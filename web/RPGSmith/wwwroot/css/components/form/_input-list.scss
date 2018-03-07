@@ -1,0 +1,156 @@
+// Checkbox / radio list
+.input-list {
+    &-items {
+        display : flex;
+        flex    : {direction: column}
+        margin  : 0;
+        padding : 0;
+
+        // List item
+        .form-check {
+            margin: {bottom: rem(8px)}
+
+            &:last-of-type {
+                margin: {bottom: 0}
+            }
+
+            // Item wrapper
+            &-label {
+                display : flex;
+                margin  : 0;
+                padding : 0;
+                color   : $color-dgray-d;
+
+                span {
+                    display     : flex;
+                    flex        : {grow: 1}
+                    align       : {items: center}
+                    height      : rem(48px);
+                    background  : {color: $color-lgray-xl}
+                    border      : {width: 1px; style: solid; color: $color-lgray-xd}
+                    cursor      : pointer;
+                    transition  : $animation-duration;
+
+                    @include responsive(md) {
+                        height: rem(40px);
+                    }
+
+                    // Item image
+                    img {
+                        width   : rem(40px);
+                        height  : rem(40px);
+                        margin  : {left: 4px}
+
+                        @include responsive(md) {
+                            width   : rem(32px);
+                            height  : rem(32px);
+                        }
+                    }
+
+                    // Item text
+                    em {
+                        margin  : {left: rem(8px); right: rem(8px)}
+                        font    : {size: rem(14px); style: normal}
+
+                        @include responsive(md) {
+                            font: {size: rem(12px)}
+                        }
+                    }
+
+                    // Item checkbox
+                    i {
+                        display     : flex;
+                        justify     : {content: center}
+                        align       : {items: center}
+                        margin      : {left: auto; right: rem(8px)}
+                        width       : rem(28px);
+                        height      : rem(28px);
+                        background  : {color: $color-lgray-xd}
+                        transition  : $animation-duration;
+
+                        @include responsive(md) {
+                            width   : rem(24px);
+                            height  : rem(24px);
+                        }
+
+                        &:before {
+                            display : none;
+                            font    : {size: rem(12px)}
+                            content : map-get($font-icons-iconic, "tick");
+
+                            @include responsive(md) {
+                                font: {size: rem(10px)}
+                            }
+                        }
+                    }
+
+                    img {
+                        ~ em {
+                            margin: {left: rem(12px)}
+                        }
+                    }
+
+                    &:hover {
+                        border: {color: $color-dgray-xl}
+
+                        i {
+                            &:before {
+                                display: block;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Input control
+            &-input {
+                display: none;
+
+                &[type="checkbox"], &[type="radio"] {
+                    &:checked {
+                        ~ span {
+                            border      : {color: $color-dgray-xl}
+                            background  : {color: $color-basic-white}
+
+                            i {
+                                background: {color: $color-dgray-d}
+
+                                &:before {
+                                    display : block;
+                                    color   : $color-basic-white;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                &[type="radio"] {
+                    ~ span {
+                        i {
+                            border: {radius: rem(14px)}
+
+                            @include responsive(md) {
+                                border: {radius: rem(12px)}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    // Wrap list items
+    &-wrap {
+        .input-list-items {
+            flex    : {direction: row; wrap: wrap}
+            margin  : {right: rem(-8px); bottom: rem(-8px)}
+
+            .form-check {
+                span {
+                    margin: {right: rem(8px)}
+                }
+            }
+        }
+    }
+}

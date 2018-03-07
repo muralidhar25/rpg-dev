@@ -1,0 +1,32 @@
+﻿<!--https://github.com/m-e-conroy/angular-dialog-service-->
+<div class="modal-header">
+    <h4 class="modal-title">
+        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Dice Name
+    </h4>
+</div>
+<div class="modal-body">
+    <ng-form name="dlg" novalidate role="form">
+        <div class="form-group pb-10">
+            <label class="control-label col-md-4">
+                Name
+            </label>
+            <div class="col-md-8 mb-20">
+                <input type="hidden" value="Result.CharacterProfileId" ng-model="Result.CharacterProfileId" />
+                <input name="dicename" type="text" ng-model="Name" class="form-control" required />
+                <span style="color:red" ng-show="dlg.dicename.$dirty && dlg.dicename.$invalid">
+                    <span ng-show="dlg.dicename.$error.required">Dice name is required.</span>
+                </span>
+            </div>
+        </div>
+        <!--<ng-form name="dlg" novalidate role="form">
+            <div class="form-group input-group-lg" ng-class="{true: 'has-error'}[dlg.name.$dirty && dlg.name.$invalid]">
+                <span class="help-block">Enter a name</span>
+                <input type="text" class="form-control" name="name" id="name" ng-model="name" ng-keyup="hitEnter($event)" required>
+            </div>
+        </ng-form>-->
+    </ng-form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button type="button" class="btn btn-primary" ng-click="save()" ng-disabled="(dlg.$dirty && dlg.$invalid) || dlg.$pristine">Save</button>
+</div>

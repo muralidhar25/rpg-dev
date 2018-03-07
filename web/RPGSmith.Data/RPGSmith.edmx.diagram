@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="70fb2a1a267848389d23325350232c7a" Name="Diagram1" ZoomLevel="98">
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.C__EFMigrationsHistory" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.C__MigrationHistory" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.Ability" Width="1.5" PointX="12.75" PointY="35.625" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.AspNetRole" Width="1.5" PointX="0.75" PointY="46.625" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="76" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="25.875" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.AspNetUser" Width="1.5" PointX="3" PointY="43.5" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.AttributeTile" Width="1.5" PointX="10.5" PointY="51.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.BlobMap" Width="1.5" PointX="7.5" PointY="59.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.Campaign" Width="1.5" PointX="5.25" PointY="85.375" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.CampaignCoreStat" Width="1.5" PointX="7.5" PointY="85.125" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.CharacterAbility" Width="1.5" PointX="7.5" PointY="51.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.CharacterAbilityProperty" Width="1.5" PointX="9.75" PointY="60" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.CharacterCoreStat" Width="1.5" PointX="9.75" PointY="72" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.CharacterItemAbility" Width="1.5" PointX="0.75" PointY="3.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.CharacterItemProperty" Width="1.5" PointX="14.75" PointY="48" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.CharacterItem" Width="1.5" PointX="12.5" PointY="47.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.CharacterItemSpell" Width="1.5" PointX="2.75" PointY="3.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.CharacterProfile" Width="1.5" PointX="5.25" PointY="58.5" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.CharacterSpellProperty" Width="1.5" PointX="9.75" PointY="64" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.CharacterSpell" Width="1.5" PointX="7.5" PointY="55.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.CommandTile" Width="1.5" PointX="5.25" PointY="40.25" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.CoreStat" Width="1.5" PointX="7.5" PointY="27.375" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.CoreStatType" Width="1.5" PointX="5.25" PointY="93.875" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.CoreStatValue" Width="1.5" PointX="12.75" PointY="44" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.CounterTile" Width="1.5" PointX="5.25" PointY="88.875" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.ExecuteTile" Width="1.5" PointX="5.25" PointY="81.25" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.ImageTile" Width="1.5" PointX="5.25" PointY="28.375" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.ItemAbility" Width="1.5" PointX="9.75" PointY="43.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.Item" Width="1.5" PointX="9.75" PointY="31.625" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.ItemSpell" Width="1.5" PointX="9.75" PointY="46.5" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.Layout" Width="1.5" PointX="10.5" PointY="55.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.LinkTile" Width="1.5" PointX="5.25" PointY="72.5" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.Log" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.NoteTile" Width="1.5" PointX="5.25" PointY="37" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.RPGSmithType" Width="1.5" PointX="5.25" PointY="21.375" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.RuleSet" Width="1.5" PointX="5.25" PointY="32.5" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.RulesetContentType" Width="1.5" PointX="7.5" PointY="21.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.RuleSetItemsContent" Width="1.5" PointX="7.5" PointY="35.25" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.RulesetProperty" Width="1.5" PointX="5.25" PointY="17.625" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.RulesetPropertyValue" Width="1.5" PointX="7.5" PointY="31.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.Spell" Width="1.5" PointX="9.75" PointY="35.625" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.Tab" Width="1.5" PointX="12.75" PointY="51.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.Tile" Width="1.5" PointX="5.25" PointY="45.25" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.TileLocation" Width="1.5" PointX="3" PointY="52.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.TileType" Width="1.5" PointX="3" PointY="40.375" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.UserAccountSetting" Width="1.5" PointX="5.25" PointY="78.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.UserProfile" Width="1.5" PointX="5.25" PointY="65.5" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.UserVirtualDice" Width="1.5" PointX="7.5" PointY="47.875" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.Role" Width="1.5" PointX="0.75" PointY="65.625" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.RoleClaim" Width="1.5" PointX="3" PointY="61.125" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.User" Width="1.5" PointX="3" PointY="64.5" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.UserClaim" Width="1.5" PointX="5.25" PointY="55.125" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.UserLogin" Width="1.5" PointX="5.25" PointY="69.375" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.UserToken" Width="1.5" PointX="4.75" PointY="3.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.bkp_CharacterItemSpells" Width="1.5" PointX="6.75" PointY="0.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.bkp_ItemSpell" Width="1.5" PointX="0.75" PointY="6.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.characterprofile_BCK_15092017" Width="1.5" PointX="2.75" PointY="6.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.Counter_BCK_26092017" Width="1.5" PointX="6.75" PointY="3.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.Layout_BCK_26092017" Width="1.5" PointX="8.75" PointY="0.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.Note_BCK_26092017" Width="1.5" PointX="8.75" PointY="3.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.NoteTile_30102017" Width="1.5" PointX="4.75" PointY="8.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.RPGSmithType_BCK_08092014" Width="1.5" PointX="6.75" PointY="8.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.Tab_BCK_26092017" Width="1.5" PointX="8.75" PointY="7.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.Temp_Bak" Width="1.5" PointX="10.75" PointY="0.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.Tile_BCK_26092017" Width="1.5" PointX="0.75" PointY="10.75" />
+        <EntityTypeShape EntityType="RPGSmith.Data.Models.TileType_BCK_26092017" Width="1.5" PointX="10.75" PointY="3.75" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Abilities__Conte__2180FB33" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Abilities__Conte__22751F6C" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Attribute__UserI__29221CFB" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Character__UserI__30C33EC3" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Character__UserI__37703C52" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Character__UserI__3B40CD36" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__CommandTi__UserI__3D2915A8" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__ExecuteTi__UserI__44CA3770" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__LinkTile__UserId__4E53A1AA" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__RuleSet__UserId__75A278F5" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Tile__UserId__5BAD9CC8" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__UserVirtu__UserI__756D6ECB" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_Campaign_User" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_CharacterProfile_UserProfile" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_Counter_UserProfile" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_ImageTile_AspNetUsers" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_Layout_UserProfile" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_Note_UserProfile" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_Tab_UserProfile" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_UserAccountSettings_AspNetUsers" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Attribute__Chara__2739D489" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Attribute__Cores__282DF8C2" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_BlobMap_CharacterProfile" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_BlobMap_UserProfile" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_Campaign_Campaign" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_CampaignCoreStat_Campaign" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_CampaignCoreStat_CoreStatType" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_CharacterCoreStat_CampaignCoreStat" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Character__Chara__2FCF1A8A" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Character__Chara__31B762FC" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_CharacterCoreStat_CharacterProfile" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_CharacterCoreStat_UserProfile" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Character__Chara__3587F3E0" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Character__Chara__367C1819" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Character__Chara__3A4CA8FD" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__CoreStatV__Chara__40058253" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__UserVirtu__Chara__76619304" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_Layout_CharacterProfile" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Character__Chara__395884C4" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__CoreStats__Rules__3E1D39E1" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__CoreStats__TypeI__3F115E1A" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__CoreStatV__Cores__40F9A68C" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__ItemAbili__Abili__4E1E9780" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__ItemAbili__ItemI__4F12BBB9" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Items__ContentId__47A6A41B" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Items__ContentTy__489AC854" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__ItemSpell__ItemI__32767D0B" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__ItemSpell__Spell__336AA144" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_Tab_Layout" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_LinkTile_LinkTile" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__RulesetCo__TypeI__531856C7" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__RulesetPr__TypeI__55009F39" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__RuleSetIt__Rules__540C7B00" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__RulesetPr__Rules__56E8E7AB" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Spells__ContentT__58D1301D" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Spells__ContentI__57DD0BE4" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__RulesetPr__Prope__55F4C372" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK__Tile__TileLocati__3A179ED3" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_Tile_TileType" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_UserProfile_User" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_RoleClaim_Role_RoleId" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_UserClaim_User_UserId" />
+        <AssociationConnector Association="RPGSmith.Data.Models.FK_UserLogin_User_UserId" />
+        <AssociationConnector Association="RPGSmith.Data.Models.AspNetUserRoles" />
+        <AssociationConnector Association="RPGSmith.Data.Models.UserRole" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

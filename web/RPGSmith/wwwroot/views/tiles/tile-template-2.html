@@ -1,0 +1,9 @@
+﻿<div class="tile-container">
+    <div class="tile-title" ng-bind="tile.entity.name"></div>
+    <div class="tile-content {{tile.parseStyle().content.classes}}" ng-style="tile.parseStyle().content.styles"  ng-bind="tile.entity.displayValue"></div>
+    <div class="clearfix tile-counter-icons">
+        <a ng-click="decrement()"><i class="fa fa-arrow-circle-down" aria-hidden="true"></i></a>
+        <a ng-click="reset()"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+        <a ng-click="increment()"><i class="fa fa-arrow-circle-up" aria-hidden="true"></i></a>
+    </div>
+</div>

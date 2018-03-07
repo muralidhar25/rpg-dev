@@ -1,0 +1,42 @@
+﻿<div class="page-rulesets">
+    <div class="popup-new-ruleset-manage">
+        <div class="modal-header">
+            <h6 class="modal-title" id="newRulesetPopupTitle">Rule Set Properties</h6>
+			<span class="modal-title">
+				<!--<img style="width: 40px;height: 30px;" ng-src="{{GeneralSettings[2].Value.Image.image?GeneralSettings[2].Value.Image.image:'/wwwroot/images/not-available.jpg'}}" onerror="this.src='/wwwroot/images/not-available.jpg'" />-->
+				<label>{{GeneralSettings[0].RulesetName}}</label>
+			</span>
+            <button type="button" class="btn icon btn-simple-primary download "><i class="fa fa-download"  ng-click="ExportRuleSet()" aria-hidden="true"></i></button>
+            <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" ng-click="cancel()"></button>
+        </div>
+
+        <div class="modal-body">
+            <ul class="list-unstyled">
+				<li>
+					<!--<a href="./Corestats" class="btn icon icon-with-text icon-external btn-accent">Manage Core Stats</a>-->
+					<button type="button" class="btn icon icon-with-text icon-external btn-accent" ng-click="ShowAllRulesetContent('General')">General Settings</button>
+				</li>
+                <li>
+                    <!--<a href="./Corestats" class="btn icon icon-with-text icon-external btn-accent">Manage Core Stats</a>-->
+                    <button type="button" class="btn icon icon-with-text icon-external btn-accent" ng-click="ShowAllRulesetContent('Corestat')">Character Stats</button>
+                </li>
+                <li>
+                    <!--<a href="#" class="btn icon icon-with-text icon-external btn-accent" ng-click="ShowAllRulesetContent('Items')">Manage Items</a>-->
+                    <button type="button" class="btn icon icon-with-text icon-external btn-accent" ng-click="ShowAllRulesetContent('Items')">Item Templates</button>
+                </li>
+                <li>
+                    <button type="button" class="btn icon icon-with-text icon-external btn-accent" ng-click="ShowAllRulesetContent('Spells')">Spells</button>
+                </li>
+                <li>
+                    <button type="button" class="btn icon icon-with-text icon-external btn-accent" ng-click="ShowAllRulesetContent('Abilities')">Abilities</button>
+                </li>
+            </ul>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-simple-accent" ng-click="cancel()">Cancel</button>
+            <!--<button type="button" class="btn btn-accent" ng-click="save()">Next</button>-->
+        </div>
+    </div>
+</div>
+<!--<toaster-container toaster-options="{'position-class': 'toast-top-right'}" style=" left: 50%; position: fixed;"></toaster-container>-->

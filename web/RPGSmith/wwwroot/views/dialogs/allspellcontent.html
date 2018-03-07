@@ -1,0 +1,130 @@
+﻿<style>
+    .modal-content {
+        width: 1100px;
+        left: -93px;
+    }
+</style>
+<div class="container item_view">
+    <div class="row">
+        <div class="col-md-4 image">
+            <div class=" image">
+                <img ng-src="{{Properties.SpellProperties[1].Value.Image.image}}" class="img-resposive" width="120" height="120" />
+            </div>
+            <button class="btn btn-primary">{{Properties.SpellProperties[0].Value.Text.value}}</button>
+            
+        </div>
+        <div class="col-md-4">
+            <div class="text-design">
+                <div class="text">
+                    <h5>STATS</h5>
+                    <p>
+                        {{Properties.SpellProperties[2].Value.Text.value}}
+                    </p>
+                </div>
+                <div class="panels row">
+                    <div class="blue">
+                        <div class="col-md-6">
+                            <div class="panel div_blue">
+                                <div class="panel-heading text-center">CLASS</div>
+                                <div class="panel-body text-center">{{Properties.SpellProperties[10].Value.Text.value}}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel div_blue">
+                                <div class="panel-heading text-center">SCHOOL</div>
+                                <div class="panel-body text-center">{{Properties.SpellProperties[9].Value.Text.value}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="blue">
+                        <div class="col-md-12">
+                            <div class="panel div_green">
+                                <div class="panel-heading text-center">Materialized Components</div>
+                                <div class="panel-body text-center">{{Properties.SpellProperties[9].Value.Text.value}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+        <div class="col-md-4">
+            <div class="text-design">
+                <div class="text">
+                    <h5>Description</h5>
+                    <p>
+                        {{Properties.SpellProperties[18].Value.Text.value}}
+                    </p>
+                </div>
+                <div class="panels row">
+                    <div class="blue">
+                        <div class="col-md-6">
+                            <div class="panel div_red">
+                                <div class="panel-heading text-center">CASTING TIME</div>
+                                <div class="panel-body text-center">{{Properties.SpellProperties[17].Value.Number.value}}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel div_red">
+                                <div class="panel-heading text-center">Attributes</div>
+                                <div class="panel-body text-center"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="blue">
+                        <div class="col-md-12">
+                            <div class="panel panel-danger">
+                                <div class="panel-heading text-center">TAGS</div>
+                                <div class="panel-body text-center">text</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="buttons-align">
+              
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="buttons-align">
+
+                <div ng-repeat="value in Properties.SpellProperties" class="col-md-6">
+                    <rpgsmithcontenttype info="value"></rpgsmithcontenttype>
+                </div>
+              
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="buttons-align">
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 col-xs-12">
+            <div class="header-text">
+                <div class="font_icons">
+                    <i class="fa fa-cog"></i>
+                    <i class="fa fa-circle" aria-hidden="true"></i>
+                </div>
+                <p>
+                    Welcome to the party in hyderabad to become a part of real time applications to be allocated in a creative
+                    manner for a while in a association manner.    Welcome to the party in hyderabad to become a part of real time applications to be allocated in a creative
+                    manner for a while in a association manner.
+                </p>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+

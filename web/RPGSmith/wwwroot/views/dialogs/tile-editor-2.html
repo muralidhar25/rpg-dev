@@ -1,0 +1,47 @@
+﻿<div class="popup-new-counter-tile">
+    <div class="modal-header">
+        <h5 class="modal-title">
+            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+            <span ng-show="isEdit" class="ng-hide" style=""> Edit Counter Tile</span>
+            <span ng-show="!isEdit"> Counter Tile</span>
+        </h5>
+        <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close"></button>
+        <div class="col-md-offset-6 col-md-2">
+            <div class="">
+                <!--<span class="ng-isolate-scope" style="margin-right: 10px;">
+                    <img src="/wwwroot/images/drop.png" ng-click="TileBorder()">
+                </span>-->
+                <span id="bckcolor" class="ng-isolate-scope">
+                    <img src="/wwwroot/images/color.png" ng-click="TileTitleBackground()">
+                </span>
+            </div>
+        </div>
+    </div>
+	
+
+    </div>
+
+	<div class="form-group input-counter" ng-show="isEdit">
+		<div class="input-group">
+			<button class="btn icon icon-minus btn-primary" type="button"></button>
+			<input class="form-control" id="viewCounterValue" type="number" placeholder="Enter value" value="30">
+			<button class="btn icon icon-plus btn-primary" type="button"></button>
+		</div>
+		<div class="input-extend">
+			<button class="btn icon icon-with-text icon-reset btn-link-primary" type="button"><span>Reset to 6</span></button>
+		</div>
+	</div>
+    <form name="theForm" novalidate>
+        <div class="modal-body">
+            <div class="form-horizontal">
+                <!--{{tile.TileType}}-->
+                <rpgsmithcountertype info="NoteTile" useoredit=1 class="form_inline"></rpgsmithcountertype>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-simple-accent" ng-click="cancel()">Cancel</button>
+            <button type="button" class="btn btn-accent" ng-click="SaveCounterTile()">Save</button>
+
+        </div>
+    </form>
+<toaster-container class="toaster_align" toaster-options="{'time-out':1000}"></toaster-container>

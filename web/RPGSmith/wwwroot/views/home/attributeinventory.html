@@ -1,0 +1,98 @@
+﻿<div class="page-inventory itemproperty"  ng-init="onloadFun()">
+    <div class="page-toolbar">
+        <div class="container">
+            <div class="page-toolbar-wrapper">
+				<div class="page-toolbar-title">
+					<h1>Back to Inventory</h1>
+				</div>
+				<button type="button" id="newItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle">New Ability</button>
+				<div class="dropdown-menu" aria-labelledby="siteNavigationToggle">
+					<!--<ul class="page-toolbar-actions">
+			<li class="view-switch">
+				<div class="btn-group" role="group">
+					<button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary selected" ng-click="GridViewTrigger($event)"></button>
+					<button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" ng-click="ListViewTrigger($event)"></button>
+				</div>
+			</li>
+			<li>
+				<button type="button" ng-click="CreateCharacterAbility()" class="btn icon icon-with-text icon-plus btn-primary">New Ability</button>
+			</li>
+			<li>
+				<button type="button" ng-click="AddRulesetAbilities()" class="btn icon icon-with-text icon-plus btn-primary">Add Ability From Ruleset</button>
+			</li>
+			<li>
+				<button type="button" ng-click="BackToLayout()" class="btn icon icon-with-text glyphicon-backward btn-primary">Back</button>
+			</li>
+		</ul>-->
+					<ul class="dropdown-menu-list">
+						<li class="dropdown-menu-item" ng-hide="true">
+
+						</li>
+						<li class="dropdown-menu-item">
+							<button type="button" data-toggle="modal" style="width: 100%" data-target="#createItemPopup" ng-click="AddRulesetAbility()" class="btn btn-accent">Add Ability</button>
+						</li>
+						<li class="dropdown-menu-item">
+							<button type="button" data-toggle="modal" style="width: 100%" data-target="#addItemPopup" ng-click="CreateCharacterAbility()" class="btn btn-accent">Create Ability</button>
+						</li>
+
+					</ul>
+				</div>
+        </div>
+    </div>
+    <!-- End of toolbar -->
+    <!-- Inventory cards -->
+    <div class="cards cards-inventory">
+        <div class="container">
+
+            <div ng-show="ShowAbilities">
+                <div class="col-md-12">
+                    <h3 class="text-center">No Abilities Added</h3>
+                </div>
+            </div>
+
+            <div class="card-list" ng-show="ShowAbility">
+                <div class="card-wrapper" ng-repeat="ability in NewAbilityInventory.CharacterAbilities">
+                    <div class="card" data-href="#">
+                        <div class="card-image">
+                            <img class="card-img-top" ng-click="ShowAllAbilityProperties(ability,$index)" ng-src="{{ability.CharacterAbilitiesProperties[1].Value.Image.image}}" alt="{{ability.CharacterItemsProperties[0].Value.Text.value}}">
+                            <div class="card-actions">
+                                <button type="button" title="Edit" ng-click="EditItem(ability,$index,3)" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
+                                <button type="button" title="Duplicate" ng-click="CopyItem(ability,$index,3)" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                                <button type="button" title="Delete" ng-click="Removeitem(ability,$index,3)" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
+                                <button type="button" title="Close" ng-click="hideConteextMenu($event)" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title" ng-click="ShowAllAbilityProperties(ability,$index)">{{ability.CharacterAbilitiesProperties[0].Value.Text.value}}</h4>
+                            <div class="card-actions-trigger">
+                                <button type="button" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary" ng-click="showContextMenu($event)"></button>
+                            </div>
+                            <ul class="item-properties">
+                                <li class="item-property item-property-text rarity highlight" ng-if="(ability.CharacterAbilitiesProperties[6].Value.Choices.selectedchoice != undefined) && (ability.CharacterAbilitiesProperties[6].Value.Choices.selectedchoice != null) && (ability.CharacterAbilitiesProperties[6].Value.Choices.selectedchoice != '')">{{ability.CharacterAbilitiesProperties[6].Value.Choices.selectedchoice}} </li>
+                                <li class="item-property item-property-text weight" ng-if="(ability.CharacterAbilitiesProperties[4].Value.Weight.value != undefined) && (ability.CharacterAbilitiesProperties[4].Value.Weight.value != null) && (ability.CharacterAbilitiesProperties[4].Value.Weight.value != '')">{{ability.CharacterAbilitiesProperties[4].Value.Weight.value}} {{ability.CharacterAbilitiesProperties[4].Value.Weight.units.selectedUnit}}</li>
+
+                                <li ng-repeat="abilityproperty in ability.CharacterAbilitiesProperties" ng-if="(abilityproperty.TypeId==3 && abilityproperty.Value.OnorOff.value == 'Yes') || ( abilityproperty.TypeId == 4 && abilityproperty.Value.YesOrNo.value == 'Yes')" class="item-property item-property-icon icon icon-rsi" ng-class="'icon-' + abilityproperty.Name.toLowerCase()" title="{{abilityproperty.Name}}" data-toggle="tooltip"></li>
+
+                                <!--<li class="item-property item-property-icon icon icon-magical icon-rsi" title="Magical" data-toggle="tooltip"></li>
+                                <li class="item-property item-property-icon icon icon-consumable icon-rsi" title="Consumable" data-toggle="tooltip"></li>-->
+
+                            </ul>
+                            <div class="item-stats">{{ability.CharacterAbilitiesProperties[2].Value.Text.value}}</div>
+                            <div class="item-actions">
+                                <button type="button" class="btn btn-accent" ng-click="Removeitem(item,$index,1)">Drop</button>
+
+                                <button type="button" class="btn btn-accent">Use</button>
+
+                                <rpgsmithcontenttype info="value" ng-repeat="value in ability.CharacterAbilitiesProperties"></rpgsmithcontenttype>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<toaster-container class="toaster_align" toaster-options="{'time-out':1000}"></toaster-container>

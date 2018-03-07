@@ -1,0 +1,154 @@
+/**
+ * Button ----------------------------------------------------------------------
+ */
+
+
+$button: (
+    colors: (
+        primary: (
+            normal: $color-primary,
+            hover : $color-primary-d,
+            active: $color-primary-xd
+
+        ), secondary: (
+            normal: $color-secondary,
+            hover : $color-secondary-d,
+            active: $color-secondary-xd
+
+        ), accent: (
+            normal: $color-accent,
+            hover : $color-accent-d,
+            active: $color-accent-xd
+        )
+    )
+);
+
+
+.btn {
+    display     : flex;
+    justify     : {content: center}
+    align       : {items: center}
+    height      : rem(48px);
+    padding     : {top: 0; bottom: 0}
+    border      : {radius: 0}
+    font        : {size: rem(14px); weight: $font-weight-medium; family: inherit}
+    text        : {transform: uppercase}
+    cursor      : pointer;
+    transition  : $animation-duration;
+
+    @include responsive(md) {
+        height  : rem(40px);
+        padding : {left: rem(24px); right: rem(24px)}
+        font    : {size: rem(12px)}
+    }
+
+    &.icon {
+        &:before {
+            font: {size: rem(16px)}
+
+            @include responsive(md) {
+                font: {size: rem(14px)}
+            }
+        }
+
+        &-with-text {
+            &:before {
+                font: {size: rem(14px)}
+
+                @include responsive(md) {
+                    font: {size: rem(12px)}
+                }
+            }
+        }
+    }
+
+    &:hover, &:focus, &:active {
+        box     : {shadow: none !important}
+        outline : none !important;
+    }
+
+    &-primary, &-secondary, &-accent {
+        border  : {color: transparent; bottom: {width: 2px}}
+        color   : $color-basic-white !important;
+
+        &:hover {
+            border: {color: transparent}
+        }
+
+        &:focus, &:active {
+            border: {color: transparent !important}
+        }
+    }
+
+    @each $type, $states in map-get($button, "colors") {
+        $normal : map-get($states, "normal");
+        $hover  : map-get($states, "hover");
+        $active : map-get($states, "active");
+
+        &-#{$type} {
+            border      : {bottom: {color: darken($normal, 15%)}}
+            background  : {color: $normal}
+
+            &:hover {
+                border      : {bottom: {color: darken($hover, 15%)}}
+                background  : {color: $hover}
+
+            } &:focus, &:active {
+                border      : {bottom: {color: darken($active, 15%) !important}}
+                background  : {color: $active !important}
+            }
+        }
+
+        &-outline-#{$type} {
+            color       : $normal;
+            border      : {color: $normal}
+            background  : {color: transparent}
+
+            &:hover, &:focus, &:active {
+                color       : $normal !important;
+                border      : {color: $normal !important}
+                background  : {color: $color-basic-white !important}
+            }
+        }
+
+        &-simple-#{$type}, &-link-#{$type} {
+            color       : $normal;
+            border      : {color: $normal}
+            background  : {color: transparent}
+
+            @include responsive(md) {
+                border: {color: transparent}
+            }
+
+            &:hover, &:focus, &:active {
+                color       : $normal !important;
+                background  : {color: transparent !important}
+            }
+        }
+
+        &-link-#{$type} {
+            font: {size: rem(14px)}
+
+            @include responsive(md) {
+                justify : {content: flex-start}
+                height  : auto;
+                padding : {left: 0; right: 0}
+                text    : {transform: none}
+            }
+
+            &:hover {
+                text: {decoration: underline}
+            }
+
+            &.icon {
+                &:hover {
+                    text: {decoration: none}
+
+                    span {
+                        text: {decoration: underline}
+                    }
+                }
+            }
+        }
+    }
+}

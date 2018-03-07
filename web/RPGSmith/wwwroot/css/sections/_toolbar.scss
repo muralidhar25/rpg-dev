@@ -1,0 +1,121 @@
+/**
+ * Toolbar ---------------------------------------------------------------------
+ */
+
+
+$toolbar-height : rem(100px);
+
+
+.page-toolbar {
+    &-wrapper {
+        display : flex;
+        flex    : {direction: column}
+        justify : {content: center}
+        margin  : {top: rem(24px); bottom: rem(32px)}
+
+        @include responsive(md) {
+            flex        : {direction: row}
+            justify     : {content: space-between}
+            align       : {items: center}
+            height      : $toolbar-height;
+            margin      : 0;
+        }
+    }
+
+    // Page title
+    &-title {
+        display : flex;
+        align   : {items: center}
+        justify : {content: center}
+        margin  : {bottom: rem(20px)}
+        text    : {align: center}
+        color   : $color-dgray;
+
+        @include responsive(md) {
+            justify : {content: flex-start}
+            margin  : 0;
+            text    : {align: left}
+        }
+
+        // Back icon
+        a {
+            margin  : {right: rem(16px)}
+            color   : $color-dgray;
+
+            &:before {
+                font: {size: rem(20px)}
+
+                @include responsive(md) {
+                    font: {size: rem(18px)}
+                }
+            }
+        }
+
+        // Title text
+        h1 {
+            margin  : 0;
+            font    : {size: rem(28px); weight: $font-weight-light; family: $font-stack-header}
+
+            @include responsive(md) {
+                margin  : {bottom: 0}
+                font    : {size: rem(24px)}
+            }
+        }
+    }
+
+    // Toolbar links and actions
+    &-links, &-actions {
+        display : flex;
+        flex    : {direction: column}
+        margin  : {top: rem(16px); bottom: 0; left: 0; right: 0};
+        padding : 0;
+
+        @include responsive(md) {
+            flex    : {direction: row}
+            margin  : {top: 0}
+        }
+
+        > li {
+            display : flex;
+            list    : {style: {type: none}}
+            margin  : {top: rem(8px)}
+
+            @include responsive(md) {
+                margin: {top: 0; left: rem(16px)}
+            }
+
+            .btn {
+                flex: {grow: 1}
+            }
+
+            &:first-of-type {
+                margin: {top: 0}
+
+                @include responsive(md) {
+                    margin: {left: 0}
+                }
+            }
+        }
+    }
+
+    // Toolbar links
+    &-links {
+        > li {
+            @include responsive(md) {
+                &:before {
+                    margin  : {right: rem(16px)}
+                    content : "|";
+                    color   : $color-lgray-xd;
+                }
+            }
+
+            &:first-of-type {
+                @include responsive(md) {
+                    &:before {
+                        content: "";
+                    }
+                }
+            }
+        }
+    }
+}

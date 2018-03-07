@@ -1,0 +1,243 @@
+﻿<div class="popup-dice">
+    <div class="modal-header">
+        <h5 class="modal-title" id="dicePopupTitle">Dice</h5>
+        <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close"  ng-click="cancel()"></button>
+    </div>
+    <div class="modal-body">
+        <form id="diceareaforselection">
+            <!-- Saved commands -->
+            <div id="savedattackoptions"class="form-group saved-commands">
+                <label>Saved Commands</label>
+                <div class="command-list">
+                    <ul>
+                        <li ng-repeat="name in DiceList">
+                            <button type="button" class="btn" ng-click="ShowCommand(name.Name)">{{name.Name}}</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- End of saved commands -->
+            <!-- New command (initial) -->
+            <div class="form-group new-command initial">
+                <label>Command*</label>
+
+                <!-- Command console -->
+                <div class="command-console form-row">
+                    <div class="col-12 col-md-9">
+                        <input type="text" id="customset" class="form-control" placeholder="Enter the comand here or click on the dice to generate">
+                    </div>
+                    <div class="d-flex col-12 col-md-3">
+                        <button type="button" id="addmod" class="btn btn-primary btn-block" ng-click="AddNumericCorestats()">Add Mod</button>
+                    </div>
+                </div>
+                <!-- End of command console -->
+                <!-- Dice canvas -->
+                <div class="command-canvas">
+                    <ul>
+                        <li>
+                            <button type="button" class="btn icon icon-rsi icon-d4-thin" onclick="dicecommandsearch('d4')">
+                                <span>
+                                    D4 <em>4</em>
+                                </span>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn icon icon-rsi icon-d6-thin" onclick="dicecommandsearch('d6')">
+                                <span>
+                                    D6 <em>6</em>
+                                </span>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn icon icon-rsi icon-d8-thin" onclick="dicecommandsearch('d8')">
+                                <span>
+                                    D8 <em>8</em>
+                                </span>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn icon icon-rsi icon-d10-thin" onclick="dicecommandsearch('d10')">
+                                <span>
+                                    D10 <em>10</em>
+                                </span>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn icon icon-rsi icon-d12-thin" onclick="dicecommandsearch('d12')">
+                                <span>
+                                    D12 <em>12</em>
+                                </span>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn icon icon-rsi icon-d20-thin" onclick="dicecommandsearch('d20')">
+                                <span>
+                                    D20 <em>20</em>
+                                </span>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn icon icon-rsi icon-d10-thin" onclick="dicecommandsearch('d100')">
+                                <span>
+                                    D100 <em>100</em>
+                                </span>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn icon icon-reset" onclick="diceCommandClear()"></button>
+                        </li>
+                    </ul>
+                </div>
+                <!-- End of dice canvas -->
+                <!-- Dice actions -->
+                <div class="command-actions form-row">
+                    <div class="d-flex col-12 col-md-6">
+                        <button type="button" id="defaultDiceSelect" class="btn btn-accent btn-block" ng-click="DefaultDiceSelect()">Ok</button>
+                    </div>
+                    <div class="d-flex col-12 col-md-6">
+                        <button type="button" id="dicesavecommand" class="btn btn-accent btn-block" ng-click="DiceSaveCommand()">Save</button>
+                    </div>
+                    <div class="d-flex col-12 col-md-6">
+                        <button type="button" id="diceRollTrigger" class="btn btn-accent btn-block" onclick="DiceCommandRoll()">Roll</button>
+                    </div>
+                </div>
+                <!-- End of dice actions -->
+            </div>
+            <!-- End of new command (initial) -->
+            <!-- Last rolled result -->
+
+            <input type="text" id="set" style="background-color: rgba(3, 169, 244, 0.5);display:none" />
+
+            <div id="lastDiceRollResult" class="command-last-result form-group">
+                <label>Last Result</label>
+
+                <p>
+                    <strong><input id="lastrunresult" type="text" class="form-control" value="Dice not rolled yet..." disabled /></strong>
+                </p>
+
+            </div>
+            <!-- End of last rolled result -->
+        </form>
+
+        <div id="diceareaforroll" style="display:none">
+
+            <!--<div id="info_div" style="display: none">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <p>Click Ok to Continue (or) Click Roll Again or drag on the dice to roll dice again.</p>
+                </div>
+            </div>
+
+
+
+            <!--<div class="center_field">
+                <span id="label"></span>
+            </div>-->
+            <!--<div class="center_field">
+                <div class="bottom_field">
+                    <span id="labelhelp">click to continue or tap and drag again</span>
+                </div>
+            </div>
+
+        </div>-->
+            <!--  <div id="selector_div" style="display: none">
+             <div class="center_field">
+                 <div id="sethelp">
+
+                 </div>
+             </div>
+            <div class="center_field">
+                 <input type="text" id="set" value="4d6" style="background-color: rgba(3, 169, 244, 0.5);visibility:hidden;" /><br />
+                 <button id="throw">Roll</button>
+                 <button id="clear">clear</button>
+                 <button id="addmod" ng-click="AddNumericCorestats()">Add Mod</button>
+                 <button id="defaultdiceselect" ng-click="DefaultDiceSelect()">Ok</button>
+                 <button id="dicesavecommand" ng-click="DiceSaveCommand()">Save</button>
+             </div>
+         </div>-->
+
+            <input type="text" id="customsetatroll" class="form-control" placeholder="Enter the comand here or click on the dice to generate" disabled>
+
+            <div id="canvas">
+                <canvas width="1365" height="345"></canvas>
+            </div>
+
+            <div class="popup-dice">
+                <div class="new-command result">
+                    <div id="showdicerollresult" class="command-canvas">
+                        <ul>
+                            <li>
+                                <button class="btn" type="button">
+                                    <em id="showdicerollresult_d4">0</em>
+                                    <span class="icon icon-with-text icon-d6 icon-rsi">d4</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="btn" type="button">
+                                    <em id="showdicerollresult_d6">0</em>
+                                    <span class="icon icon-with-text icon-d6 icon-rsi">d6</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="btn" type="button">
+                                    <em id="showdicerollresult_d8">0</em>
+                                    <span class="icon icon-with-text icon-d12 icon-rsi">d8</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="btn" type="button">
+                                    <em id="showdicerollresult_d10">0</em>
+                                    <span class="icon icon-with-text icon-d20 icon-rsi">d10</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="btn" type="button">
+                                    <em id="showdicerollresult_d12">0</em>
+                                    <span class="icon icon-with-text icon-d20 icon-rsi">d12</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="btn" type="button">
+                                    <em id="showdicerollresult_d20">0</em>
+                                    <span class="icon icon-with-text icon-d20 icon-rsi">d20</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="btn" type="button">
+                                    <em id="showdicerollresult_d100">0</em>
+                                    <span class="icon icon-with-text icon-d20 icon-rsi">d100</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="btn" type="button"><em id="showdicerollresult_Sum">0</em></button>
+                            </li>
+                        </ul>
+                    </div>
+                    </div>
+                </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="text" id="rollresult" class="form-control" value="12" />
+                        </div>
+                    </div>
+
+                    <div class="command-actions form-row">
+                        <div class="d-flex col-12 col-md-6">
+                            <button type="button" id="diceShowDiceTrigger" class="btn btn-accent btn-block" onclick="dicerollcomplete()">Show Dice</button>
+                        </div>
+                        <div class="d-flex col-12 col-md-6">
+                            <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block" onclick="customrolediceagain()">Roll Again</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-outline-accent" ng-click="cancel()">Close</button>
+            </div>
+        </div>
+
+

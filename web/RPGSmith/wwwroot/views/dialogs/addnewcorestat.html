@@ -1,0 +1,197 @@
+﻿<div class="modal-header">
+    <h4 class="modal-title">
+        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+        <span>{{tabName}}</span>
+    </h4>
+    <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" ng-click="cancel()"></button>
+</div>
+
+<div class="modal-body">
+    <ng-form name="dlg" role="form">
+        <div class="form-group">
+            <!--<label class="control-label col-md-4">
+                Name
+            </label>
+            <div class="col-md-8 mb-20">
+                <input name="corestatname" type="text" ng-model="CoreStatProperties.Name" class="form-control" required />
+                <span style="color:red" ng-show="dlg.corestatname.$dirty && dlg.corestatname.$invalid">
+                    <span ng-show="dlg.corestatname.$error.required">Core Stat name is required.</span>
+                </span>
+            </div>-->
+            <label class="control-label">
+                <span class="help-block">Name <span class="errorColor">*</span></span>
+            </label>
+            <div class="">
+                <input name="corestatname" placeholder="Enter Name" ng-disabled="DisableNameField" type="text" ng-model="CoreStatProperties.Name" class="form-control" ng-class="{red: dlg.corestatname.$dirty && dlg.corestatname.$error.required}" required />
+            </div>
+        </div>
+        <!--<div class="" ng-show="ShowChoices">
+            <input type="text" ng-model="CoreStatProperties.ChoiceName" />
+            <div class="form-group pb-10" ng-repeat="choice in CoreStatProperties.Value.Choices.choices">
+                <label class="control-label col-md-4">Choice</label>
+                <div class="col-md-8" style="margin-bottom:6px;">
+                    <input type="text" class="form-control" ng-model="choice.ChoiceName" />
+                </div>
+            </div>
+            <div class="addchoice">
+                <button ng-click="addChoice()" class="btn btn-primary">Add Choice</button>
+            </div>
+
+
+
+        </div>-->
+        
+        <!--<div ng-show="ShowValueandSubvalue" class="form-group mr-20 col-md-12">
+            <div class="" style="width: 20%;float:left;">
+                <label class="radio-inline">
+                    <input type="radio" ng-model="ValSub" name="value" value="Value" ng-click="AddValueSubvalue('Value')" />
+                    <span>Value</span>
+                </label>
+            </div>
+            <div class="">
+                <label class="radio-inline">
+                    <input type="radio" ng-model="ValSub" name="value" value="SubValue" ng-click="AddValueSubvalue('SubValue')" />
+                    <span>Sub Value</span>
+                </label>
+            </div>
+        </div>
+        <div ng-show="ShowCurrentMaxValue" class="form-group ml-10 col-md-12">
+            <div class="" style="width: 20%;float:left;">
+                <label class="radio-inline">
+                    <input type="radio" ng-model="CurrentMaxVal" name="current" value="CurrentValue" ng-change="Addcurrentmax('CurrentValue')" />
+                    <span>Current Value</span>
+                </label>
+            </div>
+            <div class="">
+                <label class="radio-inline">
+                    <input type="radio" ng-model="CurrentMaxVal" name="current" value="MaxValue" ng-change="Addcurrentmax('MaxValue')" />
+                    <span>Max Value</span>
+                </label>
+            </div>
+        </div>-->
+        <div class="form-group pb-10">
+            <!--<label class="control-label col-md-4">
+                Type
+            </label>
+            <div class="col-md-8 mb-20">
+                <select name="corestattype" class="form-control" ng-options="item.TypeId as item.Name for item in Types" ng-model="CoreStatProperties.TypeId" required>
+                    <option value="">--Select--</option>
+                </select>
+                <span style="color:red" ng-show="dlg.corestattype.$dirty && dlg.corestattype.$invalid">
+                    <span ng-show="dlg.corestattype.$error.required">Type is required.</span>
+                </span>
+
+            </div>-->
+            <!--<label class="control-label col-md-4">
+                <span class="help-block">Type <span class="errorColor">*</span></span>
+            </label>
+            <div class="col-md-8 mb-20">
+                <select name="corestattype" ng-disabled="DisablecopyFields" ng-change="CoreStatOnChange()" class="form-control" ng-options="item.TypeId as item.Name for item in Types" ng-model="CoreStatProperties.TypeId" ng-class="{red: dlg.corestattype.$dirty && dlg.corestattype.$error.required}" required>
+                    <option value="">--Select--</option>
+                </select>
+            </div>-->
+
+        </div>
+        <div class="form-group form-row">
+			<div class="col-5 col-md-5">
+				<!-- Character ruleset -->
+				<fieldset class="form-group input-list">
+					<legend>Type</legend>
+					<ul class="input-list-items">
+						<li class="form-check" ng-repeat="item in Types">
+							<label class="form-check-label icon-ca">
+								<!--<input class="form-check-input" type="radio" name="newCharacterRuleset" value="ruleSetItem.Id" ng-model="ruleSetItem.RulesetID">-->
+								<input class="form-check-input" type="radio" ng-disabled="disableAllControls" name="CharacterStat" value="{{item.TypeId}}" ng-model="CoreStatProperties.TypeId" />
+
+								<span>
+									<!--<img ng-src="{{item.image?item.image:'/wwwroot/images/not-available.jpg'}}" onerror="this.src='/wwwroot/images/not-available.jpg'" />
+									<span >
+
+									</span>-->
+									<em class="icon icon-with-text icon-{{item.Name.toLowerCase()=='command'?'dice':(item.Name.toLowerCase()=='yes/no'?'yes-no':(item.Name.toLowerCase()=='value & sub-value'?'value-subval':(item.Name.toLowerCase()=='current & max value'?'slider':(item.Name.toLowerCase()=='on/off'?'on-off':item.Name.toLowerCase()))))}} icon-rsi">{{item.Name}}</em>
+									<i class="icon" ng-class="'ss'"></i>
+								</span>
+							</label>
+						</li>
+					</ul>
+					<!--<div class="input-extend">
+						<a ng-click="manageRuleSets()" class="btn icon icon-with-text icon-external btn-link-primary"><span>Manage Rulesets</span></a>
+					</div>-->
+				</fieldset>
+				<!-- End of character ruleset -->
+			</div>
+
+			<div class="stat-type-fields stat-type-text" style="width: 55%;padding-left: 1px">
+				<label class="control-label" ng-show="Types[CoreStatProperties.TypeId-1].Name">
+					{{CoreStatProperties.TypeId==16?'Calculation':Types[CoreStatProperties.TypeId-1].Name}}
+				</label>
+				<div class="stat-type-desc" ng-show="Types[CoreStatProperties.TypeId-1].Description">
+					<p ng-show="Types[CoreStatProperties.TypeId-1].Description">
+						{{Types[CoreStatProperties.TypeId-1].Description}}
+					</p>
+					<p ng-show="Types[CoreStatProperties.TypeId-1].Examples">
+						<em>eg. {{Types[CoreStatProperties.TypeId-1].Examples}}</em>
+					</p>
+				</div>
+				<div>
+					<label class="control-label">
+						Description (Optional)
+					</label>
+					<div class="">
+						<textarea ng-disabled="DisablecopyFields" placeholder="Enter Description" ng-model="CoreStatProperties.Description" class="form-control"></textarea>
+					</div>
+				</div>
+				<div class="" ng-show="CoreStatProperties.TypeId == 16">
+					<label class="control-label">Add an Existing Character Stat</label>
+					<div class="">
+						<select name="ExistCoreStat" class="form-control" ng-options="CoreStatsInGrid.Name for CoreStatsInGrid in CoreStatsInGrid" ng-model="CoreStatsInGrid.Name" ng-change="ExistCoreStatOnChange()" ng-class="{red: dlg.corestattype.$dirty && dlg.corestattype.$error.required}" required>
+							<option value="">--Select--</option>
+						</select>
+						<button type="button" ng-disabled="DisablecopyFields" class="byn btn-primary" ng-click="CreateFormula()">INSERT</button>
+					</div>
+					<label class="control-label">Formula</label>
+					<div >
+						<input type="text" ng-disabled="DisablecopyFields" placeholder="Enter Formula" ng-model="Formula" class="form-control" />
+					</div>
+				</div>
+				<div ng-show="Types[CoreStatProperties.TypeId-1].Name == 'Choice'">
+					<!--<input type="text" ng-model="CoreStatProperties.ChoiceName" />-->
+					<label class="control-label">Choice</label>
+					<div ng-repeat="choice in CoreStatProperties.Value.Choices.choices">
+						
+						<!--<div class="col-md-8" style="margin-bottom:6px;">
+				<input type="text" class="form-control col-md-6" ng-model="choice.ChoiceName" />
+			</div>-->
+						
+							<!--<input id="ChoiceField" style="width: 70%" ng-disabled="DisablecopyFields" type="text"  placeholder="Enter Choice" class="form-control form-control-sm icon icon-trash icon-rsi" ng-model="choice.ChoiceName">-->
+						
+							<span class="input-group-btn">
+								
+								<button type="button" title="Remove Choice" class="btn icon icon-trash btn-simple-primary" ng-click="RemoveChoice(choice)"></button>
+							</span>
+						<input type="text" ng-model="choice.ChoiceName" ng-click="addChoice()"  class="form-control" placeholder="Enter Choice">
+						
+
+
+							<!--<div ng-disabled="DisablecopyFields" class="btn btn-primary icon icon-with-text icon-trash text-sm-center btn-sm" ng-click="RemoveChoice(choice)"></div>-->
+</div>
+					
+					<!--<div class="addchoice">
+						<button ng-click="addChoice()" ng-disabled="DisablecopyFields" class="btn btn-primary">Add Choice</button>
+					</div>-->
+				</div>
+		</div>
+       
+</div>
+
+    </ng-form>
+
+</div>
+
+<div class="modal-footer">
+	<!--<button type="button" class="btn btn-primary" ng-click="NewRuleSet();"><i style="color:#fff;" class="fa fa fa-plus"></i> Add RuleSet</button>-->
+	<button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+	<button type="button" class="btn btn-primary" ng-click="SaveCorestat()">{{buttontext}}</button>
+	<!--<button type="button" class="btn btn-primary" ng-click="SaveCorestat()">Save</button>-->
+</div>
+

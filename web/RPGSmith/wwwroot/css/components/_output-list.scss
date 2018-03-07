@@ -1,0 +1,76 @@
+// Checkbox / radio list
+.output-list {
+    &-items {
+        display : flex;
+        flex    : {direction: column}
+        margin  : 0;
+        padding : 0;
+
+        // List item
+        .output-list-item {
+            margin  : {bottom: rem(8px)}
+            list    : {style: {type: none}}
+
+            &:last-of-type {
+                margin: {bottom: 0}
+            }
+
+            // Item wrapper
+            div {
+                display     : flex;
+                flex        : {grow: 1}
+                align       : {items: center}
+                height      : rem(48px);
+                background  : {color: $color-lgray-xl}
+                color       : $color-dgray-d;
+
+                @include responsive(md) {
+                    height: rem(40px);
+                }
+
+                // Item image
+                img {
+                    width   : rem(40px);
+                    height  : rem(40px);
+                    margin  : {left: 4px}
+
+                    @include responsive(md) {
+                        width   : rem(32px);
+                        height  : rem(32px);
+                    }
+                }
+
+                // Item text
+                span {
+                    margin  : {left: rem(8px); right: rem(8px)}
+                    font    : {size: rem(14px); style: normal}
+
+                    @include responsive(md) {
+                        font: {size: rem(12px)}
+                    }
+                }
+
+                img {
+                    ~ span {
+                        margin: {left: rem(12px)}
+                    }
+                }
+            }
+        }
+    }
+
+
+    // Wrap list items
+    &-wrap {
+        .output-list-items {
+            flex    : {direction: row; wrap: wrap}
+            margin  : {right: rem(-8px); bottom: rem(-8px)}
+
+            .output-list-item {
+                div {
+                    margin: {right: rem(8px)}
+                }
+            }
+        }
+    }
+}

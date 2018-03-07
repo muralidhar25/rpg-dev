@@ -1,0 +1,310 @@
+/*
+ * angular-ui-tab-scroll
+ * https://github.com/VersifitTechnologies/angular-ui-tab-scroll
+ *
+ * Version: 2.2.9
+ * License: MIT
+ */
+
+$button-width: 50px;
+$header-height: 40px;
+
+$border-color: #eee;
+$not-active-hover-color: #e5e5e5;
+$not-active-background-color: #eee; /*#F2F2F2;*/
+$not-active-text-color: #666666;
+$active-background-color: #FBFBFB;
+$active-text-color: #000;
+$active-border-color: #eee; /*#999;*/
+$active-border-radius: 0;
+
+.tab-menu-header {
+    /*padding: 5px 0 10px 15px;*/
+    padding: 10px 10px;
+    color: #777;
+
+    button {
+        color: #777;
+    }
+
+    a {
+        i {
+            font-size: 30px;
+        }
+
+        &.button-add {
+        }
+
+        &.button-delete {
+        }
+    }
+}
+
+.ui-tabs-scrollable {
+    position: relative;
+
+    > .spacer {
+        &:not(.hidden-buttons) {
+            margin-left: 0;
+            margin-right: calc(#{$button-width} + #{$button-width});
+
+            > div:first-child {
+                > .tab-content {
+                    margin-left: 0px;
+                    margin-right: calc(-#{$button-width} - #{$button-width});
+                }
+            }
+        }
+
+        &.hidden-buttons {
+            > div:first-child {
+                > .nav-tabs {
+                    > li:last-child {
+                        > a {
+                            border-right-color: $border-color;
+                        }
+
+                        &.active {
+                            > a {
+                                border-right-color: $active-border-color;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        > div:first-child {
+            > .nav-tabs {
+                white-space: nowrap;
+                overflow: hidden;
+                border: none;
+
+                > li {
+                    float: none;
+                    display: table-cell;
+                    margin: 0;
+
+                    &.active {
+                        > a {
+                            border-radius: $active-border-radius $active-border-radius 0 0;
+                            border-color: $active-border-color;
+                            border-bottom-color: transparent;
+                            border-top-color: white;
+                            background-color: $active-background-color;
+                            color: $active-text-color;
+                        }
+
+                        & + li {
+                            > a {
+                                border-left-color: $not-active-background-color;
+                            }
+                        }
+
+                        & + li {
+                            > a:hover {
+                                border-left-color: $not-active-hover-color;
+                            }
+                        }
+                    }
+
+                    &:not(.active) {
+                        > a {
+                            /*border-bottom-color: $active-border-color;*/
+                            &:hover {
+                                background-color: $not-active-hover-color;
+                            }
+                        }
+                    }
+
+                    &.disabled {
+                        &:not(.active) {
+                            > a {
+                                color: #9d9d9d;
+
+                                &:hover {
+                                    background-color: $not-active-background-color;
+                                }
+                            }
+                        }
+                    }
+
+                    > a {
+                        line-height: $header-height;
+                        height: $header-height;
+                        font-size: 12px;
+                        overflow: hidden;
+                        background-color: $not-active-background-color;
+                        border: 1px solid $border-color;
+                        border-right-color: transparent;
+                        border-radius: 0;
+                        padding: 0 15px;
+                        margin: 0;
+                        color: $not-active-text-color;
+                    }
+                }
+            }
+
+            > .tab-content {
+                margin-top: -1px;
+                border-top: 1px solid $active-border-color;
+            }
+        }
+    }
+
+    > .nav-button {
+        &:hover, &:active {
+            background-color: #e5e5e5;
+        }
+
+        &:before {
+            font-family: 'Glyphicons Halflings';
+            color: #8c8c8c;
+            font-size: 10px;
+        }
+
+        &:disabled {
+            &:before {
+                color: #c5c5c5;
+            }
+        }
+
+        position: absolute;
+        width: $button-width;
+        line-height: $header-height;
+        height: $header-height;
+        top: 0;
+        cursor: pointer;
+        text-align: center;
+        border: 1px solid $border-color;
+        /*border-bottom-color: $active-border-color;*/
+        border-radius: 0;
+        padding: 0;
+        background-color: #fff;
+        z-index: 10;
+        box-shadow: none;
+
+        &.left-nav-button {
+            right: $button-width;
+            border-right: 0;
+            display: none;
+
+            &:before {
+                content: '\e079';
+            }
+        }
+
+        &.right-nav-button {
+            right: 0;
+            display: none;
+
+            &:before {
+                content: '\e080';
+            }
+        }
+    }
+
+    > .dropdown {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        > .dropdown-toggle {
+            width: $button-width;
+            line-height: $header-height;
+            height: $header-height;
+            font-size: 10px;
+            color: #8c8c8c;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-left-width: 0;
+            padding: 0;
+            background-color: #fff;
+            z-index: 10;
+            border-radius: 0;
+            /*border-bottom-color: $active-border-color;*/
+            &:before {
+                font-family: 'Glyphicons Halflings';
+                content: '\e114';
+                font-size: 10px;
+            }
+        }
+    }
+
+    &.show-drop-down {
+        > .spacer {
+            &:not(.hidden-buttons) {
+                /*margin-right: calc(#{$button-width} + #{$button-width} + #{$button-width});*/
+                margin-right: #{$button-width};
+
+                > div:first-child {
+                    > .tab-content {
+                        /*margin-right: calc(-#{$button-width} - #{$button-width} - #{$button-width});*/
+                        margin-right: -#{$button-width};
+                    }
+                }
+            }
+        }
+
+        > .nav-button {
+            &.right-nav-button {
+                right: $button-width;
+            }
+
+            &.left-nav-button {
+                right: calc(#{$button-width} + #{$button-width});
+            }
+        }
+    }
+}
+
+.dropdown-menu {
+    min-width: 0;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, .2);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+
+    > li {
+        > a {
+            padding: 10px 30px 10px 15px;
+
+            > .dropDownTabActiveMark:before {
+                font-family: 'Glyphicons Halflings';
+                content: '\e072';
+                padding-right: 7px;
+                font-size: 10px;
+                color: #777;
+            }
+        }
+
+        &.active {
+            > a {
+                color: inherit;
+                background-color: inherit;
+
+                &:hover {
+                    color: inherit;
+                    background-color: #f5f5f5;
+                }
+            }
+        }
+    }
+}
+
+/*make the tabs content be height 100%*/
+.ui-tabs-scrollable > .spacer {
+    height: 100%;
+
+    > div:first-child {
+        height: 100%;
+
+        > .tab-content {
+            height: 100%;
+
+            > .active {
+                height: 100%;
+                overflow: auto;
+            }
+        }
+    }
+}

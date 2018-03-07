@@ -1,0 +1,140 @@
+﻿<div class="container" data-ng-init="onloadFun()">
+    <div class="account_setting">
+        <uib-tabset active="active">
+            <uib-tab>
+                <uib-tab-heading>
+                    <i class="glyphicon glyphicon-bell"></i> Edit Profile
+                </uib-tab-heading>
+                <div class="container edit_profile">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div class="page-toolbar-wrapper">
+                                <div class="page-toolbar-title">
+                                    <h1>Edit Profile</h1>
+                                </div>
+                                <button type="button" class="btn btn-primary back" ng-click="Cancel()">Back</button>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="col-md-offset-2 col-md-10">
+                                <div class="form-horizontal">
+                                    <form name="EditForm" novalidate class="form-horizontal header">
+                                        <div class="form-row">
+                                            <div class="col-12 col-md-12">
+                                                <!-- Item name -->
+                                                <div class="form-group col-md-6">
+                                                    <label for="newItemName">User Name</label>
+                                                    <input type="text" class="form-control" id="username" placeholder="Enter Username" ng-model="data.Name" disabled>
+                                                </div>
+                                                <!-- End of item name -->
+                                            </div>
+                                            <div class="col-12 col-md-12">
+                                                <!-- Item name -->
+                                                <div class="form-group col-md-6">
+                                                    <label for="newItemName">Email</label>
+                                                    <input type="text" class="form-control" id="email" placeholder="Enter email" name="email" ng-model="data.Email" disabled>
+                                                </div>
+                                                <!-- End of item name -->
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <!--<label class="control-label col-sm-2" for="pwd">Profile Image:</label>-->
+                                            <div class="col-sm-4">
+                                                <div class="clearfix">
+                                                    <div class="pull-left edit-character-portrait"><img id="profileImage" ng-src="{{data.ProfileImage}}" ng-model="data.ProfileImage" alt="" ngf-resize="{width: 120, height: 120}" /></div>
+                                                    <div class="profile_image"><span>Choose file</span><input type="file" onchange="angular.element(this).scope().ProfileImageUpload(this)" accept="x-png,gif,jpeg" /> </div>
+                                                </div>
+                                                <span class="help-block">120px by 120px</span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <button type="button" class="btn btn-accent pull-left" ng-click="Update()">Update</button>
+                                        <!--<button type="button" class="btn btn-simple-accent" ng-click="cancel()">Cancel</button>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </uib-tab>
+
+            <uib-tab>
+                <uib-tab-heading>
+                    Reset Profile
+                </uib-tab-heading>
+                <div class="container reset_password">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+
+                            <div class="page-toolbar-wrapper">
+                                <div class="page-toolbar-title">
+                                    <h1>Reset Profile</h1>
+                                </div>
+                                <button type="button" class="btn btn-primary back" ng-click="Cancel()">Back</button>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="col-md-offset-2 col-md-10">
+                                <div class="form-horizontal">
+
+                                    <!--<form name="EditForm1" novalidate class="form-horizontal">-->
+                                        <div class="form-row">
+                                            <div class="col-12 col-md-12">
+                                                <!-- Item name -->
+                                                <div class="form-group col-md-6">
+                                                    <label for="newItemName">Old Password</label>
+                                                     <input type="password" class="form-control" id="emailold" placeholder="Enter Old Password" name="emailold" ng-model="resetModel.oldpassword">
+                                                </div>
+                                                <!-- End of item name -->
+                                            </div>
+                                            <div class="col-12 col-md-12">
+                                                <!-- Item name -->
+                                                <div class="form-group col-md-6">
+                                                    <label for="newItemName">New Password</label>
+                                                    <input type="password" class="form-control" id="emailnew" placeholder="Enter New Password" name="emailnew" ng-model="resetModel.newpassword">
+                                                </div>
+                                                <!-- End of item name -->
+                                            </div>
+                                            <div class="col-12 col-md-12">
+                                                <!-- Item name -->
+                                                <div class="form-group col-md-6">
+                                                    <label for="newItemName">Confirm Password</label>
+                                                    <input type="password" class="form-control" id="pwd" placeholder="Enter Confirm password" name="pwd" ng-model="resetModel.confirmpassword" ng-change="checkpass()">
+                                                </div>
+                                                <!-- End of item name -->
+                                            </div>
+
+                                        </div>
+
+
+                                    <!--</form>-->
+
+
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <button type="button" class="btn btn-accent pull-left" ng-click="ResetProfilePassword(resetModel)">Update</button>
+                                        <!--<button type="button" class="btn btn-simple-accent" ng-click="cancel()">Cancel</button>-->
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </uib-tab>
+
+        </uib-tabset>
+    </div>
+</div>
+
+
+<toaster-container class="toaster_align" toaster-options="{'time-out':7000}"></toaster-container>

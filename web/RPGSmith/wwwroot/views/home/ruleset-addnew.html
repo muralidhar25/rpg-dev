@@ -1,0 +1,193 @@
+﻿<div class="container ruleset">
+    <div class="row">
+        <div class="">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4><i class="{{NewRuleSet.ActionIcon}}"></i>  {{NewRuleSet.Heading}}</h4>
+                </div>
+                <div class="panel-body">
+                    <ng-form name="dlg" id="rulesetForm" novalidate role="form">
+                        <!--<div class="col-md-offset-2 col-md-8 mbr-20">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">Name <span class="errorColor">*</span></label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="name" id="name" ng-model="NewRuleSet.Name" ng-class="{red: dlg.name.$dirty && dlg.name.$error.required}" required>
+                                </div>
+                                <button type="button" class="btn btn-primary" ng-click="ImportRuleSet()">Import Ruleset</button>
+                            </div>
+                        </div>-->
+                        <div class="col-md-offset-2 col-md-8 mbr-20">
+                            <div class="form-group">
+                                <label class="control-label col-md-2">Name <span class="errorColor">*</span></label>
+                                <div class="col-md-7">
+                                    <input type="text" class="form-control" name="name" id="name" ng-model="NewRuleSet.Name" ng-class="{red: dlg.name.$dirty && dlg.name.$error.required}" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="button" class="btn btn-primary pull-right" ng-click="ImportRuleSet()" ng-show="NewRuleSet.ImportRquired">Import Ruleset</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-offset-2 col-md-8">
+
+                            <uib-accordion close-others="oneAtATime">
+
+                                <uib-accordion-group is-open="status.open">
+                                    <uib-accordion-heading>
+                                        General Settings <i class="pull-left fa" ng-class="{'fa fa-minus': status.open, 'fa fa-plus': !status.open}"></i>
+                                    </uib-accordion-heading>
+                                    <div class="pb-10" ng-repeat="t in NewRuleSet.Rulesetproperty">
+                                        <rulesetproperty info="t"></rulesetproperty>
+                                    </div>
+                                </uib-accordion-group>
+                            </uib-accordion>
+
+                            <uib-accordion close-others="oneAtATime">
+                                <uib-accordion-group is-open="status.open">
+                                    <uib-accordion-heading>
+                                        Core Stats : {{NewRuleSet.Corestats.length}} <i class="pull-left fa" ng-class="{'fa fa-minus': status.open, 'fa fa-plus': !status.open}"></i>
+                                    </uib-accordion-heading>
+                                    <h4 class="text-center" ng-show="!(iscorestatsadded)">No Core Stats Added</h4>
+                                    <div class="col-md-12 mobileview_addnew">
+                                        <button type="button" class="btn btn-success col-md-offset-4 col-md-4" ng-click="showallCorestats()">Show All</button>
+                                        <button class="btn btn-primary mb-20 ng-scope pull-right" ng-click="addNewCoreStat()">Add New Corestats</button>
+
+                                    </div>
+                                    <table ng-show="(iscorestatsadded)" class="table table-bordered table-striped" id="tableAttendees">
+                                        <thead>
+                                            <tr>
+                                                <th>S.No.</th>
+                                                <th>Name</th>
+                                                <th>Type</th>
+                                                <th>Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="corestat in NewRuleSet.Corestats | limitTo : limit">
+                                                <td>{{$index +1}}</td>
+                                                <td>{{corestat.Name}}</td>
+                                                <td>{{corestat.TypeName}}</td>
+                                                <td>{{corestat.Description}}</td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </uib-accordion-group>
+                            </uib-accordion>
+
+                            <uib-accordion close-others="oneAtATime">
+
+                                <uib-accordion-group is-open="status.open">
+                                    <uib-accordion-heading>
+                                        Content <i class="pull-left fa" ng-class="{'fa fa-minus': status.open, 'fa fa-plus': !status.open}"></i>
+                                    </uib-accordion-heading>
+                                    <div class="col-md-12 items_tabs">
+                                        <ul class="nav nav-pills">
+                                            <li ng-class="{ active: isSet(1) }"><a href="#items" ng-click="setTab(1)">Items: {{NewRuleSet.Items.length}}</a></li>
+                                            <li ng-class="{ active: isSet(2) }"><a href="#spells" ng-click="setTab(2)">Spells: {{NewRuleSet.Spells.length}}</a></li>
+                                            <li ng-class="{ active: isSet(3) }"><a href="#abilities" ng-click="setTab(3)">Abilities: {{NewRuleSet.Abilities.length}}</a></li>
+                                        </ul>
+
+                                        <div class="tab-content">
+                                            <div id="items" ng-show="isSet(1)">
+                                                <div class="row">
+                                                    <h4 class="text-center" ng-show="!(isitemsadded)">No Items Added</h4>
+                                                </div>
+                                                <button type="button" ng-click="createitems()" class="create btn btn-default col-md-4">Create Items</button>
+                                                <button type="button" class="create btn btn-success col-md-4" ng-click="showallitems()">Show All</button>
+                                                <table ng-show="isitemsadded" class="table table-bordered table-striped" id="tableAttendees">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>S.No.</th>
+                                                            <th>Name</th>
+                                                            <th>Quantity</th>
+                                                            <th>Image</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        <tr ng-repeat="item in NewRuleSet.Items | limitTo : limit">
+                                                            <td>{{$index +1}}</td>
+                                                            <td>{{item.ItemProperties[0].Value.Text.value}}</td>
+                                                            <td>{{item.ItemProperties[3].Value.Number.value}}</td>
+                                                            <!--<td width="30%">{{item.ItemProperties[1].Value.Image.image}}</td>-->
+                                                            <td><img ng-src="{{item.ItemProperties[1].Value.Image.image}}" class="img-resposive" width="60" height="60" /></td>
+                                                        </tr>
+
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div id="spells" ng-show="isSet(2)">
+                                                <div class="row">
+                                                    <h4 class="text-center" ng-show="!(isspellsadded)">No Spells Added</h4>
+                                                </div>
+                                                <button type="button" ng-click="createspells()" class="create btn btn-default col-md-4">Create Spells</button>
+                                                <button type="button" class="create btn btn-success col-md-4" ng-click="ShowallSpells()">Show All</button>
+                                                <table ng-show="isspellsadded" class="table table-bordered table-striped" id="tableAttendees">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>S.No.</th>
+                                                            <th>Name</th>
+                                                            <th>Quantity</th>
+                                                            <th>Image</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="spell in NewRuleSet.Spells | limitTo : limit">
+                                                            <td>{{$index +1}}</td>
+                                                            <td>{{spell.SpellProperties[0].Value.Text.value}}</td>
+                                                            <td>{{spell.SpellProperties[3].Value.Number.value}}</td>
+                                                            <td><img ng-src="{{spell.SpellProperties[1].Value.Image.image}}" class="img-resposive" width="60" height="60" /></td>
+                                                        </tr>
+
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <div id="abilities" ng-show="isSet(3)">
+                                                <div class="row">
+                                                    <h4 class="text-center" ng-show="!(isabilitiesadded)">No Abilities Added</h4>
+                                                </div>
+                                                <button type="button" ng-click="createabilities()" class="create btn btn-default col-md-4">Create Abilities:</button>
+                                                <button type="button" class="create btn btn-success col-md-4" ng-click="ShowallAbilities()">Show All</button>
+                                                <table ng-show="isabilitiesadded" class="table table-bordered table-striped" id="tableAttendees">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>S.No.</th>
+                                                            <th>Name</th>
+                                                            <th>Quantity</th>
+                                                            <th>Image</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="ability in NewRuleSet.Abilities | limitTo : limit">
+                                                            <td>{{$index +1}}</td>
+                                                            <td>{{ability.AbilityProperties[0].Value.Text.value}}</td>
+                                                            <td>{{ability.AbilityProperties[3].Value.Number.value}}</td>
+                                                            <td><img ng-src="{{ability.AbilityProperties[1].Value.Image.image}}" class="img-resposive" width="60" height="60" /></td>
+                                                        </tr>
+
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </uib-accordion-group>
+                            </uib-accordion>
+
+                            <div class="pull-right">
+                                <button type="button" class="btn btn-default" ng-click="cancel()"><i class="fa fa-times"></i> Cancel</button>
+                                <!--<button type="button" class="btn btn-primary" ng-click="save()" ng-disabled="(dlg.$dirty && dlg.$invalid) || dlg.$pristine"><i style="color:white;padding-top: 3px;" class="{{NewRuleSet.ActionIcon}}"></i>{{NewRuleSet.Action}}</button>-->
+                                <button type="button" class="btn btn-primary" ng-click="save()"><i style="color:white;padding-top: 3px;" class="{{NewRuleSet.ActionIcon}}"></i>{{NewRuleSet.Action}}</button>
+                            </div>
+                        </div>
+                    </ng-form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<toaster-container class="toaster_align" toaster-options="{'time-out':1000}"></toaster-container>

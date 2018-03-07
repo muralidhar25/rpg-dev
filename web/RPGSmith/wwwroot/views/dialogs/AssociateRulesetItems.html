@@ -1,0 +1,46 @@
+﻿ <!-- Add item popup -->
+<!--<div class="modal fade popup-add-item" id="addItemPopup" tabindex="-1" role="dialog" aria-labelledby="addItemPopupTitle" aria-hidden="true" data-backdrop="static">
+	<div class="modal-dialog" role="document">-->
+<div class="modal-content">
+	<div class="modal-header">
+		<h5 class="modal-title" id="addItemPopupTitle">Add From Ruleset Items</h5>
+		<button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" ng-click="cancel()"></button>
+	</div>
+	<div class="modal-body">
+		<form>
+			<!-- Search query -->
+			<div class="form-group form-group-unlabelled">
+				<span class="input-group-btn">
+					<button type="button" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
+				</span>
+				<input type="text" id="addItemSearchQuery" class="form-control" placeholder="Search items">
+			</div>
+			
+
+			<fieldset class="form-group input-list input-list-wrap items" ng-repeat="r in RulesetItems | limitTo : limit">
+				<ul class="input-list-items">
+					<li class="form-check">
+						<label class="form-check-label">
+							<input class="form-check-input" type="checkbox" ng-checked="checkSelected(r,1)" ng-click="addName(r,1)" name="addItemItems[]" ng-model="r.Selected">
+							<span>
+								<img ng-src="{{r.ItemProperties[1].Value.Image.image}}" alt="{{r.ItemProperties[0].Value.Text.value}}">
+								<em>{{r.ItemProperties[0].Value.Text.value}}</em>
+								<em>{{r.ItemProperties[2].Value.Number.value}}</em>
+								<i class="icon"></i>
+							</span>
+						</label>
+					</li>
+
+				</ul>
+			</fieldset>
+			<!-- End of item rulesets -->
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" data-dismiss="modal" ng-click="cancel()" class="btn btn-simple-accent">Cancel</button>
+		<button type="button" ng-click="SaveAssociatedRulesetItems()" class="btn btn-accent">Add</button>
+	</div>
+</div>
+<!--</div>
+</div>-->
+<!-- End of add item popup -->

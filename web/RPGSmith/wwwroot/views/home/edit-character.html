@@ -1,0 +1,51 @@
+﻿<div class="modal-header">
+    <h4 class="modal-title">
+        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+        <span ng-show="isEdit">Editing {{item.name}}</span>
+        <span ng-show="!isEdit">New Character</span>
+    </h4>
+</div>
+<div class="modal-body">
+    <ng-form name="dlg" novalidate role="form">
+        <div class="form-group input-group-lg" ng-class="{true: 'has-error'}[dlg.name.$dirty && dlg.name.$invalid]">
+            <span class="help-block">Character Name</span>
+            <input type="text" class="form-control" name="name" id="name" ng-model="item.name" required>
+        </div>
+        <div class="form-group input-group-lg">
+            <span class="help-block">Character Portrait</span>
+            <div class="clearfix">
+                <div class="pull-left edit-character-portrait">
+                    <img ngf-thumbnail="getThumbNail()" class="edit-character-portrait"
+                         ngf-resize="{width: 120, height: 120}" />
+                </div>
+                <div class="pull-left btn btn-default edit-character-portrait-button"
+                     name="file"
+                     ng-model="file"
+                     ngf-select
+                     ngf-resize="{width: 120, height: 120, quality: 0.8, centerCrop: true}"
+                     ngf-fix-orientation="true"
+                     ngf-pattern="'image/*'"
+                     ngf-accept="'image/*'">Select</div>
+            </div>
+            <span class="help-block">120px by 120px</span>
+
+
+        </div>
+        <div class="form-group">
+            <span class="help-block">Select RuleSet</span>
+            <div class="">
+                <select class="form-control">
+                    <option>RuleSet 1</option>
+                    <option>RuleSet 2</option>
+                    <option>RuleSet 3</option>
+                </select>
+            </div>
+        </div>
+    </ng-form>
+</div>
+<div class="modal-footer">
+    <!--<a ng-href="http://localhost:5000/characters/NewRuleSet" class="btn btn-primary"><i style="color:#fff;" class="fa fa fa-plus"></i> Add Rule Set</a>-->
+
+    <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button type="button" class="btn btn-primary" ng-click="save()" ng-disabled="(dlg.$dirty && dlg.$invalid) || dlg.$pristine">Save</button>
+</div>

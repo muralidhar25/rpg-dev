@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        .mt-20 {
+            margin-top: 50px; 
+            margin-bottom: 50px;
+        }
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+        .mt-20 {
+            margin-top: 20px;
+        }
+        .lead {
+            margin-bottom: 0;
+        }
+        .panel-success {
+            box-shadow: 2px 3px 5px rgba(204, 204, 204, 0.55);
+        }
+        .panel-success > .panel-heading {
+            color: #666;
+            background-color: rgba(96, 125, 139, 0.38);
+            border-color: #d6e9c6;
+        }
+    </style>
+</head>
+<body>
+    <pageslide ps-open="menuHamburger.opened"
+               ps-side="left"
+               ps-key-listener="true"
+               ps-zindex="2000"
+               ps-size="200px"
+               ps-auto-close="true"
+               ps-body-class="true">
+        <pageslide-menu menus="menuHamburger.menus" menu-click="menuHamburger.menuClick"></pageslide-menu>
+    </pageslide>
+    <div class="container mt-20">
+        <div class="row">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h4 class="lead text-center">Existing RuleSet</h4>
+                </div>
+                <div class="panel-body">
+                    <a class="pull-right btn btn-primary btn-md mb-20" ng-href="http://localhost:5000/characters/NewRuleSet">Add Rule Set</a>
+                    <p id="nodata" class="lead text-center">No RuleSet Available..</p>
+                    <div id="CoreStateData" style="display:none;">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>SNO</th>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>---- No coreset Selected----</td>
+                                    <td>---- No coreset Selected----</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+</body>
+</html>

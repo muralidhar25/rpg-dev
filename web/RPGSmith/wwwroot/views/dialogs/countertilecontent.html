@@ -1,0 +1,30 @@
+﻿<style>
+    .modal-content {
+        width: 420px;
+        left: 27%;
+        top: 108px;
+        height: 100%;
+    }
+</style>
+<div class="modal-header">
+    <h4 class="modal-title" style="text-align:center">
+        {{Content.Value.Counter.Name}}
+    </h4>
+</div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="control-label col-md-4">Counter Value</label>
+                    <div class="col-md-4">
+                        <input type="number" min="0" placeholder="Value" class="form-control" ng-model="Content.Value.Counter.Value" name="input" ng-class="{red: form.input.$dirty && form.input.$error.required}" ng-required="info" value="">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-simple-accent" ng-click="cancel()">Close</button>
+        <button type="submit" class="btn btn-accent" ng-click="SaveCounterUpdatedValue()" ng-disabled="theForm.$invalid">Update</button>
+    </div>

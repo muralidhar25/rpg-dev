@@ -1,0 +1,117 @@
+﻿
+<div class="modal-header">
+    <h4 class="modal-title">
+        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+        <span>Numeric Corestats</span>
+    </h4>
+</div>
+<div class="modal-body form-horizontal">
+    <!--<div ng-show="ShowNumericCorestats"></div>-->
+    <ng-form name="dlg" novalidate role="form">
+        <div class="text-center" ng-show="ShowNonNumericCorestats">No Numeric Corestats For This Character.</div>
+        <div class="form-group" ng-show="!ShowNonNumericCorestats">
+            <label class="control-label col-md-4">
+                <span class="help-block">Select Numeric Corestat <span class="errorColor">*</span></span>
+            </label>
+            <div class="col-md-8">
+                <select name="corestattype" ng-change="ShowCorestatValue()" class="form-control" ng-options="item for item in Result" ng-model="corestatype" ng-class="{red: dlg.corestattype.$dirty && dlg.corestattype.$error.required}" required>
+                    <option value="">--Select--</option>
+                </select>
+            </div>
+        </div>
+
+
+
+        <!--<div ng-show="CurrentMaxValue" class="form-group ml-10">
+            <label class="control-label col-md-4">
+                <div class="checkbox-inline">
+                    <label><input type="checkbox" ng-model="currentvalue" name="current" ng-change="showcurrent()" />Current Value</label>
+                </div>
+                <div class="checkbox-inline">
+                    <label><input type="checkbox" ng-model="checked" name="max" ng-init="checked=true" />Max Value</label>
+                </div>
+            </label>
+
+        </div>
+        <div ng-show="ValueSubValue" class="form-group mr-20">
+            <label class="control-label col-md-4">
+                <div class="checkbox-inline">
+                    <label><input type="checkbox" ng-model="checked" name="value" ng-init="checked=true" />Value</label>
+                </div>
+                <div class="checkbox-inline">
+                    <label><input type="checkbox" ng-model="subvalue" name="sub" ng-change="showsubvalue()" />Sub Value</label>
+                </div>
+            </label>
+        </div>-->
+        <div ng-show="CurrentMaxValue" class="form-group ml-10">
+            <label class="control-label col-md-4"></label>
+            <div class="radio-inline">
+                <label><input type="radio" ng-model="CurrentMaxVal" name="current" value="CurrentValue" ng-change="showcurrentmax('CurrentValue')" />Current Value</label>
+            </div>
+            <div class="radio-inline">
+                <label><input type="radio" ng-model="CurrentMaxVal" name="current" value="MaxValue" ng-change="showcurrentmax('MaxValue')" />Max Value</label>
+            </div>
+            <!--</label>-->
+
+        </div>
+        <div ng-show="ValueSubValue" class="form-group mr-20">
+            <label class="control-label col-md-4"></label>
+            <div class="radio-inline">
+                <label><input type="radio" ng-model="ValSub" name="value" value="Value" ng-change="showValueSubvalue('Value')" />Value</label>
+            </div>
+            <div class="radio-inline">
+                <label><input type="radio" ng-model="ValSub" name="value" value="SubValue" ng-change="showValueSubvalue('SubValue')" />Sub Value</label>
+            </div>
+            <!--</label>-->
+        </div>
+        <div ng-show="Number">
+            <div class="form-group">
+                <label class="control-label col-md-4"></label>
+                <div class="col-md-8">
+                    <input type="text" ng-model="number" class="form-control col-md-8" disabled />
+                </div>
+            </div>
+        </div>
+
+        <div ng-show="currenttext">
+            <div class="form-group">
+                <label class="control-label col-md-4"></label>
+                <div class="col-md-8">
+                    <input type="text" ng-model="current" class="form-control col-md-8" disabled />
+                </div>
+            </div>
+        </div>
+
+        <div ng-show="maxtext">
+            <div class="form-group">
+                <label class="control-label col-md-4"></label>
+                <div class="col-md-8">
+                    <input type="text" ng-model="max" class="form-control col-md-8" disabled />
+                </div>
+            </div>
+        </div>
+
+        <div ng-show="valtext">
+            <div class="form-group">
+                <label class="control-label col-md-4"></label>
+                <div class="col-md-8">
+                    <input type="text" ng-model="val" class="form-control col-md-8" disabled />
+                </div>
+            </div>
+        </div>
+
+        <div ng-show="subvaltext">
+            <div class="form-group">
+                <label class="control-label col-md-4"></label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control col-md-8" ng-model="subval" disabled />
+                </div>
+            </div>
+        </div>
+
+    </ng-form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button type="button" class="btn btn-primary" ng-click="SaveCorestatValues()" ng-disabled="(dlg.$dirty && dlg.$invalid)|| dlg.$pristine ">Save</button>
+</div>

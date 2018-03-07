@@ -1,0 +1,25 @@
+{
+  "name": "number-format.js",
+  "main": "src/format.js",
+  "ignore": [
+    "/node_modules",
+    "/bower_components",
+    "/.git",
+    "/src",
+    "/test",
+    "/Gruntfile.js",
+    "/package.json",
+    "/index.html"
+  ],
+  "homepage": "https://github.com/Mottie/javascript-number-formatter",
+  "version": "1.1.11",
+  "_release": "1.1.11",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.1.11",
+    "commit": "9aa6891a0919e2fb265165cffce1ab6986ff186f"
+  },
+  "_source": "https://github.com/Mottie/javascript-number-formatter.git",
+  "_target": "1.1.11",
+  "_originalSource": "number-format.js"
+}

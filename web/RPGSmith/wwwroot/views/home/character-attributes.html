@@ -1,0 +1,27 @@
+﻿<pageslide ps-open="menuHamburger.opened"
+           ps-side="left"
+           ps-key-listener="true"
+           ps-zindex="2000"
+           ps-size="200px"
+           ps-auto-close="true"
+           ps-body-class="true">
+    <pageslide-menu menus="menuHamburger.menus" menu-click="menuHamburger.menuClick"></pageslide-menu>
+</pageslide>
+
+<pageslide ps-open="menuCharacter.opened"
+           ps-side="left"
+           ps-key-listener="true"
+           ps-zindex="2000"
+           ps-size="200px"
+           ps-auto-close="true"
+           ps-body-class="true">
+    <pageslide-menu menus="menuCharacter.menus" menu-click="menuCharacter.menuClick"></pageslide-menu>
+</pageslide>
+
+<div class="container-fluid">
+    <ul>
+        <li ng-repeat="stat in data.corestats">
+            {{stat.name}}
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,38 @@
+{
+  "version": "1.0.0",
+  "name": "asp.net",
+  "private": true,
+  "devDependencies": {
+    "@angular/cli": "^1.2.4",
+    "@angular/core": "^4.0.0",
+    "gulp-angular-templatecache": "^2.0.0",
+    "gulp-htmlmin": "^3.0.0",
+    "gulp-plumber": "^1.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^2.5.0",
+    "gulp-uglify": "^2.1.2",
+    "merge-stream": "^1.0.1"
+  },
+  "eslint": {
+    "rules": {
+      "eqeqeq": [
+        2,
+        "allow-null"
+      ]
+    }
+  },
+  "depecies": {
+    "System.Linq": "4.1.0-rc2-24027",
+    "@angular/compiler-cli": "^4.3.1",
+    "angular-scroll": "^1.0.2",
+    "common-tags": "^1.4.0",
+    "gulp": "^3.9.1",
+    "ui-router-ng2": "^1.0.0-beta.5",
+    "gridstack": "^0.3.0",
+    "angular-ui-router": "1.0.3",
+    "Microsoft.AspNet.Server.IIS": "1.0.0-beta3",
+    "Microsoft.AspNet.Mvc": "6.0.0-beta3",
+    "mscorlib": "0.0.1",
+    "Microsoft.NETCore.Portable.Compatibility": "1.0.1-rc2-24027"
+  }
+}

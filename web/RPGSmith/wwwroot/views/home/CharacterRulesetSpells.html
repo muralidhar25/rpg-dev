@@ -1,0 +1,81 @@
+﻿
+<div class="container item_properties invenroty">
+    <div class="row">
+        <div class="well well-sm">
+            <div class="col-md-12">
+                <h4>Ruleset Spells</h4>
+            </div>
+            <div class="col-md-offset-4 col-md-4">
+                <button type="button" class="btn btn-primary back" ng-click="BackSpell()">Back</button>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-show="ShowSpells">
+        <div class="col-md-12">
+            <h3 class="text-center">No Ruleset Spells </h3>
+        </div>
+    </div>
+    <div class="row" id="listview" ng-show="ShowSpell">
+        <div class="col-md-12 col-sm-12 table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>S.No</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Stats</th>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        <th>Attributes</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="spell in RulesetSpells">
+                        <td>
+                            <input type="checkbox" class="input-sm" ng-checked="checkSelected(spell,2)" ng-click="addName(spell,2)" />
+                        </td>
+                        <td ng-click="ShowAllItemProperties(item,$index)">{{$index + 1}}</td>
+                        <td ng-click="ShowAllItemProperties(item,$index)"><img ng-src="{{spell.SpellProperties[1].Value.Image.image}}" class="img-resposive" width="120" height="120" /></td>
+                        <td ng-click="ShowAllItemProperties(item,$index)">{{spell.SpellProperties[0].Value.Text.value}}</td>
+                        <td ng-click="ShowAllItemProperties(item,$index)">{{spell.SpellProperties[2].Value.Text.value}}</td>
+                        <td ng-click="ShowAllItemProperties(item,$index)">{{spell.SpellProperties[9].Value.Text.value}}</td>
+                        <td ng-click="ShowAllItemProperties(item,$index)">{{spell.SpellProperties[3].Value.Number.value}}</td>
+                        <td ng-click="ShowAllItemProperties(item,$index)">
+                            <div>
+                                <div>
+                                    <div class="icon_box"><span>{{spell.SpellProperties[13].Name | limitTo : 1}}</span></div>
+                                    <div class="icon_box"><span>{{spell.SpellProperties[14].Name | limitTo : 2}}</span></div>
+                                    <div class="icon_box"><span>{{spell.SpellProperties[15].Name | limitTo : 1}}</span></div>
+                                    <div class="icon_box"><span>{{spell.SpellProperties[16].Name | limitTo : 2}}</span></div>
+                                    <div class="icon_box"><span>{{spell.SpellProperties[20].Name | limitTo : 1}}</span></div>
+                                    <div class="icon_box"><span>{{spell.SpellProperties[22].Name | limitTo : 2}}</span></div>
+                                </div>
+                            </div>
+
+                        </td>
+
+                        <!--<td>
+                            <div class="row items_button">
+                                <button type="button" class="btn btn-primary" ng-click="EditItem(item,$index)"><i class="fa fa-edit"></i> EDIT</button>
+                                <button type="button" class="btn btn-info" ng-click="CopyItem(item,$index)"><i class="fa fa-copy"></i>COPY</button>
+
+                                <button type="button" class="btn btn-danger" ng-click="Removeitem(item)"><i class="fa fa-remove"></i>REMOVE</button>
+                            </div>
+                        </td>-->
+
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="row mb-20">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-primary pull-right" ng-click="SaveRulesetSpell()">OK</button>
+        </div>
+    </div>
+
+</div>

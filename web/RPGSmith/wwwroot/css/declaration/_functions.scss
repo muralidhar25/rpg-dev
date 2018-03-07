@@ -1,0 +1,30 @@
+// Returns rem for the given pixel
+@function rem ($px, $base : 16px) {
+
+    $rem : $px / $base;
+
+    @return #{$rem}rem;
+}
+
+
+// Returns url for the given path and base
+@function _url ($path, $base) {
+
+    $path: unquote($path);
+
+    @return "#{$base}/#{$path}";
+}
+
+
+// Returns asset url
+@function asset-url ($path, $base : $path-asset) {
+
+    @return _url($path, $base);
+}
+
+
+// Returns image url
+@function img-url ($path, $base : $path-image) {
+
+    @return _url($path, $base);
+}

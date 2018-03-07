@@ -1,0 +1,39 @@
+﻿<div class="popup-manage-core-stats">
+    <div class="modal-header">
+        <h5 class="modal-title" id="manageCoreStatsPopupTitle">MANAGE CHARARCTER STATS (<span>{{characters.CorestatValues.length}}</span>)</h5>
+        <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" ng-click="cancel()"></button>
+    </div>
+
+    <div class="modal-body">
+        <form>
+            <table class="table table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <td>Title</td>
+                        <td>TYPE</td>
+                        <!--<td>ALLOW PLAYER UPDATE</td>
+                        <td>SHOW TO OTHER PLAYERS</td>-->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="value in characters.CorestatValues">
+                        <td>{{value.Name}}</td>
+                        <td>
+                            <rpgsmithtype info="value" fullscope="characters.CorestatValues" class="col-md-8" style="padding-left:0"></rpgsmithtype>
+                        </td>
+
+                    </tr>
+
+                </tbody>
+            </table>
+        </form>
+
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-simple-accent" ng-click="cancel()">Cancel</button>
+        <button type="button" class="btn btn-accent" ng-click="SaveCorestatValues()">Save</button>
+        <!--<button type="button" class="btn btn-primary" ><i class="{{characters.CorestatValuesIcon}}" style="color:white;"></i>{{characters.CorestatValuesBtnText}}</button>-->
+    </div>
+</div>
+

@@ -1,0 +1,510 @@
+/**
+ * Character Dashboard Page ----------------------------------------------------
+ */
+
+
+.page-character-dashboard {
+    .page-toolbar {
+        &-wrapper {
+            display: none;
+
+            @include responsive(md) {
+                height  : rem(160px);
+                justify : {content: space-around}
+                padding : {top: rem(8px); bottom: rem(8px)}
+
+            } @include responsive(lg) {
+                height  : rem(100px);
+                justify : {content: space-between}
+                padding : {top: 0; bottom: 0}
+            }
+
+            @include responsive(md) {
+                display : flex;
+                flex    : {direction: column}
+                align   : {items: stretch}
+
+            } @include responsive(lg) {
+                flex    : {direction: row}
+                align   : {items: center}
+            }
+
+            &.show {
+                display: flex;
+            }
+
+            &-toggle-trigger {
+                display: flex;
+                margin  : {top: rem(16px); bottom: rem(16px)}
+
+                .btn {
+                    flex: {grow: 1}
+                }
+
+                @include responsive(md) {
+                    display: none;
+                }
+            }
+
+            &.manage {
+                display: none;
+            }
+        }
+
+        &-dropdowns, &-links, &-actions {
+            @include responsive(md) {
+                margin : {top: rem(8px); bottom: rem(8px)}
+                justify: {content: space-between}
+
+            } @include responsive(lg) {
+                margin : {top: 0; bottom: 0}
+            }
+        }
+
+        &-links, &-actions {
+            li {
+                @include responsive(md) {
+                    flex: {grow: 1}
+                }
+
+                .btn {
+                    @include responsive(md) {
+                        justify: {content: center}
+                    }
+                }
+            }
+        }
+
+        &-dropdowns {
+            display : flex;
+            flex    : {direction: column}
+
+            @include responsive(md) {
+                flex: {direction: row}
+            }
+
+            .dropdown {
+                margin: {bottom: rem(8px)}
+
+                @include responsive(md) {
+                    margin: {bottom: 0; right: rem(32px)}
+                }
+
+                &:last-of-type {
+                    margin: {bottom: 0}
+
+                    @include responsive(md) {
+                        margin: {right: 0}
+                    }
+                }
+
+                &-toggle {
+                    padding : {top: rem(12px); bottom: rem(12px)}
+                    border  : {width: 1px; style: solid; color: $color-dgray-xl}
+
+                    @include responsive(md) {
+                        padding : 0;
+                        border  : none;
+                    }
+
+                    span {
+                        font    : {size: rem(16px)}
+                        color   : $color-dgray-l;
+
+                        em {
+                            font    : {weight: $font-weight-medium; style: normal}
+                            color   : $color-dgray-xd;
+                        }
+                    }
+                }
+
+                &-menu {
+                    @include responsive(md) {
+                        width: rem(240px);
+                    }
+
+                    &-add-item-trigger {
+                        padding: rem(16px);
+
+                        @include responsive(md) {
+                            padding: rem(8px);
+                        }
+                    }
+
+                    &-item {
+                        &:first-of-type {
+                            border: {top: {width: 1px; style: solid; color: $color-lgray-l}}
+                        }
+                    }
+                }
+            }
+        }
+
+        &-links {
+            li {
+                &:before {
+                    @include responsive(md) {
+                        display: none;
+
+                    } @include responsive(lg) {
+                        display: block;
+                    }
+                }
+
+                &:first-of-type {
+                    .btn {
+                        @include responsive(md) {
+                            justify: {content: flex-start}
+                        }
+                    }
+
+                } &:last-of-type {
+                    .btn {
+                        @include responsive(md) {
+                            justify: {content: flex-end}
+                        }
+                    }
+                }
+            }
+        }
+
+
+        .popup-new-tile-trigger {
+            position: fixed;
+            right   : rem(32px);
+            bottom  : rem(32px);
+            z       : {index: 480}
+
+            .btn {
+                width   : rem(64px);
+                height  : rem(64px);
+                padding : 0;
+                border  : {radius: rem(32px); bottom: none}
+
+                &:before {
+                    font: {size: rem(24px)}
+                }
+            }
+
+            @include responsive(md) {
+                right   : rem(64px);
+                bottom  : rem(64px);
+            }
+
+            .btn, .btn:hover, .btn:focus, .btn:active {
+                box : {shadow: 0 rem(2px) rem(8px) rgba($color-basic-black, 0.4) !important}
+            }
+        }
+    }
+
+
+    // Manage core stats popup
+    .popup-manage-core-stats {
+        @include responsive(md) {
+            .form-group {
+                > label, > legend {
+                    float   : left;
+                    width   : 30%;
+                    margin  : {top: rem(8px)}
+                }
+
+                > .form-control {
+                    float: left;
+                    width: 70%;
+                }
+
+                &::after {
+                    display : block;
+                    content : "";
+                    clear   : both;
+                }
+            }
+        }
+    }
+
+
+    // New title popup
+    .popup-new-tile {
+        .modal-body {
+            ul {
+                display : flex;
+                flex    : {wrap: wrap}
+                margin  : {top: rem(-8px); bottom: rem(16px); left: rem(-8px); right: rem(-8px)};
+                padding : 0;
+
+                li {
+                    display : flex;
+                    list    : {style: {type: none}}
+                    width   : percentage(1 / 2);
+
+                    @include responsive(md) {
+                        width: percentage(1 / 3);
+                    }
+
+                    .btn {
+                        flex    : {direction: column; grow: 1}
+                        height  : rem(120px);
+                        margin  : rem(8px);
+                        padding : 0;
+                        border  : {bottom: {width: rem(4px)}}
+                        font    : {size: rem(14px)}
+
+                        @include responsive(md) {
+                            height: rem(160px);
+                        }
+
+                        &:before {
+                            margin  : 0;
+                            font    : {size: rem(40px)}
+
+                            @include responsive(md) {
+                                font: {size: rem(64px)}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    // New attribute tile popup
+    .popup-new-attribute-tile {
+        .core-stats {
+            .form-check {
+                width: percentage(1 / 2);
+
+                @include responsive(md) {
+                    width: percentage(1 / 4);
+                }
+            }
+        }
+    }
+
+
+    // New link tile popup
+    .popup-new-link-tile {
+        .properties {
+            .form-check {
+                width: percentage(1 / 1);
+
+                @include responsive(md) {
+                    width: percentage(1 / 3);
+                }
+            }
+        }
+    }
+
+
+    // New command and image tile popup
+    .popup-new-command-tile, .popup-new-image-tile {
+        .input-image-control {
+            @include responsive(md) {
+                height: rem(196px);
+            }
+        }
+    }
+
+
+    // View counter popup
+    .popup-view-counter {
+        .input-counter {
+            .input-group {
+                .btn, .form-control {
+                    @include responsive(md) {
+                        width   : rem(100px);
+                        height  : rem(60px);
+                    }
+                }
+
+                .btn {
+                    &:before {
+                        @include responsive(md) {
+                            font: {size: rem(16px)}
+                        }
+                    }
+                }
+
+                .form-control {
+                    @include responsive(md) {
+                        font: {size: rem(32px); weight: $font-weight-medium}
+                    }
+                }
+            }
+
+            .input-extend {
+                .btn {
+                    @include responsive(md) {
+                        font: {size: rem(16px)}
+                    }
+
+                    &:before {
+                        @include responsive(md) {
+                            font: {size: rem(14px)}
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    // View note popup
+    .popup-view-note {
+        .text-content {
+            margin      : {bottom: rem(24px)}
+            padding     : rem(16px) rem(20px);
+            background  : {color: $color-basic-white}
+        }
+    }
+
+
+    // View image popup
+    .popup-view-image {
+        .image-content {
+            text        : {align: center}
+            margin      : {bottom: rem(24px)}
+            padding     : rem(4px);
+            background  : {color: $color-basic-white}
+
+            img {
+                max     : {width: 100%}
+                height  : auto;
+            }
+        }
+    }
+
+
+    // Character tiles
+    .tiles {
+        .tile {
+            &-section {
+                display: flex;
+
+                &-column {
+                    flex: {direction: column}
+                }
+
+                &-r1 {
+                    &-c1 {
+                        flex: {basis: 40%}
+
+                        @include responsive(md) {
+                            flex: {basis: 30%}
+
+                        } @include responsive(lg) {
+                            flex: {basis: 20%}
+                        }
+
+                    } &-c2 {
+                        flex: {basis: 60%}
+
+                        @include responsive(md) {
+                            flex: {basis: 70%}
+
+                        } @include responsive(lg) {
+                            flex: {basis: 80%}
+                        }
+
+                        &-r2 {
+                            &-c1 {
+                                flex: {basis: 100%}
+
+                                @include responsive(md) {
+                                    flex: {basis: 100%}
+
+                                } @include responsive(lg) {
+                                    flex: {basis: 60%}
+                                }
+
+                            } &-c2 {
+                                flex: {basis: 0%}
+
+                                @include responsive(md) {
+                                    flex: {basis: 0%}
+
+                                } @include responsive(lg) {
+                                    flex: {basis: 40%}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            &-group {
+                display: none;
+
+                &-characters {
+                    display: flex;
+                }
+
+                &-item_counts {
+                    display: flex;
+
+                    @include responsive(lg) {
+                        flex: {basis: 30%}
+                    }
+                }
+
+                &-spell_level_counts {
+                    @include responsive(md) {
+                        display: flex;
+
+                    } @include responsive(lg) {
+                        flex: {basis: 30%}
+                    }
+                }
+
+                &-abilitiy_counts {
+                    @include responsive(lg) {
+                        display : flex;
+                        flex    : {basis: 40%}
+                    }
+                }
+
+                &-quick_large_images {
+                    display: flex;
+                }
+
+                &-quick_small_images_1 {
+                    @include responsive(lg) {
+                        display: flex;
+                    }
+                }
+
+                &-quick_small_images_2 {
+                    @include responsive(lg) {
+                        display: flex;
+                    }
+                }
+
+                &-commands {
+                    @include responsive(lg) {
+                        display: flex;
+                    }
+                }
+
+                &-items {
+                    display: flex;
+                }
+
+                &-apperance {
+                    @include responsive(md) {
+                        display: flex;
+                    }
+                }
+
+                &-bg_story {
+                    display: flex;
+                }
+
+                &-seen_in_game {
+                    @include responsive(lg) {
+                        display: flex;
+                    }
+                }
+            }
+        }
+    }
+}

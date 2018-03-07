@@ -1,0 +1,189 @@
+﻿<div class="page-toolbar">
+    <div class="container">
+        <div class="page-toolbar-wrapper">
+            <button type="button" class="btn btn-primary back" ng-click="BackItemProperties()">Back</button>
+            <button type="button" class="btn btn-accent" ng-click="SaveInventoryTiles(CharacterContent,1)">Save Tile</button>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container item_view">
+
+    <div class="row">
+        <div class="col-md-4 image">
+            <div class="image">
+                <img ng-src="{{CharacterContent.CharacterItemsProperties[1].Value.Image.image}}" class="img-resposive" width="120" height="120" />
+            </div>
+            <button class="btn btn-primary">{{CharacterContent.CharacterItemsProperties[0].Value.Text.value}}</button>
+            <div class="buttons-align mt-30">
+                <button class="btn btn-warning" ng-click="Removeitems(CharacterContent,1)">
+                    <i class="fa fa-download" aria-hidden="true"></i>
+                    DROP
+                </button>
+                <button class="btn btn-warning" ng-click="EditItems(CharacterContent,1)">
+                    <i class="fa fa-exchange" aria-hidden="true"></i>
+                    Edit
+                </button>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="text-design">
+                <div class="text">
+                    <h5>STATS</h5>
+                    <p>
+                        {{CharacterContent.CharacterItemsProperties[2].Value.Text.value}}
+                    </p>
+                </div>
+                <div class="panels row">
+                    <div class="blue">
+                        <div class="col-md-6">
+                            <div class="panel div_blue">
+                                <div class="panel-heading text-center">WEIGHT</div>
+                                <div class="panel-body text-center">{{CharacterContent.CharacterItemsProperties[4].Value.Weight.value}}   {{CharacterContent.CharacterItemsProperties[4].Value.Weight.units.selectedUnit}}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel div_blue">
+                                <div class="panel-heading text-center">VOLUME</div>
+                                <div class="panel-body text-center">{{CharacterContent.CharacterItemsProperties[5].Value.Volume.lenghtvalue}} {{CharacterContent.CharacterItemsProperties[5].Value.Volume.heightvalue}} {{CharacterContent.CharacterItemsProperties[5].Value.Volume.depthvalue}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="blue">
+                        <div class="col-md-6">
+                            <div class="panel div_red">
+                                <div class="panel-heading text-center">ATTRIBUTES</div>
+                                <div class="panel-body text-center">text</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel div_green">
+                                <div class="panel-heading text-center">RARITY</div>
+                                <div class="panel-body text-center">{{CharacterContent.CharacterItemsProperties[6].Value.Choices.selectedchoice}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div  style="margin-top:0px;">
+                <div class="buttons-align">
+                    <!--<button class="btn uneqp">
+                <i class="fa fa-hand-paper-o" aria-hidden="true"></i>
+                UNEQUIP
+            </button>-->
+                    <div ng-repeat="value in CharacterContent.CharacterItemsProperties"  class="equip">
+                        <rpgsmithcontenttype info="value"></rpgsmithcontenttype>
+                    </div>
+                    <button class="btn btn-warning" ng-click="CopyItems(CharacterContent,1)">
+                        <i class="fa fa-external-link" aria-hidden="true"></i>
+                        Duplicate
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="text-design">
+                <div class="text">
+                    <h5>Visible Description</h5>
+                    <p>
+                        {{CharacterContent.CharacterItemsProperties[6].Value.Text.value}}
+                    </p>
+                </div>
+                <div class="panels row">
+                    <div class="blue">
+                        <div class="col-md-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading text-center">Associated Spell</div>
+                                <div class="panel-body">
+                                    <div class="text-center" ng-if="RulesetContent.AssociatedSpells.length <= 0">None</div>
+                                    <div class="text-center" ng-if="RulesetContent.AssociatedSpells.length > 0">
+                                        <!--<button class="btn btn-warning" ng-click="ShowAllSpellsContent(RulesetContent.AssociatedSpells,$index)">
+                                            {{associatedSpell.SpellProperties[0].Value.Text.value}}
+                                        </button>-->
+                                        <button ng-repeat="associatedSpell in RulesetContent.AssociatedSpells" class="btn btn-warning" ng-click="ShowAssociatedSpells($index)">
+                                            {{associatedSpell.SpellProperties[0].Value.Text.value}}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading text-center">Associated Ability</div>
+                                <div class="panel-body text-center">None</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="blue">
+                        <div class="col-md-12">
+                            <div class="panel panel-danger">
+                                <div class="panel-heading text-center">TAGS</div>
+                                <div class="panel-body text-center">
+                                    <p>{{CharacterContent.CharacterItemsProperties[17].Value.Text.value}}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="buttons-align">
+                <button class="btn btn-warning" style="width:100%;" ng-click="ShowTilesforInventory(CharacterContent.CharacterItemsProperties)">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    ADD TILE
+                </button>
+            </div>
+        </div>
+
+    </div>
+	<div gridstack class="grid-stack grid1" options="options" on-change="onChange(event,items)" on-drag-start="onDragStart(event,ui)" on-drag-stop="onDragStop(event,ui)" on-resize-start="onResizeStart(event,ui)" on-resize-stop="onResizeStop(event,ui)">
+		<div gridstack-item class="grid-stack-item" gs-item-x="w.x" gs-item-y="w.y"
+			 gs-item-width="w.width" gs-item-height="w.height" gs-item-autopos="1" on-item-added="onItemAdded(item)" on-item-removed="onItemRemoved(item)">
+			<div class="grid-stack-item-content">
+				<a class="btn btn-primary" ng-click="removeWidget(w)" href="#">remove</a>
+			</div>
+		</div>
+	</div>
+
+   
+    <div class="tile-bubble-remove" title="Remove Page" droppable ng-class="{'show-bubble': state.tileDragging}"
+         on-droppable-drop="onDeleteDropCharacterTiles(event,ui)"
+         on-droppable-over="onDeleteOverCharacterItem(event,ui)" on-droppable-out="onDeleteOutCharacterItem(event)">
+        <i class="fa fa-trash-o" aria-hidden="true"></i>
+    </div>
+
+
+    <div class="tile-bubble-add" title="Add a new tile"
+         ng-click="ShowTiles()">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+    </div>
+    <div class="tile-bubble-save" title="Save changes"
+         ng-click="SaveLayout(NewLayout)">
+        <i class="fa fa-floppy-o" aria-hidden="true"></i>
+    </div>
+    <!--<div class="popup-new-tile-trigger remove_new tile-bubble-remove" title="Remove Page" droppable ng-class="{'show-bubble': state.tileDragging}"
+        on-droppable-drop="onDeleteDropCharacterItem(event,ui,1,CharacterContent)"
+        on-droppable-over="onDeleteOverCharacterItem(event,ui)" on-droppable-out="onDeleteOutCharacterItem(event)">
+        <button type="button" data-toggle="modal" class="btn btn-primary" ng-class="{'show-bubble': state.tileDragging}" on-droppable-drop="onDeleteDrop(event,ui)" on-droppable-over="onDeleteOver(event,ui)" on-droppable-out="onDeleteOut(event)"></button>
+        <i class="fa fa-trash-o fa-2x" style="color:#fff;"></i>
+
+    </div>-->
+    <!--<div class="tile-bubble-remove" title="Remove Page" droppable
+         ng-class="{'show-bubble': true}"
+         on-droppable-drop="onDeleteDropCharacterItem(event,ui)"
+         on-droppable-over="onDeleteOverCharacterItem(event,ui)" on-droppable-out="onDeleteOutCharacterItem(event)">
+        <i class="fa fa-trash-o" aria-hidden="true"></i>
+    </div>-->
+    <!--<div class="tile-bubble-add" title="Add a new tile"
+         ng-click="ShowTiles()">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+    </div>
+    <div class="tile-bubble-save" title="Save changes"
+         ng-click="SaveLayout(NewLayout)">
+        <i class="fa fa-floppy-o" aria-hidden="true"></i>
+    </div>-->
+    </div>
+
+<toaster-container class="toaster_align" toaster-options="{'time-out':1000}"></toaster-container>

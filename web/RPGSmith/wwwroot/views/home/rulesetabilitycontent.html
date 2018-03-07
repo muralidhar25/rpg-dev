@@ -1,0 +1,143 @@
+﻿<div class="page-toolbar">
+    <div class="container">
+        <div class="page-toolbar-wrapper">
+            <button type="button" class="btn btn-primary back" ng-click="BackContent(3)">Back</button>
+            <button type="button" class="btn btn-accent" ng-click="SaveTilesForRuleset(RulesetContent.AbilityProperties,3)">Save Tile</button>
+        </div>
+    </div>
+</div>
+
+<div class="container item_view">
+    <div class="row">
+        <div class="col-md-4 image">
+            <div class="image">
+                <img ng-src="{{RulesetContent.AbilityProperties[1].Value.Image.image}}" class="img-resposive" width="120" height="120" />
+            </div>
+            <button class="btn btn-primary">{{RulesetContent.AbilityProperties[0].Value.Text.value}}</button>
+            <div class="buttons-align">
+                <button class="btn btn-warning" ng-click="CopyAbility(RulesetContent)">
+                    <i class="fa fa-remove" aria-hidden="true"></i>
+                    Copy
+                </button>
+                <!--<button class="btn btn-warning">
+                    <i class="fa fa-exchange" aria-hidden="true"></i>
+                    UNMEMORIZE
+                </button>-->
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="text-design">
+                <div class="text">
+                    <h5>STATS</h5>
+                    <p>
+                        {{RulesetContent.AbilityProperties[2].Value.Text.value}}
+                    </p>
+                </div>
+                <div class="panels row">
+                    <div class="blue">
+                        <div class="col-md-6">
+                            <div class="panel div_blue">
+                                <div class="panel-heading text-center">CLASS</div>
+                                <div class="panel-body text-center">{{RulesetContent.AbilityProperties[10].Value.Text.value}}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel div_red">
+                                <div class="panel-heading text-center">ATTRIBUTES</div>
+                                <div class="panel-body text-center">{{RulesetContent.AbilityProperties[9].Value.Text.value}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="blue">
+                        <div class="col-md-6">
+                            <div class="panel div_green">
+                                <div class="panel-heading text-center">USES ReEMAINING</div>
+                                <div class="panel-body text-center">{{RulesetContent.AbilityProperties[13].Value.Number.value}}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel div_green">
+                                <div class="panel-heading text-center">MAX USES</div>
+                                <div class="panel-body text-center">{{RulesetContent.AbilityProperties[12].Value.Number.value}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="buttons-align">
+                <button class="btn btn_red" ng-click="RemoveAbility(RulesetContent)">
+                    <i class="fa fa-remove" aria-hidden="true"></i>
+                    REMOVE
+                </button>
+                <button class="btn uneqp" ng-click="EditAbility(RulesetContent)">
+                    <i class="fa fa-edit" aria-hidden="true"></i>
+                    EDIT
+                </button>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="text-design">
+                <div class="text">
+                    <h5>Description</h5>
+                    <p>
+                        {{RulesetContent.AbilityProperties[14].Value.Text.value}}
+                    </p>
+                </div>
+                <div class="panels row">
+                    <div class="blue">
+                        <div class="col-md-12">
+                            <div class="panel panel-danger">
+                                <div class="panel-heading text-center">TAGS</div>
+                                <div class="panel-body text-center">{{RulesetContent.AbilityProperties[17].Value.Number.value}}</div>
+                            </div>
+                        </div>
+                        <!--<div class="col-md-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading text-center" style="background-color: rgba(237, 20, 61, 0.67);">Attributes</div>
+                                <div class="panel-body text-center" style="background-color: rgba(237, 20, 61, 0.58);"></div>
+                            </div>
+                        </div>-->
+                    </div>
+                    <div class="blue">
+                        <div class="col-md-12">
+                            <div class="panel panel-danger">
+                                <div class="panel-heading text-center">REQUIREMENTS</div>
+                                <div class="panel-body text-center">text</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="buttons-align">
+                <button class="btn btn-warning" style="width:100%;" ng-click="ShowTiles(RulesetContent.AbilityProperties)">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    ADD TILE
+                </button>
+
+            </div>
+        </div>
+
+    </div>
+    
+    <div gridstack class="grid-stack" options="stackOptions" on-change="onChange(event,ui)" on-drag-start="onDragStart(event,ui)" on-drag-stop="onDragStop(event,ui)" on-resize-start="onResizeStart(event,ui)" on-resize-stop="onResizeStop(event,ui)">
+        <div gridstack-item ng-repeat="tab in RulesetContent.AbilityProperties" ng-click="tileSelect(tab.tile)" ng-class="getTileClass(tab.tile)" ng-switch on="tab.tile.TileTypeName" class="grid-stack-item" gs-item="tile" gs-item-id="tab.tile.ClientObjectId" gs-item-x="tab.tile.X" gs-item-y="tab.tile.Y"
+             gs-item-width="tab.tile.Width" gs-item-height="tab.tile.Height" gs-item-autopos="1" on-item-added="onItemAdded(item)" on-item-removed="onItemRemoved(item)"
+             data-gs-width="4" data-gs-height="2">
+            <rpgsmithnotetype info="tab.tile" ng-style="" style="border: {{tab.tile.Styles.width}} {{tab.tile.Styles.style}} {{tab.tile.Styles.color}}; border-radius: {{tab.tile.Styles.radius}};background-color: {{tab.tile.Styles.bodybackgroundColor}};box-shadow:{{tab.tile.Styles.shadow}};" useoredit=0 class="form_inline grid-stack-item-content" ng-switch-when='Note'></rpgsmithnotetype>
+            <rpgsmithcountertype info="tab.tile" ng-style="" style="border: {{tab.tile.Styles.width}} {{tab.tile.Styles.style}} {{tab.tile.Styles.color}}; border-radius: {{tab.tile.Styles.radius}};background-color: {{tab.tile.Styles.bodybackgroundColor}};box-shadow:{{tab.tile.Styles.shadow}};" useoredit=0 class="form_inline grid-stack-item-content" ng-switch-when='Counter'></rpgsmithcountertype>
+            <rpgsmithattributetype info="tab.tile" ng-style="" style="border: {{tab.tile.Styles.width}} {{tab.tile.Styles.style}} {{tab.tile.Styles.color}}; border-radius: {{tab.tile.Styles.radius}};background-color: {{tab.tile.Styles.bodybackgroundColor}};box-shadow:{{tab.tile.Styles.shadow}};" useoredit=0 class="form_inline grid-stack-item-content" ng-switch-when='Attribute'></rpgsmithattributetype>
+            <rpgsmithlinktype info="tab.tile" ng-style="" style="border: {{tab.tile.Styles.width}} {{tab.tile.Styles.style}} {{tab.tile.Styles.color}}; border-radius: {{tab.tile.Styles.radius}};background-color: {{tab.tile.Styles.bodybackgroundColor}};box-shadow:{{tab.tile.Styles.shadow}};" useoredit=0 class="form_inline grid-stack-item-content" ng-switch-when='Link' fullscope="RuleSetContentForLinkExecuteTile"></rpgsmithlinktype>
+            <rpgsmithexecutetype info="tab.tile" ng-style="" style="border: {{tab.tile.Styles.width}} {{tab.tile.Styles.style}} {{tab.tile.Styles.color}}; border-radius: {{tab.tile.Styles.radius}};background-color: {{tab.tile.Styles.bodybackgroundColor}};box-shadow:{{tab.tile.Styles.shadow}};" useoredit=0 class="form_inline grid-stack-item-content" ng-switch-when='Execute' fullscope="RuleSetContentForLinkExecuteTile"></rpgsmithexecutetype>
+            <rpgsmithcommandtype info="tab.tile" ng-style="" style="border: {{tab.tile.Styles.width}} {{tab.tile.Styles.style}} {{tab.tile.Styles.color}}; border-radius: {{tab.tile.Styles.radius}};background-color: {{tab.tile.Styles.bodybackgroundColor}};box-shadow:{{tab.tile.Styles.shadow}};" useoredit=0 class="form_inline grid-stack-item-content" ng-switch-when='Command'></rpgsmithcommandtype>
+            <rpgsmithimagetype info="tab.tile" ng-style="" style="border: {{tab.tile.Styles.width}} {{tab.tile.Styles.style}} {{tab.tile.Styles.color}}; border-radius: {{tab.tile.Styles.radius}};background-color: {{tab.tile.Styles.bodybackgroundColor}};box-shadow:{{tab.tile.Styles.shadow}};" useoredit=0 class="form_inline grid-stack-item-content" ng-switch-when='Image'></rpgsmithimagetype>
+        </div>
+
+    </div>
+    <div class="tile-bubble-remove" title="Remove Page" droppable ng-class="{'show-bubble': state.tileDragging}"
+         on-droppable-drop="onDeleteDrop(event,ui)"
+         on-droppable-over="onDeleteOver(event,ui)" on-droppable-out="onDeleteOut(event)">
+        <i class="fa fa-trash-o" aria-hidden="true"></i>
+    </div>
+</div>
+<toaster-container class="toaster_align" toaster-options="{'time-out':1000}"></toaster-container>

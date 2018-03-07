@@ -1,0 +1,64 @@
+﻿<div class="container edit_profile">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4>
+                <i class="fa fa-edit"></i>  Edit Profile <a href="/characters" class="btn btn-default back_new"><i class="fa fa-angle-double-left"></i>&nbsp;<span>Back</span></a>
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="form-horizontal">
+                    <form name="EditForm" novalidate class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="email">User Name:</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" id="email" placeholder="Enter Username" ng-model="data.Name" disabled>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="email">Email</label>
+                            <div class="col-sm-3">
+                                <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" ng-model="data.Email" disabled>
+                            </div>
+                        </div>
+                        <!--<div class="form-group">
+                            <label class="control-label col-sm-2" for="pwd">Password:</label>
+                            <div class="col-sm-3">
+                                <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd" ng-model="data.PasswordHash">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="pwd">Confirm Password:</label>
+                            <div class="col-sm-3">
+                                <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd" ng-model="password" ng-change="checkpass()">
+                            </div>
+                        </div>-->
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" for="pwd">Profile Image:</label>
+                            <div class="col-sm-4">
+                                <div class="clearfix">
+                                    <div class="pull-left edit-character-portrait"><img id="profileImage" ng-src="{{data.ProfileImage}}" ng-model="data.ProfileImage" alt="Profile Image" ngf-resize="{width: 120, height: 120}" /></div>
+                                    <div class="profile_image"><span>Select</span><input type="file" onchange="angular.element(this).scope().ProfileImageUpload(this)" accept="x-png,gif,jpeg" /> </div>
+                                </div>
+                                <span class="help-block">120px by 120px</span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="button" class="btn btn-primary" ng-click="Update()"><i class="fa fa-edit"></i><span>Update</span></button>
+                        <button type="button" class="btn btn-default" ng-click="cancel()"><i class="fa fa-times"></i><span>Cancel</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+<toaster-container class="toaster_align" toaster-options="{'time-out':1000}"></toaster-container>

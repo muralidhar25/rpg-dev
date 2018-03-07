@@ -1,0 +1,35 @@
+﻿<div class="modal-header">
+    <h4 class="modal-title">
+        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+        <span>Select Tile</span>
+    </h4>
+</div>
+
+<div class="modal-body">
+    <ng-form name="dlg" novalidate role="form" >
+        
+        <!--<div class="form-group pb-10">
+            
+            <label class="control-label col-md-4">
+                <span class="help-block">Select Tile Type <span class="errorColor">*</span></span>
+            </label>
+            <div class="col-md-8 mb-20">
+                <select name="corestattype" ng-change="" class="form-control" ng-options="item.TileId as item.TileType for item in tileTypes" ng-model="tileTypes.TileId" ng-class="{red: dlg.corestattype.$dirty && dlg.corestattype.$error.required}" required>
+                    <option value="">--Select--</option>
+                </select>
+            </div>
+        </div>-->
+        <div class="select-tile-tiles select-tile-characters" ng-class="{picker: tilePickerApi.selecting}">
+            <ul>
+                <li ng-click="selecttiletype(tiletype)" title="{{tiletype.TileType}}" class="" ng-repeat="tiletype in tileTypes">
+                    <img ng-src="{{tiletype.TileType==='ABILITY'?'attribute':tiletype.TileType}}" ng-style="newstyles(c)" class="img-resposive ng-pristine ng-untouched ng-valid ng-empty">
+                    <span class="name">{{tiletype.TileType}}</span>
+                </li>
+            </ul>
+            </div>
+</ng-form>
+
+</div>
+
+
+

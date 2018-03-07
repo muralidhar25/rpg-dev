@@ -1,0 +1,31 @@
+﻿<div class="modal-header">
+    <h5 class="modal-title">
+        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+        <span ng-show="isEdit" class="ng-hide" style=""> Edit Execute Tile</span>
+        <span ng-show="!isEdit"> Execute Tile</span>
+    </h5>
+    <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close"></button>
+    <div class="col-md-offset-6 col-md-2">
+        <div class="">
+            <!--<span class="ng-isolate-scope" style="margin-right: 10px;">
+                <img src="/wwwroot/images/drop.png" ng-click="TileBorder()">
+            </span>-->
+            <span id="bckcolor"  class="ng-isolate-scope">
+                <img src="/wwwroot/images/color.png" ng-click="TileTitleBackground()">
+            </span>
+        </div>
+    </div>
+</div>
+
+<form name="theForm" novalidate>
+    <div class="modal-body">
+        <div class="form-horizontal">
+            <!--{{tile.TileType}}-->
+            <rpgsmithexecutetype info="NoteTile" class="form_inline" useoredit=1 fullscope="LinkExecuteTileContent"></rpgsmithexecutetype>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+        <button type="submit" class="btn btn-primary" ng-click="SaveExecuteTile()" ng-disabled="theForm.$invalid">Save</button>
+    </div>
+</form>
