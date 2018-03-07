@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.8
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPGSmith", "RPGSmith\RPGSmith.csproj", "{E72ADB5F-B467-4E06-B4B1-5FF75C797F75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPGSmith.Data", "RPGSmith.Data\RPGSmith.Data.csproj", "{6E3E53A1-243C-4BB9-A928-0FECC43838CB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E72ADB5F-B467-4E06-B4B1-5FF75C797F75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E72ADB5F-B467-4E06-B4B1-5FF75C797F75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E72ADB5F-B467-4E06-B4B1-5FF75C797F75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E72ADB5F-B467-4E06-B4B1-5FF75C797F75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E3E53A1-243C-4BB9-A928-0FECC43838CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E3E53A1-243C-4BB9-A928-0FECC43838CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E3E53A1-243C-4BB9-A928-0FECC43838CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E3E53A1-243C-4BB9-A928-0FECC43838CB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AB750A0A-ACC8-45C1-AABD-FE24DE678D15}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://rpgsmithroleplaygame.visualstudio.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = RPGSmith.Data\\RPGSmith.Data.csproj
+		SccProjectName1 = RPGSmith.Data
+		SccLocalPath1 = RPGSmith.Data
+		SccProjectUniqueName2 = RPGSmith\\RPGSmith.csproj
+		SccProjectName2 = RPGSmith
+		SccLocalPath2 = RPGSmith
+	EndGlobalSection
+EndGlobal
