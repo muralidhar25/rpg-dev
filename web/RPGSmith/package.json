@@ -21,7 +21,7 @@
       ]
     }
   },
-  "depecies": {
+  "dependencies": {
     "System.Linq": "4.1.0-rc2-24027",
     "@angular/compiler-cli": "^4.3.1",
     "angular-scroll": "^1.0.2",
