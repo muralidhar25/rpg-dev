@@ -16,7 +16,6 @@
     "angular-ui-tinymce": "0.0.18",
     "bootstrap-css-only": "3.3.7",
     "font-awesome": "4.7.0",
-    "gridstack": "https://github.com/randellhodges/gridstack.js.git#support-pixelwidth",
     "jquery": "3.2.1",
     "jquery-ui": "1.12.1",
     "jquery-ui-touch-punch": "*",
