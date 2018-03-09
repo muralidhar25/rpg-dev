@@ -1,0 +1,14 @@
+{
+  "name": "number-format.js",
+  "main": "src/format.js",
+  "ignore": [
+    "/node_modules",
+    "/bower_components",
+    "/.git",
+    "/src",
+    "/test",
+    "/Gruntfile.js",
+    "/package.json",
+    "/index.html"
+  ]
+}
