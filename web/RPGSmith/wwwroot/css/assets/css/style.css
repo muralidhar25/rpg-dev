@@ -1755,6 +1755,10 @@ a.icon:hover span {
 }
 .card-img-top {
   border-radius: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 50%;
+  transform: translateY(+50%);
 }
 .card-title {
   max-width: 100%;
