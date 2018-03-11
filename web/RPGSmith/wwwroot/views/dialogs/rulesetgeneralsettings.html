@@ -10,7 +10,7 @@
                 <!-- RuleSet name -->
                 <div class="form-group">
                     <label for="newRulesetCharacterName">Name (required)</label>
-                    <input type="text" class="form-control" name="name" id="name" placeholder="Character Name" ng-model="GeneralSettings[0].RulesetName" ng-class="{red: form.name.$dirty && form.name.$error.required}" ng-disabled={{DisableName}} required>
+                    <input type="text" class="form-control" name="name" id="name" ng-model="GeneralSettings[0].RulesetName" ng-class="{red: form.name.$dirty && form.name.$error.required}" ng-disabled={{DisableName}} required>
                 </div>
                 <!-- End of RuleSet name -->
             </div>

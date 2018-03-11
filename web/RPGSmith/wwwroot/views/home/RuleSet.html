@@ -14,7 +14,7 @@
 					<li>
                        <div class="dropdown dropdown-buttons show"  ng-click="siteNavigationMenuToggle($event)" >
 							<div class="dropdown-toggle btn  btn-primary" id="siteNavigationToggle" data-toggle="dropdown" style="width:100%">
-								<span class="icon icon-with-text icon-plus">NEW RULE SET</span> 
+								<span class="icon icon-with-text icon-plus">NEW RULE SET</span>
 							</div>
 							<div class="dropdown-menu" aria-labelledby="siteNavigationToggle">
 								<!--<div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
@@ -40,7 +40,7 @@
 									<li class="dropdown-menu-item">
 										<button type="button" data-toggle="modal" data-target="#createItemPopup" class="btn btn-accent">Import Rule Set</button>
 									</li>
-									
+
 
 									<!--<li class="dropdown-menu-item" ng-click="RulesetGeneralSettings()">
 										<a class="dropdown-menu-item-link"  id="AddRuleSet" >
@@ -57,7 +57,7 @@
 											<span class="dropdown-menu-item-title">Import Rule Set</span>
 										</a>
 									</li>-->
-									
+
 								</ul>
 							</div>
 						</div>
@@ -76,7 +76,7 @@
                         <div class="card-wrapper">
                             <div class="card" data-href="#" >
                                 <div class="card-image" style="vertical-align: central; height: 80%">
-									
+
 										<img style="display: block" class="card-img-top" ng-src="{{ruleset.Rulesetproperty[2].Value.Image.image?ruleset.Rulesetproperty[2].Value.Image.image:'/wwwroot/images/not-available.jpg'}}" onerror="this.src='/wwwroot/images/not-available.jpg'" alt="{{ruleset.Name}}" ng-click="ManageRuleset(ruleset.Id)" />
 										<div class="card-actions">
 											<button type="button" title="Edit" data-toggle="tooltip" ng-click="EditGeneralSettings(ruleset.Id)" class="btn icon icon-pencil btn-simple-primary"></button>
@@ -84,7 +84,7 @@
 											<button type="button" title="Delete" data-toggle="tooltip" ng-click="deleteRuleSet(ruleset,$index);" class="btn icon icon-trash btn-simple-primary"></button>
 											<button type="button" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary" ng-click="hideConteextMenu($event)"></button>
 										</div>
-									
+
                                 </div>
                                 <div class="card-body" >
                                     <h4 class="card-title">{{ruleset.Name}}</h4>
@@ -95,7 +95,7 @@
                             </div>
                         </div>
                     </div>
-                  
+
                 </div>
             </div>
         </div>
@@ -103,7 +103,7 @@
     </div>
 
     <!-- New ruleset popup -->
-	
+
     <!-- End of new ruleset popup -->
     <!-- New ruleset manage popup -->
     <div class="modal fade popup-new-ruleset-manage" id="newRulesetManagePopup" tabindex="-1" role="dialog" aria-labelledby="newRulesetManagePopupTitle" aria-hidden="true" data-backdrop="static">
@@ -151,7 +151,7 @@
                                 <!-- Character name -->
                                 <div class="form-group">
                                     <label for="editRulesetCharacterName">Name (required)</label>
-                                    <input type="text" id="editRulesetCharacterName" class="form-control" placeholder="Name of the ruleset" value="Apocalypse World">
+                                    <input type="text" id="editRulesetCharacterName" class="form-control" placeholder="Rule Set Name" value="Apocalypse World">
                                 </div>
                                 <!-- End of character name -->
                             </div>
@@ -184,19 +184,19 @@
                                 <!-- Ruleset currency -->
                                 <div class="form-group">
                                     <label for="editRulesetCurrency">Currency Label</label>
-                                    <input type="text" id="editRulesetCurrency" class="form-control" placeholder="Enter currency value">
+                                    <input type="text" id="editRulesetCurrency" class="form-control" placeholder="Currency Label">
                                 </div>
                                 <!-- End of ruleset currency -->
                                 <!-- Ruleset weight -->
                                 <div class="form-group">
                                     <label for="editRulesetWeightMetric">Weight Metric Label</label>
-                                    <input type="text" id="editRulesetWeightMetric" class="form-control" placeholder="Enter metric value">
+                                    <input type="text" id="editRulesetWeightMetric" class="form-control" placeholder="Weight Metric Label">
                                 </div>
                                 <!-- End of ruleset weight -->
                                 <!-- Ruleset distance -->
                                 <div class="form-group">
                                     <label for="editRulesetDistanceMetric">Distance Metric Label</label>
-                                    <input type="text" id="editRulesetDistanceMetric" class="form-control" placeholder="Enter metric value">
+                                    <input type="text" id="editRulesetDistanceMetric" class="form-control" placeholder="Distance Metric Label">
                                 </div>
                                 <!-- End of ruleset distance -->
                             </div>
