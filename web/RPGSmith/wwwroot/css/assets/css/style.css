@@ -1757,9 +1757,9 @@ a.icon:hover span {
   border-radius: 0;
   left: 50%;
   transform: translateX(-50%);
-  margin-top: 30%;
+  top: 50%;
+  transform: translateY(+50);
 }
-
 .card-title {
   max-width: 100%;
   color: #be8917;
@@ -2359,8 +2359,7 @@ a.icon:hover span {
   border-top-width: 0;
   border-left-width: 0;
   border-right-width: 0;
-  top: 50%
-  transform: translateY(+50%);
+  vertical-align: middle;
 }
 .cards .card-wrapper .card-body {
   display: flex;
