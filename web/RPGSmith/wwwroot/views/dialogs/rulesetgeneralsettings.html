@@ -10,7 +10,7 @@
                 <!-- RuleSet name -->
                 <div class="form-group">
                     <label for="newRulesetCharacterName">Name (required)</label>
-                    <input type="text" class="form-control" name="name" id="name" ng-model="GeneralSettings[0].RulesetName" ng-class="{red: form.name.$dirty && form.name.$error.required}" ng-disabled={{DisableName}} required>
+                    <input type="text" class="form-control" name="name" id="name" placeholder="Character Name" ng-model="GeneralSettings[0].RulesetName" ng-class="{red: form.name.$dirty && form.name.$error.required}" ng-disabled={{DisableName}} required>
                 </div>
                 <!-- End of RuleSet name -->
             </div>
@@ -50,14 +50,14 @@
 					<rpgsmithrulesettype info="GeneralSettings[5]" mode="'{{Disabled}}'"></rpgsmithrulesettype>
 				</div>
 			</div>
-			
+
 			<div class="col" >
 				<!-- Ruleset image -->
 				<div class="form-group input-image input-image-alt">
 					<label for="newRulesetImage">Image</label>
 					<div class="input-image-control input-image-note input-image-trigger" ng-hide="showimagebtns || GeneralSettings[2].Value.Image.image"   ng-click="showimagebtns=true">
 						<div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
-						
+
 					</div>
 					<div class="input-image-control input-image-buttons" ng-show="showimagebtns" style="display:block;background-size:cover;cursor: pointer ; background-repeat: no-repeat; background-image: url('{{GeneralSettings[2].Value.Image.image?GeneralSettings[2].Value.Image.image:''}}');" >
 						<button type="button" ng-click="OpenBingSearch()" class="btn icon icon-with-text icon-globe btn-primary btn-block input-image-button-web">From Web</button>
@@ -85,12 +85,12 @@
 						<button type="button" class="btn btn-outline-primary btn-block input-image-button-close" ng-click="showimagebtns = false">Cancel</button>
 					</div>
 					<div ng-click="showimagebtns=true" class="input-image-control input-image-buttons" ng-show="!showimagebtns && GeneralSettings[2].Value.Image.image" style="background-size:cover; cursor: pointer ; background-repeat: no-repeat; background-image: url('{{GeneralSettings[2].Value.Image.image?GeneralSettings[2].Value.Image.image:''}}'); padding-top: 100px;padding-left:20px;padding-right: 20px;max-height: 320px;max-width:320px;background-color: #d3cfce;vertical-align: middle">
-						
+
 					</div>
 					<input type="file" id="newRulesetImage" onchange="angular.element(this).scope().ItemImageUpload(this)" class="form-control-file">-->
 					<!--<div ng-show="GeneralSettings[2].Value.Image.image" class="input-image-control input-image-buttons" style="padding: 0px;max-height: 320px;max-width:320px;background-color: #d3cfce;vertical-align: middle">
 						<img class="card-img" ng-src="{{GeneralSettings[2].Value.Image.image?GeneralSettings[2].Value.Image.image:'/wwwroot/images/not-available.jpg'}}" onerror="this.src='/wwwroot/images/not-available.jpg'" alt="{{GeneralSettings[0].RulesetName}}" ng-click="showimagebtns = true" />
-					</div>					
+					</div>
 				</div>-->
 				<!-- End of ruleset image -->
 
@@ -99,13 +99,13 @@
 
 			</div>
 		</div>
-		
-		
+
+
 </ng-form>
 </div>
 
 <div class="modal-footer">
-	
+
 	<button  type="button" data-dismiss="modal" class="btn btn-simple-accent" ng-click="cancel()">Cancel</button>
     <button  type="button" class="btn btn-accent" ng-click="ManageRuleset()" >{{buttontext}}</button>
 </div>
@@ -125,12 +125,3 @@
 		background-color: #d3cfce;
 	}
 </style>
-
-
-
-
-
-
-
-
-
