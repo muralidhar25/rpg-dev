@@ -1713,11 +1713,6 @@ a.icon:hover span {
 .dropdown-buttons .dropdown-toggle:after {
   margin-left: 1.5rem;
 }
-@media screen and (min-width: 768px) {
-  .dropdown-buttons .dropdown-toggle:after {
-    margin-left: 0.75rem;
-  }
-}
 .dropdown-buttons .dropdown-menu-list {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
@@ -1747,12 +1742,59 @@ a.icon:hover span {
   border-bottom-color: #913c1b;
   background-color: #d15727;
 }
-@media screen and (min-width: 265px) {
+@media only screen and (min-width:960px){
+    /* styles for browsers larger than 960px; */
+    .dropdown-buttons .dropdown-toggle:after {
+      margin-left: 0.75rem;
+    }
+}
+@media only screen and (min-width:1440px){
+    /* styles for browsers larger than 1440px; */
+    .dropdown-buttons .dropdown-menu-list {
+      padding-top: 0.375rem;
+      padding-bottom: 0.375rem;
+    }
+}
+@media only screen and (min-width:2000px){
+    /* for sumo sized (mac) screens */
+    .dropdown-buttons .dropdown-menu-list {
+      padding-top: 0.375rem;
+      padding-bottom: 0.375rem;
+    }
+}
+@media only screen and (max-device-width:480px){
+   /* styles for mobile browsers smaller than 480px; (iPhone) */
+   .dropdown-buttons .dropdown-menu-list {
+     padding-top: 0.375rem;
+     padding-bottom: 0.375rem;
+     width: 100%;
+    }
+}
+@media only screen and (device-width:768px){
+   /* default iPad screens */
+   .dropdown-buttons .dropdown-menu-list {
+     padding-top: 0.375rem;
+     padding-bottom: 0.375rem;
+   }
+}
+/* different techniques for iPad screening */
+@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait) {
+  /* For portrait layouts only */
   .dropdown-buttons .dropdown-menu-list {
     padding-top: 0.375rem;
     padding-bottom: 0.375rem;
     width: 100%;
-  }
+   }
+}
+
+@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape) {
+  /* For landscape layouts only */
+  .dropdown-buttons .dropdown-menu-list {
+    padding-top: 0.375rem;
+    padding-bottom: 0.375rem;
+    width: 100%;
+   }
+}
 
 /**
  * Card ------------------------------------------------------------------------
