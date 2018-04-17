@@ -1,0 +1,9 @@
+c:\repos\RPGSmithApp\RPGSmithApp\DAL\bin\Debug\netstandard2.0\DAL.deps.json
+c:\repos\RPGSmithApp\RPGSmithApp\DAL\bin\Debug\netstandard2.0\DAL.dll
+c:\repos\RPGSmithApp\RPGSmithApp\DAL\bin\Debug\netstandard2.0\DAL.pdb
+c:\repos\RPGSmithApp\RPGSmithApp\DAL\obj\Debug\netstandard2.0\DAL.csprojResolveAssemblyReference.cache
+c:\repos\RPGSmithApp\RPGSmithApp\DAL\obj\Debug\netstandard2.0\DAL.csproj.CoreCompileInputs.cache
+c:\repos\RPGSmithApp\RPGSmithApp\DAL\obj\Debug\netstandard2.0\DAL.AssemblyInfoInputs.cache
+c:\repos\RPGSmithApp\RPGSmithApp\DAL\obj\Debug\netstandard2.0\DAL.AssemblyInfo.cs
+c:\repos\RPGSmithApp\RPGSmithApp\DAL\obj\Debug\netstandard2.0\DAL.dll
+c:\repos\RPGSmithApp\RPGSmithApp\DAL\obj\Debug\netstandard2.0\DAL.pdb

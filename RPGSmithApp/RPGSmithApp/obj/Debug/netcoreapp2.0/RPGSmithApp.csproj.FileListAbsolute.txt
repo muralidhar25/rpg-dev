@@ -1,0 +1,14 @@
+c:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\bin\Debug\netcoreapp2.0\RPGSmithApp.deps.json
+c:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\bin\Debug\netcoreapp2.0\RPGSmithApp.runtimeconfig.json
+c:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\bin\Debug\netcoreapp2.0\RPGSmithApp.runtimeconfig.dev.json
+c:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\bin\Debug\netcoreapp2.0\RPGSmithApp.dll
+c:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\bin\Debug\netcoreapp2.0\RPGSmithApp.pdb
+c:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\bin\Debug\netcoreapp2.0\DAL.dll
+c:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\bin\Debug\netcoreapp2.0\DAL.pdb
+c:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Debug\netcoreapp2.0\RPGSmithApp.csprojResolveAssemblyReference.cache
+c:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Debug\netcoreapp2.0\RPGSmithApp.csproj.CoreCompileInputs.cache
+c:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Debug\netcoreapp2.0\RPGSmithApp.AssemblyInfoInputs.cache
+c:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Debug\netcoreapp2.0\RPGSmithApp.AssemblyInfo.cs
+c:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Debug\netcoreapp2.0\RPGSmithApp.csproj.CopyComplete
+c:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Debug\netcoreapp2.0\RPGSmithApp.dll
+c:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Debug\netcoreapp2.0\RPGSmithApp.pdb

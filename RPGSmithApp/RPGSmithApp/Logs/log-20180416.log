@@ -1,0 +1,849 @@
+2018-04-16T22:12:38.0118416-04:00  [INF] Starting @angular/cli on port 50013... (9f5c0bb3)
+2018-04-16T22:12:45.5912729-04:00  [INF] Entity Framework Core "2.0.1-rtm-125" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=RPGSmithApp " (9958f5bb)
+2018-04-16T22:12:53.6128882-04:00  [ERR] Failed executing DbCommand ("88"ms) [Parameters=[""], CommandType='Text', CommandTimeout='60']"
+""CREATE DATABASE [RPGSmithApp];" (627a98df)
+System.Data.SqlClient.SqlException (0x80131904): CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.<ExecuteAsync>d__17.MoveNext()
+ClientConnectionId:6ba71b3c-9188-4eb0-ae69-33aef9514c31
+Error Number:5123,State:1,Class:16
+2018-04-16T22:12:54.4995034-04:00  [FTL] Error whilst creating and seeding database (944fb156)
+System.AggregateException: One or more errors occurred. (CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.) ---> System.Data.SqlClient.SqlException: CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.<ExecuteAsync>d__17.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.MigrationCommand.<ExecuteNonQueryAsync>d__8.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.<ExecuteNonQueryAsync>d__1.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDatabaseCreator.<CreateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.<MigrateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at DAL.DatabaseInitializer.<SeedAsync>d__4.MoveNext() in c:\repos\RPGSmithApp\RPGSmithApp\DAL\DatabaseInitializer.cs:line 43
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
+   at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   at System.Threading.Tasks.Task.Wait()
+   at RPGSmithApp.Program.Main(String[] args) in c:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\Program.cs:line 32
+---> (Inner Exception #0) System.Data.SqlClient.SqlException (0x80131904): CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.<ExecuteAsync>d__17.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.MigrationCommand.<ExecuteNonQueryAsync>d__8.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.<ExecuteNonQueryAsync>d__1.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDatabaseCreator.<CreateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.<MigrateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at DAL.DatabaseInitializer.<SeedAsync>d__4.MoveNext() in c:\repos\RPGSmithApp\RPGSmithApp\DAL\DatabaseInitializer.cs:line 43
+ClientConnectionId:6ba71b3c-9188-4eb0-ae69-33aef9514c31
+Error Number:5123,State:1,Class:16<---
+
+2018-04-16T22:12:56.6209694-04:00  [ERR] An old CLI configuration has been detected, which needs to be updated to the latest version.
+ (0b23edda)
+2018-04-16T22:12:56.6614785-04:00  [ERR] 
+Please run the following command to update this workspace:
+  ng update @angular/cli --migrate-only --from=1
+npm ERR! code ELIFECYCLE
+ (fc575bdb)
+2018-04-16T22:12:57.4990505-04:00 0HLD412U2UVV5:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:49952/   (ca22a1cb)
+2018-04-16T22:12:59.3373141-04:00 0HLD412U2UVV5:00000001 [ERR] An unhandled exception has occurred while executing the request (cf926119)
+System.AggregateException: One or more errors occurred. (One or more errors occurred. (The NPM script 'start' exited without indicating that the Angular CLI was listening for requests. The error output was: An old CLI configuration has been detected, which needs to be updated to the latest version.
+
+)) ---> System.AggregateException: One or more errors occurred. (The NPM script 'start' exited without indicating that the Angular CLI was listening for requests. The error output was: An old CLI configuration has been detected, which needs to be updated to the latest version.
+
+) ---> System.InvalidOperationException: The NPM script 'start' exited without indicating that the Angular CLI was listening for requests. The error output was: An old CLI configuration has been detected, which needs to be updated to the latest version.
+
+ ---> System.IO.EndOfStreamException: Attempted to read past the end of the stream.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.SpaServices.AngularCli.AngularCliMiddleware.<StartAngularCliServerAsync>d__3.MoveNext()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.SpaServices.AngularCli.AngularCliMiddleware.<StartAngularCliServerAsync>d__3.MoveNext()
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at Microsoft.AspNetCore.SpaServices.AngularCli.AngularCliMiddleware.<>c.<Attach>b__2_0(Task`1 task)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot)
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at Microsoft.AspNetCore.SpaServices.Extensions.Util.TaskTimeoutExtensions.<WithTimeout>d__1`1.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.SpaServices.Extensions.Proxy.SpaProxy.<PerformProxyRequest>d__4.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Builder.SpaProxyingExtensions.<>c__DisplayClass2_0.<<UseProxyToSpaDevelopmentServer>b__0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Builder.RouterMiddleware.<Invoke>d__4.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIIndexMiddleware.<Invoke>d__3.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.<Invoke>d__6.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.<Invoke>d__6.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Cors.Infrastructure.CorsMiddleware.<Invoke>d__7.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.<Invoke>d__7.MoveNext()
+---> (Inner Exception #0) System.AggregateException: One or more errors occurred. (The NPM script 'start' exited without indicating that the Angular CLI was listening for requests. The error output was: An old CLI configuration has been detected, which needs to be updated to the latest version.
+
+) ---> System.InvalidOperationException: The NPM script 'start' exited without indicating that the Angular CLI was listening for requests. The error output was: An old CLI configuration has been detected, which needs to be updated to the latest version.
+
+ ---> System.IO.EndOfStreamException: Attempted to read past the end of the stream.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.SpaServices.AngularCli.AngularCliMiddleware.<StartAngularCliServerAsync>d__3.MoveNext()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.SpaServices.AngularCli.AngularCliMiddleware.<StartAngularCliServerAsync>d__3.MoveNext()
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at Microsoft.AspNetCore.SpaServices.AngularCli.AngularCliMiddleware.<>c.<Attach>b__2_0(Task`1 task)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot)
+---> (Inner Exception #0) System.InvalidOperationException: The NPM script 'start' exited without indicating that the Angular CLI was listening for requests. The error output was: An old CLI configuration has been detected, which needs to be updated to the latest version.
+
+ ---> System.IO.EndOfStreamException: Attempted to read past the end of the stream.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.SpaServices.AngularCli.AngularCliMiddleware.<StartAngularCliServerAsync>d__3.MoveNext()
+   --- End of inner exception stack trace ---
+   at Microsoft.AspNetCore.SpaServices.AngularCli.AngularCliMiddleware.<StartAngularCliServerAsync>d__3.MoveNext()<---
+<---
+
+2018-04-16T22:13:00.2575065-04:00 0HLD412U2UVV5:00000001 [INF] Request finished in 2256.8851ms 500 text/html; charset=utf-8 (791a596a)
+2018-04-16T22:37:09.6163330-04:00  [INF] Starting @angular/cli on port 50171... (4ef2511e)
+2018-04-16T22:37:11.9323187-04:00  [INF] Entity Framework Core "2.0.1-rtm-125" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=RPGSmithApp " (9958f5bb)
+2018-04-16T22:37:43.2866015-04:00  [ERR] Failed executing DbCommand ("576"ms) [Parameters=[""], CommandType='Text', CommandTimeout='60']"
+""CREATE DATABASE [RPGSmithApp];" (627a98df)
+System.Data.SqlClient.SqlException (0x80131904): CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.<ExecuteAsync>d__17.MoveNext()
+ClientConnectionId:4b159e41-5eb8-40fb-8ae3-6c457a76b825
+Error Number:5123,State:1,Class:16
+2018-04-16T22:37:44.3788976-04:00  [FTL] Error whilst creating and seeding database (944fb156)
+System.AggregateException: One or more errors occurred. (CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.) ---> System.Data.SqlClient.SqlException: CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.<ExecuteAsync>d__17.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.MigrationCommand.<ExecuteNonQueryAsync>d__8.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.<ExecuteNonQueryAsync>d__1.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDatabaseCreator.<CreateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.<MigrateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at DAL.DatabaseInitializer.<SeedAsync>d__4.MoveNext() in C:\repos\RPGSmithApp\RPGSmithApp\DAL\DatabaseInitializer.cs:line 43
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
+   at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   at System.Threading.Tasks.Task.Wait()
+   at RPGSmithApp.Program.Main(String[] args) in C:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\Program.cs:line 32
+---> (Inner Exception #0) System.Data.SqlClient.SqlException (0x80131904): CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.<ExecuteAsync>d__17.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.MigrationCommand.<ExecuteNonQueryAsync>d__8.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.<ExecuteNonQueryAsync>d__1.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDatabaseCreator.<CreateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.<MigrateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at DAL.DatabaseInitializer.<SeedAsync>d__4.MoveNext() in C:\repos\RPGSmithApp\RPGSmithApp\DAL\DatabaseInitializer.cs:line 43
+ClientConnectionId:4b159e41-5eb8-40fb-8ae3-6c457a76b825
+Error Number:5123,State:1,Class:16<---
+
+2018-04-16T22:37:47.3068971-04:00 0HLD41GQ4CP4E:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:49952/   (ca22a1cb)
+2018-04-16T22:37:55.3097440-04:00  [INF] > quickapp@2.5.3 start C:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\ClientApp
+> ng serve --extract-css "--port" "50171"
+
+** NG Live Development Server is listening on localhost:50171, open your browser on http://localhost:50171/ **
+ (5c07b344)
+2018-04-16T22:38:46.7633508-04:00 0HLD41GQ4CP4E:00000001 [ERR] An unhandled exception has occurred while executing the request (cf926119)
+System.TimeoutException: The Angular CLI process did not start listening for requests within the timeout period of 50 seconds. Check the log output for error information.
+   at Microsoft.AspNetCore.SpaServices.Extensions.Util.TaskTimeoutExtensions.<WithTimeout>d__1`1.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.SpaServices.Extensions.Proxy.SpaProxy.<PerformProxyRequest>d__4.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Builder.SpaProxyingExtensions.<>c__DisplayClass2_0.<<UseProxyToSpaDevelopmentServer>b__0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Builder.RouterMiddleware.<Invoke>d__4.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIIndexMiddleware.<Invoke>d__3.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.<Invoke>d__6.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.<Invoke>d__6.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Cors.Infrastructure.CorsMiddleware.<Invoke>d__7.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.<Invoke>d__7.MoveNext()
+2018-04-16T22:38:47.1238745-04:00 0HLD41GQ4CP4E:00000001 [INF] Request finished in 59821.1789ms 500 text/html; charset=utf-8 (791a596a)
+2018-04-16T22:39:07.5935452-04:00  [INF] Date: 2018-04-17T02:39:07.095Z
+ (24fbf4d4)
+2018-04-16T22:39:10.3139443-04:00  [INF] Hash: 7c493fd34896aea24573
+Time: 71704ms
+chunk {inline} inline.bundle.js (inline) 3.85 kB [entry] [rendered]
+chunk {main} main.bundle.js (main) 1.44 MB [initial] [rendered]
+chunk {polyfills} polyfills.bundle.js (polyfills) 676 kB [initial] [rendered]
+chunk {scripts} scripts.bundle.js (scripts) 291 kB [initial] [rendered]
+chunk {styles} styles.bundle.css (styles) 293 kB [initial] [rendered]
+chunk {vendor} vendor.bundle.js (vendor) 15.8 MB [initial] [rendered]
+
+ (863cfa28)
+2018-04-16T22:39:10.3172829-04:00  [INF] webpack: Compiled successfully.
+ (f274984e)
+2018-04-16T22:40:06.7763052-04:00 0HLD41GQ4CP4G:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:49952/   (ca22a1cb)
+2018-04-16T22:40:07.9900943-04:00 0HLD41GQ4CP4G:00000001 [INF] Request finished in 1208.4548ms 200 text/html; charset=UTF-8 (791a596a)
+2018-04-16T22:40:08.0368269-04:00 0HLD41GQ4CP4G:00000002 [INF] Request starting HTTP/1.1 GET http://localhost:49952/assets/styles-external.css   (ca22a1cb)
+2018-04-16T22:40:08.1163901-04:00 0HLD41GQ4CP4G:00000002 [INF] Request finished in 58.0501ms 200 text/css; charset=UTF-8 (791a596a)
+2018-04-16T22:40:08.1270924-04:00 0HLD41GQ4CP4G:00000003 [INF] Request starting HTTP/1.1 GET http://localhost:49952/styles.bundle.css   (ca22a1cb)
+2018-04-16T22:40:08.4471740-04:00 0HLD41GQ4CP4G:00000003 [INF] Request finished in 263.3842ms 200 text/css; charset=UTF-8 (791a596a)
+2018-04-16T22:40:08.4541655-04:00 0HLD41GQ4CP4G:00000004 [INF] Request starting HTTP/1.1 GET http://localhost:49952/inline.bundle.js   (ca22a1cb)
+2018-04-16T22:40:09.0754520-04:00 0HLD41GQ4CP4G:00000004 [INF] Request finished in 617.273ms 200 application/javascript; charset=UTF-8 (791a596a)
+2018-04-16T22:40:10.5139717-04:00 0HLD41GQ4CP4G:00000005 [INF] Request starting HTTP/1.1 GET http://localhost:49952/polyfills.bundle.js   (ca22a1cb)
+2018-04-16T22:40:14.1036665-04:00 0HLD41GQ4CP4G:00000005 [INF] Request finished in 3872.4518ms 200 application/javascript; charset=UTF-8 (791a596a)
+2018-04-16T22:40:33.1257222-04:00 0HLD41GQ4CP4G:00000006 [INF] Request starting HTTP/1.1 GET http://localhost:49952/scripts.bundle.js   (ca22a1cb)
+2018-04-16T22:40:35.0331135-04:00 0HLD41GQ4CP4G:00000006 [INF] Request finished in 1906.9344ms 200 application/javascript; charset=UTF-8 (791a596a)
+2018-04-16T22:40:35.3717868-04:00 0HLD41GQ4CP4G:00000007 [INF] Request starting HTTP/1.1 GET http://localhost:49952/vendor.bundle.js   (ca22a1cb)
+2018-04-16T22:40:38.2764209-04:00 0HLD41GQ4CP4G:00000007 [INF] Request finished in 2909.5311ms 200 application/javascript; charset=UTF-8 (791a596a)
+2018-04-16T22:40:39.3729950-04:00 0HLD41GQ4CP4G:00000008 [INF] Request starting HTTP/1.1 GET http://localhost:49952/main.bundle.js   (ca22a1cb)
+2018-04-16T22:40:39.7642714-04:00 0HLD41GQ4CP4G:00000008 [INF] Request finished in 397.2459ms 200 application/javascript; charset=UTF-8 (791a596a)
+2018-04-16T22:41:29.8486470-04:00 0HLD41GQ4CP4G:00000009 [INF] Request starting HTTP/1.1 GET http://localhost:49952/sockjs-node/info?t=1523932888335   (ca22a1cb)
+2018-04-16T22:41:32.5666509-04:00 0HLD41GQ4CP4G:00000009 [INF] Request finished in 3357.2586ms 200 application/json; charset=UTF-8 (791a596a)
+2018-04-16T22:41:32.6121221-04:00 0HLD41GQ4CP4G:0000000A [INF] Request starting HTTP/1.1 GET http://localhost:49952/sockjs-node/708/nxnmqyoo/websocket   (ca22a1cb)
+2018-04-16T22:41:32.6205635-04:00 0HLD41GQ4CP4G:0000000A [INF] Policy execution successful. (0204925d)
+2018-04-16T22:49:19.7830487-04:00 0HLD41GQ4CP4G:0000000A [INF] Request finished in 467006.0863ms 101  (791a596a)
+2018-04-16T22:49:44.7624018-04:00  [INF] Starting @angular/cli on port 50265... (3e005b19)
+2018-04-16T22:49:46.1315650-04:00  [INF] Entity Framework Core "2.0.1-rtm-125" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=RPGSmithApp " (9958f5bb)
+2018-04-16T22:49:53.0640906-04:00  [ERR] Failed executing DbCommand ("136"ms) [Parameters=[""], CommandType='Text', CommandTimeout='60']"
+""CREATE DATABASE [RPGSmithApp];" (627a98df)
+System.Data.SqlClient.SqlException (0x80131904): CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.<ExecuteAsync>d__17.MoveNext()
+ClientConnectionId:38559810-ce9e-42e7-8ec1-9a6802c79c16
+Error Number:5123,State:1,Class:16
+2018-04-16T22:49:53.4681648-04:00  [FTL] Error whilst creating and seeding database (944fb156)
+System.AggregateException: One or more errors occurred. (CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.) ---> System.Data.SqlClient.SqlException: CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.<ExecuteAsync>d__17.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.MigrationCommand.<ExecuteNonQueryAsync>d__8.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.<ExecuteNonQueryAsync>d__1.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDatabaseCreator.<CreateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.<MigrateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at DAL.DatabaseInitializer.<SeedAsync>d__4.MoveNext() in C:\repos\RPGSmithApp\RPGSmithApp\DAL\DatabaseInitializer.cs:line 43
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
+   at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   at System.Threading.Tasks.Task.Wait()
+   at RPGSmithApp.Program.Main(String[] args) in C:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\Program.cs:line 32
+---> (Inner Exception #0) System.Data.SqlClient.SqlException (0x80131904): CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.<ExecuteAsync>d__17.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.MigrationCommand.<ExecuteNonQueryAsync>d__8.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.<ExecuteNonQueryAsync>d__1.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDatabaseCreator.<CreateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.<MigrateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at DAL.DatabaseInitializer.<SeedAsync>d__4.MoveNext() in C:\repos\RPGSmithApp\RPGSmithApp\DAL\DatabaseInitializer.cs:line 43
+ClientConnectionId:38559810-ce9e-42e7-8ec1-9a6802c79c16
+Error Number:5123,State:1,Class:16<---
+
+2018-04-16T22:49:55.9023093-04:00 0HLD41NISFV8C:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:49952/   (ca22a1cb)
+2018-04-16T22:50:03.0779610-04:00  [INF] > quickapp@2.5.3 start C:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\ClientApp
+> ng serve --extract-css "--port" "50265"
+
+** NG Live Development Server is listening on localhost:50265, open your browser on http://localhost:50265/ **
+ (a4afa9d8)
+2018-04-16T22:50:38.7997249-04:00  [INF] Date: 2018-04-17T02:50:38.714Z
+ (5af11380)
+2018-04-16T22:50:40.7884484-04:00  [INF] Hash: 7c493fd34896aea24573
+Time: 35543ms
+chunk {inline} inline.bundle.js (inline) 3.85 kB [entry] [rendered]
+chunk {main} main.bundle.js (main) 1.44 MB [initial] [rendered]
+chunk {polyfills} polyfills.bundle.js (polyfills) 676 kB [initial] [rendered]
+chunk {scripts} scripts.bundle.js (scripts) 291 kB [initial] [rendered]
+chunk {styles} styles.bundle.css (styles) 293 kB [initial] [rendered]
+chunk {vendor} vendor.bundle.js (vendor) 15.8 MB [initial] [rendered]
+
+ (036ef4f0)
+2018-04-16T22:50:41.8261286-04:00  [INF] webpack: Compiled successfully.
+ (f274984e)
+2018-04-16T22:50:46.0474613-04:00 0HLD41NISFV8C:00000001 [INF] Request finished in 50138.0481ms 304  (791a596a)
+2018-04-16T22:50:46.3199159-04:00 0HLD41NISFV8C:00000002 [INF] Request starting HTTP/1.1 GET http://localhost:49952/assets/styles-external.css   (ca22a1cb)
+2018-04-16T22:50:47.1019805-04:00 0HLD41NISFV8D:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:49952/main.bundle.js   (ca22a1cb)
+2018-04-16T22:50:47.1079255-04:00 0HLD41NISFV8F:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:49952/scripts.bundle.js   (ca22a1cb)
+2018-04-16T22:50:47.3100441-04:00 0HLD41NISFV8E:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:49952/vendor.bundle.js   (ca22a1cb)
+2018-04-16T22:50:47.3654420-04:00 0HLD41NISFV8G:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:49952/polyfills.bundle.js   (ca22a1cb)
+2018-04-16T22:50:47.5144016-04:00 0HLD41NISFV8H:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:49952/inline.bundle.js   (ca22a1cb)
+2018-04-16T22:50:47.7874164-04:00 0HLD41NISFV8I:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:49952/styles.bundle.css   (ca22a1cb)
+2018-04-16T22:50:48.3746302-04:00 0HLD41NISFV8C:00000002 [INF] Request finished in 1701.3754ms 200 text/css; charset=UTF-8 (791a596a)
+2018-04-16T22:50:49.7344471-04:00 0HLD41NISFV8H:00000001 [INF] Request finished in 2603.41ms 200 application/javascript; charset=UTF-8 (791a596a)
+2018-04-16T22:50:50.8903221-04:00 0HLD41NISFV8F:00000001 [INF] Request finished in 3869.0525ms 200 application/javascript; charset=UTF-8 (791a596a)
+2018-04-16T22:50:51.1471928-04:00 0HLD41NISFV8I:00000001 [INF] Request finished in 3832.8915ms 200 text/css; charset=UTF-8 (791a596a)
+2018-04-16T22:50:51.8332790-04:00 0HLD41NISFV8G:00000001 [INF] Request finished in 4567.617ms 200 application/javascript; charset=UTF-8 (791a596a)
+2018-04-16T22:51:07.2211509-04:00 0HLD41NISFV8D:00000001 [INF] Request finished in 20188.4191ms 200 application/javascript; charset=UTF-8 (791a596a)
+2018-04-16T22:51:13.4435891-04:00 0HLD41NISFV8E:00000001 [INF] Request finished in 22033.6403ms 200 application/javascript; charset=UTF-8 (791a596a)
+2018-04-16T22:53:41.6007711-04:00  [INF] Starting @angular/cli on port 50319... (04e95c09)
+2018-04-16T22:53:42.4146932-04:00  [INF] Entity Framework Core "2.0.1-rtm-125" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=RPGSmithApp " (9958f5bb)
+2018-04-16T22:54:25.0336968-04:00  [ERR] Failed executing DbCommand ("40"ms) [Parameters=[""], CommandType='Text', CommandTimeout='60']"
+""CREATE DATABASE [RPGSmithApp];" (627a98df)
+System.Data.SqlClient.SqlException (0x80131904): CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.<ExecuteAsync>d__17.MoveNext()
+ClientConnectionId:ea503a62-4092-4e8a-abba-2b095efe5906
+Error Number:5123,State:1,Class:16
+2018-04-16T22:54:25.1622201-04:00  [FTL] Error whilst creating and seeding database (944fb156)
+System.AggregateException: One or more errors occurred. (CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.) ---> System.Data.SqlClient.SqlException: CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.<ExecuteAsync>d__17.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.MigrationCommand.<ExecuteNonQueryAsync>d__8.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.<ExecuteNonQueryAsync>d__1.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDatabaseCreator.<CreateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.<MigrateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at DAL.DatabaseInitializer.<SeedAsync>d__4.MoveNext() in C:\repos\RPGSmithApp\RPGSmithApp\DAL\DatabaseInitializer.cs:line 43
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
+   at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   at System.Threading.Tasks.Task.Wait()
+   at RPGSmithApp.Program.Main(String[] args) in C:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\Program.cs:line 32
+---> (Inner Exception #0) System.Data.SqlClient.SqlException (0x80131904): CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.<ExecuteAsync>d__17.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.MigrationCommand.<ExecuteNonQueryAsync>d__8.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.<ExecuteNonQueryAsync>d__1.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDatabaseCreator.<CreateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.<MigrateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at DAL.DatabaseInitializer.<SeedAsync>d__4.MoveNext() in C:\repos\RPGSmithApp\RPGSmithApp\DAL\DatabaseInitializer.cs:line 43
+ClientConnectionId:ea503a62-4092-4e8a-abba-2b095efe5906
+Error Number:5123,State:1,Class:16<---
+
+2018-04-16T22:56:16.8182800-04:00  [INF] > quickapp@2.5.3 start C:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\ClientApp
+> ng serve --extract-css "--port" "50319"
+
+** NG Live Development Server is listening on localhost:50319, open your browser on http://localhost:50319/ **
+ (65674f3d)
+2018-04-16T22:56:17.3187116-04:00 0HLD41Q40BOGA:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:49952/   (ca22a1cb)
+2018-04-16T22:58:01.4370091-04:00  [INF] Date: 2018-04-17T02:58:01.385Z
+ (eca8ea81)
+2018-04-16T22:58:01.9231116-04:00  [INF] Hash: 7c493fd34896aea24573
+Time: 115902ms
+chunk {inline} inline.bundle.js (inline) 3.85 kB [entry] [rendered]
+chunk {main} main.bundle.js (main) 1.44 MB [initial] [rendered]
+chunk {polyfills} polyfills.bundle.js (polyfills) 676 kB [initial] [rendered]
+chunk {scripts} scripts.bundle.js (scripts) 291 kB [initial] [rendered]
+chunk {styles} styles.bundle.css (styles) 293 kB [initial] [rendered]
+chunk {vendor} vendor.bundle.js (vendor) 15.8 MB [initial] [rendered]
+
+ (62f100ea)
+2018-04-16T22:58:01.9253458-04:00  [INF] webpack: Compiled successfully.
+ (f274984e)
+2018-04-16T22:58:41.4908025-04:00 0HLD41Q40BOGA:00000001 [ERR] An unhandled exception has occurred while executing the request (cf926119)
+System.TimeoutException: The Angular CLI process did not start listening for requests within the timeout period of 50 seconds. Check the log output for error information.
+   at Microsoft.AspNetCore.SpaServices.Extensions.Util.TaskTimeoutExtensions.<WithTimeout>d__1`1.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.SpaServices.Extensions.Proxy.SpaProxy.<PerformProxyRequest>d__4.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Builder.SpaProxyingExtensions.<>c__DisplayClass2_0.<<UseProxyToSpaDevelopmentServer>b__0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Builder.RouterMiddleware.<Invoke>d__4.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIIndexMiddleware.<Invoke>d__3.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.<Invoke>d__6.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.<Invoke>d__6.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Cors.Infrastructure.CorsMiddleware.<Invoke>d__7.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.<Invoke>d__7.MoveNext()
+2018-04-16T22:58:41.6690490-04:00 0HLD41Q40BOGA:00000001 [INF] Request finished in 144307.9088ms 500 text/html; charset=utf-8 (791a596a)
+2018-04-16T22:59:16.5187683-04:00 0HLD41Q40BOGA:00000002 [INF] Request starting HTTP/1.1 GET http://localhost:49952/   (ca22a1cb)
+2018-04-16T22:59:55.8404353-04:00 0HLD41Q40BOGA:00000002 [INF] Request finished in 48957.2614ms 200 text/html; charset=UTF-8 (791a596a)
+2018-04-16T22:59:55.8488760-04:00 0HLD41Q40BOGA:00000003 [INF] Request starting HTTP/1.1 GET http://localhost:49952/assets/styles-external.css   (ca22a1cb)
+2018-04-16T23:00:04.6691186-04:00 0HLD41Q40BOGA:00000003 [INF] Request finished in 8784.6886ms 304  (791a596a)
+2018-04-16T23:00:04.6748539-04:00 0HLD41Q40BOGA:00000004 [INF] Request starting HTTP/1.1 GET http://localhost:49952/styles.bundle.css   (ca22a1cb)
+2018-04-16T23:00:22.7345156-04:00 0HLD41Q40BOGA:00000004 [INF] Request finished in 17988.8263ms 304  (791a596a)
+2018-04-16T23:00:22.7513644-04:00 0HLD41Q40BOGA:00000005 [INF] Request starting HTTP/1.1 GET http://localhost:49952/inline.bundle.js   (ca22a1cb)
+2018-04-16T23:00:28.2638964-04:00 0HLD41Q40BOGA:00000005 [INF] Request finished in 5486.2809ms 304  (791a596a)
+2018-04-16T23:00:28.2726949-04:00 0HLD41Q40BOGA:00000006 [INF] Request starting HTTP/1.1 GET http://localhost:49952/polyfills.bundle.js   (ca22a1cb)
+2018-04-16T23:00:28.4080591-04:00 0HLD41Q40BOGA:00000006 [INF] Request finished in 61.6829ms 304  (791a596a)
+2018-04-16T23:01:00.7021399-04:00 0HLD41Q40BOGA:00000007 [INF] Request starting HTTP/1.1 GET http://localhost:49952/scripts.bundle.js   (ca22a1cb)
+2018-04-16T23:01:46.0746064-04:00 0HLD41Q40BOGA:00000007 [INF] Request finished in 52500.9423ms 304  (791a596a)
+2018-04-16T23:01:46.0884378-04:00 0HLD41Q40BOGA:00000008 [INF] Request starting HTTP/1.1 GET http://localhost:49952/vendor.bundle.js   (ca22a1cb)
+2018-04-16T23:01:56.9853103-04:00 0HLD41Q40BOGA:00000008 [INF] Request finished in 10900.0186ms 200 application/javascript; charset=UTF-8 (791a596a)
+2018-04-16T23:02:11.8268822-04:00 0HLD41Q40BOGA:00000009 [INF] Request starting HTTP/1.1 GET http://localhost:49952/main.bundle.js   (ca22a1cb)
+2018-04-16T23:04:15.9175025-04:00 0HLD41Q40BOGA:00000009 [INF] Request finished in 131362.0673ms 200 application/javascript; charset=UTF-8 (791a596a)
+2018-04-16T23:06:03.1391338-04:00 0HLD41Q40BOGB:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:49952/sockjs-node/info?t=1523934346311   (ca22a1cb)
+2018-04-16T23:06:03.2111887-04:00 0HLD41Q40BOGC:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:49952/sockjs-node/info?t=1523934355452   (ca22a1cb)
+2018-04-16T23:06:18.4362572-04:00 0HLD41Q40BOGD:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:49952/sockjs-node/info?t=1523934365579   (ca22a1cb)
+2018-04-16T23:06:18.5128048-04:00 0HLD41Q40BOGE:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:49952/sockjs-node/info?t=1523934377688   (ca22a1cb)
+2018-04-16T23:06:18.5159477-04:00 0HLD41Q40BOGB:00000001 [INF] Request finished in 23472.4447ms 200 application/json; charset=UTF-8 (791a596a)
+2018-04-16T23:06:18.5581055-04:00 0HLD41Q40BOGC:00000001 [INF] Request finished in 15323.3635ms 200 application/json; charset=UTF-8 (791a596a)
+2018-04-16T23:06:22.7363549-04:00 0HLD41Q40BOGD:00000001 [INF] Request finished in 14265.0939ms 200 application/json; charset=UTF-8 (791a596a)
+2018-04-16T23:06:22.8094119-04:00 0HLD41Q40BOGE:00000001 [INF] Request finished in 4299.3512ms 200 application/json; charset=UTF-8 (791a596a)
+2018-04-16T23:06:22.8145191-04:00 0HLD41Q40BOGE:00000002 [INF] Request starting HTTP/1.1 GET http://localhost:49952/sockjs-node/990/nqk3j2ve/websocket   (ca22a1cb)
+2018-04-16T23:06:22.8175751-04:00 0HLD41Q40BOGE:00000002 [INF] Policy execution successful. (0204925d)
+2018-04-16T23:08:17.2998139-04:00 0HLD41Q40BOGE:00000002 [INF] Request finished in 110312.2458ms 101  (791a596a)
+2018-04-16T23:16:24.3985083-04:00  [INF] Starting @angular/cli on port 49782... (4cabfe14)
+2018-04-16T23:16:26.0974733-04:00  [INF] Entity Framework Core "2.0.1-rtm-125" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=RPGSmithApp " (9958f5bb)
+2018-04-16T23:16:35.0443452-04:00  [ERR] Failed executing DbCommand ("103"ms) [Parameters=[""], CommandType='Text', CommandTimeout='60']"
+""CREATE DATABASE [RPGSmithApp];" (627a98df)
+System.Data.SqlClient.SqlException (0x80131904): CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.<ExecuteAsync>d__17.MoveNext()
+ClientConnectionId:a360c061-050d-4f5c-94d8-f0a5888dceb7
+Error Number:5123,State:1,Class:16
+2018-04-16T23:16:35.3639104-04:00  [FTL] Error whilst creating and seeding database (944fb156)
+System.AggregateException: One or more errors occurred. (CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.) ---> System.Data.SqlClient.SqlException: CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.<ExecuteAsync>d__17.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.MigrationCommand.<ExecuteNonQueryAsync>d__8.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.<ExecuteNonQueryAsync>d__1.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDatabaseCreator.<CreateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.<MigrateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at DAL.DatabaseInitializer.<SeedAsync>d__4.MoveNext() in C:\repos\RPGSmithApp\RPGSmithApp\DAL\DatabaseInitializer.cs:line 45
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
+   at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   at RPGSmithApp.Program.Main(String[] args) in C:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\Program.cs:line 32
+---> (Inner Exception #0) System.Data.SqlClient.SqlException (0x80131904): CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open or create the physical file 'C:\Users\garyRPGSmithApp.mdf'.
+CREATE DATABASE failed. Some file names listed could not be created. Check related errors.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at System.Data.SqlClient.SqlCommand.EndExecuteNonQuery(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Storage.Internal.RelationalCommand.<ExecuteAsync>d__17.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.MigrationCommand.<ExecuteNonQueryAsync>d__8.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.<ExecuteNonQueryAsync>d__1.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDatabaseCreator.<CreateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.<MigrateAsync>d__12.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at DAL.DatabaseInitializer.<SeedAsync>d__4.MoveNext() in C:\repos\RPGSmithApp\RPGSmithApp\DAL\DatabaseInitializer.cs:line 45
+ClientConnectionId:a360c061-050d-4f5c-94d8-f0a5888dceb7
+Error Number:5123,State:1,Class:16<---
+
+2018-04-16T23:16:39.0275848-04:00 0HLD426H20253:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:49952/   (ca22a1cb)
+2018-04-16T23:16:51.5366451-04:00  [INF] > quickapp@2.5.3 start C:\repos\RPGSmithApp\RPGSmithApp\RPGSmithApp\ClientApp
+> ng serve --extract-css "--port" "49782"
+
+** NG Live Development Server is listening on localhost:49782, open your browser on http://localhost:49782/ **
+ (fd48b14c)
+2018-04-16T23:17:40.7169254-04:00 0HLD426H20253:00000001 [ERR] An unhandled exception has occurred while executing the request (cf926119)
+System.TimeoutException: The Angular CLI process did not start listening for requests within the timeout period of 50 seconds. Check the log output for error information.
+   at Microsoft.AspNetCore.SpaServices.Extensions.Util.TaskTimeoutExtensions.<WithTimeout>d__1`1.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.SpaServices.Extensions.Proxy.SpaProxy.<PerformProxyRequest>d__4.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Builder.SpaProxyingExtensions.<>c__DisplayClass2_0.<<UseProxyToSpaDevelopmentServer>b__0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Builder.RouterMiddleware.<Invoke>d__4.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIIndexMiddleware.<Invoke>d__3.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.<Invoke>d__6.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.<Invoke>d__6.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Cors.Infrastructure.CorsMiddleware.<Invoke>d__7.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.<Invoke>d__7.MoveNext()
+2018-04-16T23:17:42.9972232-04:00 0HLD426H20253:00000001 [INF] Request finished in 63278.1767ms 500 text/html; charset=utf-8 (791a596a)
+2018-04-16T23:18:00.9151594-04:00  [INF] Date: 2018-04-17T03:18:00.741Z
+ (1e6c3d8b)
+2018-04-16T23:18:05.1706328-04:00  [INF] Hash: 7c493fd34896aea24573
+Time: 69012ms
+chunk {inline} inline.bundle.js (inline) 3.85 kB [entry] [rendered]
+chunk {main} main.bundle.js (main) 1.44 MB [initial] [rendered]
+chunk {polyfills} polyfills.bundle.js (polyfills) 676 kB [initial] [rendered]
+chunk {scripts} scripts.bundle.js (scripts) 291 kB [initial] [rendered]
+chunk {styles} styles.bundle.css (styles) 293 kB [initial] [rendered]
+chunk {vendor} vendor.bundle.js (vendor) 15.8 MB [initial] [rendered]
+
+ (9d5d0e96)
+2018-04-16T23:18:05.1741589-04:00  [INF] webpack: Compiled successfully.
+ (f274984e)
