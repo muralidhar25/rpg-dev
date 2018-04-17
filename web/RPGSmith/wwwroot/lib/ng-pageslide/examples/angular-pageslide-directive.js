@@ -1,1 +1,0 @@
-../src/angular-pageslide-directive.js
