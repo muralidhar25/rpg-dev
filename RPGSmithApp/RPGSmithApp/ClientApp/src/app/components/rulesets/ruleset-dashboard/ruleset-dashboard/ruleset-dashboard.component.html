@@ -1,0 +1,415 @@
+<div class="page-character-dashboard">
+    <!-- Toolbar -->
+    <div class="page-toolbar">
+        <div class="container">
+            <!--<div class="page-toolbar-wrapper-toggle-trigger">
+                <button type="button" class="btn icon icon-with-text btn-accent" (click)="showActionButtons(showActions)"
+                        [ngClass]="{'icon-arrow-up' : showActions,  'icon-arrow-down' : !showActions}">
+                    {{actionText}}
+                </button>
+            </div>-->
+            <div class="page-toolbar-wrapper initial show">
+                <div class="page-toolbar-dropdowns">
+                    <!-- Layout dropdown -->
+                    <div class="dropdown" [ngClass]="{'show': isLayoutDropdownOpen}">
+                        <div class="dropdown-toggle is-layout-show" id="layoutNavigationToggle">
+                            <span class="is-layout-show"><span>Layout</span>  <em *ngIf="selectedlayout">{{selectedlayout.name}}</em> </span>
+                        </div>
+                        <div infiniteScroll (scrolled)="onLayoutScroll()" [infiniteScrollDistance]="1"
+                             [infiniteScrollThrottle]="100" [scrollWindow]="false" [class]="foldClass" aria-labelledby="pageLayoutNavigationToggle" *ngIf="isLayoutDropdownOpen && !isLoading">
+                            <div class="dropdown-menu-add-item-trigger">
+                                <button (click)="newLayout()" type="button" class="btn btn-accent btn-block">New Layout</button>
+                            </div>
+                            <div class="web-view" [dragula]='"bag-rulesetDashboardLayout"' [dragulaModel]="rulesetlayouts">
+                                <ul class="dropdown-menu-list dropdown-menu-item-contain-actions" *ngFor="let layout of rulesetlayouts" [attr.id]="layout.rulesetDashboardLayoutId">
+                                    <li class="dropdown-menu-item" [ngClass]="{'active': selectedlayout.rulesetDashboardLayoutId == layout.rulesetDashboardLayoutId}">
+                                        <span (click)="navigateTo(6,layout)" class="dropdown-menu-item-title layout-spacing">{{layout.name}}</span>
+                                        <div class="dropdown-menu-item-actions show" *ngIf="layout?.showIcon">
+                                            <button type="button" (click)="navigateTo(8,layout)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
+                                            <button type="button" (click)="navigateTo(9,layout)" tooltip="Duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                                            <button type="button" (click)="navigateTo(10,layout)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
+                                            <button type="button" (click)="manageIcon('0')" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary show-layout-drp"></button>
+                                        </div>
+                                        <div class="dropdown-menu-item-actions-trigger showdrp">
+                                            <button type="button" *ngIf="!layout?.showIcon" (click)="manageIcon(layout.rulesetDashboardLayoutId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary show-layout-drp"></button>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                            </div>
+                            <div class="mob-view">
+                                <ul class="dropdown-menu-list dropdown-menu-item-contain-actions" *ngFor="let layout of rulesetlayouts" [attr.id]="layout.rulesetDashboardLayoutId">
+                                    <li class="dropdown-menu-item" [ngClass]="{'active': selectedlayout.rulesetDashboardLayoutId == layout.rulesetDashboardLayoutId}">
+                                        <span (click)="navigateTo(6,layout)" class="dropdown-menu-item-title layout-spacing">{{layout.name}}</span>
+                                        <div class="dropdown-menu-item-actions show" *ngIf="layout?.showIcon">
+                                            <button type="button" (click)="navigateTo(8,layout)" title="Edit" data-toggle="tooltip" data-action="edit" class="action-buttons-left btn icon icon-pencil btn-simple-primary"></button>
+                                            <button type="button" (click)="navigateTo(9,layout)" tooltip="Duplicate" class=" btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                                            <button type="button" (click)="navigateTo(10,layout)" title="Delete" data-toggle="tooltip" data-action="delete" class="action-buttons-left btn icon icon-trash btn-simple-primary"></button>
+                                            <button type="button" (click)="manageIcon('0')" title="Close" data-toggle="tooltip" data-action="close" class="action-buttons-left btn icon icon-cross btn-simple-primary show-layout-drp"></button>
+                                        </div>
+                                        <div class="dropdown-menu-item-actions-trigger showdrp">
+                                            <div class="card-actions action-buttons-left sorting-up-arrow" (click)="scrollUp(layout,false,this)">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </div>
+                                            <div class="card-actions action-buttons-left sorting-down-arrow" (click)="scrollDown(layout,false,this)">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </div>
+                                            <button type="button" *ngIf="!layout?.showIcon" (click)="manageIcon(layout.rulesetDashboardLayoutId)" title="Manage" data-toggle="tooltip" class="action-buttons-left btn icon icon-more btn-simple-primary show-layout-drp"></button>
+                                        </div>
+
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of layout dropdown -->
+                    <!-- Page dropdown -->
+                    <div class="dropdown" [ngClass]="{'show': isPageDropdownOpen}">
+                        <div class="dropdown-toggle is-page-show" id="pageNavigationToggle">
+                            <span class="is-page-show"><span>Page</span> <em *ngIf="selectedPage && !isLoading">{{selectedPage.name}}</em></span>
+                        </div>
+                        <div [class]="pagedrpClass" aria-labelledby="pageLayoutNavigationToggle" *ngIf="isPageDropdownOpen && selectedlayout && !isLoading">
+                            <div class="dropdown-menu-add-item-trigger">
+                                <button type="button" (click)="newPage()" class="btn btn-accent btn-block">New Page</button>
+                            </div>
+                            <div class="web-view" [dragula]='"bag-rulesetDashboardPages"' [dragulaModel]="selectedlayout.rulesetDashboardPages">
+                                <ul class="dropdown-menu-list dropdown-menu-item-contain-actions" *ngFor="let page of selectedlayout?.rulesetDashboardPages" [attr.id]="page?.rulesetDashboardPageId">
+                                    <li class="dropdown-menu-item" [ngClass]="{'active': selectedPage?.rulesetDashboardPageId == page?.rulesetDashboardPageId}">
+                                        <span (click)="navigateTo(7,page)" class="dropdown-menu-item-title layout-spacing">{{page.name}}</span>
+                                        <div class="dropdown-menu-item-actions show" *ngIf="page?.showIcon">
+                                            <button (click)="navigateTo(12,page)" type="button" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
+                                            <button (click)="navigateTo(13,page)" type="button" tooltip="Duplicate" class=" btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                                            <button (click)="navigateTo(14,page)" type="button" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
+                                            <button (click)="managePageIcon(0)" type="button" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary show-page-drp"></button>
+                                        </div>
+                                        <div class="dropdown-menu-item-actions-trigger">
+                                            <button type="button" *ngIf="!page?.showIcon" (click)="managePageIcon(page?.rulesetDashboardPageId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary show-page-drp"></button>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                            </div>
+                            <div class="mob-view">
+                                <ul class="dropdown-menu-list dropdown-menu-item-contain-actions" *ngFor="let page of selectedlayout?.rulesetDashboardPages" [attr.id]="page?.rulesetDashboardPageId">
+                                    <li class="dropdown-menu-item" [ngClass]="{'active': selectedPage == page}">
+                                        <span (click)="navigateTo(7,page)" class="dropdown-menu-item-title layout-spacing">{{page.name}}</span>
+                                        <div class="dropdown-menu-item-actions show" *ngIf="page?.showIcon">
+                                            <button (click)="navigateTo(12,page)" type="button" title="Edit" data-toggle="tooltip" data-action="edit" class="action-buttons-left btn icon icon-pencil btn-simple-primary"></button>
+                                            <button (click)="navigateTo(13,page)" type="button" tooltip="Duplicate" class=" btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                                            <button (click)="navigateTo(14,page)" type="button" title="Delete" data-toggle="tooltip" data-action="delete" class="action-buttons-left btn icon icon-trash btn-simple-primary"></button>
+                                            <button (click)="managePageIcon(0)" type="button" title="Close" data-toggle="tooltip" data-action="close" class="action-buttons-left btn icon icon-cross btn-simple-primary show-page-drp"></button>
+                                        </div>
+                                        <div class="dropdown-menu-item-actions-trigger">
+                                            <div class=" action-buttons-left card-actions sorting-up-arrow" (click)="scrollUp(page,true,this)">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </div>
+                                            <div class="card-actions action-buttons-left sorting-down-arrow" (click)="scrollDown(page,true,this)">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </div>
+                                            <button type="button" *ngIf="!page?.showIcon" (click)="managePageIcon(page?.rulesetDashboardPageId)" title="Manage" data-toggle="tooltip" class=" action-buttons-left btn icon icon-more btn-simple-primary show-page-drp"></button>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End of page dropdown -->
+                </div>
+
+                <!--<div class="page-toolbar-wrapper-toggle-trigger">
+            <button type="button" class="btn icon icon-with-text btn-accent btn-block" (click)="showActionButtons(showActions)"
+                    [ngClass]="{'icon-arrow-up' : showActions,  'icon-arrow-down' : !showActions}">
+                {{actionText}}
+            </button>
+        </div>-->
+                <div class="page-toolbar-wrapper initial show  recordes-menu">
+                    <!-- Toolbar links -->
+                    <ul class="page-toolbar-links">
+                        <li *ngIf="rulesetModel">
+                            <a (click)="navigateTo(1)" class="btn btn-link-primary nav-redirection selected">Layouts</a>
+                        </li>
+                        <li *ngIf="rulesetModel?.isItemEnabled">
+                            <a (click)="navigateTo(2)" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Item Templates</span></a>
+                        </li>
+                        <li *ngIf="rulesetModel?.isSpellEnabled">
+                            <a (click)="navigateTo(3)" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+                        </li>
+                        <li *ngIf="rulesetModel?.isAbilityEnabled">
+                            <a (click)="navigateTo(4)" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+                        </li>
+                        <li *ngIf="rulesetModel">
+                            <a (click)="navigateTo(5)" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
+                        </li>
+                        <li *ngIf="StateChanged && !IsTrashPage">
+                            <button (click)="save()" class="btn btn-accent">Save</button>
+                        </li>
+                        <li *ngIf="IsTrashPage" class="d-none d-md-flex d-xl-inline-block">
+                            <button *ngIf="!isLoading && IsTrashPage" type="button" (click)="backToNormal()" class="btn btn-accent">Cancel</button>
+                        </li>
+                        <li *ngIf="IsTrashPage" class="d-none d-md-flex  d-xl-inline-block">
+                            <button *ngIf="!isLoading && IsTrashPage" type="button" (click)="deleteMultipleTiles()" class="btn btn-accent">Save</button>
+                        </li>
+                    </ul>
+                    <!-- End of toolbar links -->
+                </div>
+            </div>
+            <div class="page-toolbar-wrapper-toggle-trigger" *ngIf="!isLoading && IsTrashPage">
+                <button class="btn icon icon-with-text btn-accent mr-1" (click)="backToNormal()"  type="button">Cancel</button>
+                <button class="btn icon icon-with-text btn-accent" (click)="deleteMultipleTiles()" type="button">Save</button>
+            </div>
+            
+            <!--<div class="page-toolbar-wrapper manage" *ngIf="false">
+        <div class="page-toolbar-title">
+            <h1>Manage Tiles</h1>
+        </div>
+        <ul class="page-toolbar-actions">
+            <li class="popup-new-tile-trigger">
+                <button type="button" data-toggle="modal" data-target="#newTilePopup" class="btn icon icon-plus btn-primary"></button>
+            </li>
+            <li>
+                <button type="button" id="manageTilesDoneTrigger" class="btn btn-accent">Done</button>
+            </li>
+        </ul>
+    </div>-->
+        </div>
+    </div>
+    <!-- End of toolbar -->
+    <!-- Tiles -->
+    <div class="tiles">
+
+        <div style="display:inline;">
+            <button type="button" class="btn icon icon-with-text prev-button icon-Gen-BackArrow"
+                    (click)="NextPrevPage(selectedlayout,false)"></button>
+            <button type="button" class="btn icon icon-with-text next-button icon-Gen-BackArrow"
+                    (click)="NextPrevPage(selectedlayout,true)"></button>
+        </div>
+
+        <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound && !isLoading">No Tiles have been added to this Layout. Click "+" to add some.</p>
+        <div class="bg-white height-fixed-grid" style="border-radius:4px;padding-top:15px; padding-bottom:15px;" *ngIf="!isLoading && !noRecordFound" [ngClass]="(boxes?.length==0)?'p-0':''">
+
+            <div [ngGrid]="gridConfig" (onItemChange)="grid_onItemChange($event)">
+
+                <div #refElement *ngFor="let box of boxes; let i = index" [ngClass]="IsTrashPage?'delete-tile-action':''" [(ngGridItem)]="box.config" (onChangeStop)="changeDone(i, $event)" (onResize)="onResize(box,i, $event)" (onDrag)="onDrag(i, $event,refElement)" (onChangeStart)="onChangeStart($event,i)" (onDragStop)="onDragStop($event,box.tile,i)">
+
+                    <div *ngIf="!box.IsCharacter" (click)="removeTile($event,box.tile,i)">
+                        <div class="tiles manage manage-tiles colwidth handle">
+                            <!-- End of ruleset tiles -->
+
+                            <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.NOTE && box.tile.noteTiles" [ngClass]="(box.tile.noteTiles?.shape=='50')?'grid-rounded':''">
+                                <div class="tile tile-type-note" [style.background-color]="box.tile.noteTiles.bodyBgColor">
+                                    <h5 *ngIf="box.tile.noteTiles?.title" class="tile-title wraptext" popover="{{box.tile.noteTiles?.title}}" triggers="hover"
+                                        [ngStyle]="{'color': box.tile.noteTiles.titleTextColor, 'background-color': box.tile.noteTiles.titleBgColor}"
+                                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                                        {{box.tile.noteTiles?.title}}
+                                    </h5>
+
+                                    <div class="tile-body">
+                                        <div class="grid-rounded">
+                                            <p [style.background-color]="white"
+                                               [froalaView]="box.tile.noteTiles?.content" class="text-center">
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="tile-actions">
+                                        <!-- <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
+                                        <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                                        <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                                        <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                                        <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.IMAGE && box.tile.imageTiles">
+                                <div class="tile tile-type-note" [style.background-color]="box.tile.imageTiles?.bodyBgColor" [ngClass]="(box.tile.imageTiles?.shape=='50')?'grid-rounded':(box.tile.imageTiles?.shape=='100')?'grid-circle':''">
+                                    <h5 *ngIf="box.tile.imageTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.imageTiles.titleTextColor, 'background-color': box.tile.imageTiles.titleBgColor}"
+                                        popover="{{box.tile.imageTiles?.title}}" triggers="hover"
+                                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                                        {{box.tile.imageTiles?.title}}
+                                    </h5>
+
+                                    <div class="tile-body">
+                                        <img onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png';" [src]="box.tile.imageTiles?.imageUrl" [alt]="box.tile.imageTiles?.title" class="imgwidth">
+                                    </div>
+                                </div>
+                                <div class="tile-actions">
+                                    <!--  <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
+                                    <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                                    <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>
+                                </div>
+                            </div>
+
+                            <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.COUNTER && box.tile.counterTiles">
+                                <div class="tile tile-type-note tile-color-6" [style.background-color]="box.tile.counterTiles?.bodyBgColor" [ngClass]="(box.tile.counterTiles?.shape=='50')?'grid-rounded':(box.tile.counterTiles?.shape=='100')?'grid-circle':''">
+                                    <h5 *ngIf="box.tile.counterTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.counterTiles.titleTextColor, 'background-color': box.tile.counterTiles.titleBgColor}"
+                                        popover="{{box.tile.counterTiles?.title}}" triggers="hover"
+                                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                                        {{box.tile.counterTiles?.title}}
+                                    </h5>
+
+                                    <div class="tile-body">
+                                        <span class="textfont" [style.color]="box.tile.counterTiles.bodyTextColor===box.tile.counterTiles.bodyBgColor?'white':box.tile.counterTiles.bodyTextColor"
+                                              [style.background-color]="box.tile.counterTiles.bodyBgColor"
+                                              [style.font-size.px]="box.config.sizex*box.config.sizey*5+30">
+                                            {{box.tile.counterTiles?.currentValue}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="tile-actions">
+                                    <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                                    <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
+                                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>
+                                </div>
+                            </div>
+
+                            <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.CHARACTERSTAT && box.tile.characterStatTiles">
+                                <div class="tile tile-type-note tile-color-6" [style.background-color]="box.tile.characterStatTiles?.bodyBgColor" [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatTiles?.shape=='100')?'grid-circle':''">
+                                    <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.characterStatTiles.titleTextColor, 'background-color': box.tile.characterStatTiles.titleBgColor}"
+                                        *ngIf="box.tile.characterStatTiles?.showTitle" popover="{{box.tile.characterStatTiles?.characterStat?.statName}}" triggers="hover"
+                                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                                        {{box.tile.characterStatTiles?.characterStat?.statName}}
+                                    </h5>
+
+                                    <div class="tile-body" popover="{{box.tile.characterStatTiles?.characterStat?.statName}}" [triggers]="!box.tile.characterStatTiles?.showTitle ? 'hover' : ''">
+                                        <div class="grid-rounded" [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                                             [style.background-color]="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.RichText ? '' : box.tile.characterStatTiles.bodyBgColor">
+
+                                            <p [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                                               [style.font-size.px]="box.config.sizex*box.config.sizey+12"
+                                               [style.line-height.px]="box.config.sizex*box.config.sizey+14"
+                                               *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Text">
+                                            </p>
+
+                                            <span style="color:#000" *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.RichText">
+                                            </span>
+                                            <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Number" [style.font-size.px]="box.config.sizex*box.config.sizey*5+30" class="text-center-v">
+                                            </span>
+                                            <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.CurrentMax" [style.font-size.px]="box.config.sizex*box.config.sizey*2+10" class="text-center-v">
+                                            </span>
+
+                                            <div class="text-center-v" *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Choice">
+                                                <ng-container *ngIf="box.tile.characterStatTiles?.characterStat?.isMultiSelect">
+                                                    <ng-container *ngFor="let choice of box.tile.characterStatTiles?.characterStat?.characterStatChoices; let i = index">
+                                                        <span [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 12 ? 14 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 12 ? 14 : box.config.sizex*4 ) "
+                                                              [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 16 ? 18 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 16 ? 18 : box.config.sizex*5 ) ">
+                                                            {{choice.statChoiceValue}}
+                                                        </span>
+                                                    </ng-container>
+                                                </ng-container>
+                                            </div>
+
+                                            <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.ValueSubValue" [style.font-size.px]="box.config.sizex*box.config.sizey*2+10" class="text-center-v">
+                                            </span>
+
+                                            <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.OnOff" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
+                                            </span>
+
+                                            <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.YesNo" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
+                                            </span>
+
+                                            <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Calculation" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
+                                            </span>
+
+                                            <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Command">
+                                                <img src="https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png" class="imgwidth">
+                                            </span>
+                                            <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Combo" [style.font-size.px]="box.config.sizex*box.config.sizey*5" class="text-center-v">
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tile-actions">
+                                    <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                                    <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
+                                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>
+                                </div>
+                            </div>
+
+                            <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.LINK && box.tile.linkTiles">
+                            </div>
+
+                            <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.EXECUTE && box.tile.executeTiles">
+                            </div>
+
+                            <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.COMMAND && box.tile.commandTiles">
+                                <div class="tile tile-type-image tile-color-6" [style.background-color]="box.tile.commandTiles?.bodyBgColor" [ngClass]="(box.tile.commandTiles?.shape=='50')?'grid-rounded':(box.tile.commandTiles?.shape=='100')?'grid-circle':''">
+                                    <h5 *ngIf="box.tile.commandTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
+                                        popover="{{box.tile.commandTiles?.title}}" triggers="hover"
+                                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                                        {{box.tile.commandTiles?.title}}
+                                    </h5>
+
+                                    <div class="tile-body">
+                                        <img *ngIf="box.tile.commandTiles?.imageUrl !== '' && box.tile.commandTiles?.imageUrl !== null && box.tile.commandTiles?.imageUrl !== undefined"
+                                             [src]="box.tile.commandTiles?.imageUrl" [alt]="box.tile.commandTiles?.title" class="imgwidth">
+                                        <img *ngIf="box.tile.commandTiles?.imageUrl === '' || box.tile.commandTiles?.imageUrl === null || box.tile.commandTiles?.imageUrl === undefined"
+                                             src="https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png" [alt]="box.tile.commandTiles?.title" class="imgwidth">
+                                    </div>
+                                </div>
+                                <div class="tile-actions">
+                                    <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                                    <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
+                                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>
+
+                                </div>
+                            </div>
+
+
+                            <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.TEXT && box.tile.textTiles">
+                                <div class="tile tile-type-note" [style.background-color]="box.tile.textTiles?.bodyBgColor" [ngClass]="(box.tile.textTiles?.shape=='50')?'grid-rounded':(box.tile.textTiles?.shape=='100')?'grid-circle':''">
+                                    <h5 *ngIf="box.tile.textTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.textTiles.titleTextColor, 'background-color': box.tile.textTiles.titleBgColor}"
+                                        popover="{{box.tile.textTiles?.title}}" triggers="hover"
+                                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                                        {{box.tile.textTiles?.title}}
+                                    </h5>
+
+                                    <div class="tile-body">
+                                        <span class="text-center-v" [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)" [style.color]="box.tile.textTiles.bodyTextColor" [style.background-color]="box.tile.textTiles.bodyBgColor">
+                                            {{box.tile.textTiles?.text}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="tile-actions">
+                                    <!--  <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
+                                    <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                                    <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="add-del-btn page-toolbar">
+        <ul class="page-toolbar-actions">
+            <li class="popup-new-tile-trigger plus-li" [ngClass]="preventClick?'slide-down':''">
+                <button *ngIf="!isLoading && !IsTrashPage" type="button" (click)="openTile()" class="btn icon btn-primary icon-plus"></button>
+            </li>
+
+            <li *ngIf="boxes.length?true:false" class="popup-new-tile-trigger cross-li" [ngClass]="preventClick?'slide-down':''">
+                <button *ngIf="!isLoading && !IsTrashPage" type="button" (click)="openTrashGrid()" class="btn icon btn-primary icon-Gen-Trash"></button>
+            </li>
+           
+            <li class="popup-new-tile-trigger delete-li" [ngClass]="preventClick?'slide-up':''">
+                <button [disabled]="isLoading" type="button" class="btn icon icon-Gen-Trash btn-primary" style="box-shadow: 0px 0px 10px #fff !important;"
+                        (mouseover)="trashTile()" (mouseout)="mouseout()"></button>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+<app-loader [isLoading]="isLoading"></app-loader>

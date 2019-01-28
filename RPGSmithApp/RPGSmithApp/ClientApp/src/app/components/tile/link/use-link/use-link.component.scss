@@ -1,0 +1,44 @@
+.flexcol {
+    flex-direction: column !important;
+}
+
+.btn-edit {
+    border-color: #fd7e14;
+    background-color: transparent;
+    color: #fd7e14;
+}
+
+.btn-edit:hover {
+    border-color: #fd7e14;
+    background-color: #ffffff;
+    color: #fd7e14;
+}
+
+.wraptext {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    font-size: 15px;
+    padding: 5px 10px;
+    line-height: 30px;
+    height: auto;
+    text-align: center;
+}
+.image-box{
+    width:200px;
+    height:200px;
+    position:relative;
+    overflow:hidden
+}
+.image-box img{
+    position:absolute;
+    top:50%;
+    max-width:100%;
+    max-height:100%;
+    left:50%;
+    transform:translate(-50%,-50%)
+}
+.modal-footer .btn {
+    margin-top: 0px !important;
+    }

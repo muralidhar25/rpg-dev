@@ -1,0 +1,23 @@
+.btn-justify-custom {
+    justify-content: initial !important;
+    display: table;
+    width: 100%;
+}
+
+@media(max-width:767.98px) {
+    .btn-justify-custom {
+        display: flex;
+    }
+    .save {
+        margin-bottom: 4px;
+    }
+}
+
+.modal-footer {
+    padding: 12px 15px 10px;
+    border-top: 1px solid #dedbda;
+}
+
+.modal-footer .btn {
+    margin-top: 0px !important;
+}

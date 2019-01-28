@@ -1,0 +1,98 @@
+// Color list
+
+
+$input-colors: (#343038, #45362e, #54573a, #2a524b, #0f7a67, #147a80, #185f7a, #363e7a, #592959, #953163, #a3344a, #a3372e);
+
+
+.input-color {
+    &-items {
+        display : flex;
+        flex    : {wrap: wrap}
+        margin  : 0;
+        padding : 0;
+
+        // Color item
+        .form-check {
+            margin: {right: rem(8px)}
+
+            @include responsive(md) {
+                margin: {right: rem(6px)}
+            }
+
+            &:last-of-type {
+                margin: {right: 0}
+            }
+
+            // Item wrapper
+            &-label {
+                display : flex;
+                margin  : 0;
+                padding : 0;
+                cursor  : pointer;
+
+                // Item checkbox
+                i {
+                    display : flex;
+                    justify : {content: center}
+                    align   : {items: center}
+                    width   : rem(28px);
+                    height  : rem(28px);
+                    border  : {radius: rem(14px)}
+
+                    @include responsive(md) {
+                        width   : rem(24px);
+                        height  : rem(24px);
+                        border  : {radius: rem(12px)}
+                    }
+
+                    &:before {
+                        display : none;
+                        font    : {size: rem(12px)}
+                        content : map-get($font-icons-iconic, "tick");
+                        color   : $color-basic-white;
+
+                        @include responsive(md) {
+                            font: {size: rem(10px)}
+                        }
+                    }
+
+                    @for $i from 1 through length($input-colors) {
+                        $color: nth($input-colors, $i);
+
+                        &.input-color-#{$i} {
+                            background  : {color: $color}
+                        }
+                    }
+
+                    &.input-color-custom {
+                        background: {color: $color-basic-white}
+
+                        &:before {
+                            display : block;
+                            font    : {size: rem(14px)}
+                            content : map-get($font-icons-iconic, "palette");
+                            color   : $color-primary;
+
+                            @include responsive(md) {
+                                font: {size: rem(12px)}
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Input control
+            &-input {
+                display: none;
+
+                &:checked {
+                    ~ i {
+                        &:before {
+                            display : block;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

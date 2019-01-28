@@ -1,0 +1,63 @@
+/**
+ * Icons -----------------------------------------------------------------------
+ */
+
+
+.icon {
+    &:before {
+        display : inline-block;
+        font    : {family: "Iconic"; size: rem(16px); style: normal; weight: normal}
+        text    : {decoration: none}
+    }
+
+    &-with-text {
+        &:before {
+            margin  : {right: rem(12px)}
+            font    : {size: rem(14px)}
+
+            @include responsive(md) {
+                margin  : {right: rem(8px)}
+                font    : {size: rem(12px)}
+            }
+        }
+    }
+
+    &-rsi {
+        &:before {
+            font: {family: "RPG Smith Icons"}
+        }
+    }
+
+    &-ico {
+        &:before {
+            font: { family: "Icomoon Icons"} 
+        }
+    }
+
+    // Iconic icons
+    @each $name, $glyph in $font-icons-iconic {
+        &-#{$name}:before {
+            content: $glyph;
+        }
+    }
+
+    // RPG Smith Icons
+    @each $name, $glyph in $font-icons-rpg-smith {
+        &-#{$name}:before {
+            content: $glyph;
+        }
+    }
+
+    // Icomoon icons
+    @each $name, $glyph in $font-icons-icomoon {
+        &-#{$name}:before {
+            content: $glyph;
+        }
+    }
+
+    &-more {
+        &:before {
+            transform: rotate(90deg);
+        }
+    }
+}

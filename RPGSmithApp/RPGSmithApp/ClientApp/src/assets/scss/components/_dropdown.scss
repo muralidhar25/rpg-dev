@@ -1,0 +1,212 @@
+/**
+ * Dropdown --------------------------------------------------------------------
+ */
+
+
+.dropdown {
+    cursor: pointer;
+
+    // Dropdown trigger
+    &-toggle {
+        display : flex;
+        justify : {content: center}
+        align   : {items: center}
+
+        &:after {
+            margin  : {left: rem(12px)}
+            font    : {size: rem(20px)}
+
+            @include responsive(md) {
+                margin  : {left: rem(6px)}
+                font    : {size: rem(16px)}
+            }
+        }
+    }
+
+    // Dropdown menu
+    &-menu {
+        width       : 100%;
+        box         : {shadow: 0 rem(2px) rem(8px) rgba($color-basic-black, 0.2)}
+        margin      : {top: rem(8px)}
+        padding     : 0;
+        border      : {width: 0; radius: 0}
+        font        : {size: rem(16px)}
+        background  : {color: $color-basic-white}
+
+        @include responsive(md) {
+            width   : auto;
+            font    : {size: rem(14px)}
+        }
+
+        // Dropdown menu list
+        &-list {
+            margin  : 0;
+            padding : 0;
+        }
+
+        // Dropdown menu item
+        &-item {
+            display     : flex;
+            justify     : {content: space-between}
+            align       : {items: center}
+            height      : rem(60px);
+            padding     : {left: rem(16px); right: rem(16px)}
+            border      : {bottom: {width: 1px; style: solid; color: $color-lgray-l}}
+            transition  : $animation-duration;
+
+            @include responsive(md) {
+                height  : rem(48px);
+                padding : {left: rem(12px); right: rem(12px)}
+            }
+
+            &:last-of-type {
+                border: {bottom: none}
+            }
+
+            &:hover {
+                background: {color: $color-lgray-xl}
+
+                @include responsive(md) {
+                    .dropdown-menu-item-actions-trigger {
+                        &:not(.hide) {
+                            display: flex;
+                        }
+                    }
+                }
+            }
+
+            // Dropdown item title
+            &-title {
+                color: $color-dgray-d;
+            }
+
+            // Dropdown link
+            &-link {
+                display : flex;
+                flex    : {grow: 1}
+                justify : {content: space-between}
+                align   : {items: center}
+                padding : {left: rem(16px); right: rem(16px)}
+                white   : {space: nowrap}
+
+                @include responsive(md) {
+                    padding : {left: rem(12px); right: rem(12px)}
+                }
+
+                &:hover {
+                    text: {decoration: none}
+                }
+            }
+
+            // Dropdown actions
+            &-actions {
+                display : none;
+                margin  : {left: rem(16px)}
+
+                .btn {
+                    height  : auto;
+                    margin  : rem(4px);
+                    padding : rem(8px);
+                    border  : none;
+
+                    @include responsive(md) {
+                        margin  : rem(2px);
+                        padding : rem(4px);
+                    }
+
+                    &:before {
+                        font: {size: rem(14px)}
+
+                        @include responsive(md) {
+                            font: {size: rem(12px)}
+                        }
+                    }
+
+                    &.icon-cross {
+                        margin: {right: rem(12px)}
+
+                        @include responsive(md) {
+                            margin: {right: rem(8px)}
+                        }
+
+                        &:before {
+                            font    : {size: rem(12px)}
+                            color   : $color-dgray-xl;
+
+                            @include responsive(md) {
+                                font    : {size: rem(10px)}
+                            }
+                        }
+                    }
+                }
+
+                // Dropdown action trigger
+                &-trigger {
+                    @include responsive(lg) {
+                        display: none;
+                    }
+
+                    .btn {
+                        height  : auto;
+                        padding : rem(12px) rem(16px);
+                        border  : none;
+
+                        @include responsive(md) {
+                            padding: rem(8px);
+                        }
+
+                        &:before {
+                            font    : {size: rem(12px)}
+                            color   : $color-dgray-xl;
+                        }
+                    }
+
+                    &.hide {
+                        display: none;
+                    }
+                }
+
+                &.show {
+                    display: flex;
+                }
+            }
+
+            &.active {
+                .dropdown-menu-item {
+                    &-title {
+                        font    : {weight: $font-weight-medium}
+                        color   : $color-secondary-d;
+                    }
+                }
+            }
+
+            &-contain {
+                // Dropdown contain links
+                &-links {
+                    .dropdown {
+                        &-menu {
+                            &-item {
+                                padding: {left: 0; right: 0}
+                            }
+                        }
+                    }
+                }
+
+                // Dropdown contain actions
+                &-actions {
+                    .dropdown {
+                        &-menu {
+                            &-item {
+                                padding: {right: 0}
+
+                                &-link {
+                                    padding: {right: 0}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

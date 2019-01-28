@@ -1,0 +1,48 @@
+.icon-Gen-dx:before {
+    font-size: 3rem !important;
+}
+.modal-title {
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+}
+.modal-title .manage-ruleset-header{
+    float:none
+}
+.popup-dice .command-canvas{
+    margin-top:0px;
+}
+@media (max-width:420px) {
+    .popup-dice .new-command.initial .command-canvas ul li .btn {
+        min-width: 4rem
+    }
+}
+.manage-ruleset-header span:last-child {
+    display: inline-block;
+    width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    top: 7px;
+}
+
+.modal-title .manage-ruleset-header {
+    min-width: 115px;
+}
+
+@media (max-width:768px) {
+    .modal-title .manage-ruleset-header {
+        min-width: 115px;
+    }
+
+    .manage-ruleset-header span:last-child {
+        display: inline-block;
+        width: 50px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        position: relative;
+        top: 7px;
+    }
+}

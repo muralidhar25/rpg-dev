@@ -1,0 +1,156 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <IsPackable>false</IsPackable>
+    <SpaRoot>ClientApp\</SpaRoot>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+
+    <!-- Set this to true if you enable server-side prerendering -->
+    <BuildServerSideRenderer>false</BuildServerSideRenderer>
+    <Description>RPGSmith Portal</Description>
+    <Copyright>Copyright © 2018 www.rpgsmith.com</Copyright>
+    <PackageProjectUrl>https://github.com/emonney/QuickApp</PackageProjectUrl>
+    <Company>RPGSMITH</Company>
+    <Version>2.5.3</Version>
+    <StartupObject>RPGSmithApp.Program</StartupObject>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>bin\Debug\netcoreapp2.1\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNet.Security.OAuth.Validation" Version="2.0.0-rc1-final" />
+    <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <PackageReference Include="CoreCompat.System.Drawing" Version="1.0.0-beta006" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="8.0.0" />
+    <PackageReference Include="MailKit" Version="2.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.3" />
+    <PackageReference Include="OpenIddict" Version="2.0.0-rc2-final" />
+    <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="2.0.0-rc2-final" />
+    <PackageReference Include="OpenIddict.Mvc" Version="2.0.0-rc2-final" />
+    <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DAL\DAL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.2" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="ClientApp\src\app\components\character-records\abilities\create-abilities\**" />
+    <Compile Remove="ClientApp\src\app\components\character-records\spells\create-spells\**" />
+    <Content Remove="$(SpaRoot)**" />
+    <Content Remove="ClientApp\src\app\components\character-records\abilities\create-abilities\**" />
+    <Content Remove="ClientApp\src\app\components\character-records\spells\create-spells\**" />
+    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="ClientApp\src\app\components\character-records\abilities\create-abilities\**" />
+    <EmbeddedResource Remove="ClientApp\src\app\components\character-records\spells\create-spells\**" />
+    <None Remove="ClientApp\src\app\components\character-records\abilities\create-abilities\**" />
+    <None Remove="ClientApp\src\app\components\character-records\spells\create-spells\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\ChoiceController.cs" />
+    <Compile Remove="Controllers\CustomerController.cs" />
+    <Compile Remove="Migrations\20180513192152_InitialModules.cs" />
+    <Compile Remove="Migrations\20180513192152_InitialModules.Designer.cs" />
+    <Compile Remove="Migrations\20180513195848_AddFieldInMappingRuleSetCharacterStat.cs" />
+    <Compile Remove="Migrations\20180513195848_AddFieldInMappingRuleSetCharacterStat.Designer.cs" />
+    <Compile Remove="Migrations\20180523183213_InitialModels.cs" />
+    <Compile Remove="Migrations\20180523183213_InitialModels.Designer.cs" />
+    <Compile Remove="Migrations\20180523183651_UpdateModels.cs" />
+    <Compile Remove="Migrations\20180523183651_UpdateModels.Designer.cs" />
+    <Compile Remove="Migrations\20180525071451_Add_CharacterModel.cs" />
+    <Compile Remove="Migrations\20180525071451_Add_CharacterModel.Designer.cs" />
+    <Compile Remove="Migrations\20180525072453_Update_CharacterModel.cs" />
+    <Compile Remove="Migrations\20180525072453_Update_CharacterModel.Designer.cs" />
+    <Compile Remove="Migrations\20180525072940_Update_CharacterModel2.cs" />
+    <Compile Remove="Migrations\20180525072940_Update_CharacterModel2.Designer.cs" />
+    <Compile Remove="Migrations\20180526070751_k1.cs" />
+    <Compile Remove="Migrations\20180526070751_k1.Designer.cs" />
+    <Compile Remove="Migrations\20180526072213_26052018.cs" />
+    <Compile Remove="Migrations\20180526072213_26052018.Designer.cs" />
+    <Compile Remove="Migrations\20180531071121_31052018.cs" />
+    <Compile Remove="Migrations\20180531071121_31052018.Designer.cs" />
+    <Compile Remove="Migrations\20180604070212_04062018.cs" />
+    <Compile Remove="Migrations\20180604070212_04062018.Designer.cs" />
+    <Compile Remove="Migrations\20180608090322_UpdateUserTable.cs" />
+    <Compile Remove="Migrations\20180608090322_UpdateUserTable.Designer.cs" />
+    <Compile Remove="Migrations\20180609120218_ItemMaster_Ability_Player_Spell.cs" />
+    <Compile Remove="Migrations\20180609120218_ItemMaster_Ability_Player_Spell.Designer.cs" />
+    <Compile Remove="Migrations\20180625080243_item_spell_ability_commands.cs" />
+    <Compile Remove="Migrations\20180625080243_item_spell_ability_commands.Designer.cs" />
+    <Compile Remove="Migrations\20180625104918_Metatags_Column_For_Ability_Spell.cs" />
+    <Compile Remove="Migrations\20180625104918_Metatags_Column_For_Ability_Spell.Designer.cs" />
+    <Compile Remove="Migrations\20180626175856_26-06-18.cs" />
+    <Compile Remove="Migrations\20180626175856_26-06-18.Designer.cs" />
+    <Compile Remove="Migrations\20180627080105_Item_Ability_Spell_ParentReferenceKey.cs" />
+    <Compile Remove="Migrations\20180627080105_Item_Ability_Spell_ParentReferenceKey.Designer.cs" />
+    <Compile Remove="Migrations\20180628140421_AddColumn_ParentCharacterId_Charater.cs" />
+    <Compile Remove="Migrations\20180628140421_AddColumn_ParentCharacterId_Charater.Designer.cs" />
+    <Compile Remove="Migrations\20180702105208_item-table-changes.cs" />
+    <Compile Remove="Migrations\20180702105208_item-table-changes.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ClientApp\src\app\common\backend-less-old.ts" />
+    <None Remove="ClientApp\src\app\common\backend-less-old.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\UploadedFiles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\mail-templates\account-verification.html" />
+    <None Include="wwwroot\mail-templates\account-verification.html" />
+    <None Include="wwwroot\mail-templates\reset-password.html" />
+    <None Include="wwwroot\mail-templates\reset-password.html" />
+  </ItemGroup>
+  
+  <!--<ItemGroup>
+    <PackageReference Update="Microsoft.NETCore.App" Version="2.1.0-rc1" />
+  </ItemGroup>-->
+
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+    <!-- Ensure Node.js is installed -->
+    <Exec Command="node --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+  </Target>
+
+  <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build --prod" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:ssr -- --prod" Condition=" '$(BuildServerSideRenderer)' == 'true' " />
+
+    <!-- Include the newly-built files in the publish output -->
+    <ItemGroup>
+      <DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**" />
+      <DistFiles Include="$(SpaRoot)node_modules\**" Condition="'$(BuildServerSideRenderer)' == 'true'" />
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
+</Project>

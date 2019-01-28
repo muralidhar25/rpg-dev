@@ -1,0 +1,15 @@
+/**
+ * Characters Page -------------------------------------------------------------
+ */
+
+
+.page-characters {
+    // New character popuo
+    .popup-new-character {
+        .input-image-control {
+            @include responsive(md) {
+                height: rem(232px);
+            }
+        }
+    }
+}

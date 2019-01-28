@@ -1,0 +1,17 @@
+F:\Vikas\Projects\RPGSmith\DEV\RPGSmith\RPGSmithApp\RPGSmithApp\RPGSmithApp\bin\Debug\netcoreapp2.1\netcoreapp2.1\RPGSmithApp.deps.json
+F:\Vikas\Projects\RPGSmith\DEV\RPGSmith\RPGSmithApp\RPGSmithApp\RPGSmithApp\bin\Debug\netcoreapp2.1\netcoreapp2.1\RPGSmithApp.runtimeconfig.json
+F:\Vikas\Projects\RPGSmith\DEV\RPGSmith\RPGSmithApp\RPGSmithApp\RPGSmithApp\bin\Debug\netcoreapp2.1\netcoreapp2.1\RPGSmithApp.runtimeconfig.dev.json
+F:\Vikas\Projects\RPGSmith\DEV\RPGSmith\RPGSmithApp\RPGSmithApp\RPGSmithApp\bin\Debug\netcoreapp2.1\netcoreapp2.1\RPGSmithApp.dll
+F:\Vikas\Projects\RPGSmith\DEV\RPGSmith\RPGSmithApp\RPGSmithApp\RPGSmithApp\bin\Debug\netcoreapp2.1\netcoreapp2.1\RPGSmithApp.pdb
+F:\Vikas\Projects\RPGSmith\DEV\RPGSmith\RPGSmithApp\RPGSmithApp\RPGSmithApp\bin\Debug\netcoreapp2.1\netcoreapp2.1\DAL.dll
+F:\Vikas\Projects\RPGSmith\DEV\RPGSmith\RPGSmithApp\RPGSmithApp\RPGSmithApp\bin\Debug\netcoreapp2.1\netcoreapp2.1\DAL.pdb
+F:\Vikas\Projects\RPGSmith\DEV\RPGSmith\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Debug\netcoreapp2.1\RPGSmithApp.csprojAssemblyReference.cache
+F:\Vikas\Projects\RPGSmith\DEV\RPGSmith\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Debug\netcoreapp2.1\RPGSmithApp.csproj.CoreCompileInputs.cache
+F:\Vikas\Projects\RPGSmith\DEV\RPGSmith\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Debug\netcoreapp2.1\RPGSmithApp.RazorAssemblyInfo.cache
+F:\Vikas\Projects\RPGSmith\DEV\RPGSmith\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Debug\netcoreapp2.1\RPGSmithApp.RazorAssemblyInfo.cs
+F:\Vikas\Projects\RPGSmith\DEV\RPGSmith\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Debug\netcoreapp2.1\RPGSmithApp.AssemblyInfoInputs.cache
+F:\Vikas\Projects\RPGSmith\DEV\RPGSmith\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Debug\netcoreapp2.1\RPGSmithApp.AssemblyInfo.cs
+F:\Vikas\Projects\RPGSmith\DEV\RPGSmith\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Debug\netcoreapp2.1\RPGSmithApp.RazorTargetAssemblyInfo.cache
+F:\Vikas\Projects\RPGSmith\DEV\RPGSmith\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Debug\netcoreapp2.1\RPGSmithApp.csproj.CopyComplete
+F:\Vikas\Projects\RPGSmith\DEV\RPGSmith\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Debug\netcoreapp2.1\RPGSmithApp.dll
+F:\Vikas\Projects\RPGSmith\DEV\RPGSmith\RPGSmithApp\RPGSmithApp\RPGSmithApp\obj\Debug\netcoreapp2.1\RPGSmithApp.pdb

@@ -1,0 +1,13 @@
+/*.fb-login-condition ul li:not(:last-child) span:after {
+    border: 1px solid red;
+}*/
+.req-check:after {
+    border: 1px solid red !important;
+}
+.link {
+    font-weight: bold;
+    cursor: pointer !important;
+    color: black;
+    text-decoration: underline;
+}
+

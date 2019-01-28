@@ -1,0 +1,262 @@
+/**
+ * Header ----------------------------------------------------------------------
+ */
+
+
+$header-height  : rem(72px);
+$avatar-size    : rem(40px);
+
+
+.site-header {
+    border      : {bottom: {width: 1px; style: solid; color: $color-lgray-l}}
+    background  : {color: $color-basic-white}
+
+    .container-fluid {
+        padding : {right: 0}
+    }
+
+    &-wrapper {
+        display : flex;
+        justify : {content: space-between}
+        align   : {items: stretch}
+        height  : $header-height;
+    }
+
+    &-left-section, &-right-section {
+        display: flex;
+    }
+
+    &-left-section {
+        align: {items: center}
+
+    } &-right-section {
+        align: {items: stretch}
+    }
+
+    &-logo, &-user, &-navigation .dropdown-toggle {
+        display : flex;
+        align   : {items: center}
+    }
+
+
+    // Logo --------------------------------------------------------------------
+    &-logo {
+        &-full {
+            display: none;
+
+            @include responsive(md) {
+                display: block;
+            }
+        }
+
+        &-small {
+            @include responsive(md) {
+                display: none;
+            }
+        }
+
+        img {
+            height: rem(24px);
+
+            @include responsive(md) {
+                height: rem(40px);
+            }
+        }
+    }
+
+    // Search ------------------------------------------------------------------
+    &-search {
+        display : none;
+        align   : {items: center}
+        margin  : {right: rem(40px)}
+
+        @include responsive(md) {
+            display: flex;
+        }
+
+        .icon {
+            position: relative;
+            z       : {index: 80}
+            margin  : {right: rem(-32px)}
+
+            &:before {
+                color: $color-dgray-xl;
+            }
+        }
+
+        input {
+            display     : flex;
+            align       : {items: center}
+            width       : rem(200px);
+            height      : rem(40px);
+            padding     : {top: 0; bottom: 0; left: rem(40px); right: rem(16px)}
+            border      : none;
+            color       : $color-dgray-xd;
+            background  : {color: transparent}
+            outline     : none !important;
+            transition  : $animation-duration;
+
+            &::placeholder {
+                color: $color-dgray-xl;
+            }
+
+            &:focus {
+                background: {color: $color-lgray-xl}
+
+                &::placeholder {
+                    color: $color-dgray-l;
+                }
+
+                ~ .icon {
+                    color: $color-dgray-l;
+                }
+            }
+        }
+    }
+
+    // User --------------------------------------------------------------------
+    &-user {
+        &-avatar {
+            position: relative;
+            width   : $avatar-size;
+            height  : $avatar-size;
+
+            img {
+                width   : 100%;
+                height  : 100%;
+            }
+
+            svg {
+                position: absolute;
+                top     : 0;
+                bottom  : 0;
+                left    : 0;
+                right   : 0;
+                fill    : $color-basic-white;
+                border  : none;
+            }
+        }
+
+        &-name {
+            display: none;
+
+            @include responsive(md) {
+                display : block;
+                margin  : {left: rem(12px)}
+            }
+        }
+    }
+
+    // Site navigation ---------------------------------------------------------
+    &-navigation {
+        display : flex;
+        align   : {items: stretch}
+
+        .dropdown {
+            display : flex;
+            position: static;
+            margin  : {left: rem(24px)}
+
+            @include responsive(md) {
+                position: relative;
+            }
+
+            &-toggle {
+                width   : $header-height;
+                border  : {left: {width: 1px; style: solid; color: $color-lgray-l}}
+
+                &:after {
+                    display: none;
+                }
+
+                .icon {
+                    color: $color-dgray-xl;
+
+                    &:before {
+                        content: map-get($font-icons-iconic, "list");
+                    }
+                }
+            }
+
+            &-menu {
+                top         : $header-height !important;
+                margin      : {top: 0}
+                border      : {bottom: {width: 3px; style: solid; color: $color-dgray-xd}}
+                background  : {color: $color-dgray-d}
+                transform   : none !important;
+
+                @include responsive(md) {
+                    left    : auto !important;
+                    right   : 0 !important;
+                    width   : rem(240px);
+                    border  : {bottom: {width: 2px}}
+                }
+
+                &-item {
+                    align   : {items: stretch}
+                    height  : rem(64px);
+                    border  : {bottom: {color: $color-dgray}}
+
+                    @include responsive(md) {
+                        height: rem(60px);
+                    }
+
+                    &:hover {
+                        background: {color: $color-dgray}
+                    }
+
+                    &-title, &-count {
+                        color: $color-basic-white;
+                    }
+
+                    &-link {
+                        padding: {left: rem(24px); right: rem(24px)}
+
+                        @include responsive(md) {
+                            padding : {left: rem(20px); right: rem(20px)}
+                        }
+                    }
+
+                    &-count {
+                        width       : rem(48px);
+                        padding     : {top: rem(4px); bottom: rem(4px)}
+                        font        : {size: rem(14px)}
+                        text        : {align: center}
+                        background  : {color: $color-dgray-l}
+
+                        @include responsive(md) {
+                            width   : rem(40px);
+                            padding : {top: rem(2px); bottom: rem(2px)}
+                            font    : {size: rem(12px)}
+                        }
+                    }
+
+                    &.active {
+                        background  : {color: $color-dgray-xd}
+
+                        .dropdown-menu-item {
+                            &-title {
+                                color: $color-basic-white;
+                            }
+
+                            &-count {
+                                background: {color: $color-dgray-d}
+                            }
+                        }
+                    }
+                }
+            }
+
+            &.show {
+                .dropdown-toggle {
+                    .icon {
+                        &:before {
+                            font    : {size: rem(12px)}
+                            content : map-get($font-icons-iconic, "cross");
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

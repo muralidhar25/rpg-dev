@@ -1,0 +1,191 @@
+<div class="page-inventory">
+    <!-- Toolbar -->
+    <div class="page-toolbar">
+        <div class="container">
+            <div class="page-toolbar-wrapper">
+                <div class="page-toolbar-title">
+                    <a [routerLink]="['/character/dashboard', characterId]" class="icon icon-back">
+                        <h1 class="d-none d-md-inline-block"> Back</h1>
+                    </a>
+                    <h1 class="d-md-none"> Spells</h1>
+                </div>
+                <!--<div class="page-toolbar-wrapper-toggle-trigger">
+                    <button type="button" class="btn icon icon-with-text btn-accent btn-block" (click)="showActionButtons(showActions)"
+                            [ngClass]="{'icon-arrow-up' : showActions,  'icon-arrow-down' : !showActions}">
+                        {{actionText}}
+                    </button>
+                </div>-->
+                <div class="page-toolbar-wrapper initial show">
+                    <!-- Toolbar links -->
+                    <ul class="page-toolbar-links">
+                        <li *ngIf="ruleSet?.isItemEnabled" class="hidden-tab">
+                            <a [routerLink]="['/character/inventory/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Inventory</span></a>
+                        </li>
+                        <li *ngIf="ruleSet?.isSpellEnabled" class="hidden-tab">
+                            <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection selected icon-Rec-Magical"> <span>Spells</span></a>
+                        </li>
+                        <li *ngIf="ruleSet?.isAbilityEnabled" class="hidden-tab">
+                            <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+                        </li>
+                        <li *ngIf="ruleSet" class="hidden-tab">
+                            <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
+                        </li>
+                        <li class="visible-tab">
+                            <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                                    <ul class="dropdown-menu-list">
+                                        <li *ngIf="ruleSet?.isItemEnabled" class="dropdown-menu-item">
+                                            <a [routerLink]="['/character/inventory/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> Inventory</a>
+                                        </li>
+                                        <li *ngIf="ruleSet?.isSpellEnabled" class="dropdown-menu-item">
+                                            <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection selected icon-Rec-Magical"> Spells</a>
+                                        </li>
+                                        <li *ngIf="ruleSet?.isAbilityEnabled" class="dropdown-menu-item">
+                                            <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
+                                        </li>
+                                        <li *ngIf="ruleSet" class="dropdown-menu-item">
+                                            <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> Character Stats</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <!--<div class="dropdown dropdown-buttons">
+                                <button type="button" (click)="addSpell()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Add Spell</button>
+                            </div>-->
+                            <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle is-show"><span class="text-hide-tab  is-show">New Spell</span></button>
+                                <!--<button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle is-show"><span class="text-hide-tab  is-show">New Spell</span></button>-->
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                                    <ul class="dropdown-menu-list">
+                                        <li class="dropdown-menu-item">
+                                            <button type="button" (click)="addSpell()" class="btn btn-accent icon-Rec-Add"> Add Spell</button>
+                                        </li>
+                                        <li class="dropdown-menu-item">
+                                            <button type="button" (click)="createSpell()" class="btn btn-accent icon-Gen-Edit"> Create Spell</button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <!-- End of toolbar links -->
+                </div>
+                <ul class="page-toolbar-actions">
+                    <li class="view-switch">
+                        <div class="btn-group" role="group">
+                            <button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="{'selected':!isListView}" (click)="showListView(false)"></button>
+                            <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="{'selected':isListView}" (click)="showListView(true)"></button>
+                        </div>
+                    </li>
+                    <li>
+                        <!--<div class="dropdown dropdown-buttons">
+                            <button type="button" (click)="addSpell()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Add Spell</button>
+                        </div>-->
+                        <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                            <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle is-show">
+                                <span class="text-hide-tab  is-show">New Spell</span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                                <ul class="dropdown-menu-list">
+                                    <li class="dropdown-menu-item">
+                                        <button type="button" (click)="addSpell()" class="btn btn-accent icon-Rec-Add"> Add Spell</button>
+                                    </li>
+                                    <li class="dropdown-menu-item">
+                                        <button type="button" (click)="createSpell()" class="btn btn-accent icon-Gen-Edit"> Create Spell</button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary"><span class="text-hide-tab">Dice</span></button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- End of toolbar -->
+    <!-- Inventory cards -->
+    <div class="cards cards-inventory" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
+         [infiniteScrollThrottle]="300" [scrollWindow]="true">
+        <div class="container">
+            <div class="card-list" [ngClass]="{'view-list':isListView}">
+                <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Spells have been added to this character. Click "+New Spell" to add some.</p>
+                <div class="card-wrapper" *ngFor="let spell of spellsList">
+                    <div class="card" [ngClass]="{'card-equip':spell.isMemorized}">
+                        <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
+
+                            <img class="card-img-top portrait" [src]="spell.spell.imageUrl" [alt]="spell.spell.imageUrl"
+                                 onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-spells/Fire.jpg';" [routerLink]="['/character/spell-details', spell.characterSpellId]" />
+
+                            <div class="card-actions show" *ngIf="spell.showIcon && !isListView">
+                                <button type="button" (click)="editSpell(spell)" tooltip="Edit" class="btn icon icon-pencil btn-simple-primary"></button>
+                                <button type="button" (click)="duplicateSpell(spell)" tooltip="Duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                                <button type="button" (click)="deleteSpell(spell)" tooltip="Delete" class="btn icon icon-trash btn-simple-primary"></button>
+                                <button type="button" (click)="manageIcon(false)" tooltip="Close" class="btn icon icon-cross btn-simple-primary"></button>
+                            </div>
+                        </div>
+                        <div class="card-body" [routerLink]="['/character/spell-details', spell.characterSpellId]">
+                            <h4 class="card-title" popover="{{spell.spell.name}}" triggers="hover">{{spell.spell.name}}</h4>
+                            <ul class="item-properties d-sm-none">
+                                <li *ngIf="spell.spell.class && isListView" class="item-property item-property-text class">{{spell.spell.class}}</li>
+                                <li *ngIf="spell.spell.school && isListView" class="item-property item-property-text school">{{spell.spell.school}}</li>
+                                <li *ngIf="spell.spell.levels" class="item-property item-property-text levels">{{spell.spell.levels}}</li>
+                                <li *ngIf="spell.spell.castingTime && isListView" class="item-property item-property-text levels">{{spell.spell.castingTime}}</li>
+                            </ul>
+                            <ul class="item-properties mb-4 " *ngIf="isListView">
+                                <li *ngIf="spell.spell.isSomaticComponent" class="item-property item-property-icon icon-ico icon-Rec-Somantic" title="Somatic Component" data-toggle="tooltip"></li>
+                                <li *ngIf="spell.spell.isVerbalComponent" class="item-property item-property-icon icon-ico icon-Rec-Verbal" title="Verbal Component" data-toggle="tooltip"></li>
+                                <li *ngIf="spell.spell.isMaterialComponent" class="item-property item-property-icon icon-ico icon-Rec-Material icon-rsi" title="Material Component" data-toggle="tooltip"></li>
+                                <li *ngIf="spell.isMemorized" class="item-property item-property-icon icon-ico icon-Rec-Memorized" title="Readied" data-toggle="tooltip"></li>
+                            </ul>
+                            <ul class="item-properties" *ngIf="!isListView">
+                                <li *ngIf="spell.spell.isSomaticComponent" class="item-property item-property-icon icon-ico icon-Rec-Somantic" title="Somatic Component" data-toggle="tooltip"></li>
+                                <li *ngIf="spell.spell.isVerbalComponent" class="item-property item-property-icon icon-ico icon-Rec-Verbal" title="Verbal Component" data-toggle="tooltip"></li>
+                                <li *ngIf="spell.spell.isMaterialComponent" class="item-property item-property-icon icon-ico icon-Rec-Material icon-rsi" title="Material Component" data-toggle="tooltip"></li>
+                                <li *ngIf="spell.isMemorized" class="item-property item-property-icon icon-ico icon-Rec-Memorized" title="Readied" data-toggle="tooltip"></li>
+                            </ul>
+                            <div class="item-stats d-sm-none" [froalaView]="spell?.spell?.description"></div>
+                        </div>
+                        <div class="item-stats d-sm-block d-none" [froalaView]="spell?.spell?.description"></div>
+                        <!--<div class="item-stats d-sm-block d-none" tooltip="{{spell.spell.description}}">{{spell.spell.description}}</div>-->
+                        <div class="card-actions-trigger" [hidden]="spell.showIcon">
+                            <!--to-->
+                            <button type="button" (click)="manageIcon(spell.characterSpellId)" tooltip="Manage" class="btn icon icon-more btn-simple-primary"></button>
+                        </div>
+
+                        <div class="card-actions show" *ngIf="spell.showIcon && isListView">
+                            <button type="button" (click)="editSpell(spell)" tooltip="Edit" class="btn icon icon-pencil btn-simple-primary"></button>
+                            <button type="button" (click)="duplicateSpell(spell)" tooltip="Duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                            <button type="button" (click)="deleteSpell(spell)" tooltip="Delete" class="btn icon icon-trash btn-simple-primary"></button>
+                            <button type="button" (click)="manageIcon(false)" tooltip="Close" class="btn icon icon-cross btn-simple-primary"></button>
+                        </div>
+
+                        <div class="item-actions mobile-buttons" *ngIf="isListView">
+                            <button (click)="memorizeSpell(spell)" type="button" class="btn btn-accent icon-Rec-Disable" *ngIf="spell.isMemorized"> Unready</button>
+                            <button (click)="memorizeSpell(spell)" type="button" class="btn btn-accent  icon-Rec-Memorized" *ngIf="!spell.isMemorized"> Ready</button>
+                            <button (click)="deleteSpell(spell)" type="button" class="btn btn-accent icon-Rec-Remove"> Remove</button>
+                            <button (click)="castSpell(spell)" type="button" class="btn btn-accent icon-Rec-Magical" *ngIf="spell.showCast"> Cast</button>
+                        </div>
+                        <div class="item-actions" *ngIf="!isListView">
+                            <button (click)="memorizeSpell(spell)" type="button" class="btn btn-accent icon-Rec-Disable" *ngIf="spell.isMemorized"> Unready</button>
+                            <button (click)="memorizeSpell(spell)" type="button" class="btn btn-accent icon-Rec-Memorized" *ngIf="!spell.isMemorized"> Ready</button>
+                            <button (click)="deleteSpell(spell)" type="button" class="btn btn-accent icon-Rec-Remove"> Remove</button>
+                            <button (click)="castSpell(spell)" type="button" class="btn btn-accent icon-Rec-Magical" *ngIf="spell.showCast"> Cast</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End of inventory cards -->
+
+    <app-loader [isLoading]="isLoading"></app-loader>
+    <div class="spinner"  *ngIf="scrollLoading">
+            <img src="../../../../assets/images/PageLoader.gif" />
+    </div>
+
+</div>

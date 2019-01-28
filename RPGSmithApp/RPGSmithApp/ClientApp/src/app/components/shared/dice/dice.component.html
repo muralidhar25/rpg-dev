@@ -1,0 +1,240 @@
+<div class="page-character-dashboard popup-dice">
+
+    <div class="modal-header">
+        <h5 class="modal-title" id="dicePopupTitle">{{title}}</h5>
+        <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+    </div>
+    <div class="modal-body">
+        <form>
+            <!-- Saved commands -->
+            <div class="form-group saved-commands">
+                <label>Saved Commands</label>
+                <div class="command-list">
+                    <ul>
+                        <li>
+                            <button type="button" class="btn">Last Command</button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn">Cmd 1</button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn">Cmd 2</button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="input-extend">
+                    <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
+                </div>
+            </div>
+            <!-- End of saved commands -->
+
+            <!-- New command (initial) -->
+            <div class="form-group new-command initial">
+                <label>Command*</label>
+
+                <!-- Command console -->
+                <div class="command-console form-row">
+                    <div class="col-12 col-md-9">
+                        <input type="text" id="diceCommandConsole" class="form-control" placeholder="Enter the comand here or click on the dice to generate" 
+                            [autofocus]>
+                    </div>
+                    <div class="d-flex col-12 col-md-3">
+                        <button type="button" class="btn btn-primary btn-block">Add Mod</button>
+                    </div>
+                </div>
+                <!-- End of command console -->
+
+                <!-- Dice canvas -->
+                <div class="command-canvas">
+                    <ul>
+                        <li>
+                            <button class="btn icon icon-rsi icon-d4-thin" type="button">
+                                <span>
+                                    D4                                                            </span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="btn icon icon-rsi icon-d6-thin" type="button">
+                                <span>
+                                    D6                                <em>6</em>                            </span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="btn icon icon-rsi icon-d8-thin" type="button">
+                                <span>
+                                    D8                                                            </span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="btn icon icon-rsi icon-d10-thin" type="button">
+                                <span>
+                                    D10                                                            </span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="btn icon icon-rsi icon-d12-thin" type="button">
+                                <span>
+                                    D12                                <em>8</em>                            </span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="btn icon icon-rsi icon-d20-thin" type="button">
+                                <span>
+                                    D20                                                            </span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="btn icon icon-rsi icon-d100-thin" type="button">
+                                <span>
+                                    D100                                <em>2</em>                            </span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="btn icon icon-reset" type="button"></button>
+                        </li>
+                    </ul>
+                </div>
+                <!-- End of dice canvas -->
+
+                <!-- Dice actions -->
+                <div class="command-actions form-row">
+                    <div class="d-flex col-12 col-md-6">
+                        <button type="button" class="btn btn-accent btn-block">Save</button>
+                    </div>
+                    <div class="d-flex col-12 col-md-6">
+                        <button type="button" id="diceRollTrigger" class="btn btn-accent btn-block">Roll</button>
+                    </div>
+                </div>
+                <!-- End of dice actions -->
+            </div>
+            <!-- End of new command (initial) -->
+
+            <!-- New command (result) -->
+            <div class="form-group new-command result d-none">
+                <label>Command*</label>
+
+                <!-- Command console -->
+                <span class="input-group-btn">
+                    <button type="button" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                </span>
+                <input type="text" id="diceResultCommandConsole" class="form-control" value="2d6 + d12 + 2d20 + 8" disabled="disabled">
+                <!-- End of command console -->
+
+                <!-- Result canvas -->
+                <div class="command-canvas">
+                    <ul>
+                        <li>
+                            <button class="btn" type="button">
+                                <em>3</em>
+                                <span class="icon icon-with-text icon-d6 icon-rsi">d6</span>
+                            </button>
+                            <div class="result-reroll">
+                                <a>Reroll</a>
+                            </div>
+                            <div class="result-anim">
+                                <span class="icon icon-d6 icon-rsi"></span>
+                            </div>
+                        </li>
+                        <li>
+                            <button class="btn" type="button">
+                                <em>6</em>
+                                <span class="icon icon-with-text icon-d6 icon-rsi">d6</span>
+                            </button>
+                            <div class="result-reroll">
+                                <a>Reroll</a>
+                            </div>
+                            <div class="result-anim">
+                                <span class="icon icon-d6 icon-rsi"></span>
+                            </div>
+                        </li>
+                        <li>
+                            <button class="btn" type="button">
+                                <em>8</em>
+                                <span class="icon icon-with-text icon-d12 icon-rsi">d12</span>
+                            </button>
+                            <div class="result-reroll">
+                                <a>Reroll</a>
+                            </div>
+                            <div class="result-anim">
+                                <span class="icon icon-d12 icon-rsi"></span>
+                            </div>
+                        </li>
+                        <li>
+                            <button class="btn" type="button">
+                                <em>2</em>
+                                <span class="icon icon-with-text icon-d20 icon-rsi">d20</span>
+                            </button>
+                            <div class="result-reroll">
+                                <a>Reroll</a>
+                            </div>
+                            <div class="result-anim">
+                                <span class="icon icon-d20 icon-rsi"></span>
+                            </div>
+                        </li>
+                        <li>
+                            <button class="btn" type="button">
+                                <em>5</em>
+                                <span class="icon icon-with-text icon-d20 icon-rsi">d20</span>
+                            </button>
+                            <div class="result-reroll">
+                                <a>Reroll</a>
+                            </div>
+                            <div class="result-anim">
+                                <span class="icon icon-d20 icon-rsi"></span>
+                            </div>
+                        </li>
+                        <li>
+                            <button class="btn" type="button">
+                                <em>8</em>
+                                <span class="icon icon-with-text icon-person">User</span>
+                            </button>
+                            <div class="result-reroll">
+                                <a>Reroll</a>
+                            </div>
+                            <div class="result-anim">
+                                <span class="icon icon-person"></span>
+                            </div>
+                        </li>
+                        <li>
+                            <button class="btn sum" type="button">32</button>
+                        </li>
+                    </ul>
+                </div>
+                <!-- End of result canvas -->
+
+                <!-- Result calculation -->
+                <div class="command-result">
+                    <span>3 + 6 + 8 + 2 + 5 + 8 = 32</span>
+                    <button type="button" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                </div>
+                <!-- End of result calculation -->
+
+                <!-- Result actions -->
+                <div class="command-actions form-row">
+                    <div class="d-flex col-12 col-md-6">
+                        <button type="button" id="diceShowDiceTrigger" class="btn btn-accent btn-block">Show Dice</button>
+                    </div>
+                    <div class="d-flex col-12 col-md-6">
+                        <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block">Roll Again</button>
+                    </div>
+                </div>
+                <!-- End of result actions -->
+            </div>
+            <!-- End of new command (result) -->
+
+            <!-- Last rolled result -->
+            <div class="command-last-result form-group">
+                <label>Last Result</label>
+                <p><strong>38</strong> (3 + 6 + 8 + 6 + 5 + 2 + 5 + 3)</p>
+                <div class="input-extend">
+                    <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show details</span></button>
+                </div>
+            </div>
+            <!-- End of last rolled result -->
+        </form>            
+    </div>
+    <div class="modal-footer">
+        <button type="button" (click)="close()" class="btn btn-outline-accent">Close</button>
+    </div>
+
+</div>

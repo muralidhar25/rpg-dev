@@ -1,0 +1,254 @@
+/**
+ * Item Details Page -----------------------------------------------------------
+ */
+
+.page-item-details {
+    // Item info
+    .item-info {
+        margin: {bottom: rem(16px)}
+
+        @include responsive(md) {
+            margin: {bottom: rem(32px)}
+        }
+
+        &-wrapper {
+            border      : {width: 1px; style: solid; color: $color-lgray-d}
+            background  : {color: $color-basic-white}
+        }
+
+        // Top section
+        &-top-section {
+            border  : {bottom: {width: 1px; style: solid; color: $color-lgray-d}}
+
+            ul, li {
+                display : flex;
+            }
+
+            ul {
+                padding: 0;
+
+                li {
+                    align   : {items: center}
+                    justify : {content: center}
+                    list    : {style: {type: none}}
+                }
+            }
+        }
+
+        // Bottom section
+        &-bottom-section {
+            padding: {top: rem(16px); left: rem(16px); right: rem(16px)}
+
+            @include responsive(lg) {
+                padding: {top: rem(32px); left: rem(32px); right: rem(32px)}
+            }
+
+            h3 {
+                margin  : {bottom: rem(12px)}
+                font    : {size: rem(16px); weight: $font-weight-medium}
+                color   : $color-secondary-d;
+
+                @include responsive(md) {
+                    margin: {bottom: rem(8px)}
+                }
+            }
+        }
+
+        // Banner
+        &-banner {
+            display     : flex;
+            position    : relative;
+            flex        : {wrap: wrap; direction: column}
+            align       : {items: center}
+            padding     : {top: rem(32px); bottom: rem(16px); left: rem(16px); right: rem(16px)}
+            color       : $color-basic-white;
+            background  : {color: $color-dgray-xd}
+
+            @include responsive(lg) {
+                height: rem(200px);
+            }
+        }
+
+        // Actions
+        &-actions {
+            flex    : {direction: column}
+            margin  : rem(4px) rem(8px);
+
+            @include responsive(md) {
+                flex    : {direction: row}
+                margin  : {top: 0; bottom: 0};
+
+            } @include responsive(lg) {
+                height  : rem(100px);
+                margin  : {left: rem(260px - 8px); right: rem(-8px)}
+            }
+
+            li {
+                margin  : rem(4px);
+
+                @include responsive(md) {
+                    width   : percentage(1 / 3);
+                    margin  : rem(16px) rem(8px);
+
+                } @include responsive(lg) {
+                    width   : auto;
+                    margin  : {top: 0; bottom: 0}
+                }
+
+                .btn {
+                    flex: {grow: 1}
+
+                    @include responsive(lg) {
+                        width: rem(140px);
+                    }
+                }
+            }
+        }
+
+        // Item image
+        &-image {
+            width   : rem(120px);
+            border  : {width: 1px; style: solid; color: $color-lgray-d}
+
+            @include responsive(lg) {
+                position: absolute;
+                left    : rem(32px);
+                bottom  : rem(-72px);
+                width   : rem(200px);
+            }
+
+            img {
+                max     : {width: 100%}
+                height  : auto;
+            }
+        }
+
+        &-name, &-props-indics {
+            @include responsive(lg) {
+                position: absolute;
+                left    : rem(260px);
+            }
+        }
+
+        &-props-indics {
+            display : flex;
+            flex    : {direction: column}
+            justify : {content: center}
+
+            @include responsive(lg) {
+                flex    : {direction: row}
+                bottom  : rem(32px);
+            }
+        }
+
+        &-props, &-indics {
+            display : flex;
+            flex    : {wrap: wrap}
+            justify : {content: center}
+        }
+
+        // Item name
+        &-name {
+            margin  : rem(16px) 0;
+            font    : {size: rem(24px); weight: $font-weight-medium}
+
+            @include responsive(lg) {
+                bottom  : rem(80px);
+                font    : {size: rem(32px)}
+            }
+        }
+
+        // Item properties
+        &-props {
+            margin: rem(-4px);
+
+            @include responsive(lg) {
+                margin: {top: 0; bottom: 0}
+            }
+
+            li {
+                height      : rem(40px);
+                margin      : rem(4px);
+                padding     : 0 rem(16px);
+                font        : {size: rem(12px)}
+                background  : {color: $color-dgray-d}
+
+                @include responsive(lg) {
+                    margin: {top: 0; bottom: 0}
+                }
+            }
+        }
+
+        // Item indiciators
+        &-indics {
+            margin: {top: rem(16px); bottom: 0}
+
+            @include responsive(lg) {
+                margin: {top: 0; bottom: 0; left: rem(24px)}
+            }
+
+            li {
+                width   : rem(40px);
+                height  : rem(40px);
+
+                i {
+                    &:before {
+                        font    : {size: rem(20px)}
+                        color   : $color-dgray-xl;
+                    }
+                }
+            }
+        }
+
+        &-command, &-stats, &-desc, &-tags, &-spells, &-abils {
+            margin: {bottom: rem(24px)}
+
+            @include responsive(lg) {
+                margin: {bottom: rem(40px)}
+            }
+        }
+
+        &-command, &-desc, &-spells {
+            @include responsive(lg) {
+                margin: {right: rem(32px)}
+            }
+        }
+
+        &-stats, &-tags, &-abils {
+            @include responsive(lg) {
+                margin: {left: rem(32px)}
+            }
+        }
+
+        &-spells, &-abils {
+            .output-list-item {
+                width: percentage(1);
+
+                @include responsive(md) {
+                    width: percentage(1 / 2);
+
+                } @include responsive(lg) {
+                    width: percentage(1 / 3);
+                }
+            }
+        }
+    }
+
+    // Item tiles
+    .item-tiles {
+        margin: {bottom: rem(16px)}
+
+        @include responsive(lg) {
+            margin: {bottom: rem(32px)}
+        }
+
+        .tiles {
+            display : flex;
+            flex    : {direction: column}
+
+            @include responsive(md) {
+                flex: {direction: row}
+            }
+        }
+    }
+}

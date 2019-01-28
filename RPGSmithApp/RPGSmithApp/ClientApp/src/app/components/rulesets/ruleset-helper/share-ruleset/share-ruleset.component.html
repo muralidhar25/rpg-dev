@@ -1,0 +1,54 @@
+<form name="shareForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Share Rule Set</h5>
+            <button type="button" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
+        </div>
+        <div class="modal-body" *ngIf="!isLoading">
+
+            <div class="form-row">
+                <div class="col">
+                    <div class="form-group">
+                        <p>
+                            Input the recipient’s email address in the field below for
+                            whom you would like to share this Rule Set.
+                        </p>
+                        <p>
+                            Shared Rule Sets are copied to the recipients account
+                            when they input a custom code generated and associated
+                            with the source rule set at the time they enable sharing.
+                            Any future changes to the source Rule Set will not affect
+                            other users.
+                        </p>
+                        <p>
+                            All content is duplicated at the time of installation by the
+                            recipient, except for images. Any existing image
+                            references at the time the copy occurs will continue to use
+                            images stored on the source user’s account. Should the
+                            source user delete the Rule Set or remove images the recipients Rule Set will revert to a default stock
+                            image.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="emailId1">Email Address</label>
+                        <input type="email" class="form-control" name="emailId1" placeholder="Email"
+                               required [(ngModel)]="emailId" #emailId1="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <app-loader [isLoading]="isLoading"></app-loader>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-simple-accent" *ngIf="!isLoading" (click)="close()">Cancel</button>
+            <button type="submit" class="btn btn-accent" [disabled]="f.form.invalid || isLoading">SEND</button>
+        </div>
+    </div>
+</form>

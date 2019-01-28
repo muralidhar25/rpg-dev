@@ -1,0 +1,498 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using DAL.Models;
+using DAL.Models.SPModels;
+using DAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+
+namespace DAL.Services
+{
+    public class AbilityService : IAbilityService
+    {
+        private readonly IRepository<Ability> _repo;
+        protected readonly ApplicationDbContext _context;
+        private readonly IConfiguration _configuration;
+        public AbilityService(ApplicationDbContext context, IRepository<Ability> repo, IConfiguration configuration)
+        {
+            _repo = repo;
+            _context = context;
+            this._configuration = configuration;
+        }
+
+        public async Task<Ability> Create(Ability item)
+        {
+            return await _repo.Add(item);
+        }
+
+        public async  Task<bool> Delete(int id)
+        {
+            // Remove associated Commands
+            var ac = _context.AbilityCommands.Where(x => x.AbilityId == id && x.IsDeleted !=true).ToList();
+
+            foreach(AbilityCommand item in ac)
+            {
+                item.IsDeleted = true;
+            }
+
+            // Remove associated character ability
+
+            var ca = _context.CharacterAbilities.Where(x => x.AbilityId == id && x.IsDeleted!=true).ToList();
+
+            foreach (CharacterAbility  ca_item in ca)
+            {
+                ca_item.IsDeleted = true;
+                var LinkedRecords_CharacterCharacterStats = _context.CharactersCharacterStats.Where(x => x.LinkType == "ability" && x.DefaultValue == ca_item.CharacterAbilityId).ToList();
+                foreach (var LRCCS in LinkedRecords_CharacterCharacterStats)
+                {
+                    LRCCS.DefaultValue = 0;
+                    LRCCS.LinkType = "";
+                }
+            }
+
+            // Remove associated Items Master ability
+            var ima = _context.ItemMasterAbilities.Where(x => x.AbilityId == id && x.IsDeleted!=true).ToList();
+
+            foreach (ItemMasterAbility ima_item in ima)
+            {
+                ima_item.IsDeleted = true;
+            }
+
+
+            // Remove Ability
+            var ability =await  _repo.Get(id);
+
+            if (ability == null)
+            return false;
+
+            ability.IsDeleted = true;
+               
+            try
+            {
+                _context.SaveChanges();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+           
+
+            //  return await _repo.Remove(id);
+
+         }
+
+        public List<Ability> GetAll()
+        {
+            List<Ability> abilities = _context.Abilities
+                 .Include(d => d.RuleSet)
+                .Include(d => d.ItemMasterAbilities)
+                .Include(d => d.AbilityCommand)
+                .Where(x => x.IsDeleted != true).OrderBy(o => o.Name).ToList();
+
+
+            if (abilities == null) return abilities;
+
+            foreach (Ability a in abilities)
+            {
+                a.ItemMasterAbilities = a.ItemMasterAbilities.Where(p => p.IsDeleted != true).ToList();
+                a.AbilityCommand = a.AbilityCommand.Where(p => p.IsDeleted != true).ToList();
+            }
+
+            return abilities;
+        }
+
+        public Ability GetById(int? id)
+        {
+            Ability ability= _context.Abilities
+                .Include(d=>d.RuleSet)
+                .Include(d=>d.ItemMasterAbilities)
+                .Include(d=>d.AbilityCommand)
+                .Where(x => x.AbilityId  == id && x.IsDeleted != true)
+                .FirstOrDefault();
+
+            if (ability == null) return ability;
+
+            ability.ItemMasterAbilities = ability.ItemMasterAbilities.Where(p => p.IsDeleted != true).ToList();
+            ability.AbilityCommand = ability.AbilityCommand.Where(p => p.IsDeleted != true).ToList();
+
+            return ability;
+        }
+        public List<Ability> GetAbilitiesByRuleSetId_add(int rulesetId) {
+            List<Ability> abilityList = new List<Ability>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            //string qry = "EXEC AbilitiesByRuleSetId_add @RulesetID = '" + rulesetId + "'";
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("AbilitiesByRuleSetId_add", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@RulesetID", rulesetId);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+           
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    Ability _ability = new Ability();
+                    _ability.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    _ability.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
+                    _ability.Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString();
+                    _ability.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
+                    _ability.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
+                    _ability.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    _ability.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+                    _ability.Level = row["Level"] == DBNull.Value ? null : row["Level"].ToString();
+                    _ability.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
+                    _ability.IsEnabled = row["IsEnabled"] == DBNull.Value ? false : Convert.ToBoolean(row["IsEnabled"]);
+
+                    _ability.AbilityId = row["AbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(row["AbilityId"].ToString());
+                    _ability.ParentAbilityId = row["ParentAbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentAbilityId"].ToString());
+                    _ability.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
+                    _ability.CurrentNumberOfUses = row["CurrentNumberOfUses"] == DBNull.Value ? 0 : Convert.ToInt32(row["CurrentNumberOfUses"].ToString());
+                    _ability.MaxNumberOfUses = row["MaxNumberOfUses"] == DBNull.Value ? 0 : Convert.ToInt32(row["MaxNumberOfUses"].ToString());
+
+                    abilityList.Add(_ability);
+                }
+            }
+            return abilityList;
+        }
+        public List<Ability> GetAbilitiesByRuleSetId(int ruleSetId)
+        {
+            List<Ability> abilities= _context.Abilities
+                .Include(d => d.RuleSet)
+                .Include(d => d.ItemMasterAbilities)
+                .Include(d => d.AbilityCommand)
+                .Where(x => x.RuleSetId == ruleSetId && x.IsDeleted!=true)
+                .OrderBy(o => o.Name).ToList();
+
+            if (abilities == null) return abilities;
+
+            foreach (Ability a in abilities)
+            {
+                a.ItemMasterAbilities = a.ItemMasterAbilities.Where(p => p.IsDeleted != true).ToList();
+                a.AbilityCommand = a.AbilityCommand.Where(p => p.IsDeleted != true).ToList();
+            }
+
+            return abilities;
+        }
+        public List<Ability> Core_GetAbilitiesByRuleSetId(int ruleSetId,int parentID)
+        {
+            var idsToRemove = _context.Abilities.Where(p => (p.RuleSetId == ruleSetId) && p.ParentAbilityId != null ).Select(p => p.ParentAbilityId).ToArray();
+
+            var recsToRemove = _context.Abilities.Where(p => idsToRemove.Contains(p.AbilityId)).ToList();
+
+            var res = _context.Abilities.Where(x => (x.RuleSetId == ruleSetId || x.RuleSetId == parentID) && x.IsDeleted != true)
+                .Except(recsToRemove);
+            List<Ability> abilities = _context.Abilities.Where(x => (x.RuleSetId == ruleSetId || x.RuleSetId == parentID) && x.IsDeleted != true)
+                .Except(recsToRemove)
+                .Include(d => d.RuleSet)
+                .Include(d => d.ItemMasterAbilities)
+                .Include(d => d.AbilityCommand)
+                
+                .OrderBy(o => o.Name).ToList();
+
+            if (abilities == null) return abilities;
+
+            foreach (Ability a in abilities)
+            {
+                a.ItemMasterAbilities = a.ItemMasterAbilities.Where(p => p.IsDeleted != true).ToList();
+                a.AbilityCommand = a.AbilityCommand.Where(p => p.IsDeleted != true).ToList();
+            }
+
+            return abilities;
+        }
+        public async Task<Ability> Update(Ability item, bool IsFromCharacter = false)
+        {
+            var ability = _context.Abilities.FirstOrDefault(x => x.AbilityId == item.AbilityId);
+
+            if (ability == null)
+                return ability;
+
+            ability.Name = item.Name;
+            ability.Level = item.Level;
+            ability.Command = item.Command;
+            ability.CommandName = item.CommandName;
+            ability.Description = item.Description;
+            ability.Stats = item.Stats;
+            ability.ImageUrl = item.ImageUrl;
+            ability.IsEnabled = item.IsEnabled;
+            ability.Metatags = item.Metatags;
+
+            if (!IsFromCharacter)
+            {
+                ability.MaxNumberOfUses = item.MaxNumberOfUses;
+                ability.CurrentNumberOfUses = item.CurrentNumberOfUses;
+            }
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return ability;
+        }
+
+        public int GetCountByRuleSetId(int ruleSetId)
+        {
+            return _context.Abilities.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted!=true).Count();
+        }
+        public int Core_GetCountByRuleSetId(int ruleSetId,int parentID)
+        {
+            //var idsToRemove = _context.Abilities.Where(p => (p.RuleSetId == ruleSetId) && p.ParentAbilityId != null).Select(p => p.ParentAbilityId).ToArray();
+
+            //var recsToRemove = _context.Abilities.Where(p => idsToRemove.Contains(p.AbilityId)).ToList();
+
+            //var res = _context.Abilities.Where(x => (x.RuleSetId == ruleSetId || x.RuleSetId == parentID) && x.IsDeleted != true)
+            //    .Except(recsToRemove);
+            //return res.Count();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            //string qry = "EXEC Ruleset_GetRecordCounts @RulesetID = '" + ruleSetId + "'";
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataTable dt = new DataTable();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("Ruleset_GetRecordCounts", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@RulesetID", ruleSetId);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(dt);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            
+            
+            SP_RulesetRecordCount res = new SP_RulesetRecordCount();
+            if (dt.Rows.Count > 0)
+            {
+                res.AbilityCount = Convert.ToInt32(dt.Rows[0]["AbilityCount"]);                
+            }
+            return res.AbilityCount;
+        }
+
+        public async Task<bool> CheckDuplicateAbility(string value, int? ruleSetId,int? abilityId=0)
+        {
+            //var items = _repo.GetAll();
+            //if (items.Result == null || items.Result.Count == 0) return false;
+            //else if (ruleSetId > 0)
+            //{
+            //    return items.Result.Where(x => x.Name.ToLower() == value.ToLower() && x.RuleSetId == ruleSetId && x.AbilityId!=abilityId && x.IsDeleted!=true).FirstOrDefault() == null ? false : true;
+            //}
+            //else
+            //    return items.Result.Where(x => x.Name.ToLower() == value.ToLower()).FirstOrDefault() == null ? false : true;
+           
+            if (ruleSetId > 0)
+            {
+                return _context.Abilities.Where(x => x.Name.ToLower() == value.ToLower() && x.RuleSetId == ruleSetId && x.AbilityId != abilityId && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
+            }
+            else
+                return _context.Abilities.Where(x => x.Name.ToLower() == value.ToLower()).FirstOrDefault() == null ? false : true;
+        }
+
+        public void ToggleEnableAbility(int Id)
+        {
+            var ability = _context.Abilities.FirstOrDefault(x => x.AbilityId == Id);
+
+            if (ability == null)
+                return;
+
+
+            if (ability.IsEnabled == true)
+            {
+                ability.IsEnabled = false;
+            }
+            else if (ability.IsEnabled == false)
+            {
+                ability.IsEnabled = true;
+            }
+
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool Core_AbilityWithParentIDExists(int abilityId,int RulesetID) {
+            if (_context.Abilities.Where(x => x.AbilityId == abilityId && x.ParentAbilityId != null && x.IsDeleted != true).Any())
+            {
+                return true;
+            }
+            else
+            {
+                var model = _context.Abilities.Where(x => x.AbilityId == abilityId && x.ParentAbilityId == null && x.IsDeleted != true);
+                if (model.FirstOrDefault().RuleSetId == RulesetID)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public async Task<Ability> Core_CreateAbility(Ability ability) {
+            ability.ParentAbilityId = ability.AbilityId;
+            ability.AbilityId = 0;
+            return await _repo.Add(ability);
+        }
+
+        public List<Ability> SP_GetAbilityByRuleSetId(int rulesetId, int page, int pageSize)
+        {
+            List<Ability> _abilityList = new List<Ability>();
+            RuleSet ruleset = new RuleSet();
+
+            short num = 0;
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            //string qry = "EXEC Ability_GetByRulesetID @RulesetID = '" + rulesetId + "',@page='" + page + "',@size='" + pageSize + "'";
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("Ability_GetByRulesetID", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@RulesetID", rulesetId);
+                command.Parameters.AddWithValue("@page", page);
+                command.Parameters.AddWithValue("@size", pageSize);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+           
+            
+
+            if (ds.Tables[1].Rows.Count > 0)
+                ruleset = _repo.GetRuleset(ds.Tables[1], num);
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+               
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    Ability _ability = new Ability();
+                    _ability.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    _ability.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
+                    _ability.Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString();
+                    _ability.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
+                    _ability.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
+                    _ability.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    _ability.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+                    _ability.Level = row["Level"] == DBNull.Value ? null : row["Level"].ToString();
+                    _ability.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
+                    _ability.IsEnabled = row["IsEnabled"] == DBNull.Value ? false : Convert.ToBoolean(row["IsEnabled"]);
+
+                    _ability.AbilityId = row["AbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(row["AbilityId"].ToString());
+                    _ability.ParentAbilityId = row["ParentAbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentAbilityId"].ToString());
+                    _ability.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
+                    _ability.CurrentNumberOfUses = row["CurrentNumberOfUses"] == DBNull.Value ? 0 : Convert.ToInt32(row["CurrentNumberOfUses"].ToString());
+                    _ability.MaxNumberOfUses = row["MaxNumberOfUses"] == DBNull.Value ? 0 : Convert.ToInt32(row["MaxNumberOfUses"].ToString());
+
+                    _ability.RuleSet = ruleset;
+                    _abilityList.Add(_ability);
+                }
+            }
+            return _abilityList;
+        }
+
+        public List<AbilityCommand> SP_GetAbilityCommands(int abilityId)
+        {
+            List<AbilityCommand> _abilityCommand = new List<AbilityCommand>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            string qry = "EXEC Ability_GetAbilityCommands @AbilityId = '" + abilityId + "'";
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("Ability_GetAbilityCommands", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@AbilityId", abilityId);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }    
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    AbilityCommand _cmd = new AbilityCommand();
+
+                    _cmd.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
+                    _cmd.AbilityId = row["AbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(row["AbilityId"].ToString());
+                    _cmd.AbilityCommandId = row["AbilityCommandId"] == DBNull.Value ? 0 : Convert.ToInt32(row["AbilityCommandId"].ToString());
+                    _cmd.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
+                    _cmd.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+
+                    _abilityCommand.Add(_cmd);
+                }
+            }
+
+            return _abilityCommand;
+        }
+    }
+}

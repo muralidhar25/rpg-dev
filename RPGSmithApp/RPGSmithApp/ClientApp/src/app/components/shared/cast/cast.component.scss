@@ -1,0 +1,26 @@
+.btn-cast {
+    height: 1.75rem !important;
+    width: 100%;
+}
+
+.table-bordered td, .table-bordered th{
+    border: 5px solid #d3cfce;
+}
+.modal-title {
+    width: 88%;
+    line-height: 36px;
+    height: 36px;
+}
+.modal-title > span {
+    max-width: calc(100% - 180px);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-block;
+}
+.modal-title .manage-ruleset-header {
+    max-width: 152px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

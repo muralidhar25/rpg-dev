@@ -1,0 +1,92 @@
+<!-- Add item popup -->
+<div class="modal-header">
+    <h5 class="modal-title" id="addItemPopupTitle">Add From Ruleset</h5>
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+</div>
+<div class="modal-body">
+    <form>
+        <div class="form-row">
+            <div class="col-12 col-md-12 col-sm-12">
+                <!-- Search query -->
+                <div class="form-group form-group-unlabelled">
+                    <span class="input-group-btn">
+                        <button type="button" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
+                    </span>
+                    <input type="text" id="addItemSearchQuery" class="form-control" placeholder="Search items" [autofocus]>
+                </div>
+                <!-- End of search query -->
+            </div>
+            <!-- Item rulesets -->
+            <fieldset class="form-group input-list input-list-wrap items">
+                <ul class="input-list-items">
+                    <li class="form-check col-md-4 col-sm-12">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" name="addItemItems[]">
+                            <span>
+                                <img src="./assets/images/items/boots.jpg" alt="Boots">
+                                <em>Boots</em>
+                                <i class="icon"></i>
+                            </span>
+                        </label>
+                    </li>
+                    <li class="form-check col-md-4 col-sm-12">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" name="addItemItems[]">
+                            <span>
+                                <img src="./assets/images/items/bow.jpg" alt="Bow">
+                                <em>Bow</em>
+                                <i class="icon"></i>
+                            </span>
+                        </label>
+                    </li>
+                    <li class="form-check col-md-4 col-sm-12">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" name="addItemItems[]">
+                            <span>
+                                <img src="./assets/images/items/golden-ring.jpg" alt="Golden Ring">
+                                <em>Golden Ring</em>
+                                <i class="icon"></i>
+                            </span>
+                        </label>
+                    </li>
+                    <li class="form-check col-md-4 col-sm-12">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" name="addItemItems[]">
+                            <span>
+                                <img src="./assets/images/items/halberd.jpg" alt="Halberd">
+                                <em>Halberd</em>
+                                <i class="icon"></i>
+                            </span>
+                        </label>
+                    </li>
+                    <li class="form-check col-md-4 col-sm-12">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" name="addItemItems[]">
+                            <span>
+                                <img src="./assets/images/items/shield.jpg" alt="Shield">
+                                <em>Shield</em>
+                                <i class="icon"></i>
+                            </span>
+                        </label>
+                    </li>
+                    <li class="form-check col-md-4 col-sm-12">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" name="addItemItems[]">
+                            <span>
+                                <img src="./assets/images/items/silver-ring.jpg" alt="Silver Ring">
+                                <em>Silver Ring</em>
+                                <i class="icon"></i>
+                            </span>
+                        </label>
+                    </li>
+                </ul>
+            </fieldset>
+            <!-- End of item rulesets -->
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+    <button type="button" class="btn btn-accent">Add</button>
+</div>
+<!-- End of add item popup -->

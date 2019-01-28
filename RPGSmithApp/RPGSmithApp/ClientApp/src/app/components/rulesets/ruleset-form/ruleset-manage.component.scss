@@ -1,0 +1,61 @@
+ul.list-unstyled li {
+    padding: 5px 0px 5px 0px;
+}
+
+.dropdown-menu-item-count {
+    width: 40px;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    font-size: 0.875rem;
+    text-align: center;
+    background-color: #938c88;
+    text-decoration: none !important;
+    margin-left: 1.5em;
+}
+
+.list-unstyled li span {
+    margin-top: -32px;
+    margin-right: 10px;
+    color: #185888;
+    background-color: #e8e6e5;
+    border-color: #fff;
+    font-weight: 600;
+}
+
+@media screen and (max-width: 767.98px) {
+    .dropdown-menu-item-count {
+        width: 40px;
+        height: 2rem;
+    }
+
+    .list-unstyled li span {
+        margin-top: -42px;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .dropdown-menu-item-count {
+        width: 40px;
+        padding-top: 0.12rem;
+        padding-bottom: 0.125rem;
+        font-size: 0.7rem;
+        text-decoration: none !important;
+        margin-left: 1.5em;
+    }
+}
+
+.manage-ruleset-header span:last-child {
+    display: inline-block;
+    width: 80px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 6px 0;
+    float: right;
+}
+
+@media (max-width:767px) {
+    .manage-ruleset-header span:last-child {
+        width: 60px;
+    }
+}

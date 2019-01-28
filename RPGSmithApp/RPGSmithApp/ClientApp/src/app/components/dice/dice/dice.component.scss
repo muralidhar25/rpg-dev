@@ -1,0 +1,58 @@
+.modal-body {
+    overflow-y: hidden;
+}
+
+@media screen and (max-width: 767.98px){
+    .command-canvas button .dice-name {
+        -webkit-box-pack: justify;
+        position: relative;
+        display: inline-block;
+        text-align: center;
+        justify-content: center;
+        height: 1.6rem;
+        vertical-align: middle;
+        width: 100%;
+    }
+
+    .command-canvas button .dice-count {
+        position: relative;
+        max-height: 1.6rem;
+        justify-content: center;
+    }
+
+    .popup-dice .new-command.initial .command-canvas ul li .btn .dice-name{
+        top: -100px;
+    }
+
+    .popup-dice .new-command.initial .command-canvas ul li .btn span em,
+    .popup-dice .new-command.result .command-canvas ul li .btn span em {
+        background-color: transparent;
+        height: 100%;
+    }
+
+    .popup-dice .new-command.initial .command-canvas ul li .btn:before,
+    .popup-dice .new-command.result .command-canvas ul li .btn:before {
+        padding-top: 0.375em;
+    }
+
+    .command-canvas .web-view {
+        display: none;
+    }
+
+    .popup-dice .new-command.initial .command-canvas ul li .btn span,
+    .popup-dice .new-command.result .command-canvas ul li .btn span {
+        justify-content: center;
+    }
+}
+
+@media screen and (min-width: 768px){
+    .command-canvas .mob-view {
+        display: none;
+    }
+}
+.command-canvas {
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 20rem;
+    outline: none;
+}
