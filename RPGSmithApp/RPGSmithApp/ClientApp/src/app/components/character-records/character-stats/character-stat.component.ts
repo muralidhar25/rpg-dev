@@ -352,6 +352,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                         }
                         
                         if (item.characterStat.characterStatTypeId == STAT_TYPE.Condition) {
+                            
                             let result = '';
                             if (item.characterStat.characterStatConditions) {
                                 
@@ -359,13 +360,19 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                     let SkipNextEntries: boolean = false;
                                     item.characterStat.characterStatConditions.map((Condition: CharacterStatConditionViewModel) => {
                                         if (!SkipNextEntries) {
-                                            let ConditionStatValue: string = this.GetValueFromStatsByStatID(Condition.ifClauseStatId, Condition.ifClauseStattype);
+                                            //let ConditionStatValue: string = this.GetValueFromStatsByStatID(Condition.ifClauseStatId, Condition.ifClauseStattype);
+
+                                            let ConditionStatValue: string = '';
+                                            if (Condition.ifClauseStatText) {
+                                                ConditionStatValue = Utilities.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition,false);
+                                            }
                                             let operator = "";
-                                            let ValueToCompare = Condition.compareValue;
+                                            let ValueToCompare = Utilities.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition,true);//Condition.compareValue;
+                                            
                                             let ConditionTrueResult = Condition.result;
 
 
-                                            if (Condition.ifClauseStatId) {//if and Else If Part
+                                            if (Condition.sortOrder != item.characterStat.characterStatConditions.length) {//if and Else If Part
                                                 if (Condition.conditionOperator) {
                                                     //////////////////////////////////////////////////////////////////
 
@@ -844,19 +851,27 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
             }
 
             if (item.characterStat.characterStatTypeId == STAT_TYPE.Condition) {
+                
                 let result = '';
                 if (item.characterStat.characterStatConditions) {
+
                     if (item.characterStat.characterStatConditions.length) {
                         let SkipNextEntries: boolean = false;
                         item.characterStat.characterStatConditions.map((Condition: CharacterStatConditionViewModel) => {
                             if (!SkipNextEntries) {
-                                let ConditionStatValue: string = this.GetValueFromStatsByStatID(Condition.ifClauseStatId, Condition.ifClauseStattype);
+                                //let ConditionStatValue: string = this.GetValueFromStatsByStatID(Condition.ifClauseStatId, Condition.ifClauseStattype);
+
+                                let ConditionStatValue: string = '';
+                                if (Condition.ifClauseStatText) {
+                                    ConditionStatValue = Utilities.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition, false);
+                                }
                                 let operator = "";
-                                let ValueToCompare = Condition.compareValue;
+                                let ValueToCompare = Utilities.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition, true);//Condition.compareValue;
+
                                 let ConditionTrueResult = Condition.result;
 
 
-                                if (Condition.ifClauseStatId) {//if and Else If Part
+                                if (Condition.sortOrder != item.characterStat.characterStatConditions.length) {//if and Else If Part
                                     if (Condition.conditionOperator) {
                                         //////////////////////////////////////////////////////////////////
 
@@ -1319,19 +1334,27 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                     }
 
                     if (item.characterStat.characterStatTypeId == STAT_TYPE.Condition) {
+                        
                         let result = '';
                         if (item.characterStat.characterStatConditions) {
+
                             if (item.characterStat.characterStatConditions.length) {
                                 let SkipNextEntries: boolean = false;
                                 item.characterStat.characterStatConditions.map((Condition: CharacterStatConditionViewModel) => {
                                     if (!SkipNextEntries) {
-                                        let ConditionStatValue: string = this.GetValueFromStatsByStatID(Condition.ifClauseStatId, Condition.ifClauseStattype);
+                                        //let ConditionStatValue: string = this.GetValueFromStatsByStatID(Condition.ifClauseStatId, Condition.ifClauseStattype);
+
+                                        let ConditionStatValue: string = '';
+                                        if (Condition.ifClauseStatText) {
+                                            ConditionStatValue = Utilities.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition, false);
+                                        }
                                         let operator = "";
-                                        let ValueToCompare = Condition.compareValue;
+                                        let ValueToCompare = Utilities.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition, true);//Condition.compareValue;
+
                                         let ConditionTrueResult = Condition.result;
 
 
-                                        if (Condition.ifClauseStatId) {//if and Else If Part
+                                        if (Condition.sortOrder != item.characterStat.characterStatConditions.length) {//if and Else If Part
                                             if (Condition.conditionOperator) {
                                                 //////////////////////////////////////////////////////////////////
 
@@ -1936,4 +1959,5 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         result = result ? result.substring(0, result.length - 1) : '';
         return result;
     }
+    
 }

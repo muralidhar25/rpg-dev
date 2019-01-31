@@ -238,8 +238,9 @@ export class CharacterStatService extends EndpointFactory {
     }
     private GetDefaultConditionValues() {
         let arr: CharacterStatConditionViewModel[] = [];
-        let ifModel = new CharacterStatConditionViewModel(0, 0, 1, '', '', 1, 0, null,0,'',[],false);
-        let elseModel = new CharacterStatConditionViewModel(0, null, 0, '', '', 2, 0, null, 0, '', [], false);
+        
+        let ifModel = new CharacterStatConditionViewModel(0, 1, '', '', 1, 0, null, [], false, '',false,false,true);
+        let elseModel = new CharacterStatConditionViewModel(0, null, '', '', 2, 0, null, [], false, null, false, false,true);
         arr.push(ifModel);
         arr.push(elseModel);
         return arr;

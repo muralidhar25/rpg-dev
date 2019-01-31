@@ -183,6 +183,24 @@ export class EditCharacterStatComponent implements OnInit {
         //    { text: 'Unique1', selected: false }
 
         //];
+        let obj: any = this.CharacterStatTile.charactersCharacterStat.characterStat;
+        let DefaultValuesList: any = obj.characterStatDefaultValues;
+        if (DefaultValuesList) {
+            if (DefaultValuesList.length) {
+                DefaultValuesList.map((dfv) => {
+                    if (!isNaN(+dfv.maximum)) {
+                        dfv.maximum = +dfv.maximum;
+                    } else {
+                        dfv.maximum = 0;
+                    }
+                    if (!isNaN(+dfv.minimum)) {
+                        dfv.minimum = +dfv.minimum;
+                    } else {
+                        dfv.minimum = 0;
+                    }
+                })
+            }
+        }
     }
 
     saveStat(characterStatTypeId: number) {
@@ -209,10 +227,11 @@ export class EditCharacterStatComponent implements OnInit {
                         nummin = DefaultValuesList[0].minimum;
                     }
                 }
-                charactersCharacterStat.number = +this.valNumber;
+                
 
                 if (!(nummax == 0 && nummin == 0)) {
                     if (parseInt(this.valNumber) >= nummin && parseInt(this.valNumber) <= nummax) {
+                        charactersCharacterStat.number = +this.valNumber;
                         this.updateStatService(charactersCharacterStat);
                     }
                     else {
@@ -221,6 +240,7 @@ export class EditCharacterStatComponent implements OnInit {
                     }
                 }
                 else {
+                    charactersCharacterStat.number = +this.valNumber;
                     this.updateStatService(charactersCharacterStat);
                 }
                 
@@ -244,8 +264,7 @@ export class EditCharacterStatComponent implements OnInit {
                     }
                 }
                 let valid = true;
-                charactersCharacterStat.current = +this.valCurrentMax.current;
-                charactersCharacterStat.maximum = +this.valCurrentMax.max;
+                
 
                 if (!(curmax == 0 && curmin == 0)) {
                     if (parseInt(this.valCurrentMax.current) >= curmin && parseInt(this.valCurrentMax.current) <= curmax) {
@@ -268,6 +287,8 @@ export class EditCharacterStatComponent implements OnInit {
                 }
 
                 if (valid) {
+                    charactersCharacterStat.current = +this.valCurrentMax.current;
+                    charactersCharacterStat.maximum = +this.valCurrentMax.max;
                     this.updateStatService(charactersCharacterStat);
                 }
                 
@@ -304,8 +325,7 @@ export class EditCharacterStatComponent implements OnInit {
                         submin = DefaultValuesList[1].minimum;
                     }
                 }
-                charactersCharacterStat.value = +this.valValueSubValue.value;
-                charactersCharacterStat.subValue = +this.valValueSubValue.subValue;
+              
                 
                 let validval = true;
                 if (!(valmax == 0 && valmin == 0)) {
@@ -329,6 +349,8 @@ export class EditCharacterStatComponent implements OnInit {
                 }
 
                 if (validval) {
+                    charactersCharacterStat.value = +this.valValueSubValue.value;
+                    charactersCharacterStat.subValue = +this.valValueSubValue.subValue;
                     this.updateStatService(charactersCharacterStat);
                 }
                 

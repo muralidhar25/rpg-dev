@@ -213,34 +213,43 @@ export class CharacterStatDefaultValue {
     public type: number;
 }
 export class CharacterStatConditionViewModel {
-    constructor(characterStatConditionId: number, ifClauseStatId: number, conditionOperatorID: number, compareValue: string, result: string, sortOrder: number, characterStatId: number, conditionOperator: ConditionOperator, ifClauseStattype?: number, tempIfClauseStatId?: string, statsList?: StatsList[],isNumeric?: boolean) {
+    constructor(characterStatConditionId: number, conditionOperatorID: number, compareValue: string, result: string, sortOrder: number, characterStatId: number, conditionOperator: ConditionOperator, statsList?: StatsList[], isNumeric?: boolean, ifClauseStatText?: string, ifClauseStatText_isNumeric?: boolean, compareValue_isNumeric?: boolean, ifClauseStatText_isValid?: boolean, compareValue_isValid?: boolean) {
         this.characterStatConditionId = characterStatConditionId ? characterStatConditionId : 0;
 
-        this.ifClauseStatId = (ifClauseStatId == null || ifClauseStatId == undefined) ? null : ifClauseStatId;
-        this.conditionOperatorID = conditionOperatorID ? conditionOperatorID : 1;
-        this.compareValue = compareValue ? compareValue:'';
-        this.result = result ? result:'';
+        //this.ifClauseStatId = (ifClauseStatId == null || ifClauseStatId == undefined) ? null : ifClauseStatId;
+        this.conditionOperatorID = conditionOperatorID ? conditionOperatorID : null;
+        this.compareValue = compareValue ? compareValue : '';
+        this.result = result ? result : '';
         this.sortOrder = sortOrder ? sortOrder : 0;
         this.characterStatId = characterStatId ? characterStatId : 0;
         this.conditionOperator = conditionOperator ? conditionOperator : new ConditionOperator();
-        this.ifClauseStattype = ifClauseStattype ? ifClauseStattype : 0;
-        this.tempIfClauseStatId = tempIfClauseStatId ? tempIfClauseStatId : '';
+        //this.ifClauseStattype = ifClauseStattype ? ifClauseStattype : 0;
+        //this.tempIfClauseStatId = tempIfClauseStatId ? tempIfClauseStatId : '';
         this.statsList = statsList ? statsList : [];
-        this.isNumeric = isNumeric ;
-
+        this.isNumeric = isNumeric;
+        this.ifClauseStatText = ifClauseStatText ? ifClauseStatText : '';
+        this.ifClauseStatText_isNumeric = ifClauseStatText_isNumeric
+        this.compareValue_isNumeric = compareValue_isNumeric
+        this.ifClauseStatText_isValid = ifClauseStatText_isValid
+        this.compareValue_isValid = compareValue_isValid
     }
     public characterStatConditionId: number;
-    public tempIfClauseStatId: string;
-    public ifClauseStatId: number;
+    //public tempIfClauseStatId: string;
+    //public ifClauseStatId: number;
     public conditionOperatorID: number;
     public compareValue: string;
     public result: string;
     public sortOrder: number;
     public characterStatId: number;
     public conditionOperator: ConditionOperator;
-    public ifClauseStattype: number;
+    //public ifClauseStattype: number;
     public statsList: StatsList[];
-    public isNumeric: boolean; 
+    public isNumeric: boolean;
+    public ifClauseStatText: string;
+    public ifClauseStatText_isNumeric: boolean;
+    public compareValue_isNumeric: boolean;
+    public ifClauseStatText_isValid: boolean;
+    public compareValue_isValid: boolean;
     
 }
 export class ConditionOperator {

@@ -14,6 +14,7 @@ import { SharedService } from '../../../services/shared.service';
 import { characterStatCombo } from '../../../models/tiles/character-stat-tile.model';
 import { ImageSelectorComponent } from '../../image-interface/image-selector/image-selector.component';
 import { DiceComponent } from '../../dice/dice/dice.component';
+import { DiceService } from '../../../services/dice.service';
 
 @Component({
     selector: 'app-character-stats-form',
@@ -52,6 +53,7 @@ export class CharacterStatsFormComponent implements OnInit {
     options(placeholder?: string, initOnClick?: boolean): Object {
         return Utilities.optionsFloala(160, placeholder, initOnClick);
     }
+    erMessage: string = '';
     constructor(
         private router: Router, private bsModalRef: BsModalRef,
         private alertService: AlertService, private authService: AuthService,
@@ -85,10 +87,21 @@ export class CharacterStatsFormComponent implements OnInit {
             else {
                 this._ruleSetId = this.bsModalRef.content.characterStatTypeViewModel.ruleSetId;
             }
-
+            
             this.characterStatsFormModal = this.charactersService.getCharacterStatsFormModal(_characterStatsVM, _view);
             this.characterStatsFormModal.ruleSetId = this._ruleSetId;
 
+            
+            if (this.characterStatsFormModal.characterStatConditionViewModel) {
+                if (this.characterStatsFormModal.characterStatConditionViewModel.length) {
+                    this.characterStatsFormModal.characterStatConditionViewModel.map((x: CharacterStatConditionViewModel) => {
+                        x.compareValue_isNumeric = x.isNumeric;
+                        x.ifClauseStatText_isNumeric = x.isNumeric;
+                        x.compareValue_isValid = true;
+                        x.ifClauseStatText_isValid = true;
+                    })
+                }
+            }
             this.ConditionOperators = this.bsModalRef.content.ConditionOperators
             let characterStatsForConditions: StatsList[] = this.bsModalRef.content.characterStats;
             characterStatsForConditions = characterStatsForConditions.filter(x => x.typeId == STAT_TYPE.Text || x.typeId == STAT_TYPE.Number || x.typeId == STAT_TYPE.CurrentMax || x.typeId == STAT_TYPE.Choice || x.typeId == STAT_TYPE.ValueSubValue || x.typeId == STAT_TYPE.Combo || x.typeId == STAT_TYPE.Calculation)
@@ -256,7 +269,25 @@ export class CharacterStatsFormComponent implements OnInit {
     }
 
 
-    validateCombo(characterStatCombo: CharacterStatCombo) : boolean {
+    validateCombo(characterStatCombo: CharacterStatCombo): boolean {
+
+        if (characterStatCombo.minimum !== undefined) {
+            if (characterStatCombo.minimum === null) {
+                characterStatCombo.minimum = undefined;
+            }
+            else if (characterStatCombo.minimum.toString() === '') {
+                characterStatCombo.minimum = undefined;
+            }
+        }
+        if (characterStatCombo.maximum !== undefined) {
+            if (characterStatCombo.maximum === null) {
+                characterStatCombo.maximum = undefined;
+            }
+            else if (characterStatCombo.maximum.toString() === '') {
+                characterStatCombo.maximum = undefined;
+            }
+        }
+
         if ((characterStatCombo.minimum === undefined && characterStatCombo.maximum !== undefined)
             || (characterStatCombo.minimum === null && characterStatCombo.maximum !== null)) {
             this.alertService.showMessage("", "The minimum value can not be empty if maximum value is provided.", MessageSeverity.error);
@@ -304,6 +335,7 @@ export class CharacterStatsFormComponent implements OnInit {
         }
         else {
             let validForm = true;
+            
             if (characterStat.characterStatTypeName == STAT_NAME.Calculation) { // || characterStat.characterStatTypeName == 'Command') {
                 let _calsComndValue = characterStat.characterStatTypeName == STAT_NAME.Calculation ? characterStat.characterStatCalculation : characterStat.characterStatCommand;
                 
@@ -581,6 +613,22 @@ export class CharacterStatsFormComponent implements OnInit {
         let valid = true;
         
         characterStatDefaultValues.map((characterStatDefaultValue) => {
+            if (characterStatDefaultValue.minimum !== undefined) {
+                if (characterStatDefaultValue.minimum === null) {
+                    characterStatDefaultValue.minimum = undefined;
+                }
+               else if (characterStatDefaultValue.minimum.toString() === '') {
+                    characterStatDefaultValue.minimum = undefined;
+                }
+            }
+            if (characterStatDefaultValue.maximum !== undefined) {
+                if (characterStatDefaultValue.maximum === null) {
+                    characterStatDefaultValue.maximum = undefined;
+                }
+                else if (characterStatDefaultValue.maximum.toString() === '') {
+                    characterStatDefaultValue.maximum = undefined;
+                }
+            }
             if ((characterStatDefaultValue.minimum === undefined && characterStatDefaultValue.maximum !== undefined)
                 || (+characterStatDefaultValue.minimum === null && +characterStatDefaultValue.maximum !== null)) {
                 this.alertService.showMessage("", "The minimum value can not be empty if maximum value is provided.", MessageSeverity.error);
@@ -591,19 +639,45 @@ export class CharacterStatsFormComponent implements OnInit {
                 this.alertService.showMessage("", "The maximum value can not be empty if minimum value is provided.", MessageSeverity.error);
                 valid= false;
             }
-            else if ((+characterStatDefaultValue.minimum && +characterStatDefaultValue.maximum) || (+characterStatDefaultValue.minimum === 0 || +characterStatDefaultValue.maximum === 0)) {
-                if (+characterStatDefaultValue.minimum > +characterStatDefaultValue.maximum) {
-                    this.alertService.showMessage("", "The minimum value could not be greater than the maximum value.", MessageSeverity.error);
-                    valid = false;
-                }
-                else if (characterStatDefaultValue.defaultValue !== undefined) {
-                    if (+characterStatDefaultValue.minimum > +characterStatDefaultValue.defaultValue
-                        || +characterStatDefaultValue.maximum < +characterStatDefaultValue.defaultValue
-                    ) {
-                        this.alertService.showMessage("", "The value for this field must be between " + characterStatDefaultValue.minimum + " and " + characterStatDefaultValue.maximum + " value.", MessageSeverity.error);
-                        valid = false;
+            else if (characterStatDefaultValue.minimum !== undefined && characterStatDefaultValue.maximum !== undefined) {
+                if (characterStatDefaultValue.minimum.toString() !== '' && characterStatDefaultValue.maximum.toString() !== '') {
+                    if ((+characterStatDefaultValue.minimum && +characterStatDefaultValue.maximum) || (+characterStatDefaultValue.minimum === 0 || +characterStatDefaultValue.maximum === 0)) {
+                        if (+characterStatDefaultValue.minimum > +characterStatDefaultValue.maximum) {
+                            this.alertService.showMessage("", "The minimum value could not be greater than the maximum value.", MessageSeverity.error);
+                            valid = false;
+                        }
+                        else if (characterStatDefaultValue.defaultValue !== undefined) {
+                            if (+characterStatDefaultValue.minimum > +characterStatDefaultValue.defaultValue
+                                || +characterStatDefaultValue.maximum < +characterStatDefaultValue.defaultValue
+                            ) {
+                                
+                                this.alertService.showMessage("", "The value for this field must be between " + characterStatDefaultValue.minimum + " and " + characterStatDefaultValue.maximum + " value.", MessageSeverity.error);
+                                valid = false;
+                            }
+                        }
                     }
                 }
+                else {
+                    
+                    if (characterStatDefaultValue.minimum !== undefined && characterStatDefaultValue.maximum !== undefined) {
+
+                        if (characterStatDefaultValue.minimum.toString() === '' && characterStatDefaultValue.maximum.toString() === '') {
+                            characterStatDefaultValue.minimum = undefined;
+                            characterStatDefaultValue.maximum = undefined;
+                        }
+                        else if (characterStatDefaultValue.minimum.toString() !== '' && characterStatDefaultValue.maximum.toString() === '') {
+                            this.alertService.showMessage("", "The maximum value can not be empty if minimum value is provided.", MessageSeverity.error);
+                            valid = false;
+                        }
+                        else if (characterStatDefaultValue.minimum.toString() === '' && characterStatDefaultValue.maximum.toString() !== '') {
+                            this.alertService.showMessage("", "The minimum value can not be empty if maximum value is provided.", MessageSeverity.error);
+                            valid = false;
+                        }
+                    }
+                        
+                       
+                }
+            //else 
                 //if (characterStatDefaultValue.defaultValue !== undefined) {
                 //    if (+characterStatDefaultValue.minimum > +characterStatDefaultValue.defaultValue
                 //        || +characterStatDefaultValue.maximum < +characterStatDefaultValue.defaultValue
@@ -622,7 +696,7 @@ export class CharacterStatsFormComponent implements OnInit {
         let IndexPositionToInsert_ElseIf: number = elseIndex - 1;
         let NewElseIfSortOrder: number = elseIndex+1;
 
-        let NewElseIf = new CharacterStatConditionViewModel(0, 0, 1, '', '', NewElseIfSortOrder, 0, null, 0, '', [], false);
+        let NewElseIf = new CharacterStatConditionViewModel(0, 1, '', '', NewElseIfSortOrder, 0, null, [], false, '', false, false,true,true);
         
         this.characterStatsFormModal.characterStatConditionViewModel.splice(elseIndex, 0, NewElseIf);
 
@@ -637,17 +711,17 @@ export class CharacterStatsFormComponent implements OnInit {
             sc.sortOrder = index + 1;
         })
     }
-    conditionStatChanged(e: any, condition: CharacterStatConditionViewModel) {
-        let selectedVal = e.target.value;
-        this.characterStatsForConditions.map((stat: StatsList) => {
-            if (stat.tempCharacterStatId == selectedVal) {
-                condition.ifClauseStatId = stat.characterStatId;
-                condition.ifClauseStattype = stat.ifClauseStattype;
-                condition.isNumeric = stat.isNumeric;
+    //conditionStatChanged(e: any, condition: CharacterStatConditionViewModel) {
+    //    let selectedVal = e.target.value;
+    //    this.characterStatsForConditions.map((stat: StatsList) => {
+    //        if (stat.tempCharacterStatId == selectedVal) {
+    //            condition.ifClauseStatId = stat.characterStatId;
+    //            condition.ifClauseStattype = stat.ifClauseStattype;
+    //            condition.isNumeric = stat.isNumeric;
                 
-            }
-        })
-    }
+    //        }
+    //    })
+    //}
     GetStatList(statsList: StatsList[]) {
         let newList: StatsList[] = [];
         statsList.map((stat: StatsList) => {
@@ -685,26 +759,299 @@ export class CharacterStatsFormComponent implements OnInit {
         
         return newList;
     }
-    IsStatSelected(stat: StatsList, condition: CharacterStatConditionViewModel) {
+    //IsStatSelected(stat: StatsList, condition: CharacterStatConditionViewModel) {
         
-        if (condition.ifClauseStatId.toString() == stat.tempCharacterStatId && condition.ifClauseStatId == stat.characterStatId && condition.ifClauseStattype<=0) {
-            return true;
-        }
-        else if (condition.ifClauseStatId == stat.characterStatId) {
-            if (stat.tempCharacterStatId.indexOf('_') != -1) {
-                if (stat.tempCharacterStatId.split('_')[1] === condition.ifClauseStattype.toString()) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    //    if (condition.ifClauseStatId.toString() == stat.tempCharacterStatId && condition.ifClauseStatId == stat.characterStatId && condition.ifClauseStattype<=0) {
+    //        return true;
+    //    }
+    //    else if (condition.ifClauseStatId == stat.characterStatId) {
+    //        if (stat.tempCharacterStatId.indexOf('_') != -1) {
+    //            if (stat.tempCharacterStatId.split('_')[1] === condition.ifClauseStattype.toString()) {
+    //                return true;
+    //            }
+    //        }
+    //    }
+    //    return false;
 
-    }
+    //}
     checkNum(event: any) {
         //const pattern = /^-?[0-9]\d*(\\d+)?$/g;
         //if (!pattern.test(event.target.value)) {  
         //            event.target.value = event.target.value.replace(/[^0-9]/g, "");
         //}
         return false;
+    }
+    ifClauseStatTextChanged(condition: CharacterStatConditionViewModel) {
+        
+        let res: boolean = this.IsStatStringContainsOnlyNumericResult(condition.ifClauseStatText);
+        condition.ifClauseStatText_isNumeric = res;
+        if (!isNaN(+condition.ifClauseStatText)) {
+            condition.ifClauseStatText_isNumeric = condition.compareValue_isNumeric;
+        }
+        else {
+            if (!isNaN(+condition.compareValue)) {
+                condition.compareValue_isNumeric = condition.ifClauseStatText_isNumeric
+            }
+        }
+        if (condition.compareValue=='') {
+            condition.compareValue_isNumeric = condition.ifClauseStatText_isNumeric;
+        }
+        this.CommonConditionTextBoxChanged(condition);
+    }
+    CompareValueTextChanged(condition: CharacterStatConditionViewModel) {
+        
+        let res: boolean = this.IsStatStringContainsOnlyNumericResult(condition.compareValue);
+        condition.compareValue_isNumeric = res;
+        if (!isNaN(+condition.compareValue)) {
+            condition.compareValue_isNumeric = condition.ifClauseStatText_isNumeric;
+        }
+        else {
+            if (!isNaN(+condition.ifClauseStatText)) {
+                condition.ifClauseStatText_isNumeric = condition.compareValue_isNumeric;
+            }
+        }
+        if (condition.ifClauseStatText=='') {
+            condition.ifClauseStatText_isNumeric = condition.compareValue_isNumeric;
+        }
+        this.CommonConditionTextBoxChanged(condition);
+    }
+    public CommonConditionTextBoxChanged(condition: CharacterStatConditionViewModel) {
+        condition.compareValue_isValid = true;
+        condition.ifClauseStatText_isValid = true;
+        let errMsg = '';
+        this.erMessage = errMsg;
+        if (!isNaN(+condition.ifClauseStatText) && !isNaN(+condition.compareValue)) {
+            condition.ifClauseStatText_isNumeric = true;
+            condition.compareValue_isNumeric = true;
+        }        
+        if (condition.ifClauseStatText_isNumeric && condition.compareValue_isNumeric) {
+            condition.isNumeric = true;
+        }
+        else {
+            condition.isNumeric = false;
+        }
+
+
+        var ifClauseStatTextString = condition.ifClauseStatText;
+        var compareValueString = condition.compareValue;
+        var myRegEx = /\[(.*?)\]/g;
+
+        // Get an array containing the first capturing group for every match
+        
+        var matchesIfClauseStatText = this.getMatches(ifClauseStatTextString, myRegEx);
+        var matchesCompareValueString = this.getMatches(compareValueString, myRegEx);
+        
+        let NotValidStatNames = '';
+        let Matched_IfClauseStatText: boolean = true;
+        let Matched_CompareValue: boolean = true;
+        matchesIfClauseStatText.map((x) => {
+
+            if (this.characterStatsForConditions.filter(csfc => csfc.statName.toUpperCase() == x.toUpperCase()).length==0) {
+                Matched_IfClauseStatText = false;
+                condition.ifClauseStatText_isValid = false;
+                NotValidStatNames += ' [' + x + '],';
+            }
+            
+        });
+        matchesCompareValueString.map((x) => {
+            if (this.characterStatsForConditions.filter(csfc => csfc.statName.toUpperCase() == x.toUpperCase()).length==0) {
+                Matched_CompareValue = false;
+                condition.compareValue_isValid = false;
+                NotValidStatNames += ' [' + x + '],';
+            }
+        });
+        
+        if (!(Matched_IfClauseStatText && Matched_CompareValue)) {
+            NotValidStatNames = NotValidStatNames.substring(0, NotValidStatNames.length - 1);
+            errMsg =NotValidStatNames+' is not valid stat name.'
+        }
+        this.erMessage = errMsg;
+        console.log(this.erMessage);
+    }
+    public IsStatStringContainsOnlyNumericResult(text: string): boolean {        
+        let IDs: any[] = [];
+        let calculationString: string = text;
+        let finalCalcString: string = '';
+        let NumericStatType = { CURRENT: 1, MAX: 2, VALUE: 3, SUBVALUE: 4, NUMBER: 5 };
+        if (calculationString) {
+            calculationString.split(/\[(.*?)\]/g).map((rec) => {
+
+                let id = ''; let flag = false; let type = 0; let statType = 0;
+
+
+
+                //let id = ''; let flag = false; let type = 0; let statType = 0;
+                let isValue = false; let isSubValue = false; let isCurrent = false; let isMax = false; let isNum = false;
+
+                if (rec.toUpperCase().split('(VALUE)').length > 1) { isValue = true; }
+                if (rec.toUpperCase().split('(SUBVALUE)').length > 1) { isSubValue = true; }
+                if (rec.toUpperCase().split('(CURRENT)').length > 1) { isCurrent = true; }
+                if (rec.toUpperCase().split('(MAX)').length > 1) { isMax = true; }
+                if (rec.toUpperCase().split('(Number)').length > 1) { isNum = true; }
+
+                if (isValue || isSubValue || isCurrent || isMax || isNum) {
+                    if (isValue) {
+                        id = rec.toUpperCase().split('(VALUE)')[0].replace('[', '').replace(']', '');
+                        type = NumericStatType.VALUE;
+                    }
+                    else if (isSubValue) {
+                        id = rec.toUpperCase().split('(SUBVALUE)')[0].replace('[', '').replace(']', '');
+                        type = NumericStatType.SUBVALUE;
+                    }
+                    else if (isCurrent) {
+                        id = rec.toUpperCase().split('(CURRENT)')[0].replace('[', '').replace(']', '');
+                        type = NumericStatType.CURRENT;
+                    }
+                    else if (isMax) {
+                        id = rec.toUpperCase().split('(MAX)')[0].replace('[', '').replace(']', '');
+                        type = NumericStatType.MAX;
+                    }
+                    else if (isNum) {
+                        id = rec.toUpperCase().split('(Number)')[0].replace('[', '').replace(']', '');
+                        type = NumericStatType.NUMBER;
+                    }
+
+                }
+                else {
+                    id = rec.replace('[', '').replace(']', '');
+                    type = 0
+                }
+                this.characterStatsForConditions.map((q) => {
+                    if (!flag) {
+                        flag = (id.toUpperCase() == q.statName.toUpperCase());
+                        statType = q.typeId
+                    }
+                })
+                if (flag) {
+                    IDs.push({ id: id, type: isNaN(type) ? 0 : type, originaltext: "[" + rec + "]", statType: statType })
+                }
+                else if (+id == -1) {
+                    IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
+                }
+            })
+            IDs.map((rec) => {
+                let TestNumber: number = 1;
+                this.characterStatsForConditions.map((stat) => {
+                    if (rec.id.toUpperCase() == stat.statName.toUpperCase()) {
+                        let num = 0;
+                        switch (rec.statType) {
+                            case 3: //Number
+                                num = TestNumber
+                                break;
+                            case 5: //Current Max
+                                if (rec.type == 0)//current
+                                {
+                                    num = TestNumber
+                                }
+                                else if (rec.type == NumericStatType.CURRENT)//current
+                                {
+                                    num = TestNumber
+                                }
+                                else if (rec.type == NumericStatType.MAX)//Max
+                                {
+                                    num = TestNumber
+                                }
+                                break;
+                            case 7: //Val Sub-Val
+                                if (rec.type == 0)//value
+                                {
+                                    num = TestNumber
+                                }
+                                else if (rec.type == NumericStatType.VALUE)//value
+                                {
+                                    num = TestNumber
+                                }
+                                else if (rec.type == NumericStatType.SUBVALUE)//sub-value
+                                {
+                                    num = TestNumber
+                                }
+                                break;
+                            case 12: //Calculation
+                                num = TestNumber
+                                break;
+                            case STAT_TYPE.Combo: //Combo
+
+                                num = TestNumber
+                                break;
+                            default:
+                                break;
+                        }
+                        if (num)
+                            calculationString = calculationString.replace(rec.originaltext, num.toString());
+                        else
+                            calculationString = calculationString.replace(rec.originaltext, '0');
+                        //CalcString = CalcString.replace(rec.originaltext, "(" + num + ")");
+                    }
+
+                });
+
+                finalCalcString = calculationString;
+            });
+        }
+        ////////////////////////////////
+        finalCalcString = finalCalcString.replace(/  +/g, ' ');
+        finalCalcString = finalCalcString.replace(/RU/g, ' RU').replace(/RD/g, ' RD').replace(/KL/g, ' KL').replace(/KH/g, ' KH').replace(/DL/g, ' DL').replace(/DH/g, ' DH');
+        finalCalcString = finalCalcString.replace(/\+0/g, '').replace(/\-0/g, '');
+        finalCalcString = finalCalcString.replace(/\+ 0/g, '').replace(/\- 0/g, '');
+        let CalcStringForValue_Result: number = Utilities.InvalidValueForConditionStats;
+        try {
+            finalCalcString = (finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '+ 0' ||
+                finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '- 0' ||
+                finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '* 0' ||
+                finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '/ 0')
+                ? finalCalcString.trim().slice(0, -1)
+                : finalCalcString.trim();
+            let obj: any = +finalCalcString == 0 ? 0 : DiceService.commandInterpretationForConditionStatValueCalculations(finalCalcString, undefined, undefined)[0];
+            let res = false;
+            if (obj) {
+                if (obj.calculationArray) {
+                    if (obj.calculationArray.length) {
+                        if (obj.calculationArray.length == obj.calculationArray.filter(x => x.static).length) {
+                            res = true;
+                        }
+                        //obj.calculationArray.map((o) => {
+                        //    if (!o.static) {
+                        //        res = false;
+                        //    }
+                        //})
+                    }
+                }
+            }
+            return res;
+        }
+        catch (ex) {            
+            return false;
+        }
+       
+    }
+    public CheckConditionsAreValid():boolean {
+        if (this.characterStatsFormModal.characterStatTypeId == STAT_TYPE.Condition) {
+            let res = true;
+            if (this.characterStatsFormModal.characterStatConditionViewModel) {
+                if (this.characterStatsFormModal.characterStatConditionViewModel.length) {
+                    this.characterStatsFormModal.characterStatConditionViewModel.map((x: CharacterStatConditionViewModel) => {
+                        if (x.compareValue_isNumeric != x.ifClauseStatText_isNumeric) {
+                            res = false;
+                        }
+                        else if (x.ifClauseStatText_isValid != x.compareValue_isValid) {
+                            res = false;
+                        }
+                    })
+                }
+            }
+            return res;
+        }
+        else {
+            return true;
+        }
+    }
+    public getMatches(string, regex) {
+        let index = 1; // default to the first capturing group
+        var matches = [];
+        var match;
+        while (match = regex.exec(string)) {
+            matches.push(match[index]);
+        }
+        return matches;
     }
 }

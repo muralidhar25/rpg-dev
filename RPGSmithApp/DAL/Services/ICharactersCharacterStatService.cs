@@ -9,7 +9,7 @@ namespace DAL.Services
 {
    public interface ICharactersCharacterStatService
     {
-        Task<CharactersCharacterStat> Create(CharactersCharacterStat item);
+        void Create(CharactersCharacterStat item);
         Task<CharactersCharacterStat> Update(CharactersCharacterStat item);
         void Update(List<CharactersCharacterStat> characterStats);
         List<CharactersCharacterStat> GetByCharacterId(int characterId, int page, int pageSize);

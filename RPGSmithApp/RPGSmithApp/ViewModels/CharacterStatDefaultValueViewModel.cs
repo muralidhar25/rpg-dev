@@ -11,8 +11,8 @@ namespace RPGSmithApp.ViewModels
         public int CharacterStatDefaultValueId { get; set; }
         public int CharacterStatId { get; set; }
         public string DefaultValue { get; set; }
-        public int Maximum { get; set; }
-        public int Minimum { get; set; }
+        public int? Maximum { get; set; }
+        public int? Minimum { get; set; }
         public int Type { get; set; }
     }
 

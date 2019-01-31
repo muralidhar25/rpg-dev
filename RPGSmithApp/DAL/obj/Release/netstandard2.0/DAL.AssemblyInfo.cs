@@ -11,9 +11,9 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("EBENMONNEY")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("RPGSMITH")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
-[assembly: System.Reflection.AssemblyCopyrightAttribute("Copyright © 2018 www.ebenmonney.com")]
+[assembly: System.Reflection.AssemblyCopyrightAttribute("Copyright © 2018 www.rpgsmith.com")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("Data Access Layer for the Quick Application template")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("2.0.0.1")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("2.0.1")]

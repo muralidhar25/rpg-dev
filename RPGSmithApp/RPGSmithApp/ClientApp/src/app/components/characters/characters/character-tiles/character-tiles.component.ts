@@ -889,19 +889,23 @@ export class CharacterTilesComponent implements OnInit {
                 }
                 if (item.characterStatTiles.charactersCharacterStat.characterStat.characterStatTypeId == STAT_TYPE.Condition) {
                     let result = '';
-                    
+
                     if (item.characterStatTiles.charactersCharacterStat.characterStat.characterStatConditions) {
                         if (item.characterStatTiles.charactersCharacterStat.characterStat.characterStatConditions.length) {
                             let SkipNextEntries: boolean = false;
                             item.characterStatTiles.charactersCharacterStat.characterStat.characterStatConditions.map((Condition: CharacterStatConditionViewModel) => {
                                 if (!SkipNextEntries) {
-                                    let ConditionStatValue: string = this.GetValueFromStatsByStatID(Condition.ifClauseStatId, Condition.ifClauseStattype);
+                                    //let ConditionStatValue: string = this.GetValueFromStatsByStatID(Condition.ifClauseStatId, Condition.ifClauseStattype);
+                                    let ConditionStatValue: string = '';
+                                    if (Condition.ifClauseStatText) {
+                                        ConditionStatValue = Utilities.GetClaculatedValuesOfConditionStats(this.CharacterStatsValues.character.inventoryWeight, this.CharacterStatsValues.charactersCharacterStat, Condition, false);
+                                    }
                                     let operator = "";
-                                    let ValueToCompare = Condition.compareValue;
+                                    let ValueToCompare = Utilities.GetClaculatedValuesOfConditionStats(this.CharacterStatsValues.character.inventoryWeight, this.CharacterStatsValues.charactersCharacterStat, Condition, true); //Condition.compareValue;
                                     let ConditionTrueResult = Condition.result;
 
 
-                                    if (Condition.ifClauseStatId) {//if and Else If Part
+                                    if (Condition.sortOrder != item.characterStatTiles.charactersCharacterStat.characterStat.characterStatConditions.length) {//if and Else If Part
                                         if (Condition.conditionOperator) {
                                             //////////////////////////////////////////////////////////////////
 
@@ -1000,7 +1004,7 @@ export class CharacterTilesComponent implements OnInit {
                         }
                     }
                     item.characterStatTiles.charactersCharacterStat.text = result;
-                } 
+                }    
             }
             else if (item.tileTypeId == TILES.TEXT) {
                 let AllChoices: any[] = [];

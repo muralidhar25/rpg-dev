@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace RPGSmithApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190129045636_DefaultValue_nullableColumns")]
+    partial class DefaultValue_nullableColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -667,7 +669,9 @@ namespace RPGSmithApp.Migrations
 
                     b.Property<int?>("ConditionOperatorID");
 
-                    b.Property<string>("IfClauseStatText");
+                    b.Property<int?>("IfClauseStatId");
+
+                    b.Property<int?>("IfClauseStattype");
 
                     b.Property<bool>("IsNumeric");
 
@@ -681,6 +685,8 @@ namespace RPGSmithApp.Migrations
                     b.HasIndex("CharacterStatId");
 
                     b.HasIndex("ConditionOperatorID");
+
+                    b.HasIndex("IfClauseStatId");
 
                     b.ToTable("CharacterStatConditions");
                 });
@@ -2874,6 +2880,10 @@ namespace RPGSmithApp.Migrations
                     b.HasOne("DAL.Models.ConditionOperator", "ConditionOperator")
                         .WithMany()
                         .HasForeignKey("ConditionOperatorID");
+
+                    b.HasOne("DAL.Models.CharacterStat", "IfClauseStat")
+                        .WithMany()
+                        .HasForeignKey("IfClauseStatId");
                 });
 
             modelBuilder.Entity("DAL.Models.CharacterStatDefaultValue", b =>

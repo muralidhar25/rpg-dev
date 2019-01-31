@@ -12,8 +12,9 @@ namespace DAL.Models
         public int CharacterStatConditionId { get; set; }
 
 
-        public int? IfClauseStatId { get; set; }
-        public int? IfClauseStattype { get; set; }
+        //public int? IfClauseStatId { get; set; }
+        //public int? IfClauseStattype { get; set; }
+        public string IfClauseStatText { get; set; }
         public int? ConditionOperatorID { get; set; }
         [Column(TypeName = "nvarchar(255)")]
         public string CompareValue { get; set; }
@@ -26,6 +27,6 @@ namespace DAL.Models
 
         public virtual ConditionOperator ConditionOperator { get; set; }
         public virtual CharacterStat CharacterStat { get; set; }
-        public virtual CharacterStat IfClauseStat { get; set; }
+        //public virtual CharacterStat IfClauseStat { get; set; }
     }
 }

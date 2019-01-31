@@ -343,13 +343,28 @@ export class CharactersFormComponent implements OnInit {
         ++this.page;
         this.offset = (this.page - 1) * this.pageSize;
         this.isLoading = false;
-        //this.rulesetService.getRulesets(this.page, this.pageSize)
-        //    .subscribe(data => {
-        //        debugger
-        //        this.charactersFormModal.ruleSets.push(data);
-        //        this.charactersFormModal.hasRuleset = data == undefined ? false : data.length == 0 ? false : true;
-        //        this.isLoading = false;
-        //    }, error => { }, () => { });
+        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+        if (user == null)
+            this.authService.logout();
+        this.rulesetService.getAllRuleSetByUserId(user.id, this.page, this.pageSize)
+            .subscribe(data => {
+                let results = data;
+                if (results) {
+                    if (results.length) {
+                        results.map((Rset) => {
+                            this.charactersFormModal.ruleSets.push(Rset);
+                        })
+                    }
+                }
+                //this.charactersFormModal.ruleSets = data;
+                //this.charactersFormModal.hasRuleset = data == undefined ? false : data.length == 0 ? false : true;
+                this.isLoading = false;
+            }, error => {
+                this.isLoading = false;
+                this.alertService.stopLoadingMessage();
+                let Errors = Utilities.ErrorDetail("Error", error);
+                if (Errors.sessionExpire) this.authService.logout(true);
+            }, () => { });
     }
 
     private destroyModalOnInit(): void {

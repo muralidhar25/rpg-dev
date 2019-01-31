@@ -34,8 +34,7 @@ namespace DAL.Services
 
         public async Task<List<RuleSet>> GetRuleSets(int page, int pageSize)
         {
-            var results = _context.RuleSets.Where(p => p.IsDeleted != true).ToList();
-            return results.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
+            return _context.RuleSets.Where(p => p.IsDeleted != true).Skip(pageSize * (page - 1)).Take(pageSize).ToList();
         }
 
         public async Task<List<RuleSet>> GetRuleSets()

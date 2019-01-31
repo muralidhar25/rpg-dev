@@ -7,6 +7,7 @@ import { CharacterCommand, DiceCommand } from '../models/view-models/character-c
 import { DiceRoll } from '../models/view-models/dice-roll.model';
 import { forEach } from '@angular/router/src/utils/collection';
 import { CustomDice, DefaultDice, DiceTray } from '../models/view-models/custome-dice.model';
+import { Utilities } from './utilities';
 
 @Injectable()
 export class DiceService {
@@ -287,7 +288,7 @@ export class DiceService {
     }
 
     private static calsInterpretationArray(_commandArray: any, _calculationIndex: number): any {
-        debugger
+        
         let _diceInterpretationArray = _commandArray.diceInterpretationArray;
         if (_commandArray.isCustomDice) {
             return {
@@ -482,14 +483,16 @@ export class DiceService {
                 d.isCustomNumeric = false;
                 //Explode
                 d.isExploded = false;
-                let exRandomCount = 0;
+                //let exRandomCount = 0;
                 let diceValArray = d.dice.split('D')
-                exRandomCount = diceValArray[0] == "" ? 1 : (+diceValArray[0] < 1 ? 1 : +diceValArray[0]);
-                let diceValueExcludeExplode = diceValArray[1].indexOf('!') > -1 ? diceValArray[1].replace(/!/g, '') : diceValArray[1];
+                //exRandomCount = diceValArray[0] == "" ? 1 : (+diceValArray[0] < 1 ? 1 : +diceValArray[0]);
+                if (d.dice.indexOf('!') > 1) {
+                    let diceValueExcludeExplode = diceValArray[1].indexOf('!') > -1 ? diceValArray[1].replace(/!/g, '') : diceValArray[1];
 
-                if (diceValArray[1].indexOf('!') > -1) {
-                    if (!(diceValArray[1].split('!').length > 2) && !(+diceValueExcludeExplode == 1)) {
-                        d.isExploded = true;
+                    if (diceValArray[1].indexOf('!') > -1) {
+                        if (!(diceValArray[1].split('!').length > 2) && !(+diceValueExcludeExplode == 1)) {
+                            d.isExploded = true;
+                        }
                     }
                 }
                 // End Explode
@@ -635,16 +638,19 @@ export class DiceService {
 
                 //Explode
                 d.isExploded = false;
-                let exRandomCount = 0;
+                //let exRandomCount = 0;
                 let diceValArray = d.dice.split('D')
-                exRandomCount = diceValArray[0] == "" ? 1 : (+diceValArray[0] < 1 ? 1 : +diceValArray[0]);
-                let diceValueExcludeExplode = diceValArray[1].indexOf('!') > -1 ? diceValArray[1].replace(/!/g, '') : diceValArray[1];
+                //exRandomCount = diceValArray[0] == "" ? 1 : (+diceValArray[0] < 1 ? 1 : +diceValArray[0]);
+                if (d.dice.indexOf('!')>1) {
+                    let diceValueExcludeExplode = diceValArray[1].indexOf('!') > -1 ? diceValArray[1].replace(/!/g, '') : diceValArray[1];
 
-                if (diceValArray[1].indexOf('!') > -1) {                    
-                    if (!(diceValArray[1].split('!').length > 2) && !(+diceValueExcludeExplode == 1)) {
-                        d.isExploded = true;
-                    }
-                }                
+                    if (diceValArray[1].indexOf('!') > -1) {
+                        if (!(diceValArray[1].split('!').length > 2) && !(+diceValueExcludeExplode == 1)) {
+                            d.isExploded = true;
+                        }
+                    }   
+                }
+                            
                 // End Explode
                 if (d.dice.length >= 2) {
                     let arr = d.dice.split('D');
@@ -738,29 +744,33 @@ export class DiceService {
                     let isDiceExploded = false;
                     let diceValArray = _dice.split('D')
                     randomCount = diceValArray[0] == "" ? 1 : (+diceValArray[0] < 1 ? 1 : +diceValArray[0]);
-                    let diceValueExcludeExplode = diceValArray[1].indexOf('!') > -1 ? diceValArray[1].replace(/!/g, '') : diceValArray[1];
-                   
-                    if (diceValArray[1].indexOf('!') > -1) {
-                        if (diceValArray[1].split('!').length > 2) {
-                            this.HasError = -1;
-                        }
-                        if (+diceValueExcludeExplode==1) {
-                            this.HasError = -1;
-                        }
-                        if (!(diceValArray[1].split('!').length > 2) && !(+diceValueExcludeExplode == 1)) {
-                            isExplodDice = true;
+                    let diceValueExcludeExplode = diceValArray[1];
+                    if (_dice.indexOf('!') > 1) {
+                        diceValueExcludeExplode = diceValArray[1].indexOf('!') > -1 ? diceValArray[1].replace(/!/g, '') : diceValArray[1];
+
+                        if (diceValArray[1].indexOf('!') > -1) {
+                            if (diceValArray[1].split('!').length > 2) {
+                                this.HasError = -1;
+                            }
+                            if (+diceValueExcludeExplode == 1) {
+                                this.HasError = -1;
+                            }
+                            if (!(diceValArray[1].split('!').length > 2) && !(+diceValueExcludeExplode == 1)) {
+                                isExplodDice = true;
+                            }
                         }
                     }
                     diceNumber = diceValueExcludeExplode.trim() == "" ? 1 : +diceValueExcludeExplode;
+                    
                     for (var x = 1; x <= randomCount; x++) {
                         let _getRandom = this.getRandomNumber(1, diceNumber);
 
-                        if (isExplodDice) {
-                            if (diceValueExcludeExplode == _getRandom) { // Dice is Exploded..
-                                isDiceExploded = true;
-                                randomCount = randomCount + 1;
-                            }
-                        }
+                        //if (isExplodDice) {
+                        //    if (diceValueExcludeExplode == _getRandom) { // Dice is Exploded..
+                        //        isDiceExploded = true;
+                        //        randomCount = randomCount + 1;
+                        //    }
+                        //}
                         if (x == randomCount) {
                             randomNumbers += _getRandom;
                         }
@@ -770,7 +780,45 @@ export class DiceService {
                         randomNumbersSum += _getRandom;
                         
                     }
+                    
+                    randomNumbers.split(',').map((item)=> {
+                        if (isExplodDice) {
+                            if (diceValueExcludeExplode == item) { // Dice is Exploded..
+                                let New_randomCount: number = 1;
+                                let isFirstNumberOfExplodedDice = true;
+                                console.log("forout");
+                                for (var x = 1; x <= New_randomCount; x++) {
+                                    console.log("for");
+                                    let _getRandom = this.getRandomNumber(1, diceNumber);
 
+                                    //if (isExplodDice) {
+                                        if (diceValueExcludeExplode == _getRandom) { // Dice is Exploded..
+                                            isDiceExploded = true;
+                                            New_randomCount = New_randomCount + 1;
+                                        }
+                                    //}                                    
+                                    if (x == New_randomCount) {
+                                        if (isFirstNumberOfExplodedDice) {
+                                            randomNumbers += ',';
+                                            isFirstNumberOfExplodedDice = false;
+                                        }
+                                        randomNumbers += _getRandom;
+                                    }
+                                    else {
+                                        if (isFirstNumberOfExplodedDice) {
+                                            randomNumbers += ',';
+                                            isFirstNumberOfExplodedDice = false;
+                                        }
+                                        randomNumbers += _getRandom + ',';
+                                    }
+                                    
+                                    randomNumbersSum += _getRandom;
+
+                                }
+                            }
+                        }
+                    });
+                    
                     //sort random number ASC order=1,2,3,4,5
                     let _randomNumber = randomNumbers.split(',').map(function (item) {
                         return parseInt(item, 10);
@@ -960,7 +1008,7 @@ export class DiceService {
             operator: operator,
             operatorNumber: operatorNumber
         };
-        debugger
+        
         return _diceInterpretationArray;
     }
 
@@ -2080,6 +2128,255 @@ export class DiceService {
         }
         return signs;
     }
+    public static commandInterpretationForConditionStatValueCalculations(command: string, numberToAdd?: number, modArray?: any, customDices: CustomDice[] = []): any {
+        
+        let _commandInterpretationArrayList = [];
+        let _calculationCommand = "";
 
+        if (!command) return [];
+        //example command:  d4 + 2d6 * d8 - 2d10 kh1 / d12 + (d20 + d100 / 5) AND (4d6 kh3 / 5 ru) + (4d6 kh2 / 5 rd)
+        let _commandInterpretationArray = this.commandInterpretationArray(command, customDices);
+
+        let diceARRAY = [];
+
+        //iteration for AND
+        for (var cmd in _commandInterpretationArray) {
+
+            let _finalInterpretationArray = [];
+            let _calculationString = "";
+            let _calculationStringForResult = "";
+            let _operator = "";
+            let _commandArray = _commandInterpretationArray[cmd].commandArray;
+            let checkLastCommandString = '';
+            //iteration for command
+            for (var cmdArr in _commandArray) {
+                let _sign = ' ' + _commandArray[cmdArr].sign + ' ';
+                if (_commandArray[cmdArr].parenthesis) {
+                    let __calculationString = "";
+                    let _diceArray = _commandArray[cmdArr].diceArray;
+
+                    for (var diceArr in _diceArray) {
+
+                        __calculationString += __calculationString == "" ? (_calculationString == "" ? (_sign.trim() == '-' ? _sign : '') : _sign) + ' ( ' + (_diceArray[diceArr].sign.trim() == '-' ? _diceArray[diceArr].sign : '') + _diceArray[diceArr].diceInterpretationArray.randomNumbersAfter
+                            : _diceArray[diceArr].sign + _diceArray[diceArr].diceInterpretationArray.randomNumbersAfter;
+
+                        _finalInterpretationArray.push(this.calsInterpretationArray(_diceArray[diceArr], +cmd));
+
+                        if (_diceArray.length - 1 === +diceArr) {
+                            //if (!_commandArray[cmdArr].isCustomDice)
+                            _calculationString += __calculationString + ' ) ';
+                        }
+
+                        ///20-dec-18
+                        let checkLastCommandStringReplaceTo = "";
+                        checkLastCommandString += _diceArray[diceArr].sign + _diceArray[diceArr].diceInterpretationArray.randomNumbersAfter;
+
+                        try {
+                            _operator = _diceArray[diceArr].diceInterpretationArray.operator;
+                            if (_operator == 'RU') {
+                                checkLastCommandStringReplaceTo = Math.ceil(eval(checkLastCommandString)).toString();
+                            } else if (_operator == 'RD') {
+                                checkLastCommandStringReplaceTo = Math.floor(eval(checkLastCommandString)).toString();
+                            }
+                        } catch (err) { }
+
+                        _calculationStringForResult = _calculationString.replace(/  /g, ' ');
+                        if (checkLastCommandStringReplaceTo !== "") {
+                            _calculationStringForResult = _calculationStringForResult.replace(checkLastCommandString, checkLastCommandStringReplaceTo);
+                        }
+                        checkLastCommandString = _diceArray[diceArr].diceInterpretationArray.randomNumbersAfter;
+                    }
+
+                }
+                else if (_commandArray[cmdArr].addMod) {
+
+                    let modValue: number = Utilities.InvalidValueForConditionStats;
+                    if (modArray)
+                        modArray.map(mod => {
+                            //let charactersCharacterStatId = mod.charactersCharacterStatId;
+                            //let selectedStatValue = mod.selectedStatValue;
+                            let selectedStat: string = mod.selectedStat;
+                            if (_commandArray[cmdArr].dice === selectedStat) {
+                                modValue = +mod.selectedStatValue;
+                            }
+                        });
+
+                    try {
+                        _commandArray[cmdArr].diceInterpretationArray.randomNumbers = modValue;
+                        _commandArray[cmdArr].diceInterpretationArray.randomNumbersAfter = modValue;
+                        //_commandArray[cmdArr].diceInterpretationArray.randomNumbersList = modValue;
+                        //_commandArray[cmdArr].diceInterpretationArray.randomNumbersListAfter = modValue;
+                        _commandArray[cmdArr].diceInterpretationArray.randomNumbersSum = +modValue;
+                        _commandArray[cmdArr].diceInterpretationArray.randomNumbersSumAfter = +modValue;
+                        _commandArray[cmdArr].static = true;
+
+                        _finalInterpretationArray.push(this.calsInterpretationArray(_commandArray[cmdArr], +cmd));
+                    } catch (err) { }
+
+                    //if (!_commandArray[cmdArr].isCustomDice)
+                    _calculationString += _calculationString == "" ? (_commandArray[cmdArr].sign.trim() == '-' ? _sign : '') + modValue : _sign + modValue;
+
+                    _calculationStringForResult = _calculationString;
+                }
+                else {
+                    let checkLastCommandStringReplaceTo = "";
+                    checkLastCommandString += _commandArray[cmdArr].sign + _commandArray[cmdArr].diceInterpretationArray.randomNumbersAfter;
+
+                    try {
+                        _operator = _commandArray[cmdArr].diceInterpretationArray.operator;
+                        if (_operator == 'RU') {
+                            checkLastCommandStringReplaceTo = Math.ceil(eval(checkLastCommandString)).toString();
+                        } else if (_operator == 'RD') {
+                            checkLastCommandStringReplaceTo = Math.floor(eval(checkLastCommandString)).toString();
+                        }
+                    } catch (err) { }
+
+                    //if (!_commandArray[cmdArr].isCustomDice)
+                    _calculationString += _calculationString == "" ? (_commandArray[cmdArr].sign.trim() == '-' ? _sign : '') + _commandArray[cmdArr].diceInterpretationArray.randomNumbersAfter
+                        : _sign + _commandArray[cmdArr].diceInterpretationArray.randomNumbersAfter;
+
+                    _finalInterpretationArray.push(this.calsInterpretationArray(_commandArray[cmdArr], +cmd));
+
+                    _calculationStringForResult = _calculationString.replace(/  /g, ' ');
+                    if (checkLastCommandStringReplaceTo !== "") {
+                        //let newstring = _calculationStringForResult.replace('(', '').replace(')', '').replace(/ /g, '');
+                        //let res = newstring.replace(checkLastCommandString, checkLastCommandStringReplaceTo);
+                        //checkLastCommandString = checkLastCommandString.replace(/ /g, '');
+                        //_calculationStringForResult = newstring.replace(checkLastCommandString, checkLastCommandStringReplaceTo);
+                        _calculationStringForResult = _calculationStringForResult.replace(checkLastCommandString, checkLastCommandStringReplaceTo);
+                    }
+
+                    checkLastCommandString = _commandArray[cmdArr].diceInterpretationArray.randomNumbersAfter;
+                }
+
+                if (_commandArray[cmdArr].isCustomDice) {
+
+                    //_calculationString = '';
+                    //if (_commandArray[cmdArr].isCustomNumeric) {
+                    //    _calculationString += _commandArray[cmdArr].diceInterpretationArray.randomNumbersListAfter.join(' + ');
+                    //}
+                    //else {
+                    //    _calculationString += _commandArray[cmdArr].diceInterpretationArray.randomNumbersListAfter.join(', ');
+                    //}
+                    _calculationString = _calculationString.replace(/  /g, ' ');
+                    _calculationStringForResult = _calculationString.replace(/  /g, ' ');
+
+
+                }
+
+            }
+
+            //_calculationString = _calculationString.replace(/  /g, ' ');
+            try {
+                if (_calculationString.split("((").length - 1 === _calculationString.split("))").length - 1) {
+                    _calculationString = _calculationString.replace('((', '(').replace('))', ')');
+                }
+            } catch (err) { }
+            if (_calculationString.length > 1) {
+                _calculationString = _calculationString.replace(/  /g, ' ');
+                _calculationString.split('+ -').map((x) => {
+                    _calculationString = _calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+                })
+                _calculationString.split('+ *').map((x) => {
+                    _calculationString = _calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+                })
+                _calculationString.split('+ /').map((x) => {
+                    _calculationString = _calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+                })
+                _calculationString.split('+ +').map((x) => {
+                    _calculationString = _calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+                })
+                _calculationString.split('- -').map((x) => {
+                    _calculationString = _calculationString.replace('- -', '-');
+                })
+            }
+            _calculationString = _calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+').replace('- -', '-');
+
+            if (numberToAdd) {
+
+                _calculationString = _calculationString + ' + ' + numberToAdd;
+                _calculationStringForResult = _calculationStringForResult + ' + ' + numberToAdd;
+                _commandInterpretationArray[cmd] = Object.assign(_commandInterpretationArray[cmd], { command: _commandInterpretationArray[cmd].command + ' + ' + numberToAdd })
+            }
+
+            //let _calculationStringArray = this.splitByMultiSeparator(calculationStringForArray, ['+', '-', '/', '*']);
+
+            _calculationString = _calculationString.replace(/  /g, ' ');
+
+            let _calculationStringArray = this.getCalculationStringArray(_calculationString, undefined);
+
+            let __result = 0;
+
+            let __IsResultWithCustomDice = true;
+            try {
+
+                if (_calculationStringForResult.length > 1) {
+                    _calculationStringForResult = _calculationStringForResult.replace(/  /g, ' ');
+                    _calculationStringForResult.split('+ -').map((x) => {
+                        _calculationStringForResult = _calculationStringForResult.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+                    })
+                    _calculationStringForResult.split('+ *').map((x) => {
+                        _calculationStringForResult = _calculationStringForResult.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+                    })
+                    _calculationStringForResult.split('+ /').map((x) => {
+                        _calculationStringForResult = _calculationStringForResult.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+                    })
+                    _calculationStringForResult.split('+ +').map((x) => {
+                        _calculationStringForResult = _calculationStringForResult.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+                    })
+                    _calculationStringForResult.split('- -').map((x) => {
+                        _calculationStringForResult = _calculationStringForResult.replace('- -', '-');
+                    })
+                }
+                _calculationStringForResult = _calculationStringForResult.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+').replace('- -', '-');
+                __result = Math.round(eval(_calculationStringForResult));
+                if (_commandInterpretationArray[cmd].command.indexOf('RU') > -1)
+                    __result = Math.ceil(eval(_calculationStringForResult));
+                else if (_commandInterpretationArray[cmd].command.indexOf('RD') > -1)
+                    __result = Math.floor(eval(_calculationStringForResult));
+                __IsResultWithCustomDice = false;
+
+
+                let IsNonNumericCommandIncluded: boolean = false;
+                _commandArray.map((c) => {
+                    if (c.isCustomDice && !c.isCustomNumeric) {
+                        IsNonNumericCommandIncluded = true;
+                    }
+                })
+
+                if (IsNonNumericCommandIncluded) {
+                    __IsResultWithCustomDice = true;
+                    if (isNaN(__result)) {
+                        __result = Utilities.InvalidValueForConditionStats;
+                    }
+                }
+
+                //if (_commandInterpretationArray[cmd].isCustomNumericCommand) {
+
+                //}
+                //if (_commandArray[0].isCustomDice && !_commandInterpretationArray[cmd].isCustomNumericCommand) {
+                //    __result = 0
+                //    __IsResultWithCustomDice = true;
+                //}
+            }
+            catch (exe) {
+                __result = Utilities.InvalidValueForConditionStats
+                __IsResultWithCustomDice = true;
+
+            }
+            _commandInterpretationArrayList.push({
+                calculationString: _calculationString,
+                calculationStringArray: _calculationStringArray,
+                calculationResult: __result, //Math.round(eval(_calculationStringForResult)), //Math.floor(eval(_calculationString))
+                calculationCommand: _commandInterpretationArray[cmd].command,
+                calculationArray: _finalInterpretationArray,
+                calculationIndex: +cmd,
+                isResultWithCustomDice: __IsResultWithCustomDice,
+                isCustomNumericCommand: _commandInterpretationArray[cmd].isCustomNumericCommand ? true : false,
+            });
+        }
+
+        return _commandInterpretationArrayList;
+    }
 }
 

@@ -439,23 +439,27 @@
                                             <span class="col-form-label pull-right">IF</span>
                                         </div>
                                         <div class="col-9 col-sm-4 mb-2">
-                                            <select class="form-control" [name]="'ifClauseStatId'+i" (change)="conditionStatChanged($event,condition)">
-                                                <option value="0">Select character stat</option>
-                                                <ng-container *ngFor="let stat of characterStatsForConditions;let i_c = index;">
-                                                    <option [value]="stat?.tempCharacterStatId" [selected]="IsStatSelected(stat,condition)">
-                                                        {{stat?.statName}}
-                                                    </option>
-                                                </ng-container>
+                                            <!--<select class="form-control" [name]="'ifClauseStatId'+i" (change)="conditionStatChanged($event,condition)">
+                                        <option value="0">Select character stat</option>
+                                        <ng-container *ngFor="let stat of characterStatsForConditions;let i_c = index;">
+                                            <option [value]="stat?.tempCharacterStatId" [selected]="IsStatSelected(stat,condition)">
+                                                {{stat?.statName}}
+                                            </option>
+                                        </ng-container>
 
-                                            </select>
+                                    </select>-->
+                                            <input class="form-control" type="text" placeholder="Character stat" [(ngModel)]="condition.ifClauseStatText" [name]="'ifClauseStatText'+i" (change)="ifClauseStatTextChanged(condition)" [ngClass]="(condition.compareValue_isNumeric == condition.ifClauseStatText_isNumeric && condition.ifClauseStatText_isValid)?'':'textbox-error'"/>
                                         </div>
                                         <div class="col-6 col-sm-3 mb-2">
                                             <select class="form-control" [(ngModel)]="condition.conditionOperatorID" [name]="'conditionOperatorID'+i">
                                                 <ng-container *ngFor="let operator of ConditionOperators;let i_o = index;">
-                                                    <option *ngIf="!condition.isNumeric && !operator.isNumeric" [value]="operator?.conditionOperatorId">
+                                                    <!--<option [value]="operator?.conditionOperatorId">
+                                                        {{operator?.name}}
+                                                    </option>-->
+                                                    <option *ngIf="!(condition.isNumeric && condition.ifClauseStatText_isNumeric && condition.compareValue_isNumeric) && !operator.isNumeric" [value]="operator?.conditionOperatorId">
                                                         {{operator?.name}}
                                                     </option>
-                                                    <option *ngIf="condition.isNumeric" [value]="operator?.conditionOperatorId">
+                                                    <option *ngIf="(condition.isNumeric && condition.ifClauseStatText_isNumeric && condition.compareValue_isNumeric)" [value]="operator?.conditionOperatorId">
                                                         {{operator?.name}}
                                                     </option>
                                                 </ng-container>
@@ -463,12 +467,14 @@
                                             </select>
                                         </div>
                                         <div class="col-6 col-sm-4 mb-2">
-                                            <input *ngIf="condition.isNumeric" class="form-control" type="number" placeholder="value" [(ngModel)]="condition.compareValue" [name]="'compareValue'+i" pattern="^-?[0-9]\d*(\\d+)?$"   (input)="checkNum($event)"/>
-                                            <input *ngIf="!condition.isNumeric" class="form-control" type="text" placeholder="value" [(ngModel)]="condition.compareValue" [name]="'compareValue1'+i" />
+                                            <!--<input *ngIf="condition.isNumeric" class="form-control" type="number" placeholder="value" [(ngModel)]="condition.compareValue" [name]="'compareValue'+i" pattern="^-?[0-9]\d*(\\d+)?$" (input)="checkNum($event)" />
+                                            <input *ngIf="!condition.isNumeric" class="form-control" type="text" placeholder="value" [(ngModel)]="condition.compareValue" [name]="'compareValue1'+i" />-->
+                                            <input class="form-control" type="text" placeholder="value" [(ngModel)]="condition.compareValue" [name]="'compareValue1'+i" (change)="CompareValueTextChanged(condition)" [ngClass]="(condition.compareValue_isNumeric == condition.ifClauseStatText_isNumeric && condition.compareValue_isValid)?'':'textbox-error'"/>
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="col-4 col-sm-5">
+                                            <!--<span>||{{condition.ifClauseStatText_isNumeric}},{{condition.compareValue_isNumeric}},{{condition.isNumeric}}||</span>-->
                                             <span class="col-form-label pull-right">THEN</span>
                                         </div>
                                         <div class="col-8 col-sm-7">                                            
@@ -484,7 +490,7 @@
                                             <span class="col-form-label pull-right">ELSE IF</span>
                                         </div>
                                         <div class="col-8 col-sm-4 mb-2">
-                                            <select class="form-control" [name]="'ifClauseStatId'+i" (change)="conditionStatChanged($event,condition)">
+                                            <!--<select class="form-control" [name]="'ifClauseStatId'+i" (change)="conditionStatChanged($event,condition)">
                                                 <option value="0">Select character stat</option>
                                                 <ng-container *ngFor="let stat of characterStatsForConditions;let i_c = index;">
                                                     <option [value]="stat?.tempCharacterStatId" [selected]="IsStatSelected(stat,condition)">
@@ -492,27 +498,33 @@
                                                     </option>
                                                 </ng-container>
 
-                                            </select>
+                                            </select>-->
+                                            <input class="form-control" type="text" placeholder="Character stat" [(ngModel)]="condition.ifClauseStatText" [name]="'ifClauseStatText'+i" (change)="ifClauseStatTextChanged(condition)" [ngClass]="(condition.compareValue_isNumeric == condition.ifClauseStatText_isNumeric && condition.ifClauseStatText_isValid)?'':'textbox-error'"/>
                                         </div>
                                         <div class="col-6 col-sm-3 mb-2">
                                             <select class="form-control" [(ngModel)]="condition.conditionOperatorID" [name]="'conditionOperatorID'+i">
                                                 <ng-container *ngFor="let operator of ConditionOperators;let i_o = index;">
-                                                    <option *ngIf="!condition.isNumeric && !operator.isNumeric" [value]="operator?.conditionOperatorId">
+                                                    <!--<option [value]="operator?.conditionOperatorId">
+                                                        {{operator?.name}}
+                                                    </option>-->
+                                                    <option *ngIf="!(condition.isNumeric && condition.ifClauseStatText_isNumeric && condition.compareValue_isNumeric) && !operator.isNumeric" [value]="operator?.conditionOperatorId">
                                                         {{operator?.name}}
                                                     </option>
-                                                    <option *ngIf="condition.isNumeric" [value]="operator?.conditionOperatorId">
+                                                    <option *ngIf="(condition.isNumeric && condition.ifClauseStatText_isNumeric && condition.compareValue_isNumeric)" [value]="operator?.conditionOperatorId">
                                                         {{operator?.name}}
                                                     </option>
                                                 </ng-container>
                                             </select>
                                         </div>
                                         <div class="col-6 col-sm-3 mb-2">
-                                            <input *ngIf="condition.isNumeric" class="form-control" type="number" placeholder="value" [(ngModel)]="condition.compareValue" [name]="'compareValue'+i"  pattern="^-?[0-9]\d*(\\d+)?$"   (input)="checkNum($event)"/>
-                                            <input *ngIf="!condition.isNumeric" class="form-control" type="text" placeholder="value" [(ngModel)]="condition.compareValue" [name]="'compareValue'+i" />
+                                            <!--<input *ngIf="condition.isNumeric" class="form-control" type="number" placeholder="value" [(ngModel)]="condition.compareValue" [name]="'compareValue'+i" pattern="^-?[0-9]\d*(\\d+)?$" (input)="checkNum($event)" />
+                                            <input *ngIf="!condition.isNumeric" class="form-control" type="text" placeholder="value" [(ngModel)]="condition.compareValue" [name]="'compareValue'+i" />-->
+                                            <input class="form-control" type="text" placeholder="value" [(ngModel)]="condition.compareValue" [name]="'compareValue'+i" (change)="CompareValueTextChanged(condition)" [ngClass]="(condition.compareValue_isNumeric == condition.ifClauseStatText_isNumeric && condition.compareValue_isValid)?'':'textbox-error'"/>
                                         </div>
                                     </div>
                                     <div class="form-row">
                                         <div class="col-4 col-sm-5">
+                                            <!--<span>||{{condition.ifClauseStatText_isNumeric}},{{condition.compareValue_isNumeric}},{{condition.isNumeric}}||</span>-->
                                             <span class="col-form-label pull-right">THEN</span>
                                         </div>
                                         <div class="col-8 col-sm-7">
@@ -548,8 +560,17 @@
             <!-- End of Condition Character Stat-->
         </div>
             <div class="modal-footer">
+                <span *ngIf="!CheckConditionsAreValid()" class="text-danger" style="font-size:12px;">
+                    <span *ngIf="!erMessage">                        
+                        Both text fields must conains result of same type either numeric or non-numeric.
+                    </span>
+                    <span *ngIf="erMessage">
+                        {{erMessage}}
+                    </span>
+                   
+                </span>
                 <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
-                <button type="submit" [disabled]="isLoading" class="btn btn-accent">{{button}}</button>
+                <button type="submit" [disabled]="isLoading || !CheckConditionsAreValid()" class="btn btn-accent">{{button}}</button>
             </div>
         </div>
 </form>

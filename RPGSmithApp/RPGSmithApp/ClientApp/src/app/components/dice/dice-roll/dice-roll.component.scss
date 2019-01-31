@@ -216,5 +216,15 @@
 @media (max-width:480px) {
     .popup-dice .new-command.result .command-canvas ul li .btn em {
         font-size: 12px;
-    }
+    }    
+}
+.icon-Dice-Explode:before {
+    position: absolute;
+    font-size: 6rem;
+    color: #787575;
+}
+@media (max-width:479px) {
+    .icon-Dice-Explode:before {
+        font-size: 3rem;
+    } 
 }

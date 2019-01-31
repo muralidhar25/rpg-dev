@@ -27,9 +27,57 @@ namespace DAL.Services
             _configuration = configuration;
         }
 
-        public async Task<CharactersCharacterStat> Create(CharactersCharacterStat item)
+        public void Create(CharactersCharacterStat item)
         {
-            return await _repo.Add(item);
+            //return await _repo.Add(item);
+            string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            using (SqlConnection con = new SqlConnection(consString))
+            {
+                using (SqlCommand cmd = new SqlCommand("CharactersCharacterStats_Create"))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = con;
+                    //cmd.Parameters.AddWithValue("@CharactersCharacterStatId", GetNull(item.CharactersCharacterStatId));
+                    cmd.Parameters.AddWithValue("@CharacterStatId", GetNull(item.CharacterStatId));
+                    cmd.Parameters.AddWithValue("@CharacterId", GetNull(item.CharacterId));
+                    cmd.Parameters.AddWithValue("@Text", GetNull(item.Text));
+                    cmd.Parameters.AddWithValue("@RichText", GetNull(item.RichText));
+                    cmd.Parameters.AddWithValue("@Choice", GetNull(item.Choice));
+                    cmd.Parameters.AddWithValue("@MultiChoice", GetNull(item.MultiChoice));
+                    cmd.Parameters.AddWithValue("@Command", GetNull(item.Command));
+                    cmd.Parameters.AddWithValue("@YesNo", GetNull(item.YesNo));
+                    cmd.Parameters.AddWithValue("@OnOff", GetNull(item.OnOff));
+                    cmd.Parameters.AddWithValue("@Value", GetNull(item.Value));
+                    cmd.Parameters.AddWithValue("@Number", GetNull(item.Number));
+                    cmd.Parameters.AddWithValue("@SubValue", GetNull(item.SubValue));
+                    cmd.Parameters.AddWithValue("@Current", GetNull(item.Current));
+                    cmd.Parameters.AddWithValue("@Maximum", GetNull(item.Maximum));
+                    cmd.Parameters.AddWithValue("@CalculationResult", GetNull(item.CalculationResult));
+                    cmd.Parameters.AddWithValue("@IsDeleted", GetNull(item.IsDeleted));
+                    cmd.Parameters.AddWithValue("@ComboText", GetNull(item.ComboText));
+                    cmd.Parameters.AddWithValue("@DefaultValue", GetNull(item.DefaultValue));
+                    cmd.Parameters.AddWithValue("@Minimum", GetNull(item.Minimum));
+                    cmd.Parameters.AddWithValue("@Display", GetNull(item.Display));
+                    cmd.Parameters.AddWithValue("@IsCustom", GetNull(item.IsCustom));
+                    cmd.Parameters.AddWithValue("@ShowCheckbox", GetNull(item.ShowCheckbox));
+                    cmd.Parameters.AddWithValue("@IsOn", GetNull(item.IsOn));
+                    cmd.Parameters.AddWithValue("@IsYes", GetNull(item.IsYes));
+                    cmd.Parameters.AddWithValue("@LinkType", GetNull(item.LinkType));
+                    con.Open();
+                    try
+                    {
+                        var a = cmd.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        con.Close();
+                        throw ex;
+                    }
+                    con.Close();
+                }
+            }
+            //return new CharactersCharacterStat();
         }
 
         public List<CharactersCharacterStat> GetByCharacterStatId(int characterStatId, int characterId)
@@ -340,6 +388,20 @@ namespace DAL.Services
                .Where(x => x.CharacterId == characterId && x.IsDeleted != true).OrderBy(x => x.CharacterStat.SortOrder)
                .ToListAsync();
             return CharactersCharacterStats;
+        }
+        private object GetNull(object obj)
+        {
+            if (obj == null)
+                return DBNull.Value;
+            else if (obj.GetType() == typeof(bool))
+            {
+                if ((bool)obj)
+                    return 1;
+                else
+                    return 0;
+            }
+            else
+                return obj;
         }
     }
 }

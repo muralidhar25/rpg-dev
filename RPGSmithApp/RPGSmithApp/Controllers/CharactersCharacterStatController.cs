@@ -105,18 +105,20 @@ namespace RPGSmithApp.Controllers
                         //    Maximum= item.CharacterStat.CharacterStatCombos.Maximum,
                         //    Minimum= item.CharacterStat.CharacterStatCombos.Minimum
                         //} ,
-                        CharacterStatConditions = item.CharacterStat.CharacterStatConditions.Select(x=>new CharacterStatCondition() {
-                        CharacterStatConditionId = x.CharacterStatConditionId,
-                        CharacterStatId = x.CharacterStatId,
-                        CompareValue = x.CompareValue,
-                        ConditionOperatorID = x.ConditionOperatorID,
-                        ConditionOperator = _characterStatConditionService.GetConditionOperatorById(x.ConditionOperatorID),
-                        IfClauseStatId = x.IfClauseStatId,
-                        IfClauseStattype = x.IfClauseStattype,
-                        IsNumeric = x.IsNumeric,
-                        SortOrder = x.SortOrder,
-                        Result = x.Result
-                    }).OrderBy(z=>z.SortOrder).ToList()
+                        CharacterStatConditions = item.CharacterStat.CharacterStatConditions.Select(x => new CharacterStatCondition()
+                        {
+                            CharacterStatConditionId = x.CharacterStatConditionId,
+                            CharacterStatId = x.CharacterStatId,
+                            CompareValue = x.CompareValue,
+                            ConditionOperatorID = x.ConditionOperatorID,
+                            ConditionOperator = _characterStatConditionService.GetConditionOperatorById(x.ConditionOperatorID),
+                            //IfClauseStatId = x.IfClauseStatId,
+                            //IfClauseStattype = x.IfClauseStattype,
+                            IfClauseStatText = x.IfClauseStatText,
+                            IsNumeric = x.IsNumeric,
+                            SortOrder = x.SortOrder,
+                            Result = x.Result
+                        }).OrderBy(z => z.SortOrder).ToList()
                     },
                     Character=new Character() {
                         CharacterId= item.Character.CharacterId,
@@ -146,7 +148,7 @@ namespace RPGSmithApp.Controllers
                                 DefaultValue = defv.DefaultValue,
                                 Maximum = defv.Maximum,
                                 Minimum = defv.Minimum,
-                                Type = defv.Minimum,
+                                Type = defv.Type,
                                 CharacterStat=null,
                             };
                             CharactersCharacterStatVievModel.CharacterStat.CharacterStatDefaultValues.Add(CharStatDefValues);
@@ -267,7 +269,7 @@ namespace RPGSmithApp.Controllers
               
                 try
                 {
-                     await  _charactersCharacterStatServic.Create(model);
+                      _charactersCharacterStatServic.Create(model);
                 }
                 catch (Exception ex)
                 {

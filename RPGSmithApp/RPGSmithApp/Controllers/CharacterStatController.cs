@@ -211,7 +211,7 @@ namespace RPGSmithApp.Controllers
                     catch (Exception ex)
                     {
                     }
-                    if (model.CharacterStatDefaultValueViewModel != null)
+                    if (model.CharacterStatDefaultValueViewModel != null && (model.CharacterStatTypeId!=(int)STAT_TYPE.RichText && model.CharacterStatTypeId != (int)STAT_TYPE.Toggle && model.CharacterStatTypeId != (int)STAT_TYPE.Condition && model.CharacterStatTypeId != (int)STAT_TYPE.Calculation && model.CharacterStatTypeId != (int)STAT_TYPE.Choice && model.CharacterStatTypeId != (int)STAT_TYPE.Combo && model.CharacterStatTypeId != (int)STAT_TYPE.LinkRecord && model.CharacterStatTypeId != (int)STAT_TYPE.OnOff && model.CharacterStatTypeId != (int)STAT_TYPE.YesNo))
                     {
                         if (model.CharacterStatDefaultValueViewModel.Count > 0)
                         {
@@ -246,12 +246,13 @@ namespace RPGSmithApp.Controllers
                                     {
                                         CharacterStatId = result.CharacterStatId,
                                         CompareValue = condition.CompareValue,
-                                        ConditionOperatorID = condition.IfClauseStatId == null ? null : condition.ConditionOperatorID,
-                                        IfClauseStatId = condition.IfClauseStatId,
+                                        ConditionOperatorID = condition.IfClauseStatText == null ? null : condition.ConditionOperatorID,
+                                        //IfClauseStatId = condition.IfClauseStatId,
+                                        //IfClauseStattype = condition.IfClauseStattype,
                                         Result = condition.Result,
-                                        SortOrder = condition.SortOrder,
-                                        IfClauseStattype=condition.IfClauseStattype,
-                                        IsNumeric=condition.IsNumeric
+                                        SortOrder = condition.SortOrder,                                        
+                                        IfClauseStatText=condition.IfClauseStatText,
+                                        IsNumeric =condition.IsNumeric
                                     };
                                     conditionsList.Add(obj);
                                 
@@ -315,7 +316,8 @@ namespace RPGSmithApp.Controllers
                             //}
                             
                         }
-                        if (model.CharacterStatDefaultValueViewModel != null) {
+                        if (model.CharacterStatDefaultValueViewModel != null && (model.CharacterStatTypeId != (int)STAT_TYPE.RichText && model.CharacterStatTypeId != (int)STAT_TYPE.Toggle && model.CharacterStatTypeId != (int)STAT_TYPE.Condition && model.CharacterStatTypeId != (int)STAT_TYPE.Calculation && model.CharacterStatTypeId != (int)STAT_TYPE.Choice && model.CharacterStatTypeId != (int)STAT_TYPE.Combo && model.CharacterStatTypeId != (int)STAT_TYPE.LinkRecord && model.CharacterStatTypeId != (int)STAT_TYPE.OnOff && model.CharacterStatTypeId != (int)STAT_TYPE.YesNo))
+                        {
                             if (model.CharacterStatDefaultValueViewModel.Count > 0) {
                                 foreach (var cDefval in model.CharacterStatDefaultValueViewModel)
                                 {
@@ -328,19 +330,19 @@ namespace RPGSmithApp.Controllers
                                             _charactersCharacterStat.RichText = cDefval.DefaultValue;
                                             break;
                                         case 3:
-                                            _charactersCharacterStat.Number = Convert.ToInt32(cDefval.DefaultValue);
+                                            _charactersCharacterStat.Number = getIntiger(cDefval.DefaultValue);
                                             break;
                                         case 4:
-                                            _charactersCharacterStat.Current = Convert.ToInt32(cDefval.DefaultValue);
+                                            _charactersCharacterStat.Current = getIntiger(cDefval.DefaultValue);
                                             break;
                                         case 5:
-                                            _charactersCharacterStat.Maximum = Convert.ToInt32(cDefval.DefaultValue);
+                                            _charactersCharacterStat.Maximum = getIntiger(cDefval.DefaultValue);
                                             break;
                                         case 6:
-                                            _charactersCharacterStat.Value = Convert.ToInt32(cDefval.DefaultValue);
+                                            _charactersCharacterStat.Value = getIntiger(cDefval.DefaultValue);
                                             break;
                                         case 7:
-                                            _charactersCharacterStat.SubValue = Convert.ToInt32(cDefval.DefaultValue);
+                                            _charactersCharacterStat.SubValue = getIntiger(cDefval.DefaultValue);
                                             break;
                                         case 8:
                                             _charactersCharacterStat.Command = cDefval.DefaultValue;
@@ -353,7 +355,7 @@ namespace RPGSmithApp.Controllers
                             }
                         }
 
-                            await _charactersCharacterStatServic.Create(_charactersCharacterStat);
+                            _charactersCharacterStatServic.Create(_charactersCharacterStat);
                     }
 
                     return Ok();
@@ -363,6 +365,20 @@ namespace RPGSmithApp.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        private int getIntiger(string defaultValue)
+        {
+            if (string.IsNullOrEmpty(defaultValue))
+            {
+                return 0;
+            }
+            try {
+                return Convert.ToInt32(defaultValue);
+            }
+            catch (Exception ex) {
+                return 0;
             }
         }
 
@@ -549,7 +565,7 @@ namespace RPGSmithApp.Controllers
                 }
             }
             catch { }
-            if (model.CharacterStatDefaultValueViewModel != null)
+            if (model.CharacterStatDefaultValueViewModel != null && (model.CharacterStatTypeId != (int)STAT_TYPE.RichText && model.CharacterStatTypeId != (int)STAT_TYPE.Toggle && model.CharacterStatTypeId != (int)STAT_TYPE.Condition && model.CharacterStatTypeId != (int)STAT_TYPE.Calculation && model.CharacterStatTypeId != (int)STAT_TYPE.Choice && model.CharacterStatTypeId != (int)STAT_TYPE.Combo && model.CharacterStatTypeId != (int)STAT_TYPE.LinkRecord && model.CharacterStatTypeId != (int)STAT_TYPE.OnOff && model.CharacterStatTypeId != (int)STAT_TYPE.YesNo))
             {
                 if (model.CharacterStatDefaultValueViewModel.Count > 0)
                 {
@@ -582,12 +598,13 @@ namespace RPGSmithApp.Controllers
                         {
                             CharacterStatId = result.CharacterStatId,
                             CompareValue = condition.CompareValue,
-                            ConditionOperatorID = condition.IfClauseStatId == null ? null : condition.ConditionOperatorID,
-                            IfClauseStatId = condition.IfClauseStatId,
+                            ConditionOperatorID = condition.IfClauseStatText == null ? null : condition.ConditionOperatorID,
+                            //IfClauseStatId = condition.IfClauseStatId,
+                            //IfClauseStattype = condition.IfClauseStattype,
                             Result = condition.Result,
-                            SortOrder = condition.SortOrder,
-                            IfClauseStattype = condition.IfClauseStattype,
-                            IsNumeric=condition.IsNumeric
+                            SortOrder = condition.SortOrder,                            
+                            IfClauseStatText=condition.IfClauseStatText,
+                            IsNumeric =condition.IsNumeric
                         };
                         conditionsList.Add(obj);
 
@@ -846,7 +863,7 @@ namespace RPGSmithApp.Controllers
                         
                     }
                 }
-                if (model.CharacterStatDefaultValueViewModel != null)
+                if (model.CharacterStatDefaultValueViewModel != null && (model.CharacterStatTypeId != (int)STAT_TYPE.RichText && model.CharacterStatTypeId != (int)STAT_TYPE.Toggle && model.CharacterStatTypeId != (int)STAT_TYPE.Condition && model.CharacterStatTypeId != (int)STAT_TYPE.Calculation && model.CharacterStatTypeId != (int)STAT_TYPE.Choice && model.CharacterStatTypeId != (int)STAT_TYPE.Combo && model.CharacterStatTypeId != (int)STAT_TYPE.LinkRecord && model.CharacterStatTypeId != (int)STAT_TYPE.OnOff && model.CharacterStatTypeId != (int)STAT_TYPE.YesNo))
                 {
                     if (model.CharacterStatDefaultValueViewModel.Count > 0)
                     {
@@ -893,12 +910,13 @@ namespace RPGSmithApp.Controllers
                             {
                                 CharacterStatId = result.CharacterStatId,
                                 CompareValue = condition.CompareValue,
-                                ConditionOperatorID = condition.IfClauseStatId == null ? null : condition.ConditionOperatorID,
-                                IfClauseStatId = condition.IfClauseStatId,
+                                ConditionOperatorID = condition.IfClauseStatText == null ? null : condition.ConditionOperatorID,
+                                //IfClauseStatId = condition.IfClauseStatId,
+                                //IfClauseStattype = condition.IfClauseStattype,
                                 Result = condition.Result,
-                                SortOrder = condition.SortOrder,
-                                IfClauseStattype = condition.IfClauseStattype,
-                                IsNumeric=condition.IsNumeric
+                                SortOrder = condition.SortOrder,                                
+                                IfClauseStatText=condition.IfClauseStatText,
+                                IsNumeric =condition.IsNumeric
                             };
                             conditionsList.Add(obj);
 

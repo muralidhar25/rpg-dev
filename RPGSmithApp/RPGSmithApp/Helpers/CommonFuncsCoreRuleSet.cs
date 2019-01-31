@@ -152,12 +152,13 @@ namespace RPGSmithApp.Helpers
                             CharacterStatConditionId = cd.CharacterStatConditionId,
                             CompareValue = cd.CompareValue,
                             CharacterStatId = cd.CharacterStatId,
-                            IfClauseStatId = cd.IfClauseStatId,
+                            //IfClauseStatId = cd.IfClauseStatId,
+                            //IfClauseStattype = cd.IfClauseStattype,
                             Result = cd.Result,
                             ConditionOperatorID = cd.ConditionOperatorID,
-                            SortOrder = cd.SortOrder,
-                            IfClauseStattype = cd.IfClauseStattype,
-                            IsNumeric=cd.IsNumeric
+                            SortOrder = cd.SortOrder,                            
+                            IfClauseStatText=cd.IfClauseStatText,
+                            IsNumeric =cd.IsNumeric
                         });
                     }
                     characterStatsVM.CharacterStatConditionViewModel = ModelList.OrderBy(z=>z.SortOrder).ToList();
