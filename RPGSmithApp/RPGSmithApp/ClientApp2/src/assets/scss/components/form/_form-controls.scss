@@ -1,0 +1,57 @@
+// Input contorls
+.form {
+    &-control, &-control-file {
+        &:focus, &:active {
+            box     : {shadow: none !important}
+            border  : {radius: 0; color: $color-lgray-xd}
+            outline : none !important;
+        }
+    }
+
+
+    // Text inputs
+    &-control {
+        display : flex;
+        height  : 48px;
+        padding : {top: rem(6px); left: rem(16px); right: rem(16px)}
+        border  : {radius: 0; color: $color-lgray}
+        font    : {size: rem(14px)}
+        line    : {height: 1}
+        color   : $color-dgray-xd;
+
+        @include responsive(md) {
+            height  : rem(40px);
+            padding : {top: rem(6px); left: rem(12px); right: rem(12px)}
+            font    : {size: rem(12px)}
+        }
+
+        &:disabled {
+            color       : $color-dgray-xl;
+            background: {color: $color-lgray-d}
+        }
+
+        &::placeholder {
+            color: $color-dgray-xl;
+        }
+    }
+
+
+    // Textarea
+    &-group {
+        textarea {
+            height  : auto;
+            padding : {top: rem(18px); bottom: rem(18px)}
+            resize  : none;
+
+            @include responsive(md) {
+                padding : {top: rem(14px); bottom: rem(14px)}
+            }
+        }
+    }
+    
+    // Separator
+    &-separator {
+        margin  : {bottom: rem(24px); left: rem(-12px); right: rem(-12px)}
+        border  : {bottom: {width: 1px; style: solid; color: $color-lgray-xd}}
+    }
+}

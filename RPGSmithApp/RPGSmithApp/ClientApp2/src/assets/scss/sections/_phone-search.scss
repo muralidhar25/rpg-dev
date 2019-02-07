@@ -1,0 +1,55 @@
+/**
+ * Phone Search ----------------------------------------------------------------
+ */
+
+
+.site-phone-search {
+    display : flex;
+    align   : {items: center}
+    margin  : {left: rem(16px); right: rem(-16px)}
+    padding : {top: rem(16px)}
+
+    @include responsive(md) {
+        display: none;
+    }
+
+    .icon {
+        position: relative;
+        z       : {index: 80}
+        margin  : {right: rem(-32px)}
+
+        &:before {
+            color: $color-dgray-l;
+        }
+    }
+
+    input {
+        display     : flex;
+        align       : {items: center}
+        width       : 100%;
+        height      : rem(40px);
+        padding     : {top: 0; bottom: 0; left: rem(40px); right: rem(16px)}
+        border      : {width: 1px; style: solid; color: transparent; bottom: {color: $color-lgray}}
+        color       : $color-dgray-d;
+        background  : {color: transparent}
+        outline     : none !important;
+        transition  : $animation-duration;
+
+        &::placeholder {
+            color: $color-dgray-l;
+        }
+
+        &:focus {
+            border      : {bottom: {color: transparent}}
+            background  : {color: $color-basic-white}
+
+            &::placeholder {
+                color: $color-dgray-xl;
+            }
+
+            ~ .icon {
+                color: $color-dgray-xl;
+            }
+        }
+    }
+}

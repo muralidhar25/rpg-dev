@@ -1,0 +1,15 @@
+.login-input a {
+    font-size: 18px;
+}
+
+.login-input {
+    margin-top: -30px;
+    float: right;
+}
+
+@media(max-width: 575.98px){
+    .login-input {
+        margin-top: 0px;
+        float: left;
+    }
+}

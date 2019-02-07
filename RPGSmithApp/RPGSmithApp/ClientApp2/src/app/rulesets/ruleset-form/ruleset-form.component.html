@@ -1,0 +1,226 @@
+<!-- New rule set popup -->
+<form name="rulesetForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="newRulesetPopupTitle">
+                {{title}}
+                <div class="manage-ruleset-header" *ngIf="(!showWebButtons && rulesetFormModal.imageUrl !== undefined && rulesetFormModal.imageUrl !== null) && rulesetFormModal.view=='edit'">
+                            
+                    <span>
+                        <img class="ruleset-img" [src]="rulesetFormModal.imageUrl" />
+                    </span>
+                    <span>{{rulesetFormModal.ruleSetName}}</span>
+                </div>
+            </h5>
+            <button type="button" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close(rulesetFormModal)"></button>
+        </div>
+        <div class="modal-body">
+
+            <div class="form-row">
+                <div class="col">
+                    <!-- Character name -->
+                    <div class="form-group" [ngClass]="{ 'has-success': f.submitted && rulesetCharacterName.valid, 'has-error': f.submitted && !rulesetCharacterName.valid }">
+                        <label for="editRulesetCharacterName">Name (required)</label>
+                        <input id="ruleset-character-name" name="rulesetCharacterName" type="text" class="form-control" [ngStyle]="{'border-color': f.submitted && !rulesetCharacterName.valid ? 'red' : '#d3cfce'}"
+                               [autofocus] [(ngModel)]="rulesetFormModal.ruleSetName" #rulesetCharacterName="ngModel" required placeholder="Rule Set Name">
+                        <input id="ruleSetId" name="ruleSetId" type="hidden" [(ngModel)]="rulesetFormModal.ruleSetId" #ruleSetId="ngModel">
+                    </div>
+                    <!-- End of character name -->
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col">
+                    <!-- Character description -->
+                    <div class="form-group">
+                        <label for="editRulesetDescription">Description</label>
+                        <div [froalaEditor]="options('Description')" [(ngModel)]="rulesetFormModal.ruleSetDesc" name="ruleSetDesc"></div>
+                        <!--<input id="ruleset-description" name="rulesetDescription" type="text" class="form-control" placeholder="Description"
+                       [(ngModel)]="rulesetFormModal.ruleSetDesc" #rulesetDescription="ngModel">-->
+                    </div>
+                    <!-- End of character description -->
+                </div>
+            </div>
+            <div class="form-row mb-4">
+                <div class="col-12 col-md-6 ">
+                    <!-- Ruleset image -->
+                    <div class="form-group input-image input-image-alt">
+                        <label for="editRulesetImage">Image (optional)</label>
+                        <div class="input-image-control input-image-note input-image-trigger" (click)="cropImage(null,true,'VIEW.ADD')"
+                             *ngIf="((rulesetFormModal.ruleSetId === undefined || rulesetFormModal.ruleSetId === 0) && !showWebButtons && rulesetFormModal.imageUrl === undefined)
+                            || (!showWebButtons && (rulesetFormModal.imageUrl === undefined || rulesetFormModal.imageUrl === null))">
+                            <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
+                        </div>
+                        <div class="form-group input-image-note input-image-trigger" (click)="cropImage(rulesetFormModal.imageUrl,true,'VIEW.EDIT')"
+                             *ngIf="(!showWebButtons && rulesetFormModal.imageUrl !== undefined && rulesetFormModal.imageUrl !== null)">
+                            <img class="ruleset-img" [src]="rulesetFormModal.imageUrl" />
+                        </div>
+                        <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
+                            <img [src]="rulesetFormModal.imageUrl" class="bg-image" />
+                        </div>
+                        <input type="file" id="newRulesetPortrait" class="form-control-file">
+                    </div>
+                    <!-- End of ruleset image -->
+                </div>
+                <div class="col-12 col-md-6">
+                    <!-- Ruleset dice -->
+                    <div class="form-group mb-0">
+                        <label>Dice</label><br />
+                    </div>
+                    <div class="border-box">
+                        <div class="form-group">
+                            <label for="editRulesetDice">Default</label>
+                            <span class="input-group-btn">
+                                <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,rulesetFormModal.defaultDice)"></button>
+                            </span>
+                            <input id="ruleset-dice" name="rulesetDice" type="text" class="form-control" placeholder="Default Dice"
+                                   [(ngModel)]="rulesetFormModal.defaultDice" #rulesetDice="ngModel">
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-block btn-accent" (click)="openCustonDice(rulesetFormModal);">Custom Dice</button>
+                        </div>
+                        <div class="form-group mb-0">
+                            <button type="button" class="btn btn-block btn-accent" (click)="openDiceTray(rulesetFormModal);">Dice Tray</button>
+                        </div>
+                    </div>
+                    <!-- End of ruleset dice -->
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-12 col-md-6">
+                    <!-- Ruleset currency -->
+                    <div class="form-group">
+                        <label for="editRulesetCurrency">Currency Label</label>
+                        <input type="text" id="editRulesetCurrency" name="rulesetCurrency" class="form-control" placeholder="Gold Pieces, Dollars"
+                               [(ngModel)]="rulesetFormModal.currencyLabel" #rulesetCurrency="ngModel">
+                    </div>
+                    <!-- End of ruleset currency -->
+                    <!-- Ruleset weight -->
+                    <div class="form-group">
+                        <label for="editRulesetWeightMetric">Weight Metric Label</label>
+                        <input type="text" id="editRulesetWeightMetric" name="rulesetWeightMatric" class="form-control" placeholder="lbs, stones"
+                               [(ngModel)]="rulesetFormModal.weightLabel" #rulesetWeightMatric="ngModel">
+                    </div>
+                    <!-- End of ruleset weight -->
+                </div>
+                <div class="col-12 col-md-6">
+                    <!-- Ruleset distance -->
+                    <div class="form-group">
+                        <label for="editRulesetDistanceMetric">Distance Metric Label</label>
+                        <input type="text" id="editRulesetDistanceMetric" name="rulesetDistanceMatric" class="form-control" placeholder="feet, miles"
+                               [(ngModel)]="rulesetFormModal.distanceLabel" #rulesetDistanceMatric="ngModel">
+                    </div>
+                    <!-- End of ruleset distance -->
+                    <!-- Ruleset volume -->
+                    <div class="form-group">
+                        <label for="editRulesetVolumeMetric">Volume Metric Label</label>
+                        <input type="text" id="editRulesetVolumeMetric" name="rulesetVolumeMetric" class="form-control" placeholder="cubic inches, cubic feet"
+                               [(ngModel)]="rulesetFormModal.volumeLabel" #rulesetVolumeMetric="ngModel">
+                    </div>
+                    <!-- End of ruleset volume -->
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-12 col-md-6">
+                   
+                    
+                </div>
+                
+            </div>
+
+            <div class="form-row">
+                <div class="col">
+                    <fieldset class="form-group input-list input-list-wrap indicators">
+                        <legend>Rule Set Features</legend>
+                        <ul class="input-list-items form-check-transparent">
+                            <li class="form-check col-md-4 col-sm-12 pl-0">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" [(ngModel)]="rulesetFormModal.isItemEnabled" #IsItemEnabled="ngModel" [checked]="rulesetFormModal.isItemEnabled"
+                                           name="IsItemEnabled" />
+                                    <span>
+                                        <i class="icon"></i>
+                                        <em class="icon icon-with-text">Items</em>
+                                    </span>
+                                </label>
+                            </li>
+                            <li class="form-check col-md-4 col-sm-12 pl-0">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" [(ngModel)]="rulesetFormModal.isSpellEnabled" #IsSpellEnabled="ngModel" [checked]="rulesetFormModal.isSpellEnabled"
+                                           name="IsSpellEnabled" />
+                                    <span>
+                                        <i class="icon"></i>
+                                        <em class="icon icon-with-text">Spells</em>
+                                    </span>
+                                </label>
+                            </li>
+                            <li class="form-check col-md-4 col-sm-12 pl-0">
+                                <label class="form-check-label">
+                                    {{rulesetFormModal.IsAbilityEnabled}}
+                                    <input class="form-check-input" type="checkbox" [(ngModel)]="rulesetFormModal.isAbilityEnabled" #IsAbilityEnabled="ngModel" [checked]="rulesetFormModal.isAbilityEnabled"
+                                           name="IsAbilityEnabled" />
+                                    <span>
+                                        <i class="icon"></i>
+                                        <em class="icon icon-with-text">Abilities</em>
+                                    </span>
+                                </label>
+                            </li>
+                        </ul>
+                    </fieldset>
+                </div>
+            </div>
+
+            <div class="form-row" *ngIf="rulesetFormModal.view!=='duplicate' && !IsCopiedFromCoreRuleset">
+                <div class="col">
+                    <div class="form-group">
+                        <fieldset class="form-group input-list input-list-wrap indicators">
+                            <legend>Sharing</legend>
+                            <div class="input-list-items form-check-transparent">
+                                <div class="form-check col-12 col-sm-8 pl-0">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" [(ngModel)]="rulesetFormModal.isAllowSharing" #isAllowSharing="ngModel" [checked]="rulesetFormModal.isAllowSharing"
+                                               name="isAllowSharing" />
+                                        <span>
+                                            <i class="icon"></i>
+                                            <em class="icon icon-with-text">Allow Others to copy this Rule Set</em>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="col-12 col-sm-4 pl-0">
+                                    <label for="sharing" class="share-label" *ngIf="rulesetFormModal.view==='edit' && rulesetFormModal.isAllowSharing" (click)="shareRuleset(rulesetFormModal)">
+                                        <a href="javascript:void(0)"><i class="fa fa-external-link"></i> Share rule set</a>
+                                    </label>
+                                </div>
+                                <div class="col-12 col-sm-3 text-right" *ngIf="rulesetFormModal.view==='edit' && rulesetFormModal.isAllowSharing">
+                                    <label for="sharing" class="share-label color-black"> Share Code</label>
+                                </div>
+                                <div class="col-12 col-sm-9" *ngIf="rulesetFormModal.view==='edit' && rulesetFormModal.isAllowSharing">
+                                    <div class="form-group position-relative">
+                                        <span class="input-group-btn top-0">
+                                            <button type="button" (click)="copyShareCode(rulesetFormModal.shareCode)" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                                        </span>
+                                        <input id="ruleset-description" name="shareCode" [(ngModel)]="rulesetFormModal.shareCode" type="text"
+                                               class="form-control" #shareCode="ngModel" placeholder="Share Rule Set Code" readonly>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <span *ngIf="rulesetFormModal.view != 'add'">
+                <i class="fa fa-external-link"></i>&nbsp;
+                Manage <a (click)="characterStats(rulesetFormModal)">Character Stats</a>,&nbsp;
+                <a (click)="itemTemplate(rulesetFormModal)">Item Templates</a>,&nbsp;
+                <a (click)="spell(rulesetFormModal)">Spells</a> and
+                <a (click)="ability(rulesetFormModal)">Abilities.</a>
+            </span>
+            <button type="button" class="btn btn-simple-accent" (click)="close(rulesetFormModal)">Cancel</button>
+            <button type="submit" [disabled]="isLoading" class="btn btn-accent">{{button}}</button>
+        </div>
+    </div>
+</form>
+<!-- End of new ruleset popup -->

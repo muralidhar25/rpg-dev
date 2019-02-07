@@ -1,0 +1,288 @@
+/**
+ * Inventory Page --------------------------------------------------------------
+ */
+
+.page-character-stats {
+    .cards-stats {
+        .card-list {
+            display : flex;
+            flex    : {wrap: wrap}
+
+            .card-wrapper {
+                flex    : {basis: 100%}
+                margin  : {bottom: rem(16px)}
+
+                // Stat card
+                .card {
+                    flex: {direction: row}
+
+                    &-icon, &-order-trigger {
+                        flex    : {basis: rem(80px)}
+                        align   : {items: center}
+                        justify : {content: center}
+                        border  : {width: 1px; style: solid; color: $color-lgray-d; top: {width: 0}; bottom: {width: 0}; left: {width: 0}}
+                        color   : $color-dgray-l;
+                    }
+
+                    // Stat icon
+                    &-icon {
+                        display : none;
+
+                         @include responsive(lg) {
+                            display: flex;
+                        }
+
+                        &:before {
+                            font: {size: rem(24px)}
+
+                            @include responsive(md) {
+                                font: {size: rem(32px)}
+                            }
+                        }
+                    }
+
+                    // Stat order trigger
+                    &-order-trigger {
+                        display     : flex;
+                        background  : {color: $color-lgray-l}
+                        cursor      : move;
+
+                        @include responsive(lg) {
+                             display: none;
+                        }
+
+                        &:before {
+                            font: {size: rem(16px)}
+                        }
+                    }
+
+                    // Stat card body
+                    &-body {
+                        flex    : {direction: column}
+                        align   : {items: flex-start}
+                        justify : {content: flex-start}
+                        padding : rem(24px);
+
+                        @include responsive(md) {
+                            padding : rem(20px);
+                        }
+                    }
+
+                    // Stat title
+                    &-title {
+                        margin  : {bottom: rem(4px); right: rem(32px)}
+                        font    : {size: rem(20px)}
+
+                        @include responsive(md) {
+                            font: {size: rem(16px)}
+                        }
+                    }
+
+                    // Stat actions trigger
+                    &-actions-trigger {
+                        top     : rem(16px);
+                        right   : rem(8px);
+                        bottom  : auto;
+
+                        &.hide {
+                            display: none;
+                        }
+                    }
+
+                    // Stat actions
+                    &-actions {
+                        top         : rem(8px);
+                        bottom      : auto;
+                        left        : auto;
+                        right       : 0;
+                        height      : auto;
+                        width       : auto;
+                        padding     : rem(12px);
+                        background  : {color: $color-basic-white}
+
+                        @include responsive(md) {
+                            padding: 0;
+                            right  : rem(8px);
+                        }
+
+                        .btn {
+                            margin  : 0 rem(16px);
+                            border  : none;
+
+                            @include responsive(md) {
+                                margin: rem(12px);
+                            }
+
+                            &:before {
+                                font    : {size: rem(16px)}
+                                color   : $color-primary;
+
+                                @include responsive(md) {
+                                    font    : {size: rem(12px)}
+                                }
+                            }
+
+                            &.icon-cross {
+                                &:before {
+                                    font    : {size: rem(14px)}
+                                    color   : $color-dgray-xl;
+
+                                    @include responsive(md) {
+                                        font: {size: rem(10px)}
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    &:hover {
+                        .card {
+                            &-icon {
+                                @include responsive(lg) {
+                                    display: none;
+                                }
+                            }
+
+                            &-order-trigger {
+                                border  : {color: $color-dgray-xl}
+
+                                @include responsive(lg) {
+                                    display : flex;
+                                }
+                            }
+                        }
+                    }
+
+                    .item {
+                        &-type, &-desc {
+                            font    : {size: rem(14px)}
+
+                            @include responsive(md) {
+                                font: {size: rem(12px)}
+                            }
+                        }
+
+                        &-desc {
+                            color   : $color-dgray-l;
+                        }
+
+                        &-type {
+                            display     : flex;
+                            align       : {items: center}
+                            justify     : {content: center}
+                            margin      : {top: rem(8px)}
+
+                            @include responsive(md) {
+                                position: absolute;
+                                top     : 0;
+                                bottom  : 0;
+                                left    : rem(240px);
+                                margin  : {top: 0}
+                            }
+
+                            span {
+                                display     : flex;
+                                padding     : rem(4px) rem(8px);
+                                background  : {color: $color-lgray-l}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    // New stat popup
+    .popup-new-stat {
+        .stat-type {
+            // Stat types
+            &-fields {
+                display: none;
+
+                .input {
+                    // Choice input
+                    &-choice {
+                        position: relative;
+                        margin  : {bottom: rem(8px)}
+
+                        .form-control {
+                            padding: {right: 48px}
+
+                            @include responsive(md) {
+                                padding: {right: 40px}
+                            }
+                        }
+
+                        .btn {
+                            position: absolute;
+                            top     : 0;
+                            right   : 0;
+                            width   : rem(48px);
+                            padding : 0;
+                            border  : none;
+
+                            @include responsive(md) {
+                                width: rem(40px);
+                            }
+                        }
+                    }
+
+                    // Core stat input
+                    &-core-stat {
+                        display : flex;
+                        flex    : {wrap: nowrap}
+                        margin  : {bottom: rem(8px)}
+
+                        select {
+                            width   : 60%;
+                            height  : rem(48px);
+
+                            @include responsive(md) {
+                                height: rem(40px);
+                            }
+                        }
+
+                        .btn {
+                            width   : 40%;
+                            padding : 0;
+                        }
+                    }
+                }
+            }
+
+            // Stat type description
+            &-desc {
+                margin  : {bottom: rem(24px)}
+
+                @include responsive(md) {
+                    margin: {bottom: rem(20px)}
+                }
+
+                h5 {
+                    margin  : {bottom: rem(12px)}
+                    font    : {size: inherit; weight: $font-weight-medium}
+                    color   : $color-secondary-d;
+
+                    @include responsive(md) {
+                        margin: {bottom: rem(8px)}
+                    }
+                }
+
+                p {
+                    margin  : {bottom: rem(8px)}
+                    font    : {size: rem(14px)}
+                    color   : $color-dgray;
+
+                    @include responsive(md) {
+                        font: {size: rem(12px)}
+                    }
+
+                    strong {
+                        font: {weight: $font-weight-medium}
+                    }
+                }
+            }
+        }
+    }
+}

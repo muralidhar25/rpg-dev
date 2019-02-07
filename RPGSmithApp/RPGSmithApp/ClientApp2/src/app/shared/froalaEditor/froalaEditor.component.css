@@ -1,0 +1,272 @@
+.icon-rsi:before {
+    font-family: "RPG Smith Icons";
+}
+.icon-dice:before {
+    content: "";
+}
+.btn-simple-primary, .btn-link-primary {
+    color: #d15727;
+    border-color: #d15727;
+    background-color: transparent;
+}
+
+.input-group-btn {
+    position: absolute;
+    top: 2.25rem;
+    right: 0;
+}
+.btn-simple-primary:hover, .btn-simple-primary:focus, .btn-simple-primary:active, .btn-link-primary:hover, .btn-link-primary:focus, .btn-link-primary:active {
+    color: #d15727 !important;
+    background-color: transparent !important;
+}
+
+.modal-header h3{
+    font-size: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.modal-header button{
+    color: #000;
+    position: relative;
+    margin: -22px;
+    margin-right: -40px;
+}
+
+.close i{
+    position: absolute;
+    left: 94%;
+    margin-top: -7px;
+}
+
+.modal-footer .btn{
+    height: 2em;
+}
+
+.btn-secondary {
+    background: transparent;
+    border-color: transparent;
+    color: #337ab7 !important;
+}
+
+.btn-secondary:focus, .btn-secondary:active {
+    border-bottom-color: transparent !important;
+    background-color: transparent !important;
+    color: #337ab7 !important;
+}
+
+.btn-primary:focus, .btn-primary:active {
+    border-bottom-color: #337ab7 !important;
+    background-color: #337ab7 !important;
+}
+
+.btn-accent {
+    border-bottom-color: #113148;
+    background-color: #205a86;
+    border-radius: 0 !important;
+}
+
+.btn-accent:hover {
+    border-bottom-color: #071625;
+    background-color: #123d66;
+}
+
+.btn-accent:focus, .btn-accent:active {
+    border-bottom-color: black !important;
+    background-color: #042046 !important;
+}
+
+.btn-outline-primary {
+    color: #d15727;
+    border-color: #d15727;
+    background-color: transparent;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    height: 2.5em;
+    border-radius: 0;
+}
+
+.btn-outline-primary:hover{
+    background-color: #ffffff;
+}
+
+.has-feedback{
+    background-color: #d3cfce;
+    padding: 20px;
+    padding-top: 75px;
+    height: 275px;
+}
+
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    width: 100% !important;
+}
+  
+.btn-image {
+    color: #ffffff;
+    background-color: #d15727;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    height: 2.5em;
+    border-radius: 0;
+}
+
+.btn-image input:hover {
+    background-color: #be3b17;
+}
+
+.upload-btn-wrapper input[type=file] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}
+
+.icon:before {
+    display: inline-block;
+    font-family: "Iconic";
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: none;
+}
+
+.input-image-note {
+    text-align: center;
+    color: #938c88;
+    font-weight: bold;
+}
+
+.icon-globe:before {
+    content: "";
+}
+
+.icon-computer:before {
+    content: "";
+}
+
+.icon-upload:before {
+    content: "";
+}
+
+.icon-dice:before {
+    content: "";
+}
+
+.icon-rsi:before {
+    font-family: "RPG Smith Icons";
+}
+
+.input-group-btn>.btn{
+    margin: 5px -10px;
+    width: 0;
+}
+
+.modal-footer span{
+    float: left;
+}
+
+.modal-footer span a{
+    color: #d15727;
+}
+
+.icon-external:before {
+    content: "";
+}
+
+.icon-cross:before {
+    content: "";
+    color: #000;
+}
+
+.icon.icon-upload{
+    margin-top: 20px;
+}
+
+.modal-body fieldset{
+    padding: 5px;
+}
+
+.input-list-items{
+    list-style: none;
+}
+
+.input-list-items .form-check-label span {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    height: 3.5rem;
+    background-color: #f3f2f2;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #d3cfce;
+    cursor: pointer;
+    transition: 0.4s;
+    width: 100%;
+}
+
+.input-list-items .form-check-label span em {
+    font-size: 1.2rem;
+}
+
+.character-img{
+    height: 275px;
+    width: 100%;
+}
+
+.input-list-items .form-check-label span i {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.input-check-items .form-check-label {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    color: #58514c;
+}
+
+.stat-type-desc p{
+    font-size: 1.0rem
+}
+
+.form-check-label span em{
+    display: inline-block;
+    margin-bottom: -0.3rem;
+    word-wrap: initial;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 180px !important;
+}
+
+.ruleset-section{
+    padding: 10px;
+    background-color: #d3cfce;
+    height: 275px;
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+.ruleset-section::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    background-color: #F5F5F5;
+}
+
+.ruleset-section::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+}
+
+.ruleset-section::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+    background-color: #d3cfce;
+}

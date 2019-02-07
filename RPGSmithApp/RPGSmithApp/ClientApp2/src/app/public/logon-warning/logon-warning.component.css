@@ -1,0 +1,51 @@
+
+@media(min-width: 576px){
+    .rpgs-login .login-form-1{
+        max-width: 45%;
+    }
+}
+.rpgs-login .login-form-1 .form-group{
+    border-bottom: none;
+}
+
+h4 {
+   color: #222222;
+}
+
+.form-group button {
+    width: auto;
+    height: auto;
+}
+
+/* Update */
+.update-button {
+    background-color: #da7c47;
+    /* background-image: linear-gradient(#da7c47, #da7c47); */
+    text-shadow: 0 -1px 0 #da7c47;
+    width: 46%;
+    font-size: 13px;
+    text-align: -webkit-center;
+    font-family: inherit;
+    color: #ffffff;
+}
+
+.update-button:hover,
+.update-button:focus {
+    background-color: #da611d;
+    background-image: linear-gradient(#da611d, #da611d);
+}
+
+.RPGSmith{
+    color: #D2602A;
+    font-weight: 700;
+}
+
+.RPGSmith span{
+    color: #222222;
+    font-weight: 700;
+}
+
+.footer-btn button{
+    width: 40px;
+}
+

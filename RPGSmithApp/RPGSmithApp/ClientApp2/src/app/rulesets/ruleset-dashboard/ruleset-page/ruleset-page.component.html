@@ -1,0 +1,105 @@
+<!-- New Page popup -->
+<form name="pageForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="newRulesetPopupTitle">{{title}}</h5>
+            <button type="button" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
+        </div>
+        <div class="modal-body">
+
+            <div class="form-row">
+                <div class="col">
+                    <!-- Page name -->
+                    <div class="form-group" [ngClass]="{ 'has-success': f.submitted && pageName.valid, 'has-error': f.submitted && !pageName.valid }">
+                        <label>Name (required)</label>
+                        <input id="page-name" name="pageName" type="text" class="form-control" [ngStyle]="{'border-color': f.submitted && !pageName.valid ? 'red' : '#d3cfce'}"
+                               [autofocus] [(ngModel)]="pageFormModal.name" #pageName="ngModel" required placeholder="Page Name">
+                        <input id="rulesetDashboardPageId" name="rulesetDashboardPageId" type="hidden" [(ngModel)]="pageFormModal.rulesetDashboardPageId" #rulesetDashboardPageId="ngModel">
+                    </div>
+
+                    <div class="form-row hide hideContent">
+                        <div class="col-12 col-md-6">
+                            <!-- Tile background color -->
+                            <div class="form-group">
+                                <label for="titleBackgroundColor">Title Background</label>
+                                <span class="input-group-btn">
+                                    <label class="form-check-label">
+                                        <i class="icon input-color-custom" role="button" title="Select Color" data-toggle="tooltip"></i>
+                                    </label>
+                                    <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
+                                        <input class="icon input-color-custom" type="color" [(ngModel)]="pageFormModal.titleBgColor" name="titleBgColor" id="titleBgColor" />
+                                    </button>
+                                </span>
+                                <input type="text" id="titleBackgroundColor" class="form-control" placeholder="Select color" [(ngModel)]="pageFormModal.titleBgColor" name="titleBgColor">
+                            </div>
+                            <!-- End of tile background color -->
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <!-- Tile text color -->
+                            <div class="form-group">
+                                <label for="titleTextColor">Title Text</label>
+                                <span class="input-group-btn">
+                                    <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
+                                        <input class="icon input-color-custom" type="color" [(ngModel)]="pageFormModal.titleTextColor" name="titleTextColor" id="titleTextColor" />
+                                    </button>
+                                </span>
+                                <input type="text" id="titleTextColor" class="form-control" placeholder="Select color" [(ngModel)]="pageFormModal.titleTextColor" name="titleTextColor">
+                            </div>
+                            <!-- End of tile text color -->
+                        </div>
+                    </div>
+                    <div class="form-row  hide hideContent">
+                        <div class="col-12 col-md-6">
+                            <!-- Body background color -->
+                            <div class="form-group">
+                                <label for="bodyBackgroundColor">Body Background</label>
+                                <span class="input-group-btn">
+                                    <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
+                                        <input class="icon input-color-custom" type="color" [(ngModel)]="pageFormModal.bodyBgColor" name="bodyBgColor" id="bodyBgColor" />
+                                    </button>
+                                </span>
+                                <input type="text" id="bodyBackgroundColor" class="form-control" placeholder="Select color" [(ngModel)]="pageFormModal.bodyBgColor" name="bodyBgColor">
+                            </div>
+                            <!-- End of body background color -->
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <!-- Body text color -->
+                            <div class="form-group">
+                                <label for="bodyTextColor">Body Text</label>
+                                <span class="input-group-btn">
+                                    <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
+                                        <input class="icon input-color-custom" type="color" [(ngModel)]="pageFormModal.bodyTextColor" name="bodyTextColor" id="bodyTextColor" />
+                                    </button>
+                                </span>
+                                <input type="text" id="bodyTextColor" class="form-control" placeholder="Select color" [(ngModel)]="pageFormModal.bodyTextColor" name="bodyTextColor" />
+                            </div>
+                            <!-- End of body text color -->
+                        </div>
+                    </div>
+
+                    <div *ngIf="false" class="form-group row" [ngClass]="{ 'has-success': f.submitted && pageName.valid, 'has-error': f.submitted && !pageName.valid }">
+                        <div class="col-md-6">
+                            <label>Width *</label>
+                            <input id="Width" name="containerWidth" type="text" class="form-control" [ngStyle]="{'border-color': f.submitted && !containerWidth.valid ? 'red' : '#d3cfce'}"
+                                   [(ngModel)]="pageFormModal.containerWidth" #containerWidth="ngModel" placeholder="Width">
+                        </div>
+                        <div class="col-md-6">
+                            <label>Height *</label>
+                            <input id="Height" name="containerHeight" type="text" class="form-control" [ngStyle]="{'border-color': f.submitted && !containerHeight.valid ? 'red' : '#d3cfce'}"
+                                   [(ngModel)]="pageFormModal.containerHeight" #containerHeight="ngModel" placeholder="Height">
+                        </div>
+
+                    </div>
+
+
+                    <!-- End of Page name -->
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+            <button type="submit" [disabled]="disabled" class="btn btn-accent">{{button}}</button>
+        </div>
+    </div>
+</form>
+<!-- End of new Page popup -->

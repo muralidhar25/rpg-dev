@@ -1,0 +1,59 @@
+/**
+ * Dropdown Buttons ------------------------------------------------------------
+ */
+
+
+.dropdown-buttons {
+    width: 100%;
+
+    .dropdown {
+        // Dropdown trigger
+        &-toggle {
+            width: 100%;
+
+            &:after {
+                margin: {left: rem(24px)}
+
+                @include responsive(md) {
+                    margin: {left: rem(12px)}
+                }
+            }
+        }
+
+        // Dropdown menu
+        &-menu {
+            &-list {
+                padding: {top: rem(8px); bottom: rem(8px)}
+
+                @include responsive(md) {
+                    padding: {top: rem(6px); bottom: rem(6px)}
+                }
+            }
+
+            &-item {
+                height  : auto;
+                padding : {top: rem(4px); bottom: rem(4px)}
+                border  : {bottom: none}
+
+                &:hover {
+                    background: {color: transparent}
+                }
+            }
+        }
+    }
+
+    &.show {
+        .dropdown-toggle {
+            &.btn {
+                box     : {shadow: none !important}
+                border  : {color: transparent; bottom: {width: 2px}}
+                outline : none !important;
+
+                &-primary {
+                    border      : {bottom: {color: darken($color-primary, 15%)}}
+                    background  : {color: $color-primary}
+                }
+            }
+        }
+    }
+}

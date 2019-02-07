@@ -1,0 +1,242 @@
+<form name="itemMasterForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm(spellFormModal)">
+    <!-- Create new item popup -->
+    <div class="modal-header">
+        <h5 class="modal-title" id="createItemPopupTitle">{{title}}</h5>
+        <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+    </div>
+    <div class="modal-body">
+    
+            <div class="form-row">
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label for="newSpellName">Name</label>
+                        <input type="text" id="newSpellName" name="newSpellName" class="form-control" placeholder="Name of the spell"
+                                [ngStyle]="{'border-color': f.submitted && !newSpellName.valid ? 'red' : '#d3cfce'}"
+                                [(ngModel)]="spellFormModal.name" #newSpellName="ngModel" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="newSpellSchool">School</label>
+                        <input type="text" id="newSpellSchool" name="newSpellSchool" class="form-control" placeholder="Name of the school"
+                               [ngStyle]="{'border-color': f.submitted && !newSpellSchool.valid ? 'red' : '#d3cfce'}"
+                                [(ngModel)]="spellFormModal.school" #newSpellSchool="ngModel" required />
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label for="newSpellClass">Class</label>
+                        <input type="text" id="newSpellClass" name="newSpellClass" class="form-control" placeholder="Name of the class"
+                                [ngStyle]="{'border-color': f.submitted && !newSpellClass.valid ? 'red' : '#d3cfce'}"
+                                [(ngModel)]="spellFormModal.class" #newSpellClass="ngModel" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="newSpellLevel">Level(s)</label>
+                        <input type="text" id="newSpellLevel" name="newSpellLevel" class="form-control" placeholder="Name of the level"
+                                [ngStyle]="{'border-color': f.submitted && !newSpellLevel.valid ? 'red' : '#d3cfce'}"
+                                [(ngModel)]="spellFormModal.levels" #newSpellLevel="ngModel" required />
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group input-command">
+                        <label for="newSpellCommand">Select Dice</label>
+                        <div class="input-group mb-1">
+                            <input type="text" id="newSpellCommand" name="newSpellCommand" class="form-control mr-1" placeholder="Select dice (default)"
+                                   [(ngModel)]="spellFormModal.command" #newSpellLevel="ngModel" />
+
+                            <span class="pull-right">
+                                <button class="btn icon icon-plus btn-primary" type="button" (click)="addCommand(spellFormModal.commandVM)"></button>
+                            </span>
+                        </div>
+                        <div class="input-group mb-1" *ngFor="let command of spellFormModal.commandVM;let i = index;">
+                            <input type="text" [id]="'newSpellCommand'+i" [name]="'spellCommand'+i" class="form-control mr-1" placeholder="Select dice"
+                                    [(ngModel)]="command.command" />
+
+                            <input type="text" [id]="'newSpellName'+i" [name]="'newSpellName'+i" class="form-control mr-1" placeholder="name"
+                                    [(ngModel)]="command.name" />
+
+                            <span class="pull-right">
+                                <button class="btn icon icon-trash btn-primary pull-right" type="button" (click)="removeCommand(command)"></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-separator"></div>
+            <div class="form-row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="newSpellMaterialComponent">Material Component</label>
+                        <textarea id="newSpellMaterialComponent" name="newSpellMaterialComponent" class="form-control" placeholder="Name of the material component" rows="5"
+                                 [(ngModel)]="spellFormModal.materialComponent" #newSpellMaterialComponent="ngModel"></textarea>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <fieldset class="form-group input-switch input-switch-dual input-switch-muted">
+                        <legend>Somatic Component</legend>
+                        <ul class="input-switch-items">
+                            <li class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="newSpellSomantic1" [checked]="spellFormModal.isSomaticComponent"
+                                           (click)="setComponent('Somatic', true)" />
+                                    <span>Yes</span>
+                                </label>
+                            </li>
+                            <li class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="newSpellSomantic2" [checked]="!spellFormModal.isSomaticComponent"
+                                           (click)="setComponent('Somatic', false)" />
+                                    <span>No</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </fieldset>
+                </div>
+                <div class="col-12 col-md-6">
+                    <fieldset class="form-group input-switch input-switch-dual input-switch-muted">
+                        <legend>Verbal Component</legend>
+                        <ul class="input-switch-items">
+                            <li class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="isVerbalComponent1" [checked]="spellFormModal.isVerbalComponent"
+                                           (click)="setComponent('Verbal', true)" />
+                                    <span>Yes</span>
+                                </label>
+                            </li>
+                            <li class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="isVerbalComponent2" [checked]="!spellFormModal.isVerbalComponent"
+                                           (click)="setComponent('Verbal', false)" />
+                                    <span>No</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </fieldset>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label for="newSpellDescription">Description</label>
+                        <textarea id="newSpellDescription" name="newSpellDescription" class="form-control" placeholder="Enter the description" rows="5"
+                                  [(ngModel)]="spellFormModal.description" #newSpellDescription="ngModel"></textarea>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label for="newSpellStats">Stats</label>
+                        <textarea id="newSpellStats" name="newSpellStats" class="form-control" placeholder="About the stats" rows="5"
+                                   [(ngModel)]="spellFormModal.stats" #newSpellStats="ngModel"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="form-separator"></div>
+            <div class="form-row">
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label for="newSpellCastingTime">Casting time</label>
+                        <input type="number" id="newSpellCastingTime" name="newSpellCastingTime" class="form-control" placeholder="Enter casting time"
+                               [ngStyle]="{'border-color': f.submitted && !newSpellCastingTime.valid ? 'red' : '#d3cfce'}"
+                                  [(ngModel)]="spellFormModal.castingTime" #newSpellCastingTime="ngModel" required /> 
+                    </div>
+                    <div class="form-group">
+                        <label for="tileDescription">Effect Description</label>
+                        <input type="text" id="tileDescription" name="tileDescription" class="form-control" placeholder="Enter the tile descritption"
+                                [(ngModel)]="spellFormModal.effectDescription" #tileDescription="ngModel" /> 
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label for="tileHitEffect">Hit Effect</label>
+                        <input type="text" id="tileHitEffect" name="tileHitEffect" class="form-control" placeholder="Number of hits"
+                                  [(ngModel)]="spellFormModal.hitEffect" #tileHitEffect="ngModel" /> 
+                    </div>
+                    <div class="form-group">
+                        <label for="tileMissEffect">Miss Effect</label>
+                        <input type="text" id="tileMissEffect" name="tileMissEffect" class="form-control" placeholder="Number of miss"
+                                  [(ngModel)]="spellFormModal.missEffect" #tileMissEffect="ngModel" /> 
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-separator"></div>
+            <div class="form-row">
+                <div class="col-12 col-md-6">
+                    <fieldset class="form-group input-switch input-switch-dual input-switch-muted">
+                        <legend>Memorize to cast required?</legend>
+                        <ul class="input-switch-items">
+                            <li class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="newSpellMemorize1" [checked]="spellFormModal.memorized"
+                                           (click)="setComponent('memorized', true)" />
+                                    <span>Yes</span>
+                                </label>
+                            </li>
+                            <li class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="newSpellMemorize2" [checked]="!spellFormModal.memorized"
+                                           (click)="setComponent('memorized', false)" />
+                                    <span>No</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </fieldset>
+                    <fieldset class="form-group input-switch input-switch-dual input-switch-muted">
+                        <legend>Should Cast?</legend>
+                        <ul class="input-switch-items">
+                            <li class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="newSpellShouldCast1" [checked]="spellFormModal.shouldCast"
+                                           (click)="setComponent('shouldCast', true)" />
+                                    <span>Yes</span>
+                                </label>
+                            </li>
+                            <li class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="newSpellShouldCast2" [checked]="!spellFormModal.shouldCast"
+                                           (click)="setComponent('shouldCast', false)" />
+                                    <span>No</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </fieldset>
+                    <div class="form-group">
+                        <label for="newSpellTags">Tag(s)</label>
+                        <input type="text" id="newSpellTags" name="newSpellTags" class="form-control" placeholder="Metadata tags to imporve search" 
+                                        [(ngModel)]="spellFormModal.metatags" #newSpellTags="ngModel" />
+                    </div>
+                    <!--<div class="form-group">
+                        <label for="newSpellTiles">Tile(s)</label>
+                        <input type="text" id="newSpellTiles" name="newSpellTiles" class="form-control" placeholder="Metadata tiles to imporve search" />
+                    </div>-->
+                </div>
+                <div class="col-12 col-md-6">
+                    <!-- Image file -->
+                    <div class="form-group input-image input-image-alt">
+                        <label for="newItemImageFile">Image (optional)</label>
+                        <div class="input-image-control input-image-note input-image-trigger" (click)="showButtons()"
+                            *ngIf="((spellFormModal.spellId === undefined || spellFormModal.spellId === 0) 
+                            && !showWebButtons && spellFormModal.imageUrl === undefined)
+                            || (!showWebButtons && (spellFormModal.imageUrl === undefined || spellFormModal.imageUrl === null))">
+                            <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
+                        </div>
+                        <div class="form-group input-image-note input-image-trigger" (click)="showButtons()"
+                                *ngIf="(!showWebButtons && spellFormModal.imageUrl !== undefined && spellFormModal.imageUrl !== null)">
+                            <img class="spell-img" [alt]="spellFormModal.name" [src]="spellFormModal.imageUrl" />                                 
+                        </div>
+                        <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons" 
+                            [ngStyle]="{'background-image': 'url('+spellFormModal.imageUrl+')', 'background-size': 'cover'}">
+                            <button type="button" class="btn icon icon-with-text icon-globe btn-primary btn-block input-image-button-web" (click)="openWeb(spellFormModal)">From Web</button>
+                            <button type="button" class="btn icon icon-with-text icon-computer btn-primary btn-block input-imagez-trigger input-image-button-computer">From Computer</button>
+                            <input type="file" id="spell-image" (change)="fileInput($event.target.files); readTempUrl($event)" name="spellImage" placeholder="Choose image..." class="form-control" />
+                            <button type="button" class="btn btn-primary btn-block input-image-button-close" (click)="hideButtons()">Cancel</button>
+                        </div>                        
+                        <input type="file" id="newItemImagePortrait" class="form-control-file">
+                    </div>
+                    <!-- End of image file -->
+                </div>
+            </div>
+        
+    </div>
+    <div class="modal-footer">
+        <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+        <button type="submit" class="btn btn-accent">{{button}}</button>
+    </div>
+    <!-- End of create new item popup -->
+</form>

@@ -1,0 +1,52 @@
+
+<div class="form-logon-warning">
+
+    <table>
+        <tr>
+            <td align="center" class="logo">
+                <a title="RPGSmith">
+                    <img [src]="appLogo" alt="logo">
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <div class="warning-message">Warning, Failed Logon Attempts!</div>
+            </td>
+        </tr>
+
+        <tr>
+            <td align="center">
+                <div class="wrong-attempt-message">Someone has attempted to logon to your account 5 times incorrectly.<br><br>Your account has been locked for 60 seconds.</div>
+            </td>
+        </tr>
+
+        <tr>
+            <td align="center">
+                <table width="100%">
+                    <tr>
+                        <button type="button" class="btn-logon">
+                            <a [routerLink]="['/login']">Click here to login</a>
+                        </button><br><br><br>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td align="center" class="footer-section">
+                Copyright &#169;2018 <a href="https://www.facebook.com/RPG-Smith-1625592264372389" title="RPGSmith" style="text-decoration: none;color: #34AADC;"><span class="RPGSmith" style="color: #D2602A;font-weight: 700;">RPG<b style="color: #000000;font-weight: 700;">&#8226;Smith</b></span></a>, LLC All rights reserved.<br>
+                <div class="social-login">
+                    <a (click)="openFacebook()">
+                        <img src="https://cache.addthiscdn.com/icons/v2/thumbs/32x32/facebook.png" border="0" alt="Facebook"/>
+                    </a>
+                    <a (click)="openGoogle()">
+                        <img src="https://cache.addthiscdn.com/icons/v2/thumbs/32x32/google_plusone_share.png" border="0" alt="Google+"/>
+                    </a>
+                </div>
+            </td>
+        </tr>   
+
+    </table>
+
+</div>

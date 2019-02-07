@@ -1,0 +1,102 @@
+import { Component, OnInit } from '@angular/core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { ImageTileComponent } from '../image.component';
+import { CommandTileComponent } from '../../command/command.component';
+import { ImageTile } from '../../../core/models/tiles/image-tile.model';
+import { LinkTile } from '../../../core/models/tiles/link-tile.model';
+import { ExecuteTile } from '../../../core/models/tiles/execute-tile.model';
+import { CommandTile } from '../../../core/models/tiles/command-tile.model';
+import { CharacterDashboardPage } from '../../../core/models/view-models/character-dashboard-page.model';
+import { VIEW } from '../../../core/models/enums';
+
+@Component({
+    selector: 'app-edit-image',
+    templateUrl: './edit-image.component.html',
+    styleUrls: ['./edit-image.component.scss']
+})
+export class EditImageComponent implements OnInit {
+    imageTileData: any;
+    imageUrl: string;
+    title: any;
+    tileName: any;
+    viewTile: string;
+    tileModel: any;
+    characterId: number;
+    pageId: number;
+    pageDefaultData = new CharacterDashboardPage();
+
+    imageFormModel = new ImageTile();
+    executeFormModel: any;
+    commandFormModel = new CommandTile();
+    titleBgColor: any;
+    titleTextColor: any;
+    bodyBgColor: any;
+
+    constructor(private bsModalRef: BsModalRef, private modalService: BsModalService) { }
+
+    ngOnInit() {
+        setTimeout(() => {
+
+            this.viewTile = this.bsModalRef.content.tileName;
+
+            if (this.viewTile === 'image') {
+                this.imageFormModel = this.bsModalRef.content.imageTile;
+                this.title = this.imageFormModel.title;
+                this.tileModel = this.bsModalRef.content.tile;
+                this.titleBgColor = this.imageFormModel.titleBgColor;
+                this.titleTextColor = this.imageFormModel.titleTextColor;
+                this.bodyBgColor = this.imageFormModel.bodyBgColor;
+            }
+            else if (this.viewTile === 'execute') {
+                this.tileModel = this.bsModalRef.content.tile;
+                this.executeFormModel = this.bsModalRef.content.executeTile;
+                this.imageUrl = this.executeFormModel.linkType == 'Spell' ? this.executeFormModel.spell.spell.imageUrl : this.executeFormModel.linkType == 'Ability' ? this.executeFormModel.ability.ability.imageUrl : this.executeFormModel.linkType == 'Item' ? this.executeFormModel.item.itemImage : '';
+                this.title = this.executeFormModel.linkType == 'Spell' ? this.executeFormModel.spell.spell.name : this.executeFormModel.linkType == 'Ability' ? this.executeFormModel.ability.ability.name : this.executeFormModel.linkType == 'Item' ? this.executeFormModel.item.name : ''
+                this.titleBgColor = this.executeFormModel.titleBgColor;
+                this.titleTextColor = this.executeFormModel.titleTextColor;
+                this.bodyBgColor = this.executeFormModel.bodyBgColor;
+            }
+            else if (this.viewTile === 'command') {
+                this.tileModel = this.bsModalRef.content.tile;
+                this.commandFormModel = this.bsModalRef.content.commandTile;
+                this.title = this.commandFormModel.title;
+                this.titleBgColor = this.commandFormModel.titleBgColor;
+                this.titleTextColor = this.commandFormModel.titleTextColor;
+                this.bodyBgColor = this.commandFormModel.bodyBgColor;
+            }
+
+        }, 0);
+    }
+
+    edit() {
+        let _tile = Object.assign({}, this.tileModel);
+        this.close();
+
+        this.bsModalRef = this.modalService.show(ImageTileComponent, {
+            class: 'modal-primary modal-md',
+            ignoreBackdropClick: true,
+            keyboard: false
+        });
+
+        this.bsModalRef.content.title = "Edit Image Tile";
+        this.bsModalRef.content.tile = _tile;
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.EDIT;
+    }
+
+    close() {
+        this.bsModalRef.hide();
+        //this.destroyModalOnInit();
+    }
+
+    private destroyModalOnInit(): void {
+        try {
+            this.modalService.hide(1);
+            document.body.classList.remove('modal-open');
+            //$(".modal-backdrop").remove();
+        } catch (err) { }
+    }
+    
+}

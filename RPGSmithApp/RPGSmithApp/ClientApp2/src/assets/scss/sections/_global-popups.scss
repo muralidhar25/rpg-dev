@@ -1,0 +1,109 @@
+.modal {
+    // Alert message
+    &-alert {
+        &-content {
+            margin: {bottom: rem(24px)}
+        }
+
+        &-image {
+            height  : auto;
+            max     : {width: 100%}
+            margin  : {bottom: rem(16px)}
+        }
+
+        &-message {
+            strong {
+                font: {weight: $font-weight-medium}
+            }
+
+            em {
+                font    : {style: normal}
+                color   : $color-secondary-xd;
+            }
+
+            .danger {
+                color: #b71c1c;
+            }
+        }
+    }
+}
+
+.global-popup {
+    // Account settings popup
+    &-account-settings {
+        .modal {
+            &-footer {
+                padding: {top: rem(16px)}
+            }
+        }
+
+        .preferences {
+            legend {
+                display: none;
+
+                @include responsive(md) {
+                    display: block;
+                }
+            }
+        }
+    }
+
+    // About popup
+    &-about {
+        .logo {
+            width   : rem(240px);
+            height  : auto;
+        }
+
+        .version {
+            &-number, &-updated {
+                strong {
+                    font    : {weight: $font-weight-medium}
+                    color   : $color-secondary-xd;
+                }
+
+                span {
+                    color: $color-dgray-l;
+                }
+            }
+
+            &-number, &-info {
+                margin: {top: rem(4px)}
+            }
+
+            &-info {
+                font: {size: rem(12px)}
+            }
+        }
+
+        .copyright {
+            margin  : {top: rem(8px)}
+            font    : {size: rem(12px)}
+            color   : $color-dgray-l;
+        }
+
+        .buttons {
+            display : flex;
+            flex    : {wrap: wrap}
+            margin  : {top: rem(24px); left: rem(-4px); right: rem(-4px)}
+
+            li {
+                &.span {
+                    &-half, &-full {
+                        width: 100%;
+
+                    } &-half {
+                        @include responsive(md) {
+                            width: 50%;
+                        }
+                    }
+                }
+
+                .btn {
+                    height  : rem(48px);
+                    margin  : rem(4px);
+                }
+            }
+        }
+    }
+}

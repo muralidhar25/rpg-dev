@@ -1,0 +1,236 @@
+<form name="tileForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+
+
+    <div class="modal-header">
+        <h5 class="modal-title" id="newNoteTilePopupTitle"> {{title}} </h5>
+        <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+    </div>
+    <div class="modal-body" *ngIf="!isLoading">
+
+        <div class="form-row">
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <label for="newCommandTitle">Title</label>
+                    <input type="text" id="newCommandTitle" class="form-control" placeholder="Enter command title" [(ngModel)]="commandTileFormModal.title" name="title">
+                </div>
+                <div class="form-group">
+                    <label for="newCommandCmd">Command</label>
+                    <span class="input-group-btn">
+                        <button type="button" title="Show Dice" data-toggle="tooltip" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal('-1', commandTileFormModal.command)"></button>
+                    </span>
+                    <input type="text" id="newCommandCmd" class="form-control" placeholder="Enter the command" [(ngModel)]="commandTileFormModal.command" #newCommandCmd="ngModel" name="newCommandCmd" [autofocus]
+                           required [ngClass]="{ 'ng-valid': f.form.valid, 'ng-touched ng-dirty ng-valid': f.form.invalid }" />
+                </div>
+
+                <!-- Command tile color -->
+                <!--<fieldset class="form-group input-color">
+                <legend>Color</legend>
+                <ul class="input-color-items">
+                    <li class="form-check" *ngFor="let color of colorList;let i = index">
+                        <label class="form-check-label">
+                            <input type="checkbox" [checked]="color.selected" class="form-check-input" name="tilePresetColor" id="favColor" (click)="setColor(color,i)">
+                            <i class="icon" [ngStyle]="{'background-color': color.bodyBgColor}"
+                               [ngClass]="(color.bodyBgColor == '#FFFFFF') ?'black-check':''"></i>
+                        </label>
+                    </li>
+                    <li class="form-check">
+                        <label class="form-check-label">
+                            <i class="icon input-color-custom" role="button" (click)=" opencolorpopup()"></i>
+                        </label>
+                    </li>
+                </ul>
+            </fieldset>-->
+                <!-- End of command tile color -->
+
+
+            </div>
+            <div class="col-12 col-md-6">
+                <!-- Image file -->
+                <div class="form-group input-image input-image-alt">
+
+                    <div class="input-image-control input-image-note input-image-trigger" (click)="cropImage(null,true,'VIEW.ADD')" *ngIf="
+                         !showWebButtons && (imageUrl === undefined || imageUrl === null || imageUrl === '')">
+                        <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
+                    </div>
+                    <div class="form-group input-image-note input-image-trigger" (click)="cropImage(imageUrl,true,'VIEW.EDIT')" *ngIf="(!showWebButtons && imageUrl !== undefined && imageUrl !== null && imageUrl !== '')">
+                        <img class="spell-img" [src]="imageUrl"
+                             onerror="this.src='../assets/images/DefaultImages/ability.png';">
+                    </div>
+
+                    <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
+                        <img [src]="imageUrl" class="bg-image" />
+                    </div>
+                    <input type="file" id="newimageTileProfile" class="form-control-file">
+                </div>
+                <!-- End of image file -->
+            </div>
+        </div>
+        <div class="form-row align-items-center">
+            <div class="col-8 col-sm-8 col-lg-10 col-md-8">
+                <fieldset class="form-group input-color w-100 mt-2 mb-1">
+                    <legend class="mb-0">Color</legend>
+                    <div class="row align-items-center">
+                        <!--<div class="col-12 col-sm-3 col-md-4">
+                            <legend class="mb-0"><small>Preset</small></legend>
+                        </div>-->
+                        <div class="col-12 col-sm-9 col-md-8 col-lg-12">
+                            <ul class="input-color-items">
+                                <li class="form-check" *ngFor="let color of defaultColorList;let i = index">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" [checked]="color.selected" (click)="setdefaultColor(color,i)" id="color" name="color" type="checkbox">
+                                        <i class="icon" [ngStyle]="{'background-color': color.bodyBgColor, 'color': (color.bodyBgColor == '#FFFFFF') ? '#000000' : '#ffffff'}"
+                                           [ngClass]="(color.bodyBgColor == '#FFFFFF') ?'black-check':''"></i>
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="form-group input-color w-100 mb-1">
+                    <div class="row align-items-center">
+                        <div class="col-12 col-sm-3 col-md-4">
+                            <legend class="mb-0"><small>Last Used</small></legend>
+                        </div>
+                        <div class="col-12 col-sm-9 col-md-8 col-lg-8">
+                            <ul class="input-color-items">
+                                <li class="form-check" *ngFor="let color of colorList;let i = index">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" [checked]="color.selected" class="form-check-input" name="tilePresetColor" id="favColor" (click)="setColor(color,i)">
+                                        <i class="icon" [ngStyle]="{'background-color': color.bodyBgColor}"
+                                           [ngClass]="(color.bodyBgColor == '#FFFFFF') ?'black-check':''"></i>
+                                    </label>
+                                </li>
+
+                                <!--<li class="form-check">
+                                <label class="form-check-label">
+                                    <i class="icon input-color-custom" role="button" (click)="openColorPopup()"></i>
+                                </label>
+                            </li>-->
+                            </ul>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="col-4 col-sm-4 col-lg-2 col-md-4">
+                <ul class="input-color-items mb-2">
+                    <li [ngClass]="shapeClass" class="d-block m-auto">
+                        <div class="tile">
+                            <span *ngIf="commandTileFormModal.title" [ngStyle]="{'color': colorModel.titleTextColor, 'background-color': colorModel.titleBgColor,'border-bottom': (colorModel.titleBgColor==colorModel.bodyBgColor) ? '1px solid rgba(255,255,255,.5)':''}"
+                                  class="tile-title wraptext">Title Text</span>
+                            <div class="tile-body">
+                                <div [style.background-color]="colorModel.bodyBgColor">
+                                    <div class="d-block h-100 w-100" [ngStyle]="{'background-color': (selectedStatType==2 || tile==1)?'#fff':colorModel.bodyBgColor}">
+                                        <p class="" [ngStyle]="{'color': (selectedStatType==2 || tile==1)?'#000':colorModel.bodyTextColor}">
+                                            Body Text
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-12 mb-3">
+                <div class="input-extend">
+                    <button type="button" class="btn btn-link-primary btn-underline" (click)="showMoreColorFields()"><span>{{showMoreLessColorText}}</span></button>
+                </div>
+            </div>
+        </div>
+        <div class="form-row" *ngIf="!showMoreLessColorToggle">
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <label for="titleBackgroundColor">Title Background</label>
+                    <span class="input-group-btn">
+                        <label class="form-check-label">
+                            <i class="icon input-color-custom" role="button" title="Select Color" data-toggle="tooltip"></i>
+                        </label>
+                        <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
+                            <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.titleBgColor" name="titleBgColor" id="titleBgColor"  (change)="setColor(colorModel)" />
+                        </button>
+                    </span>
+                    <input type="text" id="titleBackgroundColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.titleBgColor" name="titleBgColor">
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <label for="titleTextColor">Title Text</label>
+                    <span class="input-group-btn">
+                        <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
+                            <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.titleTextColor" name="titleTextColor" id="titleTextColor"  (change)="setColor(colorModel)" />
+                        </button>
+                    </span>
+                    <input type="text" id="titleTextColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.titleTextColor" name="titleTextColor">
+                </div>
+            </div>
+        </div>
+        <div class="form-row" *ngIf="!showMoreLessColorToggle">
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <label for="bodyBackgroundColor">Body Background</label>
+                    <span class="input-group-btn">
+                        <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
+                            <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.bodyBgColor" name="bodyBgColor" id="bodyBgColor"  (change)="setColor(colorModel)" />
+                        </button>
+                    </span>
+                    <input type="text" id="bodyBackgroundColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.bodyBgColor" name="bodyBgColor">
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6" *ngIf="tile!==1">
+                <div class="form-group">
+                    <label for="bodyTextColor">Body Text</label>
+                    <span class="input-group-btn">
+                        <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
+                            <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.bodyTextColor" name="bodyTextColor" id="bodyTextColor"  (change)="setColor(colorModel)" />
+                        </button>
+                    </span>
+                    <input type="text" id="bodyTextColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.bodyTextColor" name="bodyTextColor">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <fieldset class="form-group input-switch input-switch-dual">
+                    <legend>Shape</legend>
+                    <ul class="input-switch-items">
+                        <li class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" (change)="setShape(0)" [checked]="commandTileFormModal.shape===0">
+                                <span>SQUARE</span>
+                            </label>
+                        </li>
+                        <li class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" (change)="setShape(50)" [checked]="commandTileFormModal.shape===50">
+                                <span>ROUNDED</span>
+                            </label>
+                        </li>
+                        <li class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" (change)="setShape(100)" [checked]="commandTileFormModal.shape===100">
+                                <span>CIRCLE</span>
+                            </label>
+                        </li>
+                    </ul>
+                </fieldset>
+            </div>
+            <!--<div class="col-sm-2">
+                <div [class]="shapeClass"></div>
+                <div class="rangevalue"></div>
+            </div>-->
+        </div>
+
+    </div>
+
+    <app-loader [isLoading]="isLoading"></app-loader>
+
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+        <button type="submit" class="btn btn-accent">Save</button>
+    </div>
+
+
+</form>
