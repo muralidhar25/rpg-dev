@@ -5,7 +5,7 @@
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <IsPackable>false</IsPackable>
-    <SpaRoot>ClientApp\</SpaRoot>
+    <SpaRoot>ClientApp2\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
 
     <!-- Set this to true if you enable server-side prerendering -->
@@ -20,6 +20,12 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>bin\Debug\netcoreapp2.1\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RuntimeFrameworkVersion>2.1.0</RuntimeFrameworkVersion>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
@@ -49,19 +55,19 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
-    <Compile Remove="ClientApp\src\app\components\character-records\abilities\create-abilities\**" />
-    <Compile Remove="ClientApp\src\app\components\character-records\spells\create-spells\**" />
+    <Compile Remove="ClientApp2\src\app\components\character-records\abilities\create-abilities\**" />
+    <Compile Remove="ClientApp2\src\app\components\character-records\spells\create-spells\**" />
     <Content Remove="$(SpaRoot)**" />
-    <Content Remove="ClientApp\src\app\components\character-records\abilities\create-abilities\**" />
-    <Content Remove="ClientApp\src\app\components\character-records\spells\create-spells\**" />
+    <Content Remove="ClientApp2\src\app\components\character-records\abilities\create-abilities\**" />
+    <Content Remove="ClientApp2\src\app\components\character-records\spells\create-spells\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Remove="ClientApp\src\app\components\character-records\abilities\create-abilities\**" />
-    <EmbeddedResource Remove="ClientApp\src\app\components\character-records\spells\create-spells\**" />
-    <None Remove="ClientApp\src\app\components\character-records\abilities\create-abilities\**" />
-    <None Remove="ClientApp\src\app\components\character-records\spells\create-spells\**" />
+    <EmbeddedResource Remove="ClientApp2\src\app\components\character-records\abilities\create-abilities\**" />
+    <EmbeddedResource Remove="ClientApp2\src\app\components\character-records\spells\create-spells\**" />
+    <None Remove="ClientApp2\src\app\components\character-records\abilities\create-abilities\**" />
+    <None Remove="ClientApp2\src\app\components\character-records\spells\create-spells\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -198,8 +204,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ClientApp\src\app\common\backend-less-old.ts" />
-    <None Remove="ClientApp\src\app\common\backend-less-old.ts" />
+    <None Remove="ClientApp2\src\app\common\backend-less-old.ts" />
+    <None Remove="ClientApp2\src\app\common\backend-less-old.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -212,7 +218,7 @@
     <None Include="wwwroot\mail-templates\reset-password.html" />
     <None Include="wwwroot\mail-templates\reset-password.html" />
   </ItemGroup>
-  
+
   <!--<ItemGroup>
     <PackageReference Update="Microsoft.NETCore.App" Version="2.1.0-rc1" />
   </ItemGroup>-->
