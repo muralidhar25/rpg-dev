@@ -1,22 +1,20 @@
 import { Component, OnInit, OnDestroy, Input } from "@angular/core";
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { AlertService, MessageSeverity, DialogType } from './../../../core/common/alert.service';
-import { AuthService } from "./../../../core/auth/auth.service";
-import { ConfigurationService } from './../../../core/common/configuration.service';
-import { Utilities } from './../../../core/common/utilities';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { DBkeys } from '../../../core/common/db-keys';
-import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
+import { ItemMaster } from "../../../core/models/view-models/item-master.model";
+import { ConfigurationService } from "../../../core/common/configuration.service";
+import { AlertService, DialogType, MessageSeverity } from "../../../core/common/alert.service";
+import { LocalStoreManager } from "../../../core/common/local-store-manager.service";
+import { AuthService } from "../../../core/auth/auth.service";
 import { SharedService } from "../../../core/services/shared.service";
 import { CommonService } from "../../../core/services/shared/common.service";
-import { ItemMasterService } from "../../../core/services/item-master.service";
-
-import { AddItemMasterComponent } from './../../item-master/add-item/add-item.component';
-import { CreateItemMsterComponent } from './../../item-master/create-item/create-item.component';
-import { User } from '../../../core/models/user.model';
-import { ItemMaster } from './../../../core/models/view-models/item-master.model';
-import { ImageViewerComponent } from "../../../shared/image-interface/image-viewer/image-viewer.component";
 import { RulesetService } from "../../../core/services/ruleset.service";
+import { ItemMasterService } from "../../../core/services/item-master.service";
+import { User } from "../../../core/models/user.model";
+import { DBkeys } from "../../../core/common/db-keys";
+import { Utilities } from "../../../core/common/utilities";
+import { CreateItemMsterComponent } from "../create-item/create-item.component";
+import { ImageViewerComponent } from "../../../shared/image-interface/image-viewer/image-viewer.component";
 
 @Component({
     selector: 'app-item-details',

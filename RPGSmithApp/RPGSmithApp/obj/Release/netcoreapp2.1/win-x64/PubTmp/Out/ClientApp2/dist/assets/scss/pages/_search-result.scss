@@ -1,0 +1,129 @@
+/**
+ * Search Result Page ----------------------------------------------------------
+ */
+
+.page-search-result {
+    .page-toolbar-dropdown {
+        .dropdown {
+            &-toggle {
+                padding : {top: rem(12px); bottom: rem(12px)}
+                border  : {width: 1px; style: solid; color: $color-dgray-xl}
+
+                @include responsive(md) {
+                    padding : 0;
+                    border  : none;
+                }
+
+                span {
+                    font    : {size: rem(16px)}
+                    color   : $color-dgray-l;
+
+                    em {
+                        font    : {weight: $font-weight-medium; style: normal}
+                        color   : $color-dgray-xd;
+                    }
+                }
+            }
+        }
+    }
+
+    // Search field
+    .search-field {
+        form {
+            display : flex;
+            align   : {items: center}
+            margin  : {bottom: rem(16px); left: rem(16px); right: rem(-16px)}
+
+            @include responsive(md) {
+                margin: {bottom: rem(32px); left: rem(24px); right: rem(-24px)}
+            }
+
+            .icon {
+                position: relative;
+                z       : {index: 80}
+                margin  : {right: rem(-32px)}
+
+                @include responsive(md) {
+                    margin: {right: rem(-48px)}
+                }
+
+                &:before {
+                    font    : {size: rem(16px)}
+                    color   : $color-dgray-xl;
+
+                    @include responsive(md) {
+                        font: {size: rem(20px)}
+                    }
+                }
+            }
+
+            input {
+                display     : flex;
+                align       : {items: center}
+                width       : 100%;
+                height      : rem(48px);
+                padding     : {top: 0; bottom: 0; left: rem(40px); right: rem(12px)}
+                border      : {width: 2px; style: solid; color: $color-lgray-d};
+                font        : {size: rem(14px)}
+                color       : $color-dgray-d;
+                background  : {color: $color-basic-white}
+                outline     : none !important;
+                transition  : $animation-duration;
+
+                @include responsive(md) {
+                    height  : rem(64px);
+                    padding : {left: rem(64px); right: rem(24px)}
+                    font    : {size: rem(16px)}
+                }
+
+                &::placeholder {
+                    color: $color-dgray-xl;
+                }
+
+                &:focus {
+                    border: {color: $color-dgray-xl}
+                }
+            }
+        }
+    }
+
+    // Result cards
+    .cards {
+        .card-wrapper {
+            flex    : {grow: 1}
+            margin  : {bottom: rem(16px)}
+
+            @include responsive(md) {
+                margin  : {bottom: rem(32px)}
+            }
+
+            .card {
+                flex    : {direction: row}
+                align   : {items: center}
+
+                &-image {
+                    width: rem(80px);
+                    border: {bottom: {width: 0} right: {width: 1px}}
+                }
+
+                &-body {
+                    flex    : {direction: column}
+                    align   : {items: flex-start}
+                    justify : {content: flex-start}
+                    padding : 0 rem(16px);
+                }
+
+                &-title {
+                    margin  : {bottom: rem(4px)}
+                    font    : {weight: $font-weight-regular}
+                }
+
+                &-text {
+                    margin  : 0;
+                    font    : {size: rem(12px)}
+                    color   : $color-dgray-xl;
+                }
+            }
+        }
+    }
+}

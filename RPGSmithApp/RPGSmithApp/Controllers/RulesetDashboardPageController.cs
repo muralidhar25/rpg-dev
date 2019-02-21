@@ -22,6 +22,7 @@ namespace RPGSmithApp.Controllers
         private readonly IRulesetTileService _tileService;
         private readonly IRulesetCharacterStatTileService _characterStatTileService;
         private readonly IRulesetCommandTileService _commandTileService;
+        private readonly IRulesetTextTileService _textTileService;
         private readonly IRulesetCounterTileService _counterTileService;
         private readonly IRulesetImageTileService _imageTileService;
         private readonly IRulesetNoteTileService _noteTileService;
@@ -37,7 +38,8 @@ namespace RPGSmithApp.Controllers
             IRulesetCounterTileService counterTileService,
             IRulesetImageTileService imageTileService,
             IRulesetNoteTileService noteTileService,
-            IRulesetTileConfigService tileConfigService)
+            IRulesetTileConfigService tileConfigService,
+            IRulesetTextTileService textTileService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._rulesetDashboardPageService = rulesetDashboardPageService;
@@ -49,6 +51,7 @@ namespace RPGSmithApp.Controllers
             this._noteTileService = noteTileService;
             this._tileConfigService = tileConfigService;
             this._rulesetDashboardLayoutService = rulesetDashboardLayoutService;
+            this._textTileService = textTileService;
         }
 
         [HttpGet("GetById")]
@@ -256,6 +259,23 @@ namespace RPGSmithApp.Controllers
                                     TitleBgColor = commandTile.TitleBgColor,
                                     TitleTextColor = commandTile.TitleTextColor,
                                     IsDeleted = false
+                                });
+                                //SaveColorsAsync(Tile);
+                                break;
+                            case (int)Enum.TILES.TEXT:
+                                var textTile = _tile.TextTiles;
+                                Tile.TextTiles = await _textTileService.Create(new RulesetTextTile
+                                {
+                                    RulesetTileId = Tile.RulesetTileId,
+                                    Title = textTile.Title,
+                                    Shape = textTile.Shape,
+                                    SortOrder = textTile.SortOrder,
+                                    BodyBgColor = textTile.BodyBgColor,
+                                    BodyTextColor = textTile.BodyTextColor,
+                                    TitleBgColor = textTile.TitleBgColor,
+                                    TitleTextColor = textTile.TitleTextColor,
+                                    IsDeleted = false,
+                                    Text= textTile.Text
                                 });
                                 //SaveColorsAsync(Tile);
                                 break;

@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
-import { RulesetNoteTileComponent } from './note/note.component';
-import { RulesetCharacterStatTileComponent } from './character-stat/character-stat.component';
-import { RulesetCommandTileComponent } from './command/command.component';
-import { RulesetCounterTileComponent } from './counter/counter.component';
-import { RulesetImageTileComponent } from './image/image.component';
-import { TILES, TILE_ICON, VIEW } from '../core/models/enums';
+import { Ruleset } from '../core/models/view-models/ruleset.model';
 import { RulesetDashboardPage } from '../core/models/view-models/ruleset-dashboard-page.model';
 import { RulesetDashboardPageService } from '../core/services/ruleset-dashboard-page.service';
-import { Ruleset } from '../core/models/view-models/ruleset.model';
+import { TILES, TILE_ICON, VIEW } from '../core/models/enums';
+import { RulesetNoteTileComponent } from './note/note.component';
+import { RulesetImageTileComponent } from './image/image.component';
+import { RulesetCounterTileComponent } from './counter/counter.component';
+import { RulesetCharacterStatTileComponent } from './character-stat/character-stat.component';
+import { RulesetCommandTileComponent } from './command/command.component';
 import { RulesetTextTileComponent } from './text/text.component';
 
 @Component({

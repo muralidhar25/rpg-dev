@@ -1,14 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from '@angular/router';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { AlertService, MessageSeverity, DialogType } from '../../../core/common/alert.service';
-import { AuthService } from "./../../../core/auth/auth.service";
-import { Utilities } from '../../../core/common/utilities';
-import { DiceComponent } from '../dice/dice.component';
-import { CharacterCommandService } from '../../../core/services/character-command.service';
+import { CharacterCommand } from "../../../core/models/view-models/character-command.model";
+import { AuthService } from "../../../core/auth/auth.service";
 import { SharedService } from "../../../core/services/shared.service";
-import { DiceService } from '../../../core/services/dice.service';
-import { CharacterCommand, DiceCommand } from '../../../core/models/view-models/character-command.model';
+import { AlertService, MessageSeverity, DialogType } from "../../../core/common/alert.service";
+import { CharacterCommandService } from "../../../core/services/character-command.service";
+import { DiceService } from "../../../core/services/dice.service";
+import { Utilities } from "../../../core/common/utilities";
+import { DiceComponent } from "../dice/dice.component";
 
 @Component({
     selector: "app-dice-save",
@@ -49,7 +49,7 @@ export class DiceSaveComponent implements OnInit {
             _command.character = this.bsModalRef.content.character;
             _command.characterId = this.bsModalRef.content.characterId;
             this.view = this.bsModalRef.content.view;
-            this.characterCommand = this.characterCommandService.commandModelData(_command, this.view);
+            this.characterCommand = this.characterCommandService.commandModelData(_command, this.view);            
         }, 0);
     }
 
@@ -77,7 +77,7 @@ export class DiceSaveComponent implements OnInit {
                     return false;
                 }
 
-                //add mod & validate command
+                //add mod & validate command            
                 //let commandToValidate = command.trim();
                 this.addModArray.map(mod => {
                     //let charactersCharacterStatId = mod.charactersCharacterStatId;
@@ -123,7 +123,7 @@ export class DiceSaveComponent implements OnInit {
                     return false;
                 }
 
-                //add mod & validate command
+                //add mod & validate command            
                 //let commandToValidate = command.trim();
                 this.addModArray.map(mod => {
                     //let charactersCharacterStatId = mod.charactersCharacterStatId;
@@ -177,7 +177,7 @@ export class DiceSaveComponent implements OnInit {
     }
 
     private deleteCommandHelper(characterCommand: CharacterCommand) {
-
+        
         this.isLoading = true;
         this.characterCommandService.delete<any>(characterCommand.characterCommandId)
             .subscribe(
@@ -212,7 +212,7 @@ export class DiceSaveComponent implements OnInit {
             class: 'modal-primary modal-md dice-screen',
             ignoreBackdropClick: true,
             keyboard: false
-        });
+        });    
         this.bsModalRef.content.title = "Dice"
     }
 

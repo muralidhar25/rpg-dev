@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { RulesetNoteTileComponent } from '../note.component';
 import { NoteTile } from '../../../core/models/tiles/note-tile.model';
-import { VIEW } from '../../../core/models/enums';
 import { RulesetDashboardPage } from '../../../core/models/view-models/ruleset-dashboard-page.model';
 import { Utilities } from '../../../core/common/utilities';
+import { RulesetNoteTileComponent } from '../note.component';
+import { VIEW } from '../../../core/models/enums';
 
 @Component({
   selector: 'edit-note',

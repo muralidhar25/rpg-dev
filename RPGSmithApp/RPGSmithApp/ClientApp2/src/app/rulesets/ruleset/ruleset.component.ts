@@ -1,26 +1,23 @@
 import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
 import { Router, NavigationExtras } from "@angular/router";
-import { fadeInOut } from '../../core/services/animations';
-import { AlertService, MessageSeverity, DialogType } from '../../core/common/alert.service';
-import { AuthService } from "../../core/auth/auth.service";
-import { ConfigurationService } from '../../core/common/configuration.service';
-import { Utilities } from '../../core/common/utilities';
-import { RulesetService } from "../../core/services/ruleset.service";
-import { Ruleset } from '../../core/models/view-models/ruleset.model';
-import { VIEW } from '../../core/models/enums';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { RulesetFormComponent } from '../ruleset-form/ruleset-form.component';
-import { RulesetManageComponent } from '../ruleset-form/ruleset-manage.component';
-
-import { SharedService } from '../../core/services/shared.service';
+import { fadeInOut } from "../../core/services/animations";
+import { AlertService, DialogType, MessageSeverity } from "../../core/common/alert.service";
+import { LocalStoreManager } from "../../core/common/local-store-manager.service";
+import { AuthService } from "../../core/auth/auth.service";
+import { ConfigurationService } from "../../core/common/configuration.service";
+import { RulesetService } from "../../core/services/ruleset.service";
+import { SharedService } from "../../core/services/shared.service";
 import { CommonService } from "../../core/services/shared/common.service";
-import { LocalStoreManager } from '../../core/common/local-store-manager.service';
-
 import { DBkeys } from "../../core/common/db-keys";
-import { User } from '../../core/models/user.model';
-import { RulesetRecordCount } from '../../core/models/view-models/ruleset-record-count.model';
-import { ImportRulesetComponent } from '../ruleset-helper/import-ruleset/import-ruleset.component'
-import { RulesetAddComponent } from "../ruleset-helper/ruleset-add/ruleset-add.component";
+import { User } from "../../core/models/user.model";
+import { Utilities } from "../../core/common/utilities";
+import { RulesetFormComponent } from "../ruleset-form/ruleset-form.component";
+import { Ruleset } from "../../core/models/view-models/ruleset.model";
+import { RulesetManageComponent } from "../ruleset-form/ruleset-manage.component";
+import { VIEW } from "../../core/models/enums";
+import { ImportRulesetComponent } from "../ruleset-helper/import-ruleset/import-ruleset.component";
+import { AppService1 } from "../../app.service";
 
 @Component({
   selector: 'app-ruleset',
@@ -46,7 +43,7 @@ export class RulesetComponent implements OnInit {
         private router: Router, private alertService: AlertService, private localStorage: LocalStoreManager,
         private authService: AuthService, private configurations: ConfigurationService,
         private rulesetService: RulesetService, private modalService: BsModalService, private modalService1: BsModalService,
-        private sharedService: SharedService, private commonService: CommonService
+      private sharedService: SharedService, private commonService: CommonService, public appService: AppService1
     ) {
         if (!this.authService.isLoggedIn) {
             this.authService.logout();
@@ -60,7 +57,7 @@ export class RulesetComponent implements OnInit {
     }
 
     @HostListener('document:click', ['$event.target'])
-    documentClick(target: any) {
+    documentClick(target: any) {        
         try {
             if (target.className.endsWith("not-plus"))
                 this.showPlus = false;
@@ -73,20 +70,21 @@ export class RulesetComponent implements OnInit {
             else this.isDropdownOpen = false;
         } catch (err) { this.isDropdownOpen = false; this.showPlus = true;}
     }
-
+   
     ngOnInit() {
         this.destroyModalOnInit();
         this.initialize(null);
     }
 
     private resetHeaderValues(): any {
-        try {
+      try {
+        this.appService.updateAccountSetting1(-1);
             this.sharedService.updateAccountSetting(-1);
             this.localStorage.deleteData(DBkeys.HEADER_VALUE);
             this.localStorage.saveSyncedSessionData(undefined, DBkeys.HEADER_VALUE);
         } catch (err) { }
     }
-
+    
     private initialize(ruleset?: any) {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)
@@ -122,17 +120,18 @@ export class RulesetComponent implements OnInit {
     }
 
     addRuleset() {
-        this.bsModalRef = this.modalService.show(RulesetAddComponent, {
-            class: 'modal-primary modal-md',
-            ignoreBackdropClick: true,
-            keyboard: false
-        });
-        this.bsModalRef.content.rulesets = this.rulesets;
-        this.bsModalRef.content.eventEmitter.subscribe(result => {
-            if (result) {
-                this.initialize();
-            }
-        });
+        //this.bsModalRef = this.modalService.show(RulesetAddComponent, {
+        //    class: 'modal-primary modal-md',
+        //    ignoreBackdropClick: true,
+        //    keyboard: false
+        //});
+        //this.bsModalRef.content.rulesets = this.rulesets;
+        //this.bsModalRef.content.eventEmitter.subscribe(result => {
+        //    if (result) {
+        //        this.initialize();
+        //    }
+        //});
+        this.router.navigate(['/ruleset/add']);
     }
 
     createRuleset() {
@@ -147,7 +146,7 @@ export class RulesetComponent implements OnInit {
     }
 
     manageRuleset(ruleset: Ruleset) {
-
+        
         console.log('mange ruleset popup');
         if (!document.getElementsByClassName('mng-ruleset-popup').length) {
             this.setRulesetId(ruleset.ruleSetId);
@@ -160,10 +159,10 @@ export class RulesetComponent implements OnInit {
                 this.bsModalRef.content.title = 'Rule Set Properties';
                 ruleset.view = VIEW.EDIT;
                 this.bsModalRef.content.ruleset = ruleset;
-                this.bsModalRef.content.recordCount = ruleset.recordCount;
+                this.bsModalRef.content.recordCount = ruleset.recordCount;   
             }, 100);
-
-        }
+                  
+        }       
     }
     private setRulesetId(rulesetId: number) {
         this.localStorage.deleteData(DBkeys.RULESET_ID);
@@ -215,7 +214,7 @@ export class RulesetComponent implements OnInit {
         this.rulesetService.deleteRuleset(ruleset.ruleSetId)
             .subscribe(
             data => {
-                this.isLoading = false;
+                this.isLoading = false; 
                 this.alertService.stopLoadingMessage();
                 this.commonService.UpdateCounts(); /*update charaters count*/
                 this.alertService.showMessage("Ruleset has been deleted successfully.", "", MessageSeverity.success);
@@ -223,7 +222,7 @@ export class RulesetComponent implements OnInit {
                 //this.initialize();
             },
             error => {
-                this.isLoading = false;
+                this.isLoading = false; 
                 this.alertService.stopLoadingMessage();
 
                 let Errors = Utilities.ErrorDetail("Unable to Delete", error);
@@ -236,12 +235,13 @@ export class RulesetComponent implements OnInit {
 
             });
     }
-
+    
     private destroyModalOnInit(): void {
         try {
             this.modalService.hide(1);
             document.body.classList.remove('modal-open');
             //$(".modal-backdrop").remove();
+          this.appService.updateAccountSetting1(false);
             this.sharedService.updateAccountSetting(false);
             this.localStorage.deleteData(DBkeys.HEADER_VALUE);
         } catch (err) { }
@@ -252,7 +252,7 @@ export class RulesetComponent implements OnInit {
             class: 'modal-primary modal-md',
             ignoreBackdropClick: true,
             keyboard: false
-        });
+        });    
         this.bsModalRef.content.rulesetModel = { ruleSetId: 0 };
     }
 }

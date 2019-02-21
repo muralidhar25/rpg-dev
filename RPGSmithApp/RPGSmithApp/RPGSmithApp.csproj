@@ -209,6 +209,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ClientApp2\src\app\characters\character-records\abilities\ability-details\" />
+    <Folder Include="ClientApp2\src\app\characters\character-records\abilities\ability-ruleset-detail\" />
+    <Folder Include="ClientApp2\src\app\characters\character-records\abilities\add-abilities\" />
+    <Folder Include="ClientApp2\src\app\characters\character-records\abilities\create-abilities\" />
     <Folder Include="wwwroot\UploadedFiles\" />
   </ItemGroup>
 

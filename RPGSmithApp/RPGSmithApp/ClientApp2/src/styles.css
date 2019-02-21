@@ -37,13 +37,13 @@ input.form-control.is-required-status, textarea.form-control.is-required-status,
 }
 
 
-.ng-valid[required], .ng-valid.required {
-    border-left: 5px solid #42A948; /*57A83F*/
+/*.ng-valid[required], .ng-valid.required {
+    border-left: 5px solid #42A948; 
 }
 
 .ng-invalid:not(form) {
-    border-left: 5px solid #a94442; /*E03930*/
-}
+    border-left: 5px solid #a94442; 
+}*/
 
 .bootstrap-select.ng-novalidation > .dropdown-toggle {
     border-left-width: 5px;

@@ -24,6 +24,7 @@ namespace RPGSmithApp.Controllers
         private readonly ICharacterTileService _tileService;
         private readonly ICharacterStatTileService _characterStatTileService;
         private readonly ICommandTileService _commandTileService;
+        private readonly ITextTileService _textTileService;
         private readonly ICounterTileService _counterTileService;
         private readonly IExecuteTileService _executeTileService;
         private readonly IImageTileService _imageTileService;
@@ -42,7 +43,8 @@ namespace RPGSmithApp.Controllers
             IImageTileService imageTileService,
             ILinkTileService linkTileService,
             INoteTileService noteTileService,
-            ITileConfigService tileConfigService)
+            ITileConfigService tileConfigService,
+            ITextTileService textTileService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._characterDashboardPageService = characterDashboardPageService;
@@ -56,6 +58,7 @@ namespace RPGSmithApp.Controllers
             this._linkTileService = linkTileService;
             this._noteTileService = noteTileService;
             this._tileConfigService = tileConfigService;
+            this._textTileService = textTileService;
         }
 
         [HttpGet("GetById")]
@@ -306,6 +309,23 @@ namespace RPGSmithApp.Controllers
                                     TitleBgColor = commandTile.TitleBgColor,
                                     TitleTextColor = commandTile.TitleTextColor,
                                     IsDeleted = false
+                                });
+                                //SaveColorsAsync(Tile);
+                                break;
+                            case (int)Enum.TILES.TEXT:
+                                var textTile = _tile.TextTiles;
+                                Tile.TextTiles = await _textTileService.Create(new CharacterTextTile
+                                {
+                                    CharacterTileId = Tile.CharacterTileId,
+                                    Title = textTile.Title,
+                                    Shape = textTile.Shape,
+                                    SortOrder = textTile.SortOrder,
+                                    BodyBgColor = textTile.BodyBgColor,
+                                    BodyTextColor = textTile.BodyTextColor,
+                                    TitleBgColor = textTile.TitleBgColor,
+                                    TitleTextColor = textTile.TitleTextColor,
+                                    IsDeleted = false,
+                                    Text = textTile.Text,                                    
                                 });
                                 //SaveColorsAsync(Tile);
                                 break;

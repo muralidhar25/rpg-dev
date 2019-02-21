@@ -28,6 +28,7 @@ namespace RPGSmithApp.Controllers
         private readonly IRulesetImageTileService _imageTileService;
         private readonly IRulesetNoteTileService _noteTileService;
         private readonly IRulesetTileConfigService _tileConfigService;
+        private readonly IRulesetTextTileService _textTileService;
 
         public RulesetDashboardLayoutController(IHttpContextAccessor httpContextAccessor,
             IRulesetDashboardLayoutService rulesetDashboardLayoutService,
@@ -38,7 +39,7 @@ namespace RPGSmithApp.Controllers
             IRulesetCounterTileService counterTileService,
             IRulesetImageTileService imageTileService,
             IRulesetNoteTileService noteTileService,
-            IRulesetTileConfigService tileConfigService)
+            IRulesetTileConfigService tileConfigService, IRulesetTextTileService textTileService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._rulesetDashboardLayoutService = rulesetDashboardLayoutService;
@@ -50,6 +51,7 @@ namespace RPGSmithApp.Controllers
             this._imageTileService = imageTileService;
             this._noteTileService = noteTileService;
             this._tileConfigService = tileConfigService;
+            this._textTileService = textTileService;
         }
 
         [HttpGet("getByRulesetId")]
@@ -172,6 +174,9 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                model.IsDefaultComputer = false;
+                model.IsDefaultTablet = false;
+                model.IsDefaultMobile = false;
                 if (_rulesetDashboardLayoutService.GetCountByRulesetId((int)model.RulesetId) >= 12)
                 {
                     return BadRequest("Only 12 slots of Layouts are allowed.");
@@ -310,6 +315,23 @@ namespace RPGSmithApp.Controllers
                                         TitleBgColor = commandTile.TitleBgColor,
                                         TitleTextColor = commandTile.TitleTextColor,
                                         IsDeleted = false
+                                    });
+                                    //SaveColorsAsync(Tile);
+                                    break;
+                                case (int)Enum.TILES.TEXT:
+                                    var textTile = _tile.TextTiles;
+                                    Tile.TextTiles = await _textTileService.Create(new RulesetTextTile
+                                    {
+                                        RulesetTileId = Tile.RulesetTileId,
+                                        Title = textTile.Title,
+                                        Shape = textTile.Shape,
+                                        SortOrder = textTile.SortOrder,
+                                        BodyBgColor = textTile.BodyBgColor,
+                                        BodyTextColor = textTile.BodyTextColor,
+                                        TitleBgColor = textTile.TitleBgColor,
+                                        TitleTextColor = textTile.TitleTextColor,
+                                        IsDeleted = false,
+                                        Text = textTile.Text
                                     });
                                     //SaveColorsAsync(Tile);
                                     break;

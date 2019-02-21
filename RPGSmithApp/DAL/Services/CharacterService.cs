@@ -474,6 +474,10 @@ namespace DAL.Services
             return await _context.Characters.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted != true).ToListAsync();
         }
 
+        public bool IsNewRulesetToAdd(int ruleSetId,string userId) {
+        return   ! _context.RuleSets.Where(x => x.OwnerId == userId && x.RuleSetId == ruleSetId).Any();
+        }
+
         #region SP relate methods
 
         public (List<Character>, List<RuleSet>) SP_Character_GetByUserId(string userId, int page, int pageSize)

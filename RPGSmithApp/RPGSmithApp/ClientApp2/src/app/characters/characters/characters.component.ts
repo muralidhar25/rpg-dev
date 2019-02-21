@@ -1,22 +1,22 @@
 import { Component, OnInit, OnDestroy, Input } from "@angular/core";
 import { Router, NavigationExtras } from "@angular/router";
-import { AlertService, MessageSeverity, DialogType } from '../../core/common/alert.service';
-import { AuthService } from "../../core/auth/auth.service";
-import { ConfigurationService } from '../../core/common/configuration.service';
-import { Utilities } from '../../core/common/utilities';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
+import { Ruleset } from "../../core/models/view-models/ruleset.model";
+import { AlertService, DialogType, MessageSeverity } from "../../core/common/alert.service";
+import { AuthService } from "../../core/auth/auth.service";
 import { RulesetService } from "../../core/services/ruleset.service";
-import { Ruleset } from '../../core/models/view-models/ruleset.model';
-import { CharactersService } from '../../core/services/characters.service';
-import { CharactersFormComponent } from '../characters-form/characters-form.component';
-import { AccountSettingsComponent } from "../../shared/accounts/account-settings/account-settings.component";
-import { Characters } from '../../core/models/view-models/characters.model';
-import { VIEW } from '../../core/models/enums';
-import { User } from '../../core/models/user.model';
-import { DBkeys } from '../../core/common/db-keys';
-import { LocalStoreManager } from '../../core/common/local-store-manager.service';
+import { ConfigurationService } from "../../core/common/configuration.service";
+import { CharactersService } from "../../core/services/characters.service";
 import { SharedService } from "../../core/services/shared.service";
 import { CommonService } from "../../core/services/shared/common.service";
+import { LocalStoreManager } from "../../core/common/local-store-manager.service";
+import { User } from "../../core/models/user.model";
+import { DBkeys } from "../../core/common/db-keys";
+import { Utilities } from "../../core/common/utilities";
+import { CharactersFormComponent } from "../characters-form/characters-form.component";
+import { Characters } from "../../core/models/view-models/characters.model";
+import { AccountSettingsComponent } from "../../shared/accounts/account-settings/account-settings.component";
+import { AppService1 } from "../../app.service";
 
 @Component({
   selector: 'app-characters',
@@ -42,16 +42,15 @@ export class CharactersComponent implements OnInit {
         private authService: AuthService, private rulesetService: RulesetService,
         private charactersService: CharactersService, private configurations: ConfigurationService,
         private modalService: BsModalService, private localStorage: LocalStoreManager,
-        private sharedService: SharedService, private commonService: CommonService
+      private sharedService: SharedService, private commonService: CommonService, public appService: AppService1
     ) {
-      
          if (!this.authService.isLoggedIn) {
              this.authService.logout();
          } else
              this.hasAuth = true;
 
         this.sharedService.shouldUpdateCharacterList().subscribe(serviceJson => {
-
+            
             if (serviceJson) {
                 this.page = 1;
                 this.pageSize = 30;
@@ -97,7 +96,7 @@ export class CharactersComponent implements OnInit {
 
             //this.rulesetService.getRulesetsByUserId<any[]>(user.id)
             //    .subscribe(data => {
-
+                    
             //        this.rulesets = data;
             //        this.isLoading = false;
             //    }, error => {
@@ -149,14 +148,14 @@ export class CharactersComponent implements OnInit {
             keyboard: false
         });
         this.bsModalRef.content.title = 'New Character';
-        this.bsModalRef.content.button = 'SAVE';
+        this.bsModalRef.content.button = 'CREATE';
         this.bsModalRef.content.charactersModel = {
             characterId: 0,
             ruleSets: this.rulesets
         };
         this.bsModalRef.content.ruleSet = this.rulesets;
     }
-
+    
     manageIcon(id: number) {
         this.characters.forEach(function (val) {
             if (id === val.characterId) {
@@ -167,7 +166,7 @@ export class CharactersComponent implements OnInit {
         })
     }
 
-    gotoDashboard(character: Characters) {
+    gotoDashboard(character: Characters) {        
         this.rulesetId = character.ruleSet == undefined ? 0 : character.ruleSet.ruleSetId;
         this.setRulesetId(this.rulesetId);
         this.router.navigate(['/character/dashboard', character.characterId])
@@ -180,7 +179,7 @@ export class CharactersComponent implements OnInit {
             keyboard: false
         });
         this.bsModalRef.content.title = 'Edit Character';
-        this.bsModalRef.content.button = 'UPDATE';
+        this.bsModalRef.content.button = 'SAVE';
         this.bsModalRef.content.characterImage = character.characterImage;
         this.bsModalRef.content.charactersModel = character;
         this.bsModalRef.content.ruleSet = this.rulesets;
@@ -210,18 +209,18 @@ export class CharactersComponent implements OnInit {
 
         this.charactersService.deleteCharacters(character.characterId)
             .subscribe(
-            data => {
-                    this.isLoading = false;
+            data => {                    
+                    this.isLoading = false; 
                     this.alertService.stopLoadingMessage();
                     this.commonService.UpdateCounts(); /*update charaters count*/
 
-                    this.alertService.showMessage("Character has been deleted successfully.", "", MessageSeverity.success);
+                    this.alertService.showMessage("Character has been deleted successfully.", "", MessageSeverity.success);                    
                     this.characters = this.characters.filter((val) => val.characterId != character.characterId);
                    // this.initialize();
                 },
             error => {
-
-                    this.isLoading = false;
+                
+                    this.isLoading = false; 
                     this.alertService.stopLoadingMessage();
                     let _message = "Unable to Delete";
                     let Errors = Utilities.ErrorDetail(_message, error);
@@ -244,7 +243,8 @@ export class CharactersComponent implements OnInit {
     }
 
     private resetHeaderValues(): any {
-        try {
+      try {
+        this.appService.updateAccountSetting1(-1);
             this.sharedService.updateAccountSetting(-1);
             this.localStorage.deleteData(DBkeys.HEADER_VALUE);
             this.localStorage.saveSyncedSessionData(null, DBkeys.HEADER_VALUE);
@@ -260,7 +260,8 @@ export class CharactersComponent implements OnInit {
     private destroyModalOnInit(): void {
         try {
             this.modalService.hide(1);
-            document.body.classList.remove('modal-open');
+          document.body.classList.remove('modal-open');
+          this.appService.updateAccountSetting1(false);
             this.sharedService.updateAccountSetting(false);
             this.localStorage.deleteData(DBkeys.HEADER_VALUE);
             //const modalContainer = document.querySelector('modal-container');

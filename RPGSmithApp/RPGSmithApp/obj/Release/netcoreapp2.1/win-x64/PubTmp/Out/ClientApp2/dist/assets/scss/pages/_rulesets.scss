@@ -1,0 +1,29 @@
+/**
+ * Rulesets Page --------------------------------------------------------------
+ */
+
+
+.page-rulesets {
+    // New ruleset and edit ruleset popup
+    .popup-new-ruleset, .popup-edit-ruleset {
+        .input-image-control {
+            @include responsive(md) {
+                height: rem(216px);
+            }
+        }
+    }
+
+
+    // New ruleset popup
+    .popup-new-ruleset-manage {
+        ul {
+            li {
+                margin: {bottom: rem(16px)}
+
+                .btn {
+                    display: flex;
+                }
+            }
+        }
+    }
+}

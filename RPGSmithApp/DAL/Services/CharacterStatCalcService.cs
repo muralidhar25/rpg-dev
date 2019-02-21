@@ -87,5 +87,8 @@ namespace DAL.Services
                 throw ex;
             }
         }
+        public List<CharacterStatCalc> GetByStatId(int StatId) {
+            return _context.CharacterStatCalcs.Where(x => x.CharacterStatId == StatId && x.IsDeleted != true).ToList(); 
+        }
     }
 }

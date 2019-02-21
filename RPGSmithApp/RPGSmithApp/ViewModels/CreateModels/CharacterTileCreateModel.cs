@@ -33,7 +33,7 @@ namespace RPGSmithApp.ViewModels.CreateModels
         public int SortOrder { get; set; }
 
         public bool IsDeleted { get; set; }
-     
+
         public CharacterNoteTile NoteTile { get; set; }
         public CharacterImageTile ImageTile { get; set; }
         public CharacterTextTile TextTile { get; set; }
@@ -53,6 +53,7 @@ namespace RPGSmithApp.ViewModels.CreateModels
     {
         public int CharacterStatId { get; set; }
         public int CharacterStatTypeId { get; set; }
+        public string Image { get; set; }
     }
     public class multiRecord {
         public string recType { get; set; }

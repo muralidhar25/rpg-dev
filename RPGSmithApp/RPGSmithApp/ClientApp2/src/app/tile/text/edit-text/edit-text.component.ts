@@ -1,14 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { TextTileComponent } from '../text.component';
-import { CommandTileComponent } from '../../command/command.component';
-import { ImageTile } from '../../../core/models/tiles/image-tile.model';
-import { LinkTile } from '../../../core/models/tiles/link-tile.model';
-import { ExecuteTile } from '../../../core/models/tiles/execute-tile.model';
-import { CommandTile } from '../../../core/models/tiles/command-tile.model';
 import { CharacterDashboardPage } from '../../../core/models/view-models/character-dashboard-page.model';
-import { VIEW } from '../../../core/models/enums';
 import { TextTile } from '../../../core/models/tiles/text-tile.model';
+import { CommandTile } from '../../../core/models/tiles/command-tile.model';
+import { TextTileComponent } from '../text.component';
+import { VIEW } from '../../../core/models/enums';
 
 @Component({
   selector: 'app-edit-text',

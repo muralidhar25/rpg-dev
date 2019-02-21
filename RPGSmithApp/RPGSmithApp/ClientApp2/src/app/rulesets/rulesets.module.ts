@@ -18,6 +18,9 @@ import { RulesetDashboardComponent } from './ruleset-dashboard/ruleset-dashboard
 import { RulesetLayoutComponent } from './ruleset-dashboard/ruleset-layout/ruleset-layout.component';
 import { RulesetPageComponent } from './ruleset-dashboard/ruleset-page/ruleset-page.component';
 import { RulesetAddComponent } from './ruleset-helper/ruleset-add/ruleset-add.component';
+import { CharacterStatsFormComponent } from "./character-stats/character-stats-form/character-stats-form.component";
+import { CharacterStatsComponent } from "./character-stats/character-stats/character-stats.component";
+import { RulesetAddInterfaceComponent } from "./ruleset-helper/ruleset-add-interface/ruleset-add-interface.component";
 
 @NgModule({
   declarations: [
@@ -29,7 +32,10 @@ import { RulesetAddComponent } from './ruleset-helper/ruleset-add/ruleset-add.co
     RulesetDashboardComponent,
     RulesetLayoutComponent,
     RulesetPageComponent,
-    RulesetAddComponent
+    RulesetAddComponent,
+    CharacterStatsComponent,
+    CharacterStatsFormComponent,
+    RulesetAddInterfaceComponent 
   ],
   imports: [
     SharedModule,
@@ -49,14 +55,20 @@ import { RulesetAddComponent } from './ruleset-helper/ruleset-add/ruleset-add.co
     RulesetDashboardComponent,
     RulesetLayoutComponent,
     RulesetPageComponent,
-    RulesetAddComponent
+    RulesetAddComponent,
+    CharacterStatsComponent,
+    CharacterStatsFormComponent,
+    RulesetAddInterfaceComponent 
   ],
   entryComponents: [
     RulesetFormComponent,
     RulesetManageComponent,
     ShareRulesetComponent,
     ImportRulesetComponent,
-    RulesetAddComponent
+    RulesetAddComponent,
+    CharacterStatsFormComponent,
+    RulesetLayoutComponent,
+    RulesetPageComponent,
   ]
 })
 export class RulesetsModule {}

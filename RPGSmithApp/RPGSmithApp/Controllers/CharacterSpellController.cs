@@ -88,21 +88,34 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 foreach (var spell in model.MultiSpells)
                 {
-                    (bool IsExist, string name) = _characterSpellService.CheckCharacterSpellExist(model.CharacterId ?? 0, spell.SpellId);
-                    if (IsExist)
-                        return BadRequest("Spell '" + name + "' already added.");
-                }
-                foreach (var spell in model.MultiSpells)
-                {
-                    var result = await _characterSpellService.InsertCharacterSpell(new CharacterSpell
+                    try
                     {
-                        SpellId = spell.SpellId,
-                        CharacterId = model.CharacterId,
-                        IsMemorized = model.IsMemorized
-                    });
+                        (bool IsExist, string name) = _characterSpellService.CheckCharacterSpellExist(model.CharacterId ?? 0, spell.SpellId);
+                        if (IsExist)
+                            return BadRequest("Spell '" + name + "' already added.");
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest("Something went wrong. Please try again later.");
+                    }
                 }
+                foreach (var spell in model.MultiSpells)
+                {
+                    try
+                    {
+                        var result = await _characterSpellService.InsertCharacterSpell(new CharacterSpell
+                        {
+                            SpellId = spell.SpellId,
+                            CharacterId = model.CharacterId,
+                            IsMemorized = model.IsMemorized
+                        });
+                    }
+                    catch (Exception ex) { }
+                }
+
                 return Ok();
             }
             return BadRequest(Utilities.ModelStateError(ModelState));

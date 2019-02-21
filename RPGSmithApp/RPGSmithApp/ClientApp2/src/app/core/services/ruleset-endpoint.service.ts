@@ -11,240 +11,250 @@ import { CustomDice } from '../models/view-models/custome-dice.model';
 @Injectable()
 export class RulesetEndpoint extends EndpointFactory {
 
-    private readonly _getUrl: string = "/api/RuleSet/GetRuleSets";
-    private readonly _getByUserUrl: string = "/api/RuleSet/GetRuleSetByUserId";
-    private readonly _getAllUrl: string = "/api/RuleSet/GetAllRuleSets";
-    private readonly _getCountUrl: string = "/api/RuleSet/GetRuleSetsCount";
-    private readonly _getRCCountUrl: string = "/api/RuleSet/GetRuleSetAndCharacterCount";
-    private readonly _getRulesetRecordCountUrl: string = "/api/RuleSet/getRulesetRecordCountById"; //
-    private readonly _createUrl: string = "/api/RuleSet/CreateRuleSet";
-    private readonly _uploadImgUrl: string = "/api/RuleSet/UpLoadRuleSetImage";
-    private readonly _updateUrl: string = "/api/RuleSet/UpdateRuleSet";
-    private readonly _deleteUrl: string = "/api/RuleSet/DeleteRuleSet";
-    private readonly _duplicateUrl: string = "/api/RuleSet/DuplicateRuleSet";
-    private readonly _addEditCustomDiceUrl: string = "/api/RuleSet/addEditCustomDice";
-    private readonly _getCustomDiceUrl: string = "/api/RuleSet/GetCustomDice";
+  private readonly _getUrl: string = "/api/RuleSet/GetRuleSets";
+  private readonly _getByUserUrl: string = "/api/RuleSet/GetRuleSetByUserId";
+  private readonly _getAllUrl: string = "/api/RuleSet/GetAllRuleSets";
+  private readonly _getCountUrl: string = "/api/RuleSet/GetRuleSetsCount";
+  private readonly _getRCCountUrl: string = "/api/RuleSet/GetRuleSetAndCharacterCount";
+  private readonly _getRulesetRecordCountUrl: string = "/api/RuleSet/getRulesetRecordCountById"; //
+  private readonly _createUrl: string = "/api/RuleSet/CreateRuleSet";
+  private readonly _uploadImgUrl: string = "/api/RuleSet/UpLoadRuleSetImage";
+  private readonly _updateUrl: string = "/api/RuleSet/UpdateRuleSet";
+  private readonly _deleteUrl: string = "/api/RuleSet/DeleteRuleSet";
+  private readonly _duplicateUrl: string = "/api/RuleSet/DuplicateRuleSet";
+  private readonly _addEditCustomDiceUrl: string = "/api/RuleSet/addEditCustomDice";
+  private readonly _getCustomDiceUrl: string = "/api/RuleSet/GetCustomDice";
 
 
-    private readonly getByIdUrl: string = this.configurations.baseUrl + "/api/RuleSet/GetRuleSetById";
-    private readonly getAllRuleSetByUserIdUrl: string = this.configurations.baseUrl + "/api/RuleSet/GetAllRuleSetByUserId";
-    private readonly importRuleSet: string = this.configurations.baseUrl + "/api/RuleSet/ImportRuleSet";
-    private readonly shareRuleSetCodeApi: string = this.configurations.baseUrl + "/api/RuleSet/ShareRuleSetCode";
-    private readonly getCoreRulesetsApi: string = this.configurations.baseUrl + "/api/RuleSet/GetCoreRuleSets";
-    private readonly addRulesetsApi: string = this.configurations.baseUrl + "/api/RuleSet/addRuleSets";
-    private readonly GetCopiedRulesetIDApi: string = this.configurations.baseUrl + "/api/RuleSet/GetCopiedRulesetID";
+  private readonly getByIdUrl: string = this.configurations.baseUrl + "/api/RuleSet/GetRuleSetById";
+  private readonly getAllRuleSetByUserIdUrl: string = this.configurations.baseUrl + "/api/RuleSet/GetAllRuleSetByUserId";
+  private readonly getRuleSetToCreateCharacterByUserIdUrl: string = this.configurations.baseUrl + "/api/RuleSet/GetRuleSetToCreateCharacterByUserId";
+  private readonly importRuleSet: string = this.configurations.baseUrl + "/api/RuleSet/ImportRuleSet";
+  private readonly shareRuleSetCodeApi: string = this.configurations.baseUrl + "/api/RuleSet/ShareRuleSetCode";
+  private readonly getCoreRulesetsApi: string = this.configurations.baseUrl + "/api/RuleSet/GetCoreRuleSets";
+  private readonly addRulesetsApi: string = this.configurations.baseUrl + "/api/RuleSet/addRuleSets";
+  private readonly GetCopiedRulesetIDApi: string = this.configurations.baseUrl + "/api/RuleSet/GetCopiedRulesetID";
 
-    get getUrl() { return this.configurations.baseUrl + this._getUrl; }
-    get getByUserUrl() { return this.configurations.baseUrl + this._getByUserUrl; }
-    get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
-    get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
-    get getRCCountUrl() { return this.configurations.baseUrl + this._getRCCountUrl; }
-    get getRulesetRecordCountUrl() { return this.configurations.baseUrl + this._getRulesetRecordCountUrl; }
-    get createUrl() { return this.configurations.baseUrl + this._createUrl; }
-    get uploadImgUrl() { return this.configurations.baseUrl + this._uploadImgUrl; }
-    get updateUrl() { return this.configurations.baseUrl + this._updateUrl; }
-    get deleteUrl() { return this.configurations.baseUrl + this._deleteUrl; }
-    get duplicateUrl() { return this.configurations.baseUrl + this._duplicateUrl; }
-    get addEditCustomDiceUrl() { return this.configurations.baseUrl + this._addEditCustomDiceUrl; }
-    get getCustomDiceApi() { return this.configurations.baseUrl + this._getCustomDiceUrl; }
+  get getUrl() { return this.configurations.baseUrl + this._getUrl; }
+  get getByUserUrl() { return this.configurations.baseUrl + this._getByUserUrl; }
+  get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
+  get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
+  get getRCCountUrl() { return this.configurations.baseUrl + this._getRCCountUrl; }
+  get getRulesetRecordCountUrl() { return this.configurations.baseUrl + this._getRulesetRecordCountUrl; }
+  get createUrl() { return this.configurations.baseUrl + this._createUrl; }
+  get uploadImgUrl() { return this.configurations.baseUrl + this._uploadImgUrl; }
+  get updateUrl() { return this.configurations.baseUrl + this._updateUrl; }
+  get deleteUrl() { return this.configurations.baseUrl + this._deleteUrl; }
+  get duplicateUrl() { return this.configurations.baseUrl + this._duplicateUrl; }
+  get addEditCustomDiceUrl() { return this.configurations.baseUrl + this._addEditCustomDiceUrl; }
+  get getCustomDiceApi() { return this.configurations.baseUrl + this._getCustomDiceUrl; }
 
 
 
-    constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector)
-    {
-        super(http, configurations, injector);
-    }
+  constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
+    super(http, configurations, injector);
+  }
 
-    getRulesetById<T>(rulesetId: number): Observable<T> {
-        let endpointUrl = `${this.getByIdUrl}?id=${rulesetId}`;
+  getRulesetById<T>(rulesetId: number): Observable<T> {
+    let endpointUrl = `${this.getByIdUrl}?id=${rulesetId}`;
 
-        return this.http.get(endpointUrl, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.getRulesetById(rulesetId));
-            });
-    }
+    return this.http.get(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getRulesetById(rulesetId));
+      });
+  }
 
-    getRulesetsEndpoint<T>(page?: number, pageSize?: number): Observable<T> {
-        let endpointUrl = page && pageSize ? `${this.getUrl}?page=${page}&pageSize=${pageSize}` : this.getUrl;
+  getRulesetsEndpoint<T>(page?: number, pageSize?: number): Observable<T> {
+    let endpointUrl = page && pageSize ? `${this.getUrl}?page=${page}&pageSize=${pageSize}` : this.getUrl;
 
-        return this.http.get<T>(endpointUrl, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.getRulesetsEndpoint(page, pageSize));
-            });
-    }
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getRulesetsEndpoint(page, pageSize));
+      });
+  }
 
-    getAllRuleSetByUserId<T>(id?: string, page?: number, pageSize?: number): Observable<T> {
-        let endpointUrl = `${this.getAllRuleSetByUserIdUrl}?id=${id}&page=${page}&pageSize=${pageSize}`;
+  getAllRuleSetByUserId<T>(id?: string, page?: number, pageSize?: number): Observable<T> {
+    let endpointUrl = `${this.getAllRuleSetByUserIdUrl}?id=${id}&page=${page}&pageSize=${pageSize}`;
 
-        return this.http.get<T>(endpointUrl, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.getAllRuleSetByUserId(id, page, pageSize));
-            });
-    }
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getAllRuleSetByUserId(id, page, pageSize));
+      });
+  }
 
-    getAllRulesetsEndpoint<T>(): Observable<T> {
-        return this.http.get<T>(this.getAllUrl, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.getAllRulesetsEndpoint());
-            });
-    }
+  getRuleSetToCreateCharacterByUserId<T>(id?: string, page?: number, pageSize?: number): Observable<T> {
+    let endpointUrl = `${this.getRuleSetToCreateCharacterByUserIdUrl}?id=${id}&page=${page}&pageSize=${pageSize}`;
 
-    getRulesetsCountEndpoint(userId: string) {
-        let endpointUrl = `${this.getCountUrl}?id=${userId}`;
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getRuleSetToCreateCharacterByUserId(id, page, pageSize));
+      });
+  }
 
-        return this.http.get(endpointUrl, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.getRulesetsCountEndpoint(userId));
-            });
-    }
+  getAllRulesetsEndpoint<T>(): Observable<T> {
+    return this.http.get<T>(this.getAllUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getAllRulesetsEndpoint());
+      });
+  }
 
-    getRulesetAndCharactrCountEndpoint(userId: string) {
-        let endpointUrl = `${this.getRCCountUrl}?id=${userId}`;
+  getRulesetsCountEndpoint(userId: string) {
+    let endpointUrl = `${this.getCountUrl}?id=${userId}`;
 
-        return this.http.get(endpointUrl, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.getRulesetAndCharactrCountEndpoint(userId));
-            });
-    }
+    return this.http.get(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getRulesetsCountEndpoint(userId));
+      });
+  }
 
-    getRulesetRecordCountEndpoint(rulesetId: number): any {
-        let endpointUrl = `${this.getRulesetRecordCountUrl}?id=${rulesetId}`;
+  getRulesetAndCharactrCountEndpoint(userId: string) {
+    let endpointUrl = `${this.getRCCountUrl}?id=${userId}`;
 
-        return this.http.get(endpointUrl, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.getRulesetRecordCountEndpoint(rulesetId));
-            });
-    }
+    return this.http.get(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getRulesetAndCharactrCountEndpoint(userId));
+      });
+  }
 
-    getRulesetsByUserEndpoint<T>(Id: string): Observable<T> {
-        let endpointUrl = `${this.getByUserUrl}?id=${Id}`;
+  getRulesetRecordCountEndpoint(rulesetId: number): any {
+    let endpointUrl = `${this.getRulesetRecordCountUrl}?id=${rulesetId}`;
 
-        return this.http.get<T>(endpointUrl, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.getRulesetsByUserEndpoint(Id));
-            });
-    }
+    return this.http.get(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getRulesetRecordCountEndpoint(rulesetId));
+      });
+  }
 
-    getCoreRulesets<T>(Id: string): Observable<T> {
-        let endpointUrl = `${this.getCoreRulesetsApi}?id=${Id}`;
-        return this.http.get<T>(endpointUrl, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.getCoreRulesets(Id));
-            });
-    }
+  getRulesetsByUserEndpoint<T>(Id: string): Observable<T> {
+    let endpointUrl = `${this.getByUserUrl}?id=${Id}`;
 
-    getmockRulesetsEndpoint<T>(page?: number, pageSize?: number): Observable<T> {
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getRulesetsByUserEndpoint(Id));
+      });
+  }
 
-        return this.http.get<T>(this.getUrl, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.getmockRulesetsEndpoint(page, pageSize));
-            });
-    }
+  getCoreRulesets<T>(Id: string): Observable<T> {
+    let endpointUrl = `${this.getCoreRulesetsApi}?id=${Id}`;
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getCoreRulesets(Id));
+      });
+  }
 
-    createRulesetEndpoint<T>(userObject: any): Observable<T> {
+  getmockRulesetsEndpoint<T>(page?: number, pageSize?: number): Observable<T> {
 
-        let rulesetUrl = this.createUrl;
+    return this.http.get<T>(this.getUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getmockRulesetsEndpoint(page, pageSize));
+      });
+  }
 
-        if (userObject.ruleSetId == 0 || userObject.ruleSetId === undefined)
-            rulesetUrl = this.createUrl;
-        else
-            rulesetUrl = this.updateUrl;
+  createRulesetEndpoint<T>(userObject: any): Observable<T> {
 
-        return this.http.post<T>(rulesetUrl, JSON.stringify(userObject), this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.createRulesetEndpoint(userObject));
-            });
-    }
+    let rulesetUrl = this.createUrl;
 
-    UploadImgEndpoint<T>(fileToUpload: File): Observable<T> {
+    if (userObject.ruleSetId == 0 || userObject.ruleSetId === undefined)
+      rulesetUrl = this.createUrl;
+    else
+      rulesetUrl = this.updateUrl;
 
-        return this.http.post<T>(this.uploadImgUrl, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.UploadImgEndpoint(fileToUpload));
-            });
-    }
+    return this.http.post<T>(rulesetUrl, JSON.stringify(userObject), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.createRulesetEndpoint(userObject));
+      });
+  }
 
-    updateRulesetEndpoint<T>(userObject: any): Observable<T> {
+  UploadImgEndpoint<T>(fileToUpload: File): Observable<T> {
 
-        return this.http.put<T>(this.updateUrl, JSON.stringify(userObject), this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.updateRulesetEndpoint(userObject));
-            });
-    }
+    return this.http.post<T>(this.uploadImgUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.UploadImgEndpoint(fileToUpload));
+      });
+  }
 
-    deleteRulesetEndpoint<T>(Id: number): Observable<T> {
-        let endpointUrl = `${this.deleteUrl}?id=${Id}`;
+  updateRulesetEndpoint<T>(userObject: any): Observable<T> {
 
-        return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.deleteRulesetEndpoint(Id));
-            });
-    }
+    return this.http.put<T>(this.updateUrl, JSON.stringify(userObject), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.updateRulesetEndpoint(userObject));
+      });
+  }
 
-    duplicateRulesetEndpoint<T>(userObject: any): Observable<T> {
+  deleteRulesetEndpoint<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.deleteUrl}?id=${Id}`;
 
-        /*as duplicate api is not created*/
-        //let rulesetUrl = this.createUrl;
-        //userObject.ruleSetId = 0;
-        //return this.http.post<T>(rulesetUrl, JSON.stringify(userObject), this.getRequestHeaders())
-        //    .catch(error => {
-        //        return this.handleError(error, () => this.createRulesetEndpoint(userObject));
-        //    });
+    return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deleteRulesetEndpoint(Id));
+      });
+  }
 
-        return this.http.post<T>(this.duplicateUrl, JSON.stringify(userObject), this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.duplicateRulesetEndpoint(userObject));
-            });
-    }
+  duplicateRulesetEndpoint<T>(userObject: any): Observable<T> {
 
-    importRuleSetsEndpoint<T>(code : string): Observable<T> {
+    /*as duplicate api is not created*/
+    //let rulesetUrl = this.createUrl;
+    //userObject.ruleSetId = 0;
+    //return this.http.post<T>(rulesetUrl, JSON.stringify(userObject), this.getRequestHeaders())
+    //    .catch(error => {
+    //        return this.handleError(error, () => this.createRulesetEndpoint(userObject));
+    //    });
 
-        let importRuleSetApi = `${this.importRuleSet}?code=${code}`;
-        return this.http.get<T>(importRuleSetApi, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.importRuleSetsEndpoint(code));
-            });
-    }
+    return this.http.post<T>(this.duplicateUrl, JSON.stringify(userObject), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.duplicateRulesetEndpoint(userObject));
+      });
+  }
 
-    //addRuleSet
-    addRuleSets<T>(rulesetIds: number[]): Observable<T> {
+  importRuleSetsEndpoint<T>(code: string): Observable<T> {
 
-        return this.http.post<T>(this.addRulesetsApi, rulesetIds, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.addRuleSets(rulesetIds));
-            });
-    }
+    let importRuleSetApi = `${this.importRuleSet}?code=${code}`;
+    return this.http.get<T>(importRuleSetApi, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.importRuleSetsEndpoint(code));
+      });
+  }
 
-    shareRuleSetCodeEndpoint<T>(email: string, code: string): Observable<T> {
+  //addRuleSet
+  addRuleSets<T>(rulesetIds: number[]): Observable<T> {
 
-        let shareCodeEndpoint = `${this.shareRuleSetCodeApi}?email=${email}&code=${code}`;
+    return this.http.post<T>(this.addRulesetsApi, rulesetIds, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.addRuleSets(rulesetIds));
+      });
+  }
 
-        return this.http.post<T>(shareCodeEndpoint, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.shareRuleSetCodeEndpoint(email, code));
-            });
-    }
-    GetCopiedRulesetID<T>(rulesetID: number, UserID: string): Observable<T>{
-        let GetCopiedRulesetIDEndpoint = `${this.GetCopiedRulesetIDApi}?rulesetID=${rulesetID}&UserID=${UserID}`;
+  shareRuleSetCodeEndpoint<T>(email: string, code: string): Observable<T> {
 
-        return this.http.get<T>(GetCopiedRulesetIDEndpoint, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.GetCopiedRulesetID(rulesetID, UserID));
-            });
-    }
-    addEditCustomDice<T>(customDices: CustomDice[], rulesetId: number): any {
-        let Endpoint = `${this.addEditCustomDiceUrl}?rulesetID=${rulesetId}`;
-        return this.http.post<T>(Endpoint, JSON.stringify(customDices), this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.addEditCustomDice(customDices, rulesetId));
-            });
-    }
-    getCustomDice<T>(rulesetID: number): any {
-        let getCustomDiceEndpoint = `${this.getCustomDiceApi}?rulesetID=${rulesetID}`;
+    let shareCodeEndpoint = `${this.shareRuleSetCodeApi}?email=${email}&code=${code}`;
 
-        return this.http.get<T>(getCustomDiceEndpoint, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.getCustomDice(rulesetID));
-            });
-    }
+    return this.http.post<T>(shareCodeEndpoint, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.shareRuleSetCodeEndpoint(email, code));
+      });
+  }
+  GetCopiedRulesetID<T>(rulesetID: number, UserID: string): Observable<T> {
+    let GetCopiedRulesetIDEndpoint = `${this.GetCopiedRulesetIDApi}?rulesetID=${rulesetID}&UserID=${UserID}`;
+
+    return this.http.get<T>(GetCopiedRulesetIDEndpoint, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.GetCopiedRulesetID(rulesetID, UserID));
+      });
+  }
+  addEditCustomDice<T>(customDices: CustomDice[], rulesetId: number): any {
+    let Endpoint = `${this.addEditCustomDiceUrl}?rulesetID=${rulesetId}`;
+    return this.http.post<T>(Endpoint, JSON.stringify(customDices), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.addEditCustomDice(customDices, rulesetId));
+      });
+  }
+  getCustomDice<T>(rulesetID: number): any {
+    let getCustomDiceEndpoint = `${this.getCustomDiceApi}?rulesetID=${rulesetID}`;
+
+    return this.http.get<T>(getCustomDiceEndpoint, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getCustomDice(rulesetID));
+      });
+  }
 }
+

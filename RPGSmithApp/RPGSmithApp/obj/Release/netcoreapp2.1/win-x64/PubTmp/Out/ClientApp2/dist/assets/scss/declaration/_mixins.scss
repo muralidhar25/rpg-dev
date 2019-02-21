@@ -1,0 +1,55 @@
+// Defines responsive styles ---------------------------------------------------
+@mixin responsive ($breakpoint) {
+
+    $breakpoint : to_lower_case($breakpoint);
+
+    // Small devices
+    @if $breakpoint == sm {
+        @media screen and (min-width: 576px) {
+            @content;
+        }
+
+    // Medium devices
+    } @else if $breakpoint == md {
+        @media screen and (min-width: 768px) {
+            @content;
+        }
+
+    // Large devices
+    } @else if $breakpoint == lg {
+        @media screen and (min-width: 992px) {
+            @content;
+        }
+
+    // Extra large devices
+    } @else if $breakpoint == xl {
+        @media screen and (min-width: 1200px) {
+            @content;
+        }
+
+    // Extra small devices
+    } @else {
+        @content;
+    }
+}
+
+
+// Loads a local font ----------------------------------------------------------
+@mixin font-local ($family, $file, $style : normal, $weight : normal) {
+
+    $file: unquote($file);
+
+    @font-face {
+        font: {family: $family; weight: $weight; style: $style;}
+        src : url("#{$file}") format("woff");
+    }
+}
+
+
+// Loads a Google Font ---------------------------------------------------------
+@mixin font-google ($font) {
+
+    $font : unquote($font);
+
+    @import url("https://fonts.googleapis.com/css?family=#{$font}");
+}

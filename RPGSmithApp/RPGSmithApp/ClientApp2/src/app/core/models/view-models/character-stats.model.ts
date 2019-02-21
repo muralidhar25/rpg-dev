@@ -89,17 +89,19 @@ export class CharacterStatTypeViewModel{
 
 export class CharacterStatCombo {
     constructor(characterStatComboId?: number, maximum?: number, minimum?: number,
-        defaultValue?: number)
+        defaultValue?: number, defaultText?:string)
     {
         this.characterStatComboId = characterStatComboId;
         this.maximum = maximum;
         this.minimum = minimum;
         this.defaultValue = defaultValue;
+        this.defaultText = defaultText;
     }
     public characterStatComboId: number;
     public maximum: number;
     public minimum: number;
     public defaultValue: number;
+    public defaultText: string;
 }
 
 export class CharacterStatToggle {

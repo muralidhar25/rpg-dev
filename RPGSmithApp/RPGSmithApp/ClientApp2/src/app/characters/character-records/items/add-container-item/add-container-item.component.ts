@@ -1,22 +1,17 @@
-import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
+import { Component, OnInit} from '@angular/core';
+import { Router, ActivatedRoute } from "@angular/router";
 import 'rxjs/add/operator/switchMap';
-import { AlertService, MessageSeverity, DialogType } from '../../../../core/common/alert.service';
-import { ConfigurationService } from '../../../../core/common/configuration.service';
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { AuthService } from "../../../../core/auth/auth.service";
-import { SharedService } from '../../../../core/services/shared.service';
-import { Utilities } from '../../../../core/common/utilities';
-import { DBkeys } from '../../../../core/common/db-keys';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
+import { AlertService, MessageSeverity } from '../../../../core/common/alert.service';
+import { AuthService } from '../../../../core/auth/auth.service';
 import { LocalStoreManager } from '../../../../core/common/local-store-manager.service';
-import { CommonService } from "../../../../core/services/shared/common.service";
-import { ItemsService } from "../../../../core/services/items.service";
-
+import { SharedService } from '../../../../core/services/shared.service';
+import { CommonService } from '../../../../core/services/shared/common.service';
+import { ItemsService } from '../../../../core/services/items.service';
 import { User } from '../../../../core/models/user.model';
-import { Items } from '../../../../core/models/view-models/items.model';
-import { VIEW } from '../../../../core/models/enums';
-import { FilterPipe } from "../../../../core/pipes/filter.pipe";
+import { DBkeys } from '../../../../core/common/db-keys';
+import { Utilities } from '../../../../core/common/utilities';
+
 
 @Component({
     selector: 'app-add-container-item',

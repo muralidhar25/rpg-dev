@@ -23,6 +23,7 @@ import {
   AppTranslationService,
   TranslateLanguageLoader
 } from './core/common/app-translation.service';
+import { AppService1 } from './app.service';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,9 @@ import {
     AppRoutingModule,
     MainModule
   ],
-  providers: [],
+  providers: [
+AppService1
+  ],
   exports: [
   ],
   bootstrap: [AppComponent]

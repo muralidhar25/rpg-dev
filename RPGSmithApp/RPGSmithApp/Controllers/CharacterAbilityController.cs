@@ -98,21 +98,36 @@ namespace RPGSmithApp.Controllers
             {
                 foreach (var ability in model.MultiAbilities)
                 {
-                    (bool IsExist, string name) = _characterAbilityService.CheckCharacterAbilityExist(model.CharacterId??0, ability.AbilityId);
-                    if (IsExist)
-                        return BadRequest("Ability '" + name + "' already added.");
+                    try
+                    {
+                        (bool IsExist, string name) = _characterAbilityService.CheckCharacterAbilityExist(model.CharacterId ?? 0, ability.AbilityId);
+                        if (IsExist)
+                            return BadRequest("Ability '" + name + "' already added.");
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest("Something went wrong. Please try again later.");
+                    }
+                    
                 }
                 foreach (var ability in model.MultiAbilities)
                 {
                     var _ability =  _abilityService.GetById(ability.AbilityId);
-                    var result = await _characterAbilityService.InsertCharacterAbility(new CharacterAbility
+                    try
                     {
-                        AbilityId = ability.AbilityId,
-                        CharacterId = model.CharacterId,
-                        IsEnabled = model.IsEnabled,
-                        MaxNumberOfUses= _ability.MaxNumberOfUses,
-                        CurrentNumberOfUses= _ability.CurrentNumberOfUses
-                    });
+                        var result = await _characterAbilityService.InsertCharacterAbility(new CharacterAbility
+                        {
+                            AbilityId = ability.AbilityId,
+                            CharacterId = model.CharacterId,
+                            IsEnabled = model.IsEnabled,
+                            MaxNumberOfUses = _ability.MaxNumberOfUses,
+                            CurrentNumberOfUses = _ability.CurrentNumberOfUses
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                    
                 }
             
                 return Ok();

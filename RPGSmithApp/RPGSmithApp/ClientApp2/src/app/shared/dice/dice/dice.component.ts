@@ -1,20 +1,18 @@
 import { Component, OnInit, EventEmitter } from "@angular/core";
-import { Router } from '@angular/router';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { DiceSaveComponent } from '../dice-save/dice-save.component';
-import { AuthService } from "./../../../core/auth/auth.service";
-import { User } from '../../../core/models/user.model';
-import { DICE, DICE_ICON, TILES } from '../../../core/models/enums';
-import { CharacterCommand, DiceCommand } from '../../../core/models/view-models/character-command.model';
-import { DiceRoll } from '../../../core/models/view-models/dice-roll.model';
-import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
-import { DBkeys } from "../../../core/common/db-keys";
-import { CharacterCommandService } from '../../../core/services/character-command.service';
-import { DiceService } from '../../../core/services/dice.service';
-import { SharedService } from '../../../core/services/shared.service';
-import { NumericCharacterStatComponent } from "../../numeric-character-stats/numeric-character-stat.component";
-import { CharactersService } from "../../../core/services/characters.service";
+import { DiceService } from "../../../core/services/dice.service";
+import { CharacterCommand } from "../../../core/models/view-models/character-command.model";
+import { DiceRoll } from "../../../core/models/view-models/dice-roll.model";
 import { DiceTray, CustomDice, DefaultDice } from "../../../core/models/view-models/custome-dice.model";
+import { AuthService } from "../../../core/auth/auth.service";
+import { CharacterCommandService } from "../../../core/services/character-command.service";
+import { LocalStoreManager } from "../../../core/common/local-store-manager.service";
+import { SharedService } from "../../../core/services/shared.service";
+import { CharactersService } from "../../../core/services/characters.service";
+import { User } from "../../../core/models/user.model";
+import { DBkeys } from "../../../core/common/db-keys";
+import { DiceSaveComponent } from "../dice-save/dice-save.component";
+import { NumericCharacterStatComponent } from "../../numeric-character-stats/numeric-character-stat.component";
 
 @Component({
     selector: "app-dice",
@@ -39,10 +37,10 @@ export class DiceComponent implements OnInit {
     diceTray: DiceTray[] = [];
     customDices: CustomDice[] = [];
     defaultDices: DefaultDice[] = [];
-
+    
     constructor(
         public modalService: BsModalService, private bsModalRef: BsModalRef, private authService: AuthService,
-        private characterCommandService: CharacterCommandService, private _diceService: DiceService,
+        private characterCommandService: CharacterCommandService, private _diceService: DiceService, 
         private localStorage: LocalStoreManager, private sharedService: SharedService, private charactersService: CharactersService
     ) {
         this.diceSection = true;
@@ -51,7 +49,7 @@ export class DiceComponent implements OnInit {
 
     ngOnInit(){
         setTimeout(() => {
-
+            
             //this.rulesetId = 0;
             this.diceTray = [];
             this.customDices = [];
@@ -62,14 +60,14 @@ export class DiceComponent implements OnInit {
             else {
                 this.characterId = 0;
                 if (this.bsModalRef.content.rulesetId) {
-                    this.rulesetId = this.bsModalRef.content.rulesetId;
+                    this.rulesetId = this.bsModalRef.content.rulesetId;                    
                 }
             }
             this.isLoading = true;
             this.charactersService.getDiceTray<any>(this.rulesetId, this.characterId)
                 .subscribe(data => {
                     let model: any = data;
-
+                    
                     this.customDices = model.customDices;
                     this.diceTray = model.diceTray;
                     this.defaultDices = model.defaultDices;
@@ -82,8 +80,8 @@ export class DiceComponent implements OnInit {
                     this.defaultDices = [];
                     this.BindData();
                     this.isLoading = false;
-                }, () => { });
-
+                }, () => { });           
+            
         }, 0);
     }
     private BindData() {
@@ -101,7 +99,7 @@ export class DiceComponent implements OnInit {
         else {
             this.diceRollModel = this.characterCommandService.DiceRollData(this.characterId);
         }
-
+              
         if (this.bsModalRef.content.parentCommand !== '' || this.bsModalRef.content.parentCommand !== undefined || this.bsModalRef.content.parentCommand !== null) {
             this.characterCommandModel.command = this.bsModalRef.content.parentCommand;
             this.characterCommandModel = this.characterCommandService.commandModelData(this.characterCommandModel, "UPDATE");
@@ -124,7 +122,7 @@ export class DiceComponent implements OnInit {
             this.isLoading = true;
             this.characterCommandService.getByCharacterId<any>(this.characterId)
                 .subscribe(data => {
-
+                    
                     this.characterCommandData = data;// this.characterCommandService.commandModelData(data, "UPDATE");
                     this.isLoading = false;
                 }, error => {
@@ -172,7 +170,7 @@ export class DiceComponent implements OnInit {
             dice.rolledCount = 1;
         }
         else {
-
+            
             _command = this.characterCommandModel.command;
             let cmdText: string = '';
             let diceExist: boolean = false;
@@ -211,17 +209,17 @@ export class DiceComponent implements OnInit {
 
         command = command.toUpperCase();
         let diceRollList = DiceService.diceOnRollCount(command, this.diceTray);
-
+      
         diceRollModel.forEach((val) => {
             val.rolledCount = 0;
         })
         for (var val in diceRollList) {
-
+         
             var _diceRollModel = diceRollModel.find((dice) => dice.dice == diceRollList[val].dice);
             _diceRollModel.rolledCount = _diceRollModel.rolledCount + Number(diceRollList[val].diceRolledCount);
-
+            
         }
-
+        
         //diceRollModel.forEach(function (dice) {
         //    dice.rolledCount = 0;
         //    //diceRollList.forEach(function (val) {
@@ -231,7 +229,7 @@ export class DiceComponent implements OnInit {
         //    //    }
         //    //});
         //});
-
+                
         this.sharedService.UpdateDice(true);
     }
 
@@ -255,7 +253,7 @@ export class DiceComponent implements OnInit {
             class: 'modal-primary modal-md',
             ignoreBackdropClick: true,
             keyboard: false
-        });
+        });    
         this.bsModalRef.content.title = "New Saved Command"
     }
 
@@ -263,7 +261,7 @@ export class DiceComponent implements OnInit {
         this.close();
         this.characterCommandModel.parentIndex = this.parentInputIndex;
         this.sharedService.setCommandData(this.characterCommandModel);
-        this.closeevent.emit(this.characterCommandModel);
+        this.closeevent.emit(this.characterCommandModel); 
     }
 
     close() {
@@ -295,14 +293,14 @@ export class DiceComponent implements OnInit {
     public closeevent: EventEmitter<any> = new EventEmitter();
 
     addMod() {
-
+        
         this.bsModalRef = this.modalService.show(NumericCharacterStatComponent, {
             class: 'modal-primary modal-md',
             ignoreBackdropClick: true,
             keyboard: false
         });
         this.bsModalRef.content.characterId = this.characterId;
-
+        
         this.bsModalRef.content.event.subscribe(data => {
 
             if (this.characterCommandModel.command != "" && this.characterCommandModel.command != null) {

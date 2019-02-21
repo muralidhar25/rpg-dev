@@ -18,9 +18,14 @@ namespace DAL.Services
         private readonly string _apiKey = "0d5f4ef9190e4fdb9db3da7d6d7e7f18";
         private readonly string _apiEndpoint = "https://api.cognitive.microsoft.com/bing/v7.0/images/search";
 
-        public async Task<BingApiResponse> BingImageSearchAsync(string query)
+        public async Task<BingApiResponse> BingImageSearchAsync(string query, int count = 0)
         {
-            var uriQuery = _apiEndpoint + "?q=" + Uri.EscapeDataString(query == null ? "" : query);
+            string countString ="";
+            if (count>0)
+            {
+                countString = "&count=" + count.ToString();
+            }
+            var uriQuery = _apiEndpoint + "?q=" + Uri.EscapeDataString(query == null ? "" : query) + countString;
 
             WebRequest request = HttpWebRequest.Create(uriQuery);
             request.Headers["Ocp-Apim-Subscription-Key"] = _apiKey;

@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
-import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
-import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
 import { Ruleset } from '../../../core/models/view-models/ruleset.model';
-import { RulesetService } from "../../../core/services/ruleset.service";
-import { VIEW } from '../../../core/models/enums';
-import { RulesetManageComponent } from '../../ruleset-form/ruleset-manage.component';
-import { Utilities } from '../../../core/common/utilities';
+import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
+import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
 import { AuthService } from '../../../core/auth/auth.service';
+import { RulesetService } from '../../../core/services/ruleset.service';
+import { Utilities } from '../../../core/common/utilities';
 import { RulesetFormComponent } from '../../ruleset-form/ruleset-form.component';
+import { VIEW } from '../../../core/models/enums';
 
 @Component({
     selector: 'import-ruleset',
@@ -20,7 +19,7 @@ export class ImportRulesetComponent implements OnInit {
 
     rulesetModel = new Ruleset();
 
-    constructor(private router: Router, private alertService: AlertService, private authService: AuthService,
+    constructor(private router: Router, private alertService: AlertService, private authService: AuthService, 
         private bsModalRef: BsModalRef, private modalService: BsModalService,
         private localStorage: LocalStoreManager, private rulesetService: RulesetService
     ) { }
@@ -58,7 +57,7 @@ export class ImportRulesetComponent implements OnInit {
     }
 
     generalSetting(ruleset: Ruleset) {
-
+        
         this.bsModalRef = this.modalService.show(RulesetFormComponent, {
             class: 'modal-primary modal-md',
             ignoreBackdropClick: true,
@@ -71,5 +70,5 @@ export class ImportRulesetComponent implements OnInit {
         this.bsModalRef.content.rulesetModel = ruleset;
     }
 
-
+    
 }

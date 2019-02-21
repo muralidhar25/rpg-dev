@@ -1,25 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { LocalStoreManager } from '../../core/common/local-store-manager.service';
-import { AuthService } from '../../core/auth/auth.service';
-import { ItemsService } from '../../core/services/items.service';
-import { CharacterSpellService } from '../../core/services/character-spells.service';
-import { CharacterAbilityService } from '../../core/services/character-abilities.service';
-import { AlertService, MessageSeverity } from '../../core/common/alert.service';
-import { User } from '../../core/models/user.model';
-import { DBkeys } from '../../core/common/db-keys';
-import { ColorsComponent } from '../colors/colors.component';
+import { FilterTilePipe } from "../../core/pipes/filter-tile.pipe";
+import { Ruleset } from '../../core/models/view-models/ruleset.model';
+import { Color } from '../../core/models/tiles/color.model';
+import { CharacterDashboardPage } from '../../core/models/view-models/character-dashboard-page.model';
 import { VIEW, SHAPE, SHAPE_CLASS } from '../../core/models/enums';
 import { ExecuteTile } from '../../core/models/tiles/execute-tile.model';
-import { ExecuteTileService } from '../../core/services/tiles/execute-tile.service';
-import { Utilities } from '../../core/common/utilities';
-import { SharedService } from "../../core/services/shared.service";
-import { ColorService } from '../../core/services/tiles/color.service';
 import { CharacterTile } from '../../core/models/tiles/character-tile.model';
-import { Color } from '../../core/models/tiles/color.model';
-import { FilterTilePipe } from "../../core/pipes/filter-tile.pipe";
-import { CharacterDashboardPage } from '../../core/models/view-models/character-dashboard-page.model';
-import { Ruleset } from '../../core/models/view-models/ruleset.model';
+import { ColorService } from '../../core/services/tiles/color.service';
+import { AuthService } from '../../core/auth/auth.service';
+import { LocalStoreManager } from '../../core/common/local-store-manager.service';
+import { CharacterSpellService } from '../../core/services/character-spells.service';
+import { ItemsService } from '../../core/services/items.service';
+import { AlertService, MessageSeverity } from '../../core/common/alert.service';
+import { ExecuteTileService } from '../../core/services/tiles/execute-tile.service';
+import { SharedService } from '../../core/services/shared.service';
+import { CharacterAbilityService } from '../../core/services/character-abilities.service';
+import { User } from '../../core/models/user.model';
+import { DBkeys } from '../../core/common/db-keys';
+import { Utilities } from '../../core/common/utilities';
+import { ColorsComponent } from '../colors/colors.component';
 
 
 @Component({
@@ -187,7 +187,7 @@ export class ExecuteTileComponent implements OnInit {
                             bodyTextColor: val.bodyTextColor,
                             selected: _selected
                         });
-
+                        
                         let colorDelectedforTile = false;
                         _colorList.map((clr, index) => {
                             if (clr.selected) {

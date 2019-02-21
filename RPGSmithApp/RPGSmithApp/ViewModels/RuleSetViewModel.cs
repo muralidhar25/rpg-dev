@@ -32,7 +32,8 @@ namespace RPGSmithApp.ViewModels
         public bool IsAllowSharing { get; set; }
         public bool isAdmin { get; set; }
         public Guid? ShareCode { get; set; }
-
+        public string CoreRulesetAdminImageUrl { get; set; }
+        public string CreatedOn { get; set; }
         public RulesetRecordCount RecordCount { get; set; }
 
         public virtual ICollection<ItemMaster> ItemMasters { get; set; }

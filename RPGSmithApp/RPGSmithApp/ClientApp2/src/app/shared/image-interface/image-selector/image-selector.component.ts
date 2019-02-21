@@ -1,16 +1,16 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
-import { User } from '../../../core/models/user.model';
-import { DBkeys } from '../../../core/common/db-keys';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
-import { AuthService } from '../../../core/auth/auth.service';
-import { BingSearchComponent } from '../bing-search/bing-search.component';
 import { Characters } from '../../../core/models/view-models/characters.model';
-import { IMAGE, VIEW } from '../../../core/models/enums';
-import { ImageSearchService } from "../../../core/services/shared/image-search.service";
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { AuthService } from '../../../core/auth/auth.service';
+import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
+import { ImageSearchService } from '../../../core/services/shared/image-search.service';
+import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
+import { DBkeys } from '../../../core/common/db-keys';
+import { IMAGE, VIEW } from '../../../core/models/enums';
+import { User } from '../../../core/models/user.model';
 import { Utilities } from '../../../core/common/utilities';
-import { AlertService, MessageSeverity, DialogType } from '../../../core/common/alert.service';
+import { BingSearchComponent } from '../bing-search/bing-search.component';
 
 
 @Component({
@@ -65,7 +65,7 @@ export class ImageSelectorComponent implements OnInit {
         }, 0);
     }
     private async  getBase64ImageFromUrl(imageUrl) {
-
+        
         var res = await fetch(imageUrl);
         var blob = await res.blob();
         return new Promise((resolve, reject) => {
@@ -81,12 +81,12 @@ export class ImageSelectorComponent implements OnInit {
         })
     }
     private LoadImage(ImageUrl, fromLocal) {
-
+        
         this.isImageLoadong = true;
         //var imageBase64 = '';
         try {
             if (fromLocal) {
-
+                
                 this.getBase64ImageFromUrl(ImageUrl)
                     .then((result) => {
                         this.imageBase64 = result.toString()
@@ -106,7 +106,7 @@ export class ImageSelectorComponent implements OnInit {
                     });
                 }
                 else {
-
+                    
                     this.getBase64ImageFromUrl(ImageUrl)
                         .then((result) => {
                             this.imageBase64 = result.toString()
@@ -205,13 +205,17 @@ export class ImageSelectorComponent implements OnInit {
 
     saveImageFile() {
         if (this.flag) {
-            this.event.emit({ base64: this.charactersFormModal.Old_imageUrl, file: this.Old_fileToUpload, isUrl: this.Old_fileToUpload ? false: true});
+            this.event.emit({ base64: this.charactersFormModal.Old_imageUrl, file: this.Old_fileToUpload, isUrl: this.Old_fileToUpload ? false : true });
         }
         else {
             this.event.emit({ base64: this.charactersFormModal.imageUrl, file: this.fileToUpload, isUrl: this.fileToUpload ? false : true });
         }
-        this.bsModalRef.hide();
-        this.destroyModal();
+        this.close();
+    }
+
+    removeImageFile() {
+        this.event.emit({ base64: null, file: null, isUrl: false });
+        this.close();
     }
 
     close() {
@@ -240,7 +244,7 @@ export class ImageSelectorComponent implements OnInit {
         this.bsModalRef.content.defaultText = type == 1 ? IMAGE.WEB : type == 2 ? IMAGE.STOCK : type == 3 ? IMAGE.MYIMAGES : IMAGE.WEB
         this.bsModalRef.content.event.subscribe(data => {
             //this.isImageLoadong = true;
-
+            
             this.cropBtnText = this.Crop;
             this.isCropable = true;
             this.isInitial = true;
@@ -269,7 +273,7 @@ export class ImageSelectorComponent implements OnInit {
         });
     }
     selectFile(event: any) {
-
+        
         if (event.target.files && event.target.files[0]) {
             var reader = new FileReader();
 

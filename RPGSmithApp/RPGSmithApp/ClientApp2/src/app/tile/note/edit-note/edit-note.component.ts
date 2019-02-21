@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { NoteTileComponent } from '../note.component';
 import { NoteTile } from '../../../core/models/tiles/note-tile.model';
-import { VIEW } from '../../../core/models/enums';
 import { CharacterDashboardPage } from '../../../core/models/view-models/character-dashboard-page.model';
 import { Utilities } from '../../../core/common/utilities';
+import { NoteTileComponent } from '../note.component';
+import { VIEW } from '../../../core/models/enums';
 
 @Component({
   selector: 'edit-note',
@@ -37,7 +37,7 @@ export class EditNoteComponent implements OnInit {
         this.close();
 
         this.bsModalRef = this.modalService.show(NoteTileComponent, {
-            class: 'modal-primary modal-lg',
+            class: 'modal-primary modal-lg modal-custom',
             ignoreBackdropClick: true,
             keyboard: false
         });

@@ -1,25 +1,25 @@
 import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { AlertService, MessageSeverity, DialogType } from './../../../../core/common/alert.service';
-import { AuthService } from "./../../../../core/auth/auth.service";
-import { ConfigurationService } from './../../../../core/common/configuration.service';
-import { Utilities } from './../../../../core/common/utilities';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { DBkeys } from '../../../../core/common/db-keys';
-import { LocalStoreManager } from '../../../../core/common/local-store-manager.service';
+import { Ability } from "../../../../core/models/view-models/ability.model";
+import { Characters } from "../../../../core/models/view-models/characters.model";
+import { ConfigurationService } from "../../../../core/common/configuration.service";
+import { AlertService, DialogType, MessageSeverity } from "../../../../core/common/alert.service";
+import { AuthService } from "../../../../core/auth/auth.service";
 import { SharedService } from "../../../../core/services/shared.service";
+import { LocalStoreManager } from "../../../../core/common/local-store-manager.service";
 import { CommonService } from "../../../../core/services/shared/common.service";
-import { CreateAbilitiesComponent } from './../../abilities/create-abilities/create-abilities.component';
-
-import { User } from '../../../../core/models/user.model';
-import { Ability } from '../../../../core/models/view-models/ability.model';
-import { AbilityService } from "../../../../core/services/ability.service";
-import { ImageViewerComponent } from "../../../../shared/image-interface/image-viewer/image-viewer.component";
 import { RulesetService } from "../../../../core/services/ruleset.service";
+import { CharactersService } from "../../../../core/services/characters.service";
+import { AbilityService } from "../../../../core/services/ability.service";
+import { DBkeys } from "../../../../core/common/db-keys";
+import { User } from "../../../../core/models/user.model";
+import { Utilities } from "../../../../core/common/utilities";
+import { ImageViewerComponent } from "../../../../shared/image-interface/image-viewer/image-viewer.component";
 import { CastComponent } from "../../../../shared/cast/cast.component";
 import { DiceRollComponent } from "../../../../shared/dice/dice-roll/dice-roll.component";
-import { Characters } from "../../../../core/models/view-models/characters.model";
-import { CharactersService } from "../../../../core/services/characters.service";
+import { CreateAbilitiesComponent } from "../../../../shared/create-abilities/create-abilities.component";
+
 
 @Component({
     selector: 'app-ability-ruleset-detail',
@@ -141,7 +141,7 @@ export class AbilityRulesetDetailComponent implements OnInit {
     }
 
     duplicateAbility(ability: Ability) {
-        // this.alertService.startLoadingMessage("", "Checking records");
+        // this.alertService.startLoadingMessage("", "Checking records");      
         this.abilityService.getAbilitiesCount(this.ruleSetId)
             .subscribe(data => {
                 //this.alertService.stopLoadingMessage();
@@ -181,15 +181,15 @@ export class AbilityRulesetDetailComponent implements OnInit {
         //this.abilityService.deleteAbility(ability.abilityId)
         //    .subscribe(
         //        data => {
-        //            this.isLoading = false;
+        //            this.isLoading = false; 
         //            this.alertService.stopLoadingMessage();
         //            this.alertService.showMessage("Ability has been deleted successfully.", "", MessageSeverity.success);
         //            //this.initialize();
-        //            //this.location.replaceState('/');
+        //            //this.location.replaceState('/'); 
         //            this.router.navigate(['/ruleset/ability', this.ruleSetId]);
         //        },
         //        error => {
-        //            this.isLoading = false;
+        //            this.isLoading = false; 
         //            this.alertService.stopLoadingMessage();
         //            let Errors = Utilities.ErrorDetail("Unable to Delete", error);
         //            if (Errors.sessionExpire) {
@@ -206,7 +206,7 @@ export class AbilityRulesetDetailComponent implements OnInit {
                     this.alertService.stopLoadingMessage();
                     this.alertService.showMessage("Ability has been deleted successfully.", "", MessageSeverity.success);
                     //this.initialize();
-                    //this.location.replaceState('/');
+                    //this.location.replaceState('/'); 
                     this.router.navigate(['/ruleset/ability', this.ruleSetId]);
                 },
                 error => {

@@ -185,44 +185,44 @@ namespace RPGSmithApp.Helpers
         //    return JsonConvert.DeserializeObject<IList<T>>(json);
         //}
         public static bool AddDefaultCoreRuleset(string UserID, IRuleSetService _ruleSetService) {            
-                Guid RulesetSharecode = DefaultCoreRulesetID;
-            RuleSet _ruleset = _ruleSetService.GetRuleSetBySharecode(RulesetSharecode).Result;
-            int oldRulesetID = _ruleset.RuleSetId;
-                var _addRuleset = new RuleSetViewModel()
-                {
-                    RuleSetName = _ruleset.RuleSetName,
-                    RuleSetDesc = _ruleset.RuleSetDesc,
-                    DefaultDice = _ruleset.DefaultDice,
-                    CurrencyLabel = _ruleset.CurrencyLabel,
-                    WeightLabel = _ruleset.WeightLabel,
-                    DistanceLabel = _ruleset.DistanceLabel,
-                    SortOrder = _ruleset.SortOrder,
-                    VolumeLabel = _ruleset.VolumeLabel,
-                    ImageUrl = _ruleset.ImageUrl,
-                    ThumbnailUrl = _ruleset.ThumbnailUrl,
-                    IsAbilityEnabled = _ruleset.IsAbilityEnabled,
-                    IsItemEnabled = _ruleset.IsItemEnabled,
-                    IsSpellEnabled = _ruleset.IsSpellEnabled,
-                    IsAllowSharing = _ruleset.IsAllowSharing,
+            //    Guid RulesetSharecode = DefaultCoreRulesetID;
+            //RuleSet _ruleset = _ruleSetService.GetRuleSetBySharecode(RulesetSharecode).Result;
+            //int oldRulesetID = _ruleset.RuleSetId;
+            //    var _addRuleset = new RuleSetViewModel()
+            //    {
+            //        RuleSetName = _ruleset.RuleSetName,
+            //        RuleSetDesc = _ruleset.RuleSetDesc,
+            //        DefaultDice = _ruleset.DefaultDice,
+            //        CurrencyLabel = _ruleset.CurrencyLabel,
+            //        WeightLabel = _ruleset.WeightLabel,
+            //        DistanceLabel = _ruleset.DistanceLabel,
+            //        SortOrder = _ruleset.SortOrder,
+            //        VolumeLabel = _ruleset.VolumeLabel,
+            //        ImageUrl = _ruleset.ImageUrl,
+            //        ThumbnailUrl = _ruleset.ThumbnailUrl,
+            //        IsAbilityEnabled = _ruleset.IsAbilityEnabled,
+            //        IsItemEnabled = _ruleset.IsItemEnabled,
+            //        IsSpellEnabled = _ruleset.IsSpellEnabled,
+            //        IsAllowSharing = _ruleset.IsAllowSharing,
 
-                    IsCoreRuleset = _ruleset.IsCoreRuleset,
-                    ParentRuleSetId = _ruleset.RuleSetId
-                };
-                var _rulesetData = Mapper.Map<RuleSet>(_addRuleset);
-                _rulesetData.isActive = true;
-                _rulesetData.ShareCode = null;//Guid.NewGuid(); //not used in sp
-                _rulesetData.OwnerId = UserID;
-                _rulesetData.CreatedBy = UserID;
-                _rulesetData.CreatedDate = DateTime.Now;
+            //        IsCoreRuleset = _ruleset.IsCoreRuleset,
+            //        ParentRuleSetId = _ruleset.RuleSetId
+            //    };
+            //    var _rulesetData = Mapper.Map<RuleSet>(_addRuleset);
+            //    _rulesetData.isActive = true;
+            //    _rulesetData.ShareCode = null;//Guid.NewGuid(); //not used in sp
+            //    _rulesetData.OwnerId = UserID;
+            //    _rulesetData.CreatedBy = UserID;
+            //    _rulesetData.CreatedDate = DateTime.Now;
 
-                _addRuleset.IsCoreRuleset = false;//not used in sp
+            //    _addRuleset.IsCoreRuleset = false;//not used in sp
 
-            RuleSet res = _ruleSetService.AddCoreRuleset(_rulesetData, _ruleset.RuleSetId, UserID).Result;
-            _ruleSetService.CopyCustomDiceToNewRuleSet(oldRulesetID, res.RuleSetId);
-                if (res != null)
-                {
-                    return true;
-                }            
+            //RuleSet res = _ruleSetService.AddCoreRuleset(_rulesetData, _ruleset.RuleSetId, UserID).Result;
+            //_ruleSetService.CopyCustomDiceToNewRuleSet(oldRulesetID, res.RuleSetId);
+            //    if (res != null)
+            //    {
+            //        return true;
+            //    }            
             return false;
         }
         public static List<CustomDiceViewModel> MapCustomDice(List<CustomDice> list)
@@ -254,5 +254,30 @@ namespace RPGSmithApp.Helpers
             }
             return result;
         }
+        public  static RuleSetViewModel GetRuleset(int rulesetId, IRuleSetService _ruleSetService)
+        {
+            var _ruleset = _ruleSetService.GetRuleSetById(rulesetId).Result;
+            return new RuleSetViewModel()
+            {
+                RuleSetName = _ruleset.RuleSetName,
+                RuleSetDesc = _ruleset.RuleSetDesc,
+                DefaultDice = _ruleset.DefaultDice,
+                CurrencyLabel = _ruleset.CurrencyLabel,
+                WeightLabel = _ruleset.WeightLabel,
+                DistanceLabel = _ruleset.DistanceLabel,
+                SortOrder = _ruleset.SortOrder,
+                VolumeLabel = _ruleset.VolumeLabel,
+                ImageUrl = _ruleset.ImageUrl,
+                ThumbnailUrl = _ruleset.ThumbnailUrl,
+                IsAbilityEnabled = _ruleset.IsAbilityEnabled,
+                IsItemEnabled = _ruleset.IsItemEnabled,
+                IsSpellEnabled = _ruleset.IsSpellEnabled,
+                IsAllowSharing = _ruleset.IsAllowSharing,
+
+                IsCoreRuleset = _ruleset.IsCoreRuleset,
+                ParentRuleSetId = rulesetId
+            };
+        }
+
     }
 }

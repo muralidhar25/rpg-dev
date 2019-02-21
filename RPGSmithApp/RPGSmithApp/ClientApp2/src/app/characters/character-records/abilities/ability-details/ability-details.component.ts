@@ -1,25 +1,26 @@
 import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { AlertService, MessageSeverity, DialogType } from '../../../../core/common/alert.service';
-import { AuthService } from "../../../../core/auth/auth.service";
-import { ConfigurationService } from '../../../../core/common/configuration.service';
-import { Utilities } from '../../../../core/common/utilities';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { DBkeys } from '../../../../core/common/db-keys';
-import { LocalStoreManager } from '../../../../core/common/local-store-manager.service';
-import { SharedService } from "../../../../core/services/shared.service";
-import { CommonService } from "../../../../core/services/shared/common.service";
-import { AbilityService } from "../../../../core/services/ability.service";
-import { CharacterAbilityService } from "../../../../core/services/character-abilities.service";
-
-import { CreateAbilitiesComponent } from '../../../../records/abilities/create-abilities/create-abilities.component';
-import { User } from '../../../../core/models/user.model';
-import { Ability } from '../../../../core/models/view-models/ability.model';
-import { DiceRollComponent } from "../../../../shared/dice/dice-roll/dice-roll.component";
 import { Characters } from "../../../../core/models/view-models/characters.model";
-import { CastComponent } from "../../../../shared/cast/cast.component";
-import { ImageViewerComponent } from "../../../../shared/image-interface/image-viewer/image-viewer.component";
+import { Ability } from "../../../../core/models/view-models/ability.model";
+import { ConfigurationService } from "../../../../core/common/configuration.service";
+import { AuthService } from "../../../../core/auth/auth.service";
+import { AlertService, MessageSeverity, DialogType } from "../../../../core/common/alert.service";
+import { CommonService } from "../../../../core/services/shared/common.service";
 import { RulesetService } from "../../../../core/services/ruleset.service";
+import { LocalStoreManager } from "../../../../core/common/local-store-manager.service";
+import { CharacterAbilityService } from "../../../../core/services/character-abilities.service";
+import { SharedService } from "../../../../core/services/shared.service";
+import { AbilityService } from "../../../../core/services/ability.service";
+import { DBkeys } from "../../../../core/common/db-keys";
+import { User } from "../../../../core/models/user.model";
+import { Utilities } from "../../../../core/common/utilities";
+import { CastComponent } from "../../../../shared/cast/cast.component";
+import { DiceRollComponent } from "../../../../shared/dice/dice-roll/dice-roll.component";
+import { ImageViewerComponent } from "../../../../shared/image-interface/image-viewer/image-viewer.component";
+import { CreateAbilitiesComponent } from "../../../../shared/create-abilities/create-abilities.component";
+
+
 
 @Component({
     selector: 'app-ability-details',

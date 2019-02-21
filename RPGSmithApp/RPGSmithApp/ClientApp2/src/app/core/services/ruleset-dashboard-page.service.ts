@@ -17,105 +17,106 @@ import { ICON, VIEW } from '../models/enums';
 @Injectable()
 export class RulesetDashboardPageService extends EndpointFactory {
 
-    private readonly getByRulesetIdUrl: string = this.configurations.baseUrl + "/api/RulesetDashboardPage/getByRulesetId";
-    private readonly getByLayoutIdUrl: string = this.configurations.baseUrl + "/api/RulesetDashboardPage/getByLayoutId";
-    private readonly getCountByRulesetIdUrl: string = this.configurations.baseUrl + "api/RulesetDashboardPage/GetCountByRulesetId";
-    private readonly getCountByLayoutIdUrl: string = this.configurations.baseUrl + "api/RulesetDashboardPage/GetCountByLayoutId";
-    private readonly createUrl: string = this.configurations.baseUrl + "/api/RulesetDashboardPage/create";
-    private readonly updateUrl: string = this.configurations.baseUrl + "/api/RulesetDashboardPage/update";
-    private readonly updateSortOrderUrl: string = this.configurations.baseUrl + "/api/RulesetDashboardPage/updateSortOrder";
-    private readonly deleteUrl: string = this.configurations.baseUrl + "/api/RulesetDashboardPage/delete";
-    private readonly getByIdUrl: string = this.configurations.baseUrl + "/api/RulesetDashboardPage/GetById";
-    private readonly duplicateUrl: string = this.configurations.baseUrl + "/api/RulesetDashboardPage/duplicate";
+  private readonly getByRulesetIdUrl: string = this.configurations.baseUrl + "/api/RulesetDashboardPage/getByRulesetId";
+  private readonly getByLayoutIdUrl: string = this.configurations.baseUrl + "/api/RulesetDashboardPage/getByLayoutId";
+  private readonly getCountByRulesetIdUrl: string = this.configurations.baseUrl + "api/RulesetDashboardPage/GetCountByRulesetId";
+  private readonly getCountByLayoutIdUrl: string = this.configurations.baseUrl + "api/RulesetDashboardPage/GetCountByLayoutId";
+  private readonly createUrl: string = this.configurations.baseUrl + "/api/RulesetDashboardPage/create";
+  private readonly updateUrl: string = this.configurations.baseUrl + "/api/RulesetDashboardPage/update";
+  private readonly updateSortOrderUrl: string = this.configurations.baseUrl + "/api/RulesetDashboardPage/updateSortOrder";
+  private readonly deleteUrl: string = this.configurations.baseUrl + "/api/RulesetDashboardPage/delete";
+  private readonly getByIdUrl: string = this.configurations.baseUrl + "/api/RulesetDashboardPage/GetById";
+  private readonly duplicateUrl: string = this.configurations.baseUrl + "/api/RulesetDashboardPage/duplicate";
 
-    constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
-        private fileUploadService: FileUploadService) {
-            super(http, configurations, injector);
-    }
+  constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
+    private fileUploadService: FileUploadService) {
+    super(http, configurations, injector);
+  }
 
-    getRulesetDashboardPageById<T>(Id: number): Observable<T> {
-        let endpointUrl = `${this.getByIdUrl}?id=${Id}`;
+  getRulesetDashboardPageById<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getByIdUrl}?id=${Id}`;
 
-        return this.http.get<T>(endpointUrl, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.getRulesetDashboardPageById(Id));
-            });
-    }
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getRulesetDashboardPageById(Id));
+      });
+  }
 
-    getPagesCountByRulesetId<T>(Id: number): Observable<T> {
-        let endpointUrl = `${this.getCountByRulesetIdUrl}?rulesetId=${Id}`;
+  getPagesCountByRulesetId<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getCountByRulesetIdUrl}?rulesetId=${Id}`;
 
-        return this.http.get<T>(endpointUrl, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.getPagesCountByRulesetId(Id));
-            });
-    }
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getPagesCountByRulesetId(Id));
+      });
+  }
 
-    getPagesCountByLayoutId<T>(Id: number): Observable<T> {
-        let endpointUrl = `${this.getCountByLayoutIdUrl}?layoutId=${Id}`;
+  getPagesCountByLayoutId<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getCountByLayoutIdUrl}?layoutId=${Id}`;
 
-        return this.http.get<T>(endpointUrl, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.getPagesCountByLayoutId(Id));
-            });
-    }
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getPagesCountByLayoutId(Id));
+      });
+  }
 
-    getPagesByRulesetId<T>(Id: number): Observable<T> {
-        let endpointUrl = `${this.getByRulesetIdUrl}?rulesetId=${Id}`;
+  getPagesByRulesetId<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getByRulesetIdUrl}?rulesetId=${Id}`;
 
-        return this.http.get<T>(endpointUrl, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.getPagesByRulesetId(Id));
-            });
-    }
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getPagesByRulesetId(Id));
+      });
+  }
 
-    getPagesByLayoutId<T>(Id: number): Observable<T> {
-        let endpointUrl = `${this.getByLayoutIdUrl}?layoutId=${Id}`;
+  getPagesByLayoutId<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getByLayoutIdUrl}?layoutId=${Id}`;
 
-        return this.http.get<T>(endpointUrl, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.getPagesByLayoutId(Id));
-            });
-    }
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getPagesByLayoutId(Id));
+      });
+  }
 
-    createEditRulesetDashboardPage<T>(RulesetDashboardPage: RulesetDashboardPage): Observable<T> {
+  createEditRulesetDashboardPage<T>(RulesetDashboardPage: RulesetDashboardPage): Observable<T> {
 
-        let endpointUrl = this.createUrl;
+    let endpointUrl = this.createUrl;
 
-        if (RulesetDashboardPage.rulesetDashboardPageId == 0 || RulesetDashboardPage.rulesetDashboardPageId  === undefined)
-            endpointUrl = this.createUrl;
-        else
-            endpointUrl = this.updateUrl;
+    if (RulesetDashboardPage.rulesetDashboardPageId == 0 || RulesetDashboardPage.rulesetDashboardPageId === undefined)
+      endpointUrl = this.createUrl;
+    else
+      endpointUrl = this.updateUrl;
 
-        return this.http.post(endpointUrl, JSON.stringify(RulesetDashboardPage), { headers: this.getRequestHeadersNew(), responseType: "text" })
-            .catch(error => {
-                return this.handleError(error, () => this.createEditRulesetDashboardPage(RulesetDashboardPage));
-            });
-    }
+    return this.http.post(endpointUrl, JSON.stringify(RulesetDashboardPage), { headers: this.getRequestHeadersNew(), responseType: "text" })
+      .catch(error => {
+        return this.handleError(error, () => this.createEditRulesetDashboardPage(RulesetDashboardPage));
+      });
+  }
 
-    duplicateRulesetDashboardPage<T>(RulesetDashboardPage: RulesetDashboardPage): Observable<T> {
+  duplicateRulesetDashboardPage<T>(RulesetDashboardPage: RulesetDashboardPage): Observable<T> {
 
-        return this.http.post<T>(this.duplicateUrl, JSON.stringify(RulesetDashboardPage), this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.duplicateRulesetDashboardPage(RulesetDashboardPage));
-            });
-    }
+    return this.http.post<T>(this.duplicateUrl, JSON.stringify(RulesetDashboardPage), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.duplicateRulesetDashboardPage(RulesetDashboardPage));
+      });
+  }
 
-    deleteRulesetDashboardPage<T>(Id: number): Observable<T> {
-        let endpointUrl = `${this.deleteUrl}?id=${Id}`;
+  deleteRulesetDashboardPage<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.deleteUrl}?id=${Id}`;
 
-        return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.deleteRulesetDashboardPage(Id));
-            });
-    }
+    return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deleteRulesetDashboardPage(Id));
+      });
+  }
 
-    sortOrderPages<T>(objPages: any): Observable<T> {
+  sortOrderPages<T>(objPages: any): Observable<T> {
 
-        return this.http.post<T>(this.updateSortOrderUrl, JSON.stringify(objPages), this.getRequestHeaders())
-            .catch(error => {
-                return this.handleError(error, () => this.sortOrderPages(objPages));
-            });
-    }
+    return this.http.post<T>(this.updateSortOrderUrl, JSON.stringify(objPages), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.sortOrderPages(objPages));
+      });
+  }
 
 }
+

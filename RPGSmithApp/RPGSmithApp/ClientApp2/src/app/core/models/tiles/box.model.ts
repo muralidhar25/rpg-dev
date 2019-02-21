@@ -4,3 +4,12 @@ export class Box {
     tile: any;
     IsCharacter: boolean
 }
+
+export class config {
+    col: any
+    dragHandle: any
+    payload: any
+    row: any
+    sizex: any
+    sizey: any
+}

@@ -102,3 +102,60 @@
 .modal-dialog {
     width: 300px !important;
 }
+.title-show-hide .icon:before {
+    font-size: 3rem;
+}
+
+.title-show-hide h2 {
+    font-size: 16px;
+    color: #be8917;
+    margin-bottom: 15px;
+}
+
+.title-show-hide p {
+    margin-bottom: 0px;
+    color: #be8917;
+}
+
+.title-show-hide p > span {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    position: relative;
+    background: #d8d8d8;
+    margin-top: 5px;
+}
+
+.title-show-hide p span input {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    width: 20px;
+    height: 20px;
+    opacity: 0;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.title-show-hide p span span {
+    background: #58514c;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    visibility: hidden
+}
+
+.title-show-hide p span span:after {
+    content: '';
+    width: 6px;
+    height: 10px;
+    border: 1px solid transparent;
+    border-color: #fff transparent transparent #fff;
+    -webkit-transform: rotate(-130deg);
+    transform: rotate(-130deg);
+    display: inline-block;
+}
+
+.title-show-hide p span input:checked + span {
+    visibility: visible
+}

@@ -54,6 +54,8 @@ import { NumericCharacterStatComponent } from './numeric-character-stats/numeric
 
 import { RouterModule } from "@angular/router";
 import { AuthModule } from "../core/auth/auth.module";
+import { CreateAbilitiesComponent } from "./create-abilities/create-abilities.component";
+import { CreateSpellsComponent } from "./create-spells/create-spells.component";
 
 @NgModule({
   declarations: [
@@ -77,7 +79,9 @@ import { AuthModule } from "../core/auth/auth.module";
     DiceRollComponent,
     DiceComponent,
     DiceSaveComponent,
-    NumericCharacterStatComponent
+    NumericCharacterStatComponent,
+    CreateAbilitiesComponent,
+    CreateSpellsComponent
   ],
   imports: [
     CommonModule,
@@ -157,7 +161,9 @@ import { AuthModule } from "../core/auth/auth.module";
     DiceRollComponent,
     DiceComponent,
     DiceSaveComponent,
-    NumericCharacterStatComponent
+    NumericCharacterStatComponent,
+    CreateAbilitiesComponent,
+    CreateSpellsComponent
   ],
   entryComponents: [
     AccountSettingsComponent,
@@ -178,7 +184,9 @@ import { AuthModule } from "../core/auth/auth.module";
     DiceRollComponent,
     DiceComponent,
     DiceSaveComponent,
-    NumericCharacterStatComponent,
+    NumericCharacterStatComponent, 
+    CreateAbilitiesComponent,
+    CreateSpellsComponent
   ]
 })
 export class SharedModule {}

@@ -35,8 +35,10 @@
                         <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
                     </div>
                     <div class="form-group input-image-note input-image-trigger" (click)="cropImage(imageUrl,true,'VIEW.EDIT')" *ngIf="(!showWebButtons && imageUrl !== undefined && imageUrl !== null && imageUrl !== '')">
-                        <img class="spell-img" [src]="imageUrl"
-                             onerror="this.src='../assets/images/DefaultImages/ability.png';">
+                        <img class="spell-img" [src]="imageUrl" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">
+                    </div>
+                    <div class="remove-btn-box" *ngIf="(!showWebButtons && imageUrl !== undefined && imageUrl !== null && imageUrl !== '')">
+                        <button type="button" class="removebtn-img" (click)="removeImage()">Remove Image</button>
                     </div>
 
                     <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
@@ -132,7 +134,7 @@
                             <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.titleBgColor" name="titleBgColor" id="titleBgColor"  (change)="setColor(colorModel)" />
                         </button>
                     </span>
-                    <input type="text" id="titleBackgroundColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.titleBgColor" name="titleBgColor">
+                    <input type="text" id="titleBackgroundColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.titleBgColor" name="titleBgColor" (change)="setColor(colorModel)">
                 </div>
             </div>
 
@@ -144,7 +146,7 @@
                             <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.titleTextColor" name="titleTextColor" id="titleTextColor" (change)="setColor(colorModel)" />
                         </button>
                     </span>
-                    <input type="text" id="titleTextColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.titleTextColor" name="titleTextColor">
+                    <input type="text" id="titleTextColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.titleTextColor" name="titleTextColor" (change)="setColor(colorModel)">
                 </div>
             </div>
         </div>
@@ -157,7 +159,7 @@
                             <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.bodyBgColor" name="bodyBgColor" id="bodyBgColor" (change)="setColor(colorModel)" />
                         </button>
                     </span>
-                    <input type="text" id="bodyBackgroundColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.bodyBgColor" name="bodyBgColor">
+                    <input type="text" id="bodyBackgroundColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.bodyBgColor" name="bodyBgColor" (change)="setColor(colorModel)">
                 </div>
             </div>
 
@@ -169,7 +171,7 @@
                             <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.bodyTextColor" name="bodyTextColor" id="bodyTextColor" (change)="setColor(colorModel)" />
                         </button>
                     </span>
-                    <input type="text" id="bodyTextColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.bodyTextColor" name="bodyTextColor">
+                    <input type="text" id="bodyTextColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.bodyTextColor" name="bodyTextColor" (change)="setColor(colorModel)">
                 </div>
             </div>
         </div>

@@ -8,6 +8,6 @@ namespace DAL.Services
 {
     public interface IImageService
     {
-        Task<BingApiResponse> BingImageSearchAsync(string query);
+        Task<BingApiResponse> BingImageSearchAsync(string query, int count = 0);
     }
 }

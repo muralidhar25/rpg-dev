@@ -1,25 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { ColorsComponent } from './../colors/colors.component';
+import { FilterTilePipe } from "../../core/pipes/filter-tile.pipe";
+import { Ruleset } from '../../core/models/view-models/ruleset.model';
+import { Color } from '../../core/models/tiles/color.model';
+import { LinkTile } from '../../core/models/tiles/link-tile.model';
+import { CharacterTile } from '../../core/models/tiles/character-tile.model';
+import { CharacterDashboardPage } from '../../core/models/view-models/character-dashboard-page.model';
+import { VIEW, SHAPE, SHAPE_CLASS } from '../../core/models/enums';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
-import { User } from '../../core/models/user.model';
-import { DBkeys } from '../../core/common/db-keys';
+import { SharedService } from '../../core/services/shared.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { ItemsService } from '../../core/services/items.service';
-import { CharacterAbilityService } from '../../core/services/character-abilities.service';
-import { LinkTile } from '../../core/models/tiles/link-tile.model';
 import { LinkTileService } from '../../core/services/tiles/link-tile.service';
 import { CharacterSpellService } from '../../core/services/character-spells.service';
-import { MessageSeverity, AlertService } from '../../core/common/alert.service';
-import { VIEW, SHAPE, SHAPE_CLASS } from '../../core/models/enums';
-import { Utilities } from '../../core/common/utilities';
-import { SharedService } from "../../core/services/shared.service";
-import { CharacterTile } from '../../core/models/tiles/character-tile.model';
-import { FilterTilePipe } from "../../core/pipes/filter-tile.pipe";
-import { Color } from '../../core/models/tiles/color.model';
+import { CharacterAbilityService } from '../../core/services/character-abilities.service';
+import { AlertService, MessageSeverity } from '../../core/common/alert.service';
 import { ColorService } from '../../core/services/tiles/color.service';
-import { CharacterDashboardPage } from '../../core/models/view-models/character-dashboard-page.model';
-import { Ruleset } from '../../core/models/view-models/ruleset.model';
+import { DBkeys } from '../../core/common/db-keys';
+import { User } from '../../core/models/user.model';
+import { Utilities } from '../../core/common/utilities';
+import { ColorsComponent } from '../colors/colors.component';
 
 @Component({
   selector: 'app-link',

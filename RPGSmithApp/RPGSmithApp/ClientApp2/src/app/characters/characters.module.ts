@@ -21,7 +21,6 @@ import { CharacterItemsComponent } from './character-records/items/items.compone
 import { AddItemComponent } from './character-records/items/add-item/add-item.component';
 import { CharacterSpellsComponent } from './character-records/spells/spells.component';
 import { AddCharacterSpellComponent } from './character-records/spells/add-spells/add-spells.component';
-import { CreateSpellsComponent } from './character-records/spells/create-spells/create-spells.component';
 import { CharacterAbilitiesComponent } from './character-records/abilities/abilities.component';
 import { AddCharaterAbilityComponent } from './character-records/abilities/add-abilities/add-abilities.component';
 
@@ -29,7 +28,6 @@ import { CharacterItemDetailsComponent } from './character-records/items/item-de
 import { CharacterSpellDetailsComponent } from './character-records/spells/spell-details/spell-details.component';
 import { CharacterAbilityDetailsComponent } from './character-records/abilities/ability-details/ability-details.component';
 //TODO-NJ: Duplicate in records
-import { CreateAbilitiesComponent } from './character-records/abilities/create-abilities/create-abilities.component';
 
 import { CreateItemComponent } from './character-records/items/create-item/create-item.component';
 import { EditItemComponent } from './character-records/items/edit-item/edit-item.component';
@@ -40,9 +38,13 @@ import { CharacterCharacterStatComponent } from './character-records/character-s
 import { AbilityRulesetDetailComponent } from './character-records/abilities/ability-ruleset-detail/ability-ruleset-detail.component';
 import { SpellRulesetDetailComponent } from './character-records/spells/spell-ruleset-detail/spell-ruleset-detail.component';
 import { LinkRecordComponent } from './character-records/character-stats/link-record/link-record.component';
+import { RulesetViewAbilityDetailComponent } from "./character-records/abilities/ruleset/ruleset-view-ability-detail/ruleset-view-ability-detail.component";
+import { AbilityRulesetViewListComponent } from "./character-records/abilities/ruleset/ruleset-view-list/ruleset-view-list.component";
+import { RulesetViewItemDetailComponent } from "./character-records/items/ruleset/ruleset-view-item-detail/ruleset-view-item-detail.component";
+import { ItemRulesetViewListComponent } from "./character-records/items/ruleset/ruleset-view-list/ruleset-view-list.component";
+import { SpellRulesetViewListComponent } from "./character-records/spells/ruleset/ruleset-view-list/ruleset-view-list.component";
+import { RulesetViewSpellDetailComponent } from "./character-records/spells/ruleset/ruleset-view-spell-detail/ruleset-view-spell-detail.component";
 
-import { CharacterStatsComponent } from './character-stats/character-stats/character-stats.component';
-import { CharacterStatsFormComponent } from './character-stats/character-stats-form/character-stats-form.component';
 
 @NgModule({
   declarations: [
@@ -71,11 +73,12 @@ import { CharacterStatsFormComponent } from './character-stats/character-stats-f
     AbilityRulesetDetailComponent,
     SpellRulesetDetailComponent,
     LinkRecordComponent,
-    CreateAbilitiesComponent,
-    CreateSpellsComponent,
-
-    CharacterStatsComponent,
-    CharacterStatsFormComponent
+    RulesetViewAbilityDetailComponent,
+    AbilityRulesetViewListComponent,
+    RulesetViewItemDetailComponent,
+    ItemRulesetViewListComponent,
+    SpellRulesetViewListComponent,
+    RulesetViewSpellDetailComponent
   ],
   imports: [
     SharedModule,
@@ -112,22 +115,20 @@ import { CharacterStatsFormComponent } from './character-stats/character-stats-f
     AbilityRulesetDetailComponent,
     SpellRulesetDetailComponent,
     LinkRecordComponent,
-    CreateAbilitiesComponent,
-    CreateSpellsComponent,
-
-    CharacterStatsComponent,
-    CharacterStatsFormComponent
+    RulesetViewAbilityDetailComponent,
+    AbilityRulesetViewListComponent,
+    RulesetViewItemDetailComponent,
+    ItemRulesetViewListComponent,
+    SpellRulesetViewListComponent,
+    RulesetViewSpellDetailComponent
   ],
   entryComponents: [
     CharactersFormComponent,
-    CharacterStatsFormComponent,
     LayoutFormComponent,
     PageFormComponent,
     AddContainerComponent,
     AddContainerItemComponent,
     AddItemComponent,
-    CreateSpellsComponent,
-    CreateAbilitiesComponent,
     CreateItemComponent,
     EditItemComponent,
     AddCharacterSpellComponent,

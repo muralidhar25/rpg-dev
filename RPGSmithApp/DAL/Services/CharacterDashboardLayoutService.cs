@@ -37,6 +37,9 @@ namespace DAL.Services
 
         public async Task<CharacterDashboardLayout> Create(CharacterDashboardLayout item)
         {
+            //item.IsDefaultComputer = false;
+            //item.IsDefaultTablet = false;
+            //item.IsDefaultMobile = false;
             return await _repo.Add(item);
         }
 
@@ -211,11 +214,27 @@ namespace DAL.Services
             CharacterDashboardLayout.DefaultPageId = item.DefaultPageId;
             CharacterDashboardLayout.LayoutHeight = item.LayoutHeight;
             CharacterDashboardLayout.LayoutWidth = item.LayoutWidth;
-
+            CharacterDashboardLayout.IsDefaultComputer = item.IsDefaultComputer;
+            CharacterDashboardLayout.IsDefaultTablet = item.IsDefaultTablet;
+            CharacterDashboardLayout.IsDefaultMobile = item.IsDefaultMobile;
 
             try
             {
                 await _repo.Update(CharacterDashboardLayout);
+
+                ///////////////////////////////////////////////
+                if (CharacterDashboardLayout.IsDefaultComputer)
+                {
+                    RemoveDefaultComputerDeviceFromOtherLayouts(CharacterDashboardLayout);
+                }
+                if (CharacterDashboardLayout.IsDefaultTablet)
+                {
+                    RemoveDefaultTabletDeviceFromOtherLayouts(CharacterDashboardLayout);
+                }
+                if (CharacterDashboardLayout.IsDefaultMobile)
+                {
+                    RemoveDefaultMobileDeviceFromOtherLayouts(CharacterDashboardLayout);
+                }
             }
             catch (Exception ex)
             {
@@ -224,7 +243,37 @@ namespace DAL.Services
 
             return CharacterDashboardLayout;
         }
-        
+
+        private void RemoveDefaultMobileDeviceFromOtherLayouts(CharacterDashboardLayout CDL)
+        {
+            var layouts = _context.CharacterDashboardLayouts.Where(x => x.CharacterDashboardLayoutId != CDL.CharacterDashboardLayoutId && x.CharacterId==CDL.CharacterId && x.IsDeleted!=true).ToList();
+            foreach (var item in layouts)
+            {
+                item.IsDefaultMobile = false;
+            }
+            _context.SaveChanges();
+        }
+
+        private void RemoveDefaultTabletDeviceFromOtherLayouts(CharacterDashboardLayout CDL)
+        {
+            var layouts = _context.CharacterDashboardLayouts.Where(x => x.CharacterDashboardLayoutId != CDL.CharacterDashboardLayoutId && x.CharacterId == CDL.CharacterId && x.IsDeleted != true).ToList();
+            foreach (var item in layouts)
+            {
+                item.IsDefaultTablet = false;
+            }
+            _context.SaveChanges();
+        }
+
+        private void RemoveDefaultComputerDeviceFromOtherLayouts(CharacterDashboardLayout CDL)
+        {
+            var layouts = _context.CharacterDashboardLayouts.Where(x => x.CharacterDashboardLayoutId != CDL.CharacterDashboardLayoutId && x.CharacterId == CDL.CharacterId && x.IsDeleted != true).ToList();
+            foreach (var item in layouts)
+            {
+                item.IsDefaultComputer = false;
+            }
+            _context.SaveChanges();
+        }
+
         public int GetMaximumSortOrdertByCharacterId(int? characterId)
         {
             var result = _context.CharacterDashboardLayouts.Where(x => x.IsDeleted != true && x.CharacterId == characterId).OrderByDescending(x => x.SortOrder).FirstOrDefault();

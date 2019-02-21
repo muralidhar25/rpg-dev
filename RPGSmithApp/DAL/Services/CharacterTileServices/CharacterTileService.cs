@@ -21,13 +21,17 @@ namespace DAL.Services.CharacterTileServices
         private readonly IConfiguration _configuration;
         private readonly ICharacterStatDefaultValueService _characterStatDefaultValueService;
         private readonly ICharacterStatConditionService _characterStatConditionService;
-        public CharacterTileService(ApplicationDbContext context, IRepository<CharacterTile> repo, IConfiguration configuration, ICharacterStatDefaultValueService characterStatDefaultValueService, ICharacterStatConditionService characterStatConditionService)
+        private readonly ICharacterStatChoiceService _characterStatChoiceService;
+        private readonly ICharacterStatCalcService _characterStatCalcService;
+        public CharacterTileService(ApplicationDbContext context, IRepository<CharacterTile> repo, IConfiguration configuration, ICharacterStatDefaultValueService characterStatDefaultValueService, ICharacterStatConditionService characterStatConditionService, ICharacterStatChoiceService characterStatChoiceService, ICharacterStatCalcService characterStatCalcService)
         {
             _repo = repo;
             _context = context;
             _configuration = configuration;
             _characterStatDefaultValueService = characterStatDefaultValueService;
             _characterStatConditionService = characterStatConditionService;
+            _characterStatChoiceService = characterStatChoiceService;
+            _characterStatCalcService = characterStatCalcService;
         }
 
         public async Task<CharacterTile> Create(CharacterTile item)
@@ -352,6 +356,7 @@ namespace DAL.Services.CharacterTileServices
                                         //CST.CharacterStatId = CST_Row["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CST_Row["CharacterStatId"]);
                                         CST.CharactersCharacterStatId = CST_Row["CharactersCharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CST_Row["CharactersCharacterStatId"]);
                                         CST.ShowTitle = CST_Row["ShowTitle"] == DBNull.Value ? false : Convert.ToBoolean(CST_Row["ShowTitle"]);
+                                        CST.ImageUrl = CST_Row["ImageUrl"] == DBNull.Value ? null : CST_Row["ImageUrl"].ToString();
 
                                         CharactersCharacterStat CharCharStat = null;
                                         if (ds.Tables[8].Rows.Count > 0)
@@ -374,7 +379,7 @@ namespace DAL.Services.CharacterTileServices
                                                     CharCharStat.YesNo = CharCharStat_Row["YesNo"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["YesNo"]);
                                                     CharCharStat.OnOff = CharCharStat_Row["OnOff"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["OnOff"]);
                                                     CharCharStat.Value = CharCharStat_Row["Value"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["Value"]);
-                                                    CharCharStat.Number = CharCharStat_Row["Number"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["Number"]);
+                                                    CharCharStat.Number = CharCharStat_Row["Number"] == DBNull.Value ? (int?)null : Convert.ToInt32(CharCharStat_Row["Number"]);
                                                     CharCharStat.SubValue = CharCharStat_Row["SubValue"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["SubValue"]);
                                                     CharCharStat.Current = CharCharStat_Row["Current"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["Current"]);
                                                     CharCharStat.Maximum = CharCharStat_Row["Maximum"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["Maximum"]);
@@ -941,7 +946,7 @@ namespace DAL.Services.CharacterTileServices
                         IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]),
                         Maximum = row["Maximum"] == DBNull.Value ? 0 : Convert.ToInt32(row["Maximum"]),
                         MultiChoice = row["MultiChoice"] == DBNull.Value ? null : row["MultiChoice"].ToString(),
-                        Number = row["Number"] == DBNull.Value ? 0 : Convert.ToInt32(row["Number"]),
+                        Number = row["Number"] == DBNull.Value ? (int?)null : Convert.ToInt32(row["Number"]),
                         OnOff = row["OnOff"] == DBNull.Value ? false : Convert.ToBoolean(row["OnOff"]),
                         RichText = row["RichText"] == DBNull.Value ? null : row["RichText"].ToString(),
                         SubValue = row["SubValue"] == DBNull.Value ? 0 : Convert.ToInt32(row["SubValue"]),
@@ -961,7 +966,10 @@ namespace DAL.Services.CharacterTileServices
                         {
                             CharacterStatTypeId = row["CharacterStatTypeId"] == DBNull.Value ? num : (short)(row["CharacterStatTypeId"]),
                             CharacterStatId = row["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(row["CharacterStatId"]),
-                            StatName = row["StatName"] == DBNull.Value ? null : row["StatName"].ToString()
+                            StatName = row["StatName"] == DBNull.Value ? null : row["StatName"].ToString(),
+                            isMultiSelect = row["isMultiSelect"] == DBNull.Value ? false : Convert.ToBoolean(row["isMultiSelect"]),
+                            CharacterStatChoices = _characterStatChoiceService.GetByIds(((row["Choice"] == DBNull.Value ? "" : row["Choice"].ToString()) + (row["MultiChoice"] == DBNull.Value ? "" : row["MultiChoice"].ToString())).ToString()),
+                            CharacterStatCalcs = _characterStatCalcService.GetByStatId(row["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(row["CharacterStatId"]))
                         }
                     };
                     list.Add(ccs);

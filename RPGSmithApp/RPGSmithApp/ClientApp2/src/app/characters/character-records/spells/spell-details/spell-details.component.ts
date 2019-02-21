@@ -1,25 +1,24 @@
-import { Component, OnInit, OnDestroy, Input } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { AlertService, MessageSeverity, DialogType } from './../../../../core/common/alert.service';
-import { AuthService } from "./../../../../core/auth/auth.service";
-import { ConfigurationService } from './../../../../core/common/configuration.service';
-import { Utilities } from './../../../../core/common/utilities';
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { DBkeys } from '../../../../core/common/db-keys';
-import { LocalStoreManager } from '../../../../core/common/local-store-manager.service';
+import { Component, OnInit } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef} from 'ngx-bootstrap';
+import { Characters } from "../../../../core/models/view-models/characters.model";
+import { Spell } from "../../../../core/models/view-models/spell.model";
+import { AlertService, DialogType, MessageSeverity } from "../../../../core/common/alert.service";
+import { AuthService } from "../../../../core/auth/auth.service";
+import { ConfigurationService } from "../../../../core/common/configuration.service";
+import { LocalStoreManager } from "../../../../core/common/local-store-manager.service";
 import { SharedService } from "../../../../core/services/shared.service";
 import { CommonService } from "../../../../core/services/shared/common.service";
-
-import { CreateSpellsComponent } from '../../../../records/spells/create-spells/create-spells.component';
-import { User } from '../../../../core/models/user.model';
-import { Spell } from '../../../../core/models/view-models/spell.model';
-import { SpellsService } from "../../../../core/services/spells.service";
 import { CharacterSpellService } from "../../../../core/services/character-spells.service";
-import { CastComponent } from '../../../../shared/cast/cast.component';
-import { Characters } from "../../../../core/models/view-models/characters.model";
+import { SpellsService } from "../../../../core/services/spells.service";
+import { RulesetService } from "../../../../core/services/ruleset.service";
+import { User } from "../../../../core/models/user.model";
+import { DBkeys } from "../../../../core/common/db-keys";
+import { Utilities } from "../../../../core/common/utilities";
+import { CastComponent } from "../../../../shared/cast/cast.component";
 import { DiceRollComponent } from "../../../../shared/dice/dice-roll/dice-roll.component";
 import { ImageViewerComponent } from "../../../../shared/image-interface/image-viewer/image-viewer.component";
-import { RulesetService } from "../../../../core/services/ruleset.service";
+import { CreateSpellsComponent } from "../../../../shared/create-spells/create-spells.component";
 
 @Component({
     selector: 'app-spell-details',
@@ -117,7 +116,7 @@ export class CharacterSpellDetailsComponent implements OnInit {
     }
 
     duplicateSpell(spell: Spell) {
-        // this.alertService.startLoadingMessage("", "Checking records");
+        // this.alertService.startLoadingMessage("", "Checking records");   
         this.spellsService.getspellsCount(this.ruleSetId)
             .subscribe(data => {
                 //this.alertService.stopLoadingMessage();
@@ -138,8 +137,8 @@ export class CharacterSpellDetailsComponent implements OnInit {
                     //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
                     this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
                 }
-            }, error => { }, () => { });
-
+            }, error => { }, () => { });  
+       
 
     }
 

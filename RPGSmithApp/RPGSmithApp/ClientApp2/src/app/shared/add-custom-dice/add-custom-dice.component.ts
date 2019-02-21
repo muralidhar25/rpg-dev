@@ -1,12 +1,12 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { Ruleset } from '../../core/models/view-models/ruleset.model';
-import { SelectCustomDiceIconComponent } from '../select-custom-dice-icon/select-custom-dice-icon.component';
-import { CustomDiceComponent } from '../custom-dice/custom-dice.component';
 import { CustomDice } from '../../core/models/view-models/custome-dice.model';
-import { SharedService } from '../../core/services/shared.service';
 import { DICE_ICON, VIEW } from '../../core/models/enums';
-import { MessageSeverity, AlertService } from '../../core/common/alert.service';
+import { Ruleset } from '../../core/models/view-models/ruleset.model';
+import { SharedService } from '../../core/services/shared.service';
+import { AlertService, MessageSeverity } from '../../core/common/alert.service';
+import { CustomDiceComponent } from '../custom-dice/custom-dice.component';
+import { SelectCustomDiceIconComponent } from '../select-custom-dice-icon/select-custom-dice-icon.component';
 
 @Component({
     selector: 'app-add-custom-dice',
@@ -32,12 +32,12 @@ export class AddCustomDiceComponent implements OnInit {
 
     ngOnInit() {
         setTimeout(() => {
-
+            
             this.customDices.map((d, index) => {
                 if (d.name == this.customDice.name) {
                     this.customDiceIndex = index
                 }
-            })
+            })            
             this.customDice = Object.assign({}, this.bsModalRef.content.customDice);
             if (this.customDice.name == undefined) {
                 this.customDice.isNumeric = true;
@@ -62,7 +62,7 @@ export class AddCustomDiceComponent implements OnInit {
                     return Object.assign({}, r);
                 }));
             }
-
+            
 
             this.customDices = Object.assign([], this.bsModalRef.content.customDices);
             this.OldcustomDices = Object.assign([], this.bsModalRef.content.customDices);
@@ -107,7 +107,7 @@ export class AddCustomDiceComponent implements OnInit {
         //})
     }
     submitForm() {
-
+        
         let name = 'D' + this.customDice.name;
         let index = this.customDices.findIndex(x => x.name.toLowerCase() == name.toLowerCase());
         if (
@@ -149,7 +149,7 @@ export class AddCustomDiceComponent implements OnInit {
             this.bsModalRef.content.ruleset = this.ruleset;
         }
         //this.event.emit(this.customDice);
-
+        
     }
 
     openSelectDiceIcon(ruleset: Ruleset, customDice: CustomDice) {
@@ -172,7 +172,7 @@ export class AddCustomDiceComponent implements OnInit {
 
 
     close(ruleset: Ruleset) {
-
+        
         this.OldcustomDices.map((rec) => {
 
         })
@@ -210,12 +210,12 @@ export class AddCustomDiceComponent implements OnInit {
         } catch (err) { }
     }
 
-    checkNameIsValid(e) {
+    checkNameIsValid(e) {        
         let regexp = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/;
         if (e.target.value) {
             if (regexp.test(e.target.value)) {
                 this.alertService.showMessage("", "No Special Characters allowed in the Name, Only letters and numbers.", MessageSeverity.error);
-            }
+            }            
         }
         if (e.target.value.toUpperCase().startsWith('F')) {
             this.customDice.name = '';

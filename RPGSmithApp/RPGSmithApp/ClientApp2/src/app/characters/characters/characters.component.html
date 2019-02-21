@@ -21,7 +21,7 @@
     <div class="cards">
         <div class="container">
             <div class="row">
-                <div class="col-12" *ngIf="totalRuleSets<=0">
+                <div class="col-12" *ngIf="totalRuleSets<=0 && false"> <!--this is removed-->
                     <p class="alert alert-important d-block w-100">At least 1 Rule Set is needed before a character can be created. Please Add, Create, or Import a Rule Set.</p>
                 </div>
                 <div class="col-sm-12 col-md-4 col-lg-3" *ngFor="let character of characters">

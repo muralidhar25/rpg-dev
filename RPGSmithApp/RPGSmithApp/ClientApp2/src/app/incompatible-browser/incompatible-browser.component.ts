@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationExtras } from "@angular/router";
-import { DBkeys } from '../core/common/db-keys';
 import { LocalStoreManager } from '../core/common/local-store-manager.service';
-import { AuthService } from "../core/auth/auth.service";
+import { DBkeys } from '../core/common/db-keys';
+import { AuthService } from '../core/auth/auth.service';
 
 @Component({
   selector: 'app-incompatible-browser',
@@ -22,7 +22,7 @@ export class IncompatibleBrowserComponent implements OnInit {
     }
 
     proceed() {
-
+        
         this.localStorage.deleteData(DBkeys.NOT_CHROME);
         this.localStorage.saveSyncedSessionData(true, DBkeys.NOT_CHROME);
         this.authService.logout();

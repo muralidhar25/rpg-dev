@@ -1,22 +1,19 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Router, } from "@angular/router";
-
-import { AlertService, MessageSeverity, DialogType } from './../../../core/common/alert.service';
-import { ConfigurationService } from '../../../core/common/configuration.service';
+import { Router } from "@angular/router";
 import { BsModalService, BsModalRef, ModalDirective } from 'ngx-bootstrap';
-import { Utilities } from './../../../core/common/utilities';
-import { User } from '../../../core/models/user.model';
-import { DBkeys } from '../../../core/common/db-keys';
-import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
-
-import { RulesetDashboardLayoutService } from "../../../core/services/ruleset-dashboard-layout.service";
 import { RulesetDashboardLayout } from '../../../core/models/view-models/ruleset-dashboard-layout.model';
-
-import { SharedService } from "../../../core/services/shared.service";
-import { CommonService } from "../../../core/services/shared/common.service";
-import { AuthService } from "../../../core/auth/auth.service";
-import { VIEW } from '../../../core/models/enums';
+import { DEVICE, VIEW } from '../../../core/models/enums';
+import { SharedService } from '../../../core/services/shared.service';
+import { CommonService } from '../../../core/services/shared/common.service';
+import { ConfigurationService } from '../../../core/common/configuration.service';
+import { RulesetDashboardLayoutService } from '../../../core/services/ruleset-dashboard-layout.service';
+import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
+import { AlertService, MessageSeverity, DialogType } from '../../../core/common/alert.service';
+import { AuthService } from '../../../core/auth/auth.service';
+import { DBkeys } from '../../../core/common/db-keys';
+import { User } from '../../../core/models/user.model';
+import { Utilities } from '../../../core/common/utilities';
 
 @Component({
     selector: 'app-ruleset-layout',
@@ -34,9 +31,11 @@ export class RulesetLayoutComponent implements OnInit {
     disabled: boolean = false;
     screenHeight: number;
     screenWidth: number;
-    title: any;
-    button: any;
 
+    DeviceType = DEVICE
+    View = VIEW
+  title: string = ''
+  button: string = ''
     @HostListener('window:resize', ['$event'])
     onResize(event?) {
         this.screenHeight = window.innerHeight;
@@ -210,6 +209,42 @@ export class RulesetLayoutComponent implements OnInit {
         this.bsModalRef.hide();
         this.router.navigate(['/rulesets']);
     }
-
-
+    SelectDefaultLayout(event, element, layout, deviceName) {
+        if (event.target.checked) {
+            
+            let message = 'Would you like to make this ' + layout.name + ' Layout the default layout for ' + deviceName + ' Devices?';
+            this.alertService.showDialog(message,
+                DialogType.confirm, () => this.updateLayoutDefaultDevice(layout, deviceName), () => this.DeselectSelectedDevice(event, layout, deviceName), 'Yes', 'No');
+        }
+    }
+    updateLayoutDefaultDevice(layout, device) {
+        switch (device) {
+            case DEVICE.COMPUTER:
+                layout.isDefaultComputer = true;
+                break;
+            case DEVICE.TABLET:
+                layout.isDefaultTablet = true;
+                break;
+            case DEVICE.MOBILE:
+                layout.isDefaultMobile = true;
+                break;
+            default:
+        }
+    }
+    DeselectSelectedDevice(event, layout, device) {
+        event.target.checked = false;
+        event.target.disabled = false;
+        switch (device) {
+            case DEVICE.COMPUTER:
+                layout.isDefaultComputer = false;
+                break;
+            case DEVICE.TABLET:
+                layout.isDefaultTablet = false;
+                break;
+            case DEVICE.MOBILE:
+                layout.isDefaultMobile = false;
+                break;
+            default:
+        }
+    }
 }

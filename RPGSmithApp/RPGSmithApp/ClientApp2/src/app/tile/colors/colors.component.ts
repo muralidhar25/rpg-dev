@@ -2,9 +2,9 @@ import { Component, OnInit, EventEmitter } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { Color } from '../../core/models/tiles/color.model';
 import { ColorService } from '../../core/services/tiles/color.service';
+import { LocalStoreManager } from '../../core/common/local-store-manager.service';
 import { User } from '../../core/models/user.model';
 import { DBkeys } from '../../core/common/db-keys';
-import { LocalStoreManager } from '../../core/common/local-store-manager.service';
 @Component({
     selector: 'app-colors',
     templateUrl: './colors.component.html',
@@ -13,7 +13,7 @@ import { LocalStoreManager } from '../../core/common/local-store-manager.service
 export class ColorsComponent implements OnInit {
     colorList: Color[] = [];
     colorModel: Color = new Color();
-    view: any;
+    view: any; 
     showDemo: boolean = false;
     tile: number;
     isLoading: boolean = false;
@@ -43,9 +43,9 @@ export class ColorsComponent implements OnInit {
     private setColorOnInit() {
         //let colorExist = false;
         this.isLoading = true;
-        this.colorList = this.colorService.setDefaultRPGColors(this.view);
-
-        setTimeout(() => {
+        this.colorList = this.colorService.setDefaultRPGColors(this.view);        
+        
+        setTimeout(() => {           
             this.colorService.AllReadyHaveColor(this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER).id).subscribe(
                 data => {
                     let clrList: Color[] = this.colorList.map((clr, index) => {
@@ -68,12 +68,12 @@ export class ColorsComponent implements OnInit {
                         }
                     })
                     this.colorList = clrList;
-                    this.isLoading = false;
+                    this.isLoading = false; 
                 },
                 error => {
-                    this.isLoading = false;
+                    this.isLoading = false; 
                 });
-
+            
         }, 600);
     }
 

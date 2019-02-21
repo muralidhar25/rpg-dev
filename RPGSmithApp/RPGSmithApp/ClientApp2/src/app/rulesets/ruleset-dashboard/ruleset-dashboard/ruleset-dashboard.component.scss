@@ -38,7 +38,7 @@
     font-size: 1.5rem;
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 767.5px) {
     .page-character-dashboard .page-toolbar .popup-new-tile-trigger {
         right: 4rem;
         bottom: 4rem;
@@ -61,7 +61,7 @@
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 767.5px) {
     .col-md-4 {
         max-width: inherit !important;
     }
@@ -168,7 +168,7 @@
     }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 767.5px) {
     .colwidth {
         flex-basis: 0% !important
     }
@@ -289,7 +289,7 @@ body {
 
 
 
-@media(min-width: 768px) {
+@media(min-width: 767.5px) {
 
     div.web-view {
         visibility: visible;
@@ -493,7 +493,7 @@ body {
     }
 }
 
-@media(min-width: 768px) {
+@media(min-width: 767.5px) {
 
     div.web-view {
         visibility: visible;
@@ -502,20 +502,10 @@ body {
     div.mob-view {
         display: none;
     }
-}
-@media (max-width:420px) {
-    .tile .tile-title.wraptext {
-        font-size: 10px !important;
-        line-height: 15px !important;
-        height: 20px !important;
-        padding: 2px !important;
-    }
+    
+} 
 
-    .tile .tile-body span.text-center-v {
-        font-size: 14px !important;
-    }
-}
-.grid-item.delete-tile-action:after {
+/*.grid-item.delete-tile-action:after {
     content: '';
     position: absolute;
     width: 100%;
@@ -525,7 +515,7 @@ body {
     top: 0px;
     border-radius: 8px;
     z-index: 8;
-}
+}*/
 
 .delete-tile-action .tiles.manage .tile-actions {
     display: block
@@ -546,3 +536,156 @@ body {
     /* transform: translate(-50%,-50%);*/
 }
 
+/********new action button css 06-02-2019**********/
+@media (max-width:767.5px) {
+    @keyframes resize {
+        0% {
+            right: 200%;
+            transform: rotate(360deg)
+        }
+
+        100% {
+            right: 0%;
+        }
+    }
+
+    .add-del-btn ul.page-toolbar-actions {
+        position: fixed;
+        bottom: 2rem;
+        left: 2rem;
+        right: 2rem;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: unset;
+        z-index: 9999;
+    }
+
+    .add-del-btn .page-toolbar-actions > li {
+        margin-top: 0px;
+        flex-grow: unset;
+        overflow: hidden;
+    }
+
+    .add-del-btn ul.page-toolbar-actions li .btn {
+        border-radius: 100%;
+        width: 44px;
+        height: 44px;
+        flex-grow: unset;
+        padding: 0px;
+        right: 0%;
+        position: relative;
+        animation: resize .4s linear;
+    }
+
+    .btn-text-big {
+        font-size: 30px;
+    }
+
+    .add-del-btn ul.page-toolbar-actions li .btn.icon:before {
+        font-size: 1.2rem
+    }
+
+    .add-del-btn ul.page-toolbar-actions li .btn.icon-Gen-Relocate:before {
+        font-size: 2rem !important
+    }
+
+    .delete-tile-action .tile-actions .delete-tile-btn {
+        top: -4px !important;
+        left: -4px;
+        bottom: 0px;
+        text-align: right;
+        height: 100%;
+        display: flex;
+        background: none;
+        width: 100%;
+    }
+
+    .delete-tile-action .tile-actions .delete-tile-btn:hover {
+        background: none !important
+    }
+
+    .delete-tile-action .tile-actions .delete-tile-btn:before {
+        position: absolute;
+        top: 5px;
+        right: 7px;
+        opacity: 1;
+        z-index: 1;
+    }
+
+    .delete-tile-action .tile-actions .delete-tile-btn:after {
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        content: '';
+        background: rgba(0, 0, 0, 0.8);
+        width: 24px;
+        height: 24px;
+    }
+    .page-character-dashboard .page-toolbar-dropdowns .dropdown-toggle {
+        padding: 8px .6rem !important;
+    }
+
+    .page-character-dashboard .page-toolbar-dropdowns .dropdown-toggle span {
+        white-space: nowrap;
+        overflow: hidden;
+        width: 100%;
+        /*display: flex;
+        align-items: center;
+        text-overflow:ellipsis*/
+    }
+
+    .page-character-dashboard .page-toolbar-dropdowns .dropdown-toggle span span {
+        white-space: nowrap;
+        overflow: hidden;
+        width: 9px;
+        float: left;
+        margin-right: 5px;
+    }
+
+    .page-character-dashboard .page-toolbar-dropdowns .dropdown-toggle span em {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: calc(100% - 14px);
+        float: left;
+    }
+    .page-character-dashboard .page-toolbar-dropdowns .dropdown {
+        width: 50%;
+        padding: 0px 4px;
+    }
+}
+/*.grid-item:hover {
+    z-index: 9999 !important
+}
+.modal {
+    z-index: 99999 !important
+}*/
+@media (max-width:420px) {
+    .tile .tile-title.wraptext {
+        font-size: 10px !important;
+        line-height: 15px !important;
+        height: 20px !important;
+        padding: 2px !important;
+    }
+
+    .tile .tile-body span.text-center-v {
+        font-size: 14px !important;
+    }
+
+    .page-character-dashboard .page-toolbar-dropdowns .dropdown-toggle {
+        padding: 8px .2rem !important;
+    }
+
+    .page-character-dashboard .page-toolbar-dropdowns .dropdown-toggle span {
+        white-space: nowrap;
+        overflow: hidden;
+        width: 100%;
+    }
+}
+.grid-item {
+    z-index: 9 !important
+}
+
+.grid-item:hover {
+    z-index: 10 !important
+}

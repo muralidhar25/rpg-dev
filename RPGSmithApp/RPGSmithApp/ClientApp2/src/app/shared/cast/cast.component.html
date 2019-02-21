@@ -4,7 +4,7 @@
         <span>{{title}}</span>
         <div class="manage-ruleset-header">
             <span>
-                <img [src]="Command.itemImage" *ngIf="Command.itemImage"
+                <img [src]="Command?.itemImage" *ngIf="Command?.itemImage"
                      onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Shield.jpg';" [alt]="Command.name">
                 <img [src]="Command.imageUrl" *ngIf="Command.imageUrl"
                      onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-spells/Fire.jpg';" [alt]="Command.name">

@@ -1,22 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { RulesetCharacterStatTileComponent } from '../character-stat.component';
-import { CharacterStatTile, currentMax, valSubVal, choice } from '../../../core/models/tiles/character-stat-tile.model';
-import { CharacterStats } from '../../../core/models/view-models/character-stats.model';
-import { CharactersCharacterStat } from '../../../core/models/view-models/characters-character-stats.model';
-import { Event } from '@angular/router';
-import { DiceRollComponent } from '../../../shared/dice/dice-roll/dice-roll.component';
+import { STAT_TYPE, VIEW } from '../../../core/models/enums';
 import { Ruleset } from '../../../core/models/view-models/ruleset.model';
 import { Characters } from '../../../core/models/view-models/characters.model';
-import { CharactersCharacterStatService } from '../../../core/services/characters-character-stat.service';
-import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
-import { AuthService } from '../../../core/auth/auth.service';
-import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
-import { Utilities } from '../../../core/common/utilities';
-import { SharedService } from '../../../core/services/shared.service';
-import { VIEW, STAT_TYPE } from '../../../core/models/enums';
+import { CharacterStatTile, currentMax, choice, valSubVal } from '../../../core/models/tiles/character-stat-tile.model';
+import { CharactersCharacterStat } from '../../../core/models/view-models/characters-character-stats.model';
 import { RulesetDashboardPage } from '../../../core/models/view-models/ruleset-dashboard-page.model';
+import { Utilities } from '../../../core/common/utilities';
+import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
+import { SharedService } from '../../../core/services/shared.service';
+import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
+import { AuthService } from '../../../core/auth/auth.service';
+import { CharactersCharacterStatService } from '../../../core/services/characters-character-stat.service';
 import { DBkeys } from '../../../core/common/db-keys';
+import { CharacterStats } from '../../../core/models/view-models/character-stats.model';
+import { DiceRollComponent } from '../../../shared/dice/dice-roll/dice-roll.component';
+import { RulesetCharacterStatTileComponent } from '../character-stat.component';
 
 @Component({
     selector: 'app-edit-character-stat',

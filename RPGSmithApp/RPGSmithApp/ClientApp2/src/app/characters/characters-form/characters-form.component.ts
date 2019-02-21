@@ -1,24 +1,24 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from "@angular/router";
-import { AlertService, MessageSeverity, DialogType } from '../../core/common/alert.service';
-import { ConfigurationService } from '../../core/common/configuration.service';
-import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { Utilities } from '../../core/common/utilities';
+import { Ruleset } from '../../core/models/view-models/ruleset.model';
+import { AlertService, MessageSeverity } from '../../core/common/alert.service';
+import { AuthService } from '../../core/auth/auth.service';
+import { ConfigurationService } from '../../core/common/configuration.service';
+import { CharactersService } from '../../core/services/characters.service';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { LocalStoreManager } from '../../core/common/local-store-manager.service';
+import { FileUploadService } from '../../core/common/file-upload.service';
+import { CommonService } from '../../core/services/shared/common.service';
+import { ImageSearchService } from '../../core/services/shared/image-search.service';
+import { RulesetService } from '../../core/services/ruleset.service';
+import { SharedService } from '../../core/services/shared.service';
 import { User } from '../../core/models/user.model';
 import { DBkeys } from '../../core/common/db-keys';
-import { LocalStoreManager } from '../../core/common/local-store-manager.service';
-import { CharactersService } from "../../core/services/characters.service";
-import { Characters } from '../../core/models/view-models/characters.model';
-import { VIEW, TILES } from '../../core/models/enums';
-import { FileUploadService } from "../../core/common/file-upload.service";
-import { RulesetService } from "../../core/services/ruleset.service";
-import { SharedService } from "../../core/services/shared.service";
-import { CommonService } from "../../core/services/shared/common.service";
-import { AuthService } from "../../core/auth/auth.service";
-import { BingSearchComponent } from '../../shared/image-interface/bing-search/bing-search.component';
+import { VIEW } from '../../core/models/enums';
 import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
-import { ImageSearchService } from "../../core/services/shared/image-search.service";
+import { Characters } from '../../core/models/view-models/characters.model';
 
 @Component({
     selector: 'app-characters-form',
@@ -49,6 +49,10 @@ export class CharactersFormComponent implements OnInit {
 
     layoutHeight: number;
     layoutWidth: number;
+
+    UserRulesetsList: Ruleset[]= [];
+    searchText:string=''
+
     @HostListener('window:resize', ['$event'])
     onResize(event?) {
         this.layoutHeight = window.innerHeight;
@@ -72,7 +76,9 @@ export class CharactersFormComponent implements OnInit {
             let modalContentButton = this.button = this.bsModalRef.content.button;
             let _charactersModel = this.bsModalRef.content.charactersModel;
             _charactersModel.ruleSets = this.bsModalRef.content.ruleSet;
+            this.charactersFormModal.ruleSets = [];
             this.charactersFormModal = this.charactersService.characterModelData(_charactersModel, modalContentButton);
+            this.UserRulesetsList = Object.assign([], this.charactersFormModal.ruleSets);
             this.bingImageUrl = this.charactersFormModal.imageUrl;
             if (this.charactersFormModal.view == VIEW.ADD) {
                 this.initialize();
@@ -94,7 +100,10 @@ export class CharactersFormComponent implements OnInit {
             //         this.charactersFormModal.hasRuleset = data == undefined ? false : data.length == 0 ? false : true;
             //         this.isLoading = false;
             //     }, error => { }, () => { });
-            this.rulesetService.getAllRuleSetByUserId(user.id, this.page, this.pageSize)
+
+
+            //this.rulesetService.getAllRuleSetByUserId(user.id, this.page, this.pageSize)
+            this.rulesetService.getRuleSetToCreateCharacterByUserId(user.id, this.page, this.pageSize) 
                 .subscribe(data => {
                     this.charactersFormModal.ruleSets = data;
                     this.charactersFormModal.hasRuleset = data == undefined ? false : data.length == 0 ? false : true;
@@ -232,7 +241,7 @@ export class CharactersFormComponent implements OnInit {
                 //if (!this.charactersFormModal.imageUrl) {
                 this.imageSearchService.getDefaultImage<any>('char')
                     .subscribe(data => {
-                        let model = Object.assign({}, this.charactersFormModal)
+                        let model = Object.assign({}, this.charactersFormModal)                        
                         model.imageUrl = data.imageUrl.result
                         this.addEditCharacters(model);
                     }, error => {
@@ -346,7 +355,10 @@ export class CharactersFormComponent implements OnInit {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)
             this.authService.logout();
-        this.rulesetService.getAllRuleSetByUserId(user.id, this.page, this.pageSize)
+
+
+        //this.rulesetService.getAllRuleSetByUserId(user.id, this.page, this.pageSize)
+        this.rulesetService.getRuleSetToCreateCharacterByUserId(user.id, this.page, this.pageSize) 
             .subscribe(data => {
                 let results = data;
                 if (results) {

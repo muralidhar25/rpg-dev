@@ -191,6 +191,27 @@ namespace DAL.Services
             return CharactersCharacterStat;
         }
 
+        public async Task<CharactersCharacterStat> UpdateCommandImage(int id, string image)
+        {
+            var CharactersCharacterStat = await _repo.Get(id);
+
+            if (CharactersCharacterStat == null)
+                return CharactersCharacterStat;
+
+            CharactersCharacterStat.Text = image; //saving image in text field for command only
+
+            try
+            {
+                await _repo.Update(CharactersCharacterStat);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return CharactersCharacterStat;
+        }
+
         public void Update(List<CharactersCharacterStat> characterStats)
         {
 
@@ -355,7 +376,8 @@ namespace DAL.Services
                     id = item.ItemId,
                     image = item.ItemImage,
                     name = item.Name,
-                    type = "item"
+                    type = "item",
+                    isItemEquiped = item.IsEquipped
                 });
             }
             foreach (var spell in spellsList)
@@ -365,7 +387,8 @@ namespace DAL.Services
                     id = spell.CharacterSpellId,
                     image = spell.Spell.ImageUrl,
                     name = spell.Spell.Name,
-                    type = "spell"
+                    type = "spell",
+                    isSpellMemorized=spell.IsMemorized
                 });
             }
             foreach (var ability in abilitiesList)
@@ -375,7 +398,8 @@ namespace DAL.Services
                     id = ability.CharacterAbilityId,
                     image = ability.Ability.ImageUrl,
                     name = ability.Ability.Name,
-                    type = "ability"
+                    type = "ability",
+                    isAbilityEnabled=ability.IsEnabled
                 });
             }
 
@@ -402,6 +426,253 @@ namespace DAL.Services
             }
             else
                 return obj;
+        }
+        public List<CharactersCharacterStat> GetByCharacterId_sp(int characterId, int page = 1, int pageSize = 10)
+        {
+            List<CharactersCharacterStat> CharactersCharacterStatsList = new List<CharactersCharacterStat>();
+
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            //string qry = "EXEC Character_GetTilesByPageID @CharacterID = '" + characterId + "' ,@PageID='" + pageId + "'";
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("CharCharStatReferenced_GetByCharacterID", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@CharacterID", characterId);
+                command.Parameters.AddWithValue("@page", page);
+                command.Parameters.AddWithValue("@size", pageSize);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            if (ds.Tables[1].Rows.Count > 0)
+            {
+                foreach (DataRow CharCharStat_Row in ds.Tables[1].Rows)
+                {
+                    CharactersCharacterStat CharCharStat = null;
+                    int? nullInt = null;
+                    int CharactersCharacterStatId = CharCharStat_Row["CharactersCharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["CharactersCharacterStatId"]);
+
+                    CharCharStat = new CharactersCharacterStat()
+                    {
+                        CharactersCharacterStatId = CharactersCharacterStatId,
+                        CharacterStatId = CharCharStat_Row["CharacterStatId"] == DBNull.Value ? nullInt : Convert.ToInt32(CharCharStat_Row["CharacterStatId"]),
+                        CharacterId = CharCharStat_Row["CharacterId"] == DBNull.Value ? nullInt : Convert.ToInt32(CharCharStat_Row["CharacterId"]),
+                        Text = CharCharStat_Row["Text"] == DBNull.Value ? null : CharCharStat_Row["Text"].ToString(),
+                        RichText = CharCharStat_Row["RichText"] == DBNull.Value ? null : CharCharStat_Row["RichText"].ToString(),
+                        Choice = CharCharStat_Row["Choice"] == DBNull.Value ? null : CharCharStat_Row["Choice"].ToString(),
+                        MultiChoice = CharCharStat_Row["MultiChoice"] == DBNull.Value ? null : CharCharStat_Row["MultiChoice"].ToString(),
+                        Command = CharCharStat_Row["Command"] == DBNull.Value ? null : CharCharStat_Row["Command"].ToString(),
+                        YesNo = CharCharStat_Row["YesNo"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["YesNo"]),
+                        OnOff = CharCharStat_Row["OnOff"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["OnOff"]),
+                        Value = CharCharStat_Row["Value"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["Value"]),
+                        Number = CharCharStat_Row["Number"] == DBNull.Value ? (int?)null : Convert.ToInt32(CharCharStat_Row["Number"]),
+                        SubValue = CharCharStat_Row["SubValue"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["SubValue"]),
+                        Current = CharCharStat_Row["Current"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["Current"]),
+                        Maximum = CharCharStat_Row["Maximum"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["Maximum"]),
+                        CalculationResult = CharCharStat_Row["CalculationResult"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["CalculationResult"]),
+                        Minimum = CharCharStat_Row["Minimum"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["Minimum"]),
+                        DefaultValue = CharCharStat_Row["DefaultValue"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["DefaultValue"]),
+                        ComboText = CharCharStat_Row["ComboText"] == DBNull.Value ? null : CharCharStat_Row["ComboText"].ToString(),
+                        IsDeleted = CharCharStat_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsDeleted"]),
+                        Display = CharCharStat_Row["Display"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["Display"]),
+                        ShowCheckbox = CharCharStat_Row["ShowCheckbox"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["ShowCheckbox"]),
+                        IsCustom = CharCharStat_Row["IsCustom"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsCustom"]),
+                        //CustomToggleId = CharCharStat_Row["CustomToggleId"] == DBNull.Value ? nullInt : Convert.ToInt32(CharCharStat_Row["CustomToggleId"]),
+                        IsYes = CharCharStat_Row["IsYes"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsYes"]),
+                        IsOn = CharCharStat_Row["IsOn"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsOn"]),
+                        LinkType = CharCharStat_Row["LinkType"] == DBNull.Value ? null : CharCharStat_Row["LinkType"].ToString(),
+
+                    };
+
+                    CharacterStat CharStat = null;
+                    short num = 0;
+                    int characterstatID = CharCharStat_Row["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["CharacterStatId"]);
+                    if (characterstatID == CharCharStat.CharacterStatId)
+                    {
+                        CharStat = new CharacterStat()
+                        {
+                            CharacterStatId = characterstatID,
+                            RuleSetId = CharCharStat_Row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["RuleSetId"]),
+                            StatName = CharCharStat_Row["StatName"] == DBNull.Value ? null : CharCharStat_Row["StatName"].ToString(),
+                            StatDesc = CharCharStat_Row["StatDesc"] == DBNull.Value ? null : CharCharStat_Row["StatDesc"].ToString(),
+                            isActive = CharCharStat_Row["isActive"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["isActive"]),
+                            CharacterStatTypeId = CharCharStat_Row["CharacterStatTypeId"] == DBNull.Value ? num : (short)(CharCharStat_Row["CharacterStatTypeId"]),
+                            isMultiSelect = CharCharStat_Row["isMultiSelect"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["isMultiSelect"]),
+                            ParentCharacterStatId = CharCharStat_Row["ParentCharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["ParentCharacterStatId"]),
+                            SortOrder = CharCharStat_Row["SortOrder"] == DBNull.Value ? num : (short)(CharCharStat_Row["SortOrder"]),
+                            IsDeleted = CharCharStat_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsDeleted"]),
+                            CreatedBy = CharCharStat_Row["CreatedBy"] == DBNull.Value ? null : CharCharStat_Row["CreatedBy"].ToString(),
+                            CreatedDate = CharCharStat_Row["CreatedDate"] == DBNull.Value ? new DateTime() : Convert.ToDateTime(CharCharStat_Row["CreatedDate"]),
+                            OwnerId = CharCharStat_Row["OwnerId"] == DBNull.Value ? null : CharCharStat_Row["OwnerId"].ToString(),
+                        };
+
+                        List<CharacterStatDefaultValue> defVals = new List<CharacterStatDefaultValue>();
+                        if (ds.Tables[6].Rows.Count > 0)
+                        {
+                            foreach (DataRow r in ds.Tables[6].Rows)
+                            {
+                                int defValCharacterStat = r["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatId"]);
+                                if (characterstatID == defValCharacterStat)
+                                {
+                                    CharacterStatDefaultValue dv = new CharacterStatDefaultValue()
+                                    {
+                                        CharacterStatDefaultValueId = r["CharacterStatDefaultValueId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatDefaultValueId"]),
+                                        CharacterStatId = r["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatId"]),
+                                        DefaultValue = r["DefaultValue"] == DBNull.Value ? null : r["DefaultValue"].ToString(),
+                                        Maximum = r["Maximum"] == DBNull.Value ? nullInt : Convert.ToInt32(r["Maximum"]),
+                                        Minimum = r["Minimum"] == DBNull.Value ? nullInt : Convert.ToInt32(r["Minimum"]),
+                                        Type = r["Type"] == DBNull.Value ? 0 : Convert.ToInt32(r["Type"]),
+                                    };
+                                    defVals.Add(dv);
+                                }
+                            }
+                        }
+                        CharStat.CharacterStatDefaultValues = defVals;
+
+
+                        List<CharacterStatCondition> cnds = new List<CharacterStatCondition>();
+                        if (ds.Tables[5].Rows.Count > 0)
+                        {
+                            foreach (DataRow r in ds.Tables[5].Rows)
+                            {
+                                int CndCharacterStat = r["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatId"]);
+                                if (characterstatID == CndCharacterStat)
+                                {
+                                    CharacterStatCondition cnd = new CharacterStatCondition()
+                                    {
+                                        CharacterStatConditionId = r["CharacterStatConditionId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatConditionId"]),
+                                        CompareValue = r["CompareValue"] == DBNull.Value ? null : r["CompareValue"].ToString(),
+                                        IfClauseStatText = r["IfClauseStatText"] == DBNull.Value ? null : r["IfClauseStatText"].ToString(),
+                                        IsNumeric = r["IsNumeric"] == DBNull.Value ? false : Convert.ToBoolean(r["IsNumeric"]),
+                                        Result = r["Result"] == DBNull.Value ? null : r["Result"].ToString(),
+                                        SortOrder = r["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(r["SortOrder"]),
+                                        ConditionOperatorID = r["ConditionOperatorID"] == DBNull.Value ? nullInt : Convert.ToInt32(r["ConditionOperatorID"]),
+
+                                    };
+                                    if (cnd.ConditionOperatorID != null)
+                                    {
+                                        cnd.ConditionOperator = new ConditionOperator()
+                                        {
+                                            ConditionOperatorId = r["CO_ConditionOperatorId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CO_ConditionOperatorId"]),
+                                            IsNumeric = r["CO_IsNumeric"] == DBNull.Value ? false : Convert.ToBoolean(r["CO_IsNumeric"]),
+                                            Name = r["CO_Name"] == DBNull.Value ? null : r["CO_Name"].ToString(),
+                                            Symbol = r["CO_Symbol"] == DBNull.Value ? null : r["CO_Symbol"].ToString(),
+                                        };
+                                    }
+                                    cnds.Add(cnd);
+                                }
+                            }
+                        }
+                        CharStat.CharacterStatConditions = cnds;
+
+                        List<CharacterStatChoice> Choices = new List<CharacterStatChoice>();
+                        if (ds.Tables[4].Rows.Count > 0)
+                        {
+                            foreach (DataRow r in ds.Tables[4].Rows)
+                            {
+                                int choiceCharacterStat = r["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatId"]);
+                                if (characterstatID == choiceCharacterStat)
+                                {
+                                    CharacterStatChoice ch = new CharacterStatChoice();
+                                    ch.CharacterStatChoiceId = r["CharacterStatChoiceId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatChoiceId"]);
+                                    ch.StatChoiceValue = r["StatChoiceValue"] == DBNull.Value ? null : r["StatChoiceValue"].ToString();
+                                    ch.CharacterStatId = choiceCharacterStat;
+                                    ch.IsDeleted = r["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(r["IsDeleted"]);
+
+                                    Choices.Add(ch);
+                                }
+                            }
+                        }
+                        CharStat.CharacterStatChoices = Choices;
+
+
+                        List<CharacterStatCalc> calcs = new List<CharacterStatCalc>();
+                        if (ds.Tables[3].Rows.Count > 0)
+                        {
+                            foreach (DataRow r in ds.Tables[3].Rows)
+                            {
+                                int calcCharacterStat = r["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatId"]);
+                                if (characterstatID == calcCharacterStat)
+                                {
+                                    CharacterStatCalc cal = new CharacterStatCalc();
+                                    cal.CharacterStatCalcId = r["CharacterStatCalcId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatCalcId"]);
+                                    cal.StatCalculation = r["StatCalculation"] == DBNull.Value ? null : r["StatCalculation"].ToString();
+                                    cal.CharacterStatId = r["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatId"]);
+                                    cal.IsDeleted = r["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(r["IsDeleted"]);
+                                    cal.StatCalculationIds = r["StatCalculationIds"] == DBNull.Value ? null : r["StatCalculationIds"].ToString();
+                                    calcs.Add(cal);
+                                }
+                            }
+                        }
+                        CharStat.CharacterStatCalcs = calcs;
+
+                        CharacterStatType statType = new CharacterStatType();
+                        if (ds.Tables[2].Rows.Count > 0)
+                        {
+                            foreach (DataRow r in ds.Tables[2].Rows)
+                            {
+                                short CharacterStatTypeID = r["CharacterStatTypeId"] == DBNull.Value ? num : (short)(r["CharacterStatTypeId"]);
+                                if (CharacterStatTypeID == CharStat.CharacterStatTypeId)
+                                {
+                                    statType = new CharacterStatType();
+                                    statType.CharacterStatTypeId = CharacterStatTypeID;
+                                    statType.StatTypeName = r["StatTypeName"] == DBNull.Value ? null : r["StatTypeName"].ToString();
+                                    statType.StatTypeDesc = r["StatTypeDesc"] == DBNull.Value ? null : r["StatTypeDesc"].ToString();
+                                    statType.isNumeric = r["isNumeric"] == DBNull.Value ? false : Convert.ToBoolean(r["isNumeric"]);
+                                    statType.TypeId = r["TypeId"] == DBNull.Value ? num : (short)(r["TypeId"]);
+                                }
+                            }
+                        }
+                        CharStat.CharacterStatType = statType;
+                    }
+                    CharCharStat.CharacterStat = CharStat;
+
+                    CharCharStat.Character = new Character();
+
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow r in ds.Tables[0].Rows)
+                        {
+                            int CharacterId = r["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterId"]);
+                            if (CharacterId == CharCharStat.CharacterId)
+                            {
+                                CharCharStat.Character = new Character()
+                                {
+                                    CharacterId = CharacterId,
+                                    CharacterName = r["CharacterName"] == DBNull.Value ? null : r["CharacterName"].ToString(),
+                                    ImageUrl = r["ImageUrl"] == DBNull.Value ? null : r["ImageUrl"].ToString(),
+                                    InventoryWeight = r["InventoryWeight"] == DBNull.Value ? 0 : Convert.ToDecimal(r["InventoryWeight"]),
+                                    ParentCharacterId = r["ParentCharacterId"] == DBNull.Value ? nullInt : Convert.ToInt32(r["ParentCharacterId"]),
+                                    RuleSetId = r["RuleSetId"] == DBNull.Value ? nullInt : Convert.ToInt32(r["RuleSetId"]),
+                                    UserId = r["UserId"] == DBNull.Value ? null : r["UserId"].ToString()
+                                };
+                            }
+                        }
+                    }
+                    CharactersCharacterStatsList.Add(CharCharStat);
+                }
+            }
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            return CharactersCharacterStatsList;
         }
     }
 }

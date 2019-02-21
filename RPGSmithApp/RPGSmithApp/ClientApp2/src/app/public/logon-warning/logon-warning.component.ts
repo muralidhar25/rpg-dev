@@ -32,5 +32,5 @@ export class LogonWarningComponent implements OnInit {
     openGoogle(){
         window.open("https://plus.google.com/u/2/communities/101062066525142446219", "_blank");
     }
-
+    
 }

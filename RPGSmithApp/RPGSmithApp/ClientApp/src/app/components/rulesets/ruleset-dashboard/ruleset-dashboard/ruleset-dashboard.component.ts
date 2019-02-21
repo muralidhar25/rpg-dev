@@ -1640,7 +1640,7 @@ export class RulesetDashboardComponent implements OnInit {
             this.router.navigate(['/ruleset/ability/', this.ruleSetId]);
         }
         else if (redirectto == 5) {
-            this.router.navigate(['/character-stats/', this.ruleSetId]);
+            this.router.navigate(['/ruleset/character-stats/', this.ruleSetId]);
         }
         else if (redirectto == 6) {
             this.onLayoutSelect(params);

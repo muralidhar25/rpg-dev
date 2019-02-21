@@ -25,5 +25,6 @@ namespace DAL.Services
         (List<Character>, List<RuleSet>) SP_Character_GetByUserId(string userId, int page, int pageSize);
         Character GetCharacterByIdDice(int Id);
         void Create_SP(Character characterDomain, int layoutHeight, int layoutWidth);
+        bool IsNewRulesetToAdd(int ruleSetId, string userId);
     }
 }

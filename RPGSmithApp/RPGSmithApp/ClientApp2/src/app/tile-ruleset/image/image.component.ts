@@ -1,24 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { ColorsComponent } from '../../tile/colors/colors.component';
-import { ImageTileService } from '../../core/services/tiles/image-tile.service';
-import { ImageTile } from '../../core/models/tiles/image-tile.model';
-import { AuthService } from '../../core/auth/auth.service';
-import { Utilities } from '../../core/common/utilities';
-import { SharedService } from "../../core/services/shared.service";
 import { RulesetTile } from '../../core/models/tiles/ruleset-tile.model';
+import { ImageTile } from '../../core/models/tiles/image-tile.model';
 import { Color } from '../../core/models/tiles/color.model';
-import { ColorService } from '../../core/services/tiles/color.service';
 import { RulesetDashboardPage } from '../../core/models/view-models/ruleset-dashboard-page.model';
-import { VIEW, TILES, ImageError, SHAPE, SHAPE_CLASS } from '../../core/models/enums';
-import { FileUploadService } from "../../core/common/file-upload.service";
-import { BingSearchComponent } from '../../shared/image-interface/bing-search/bing-search.component';
-import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
-import { AlertService, MessageSeverity, DialogType } from '../../core/common/alert.service';
-import { DBkeys } from '../../core/common/db-keys';
-import { User } from '../../core/models/user.model';
+import { ImageError, SHAPE_CLASS, SHAPE, VIEW } from '../../core/models/enums';
+import { FileUploadService } from '../../core/common/file-upload.service';
+import { ImageTileService } from '../../core/services/tiles/image-tile.service';
+import { AlertService, MessageSeverity } from '../../core/common/alert.service';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
 import { RulesetTileService } from '../../core/services/ruleset-tile.service';
+import { SharedService } from '../../core/services/shared.service';
+import { AuthService } from '../../core/auth/auth.service';
+import { ColorService } from '../../core/services/tiles/color.service';
+import { User } from '../../core/models/user.model';
+import { DBkeys } from '../../core/common/db-keys';
+import { Utilities } from '../../core/common/utilities';
+import { ColorsComponent } from '../../tile/colors/colors.component';
+import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
 
 @Component({
     selector: 'app-image',
@@ -37,7 +36,7 @@ export class RulesetImageTileComponent implements OnInit {
     imageTileFormModal = new ImageTile();
 
     color: any;
-    selectedColor: string;
+    selectedColor: string;    
     colorList: Color[] = [];
     tileColor: any;
     pageId: number;
@@ -80,7 +79,7 @@ export class RulesetImageTileComponent implements OnInit {
             this.rulesetTileModel = this.imageTileService.imageTileRulesetModelData(model, this.rulesetId, this.pageId, view, this.pageDefaultData);
             this.imageTileFormModal = Object.assign({}, this.rulesetTileModel.imageTile);
             this.imageTileFormModal.color = this.rulesetTileModel.color;
-            this.imageTileFormModal.shape = this.rulesetTileModel.shape;
+            this.imageTileFormModal.shape = this.rulesetTileModel.shape;            
             this.imageUrl = this.imageTileFormModal.imageUrl;
 
             this.bingImageUrl = this.imageTileFormModal.imageUrl;
@@ -373,7 +372,7 @@ export class RulesetImageTileComponent implements OnInit {
                     });
         }
     }
-
+ 
     private fileUpload() {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)

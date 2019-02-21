@@ -1055,7 +1055,7 @@ export class DiceRollComponent implements OnInit {
                     //let StartHidingDice = false;
                     
                     if (!lastResultArray) {
-                        debugger
+                        
                             diceRoll.randomNumbersList.map((randomNumberObj, index) => {
                                 if (((index) + 1 > diceRoll.randomCount) && diceRoll.isExploded){
                                     randomNumberObj.hideExplode = true;

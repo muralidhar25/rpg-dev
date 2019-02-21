@@ -1,66 +1,77 @@
-.dropdown-menu-item-count{
-    float: right;
+.dropdown-menu-item-count {
+  float: right;
 }
 
 .fade-in {
-    opacity: 1;
-    animation-name: fadeInOpacity;
-    animation-iteration-count: 1;
-    animation-timing-function: ease-in;
-    animation-duration: 2s;
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 2s;
 }
 
 @keyframes fadeInOpacity {
-    0% {
-        opacity: 0;
-    }
+  0% {
+    opacity: 0;
+  }
 
-    100% {
-        opacity: 1;
-    }
+  100% {
+    opacity: 1;
+  }
 }
 
 .site-header-logo img,
 .site-header-user-avatar img,
 .user-login-details span {
-    cursor: pointer !important;
+  cursor: pointer !important;
 }
 
 .user-login-details span:first-child {
-    float: left;
+  float: left;
 }
 
 .user-login-details span:last-child {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    float: left;
-    width: calc(100% - 50px);
-    display: inline-block;
-    margin-top: 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  float: left;
+  width: calc(100% - 50px);
+  display: inline-block;
+  margin-top: 9px;
 }
 
 .user-login-details {
-    margin-left: 25px;
-    display: inline-block;
-    background: #dadada;
-    padding-right: 5px;
-    max-width: 122px;
-    margin-right:5px;
+  margin-left: 25px;
+  display: inline-block;
+  background: #dadada;
+  padding-right: 5px;
+  max-width: 122px;
+  margin-right: 5px;
 }
 
 @media (max-width:991px) {
-    .site-header-user-name {
-        display: none !important;
-    }
-    }
+  .site-header-user-name {
+    display: none !important;
+  }
+}
 
-@media (min-width:1024px){
-    .user-login-details{
-        max-width:100% !important;
-    }
-    .user-login-details span:last-child{
-        text-overflow:initial !important;
-        width:auto
-    }
+@media (min-width:1024px) {
+  .user-login-details {
+    max-width: 100% !important;
+  }
+
+  .user-login-details span:last-child {
+    text-overflow: initial !important;
+    width: auto
+  }
+}
+
+.body-manila {
+  background: #f8f1d2;
+  min-height: 100vh;
+}
+
+.active-profile {
+  border: 2px solid #afafaf !important;
+  padding: 4px;
 }

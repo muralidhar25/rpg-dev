@@ -1,23 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { ColorsComponent } from './../colors/colors.component';
-import { ImageTileService } from '../../core/services/tiles/image-tile.service';
-import { ImageTile } from '../../core/models/tiles/image-tile.model';
-import { AuthService } from '../../core/auth/auth.service';
-import { Utilities } from '../../core/common/utilities';
-import { SharedService } from "../../core/services/shared.service";
 import { CharacterTile } from '../../core/models/tiles/character-tile.model';
-import { Color } from '../../core/models/tiles/color.model';
-import { ColorService } from '../../core/services/tiles/color.service';
 import { CharacterDashboardPage } from '../../core/models/view-models/character-dashboard-page.model';
-import { VIEW, TILES, ImageError, SHAPE, SHAPE_CLASS } from '../../core/models/enums';
-import { FileUploadService } from "../../core/common/file-upload.service";
-import { BingSearchComponent } from '../../shared/image-interface/bing-search/bing-search.component';
-import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
-import { AlertService, MessageSeverity, DialogType } from '../../core/common/alert.service';
+import { ImageTile } from '../../core/models/tiles/image-tile.model';
+import { Color } from '../../core/models/tiles/color.model';
+import { ImageError, SHAPE_CLASS, SHAPE, VIEW } from '../../core/models/enums';
+import { AuthService } from '../../core/auth/auth.service';
+import { FileUploadService } from '../../core/common/file-upload.service';
+import { LocalStoreManager } from '../../core/common/local-store-manager.service';
+import { AlertService, MessageSeverity } from '../../core/common/alert.service';
+import { ImageTileService } from '../../core/services/tiles/image-tile.service';
+import { ColorService } from '../../core/services/tiles/color.service';
+import { SharedService } from '../../core/services/shared.service';
 import { DBkeys } from '../../core/common/db-keys';
 import { User } from '../../core/models/user.model';
-import { LocalStoreManager } from '../../core/common/local-store-manager.service';
+import { Utilities } from '../../core/common/utilities';
+import { ColorsComponent } from '../colors/colors.component';
+import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
 
 @Component({
     selector: 'app-image',
@@ -36,7 +35,7 @@ export class ImageTileComponent implements OnInit {
     imageTileFormModal = new ImageTile();
 
     color: any;
-    selectedColor: string;
+    selectedColor: string;    
     colorList: Color[] = [];
     tileColor: any;
     pageId: number;
@@ -79,7 +78,7 @@ export class ImageTileComponent implements OnInit {
             this.characterTileModel = this.imageTileService.imageTileModelData(model, this.characterId, this.pageId, view, this.pageDefaultData);
             this.imageTileFormModal = Object.assign({}, this.characterTileModel.imageTile);
             this.imageTileFormModal.color = this.characterTileModel.color;
-            this.imageTileFormModal.shape = this.characterTileModel.shape;
+            this.imageTileFormModal.shape = this.characterTileModel.shape;            
             this.imageUrl = this.imageTileFormModal.imageUrl;
 
             this.bingImageUrl = this.imageTileFormModal.imageUrl;
@@ -372,7 +371,7 @@ export class ImageTileComponent implements OnInit {
                     });
         }
     }
-
+ 
     private fileUpload() {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)

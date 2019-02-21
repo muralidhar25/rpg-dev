@@ -123,7 +123,7 @@ namespace DAL.Services
             {
                 try
                 {
-                    name = _context.CharacterAbilities.Where(x => x.CharacterId == characterId && x.AbilityId == abilityId && x.IsDeleted != true).FirstOrDefault().Ability.Name;
+                    name = _context.CharacterAbilities.Where(x => x.CharacterId == characterId && x.AbilityId == abilityId && x.IsDeleted != true).Include(x=>x.Ability).FirstOrDefault().Ability.Name;
                 }
                 catch (Exception ex)
                 {

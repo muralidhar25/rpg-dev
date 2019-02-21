@@ -80,7 +80,9 @@ export enum STAT_NAME {
     Toggle = "Toggle",
     Combo = "Combo",
     InventoryWeight = "InventoryWeight",
-    Condition = "Condition"
+    Condition = "Condition",
+    CharName = "CharName",
+    CharDesc = "CharDesc"
 }
 
 export enum TOGGLE_TYPE {
@@ -183,4 +185,13 @@ export enum FATE_DICE {
     plus = "+",
     zero = "",
     minus = "-"
+}
+export enum BLOB_TYPE {
+    blob = "rpgsmithsa.blob.core.windows.net",
+    base64 = "data:image"
+}
+export enum DEVICE {
+    COMPUTER = "Computer",
+    TABLET = "Tablet",
+    MOBILE = "Mobile",
 }

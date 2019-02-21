@@ -1,25 +1,19 @@
-import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit} from '@angular/core';
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import 'rxjs/add/operator/switchMap';
-import { AlertService, MessageSeverity, DialogType } from '../../../../core/common/alert.service';
-import { ConfigurationService } from '../../../../core/common/configuration.service';
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { AuthService } from "../../../../core/auth/auth.service";
-import { SharedService } from '../../../../core/services/shared.service';
-import { Utilities } from '../../../../core/common/utilities';
-import { DBkeys } from '../../../../core/common/db-keys';
-import { LocalStoreManager } from '../../../../core/common/local-store-manager.service';
-import { CommonService } from "../../../../core/services/shared/common.service";
-import { ItemsService } from "../../../../core/services/items.service";
-import { ItemMasterService } from "../../../../core/services/item-master.service";
-
-import { User } from '../../../../core/models/user.model';
+import { BsModalService, BsModalRef,   } from 'ngx-bootstrap';
 import { Items } from '../../../../core/models/view-models/items.model';
-import { ItemMaster } from '../../../../core/models/view-models/item-master.model';
+import { CommonService } from '../../../../core/services/shared/common.service';
+import { AlertService, MessageSeverity } from '../../../../core/common/alert.service';
+import { AuthService } from '../../../../core/auth/auth.service';
+import { ItemMasterService } from '../../../../core/services/item-master.service';
+import { SharedService } from '../../../../core/services/shared.service';
+import { LocalStoreManager } from '../../../../core/common/local-store-manager.service';
+import { ItemsService } from '../../../../core/services/items.service';
+import { User } from '../../../../core/models/user.model';
+import { DBkeys } from '../../../../core/common/db-keys';
+import { Utilities } from '../../../../core/common/utilities';
 import { VIEW } from '../../../../core/models/enums';
-import { FilterPipe } from "../../../../core/pipes/filter.pipe";
-import { ContainsPipe } from "../../../../core/pipes/contains.pipe";
 
 @Component({
     selector: 'app-add-item',
@@ -72,7 +66,7 @@ export class AddItemComponent implements OnInit {
             this.itemMasterService.getItemMasterByRuleset_add<any>(this.rulesetId)
                 .subscribe(data => {
                     this.itemsList = data.ItemMaster;
-
+                    
                     this.itemsList.forEach(function (val) { val.showIcon = false; val.selected = false; });
                     this.isLoading = false;
                 }, error => {
@@ -95,7 +89,7 @@ export class AddItemComponent implements OnInit {
         //    this.characterItemModal.multiItemMasters
         //        .splice(this.characterItemModal.multiItemMasters.indexOf({ itemMasterId: itemMaster.itemMasterId }), 1);
         //}
-
+        
         this.itemsList.map((item) => {
             if (item.itemMasterId == itemMaster.itemMasterId) {
                 item.selected = event.target.checked;
@@ -133,7 +127,7 @@ export class AddItemComponent implements OnInit {
         this.itemsService.addItem(modal)
             .subscribe(
                 data => {
-                    this.isLoading = false;
+                    this.isLoading = false; 
                     this.alertService.stopLoadingMessage();
                     let message = "Item(s) added successfully.";
                     this.alertService.showMessage(message, "", MessageSeverity.success);
@@ -141,7 +135,7 @@ export class AddItemComponent implements OnInit {
                     this.sharedService.updateItemsList(true);
                 },
                 error => {
-                    this.isLoading = false;
+                    this.isLoading = false; 
                     this.alertService.stopLoadingMessage();
                     let Errors = Utilities.ErrorDetail("Unable to Add", error);
                     if (Errors.sessionExpire) {
@@ -158,14 +152,14 @@ export class AddItemComponent implements OnInit {
         this.itemsService.duplicateItem(modal)
             .subscribe(
                 data => {
-                    this.isLoading = false;
+                    this.isLoading = false; 
                     this.alertService.stopLoadingMessage();
                     this.alertService.showMessage("Item has been duplicated successfully.", "", MessageSeverity.success);
                     this.bsModalRef.hide();
                     this.sharedService.updateItemsList(true);
                 },
                 error => {
-                    this.isLoading = false;
+                    this.isLoading = false; 
                     this.alertService.stopLoadingMessage();
                     let Errors = Utilities.ErrorDetail("Unable to Duplicate ", error);
                     if (Errors.sessionExpire) {

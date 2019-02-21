@@ -353,7 +353,13 @@ namespace RPGSmithApp.Migrations
 
                     b.Property<int?>("DefaultPageId");
 
+                    b.Property<bool>("IsDefaultComputer");
+
                     b.Property<bool>("IsDefaultLayout");
+
+                    b.Property<bool>("IsDefaultMobile");
+
+                    b.Property<bool>("IsDefaultTablet");
 
                     b.Property<bool>("IsDeleted");
 
@@ -470,7 +476,7 @@ namespace RPGSmithApp.Migrations
                     b.Property<string>("MultiChoice")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Number");
+                    b.Property<int?>("Number");
 
                     b.Property<bool>("OnOff");
 
@@ -638,6 +644,8 @@ namespace RPGSmithApp.Migrations
 
                     b.Property<int>("CharacterStatId");
 
+                    b.Property<string>("DefaultText");
+
                     b.Property<int>("DefaultValue");
 
                     b.Property<bool>("IsDeleted");
@@ -768,6 +776,8 @@ namespace RPGSmithApp.Migrations
                     b.Property<int?>("CharacterTileId");
 
                     b.Property<int?>("CharactersCharacterStatId");
+
+                    b.Property<string>("ImageUrl");
 
                     b.Property<bool>("IsDeleted");
 
@@ -1795,6 +1805,8 @@ namespace RPGSmithApp.Migrations
 
                     b.Property<int?>("CharacterStatId");
 
+                    b.Property<string>("ImageUrl");
+
                     b.Property<bool>("IsDeleted");
 
                     b.Property<int?>("RulesetTileId");
@@ -1943,7 +1955,13 @@ namespace RPGSmithApp.Migrations
 
                     b.Property<int?>("DefaultPageId");
 
+                    b.Property<bool>("IsDefaultComputer");
+
                     b.Property<bool>("IsDefaultLayout");
+
+                    b.Property<bool>("IsDefaultMobile");
+
+                    b.Property<bool>("IsDefaultTablet");
 
                     b.Property<bool>("IsDeleted");
 

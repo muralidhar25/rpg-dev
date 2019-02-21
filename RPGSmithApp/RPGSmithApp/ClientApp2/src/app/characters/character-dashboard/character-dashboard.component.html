@@ -1,477 +1,499 @@
 <div class="page-character-dashboard">
-    <!-- Toolbar -->
-    <div class="page-toolbar">
-        <div class="container">
-            
-            <div class="page-toolbar-wrapper initial show">
-                <div class="page-toolbar-dropdowns">
-                    <!-- Layout dropdown -->
-                    <div class="dropdown" [ngClass]="{'show': isLayoutDropdownOpen}">
-                        <div class="dropdown-toggle is-layout-show" id="layoutNavigationToggle">
-                            <span class="is-layout-show"><span>Layout</span>  <em *ngIf="selectedlayout">{{selectedlayout.name}}</em> </span>
-                        </div>
-                        <div infiniteScroll (scrolled)="onLayoutScroll()" [infiniteScrollDistance]="1"
-                             [infiniteScrollThrottle]="100" [scrollWindow]="false" [class]="foldClass" aria-labelledby="pageLayoutNavigationToggle" *ngIf="isLayoutDropdownOpen && !isLoading">
-                            <div class="dropdown-menu-add-item-trigger">
-                                <button (click)="newLayout()" type="button" class="btn btn-accent btn-block">New Layout</button>
-                            </div>
-                            <div class="web-view" [dragula]='"bag-characterDashboardLayout"' [dragulaModel]="characterlayouts">
-                                <ul class="dropdown-menu-list dropdown-menu-item-contain-actions" *ngFor="let layout of characterlayouts" [attr.id]="layout.characterDashboardLayoutId">
-                                    <li class="dropdown-menu-item" [ngClass]="{'active': selectedlayout.characterDashboardLayoutId == layout.characterDashboardLayoutId}">
-                                        <span (click)="onLayoutSelect(layout)" class="dropdown-menu-item-title layout-spacing">{{layout.name}}</span>
-                                        <div class="dropdown-menu-item-actions show" *ngIf="layout?.showIcon">
-                                            <button type="button" (click)="editLayout(layout)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
-                                            <button type="button" (click)="duplicateLayout(layout)" tooltip="Duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
-                                            <button type="button" (click)="deleteLayout(layout)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
-                                            <button type="button" (click)="manageIcon('0')" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary show-layout-drp"></button>
-                                        </div>
-                                        <div class="dropdown-menu-item-actions-trigger showdrp">
-                                            <button type="button" *ngIf="!layout?.showIcon" (click)="manageIcon(layout.characterDashboardLayoutId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary show-layout-drp"></button>
-                                        </div>
-                                    </li>
+  <!-- Toolbar -->
+  <div class="page-toolbar">
+    <div class="container">
 
-                                </ul>
-                            </div>
-                            <div class="mob-view">
-                                <ul class="dropdown-menu-list dropdown-menu-item-contain-actions" *ngFor="let layout of characterlayouts" [attr.id]="layout.characterDashboardLayoutId">
-                                    <li class="dropdown-menu-item" [ngClass]="{'active': selectedlayout.characterDashboardLayoutId == layout.characterDashboardLayoutId}">
-                                        <span (click)="onLayoutSelect(layout)" class="dropdown-menu-item-title layout-spacing">{{layout.name}}</span>
-                                        <div class="dropdown-menu-item-actions show" *ngIf="layout?.showIcon">
-                                            <button type="button" (click)="editLayout(layout)" title="Edit" data-toggle="tooltip" data-action="edit" class="action-buttons-left btn icon icon-pencil btn-simple-primary"></button>
-                                            <button type="button" (click)="duplicateLayout(layout)" tooltip="Duplicate" class=" btn icon icon-copy icon-rsi btn-simple-primary"></button>
-                                            <button type="button" (click)="deleteLayout(layout)" title="Delete" data-toggle="tooltip" data-action="delete" class="action-buttons-left btn icon icon-trash btn-simple-primary"></button>
-                                            <button type="button" (click)="manageIcon('0')" title="Close" data-toggle="tooltip" data-action="close" class="action-buttons-left btn icon icon-cross btn-simple-primary show-layout-drp"></button>
-                                        </div>
-                                        <div class="dropdown-menu-item-actions-trigger showdrp">
-                                            <div class="card-actions action-buttons-left sorting-up-arrow" (click)="scrollUp(layout,false,this)">
-                                                <i class="fa fa-arrow-up"></i>
-                                            </div>
-                                            <div class="card-actions action-buttons-left sorting-down-arrow" (click)="scrollDown(layout,false,this)">
-                                                <i class="fa fa-arrow-down"></i>
-                                            </div>
-                                            <button type="button" *ngIf="!layout?.showIcon" (click)="manageIcon(layout.characterDashboardLayoutId)" title="Manage" data-toggle="tooltip" class="action-buttons-left btn icon icon-more btn-simple-primary show-layout-drp"></button>
-                                        </div>
-
-                                    </li>
-
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End of layout dropdown -->
-                    <!-- Action menu-->
-                    <div class="page-toolbar-wrapper-toggle-trigger">
-                        <button type="button" class="btn icon icon-with-text btn-accent" (click)="showActionButtons(showActions)"
-                                [ngClass]="{'icon-arrow-up' : showActions,  'icon-arrow-down' : !showActions}">
-                            {{actionText}}
-                        </button>
-                    </div>
-                    <!-- End of Action menu-->
-                    <!-- Page dropdown -->
-                    <div class="dropdown" [ngClass]="{'show': isPageDropdownOpen}">
-                        <div class="dropdown-toggle is-page-show" id="pageNavigationToggle">
-                            <span class="is-page-show"><span>Page</span> <em *ngIf="selectedPage && !isLoading">{{selectedPage.name}}</em></span>
-                        </div>
-                        <div [class]="pagedrpClass" aria-labelledby="pageLayoutNavigationToggle" *ngIf="isPageDropdownOpen && selectedlayout && !isLoading">
-                            <div class="dropdown-menu-add-item-trigger">
-                                <button type="button" (click)="newPage()" class="btn btn-accent btn-block">New Page</button>
-                            </div>
-                            <div class="web-view" [dragula]='"bag-characterDashboardPages"' [dragulaModel]="selectedlayout.characterDashboardPages">
-                                <ul class="dropdown-menu-list dropdown-menu-item-contain-actions" *ngFor="let page of selectedlayout?.characterDashboardPages" [attr.id]="page?.characterDashboardPageId">
-                                    <li class="dropdown-menu-item" [ngClass]="{'active': selectedPage?.characterDashboardPageId == page?.characterDashboardPageId}">
-                                        <span (click)="onPageSelect(page)" class="dropdown-menu-item-title layout-spacing">{{page.name}}</span>
-                                        <div class="dropdown-menu-item-actions show" *ngIf="page?.showIcon">
-                                            <button (click)="editPage(page)" type="button" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
-                                            <button (click)="duplicatePage(page)" type="button" tooltip="Duplicate" class=" btn icon icon-copy icon-rsi btn-simple-primary"></button>
-                                            <button (click)="deletePage(page)" type="button" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
-                                            <button (click)="managePageIcon(0)" type="button" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary show-page-drp"></button>
-                                        </div>
-                                        <div class="dropdown-menu-item-actions-trigger">
-                                            <button type="button" *ngIf="!page?.showIcon" (click)="managePageIcon(page?.characterDashboardPageId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary show-page-drp"></button>
-                                        </div>
-                                    </li>
-
-                                </ul>
-                            </div>
-                            <div class="mob-view">
-                                <ul class="dropdown-menu-list dropdown-menu-item-contain-actions" *ngFor="let page of selectedlayout?.characterDashboardPages" [attr.id]="page?.characterDashboardPageId">
-                                    <li class="dropdown-menu-item" [ngClass]="{'active': selectedPage == page}">
-                                        <span (click)="onPageSelect(page)" class="dropdown-menu-item-title layout-spacing">{{page.name}}</span>
-                                        <div class="dropdown-menu-item-actions show" *ngIf="page?.showIcon">
-                                            <button (click)="editPage(page)" type="button" title="Edit" data-toggle="tooltip" data-action="edit" class="action-buttons-left btn icon icon-pencil btn-simple-primary"></button>
-                                            <button (click)="duplicatePage(page)" type="button" tooltip="Duplicate" class=" btn icon icon-copy icon-rsi btn-simple-primary"></button>
-                                            <button (click)="deletePage(page)" type="button" title="Delete" data-toggle="tooltip" data-action="delete" class="action-buttons-left btn icon icon-trash btn-simple-primary"></button>
-                                            <button (click)="managePageIcon(0)" type="button" title="Close" data-toggle="tooltip" data-action="close" class="action-buttons-left btn icon icon-cross btn-simple-primary show-page-drp"></button>
-                                        </div>
-                                        <div class="dropdown-menu-item-actions-trigger">
-                                            <div class=" action-buttons-left card-actions sorting-up-arrow" (click)="scrollUp(page,true,this)">
-                                                <i class="fa fa-arrow-up"></i>
-                                            </div>
-                                            <div class="card-actions action-buttons-left sorting-down-arrow" (click)="scrollDown(page,true,this)">
-                                                <i class="fa fa-arrow-down"></i>
-                                            </div>
-                                            <button type="button" *ngIf="!page?.showIcon" (click)="managePageIcon(page?.characterDashboardPageId)" title="Manage" data-toggle="tooltip" class=" action-buttons-left btn icon icon-more btn-simple-primary show-page-drp"></button>
-                                        </div>
-                                    </li>
-
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End of page dropdown -->
-                </div>
-
-                <!-- Toolbar links -->
-                <ul class="page-toolbar-links"  [ngClass]="{'d-none d-md-flex' : !showActions}">
-                    <li *ngIf="rulesetModel?.isItemEnabled">
-                        <a (click)="manageRoute('/character/inventory')" class="btn btn-link-primary icon-Gen-Items"> <span>Inventory</span></a>
-                    </li>
-                    <li *ngIf="rulesetModel?.isSpellEnabled">
-                        <a (click)="manageRoute('/character/spell')" class="btn btn-link-primary icon-Rec-Magical"> <span>Spells</span></a>
-                    </li>
-                    <li *ngIf="rulesetModel?.isAbilityEnabled">
-                        <a (click)="manageRoute('/character/ability')" class="btn btn-link-primary icon-Gen-Ability"> <span>Abilities</span></a>
-                    </li>
-                    <li *ngIf="rulesetModel">
-                        <a (click)="manageRoute('character/character-stats')" class="btn btn-link-primary icon-Gen-CharStat"> <span>Character Stats</span></a>
-                    </li>
-                </ul>
-                <!-- End of toolbar links -->
-                <!-- Toolbar actions -->
-                <ul class="page-toolbar-actions" [ngClass]="{'d-none d-md-flex' : !showActions}">
-                    <li>
-                        <button [disabled]="isLoading" type="button" id="manageTilesTrigger" class="btn btn-outline-primary icon-Gen-Edit" (click)="checkTile('character/tiles',selectedPage?.characterDashboardPageId,selectedlayout.characterDashboardLayoutId)"> Manage Tiles</button>
-                    </li>
-                    <!--<li>
-                        <button type="button" data-toggle="modal" data-target="#manageCoreStatsPopup" class="btn btn-outline-primary">Manage Core Stats</button>
-                    </li>-->
-                    <li>
-                        <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>
-                    </li>
-                </ul>
-                <!-- End of toolbar actions -->
+      <div class="page-toolbar-wrapper initial show">
+        <div class="page-toolbar-dropdowns">
+          <!-- Layout dropdown -->
+          <div class="dropdown" [ngClass]="{'show': isLayoutDropdownOpen}">
+            <div class="dropdown-toggle is-layout-show" id="layoutNavigationToggle">
+              <span class="is-layout-show"><span class="d-none d-md-inline-block">Layout</span> <span class="d-md-none">L</span> <em *ngIf="selectedlayout">{{selectedlayout.name}}</em> </span>
             </div>
+            <div infiniteScroll (scrolled)="onLayoutScroll()" [infiniteScrollDistance]="1"
+                 [infiniteScrollThrottle]="100" [scrollWindow]="false" [class]="foldClass" aria-labelledby="pageLayoutNavigationToggle" *ngIf="isLayoutDropdownOpen && !isLoading">
+              <div class="dropdown-menu-add-item-trigger">
+                <button (click)="newLayout()" type="button" class="btn btn-accent btn-block">New Layout</button>
+              </div>
+              <div class="web-view" [dragula]='"bag-characterDashboardLayout"' [dragulaModel]="characterlayouts">
+                <ul class="dropdown-menu-list dropdown-menu-item-contain-actions" *ngFor="let layout of characterlayouts" [attr.id]="layout.characterDashboardLayoutId">
+                  <li class="dropdown-menu-item" [ngClass]="{'active': selectedlayout.characterDashboardLayoutId == layout.characterDashboardLayoutId}">
+                    <span (click)="onLayoutSelect(layout)" class="dropdown-menu-item-title layout-spacing">{{layout.name}}</span>
+                    <div class="dropdown-menu-item-actions show" *ngIf="layout?.showIcon">
+                      <button type="button" (click)="editLayout(layout)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
+                      <button type="button" (click)="duplicateLayout(layout)" tooltip="Duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                      <button type="button" (click)="deleteLayout(layout)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
+                      <button type="button" (click)="manageIcon('0')" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary show-layout-drp"></button>
+                    </div>
+                    <div class="dropdown-menu-item-actions-trigger showdrp">
+                      <button type="button" *ngIf="!layout?.showIcon" (click)="manageIcon(layout.characterDashboardLayoutId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary show-layout-drp"></button>
+                    </div>
+                  </li>
 
-            <div class="page-toolbar-wrapper manage">
-                <div class="page-toolbar-title">
-                    <h1>Manage Tiles</h1>
-                </div>
-                <ul class="page-toolbar-actions">
-                    <li class="popup-new-tile-trigger">
-                        <button type="button" data-toggle="modal" data-target="#newTilePopup" class="btn icon icon-plus btn-primary"></button>
-                    </li>
-                    <li>
-                        <button type="button" id="manageTilesDoneTrigger" class="btn btn-accent">Done</button>
-                    </li>
                 </ul>
+              </div>
+              <div class="mob-view">
+                <ul class="dropdown-menu-list dropdown-menu-item-contain-actions" *ngFor="let layout of characterlayouts" [attr.id]="layout.characterDashboardLayoutId">
+                  <li class="dropdown-menu-item" [ngClass]="{'active': selectedlayout.characterDashboardLayoutId == layout.characterDashboardLayoutId}">
+                    <span (click)="onLayoutSelect(layout)" class="dropdown-menu-item-title layout-spacing">{{layout.name}}</span>
+                    <div class="dropdown-menu-item-actions show" *ngIf="layout?.showIcon">
+                      <button type="button" (click)="editLayout(layout)" title="Edit" data-toggle="tooltip" data-action="edit" class="action-buttons-left btn icon icon-pencil btn-simple-primary"></button>
+                      <button type="button" (click)="duplicateLayout(layout)" tooltip="Duplicate" class=" btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                      <button type="button" (click)="deleteLayout(layout)" title="Delete" data-toggle="tooltip" data-action="delete" class="action-buttons-left btn icon icon-trash btn-simple-primary"></button>
+                      <button type="button" (click)="manageIcon('0')" title="Close" data-toggle="tooltip" data-action="close" class="action-buttons-left btn icon icon-cross btn-simple-primary show-layout-drp"></button>
+                    </div>
+                    <div class="dropdown-menu-item-actions-trigger showdrp">
+                      <div class="card-actions action-buttons-left sorting-up-arrow" (click)="scrollUp(layout,false,this)">
+                        <i class="fa fa-arrow-up"></i>
+                      </div>
+                      <div class="card-actions action-buttons-left sorting-down-arrow" (click)="scrollDown(layout,false,this)">
+                        <i class="fa fa-arrow-down"></i>
+                      </div>
+                      <button type="button" *ngIf="!layout?.showIcon" (click)="manageIcon(layout.characterDashboardLayoutId)" title="Manage" data-toggle="tooltip" class="action-buttons-left btn icon icon-more btn-simple-primary show-layout-drp"></button>
+                    </div>
+
+                  </li>
+
+                </ul>
+              </div>
             </div>
+          </div>
+          <!-- End of layout dropdown -->
+          <!-- Action menu-->
+          <div class="page-toolbar-wrapper-toggle-trigger">
+            <button type="button" class="btn icon icon-with-text btn-accent" (click)="showActionButtons(showActions)"
+                    [ngClass]="{'icon-arrow-up' : showActions,  'icon-arrow-down' : !showActions}">
+              {{actionText}}
+            </button>
+          </div>
+          <!-- End of Action menu-->
+          <!-- Page dropdown -->
+          <div class="dropdown" [ngClass]="{'show': isPageDropdownOpen}">
+            <div class="dropdown-toggle is-page-show" id="pageNavigationToggle">
+              <span class="is-page-show"><span class="d-none d-md-inline-block">Page</span> <span class="d-md-none">P</span> <em *ngIf="selectedPage && !isLoading">{{selectedPage.name}}</em></span>
+            </div>
+            <div [class]="pagedrpClass" aria-labelledby="pageLayoutNavigationToggle" *ngIf="isPageDropdownOpen && selectedlayout && !isLoading">
+              <div class="dropdown-menu-add-item-trigger">
+                <button type="button" (click)="newPage()" class="btn btn-accent btn-block">New Page</button>
+              </div>
+              <div class="web-view" [dragula]='"bag-characterDashboardPages"' [dragulaModel]="selectedlayout.characterDashboardPages">
+                <ul class="dropdown-menu-list dropdown-menu-item-contain-actions" *ngFor="let page of selectedlayout?.characterDashboardPages" [attr.id]="page?.characterDashboardPageId">
+                  <li class="dropdown-menu-item" [ngClass]="{'active': selectedPage?.characterDashboardPageId == page?.characterDashboardPageId}">
+                    <span (click)="onPageSelect(page)" class="dropdown-menu-item-title layout-spacing">{{page.name}}</span>
+                    <div class="dropdown-menu-item-actions show" *ngIf="page?.showIcon">
+                      <button (click)="editPage(page)" type="button" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
+                      <button (click)="duplicatePage(page)" type="button" tooltip="Duplicate" class=" btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                      <button (click)="deletePage(page)" type="button" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
+                      <button (click)="managePageIcon(0)" type="button" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary show-page-drp"></button>
+                    </div>
+                    <div class="dropdown-menu-item-actions-trigger">
+                      <button type="button" *ngIf="!page?.showIcon" (click)="managePageIcon(page?.characterDashboardPageId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary show-page-drp"></button>
+                    </div>
+                  </li>
+
+                </ul>
+              </div>
+              <div class="mob-view">
+                <ul class="dropdown-menu-list dropdown-menu-item-contain-actions" *ngFor="let page of selectedlayout?.characterDashboardPages" [attr.id]="page?.characterDashboardPageId">
+                  <li class="dropdown-menu-item" [ngClass]="{'active': selectedPage == page}">
+                    <span (click)="onPageSelect(page)" class="dropdown-menu-item-title layout-spacing">{{page.name}}</span>
+                    <div class="dropdown-menu-item-actions show" *ngIf="page?.showIcon">
+                      <button (click)="editPage(page)" type="button" title="Edit" data-toggle="tooltip" data-action="edit" class="action-buttons-left btn icon icon-pencil btn-simple-primary"></button>
+                      <button (click)="duplicatePage(page)" type="button" tooltip="Duplicate" class=" btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                      <button (click)="deletePage(page)" type="button" title="Delete" data-toggle="tooltip" data-action="delete" class="action-buttons-left btn icon icon-trash btn-simple-primary"></button>
+                      <button (click)="managePageIcon(0)" type="button" title="Close" data-toggle="tooltip" data-action="close" class="action-buttons-left btn icon icon-cross btn-simple-primary show-page-drp"></button>
+                    </div>
+                    <div class="dropdown-menu-item-actions-trigger">
+                      <div class=" action-buttons-left card-actions sorting-up-arrow" (click)="scrollUp(page,true,this)">
+                        <i class="fa fa-arrow-up"></i>
+                      </div>
+                      <div class="card-actions action-buttons-left sorting-down-arrow" (click)="scrollDown(page,true,this)">
+                        <i class="fa fa-arrow-down"></i>
+                      </div>
+                      <button type="button" *ngIf="!page?.showIcon" (click)="managePageIcon(page?.characterDashboardPageId)" title="Manage" data-toggle="tooltip" class=" action-buttons-left btn icon icon-more btn-simple-primary show-page-drp"></button>
+                    </div>
+                  </li>
+
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!-- End of page dropdown -->
         </div>
+
+        <!-- Toolbar links -->
+        <ul class="page-toolbar-links" [ngClass]="{'d-none d-md-flex' : !showActions}">
+          <li *ngIf="rulesetModel?.isItemEnabled">
+            <a (click)="manageRoute('/character/inventory')" class="btn btn-link-primary icon-Gen-Items"> <span>Inventory</span></a>
+          </li>
+          <li *ngIf="rulesetModel?.isSpellEnabled">
+            <a (click)="manageRoute('/character/spell')" class="btn btn-link-primary icon-Rec-Magical"> <span>Spells</span></a>
+          </li>
+          <li *ngIf="rulesetModel?.isAbilityEnabled">
+            <a (click)="manageRoute('/character/ability')" class="btn btn-link-primary icon-Gen-Ability"> <span>Abilities</span></a>
+          </li>
+          <li *ngIf="rulesetModel">
+            <a (click)="manageRoute('character/character-stats')" class="btn btn-link-primary icon-Gen-CharStat"> <span>Character Stats</span></a>
+          </li>
+        </ul>
+        <!-- End of toolbar links -->
+        <!-- Toolbar actions -->
+        <ul class="page-toolbar-actions" [ngClass]="{'d-none d-md-flex' : !showActions}">
+          <li>
+            <button [disabled]="isLoading" type="button" id="manageTilesTrigger" class="btn btn-outline-primary icon-Gen-Edit" (click)="checkTile('character/tiles',selectedPage?.characterDashboardPageId,selectedlayout.characterDashboardLayoutId)"> Manage Tiles</button>
+          </li>
+          <!--<li>
+              <button type="button" data-toggle="modal" data-target="#manageCoreStatsPopup" class="btn btn-outline-primary">Manage Core Stats</button>
+          </li>-->
+          <li>
+            <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>
+          </li>
+        </ul>
+        <!-- End of toolbar actions -->
+      </div>
+
+      <div class="page-toolbar-wrapper manage">
+        <div class="page-toolbar-title">
+          <h1>Manage Tiles</h1>
+        </div>
+        <ul class="page-toolbar-actions">
+          <li class="popup-new-tile-trigger">
+            <button type="button" data-toggle="modal" data-target="#newTilePopup" class="btn icon icon-plus btn-primary"></button>
+          </li>
+          <li>
+            <button type="button" id="manageTilesDoneTrigger" class="btn btn-accent">Done</button>
+          </li>
+        </ul>
+      </div>
     </div>
-    <!-- End of toolbar -->
-    <!-- Tiles -->
-    <div class="tiles">
+  </div>
+  <!-- End of toolbar -->
+  <!-- Tiles -->
+  <div class="tiles">
 
-        <div style="display:inline;" *ngIf="selectedlayout?.characterDashboardPages?.length>1">
-            <button type="button" class="btn icon icon-with-text prev-button icon-Gen-BackArrow"
-                    (click)="NextPrevPage(selectedlayout,false)"></button>
-            <button type="button" class="btn icon icon-with-text next-button icon-Gen-BackArrow"
-                    (click)="NextPrevPage(selectedlayout,true)"></button>
-        </div>
-
-        
-        <div class="container height-fixed-grid" *ngIf="!isLoading">
-            <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Tiles have been added to this character. Click "Manage Tiles" to add some.</p>
-            <div [ngGrid]="gridConfig">
-
-                <div *ngFor="let box of boxes; let i = index" [(ngGridItem)]="box.config">
-
-                    <!--<div *ngIf="box.IsCharacter">
-                <div class="tiles manage character handle">
-                    <div class="tile-group tile-group-item_counts ">
-                        <div class="tile tile-type-image tile-color-6">
-                            <h5 class="tile-title" popover="{{character.characterName}}" triggers="hover">{{character.characterName}}</h5>
-                            <div class="tile-body">
-                                <img [src]="character.imageUrl" [alt]="character.characterName"
-                                     onerror="this.src = '../assets/images/DefaultImages/Character.jpg';">
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>-->
-                    <div *ngIf="!box.IsCharacter">
-                        <div class="tiles manage colwidth handle">
-
-                            <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.NOTE && box.tile.noteTiles" [ngClass]="(box.tile.noteTiles?.shape=='50')?'grid-rounded':''">
-                                <div class="tile tile-type-note" [style.background-color]="box.tile.noteTiles.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
-                                    <h5 *ngIf="box.tile.noteTiles?.title" class="tile-title wraptext" popover="{{box.tile.noteTiles?.title}}" triggers="hover"
-                                        [ngStyle]="{'color': box.tile.noteTiles.titleTextColor, 'background-color': box.tile.noteTiles.titleBgColor}"
-                                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
-                                        {{box.tile.noteTiles?.title}}
-                                    </h5>
-
-                                    <div class="tile-body">
-                                        <div class="grid-rounded">
-                                            <p [style.background-color]="white"
-                                               [froalaView]="box.tile.noteTiles?.content">
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.IMAGE && box.tile.imageTiles" [ngClass]="(box.tile.imageTiles?.shape=='50')?'grid-rounded':(box.tile.imageTiles?.shape=='100')?'grid-circle':''">
-                                <div class="tile tile-type-note" [style.background-color]="box.tile.imageTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
-                                    <h5 *ngIf="box.tile.imageTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.imageTiles.titleTextColor, 'background-color': box.tile.imageTiles.titleBgColor}"
-                                        popover="{{box.tile.imageTiles?.title}}" triggers="hover"
-                                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
-                                        {{box.tile.imageTiles?.title}}
-                                    </h5>
-
-                                    <div class="tile-body">
-                                        <img onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png';" [src]="box.tile.imageTiles?.imageUrl" [alt]="box.tile.imageTiles?.title" class="imgwidth">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.COUNTER && box.tile.counterTiles" [ngClass]="(box.tile.counterTiles?.shape=='50')?'grid-rounded':(box.tile.counterTiles?.shape=='100')?'grid-circle':''">
-                                <div class="tile tile-type-note tile-color-6" [style.background-color]="box.tile.counterTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
-                                    <h5 *ngIf="box.tile.counterTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.counterTiles.titleTextColor, 'background-color': box.tile.counterTiles.titleBgColor}"
-                                        popover="{{box.tile.counterTiles?.title}}" triggers="hover"
-                                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
-                                        {{box.tile.counterTiles?.title}}
-                                    </h5>
-
-                                    <div class="tile-body">
-                                        <span [style.font-size.px]="box.config.sizex*box.config.sizey*5+30" class="textfont" [style.color]="box.tile.counterTiles.bodyTextColor" [style.background-color]="box.tile.counterTiles.bodyBgColor">
-                                            {{box.tile.counterTiles?.currentValue}}
-                                        </span>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.CHARACTERSTAT && box.tile.characterStatTiles" [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatTiles?.shape=='100')?'grid-circle':''">
-                                <div class="tile tile-type-note tile-color-6" [style.background-color]="box.tile.characterStatTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
-                                    <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.characterStatTiles.titleTextColor, 'background-color': box.tile.characterStatTiles.titleBgColor}"
-                                        *ngIf="box.tile.characterStatTiles?.showTitle" popover="{{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.statName}}" triggers="hover"
-                                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
-                                        {{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.statName}}
-                                    </h5>
-                                    <div class="tile-body">
-                                        <div class="grid-rounded" [style.color]="box.tile.characterStatTiles.bodyTextColor"
-                                             [style.background-color]="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.RichText ? '' : box.tile.characterStatTiles.bodyBgColor">
-
-                                            <p [style.color]="box.tile.characterStatTiles.bodyTextColor"
-                                               [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 14 ? 16 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 14 ? 16 : box.config.sizex*4 ) "
-                                               [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 18 ? 20 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 18 ? 20 : box.config.sizex*5 ) "
-                                               *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Text">
-                                                {{box.tile.characterStatTiles?.charactersCharacterStat?.text}}
-                                            </p>
-
-                                            <span style="color:#000" *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.RichText"
-                                                  [froalaView]="box.tile.characterStatTiles?.charactersCharacterStat?.richText">
-                                            </span>
-
-                                            <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Number" [style.font-size.px]="box.config.sizex*box.config.sizey*5+30" class="text-center-v">
-                                                {{box.tile.characterStatTiles?.charactersCharacterStat?.number}}
-                                            </span>
-                                            <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.CurrentMax" [style.font-size.px]="box.config.sizex*box.config.sizey*2+11" class="text-center-v">
-                                                {{box.tile.characterStatTiles?.charactersCharacterStat.current}} / {{box.tile.characterStatTiles?.charactersCharacterStat.maximum}}
-                                            </span>
-
-                                            <div class="text-center-v bold-whitebg-textblack" *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Choice">
-                                                <p style="padding:0">
-                                                    <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isMultiSelect">
-                                                        <ng-container *ngFor="let choice of box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatChoices; let i = index">
-                                                            <ng-container *ngFor="let mChoice of box.tile.characterStatTiles?.charactersCharacterStat?.multiChoice?.split(';');let j = index">
-                                                                <span *ngIf="choice?.characterStatChoiceId===+mChoice && box.tile.characterStatTiles?.charactersCharacterStat?.multiChoice?.split(';')?.length>1"
-                                                                      [style.font-size.px]="((box.config.sizey+box.config.sizex)*2) < 16 ? 18 : ((box.config.sizey+box.config.sizex)*2)"
-                                                                      [style.line-height.px]="((box.config.sizey+box.config.sizex)*2+5)  < 18 ? 20 : ((box.config.sizey+box.config.sizex)*2+5)">
-                                                                    {{choice.statChoiceValue}}
-                                                                </span>
-                                                                <span *ngIf="choice?.characterStatChoiceId===+mChoice && box.tile.characterStatTiles?.charactersCharacterStat?.multiChoice?.split(';')?.length<=1"
-                                                                      [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
-                                                                      [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
-                                                                    {{choice.statChoiceValue}}
-
-                                                                </span>
-                                                            </ng-container>
-                                                        </ng-container>
-                                                    </ng-container>
-                                                </p>
-                                                <ng-container *ngIf="!box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isMultiSelect">
-                                                    <p>
-                                                        <ng-container *ngFor="let choice of box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatChoices; let i = index">
-                                                            <span *ngIf="choice?.characterStatChoiceId===+box.tile.characterStatTiles?.charactersCharacterStat?.choice" [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
-                                                                  [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
-                                                                {{choice.statChoiceValue}}
-                                                            </span>
-                                                        </ng-container>
-                                                    </p>
-                                                </ng-container>
-                                                <!--<span *ngIf="choice?.characterStatChoiceId===+box.tile.characterStatTiles?.charactersCharacterStat?.choice" [style.font-size.px]="box.config.sizex*box.config.sizey*5+16" class="text-center-v">
-            {{choice.statChoiceValue}}
-        </span>-->
-
-                                            </div>
-
-                                            <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.ValueSubValue" [style.font-size.px]="box.config.sizex*box.config.sizey*2+11" class="text-center-v">
-                                                {{box.tile.characterStatTiles?.charactersCharacterStat.value}} ({{box.tile.characterStatTiles?.charactersCharacterStat.subValue}})
-                                            </span>
-                                            <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.OnOff" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
-                                                {{box.tile.characterStatTiles?.charactersCharacterStat?.onOff ? 'ON' : 'OFF'}}
-                                            </span>
-                                            <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.YesNo" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
-                                                {{box.tile.characterStatTiles?.charactersCharacterStat?.yesNo ? 'YES' : 'NO'}}
-                                            </span>
-                                            <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Calculation" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
-                                                {{box.tile.characterStatTiles?.charactersCharacterStat?.calculationResult}}
-                                            </span>
-                                            <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Command">
-                                                <img src="https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png" class="imgwidth"
-                                                     [alt]="box.tile.characterStatTiles?.charactersCharacterStat?.command">
-                                            </span>
-                                            <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Combo" class="text-center-v" [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
-                                                {{box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue}}
-                                                <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.comboText"> / {{box.tile.characterStatTiles?.charactersCharacterStat?.comboText}}</span>
-                                            </span>
-
-                                            <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Toggle">
-                                                <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.yesNo">
-                                                    <span [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v noselect">{{box.tile.characterStatTiles?.charactersCharacterStat?.isYes ? 'YES' : 'NO'}}</span>
-                                                </ng-container>
-                                                <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.onOff">
-                                                    <span [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v noselect">{{box.tile.characterStatTiles?.charactersCharacterStat?.isOn ? 'ON' : 'OFF'}}</span>
-                                                </ng-container>
-                                                <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.display">
-                                                    <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.showCheckbox" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v icon-Gen-Check noselect"></span>
-                                                    <span *ngIf="!box.tile.characterStatTiles?.charactersCharacterStat?.showCheckbox" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v icon-Gen-Uncheck noselect"></span>
-                                                </ng-container>
-
-
-                                                <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.isCustom">
-                                                    <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterCustomToggles?.length">
-                                                        <ng-container *ngFor="let toggleVal of box.tile.characterStatTiles?.charactersCharacterStat?.characterCustomToggles; let i = index">
-                                                            <ng-container *ngIf="toggleVal.initial">
-                                                                <ng-container *ngIf="toggleVal.toggleText">
-
-                                                                    <p class="noselect" [style.color]="box.tile.characterStatTiles.bodyTextColor"
-                                                                       [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
-                                                                        {{toggleVal.toggleText}}
-                                                                    </p>
-                                                                </ng-container>
-                                                                <ng-container *ngIf="toggleVal.image">
-                                                                    <img class="imgwidth" [src]="toggleVal.image" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png';" />
-                                                                </ng-container>
-                                                            </ng-container>
-
-                                                        </ng-container>
-                                                    </ng-container>
-                                                </ng-container>
-
-                                            </ng-container>
-
-                                            <div *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.LinkRecord">
-
-                                                <img *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue" class="imgwidth" [src]="GetLinkRecordImage(box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue,box.tile.characterStatTiles?.charactersCharacterStat?.linkType)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png';" />
-
-                                            </div>
-                                            <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Condition">
-                                                <p [style.color]="box.tile.characterStatTiles.bodyTextColor"
-                                                   [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 14 ? 16 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 14 ? 16 : box.config.sizex*4 ) "
-                                                   [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 18 ? 20 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 18 ? 20 : box.config.sizex*5 ) ">
-                                                    {{box.tile.characterStatTiles?.charactersCharacterStat?.text}}
-                                                </p>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.LINK && box.tile.linkTiles" [ngClass]="(box.tile.linkTiles?.shape=='50')?'grid-rounded':(box.tile.linkTiles?.shape=='100')?'grid-circle':''">
-                                <div class="tile tile-type-note tile-color-6" [style.background-color]="box.tile.linkTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
-                                    <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.linkTiles.titleTextColor, 'background-color': box.tile.linkTiles.titleBgColor}"
-                                        *ngIf="box.tile.linkTiles?.showTitle" popover="{{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name : ''}}" triggers="hover"
-                                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
-                                        {{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name : ''}}
-                                    </h5>
-                                    <div class="tile-body" popover="{{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name : ''}}" [triggers]="!box.tile.linkTiles?.showTitle ? 'hover' : ''">
-                                        <img [src]="box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.imageUrl : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.imageUrl : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.itemImage : box.tile.linkTiles?.item?.itemImage"
-                                             [alt]="box.tile.linkTiles?.title" class="imgwidth"
-                                             (error)="getErrorImage(refImg,box.tile.linkTiles)"
-                                             #refImg>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.EXECUTE && box.tile.executeTiles" [ngClass]="(box.tile.executeTiles?.shape=='50')?'grid-rounded':(box.tile.executeTiles?.shape=='100')?'grid-circle':''">
-                                <div class="tile tile-type-note tile-color-6" [style.background-color]="box.tile.executeTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
-                                    <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.executeTiles.titleTextColor, 'background-color': box.tile.executeTiles.titleBgColor}"
-                                        *ngIf="box.tile.executeTiles?.showTitle" popover="{{box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}" triggers="hover"
-                                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
-                                        {{box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}
-                                    </h5>
-
-                                    <div class="tile-body" popover="{{box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}" [triggers]="!box.tile.executeTiles?.showTitle ? 'hover' : ''">
-                                        <img [src]="box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.imageUrl : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.imageUrl : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.itemImage : box.tile.executeTiles?.item?.itemImage"
-                                             [alt]="box.tile.executeTiles?.title" class="imgwidth"
-                                             (error)="getErrorImage(refImg,box.tile.executeTiles)"
-                                             #refImg>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.COMMAND && box.tile.commandTiles" [ngClass]="(box.tile.commandTiles?.shape=='50')?'grid-rounded':(box.tile.commandTiles?.shape=='100')?'grid-circle':''">
-                                <div class="tile tile-type-image tile-color-6" [style.background-color]="box.tile.commandTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
-                                    <h5 *ngIf="box.tile.commandTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
-                                        popover="{{box.tile.commandTiles?.title}}" triggers="hover"
-                                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
-                                        {{box.tile.commandTiles?.title}}
-                                    </h5>
-
-                                    <div class="tile-body">
-                                        <img *ngIf="box.tile.commandTiles?.imageUrl !== '' && box.tile.commandTiles?.imageUrl !== null && box.tile.commandTiles?.imageUrl !== undefined"
-                                             [src]="box.tile.commandTiles?.imageUrl" [alt]="box.tile.commandTiles?.title" class="imgwidth">
-                                        <img *ngIf="box.tile.commandTiles?.imageUrl === '' || box.tile.commandTiles?.imageUrl === null || box.tile.commandTiles?.imageUrl === undefined"
-                                             src="https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png" [alt]="box.tile.commandTiles?.title" class="imgwidth">
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.TEXT && box.tile.textTiles" [ngClass]="(box.tile.textTiles?.shape=='50')?'grid-rounded':(box.tile.textTiles?.shape=='100')?'grid-circle':''">
-                                <div class="tile tile-type-note" [style.background-color]="box.tile.textTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
-                                    <h5 *ngIf="box.tile.textTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.textTiles.titleTextColor, 'background-color': box.tile.textTiles.titleBgColor}"
-                                        popover="{{box.tile.textTiles?.title}}" triggers="hover"
-                                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
-                                        {{box.tile.textTiles?.title}}
-                                    </h5>
-
-                                    <div class="tile-body">
-                                        <span class="text-center-v" [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)" [style.color]="box.tile.textTiles.bodyTextColor" [style.background-color]="box.tile.textTiles.bodyBgColor">
-                                            {{box.tile.textTiles?.displaytext ? box.tile.textTiles?.displaytext : box.tile.textTiles?.text}}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="" style="display:none;">
-            <ul class="page-toolbar-actions">
-                <li class="popup-new-tile-trigger">
-                    <button type="button" (click)="openTile()" class="btn icon icon-plus btn-primary"></button>
-                </li>
-            </ul>
-        </div>
+    <div style="display:inline;" *ngIf="selectedlayout?.characterDashboardPages?.length>1">
+      <button type="button" class="btn icon icon-with-text prev-button icon-Gen-BackArrow"
+              (click)="NextPrevPage(selectedlayout,false)"></button>
+      <button type="button" class="btn icon icon-with-text next-button icon-Gen-BackArrow"
+              (click)="NextPrevPage(selectedlayout,true)"></button>
     </div>
+
+
+    <div class="container height-fixed-grid" *ngIf="!isLoading">
+      <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Tiles have been added to this character. Click "Manage Tiles" to add some.</p>
+      <div [ngGrid]="gridConfig">
+
+        <div *ngFor="let box of boxes; let i = index" [(ngGridItem)]="box.config">
+
+          <!--<div *ngIf="box.IsCharacter">
+              <div class="tiles manage character handle">
+                  <div class="tile-group tile-group-item_counts ">
+                      <div class="tile tile-type-image tile-color-6">
+                          <h5 class="tile-title" popover="{{character.characterName}}" triggers="hover">{{character.characterName}}</h5>
+                          <div class="tile-body">
+                              <img [src]="character.imageUrl" [alt]="character.characterName"
+                                   onerror="this.src = '../assets/images/DefaultImages/Character.jpg';">
+                          </div>
+
+                      </div>
+                  </div>
+              </div>
+          </div>-->
+          <div *ngIf="!box.IsCharacter">
+            <div class="tiles manage colwidth handle">
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.NOTE && box.tile.noteTiles" [ngClass]="(box.tile.noteTiles?.shape=='50')?'grid-rounded':''">
+                <div class="tile tile-type-note" [style.background-color]="box.tile.noteTiles.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
+                  <h5 *ngIf="box.tile.noteTiles?.title" class="tile-title wraptext" popover="{{box.tile.noteTiles?.title}}" triggers="hover"
+                      [ngStyle]="{'color': box.tile.noteTiles.titleTextColor, 'background-color': box.tile.noteTiles.titleBgColor}"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                    {{box.tile.noteTiles?.title}}
+                  </h5>
+
+                  <div class="tile-body">
+                    <div class="" [ngClass]="(box.tile.noteTiles?.shape=='50')?'grid-rounded':''">
+                      <p [style.background-color]="white"
+                         [froalaView]="box.tile.noteTiles?.content">
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.IMAGE && box.tile.imageTiles" [ngClass]="(box.tile.imageTiles?.shape=='50')?'grid-rounded':(box.tile.imageTiles?.shape=='100')?'grid-circle':''">
+                <div class="tile tile-type-note" [style.background-color]="box.tile.imageTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
+                  <h5 *ngIf="box.tile.imageTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.imageTiles.titleTextColor, 'background-color': box.tile.imageTiles.titleBgColor}"
+                      popover="{{box.tile.imageTiles?.title}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                    {{box.tile.imageTiles?.title}}
+                  </h5>
+
+                  <div class="tile-body">
+                    <img onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png';" [src]="box.tile.imageTiles?.imageUrl" [alt]="box.tile.imageTiles?.title" class="imgwidth">
+                  </div>
+                </div>
+              </div>
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.COUNTER && box.tile.counterTiles" [ngClass]="(box.tile.counterTiles?.shape=='50')?'grid-rounded':(box.tile.counterTiles?.shape=='100')?'grid-circle':''">
+                <div class="tile tile-type-note tile-color-6" [style.background-color]="box.tile.counterTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
+                  <h5 *ngIf="box.tile.counterTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.counterTiles.titleTextColor, 'background-color': box.tile.counterTiles.titleBgColor}"
+                      popover="{{box.tile.counterTiles?.title}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                    {{box.tile.counterTiles?.title}}
+                  </h5>
+
+                  <div class="tile-body">
+                    <span [style.font-size.px]="box.config.sizex*box.config.sizey*5+30" class="textfont" [style.color]="box.tile.counterTiles.bodyTextColor" [style.background-color]="box.tile.counterTiles.bodyBgColor">
+                      {{box.tile.counterTiles?.currentValue}}
+                    </span>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.CHARACTERSTAT && box.tile.characterStatTiles" [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatTiles?.shape=='100')?'grid-circle':''">
+                <div class="tile tile-type-note tile-color-6" (click)="viewTile(box.tile, box.tile.tileTypeId)"
+                     [style.background-color]="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Command?((box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl)?box.tile.characterStatTiles.titleBgColor:box.tile.characterStatTiles.bodyBgColor):box.tile.characterStatTiles.bodyBgColor">
+
+                  <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.characterStatTiles?.titleTextColor, 'background-color': box.tile.characterStatTiles.titleBgColor}"
+                      *ngIf="(box.tile.characterStatTiles?.showTitle && box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId!==STAT_TYPE.Command)||(box.tile.characterStatTiles?.showTitle && box.tile?.characterStatTiles?.imageUrl && box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Command)"
+                      popover="{{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.statName}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                    {{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.statName}}
+                  </h5>
+
+                  <div class="tile-body">
+                    <div [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':''" [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                         [style.background-color]="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.RichText ? '' : (box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Command && box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl)?box.tile.characterStatTiles.titleBgColor:box.tile.characterStatTiles.bodyBgColor">
+
+                      <p [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                         [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 14 ? 16 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 14 ? 16 : box.config.sizex*4 ) "
+                         [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 18 ? 20 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 18 ? 20 : box.config.sizex*5 ) "
+                         *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Text">
+                        {{box.tile.characterStatTiles?.charactersCharacterStat?.text}}
+                      </p>
+
+                      <span style="color:#000" *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.RichText"
+                            [froalaView]="box.tile.characterStatTiles?.charactersCharacterStat?.richText">
+                      </span>
+
+                      <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Number" [style.font-size.px]="box.config.sizex*box.config.sizey*5+30" class="text-center-v">
+                        {{box.tile.characterStatTiles?.charactersCharacterStat?.number}}
+                      </span>
+                      <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.CurrentMax" [style.font-size.px]="box.config.sizex*box.config.sizey*2+11" class="text-center-v">
+                        {{box.tile.characterStatTiles?.charactersCharacterStat.current}} / {{box.tile.characterStatTiles?.charactersCharacterStat.maximum}}
+                      </span>
+
+                      <div class="text-center-v bold-whitebg-textblack" *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Choice">
+                        <p style="padding:0">
+                          <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isMultiSelect">
+                            <ng-container *ngFor="let choice of box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatChoices; let i = index">
+                              <ng-container *ngFor="let mChoice of box.tile.characterStatTiles?.charactersCharacterStat?.multiChoice?.split(';');let j = index">
+                                <span *ngIf="choice?.characterStatChoiceId===+mChoice && box.tile.characterStatTiles?.charactersCharacterStat?.multiChoice?.split(';')?.length>1"
+                                      [style.font-size.px]="((box.config.sizey+box.config.sizex)*2) < 16 ? 18 : ((box.config.sizey+box.config.sizex)*2)"
+                                      [style.line-height.px]="((box.config.sizey+box.config.sizex)*2+5)  < 18 ? 20 : ((box.config.sizey+box.config.sizex)*2+5)">
+                                  {{choice.statChoiceValue}}
+                                </span>
+                                <span *ngIf="choice?.characterStatChoiceId===+mChoice && box.tile.characterStatTiles?.charactersCharacterStat?.multiChoice?.split(';')?.length<=1"
+                                      [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
+                                      [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                  {{choice.statChoiceValue}}
+
+                                </span>
+                              </ng-container>
+                            </ng-container>
+                          </ng-container>
+                        </p>
+                        <ng-container *ngIf="!box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isMultiSelect">
+                          <p>
+                            <ng-container *ngFor="let choice of box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatChoices; let i = index">
+                              <span *ngIf="choice?.characterStatChoiceId===+box.tile.characterStatTiles?.charactersCharacterStat?.choice" [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
+                                    [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                {{choice.statChoiceValue}}
+                              </span>
+                            </ng-container>
+                          </p>
+                        </ng-container>
+                        <!--<span *ngIf="choice?.characterStatChoiceId===+box.tile.characterStatTiles?.charactersCharacterStat?.choice" [style.font-size.px]="box.config.sizex*box.config.sizey*5+16" class="text-center-v">
+                            {{choice.statChoiceValue}}
+                        </span>-->
+
+                      </div>
+
+                      <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.ValueSubValue" [style.font-size.px]="box.config.sizex*box.config.sizey*2+11" class="text-center-v">
+
+                        {{box.tile.characterStatTiles?.charactersCharacterStat.value}} ({{box.tile.characterStatTiles?.charactersCharacterStat.subValue}})
+                      </span>
+                      <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.OnOff" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
+                        {{box.tile.characterStatTiles?.charactersCharacterStat?.onOff ? 'ON' : 'OFF'}}
+                      </span>
+                      <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.YesNo" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
+                        {{box.tile.characterStatTiles?.charactersCharacterStat?.yesNo ? 'YES' : 'NO'}}
+                      </span>
+                      <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Calculation" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
+                        {{box.tile.characterStatTiles?.charactersCharacterStat?.calculationResult}}
+                      </span>
+                      <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Command">
+
+                        <img *ngIf="(box.tile.characterStatTiles?.showTitle && box.tile?.characterStatTiles?.imageUrl) || !box.tile.characterStatTiles?.showTitle"
+                             [src]="box.tile?.characterStatTiles?.imageUrl" [alt]="box.tile?.characterStatTiles?.imageUrl"
+                             class="imgwidth" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">
+
+                        <span *ngIf="box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl" class="text-center-v"
+                              [ngStyle]="{'color': box.tile.characterStatTiles?.titleTextColor, 'background-color': box.tile.characterStatTiles?.titleBgColor}"
+                              popover="{{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.statName}}" triggers="hover"
+                              [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey"
+                              [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey"
+                              [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
+                          {{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.statName}}
+                        </span>
+
+                      </span>
+                      <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Combo" class="text-center-v" [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                        {{box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue}}
+                        <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.comboText"> / {{box.tile.characterStatTiles?.charactersCharacterStat?.comboText}}</span>
+                      </span>
+
+                      <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Toggle">
+                        <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.yesNo">
+                          <span [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v noselect">{{box.tile.characterStatTiles?.charactersCharacterStat?.isYes ? 'YES' : 'NO'}}</span>
+                        </ng-container>
+                        <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.onOff">
+                          <span [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v noselect">{{box.tile.characterStatTiles?.charactersCharacterStat?.isOn ? 'ON' : 'OFF'}}</span>
+                        </ng-container>
+                        <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.display">
+                          <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.showCheckbox" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v icon-Gen-Check noselect"></span>
+                          <span *ngIf="!box.tile.characterStatTiles?.charactersCharacterStat?.showCheckbox" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v icon-Gen-Uncheck noselect"></span>
+                        </ng-container>
+
+
+                        <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.isCustom">
+                          <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterCustomToggles?.length">
+                            <ng-container *ngFor="let toggleVal of box.tile.characterStatTiles?.charactersCharacterStat?.characterCustomToggles; let i = index">
+                              <ng-container *ngIf="toggleVal.initial">
+                                <ng-container *ngIf="toggleVal.toggleText">
+
+                                  <p class="noselect" [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                                     [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                    {{toggleVal.toggleText}}
+                                  </p>
+                                </ng-container>
+                                <ng-container *ngIf="toggleVal.image">
+                                  <img class="imgwidth" [src]="toggleVal.image" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png';" />
+                                </ng-container>
+                              </ng-container>
+
+                            </ng-container>
+                          </ng-container>
+                        </ng-container>
+
+                      </ng-container>
+
+                      <div *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.LinkRecord">
+
+                        <img *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue" class="imgwidth" [src]="GetLinkRecordImage(box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue,box.tile.characterStatTiles?.charactersCharacterStat?.linkType)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png';" />
+
+                      </div>
+                      <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Condition">
+                        <p [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                           [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 14 ? 16 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 14 ? 16 : box.config.sizex*4 ) "
+                           [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 18 ? 20 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 18 ? 20 : box.config.sizex*5 ) ">
+                          {{box.tile.characterStatTiles?.charactersCharacterStat?.text}}
+                        </p>
+                      </ng-container>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.LINK && box.tile.linkTiles" [ngClass]="(box.tile.linkTiles?.shape=='50')?'grid-rounded':(box.tile.linkTiles?.shape=='100')?'grid-circle':''">
+                <div class="tile tile-type-note tile-color-6" [style.background-color]="box.tile.linkTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
+                  <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.linkTiles.titleTextColor, 'background-color': box.tile.linkTiles.titleBgColor}"
+                      *ngIf="box.tile.linkTiles?.showTitle" popover="{{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name : ''}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                    {{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name : ''}}
+                  </h5>
+                  <div class="tile-body" popover="{{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name : ''}}" [triggers]="!box.tile.linkTiles?.showTitle ? 'hover' : ''">
+                    <img [src]="box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.imageUrl : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.imageUrl : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.itemImage : box.tile.linkTiles?.item?.itemImage"
+                         [alt]="box.tile.linkTiles?.title" class="imgwidth"
+                         (error)="getErrorImage(refImg,box.tile.linkTiles)"
+                         #refImg>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.EXECUTE && box.tile.executeTiles" [ngClass]="(box.tile.executeTiles?.shape=='50')?'grid-rounded':(box.tile.executeTiles?.shape=='100')?'grid-circle':''">
+                <div class="tile tile-type-note tile-color-6" [style.background-color]="box.tile.executeTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
+                  <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.executeTiles.titleTextColor, 'background-color': box.tile.executeTiles.titleBgColor}"
+                      *ngIf="box.tile.executeTiles?.showTitle" popover="{{box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                    {{box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}
+                  </h5>
+
+                  <div class="tile-body" popover="{{box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}" [triggers]="!box.tile.executeTiles?.showTitle ? 'hover' : ''">
+                    <img [src]="box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.imageUrl : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.imageUrl : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.itemImage : box.tile.executeTiles?.item?.itemImage"
+                         [alt]="box.tile.executeTiles?.title" class="imgwidth"
+                         (error)="getErrorImage(refImg,box.tile.executeTiles)"
+                         #refImg>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.COMMAND && box.tile.commandTiles" [ngClass]="(box.tile.commandTiles?.shape=='50')?'grid-rounded':(box.tile.commandTiles?.shape=='100')?'grid-circle':''">
+                <div class="tile tile-type-image tile-color-6" [style.background-color]="box.tile.commandTiles?.title && box.tile.commandTiles?.imageUrl?.trim()?box.tile.commandTiles?.bodyBgColor:box.tile.commandTiles?.titleBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
+                  <h5 *ngIf="box.tile.commandTiles?.title && box.tile.commandTiles?.imageUrl?.trim()" class="tile-title wraptext" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
+                      popover="{{box.tile.commandTiles?.title}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                    {{box.tile.commandTiles?.title}}
+                  </h5>
+
+                  <div class="tile-body">
+
+                    <img *ngIf="box.tile.commandTiles?.imageUrl" [src]="box.tile.commandTiles?.imageUrl" [alt]="box.tile.commandTiles?.title"
+                         class="imgwidth" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">
+
+                    <span *ngIf="box.tile.commandTiles?.title && !box.tile.commandTiles?.imageUrl" class="text-center-v" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
+                          popover="{{box.tile.commandTiles?.title}}" triggers="hover"
+                          [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey" [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey" [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
+                      {{box.tile.commandTiles?.title}}
+                    </span>
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.TEXT && box.tile.textTiles" [ngClass]="(box.tile.textTiles?.shape=='50')?'grid-rounded':(box.tile.textTiles?.shape=='100')?'grid-circle':''">
+                <div class="tile tile-type-note" [style.background-color]="box.tile.textTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
+                  <h5 *ngIf="box.tile.textTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.textTiles.titleTextColor, 'background-color': box.tile.textTiles.titleBgColor}"
+                      popover="{{box.tile.textTiles?.title}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                    {{box.tile.textTiles?.title}}
+                  </h5>
+
+                  <div class="tile-body">
+                    <span class="text-center-v" [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)" [style.color]="box.tile.textTiles.bodyTextColor" [style.background-color]="box.tile.textTiles.bodyBgColor">
+                      {{box.tile.textTiles?.displaytext ? box.tile.textTiles?.displaytext : box.tile.textTiles?.text}}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="" style="display:none;">
+      <ul class="page-toolbar-actions">
+        <li class="popup-new-tile-trigger">
+          <button type="button" (click)="openTile()" class="btn icon icon-plus btn-primary"></button>
+        </li>
+      </ul>
+    </div>
+  </div>
 
 </div>
 

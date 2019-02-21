@@ -19,6 +19,7 @@ import { ImageSelectorComponent } from '../../image-interface/image-selector/ima
 import { FileUploadService } from "../../../core/common/file-upload.service";
 import { setTimeout } from 'timers';
 import { DeleteAccountComponent } from '../delete-account/delete-account.component';
+import { AppService1 } from '../../../app.service';
 
 @Component({
     selector: 'settings',
@@ -48,7 +49,8 @@ export class AccountSettingsComponent implements OnInit {
     constructor(
         private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
-        private userService: UserService, private localStorage: LocalStoreManager, private fileUploadService: FileUploadService,
+      private userService: UserService, private localStorage: LocalStoreManager, private fileUploadService: FileUploadService,
+      public appService: AppService1
     ) {
     }
 
@@ -233,7 +235,8 @@ export class AccountSettingsComponent implements OnInit {
                         this.alertService.showMessage(data.message, "", MessageSeverity.success);
 
                     this.bsModalRef.hide();
-                    this.destroyModalOnInit();
+                  this.destroyModalOnInit();
+                  this.appService.updateAccountSetting1(true);
                     this.sharedService.updateAccountSetting(true);
                 },
                 error => {

@@ -124,7 +124,7 @@ namespace DAL.Services
             {
                 try
                 {
-                    name = _context.CharacterSpells.Where(x => x.CharacterId == characterId && x.SpellId == spellId && x.IsDeleted!=true).FirstOrDefault().Spell.Name;
+                    name = _context.CharacterSpells.Where(x => x.CharacterId == characterId && x.SpellId == spellId && x.IsDeleted!=true).Include(x=>x.Spell).FirstOrDefault().Spell.Name;
                 }
                 catch (Exception ex)
                 {

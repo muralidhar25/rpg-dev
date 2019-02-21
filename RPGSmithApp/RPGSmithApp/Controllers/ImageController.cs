@@ -40,9 +40,9 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpGet("BingSearch")]
-        public async Task<IActionResult> BingSearch(string q)
+        public async Task<IActionResult> BingSearch(string q, int count=0)
         {
-            return Ok(_imageService.BingImageSearchAsync(q).Result);
+            return Ok(_imageService.BingImageSearchAsync(q,count).Result);
         }
 
         [HttpGet("BlobStock")]
@@ -51,10 +51,21 @@ namespace RPGSmithApp.Controllers
             return Ok(bs.BlobStockAllAsync());
         }
 
+        [HttpGet("BlobStockPaging")]
+        public async Task<IActionResult> BlobStock(int Count = 39, int previousContainerNumber = 0, int previousContainerImageNumber = 0)
+        {
+            return Ok(bs.BlobStockAllAsync(Count, previousContainerNumber,previousContainerImageNumber));
+        }
+
         [HttpGet("MyImages")]
         public async Task<IActionResult> MyImages(string q, string id)
         {
             return Ok(bs.BlobMyImagesAsync("user-" + id));
+        }
+        [HttpGet("MyImagesPaging")]
+        public async Task<IActionResult> MyImages(string q, string id, int Count = 39, int previousContainerImageNumber = 0)
+        {
+            return Ok(bs.BlobMyImagesAsync("user-" + id, Count, previousContainerImageNumber));
         }
 
         [HttpGet("GetBlobSpaceUsed")]
@@ -213,6 +224,36 @@ namespace RPGSmithApp.Controllers
             //    throw ex;
             //}
             //return BadRequest("No Image Selected");
+        }
+
+        [HttpPost("uploadImageToBlob")]
+        public async Task<IActionResult> uploadImageToBlob([FromBody] ImageViewModel model)
+        {
+            dynamic Response;
+           
+            try
+            {
+                Uri uri = new Uri(model.File);
+                if (uri.Host.Contains("rpgsmithsa.blob.core.windows.net"))
+                {
+                    Response = new ExpandoObject();
+                    Response.ImageUrl = model.File;
+                    Response.ThumbnailUrl = model.File;
+                    return Ok(Response);
+                }
+            }
+            catch (Exception ex) { }
+
+            var container = bs.GetCloudBlobContainer("user-" + model.UserId).Result;
+            string imageName = Guid.NewGuid().ToString() + ".jpg";
+            Response = new ExpandoObject();
+            if (model.Type == "base64")
+                Response.ImageUrl = bs.UploadImage_Base64(model.File, imageName, container).Result;
+            else if(model.Type == "url")
+                Response.ImageUrl = bs.UploadImage_URL(model.File, imageName, container).Result; 
+            //Response.ThumbnailUrl = Response.ImageUrl; // bs.UploadThumbnail_URL(file, imageName, container).Result;
+
+            return Ok(Response);
         }
 
         [HttpGet("BlobGetDefaultImage")]

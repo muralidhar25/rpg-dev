@@ -12,7 +12,8 @@
         </div>
         <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
     </div>
-    <div class="modal-body" [style.display]="isLoading==true?'none':'block'">
+    <div class="modal-body" [style.display]="isLoading==true?'none':'block'" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="2"
+                [infiniteScrollThrottle]="300" [scrollWindow]="false">
 
         <!-- Search query -->
         <div class="form-group form-group-unlabelled">

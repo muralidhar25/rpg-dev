@@ -1,38 +1,25 @@
-import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
+import { Component, OnInit} from '@angular/core';
+import { Router,  ActivatedRoute } from "@angular/router";
 import 'rxjs/add/operator/switchMap';
-
-import { AlertService, MessageSeverity, DialogType } from '../../../../core/common/alert.service';
-import { ConfigurationService } from '../../../../core/common/configuration.service';
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { AuthService } from "../../../../core/auth/auth.service";
-import { SharedService } from '../../../../core/services/shared.service';
+import { BsModalService, BsModalRef} from 'ngx-bootstrap';
+import { Items } from '../../../../core/models/view-models/items.model';
+import { ImageError, VIEW } from '../../../../core/models/enums';
 import { Utilities } from '../../../../core/common/utilities';
-import { DBkeys } from '../../../../core/common/db-keys';
+import { AlertService, MessageSeverity } from '../../../../core/common/alert.service';
+import { AuthService } from '../../../../core/auth/auth.service';
 import { LocalStoreManager } from '../../../../core/common/local-store-manager.service';
-import { CommonService } from "../../../../core/services/shared/common.service";
-import { ItemMasterService } from "../../../../core/services/item-master.service";
-import { ItemsService } from "../../../../core/services/items.service";
-import { AbilityService } from "../../../../core/services/ability.service";
-import { SpellsService } from "../../../../core/services/spells.service";
+import { SharedService } from '../../../../core/services/shared.service';
+import { ItemMasterService } from '../../../../core/services/item-master.service';
+import { FileUploadService } from '../../../../core/common/file-upload.service';
+import { ItemsService } from '../../../../core/services/items.service';
+import { CommonService } from '../../../../core/services/shared/common.service';
+import { AbilityService } from '../../../../core/services/ability.service';
+import { SpellsService } from '../../../../core/services/spells.service';
+import { DBkeys } from '../../../../core/common/db-keys';
+import { User } from '../../../../core/models/user.model';
 import { AddContainerComponent } from '../add-container/add-container.component';
 import { AddContainerItemComponent } from '../add-container-item/add-container-item.component';
-
-import { ItemMaster } from '../../../../core/models/view-models/item-master.model';
-import { itemMasterAbility } from '../../../../core/models/view-models/item-master-ability.model';
-import { itemMasterPlayer } from '../../../../core/models/view-models/item-master-player.model';
-import { itemMasterSpell } from '../../../../core/models/view-models/item-master-spell.model';
-import { User } from '../../../../core/models/user.model';
-import { VIEW, TILES, ImageError } from '../../../../core/models/enums';
-
-import { Items } from '../../../../core/models/view-models/items.model';
-import { FilterPipe } from "../../../../core/pipes/filter.pipe";
-import { ContainsPipe } from "../../../../core/pipes/contains.pipe";
-
 import { DiceComponent } from '../../../../shared/dice/dice/dice.component';
-import { FileUploadService } from "../../../../core/common/file-upload.service";
-import { BingSearchComponent } from '../../../../shared/image-interface/bing-search/bing-search.component';
 import { ImageSelectorComponent } from '../../../../shared/image-interface/image-selector/image-selector.component';
 
 @Component({
@@ -48,7 +35,7 @@ export class EditItemComponent implements OnInit {
     showWebButtons: boolean = false;
     ItemFormModal: any = new Items();
     fileToUpload: File = null;
-    numberRegex = "^(?:[0-9]+(?:\.[0-9]{0,8})?)?$";// "^((\\+91-?)|0)?[0-9]{0,2}$";
+    numberRegex = "^(?:[0-9]+(?:\.[0-9]{0,8})?)?$";// "^((\\+91-?)|0)?[0-9]{0,2}$"; 
     fromDetail: boolean = false;
     isFromCharacter: boolean = false;
     isFromCharacterId: number;
@@ -115,13 +102,13 @@ export class EditItemComponent implements OnInit {
 
     ngOnInit() {
         setTimeout(() => {
-
+            
             this.title = this.bsModalRef.content.title;
             let _view = this.button= this.bsModalRef.content.button;
             let _itemVM = this.bsModalRef.content.itemVM;
             if (this._ruleSetId == undefined)
                 this._ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-
+            
             this.setInitialValues(_itemVM, _view);
 
             this.initialize();
@@ -129,7 +116,7 @@ export class EditItemComponent implements OnInit {
     }
 
     private setInitialValues(itemVM, view) {
-
+        
         this.ItemFormModal = this.itemsService.itemModelData(itemVM, view);
         this.ItemFormModal.ruleSetId = this._ruleSetId;
 
@@ -162,10 +149,10 @@ export class EditItemComponent implements OnInit {
             this.authService.logout();
         else {
             this.isLoading = true;
-
+            
             this.itemsService.getAbilitySpellForItems_sp<any>(this.ItemFormModal.characterId, this.ItemFormModal.ruleSetId, this.ItemFormModal.itemId)
                 .subscribe(data => {
-
+                    
                     this.abilitiesList = data.abilityList;
                     this.spellsList = data.spellList;
                     this.selectedAbilities = data.selectedAbilityList.map(x => { return x; });
@@ -277,7 +264,7 @@ export class EditItemComponent implements OnInit {
             this.ItemFormModal.itemAbilityVM = _itemAbilityVM;
         }
     }
-
+    
     onChangeContainer(event) {
         if (event.target.checked) {
             this.ItemFormModal.quantity = 1;
@@ -289,7 +276,7 @@ export class EditItemComponent implements OnInit {
         this.fileToUpload = _files.item(0);
         this.showWebButtons = false;
     }
-
+    
     validateImageSize() {
         if ((this.fileToUpload.size / 1024) <= 250) {
             return true;
@@ -298,7 +285,7 @@ export class EditItemComponent implements OnInit {
     }
 
     validateSubmit(item: any) {
-
+        
         item.itemAbilities = this.selectedAbilities.map(x => {
             return { abilityId: x.abilityId, itemId: item.itemId };
         });
@@ -312,7 +299,7 @@ export class EditItemComponent implements OnInit {
             else return x.value;
         });
         item.metatags = tagsValue.join(', ');
-
+        
         if (!item.character) {
             item.character = {
                 ruleSetId: item.ruleSetId,
@@ -345,7 +332,7 @@ export class EditItemComponent implements OnInit {
                 extension = extension ? extension : 'jpg';
             } catch{ }
             this.fileUploadFromBing(this.ItemFormModal.itemImage, extension, item);
-        }
+        }      
         else {
             this.submit(item);
         }
@@ -424,7 +411,7 @@ export class EditItemComponent implements OnInit {
 
     updateItem(modal: any) {
         this.isLoading = true;
-
+        
         this.itemsService.updateItem<any>(modal)
             .subscribe(
                 data => {
@@ -522,16 +509,16 @@ export class EditItemComponent implements OnInit {
         this.bsModalRef.content.itemName = item.containerName;
         this.bsModalRef.content.contains = item.contains;
         this.bsModalRef.content.containerItemId = item.containerItemId;
-
+        
     }
 
     resetToOriginal(ItemFormModal: Items) {
-
+        
         this.isLoading = true;
         this.itemsService.resetItemToOriginal(ItemFormModal)
             .subscribe(
             data => {
-
+                
                     this.isLoading = false;
                     this.setInitialValues(data, 'UPDATE')
                 },
@@ -601,13 +588,13 @@ export class EditItemComponent implements OnInit {
     }
 
     onInputBlurred(event: any) {
-
+          
     }
     onItemRemoved(event: any) {
-
+        
     }
     onItemAdded(event: any) {
-
+        
     }
 
     openDiceModal(index, command) {

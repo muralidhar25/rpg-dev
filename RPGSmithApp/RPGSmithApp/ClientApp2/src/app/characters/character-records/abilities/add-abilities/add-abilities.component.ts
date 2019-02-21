@@ -1,25 +1,19 @@
-import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { Router,  ActivatedRoute } from "@angular/router";
 import 'rxjs/add/operator/switchMap';
-import { AlertService, MessageSeverity, DialogType } from '../../../../core/common/alert.service';
-import { ConfigurationService } from '../../../../core/common/configuration.service';
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { AuthService } from "../../../../core/auth/auth.service";
-import { SharedService } from '../../../../core/services/shared.service';
-import { Utilities } from '../../../../core/common/utilities';
-import { DBkeys } from '../../../../core/common/db-keys';
-import { LocalStoreManager } from '../../../../core/common/local-store-manager.service';
-import { CommonService } from "../../../../core/services/shared/common.service";
-import { AbilityService } from "../../../../core/services/ability.service";
-import { CharacterAbilityService } from "../../../../core/services/character-abilities.service";
-
-import { User } from '../../../../core/models/user.model';
-import { Ability } from '../../../../core/models/view-models/ability.model';
+import { BsModalService, BsModalRef} from 'ngx-bootstrap';
 import { CharacterAbilities } from '../../../../core/models/view-models/character-abilities.model';
+import { AlertService, MessageSeverity } from '../../../../core/common/alert.service';
+import { CommonService } from '../../../../core/services/shared/common.service';
+import { LocalStoreManager } from '../../../../core/common/local-store-manager.service';
+import { SharedService } from '../../../../core/services/shared.service';
+import { AbilityService } from '../../../../core/services/ability.service';
+import { AuthService } from '../../../../core/auth/auth.service';
+import { CharacterAbilityService } from '../../../../core/services/character-abilities.service';
+import { DBkeys } from '../../../../core/common/db-keys';
+import { User } from '../../../../core/models/user.model';
+import { Utilities } from '../../../../core/common/utilities';
 import { VIEW } from '../../../../core/models/enums';
-import { FilterPipe } from "../../../../core/pipes/filter.pipe";
-import { ContainsPipe } from "../../../../core/pipes/contains.pipe";
 
 @Component({
     selector: 'app-add-abilities',
@@ -138,7 +132,8 @@ export class AddCharaterAbilityComponent implements OnInit {
                     this.alertService.stopLoadingMessage();
                     let message = "Ability added successfully.";
                     this.alertService.showMessage(message, "", MessageSeverity.success);
-                    this.bsModalRef.hide();
+                  this.bsModalRef.hide();
+                  
                     this.sharedService.UpdateCharacterAbilityList(true);
                 },
                 error => {

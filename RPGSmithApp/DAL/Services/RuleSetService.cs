@@ -404,6 +404,28 @@ namespace DAL.Services
 
         }
 
+
+        public List<RuleSet> GetRuleSetToCreateCharacterByUserId(string UserId, int page, int pageSize)
+        {
+            List<RuleSet> UserRulesets = _context.RuleSets.Include(p => p.AspNetUser).Where(x => x.AspNetUser.Id == UserId && x.IsDeleted != true).OrderBy(x=>x.RuleSetName).ToList();
+
+            var CoreRuleSetIdsToRemove = UserRulesets.Where(x => x.ParentRuleSetId != null).Select(x => x.ParentRuleSetId).ToArray();
+
+            List<RuleSet> CoreRulesets = _context.RuleSets.Where(x => x.IsCoreRuleset == true && x.IsAllowSharing == true && x.CreatedBy != UserId && x.IsDeleted != true).OrderBy(x => x.SortOrder).ThenBy(x => x.RuleSetName).ToList();
+
+            CoreRulesets = CoreRulesets.Where(x => !CoreRuleSetIdsToRemove.Contains(x.RuleSetId)).ToList();
+
+            foreach (var ruleset in UserRulesets)
+            {
+                ruleset.IsCoreRuleset = false;
+            }
+
+            List<RuleSet> result = new List<RuleSet>();
+            result.AddRange(UserRulesets);
+            result.AddRange(CoreRulesets);
+
+            return result.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
+        }
         public async Task<RuleSet> ImportRuleSetByCode(string code)
         {
             return _context.RuleSets
@@ -782,6 +804,10 @@ namespace DAL.Services
             }
             return GetDiceTray(rulesetID);
 
+        }
+        public string GetUserImageFromRulesetID(int ruleSetId)
+        {
+            return _context.RuleSets.Where(x=>x.RuleSetId== ruleSetId).Include(x=>x.AspNetUser).Select(x=>x.AspNetUser.ProfileImage).FirstOrDefault();
         }
         #endregion
     }

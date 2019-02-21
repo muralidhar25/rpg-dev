@@ -88,7 +88,7 @@ export class RulesetManageComponent implements OnInit,OnChanges {
     characterStats(ruleset: Ruleset) {
         this.close();    
         this.rulesetService.ruleset = ruleset;
-        this.router.navigate(['/character-stats', ruleset.ruleSetId]);
+        this.router.navigate(['/ruleset/character-stats', ruleset.ruleSetId]);
     }
 
 

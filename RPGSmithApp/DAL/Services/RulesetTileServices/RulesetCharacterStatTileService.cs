@@ -57,6 +57,7 @@ namespace DAL.Services.RulesetTileServices
             cstile.titleTextColor = item.titleTextColor;
             cstile.Shape = item.Shape;
             cstile.SortOrder = item.SortOrder;
+            cstile.ImageUrl = item.ImageUrl;
             try
             {
                 await _repo.Update(cstile);

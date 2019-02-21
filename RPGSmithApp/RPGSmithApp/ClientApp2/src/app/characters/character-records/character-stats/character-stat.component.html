@@ -106,8 +106,8 @@
         <div class="col-lg-6 col-md-6 col-6">
             <div class="form-group">
                 <div class="input-extend">
-                    <a (click)="manageRuleSetCharacterStats()" class="btn icon icon-with-text icon-external btn-link-primary d-block d-md-none text-left"><span style="color:#be8917;">Manage</span></a>
-                    <a (click)="manageRuleSetCharacterStats()" class="btn icon icon-with-text icon-external d-none d-md-block btn-link-primary text-left"><span style="color:#be8917;">Manage Rule Set Character Stats</span></a>
+                    <a (click)="navigateTo(5)" class="btn icon icon-with-text icon-external btn-link-primary d-block d-md-none text-left"><span style="color:#be8917;">Manage</span></a>
+                    <a (click)="navigateTo(5)" class="btn icon icon-with-text icon-external d-none d-md-block btn-link-primary text-left"><span style="color:#be8917;">Manage Rule Set Character Stats</span></a>
                 </div>
             </div>
         </div>
@@ -128,20 +128,20 @@
 
                 <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
                     <div class="modifier-icon">
-                        <div *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
-                        <div *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon  iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 col-md-3 col-sm-3 col-3">
                     <div class="form-group desktop-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label class="labelcharstat" popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover">
                             {{characterstat.displayStatName }}
                         </label>
 
                     </div>
                     <div class="form-group mobile-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label class="labelcharstat" popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc">
                             {{characterstat.mobiledisplayStatName }}
                         </label>
                     </div>
@@ -158,20 +158,20 @@
 
                 <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
                     <div class="modifier-icon">
-                        <div *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
-                        <div *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon  iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 col-md-3 col-sm-3 col-3">
                     <div class="form-group desktop-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover"  class="labelcharstat">
                             {{characterstat.displayStatName }}
                         </label>
 
                     </div>
                     <div class="form-group mobile-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover"  class="labelcharstat">
                             {{characterstat.mobiledisplayStatName }}
                         </label>
                     </div>
@@ -200,26 +200,27 @@
 
                 <div class="col-lg-1 col-md-1 col-sm-1 col-1  icon-charstat">
                     <div class="modifier-icon">
-                        <div *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
-                        <div *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon  iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-3 col-3">
                     <div class="form-group desktop-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.displayStatName }}
                         </label>
 
                     </div>
                     <div class="form-group mobile-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.mobiledisplayStatName }}
                         </label>
                     </div>
                 </div>
                 <div class="col-lg-7 col-md-7 col-sm-8 col-8">
                     <div class="form-group">
-                        <input placeholder="Number" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'number')" (ngModelChange)="mychange($event)" class="form-control" type="text" [(ngModel)]="characterstat.number" (change)="DefaultDefValueOnchange($event, characterstat,DefVal_STATTYPE.Number);">
+                        <input placeholder="Number" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'number')" (ngModelChange)="mychange($event)" class="form-control" type="text"
+                               [(ngModel)]="characterstat.number" (change)="DefaultDefValueOnchange($event, characterstat,DefVal_STATTYPE.Number);">
                     </div>
                 </div>
             </div>
@@ -228,20 +229,20 @@
 
                 <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
                     <div class="modifier-icon">
-                        <div *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
-                        <div *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon  iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 col-md-3 col-sm-3 col-3">
                     <div class="form-group desktop-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.displayStatName }}
                         </label>
 
                     </div>
                     <div class="form-group mobile-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.mobiledisplayStatName }}
                         </label>
                     </div>
@@ -265,20 +266,20 @@
             <div class="form-row" *ngIf="characterstat.characterStat.characterStatType.statTypeName =='Choice' && characterstat.characterStat.isMultiSelect !=true">
                 <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
                     <div class="modifier-icon">
-                        <div *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
-                        <div *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon  iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 col-md-3 col-sm-3 col-3">
                     <div class="form-group desktop-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.displayStatName }}
                         </label>
 
                     </div>
                     <div class="form-group mobile-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.mobiledisplayStatName }}
                         </label>
                     </div>
@@ -305,20 +306,20 @@
 
                 <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
                     <div class="modifier-icon">
-                        <div *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
-                        <div *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon  iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 col-md-3 col-sm-3 col-3">
                     <div class="form-group desktop-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.displayStatName }}
                         </label>
 
                     </div>
                     <div class="form-group mobile-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.mobiledisplayStatName }}
                         </label>
                     </div>
@@ -344,20 +345,20 @@
 
                 <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
                     <div class="modifier-icon">
-                        <div *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon  iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
-                        <div *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 col-md-3 col-sm-3 col-3">
                     <div class="form-group desktop-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.displayStatName }}
                         </label>
 
                     </div>
                     <div class="form-group mobile-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.mobiledisplayStatName }}
                         </label>
                     </div>
@@ -390,20 +391,20 @@
 
                 <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
                     <div class="modifier-icon">
-                        <div *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
-                        <div *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 col-md-3 col-sm-3 col-3">
                     <div class="form-group desktop-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.displayStatName }}
                         </label>
 
                     </div>
                     <div class="form-group mobile-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.mobiledisplayStatName }}
                         </label>
                     </div>
@@ -439,20 +440,20 @@
 
                 <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
                     <div class="modifier-icon">
-                        <div *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
-                        <div *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 col-md-3 col-sm-3 col-3">
                     <div class="form-group desktop-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.displayStatName }}
                         </label>
 
                     </div>
                     <div class="form-group mobile-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.mobiledisplayStatName }}
                         </label>
                     </div>
@@ -476,20 +477,20 @@
 
                 <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
                     <div class="modifier-icon">
-                        <div *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
-                        <div *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 col-md-3 col-sm-3 col-3">
                     <div class="form-group desktop-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.displayStatName }}
                         </label>
 
                     </div>
                     <div class="form-group mobile-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.mobiledisplayStatName }}
                         </label>
                     </div>
@@ -518,20 +519,20 @@
 
                 <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
                     <div class="modifier-icon">
-                        <div *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
-                        <div *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 col-md-3 col-sm-3 col-3">
                     <div class="form-group desktop-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.displayStatName }}
                         </label>
 
                     </div>
                     <div class="form-group mobile-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.mobiledisplayStatName }}
                         </label>
                     </div>
@@ -554,19 +555,19 @@
 
                 <div class="col-lg-1 col-md-1 col-sm-1 col-1  icon-charstat">
                     <div class="modifier-icon">
-                        <div *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
-                        <div *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon  iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-3 col-3">
                     <div class="form-group desktop-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.displayStatName }}
                         </label>
 
                     </div>
                     <div class="form-group mobile-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.mobiledisplayStatName }}
                         </label>
                     </div>
@@ -587,19 +588,19 @@
             <div class="form-row margin-bottom" *ngIf="characterstat.characterStat.characterStatType.statTypeName =='Toggle'">
                 <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
                     <div class="modifier-icon">
-                        <div *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon  iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
-                        <div *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-3 col-3">
                     <div class="form-group desktop-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.displayStatName }}
                         </label>
 
                     </div>
                     <div class="form-group mobile-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.mobiledisplayStatName }}
                         </label>
                     </div>
@@ -692,20 +693,20 @@
 
                 <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
                     <div class="modifier-icon">
-                        <div *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
-                        <div *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon  iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 col-md-3 col-sm-3 col-3">
                     <div class="form-group desktop-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.displayStatName }}
                         </label>
 
                     </div>
                     <div class="form-group mobile-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.mobiledisplayStatName }}
                         </label>
                     </div>
@@ -794,20 +795,20 @@
 
                 <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
                     <div class="modifier-icon">
-                        <div *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
-                        <div *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon  iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon  iconstat icon-ico" [ngClass]="characterstat.icon"></div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 col-md-3 col-sm-3 col-3">
                     <div class="form-group desktop-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.displayStatName }}
                         </label>
 
                     </div>
                     <div class="form-group mobile-view">
-                        <label class="labelcharstat" [title]="characterstat.characterStat.statDesc==null ? characterstat.displayStatName : characterstat.characterStat.statDesc">
+                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
                             {{characterstat.mobiledisplayStatName }}
                         </label>
                     </div>
@@ -828,13 +829,13 @@
 
     </div>
     <div class="spinner" *ngIf="scrollLoading">
-        <img src="../../../../../../assets/images/PageLoader.gif" />
+        <img src="../../../../assets/images/PageLoader.gif" />
     </div>
     <div class="form-row" style="margin-top:20px;" *ngIf="!isLoading">
         <div class="col-lg-6 col-md-6 col-sm-12 col-12">
             <div class="form-group">
                 <div class="input-extend">
-                    <a (click)="manageRuleSetCharacterStats()" class="btn icon icon-with-text icon-external btn-link-primary"><span style="color:#be8917;">Manage Rule Set Character Stats</span></a>
+                    <a (click)="navigateTo(5)" class="btn icon icon-with-text icon-external btn-link-primary"><span style="color:#be8917;">Manage Rule Set Character Stats</span></a>
                 </div>
             </div>
         </div>
@@ -842,12 +843,9 @@
             <div class="form-group form-group d-flex justify-content-end width-control">
                 <button class="btn btn-link btn-cancel" (click)="cancelClick()">Cancel</button>
                 <button type="submit" (click)="save(charactersCharacterStats,0)" class="btn btn-accent">Save</button>
-
             </div>
         </div>
     </div>
-
-
 </div>
 
 <app-loader [isLoading]="isLoading"></app-loader>

@@ -1,0 +1,28 @@
+/**
+ * Fonts -----------------------------------------------------------------------
+ */
+
+
+// Google Fonts ----------------------------------------------------------------
+@each $font in $fonts-google {
+    @include font-google($font);
+}
+
+
+// Local Fonts -----------------------------------------------------------------
+@each $family, $properties in $fonts-local {
+
+    $file   : map-get($properties, "file");
+    $style  : normal;
+    $weight : normal;
+
+    @if map-has-key($properties, "style") {
+        $style: map-get($properties, "style");
+    }
+
+    @if map-has-key($properties, "weight") {
+        $weight: map-get($properties, "weight");
+    }
+
+    @include font-local($family, $file, $style, $weight);
+}

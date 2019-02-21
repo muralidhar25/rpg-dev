@@ -162,7 +162,8 @@ namespace RPGSmithApp.Controllers
                                 Maximum = _characterStatComboVM.Maximum,
                                 Minimum = _characterStatComboVM.Minimum,
                                 DefaultValue = _characterStatComboVM.DefaultValue,
-                                CharacterStatId = result.CharacterStatId
+                                CharacterStatId = result.CharacterStatId,
+                                DefaultText= _characterStatComboVM.DefaultText
                             });
                         }
                     }
@@ -285,6 +286,7 @@ namespace RPGSmithApp.Controllers
                             _charactersCharacterStat.Maximum = _characterStatComboVM.Maximum ?? 0;
                             _charactersCharacterStat.Minimum = _characterStatComboVM.Minimum ?? 0;
                             _charactersCharacterStat.DefaultValue = _characterStatComboVM.DefaultValue;
+                            _charactersCharacterStat.ComboText = _characterStatComboVM.DefaultText;
                         }
                         if (_characterStatToggleVM != null && (int)STAT_TYPE.Toggle == result.CharacterStatTypeId) {
                             _charactersCharacterStat.Display = _characterStatToggleVM.Display;
@@ -518,6 +520,7 @@ namespace RPGSmithApp.Controllers
                         Maximum = _characterStatComboVM.Maximum,
                         Minimum = _characterStatComboVM.Minimum,
                         DefaultValue = _characterStatComboVM.DefaultValue,
+                        DefaultText = _characterStatComboVM.DefaultText,
                         CharacterStatId = result.CharacterStatId
                     });
                 }
@@ -761,6 +764,7 @@ namespace RPGSmithApp.Controllers
                         Maximum = _characterStatComboVM.Maximum,
                         Minimum = _characterStatComboVM.Minimum,
                         DefaultValue = _characterStatComboVM.DefaultValue,
+                        DefaultText = _characterStatComboVM.DefaultText,
                         CharacterStatId = result.CharacterStatId
                     });
                 }

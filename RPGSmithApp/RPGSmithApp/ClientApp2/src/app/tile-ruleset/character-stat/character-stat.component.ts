@@ -1,25 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { LocalStoreManager } from '../../core/common/local-store-manager.service';
-import { User } from '../../core/models/user.model';
-import { DBkeys } from '../../core/common/db-keys';
-import { AuthService } from '../../core/auth/auth.service';
 import { ActivatedRoute } from '@angular/router';
-import { CharacterStatTile } from '../../core/models/tiles/character-stat-tile.model';
-import { CharacterStatTileService } from '../../core/services/tiles/character-stat-tile.service';
-import { CharactersCharacterStatService } from '../../core/services/characters-character-stat.service';
-import { MessageSeverity, AlertService } from '../../core/common/alert.service';
-import { Utilities } from '../../core/common/utilities';
-import { VIEW, SHAPE_CLASS, SHAPE } from '../../core/models/enums';
-import { SharedService } from "../../core/services/shared.service";
-import { ColorService } from '../../core/services/tiles/color.service';
 import { RulesetTile } from '../../core/models/tiles/ruleset-tile.model';
 import { Color } from '../../core/models/tiles/color.model';
+import { CharacterStatTile } from '../../core/models/tiles/character-stat-tile.model';
+import { VIEW, SHAPE_CLASS, SHAPE } from '../../core/models/enums';
 import { RulesetDashboardPage } from '../../core/models/view-models/ruleset-dashboard-page.model';
-import { ColorsComponent } from '../../tile/colors/colors.component';
-import { CharacterStatService } from '../../core/services/character-stat.service';
-import { CharacterStats } from '../../core/models/view-models/character-stats.model';
+import { SharedService } from '../../core/services/shared.service';
+import { LocalStoreManager } from '../../core/common/local-store-manager.service';
+import { ColorService } from '../../core/services/tiles/color.service';
+import { AuthService } from '../../core/auth/auth.service';
 import { RulesetTileService } from '../../core/services/ruleset-tile.service';
+import { CharacterStatService } from '../../core/services/character-stat.service';
+import { CharacterStatTileService } from '../../core/services/tiles/character-stat-tile.service';
+import { CharactersCharacterStatService } from '../../core/services/characters-character-stat.service';
+import { AlertService, MessageSeverity } from '../../core/common/alert.service';
+import { DBkeys } from '../../core/common/db-keys';
+import { User } from '../../core/models/user.model';
+import { CharacterStats } from '../../core/models/view-models/character-stats.model';
+import { Utilities } from '../../core/common/utilities';
+import { ColorsComponent } from '../../tile/colors/colors.component';
 
 @Component({
     selector: 'app-character-stat',
@@ -44,7 +44,7 @@ export class RulesetCharacterStatTileComponent implements OnInit {
     tileColor: any;
     rangeValue: number;
     VIEW = VIEW;
-
+        
     rulesetTileModel = new RulesetTile();
     characterStatTileFormModal = new CharacterStatTile();
     pageId: number;
@@ -67,7 +67,7 @@ export class RulesetCharacterStatTileComponent implements OnInit {
 
 
         private rulesetTileService: RulesetTileService,
-
+        
 
         private charactersService: CharacterStatService,
         public characterStatTileService: CharacterStatTileService,
@@ -86,7 +86,7 @@ export class RulesetCharacterStatTileComponent implements OnInit {
             let model = this.bsModalRef.content.tile;
             let view = this.bsModalRef.content.view;
             this.pageDefaultData = this.bsModalRef.content.pageDefaultData;
-
+            
             this.rulesetTileModel = this.characterStatTileService.rulesetCharacterStatTileModelData(model, this.rulesetId, this.pageId, view, this.pageDefaultData);
             this.characterStatTileFormModal = Object.assign({}, this.rulesetTileModel.characterStatTile);
             this.characterStatTileFormModal.color = this.rulesetTileModel.color;
@@ -95,7 +95,7 @@ export class RulesetCharacterStatTileComponent implements OnInit {
             this.Initialize(view, this.characterStatTileFormModal);
 
             this.shapeClass = this.characterStatTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.characterStatTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
-            this.showTitle = this.characterStatTileFormModal.showTitle;
+            this.showTitle = this.characterStatTileFormModal.showTitle;            
         }, 0);
     }
 
@@ -133,7 +133,7 @@ export class RulesetCharacterStatTileComponent implements OnInit {
                     let _colorList = [];
                     let _hasSame = 0;
                     data.forEach((val, index)=> {
-
+                        
                         let _selected = false;
                         if (index == 0 && Tile.view == VIEW.ADD) {
                             _selected = true;
@@ -183,7 +183,7 @@ export class RulesetCharacterStatTileComponent implements OnInit {
                     else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
                 }, () => { });
             try {
-
+                
                 this.selectedStatType = view == VIEW.EDIT
                     ? this.rulesetTileModel.characterStatTile.charactersCharacterStat.characterStat.characterStatTypeId
                     : 0;
@@ -199,8 +199,8 @@ export class RulesetCharacterStatTileComponent implements OnInit {
             this.limitText = "Show more";
             this.limit = 4;
         }
-    }
-
+    }   
+        
     showMoreColorFields() {
         if (this.showMoreLessColorToggle) {
             this.showMoreLessColorText = "Show Less";
@@ -343,20 +343,21 @@ export class RulesetCharacterStatTileComponent implements OnInit {
     }
 
     getStatValueEdit(event: any, stat: any) {
-
+        
         this.characterStatId = stat.characterStatId;
         this.characterStatTileFormModal.characterStatId = stat.characterStatId;
         this.selectedStatType = stat.characterStatTypeViewModel.characterStatTypeId;
         this.rulesetTileModel.multiCharacterStats = [];
         this.rulesetTileModel.multiCharacterStats.push({
             characterStatId: stat.characterStatId,
-            characterStatTypeId: stat.characterStatTypeViewModel.characterStatTypeId
+            characterStatTypeId: stat.characterStatTypeViewModel.characterStatTypeId,
+            image: undefined
         });
 
     }
 
     getStatValue(event: any, stat: any) {
-
+        
         if (event.target.checked) {
 
             this.characterStatId = stat.characterStatId;
@@ -365,7 +366,8 @@ export class RulesetCharacterStatTileComponent implements OnInit {
 
             this.rulesetTileModel.multiCharacterStats.push({
                 characterStatId: stat.characterStatId,
-                characterStatTypeId: stat.characterStatTypeViewModel.characterStatTypeId
+                characterStatTypeId: stat.characterStatTypeViewModel.characterStatTypeId,
+                image: undefined
             });
         }
         else {
@@ -443,7 +445,7 @@ export class RulesetCharacterStatTileComponent implements OnInit {
                     this.alertService.stopLoadingMessage();
                     let message = modal.characterStatTile.characterStatTileId == 0 || modal.characterStatTile.characterStatTileId === undefined ? "Character Stat Tile has been added successfully." : "Character Stat Tile has been updated successfully.";
                     this.alertService.showMessage(message, "", MessageSeverity.success);
-
+                    
                     this.sharedService.updateRulesetDashboard(data);
                     this.close();
                 },
@@ -452,15 +454,15 @@ export class RulesetCharacterStatTileComponent implements OnInit {
                     this.alertService.stopLoadingMessage();
                     let _message = modal.characterStatTile.characterStatTileId == 0 || modal.characterStatTile.characterStatTileId === undefined ? "Unable to Add " : "Unable to Update ";
                     let Errors = Utilities.ErrorDetail(_message, error);
-                    if (Errors.sessionExpire)
+                    if (Errors.sessionExpire) 
                         this.authService.logout(true);
-                    else
+                    else 
                         this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
                 },
             );
     }
-
-
+    
+    
     close() {
         this.bsModalRef.hide();
         this.destroyModalOnInit()
@@ -473,5 +475,14 @@ export class RulesetCharacterStatTileComponent implements OnInit {
             //$(".modal-backdrop").remove();
         } catch (err) { }
     }
-
+    IsStatChecked(stat: any):boolean {
+        if (this.rulesetTileModel.multiCharacterStats) {
+            if (this.rulesetTileModel.multiCharacterStats.length) {
+                if (this.rulesetTileModel.multiCharacterStats.filter(x => x.characterStatId == stat.characterStatId).length) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

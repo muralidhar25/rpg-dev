@@ -1,19 +1,15 @@
 import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { AlertService, MessageSeverity, DialogType } from '../../../core/common/alert.service';
-import { ConfigurationService } from '../../../core/common/configuration.service';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { AuthService } from "../../../core/auth/auth.service";
+import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
+import { AuthService } from '../../../core/auth/auth.service';
 import { SharedService } from '../../../core/services/shared.service';
-import { Utilities } from '../../../core/common/utilities';
-import { DBkeys } from '../../../core/common/db-keys';
 import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
-import { CommonService } from "../../../core/services/shared/common.service";
-import { User } from '../../../core/models/user.model';
-import { VIEW } from '../../../core/models/enums';
-import { FilterPipe } from "../../../core/pipes/filter.pipe";
-import { ContainsPipe } from "../../../core/pipes/contains.pipe";
 import { RulesetService } from '../../../core/services/ruleset.service';
+import { CommonService } from '../../../core/services/shared/common.service';
+import { User } from '../../../core/models/user.model';
+import { DBkeys } from '../../../core/common/db-keys';
+import { Utilities } from '../../../core/common/utilities';
 
 @Component({
     selector: 'ruleset-add',
@@ -35,7 +31,7 @@ export class RulesetAddComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        setTimeout(() => {
+        setTimeout(() => {            
             this.addedRuleset = this.bsModalRef.content.rulesets;
             this.initialize();
         }, 0);
@@ -53,7 +49,7 @@ export class RulesetAddComponent implements OnInit {
                     this.rulesetsList.forEach(function (val) { val.showIcon = false; });
                     this.isLoading = false;
                 }, error => {
-                    this.isLoading = false;
+                    this.isLoading = false; 
                 }, () => { });
         }
     }

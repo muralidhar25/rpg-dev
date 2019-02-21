@@ -33,7 +33,26 @@
                     <!-- End of Layout default Page-->
                 </div>
             </div>
-
+            <div class="form-row title-show-hide" *ngIf="layoutFormModal.view==View.EDIT">
+                <div class="col-12">
+                    <h2>Default Layout for these Devices</h2>
+                </div>
+                <div class="col text-center">
+                    <i class="icon icon-Gen-Computer"></i>
+                    <p>Computer</p>
+                    <p><span><input type="checkbox" name="{{DeviceType.COMPUTER}}" [disabled]="layoutFormModal.isDefaultComputer" [(ngModel)]="layoutFormModal.isDefaultComputer" (change)="SelectDefaultLayout($event,chkDesktop,layoutFormModal,DeviceType.COMPUTER)" #chkDesktop /><span></span></span></p>
+                </div>
+                <div class="col text-center">
+                    <i class="icon icon-Gen-Tablet"></i>
+                    <p>Tablet</p>
+                    <p><span><input type="checkbox" name="{{DeviceType.TABLET}}" [disabled]="layoutFormModal.isDefaultTablet" [(ngModel)]="layoutFormModal.isDefaultTablet" (change)="SelectDefaultLayout($event,chkTablet,layoutFormModal,DeviceType.TABLET)" #chkTablet /><span></span></span></p>
+                </div>
+                <div class="col text-center">
+                    <i class="icon icon-Gen-Mobile"></i>
+                    <p>Phone</p>
+                    <p><span><input type="checkbox" name="{{DeviceType.MOBILE}}" [disabled]="layoutFormModal.isDefaultMobile" [(ngModel)]="layoutFormModal.isDefaultMobile" (change)="SelectDefaultLayout($event,chkPhone,layoutFormModal,DeviceType.MOBILE)" #chkPhone /><span></span></span></p>
+                </div>
+            </div>
             <!--No longer needs to be shown on UI-->
             <div class="form-group row hide hideContent">
                 <div class="col-md-6">

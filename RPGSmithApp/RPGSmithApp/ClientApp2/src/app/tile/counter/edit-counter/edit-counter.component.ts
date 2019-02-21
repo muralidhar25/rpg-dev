@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { CounterTileComponent } from '../counter.component';
 import { CounterTile } from '../../../core/models/tiles/counter-tile.model';
+import { CharacterTile } from '../../../core/models/tiles/character-tile.model';
 import { CharacterDashboardPage } from '../../../core/models/view-models/character-dashboard-page.model';
-import { VIEW } from '../../../core/models/enums';
-import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
-import { AuthService } from '../../../core/auth/auth.service';
 import { ColorService } from '../../../core/services/tiles/color.service';
-import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
 import { SharedService } from '../../../core/services/shared.service';
 import { CounterTileService } from '../../../core/services/tiles/counter-tile.service';
+import { AuthService } from '../../../core/auth/auth.service';
+import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
+import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
+import { CounterTileComponent } from '../counter.component';
+import { VIEW } from '../../../core/models/enums';
 import { Utilities } from '../../../core/common/utilities';
-import { CharacterTile } from '../../../core/models/tiles/character-tile.model';
 import { DiceRollComponent } from '../../../shared/dice/dice-roll/dice-roll.component';
 
 @Component({

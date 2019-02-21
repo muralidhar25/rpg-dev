@@ -1,31 +1,32 @@
-import { Component, OnInit, OnDestroy, OnChanges, SimpleChanges, Input, HostListener } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { AlertService, MessageSeverity, DialogType } from './../../../core/common/alert.service';
-import { AuthService } from "./../../../core/auth/auth.service";
-//import { ConfigurationService } from './../../../core/common/configuration.service';
-import { Utilities } from './../../../core/common/utilities';
-import { ServiceUtil } from './../../../core/services/service-util';
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { DBkeys } from '../../../core/common/db-keys';
-import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
+import { Component, OnInit, OnDestroy, OnChanges, SimpleChanges, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
+
+import { LinkRecordComponent } from "./link-record/link-record.component";
+import { Characters } from "../../../core/models/view-models/characters.model";
+import { DefaultValue_STAT_TYPE, STAT_LINK_TYPE, STAT_TYPE, CONDITION_OPERATOR_ENUM } from "../../../core/models/enums";
+import { CharactersCharacterStat } from "../../../core/models/view-models/characters-character-stats.model";
 import { SharedService } from "../../../core/services/shared.service";
-import { CommonService } from "../../../core/services/shared/common.service";
-import { User } from '../../../core/models/user.model';
-import { CharactersCharacterStat } from '../../../core/models/view-models/characters-character-stats.model';
+import { AlertService, DialogType, MessageSeverity } from "../../../core/common/alert.service";
+import { AuthService } from "../../../core/auth/auth.service";
 import { CharactersCharacterStatService } from "../../../core/services/characters-character-stat.service";
 import { CharacterStatService } from "../../../core/services/character-stat.service";
+import { LocalStoreManager } from "../../../core/common/local-store-manager.service";
+import { RulesetService } from "../../../core/services/ruleset.service";
+import { CommonService } from "../../../core/services/shared/common.service";
+import { DBkeys } from "../../../core/common/db-keys";
+import { User } from "../../../core/models/user.model";
+import { Utilities } from "../../../core/common/utilities";
+import { DiceService } from "../../../core/services/dice.service";
+import { CharactersService } from "../../../core/services/characters.service";
+import { CharacterStatConditionViewModel, CharacterStats, CharacterStatDefaultValue } from "../../../core/models/view-models/character-stats.model";
+import { ServiceUtil } from "../../../core/services/service-util";
 import { froalaEditorComponent } from "../../../shared/froalaEditor/froalaEditor.component";
 import { NumericCharacterStatComponent } from "../../../shared/numeric-character-stats/numeric-character-stat.component";
-import { DiceComponent } from '../../../shared/dice/dice/dice.component';
-import { RulesetService } from "../../../core/services/ruleset.service";
+import { DiceComponent } from "../../../shared/dice/dice/dice.component";
 import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
-import { Characters } from "../../../core/models/view-models/characters.model";
-import { CharactersService } from "../../../core/services/characters.service";
-import { CharacterStatsFormComponent } from "../../character-stats/character-stats-form/character-stats-form.component";
-import { CharacterStats, CharacterStatDefaultValue, CharacterStatConditionViewModel } from "../../../core/models/view-models/character-stats.model";
-import { DiceService } from "../../../core/services/dice.service";
-import { VIEW, STAT_TYPE, DefaultValue_STAT_TYPE, STAT_LINK_TYPE, CONDITION_OPERATOR_ENUM } from "../../../core/models/enums";
-import { LinkRecordComponent } from "./link-record/link-record.component";
+import { CharacterStatsFormComponent } from "../../../rulesets/character-stats/character-stats-form/character-stats-form.component";
+import { AppService1 } from "../../../app.service";
 
 
 @Component({
@@ -67,10 +68,10 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         public modalService: BsModalService, private localStorage: LocalStoreManager, private charactersCharacterStatService: CharactersCharacterStatService,
         private sharedService: SharedService, private commonService: CommonService, private characterStatService: CharacterStatService, private charactersService: CharactersService,
-        private rulesetService: RulesetService
+      private rulesetService: RulesetService, public appService: AppService1
     ) {
         this.route.params.subscribe(params => { this.characterId = params['id']; });
-        this.sharedService.shouldUpdateCharactersCharacterStats().subscribe(sharedServiceJson => {
+        this.sharedService.shouldUpdateCharactersCharacterStats().subscribe(sharedServiceJson => {            
             if (sharedServiceJson) this.initialize();
         });
 
@@ -144,6 +145,10 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
 
             this.router.navigate(['/character/dashboard/', this.characterId]);
         }
+        else if (redirectto == 5) {
+            
+          this.router.navigate(['/ruleset/character-stats', this.rulesetId]);
+        }
     }
 
     public mychange(event) {
@@ -165,7 +170,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                         this.authService.logout(true);
                     }
                 }, () => { });
-
+            
             this.charactersCharacterStatService.getConditionsValuesList<any[]>(this.characterId)
                 .subscribe(data => {
                     this.ConditionsValuesList = data;
@@ -178,13 +183,12 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                 }, () => { });
             this.charactersCharacterStatService.getCharactersCharacterStat<any[]>(this.characterId, this.page, this.pageSize)
                 .subscribe(data => {
-
                     this.charactersCharacterStats = Utilities.responseData(data, this.pageSize);
                     try {
                         this.noRecordFound = !data.length;
                     } catch (err) { }
                     this.isLoading = false;
-                }, error => {
+                }, error => {                    
                     this.isLoading = false;
                     let Errors = Utilities.ErrorDetail("", error);
                     if (Errors.sessionExpire) {
@@ -196,9 +200,6 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
 
                         item.icon = this.characterStatService.getIcon(item.characterStat.characterStatType.statTypeName);
 
-                        if (item.number == 0) {
-                            item.number = "";
-                        }
                         if (item.current == 0) {
                             item.current = "";
                         }
@@ -230,22 +231,22 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                         //else {
                             item.mobiledisplayStatName = item.characterStat.statName;
                         //}
-
+                        
                         if (item.characterStat.characterStatType.statTypeName == 'Rich Text') {
                             if (item.richText != null && item.richText != "")
                                 item.displayRichText = item.richText.replace(/(<([^>]+)>)/ig, "");
-                        }
+                        }                        
 
                         if (item.characterStat.characterStatType.statTypeName == 'Calculation') {
-
+                           
                             if (item.characterStat.characterStatCalcs.length) {
-
+                                
                                 let finalCalcString = '';
                                 if (item.characterStat.characterStatCalcs[0].statCalculation != null && item.characterStat.characterStatCalcs[0].statCalculation != undefined) {  //&& item.characterStat.characterStatCalcs[0].statCalculation.length > 34) {
                                     item.displayCalculation = item.characterStat.characterStatCalcs[0].statCalculation; //.substr(0, 34) + "...";
                                     let IDs: any[] = [];
                                     let CalcString = item.characterStat.characterStatCalcs[0].statCalculationIds;
-
+                                    
                                     if (item.characterStat.characterStatCalcs[0].statCalculationIds) {
                                         item.characterStat.characterStatCalcs[0].statCalculationIds.split(/\[(.*?)\]/g).map((rec) => {
 
@@ -351,12 +352,12 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                 //item.calculationResult = this.getCalculationResult(item.characterStat.characterStatCalcs[0].statCalculation);
                             }
                         }
-
+                        
                         if (item.characterStat.characterStatTypeId == STAT_TYPE.Condition) {
-
+                            
                             let result = '';
                             if (item.characterStat.characterStatConditions) {
-
+                                
                                 if (item.characterStat.characterStatConditions.length) {
                                     let SkipNextEntries: boolean = false;
                                     item.characterStat.characterStatConditions.map((Condition: CharacterStatConditionViewModel) => {
@@ -365,14 +366,14 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
 
                                             let ConditionStatValue: string = '';
                                             if (Condition.ifClauseStatText) {
-                                                ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition,false);
+                                              ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition,false);
                                             }
                                             let operator = "";
-                                            let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition,true);//Condition.compareValue;
-
+                                          let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition,true);//Condition.compareValue;
+                                            
                                             let ConditionTrueResult = Condition.result;
 
-
+                                            
                                             if (Condition.sortOrder != item.characterStat.characterStatConditions.length) {//if and Else If Part
                                                 if (Condition.conditionOperator) {
                                                     //////////////////////////////////////////////////////////////////
@@ -417,22 +418,61 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                                             SkipNextEntries = true;
                                                         }
                                                     }
+                                                    //else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.CONTAINS) {
+                                                    //    ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                                                    //    ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                                                    //    if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+                                                            
+                                                    //        let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
+                                                    //        choicesArr = choicesArr.map((z) => {
+                                                    //            return z.toUpperCase();
+                                                    //        })
+                                                    //        if (choicesArr.indexOf(ValueToCompare.toUpperCase()) > -1) {
+                                                    //            result = ConditionTrueResult;
+                                                    //            SkipNextEntries = true;
+                                                    //        }
+                                                    //    }
+                                                    //    else {
+                                                    //        if (ConditionStatValue.toUpperCase() == ValueToCompare.toUpperCase()) {
+                                                    //            result = ConditionTrueResult;
+                                                    //            SkipNextEntries = true;
+                                                    //        }
+                                                    //    }
+                                                    //}
+                                                    //else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.DOES_NOT_CONTAIN) {
+                                                    //    ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                                                    //    ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                                                    //    if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+                                                            
+                                                    //        let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
+                                                    //        choicesArr= choicesArr.map((z) => {
+                                                    //            return z.toUpperCase();
+                                                    //        })
+                                                    //        if (choicesArr.indexOf(ValueToCompare.toUpperCase()) == -1) {
+                                                    //            result = ConditionTrueResult;
+                                                    //            SkipNextEntries = true;
+                                                    //        }
+                                                    //    }
+                                                    //    else {
+                                                    //        if (ConditionStatValue.toUpperCase() != ValueToCompare.toUpperCase()) {
+                                                    //            result = ConditionTrueResult;
+                                                    //            SkipNextEntries = true;
+                                                    //        }
+                                                    //    }
+                                                    //}
                                                     else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.CONTAINS) {
                                                         ValueToCompare = ValueToCompare ? ValueToCompare : '';
                                                         ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
                                                         if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
 
-                                                            let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
-                                                            choicesArr = choicesArr.map((z) => {
-                                                                return z.toUpperCase();
-                                                            })
-                                                            if (choicesArr.indexOf(ValueToCompare.toUpperCase()) > -1) {
+
+                                                            if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
                                                                 result = ConditionTrueResult;
                                                                 SkipNextEntries = true;
                                                             }
                                                         }
                                                         else {
-                                                            if (ConditionStatValue.toUpperCase() == ValueToCompare.toUpperCase()) {
+                                                            if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
                                                                 result = ConditionTrueResult;
                                                                 SkipNextEntries = true;
                                                             }
@@ -443,17 +483,14 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                                         ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
                                                         if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
 
-                                                            let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
-                                                            choicesArr= choicesArr.map((z) => {
-                                                                return z.toUpperCase();
-                                                            })
-                                                            if (choicesArr.indexOf(ValueToCompare.toUpperCase()) == -1) {
+
+                                                            if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
                                                                 result = ConditionTrueResult;
                                                                 SkipNextEntries = true;
                                                             }
                                                         }
                                                         else {
-                                                            if (ConditionStatValue.toUpperCase() != ValueToCompare.toUpperCase()) {
+                                                            if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
                                                                 result = ConditionTrueResult;
                                                                 SkipNextEntries = true;
                                                             }
@@ -472,7 +509,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                 }
                             }
                             item.text = result;
-                        }
+                        }                       
                     });
                 });
 
@@ -502,7 +539,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
             .subscribe(
                 data => {
                     this.characterStatTypeList = data;
-
+                    
                     this.characterStatTypeList.forEach((val) => {
                         val.icon = this.characterStatService.getIcon(val.statTypeName);
                     });
@@ -627,7 +664,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
     }
 
     save(characterstats: any, redirectto: any) {
-
+        
         let valid = true;
         characterstats.map((cs) => {
             if (cs.characterStat.characterStatTypeId == STAT_TYPE.Combo) {
@@ -635,7 +672,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                     if (!(+cs.defaultValue >= +cs.minimum && +cs.defaultValue <= +cs.maximum)) {
                         valid = false;
                     }
-                }
+                }                
             }
             if (cs.characterStat.characterStatTypeId == STAT_TYPE.Number || cs.characterStat.characterStatTypeId == STAT_TYPE.CurrentMax ||
                 cs.characterStat.characterStatTypeId == STAT_TYPE.ValueSubValue) {
@@ -683,23 +720,19 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                         default:
                     }
                 }
-
+               
             }
         })
         if (!valid) {
             //alert('falseff')
             return false;
         }
-
+        
         let _msg = "Updating Character Stats..";
         this.isLoading = true;
         this.alertService.startLoadingMessage("", _msg);
 
         characterstats.forEach(item => {
-
-            if (item.number == "") {
-                item.number = 0;
-            }
 
             if (item.current == "") {
                 item.current = 0;
@@ -747,12 +780,12 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
             }
 
             if (item.characterStat.characterStatType.statTypeName == "Calculation") {
-
+                
                    // item.calculationResult =
                 if (item.characterStat.characterStatCalcs.length) {
                     let finalCalcString = '';
                     if (item.characterStat.characterStatCalcs[0].statCalculation != null && item.characterStat.characterStatCalcs[0].statCalculation != undefined) {
-                        item.displayCalculation = item.characterStat.characterStatCalcs[0].statCalculation;
+                        item.displayCalculation = item.characterStat.characterStatCalcs[0].statCalculation; 
                         let IDs: any[] = [];
                         let CalcString = item.characterStat.characterStatCalcs[0].statCalculationIds;
                         if (item.characterStat.characterStatCalcs[0].statCalculationIds) {
@@ -852,7 +885,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
             }
 
             if (item.characterStat.characterStatTypeId == STAT_TYPE.Condition) {
-
+                
                 let result = '';
                 if (item.characterStat.characterStatConditions) {
 
@@ -864,10 +897,10 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
 
                                 let ConditionStatValue: string = '';
                                 if (Condition.ifClauseStatText) {
-                                    ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition, false);
+                                  ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition, false);
                                 }
                                 let operator = "";
-                                let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition, true);//Condition.compareValue;
+                              let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition, true);//Condition.compareValue;
 
                                 let ConditionTrueResult = Condition.result;
 
@@ -916,22 +949,61 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                                 SkipNextEntries = true;
                                             }
                                         }
+                                        //else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.CONTAINS) {
+                                        //    ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                                        //    ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                                        //    if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+
+                                        //        let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
+                                        //        choicesArr = choicesArr.map((z) => {
+                                        //            return z.toUpperCase();
+                                        //        })
+                                        //        if (choicesArr.indexOf(ValueToCompare.toUpperCase()) > -1) {
+                                        //            result = ConditionTrueResult;
+                                        //            SkipNextEntries = true;
+                                        //        }
+                                        //    }
+                                        //    else {
+                                        //        if (ConditionStatValue.toUpperCase() == ValueToCompare.toUpperCase()) {
+                                        //            result = ConditionTrueResult;
+                                        //            SkipNextEntries = true;
+                                        //        }
+                                        //    }
+                                        //}
+                                        //else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.DOES_NOT_CONTAIN) {
+                                        //    ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                                        //    ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                                        //    if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+
+                                        //        let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
+                                        //        choicesArr = choicesArr.map((z) => {
+                                        //            return z.toUpperCase();
+                                        //        })
+                                        //        if (choicesArr.indexOf(ValueToCompare.toUpperCase()) == -1) {
+                                        //            result = ConditionTrueResult;
+                                        //            SkipNextEntries = true;
+                                        //        }
+                                        //    }
+                                        //    else {
+                                        //        if (ConditionStatValue.toUpperCase() != ValueToCompare.toUpperCase()) {
+                                        //            result = ConditionTrueResult;
+                                        //            SkipNextEntries = true;
+                                        //        }
+                                        //    }
+                                        //}
                                         else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.CONTAINS) {
                                             ValueToCompare = ValueToCompare ? ValueToCompare : '';
                                             ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
                                             if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
 
-                                                let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
-                                                choicesArr = choicesArr.map((z) => {
-                                                    return z.toUpperCase();
-                                                })
-                                                if (choicesArr.indexOf(ValueToCompare.toUpperCase()) > -1) {
+
+                                                if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
                                                     result = ConditionTrueResult;
                                                     SkipNextEntries = true;
                                                 }
                                             }
                                             else {
-                                                if (ConditionStatValue.toUpperCase() == ValueToCompare.toUpperCase()) {
+                                                if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
                                                     result = ConditionTrueResult;
                                                     SkipNextEntries = true;
                                                 }
@@ -942,17 +1014,14 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                             ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
                                             if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
 
-                                                let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
-                                                choicesArr = choicesArr.map((z) => {
-                                                    return z.toUpperCase();
-                                                })
-                                                if (choicesArr.indexOf(ValueToCompare.toUpperCase()) == -1) {
+
+                                                if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
                                                     result = ConditionTrueResult;
                                                     SkipNextEntries = true;
                                                 }
                                             }
                                             else {
-                                                if (ConditionStatValue.toUpperCase() != ValueToCompare.toUpperCase()) {
+                                                if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
                                                     result = ConditionTrueResult;
                                                     SkipNextEntries = true;
                                                 }
@@ -984,7 +1053,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                     this.alertService.stopLoadingMessage();
                     let message = "Characters stats has been updated successfully.";
                     this.alertService.showMessage(message, "", MessageSeverity.success);
-
+                    
                     if (redirectto == 0) {
 
                         this.sharedService.updateCharactersCharacterStats(true);
@@ -1002,6 +1071,9 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                     }
                     else if (redirectto == 4) {
                         this.router.navigate(['/character/dashboard/', this.characterId]);
+                    }
+                    else if (redirectto == 5) {
+                      this.router.navigate(['/ruleset/character-stats', this.rulesetId]);
                     }
                     else {
                         this.router.navigate(['/character/dashboard', this.characterId]);
@@ -1159,11 +1231,6 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
 
                     item.icon = this.characterStatService.getIcon(item.characterStat.characterStatType.statTypeName);
 
-                    if (item.number == 0) {
-
-                        item.number = "";
-                    }
-
                     if (item.current == 0) {
 
                         item.current = "";
@@ -1214,7 +1281,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                         if (item.richText != null && item.richText != "")
                             item.displayRichText = item.richText.replace(/(<([^>]+)>)/ig, "");
                     }
-
+                   
                     if (item.characterStat.characterStatType.statTypeName == 'Calculation') {
 
                         if (item.characterStat.characterStatCalcs.length) {
@@ -1236,7 +1303,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                             id = rec.replace('[', '').replace(']', '');
                                             type = 0
                                         }
-
+                                        
                                         this.charactersCharacterStats.map((q) => {
                                             if (!flag) {
                                                 flag = (parseInt(id) == q.characterStatId);
@@ -1335,7 +1402,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                     }
 
                     if (item.characterStat.characterStatTypeId == STAT_TYPE.Condition) {
-
+                        
                         let result = '';
                         if (item.characterStat.characterStatConditions) {
 
@@ -1347,10 +1414,10 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
 
                                         let ConditionStatValue: string = '';
                                         if (Condition.ifClauseStatText) {
-                                            ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition, false);
+                                          ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition, false);
                                         }
                                         let operator = "";
-                                        let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition, true);//Condition.compareValue;
+                                      let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition, true);//Condition.compareValue;
 
                                         let ConditionTrueResult = Condition.result;
 
@@ -1399,22 +1466,61 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                                         SkipNextEntries = true;
                                                     }
                                                 }
+                                                //else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.CONTAINS) {
+                                                //    ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                                                //    ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                                                //    if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+
+                                                //        let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
+                                                //        choicesArr = choicesArr.map((z) => {
+                                                //            return z.toUpperCase();
+                                                //        })
+                                                //        if (choicesArr.indexOf(ValueToCompare.toUpperCase()) > -1) {
+                                                //            result = ConditionTrueResult;
+                                                //            SkipNextEntries = true;
+                                                //        }
+                                                //    }
+                                                //    else {
+                                                //        if (ConditionStatValue.toUpperCase() == ValueToCompare.toUpperCase()) {
+                                                //            result = ConditionTrueResult;
+                                                //            SkipNextEntries = true;
+                                                //        }
+                                                //    }
+                                                //}
+                                                //else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.DOES_NOT_CONTAIN) {
+                                                //    ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                                                //    ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                                                //    if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+
+                                                //        let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
+                                                //        choicesArr = choicesArr.map((z) => {
+                                                //            return z.toUpperCase();
+                                                //        })
+                                                //        if (choicesArr.indexOf(ValueToCompare.toUpperCase()) == -1) {
+                                                //            result = ConditionTrueResult;
+                                                //            SkipNextEntries = true;
+                                                //        }
+                                                //    }
+                                                //    else {
+                                                //        if (ConditionStatValue.toUpperCase() != ValueToCompare.toUpperCase()) {
+                                                //            result = ConditionTrueResult;
+                                                //            SkipNextEntries = true;
+                                                //        }
+                                                //    }
+                                                //}
                                                 else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.CONTAINS) {
                                                     ValueToCompare = ValueToCompare ? ValueToCompare : '';
                                                     ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
                                                     if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
 
-                                                        let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
-                                                        choicesArr = choicesArr.map((z) => {
-                                                            return z.toUpperCase();
-                                                        })
-                                                        if (choicesArr.indexOf(ValueToCompare.toUpperCase()) > -1) {
+
+                                                        if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
                                                             result = ConditionTrueResult;
                                                             SkipNextEntries = true;
                                                         }
                                                     }
                                                     else {
-                                                        if (ConditionStatValue.toUpperCase() == ValueToCompare.toUpperCase()) {
+                                                        if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
                                                             result = ConditionTrueResult;
                                                             SkipNextEntries = true;
                                                         }
@@ -1425,17 +1531,14 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                                     ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
                                                     if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
 
-                                                        let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
-                                                        choicesArr = choicesArr.map((z) => {
-                                                            return z.toUpperCase();
-                                                        })
-                                                        if (choicesArr.indexOf(ValueToCompare.toUpperCase()) == -1) {
+
+                                                        if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
                                                             result = ConditionTrueResult;
                                                             SkipNextEntries = true;
                                                         }
                                                     }
                                                     else {
-                                                        if (ConditionStatValue.toUpperCase() != ValueToCompare.toUpperCase()) {
+                                                        if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
                                                             result = ConditionTrueResult;
                                                             SkipNextEntries = true;
                                                         }
@@ -1460,14 +1563,14 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
     }
 
     manageRuleSetCharacterStats() {
-
-        this.router.navigate(['/character-stats', this.rulesetId]);
+        
+      this.router.navigate(['/ruleset/character-stats', this.rulesetId]);
     }
 
 
     private editRichText(value, id, name) {
         this.bsModalRef = this.modalService.show(froalaEditorComponent, {
-            class: 'modal-primarymodal-md',
+            class: 'modal-primary  modal-custom',
             ignoreBackdropClick: true,
             keyboard: false
         });
@@ -1499,7 +1602,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         });
         this.bsModalRef.content.characterId = this.characterId;
         this.bsModalRef.content.event.subscribe(data => {
-
+            
             this.charactersCharacterStats.forEach(function (val) {
                 if (id === val.charactersCharacterStatId) {
 
@@ -1556,7 +1659,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
             return this.results;
         }
     };
-
+    
     public inputValidator(event: any, id: any, type: any) {
 
         //console.log(event.target.value);
@@ -1575,7 +1678,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                         event.target.value = '-' + event.target.value;
                         event.target.value = event.target.value.replace(/--/g, "-");
                     }
-                }
+                }                  
             }
 
             this.charactersCharacterStats.forEach(function (val) {
@@ -1590,7 +1693,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                 event.target.value = '-' + event.target.value;
                                 event.target.value = event.target.value.replace(/--/g, "-");
                             }
-                        }
+                        }                       
                     }
                     else if (type == "subvalue") {
                         if (event.target.value !== "-") {
@@ -1601,7 +1704,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                 event.target.value = '-' + event.target.value;
                                 event.target.value = event.target.value.replace(/--/g, "-");
                             }
-                        }
+                        }                        
                     }
                     else if (type == "current") {
                         if (event.target.value !== "-") {
@@ -1612,7 +1715,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                 event.target.value = '-' + event.target.value;
                                 event.target.value = event.target.value.replace(/--/g, "-");
                             }
-                        }
+                        }                        
                     }
                     else if (type == "maximum") {
                         if (event.target.value !== "-") {
@@ -1624,7 +1727,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                 event.target.value = event.target.value.replace(/--/g, "-");
                             }
                         }
-
+                        
                     }
                     else if (type == "number") {
                         if (event.target.value !== "-") {
@@ -1635,7 +1738,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                 event.target.value = '-' + event.target.value;
                                 event.target.value = event.target.value.replace(/--/g, "-");
                             }
-                        }
+                        }                        
                     }
                     else if (type == "combo") {
                         if (event.target.value !== "-") {
@@ -1670,7 +1773,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
 
         this.bsModalRef.content.closeevent.subscribe(data => {
             //command = data.command;
-
+           
             this.bsModalRef.hide();
         });
     }
@@ -1697,29 +1800,29 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
             headerId: character.characterId,
             headerLink: 'character',
             hasHeader: true
-        };
+      };
+      this.appService.updateAccountSetting1(headerValues);
         this.sharedService.updateAccountSetting(headerValues);
         this.localStorage.deleteData(DBkeys.HEADER_VALUE);
         this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
     }
-    //TOOD: Uncomment
-    // newCharacterStat() {
-    //     this.bsModalRef = this.modalService.show(CharacterStatsFormComponent, {
-    //         class: 'modal-primary modal-md',
-    //         ignoreBackdropClick: true,
-    //         keyboard: false
-    //     });
-    //     this.bsModalRef.content.title = 'New Character Stat';
-    //     this.bsModalRef.content.button = 'SAVE';
-    //     this.bsModalRef.content.ruleSetId = this.rulesetId;
-    //     this.bsModalRef.content.characterStatTypeViewModel = { ruleSetId: this.rulesetId };
-    //     this.bsModalRef.content.characterStatTypeList = this.characterStatTypeList;
-    //     this.bsModalRef.content.typeOptions = this._typeOptions;
-    //     this.bsModalRef.content.isFromCharacter = true;
-    // }
+    newCharacterStat() {
+        this.bsModalRef = this.modalService.show(CharacterStatsFormComponent, {
+            class: 'modal-primary modal-md',
+            ignoreBackdropClick: true,
+            keyboard: false
+        });
+        this.bsModalRef.content.title = 'New Character Stat';
+        this.bsModalRef.content.button = 'SAVE';
+        this.bsModalRef.content.ruleSetId = this.rulesetId;
+        this.bsModalRef.content.characterStatTypeViewModel = { ruleSetId: this.rulesetId };
+        this.bsModalRef.content.characterStatTypeList = this.characterStatTypeList;
+        this.bsModalRef.content.typeOptions = this._typeOptions;
+        this.bsModalRef.content.isFromCharacter = true;
+    }
     comboDefValueOnchange(event: any, characterStat: any) {
         try {
-
+            
             characterStat.maximum = parseInt(characterStat.maximum);
             if (isNaN(characterStat.maximum)) {
                 characterStat.maximum = 0;
@@ -1742,13 +1845,13 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         else if (+characterStat.defaultValue >= +characterStat.minimum && +characterStat.defaultValue <= +characterStat.maximum) {
             //this.IsFormValid = true;
             event.target.classList.remove('textbox-error');
-        }
+        }        
         else {
             //this.IsFormValid = false;
             event.target.classList.add('textbox-error');
             this.alertService.showMessage("The value for this field must be between " + characterStat.minimum + " and " + characterStat.maximum + " value", "", MessageSeverity.error);
         }
-
+       
     }
     DefaultDefValueOnchange(event: any, characterstat: any, DefVal_STATTYPE: DefaultValue_STAT_TYPE) {
         if (characterstat.characterStat.characterStatDefaultValues.length) {
@@ -1804,7 +1907,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
             }
         }
     }
-    linkRecordToStat(characterstat: CharactersCharacterStat) {
+    linkRecordToStat(characterstat: CharactersCharacterStat) {        
         this.bsModalRef = this.modalService.show(LinkRecordComponent, {
             class: 'modal-primary modal-md',
             ignoreBackdropClick: true,
@@ -1816,7 +1919,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         this.bsModalRef.content.title = "Link Record";
         this.bsModalRef.content.characterstat = Object.assign({}, characterstat) ;
         this.bsModalRef.content.event.subscribe(data => {
-
+            
             switch (data.type) {
                 case STAT_LINK_TYPE.ITEM:
                     characterstat.linkType = STAT_LINK_TYPE.ITEM;
@@ -1833,13 +1936,18 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                     characterstat.defaultValue = data.ability.characterAbilityId;
                     this.isModelChange = true;
                     break;
+                case '':
+                    characterstat.linkType = null;
+                    characterstat.defaultValue = 0;
+                    this.isModelChange = true;
+                    break;
                 default:
             }
-
+            
         });
     }
     GetLinkRecordImage(id, linkType) {
-
+        
         let imagePath = '';
         if (this.statLinkRecords) {
             if (this.statLinkRecords.length) {
@@ -1872,7 +1980,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         return imagePath;
     }
     GetLinkRecordName(id, linkType) {
-
+        
         let name = '';
         if (this.statLinkRecords) {
             if (this.statLinkRecords.length) {
@@ -1908,13 +2016,13 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                         }
                         break;
                     case STAT_TYPE.Choice:
-
+                        
                         if (ccs.characterStat.isMultiSelect) {
                             result = this.GetChoiceValue(ccs.multiChoice, ccs.characterStat.characterStatChoices)//ccs.multiChoice.replace(/;/g, this.choiceArraySplitter);
                         }
                         else {
                             result = this.GetChoiceValue(ccs.choice, ccs.characterStat.characterStatChoices);
-                        }
+                        }                        
                         break;
                     case STAT_TYPE.ValueSubValue:
                         if (ifClauseStattype == 2) {
@@ -1943,7 +2051,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         return result ? result : '';
     }
     GetChoiceValue(ids, choicesList) {
-
+        
         let result = '';
         if (choicesList && ids) {
             let idList = ids.split(';');
@@ -1955,11 +2063,11 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                         }
                     })
                 })
-
+                
             }
         }
         result = result ? result.substring(0, result.length - 1) : '';
         return result;
     }
-
+    
 }

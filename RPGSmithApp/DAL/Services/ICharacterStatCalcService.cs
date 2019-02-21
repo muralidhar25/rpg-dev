@@ -12,5 +12,6 @@ namespace DAL.Services
         Task<CharacterStatCalc> UdateCharacterStatCalc(CharacterStatCalc characterStatCalc);
         Task<bool> DeleteCharacterStatCalc(int id);
         bool DeleteCharacterStatCalcNotAsync(int id);
+        List<CharacterStatCalc> GetByStatId(int StatId);
     }
 }

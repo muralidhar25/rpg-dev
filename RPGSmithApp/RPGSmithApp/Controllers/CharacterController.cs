@@ -147,6 +147,20 @@ namespace RPGSmithApp.Controllers
                 if (_CharacterService.IsCharacterExist(model.CharacterName, userId).Result)
                     return BadRequest("The Character Name '" + model.CharacterName + "' had already been used in this Rule Set. Please select another name.");
 
+                if (IsNewRulesetToAdd(model.RuleSetId, userId))
+                {
+                    var NewRuleset =await AddCoreRuleSetsCommon(new int[] { model.RuleSetId });
+                    if (NewRuleset==null)
+                    {
+                        return BadRequest("The maximum number of Rule Sets (3) already exist on this account. Please delete one of the existing Rule Sets to allow for the addition of another. Rule Sets can be deleted from the Rule Sets screen");
+                    }
+                    else 
+                    {
+                        model.RuleSetId= NewRuleset.RuleSetId;
+                        characterDomain.RuleSetId = NewRuleset.RuleSetId;
+                    }
+                }
+
                 try
                 {
                     _CharacterService.Create_SP(characterDomain, model.LayoutHeight, model.LayoutWidth);
@@ -402,6 +416,11 @@ namespace RPGSmithApp.Controllers
             }
 
             return BadRequest(Utilities.ModelStateError(ModelState));
+        }
+
+        private bool IsNewRulesetToAdd(int ruleSetId,string userId)
+        {
+            return _CharacterService.IsNewRulesetToAdd(ruleSetId, userId);
         }
 
         [HttpPost("UpdateCharacter")]
@@ -805,6 +824,50 @@ namespace RPGSmithApp.Controllers
             (ApplicationUser user, string[] role) = _accountManager.GetUserAndRolesAsync(GetUserId()).Result;
             if (string.Join("", role).Contains("administrator")) return true;
             return false;
+        }
+
+        private async Task<RuleSet> AddCoreRuleSetsCommon(int[] rulesetIds)
+        {
+            RuleSet res = null;
+            var _userId = GetUserId();
+
+            //Limit user to have max 3 ruleset & //purchase for more sets
+            if (await _ruleSetService.GetRuleSetsCountByUserId(_userId) >= 3 && !IsAdminUser())
+                return null;
+
+            foreach (var _id in rulesetIds)
+            {
+                var _addRuleset =Utilities.GetRuleset(_id, _ruleSetService);
+                int Count = 1;
+                string newRulesetName = _addRuleset.RuleSetName;
+                bool rulesetExists = false;
+                do
+                {
+                    rulesetExists = _ruleSetService.IsRuleSetExist(newRulesetName, _userId).Result;
+                    if (rulesetExists)
+                    {
+                        newRulesetName = _addRuleset.RuleSetName + "_" + Count;
+                        Count++;
+                    }
+
+
+                } while (rulesetExists);
+               
+                var _rulesetData = Mapper.Map<RuleSet>(_addRuleset);
+                _rulesetData.isActive = true;
+                _rulesetData.ShareCode = null;//Guid.NewGuid(); //not used in sp
+                _rulesetData.OwnerId = _userId;
+                _rulesetData.CreatedBy = _userId;
+                _rulesetData.CreatedDate = DateTime.Now;
+                _rulesetData.RuleSetName = newRulesetName;
+
+                _addRuleset.IsCoreRuleset = false;//not used in sp
+
+                res = await _ruleSetService.AddCoreRuleset(_rulesetData, _id, _userId);
+                //CopyCustomDiceToNewRuleSet(_id, res.RuleSetId);
+                _ruleSetService.CopyCustomDiceToNewRuleSet(_id, res.RuleSetId);
+            }
+            return res;
         }
 
         #region API Using SP

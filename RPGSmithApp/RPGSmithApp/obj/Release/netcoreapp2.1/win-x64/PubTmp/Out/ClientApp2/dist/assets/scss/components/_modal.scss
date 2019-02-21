@@ -1,0 +1,116 @@
+/**
+ * Modal -----------------------------------------------------------------------
+ */
+
+
+.modal {
+    overflow: {y: auto}
+
+    &-content {
+        box     : {shadow: 0 0 rem(24px) rgba($color-basic-black, 0.5)}
+        border  : {radius: 0; width: 0}
+    }
+
+    &-header {
+        display     : flex;
+        align       : {items: center}
+        height      : rem(72px);
+        padding     : {top: 0; bottom: 0; right: 0}
+        border      : {bottom: {color: $color-lgray-d}}
+        background  : {color: $color-lgray-xl}
+
+        @include responsive(md) {
+            height: rem(64px);
+        }
+
+        .close {
+            align   : {self: stretch}
+            width   : rem(60px);
+            height  : auto;
+            padding : 0;
+            margin  : 0;
+
+            &:before {
+                color   : $color-dgray-xl;
+                font    : {size: rem(10px)}
+
+                @include responsive(md) {
+                    font: {size: rem(8px)}
+                }
+            }
+
+            &:hover {
+                &:before {
+                    color: $color-dgray;
+                }
+            }
+        }
+    }
+
+    &-title {
+        font    : {size: rem(18px); family: $font-stack-header}
+        color   : $color-dgray;
+
+        @include responsive(md) {
+            font: {size: rem(16px)}
+        }
+    }
+
+    &-body, &-footer {
+        background: {color: $color-lgray}
+    }
+
+    &-body {
+        padding : {top: rem(16px); bottom: 0}
+        overflow: {y: auto}
+
+        .form {
+            &-control {
+                border: {color: $color-lgray-xd}
+
+                &:focus, &:active {
+                    border: {color: $color-dgray-xl}
+                }
+            }
+        }
+    }
+
+    &-footer {
+        flex    : {direction: column}
+        align   : {items: stretch}
+        padding : {top: 0}
+        border  : {top: none}
+
+        @include responsive(md) {
+            flex: {direction: row}
+        }
+
+        .btn {
+            margin: {top: rem(12px); left: 0; right: 0};
+
+            @include responsive(md) {
+                width   : rem(120px);
+                margin  : {top: 0}
+                padding : 0;
+            }
+
+            &:first-of-type {
+                margin: {top: 0}
+            }
+        }
+    }
+
+    &-full-screen {
+        .modal-dialog {
+            width   : 100%;
+            min     : {width: 100%}
+            max     : {width: auto}
+            margin  : 0;
+            padding : 0;
+        }
+    }
+
+    &-backdrop {
+        //opacity: 0.8 !important;
+    }
+}

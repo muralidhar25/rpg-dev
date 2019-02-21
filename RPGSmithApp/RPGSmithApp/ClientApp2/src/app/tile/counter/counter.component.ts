@@ -1,20 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { ColorsComponent } from './../colors/colors.component';
-import { CounterTileService } from '../../core/services/tiles/counter-tile.service';
+import { Color } from '../../core/models/tiles/color.model';
+import { CharacterTile } from '../../core/models/tiles/character-tile.model';
 import { CounterTile } from '../../core/models/tiles/counter-tile.model';
+import { CharacterDashboardPage } from '../../core/models/view-models/character-dashboard-page.model';
+import { SharedService } from '../../core/services/shared.service';
+import { LocalStoreManager } from '../../core/common/local-store-manager.service';
+import { ColorService } from '../../core/services/tiles/color.service';
 import { AlertService, MessageSeverity } from '../../core/common/alert.service';
 import { AuthService } from '../../core/auth/auth.service';
-import { VIEW, SHAPE, SHAPE_CLASS } from '../../core/models/enums';
-import { Utilities } from '../../core/common/utilities';
-import { SharedService } from "../../core/services/shared.service";
-import { ColorService } from '../../core/services/tiles/color.service';
-import { CharacterTile } from '../../core/models/tiles/character-tile.model';
-import { Color } from '../../core/models/tiles/color.model';
-import { CharacterDashboardPage } from '../../core/models/view-models/character-dashboard-page.model';
+import { CounterTileService } from '../../core/services/tiles/counter-tile.service';
 import { User } from '../../core/models/user.model';
+import { SHAPE_CLASS, SHAPE, VIEW } from '../../core/models/enums';
 import { DBkeys } from '../../core/common/db-keys';
-import { LocalStoreManager } from '../../core/common/local-store-manager.service';
+import { Utilities } from '../../core/common/utilities';
+import { ColorsComponent } from '../colors/colors.component';
 
 @Component({
   selector: 'app-counter',

@@ -1,9 +1,10 @@
+import { Utilities } from "../common/utilities";
+
 // ====================================================
 // More Templates: https://www.ebenmonney.com/templates
 // Email: support@ebenmonney.com
 // ====================================================
 
-import { Utilities } from "../common/utilities";
 
 
 export class Notification {

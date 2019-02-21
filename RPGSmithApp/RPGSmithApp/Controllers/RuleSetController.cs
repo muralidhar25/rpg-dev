@@ -135,37 +135,53 @@ namespace RPGSmithApp.Controllers
         {           
             return Ok(_coreRulesetService.GetRulesetRecordCounts(Id));
         }
-        
+
         [HttpGet("GetRuleSets")]
         public async Task<IActionResult> GetRuleSets(int page, int pageSize)
         {
-            var ruleSets = await _ruleSetService.GetRuleSets(page, pageSize);
+            try
+            {
+                var ruleSets = await _ruleSetService.GetRuleSets(page, pageSize);
 
-            //If Limited edition
-            if (ruleSets != null && !IsAdminUser())
-                ruleSets = ruleSets.Take(ruleSets.Count >= 3 ? 3 : ruleSets.Count).ToList();
+                //If Limited edition
+                if (ruleSets != null && !IsAdminUser())
+                    ruleSets = ruleSets.Take(ruleSets.Count >= 3 ? 3 : ruleSets.Count).ToList();
 
-            List<RuleSetViewModel> ruleSetsVM = new List<RuleSetViewModel>();
-            foreach (var ruleSet in ruleSets)
-                ruleSetsVM.Add(_commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet));
+                List<RuleSetViewModel> ruleSetsVM = new List<RuleSetViewModel>();
+                foreach (var ruleSet in ruleSets)
+                    ruleSetsVM.Add(_commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet));
 
-            return Ok(ruleSetsVM);
+                return Ok(ruleSetsVM);
+            }
+
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("GetAllRuleSets")]
         public async Task<IActionResult> GetRuleSets()
         {
-            var ruleSets = await _ruleSetService.GetRuleSets();
+            try
+            {
+                var ruleSets = await _ruleSetService.GetRuleSets();
 
-            //If Limited edition
-            if (ruleSets != null && !IsAdminUser())
-                ruleSets = ruleSets.Take(ruleSets.Count >= 3 ? 3 : ruleSets.Count).ToList();
+                //If Limited edition
+                if (ruleSets != null && !IsAdminUser())
+                    ruleSets = ruleSets.Take(ruleSets.Count >= 3 ? 3 : ruleSets.Count).ToList();
 
-            List<RuleSetViewModel> ruleSetsVM = new List<RuleSetViewModel>();
-            foreach (var ruleSet in ruleSets)
-                ruleSetsVM.Add(_commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet));
+                List<RuleSetViewModel> ruleSetsVM = new List<RuleSetViewModel>();
+                foreach (var ruleSet in ruleSets)
+                    ruleSetsVM.Add(_commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet));
 
-            return Ok(ruleSetsVM);
+                return Ok(ruleSetsVM);
+            }
+
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("GetRuleSetById")]
@@ -194,25 +210,50 @@ namespace RPGSmithApp.Controllers
                     ruleSetsVM.Add(_commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet));
             }
 
-            catch (Exception ex) { }
+            catch (Exception ex) { return BadRequest(ex.Message); }
             return Ok(ruleSetsVM);
         }
 
         [HttpGet("GetAllRuleSetByUserId")]
         public async Task<IActionResult> GetRuleSetByUserId(string id,int page=1, int pageSize=10)
         {
-            var ruleSets = await _ruleSetService.GetRuleSetByUserId(id,page,pageSize);
-            //if (ruleSets.Count == 0) return Ok("RuleSet Not Found using UserId " + id);
+            try
+            {
+                var ruleSets = await _ruleSetService.GetRuleSetByUserId(id, page, pageSize);
+                //if (ruleSets.Count == 0) return Ok("RuleSet Not Found using UserId " + id);
 
-            //If Limited edition
-            if (ruleSets != null && !IsAdminUser())
-                ruleSets = ruleSets.Take(ruleSets.Count >= 3 ? 3 : ruleSets.Count).ToList();
+                //If Limited edition
+                if (ruleSets != null && !IsAdminUser())
+                    ruleSets = ruleSets.Take(ruleSets.Count >= 3 ? 3 : ruleSets.Count).ToList();
 
-            var ruleSetsVM = new List<RuleSetViewModel>();
-            foreach (var ruleSet in ruleSets)
-                ruleSetsVM.Add(_commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet));
+                var ruleSetsVM = new List<RuleSetViewModel>();
+                foreach (var ruleSet in ruleSets)
+                    ruleSetsVM.Add(_commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet));
 
-            return Ok(ruleSetsVM);
+                return Ok(ruleSetsVM);
+            }
+            catch (Exception ex) { return BadRequest(ex.Message); }
+        }
+
+        [HttpGet("GetRuleSetToCreateCharacterByUserId")]
+        public async Task<IActionResult> GetRuleSetToCreateCharacterByUserId(string id, int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                var ruleSets = _ruleSetService.GetRuleSetToCreateCharacterByUserId(id, page, pageSize);
+                //if (ruleSets.Count == 0) return Ok("RuleSet Not Found using UserId " + id);
+
+                ////If Limited edition
+                //if (ruleSets != null && !IsAdminUser())
+                //    ruleSets = ruleSets.Take(ruleSets.Count >= 3 ? 3 : ruleSets.Count).ToList();
+
+                var ruleSetsVM = new List<RuleSetViewModel>();
+                foreach (var ruleSet in ruleSets)
+                    ruleSetsVM.Add(_commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet));
+
+                return Ok(ruleSetsVM);
+            }
+            catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
         [HttpGet("GetCoreRuleSets")]
@@ -236,33 +277,37 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var _userId = GetUserId();
-                var ruleSetDomain = Mapper.Map<RuleSet>(model);
+                try
+                {
+                    var _userId = GetUserId();
+                    var ruleSetDomain = Mapper.Map<RuleSet>(model);
 
-                //Limit user to have max 3 ruleset & //purchase for more sets
-                if (await _ruleSetService.GetRuleSetsCountByUserId(_userId) >= 3 && !IsAdminUser())
-                    return BadRequest("Only three slots of Rule Sets are allowed. For more slots, please contact administrator.");
+                    //Limit user to have max 3 ruleset & //purchase for more sets
+                    if (await _ruleSetService.GetRuleSetsCountByUserId(_userId) >= 3 && !IsAdminUser())
+                        return BadRequest("Only three slots of Rule Sets are allowed. For more slots, please contact administrator.");
 
-                if (IsAdminUser()) ruleSetDomain.IsCoreRuleset = true;
-                else ruleSetDomain.IsCoreRuleset = false;
+                    if (IsAdminUser()) ruleSetDomain.IsCoreRuleset = true;
+                    else ruleSetDomain.IsCoreRuleset = false;
 
-                ruleSetDomain.isActive = true;
-                ruleSetDomain.ShareCode = Guid.NewGuid();
-                ruleSetDomain.OwnerId = _userId;
-                ruleSetDomain.CreatedBy = _userId;
-                ruleSetDomain.CreatedDate = DateTime.Now;
-                ruleSetDomain.ModifiedBy = _userId;
-                ruleSetDomain.ModifiedDate = DateTime.Now;
-                
-                if (_ruleSetService.IsRuleSetExist(model.RuleSetName, _userId).Result)
-                    return BadRequest("The Rule Set Name " + model.RuleSetName + " had already been used. Please select another name.");
+                    ruleSetDomain.isActive = true;
+                    ruleSetDomain.ShareCode = Guid.NewGuid();
+                    ruleSetDomain.OwnerId = _userId;
+                    ruleSetDomain.CreatedBy = _userId;
+                    ruleSetDomain.CreatedDate = DateTime.Now;
+                    ruleSetDomain.ModifiedBy = _userId;
+                    ruleSetDomain.ModifiedDate = DateTime.Now;
 
-                await _ruleSetService.Insert(ruleSetDomain);
-                //await addEditCustomDice(model.customDices.ToList(), ruleSetDomain.RuleSetId);
-                List<CustomDice> result = _addEditCustomDice(model.customDices.ToList(), ruleSetDomain.RuleSetId);
-                List<DiceTray> diceTrayResult = _addEditDiceTray(result, model.diceTray.ToList(), ruleSetDomain.RuleSetId);
-                // System.IO.File.Delete(path);
-                return Ok(ruleSetDomain);
+                    if (_ruleSetService.IsRuleSetExist(model.RuleSetName, _userId).Result)
+                        return BadRequest("The Rule Set Name " + model.RuleSetName + " had already been used. Please select another name.");
+
+                    await _ruleSetService.Insert(ruleSetDomain);
+                    //await addEditCustomDice(model.customDices.ToList(), ruleSetDomain.RuleSetId);
+                    List<CustomDice> result = _addEditCustomDice(model.customDices.ToList(), ruleSetDomain.RuleSetId);
+                    List<DiceTray> diceTrayResult = _addEditDiceTray(result, model.diceTray.ToList(), ruleSetDomain.RuleSetId);
+                    // System.IO.File.Delete(path);
+                    return Ok(ruleSetDomain);
+                }
+                catch (Exception ex) { return BadRequest(ex.Message); }
             }
 
             return BadRequest(Utilities.ModelStateError(ModelState));
@@ -271,6 +316,19 @@ namespace RPGSmithApp.Controllers
 
         [HttpPost("addRuleSets")]
         public async Task<IActionResult> addRuleSets([FromBody] int[] rulesetIds)
+        {
+            try
+            {
+                return await AddCoreRuleSetsCommon(rulesetIds);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+        }
+
+        ////This Method is also written on Charater Controller
+        private async Task<IActionResult> AddCoreRuleSetsCommon(int[] rulesetIds)
         {
             try
             {
@@ -301,7 +359,7 @@ namespace RPGSmithApp.Controllers
                     ///////////// END OLD 15Nov 2018//////////////////
 
                     /////15 nov 2018 Import RuleSet/////////////////////
-                    var _addRuleset = GetRuleset(_id);
+                    var _addRuleset = Utilities.GetRuleset(_id, _ruleSetService);
                     int Count = 1;
                     string newRulesetName = _addRuleset.RuleSetName;
                     bool rulesetExists = false;
@@ -313,7 +371,7 @@ namespace RPGSmithApp.Controllers
                             newRulesetName = _addRuleset.RuleSetName + "_" + Count;
                             Count++;
                         }
-                       
+
 
                     } while (rulesetExists);
 
@@ -692,11 +750,9 @@ namespace RPGSmithApp.Controllers
                 // System.IO.File.Delete(path);
                 return Ok();
             }
-            catch (Exception ex)
-            {
-                return BadRequest();
-            }
+            catch (Exception ex) { return BadRequest(ex.Message); }
         }
+
         [HttpPost("UpLoadRuleSetImageBlob")]
         public async Task<IActionResult> UpLoadRuleSetImageBlob()
         {
@@ -763,40 +819,44 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userId = GetUserId();
-                var ruleSetDomain = _ruleSetService.GetRuleSetById(model.RuleSetId).Result;
+                try
+                {
+                    var userId = GetUserId();
+                    var ruleSetDomain = _ruleSetService.GetRuleSetById(model.RuleSetId).Result;
 
-                if (IsAdminUser())
-                    ruleSetDomain.IsCoreRuleset = true;
-                else
-                    ruleSetDomain.IsCoreRuleset = false;
+                    if (IsAdminUser())
+                        ruleSetDomain.IsCoreRuleset = true;
+                    else
+                        ruleSetDomain.IsCoreRuleset = false;
 
-                ruleSetDomain.RuleSetName = model.RuleSetName;
-                ruleSetDomain.RuleSetDesc = model.RuleSetDesc;
-                ruleSetDomain.CurrencyLabel = model.CurrencyLabel;
-                ruleSetDomain.DistanceLabel = model.DistanceLabel;
-                ruleSetDomain.DefaultDice = model.DefaultDice;
-                ruleSetDomain.RuleSetId = model.RuleSetId;
-                ruleSetDomain.ImageUrl = model.ImageUrl;
-                ruleSetDomain.ThumbnailUrl = model.ThumbnailUrl;
-                ruleSetDomain.VolumeLabel = model.VolumeLabel;
-                ruleSetDomain.WeightLabel = model.WeightLabel;
-                ruleSetDomain.SortOrder = model.SortOrder;
-                ruleSetDomain.ModifiedBy = userId;
-                ruleSetDomain.IsAbilityEnabled = model.IsAbilityEnabled;
-                ruleSetDomain.IsItemEnabled = model.IsItemEnabled;
-                ruleSetDomain.IsSpellEnabled = model.IsSpellEnabled;
-                ruleSetDomain.IsAllowSharing = model.IsAllowSharing;
-                ruleSetDomain.ShareCode = model.ShareCode;
-                ruleSetDomain.ModifiedDate = DateTime.Now;
+                    ruleSetDomain.RuleSetName = model.RuleSetName;
+                    ruleSetDomain.RuleSetDesc = model.RuleSetDesc;
+                    ruleSetDomain.CurrencyLabel = model.CurrencyLabel;
+                    ruleSetDomain.DistanceLabel = model.DistanceLabel;
+                    ruleSetDomain.DefaultDice = model.DefaultDice;
+                    ruleSetDomain.RuleSetId = model.RuleSetId;
+                    ruleSetDomain.ImageUrl = model.ImageUrl;
+                    ruleSetDomain.ThumbnailUrl = model.ThumbnailUrl;
+                    ruleSetDomain.VolumeLabel = model.VolumeLabel;
+                    ruleSetDomain.WeightLabel = model.WeightLabel;
+                    ruleSetDomain.SortOrder = model.SortOrder;
+                    ruleSetDomain.ModifiedBy = userId;
+                    ruleSetDomain.IsAbilityEnabled = model.IsAbilityEnabled;
+                    ruleSetDomain.IsItemEnabled = model.IsItemEnabled;
+                    ruleSetDomain.IsSpellEnabled = model.IsSpellEnabled;
+                    ruleSetDomain.IsAllowSharing = model.IsAllowSharing;
+                    ruleSetDomain.ShareCode = model.ShareCode;
+                    ruleSetDomain.ModifiedDate = DateTime.Now;
 
-                if (_ruleSetService.IsRuleSetExist(model.RuleSetName, userId,model.RuleSetId).Result)
-                    return BadRequest("Duplicate RuleSet Name");
+                    if (_ruleSetService.IsRuleSetExist(model.RuleSetName, userId, model.RuleSetId).Result)
+                        return BadRequest("Duplicate RuleSet Name");
 
-                await _ruleSetService.UdateRuleSet(ruleSetDomain);
-                List<CustomDice> result=_addEditCustomDice(model.customDices.ToList(), ruleSetDomain.RuleSetId);
-                List<DiceTray> diceTrayResult = _addEditDiceTray(result, model.diceTray.ToList(), ruleSetDomain.RuleSetId);
-                return Ok(ruleSetDomain);
+                    await _ruleSetService.UdateRuleSet(ruleSetDomain);
+                    List<CustomDice> result = _addEditCustomDice(model.customDices.ToList(), ruleSetDomain.RuleSetId);
+                    List<DiceTray> diceTrayResult = _addEditDiceTray(result, model.diceTray.ToList(), ruleSetDomain.RuleSetId);
+                    return Ok(ruleSetDomain);
+                }
+                catch (Exception ex) { return BadRequest(ex.Message); }
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
@@ -828,28 +888,29 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userId = GetUserId();
-
-                if (await _ruleSetService.GetRuleSetsCountByUserId(userId) >= 3 && !IsAdminUser())
-                    return BadRequest("Only three slots of Rule Sets are allowed. For more slots, please contact administrator.");
-
-
-                if (_ruleSetService.IsRuleSetExist(model.RuleSetName, userId).Result)
-                    return BadRequest("The Rule Set Name " + model.RuleSetName + " had already been used. Please select another name.");
-                              
-                var ruleSetDomain = Mapper.Map<RuleSet>(model);
-                ruleSetDomain.isActive = true;
-                ruleSetDomain.ShareCode = IsAdminUser() ? (Guid?)Guid.NewGuid() : null;
-                ruleSetDomain.IsAllowSharing = IsAdminUser() ? model.IsAllowSharing: false;
-                ruleSetDomain.IsCoreRuleset = false;
-                ruleSetDomain.OwnerId = userId;
-                ruleSetDomain.CreatedBy = userId;
-                ruleSetDomain.CreatedDate = DateTime.Now;
-                ruleSetDomain.ModifiedBy = userId;
-                ruleSetDomain.ModifiedDate = DateTime.Now;
-                //ruleSetDomain.RuleSetId = 0;
                 try
                 {
+                    var userId = GetUserId();
+
+                    if (await _ruleSetService.GetRuleSetsCountByUserId(userId) >= 3 && !IsAdminUser())
+                        return BadRequest("Only three slots of Rule Sets are allowed. For more slots, please contact administrator.");
+
+
+                    if (_ruleSetService.IsRuleSetExist(model.RuleSetName, userId).Result)
+                        return BadRequest("The Rule Set Name " + model.RuleSetName + " had already been used. Please select another name.");
+
+                    var ruleSetDomain = Mapper.Map<RuleSet>(model);
+                    ruleSetDomain.isActive = true;
+                    ruleSetDomain.ShareCode = IsAdminUser() ? (Guid?)Guid.NewGuid() : null;
+                    ruleSetDomain.IsAllowSharing = IsAdminUser() ? model.IsAllowSharing : false;
+                    ruleSetDomain.IsCoreRuleset = false;
+                    ruleSetDomain.OwnerId = userId;
+                    ruleSetDomain.CreatedBy = userId;
+                    ruleSetDomain.CreatedDate = DateTime.Now;
+                    ruleSetDomain.ModifiedBy = userId;
+                    ruleSetDomain.ModifiedDate = DateTime.Now;
+                    //ruleSetDomain.RuleSetId = 0;
+
                     int? parentRulesetID = _ruleSetService.GetRuleSetById(model.RuleSetId).Result.ParentRuleSetId;
                     if (parentRulesetID != null)
                     {
@@ -868,12 +929,14 @@ namespace RPGSmithApp.Controllers
                     //await addEditCustomDice(model.customDices.ToList(), ruleSetDomain.RuleSetId);
                     List<CustomDice> result = _addEditCustomDice(model.customDices.ToList(), ruleSetDomain.RuleSetId);
                     List<DiceTray> diceTrayResult = _addEditDiceTray(result, model.diceTray.ToList(), ruleSetDomain.RuleSetId);
+
+                    return Ok(ruleSetDomain);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     return BadRequest(ex.Message);
                 }
-                
+
                 //var result = await _ruleSetService.Insert(ruleSetDomain);
 
                 //var characterStats = _characterStatService.GetCharacterStatRuleSetId(model.RuleSetId);
@@ -1251,7 +1314,7 @@ namespace RPGSmithApp.Controllers
                 //}
 
 
-                return Ok(ruleSetDomain);
+
             }
 
             return BadRequest(ModelState);
@@ -1261,23 +1324,30 @@ namespace RPGSmithApp.Controllers
         [HttpGet("ImportRuleSet")]
         public async Task<IActionResult> ImportRuleSet(string code)
         {
-            var ruleSet = _ruleSetService.ImportRuleSetByCode(code).Result;
-
-            if (ruleSet == null) return BadRequest("The entered share code is invalid. Please enter a valid share code.");
-
-            if (ruleSet.IsAllowSharing) {
-                var res = _commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet);
-                res.isAdmin = IsAdminUser();
-                return Ok(res);
-            }
-                
-            else
+            try
             {
-                string username = ruleSet.AspNetUser == null ? "" : ruleSet.AspNetUser.UserName;
-                string res = "The User " + username + " has not enabled sharing of this Rule Set.";
-                return BadRequest(res);
+                var ruleSet = _ruleSetService.ImportRuleSetByCode(code).Result;
+
+                if (ruleSet == null) return BadRequest("The entered share code is invalid. Please enter a valid share code.");
+
+                if (ruleSet.IsAllowSharing)
+                {
+                    var res = _commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet);
+                    res.isAdmin = IsAdminUser();
+                    return Ok(res);
+                }
+
+                else
+                {
+                    string username = ruleSet.AspNetUser == null ? "" : ruleSet.AspNetUser.UserName;
+                    string res = "The User " + username + " has not enabled sharing of this Rule Set.";
+                    return BadRequest(res);
+                }
             }
-               
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         
         [HttpPost("ShareRuleSetCode")]
@@ -1313,30 +1383,6 @@ namespace RPGSmithApp.Controllers
         
         
         
-        public RuleSetViewModel GetRuleset(int rulesetId)
-        {
-            var _ruleset = _ruleSetService.GetRuleSetById(rulesetId).Result;
-            return new RuleSetViewModel()
-            {
-                RuleSetName = _ruleset.RuleSetName,
-                RuleSetDesc = _ruleset.RuleSetDesc,
-                DefaultDice = _ruleset.DefaultDice,
-                CurrencyLabel = _ruleset.CurrencyLabel,
-                WeightLabel = _ruleset.WeightLabel,
-                DistanceLabel = _ruleset.DistanceLabel,
-                SortOrder = _ruleset.SortOrder,
-                VolumeLabel = _ruleset.VolumeLabel,
-                ImageUrl = _ruleset.ImageUrl,
-                ThumbnailUrl = _ruleset.ThumbnailUrl,
-                IsAbilityEnabled = _ruleset.IsAbilityEnabled,
-                IsItemEnabled = _ruleset.IsItemEnabled,
-                IsSpellEnabled = _ruleset.IsSpellEnabled,
-                IsAllowSharing = _ruleset.IsAllowSharing,
-
-                IsCoreRuleset = _ruleset.IsCoreRuleset,
-                ParentRuleSetId = rulesetId
-            };
-        }
 
         private async void SaveColorsAsync(RulesetTile Tile)
         {

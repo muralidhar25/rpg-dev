@@ -35,13 +35,15 @@ namespace DAL.Services
             combo.Maximum = characterStatCombo.Maximum;
             combo.Minimum = characterStatCombo.Minimum;
             combo.DefaultValue = characterStatCombo.DefaultValue;
+            combo.DefaultText = characterStatCombo.DefaultText;
 
             var characterstatslist = _context.CharactersCharacterStats.Where(x => x.IsDeleted == false && x.CharacterStatId == characterStatCombo.CharacterStatId).ToList();
             foreach (var item in characterstatslist)
             {
-                item.Maximum = (int)characterStatCombo.Maximum;
-                item.Minimum = (int)characterStatCombo.Minimum;
+                item.Maximum = characterStatCombo.Maximum==null?0: (int) characterStatCombo.Maximum;
+                item.Minimum = characterStatCombo.Minimum == null ? 0 : (int)characterStatCombo.Minimum;
                 item.DefaultValue = characterStatCombo.DefaultValue;
+                item.ComboText = characterStatCombo.DefaultText;
             }
             try
             {

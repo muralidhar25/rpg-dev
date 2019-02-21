@@ -37,6 +37,9 @@ namespace DAL.Services.RulesetTileServices
 
         public async Task<RulesetDashboardLayout> Create(RulesetDashboardLayout item)
         {
+            //item.IsDefaultComputer = false;
+            //item.IsDefaultTablet = false;
+            //item.IsDefaultMobile = false;
             return await _repo.Add(item);
         }
 
@@ -206,10 +209,26 @@ namespace DAL.Services.RulesetTileServices
             RulesetDashboardLayout.LayoutHeight = item.LayoutHeight;
             RulesetDashboardLayout.LayoutWidth = item.LayoutWidth;
 
+            RulesetDashboardLayout.IsDefaultComputer = item.IsDefaultComputer;
+            RulesetDashboardLayout.IsDefaultTablet = item.IsDefaultTablet;
+            RulesetDashboardLayout.IsDefaultMobile = item.IsDefaultMobile;
 
             try
             {
                 await _repo.Update(RulesetDashboardLayout);
+
+                if (RulesetDashboardLayout.IsDefaultComputer)
+                {
+                    RemoveDefaultComputerDeviceFromOtherLayouts(RulesetDashboardLayout);
+                }
+                if (RulesetDashboardLayout.IsDefaultTablet)
+                {
+                    RemoveDefaultTabletDeviceFromOtherLayouts(RulesetDashboardLayout);
+                }
+                if (RulesetDashboardLayout.IsDefaultMobile)
+                {
+                    RemoveDefaultMobileDeviceFromOtherLayouts(RulesetDashboardLayout);
+                }
             }
             catch (Exception ex)
             {
@@ -218,7 +237,36 @@ namespace DAL.Services.RulesetTileServices
 
             return RulesetDashboardLayout;
         }
-        
+        private void RemoveDefaultMobileDeviceFromOtherLayouts(RulesetDashboardLayout RDL)
+        {
+            var layouts = _context.RulesetDashboardLayouts.Where(x => x.RulesetDashboardLayoutId != RDL.RulesetDashboardLayoutId && x.RulesetId == RDL.RulesetId && x.IsDeleted != true).ToList();
+            foreach (var item in layouts)
+            {
+                item.IsDefaultMobile = false;
+            }
+            _context.SaveChanges();
+        }
+
+        private void RemoveDefaultTabletDeviceFromOtherLayouts(RulesetDashboardLayout RDL)
+        {
+            var layouts = _context.RulesetDashboardLayouts.Where(x => x.RulesetDashboardLayoutId != RDL.RulesetDashboardLayoutId && x.RulesetId == RDL.RulesetId && x.IsDeleted != true).ToList();
+            foreach (var item in layouts)
+            {
+                item.IsDefaultTablet = false;
+            }
+            _context.SaveChanges();
+        }
+
+        private void RemoveDefaultComputerDeviceFromOtherLayouts(RulesetDashboardLayout RDL)
+        {
+            var layouts = _context.RulesetDashboardLayouts.Where(x => x.RulesetDashboardLayoutId != RDL.RulesetDashboardLayoutId && x.RulesetId == RDL.RulesetId && x.IsDeleted != true).ToList();
+            foreach (var item in layouts)
+            {
+                item.IsDefaultComputer = false;
+            }
+            _context.SaveChanges();
+        }
+
         public int GetMaximumSortOrdertByRulesetId(int? RulesetId)
         {
             var result = _context.RulesetDashboardLayouts.Where(x => x.IsDeleted != true && x.RulesetId == RulesetId).OrderByDescending(x => x.SortOrder).FirstOrDefault();

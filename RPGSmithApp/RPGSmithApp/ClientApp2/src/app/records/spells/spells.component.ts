@@ -1,24 +1,22 @@
 import { Component, OnInit, OnDestroy, Input } from "@angular/core";
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { AlertService, MessageSeverity, DialogType } from './../../core/common/alert.service';
-import { AuthService } from "./../../core/auth/auth.service";
-import { ConfigurationService } from './../../core/common/configuration.service';
-import { Utilities } from './../../core/common/utilities';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { DBkeys } from '../../core/common/db-keys';
-import { LocalStoreManager } from '../../core/common/local-store-manager.service';
-import { SharedService } from "../../core/services/shared.service";
+import { ConfigurationService } from "../../core/common/configuration.service";
 import { CommonService } from "../../core/services/shared/common.service";
-
-import { AddSpellsComponent } from './add-spells/add-spells.component';
-import { CreateSpellsComponent } from './create-spells/create-spells.component';
-import { User } from '../../core/models/user.model';
-import { Spell } from '../../core/models/view-models/spell.model';
+import { SharedService } from "../../core/services/shared.service";
+import { AlertService, DialogType, MessageSeverity } from "../../core/common/alert.service";
 import { SpellsService } from "../../core/services/spells.service";
-import { CastComponent } from '../../shared/cast/cast.component';
-import { PageLastViewsService } from "../../core/services/pagelast-view.service";
-import { Ruleset } from '../../core/models/view-models/ruleset.model';
 import { RulesetService } from "../../core/services/ruleset.service";
+import { PageLastViewsService } from "../../core/services/pagelast-view.service";
+import { LocalStoreManager } from "../../core/common/local-store-manager.service";
+import { AuthService } from "../../core/auth/auth.service";
+import { User } from "../../core/models/user.model";
+import { DBkeys } from "../../core/common/db-keys";
+import { Utilities } from "../../core/common/utilities";
+import { AddSpellsComponent } from "./add-spells/add-spells.component";
+import { CreateSpellsComponent } from "../../shared/create-spells/create-spells.component";
+import { Spell } from "../../core/models/view-models/spell.model";
+import { CastComponent } from "../../shared/cast/cast.component";
 
 @Component({
     selector: 'app-spells',
@@ -37,6 +35,7 @@ export class SpellsComponent implements OnInit {
     ruleSetId: number;
     spellsList: any;
     pageLastView: any;
+    timeoutHandler: any;
     noRecordFound: boolean = false;
     scrollLoading: boolean = false;
 
@@ -71,11 +70,11 @@ export class SpellsComponent implements OnInit {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)
             this.authService.logout();
-        else {
+        else { 
             this.isLoading = true;
             this.spellsService.getspellsByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
                 .subscribe(data => {
-
+                    
                     this.spellsList = Utilities.responseData(data.Spells, this.pageSize);
                     this.rulesetModel = data.RuleSet;
                     this.spellsList.forEach(function (val) { val.showIcon = false; });
@@ -113,10 +112,10 @@ export class SpellsComponent implements OnInit {
 
         ++this.page;
         this.scrollLoading = true;
-
+        
         this.spellsService.getspellsByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
             .subscribe(data => {
-
+                
                 var _spells = data.Spells;
                 for (var i = 0; i < _spells.length; i++) {
                     _spells[i].showIcon = false;
@@ -133,7 +132,7 @@ export class SpellsComponent implements OnInit {
             }, () => { });
 
         //this.charactersCharacterStatService.getCharactersCharacterStat<any[]>(this.characterId, this.page, this.pageSize)
-
+           
     }
 
     showActionButtons(showActions) {
@@ -185,13 +184,13 @@ export class SpellsComponent implements OnInit {
     }
 
     createSpell() {
-        // this.alertService.startLoadingMessage("", "Checking records");
+        // this.alertService.startLoadingMessage("", "Checking records");      
         this.spellsService.getspellsCount(this.ruleSetId)
             .subscribe(data => {
                 //this.alertService.stopLoadingMessage();
                 if (data < 2000) {
                     this.bsModalRef = this.modalService.show(CreateSpellsComponent, {
-                        class: 'modal-primary modal-md',
+                        class: 'modal-primary modal-custom',
                         ignoreBackdropClick: true,
                         keyboard: false
                     });
@@ -205,13 +204,13 @@ export class SpellsComponent implements OnInit {
                     //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
                     this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
                 }
-            }, error => { }, () => { });
-
+            }, error => { }, () => { });  
+  
     }
 
     editSpell(spell: Spell) {
         this.bsModalRef = this.modalService.show(CreateSpellsComponent, {
-            class: 'modal-primary modal-md',
+            class: 'modal-primary modal-custom',
             ignoreBackdropClick: true,
             keyboard: false
         });
@@ -223,13 +222,13 @@ export class SpellsComponent implements OnInit {
     }
 
     duplicateSpell(spell: Spell) {
-        // this.alertService.startLoadingMessage("", "Checking records");
+        // this.alertService.startLoadingMessage("", "Checking records");      
         this.spellsService.getspellsCount(this.ruleSetId)
             .subscribe(data => {
                 //this.alertService.stopLoadingMessage();
                 if (data < 2000) {
                     this.bsModalRef = this.modalService.show(CreateSpellsComponent, {
-                        class: 'modal-primary modal-md',
+                        class: 'modal-primary modal-custom',
                         ignoreBackdropClick: true,
                         keyboard: false
                     });
@@ -242,7 +241,7 @@ export class SpellsComponent implements OnInit {
                     //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
                     this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
                 }
-            }, error => { }, () => { });
+            }, error => { }, () => { });          
     }
 
     deleteSpell(spell: Spell) {
@@ -261,9 +260,9 @@ export class SpellsComponent implements OnInit {
         //this.spellsService.deleteSpell(spell.spellId)
         //    .subscribe(
         //        data => {
-        //            this.isLoading = false;
+        //            this.isLoading = false; 
         //            this.alertService.stopLoadingMessage();
-        //            this.alertService.showMessage("Spell has been deleted successfully.", "", MessageSeverity.success);
+        //            this.alertService.showMessage("Spell has been deleted successfully.", "", MessageSeverity.success);                    
         //            this.spellsList = this.spellsList.filter((val) => val.spellId != spell.spellId);
         //            try {
         //                this.noRecordFound = !this.spellsList.length;
@@ -271,7 +270,7 @@ export class SpellsComponent implements OnInit {
         //            //this.initialize();
         //        },
         //        error => {
-        //            this.isLoading = false;
+        //            this.isLoading = false; 
         //            this.alertService.stopLoadingMessage();
         //            let Errors = Utilities.ErrorDetail("Unable to Delete", error);
         //            if (Errors.sessionExpire) {
@@ -305,19 +304,19 @@ export class SpellsComponent implements OnInit {
                         this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
                 });
     }
-
+    
     memorizeSpell(spell: Spell) {
         this.isLoading = true;
         let memorizeTxt = spell.memorized ? 'Unmemorize' : 'Memorize';
         this.spellsService.memorizedSpell(spell.spellId)
             .subscribe(
                 data => {
-                    this.isLoading = false;
+                    this.isLoading = false; 
                     this.alertService.stopLoadingMessage();
                     spell.memorized = spell.memorized ? false : true;
                 },
                 error => {
-                    this.isLoading = false;
+                    this.isLoading = false; 
                     this.alertService.stopLoadingMessage();
                     let Errors = Utilities.ErrorDetail("Unable to " + memorizeTxt, error);
                     if (Errors.sessionExpire) {
@@ -333,9 +332,9 @@ export class SpellsComponent implements OnInit {
             class: 'modal-primary modal-md',
             ignoreBackdropClick: true,
             keyboard: false
-        });
-        this.bsModalRef.content.title = "Spell Cast"
-
+        });    
+        this.bsModalRef.content.title = "Spell Cast"  
+        
         // let msg = "The command value for " + spell.name
         //     + " Spell has not been provided. Edit this record to input one.";
 
@@ -371,5 +370,18 @@ export class SpellsComponent implements OnInit {
     private setRulesetId(rulesetId: number) {
         this.localStorage.deleteData(DBkeys.RULESET_ID);
         this.localStorage.saveSyncedSessionData(rulesetId, DBkeys.RULESET_ID);
+    }
+
+    public clickAndHold(item: any) {
+        if (this.timeoutHandler) {
+            clearInterval(this.timeoutHandler);
+            this.timeoutHandler = null;
+        }
+    }
+
+    public editRecord(record: any) {
+        this.timeoutHandler = setInterval(() => {
+            this.editSpell(record);
+        }, 1000);
     }
 }

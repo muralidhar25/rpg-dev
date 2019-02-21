@@ -1460,7 +1460,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
 
     manageRuleSetCharacterStats() {
 
-        this.router.navigate(['/character-stats', this.rulesetId]);
+        this.router.navigate(['/ruleset/character-stats', this.rulesetId]);
     }
 
 

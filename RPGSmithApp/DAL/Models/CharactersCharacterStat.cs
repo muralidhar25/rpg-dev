@@ -43,7 +43,7 @@ namespace DAL.Models
         public int Current { get; set; }
         public int Maximum { get; set; }
         public int CalculationResult { get; set; }
-        public int Number { get; set; }
+        public int? Number { get; set; }
         
         public int DefaultValue { get; set; }
         public int Minimum { get; set; }

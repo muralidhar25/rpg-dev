@@ -25,118 +25,118 @@ import { ItemsService } from './../items.service';
 @Injectable()
 export class CommonService {
 
-    _rulesetCount: number=0;
-    _characterCount: number=0;
-    _getUser: any;
+  _rulesetCount: number = 0;
+  _characterCount: number = 0;
+  _getUser: any;
 
-    constructor(private router: Router, private configurations: ConfigurationService,
-        private endpointFactory: EndpointFactory, private localStorage: LocalStoreManager,
-        private charactersService: CharactersService, private rulesetService: RulesetService,
-        private authService: AuthService, private userService: UserService) {
-        // this.initializeLoginStatus();
-    }
+  constructor(private router: Router, private configurations: ConfigurationService,
+    private endpointFactory: EndpointFactory, private localStorage: LocalStoreManager,
+    private charactersService: CharactersService, private rulesetService: RulesetService,
+    private authService: AuthService, private userService: UserService) {
+    // this.initializeLoginStatus();                
+  }
 
-    private initializeLoginStatus() {
+  private initializeLoginStatus() {
 
-        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-        let isLoggedIn = user != null;
-        if (!isLoggedIn) {
-            this.authService.logout();
-            this.authService.redirectLogoutUser();
-        }
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    let isLoggedIn = user != null;
+    if (!isLoggedIn) {
+      this.authService.logout();
+      this.authService.redirectLogoutUser();
     }
+  }
 
 
-    /*set character & ruleset result count*/
-    UpdateCounts() {
-        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-        if (user == null) {
-            this.authService.logout();
-            this.authService.redirectLogoutUser();
-        } else {
-            this.RulesetCharacterCount(user.id)
-            //this.RulesetsCount(user.id);
-            //this.CharactersCount(user.id);
-        }
+  /*set character & ruleset result count*/
+  UpdateCounts() {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null) {
+      this.authService.logout();
+      this.authService.redirectLogoutUser();
+    } else {
+      this.RulesetCharacterCount(user.id)
+      //this.RulesetsCount(user.id);
+      //this.CharactersCount(user.id);
     }
+  }
 
-    GetUserDetail() {
-        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-        if (user == null) {
-            this.authService.logout();
-            this.authService.redirectLogoutUser();
-        } else {
-            if (user.userName == null)
-                this.GetUser(user.id);
-        }
+  GetUserDetail() {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null) {
+      this.authService.logout();
+      this.authService.redirectLogoutUser();
+    } else {
+      if (user.userName == null)
+        this.GetUser(user.id);
     }
-    private RulesetCharacterCount(userId: string) {
-        this.rulesetService.getRulesetAndCharactrCount(userId)
-            .subscribe(data => {
-                let model: any = data;
-                //console.log('RulesetsCount: ' + data);
-                this._rulesetCount = model.rulesetCount;
-                this._characterCount = model.characetrCount;
-            },
-                error => {
-                    this._rulesetCount = 0;
-                    this._characterCount = 0;
-                });
-    }
-    private RulesetsCount(userId: string) {
-        this.rulesetService.getRulesetAndCharactrCount(userId)
-            .subscribe(data => {
-                let model: any = data;
-                //console.log('RulesetsCount: ' + data);
-                this.setRulesetCount(model.rulesetCount);
-            },
-            error => {
-                this.setRulesetCount(0);
-            });
-    }
+  }
+  private RulesetCharacterCount(userId: string) {
+    this.rulesetService.getRulesetAndCharactrCount(userId)
+      .subscribe(data => {
+        let model: any = data;
+        //console.log('RulesetsCount: ' + data);
+        this._rulesetCount = model.rulesetCount;
+        this._characterCount = model.characetrCount;
+      },
+        error => {
+          this._rulesetCount = 0;
+          this._characterCount = 0;
+        });
+  }
+  private RulesetsCount(userId: string) {
+    this.rulesetService.getRulesetAndCharactrCount(userId)
+      .subscribe(data => {
+        let model: any = data;
+        //console.log('RulesetsCount: ' + data);
+        this.setRulesetCount(model.rulesetCount);
+      },
+        error => {
+          this.setRulesetCount(0);
+        });
+  }
 
-    private CharactersCount(userId: string) {
-        this.rulesetService.getRulesetAndCharactrCount(userId)
-            .subscribe(data => {
-                let model: any = data;
-                //console.log('CharactersCount: ' + data);
-                this.setCharactersCount(model.characetrCount);
-            },
-            error => {
-                this.setCharactersCount(0);
-            });
-    }
+  private CharactersCount(userId: string) {
+    this.rulesetService.getRulesetAndCharactrCount(userId)
+      .subscribe(data => {
+        let model: any = data;
+        //console.log('CharactersCount: ' + data);
+        this.setCharactersCount(model.characetrCount);
+      },
+        error => {
+          this.setCharactersCount(0);
+        });
+  }
 
-    private GetUser(userId: string) {
-        this.userService.getUserById(userId)
-            .subscribe(data => {
-                this.setUserDetails(data);
-                this.localStorage.saveSyncedSessionData(data, DBkeys.CURRENT_USER);
-            }, error => { });
-    }
+  private GetUser(userId: string) {
+    this.userService.getUserById(userId)
+      .subscribe(data => {
+        this.setUserDetails(data);
+        this.localStorage.saveSyncedSessionData(data, DBkeys.CURRENT_USER);
+      }, error => { });
+  }
 
-    setRulesetCount(count: number) {
-        this._rulesetCount = count;
-    }
+  setRulesetCount(count: number) {
+    this._rulesetCount = count;
+  }
 
-    getRulesetCount() {
-        return this._rulesetCount;
-    }
+  getRulesetCount() {
+    return this._rulesetCount;
+  }
 
-    setCharactersCount(count: number) {
-        this._characterCount = count;
-    }
+  setCharactersCount(count: number) {
+    this._characterCount = count;
+  }
 
-    getCharactersCount() {
-        return this._characterCount;
-    }
+  getCharactersCount() {
+    return this._characterCount;
+  }
 
-    setUserDetails(user: any) {
-        this._getUser = user;
-    }
+  setUserDetails(user: any) {
+    this._getUser = user;
+  }
 
-    getUserDetails() {
-        return this._getUser;
-    }
+  getUserDetails() {
+    return this._getUser;
+  }
 
 }

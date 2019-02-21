@@ -55,7 +55,7 @@ namespace DAL.Models.SPModels
         public bool YesNo { get; set; }
         public bool OnOff { get; set; }
         public int Value { get; set; }
-        public int Number { get; set; }
+        public int? Number { get; set; }
         public int SubValue { get; set; }
         public int Current { get; set; }
         public int Maximum { get; set; }
@@ -111,5 +111,8 @@ namespace DAL.Models.SPModels
         public string name { get; set; }
         public string image { get; set; }
         public string type { get; set; }
+        public bool? isItemEquiped { get; set; }
+        public bool? isSpellMemorized { get; set; }
+        public bool? isAbilityEnabled { get; set; }
     }
 }

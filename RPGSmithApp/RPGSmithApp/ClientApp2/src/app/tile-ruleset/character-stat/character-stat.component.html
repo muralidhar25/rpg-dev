@@ -24,12 +24,12 @@
                     <fieldset class="form-group input-list input-list-wrap core-stats">
                         <legend>Character Stats</legend>
                         <ul class="input-list-items">
-                            <li class="form-check" *ngFor="let stat of statsList | filterTile : query : 'stat';let i=index;">
+                            <li class="form-check" *ngFor="let stat of statsList | filterTile : query : 'rStat';let i=index;"  popover="{{stat.statName}}" triggers="hover">
                                 <!--<label class="form-check-label" *ngIf="i<limit">-->
                                 <label class="form-check-label">
                                     <input *ngIf="rulesetTileModel.view===VIEW.EDIT" class="form-check-input" type="radio" name="newAttributeCoreStats" required (change)="getStatValueEdit($event,stat)"
                                            [checked]="stat.characterStatId===characterStatTileFormModal.characterStatId" />
-                                    <input *ngIf="rulesetTileModel.view===VIEW.ADD" class="form-check-input" type="checkbox" name="newAttributeCoreStats" required (change)="getStatValue($event,stat)" />
+                                    <input *ngIf="rulesetTileModel.view===VIEW.ADD" class="form-check-input" type="checkbox" name="newAttributeCoreStats" required (change)="getStatValue($event,stat)" [checked]="IsStatChecked(stat)" />
                                     <span>
                                         <em> {{stat.statName}} </em>
                                         <i class="icon"></i>
@@ -171,7 +171,7 @@
                                 <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.titleBgColor" name="titleBgColor" id="titleBgColor"  (change)="setColor(colorModel)" />
                             </button>
                         </span>
-                        <input type="text" id="titleBackgroundColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.titleBgColor" name="titleBgColor">
+                        <input type="text" id="titleBackgroundColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.titleBgColor" name="titleBgColor" (change)="setColor(colorModel)">
                     </div>
                 </div>
 
@@ -183,7 +183,7 @@
                                 <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.titleTextColor" name="titleTextColor" id="titleTextColor"  (change)="setColor(colorModel)" />
                             </button>
                         </span>
-                        <input type="text" id="titleTextColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.titleTextColor" name="titleTextColor">
+                        <input type="text" id="titleTextColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.titleTextColor" name="titleTextColor" (change)="setColor(colorModel)">
                     </div>
                 </div>
             </div>
@@ -196,7 +196,7 @@
                                 <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.bodyBgColor" name="bodyBgColor" id="bodyBgColor"  (change)="setColor(colorModel)" />
                             </button>
                         </span>
-                        <input type="text" id="bodyBackgroundColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.bodyBgColor" name="bodyBgColor">
+                        <input type="text" id="bodyBackgroundColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.bodyBgColor" name="bodyBgColor" (change)="setColor(colorModel)">
                     </div>
                 </div>
 
@@ -208,7 +208,7 @@
                                 <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.bodyTextColor" name="bodyTextColor" id="bodyTextColor"  (change)="setColor(colorModel)" />
                             </button>
                         </span>
-                        <input type="text" id="bodyTextColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.bodyTextColor" name="bodyTextColor">
+                        <input type="text" id="bodyTextColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.bodyTextColor" name="bodyTextColor" (change)="setColor(colorModel)">
                     </div>
                 </div>
             </div>

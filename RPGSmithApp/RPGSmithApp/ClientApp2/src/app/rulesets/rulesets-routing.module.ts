@@ -9,6 +9,9 @@ import { ItemDetailsComponent } from '../records/item-master/item-details/item-d
 import { SpellDetailsComponent  } from '../records/spells/spell-details/spell-details.component';
 import { AbilityDetailsComponent } from '../records/abilities/ability-details/ability-details.component';
 import { RulesetDashboardComponent } from './ruleset-dashboard/ruleset-dashboard/ruleset-dashboard.component';
+import { CharacterStatsComponent } from "./character-stats/character-stats/character-stats.component";
+import { RulesetAddInterfaceComponent } from "./ruleset-helper/ruleset-add-interface/ruleset-add-interface.component";
+import { AuthGuard } from "../core/auth/auth-guard.service";
 
 const routes: Routes = [
   { path: "", component: RulesetComponent, data: { title: "Rulesets" } },
@@ -20,7 +23,10 @@ const routes: Routes = [
   { path: "spell-details/:id", component: SpellDetailsComponent,  data: { title: "Spell Details" } },
   { path: "ability-details/:id", component: AbilityDetailsComponent,  data: { title: "Ability Details" } },
 
-  { path: "dashboard/:id", component: RulesetDashboardComponent,  data: { title: "Ruleset Dashboard" } },
+  { path: "dashboard/:id", component: RulesetDashboardComponent, data: { title: "Ruleset Dashboard" } },
+  { path: "character-stats/:id", component: CharacterStatsComponent, data: { title: "Character Stats" } },
+  { path: "add", component: RulesetAddInterfaceComponent, canActivate: [AuthGuard], data: { title: "Add Ruleset" } },
+
 ];
 
 @NgModule({

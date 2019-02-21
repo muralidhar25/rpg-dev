@@ -30,3 +30,25 @@ input.input-color-custom {
 .input-color-items li .tile {
     margin-top: 0px;
 }
+.remove-btn-box {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    opacity: 0;
+    right:0px;
+}
+.remove-btn-box:hover{
+    opacity:1
+}
+.remove-btn-box .removebtn-img {
+    width: 100%;
+    background: #d25727;
+    border: 0px;
+    color: #fff;
+    padding: 8px 0px;
+    font-size: 15px;
+    cursor: pointer
+}
+.input-image-trigger:hover + .remove-btn-box {
+    opacity: 1;
+}

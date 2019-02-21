@@ -1,22 +1,20 @@
 import { Component, OnInit, OnDestroy, Input } from "@angular/core";
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { AlertService, MessageSeverity, DialogType } from './../../../core/common/alert.service';
-import { AuthService } from "./../../../core/auth/auth.service";
-import { ConfigurationService } from './../../../core/common/configuration.service';
-import { Utilities } from './../../../core/common/utilities';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { DBkeys } from '../../../core/common/db-keys';
-import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
-import { SharedService } from "../../../core/services/shared.service";
-import { CommonService } from "../../../core/services/shared/common.service";
-
-import { AddSpellsComponent } from './../../spells/add-spells/add-spells.component';
-import { CreateSpellsComponent } from './../../spells/create-spells/create-spells.component';
-import { User } from '../../../core/models/user.model';
-import { Spell } from '../../../core/models/view-models/spell.model';
+import { Spell } from "../../../core/models/view-models/spell.model";
+import { AuthService } from "../../../core/auth/auth.service";
+import { AlertService, DialogType, MessageSeverity } from "../../../core/common/alert.service";
+import { ConfigurationService } from "../../../core/common/configuration.service";
 import { SpellsService } from "../../../core/services/spells.service";
-import { ImageViewerComponent } from "../../../shared/image-interface/image-viewer/image-viewer.component";
+import { CommonService } from "../../../core/services/shared/common.service";
+import { SharedService } from "../../../core/services/shared.service";
+import { LocalStoreManager } from "../../../core/common/local-store-manager.service";
 import { RulesetService } from "../../../core/services/ruleset.service";
+import { User } from "../../../core/models/user.model";
+import { DBkeys } from "../../../core/common/db-keys";
+import { Utilities } from "../../../core/common/utilities";
+import { CreateSpellsComponent } from "../../../shared/create-spells/create-spells.component";
+import { ImageViewerComponent } from "../../../shared/image-interface/image-viewer/image-viewer.component";
 
 @Component({
     selector: 'app-spell-details',
@@ -59,7 +57,7 @@ export class SpellDetailsComponent implements OnInit {
             this.isLoading = true;
             this.spellsService.getspellsById<any[]>(this.spellId)
                 .subscribe(data => {
-                    this.spellDetail = this.spellsService.spellModelData(data, "UPDATE");
+                    this.spellDetail = this.spellsService.spellModelData(data, "UPDATE");                    
                     //this.spellDetail.forEach(function (val) { val.showIcon = false; });
                     this.rulesetService.GetCopiedRulesetID(this.spellDetail.ruleSetId, user.id).subscribe(data => {
                         let id: any = data
@@ -74,7 +72,7 @@ export class SpellDetailsComponent implements OnInit {
                             this.authService.logout(true);
                         }
                     }, () => { });
-
+                   
                 }, error => {
                     this.isLoading = false;
                     let Errors = Utilities.ErrorDetail("", error);
@@ -113,7 +111,7 @@ export class SpellDetailsComponent implements OnInit {
     }
 
     duplicateSpell(spell: Spell) {
-        // this.alertService.startLoadingMessage("", "Checking records");
+        // this.alertService.startLoadingMessage("", "Checking records");      
         this.spellsService.getspellsCount(this.ruleSetId)
             .subscribe(data => {
                 //this.alertService.stopLoadingMessage();
@@ -133,8 +131,8 @@ export class SpellDetailsComponent implements OnInit {
                     //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
                     this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
                 }
-            }, error => { }, () => { });
-
+            }, error => { }, () => { });  
+       
     }
 
     deleteSpell(spell: Spell) {
@@ -153,14 +151,14 @@ export class SpellDetailsComponent implements OnInit {
         //this.spellsService.deleteSpell(spell.spellId)
         //    .subscribe(
         //        data => {
-        //            this.isLoading = false;
+        //            this.isLoading = false; 
         //            this.alertService.stopLoadingMessage();
         //            this.alertService.showMessage("Spell has been deleted successfully.", "", MessageSeverity.success);
         //            //this.initialize();
         //            this.router.navigate(['/ruleset/spell', this.ruleSetId]);
         //        },
         //        error => {
-        //            this.isLoading = false;
+        //            this.isLoading = false; 
         //            this.alertService.stopLoadingMessage();
         //            let Errors = Utilities.ErrorDetail("Unable to Delete", error);
         //            if (Errors.sessionExpire) {
@@ -199,12 +197,12 @@ export class SpellDetailsComponent implements OnInit {
         this.spellsService.memorizedSpell(spell.spellId)
             .subscribe(
                 data => {
-                    this.isLoading = false;
+                    this.isLoading = false; 
                     this.alertService.stopLoadingMessage();
                     this.spellDetail.memorized = spell.memorized ? false : true;
                 },
                 error => {
-                    this.isLoading = false;
+                    this.isLoading = false; 
                     this.alertService.stopLoadingMessage();
                     let Errors = Utilities.ErrorDetail("Unable to " + memorizeTxt, error);
                     if (Errors.sessionExpire) {
@@ -229,13 +227,13 @@ export class SpellDetailsComponent implements OnInit {
             //TODO
             this.castSpellHelper(spell);
         }
-
+        
     }
 
     private castSpellHelper(spell: any) {
         this.isLoading = true;
         this.alertService.startLoadingMessage("", "TODO => Cast Spell");
-        setTimeout(() => { this.isLoading = false;
+        setTimeout(() => { this.isLoading = false; 
             this.alertService.stopLoadingMessage();
         }, 200);
     }

@@ -1,21 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { ColorsComponent } from './../colors/colors.component';
-import { TextTileService } from '../../core/services/tiles/text-tile.service';
-import { TextTile } from '../../core/models/tiles/text-tile.model';
-import { AuthService } from '../../core/auth/auth.service';
-import { Utilities } from '../../core/common/utilities';
-import { SharedService } from "../../core/services/shared.service";
 import { CharacterTile } from '../../core/models/tiles/character-tile.model';
-import { Color } from '../../core/models/tiles/color.model';
-import { ColorService } from '../../core/services/tiles/color.service';
+import { TextTile } from '../../core/models/tiles/text-tile.model';
 import { CharacterDashboardPage } from '../../core/models/view-models/character-dashboard-page.model';
-import { VIEW, TILES, SHAPE, SHAPE_CLASS } from '../../core/models/enums';
-import { FileUploadService } from "../../core/common/file-upload.service";
-import { AlertService, MessageSeverity, DialogType } from '../../core/common/alert.service';
-import { DBkeys } from '../../core/common/db-keys';
-import { User } from '../../core/models/user.model';
+import { Color } from '../../core/models/tiles/color.model';
+import { TextTileService } from '../../core/services/tiles/text-tile.service';
+import { SharedService } from '../../core/services/shared.service';
+import { ColorService } from '../../core/services/tiles/color.service';
+import { AlertService, MessageSeverity } from '../../core/common/alert.service';
+import { AuthService } from '../../core/auth/auth.service';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
+import { SHAPE_CLASS, SHAPE, VIEW } from '../../core/models/enums';
+import { User } from '../../core/models/user.model';
+import { DBkeys } from '../../core/common/db-keys';
+import { Utilities } from '../../core/common/utilities';
+import { ColorsComponent } from '../colors/colors.component';
 
 @Component({
   selector: 'app-text',

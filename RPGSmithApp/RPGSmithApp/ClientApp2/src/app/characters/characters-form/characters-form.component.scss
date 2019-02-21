@@ -116,3 +116,10 @@
         height:270px
     }
 }
+.search-rule-set {
+    margin-bottom: 0.25rem;
+}
+.search-rule-set + .input-list-items {
+    padding-top: 3px;
+    height: 10.8rem;
+}

@@ -40,10 +40,10 @@ namespace DAL.Services.CharacterTileServices
             catch (Exception ex)
             {
                 throw ex;
-
             }
         }
-        public void UpdateList(List<TileConfig> list) {
+        public void UpdateList(List<TileConfig> list)
+        {
             int index = 0;
             List<CommonTileConfig> dtList = list.Select(o => new CommonTileConfig()
             {
@@ -63,22 +63,29 @@ namespace DAL.Services.CharacterTileServices
             if (dt.Rows.Count > 0)
             {
                 string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
-
-                using (SqlConnection con = new SqlConnection(consString))
+                try
                 {
-                    using (SqlCommand cmd = new SqlCommand("Character_UpdateTileConfig"))
+                    using (SqlConnection con = new SqlConnection(consString))
                     {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Connection = con;
-                        cmd.Parameters.AddWithValue("@tileConfigs", dt);
-                        con.Open();
-                        var a = cmd.ExecuteNonQuery();
-                        con.Close();
+                        using (SqlCommand cmd = new SqlCommand("Character_UpdateTileConfig"))
+                        {
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Connection = con;
+                            cmd.Parameters.AddWithValue("@tileConfigs", dt);
+                            con.Open();
+                            var a = cmd.ExecuteNonQuery();
+                            con.Close();
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
                 }
             }
         }
-        public void createList(List<TileConfig> list) {
+        public void createList(List<TileConfig> list)
+        {
             int index = 0;
             List<CommonTileConfig> dtList = list.Select(o => new CommonTileConfig()
             {
@@ -98,19 +105,25 @@ namespace DAL.Services.CharacterTileServices
             if (dt.Rows.Count > 0)
             {
                 string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
-
-                using (SqlConnection con = new SqlConnection(consString))
+                try
                 {
-                    using (SqlCommand cmd = new SqlCommand("Character_CreateTileConfig"))
+                    using (SqlConnection con = new SqlConnection(consString))
                     {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Connection = con;
-                        cmd.Parameters.AddWithValue("@tileConfigs", dt);
-                        con.Open();
-                        var a = cmd.ExecuteNonQuery();
-                        con.Close();
+                        using (SqlCommand cmd = new SqlCommand("Character_CreateTileConfig"))
+                        {
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Connection = con;
+                            cmd.Parameters.AddWithValue("@tileConfigs", dt);
+                            con.Open();
+                            var a = cmd.ExecuteNonQuery();
+                            con.Close();
+                        }
                     }
-                }               
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
             }
         }
         public async Task<TileConfig> UpdateAsync(TileConfig item)

@@ -1,22 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { ColorsComponent } from '../../tile/colors/colors.component';
-import { TextTileService } from '../../core/services/tiles/text-tile.service';
-import { TextTile } from '../../core/models/tiles/text-tile.model';
-import { AuthService } from '../../core/auth/auth.service';
-import { Utilities } from '../../core/common/utilities';
-import { SharedService } from "../../core/services/shared.service";
 import { RulesetTile } from '../../core/models/tiles/ruleset-tile.model';
+import { TextTile } from '../../core/models/tiles/text-tile.model';
 import { Color } from '../../core/models/tiles/color.model';
-import { ColorService } from '../../core/services/tiles/color.service';
 import { RulesetDashboardPage } from '../../core/models/view-models/ruleset-dashboard-page.model';
-import { VIEW, TILES, SHAPE, SHAPE_CLASS } from '../../core/models/enums';
-import { FileUploadService } from "../../core/common/file-upload.service";
-import { AlertService, MessageSeverity, DialogType } from '../../core/common/alert.service';
+import { TextTileService } from '../../core/services/tiles/text-tile.service';
+import { FileUploadService } from '../../core/common/file-upload.service';
+import { ColorService } from '../../core/services/tiles/color.service';
+import { RulesetTileService } from '../../core/services/ruleset-tile.service';
+import { LocalStoreManager } from '../../core/common/local-store-manager.service';
+import { SharedService } from '../../core/services/shared.service';
+import { AlertService, MessageSeverity } from '../../core/common/alert.service';
+import { AuthService } from '../../core/auth/auth.service';
+import { SHAPE_CLASS, SHAPE, VIEW } from '../../core/models/enums';
 import { DBkeys } from '../../core/common/db-keys';
 import { User } from '../../core/models/user.model';
-import { LocalStoreManager } from '../../core/common/local-store-manager.service';
-import { RulesetTileService } from '../../core/services/ruleset-tile.service';
+import { ColorsComponent } from '../../tile/colors/colors.component';
+import { Utilities } from '../../core/common/utilities';
 
 @Component({
   selector: 'app-text',

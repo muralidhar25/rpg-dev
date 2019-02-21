@@ -15,7 +15,7 @@ import { CharacterDashboardLayout } from '../../../core/models/view-models/chara
 import { SharedService } from "../../../core/services/shared.service";
 import { CommonService } from "../../../core/services/shared/common.service";
 import { AuthService } from "../../../core/auth/auth.service";
-import { VIEW } from '../../../core/models/enums';
+import { VIEW, DEVICE } from '../../../core/models/enums';
 
 @Component({
     selector: 'app-layout-form',
@@ -24,190 +24,229 @@ import { VIEW } from '../../../core/models/enums';
 })
 export class LayoutFormComponent implements OnInit {
 
-    layoutModel: CharacterDashboardLayout = new CharacterDashboardLayout();
-    layoutFormModal: CharacterDashboardLayout = new CharacterDashboardLayout();
-    layoutForm: FormGroup;
-    isLoading = false;
-    characterId: number;
-    layoutPages: any;
-    disabled: boolean = false;
-    screenHeight: number;
-    screenWidth: number;
-    title: string
-    button:string
-    @HostListener('window:resize', ['$event'])
-    onResize(event?) {
-        this.screenHeight = window.innerHeight;
-        this.screenWidth = window.innerWidth;
-    }
+  layoutModel: CharacterDashboardLayout = new CharacterDashboardLayout();
+  layoutFormModal: CharacterDashboardLayout = new CharacterDashboardLayout();
+  layoutForm: FormGroup;
+  isLoading = false;
+  characterId: number;
+  layoutPages: any;
+  disabled: boolean = false;
+  screenHeight: number;
+  screenWidth: number;
+  title: string
+  button: string
+  View = VIEW
+  @HostListener('window:resize', ['$event'])
+  onResize(event?) {
+    this.screenHeight = window.innerHeight;
+    this.screenWidth = window.innerWidth;
+  }
+  DeviceType = DEVICE
 
-    constructor(
-        private router: Router, private alertService: AlertService, private authService: AuthService,
-        private configurations: ConfigurationService, private layoutService: CharacterDashboardLayoutService,
-        private bsModalRef: BsModalRef, private modalService: BsModalService, private localStorage: LocalStoreManager,
-        private sharedService: SharedService, private commonService: CommonService
-    ) {
-        this.onResize();
-    }
+  constructor(
+    private router: Router, private alertService: AlertService, private authService: AuthService,
+    private configurations: ConfigurationService, private layoutService: CharacterDashboardLayoutService,
+    private bsModalRef: BsModalRef, private modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService, private commonService: CommonService
+  ) {
+    this.onResize();
+  }
 
-    ngOnInit() {
-        this.Initialize();
-    }
+  ngOnInit() {
+    this.Initialize();
+  }
 
-    private Initialize() {
-        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-        if (user == null)
-            this.authService.logout();
-        else {
-            setTimeout(() => {
-                this.title = this.bsModalRef.content.title;
-                let modalContentButton = this.button = this.bsModalRef.content.button;
-                this.layoutPages = this.bsModalRef.content.layoutPages;
-                this.layoutFormModal = Object.assign({}, this.bsModalRef.content.layoutFormModal ? this.bsModalRef.content.layoutFormModal : this.layoutFormModal);
-                this.layoutFormModal.view = modalContentButton === 'DUPLICATE' ? VIEW.DUPLICATE : modalContentButton === 'UPDATE' ? VIEW.EDIT : VIEW.ADD;
+  private Initialize() {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      setTimeout(() => {
+        this.title = this.bsModalRef.content.title;
+        let modalContentButton = this.button = this.bsModalRef.content.button;
+        this.layoutPages = this.bsModalRef.content.layoutPages;
+        this.layoutFormModal = Object.assign({}, this.bsModalRef.content.layoutFormModal ? this.bsModalRef.content.layoutFormModal : this.layoutFormModal);
+        this.layoutFormModal.view = modalContentButton === 'DUPLICATE' ? VIEW.DUPLICATE : modalContentButton === 'UPDATE' ? VIEW.EDIT : VIEW.ADD;
 
-                if (this.layoutFormModal.view == VIEW.DUPLICATE) {
-                    this.layoutFormModal.name = '';
-                }
-                this.characterId = this.layoutFormModal.characterId = this.bsModalRef.content.characterId;
-                this.screenWidth = this.layoutFormModal.layoutWidth ? this.layoutFormModal.layoutWidth : this.screenWidth;
-                this.screenHeight = this.layoutFormModal.layoutHeight ? this.layoutFormModal.layoutHeight : this.screenHeight;
-            }, 0);
+        if (this.layoutFormModal.view == VIEW.DUPLICATE) {
+          this.layoutFormModal.name = '';
         }
+        this.characterId = this.layoutFormModal.characterId = this.bsModalRef.content.characterId;
+        this.screenWidth = this.layoutFormModal.layoutWidth ? this.layoutFormModal.layoutWidth : this.screenWidth;
+        this.screenHeight = this.layoutFormModal.layoutHeight ? this.layoutFormModal.layoutHeight : this.screenHeight;
+      }, 0);
     }
+  }
 
-    submitForm() {
-        if (this.layoutFormModal.name=="") {
-            this.alertService.showMessage("Please add Layout Name.", "Name is required", MessageSeverity.error);
-        }
-        else {
-            this.isLoading = true;
-            let _msg = this.layoutFormModal.characterDashboardLayoutId == 0 || this.layoutFormModal.characterDashboardLayoutId === undefined ? "Creating Layout..." : "Updating Layout...";         
-            this.alertService.startLoadingMessage("", _msg);
-
-            this.layoutFormModal.layoutWidth = this.screenWidth;
-            this.layoutFormModal.layoutHeight = this.screenHeight;
-            this.layoutFormModal.characterId = this.characterId;
-            
-            if (this.layoutFormModal.characterDashboardLayoutId == 0 || this.layoutFormModal.characterDashboardLayoutId === undefined) {
-                this.addLayout(this.layoutFormModal);
-            }
-            else if (this.layoutFormModal.characterDashboardLayoutId > 0 && this.layoutFormModal.view == VIEW.EDIT) {
-                this.updateLayout(this.layoutFormModal);
-            }
-            else if (this.layoutFormModal.characterDashboardLayoutId > 0 && this.layoutFormModal.view == VIEW.DUPLICATE) {
-                this.layoutFormModal.characterDashboardLayoutId = undefined;
-                this.duplicateLayout(this.layoutFormModal);
-            }
-        }
+  submitForm() {
+    if (this.layoutFormModal.name == "") {
+      this.alertService.showMessage("Please add Layout Name.", "Name is required", MessageSeverity.error);
     }
+    else {
+      this.isLoading = true;
+      let _msg = this.layoutFormModal.characterDashboardLayoutId == 0 || this.layoutFormModal.characterDashboardLayoutId === undefined ? "Creating Layout..." : "Updating Layout...";
+      this.alertService.startLoadingMessage("", _msg);
 
-    private addLayout(modal) {
-        this.isLoading = true;
-        this.disabled = true;
-        this.layoutService.createCharacterDashboardLayout(modal)
-            .subscribe(
-                data => {
-                    this.isLoading = false;
-                    this.alertService.stopLoadingMessage();
+      this.layoutFormModal.layoutWidth = this.screenWidth;
+      this.layoutFormModal.layoutHeight = this.screenHeight;
+      this.layoutFormModal.characterId = this.characterId;
 
-                    let message =  "Layout has been added successfully." ;
-                    this.alertService.showMessage(message, "", MessageSeverity.success);
-                    this.disabled = false;
-                    this.bsModalRef.hide();
-                    this.sharedService.updateCharacterDashboardLayout(true);  
-                },
-                error => {
-                    console.log(error);
-                    this.isLoading = false;
-                    this.disabled = false;
-                    this.alertService.stopLoadingMessage();
-                    let _message ="Unable to Add " ;
-                    let Errors = Utilities.ErrorDetail(_message, error);
-                    if (Errors.sessionExpire) {                       
-                        this.authService.logout(true);
-                    }
-                    else
-                        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-                },
-        );
+      if (this.layoutFormModal.characterDashboardLayoutId == 0 || this.layoutFormModal.characterDashboardLayoutId === undefined) {
+        this.addLayout(this.layoutFormModal);
+      }
+      else if (this.layoutFormModal.characterDashboardLayoutId > 0 && this.layoutFormModal.view == VIEW.EDIT) {
+        this.updateLayout(this.layoutFormModal);
+      }
+      else if (this.layoutFormModal.characterDashboardLayoutId > 0 && this.layoutFormModal.view == VIEW.DUPLICATE) {
+        this.layoutFormModal.characterDashboardLayoutId = undefined;
+        this.duplicateLayout(this.layoutFormModal);
+      }
     }
+  }
 
-    private updateLayout(modal) {
-        this.isLoading = true;
-        this.disabled = true;
-        this.layoutService.updateCharacterDashboardLayout(modal)
-            .subscribe(
-                data => {
-                    this.isLoading = false;
-                    this.disabled = false;
-                    this.alertService.stopLoadingMessage();
+  private addLayout(modal) {
+    this.isLoading = true;
+    this.disabled = true;
+    this.layoutService.createCharacterDashboardLayout(modal)
+      .subscribe(
+        data => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
 
-                    let message =  "Layout has been updated successfully.";
-                    this.alertService.showMessage(message, "", MessageSeverity.success);
-                   
-                    this.bsModalRef.hide();
-                    this.sharedService.updateCharacterDashboardLayout(true);                  
-                  
-                },
-                error => {
-                    console.log(error);
-                    this.isLoading = false;
-                    this.disabled = false;
-                    this.alertService.stopLoadingMessage();
-                    let _message =  "Unable to Update ";
-                    let Errors = Utilities.ErrorDetail(_message, error);
-                    if (Errors.sessionExpire) {
-                     
-                        this.authService.logout(true);
-                    }
-                    else
-                        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-                },
-        );
+          let message = "Layout has been added successfully.";
+          this.alertService.showMessage(message, "", MessageSeverity.success);
+          this.disabled = false;
+          this.bsModalRef.hide();
+          this.sharedService.updateCharacterDashboardLayout(true);
+        },
+        error => {
+          console.log(error);
+          this.isLoading = false;
+          this.disabled = false;
+          this.alertService.stopLoadingMessage();
+          let _message = "Unable to Add ";
+          let Errors = Utilities.ErrorDetail(_message, error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        },
+      );
+  }
+
+  private updateLayout(modal) {
+    this.isLoading = true;
+    this.disabled = true;
+    this.layoutService.updateCharacterDashboardLayout(modal)
+      .subscribe(
+        data => {
+          this.isLoading = false;
+          this.disabled = false;
+          this.alertService.stopLoadingMessage();
+
+          let message = "Layout has been updated successfully.";
+          this.alertService.showMessage(message, "", MessageSeverity.success);
+
+          this.bsModalRef.hide();
+          this.sharedService.updateCharacterDashboardLayout(true);
+
+        },
+        error => {
+          console.log(error);
+          this.isLoading = false;
+          this.disabled = false;
+          this.alertService.stopLoadingMessage();
+          let _message = "Unable to Update ";
+          let Errors = Utilities.ErrorDetail(_message, error);
+          if (Errors.sessionExpire) {
+
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        },
+      );
+  }
+
+  private duplicateLayout(modal) {
+    this.isLoading = true;
+    this.disabled = true;
+    this.layoutService.duplicateCharacterDashboardLayout(modal)
+      .subscribe(
+        data => {
+          this.isLoading = false;
+          this.disabled = false;
+          this.alertService.stopLoadingMessage();
+
+          let message = "Layout has been duplicated successfully.";
+          this.alertService.showMessage(message, "", MessageSeverity.success);
+
+          this.bsModalRef.hide();
+          this.sharedService.updateCharacterDashboardLayout(true);
+
+        },
+        error => {
+          console.log(error);
+          this.isLoading = false;
+          this.disabled = false;
+          this.alertService.stopLoadingMessage();
+          let _message = "Unable to Duplicate ";
+          let Errors = Utilities.ErrorDetail(_message, error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        },
+      );
+  }
+
+  close() {
+    this.bsModalRef.hide();
+  }
+
+  manageRuleSets() {
+    this.bsModalRef.hide();
+    this.router.navigate(['/rulesets']);
+  }
+
+  SelectDefaultLayout(event, element, layout, deviceName) {
+    if (event.target.checked) {
+
+      let message = 'Would you like to make this ' + layout.name + ' Layout the default layout for ' + deviceName + ' Devices?';
+      this.alertService.showDialog(message,
+        DialogType.confirm, () => this.updateLayoutDefaultDevice(layout, deviceName), () => this.DeselectSelectedDevice(event, layout, deviceName), 'Yes', 'No');
     }
-
-    private duplicateLayout(modal) {
-        this.isLoading = true;
-        this.disabled = true;
-        this.layoutService.duplicateCharacterDashboardLayout(modal)
-            .subscribe(
-                data => {
-                    this.isLoading = false;
-                    this.disabled = false;
-                    this.alertService.stopLoadingMessage();
-
-                    let message = "Layout has been duplicated successfully.";
-                    this.alertService.showMessage(message, "", MessageSeverity.success);
-
-                    this.bsModalRef.hide();
-                    this.sharedService.updateCharacterDashboardLayout(true);
-
-                },
-                error => {
-                    console.log(error);
-                    this.isLoading = false;
-                    this.disabled = false;
-                    this.alertService.stopLoadingMessage();
-                    let _message = "Unable to Duplicate ";
-                    let Errors = Utilities.ErrorDetail(_message, error);
-                    if (Errors.sessionExpire) {
-                        this.authService.logout(true);
-                    }
-                    else
-                        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-                },
-        );
+  }
+  updateLayoutDefaultDevice(layout, device) {
+    switch (device) {
+      case DEVICE.COMPUTER:
+        layout.isDefaultComputer = true;
+        break;
+      case DEVICE.TABLET:
+        layout.isDefaultTablet = true;
+        break;
+      case DEVICE.MOBILE:
+        layout.isDefaultMobile = true;
+        break;
+      default:
     }
-
-    close() {
-        this.bsModalRef.hide();
+  }
+  DeselectSelectedDevice(event, layout, device) {
+    event.target.checked = false;
+    event.target.disabled = false;
+    switch (device) {
+      case DEVICE.COMPUTER:
+        layout.isDefaultComputer = false;
+        break;
+      case DEVICE.TABLET:
+        layout.isDefaultTablet = false;
+        break;
+      case DEVICE.MOBILE:
+        layout.isDefaultMobile = false;
+        break;
+      default:
     }
-
-    manageRuleSets() {
-        this.bsModalRef.hide();
-        this.router.navigate(['/rulesets']);
-    }
-
-
+  }
 }

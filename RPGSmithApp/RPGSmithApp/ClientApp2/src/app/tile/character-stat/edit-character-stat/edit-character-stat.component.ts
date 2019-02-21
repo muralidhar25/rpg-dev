@@ -1,23 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { CharacterStatTileComponent } from '../character-stat.component';
-import { ExecuteTileComponent } from '../../execute/execute.component';
-import { LinkTileComponent } from '../../link/link.component';
-import { CharacterStatTile, currentMax, valSubVal, choice } from '../../../core/models/tiles/character-stat-tile.model';
-import { CharacterStats } from '../../../core/models/view-models/character-stats.model';
-import { CharactersCharacterStat } from '../../../core/models/view-models/characters-character-stats.model';
-import { Event } from '@angular/router';
-import { DiceRollComponent } from '../../../shared/dice/dice-roll/dice-roll.component';
+import { STAT_TYPE, VIEW } from '../../../core/models/enums';
 import { Characters } from '../../../core/models/view-models/characters.model';
-import { CharactersCharacterStatService } from '../../../core/services/characters-character-stat.service';
-import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
-import { AuthService } from '../../../core/auth/auth.service';
-import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
-import { Utilities } from '../../../core/common/utilities';
-import { SharedService } from '../../../core/services/shared.service';
-import { VIEW, STAT_TYPE } from '../../../core/models/enums';
+import { CharacterStatTile, currentMax, choice, valSubVal } from '../../../core/models/tiles/character-stat-tile.model';
+import { CharactersCharacterStat } from '../../../core/models/view-models/characters-character-stats.model';
 import { CharacterDashboardPage } from '../../../core/models/view-models/character-dashboard-page.model';
+import { Utilities } from '../../../core/common/utilities';
+import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
+import { SharedService } from '../../../core/services/shared.service';
+import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
+import { AuthService } from '../../../core/auth/auth.service';
+import { CharactersCharacterStatService } from '../../../core/services/characters-character-stat.service';
 import { DBkeys } from '../../../core/common/db-keys';
+import { CharacterStats } from '../../../core/models/view-models/character-stats.model';
+import { DiceRollComponent } from '../../../shared/dice/dice-roll/dice-roll.component';
+import { CharacterStatTileComponent } from '../character-stat.component';
 
 @Component({
     selector: 'app-edit-character-stat',
@@ -83,12 +80,12 @@ export class EditCharacterStatComponent implements OnInit {
     ngOnInit() {
 
         setTimeout(() => {
-
+            
             if (this.rulesetId == undefined)
                 this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-
+            
             this.tile = this.bsModalRef.content.tile;
-            this.CharacterStatTile = this.bsModalRef.content.characterStatTile;
+            this.CharacterStatTile = this.bsModalRef.content.characterStatTile;     
             this.Character = this.bsModalRef.content.character; //this.CharacterStatTile.charactersCharacterStat.character
             this.CharacterID = this.bsModalRef.content.characterId;//this.CharacterStatTile.charactersCharacterStat.character.characterId
             //this.defaultCharacterStats = this.CharacterStatTile.charactersCharacterStat.character.charactersCharacterStats;
@@ -106,7 +103,7 @@ export class EditCharacterStatComponent implements OnInit {
         this.title = characterStat.statName ? characterStat.statName : '';
         this.CharacterStatTypeID = characterStat.characterStatTypeId;
         this.CharacterStatTypeDesc = characterStat.statDesc;
-
+        
         switch (this.CharacterStatTypeID) {
             case STAT_TYPE.Text:
                 this.valText = this.charactersCharacterStat.text;
@@ -115,8 +112,8 @@ export class EditCharacterStatComponent implements OnInit {
                 this.valRichText = this.charactersCharacterStat.richText == null ? '' : this.charactersCharacterStat.richText;
                 break;
             case STAT_TYPE.Number:
-                this.valNumber = this.charactersCharacterStat.number.toString();
-                this.defValNumber = this.charactersCharacterStat.number.toString();
+                this.valNumber = this.charactersCharacterStat.number == null ? "" : this.charactersCharacterStat.number.toString();
+                this.defValNumber = this.charactersCharacterStat.number == null ? "" : this.charactersCharacterStat.number.toString();
                 break;
             case STAT_TYPE.CurrentMax:
                 let rescurrentMax: currentMax = { current: this.charactersCharacterStat.current.toString(), max: this.charactersCharacterStat.maximum.toString() };
@@ -146,7 +143,7 @@ export class EditCharacterStatComponent implements OnInit {
                         characterStat.characterStatChoices.map((item) => {
                             this.valChoices.push({ key: item.characterStatChoiceId, value: item.statChoiceValue, selected: tempId == item.characterStatChoiceId, isMultiSelect: false })
                         })
-                    }
+                    }                   
                 }
                 break;
             case STAT_TYPE.ValueSubValue:
@@ -227,7 +224,7 @@ export class EditCharacterStatComponent implements OnInit {
                         nummin = DefaultValuesList[0].minimum;
                     }
                 }
-
+                
 
                 if (!(nummax == 0 && nummin == 0)) {
                     if (parseInt(this.valNumber) >= nummin && parseInt(this.valNumber) <= nummax) {
@@ -240,10 +237,10 @@ export class EditCharacterStatComponent implements OnInit {
                     }
                 }
                 else {
-                    charactersCharacterStat.number = +this.valNumber;
+                    charactersCharacterStat.number = this.valNumber == null ? null : +this.valNumber;
                     this.updateStatService(charactersCharacterStat);
                 }
-
+                
                 break;
             case STAT_TYPE.CurrentMax:
                 let curmax = 0;
@@ -264,7 +261,7 @@ export class EditCharacterStatComponent implements OnInit {
                     }
                 }
                 let valid = true;
-
+                
 
                 if (!(curmax == 0 && curmin == 0)) {
                     if (parseInt(this.valCurrentMax.current) >= curmin && parseInt(this.valCurrentMax.current) <= curmax) {
@@ -291,7 +288,7 @@ export class EditCharacterStatComponent implements OnInit {
                     charactersCharacterStat.maximum = +this.valCurrentMax.max;
                     this.updateStatService(charactersCharacterStat);
                 }
-
+                
                 break;
             case STAT_TYPE.Choice:
                 if (this.charactersCharacterStat.characterStat.isMultiSelect) {
@@ -325,8 +322,8 @@ export class EditCharacterStatComponent implements OnInit {
                         submin = DefaultValuesList[1].minimum;
                     }
                 }
-
-
+              
+                
                 let validval = true;
                 if (!(valmax == 0 && valmin == 0)) {
                     if (parseInt(this.valValueSubValue.value) >= valmin && parseInt(this.valValueSubValue.value) <= valmax) {
@@ -353,7 +350,7 @@ export class EditCharacterStatComponent implements OnInit {
                     charactersCharacterStat.subValue = +this.valValueSubValue.subValue;
                     this.updateStatService(charactersCharacterStat);
                 }
-
+                
                 break;
             case STAT_TYPE.OnOff:
                 charactersCharacterStat.onOff = this.valOnOff;
@@ -427,7 +424,7 @@ export class EditCharacterStatComponent implements OnInit {
                     this.valChoices.map((val) => {
                         val.selected = false;
                     });
-                }
+                } 
                 choice.selected = event.target.checked;
                 this.selectedChoiceId = event.target.checked ? choice.key : undefined;
                 break;
@@ -454,11 +451,11 @@ export class EditCharacterStatComponent implements OnInit {
         this.bsModalRef.content.pageId = this.pageId;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.EDIT;
-
+        
     }
 
     reset(CharacterStatTypeID: number, type?: number) {
-
+        
         switch (this.CharacterStatTypeID) {
             case STAT_TYPE.Number:
                 this.valNumber = this.defValNumber;
@@ -490,7 +487,7 @@ export class EditCharacterStatComponent implements OnInit {
 
     updateCharacterStat(type?: number) {
         let CStat: CharactersCharacterStat = this.CharacterStatTile.charactersCharacterStat;
-
+        
         switch (this.CharacterStatTypeID) {
             case STAT_TYPE.Number:
                 CStat.number = +this.valNumber;
@@ -540,7 +537,7 @@ export class EditCharacterStatComponent implements OnInit {
     }
 
     dice(numberToAdd: number, typeId?: number, type?: number) {
-
+        
         //if (+numberToAdd) {
             this.bsModalRef.hide();
             this.bsModalRef = this.modalService.show(DiceRollComponent, {
@@ -570,10 +567,10 @@ export class EditCharacterStatComponent implements OnInit {
     }
 
     increment(CharacterStatTypeID: number, type?: number) {
-
+        
         let obj: any = this.CharacterStatTile.charactersCharacterStat.characterStat;
         let DefaultValuesList: any = obj.characterStatDefaultValues;
-        switch (this.CharacterStatTypeID) {
+        switch (this.CharacterStatTypeID) {            
             case STAT_TYPE.Number:
                 let nummax = 0;
                 let nummin = 0;
@@ -594,7 +591,7 @@ export class EditCharacterStatComponent implements OnInit {
                 else {
                     this.valNumber = (parseInt(this.valNumber) + 1).toString();
                 }
-
+                
                 //this.updateCharacterStat(type);
                 break;
             case STAT_TYPE.CurrentMax:

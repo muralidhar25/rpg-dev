@@ -4,8 +4,12 @@
         <div class="container">
             <div class="page-toolbar-wrapper">
                 <div class="page-toolbar-title">
-                    <a (click)="RedirectBack()" class="icon icon-back"></a>
-                    <h1>Inventory Details</h1>
+                    <!--<a (click)="RedirectBack()" class="icon icon-back"></a>-->
+                    <!--<h1>Inventory Details</h1>-->
+                    <!--<h1>Back</h1>-->
+                    <a (click)="RedirectBack()" class="icon icon-back">
+                        <h1 class="d-inline-block"> Back</h1>
+                    </a>
                 </div>
                 <!--<div class="page-toolbar-wrapper-toggle-trigger">
                     <button type="button" class="btn icon icon-with-text btn-accent btn-block" (click)="showActionButtons(showActions)"
@@ -131,7 +135,9 @@
                                         <li *ngIf="ItemDetail?.isEquipped" title="Equipped" data-toggle="tooltip">
                                             <i class="item-property item-property-icon icon icon-Rec-Equipped icon-ico"></i>
                                         </li>
-
+                                        <li *ngIf="ItemDetail?.containedIn" title="Contained" data-toggle="tooltip">
+                                            <i class="item-property item-property-icon icon icon-Rec-Contained icon-ico"></i>
+                                        </li>
                                     </ul>
                                 </div>
                                 <!--<div class="item-info-props-indics item-info-props-indics-discription">

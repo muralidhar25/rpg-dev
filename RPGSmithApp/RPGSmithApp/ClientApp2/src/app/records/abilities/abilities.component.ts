@@ -1,24 +1,21 @@
 import { Component, OnInit, OnDestroy, Input } from "@angular/core";
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { AlertService, MessageSeverity, DialogType } from './../../core/common/alert.service';
-import { AuthService } from "./../../core/auth/auth.service";
-import { ConfigurationService } from './../../core/common/configuration.service';
-import { Utilities } from './../../core/common/utilities';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { DBkeys } from '../../core/common/db-keys';
-import { LocalStoreManager } from '../../core/common/local-store-manager.service';
-import { SharedService } from "../../core/services/shared.service";
-import { CommonService } from "../../core/services/shared/common.service";
-import { AddAbilitiesComponent } from './add-abilities/add-abilities.component';
-import { CreateAbilitiesComponent } from './create-abilities/create-abilities.component';
-import { PageLastViewsService } from "../../core/services/pagelast-view.service";
-
-import { User } from '../../core/models/user.model';
-import { Ability } from '../../core/models/view-models/ability.model';
+import { ConfigurationService } from "../../core/common/configuration.service";
 import { AbilityService } from "../../core/services/ability.service";
-import { Ruleset } from '../../core/models/view-models/ruleset.model';
 import { RulesetService } from "../../core/services/ruleset.service";
-//import { recordAbilityMock } from '../../../common/mock-data';
+import { AuthService } from "../../core/auth/auth.service";
+import { PageLastViewsService } from "../../core/services/pagelast-view.service";
+import { CommonService } from "../../core/services/shared/common.service";
+import { LocalStoreManager } from "../../core/common/local-store-manager.service";
+import { SharedService } from "../../core/services/shared.service";
+import { AlertService, DialogType, MessageSeverity } from "../../core/common/alert.service";
+import { User } from "../../core/models/user.model";
+import { DBkeys } from "../../core/common/db-keys";
+import { Utilities } from "../../core/common/utilities";
+import { CreateAbilitiesComponent } from "../../shared/create-abilities/create-abilities.component";
+import { AddAbilitiesComponent } from "./add-abilities/add-abilities.component";
+import { Ability } from "../../core/models/view-models/ability.model";
 
 @Component({
     selector: 'app-abilities',
@@ -41,6 +38,7 @@ export class AbilitiesComponent implements OnInit {
     noRecordFound: boolean = false;
     scrollLoading: boolean = false;
     page: number = 1;
+    timeoutHandler: any;
     pageSize: number = 28;
     offset = (this.page - 1) * this.pageSize;
 
@@ -193,7 +191,7 @@ export class AbilitiesComponent implements OnInit {
                 //this.alertService.stopLoadingMessage();
                 if (data<2000) {
                     this.bsModalRef = this.modalService.show(CreateAbilitiesComponent, {
-                        class: 'modal-primary modal-md',
+                        class: 'modal-primary modal-custom',
                         ignoreBackdropClick: true,
                         keyboard: false
                     });
@@ -211,7 +209,7 @@ export class AbilitiesComponent implements OnInit {
 
     editAbility(ability: Ability) {
         this.bsModalRef = this.modalService.show(CreateAbilitiesComponent, {
-            class: 'modal-primary modal-md',
+            class: 'modal-primary modal-custom',
             ignoreBackdropClick: true,
             keyboard: false
         });
@@ -228,7 +226,7 @@ export class AbilitiesComponent implements OnInit {
                 //this.alertService.stopLoadingMessage();
                 if (data < 2000) {
                     this.bsModalRef = this.modalService.show(CreateAbilitiesComponent, {
-                        class: 'modal-primary modal-md',
+                        class: 'modal-primary modal-custom',
                         ignoreBackdropClick: true,
                         keyboard: false
                     });
@@ -367,4 +365,16 @@ export class AbilitiesComponent implements OnInit {
         this.localStorage.saveSyncedSessionData(rulesetId, DBkeys.RULESET_ID);
     }
 
+    public clickAndHold(item: any) {
+        if (this.timeoutHandler) {
+            clearInterval(this.timeoutHandler);
+            this.timeoutHandler = null;
+        }
+    }
+
+    public editRecord(record: any) {
+        this.timeoutHandler = setInterval(() => {
+            this.editAbility(record);
+        }, 1000);
+    }
 }

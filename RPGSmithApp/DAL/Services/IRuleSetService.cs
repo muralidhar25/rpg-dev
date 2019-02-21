@@ -39,5 +39,7 @@ namespace DAL.Services
         List<DefaultDice> GetDefaultDices();
         List<DiceTray> addEditDiceTray(List<CustomDice> customDices, List<DiceTray> diceTrays,int rulesetID);
         void removeDiceTray(int rulesetID);
+        List<RuleSet> GetRuleSetToCreateCharacterByUserId(string UserId, int page, int pageSize);
+        string GetUserImageFromRulesetID(int ruleSetId);
     }
 }

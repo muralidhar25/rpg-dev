@@ -1,31 +1,24 @@
 import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import 'rxjs/add/operator/switchMap';
-import { AlertService, MessageSeverity, DialogType } from '../../../core/common/alert.service';
-import { ConfigurationService } from '../../../core/common/configuration.service';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { AuthService } from "../../../core/auth/auth.service";
-import { SharedService } from '../../../core/services/shared.service';
-import { Utilities } from '../../../core/common/utilities';
-import { DBkeys } from '../../../core/common/db-keys';
-import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
-import { CommonService } from "../../../core/services/shared/common.service";
-import { ItemMasterService } from "../../../core/services/item-master.service";
-import { AbilityService } from "../../../core/services/ability.service";
-import { SpellsService } from "../../../core/services/spells.service";
-
 import { ItemMaster } from '../../../core/models/view-models/item-master.model';
-import { itemMasterAbility } from '../../../core/models/view-models/item-master-ability.model';
-import { itemMasterPlayer } from '../../../core/models/view-models/item-master-player.model';
-import { itemMasterSpell } from '../../../core/models/view-models/item-master-spell.model';
+import { ImageError, VIEW } from '../../../core/models/enums';
+import { Utilities } from '../../../core/common/utilities';
+import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
+import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
+import { AuthService } from '../../../core/auth/auth.service';
+import { ItemMasterService } from '../../../core/services/item-master.service';
+import { SharedService } from '../../../core/services/shared.service';
+import { AbilityService } from '../../../core/services/ability.service';
+import { FileUploadService } from '../../../core/common/file-upload.service';
+import { CommonService } from '../../../core/services/shared/common.service';
+import { ImageSearchService } from '../../../core/services/shared/image-search.service';
+import { SpellsService } from '../../../core/services/spells.service';
 import { User } from '../../../core/models/user.model';
-import { VIEW, TILES, ImageError } from '../../../core/models/enums';
+import { DBkeys } from '../../../core/common/db-keys';
 import { DiceComponent } from '../../../shared/dice/dice/dice.component';
-import { FileUploadService } from "../../../core/common/file-upload.service";
-import { BingSearchComponent } from '../../../shared/image-interface/bing-search/bing-search.component';
 import { ImageSelectorComponent } from '../../../shared/image-interface/image-selector/image-selector.component';
-import { ImageSearchService } from "../../../core/services/shared/image-search.service";
 
 @Component({
     selector: 'app-create-item',

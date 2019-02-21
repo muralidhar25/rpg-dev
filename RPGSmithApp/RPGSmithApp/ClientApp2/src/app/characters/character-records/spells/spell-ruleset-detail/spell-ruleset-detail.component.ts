@@ -1,24 +1,24 @@
-import { Component, OnInit, OnDestroy, Input } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { AlertService, MessageSeverity, DialogType } from './../../../../core/common/alert.service';
-import { AuthService } from "./../../../../core/auth/auth.service";
-import { ConfigurationService } from './../../../../core/common/configuration.service';
-import { Utilities } from './../../../../core/common/utilities';
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { DBkeys } from '../../../../core/common/db-keys';
-import { LocalStoreManager } from '../../../../core/common/local-store-manager.service';
-import { SharedService } from "../../../../core/services/shared.service";
-import { CommonService } from "../../../../core/services/shared/common.service";
-import { CreateSpellsComponent } from '../create-spells/create-spells.component';
-import { User } from '../../../../core/models/user.model';
-import { Spell } from '../../../../core/models/view-models/spell.model';
-import { SpellsService } from "../../../../core/services/spells.service";
-import { ImageViewerComponent } from "../../../../shared/image-interface/image-viewer/image-viewer.component";
-import { RulesetService } from "../../../../core/services/ruleset.service";
-import { CastComponent } from "../../../../shared/cast/cast.component";
-import { DiceRollComponent } from "../../../../shared/dice/dice-roll/dice-roll.component";
+import { Component, OnInit } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef} from 'ngx-bootstrap';
+import { Spell } from "../../../../core/models/view-models/spell.model";
 import { Characters } from "../../../../core/models/view-models/characters.model";
+import { AuthService } from "../../../../core/auth/auth.service";
+import { AlertService, MessageSeverity, DialogType } from "../../../../core/common/alert.service";
+import { ConfigurationService } from "../../../../core/common/configuration.service";
+import { SharedService } from "../../../../core/services/shared.service";
+import { SpellsService } from "../../../../core/services/spells.service";
+import { RulesetService } from "../../../../core/services/ruleset.service";
+import { CommonService } from "../../../../core/services/shared/common.service";
+import { LocalStoreManager } from "../../../../core/common/local-store-manager.service";
 import { CharactersService } from "../../../../core/services/characters.service";
+import { User } from "../../../../core/models/user.model";
+import { DBkeys } from "../../../../core/common/db-keys";
+import { Utilities } from "../../../../core/common/utilities";
+import { CastComponent } from "../../../../shared/cast/cast.component";
+import { ImageViewerComponent } from "../../../../shared/image-interface/image-viewer/image-viewer.component";
+import { DiceRollComponent } from "../../../../shared/dice/dice-roll/dice-roll.component";
+import { CreateSpellsComponent } from "../../../../shared/create-spells/create-spells.component";
 
 @Component({
     selector: 'app-spell-ruleset-detail',
@@ -64,7 +64,7 @@ export class SpellRulesetDetailComponent implements OnInit {
             this.charactersService.getCharactersById<any>(this.character.characterId)
                 .subscribe(data => {
                     this.character = data;
-
+                    
                 }, error => {
                     this.isLoading = false;
                     let Errors = Utilities.ErrorDetail("", error);
@@ -128,7 +128,7 @@ export class SpellRulesetDetailComponent implements OnInit {
     }
 
     duplicateSpell(spell: Spell) {
-        // this.alertService.startLoadingMessage("", "Checking records");
+        // this.alertService.startLoadingMessage("", "Checking records");      
         this.spellsService.getspellsCount(this.ruleSetId)
             .subscribe(data => {
                 //this.alertService.stopLoadingMessage();
@@ -168,14 +168,14 @@ export class SpellRulesetDetailComponent implements OnInit {
         //this.spellsService.deleteSpell(spell.spellId)
         //    .subscribe(
         //        data => {
-        //            this.isLoading = false;
+        //            this.isLoading = false; 
         //            this.alertService.stopLoadingMessage();
         //            this.alertService.showMessage("Spell has been deleted successfully.", "", MessageSeverity.success);
         //            //this.initialize();
         //            this.router.navigate(['/ruleset/spell', this.ruleSetId]);
         //        },
         //        error => {
-        //            this.isLoading = false;
+        //            this.isLoading = false; 
         //            this.alertService.stopLoadingMessage();
         //            let Errors = Utilities.ErrorDetail("Unable to Delete", error);
         //            if (Errors.sessionExpire) {

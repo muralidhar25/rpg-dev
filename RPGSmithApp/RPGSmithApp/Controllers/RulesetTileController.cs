@@ -176,7 +176,8 @@ namespace RPGSmithApp.Controllers
                                     titleTextColor = characterStatTile.titleTextColor,
                                     bodyBgColor = characterStatTile.bodyBgColor,
                                     bodyTextColor = characterStatTile.bodyTextColor,
-                                    ShowTitle = characterStatTile.ShowTitle
+                                    ShowTitle = characterStatTile.ShowTitle,
+                                    ImageUrl = characterStatTile.ImageUrl
                                 });
 
                                 SaveColorsAsync(_newTile);

@@ -4,7 +4,6 @@ import { CharactersCharacterStat } from '../view-models/characters-character-sta
 export class CharacterStatTile {
     constructor(characterStatTileId?: number,
         characterTileId?: number,
-
         rulesetStatTileId?: number,
         rulesetTileId?: number,
 
@@ -20,6 +19,7 @@ export class CharacterStatTile {
         shape?: number,
         sortOrder?: number,
         view?: VIEW,
+        imageUrl?: string,
         charactersCharacterStat?: CharactersCharacterStat
     ) {
         this.characterStatTileId = characterStatTileId;
@@ -39,6 +39,7 @@ export class CharacterStatTile {
         this.shape = shape;
         this.sortOrder = sortOrder;
         this.view = view;
+        this.imageUrl = imageUrl;
         this.charactersCharacterStat = charactersCharacterStat;
     }
 
@@ -61,6 +62,7 @@ export class CharacterStatTile {
     public shape: number;
     public sortOrder: number;
     public view: VIEW;
+    public imageUrl: string;
     public charactersCharacterStat: CharactersCharacterStat;
 }
 

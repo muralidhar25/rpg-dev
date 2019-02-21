@@ -1,0 +1,24 @@
+.not-bg{
+    background:none;
+}
+.not-bg span {
+    color: #4e4fce;
+    border-bottom: 2px solid #4e4fce;
+    cursor:pointer
+}
+.spinner {
+    width: 100%;
+    overflow: hidden;
+    float: left;
+    position: relative;
+    height: 24px;
+    margin-top: 0;
+}
+
+.spinner img {
+    width: 190px;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    left: 50%;
+}

@@ -228,3 +228,12 @@
         font-size: 3rem;
     } 
 }
+
+.popup-dice .new-command.initial .command-canvas ul li .btn:before {
+    height: auto !important;
+    font-size: 3.5rem;
+    padding-top:0px !important
+}
+.popup-dice .command-canvas ul li .btn span {
+    height: 2rem;
+}

@@ -209,6 +209,25 @@ namespace RPGSmithApp.Helpers
             }
         }
 
+        public async Task<string> UploadImage_Base64(string file, string fileName, CloudBlobContainer cloudBlobContainer)
+        {
+            //CloudBlobContainer cloudBlobContainer = await GetCloudBlobContainer();
+            try
+            {
+                byte[] bytes = Convert.FromBase64String(file.Split("base64,")[1]);
+                using (var stream = new MemoryStream(bytes))
+                {
+                    CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(fileName);
+                    await cloudBlockBlob.UploadFromStreamAsync(stream);
+                    return cloudBlockBlob.Uri.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                return string.Empty;
+            }
+        }
+
         public async Task<string> UploadThumbnail_URL(string file, string fileName, CloudBlobContainer cloudBlobContainer)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(file);
@@ -286,6 +305,130 @@ namespace RPGSmithApp.Helpers
             return objBlobResponse;
         }
 
+        public async Task<object> BlobStockAllAsync(int Count = 39, int previousContainerNumber = 0, int previousContainerImageNumber = 0)
+        {
+            int start = previousContainerImageNumber;
+            BlobResponse objBlobResponse = new BlobResponse();
+            List<Items> _items = new List<Items>();
+            try
+            {
+                //string stockContainers = "stock-defimg-rulesets,stock-defimg-chars,stock-defimg-items,stock-defimg-spells,stock-defimg-abilities,stock-images,stock-icons,stock-defimages";
+                string stockContainers =
+                   "stock-defimg-rulesets," +
+                   "stock-defimg-chars," +
+                   "stock-defimg-items," +
+                   "stock-defimg-spells," +
+                   "stock-defimg-abilities," +
+                   "stock-images," +
+                   "stock-icons";
+                //"stock-defimages";
+                string[] stockContainerList = stockContainers.Trim().Split(',');
+                bool flag = true;
+                bool flagImage = true;
+
+                for (int i = 0; i < stockContainerList.Length; i++)
+                {
+                    if (flag)
+                    {
+                        i = previousContainerNumber;
+                        flag = false;
+                    }
+
+                    // List the blobs in the container.
+                    BlobContinuationToken blobContinuationToken = null;
+                    var cloudBlobContainer = GetCloudBlobContainer(stockContainerList[i]).Result;
+                    var results = cloudBlobContainer.ListBlobsSegmentedAsync(null, true, BlobListingDetails.All, (start + Count + 1), blobContinuationToken, null, null);
+                    // Get the value of the continuation token returned by the listing call.
+                    blobContinuationToken = results.Result.ContinuationToken;
+                    var StockImagesResult = results.Result.Results.Skip(start).Take(Count).ToList();
+                    start = 0;
+                    foreach (IListBlobItem _blobItem in StockImagesResult)
+                    {
+                        CloudBlockBlob item = _blobItem as CloudBlockBlob;
+                        if (item != null)
+                        {
+                            Items _item = new Items();
+                            _item.AbsolutePath = item.Uri.AbsolutePath;
+                            _item.AbsoluteUri = item.Uri.AbsoluteUri;
+                            _item.IsAbsoluteUri = item.Uri.IsAbsoluteUri;
+                            _item.OriginalString = item.Uri.OriginalString;
+                            _item.Container = item.Container.Name;
+                            _item.Size = item.Properties.Length / 1024;
+                            _items.Add(_item);
+                            if (_items.Count >= Count)
+                            {
+                                previousContainerNumber = i;
+                                previousContainerImageNumber = results.Result.Results.Count() - 1;
+                                break;
+                            }
+                        }
+                    }
+                    if (_items.Count >= Count)
+                    {
+                        previousContainerNumber = i;
+                        previousContainerImageNumber = results.Result.Results.Count() - 1;
+                        break;
+                    }
+                }
+                objBlobResponse.items = _items;
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return new { count = Count, previousContainerNumber = previousContainerNumber, blobResponse = objBlobResponse, previousContainerImageNumber = previousContainerImageNumber };
+
+            //int start = previousContainerImageNumber;
+            //BlobResponse objBlobResponse = new BlobResponse();
+            //List<Items> _items = new List<Items>();
+            //try
+            //{
+            //    //string stockContainers = "stock-defimg-rulesets,stock-defimg-chars,stock-defimg-items,stock-defimg-spells,stock-defimg-abilities,stock-images,stock-icons,stock-defimages";
+            //    string stockContainers =
+            //       "stock-defimg-rulesets," +
+            //       "stock-defimg-chars," +
+            //       "stock-defimg-items," +
+            //       "stock-defimg-spells," +
+            //       "stock-defimg-abilities," +
+            //       "stock-images," +
+            //       "stock-icons";
+            //    //"stock-defimages";
+            //    string[] stockContainerList = stockContainers.Trim().Split(',');
+            //    foreach (string container in stockContainerList)
+            //    {
+            //        // List the blobs in the container.
+            //        BlobContinuationToken blobContinuationToken = null;
+            //        var cloudBlobContainer = GetCloudBlobContainer(container).Result;
+            //        do
+            //        {
+            //            var results = cloudBlobContainer.ListBlobsSegmentedAsync(null, blobContinuationToken);
+            //            // Get the value of the continuation token returned by the listing call.
+            //            blobContinuationToken = results.Result.ContinuationToken;
+            //            foreach (IListBlobItem _blobItem in results.Result.Results)
+            //            {
+            //                CloudBlockBlob item = _blobItem as CloudBlockBlob;
+            //                if (item != null)
+            //                {
+            //                    Items _item = new Items();
+            //                    _item.AbsolutePath = item.Uri.AbsolutePath;
+            //                    _item.AbsoluteUri = item.Uri.AbsoluteUri;
+            //                    _item.IsAbsoluteUri = item.Uri.IsAbsoluteUri;
+            //                    _item.OriginalString = item.Uri.OriginalString;
+            //                    _item.Container = item.Container.Name;
+            //                    _item.Size = item.Properties.Length / 1024;
+            //                    _items.Add(_item);
+            //                }
+            //            }
+            //        } while (blobContinuationToken != null); // Loop while the continuation token is not null.
+            //    }
+            //    objBlobResponse.items = _items.Skip(start).Take(Count).ToList();
+            //}
+            //catch (Exception ex)
+            //{
+            //}
+            //return new { count = Count, previousContainerNumber = previousContainerNumber, blobResponse = objBlobResponse, previousContainerImageNumber = previousContainerImageNumber };
+        }
+
         public void DeleteBlobs(List<DeleteBlob> model)
         {
             
@@ -338,6 +481,119 @@ namespace RPGSmithApp.Helpers
             {
             }
             return objBlobResponse;
+        }
+
+        public async Task<object> BlobMyImagesAsync(string container, int Count = 39, int previousContainerImageNumber = 0)
+        {
+            int start = previousContainerImageNumber;
+            BlobResponse objBlobResponse = new BlobResponse();
+            List<Items> _items = new List<Items>();
+            List<Items> _Tempitems = new List<Items>();
+            try
+            {
+                //BlobContinuationToken blobContinuationToken = null;
+                //var cloudBlobContainer = GetCloudBlobContainer(container).Result;
+                ////do
+                ////{
+                //var results = cloudBlobContainer.ListBlobsSegmentedAsync(null, true, BlobListingDetails.All, (start + Count + 1), blobContinuationToken, null, null);
+
+                ////var results = cloudBlobContainer.ListBlobsSegmentedAsync(null, blobContinuationToken);
+                //blobContinuationToken = results.Result.ContinuationToken;
+
+                //var StockImagesResult = results.Result.Results.ToList();
+
+                //foreach (IListBlobItem _TempblobItem in StockImagesResult)
+                //{
+                //    CloudBlockBlob item = _TempblobItem as CloudBlockBlob;
+                //    if (item != null)
+                //    {
+                //        Items _item = new Items();
+                //        _item.AbsolutePath = item.Uri.AbsolutePath;
+                //        _item.AbsoluteUri = item.Uri.AbsoluteUri;
+                //        _item.IsAbsoluteUri = item.Uri.IsAbsoluteUri;
+                //        _item.OriginalString = item.Uri.OriginalString;
+                //        _item.Container = item.Container.Name;
+                //        _item.Size = item.Properties.Length / 1024;
+                //        _item.LastModifiedDate = item.Properties.LastModified;
+                //        _item.ContentType = item.Properties.ContentType;
+                //        _Tempitems.Add(_item);                      
+                //    }
+                //}
+
+                //_Tempitems = _Tempitems.OrderByDescending(q => q.LastModifiedDate).Skip(start).Take(Count).ToList();
+
+                //foreach (Items item in _Tempitems)
+                //{
+                //    //CloudBlockBlob item = _blobItem as CloudBlockBlob;
+                //    if (item != null)
+                //    {
+                //        Items _item = new Items();
+                //        _item.AbsolutePath = item.AbsolutePath;
+                //        _item.AbsoluteUri = item.AbsoluteUri;
+                //        _item.IsAbsoluteUri = item.IsAbsoluteUri;
+                //        _item.OriginalString = item.OriginalString;
+                //        _item.Container = item.Container;
+                //        _item.Size = item.Size;
+                //        _item.LastModifiedDate = item.LastModifiedDate;
+                //        _item.ContentType = item.ContentType;
+                //        _items.Add(_item);
+
+                //        if (_items.Count >= Count)
+                //        {
+                //            previousContainerImageNumber = results.Result.Results.Count() - 1;
+                //            break;
+                //        }
+                //    }
+                //}
+                ////} while (blobContinuationToken != null);
+                //_items = _items.OrderByDescending(q => q.LastModifiedDate).ToList();
+                //objBlobResponse.items = _items;
+
+                BlobContinuationToken blobContinuationToken = null;
+                var cloudBlobContainer = GetCloudBlobContainer(container).Result;
+                do
+                {
+                    var results = cloudBlobContainer.ListBlobsSegmentedAsync(null, blobContinuationToken);
+                    blobContinuationToken = results.Result.ContinuationToken;
+
+                    foreach (IListBlobItem _blobItem in results.Result.Results)
+                    {
+                        CloudBlockBlob item = _blobItem as CloudBlockBlob;
+                        if (item != null)
+                        {
+                            Items _item = new Items();
+                            _item.AbsolutePath = item.Uri.AbsolutePath;
+                            _item.AbsoluteUri = item.Uri.AbsoluteUri;
+                            _item.IsAbsoluteUri = item.Uri.IsAbsoluteUri;
+                            _item.OriginalString = item.Uri.OriginalString;
+                            _item.Container = item.Container.Name;
+                            _item.Size = item.Properties.Length / 1024;
+                            _item.LastModifiedDate = item.Properties.LastModified;
+                            _item.ContentType = item.Properties.ContentType;
+                            _items.Add(_item);
+                        }
+                    }
+                } while (blobContinuationToken != null);
+                _items = _items.OrderByDescending(q => q.LastModifiedDate).ToList();
+                bool flag = false;
+                if (start + Count <= _items.Count())
+                {
+                    flag = true;
+                }
+
+                _items = _items.Skip(start).Take(Count).ToList();
+
+                previousContainerImageNumber = flag ? (_items.Count() + 1) : _items.Count();
+                
+
+                objBlobResponse.items = _items;
+            }
+            catch (Exception ex)
+            {
+            }
+            //  return objBlobResponse;
+            return new { count = Count, blobResponse = objBlobResponse, previousContainerImageNumber = previousContainerImageNumber };
+
         }
 
         public async Task<string> GetDefaultImage(string type = "")

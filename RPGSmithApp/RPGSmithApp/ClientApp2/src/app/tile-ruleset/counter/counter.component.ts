@@ -1,21 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { ColorsComponent } from '../../tile/colors/colors.component';
-import { CounterTileService } from '../../core/services/tiles/counter-tile.service';
-import { CounterTile } from '../../core/models/tiles/counter-tile.model';
-import { AlertService, MessageSeverity } from '../../core/common/alert.service';
-import { AuthService } from '../../core/auth/auth.service';
-import { VIEW, SHAPE, SHAPE_CLASS } from '../../core/models/enums';
-import { Utilities } from '../../core/common/utilities';
-import { SharedService } from "../../core/services/shared.service";
-import { ColorService } from '../../core/services/tiles/color.service';
 import { RulesetTile } from '../../core/models/tiles/ruleset-tile.model';
 import { Color } from '../../core/models/tiles/color.model';
+import { CounterTile } from '../../core/models/tiles/counter-tile.model';
 import { RulesetDashboardPage } from '../../core/models/view-models/ruleset-dashboard-page.model';
+import { SharedService } from '../../core/services/shared.service';
+import { RulesetTileService } from '../../core/services/ruleset-tile.service';
+import { CounterTileService } from '../../core/services/tiles/counter-tile.service';
+import { LocalStoreManager } from '../../core/common/local-store-manager.service';
+import { AuthService } from '../../core/auth/auth.service';
+import { ColorService } from '../../core/services/tiles/color.service';
+import { AlertService, MessageSeverity } from '../../core/common/alert.service';
+import { SHAPE_CLASS, SHAPE, VIEW } from '../../core/models/enums';
 import { User } from '../../core/models/user.model';
 import { DBkeys } from '../../core/common/db-keys';
-import { LocalStoreManager } from '../../core/common/local-store-manager.service';
-import { RulesetTileService } from '../../core/services/ruleset-tile.service';
+import { ColorsComponent } from '../../tile/colors/colors.component';
+import { Utilities } from '../../core/common/utilities';
 
 @Component({
   selector: 'app-counter',

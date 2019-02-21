@@ -1,23 +1,23 @@
 import { Component, OnInit, EventEmitter, ViewChild } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { AlertService, MessageSeverity, DialogType } from './../../core/common/alert.service';
-import { ColorsComponent } from './../colors/colors.component';
-import { NoteTileService } from '../../core/services/tiles/note-tile.service';
-import { NoteTile } from '../../core/models/tiles/note-tile.model';
 import { CharacterTile } from '../../core/models/tiles/character-tile.model';
-import { Color } from '../../core/models/tiles/color.model';
-import { VIEW, SHAPE, SHAPE_CLASS, TILES, TILE_ICON } from '../../core/models/enums';
-import { Utilities } from '../../core/common/utilities';
-import { AuthService } from "../../core/auth/auth.service";
-import { SharedService } from "../../core/services/shared.service";
-import { ColorService } from '../../core/services/tiles/color.service';
+import { NoteTile } from '../../core/models/tiles/note-tile.model';
 import { CharacterDashboardPage } from '../../core/models/view-models/character-dashboard-page.model';
-import { User } from '../../core/models/user.model';
+import { Color } from '../../core/models/tiles/color.model';
+import { ColorService } from '../../core/services/tiles/color.service';
+import { NoteTileService } from '../../core/services/tiles/note-tile.service';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
-import { DBkeys } from '../../core/common/db-keys';
-import { FileUploadService } from '../../core/common/file-upload.service';
+import { AlertService, MessageSeverity } from '../../core/common/alert.service';
+import { SharedService } from '../../core/services/shared.service';
+import { AuthService } from '../../core/auth/auth.service';
 import { ConfigurationService } from '../../core/common/configuration.service';
+import { FileUploadService } from '../../core/common/file-upload.service';
+import { SHAPE_CLASS, SHAPE, VIEW, TILES } from '../../core/models/enums';
+import { User } from '../../core/models/user.model';
+import { DBkeys } from '../../core/common/db-keys';
+import { Utilities } from '../../core/common/utilities';
+import { ColorsComponent } from '../colors/colors.component';
 
 @Component({
   selector: 'app-note',
@@ -375,8 +375,7 @@ export class NoteTileComponent implements OnInit {
                     });
         }
     }
-
-
+    public mobileToolbarButton = ['bold', 'italic', 'underline', 'insertImage', 'paragraphStyle', 'paragraphFormat', 'undo', 'redo'];
     public options: Object = {
 
         /////////////////////////////////
@@ -402,7 +401,7 @@ export class NoteTileComponent implements OnInit {
         //key: 'Fwvh1H-8dcC-21dA6mg1B-8==',
         charCounterCount: true,
         heightMax: 200,
-        toolbarButtons: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript',
+        toolbarButtons: Utilities.IsMobileScreen() ? this.mobileToolbarButton : ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript',
             '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle',
             '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote',
              //'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertTable',

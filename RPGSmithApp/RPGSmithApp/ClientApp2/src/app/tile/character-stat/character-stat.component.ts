@@ -1,24 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { ColorsComponent } from './../colors/colors.component';
+import { ActivatedRoute } from '@angular/router';
+import { VIEW, STAT_TYPE, SHAPE, SHAPE_CLASS, STAT_LINK_TYPE, BLOB_TYPE } from '../../core/models/enums';
+import { Characters } from '../../core/models/view-models/characters.model';
+import { CharacterTile } from '../../core/models/tiles/character-tile.model';
+import { CharacterStatTile } from '../../core/models/tiles/character-stat-tile.model';
+import { CharacterDashboardPage } from '../../core/models/view-models/character-dashboard-page.model';
+import { Color } from '../../core/models/tiles/color.model';
+import { CharactersCharacterStatService } from '../../core/services/characters-character-stat.service';
+import { CharacterStatTileService } from '../../core/services/tiles/character-stat-tile.service';
+import { ColorService } from '../../core/services/tiles/color.service';
+import { FileUploadService } from '../../core/common/file-upload.service';
+import { AuthService } from '../../core/auth/auth.service';
+import { SharedService } from '../../core/services/shared.service';
+import { AlertService, MessageSeverity } from '../../core/common/alert.service';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
 import { User } from '../../core/models/user.model';
 import { DBkeys } from '../../core/common/db-keys';
-import { AuthService } from '../../core/auth/auth.service';
-import { ActivatedRoute } from '@angular/router';
-import { CharacterStatTile } from '../../core/models/tiles/character-stat-tile.model';
-import { CharacterStatTileService } from '../../core/services/tiles/character-stat-tile.service';
-import { CharactersCharacterStatService } from '../../core/services/characters-character-stat.service';
-import { MessageSeverity, AlertService } from '../../core/common/alert.service';
 import { Utilities } from '../../core/common/utilities';
-import { VIEW, SHAPE_CLASS, SHAPE,  STAT_TYPE, STAT_LINK_TYPE } from '../../core/models/enums';
-import { SharedService } from "../../core/services/shared.service";
-import { ColorService } from '../../core/services/tiles/color.service';
-import { CharacterTile } from '../../core/models/tiles/character-tile.model';
-import { Color } from '../../core/models/tiles/color.model';
-import { CharacterDashboardPage } from '../../core/models/view-models/character-dashboard-page.model';
-import { Characters } from '../../core/models/view-models/characters.model';
+import { ColorsComponent } from '../colors/colors.component';
 import { CharactersCharacterStat } from '../../core/models/view-models/characters-character-stats.model';
+import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
 
 @Component({
     selector: 'app-character-stat',
@@ -27,6 +29,10 @@ import { CharactersCharacterStat } from '../../core/models/view-models/character
 })
 export class CharacterStatTileComponent implements OnInit {
 
+    showWebButtons: boolean;
+    imageUrl: string;
+    fileToUpload: File = null;
+    hasCommand: boolean;
     content: any;
     color: any;
     limitText: string = "Show more";
@@ -68,7 +74,7 @@ export class CharacterStatTileComponent implements OnInit {
     lengthOfRecordsToDisplay: number = 4;
     limitSpell: number = this.lengthOfRecordsToDisplay;
     limitItem: number = this.lengthOfRecordsToDisplay;
-    limitAbility: number = this.lengthOfRecordsToDisplay;
+    limitAbility: number = this.lengthOfRecordsToDisplay;    
     spellsList: boolean = true;;
     itemsList: boolean;
     abilitiesList: boolean;
@@ -86,7 +92,8 @@ export class CharacterStatTileComponent implements OnInit {
     //STAT_LINK_TYPE= STAT_LINK_TYPE
 
     constructor(private bsModalRef: BsModalRef, private route: ActivatedRoute, private sharedService: SharedService, private colorService: ColorService,
-        private modalService: BsModalService, public localStorage: LocalStoreManager, private authService: AuthService, public characterStatTileService: CharacterStatTileService, public characterStatService: CharactersCharacterStatService, private alertService: AlertService
+        private modalService: BsModalService, public localStorage: LocalStoreManager, private authService: AuthService, public characterStatTileService: CharacterStatTileService,
+        public characterStatService: CharactersCharacterStatService, private alertService: AlertService, private fileUploadService: FileUploadService
       ) {
         this.rulesetId = this.localStorage.localStorageGetItem('rulesetId');
     }
@@ -102,16 +109,27 @@ export class CharacterStatTileComponent implements OnInit {
             let model = this.bsModalRef.content.tile;
             let view = this.bsModalRef.content.view;
             this.pageDefaultData = this.bsModalRef.content.pageDefaultData;
-
+            
             this.characterTileModel = this.characterStatTileService.characterStatTileModelData(model, this.characterId, this.pageId, view, this.pageDefaultData);
             this.characterStatTileFormModal = Object.assign({}, this.characterTileModel.characterStatTile);
             this.characterStatTileFormModal.color = this.characterTileModel.color;
             this.characterStatTileFormModal.shape = this.characterTileModel.shape;
+            this.imageUrl = this.characterStatTileFormModal.imageUrl;
 
             this.Initialize(view, this.characterStatTileFormModal);
-
+            
             this.shapeClass = this.characterStatTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.characterStatTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
             this.showTitle = this.characterStatTileFormModal.showTitle;
+            if (this.characterTileModel.multiCharacterStats && this.characterTileModel.view == VIEW.EDIT) {
+                if (this.characterStatTileFormModal.charactersCharacterStat.charactersCharacterStatId) {
+                    this.characterTileModel.multiCharacterStats.push({
+                        characterStatId: this.characterStatTileFormModal.charactersCharacterStat.charactersCharacterStatId,
+                        characterStatTypeId: this.characterStatTileFormModal.charactersCharacterStat.characterStat.characterStatTypeId,
+                        image: undefined
+                    });
+                }                
+            }
+            
         }, 0);
     }
 
@@ -147,13 +165,13 @@ export class CharacterStatTileComponent implements OnInit {
                                 this.statLinkRecords.map((link) => {
                                     switch (link.type) {
                                         case STAT_LINK_TYPE.ITEM:
-                                            this.items.push({ itemId: link.id, name: link.name, itemImage: link.image});
+                                            this.items.push({ itemId: link.id, name: link.name, itemImage: link.image, isItemEquiped: link.isItemEquiped});
                                             break;
                                         case STAT_LINK_TYPE.SPELL:
-                                            this.spells.push({ characterSpellId: link.id, name: link.name, imageUrl: link.image, spell: { characterSpellId: link.id, name: link.name, imageUrl: link.image} });
+                                            this.spells.push({ characterSpellId: link.id, name: link.name, imageUrl: link.image, isSpellMemorized: link.isSpellMemorized, spell: { characterSpellId: link.id, name: link.name, imageUrl: link.image} });
                                             break;
                                         case STAT_LINK_TYPE.ABILITY:
-                                            this.abilities.push({ characterAbilityId: link.id, name: link.name, imageUrl: link.image, ability: { characterAbilityId: link.id, name: link.name, imageUrl: link.image } });
+                                            this.abilities.push({ characterAbilityId: link.id, name: link.name, imageUrl: link.image, isAbilityEnabled: link.isAbilityEnabled, ability: { characterAbilityId: link.id, name: link.name, imageUrl: link.image } });
                                             break;
                                         default:
                                     }
@@ -161,7 +179,7 @@ export class CharacterStatTileComponent implements OnInit {
                             }
                         }
                     }
-
+                    
                     if (this.items.length) {
                         this.items = Object.assign([], this.items.map((x) => {
                             if (this.itemId == x.itemId) {
@@ -220,6 +238,16 @@ export class CharacterStatTileComponent implements OnInit {
                 .subscribe(data => {
                     // console.log(data);
                     this.statsList = data;
+                    //changes for #456
+                    let countCommandSTAT = 0;
+                    this.statsList.map((x) => {
+                        if (x.characterStat.characterStatTypeId === STAT_TYPE.Command
+                            && x.charactersCharacterStatId === this.characterStatTileFormModal.charactersCharacterStatId) {
+                            countCommandSTAT += 1;
+                            if (countCommandSTAT === 1) this.hasCommand = true;
+                            else  this.hasCommand = false;                            
+                        }
+                    });
                     this.isLoading = false;
                 }, error => {
                     this.isLoading = false;
@@ -230,7 +258,7 @@ export class CharacterStatTileComponent implements OnInit {
                     let _colorList = [];
                     let _hasSame = 0;
                     data.forEach((val, index)=> {
-
+                        
                         let _selected = false;
                         if (index == 0 && Tile.view == VIEW.ADD) {
                             _selected = true;
@@ -395,7 +423,7 @@ export class CharacterStatTileComponent implements OnInit {
 
     }
 
-
+    
     opencolorpopup() {
         this.bsModalRef = this.modalService.show(ColorsComponent, {
             class: 'modal-primary modal-md',
@@ -443,41 +471,52 @@ export class CharacterStatTileComponent implements OnInit {
         this.characterStatId = stat.charactersCharacterStatId;
         this.characterStatTileFormModal.charactersCharacterStatId = stat.charactersCharacterStatId;
         this.selectedStatType = stat.characterStat.characterStatTypeId;
-
+        
         this.characterTileModel.multiCharacterStats = [];
         this.characterTileModel.multiCharacterStats.push({
             characterStatId: stat.charactersCharacterStatId,
-            characterStatTypeId: stat.characterStat.characterStatTypeId
+            characterStatTypeId: stat.characterStat.characterStatTypeId,
+            image: undefined
         });
-
+        
         this.selectLinkRecord(stat);
+        if (stat.characterStat.characterStatTypeId == STAT_TYPE.Command) {
+            this.hasCommand = true;
+        } else this.hasCommand = false;
     }
 
     getStatValue(event: any, stat: any) {
-
+        
         if (event.target.checked) {
 
             this.characterStatId = stat.charactersCharacterStatId;
             this.characterStatTileFormModal.charactersCharacterStatId = stat.charactersCharacterStatId;
-            //this.selectedStatType = stat.characterStat.characterStatTypeId;
 
             this.characterTileModel.multiCharacterStats.push({
                 characterStatId: stat.charactersCharacterStatId,
-                characterStatTypeId: stat.characterStat.characterStatTypeId
+                characterStatTypeId: stat.characterStat.characterStatTypeId,
+                image: undefined
             });
+
+            let countCommandSTAT = 0;
+            this.characterTileModel.multiCharacterStats.map((x) => {
+                if (x.characterStatTypeId === STAT_TYPE.Command) {
+                    countCommandSTAT += 1;                    
+                }
+            });
+            if (countCommandSTAT === 1) {
+                this.hasCommand = true;
+            } else this.hasCommand = false;
+
         }
         else {
             this.characterTileModel.multiCharacterStats = this.characterTileModel.multiCharacterStats.filter(x => x.characterStatId != stat.charactersCharacterStatId);
-            //this.characterTileModel.multiCharacterStats
-            //    .splice(this.characterTileModel.multiCharacterStats.indexOf({
-            //        characterStatId: stat.charactersCharacterStatId,
-            //        characterStatTypeId: stat.characterStat.characterStatTypeId
-            //    }), 1);
+           
+            if (stat.characterStat.characterStatTypeId == STAT_TYPE.Command) {
+                this.hasCommand = false;
+            }
         }
-        this.selectLinkRecord(stat);
-
-
-
+        this.selectLinkRecord(stat); 
     }
 
     setShowTitle(_showTitle:boolean) {
@@ -502,7 +541,7 @@ export class CharacterStatTileComponent implements OnInit {
     }
 
     submitForm() {
-
+        
         if (this.characterTileModel.characterId == 0 || this.characterTileModel.characterId == undefined) {
             this.alertService.showMessage("", "Character is not selected.", MessageSeverity.error);
         }
@@ -531,20 +570,25 @@ export class CharacterStatTileComponent implements OnInit {
                 ? "Creating Character Stat Tile..." : "Updating Character Stat Tile...";
 
             this.alertService.startLoadingMessage("", _msg);
-            this.addEditCharacterStatTile(this.characterTileModel);
+
+            if (this.imageUrl != null)  /*image upload then submit */
+                this.fileUpload();
+            else
+                this.addEditCharacterStatTile(this.characterTileModel);
         }
     }
 
     private addEditCharacterStatTile(modal) {
         this.isLoading = true;
-
+        
         if (modal.view === VIEW.ADD) {
             if (modal.multiCharacterStats) {
                 if (modal.multiCharacterStats.length) {
                     if (modal.multiCharacterStats.length == 1) {
                         if (modal.multiCharacterStats[0].characterStatTypeId == STAT_TYPE.LinkRecord) {
-                            this.statsList.map((st) => {
+                            this.statsList.map((st) => {                                
                                 if (st.charactersCharacterStatId == modal.multiCharacterStats[0].characterStatId) {
+                                    
                                     if (this.itemId) {
                                         st.linkType = STAT_LINK_TYPE.ITEM;
                                         st.defaultValue = this.itemId;
@@ -556,20 +600,25 @@ export class CharacterStatTileComponent implements OnInit {
                                         this.updateStatService(st)
                                     }
                                     else if (this.abilityId) {
-                                       st.linkType = STAT_LINK_TYPE.ABILITY;
+                                        st.linkType = STAT_LINK_TYPE.ABILITY;
                                         st.defaultValue = this.abilityId;
+                                        this.updateStatService(st)
+                                    }
+                                    else {
+                                        st.linkType = null;
+                                        st.defaultValue = 0;
                                         this.updateStatService(st)
                                     }
                                 }
                             })
-
+                            
                         }
                     }
                 }
             }
         }
         else if (modal.view === VIEW.EDIT) {
-            if (modal.characterStatTile.charactersCharacterStat.characterStat.characterStatTypeId == STAT_TYPE.LinkRecord) {
+            if (modal.characterStatTile.charactersCharacterStat.characterStat.characterStatTypeId == STAT_TYPE.LinkRecord) {               
                 if (this.itemId) {
                     modal.characterStatTile.charactersCharacterStat.linkType = STAT_LINK_TYPE.ITEM;
                     modal.characterStatTile.charactersCharacterStat.defaultValue = this.itemId;
@@ -585,6 +634,11 @@ export class CharacterStatTileComponent implements OnInit {
                     modal.characterStatTile.charactersCharacterStat.defaultValue = this.abilityId;
                     this.updateStatService(modal.characterStatTile.charactersCharacterStat)
                 }
+                else {
+                    modal.characterStatTile.charactersCharacterStat.linkType = null;
+                    modal.characterStatTile.charactersCharacterStat.defaultValue = 0;
+                    this.updateStatService(modal.characterStatTile.charactersCharacterStat)
+                }
             }
         }
         this.characterStatTileService.createCharacterStatTile(modal)
@@ -594,7 +648,7 @@ export class CharacterStatTileComponent implements OnInit {
                     this.alertService.stopLoadingMessage();
                     let message = modal.characterStatTile.characterStatTileId == 0 || modal.characterStatTile.characterStatTileId === undefined ? "Character Stat Tile has been added successfully." : "Character Stat Tile has been updated successfully.";
                     this.alertService.showMessage(message, "", MessageSeverity.success);
-
+                    
                     this.sharedService.updateCharacterList(data);
                     this.close();
                 },
@@ -603,14 +657,77 @@ export class CharacterStatTileComponent implements OnInit {
                     this.alertService.stopLoadingMessage();
                     let _message = modal.characterStatTile.characterStatTileId == 0 || modal.characterStatTile.characterStatTileId === undefined ? "Unable to Add " : "Unable to Update ";
                     let Errors = Utilities.ErrorDetail(_message, error);
-                    if (Errors.sessionExpire)
+                    if (Errors.sessionExpire) 
                         this.authService.logout(true);
-                    else
+                    else 
                         this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
                 },
             );
     }
 
+    private fileUpload() {
+        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+        if (user == null)
+            this.authService.logout(true);
+        else {
+
+            if (this.imageUrl.indexOf(BLOB_TYPE.blob) > -1) {
+                if (this.characterTileModel.view == VIEW.EDIT) this.characterStatTileFormModal.imageUrl = this.imageUrl;
+                else
+                    this.characterTileModel.multiCharacterStats.map((x) => {
+                        if (x.characterStatTypeId === STAT_TYPE.Command && this.hasCommand) {
+                            x.image = this.imageUrl;
+                            this.characterStatTileFormModal.imageUrl = this.imageUrl;
+                        }
+                    });
+                this.addEditCharacterStatTile(this.characterTileModel);
+            } else {
+                let type = "base64";
+                let file = this.imageUrl;
+                let extension = 'jpg';
+                if (this.imageUrl.indexOf(BLOB_TYPE.base64) > -1) {
+                    type = "base64";
+                }
+                else {
+                    type = "url";
+                    try {
+                        var regex = /(?:\.([^.]+))?$/;
+                        extension = regex.exec(this.imageUrl)[1];
+                        extension = extension ? extension : 'jpg';
+                    } catch{ }
+                }
+
+                let data = {
+                    userId: user.id,
+                    file: this.imageUrl,
+                    extension: extension,
+                    type: type
+                }
+
+                this.fileUploadService.uploadImageToBlob<any>(data)
+                    .subscribe(
+                        data => {
+                            //this.characterTileModel.imageUrl = data.ImageUrl;
+                            this.imageUrl = data.ImageUrl;
+                            this.characterTileModel.multiCharacterStats.map((x) => {
+                                if (x.characterStatTypeId === STAT_TYPE.Command && this.hasCommand) {
+                                    x.image = this.imageUrl;
+                                    this.characterStatTileFormModal.imageUrl = this.imageUrl;
+                                }
+                            });
+                            this.addEditCharacterStatTile(this.characterTileModel);
+                        },
+                        error => {
+                            let Errors = Utilities.ErrorDetail('Error', error);
+                            if (Errors.sessionExpire) {
+                                this.authService.logout(true);
+                            }
+                            else this.addEditCharacterStatTile(this.characterTileModel);
+                        });
+            }
+            
+        }
+    }
 
     showProperty(evt) {
         if (evt == "Items") {
@@ -652,7 +769,7 @@ export class CharacterStatTileComponent implements OnInit {
         this.selectedSpell = null;
         this.abilityId = val.characterAbilityId;
         this.selectedAbility = val;
-
+        
     }
 
     getSpellValue(val: any) {
@@ -662,7 +779,7 @@ export class CharacterStatTileComponent implements OnInit {
         this.selectedAbility = null;
         this.spellId = val.characterSpellId;
         this.selectedSpell = val;
-
+        
     }
     showMoreLinkRecords(fieldName: any, _limit: number, _limitText: string) {
         //console.log(fieldName);
@@ -718,7 +835,7 @@ export class CharacterStatTileComponent implements OnInit {
         if (this.characterTileModel.multiCharacterStats.length) {
             if (this.characterTileModel.multiCharacterStats.length == 1 && stat.characterStat.characterStatTypeId == STAT_TYPE.LinkRecord) {
                 this.statsList.map((st) => {
-
+                    
                     if (st.charactersCharacterStatId == this.characterTileModel.multiCharacterStats[0].characterStatId) {
                         this.itemId = 0;
                         this.spellId = 0;
@@ -757,4 +874,48 @@ export class CharacterStatTileComponent implements OnInit {
         } catch (err) { }
     }
 
+    removeImage() {
+        this.imageUrl = null;
+        this.characterStatTileFormModal.imageUrl = null;
+    }
+
+    cropImage(img: string, OpenDirectPopup: boolean, view: string) {
+        
+        this.bsModalRef = this.modalService.show(ImageSelectorComponent, {
+            class: 'modal-primary modal-sm selectPopUpModal',
+            ignoreBackdropClick: true,
+            keyboard: false
+        });
+        this.bsModalRef.content.title = 'none';
+        this.bsModalRef.content.image = img;
+        this.bsModalRef.content.view = view;
+        this.bsModalRef.content.errorImage = 'https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';
+        //this.bsModalRef.content.imageChangedEvent = this.imageChangedEvent; //base 64 || URL
+        this.bsModalRef.content.event.subscribe(data => {           
+            //this.commandTileFormModal.imageUrl = data.base64;
+            this.imageUrl = data.base64;
+            this.fileToUpload = data.base64;
+            this.showWebButtons = false;
+        });
+    }
+    RemoveSelectedLinkRecord() {
+        
+        this.abilityId = 0;
+        this.itemId = 0;
+        this.spellId = 0;
+        this.selectedItem = null;
+        this.selectedAbility = null;
+        this.selectedSpell = null;
+    }
+    IsStatChecked(stat: any): boolean {
+        if (this.characterTileModel.multiCharacterStats) {
+            if (this.characterTileModel.multiCharacterStats.length) {
+                
+                if (this.characterTileModel.multiCharacterStats.filter(x => x.characterStatId == stat.charactersCharacterStatId).length) {                    
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

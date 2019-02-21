@@ -12,5 +12,6 @@ namespace RPGSmithApp.ViewModels
         public Nullable<int> Maximum { get; set; }
         public Nullable<int> Minimum { get; set; }
         public int DefaultValue { get; set; }
+        public string DefaultText { get; set; }
     }
 }

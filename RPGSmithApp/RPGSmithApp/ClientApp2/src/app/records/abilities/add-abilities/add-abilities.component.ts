@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import 'rxjs/add/operator/switchMap';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { AlertService, MessageSeverity, DialogType } from '../../../core/common/alert.service';
-import { AuthService } from "../../../core/auth/auth.service";
+import { AlertService } from '../../../core/common/alert.service';
 
 @Component({
     selector: 'app-add-abilities',

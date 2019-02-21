@@ -23,7 +23,8 @@
         </div>
         <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="2"
+                [infiniteScrollThrottle]="300" [scrollWindow]="false">
 
         <!-- Search query -->
         <div class="form-group form-group-unlabelled">
@@ -46,24 +47,40 @@
                     </div>
                 </div>
             </li>
+            <li class="input-image-search-result-item" *ngIf="bingImages.length && bingImages.length >= noOfImagesShow">
+                <div class="input-image-search-result-item-wrapper not-bg d-flex align-items-center justify-content-center">
+                    <span (click)="getMoreResults()" class="justify-content-center">More Results</span>
+                </div>
+            </li>
         </ul>
 
         <!-- Blob Search -->
-        <ul class="input-image-search-result" *ngIf="defaultText==='Stock Images'">
-            <li class="input-image-search-result-item" *ngFor="let stockImg of blobStockImages">
-                <div class="input-image-search-result-item-wrapper">
+        <div class="w-100 d-block">
+            <ul class="input-image-search-result" *ngIf="defaultText==='Stock Images'">
+                <li class="input-image-search-result-item" *ngFor="let stockImg of blobStockImages">
+                    <div class="input-image-search-result-item-wrapper">
 
-                    <!--<img class="card-img-top portrait" [src]="stockImg.absoluteUri"
-             [alt]="stockImg.absoluteUri">-->
-                    <div class="search-image-box-section" [ngStyle]="{'background-image': 'url('+stockImg.absoluteUri+')'}"></div>
+                        <!--<img class="card-img-top portrait" [src]="stockImg.absoluteUri"
+                [alt]="stockImg.absoluteUri">-->
+                        <div class="search-image-box-section" [ngStyle]="{'background-image': 'url('+stockImg.absoluteUri+')'}"></div>
 
-                    <div class="input-image-search-result-item-use">
-                        <button type="button" class="btn btn-accent btn-block icon-Tile-Execute" (click)="useBlobStockImage(stockImg)"> Use</button>
+                        <div class="input-image-search-result-item-use">
+                            <button type="button" class="btn btn-accent btn-block icon-Tile-Execute" (click)="useBlobStockImage(stockImg)"> Use</button>
+                        </div>
                     </div>
+                </li>
+                <li *ngIf="blobStockImages?.length == 0 && !isLoading" class="input-image-search-result-item" style="list-style-type: none;margin:10px;">No Record Found</li>
+
+            </ul>
+            <!--<div *ngIf="blobStockImages?.length != 0 && defaultText==='Stock Images'" class="row m-0">
+                <div class="col-12 text-center">
+                    <a (click)="moreStockImages()" *ngIf="!hideShowMoreStockImge" class="btn btn-accent d-inline-flex" style="list-style-type: none;margin:10px;">Show More</a>
                 </div>
-            </li>
-            <li *ngIf="blobStockImages?.length == 0 && !isLoading" class="input-image-search-result-item" style="list-style-type: none;margin:10px;">No Record Found</li>
-        </ul>
+            </div>-->
+                <!--<div class="spinner" *ngIf="blobStockImages?.length != 0 && defaultText==='Stock Images' && isStockImagesLoaging">
+                    <img src="../../../../assets/images/PageLoader.gif" />
+                </div>--> 
+        </div>
 
         <!-- Blob My Images Search -->
         <ul class="input-image-search-result" *ngIf="defaultText==='My Images'">

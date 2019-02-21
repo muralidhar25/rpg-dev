@@ -1,24 +1,21 @@
 import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, NavigationExtras } from "@angular/router";
-
-import { AlertService, MessageSeverity, DialogType } from '../../../core/common/alert.service';
-import { ConfigurationService } from '../../../core/common/configuration.service';
 import { BsModalService, BsModalRef, ModalDirective } from 'ngx-bootstrap';
-import { Utilities } from '../../../core/common/utilities';
-import { User } from '../../../core/models/user.model';
-import { DBkeys } from '../../../core/common/db-keys';
-import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
-
-import { Ruleset } from '../../../core/models/view-models/ruleset.model';
 import { RulesetDashboardPage } from '../../../core/models/view-models/ruleset-dashboard-page.model';
-import { RulesetDashboardPageService } from "../../../core/services/ruleset-dashboard-page.service";
-import { VIEW } from '../../../core/models/enums';
 import { Color } from '../../../core/models/tiles/color.model';
+import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
+import { ConfigurationService } from '../../../core/common/configuration.service';
+import { RulesetDashboardPageService } from '../../../core/services/ruleset-dashboard-page.service';
+import { AuthService } from '../../../core/auth/auth.service';
+import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
+import { SharedService } from '../../../core/services/shared.service';
+import { CommonService } from '../../../core/services/shared/common.service';
+import { User } from '../../../core/models/user.model';
+import { VIEW } from '../../../core/models/enums';
+import { DBkeys } from '../../../core/common/db-keys';
+import { Utilities } from '../../../core/common/utilities';
 
-import { SharedService } from "../../../core/services/shared.service";
-import { CommonService } from "../../../core/services/shared/common.service";
-import { AuthService } from "../../../core/auth/auth.service";
 
 @Component({
     selector: 'app-ruleset-page',
@@ -34,9 +31,8 @@ export class RulesetPageComponent implements OnInit {
     rulesetId: number;
     layoutId: number;
     disabled: boolean = false;
-    title: any;
-    button: any;
-
+  title: string = ''
+  button: string = ''
     constructor(
         private router: Router, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, private pageService: RulesetDashboardPageService,

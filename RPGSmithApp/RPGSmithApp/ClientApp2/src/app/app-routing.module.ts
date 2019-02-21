@@ -62,6 +62,11 @@ const routes: Routes = [
         loadChildren: rulesetsModule,
         canActivate: [AuthGuard]
       },
+{
+        path: "ruleset",
+        loadChildren: rulesetsModule,
+        canActivate: [AuthGuard]
+      },
       {
         path: "characters",
         loadChildren: charactersModule,

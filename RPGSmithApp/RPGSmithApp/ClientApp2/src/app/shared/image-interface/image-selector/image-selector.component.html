@@ -15,8 +15,11 @@
                 <button type="button" class="btn icon icon-with-text icon-computer btn-primary input-image-button-web w-100">Upload</button>
                 <input type="file" accept="image/*" id="ruleset-image" (change)="selectFile($event)" name="rulesetImage" placeholder="Choose image..." class="form-control img-uploader" />
             </div>
+            <div class="btn-block w-100" *ngIf="charactersFormModal?.imageUrl">
+                <button type="button" class="btn btn-primary w-100" (click)="removeImageFile()">Remove Image</button>
+            </div>
             <div class="btn-block input-image-control " [ngStyle]="{'display':isImageLoadong ? 'none':'flex'}">
-                <img [src]="charactersFormModal.imageUrl" *ngIf="(!isCropable) && (charactersFormModal.imageUrl)" class="bg-image" />
+                <img [src]="charactersFormModal?.imageUrl" *ngIf="(!isCropable) && (charactersFormModal?.imageUrl)" class="bg-image" />
                 <image-cropper [imageChangedEvent]="imageChangedEvent"
                                [imageBase64]="imageBase64"
                                [maintainAspectRatio]="false"

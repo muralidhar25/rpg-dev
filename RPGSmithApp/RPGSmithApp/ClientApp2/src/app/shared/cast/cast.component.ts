@@ -1,15 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { AlertService, MessageSeverity, DialogType } from '../../core/common/alert.service';
-import { DiceRollComponent } from '../dice/dice-roll/dice-roll.component';
 import { Characters } from '../../core/models/view-models/characters.model';
+import { AlertService, DialogType } from '../../core/common/alert.service';
+import { DiceRollComponent } from '../dice/dice-roll/dice-roll.component';
 
 class Command {
     name: string = '';
     imageUrl: string = '';
-    command: string = '';
-    itemImage: any;
-    commandName: any;
+  command: string = '';
+  itemImage: string = '';
+  commandName: string = '';
 }
 
 
@@ -66,7 +66,7 @@ export class CastComponent implements OnInit {
         this.bsModalRef.content.characterId = this.character.characterId;
         this.bsModalRef.content.character = this.character;
         this.bsModalRef.content.command = Command.command;
-
+        
         if (this.CommandData.hasOwnProperty("itemId")) {
             this.bsModalRef.content.recordName = this.CommandData.name;
             this.bsModalRef.content.recordImage = this.CommandData.itemImage;

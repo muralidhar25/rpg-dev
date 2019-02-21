@@ -90,6 +90,7 @@ export class CharacterTile {
 export class characterStatIds {
     characterStatId: number;
     characterStatTypeId: number;
+    image: string;
 }
 
 

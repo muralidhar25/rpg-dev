@@ -4,40 +4,40 @@ import { HttpRequest, HttpResponse } from '@angular/common/http';
 const maxAge = 30000;
 @Injectable()
 export class RequestCache {
+  cache = new Map();
 
-    cache = new Map();
+  get(req: HttpRequest<any>): HttpResponse<any> | undefined {
 
-    get(req: HttpRequest<any>): HttpResponse<any> | undefined {
+    const url = req.urlWithParams;
+    const cached = this.cache.get(url);
 
-        const url = req.urlWithParams;
-        const cached = this.cache.get(url);
-
-        if (!cached) {
-            return undefined;
-        }
-
-        const isExpired = cached.lastRead < (Date.now() - maxAge);
-        const expired = isExpired ? 'expired ' : '';
-        return cached.response;
+    if (!cached) {
+      return undefined;
     }
 
-    put(req: HttpRequest<any>, response: HttpResponse<any>): void {
+    const isExpired = cached.lastRead < (Date.now() - maxAge);
+    const expired = isExpired ? 'expired ' : '';
+    return cached.response;
+  }
 
-        const url = req.url;
-        const entry = {
-            url,
-            response,
-            lastRead: Date.now(),
-            body: req.body,
-            method: req.method
-        };
-        this.cache.set(url, entry);
+  put(req: HttpRequest<any>, response: HttpResponse<any>): void {
 
-        const expired = Date.now() - maxAge;
-        this.cache.forEach(expiredEntry => {
-            if (expiredEntry.lastRead < expired) {
-                this.cache.delete(expiredEntry.url);
-            }
-        });
-    }
+    const url = req.url;
+    const entry = {
+      url,
+      response,
+      lastRead: Date.now(),
+      body: req.body,
+      method: req.method
+    };
+    this.cache.set(url, entry);
+
+    const expired = Date.now() - maxAge;
+    this.cache.forEach(expiredEntry => {
+      if (expiredEntry.lastRead < expired) {
+        this.cache.delete(expiredEntry.url);
+      }
+    });
+  }
 }
+

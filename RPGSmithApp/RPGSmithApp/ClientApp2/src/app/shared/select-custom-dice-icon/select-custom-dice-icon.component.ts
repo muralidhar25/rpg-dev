@@ -1,9 +1,9 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { AddCustomDiceComponent } from '../add-custom-dice/add-custom-dice.component';
+import { DICE_ICON } from '../../core/models/enums';
 import { CustomDice } from '../../core/models/view-models/custome-dice.model';
-import { DICE_ICON, VIEW, DICE } from '../../core/models/enums';
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
+import { AddCustomDiceComponent } from '../add-custom-dice/add-custom-dice.component';
 import { CustomDiceComponent } from '../custom-dice/custom-dice.component';
 
 @Component({
@@ -33,7 +33,7 @@ export class SelectCustomDiceIconComponent implements OnInit {
             this.ruleset = this.bsModalRef.content.ruleset;
         }, 0);
     }
-
+    
     submitForm(icon: string) {
         this.customDice.icon = icon;
         this.close();
@@ -41,7 +41,7 @@ export class SelectCustomDiceIconComponent implements OnInit {
 
     close() {
         this.bsModalRef.hide();
-
+        
         if (this.view == "AddCustomDice") {
             this.bsModalRef = this.modalService.show(AddCustomDiceComponent, {
                 class: 'modal-primary modal-md',

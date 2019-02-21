@@ -70,7 +70,8 @@ namespace RPGSmithApp.Helpers
                         CharacterStatComboId = CharacterStat.CharacterStatCombos.CharacterStatComboId,
                         Maximum = CharacterStat.CharacterStatCombos.Maximum,
                         Minimum = CharacterStat.CharacterStatCombos.Minimum,
-                        DefaultValue = CharacterStat.CharacterStatCombos.DefaultValue
+                        DefaultValue = CharacterStat.CharacterStatCombos.DefaultValue,
+                        DefaultText = CharacterStat.CharacterStatCombos.DefaultText
                     },
                 CharacterStatToggleViewModel = CharacterStat.CharacterStatToggles == null ? new CharacterStatToggleViewModel() :
                     new CharacterStatToggleViewModel()
@@ -194,13 +195,14 @@ namespace RPGSmithApp.Helpers
                 ItemMasters = ruleSet.ItemMasters,
                 Spells = ruleSet.Spells,
                 Abilities = ruleSet.Abilities,
-
+                CreatedOn=ruleSet.CreatedDate.ToString("MM-dd-yy"),
                 // ImageFileName = FileStreamResult(new MemoryStream(ruleSet.RuleSetImage), "image/jpeg")
                 //RuleSetImage = ruleSet.RuleSetImage
                 RecordCount = _coreRulesetService.GetRulesetRecordCounts(ruleSet.RuleSetId),
                 customDices=Utilities.MapCustomDice(_ruleSetService.GetCustomDice(ruleSet.RuleSetId)),
                 diceTray=_ruleSetService.GetDiceTray(ruleSet.RuleSetId),
-                defaultDices = _ruleSetService.GetDefaultDices()
+                defaultDices = _ruleSetService.GetDefaultDices(),
+                CoreRulesetAdminImageUrl= _ruleSetService.GetUserImageFromRulesetID(ruleSet.RuleSetId)
             };
 
             return ruleSetViewModel;

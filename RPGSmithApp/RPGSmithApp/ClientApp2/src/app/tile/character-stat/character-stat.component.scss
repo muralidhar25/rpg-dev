@@ -35,3 +35,62 @@ input.input-color-custom {
         width: 50% !important;
     }
 }
+.tile-actions{
+    display:block;
+}
+.tile-actions .btn {
+    position: absolute;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    margin: 0.25rem;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+.tile-actions .delete-btn {
+    display: block;
+    right: 5px;
+    z-index: 9;
+    cursor: pointer;
+    top: 0;
+}
+.input-expend-and-remove {
+    flex-direction: unset;
+    justify-content: space-between;
+}
+.input-expend-and-remove {
+    flex-direction: unset;
+    justify-content: space-between;
+    display: block;
+    float: left;
+    width: 100%;
+}
+.remove-btn-box {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    opacity: 0;
+    right: 0px;
+}
+
+.remove-btn-box:hover {
+    opacity: 1
+}
+
+.remove-btn-box .removebtn-img {
+    width: 100%;
+    background: #d25727;
+    border: 0px;
+    color: #fff;
+    padding: 8px 0px;
+    font-size: 15px;
+    cursor: pointer
+}
+
+.input-image-trigger:hover + .remove-btn-box {
+    opacity: 1;
+}
+.card-equip {
+    border-color: #e7ce63 !important;
+    background-color: #f8f1d2 !important;
+}

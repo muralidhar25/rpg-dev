@@ -34,6 +34,13 @@ export class FilterTilePipe implements PipeTransform {
                 return (name.toLowerCase().indexOf(searchText) > -1);
             });
         }
+        else if (column == 'rStat') {
+            return data.filter(function (item) {
+                let name = item.statName;
+                return (name.toLowerCase().indexOf(searchText) > -1);
+            });
+        }
+
         //TODO -r
     }
 }

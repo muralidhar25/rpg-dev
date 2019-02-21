@@ -1,22 +1,20 @@
 import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { AlertService, MessageSeverity, DialogType } from './../../../core/common/alert.service';
-import { AuthService } from "./../../../core/auth/auth.service";
-import { ConfigurationService } from './../../../core/common/configuration.service';
-import { Utilities } from './../../../core/common/utilities';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { DBkeys } from '../../../core/common/db-keys';
-import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
+import { Ability } from "../../../core/models/view-models/ability.model";
+import { AlertService, MessageSeverity, DialogType } from "../../../core/common/alert.service";
+import { AuthService } from "../../../core/auth/auth.service";
 import { SharedService } from "../../../core/services/shared.service";
-import { CommonService } from "../../../core/services/shared/common.service";
-import { AddAbilitiesComponent } from './../../abilities/add-abilities/add-abilities.component';
-import { CreateAbilitiesComponent } from './../../abilities/create-abilities/create-abilities.component';
-
-import { User } from '../../../core/models/user.model';
-import { Ability } from '../../../core/models/view-models/ability.model';
 import { AbilityService } from "../../../core/services/ability.service";
-import { ImageViewerComponent } from "../../../shared/image-interface/image-viewer/image-viewer.component";
+import { ConfigurationService } from "../../../core/common/configuration.service";
 import { RulesetService } from "../../../core/services/ruleset.service";
+import { CommonService } from "../../../core/services/shared/common.service";
+import { LocalStoreManager } from "../../../core/common/local-store-manager.service";
+import { User } from "../../../core/models/user.model";
+import { DBkeys } from "../../../core/common/db-keys";
+import { Utilities } from "../../../core/common/utilities";
+import { CreateAbilitiesComponent } from "../../../shared/create-abilities/create-abilities.component";
+import { ImageViewerComponent } from "../../../shared/image-interface/image-viewer/image-viewer.component";
 
 @Component({
     selector: 'app-ability-details',

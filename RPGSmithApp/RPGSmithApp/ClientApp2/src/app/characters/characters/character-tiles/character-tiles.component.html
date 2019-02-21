@@ -4,9 +4,9 @@
     <div class="page-toolbar">
         <div class="container">
             <div class="page-toolbar-wrapper-toggle-trigger">
-                <button *ngIf="!IsTrashPage" type="button" class="btn icon icon-with-text btn-accent" (click)="gotoDashboard()">Done</button>
-                <button *ngIf="!isLoading && IsTrashPage" type="button" (click)="backToNormal()" class="btn icon icon-with-text btn-accent mr-1">Cancel</button>
-                <button *ngIf="!isLoading && IsTrashPage" type="button" (click)="deleteMultipleTiles()" class="btn icon icon-with-text btn-accent">Save</button>
+                <button *ngIf="!IsTrashPage && !IsResizePage && !IsRelocatePage && !IsEditPage" type="button" class="btn icon icon-with-text btn-accent" (click)="gotoDashboard()">Done</button>
+                <button *ngIf="!isLoading && (IsTrashPage || IsResizePage || IsRelocatePage || IsEditPage )" type="button" (click)="backToNormal()" class="btn icon icon-with-text btn-accent mr-1">Cancel</button>
+                <button *ngIf="!isLoading && (IsTrashPage || IsResizePage || IsRelocatePage || IsEditPage)" type="button" (click)="deleteMultipleTiles()" class="btn icon icon-with-text btn-accent">Save</button>
             </div>
 
             <div class="page-toolbar-wrapper initial" [ngClass]="{'show': showActions}">
@@ -15,14 +15,14 @@
                     <h1>Manage Tiles</h1>
                 </div>
                 <ul class="page-toolbar-actions">
-                    <li *ngIf="!IsTrashPage">
-                        <button type="button" id="manageTilesDoneTrigger"  class="btn btn-accent" (click)="gotoDashboard()">Done</button>
+                    <li *ngIf="!IsTrashPage && !IsResizePage && !IsRelocatePage && !IsEditPage">
+                        <button type="button" id="manageTilesDoneTrigger" class="btn btn-accent" (click)="gotoDashboard()">Done</button>
                     </li>
-                    <li *ngIf="!isLoading && IsTrashPage">
-                        <button  type="button" (click)="backToNormal()" class="btn btn-accent">Cancel</button>
+                    <li *ngIf="!isLoading && (IsTrashPage || IsResizePage || IsRelocatePage || IsEditPage)">
+                        <button type="button" (click)="backToNormal()" class="btn btn-accent">Cancel</button>
                     </li>
-                    <li *ngIf="!isLoading && IsTrashPage">
-                        <button  type="button" (click)="deleteMultipleTiles()" class="btn btn-accent">Save</button>
+                    <li *ngIf="!isLoading && (IsTrashPage || IsResizePage || IsRelocatePage || IsEditPage )">
+                        <button type="button" (click)="deleteMultipleTiles()" class="btn btn-accent">Save</button>
                     </li>
                 </ul>
             </div>
@@ -33,7 +33,7 @@
 
                 <div [ngGrid]="gridConfig" (onItemChange)="grid_onItemChange($event)">
 
-                    <div #refElement *ngFor="let box of boxes; let i = index" [ngClass]="IsTrashPage?'delete-tile-action':''" [(ngGridItem)]="box.config" (onChangeStop)="changeDone(i, $event)" (onResize)="onResize(box,i, $event)" (onDrag)="onDrag(i, $event,refElement)" (onChangeStart)="onChangeStart($event)" (onDragStop)="onDragStop($event,box.tile,i)">
+                    <div #refElement *ngFor="let box of boxes; let i = index" [ngClass]="(IsTrashPage?'delete-tile-action':'') || (IsResizePage?'delete-tile-action':'') || (IsRelocatePage?'delete-tile-action':'') || (IsEditPage?'delete-tile-action':'')" [(ngGridItem)]="box.config" (onChangeStop)="changeDone(i, $event)" (onResize)="onResize(box,i, $event)" (onDrag)="onDrag(i, $event,refElement)" (onChangeStart)="onChangeStart($event)" (onDragStop)="onDragStop($event,box.tile,i)">
 
                         <div *ngIf="!box.IsCharacter" (click)="removeTile($event,box.tile,i)">
                             <div class="tiles manage manage-tiles colwidth handle">
@@ -48,7 +48,7 @@
                                         </h5>
 
                                         <div class="tile-body">
-                                            <div class="grid-rounded">
+                                            <div class=""  [ngClass]="(box.tile.noteTiles?.shape=='50')?'grid-rounded':''">
                                                 <p [style.background-color]="white"
                                                    [froalaView]="box.tile.noteTiles?.content">
                                                 </p>
@@ -56,10 +56,20 @@
                                         </div>
                                         <div class="tile-actions">
                                             <!-- <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
+                                            <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+    <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>-->
+                                            <span class="d-none d-md-block">
+                                                <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                                                <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                                                <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                                            </span>
                                             <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
-                                            <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
-                                            <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
-                                            <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                                            <button type="button" title="Edit" *ngIf="IsEditPage" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary delete-tile-btn"></button>
+                                            <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary delete-tile-btn"></button>
+                                            <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
+
                                         </div>
                                     </div>
                                 </div>
@@ -78,10 +88,20 @@
                                     </div>
                                     <div class="tile-actions">
                                         <!--  <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
+                                        <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+    <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                                        <span class="d-none d-md-block">
+                                            <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                                            <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                                            <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                                        </span>
                                         <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
-                                        <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
-                                        <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
-                                        <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>
+                                        <button type="button" title="Edit" *ngIf="IsEditPage" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary delete-tile-btn"></button>
+                                        <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary delete-tile-btn"></button>
+                                        <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
+
                                     </div>
                                 </div>
 
@@ -101,24 +121,37 @@
                                         </div>
                                     </div>
                                     <div class="tile-actions">
+                                        <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+    <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
+    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                                        <span class="d-none d-md-block">
+                                            <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                                            <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                                            <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                                        </span>
                                         <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
-                                        <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
-                                        <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
-                                        <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>
+                                        <button type="button" title="Edit" *ngIf="IsEditPage" data-action="edit" class="btn icon icon-pencil btn-primary delete-tile-btn" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
+                                        <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary delete-tile-btn"></button>
+                                        <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
+
                                     </div>
                                 </div>
 
                                 <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.CHARACTERSTAT && box.tile.characterStatTiles">
-                                    <div class="tile tile-type-note tile-color-6" [style.background-color]="box.tile.characterStatTiles?.bodyBgColor" [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatTiles?.shape=='100')?'grid-circle':''">
+                                    <div class="tile tile-type-note tile-color-6" [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatTiles?.shape=='100')?'grid-circle':''"
+                                         [style.background-color]="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Command?((box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl)?box.tile.characterStatTiles.titleBgColor:box.tile.characterStatTiles.bodyBgColor):box.tile.characterStatTiles.bodyBgColor">
+
                                         <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.characterStatTiles.titleTextColor, 'background-color': box.tile.characterStatTiles.titleBgColor}"
-                                            *ngIf="box.tile.characterStatTiles?.showTitle" popover="{{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.statName}}" triggers="hover"
+                                            *ngIf="(box.tile.characterStatTiles?.showTitle && box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId!==STAT_TYPE.Command)||(box.tile.characterStatTiles?.showTitle && box.tile?.characterStatTiles?.imageUrl && box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Command)"
+                                            popover="{{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.statName}}" triggers="hover"
                                             [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
                                             {{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.statName}}
                                         </h5>
 
                                         <div class="tile-body">
-                                            <div class="grid-rounded" [style.color]="box.tile.characterStatTiles.bodyTextColor"
-                                                 [style.background-color]="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.RichText ? '' : box.tile.characterStatTiles.bodyBgColor">
+                                            <div [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':''" [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                                                 [style.background-color]="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.RichText ? '' : (box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Command && box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl)?box.tile.characterStatTiles.titleBgColor:box.tile.characterStatTiles.bodyBgColor">
 
                                                 <p [style.color]="box.tile.characterStatTiles.bodyTextColor"
                                                    [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 14 ? 16 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 14 ? 16 : box.config.sizex*4 ) "
@@ -172,8 +205,8 @@
                                                         </p>
                                                     </ng-container>
                                                     <!--<span *ngIf="choice?.characterStatChoiceId===+box.tile.characterStatTiles?.charactersCharacterStat?.choice" [style.font-size.px]="box.config.sizex*box.config.sizey*5+16" class="text-center-v">
-            {{choice.statChoiceValue}}
-        </span>-->
+                                                {{choice.statChoiceValue}}
+                                            </span>-->
 
                                                 </div>
 
@@ -190,8 +223,20 @@
                                                     {{box.tile.characterStatTiles?.charactersCharacterStat?.calculationResult}}
                                                 </span>
                                                 <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Command">
-                                                    <img src="https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png" class="imgwidth"
-                                                         [alt]="box.tile.characterStatTiles?.charactersCharacterStat?.command">
+
+                                                    <img *ngIf="(box.tile.characterStatTiles?.showTitle && box.tile?.characterStatTiles?.imageUrl) || !box.tile.characterStatTiles?.showTitle"
+                                                         [src]="box.tile?.characterStatTiles?.imageUrl" [alt]="box.tile?.characterStatTiles?.imageUrl"
+                                                         class="imgwidth" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">
+
+                                                    <span *ngIf="box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl" class="text-center-v"
+                                                          [ngStyle]="{'color': box.tile.characterStatTiles?.titleTextColor, 'background-color': box.tile.characterStatTiles?.titleBgColor}"
+                                                          popover="{{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.statName}}" triggers="hover"
+                                                          [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey"
+                                                          [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey"
+                                                          [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
+                                                        {{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.statName}}
+                                                    </span>
+
                                                 </span>
                                                 <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Combo" class="text-center-v" [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
                                                     {{box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue}}
@@ -245,10 +290,20 @@
                                         </div>
                                     </div>
                                     <div class="tile-actions">
+                                        <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+    <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
+    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                                        <span class="d-none d-md-block">
+                                            <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                                            <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                                            <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                                        </span>
                                         <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
-                                        <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
-                                        <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
-                                        <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>
+                                        <button type="button" title="Edit" *ngIf="IsEditPage" data-action="edit" class="btn icon icon-pencil btn-primary delete-tile-btn" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
+                                        <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary delete-tile-btn"></button>
+                                        <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
+
                                     </div>
                                 </div>
 
@@ -268,10 +323,20 @@
                                         </div>
                                     </div>
                                     <div class="tile-actions">
+                                        <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+    <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
+    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                                        <span class="d-none d-md-block">
+                                            <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                                            <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                                            <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                                        </span>
                                         <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
-                                        <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
-                                        <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
-                                        <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>
+                                        <button type="button" title="Edit" *ngIf="IsEditPage" data-action="edit" class="btn icon icon-pencil btn-primary delete-tile-btn" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
+                                        <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary delete-tile-btn"></button>
+                                        <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
+
                                     </div>
                                 </div>
 
@@ -291,38 +356,65 @@
                                         </div>
                                     </div>
                                     <div class="tile-actions">
+                                        <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+    <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
+    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                                        <span class="d-none d-md-block">
+                                            <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                                            <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                                            <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                                        </span>
                                         <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
-                                        <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
-                                        <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
-                                        <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>
+                                        <button type="button" title="Edit" *ngIf="IsEditPage" data-action="edit" class="btn icon icon-pencil btn-primary delete-tile-btn" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
+                                        <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary delete-tile-btn"></button>
+                                        <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
+
                                     </div>
                                 </div>
 
                                 <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.COMMAND && box.tile.commandTiles">
-                                    <div class="tile tile-type-image tile-color-6" [style.background-color]="box.tile.commandTiles?.bodyBgColor" [ngClass]="(box.tile.commandTiles?.shape=='50')?'grid-rounded':(box.tile.commandTiles?.shape=='100')?'grid-circle':''">
-                                        <h5 *ngIf="box.tile.commandTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
+                                    <div class="tile tile-type-image tile-color-6" [style.background-color]="box.tile.commandTiles?.title && box.tile.commandTiles?.imageUrl?.trim()?box.tile.commandTiles?.bodyBgColor:box.tile.commandTiles?.titleBgColor"
+                                         [ngClass]="(box.tile.commandTiles?.shape=='50')?'grid-rounded':(box.tile.commandTiles?.shape=='100')?'grid-circle':''">
+
+                                        <h5 *ngIf="box.tile.commandTiles?.title && box.tile.commandTiles?.imageUrl?.trim()" class="tile-title wraptext" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
                                             popover="{{box.tile.commandTiles?.title}}" triggers="hover"
                                             [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
                                             {{box.tile.commandTiles?.title}}
                                         </h5>
 
                                         <div class="tile-body">
-                                            <img *ngIf="box.tile.commandTiles?.imageUrl !== '' && box.tile.commandTiles?.imageUrl !== null && box.tile.commandTiles?.imageUrl !== undefined"
-                                                 [src]="box.tile.commandTiles?.imageUrl" [alt]="box.tile.commandTiles?.title" class="imgwidth">
-                                            <img *ngIf="box.tile.commandTiles?.imageUrl === '' || box.tile.commandTiles?.imageUrl === null || box.tile.commandTiles?.imageUrl === undefined"
-                                                 src="https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png" [alt]="box.tile.commandTiles?.title" class="imgwidth">
+
+                                            <img *ngIf="box.tile.commandTiles?.imageUrl" [src]="box.tile.commandTiles?.imageUrl" [alt]="box.tile.commandTiles?.title"
+                                                 class="imgwidth" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">
+
+                                            <span *ngIf="box.tile.commandTiles?.title && !box.tile.commandTiles?.imageUrl" class="text-center-v" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
+                                                  popover="{{box.tile.commandTiles?.title}}" triggers="hover"
+                                                  [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey" [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey" [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
+                                                {{box.tile.commandTiles?.title}}
+                                            </span>
+
                                         </div>
                                     </div>
                                     <div class="tile-actions">
+                                        <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+    <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
+    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                                        <span class="d-none d-md-block">
+                                            <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                                            <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                                            <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                                        </span>
                                         <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
-                                        <button type="button" title="Edit" data-action="edit" class="btn icon icon-pencil btn-primary" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
-                                        <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
-                                        <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>
+                                        <button type="button" title="Edit" *ngIf="IsEditPage" data-action="edit" class="btn icon icon-pencil btn-primary delete-tile-btn" (click)="editTile(box.tile, box.tile.tileTypeId,i)"></button>
+                                        <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary d-block delete-tile-btn"></button>
+                                        <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
 
                                     </div>
                                 </div>
 
-                                
+
                                 <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.TEXT && box.tile.textTiles">
                                     <div class="tile tile-type-note" [style.background-color]="box.tile.textTiles?.bodyBgColor" [ngClass]="(box.tile.textTiles?.shape=='50')?'grid-rounded':(box.tile.textTiles?.shape=='100')?'grid-circle':''">
                                         <h5 *ngIf="box.tile.textTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.textTiles.titleTextColor, 'background-color': box.tile.textTiles.titleBgColor}"
@@ -339,10 +431,19 @@
                                     </div>
                                     <div class="tile-actions">
                                         <!--  <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
+                                        <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+    <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                                        <span class="d-none d-md-block">
+                                            <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                                            <button type="button" title="Resize" *ngIf="!IsTrashPage" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                                            <button type="button" title="Resize" *ngIf="!IsTrashPage" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                                        </span>
                                         <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
-                                        <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
-                                        <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
-                                        <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>
+                                        <button type="button" title="Edit" *ngIf="IsEditPage" (click)="editTile(box.tile, box.tile.tileTypeId,i)" class="btn icon icon-pencil btn-primary delete-tile-btn"></button>
+                                        <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary delete-tile-btn"></button>
+                                        <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
                                     </div>
                                 </div>
 
@@ -351,21 +452,62 @@
                     </div>
                 </div>
             </div>
-
-            <div class="add-del-btn">
+            <div class="add-del-btn d-none d-md-block">
                 <ul class="page-toolbar-actions">
                     <li class="popup-new-tile-trigger plus-li" [ngClass]="preventClick?'slide-down':''">
                         <button *ngIf="!isLoading && !IsTrashPage" type="button" (click)="openTile()" class="btn icon btn-primary icon-plus"></button>
                     </li>
-
                     <li *ngIf="boxes.length?true:false" class="popup-new-tile-trigger cross-li" [ngClass]="preventClick?'slide-down':''">
                         <button *ngIf="!isLoading && !IsTrashPage" type="button" (click)="openTrashGrid()" class="btn icon btn-primary icon-Gen-Trash"></button>
                     </li>
-                    
                     <li class="popup-new-tile-trigger delete-li" [ngClass]="preventClick?'slide-up':''">
                         <button [disabled]="isLoading" type="button" class="btn icon icon-Gen-Trash btn-primary" style="box-shadow: 0px 0px 10px #fff !important;"
                                 (mouseover)="trashTile()" (mouseout)="mouseout()"></button>
                     </li>
+                    <li class="popup-new-tile-trigger delete-li" [ngClass]="preventClick?'slide-up':''">
+                        <button [disabled]="isLoading" type="button" class="btn icon icon-Gen-Trash btn-primary" style="box-shadow: 0px 0px 10px #fff !important;"
+                                (mouseover)="trashTile()" (mouseout)="mouseout()"></button>
+                    </li>
+                </ul>
+            </div>
+            <div class="add-del-btn d-md-none">
+                <ul class="page-toolbar-actions"  [ngClass]="(!isLoading && (IsTrashPage || IsResizePage || IsRelocatePage || IsEditPage))?'':'slide-menu'">
+                    <!--<li class="popup-new-tile-trigger plus-li" [ngClass]="preventClick?'slide-down':''">
+                <button *ngIf="!isLoading && !IsTrashPage" type="button" (click)="openTile()" class="btn icon btn-primary icon-plus"></button>
+            </li>
+
+            <li *ngIf="boxes.length?true:false" class="popup-new-tile-trigger cross-li" [ngClass]="preventClick?'slide-down':''">
+                <button *ngIf="!isLoading && !IsTrashPage" type="button" (click)="openTrashGrid()" class="btn icon btn-primary icon-Gen-Trash"></button>
+            </li>
+            <li class="popup-new-tile-trigger delete-li" [ngClass]="preventClick?'slide-up':''">
+                <button [disabled]="isLoading" type="button" class="btn icon icon-Gen-Trash btn-primary" style="box-shadow: 0px 0px 10px #fff !important;"
+                        (mouseover)="trashTile()" (mouseout)="mouseout()"></button>
+            </li>-->
+
+                    <li class="" *ngIf="!isLoading && (IsTrashPage || IsResizePage || IsRelocatePage || IsEditPage)">
+                        <button type="button" (click)="backToNormal()" class="btn bg-white icon icon-righ btn-text-big icon- btn-outline-primary"> ></button>
+                    </li>
+                    <li class="" *ngIf="(boxes.length?true:false) && (!IsTrashPage) && (!isLoading ) && (!IsResizePage) && (!IsRelocatePage) && (!IsEditPage)" [ngClass]="preventClick?'slide-down':''">
+                        <button type="button" (click)="openTrashGrid()" class="btn bg-white icon btn-outline-primary icon-Gen-Trash"></button>
+                    </li>
+                    <li class="" *ngIf="!isLoading && !IsTrashPage && !IsResizePage && !IsRelocatePage && !IsEditPage">
+                        <button type="button" (click)="openResize()" class="btn icon bg-white icon-arrow-resize btn-outline-primary"></button>
+                    </li>
+                    <li class="" *ngIf="!isLoading && !IsTrashPage && !IsResizePage && !IsRelocatePage && !IsEditPage">
+                        <button type="button" (click)="openRelocate()" class="btn bg-white icon icon-Gen-Relocate btn-outline-primary"></button>
+                    </li>
+                    <li class="" *ngIf="!isLoading && !IsTrashPage && !IsResizePage && !IsRelocatePage && !IsEditPage">
+                        <button type="button" (click)="openEditGrid()" class="btn bg-white icon icon-pencil btn-outline-primary"></button>
+                    </li>
+                    <li class="" [ngClass]="preventClick?'slide-down':''" *ngIf="!isLoading && !IsTrashPage && !IsResizePage && !IsRelocatePage">
+                        <button type="button" (click)="openTile()" class="btn icon btn-primary icon-plus"></button>
+                    </li>
+
+                    <!--<li class="popup-new-tile-trigger delete-li" [ngClass]="preventClick?'slide-up':''">
+                <button [disabled]="isLoading" type="button" class="btn icon icon-Gen-Trash btn-primary" style="box-shadow: 0px 0px 10px #fff !important;"
+                        (mouseover)="trashTile()" (mouseout)="mouseout()"></button>
+            </li>-->
+
                 </ul>
             </div>
         </div>

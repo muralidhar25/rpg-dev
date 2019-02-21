@@ -1,6 +1,7 @@
 ﻿using DAL.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,9 +13,10 @@ namespace RPGSmithApp.ViewModels
         public int CharactersCharacterStatId { get; set; }      
         public int? CharacterStatId { get; set; }     
         public int? CharacterId { get; set; }
-      
+
+        [MaxLength(255, ErrorMessage = "The field Text must be string with maximum length of 255 characters")]
         public string Text { get; set; }       
-        public string RichText { get; set; }
+        public String RichText { get; set; }
       
         public string Choice { get; set; }      
         public string MultiChoice { get; set; }
@@ -29,7 +31,7 @@ namespace RPGSmithApp.ViewModels
         public int Current { get; set; }
         public int Maximum { get; set; }
         public int CalculationResult { get; set; }
-        public int Number { get; set; }
+        public int? Number { get; set; }
 
         public int DefaultValue { get; set; }
         public int Minimum { get; set; }

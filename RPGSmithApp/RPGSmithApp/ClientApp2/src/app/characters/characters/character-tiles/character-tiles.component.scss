@@ -85,7 +85,7 @@ ng-grid-placeholder.grid-placeholder, .grid-placeholder {
     top: 50%;
     transform: translate(-0%,-50%);
     left: 0;
-    padding:15px;
+    padding:0px;
     text-align:center;
     width:100%;
 }
@@ -385,7 +385,7 @@ body {
         font-size: 14px !important;
     }
 }
-.grid-item.delete-tile-action:after {
+/*.grid-item.delete-tile-action:after {
     content: '';
     position: absolute;
     width: 100%;
@@ -395,7 +395,7 @@ body {
     top: 0px;
     border-radius: 8px;
     z-index: 8;
-}
+}*/
 .delete-tile-action .tiles.manage .tile-actions{
     display:block
 }
@@ -412,4 +412,88 @@ body {
     /* left: 50%; */
     /* top: 50%; */
     /* transform: translate(-50%,-50%);*/
+}
+
+/********new action button css 06-02-2019**********/
+@media (max-width:767px){
+    @keyframes resize {
+        0% {right:200%; transform:rotate(360deg)}
+        100%{right:0%;}
+    }
+    .add-del-btn ul.page-toolbar-actions {
+        position: fixed;
+        bottom: 2rem;
+        left: 2rem;
+        right: 2rem;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: unset;
+        z-index: 9999;
+    }
+
+    .add-del-btn .page-toolbar-actions > li {
+        margin-top: 0px;
+        flex-grow: unset;
+        overflow: hidden;
+    }
+
+    .add-del-btn ul.page-toolbar-actions li .btn {
+        border-radius: 100%;
+        width: 44px;
+        height: 44px;
+        flex-grow: unset;
+        padding: 0px;
+        right: 0%;
+        position: relative;
+        animation: resize .4s linear;
+    }
+
+    .btn-text-big {
+        font-size: 30px;
+    }
+
+    .add-del-btn ul.page-toolbar-actions li .btn.icon:before {
+        font-size: 1.2rem
+    }
+    .add-del-btn ul.page-toolbar-actions li .btn.icon-Gen-Relocate:before {
+        font-size: 2rem !important
+    }
+    .delete-tile-action .tile-actions .delete-tile-btn {
+        top: -4px !important;
+        left: -4px;
+        bottom: 0px;
+        text-align: right;
+        height: 100%;
+        display: flex;
+        background:none;
+        width: 100%;
+    }
+    .delete-tile-action .tile-actions .delete-tile-btn:hover{
+        background:none !important
+    }
+    .delete-tile-action .tile-actions .delete-tile-btn:before {
+        position: absolute;
+        top: 5px;
+        right: 7px;
+        opacity: 1;
+        z-index: 1;
+    }
+    .delete-tile-action .tile-actions .delete-tile-btn:after {
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        content: '';
+        background: rgba(0, 0, 0, 0.8);
+        width: 24px;
+        height: 24px;
+    }
+}
+/*.grid-item:hover {
+    z-index: 9999 !important
+}*/
+.grid-item{
+    z-index:9 !important
+}
+.grid-item:hover {
+    z-index: 10 !important
 }

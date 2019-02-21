@@ -20,6 +20,8 @@ namespace DAL.Models
 
         public bool IsDeleted { get; set; }
 
+        public string DefaultText { get; set; }
+
         public virtual CharacterStat CharacterStat { get; set; }
     }
 }

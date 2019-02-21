@@ -1,0 +1,24 @@
+/**
+ * Global Styles --------------------------------------------------------------
+ */
+
+body {
+    font        : {size: $font-size-base; weight: $font-weight-regular; family: $font-stack-body}
+    line        : {height: $font-leading-body}
+    color       : $color-dgray-d;
+    background  : $color-lgray-xl;
+
+    @include responsive(md) {
+        font: {size: rem(14px)}
+        line: {height: rem(20px)}
+    }
+}
+
+
+/**
+ * Containers -----------------------------------------------------------------
+ */
+
+main {
+    display : block;
+}

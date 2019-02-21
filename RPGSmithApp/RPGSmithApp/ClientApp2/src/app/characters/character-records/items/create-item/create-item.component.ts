@@ -1,38 +1,28 @@
 import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import 'rxjs/add/operator/switchMap';
-
-import { AlertService, MessageSeverity, DialogType } from '../../../../core/common/alert.service';
-import { ConfigurationService } from '../../../../core/common/configuration.service';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { AuthService } from "../../../../core/auth/auth.service";
-import { SharedService } from '../../../../core/services/shared.service';
+import { ItemMaster } from '../../../../core/models/view-models/item-master.model';
+import { ImageError, VIEW } from '../../../../core/models/enums';
 import { Utilities } from '../../../../core/common/utilities';
-import { DBkeys } from '../../../../core/common/db-keys';
+import { AlertService, MessageSeverity } from '../../../../core/common/alert.service';
+import { AuthService } from '../../../../core/auth/auth.service';
 import { LocalStoreManager } from '../../../../core/common/local-store-manager.service';
-import { CommonService } from "../../../../core/services/shared/common.service";
-import { ItemMasterService } from "../../../../core/services/item-master.service";
-import { ItemsService } from "../../../../core/services/items.service";
-import { AbilityService } from "../../../../core/services/ability.service";
-import { SpellsService } from "../../../../core/services/spells.service";
+import { SharedService } from '../../../../core/services/shared.service';
+import { ItemMasterService } from '../../../../core/services/item-master.service';
+import { ImageSearchService } from '../../../../core/services/shared/image-search.service';
+import { SpellsService } from '../../../../core/services/spells.service';
+import { CommonService } from '../../../../core/services/shared/common.service';
+import { AbilityService } from '../../../../core/services/ability.service';
+import { FileUploadService } from '../../../../core/common/file-upload.service';
+import { ItemsService } from '../../../../core/services/items.service';
+import { DBkeys } from '../../../../core/common/db-keys';
+import { User } from '../../../../core/models/user.model';
 import { AddContainerComponent } from '../add-container/add-container.component';
 import { AddContainerItemComponent } from '../add-container-item/add-container-item.component';
-
-import { ItemMaster } from '../../../../core/models/view-models/item-master.model';
-import { itemMasterAbility } from '../../../../core/models/view-models/item-master-ability.model';
-import { itemMasterPlayer } from '../../../../core/models/view-models/item-master-player.model';
-import { itemMasterSpell } from '../../../../core/models/view-models/item-master-spell.model';
-import { User } from '../../../../core/models/user.model';
-import { VIEW, TILES, ImageError } from '../../../../core/models/enums';
-import { DiceComponent } from '../../../../shared/dice/dice/dice.component';
-import { Items } from '../../../../core/models/view-models/items.model';
-import { FilterPipe } from "../../../../core/pipes/filter.pipe";
-import { ContainsPipe } from "../../../../core/pipes/contains.pipe";
-import { FileUploadService } from "../../../../core/common/file-upload.service";
-import { BingSearchComponent } from '../../../../shared/image-interface/bing-search/bing-search.component';
 import { ImageSelectorComponent } from '../../../../shared/image-interface/image-selector/image-selector.component';
-import { ImageSearchService } from "../../../../core/services/shared/image-search.service";
+import { DiceComponent } from '../../../../shared/dice/dice/dice.component';
+
 
 @Component({
     selector: 'app-create-item',
@@ -47,7 +37,7 @@ export class CreateItemComponent implements OnInit {
     showWebButtons: boolean = false;
     itemMasterFormModal: any = new ItemMaster();
     fileToUpload: File = null;
-    numberRegex = "^(?:[0-9]+(?:\.[0-9]{0,8})?)?$";// "^((\\+91-?)|0)?[0-9]{0,2}$";
+    numberRegex = "^(?:[0-9]+(?:\.[0-9]{0,8})?)?$";// "^((\\+91-?)|0)?[0-9]{0,2}$"; 
     fromDetail: boolean = false;
     isFromCharacter: boolean = false;
     isFromCharacterId: number;
@@ -114,7 +104,7 @@ export class CreateItemComponent implements OnInit {
 
     ngOnInit() {
         setTimeout(() => {
-
+            
             this.fromDetail = this.bsModalRef.content.fromDetail == undefined ? false : this.bsModalRef.content.fromDetail;
             this.isFromCharacter = this.bsModalRef.content.isFromCharacter == undefined ? false : this.bsModalRef.content.isFromCharacter;
             this.isFromCharacterId = this.bsModalRef.content.isFromCharacterId == undefined ? 0 : this.bsModalRef.content.isFromCharacterId;
@@ -149,10 +139,10 @@ export class CreateItemComponent implements OnInit {
             this.authService.logout();
         else {
             this.isLoading = true;
-
+            
             this.itemsService.getAbilitySpellForItems_sp<any>(this.isFromCharacterId, this.itemMasterFormModal.ruleSetId, this.itemMasterFormModal.itemId)
                 .subscribe(data => {
-
+                    
                     this.abilitiesList = data.abilityList;
                     this.spellsList = data.spellList;
                     this.selectedAbilities = data.selectedAbilityList.map(x => { return x; });
@@ -181,7 +171,7 @@ export class CreateItemComponent implements OnInit {
                         () => { });
             }
         }
-
+      
     }
 
     itemRarity(_rarity: string) {
@@ -299,7 +289,7 @@ export class CreateItemComponent implements OnInit {
     }
 
     validateSubmit(itemMaster: any) {
-
+        
         itemMaster.itemMasterAbilityVM = this.selectedAbilities.map(x => {
             return { abilityId: x.abilityId, itemMasterId: itemMaster.itemMasterId };
         });
@@ -358,12 +348,12 @@ export class CreateItemComponent implements OnInit {
                 characterName: "-"
             }
         }
-
+        
         this.isLoading = true;
         let _msg = itemMaster.itemMasterId == 0 || itemMaster.itemMasterId === undefined ? "Creating Item Template.." : "Updating Item Template..";
         if (this.itemMasterFormModal.view === VIEW.DUPLICATE) _msg = "Duplicating Item Template..";
         this.alertService.startLoadingMessage("", _msg);
-
+        
 
         if (this.fileToUpload != null) {
             this.fileUpload(itemMaster);
@@ -433,7 +423,7 @@ export class CreateItemComponent implements OnInit {
     }
 
     private submit(itemMaster: any) {
-
+        
         if (this.itemMasterFormModal.view === VIEW.DUPLICATE) {
             this.duplicateItemMaster(itemMaster);
         }
@@ -448,17 +438,17 @@ export class CreateItemComponent implements OnInit {
             } else {
                 this.addEditItemMaster(itemMaster);
             }
-
+            
         }
     }
 
     addEditItemMaster(modal: any) {
         this.isLoading = true;
-
+        
         this.itemMasterService.createItemMaster<any>(modal)
             .subscribe(
             data => {
-
+                    
                     this.isLoading = false;
                     this.alertService.stopLoadingMessage();
                     //let message = "A new '" + modal.itemName + "' Item Template has been created for this item. Any future updates to the item will not affect the Item Template. If you wish to update the item template you may do so from the Rule Sets interface.";
@@ -515,11 +505,11 @@ export class CreateItemComponent implements OnInit {
 
     duplicateItemMaster(modal: any) {
         this.isLoading = true;
-
+        
         this.itemMasterService.duplicateItemMaster<any>(modal)
             .subscribe(
             data => {
-
+                
                     this.isLoading = false;
                     this.alertService.stopLoadingMessage();
                     //let message = "The '" + modal.itemName + "' Item Template has been duplicated for this item. Any future updates to the item will not affect the Item Template. If you wish to update the item template you may do so from the Rule Sets interface.";
@@ -645,13 +635,13 @@ export class CreateItemComponent implements OnInit {
     }
 
     onInputBlurred(event: any) {
-
+             
     }
     onItemRemoved(event: any) {
-
+        
     }
     onItemAdded(event: any) {
-
+       
     }
 
     openDiceModal(index, command) {

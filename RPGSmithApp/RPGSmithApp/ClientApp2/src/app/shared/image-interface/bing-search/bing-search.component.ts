@@ -1,17 +1,17 @@
 import { Component, OnInit, OnDestroy, Input, EventEmitter } from "@angular/core";
 import { Router, NavigationExtras } from "@angular/router";
-import { AlertService, MessageSeverity, DialogType } from '../../../core/common/alert.service';
-import { AuthService } from "../../../core/auth/auth.service";
-import { ConfigurationService } from '../../../core/common/configuration.service';
-import { Utilities } from '../../../core/common/utilities';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { VIEW,IMAGE } from '../../../core/models/enums';
-import { User } from '../../../core/models/user.model';
-import { BingImage } from '../../../core/models/bing-image.model';
-import { DBkeys } from '../../../core/common/db-keys';
-import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
+import { BingImage } from "../../../core/models/bing-image.model";
+import { AlertService, MessageSeverity } from "../../../core/common/alert.service";
+import { ConfigurationService } from "../../../core/common/configuration.service";
 import { SharedService } from "../../../core/services/shared.service";
 import { ImageSearchService } from "../../../core/services/shared/image-search.service";
+import { AuthService } from "../../../core/auth/auth.service";
+import { LocalStoreManager } from "../../../core/common/local-store-manager.service";
+import { User } from "../../../core/models/user.model";
+import { IMAGE } from "../../../core/models/enums";
+import { DBkeys } from "../../../core/common/db-keys";
+import { Utilities } from "../../../core/common/utilities";
 
 @Component({
     selector: 'app-bing-search',
@@ -22,7 +22,7 @@ export class BingSearchComponent implements OnInit {
 
     query: string;
     title: string;
-
+    
     page?: number = -1;
     pagesize?: number = -1;
     isLoading = false;
@@ -34,6 +34,17 @@ export class BingSearchComponent implements OnInit {
     Options: any;
     defaultText: string = 'Web';
     userid: string;
+    noOfImagesShow: number = 39;
+    StockImageCount: number = 39;
+    StockImagepreviousContainerNumber: number = 0;
+    previousContainerImageNumber: number = 0;
+    hideShowMoreStockImge: boolean = false;
+    isStockImagesLoaging: boolean = false;
+
+    MyImageCount: number = 39;    
+    previousContainerMyImageNumber: number = 0;
+    isMyImagesLoading: boolean = false;
+    hideShowMoreMyImage: boolean = false;
 
     constructor(
         private router: Router, private alertService: AlertService, private bsModalRef: BsModalRef,
@@ -106,8 +117,9 @@ export class BingSearchComponent implements OnInit {
     searchBing(_query) {
         this.isLoading = true;
         this.bingImages = new Array<BingImage>();
+        this.noOfImagesShow = 39;
 
-        this.imageSearchService.getBingSearch<any>(_query)
+        this.imageSearchService.getBingSearch<any>(_query, this.noOfImagesShow)
             .subscribe(data => {
                 this.bingImages = data.value;
                 this.isLoading = false;
@@ -121,16 +133,37 @@ export class BingSearchComponent implements OnInit {
             },
                 () => { });
     }
-
+    
     searchBlobStock(_query) {
         this.isLoading = true;
         this.blobMyImages = [];
         this.blobStockImages = [];
 
-        this.imageSearchService.getBlobStockSearch<any>(_query)
+        //this.imageSearchService.getBlobStockSearch<any>(_query)
+        //    .subscribe(data => {
+        //        this.blobStockImages = this.blobStockImagesBLOB = data.result.items;
+        //        this.isLoading = false;
+        //    }, error => {
+        //        console.log("searchBlobStock Error: ", error);
+        //        this.isLoading = false;
+        //        this.alertService.stopLoadingMessage();
+        //        let Errors = Utilities.ErrorDetail("Stock Images Api", error);
+        //        if (Errors.sessionExpire) this.authService.logout(true);
+        //        else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        //    },
+        //    () => { });
+        this.StockImageCount = 39;
+        this.StockImagepreviousContainerNumber = 0;
+        this.previousContainerImageNumber = 0;
+        this.imageSearchService.getBlobStockPagingSearch<any>(this.StockImageCount, this.StockImagepreviousContainerNumber, this.previousContainerImageNumber)
             .subscribe(data => {
-                this.blobStockImages = this.blobStockImagesBLOB = data.result.items;
+                this.blobStockImages = this.blobStockImagesBLOB = data.result.blobResponse.items;
+                this.StockImagepreviousContainerNumber = data.result.previousContainerNumber;
+                this.previousContainerImageNumber = data.result.previousContainerImageNumber;
                 this.isLoading = false;
+                if (data.result.blobResponse.items.length < 39) {
+                    this.hideShowMoreStockImge = true;
+                }
             }, error => {
                 console.log("searchBlobStock Error: ", error);
                 this.isLoading = false;
@@ -140,6 +173,47 @@ export class BingSearchComponent implements OnInit {
                 else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
             },
                 () => { });
+
+    }
+    moreStockImages() {
+        //console.log('scrolled')
+        this.isStockImagesLoaging = true;
+        this.imageSearchService.getBlobStockPagingSearch<any>(this.StockImageCount, this.StockImagepreviousContainerNumber, this.previousContainerImageNumber)
+            .subscribe(data => {
+                this.blobStockImages = this.blobStockImages.concat(data.result.blobResponse.items);
+                this.blobStockImagesBLOB = this.blobStockImagesBLOB.concat(data.result.blobResponse.items);
+                this.StockImagepreviousContainerNumber = data.result.previousContainerNumber;
+                this.previousContainerImageNumber = data.result.previousContainerImageNumber;
+                this.isLoading = false;
+                if (data.result.blobResponse.items.length < 39) {
+                    this.hideShowMoreStockImge = true;
+                }
+                this.isStockImagesLoaging = false;
+            }, error => {
+                this.isStockImagesLoaging = false;
+                console.log("searchBlobStock Error: ", error);
+                this.isLoading = false;
+                this.alertService.stopLoadingMessage();
+                let Errors = Utilities.ErrorDetail("Stock Images Api", error);
+                if (Errors.sessionExpire) this.authService.logout(true);
+                else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+
+            },
+                () => { });
+    }
+
+    onScroll() {
+        if (this.defaultText === 'Stock Images') {
+            if (!this.hideShowMoreStockImge) {
+                this.moreStockImages();
+            }
+           
+        }
+        if (this.defaultText === 'My Images') {
+            if (!this.hideShowMoreMyImage) {
+                this.moreMyImages();
+            }
+        }  
     }
 
     searchMyImages(_query:string, userId:string) {
@@ -147,10 +221,31 @@ export class BingSearchComponent implements OnInit {
         this.blobStockImages = [];
         this.blobMyImages = [];
 
-        this.imageSearchService.getBlobMyImagesSearch<any>(_query, userId)
-            .subscribe(data => {
-                this.blobMyImagesBLOB = this.blobMyImages = data.result.items;
+        this.MyImageCount = 39;
+        this.previousContainerMyImageNumber = 0;
+
+        //this.imageSearchService.getBlobMyImagesSearch<any>(_query, userId)  //old
+        //    .subscribe(data => {
+        //        this.blobMyImagesBLOB = this.blobMyImages = data.result.items;
+        //        this.isLoading = false;
+        //    }, error => {
+        //        console.log("searchMyImages Error: ", error);
+        //        this.isLoading = false;
+        //        this.alertService.stopLoadingMessage();
+        //        let Errors = Utilities.ErrorDetail("My Images Api", error);
+        //        if (Errors.sessionExpire) this.authService.logout(true);
+        //        else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        //    },
+        //        () => { });
+
+        this.imageSearchService.getBlobMyImagesSearchPaging<any>(_query, userId, this.MyImageCount, this.previousContainerMyImageNumber)        
+            .subscribe(data => {                
+                this.blobMyImagesBLOB = this.blobMyImages = data.result.blobResponse.items;
                 this.isLoading = false;
+                this.previousContainerMyImageNumber = data.result.previousContainerImageNumber;
+                if (data.result.blobResponse.items.length < 39) {
+                    this.hideShowMoreMyImage = true;
+                }
             }, error => {
                 console.log("searchMyImages Error: ", error);
                 this.isLoading = false;
@@ -161,7 +256,33 @@ export class BingSearchComponent implements OnInit {
             },
                 () => { });
     }
+    moreMyImages() {
+        //console.log('scrolled')
+        let _query = "";
+        this.isMyImagesLoading = true;
+        this.imageSearchService.getBlobMyImagesSearchPaging<any>(_query, this.userid, this.MyImageCount, this.previousContainerMyImageNumber)
+            .subscribe(data => {
+                this.blobMyImagesBLOB = this.blobMyImagesBLOB.concat(data.result.blobResponse.items);
+                this.blobMyImages = this.blobMyImages.concat(data.result.blobResponse.items);
+                this.isLoading = false;
+                this.previousContainerMyImageNumber = data.result.previousContainerImageNumber;              
+                this.isLoading = false;
+                this.isMyImagesLoading = false;
+                if (data.result.blobResponse.items.length < 39) {
+                    this.hideShowMoreMyImage = true;
+                }
+            }, error => {
+                this.isMyImagesLoading = false;
+                console.log("searchMyImages Error: ", error);
+                this.isLoading = false;
+                this.alertService.stopLoadingMessage();
+                let Errors = Utilities.ErrorDetail("My Images Api", error);
+                if (Errors.sessionExpire) this.authService.logout(true);
+                else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
 
+            },
+                () => { });
+    }
     public event: EventEmitter<any> = new EventEmitter();
     useBingImage(bingImg) {
         this.bsModalRef.hide();
@@ -201,5 +322,20 @@ export class BingSearchComponent implements OnInit {
             //}
         } catch (err) { }
     }
-
+    getMoreResults() {
+        this.noOfImagesShow = this.noOfImagesShow + 40;
+        this.imageSearchService.getBingSearch<any>(this.query, this.noOfImagesShow)
+            .subscribe(data => {
+                this.bingImages = data.value;
+                this.isLoading = false;
+            }, error => {
+                console.log("Error: ", error);
+                this.isLoading = false;
+                this.alertService.stopLoadingMessage();
+                let Errors = Utilities.ErrorDetail("Bing Image Api", error);
+                if (Errors.sessionExpire) this.authService.logout(true);
+                else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+            },
+                () => { });
+    }
 }

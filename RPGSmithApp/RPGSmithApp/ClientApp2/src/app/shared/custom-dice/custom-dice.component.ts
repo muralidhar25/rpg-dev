@@ -1,15 +1,15 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
-import { AddCustomDiceComponent } from '../add-custom-dice/add-custom-dice.component';
-import { SelectCustomDiceIconComponent } from '../select-custom-dice-icon/select-custom-dice-icon.component';
 import { CustomDice, DiceTray } from '../../core/models/view-models/custome-dice.model';
-import { VIEW, DICE } from '../../core/models/enums';
+import { VIEW } from '../../core/models/enums';
 import { SharedService } from '../../core/services/shared.service';
 import { RulesetService } from '../../core/services/ruleset.service';
-import { Utilities } from '../../core/common/utilities';
-import { AlertService, MessageSeverity } from '../../core/common/alert.service';
+import { AlertService } from '../../core/common/alert.service';
 import { AuthService } from '../../core/auth/auth.service';
+import { Utilities } from '../../core/common/utilities';
+import { AddCustomDiceComponent } from '../add-custom-dice/add-custom-dice.component';
+import { SelectCustomDiceIconComponent } from '../select-custom-dice-icon/select-custom-dice-icon.component';
 
 @Component({
     selector: 'app-custom-dice',
@@ -80,11 +80,11 @@ export class CustomDiceComponent implements OnInit {
     }
 
     removeDice(dice: any): void {
-
+        
         this.customDices.splice(this.customDices.indexOf(dice), 1);
         if (this.CdiceTray.length) {
-            this.CdiceTray = this.CdiceTray.filter(x => x.name != dice.name);
-        }
+            this.CdiceTray = this.CdiceTray.filter(x => x.name != dice.name);            
+        }        
     }
 
     openSelectDiceIcon(ruleset?: Ruleset, customDice?: CustomDice) {
@@ -135,7 +135,7 @@ export class CustomDiceComponent implements OnInit {
         this.sharedService.updateCustomeDice(this.customDices);
         if (this.CdiceTray.length) {
             this.sharedService.updateCustomeDice({ diceTray: this.CdiceTray, isDiceTray: true })
-        }
+        } 
         //}
 
     }

@@ -2,30 +2,29 @@ import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter } 
 import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, NavigationExtras } from "@angular/router";
 import 'rxjs/add/operator/finally';
-
-import { AlertService, MessageSeverity, DialogType } from '../../core/common/alert.service';
-import { AuthService } from "../../core/auth/auth.service";
-import { ConfigurationService } from '../../core/common/configuration.service';
-import { Utilities } from '../../core/common/utilities';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
-import { RulesetService } from "../../core/services/ruleset.service";
-import { FileUploadService } from "../../core/common/file-upload.service";
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
-import { VIEW, TILES, ImageError } from '../../core/models/enums';
-import { RulesetManageComponent } from '../ruleset-form/ruleset-manage.component';
-import { DiceComponent } from '../../shared/dice/dice/dice.component';
+import { ImageError, VIEW } from '../../core/models/enums';
+import { Utilities } from '../../core/common/utilities';
+import { CustomDice, DefaultDice, DiceTray } from '../../core/models/view-models/custome-dice.model';
+import { AlertService, MessageSeverity } from '../../core/common/alert.service';
+import { AuthService } from '../../core/auth/auth.service';
+import { ConfigurationService } from '../../core/common/configuration.service';
+import { RulesetService } from '../../core/services/ruleset.service';
+import { FileUploadService } from '../../core/common/file-upload.service';
 import { SharedService } from '../../core/services/shared.service';
-import { CommonService } from "../../core/services/shared/common.service";
-import { BingSearchComponent } from '../../shared/image-interface/bing-search/bing-search.component';
-import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
+import { CommonService } from '../../core/services/shared/common.service';
+import { LocalStoreManager } from '../../core/common/local-store-manager.service';
+import { ImageSearchService } from '../../core/services/shared/image-search.service';
 import { User } from '../../core/models/user.model';
 import { DBkeys } from '../../core/common/db-keys';
-import { LocalStoreManager } from '../../core/common/local-store-manager.service';
-import { ShareRulesetComponent } from '../ruleset-helper/share-ruleset/share-ruleset.component';
-import { ImageSearchService } from "../../core/services/shared/image-search.service";
+import { RulesetManageComponent } from './ruleset-manage.component';
 import { DiceTrayComponent } from '../../shared/dice-tray/dice-tray.component';
 import { CustomDiceComponent } from '../../shared/custom-dice/custom-dice.component';
-import { CustomDice, DefaultDice, DiceTray } from '../../core/models/view-models/custome-dice.model';
+import { DiceComponent } from '../../shared/dice/dice/dice.component';
+import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
+import { ShareRulesetComponent } from '../ruleset-helper/share-ruleset/share-ruleset.component';
+import { AppService1 } from '../../app.service';
 
 @Component({
     selector: 'ruleset-form',
@@ -66,7 +65,7 @@ export class RulesetFormComponent implements OnInit {
         private modalService: BsModalService, private fileUploadService: FileUploadService,
         private sharedService: SharedService, private commonService: CommonService,
         private localStorage: LocalStoreManager, private imageSearchService: ImageSearchService,
-        private modalService1: BsModalService,
+      private modalService1: BsModalService, public appService: AppService1
     ) {
         this.sharedService.getCommandData().subscribe(diceCommand => {
             if (diceCommand.parentIndex === -1) {
@@ -83,7 +82,7 @@ export class RulesetFormComponent implements OnInit {
             }
         });
         this.sharedService.shouldUpdateCustomeDice().subscribe(data => {
-
+            
             if (data.isDiceTray) {
                 this.RdiceTray = [];
                 this.RdiceTray = data.diceTray;
@@ -96,18 +95,18 @@ export class RulesetFormComponent implements OnInit {
 
     ngOnInit() {
         setTimeout(() => {
-
+            
             this.title = this.bsModalRef.content.title;
             let modalContentButton = this.button = this.bsModalRef.content.button;
             let _rulesetModel = this.bsModalRef.content.rulesetModel;
-
+            
             this.RcustomDices = Object.assign([], _rulesetModel.customDices);
             this.RdefaultDices = Object.assign([], _rulesetModel.defaultDices);
             this.RdefaultDices.map((d) => {
-
+                
             })
             this.RdiceTray = Object.assign([], _rulesetModel.diceTray);
-
+                
             if (modalContentButton === 'IMPORT') {
                 if (_rulesetModel.isAdmin) {
                     this.IsCopiedFromCoreRuleset = false;
@@ -284,7 +283,7 @@ export class RulesetFormComponent implements OnInit {
     }
 
     private addEditRuleset(modal) {
-
+        
         this.isLoading = true;
         //if (modal.ruleSetId == 0) {
         modal.customDices = this.RcustomDices;
@@ -302,13 +301,13 @@ export class RulesetFormComponent implements OnInit {
                         : "Rule Set has been updated successfully.";
                     this.alertService.showMessage(message, "", MessageSeverity.success);
                     this.commonService.UpdateCounts(); /*update charaters count*/
-
+                    
                     this.sharedService.updateRulesetList(data);
                     //setTimeout(() => {
                     //    if ((modal.ruleSetId == 0 || modal.ruleSetId === undefined) && data !== null)
                     //        this.manageRuleset(data);
                     //}, 200);
-
+                    
                 },
                 error => {
                     this.isLoading = false;
@@ -327,12 +326,12 @@ export class RulesetFormComponent implements OnInit {
     }
 
     private duplicateRuleset(modal) {
-
+        
         this.isLoading = true;
-
+        
         modal.customDices = this.RcustomDices;
         modal.diceTray = this.RdiceTray;
-
+        
         modal.shareCode = undefined; //auto generated
         this.rulesetService.duplicateRuleset(modal)
             .subscribe(
@@ -344,11 +343,11 @@ export class RulesetFormComponent implements OnInit {
                     let msgSuccess = modal.view === VIEW.IMPORT ? "Rule Set has been imported successfully."
                         : "Rule Set has been duplicated successfully.";
                     this.alertService.showMessage(msgSuccess, "", MessageSeverity.success);
-
+                    
                     this.sharedService.updateRulesetList(data);
                     // this.router.navigateByUrl('/rulesets', { skipLocationChange: true }).then(() => this.router.navigate(['/ruleset']));
                     // window.location.reload();
-
+                    
                 },
                 error => {
                     this.isLoading = false;
@@ -382,7 +381,7 @@ export class RulesetFormComponent implements OnInit {
     }
 
     openDiceTray(ruleset: Ruleset) {
-
+        
         //this.bsModalRef = undefined;
         this.bsModalRef = this.modalService.show(DiceTrayComponent, {
             class: 'modal-primary modal-md',
@@ -396,17 +395,17 @@ export class RulesetFormComponent implements OnInit {
     }
 
     openCustonDice(ruleset: Ruleset) {
-
+        
         this.bsModalRef = this.modalService.show(CustomDiceComponent, {
             class: 'modal-primary modal-md',
             ignoreBackdropClick: true,
             keyboard: false
         });
-        this.bsModalRef.content.ruleset = ruleset;
+        this.bsModalRef.content.ruleset = ruleset;       
         this.bsModalRef.content.customDices = this.RcustomDices;
         this.bsModalRef.content.CDdiceTray = this.RdiceTray;
-
-
+       
+        
     }
 
     close(ruleset: Ruleset) {
@@ -441,7 +440,7 @@ export class RulesetFormComponent implements OnInit {
 
     private characterStats(ruleset: Ruleset) {
         this.rulesetService.ruleset = ruleset;
-        this.router.navigate(['/character-stats', ruleset.ruleSetId]);
+      this.router.navigate(['/ruleset/character-stats', ruleset.ruleSetId]);
     }
 
     private itemTemplate(ruleset: Ruleset) {
@@ -474,7 +473,8 @@ export class RulesetFormComponent implements OnInit {
     private destroyModalOnInit(): void {
         try {
             this.modalService.hide(1);
-            document.body.classList.remove('modal-open');
+          document.body.classList.remove('modal-open');
+          this.appService.updateAccountSetting1(false);
             this.sharedService.updateAccountSetting(false);
             //$(".modal-backdrop").remove();
             document.body.getElementsByClassName('modal-backdrop')[0].className = 'modal-backdrop fade in hide';

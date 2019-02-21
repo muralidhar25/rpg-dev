@@ -1,19 +1,18 @@
 import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { AlertService, MessageSeverity, DialogType } from './../../core/common/alert.service';
-import { AuthService } from "./../../core/auth/auth.service";
-import { Utilities } from './../../core/common/utilities';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { DBkeys } from '../../core/common/db-keys';
-import { LocalStoreManager } from '../../core/common/local-store-manager.service';
+import { AlertService, DialogType, MessageSeverity } from "../../core/common/alert.service";
+import { AuthService } from "../../core/auth/auth.service";
+import { LocalStoreManager } from "../../core/common/local-store-manager.service";
+import { PageLastViewsService } from "../../core/services/pagelast-view.service";
 import { SharedService } from "../../core/services/shared.service";
 import { ItemMasterService } from "../../core/services/item-master.service";
-
-import { AddItemMasterComponent } from './add-item/add-item.component';
-import { CreateItemMsterComponent } from './create-item/create-item.component';
-import { User } from '../../core/models/user.model';
-import { ItemMaster } from './../../core/models/view-models/item-master.model';
-import { PageLastViewsService } from "../../core/services/pagelast-view.service";
+import { User } from "../../core/models/user.model";
+import { DBkeys } from "../../core/common/db-keys";
+import { Utilities } from "../../core/common/utilities";
+import { AddItemMasterComponent } from "./add-item/add-item.component";
+import { CreateItemMsterComponent } from "./create-item/create-item.component";
+import { ItemMaster } from "../../core/models/view-models/item-master.model";
 
 @Component({
     selector: 'app-item',
@@ -37,6 +36,7 @@ export class ItemMasterComponent implements OnInit {
     page: number = 1;
     scrollLoading: boolean = false;
     pageSize: number = 28;
+    timeoutHandler: any;
     offset = (this.page - 1) * this.pageSize;
 
     constructor(
@@ -190,7 +190,7 @@ export class ItemMasterComponent implements OnInit {
                 //this.alertService.stopLoadingMessage();
                 if (data < 2000) {
                     this.bsModalRef = this.modalService.show(CreateItemMsterComponent, {
-                        class: 'modal-primary modal-md',
+                        class: 'modal-primary modal-custom',
                         ignoreBackdropClick: true,
                         keyboard: false
                     });
@@ -213,7 +213,7 @@ export class ItemMasterComponent implements OnInit {
 
     editItemTemplate(itemMaster: ItemMaster) {
         this.bsModalRef = this.modalService.show(CreateItemMsterComponent, {
-            class: 'modal-primary modal-md',
+            class: 'modal-primary modal-custom',
             ignoreBackdropClick: true,
             keyboard: false
         });
@@ -232,7 +232,7 @@ export class ItemMasterComponent implements OnInit {
                 //this.alertService.stopLoadingMessage();
                 if (data < 2000) {
                     this.bsModalRef = this.modalService.show(CreateItemMsterComponent, {
-                        class: 'modal-primary modal-md',
+                        class: 'modal-primary modal-custom',
                         ignoreBackdropClick: true,
                         keyboard: false
                     });
@@ -355,5 +355,18 @@ export class ItemMasterComponent implements OnInit {
     private setRulesetId(rulesetId: number) {
         this.localStorage.deleteData(DBkeys.RULESET_ID);
         this.localStorage.saveSyncedSessionData(rulesetId, DBkeys.RULESET_ID);
+    }
+
+    public clickAndHold(item: any) {
+        if (this.timeoutHandler) {
+            clearInterval(this.timeoutHandler);
+            this.timeoutHandler = null;
+        }
+    }
+
+    public editRecord(record: any) {
+        this.timeoutHandler = setInterval(() => {
+            this.editItemTemplate(record);
+        }, 1000);
     }
 }

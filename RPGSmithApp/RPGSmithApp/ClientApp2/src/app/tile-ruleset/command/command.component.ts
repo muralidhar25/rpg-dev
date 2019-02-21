@@ -1,26 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { ColorsComponent } from '../../tile/colors/colors.component';
-import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CommandTileService } from '../../core/services/tiles/command-tile.service';
-import { CommandTile } from '../../core/models/tiles/command-tile.model';
-import { DiceComponent } from '../../shared/dice/dice/dice.component';
-import { AuthService } from '../../core/auth/auth.service';
-import { Utilities } from '../../core/common/utilities';
-import { SharedService } from "../../core/services/shared.service";
-import { ColorService } from '../../core/services/tiles/color.service';
-import { RulesetTile } from '../../core/models/tiles/ruleset-tile.model';
 import { Color } from '../../core/models/tiles/color.model';
+import { RulesetTile } from '../../core/models/tiles/ruleset-tile.model';
+import { CommandTile } from '../../core/models/tiles/command-tile.model';
 import { RulesetDashboardPage } from '../../core/models/view-models/ruleset-dashboard-page.model';
-import { VIEW, TILES, ImageError, SHAPE, SHAPE_CLASS } from '../../core/models/enums';
-import { FileUploadService } from "../../core/common/file-upload.service";
-import { BingSearchComponent } from '../../shared/image-interface/bing-search/bing-search.component';
-import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
-import { AlertService, MessageSeverity, DialogType } from '../../core/common/alert.service';
+import { ImageError, SHAPE_CLASS, SHAPE, VIEW } from '../../core/models/enums';
+import { SharedService } from '../../core/services/shared.service';
+import { AlertService, MessageSeverity } from '../../core/common/alert.service';
+import { FileUploadService } from '../../core/common/file-upload.service';
+import { CommandTileService } from '../../core/services/tiles/command-tile.service';
+import { LocalStoreManager } from '../../core/common/local-store-manager.service';
+import { ColorService } from '../../core/services/tiles/color.service';
+import { AuthService } from '../../core/auth/auth.service';
+import { RulesetTileService } from '../../core/services/ruleset-tile.service';
 import { User } from '../../core/models/user.model';
 import { DBkeys } from '../../core/common/db-keys';
-import { LocalStoreManager } from '../../core/common/local-store-manager.service';
-import { RulesetTileService } from '../../core/services/ruleset-tile.service';
+import { Utilities } from '../../core/common/utilities';
+import { ColorsComponent } from '../../tile/colors/colors.component';
+import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
+import { DiceComponent } from '../../shared/dice/dice/dice.component';
 
 @Component({
     selector: 'app-command',
@@ -103,7 +101,7 @@ export class RulesetCommandTileComponent implements OnInit {
             this.isLoading = true;
             this.setColorOnInit();
             this.rulesetTileService.getRecentColors<any>()
-                .subscribe(data => {
+                .subscribe(data => {                    
                     let _colorList = [];
                     let _hasSame = 0;
                     data.forEach((val, index)=> {
@@ -116,7 +114,7 @@ export class RulesetCommandTileComponent implements OnInit {
                                 && Tile.bodyBgColor == val.bodyBgColor) ? 1 : 0;
                             _selected = _hasSame ? true : false;
                         }
-
+                        
                         _colorList.push({
                             titleBgColor: val.titleBgColor,
                             titleTextColor: val.titleTextColor,
@@ -328,30 +326,37 @@ export class RulesetCommandTileComponent implements OnInit {
             this.alertService.showMessage("", "Command tile is not selected.", MessageSeverity.error);
         }
         else {
-
-            this.commandTileFormModal.color = this.tileColor ? this.tileColor : '#343038';
-            this.rulesetTileModel.color = this.commandTileFormModal.color;
-            this.rulesetTileModel.shape = this.commandTileFormModal.shape;
-            this.rulesetTileModel.commandTile = this.commandTileFormModal;
-
-            this.isLoading = true;
-            let _msg = this.commandTileFormModal.commandTileId == 0 || this.commandTileFormModal.commandTileId === undefined ? "Creating Command Tile..." : "Updating Command Tile...";
-
-            this.alertService.startLoadingMessage("", _msg);
-            if (this.fileToUpload != null) {
-                /*image upload then submit */
-                this.fileUpload();
-            }
-            else if (this.bingImageUrl !== this.commandTileFormModal.imageUrl) {
-                try {
-                    var regex = /(?:\.([^.]+))?$/;
-                    var extension = regex.exec(this.commandTileFormModal.imageUrl)[1];
-                    extension = extension ? extension : 'jpg';
-                } catch{ }
-                this.fileUploadFromBing(this.commandTileFormModal.imageUrl, extension);
+            this.commandTileFormModal.title = this.commandTileFormModal.title ? this.commandTileFormModal.title.trim() : undefined;
+            this.commandTileFormModal.imageUrl = this.commandTileFormModal.imageUrl ? this.commandTileFormModal.imageUrl.trim() : undefined;
+            if (!this.commandTileFormModal.title && !this.commandTileFormModal.imageUrl) {
+                this.alertService.showMessage("", "An Image or a Title must be present. Please provide either to save.", MessageSeverity.error);
+                return false;
             }
             else {
-                this.addEditCommandTile(this.rulesetTileModel);
+                this.commandTileFormModal.color = this.tileColor ? this.tileColor : '#343038';
+                this.rulesetTileModel.color = this.commandTileFormModal.color;
+                this.rulesetTileModel.shape = this.commandTileFormModal.shape;
+                this.rulesetTileModel.commandTile = this.commandTileFormModal;
+
+                this.isLoading = true;
+                let _msg = this.commandTileFormModal.commandTileId == 0 || this.commandTileFormModal.commandTileId === undefined ? "Creating Command Tile..." : "Updating Command Tile...";
+
+                this.alertService.startLoadingMessage("", _msg);
+                if (this.fileToUpload != null) {
+                    /*image upload then submit */
+                    this.fileUpload();
+                }
+                else if (this.bingImageUrl !== this.commandTileFormModal.imageUrl) {
+                    try {
+                        var regex = /(?:\.([^.]+))?$/;
+                        var extension = regex.exec(this.commandTileFormModal.imageUrl)[1];
+                        extension = extension ? extension : 'jpg';
+                    } catch{ }
+                    this.fileUploadFromBing(this.commandTileFormModal.imageUrl, extension);
+                }
+                else {
+                    this.addEditCommandTile(this.rulesetTileModel);
+                }
             }
         }
     }
@@ -367,7 +372,7 @@ export class RulesetCommandTileComponent implements OnInit {
         else {
             this.fileUploadService.fileUploadFromURL<any>(user.id, file, ext)
                 .subscribe(
-                    data => {
+                    data => {                        
                         this.imageUrl = data.ImageUrl;
                         //this.rulesetFormModal.thumbnailUrl = data.ThumbnailUrl;
                         this.addEditCommandTile(this.rulesetTileModel);
@@ -381,7 +386,7 @@ export class RulesetCommandTileComponent implements OnInit {
         }
     }
 
-
+   
     private fileUpload() {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)
@@ -410,7 +415,7 @@ export class RulesetCommandTileComponent implements OnInit {
                 data => {
                     this.commandTileFormModal.imageUrl = data.ImageUrl;
                     this.imageUrl = data.ImageUrl;
-
+                   
                     this.addEditCommandTile(this.rulesetTileModel);
                 },
                 error => {
@@ -502,6 +507,12 @@ export class RulesetCommandTileComponent implements OnInit {
         });
     }
 
+    removeImage() {
+        this.imageUrl = null;
+        this.commandTileFormModal.imageUrl = null;
+        this.fileToUpload = null;
+    }
+
     cropImage(img: string, OpenDirectPopup: boolean, view: string) {
         this.bsModalRef = this.modalService.show(ImageSelectorComponent, {
             class: 'modal-primary modal-sm selectPopUpModal',
@@ -514,7 +525,7 @@ export class RulesetCommandTileComponent implements OnInit {
         this.bsModalRef.content.errorImage = '../assets/images/DefaultImages/Spell.jpg';
         //this.bsModalRef.content.imageChangedEvent = this.imageChangedEvent; //base 64 || URL
         this.bsModalRef.content.event.subscribe(data => {
-
+            
             this.commandTileFormModal.imageUrl = data.base64;
             this.imageUrl = data.base64;
             this.fileToUpload = data.file;

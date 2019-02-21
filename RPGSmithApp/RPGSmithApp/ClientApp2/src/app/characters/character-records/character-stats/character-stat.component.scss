@@ -207,12 +207,13 @@
     text-decoration: none;
 }
 .form-row .form-group label {
-    display: block;
+    display: inline-block;
     margin-bottom: 0;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    width: 100%;
+    max-width: 100%;
+    cursor:pointer
 }
 .btn-accent {
     margin-left: 12px;
@@ -474,4 +475,12 @@ p.rich-text{
     transform: translate(-50%, -50%);
     width: auto !important;
     height: auto !important;
+}
+.modifier-icon{
+    width:100%;
+    text-align:right;
+}
+.modifier-icon > .card-icon {
+    display: inline-flex;
+    cursor:pointer
 }

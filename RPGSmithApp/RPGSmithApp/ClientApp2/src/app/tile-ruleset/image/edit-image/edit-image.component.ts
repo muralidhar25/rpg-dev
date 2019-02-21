@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { RulesetImageTileComponent } from '../image.component';
-import { RulesetCommandTileComponent } from '../../command/command.component';
+import { RulesetDashboardPage } from '../../../core/models/view-models/ruleset-dashboard-page.model';
 import { ImageTile } from '../../../core/models/tiles/image-tile.model';
 import { CommandTile } from '../../../core/models/tiles/command-tile.model';
-import { RulesetDashboardPage } from '../../../core/models/view-models/ruleset-dashboard-page.model';
+import { RulesetImageTileComponent } from '../image.component';
 import { VIEW } from '../../../core/models/enums';
 
 @Component({

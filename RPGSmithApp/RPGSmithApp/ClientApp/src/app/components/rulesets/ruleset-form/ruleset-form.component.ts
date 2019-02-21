@@ -441,7 +441,7 @@ export class RulesetFormComponent implements OnInit {
 
     private characterStats(ruleset: Ruleset) {
         this.rulesetService.ruleset = ruleset;
-        this.router.navigate(['/character-stats', ruleset.ruleSetId]);
+        this.router.navigate(['/ruleset/character-stats', ruleset.ruleSetId]);
     }
 
     private itemTemplate(ruleset: Ruleset) {

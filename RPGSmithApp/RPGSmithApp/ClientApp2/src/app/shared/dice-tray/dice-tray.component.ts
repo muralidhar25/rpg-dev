@@ -1,8 +1,8 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { Ruleset } from '../../core/models/view-models/ruleset.model';
 import { CustomDice, DefaultDice, DiceTray } from '../../core/models/view-models/custome-dice.model';
 import { DICE_ICON, DICE } from '../../core/models/enums';
-import { Ruleset } from '../../core/models/view-models/ruleset.model';
 import { AlertService, MessageSeverity } from '../../core/common/alert.service';
 import { SharedService } from '../../core/services/shared.service';
 
@@ -22,9 +22,9 @@ export class DiceTrayComponent implements OnInit {
     diceTray: DiceTray[] = [];
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private alertService: AlertService, private sharedService: SharedService) { }
 
-    ngOnInit() {
+    ngOnInit() {        
         setTimeout(() => {
-
+            
             this.ruleset = this.bsModalRef.content.ruleset;
             this.defaultDices = Object.assign([], this.bsModalRef.content.defaultDices);
             this.defaultDices.push({ defaultDiceId: 0, name: '@@DX@@', icon: "icon-Gen-dx" });
@@ -40,7 +40,7 @@ export class DiceTrayComponent implements OnInit {
         //}, 0);
     }
     initialize() {
-
+        
         //this.customDice.icon = this.customDice.icon ? this.customDice.icon : DICE_ICON.DX;
         if (this.diceTray.length == 0) {
             if (!this.customDice.dices) {
@@ -61,7 +61,7 @@ export class DiceTrayComponent implements OnInit {
             })
             this.BindDiceTray(this.customDice.dices);
         }
-
+        
     }
     addDice(dices: any): void {
         let _dices = dices;
@@ -98,7 +98,7 @@ export class DiceTrayComponent implements OnInit {
     //        }
     //    }
     //}
-    UpdateDice(event:any, dice: any,indexNumber:number) {
+    UpdateDice(event:any, dice: any,indexNumber:number) {      
         this.customDice.dices.map((d,index) => {
             if (index == indexNumber) {
                 d.name = event.target.value;
@@ -107,9 +107,9 @@ export class DiceTrayComponent implements OnInit {
         this.BindDiceTray(this.customDice.dices);
     }
     BindDiceTray(dices: any) {
-
+        
         this.diceTray = [];
-        this.customDice.dices = dices.map((d, index) => {
+        this.customDice.dices = dices.map((d, index) => {            
             let diceTrayItem: DiceTray = {
                 diceTrayId: 0,
                 customDiceId: null,
@@ -174,7 +174,7 @@ export class DiceTrayComponent implements OnInit {
                     d.isValidCommandName = true;
                 }
             }
-            else if (d.name.toUpperCase().startsWith('DF')) {  //Dice eg. DFxyz, Fate dice
+            else if (d.name.toUpperCase().startsWith('DF')) {  //Dice eg. DFxyz, Fate dice                
                 diceTrayItem = {
                     diceTrayId: 0,
                     customDiceId: null,
@@ -238,9 +238,9 @@ export class DiceTrayComponent implements OnInit {
             return d;
         })
     }
-
+    
     submitForm() {
-
+        
         let AreAllDiceValid = this.diceTray.length>0;
         this.diceTray.map((d) => {
             if (d.isValidCommandName == false) {
@@ -257,11 +257,11 @@ export class DiceTrayComponent implements OnInit {
             else {
                 this.alertService.showMessage("Please enter a valid custom dice.", "", MessageSeverity.error);
             }
-
+            
         }
     }
     submit() {
-
+        
         this.bsModalRef.hide();
         this.sharedService.updateCustomeDice({diceTray: this.diceTray, isDiceTray:true })
     }

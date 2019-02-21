@@ -61,6 +61,7 @@ namespace RPGSmithApp.Controllers
             this._noteTileService = noteTileService;
             this._colorService = colorService;
             this._charactersCharacterStatService = charactersCharacterStatService;
+            this._imageTileService = imageTileService;
         }
 
         [HttpGet("GetById")]
@@ -201,7 +202,8 @@ namespace RPGSmithApp.Controllers
                                     titleTextColor = characterStatTile.titleTextColor,
                                     bodyBgColor = characterStatTile.bodyBgColor,
                                     bodyTextColor = characterStatTile.bodyTextColor,
-                                    ShowTitle = characterStatTile.ShowTitle
+                                    ShowTitle = characterStatTile.ShowTitle,
+                                    ImageUrl= cStat.Image
                                 });
 
                                 SaveColorsAsync(_newTile);
@@ -210,6 +212,8 @@ namespace RPGSmithApp.Controllers
                                     tilesList = new List<CharacterTile>();
                                 }
                                 tilesList.Add(_newTile);
+                                //if (!string.IsNullOrEmpty(cStat.Image))
+                                    //await _charactersCharacterStatService.UpdateCommandImage(cStat.CharacterStatId, cStat.Image);
                             }                            
                             
                             break;

@@ -347,6 +347,7 @@ namespace DAL.Services.RulesetTileServices
                                         CST.titleTextColor = CST_Row["titleTextColor"] == DBNull.Value ? null : CST_Row["titleTextColor"].ToString();
                                         CST.CharacterStatId = CST_Row["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CST_Row["CharacterStatId"]);
                                         CST.ShowTitle = CST_Row["ShowTitle"] == DBNull.Value ? false : Convert.ToBoolean(CST_Row["ShowTitle"]);
+                                        CST.ImageUrl = CST_Row["ImageUrl"] == DBNull.Value ? null : CST_Row["ImageUrl"].ToString();
 
                                         CharacterStat CharStat = null;
                                         if (ds.Tables[8].Rows.Count > 0)

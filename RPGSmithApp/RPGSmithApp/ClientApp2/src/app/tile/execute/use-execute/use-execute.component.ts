@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { CommandTileComponent } from '../../command/command.component';
-import { ExecuteTile } from '../../../core/models/tiles/execute-tile.model';
 
 @Component({
     selector: 'use-execute',

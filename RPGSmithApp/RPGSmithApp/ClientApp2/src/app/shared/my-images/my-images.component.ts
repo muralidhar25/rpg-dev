@@ -1,20 +1,18 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
-import { BingImage } from '../../core/models/bing-image.model';
-import { AlertService, MessageSeverity, DialogType } from '../../core/common/alert.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
+import { BingImage } from '../../core/models/bing-image.model';
 import { AuthService } from '../../core/auth/auth.service';
+import { AlertService, MessageSeverity, DialogType } from '../../core/common/alert.service';
 import { ConfigurationService } from '../../core/common/configuration.service';
+import { SharedService } from '../../core/services/shared.service';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
 import { ImageSearchService } from '../../core/services/shared/image-search.service';
-import { SharedService } from '../../core/services/shared.service';
+import { UserService } from '../../core/common/user.service';
 import { User } from '../../core/models/user.model';
 import { DBkeys } from '../../core/common/db-keys';
-import { IMAGE } from '../../core/models/enums';
 import { Utilities } from '../../core/common/utilities';
-import { forEach } from '@angular/router/src/utils/collection';
 import { ImageViewerComponent } from '../image-interface/image-viewer/image-viewer.component';
-import { UserService } from '../../core/common/user.service';
 
 @Component({
     selector: 'app-my-images',
@@ -36,6 +34,11 @@ export class MyImagesComponent implements OnInit {
     isMouseDown: boolean = false;
     interval: any;
     usedSpace: string = '0';
+
+    MyImageCount: number = 39;
+    previousContainerMyImageNumber: number = 0;
+    isMyImagesLoading: boolean = false;
+    hideShowMoreMyImage: boolean = false;
 
     constructor(
         private router: Router, private alertService: AlertService, private bsModalRef: BsModalRef,
@@ -95,10 +98,28 @@ export class MyImagesComponent implements OnInit {
         //this.blobStockImages = [];
         this.blobMyImages = [];
 
-        this.imageSearchService.getBlobMyImagesSearch<any>(_query, userId)
+        //this.imageSearchService.getBlobMyImagesSearch<any>(_query, userId)
+        //    .subscribe(data => {
+        //        this.blobMyImagesBLOB = this.blobMyImages = data.result.items;
+        //        this.isLoading = false;
+        //    }, error => {
+        //        console.log("searchMyImages Error: ", error);
+        //        this.isLoading = false;
+        //        this.alertService.stopLoadingMessage();
+        //        let Errors = Utilities.ErrorDetail("My Images Api", error);
+        //        if (Errors.sessionExpire) this.authService.logout(true);
+        //        else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        //    },
+        //        () => { });
+
+        this.imageSearchService.getBlobMyImagesSearchPaging<any>(_query, userId, this.MyImageCount, this.previousContainerMyImageNumber)
             .subscribe(data => {
-                this.blobMyImagesBLOB = this.blobMyImages = data.result.items;
+                this.blobMyImagesBLOB = this.blobMyImages = data.result.blobResponse.items;
                 this.isLoading = false;
+                this.previousContainerMyImageNumber = data.result.previousContainerImageNumber;
+                if (data.result.blobResponse.items.length < 39) {
+                    this.hideShowMoreMyImage = true;
+                }
             }, error => {
                 console.log("searchMyImages Error: ", error);
                 this.isLoading = false;
@@ -109,6 +130,42 @@ export class MyImagesComponent implements OnInit {
             },
                 () => { });
     }
+    onScroll() {
+        if (!this.hideShowMoreMyImage) {
+            this.moreMyImages();
+        }
+    }
+
+    moreMyImages() {
+        //console.log('scrolled')
+        let _query = "";
+        this.isMyImagesLoading = true;
+        
+        this.imageSearchService.getBlobMyImagesSearchPaging<any>(_query, this.userid, this.MyImageCount, this.previousContainerMyImageNumber)
+            .subscribe(data => {
+                
+                this.blobMyImagesBLOB = this.blobMyImagesBLOB.concat(data.result.blobResponse.items);
+                this.blobMyImages = this.blobMyImages.concat(data.result.blobResponse.items);
+                this.isLoading = false;
+                this.previousContainerMyImageNumber = data.result.previousContainerImageNumber;
+                this.isLoading = false;
+                this.isMyImagesLoading = false;
+                if (data.result.blobResponse.items.length < 39) {
+                    this.hideShowMoreMyImage = true;
+                }
+            }, error => {
+                this.isMyImagesLoading = false;
+                console.log("searchMyImages Error: ", error);
+                this.isLoading = false;
+                this.alertService.stopLoadingMessage();
+                let Errors = Utilities.ErrorDetail("My Images Api", error);
+                if (Errors.sessionExpire) this.authService.logout(true);
+                else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+
+            },
+                () => { });
+    }
+
 
     close() {
         this.bsModalRef.hide();
@@ -184,12 +241,12 @@ export class MyImagesComponent implements OnInit {
     //ShowImage(image) {
     //    alert(1);
     //}
-    UploadImages(event: any) {
+    UploadImages(event: any) {                
         let imgList: any[] = [];
 
         if (event.target.files && event.target.files[0]) {
             imgList = event.target.files;
-            this.isLoading = true;
+            this.isLoading = true;            
             this.imageSearchService.uploadImages<any>(imgList,this.userid)
                 .subscribe(data => {
                     this.isLoading = false;

@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
-import { NoteTileComponent } from './note/note.component';
-import { CharacterStatTileComponent } from './character-stat/character-stat.component';
-import { CommandTileComponent } from './command/command.component';
-import { CounterTileComponent } from './counter/counter.component';
-import { LinkTileComponent } from './link/link.component';
-import { ImageTileComponent } from './image/image.component';
-import { ExecuteTileComponent } from './execute/execute.component';
-import { TILES, TILE_ICON, VIEW } from '../core/models/enums';
+import { Ruleset } from '../core/models/view-models/ruleset.model';
 import { CharacterDashboardPage } from '../core/models/view-models/character-dashboard-page.model';
 import { CharacterDashboardPageService } from '../core/services/character-dashboard-page.service';
-import { Ruleset } from '../core/models/view-models/ruleset.model';
-import { TextTileComponent } from './text/text.component';
+import { TILES, TILE_ICON, VIEW } from '../core/models/enums';
+import { NoteTileComponent } from './note/note.component';
+import { ImageTileComponent } from './image/image.component';
+import { CounterTileComponent } from './counter/counter.component';
 import { Characters } from '../core/models/view-models/characters.model';
+import { CharacterStatTileComponent } from './character-stat/character-stat.component';
+import { LinkTileComponent } from './link/link.component';
+import { ExecuteTileComponent } from './execute/execute.component';
+import { CommandTileComponent } from './command/command.component';
+import { TextTileComponent } from './text/text.component';
 
 @Component({
   selector: 'app-tile',
@@ -61,11 +61,12 @@ export class TileComponent implements OnInit {
             { tileName: 'COUNTER', tileTypeId: TILES.COUNTER, icon: TILE_ICON.COUNTER },
             { tileName: 'CHARACTER STAT', tileTypeId: TILES.CHARACTERSTAT, icon: TILE_ICON.CHARACTERSTAT },
         ];
+        this.tiles.push({ tileName: 'COMMAND', tileTypeId: TILES.COMMAND, icon: TILE_ICON.COMMAND });
         if (this.ruleSet.isItemEnabled || this.ruleSet.isAbilityEnabled || this.ruleSet.isSpellEnabled) {
             this.tiles.push({ tileName: 'LINK', tileTypeId: TILES.LINK, icon: TILE_ICON.LINK });
             this.tiles.push({ tileName: 'EXECUTE', tileTypeId: TILES.EXECUTE, icon: TILE_ICON.EXECUTE });
         }
-        this.tiles.push({ tileName: 'COMMAND', tileTypeId: TILES.COMMAND, icon: TILE_ICON.COMMAND });
+       
     }
     
     addTiles(tile:any, tileTypeId: number) {
@@ -73,7 +74,7 @@ export class TileComponent implements OnInit {
         switch (tileTypeId) {
             case TILES.NOTE: {
                 this.bsModalRef = this.modalService.show(NoteTileComponent, {
-                    class: 'modal-primary modal-lg tile-popup',
+                    class: 'modal-primary modal-lg  modal-custom tile-popup',
                     ignoreBackdropClick: true,
                     keyboard: false
                 });

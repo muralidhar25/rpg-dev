@@ -7140,11 +7140,11 @@
   "project": {
     "version": "2.0.1",
     "restore": {
-      "projectUniqueName": "F:\\Vikas\\Projects\\RPGSmith\\PROD\\RPGSmith\\RPGSmithApp\\DAL\\DAL.csproj",
+      "projectUniqueName": "F:\\Vikas\\Projects\\RPGSmith\\OptimizedCode\\RPGSmithApp\\DAL\\DAL.csproj",
       "projectName": "DAL",
-      "projectPath": "F:\\Vikas\\Projects\\RPGSmith\\PROD\\RPGSmith\\RPGSmithApp\\DAL\\DAL.csproj",
+      "projectPath": "F:\\Vikas\\Projects\\RPGSmith\\OptimizedCode\\RPGSmithApp\\DAL\\DAL.csproj",
       "packagesPath": "C:\\Users\\ducktaleit\\.nuget\\packages\\",
-      "outputPath": "F:\\Vikas\\Projects\\RPGSmith\\PROD\\RPGSmith\\RPGSmithApp\\DAL\\obj\\",
+      "outputPath": "F:\\Vikas\\Projects\\RPGSmith\\OptimizedCode\\RPGSmithApp\\DAL\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

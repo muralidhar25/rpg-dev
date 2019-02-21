@@ -28,8 +28,8 @@
                                 <!--<label class="form-check-label" *ngIf="i<limit">-->
                                 <label class="form-check-label">
                                     <input *ngIf="characterTileModel.view===VIEW.EDIT" class="form-check-input" type="radio" name="newAttributeCoreStats" required (change)="getStatValueEdit($event,stat)"
-                                           [checked]="stat.charactersCharacterStatId===characterStatTileFormModal.charactersCharacterStatId" />
-                                    <input *ngIf="characterTileModel.view===VIEW.ADD" class="form-check-input" type="checkbox" name="newAttributeCoreStats" required (change)="getStatValue($event,stat)" />
+                                           [checked]="stat?.charactersCharacterStatId===characterStatTileFormModal?.charactersCharacterStatId" />
+                                    <input *ngIf="characterTileModel.view===VIEW.ADD" class="form-check-input" type="checkbox" name="newAttributeCoreStats" required (change)="getStatValue($event,stat)" [checked]="IsStatChecked(stat)" />
                                     <span>
                                         <em> {{stat.characterStat.statName}} </em>
                                         <i class="icon"></i>
@@ -39,8 +39,8 @@
                             <li *ngIf="statsList?.length == 0" style="list-style-type: none;">No Character Stats Available</li>
                         </ul>
                         <!--<div class="input-extend">
-                    <button type="button" *ngIf="statsList?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limit==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands(statsList?.length,limitText)"><span>{{limitText}}</span></button>
-                </div>-->
+                            <button type="button" *ngIf="statsList?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limit==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands(statsList?.length,limitText)"><span>{{limitText}}</span></button>
+                        </div>-->
                     </fieldset>
                     <!-- End of attribute core stats -->
                 </div>
@@ -48,9 +48,7 @@
 
             <ng-container *ngIf="characterTileModel?.multiCharacterStats?.length==1 || characterTileModel.view==VIEW.EDIT">
                 <ng-container *ngIf="(characterTileModel?.multiCharacterStats?.length!=1 && characterTileModel.view==VIEW.EDIT && characterStatTileFormModal?.charactersCharacterStat?.linkType) || (characterTileModel?.multiCharacterStats?.length==1 && characterTileModel?.multiCharacterStats[0]?.characterStatTypeId==STAT_TYPE.LinkRecord)">
-
-
-                    <div class="form-row" >
+                    <div class="form-row">
                         <div class="col">
                             <fieldset class="form-group input-switch">
                                 <legend>Property</legend>
@@ -82,7 +80,7 @@
                                         <li class="form-check linkli" popover="{{spell.spell.name}}" triggers="hover" *ngIf="i<limitSpell">
                                             <label class="form-check-label">
                                                 <input class="form-check-input" type="radio" name="newLinkProperties" value="spell" (change)="getSpellValue(spell)" [checked]="spell.characterSpellId==spellId" />
-                                                <span>
+                                                <span [ngClass]="{'card-equip':spell.isSpellMemorized}">
                                                     <img src="{{spell.spell.imageUrl}}" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';">
                                                     <em>
                                                         {{spell.spell.name}}
@@ -94,8 +92,9 @@
                                     </ng-container>
                                     <li *ngIf="spells?.length == 0" style="list-style-type: none;">No Spells Available</li>
                                 </ul>
-                                <div class="input-extend">
-                                    <button type="button" *ngIf="spells?.length > lengthOfRecordsToDisplay" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitSpell==lengthOfRecordsToDisplay)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreLinkRecords('spell', spells?.length,limitTextSpell)"><span>{{limitTextSpell}}</span></button>
+                                <div class="input-extend input-expend-and-remove">
+                                    <button type="button" *ngIf="spells?.length > lengthOfRecordsToDisplay" class="btn icon icon-with-text icon-arrow-down btn-link-primary float-left" [ngClass]="(limitSpell==lengthOfRecordsToDisplay)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreLinkRecords('spell', spells?.length,limitTextSpell)"><span>{{limitTextSpell}}</span></button>
+                                    <button type="button" *ngIf="(spellId || abilityId || itemId)" class="btn icon icon-Rec-Disable icon-with-text btn-link-primary float-right"  (click)="RemoveSelectedLinkRecord()">Remove Link</button>
                                 </div>
                             </fieldset>
 
@@ -105,10 +104,10 @@
                                         <li class="form-check linkli" popover="{{item.name}}" triggers="hover" *ngIf="i<limitItem">
                                             <label class="form-check-label">
                                                 <input class="form-check-input" type="radio" name="newLinkProperties" value="item" (change)="getItemValue(item)" [checked]="item.itemId==itemId" />
-                                                <span>
+                                                <span [ngClass]="{'card-equip':item?.isItemEquiped}">
                                                     <img src="{{item.itemImage}}" onerror="this.src='../assets/images/DefaultImages/Item.jpg';">
                                                     <em>
-                                                        {{item.name}}
+                                                        {{item.name}}{{item?.isItemEquiped}}
                                                     </em>
                                                     <i class="icon"></i>
                                                 </span>
@@ -117,8 +116,9 @@
                                     </ng-container>
                                     <li *ngIf="items?.length == 0" style="list-style-type: none;">No Items Available</li>
                                 </ul>
-                                <div class="input-extend">
-                                    <button type="button" *ngIf="items?.length > lengthOfRecordsToDisplay" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitItem==lengthOfRecordsToDisplay)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreLinkRecords('item', items?.length,limitTextItem)"><span>{{limitTextItem}}</span></button>
+                                <div class="input-extend input-expend-and-remove">
+                                    <button type="button" *ngIf="items?.length > lengthOfRecordsToDisplay" class="btn icon icon-with-text icon-arrow-down btn-link-primary float-left" [ngClass]="(limitItem==lengthOfRecordsToDisplay)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreLinkRecords('item', items?.length,limitTextItem)"><span>{{limitTextItem}}</span></button>
+                                    <button type="button" *ngIf="(spellId || abilityId || itemId)" class="btn icon icon-Rec-Disable icon-with-text btn-link-primary float-right"  (click)="RemoveSelectedLinkRecord()">Remove Link</button>
                                 </div>
                             </fieldset>
 
@@ -128,7 +128,7 @@
                                         <li class="form-check linkli" popover="{{ability.ability.name}}" triggers="hover" *ngIf="i<limitAbility">
                                             <label class="form-check-label">
                                                 <input class="form-check-input" type="radio" name="newLinkProperties" value="ability" (change)="getAbilityValue(ability)" [checked]="ability.characterAbilityId==abilityId" />
-                                                <span>
+                                                <span [ngClass]="{'card-equip':ability.isAbilityEnabled}"> 
                                                     <img src="{{ability.ability.imageUrl}}" onerror="this.src='../assets/images/DefaultImages/ability.png';">
                                                     <em>
                                                         {{ability.ability.name}}
@@ -140,17 +140,18 @@
                                     </ng-container>
                                     <li *ngIf="abilities?.length == 0" style="list-style-type: none;">No Abilities Available</li>
                                 </ul>
-                                <div class="input-extend">
-                                    <button type="button" *ngIf="abilities?.length > lengthOfRecordsToDisplay" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitAbility==lengthOfRecordsToDisplay)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreLinkRecords('ability', abilities?.length,limitTextAbility)"><span>{{limitTextAbility}}</span></button>
+                                <div class="input-extend input-expend-and-remove">
+                                    <button type="button" *ngIf="abilities?.length > lengthOfRecordsToDisplay" class="btn icon icon-with-text icon-arrow-down btn-link-primary float-left" [ngClass]="(limitAbility==lengthOfRecordsToDisplay)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreLinkRecords('ability', abilities?.length,limitTextAbility)"><span>{{limitTextAbility}}</span></button>
+                                    <button type="button" *ngIf="(spellId || abilityId || itemId)" class="btn icon icon-Rec-Disable icon-with-text btn-link-primary float-right"  (click)="RemoveSelectedLinkRecord()">Remove Link</button>
                                 </div>
                             </fieldset>
                         </div>
                     </div>
                 </ng-container>
             </ng-container>
-                <div class="form-row">
-                    <div class="col-12">
-                        <!-- Attribute show title switch -->
+            <div class="form-row">
+                <div [ngClass]="hasCommand?'col-12 col-md-6':'col-12 col-md-12'">
+                    <div class="form-group">
                         <fieldset class="form-group input-switch input-switch-dual">
                             <legend>Show Title</legend>
                             <ul class="input-switch-items">
@@ -168,7 +169,56 @@
                                 </li>
                             </ul>
                         </fieldset>
-                        <!-- End of attribute show title switch -->
+                    </div>
+                    <div class="form-group">
+                        <fieldset class="form-group input-switch input-switch-dual">
+                            <legend>Shape</legend>
+                            <ul class="input-switch-items">
+                                <li class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" (change)="setShape(0)" [checked]="characterStatTileFormModal.shape===0">
+                                        <span>SQUARE</span>
+                                    </label>
+                                </li>
+                                <li class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" (change)="setShape(50)" [checked]="characterStatTileFormModal.shape===50">
+                                        <span>ROUNDED</span>
+                                    </label>
+                                </li>
+                                <li class="form-check" *ngIf="selectedStatType!==2">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" (change)="setShape(100)" [checked]="characterStatTileFormModal.shape===100">
+                                        <span>CIRCLE</span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </fieldset>
+                    </div>
+                </div>
+                <div [ngClass]="hasCommand?'col-12 col-md-6':'col-12 col-md-12 hide'">
+                    <!-- Image file -->
+                    <div class="form-group input-image input-image-alt">
+
+                        <div class="input-image-control input-image-note input-image-trigger" (click)="cropImage(null,true,'VIEW.ADD')" *ngIf="
+                         !showWebButtons && (imageUrl === undefined || imageUrl === null || imageUrl === '')">
+                                <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
+                            </div>
+                            <div class="form-group input-image-note input-image-trigger" (click)="cropImage(imageUrl,true,'VIEW.EDIT')" *ngIf="(!showWebButtons && imageUrl !== undefined && imageUrl !== null && imageUrl !== '')">
+                                <img class="spell-img" [src]="imageUrl"
+                                     onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">
+                            </div>
+                            <div class="remove-btn-box" *ngIf="(!showWebButtons && imageUrl !== undefined && imageUrl !== null && imageUrl !== '')">
+                                <button type="button" class="removebtn-img" (click)="removeImage()">Remove Image</button>
+                            </div>
+
+                            <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
+                                <img [src]="imageUrl" class="bg-image" />
+                            </div>
+                            <input type="file" id="newimageTileProfile" class="form-control-file">
+                        </div>
+                        <!-- End of image file -->
+                        
                     </div>
                 </div>
                 <div class="form-row align-items-center">
@@ -227,106 +277,81 @@
                                                 </p>
                                             </div>
 
-                                        </div>
                                     </div>
                                 </div>
-                            </li>
-                        </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-12 mb-3">
+                    <div class="input-extend">
+                        <button type="button" class="btn btn-link-primary btn-underline" (click)="showMoreColorFields()"><span>{{showMoreLessColorText}}</span></button>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="col-12 mb-3">
-                        <div class="input-extend">
-                            <button type="button" class="btn btn-link-primary btn-underline" (click)="showMoreColorFields()"><span>{{showMoreLessColorText}}</span></button>
-                        </div>
+            </div>
+            <div class="form-row" *ngIf="!showMoreLessColorToggle">
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label for="titleBackgroundColor">Title Background</label>
+                        <span class="input-group-btn">
+                            <label class="form-check-label">
+                                <i class="icon input-color-custom" role="button" title="Select Color" data-toggle="tooltip"></i>
+                            </label>
+                            <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
+                                <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.titleBgColor" name="titleBgColor" id="titleBgColor" (change)="setColor(colorModel)" />
+                            </button>
+                        </span>
+                        <input type="text" id="titleBackgroundColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.titleBgColor" name="titleBgColor"  (change)="setColor(colorModel)">
                     </div>
-                </div>
-                <div class="form-row" *ngIf="!showMoreLessColorToggle">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group">
-                            <label for="titleBackgroundColor">Title Background</label>
-                            <span class="input-group-btn">
-                                <label class="form-check-label">
-                                    <i class="icon input-color-custom" role="button" title="Select Color" data-toggle="tooltip"></i>
-                                </label>
-                                <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
-                                    <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.titleBgColor" name="titleBgColor" id="titleBgColor" (change)="setColor(colorModel)" />
-                                </button>
-                            </span>
-                            <input type="text" id="titleBackgroundColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.titleBgColor" name="titleBgColor">
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-6">
-                        <div class="form-group">
-                            <label for="titleTextColor">Title Text</label>
-                            <span class="input-group-btn">
-                                <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
-                                    <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.titleTextColor" name="titleTextColor" id="titleTextColor" (change)="setColor(colorModel)" />
-                                </button>
-                            </span>
-                            <input type="text" id="titleTextColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.titleTextColor" name="titleTextColor">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-row" *ngIf="!showMoreLessColorToggle">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group">
-                            <label for="bodyBackgroundColor">Body Background</label>
-                            <span class="input-group-btn">
-                                <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
-                                    <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.bodyBgColor" name="bodyBgColor" id="bodyBgColor" (change)="setColor(colorModel)" />
-                                </button>
-                            </span>
-                            <input type="text" id="bodyBackgroundColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.bodyBgColor" name="bodyBgColor">
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-6" *ngIf="tile!==1">
-                        <div class="form-group">
-                            <label for="bodyTextColor">Body Text</label>
-                            <span class="input-group-btn">
-                                <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
-                                    <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.bodyTextColor" name="bodyTextColor" id="bodyTextColor" (change)="setColor(colorModel)" />
-                                </button>
-                            </span>
-                            <input type="text" id="bodyTextColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.bodyTextColor" name="bodyTextColor">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <fieldset class="form-group input-switch input-switch-dual">
-                            <legend>Shape</legend>
-                            <ul class="input-switch-items">
-                                <li class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" (change)="setShape(0)" [checked]="characterStatTileFormModal.shape===0">
-                                        <span>SQUARE</span>
-                                    </label>
-                                </li>
-                                <li class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" (change)="setShape(50)" [checked]="characterStatTileFormModal.shape===50">
-                                        <span>ROUNDED</span>
-                                    </label>
-                                </li>
-                                <li class="form-check" *ngIf="selectedStatType!==2">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" (change)="setShape(100)" [checked]="characterStatTileFormModal.shape===100">
-                                        <span>CIRCLE</span>
-                                    </label>
-                                </li>
-                            </ul>
-                        </fieldset>
-                    </div>
-                    <!--<div class="col-sm-2">
-            <div [class]="shapeClass"></div>
-            <div class="rangevalue"></div>
-        </div>-->
                 </div>
 
-</div>
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label for="titleTextColor">Title Text</label>
+                        <span class="input-group-btn">
+                            <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
+                                <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.titleTextColor" name="titleTextColor" id="titleTextColor" (change)="setColor(colorModel)" />
+                            </button>
+                        </span>
+                        <input type="text" id="titleTextColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.titleTextColor" name="titleTextColor"  (change)="setColor(colorModel)">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row" *ngIf="!showMoreLessColorToggle">
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label for="bodyBackgroundColor">Body Background</label>
+                        <span class="input-group-btn">
+                            <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
+                                <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.bodyBgColor" name="bodyBgColor" id="bodyBgColor" (change)="setColor(colorModel)" />
+                            </button>
+                        </span>
+                        <input type="text" id="bodyBackgroundColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.bodyBgColor" name="bodyBgColor"  (change)="setColor(colorModel)">
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6" *ngIf="tile!==1">
+                    <div class="form-group">
+                        <label for="bodyTextColor">Body Text</label>
+                        <span class="input-group-btn">
+                            <button type="button" title="Select Color" data-toggle="tooltip" class="btn icon icon-color-picker btn-simple-primary">
+                                <input class="icon input-color-custom" type="color" [(ngModel)]="colorModel.bodyTextColor" name="bodyTextColor" id="bodyTextColor" (change)="setColor(colorModel)" />
+                            </button>
+                        </span>
+                        <input type="text" id="bodyTextColor" class="form-control" placeholder="Select color" [(ngModel)]="colorModel.bodyTextColor" name="bodyTextColor"  (change)="setColor(colorModel)">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+
+                </div>
+
+            </div>
+
+        </div>
 
         <app-loader [isLoading]="isLoading"></app-loader>
 
@@ -335,4 +360,4 @@
             <button type="submit" [disabled]="isLoading" class="btn btn-accent">Save</button>
         </div>
     </div>
-    </form>
+</form>

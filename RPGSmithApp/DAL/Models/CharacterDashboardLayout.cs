@@ -29,6 +29,10 @@ namespace DAL.Models
         public int SortOrder { get; set; }
      
         public bool IsDeleted { get; set; }
+        
+        public bool IsDefaultComputer { get; set; }
+        public bool IsDefaultTablet { get; set; }
+        public bool IsDefaultMobile { get; set; }
 
         public virtual ICollection<CharacterDashboardPage> CharacterDashboardPages { get; set; }
 

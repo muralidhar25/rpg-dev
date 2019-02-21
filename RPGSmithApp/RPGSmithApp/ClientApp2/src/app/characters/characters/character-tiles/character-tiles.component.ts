@@ -1,40 +1,41 @@
 import { Component, OnInit, ViewEncapsulation, ElementRef, HostListener } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { NgGrid, NgGridItem, NgGridConfig, NgGridItemConfig, NgGridItemEvent } from 'angular2-grid';
-
-import { TileComponent } from '../../../tile/tile.component';
-import { Router, ActivatedRoute, NavigationExtras } from "@angular/router";
-import { AlertService, DialogType, MessageSeverity } from '../../../core/common/alert.service';
-import { Utilities } from '../../../core/common/utilities';
-import { ServiceUtil } from '../../../core/services/service-util';
-import { AuthService } from '../../../core/auth/auth.service';
-import { CharactersService } from '../../../core/services/characters.service';
+import { STAT_TYPE, TILES, VIEW, CONDITION_OPERATOR_ENUM } from '../../../core/models/enums';
 import { Characters } from '../../../core/models/view-models/characters.model';
+import { Box, config } from '../../../core/models/tiles/box.model';
+import { CharacterDashboardPage } from '../../../core/models/view-models/character-dashboard-page.model';
+import { TileConfig } from '../../../core/models/tiles/character-tile-config.model';
+import { CharactersCharacterStat } from '../../../core/models/view-models/characters-character-stats.model';
+import { Router, ActivatedRoute } from '@angular/router';
+import { CharactersService } from '../../../core/services/characters.service';
+import { CharacterTileService } from '../../../core/services/character-tile.service';
+import { CharacterDashboardPageService } from '../../../core/services/character-dashboard-page.service';
+import { AuthService } from '../../../core/auth/auth.service';
 import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
 import { SharedService } from '../../../core/services/shared.service';
-import { CharacterTileService } from '../../../core/services/character-tile.service';
+import { AlertService, DialogType, MessageSeverity } from '../../../core/common/alert.service';
+import { CharactersCharacterStatService } from '../../../core/services/characters-character-stat.service';
+import { CharacterTileConfigService } from '../../../core/services/character-tile-config.service';
 import { DBkeys } from '../../../core/common/db-keys';
+import { User } from '../../../core/models/user.model';
+import { Utilities } from '../../../core/common/utilities';
+import { TileComponent } from '../../../tile/tile.component';
 import { NoteTileComponent } from '../../../tile/note/note.component';
+import { CharacterTile } from '../../../core/models/tiles/character-tile.model';
 import { ImageTileComponent } from '../../../tile/image/image.component';
-import { CommandTileComponent } from '../../../tile/command/command.component';
 import { CounterTileComponent } from '../../../tile/counter/counter.component';
-import { VIEW, TILES, STAT_TYPE, CONDITION_OPERATOR_ENUM } from '../../../core/models/enums';
 import { CharacterStatTileComponent } from '../../../tile/character-stat/character-stat.component';
 import { LinkTileComponent } from '../../../tile/link/link.component';
 import { ExecuteTileComponent } from '../../../tile/execute/execute.component';
-import { CharacterTile } from '../../../core/models/tiles/character-tile.model';
-import { CharacterDashboardPageService } from "../../../core/services/character-dashboard-page.service";
-import { CharacterDashboardPage } from '../../../core/models/view-models/character-dashboard-page.model';
-import { CharacterTileConfigService } from '../../../core/services/character-tile-config.service';
-import { TileConfig } from '../../../core/models/tiles/character-tile-config.model';
-import { Box } from '../../../core/models/tiles/box.model';
-import { last } from 'rxjs/operators';
-import { User } from '../../../core/models/user.model';
-import { DiceService } from '../../../core/services/dice.service';
+import { CommandTileComponent } from '../../../tile/command/command.component';
 import { TextTileComponent } from '../../../tile/text/text.component';
-import { CharactersCharacterStat } from '../../../core/models/view-models/characters-character-stats.model';
-import { CharactersCharacterStatService } from '../../../core/services/characters-character-stat.service';
+import { DiceService } from '../../../core/services/dice.service';
 import { CharacterStatConditionViewModel } from '../../../core/models/view-models/character-stats.model';
+import { ServiceUtil } from '../../../core/services/service-util';
+import { AppService1 } from '../../../app.service';
+
+
 
 
 
@@ -49,7 +50,7 @@ export class CharacterTilesComponent implements OnInit {
     TILES = TILES;
     bsModalRef: BsModalRef;
     characterId: number;
-    tiles: any;
+    tiles: any = [];
     text: string;
     isLoading = false;
     largeImageTiles: any;
@@ -65,9 +66,12 @@ export class CharacterTilesComponent implements OnInit {
     boxes: Box[] = [];
     private Originalboxes: Box[] = [];
     private Deletedboxes: Box[] = [];
+    private ResizeRelocateboxes: Box[] = [];
+
 
     hasAdded: boolean = false;
     IsMobileScreen: boolean = this.isMobile();
+    IsMobilePanel: boolean = false;
 
     private rgb: string = '#efefef';
     private curNum;
@@ -95,17 +99,28 @@ export class CharacterTilesComponent implements OnInit {
         'prefer_new': true,
         'limit_to_screen': true,
         'center_to_screen': true,
-        'resize_directions': [
-            "bottomleft",
-            "bottomright",
-            "topleft"
-        ],
+        'resize_directions': this.IsMobileScreen ? [
+                                                        "bottomleft",
+                                                        "bottomright",
+                                                        "topright",
+                                                        "topleft",
+                                                        "right",
+                                                        "left",
+                                                        "bottom",
+                                                        "top"
+                                                    ]: [
+                                                        "bottomleft",
+                                                        "bottomright"
+                                                    ],
     };
     trashedTile: boolean = false;
     StateChanged: boolean = false;
 
     //trashtileclass: string = '';
     IsTrashPage: boolean = false;
+    IsResizePage: boolean = false;
+    IsEditPage: boolean = false;
+    IsRelocatePage: boolean = false;
 
     private startIndex: number = 1
     private BoxesCurrentRow: number = this.startIndex;
@@ -129,10 +144,11 @@ export class CharacterTilesComponent implements OnInit {
     constructor(private modalService: BsModalService, private charactersService: CharactersService, private characterTileService: CharacterTileService,
         private router: Router, private route: ActivatedRoute, private authService: AuthService, private pageService: CharacterDashboardPageService,
         private localStorage: LocalStoreManager, private sharedService: SharedService, private alertService: AlertService,
-        private tileConfig: CharacterTileConfigService, private ref: ElementRef, private CCService: CharactersCharacterStatService) {
+      private tileConfig: CharacterTileConfigService, private ref: ElementRef, private CCService: CharactersCharacterStatService
+      , public appService: AppService1) {
 
         this.sharedService.shouldUpdateCharacterList().subscribe(serviceJson => {
-            if (serviceJson) {
+            if (serviceJson) {                
                 if (this.BoxesEditedIndex) { //edited
                     this.editBox(serviceJson)
                 }
@@ -157,12 +173,63 @@ export class CharacterTilesComponent implements OnInit {
         });
         this.pageId = this.localStorage.getDataObject<number>('pageId');
         this.Initialize();
+        window.onorientationchange = () => {
+            setTimeout(() => {
+                this.gridConfig = {
+                    'margins': this.getTileSize().margins,
+                    'draggable': true,
+                    'resizable': true,
+                    'max_cols': this.columnsInGrid,
+                    'max_rows': 0,
+                    'visible_cols': 0,
+                    'visible_rows': 0,
+                    'min_cols': 0,
+                    'min_rows': 0,
+                    'col_width': this.getTileSize().max,
+                    'row_height': this.getTileSize().max,
+                    'cascade': 'up',
+                    'min_width': this.getTileSize().min,
+                    'min_height': this.getTileSize().min,
+                    'fix_to_grid': false,
+                    'auto_style': true,
+                    //'auto_resize': false,
+                    'auto_resize': this.IsMobileScreen,
+                    'maintain_ratio': true,
+                    'prefer_new': true,
+                    'limit_to_screen': true,
+                    'center_to_screen': true,
+                    'resize_directions': this.IsMobileScreen ? [
+                        "bottomleft",
+                        "bottomright",
+                        "topright",
+                        "topleft",
+                        "right",
+                        "left",
+                        "bottom",
+                        "top"
+                    ] : [
+                            "bottomleft",
+                            "bottomright"
+                        ],
+                };
+                this.boxes = this.mapBoxes(this.tiles);
+            }, 10);
+        }
     }
     private Initialize() {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)
             this.authService.logout();
         else {
+            if (window.outerWidth < 767) {
+                this.gridConfig.draggable = false;
+                this.gridConfig.resizable = false;
+                this.IsMobilePanel = true;
+            } else {
+                this.gridConfig.draggable = true;
+                this.gridConfig.resizable = true;
+                this.IsMobilePanel = false;
+            }
             this.isLoading = true;
             this.CCService.getConditionsValuesList<any[]>(this.characterId)
                 .subscribe(data => {
@@ -186,6 +253,10 @@ export class CharacterTilesComponent implements OnInit {
                     this.tiles = data;
                     let _boxes = this.mapBoxes(data);
                     this.boxes = _boxes;
+                    if (this.IsMobilePanel) {
+                        this.openEditGrid();
+                    }
+                    
                     try {
                         this.noRecordFound = !data.length;
                     } catch (err) { }
@@ -233,14 +304,74 @@ export class CharacterTilesComponent implements OnInit {
         this.gridConfig.draggable = false;
         this.gridConfig.resizable = false;
         this.Deletedboxes = [];
-        this.Originalboxes = Object.assign([],this.boxes);
+        this.Originalboxes = Object.assign([], this.boxes);
+        this.ResizeRelocateboxes = [];
+    }
+    openResize() {
+        this.IsResizePage = true;
+        //IsEditPage: boolean = false;
+        //IsRelocatePage
+        this.gridConfig.draggable = false;
+        this.gridConfig.resizable = true;
+        this.ResizeRelocateboxes = Object.assign([], this.boxes.map((box) => {
+            box.config = Object.assign(new config, box.config);
+            
+            return Object.assign(new Box, box);
+        }));
+        this.Originalboxes = Object.assign([], this.boxes.map((box) => {
+            box.config = Object.assign(new config, box.config);
+
+            return Object.assign(new Box, box);
+        }));
+    }
+    openRelocate() {
+        this.IsRelocatePage = true;
+        //IsEditPage: boolean = false;
+        //IsRelocatePage
+        this.gridConfig.draggable = true;
+        this.gridConfig.resizable = false;
+        //this.ResizeRelocateboxes = [];
+        this.Originalboxes = Object.assign([], this.boxes);
+        this.ResizeRelocateboxes = Object.assign([], this.boxes.map((box) => {
+            box.config = Object.assign(new config, box.config);
+
+            return Object.assign(new Box, box);
+        }));
+        this.Originalboxes = Object.assign([], this.boxes.map((box) => {
+            box.config = Object.assign(new config, box.config);
+
+            return Object.assign(new Box, box);
+        }));
+    }
+    openEditGrid() {
+        this.IsEditPage = true;
+        //IsEditPage: boolean = false;
+        //IsRelocatePage
+        this.gridConfig.draggable = false;
+        this.gridConfig.resizable = false;
+        this.Originalboxes = Object.assign([], this.boxes);
+        this.ResizeRelocateboxes = [];
     }
     backToNormal() {
         this.IsTrashPage = false;
-        this.gridConfig.draggable = true;
-        this.gridConfig.resizable = true;
+        this.IsResizePage = false;
+        this.IsRelocatePage = false;
+        this.IsEditPage = false;
+        this.gridConfig.draggable = !this.IsMobilePanel;
+        this.gridConfig.resizable = !this.IsMobilePanel;
         this.Deletedboxes = [];
-        this.boxes = Object.assign([], this.Originalboxes);
+        if (this.ResizeRelocateboxes.length) {            
+            this.boxes = Object.assign([], this.ResizeRelocateboxes.map((box) => {
+                box.config = Object.assign(new config, box.config);
+
+                return Object.assign(new Box, box);
+            }));
+            this.ResizeRelocateboxes = [];
+        }
+        else {
+            this.boxes = Object.assign([], this.Originalboxes);
+        }
+        
     }
     moveToTrash(box:Box, index: number) {
         this.Deletedboxes.push(box);
@@ -258,8 +389,11 @@ export class CharacterTilesComponent implements OnInit {
                 .subscribe(data => {
                     //this.isLoading = false;
                     this.IsTrashPage = false;
-                    this.gridConfig.draggable = true;
-                    this.gridConfig.resizable = true;
+                    this.IsResizePage = false;
+                    this.IsRelocatePage = false;
+                    this.IsEditPage = false;
+                    this.gridConfig.draggable = !this.IsMobilePanel;
+                    this.gridConfig.resizable = !this.IsMobilePanel;
                     this.Deletedboxes = [];
                     this.gotoDashboard();
                 }, error => {
@@ -268,14 +402,17 @@ export class CharacterTilesComponent implements OnInit {
         }
         else {
             this.IsTrashPage = false;
-            this.gridConfig.draggable = true;
-            this.gridConfig.resizable = true;
+            this.IsResizePage = false;
+            this.IsRelocatePage = false;
+            this.IsEditPage = false;
+            this.gridConfig.draggable = !this.IsMobilePanel;
+            this.gridConfig.resizable = !this.IsMobilePanel;
             this.Deletedboxes = [];
             this.gotoDashboard();
         }
-
+        
     }
-
+        
     private setHeaderValues(character: Characters): any {
         let headerValues = {
             headerName: character.characterName,
@@ -283,7 +420,8 @@ export class CharacterTilesComponent implements OnInit {
             headerId: character.characterId,
             headerLink: 'character',
             hasHeader: true
-        };
+      };
+      this.appService.updateAccountSetting1(headerValues);
         this.sharedService.updateAccountSetting(headerValues);
         this.localStorage.deleteData(DBkeys.HEADER_VALUE);
         this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
@@ -482,7 +620,7 @@ export class CharacterTilesComponent implements OnInit {
         if (this.boxes[index]) {
             //if (actualDelete) {
             //    this.deleteTileConfig(this.boxes[index].config.payload);
-            //}
+            //}            
             this.boxes.splice(index, 1);
             try {
                 this.noRecordFound = !this.boxes.length;
@@ -525,13 +663,13 @@ export class CharacterTilesComponent implements OnInit {
     onChangeStart(event: NgGridItemEvent): void {
         //console.log('onChangeStart', event);
         //this.preventClick = true;
-        //alert(this.preventClick);
+        //alert(this.preventClick);       
     }
 
     onDragStop(event: any, characterTile: CharacterTile, boxIndex: number = 0) {
         if (this.trashedTile) {
-            this.preventClick = false;
-                this.deleteTile(characterTile, boxIndex);
+            this.preventClick = false;            
+                this.deleteTile(characterTile, boxIndex);                      
             this.trashedTile = false;
         }
     }
@@ -767,12 +905,12 @@ export class CharacterTilesComponent implements OnInit {
                         else {
                             //For Old Records
                             //////////////////////////////////////////////
-
-
+                            
+                           
                             let calculationString: string = item.characterStatTiles.charactersCharacterStat.characterStat.characterStatCalcs[0].statCalculation.toUpperCase();
                             let inventoreyWeight = this.CharacterStatsValues.character.inventoryWeight;
                             let finalCalcString: string = '';
-
+                            
                                 calculationString.split("[INVENTORYWEIGHT]").map((item) => {
                                     calculationString = calculationString.replace("[INVENTORYWEIGHT]", " " + inventoreyWeight + " ");
                                 })
@@ -803,7 +941,7 @@ export class CharacterTilesComponent implements OnInit {
                                             IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
                                         }
                                     })
-
+                                    
                                     IDs.map((rec) => {
                                         this.CharacterStatsValues.charactersCharacterStat.map((stat) => {
                                             if (rec.id == stat.characterStat.statName.toUpperCase()) {
@@ -853,7 +991,7 @@ export class CharacterTilesComponent implements OnInit {
                                         finalCalcString = calculationString;
                                     });
                                 }
-                                ////////////////////////////////
+                                ////////////////////////////////                    
                                 finalCalcString = finalCalcString.replace(/  +/g, ' ');
                                 finalCalcString = finalCalcString.replace(/\+0/g, '').replace(/\-0/g, '').replace(/\*0/g, '').replace(/\/0/g, '');
                                 finalCalcString = finalCalcString.replace(/\+ 0/g, '').replace(/\- 0/g, '').replace(/\* 0/g, '').replace(/\/ 0/g, '');
@@ -899,10 +1037,10 @@ export class CharacterTilesComponent implements OnInit {
                                     //let ConditionStatValue: string = this.GetValueFromStatsByStatID(Condition.ifClauseStatId, Condition.ifClauseStattype);
                                     let ConditionStatValue: string = '';
                                     if (Condition.ifClauseStatText) {
-                                        ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(this.CharacterStatsValues.character.inventoryWeight, this.CharacterStatsValues.charactersCharacterStat, Condition, false);
+                                      ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(this.CharacterStatsValues.character.inventoryWeight, this.CharacterStatsValues.charactersCharacterStat, Condition, false);
                                     }
                                     let operator = "";
-                                    let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(this.CharacterStatsValues.character.inventoryWeight, this.CharacterStatsValues.charactersCharacterStat, Condition, true); //Condition.compareValue;
+                                  let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(this.CharacterStatsValues.character.inventoryWeight, this.CharacterStatsValues.charactersCharacterStat, Condition, true); //Condition.compareValue;
                                     let ConditionTrueResult = Condition.result;
 
 
@@ -955,17 +1093,14 @@ export class CharacterTilesComponent implements OnInit {
                                                 ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
                                                 if (item.characterStatTiles.charactersCharacterStat.characterStat.isMultiSelect && item.characterStatTiles.charactersCharacterStat.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
 
-                                                    let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
-                                                    choicesArr = choicesArr.map((z) => {
-                                                        return z.toUpperCase();
-                                                    })
-                                                    if (choicesArr.indexOf(ValueToCompare.toUpperCase()) > -1) {
+
+                                                    if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
                                                         result = ConditionTrueResult;
                                                         SkipNextEntries = true;
                                                     }
                                                 }
                                                 else {
-                                                    if (ConditionStatValue.toUpperCase() == ValueToCompare.toUpperCase()) {
+                                                    if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
                                                         result = ConditionTrueResult;
                                                         SkipNextEntries = true;
                                                     }
@@ -976,17 +1111,14 @@ export class CharacterTilesComponent implements OnInit {
                                                 ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
                                                 if (item.characterStatTiles.charactersCharacterStat.characterStat.isMultiSelect && item.characterStatTiles.charactersCharacterStat.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
 
-                                                    let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
-                                                    choicesArr = choicesArr.map((z) => {
-                                                        return z.toUpperCase();
-                                                    })
-                                                    if (choicesArr.indexOf(ValueToCompare.toUpperCase()) == -1) {
+
+                                                    if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
                                                         result = ConditionTrueResult;
                                                         SkipNextEntries = true;
                                                     }
                                                 }
                                                 else {
-                                                    if (ConditionStatValue.toUpperCase() != ValueToCompare.toUpperCase()) {
+                                                    if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
                                                         result = ConditionTrueResult;
                                                         SkipNextEntries = true;
                                                     }
@@ -1005,7 +1137,7 @@ export class CharacterTilesComponent implements OnInit {
                         }
                     }
                     item.characterStatTiles.charactersCharacterStat.text = result;
-                }
+                }    
             }
             else if (item.tileTypeId == TILES.TEXT) {
                 let AllChoices: any[] = [];

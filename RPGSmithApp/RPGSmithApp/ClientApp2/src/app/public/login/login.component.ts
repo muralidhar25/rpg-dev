@@ -255,23 +255,24 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.redirectToHome();
     }
 
-    redirectToHome() {
-        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER)
+  redirectToHome() {
+    //let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER)
+    //this.rulesetService.getRulesetAndCharactrCount(user.id)
+    //    .subscribe(data => {
+    //        let model:any = data;
+    //        if (model.rulesetCount > 0) {
+    //            this.router.navigate(['/characters']);
+    //        }
+    //        else {
+    //            this.router.navigate(['/rulesets']);
+    //        }
+    //    },
+    //        error => {
+    //            this.router.navigate(['/rulesets']);
+    //        });
+    this.router.navigate(['/characters']);
 
-        this.rulesetService.getRulesetAndCharactrCount(user.id)
-            .subscribe(data => {
-                let model:any = data;
-                if (model.rulesetCount > 0) {
-                    this.router.navigate(['/characters']);
-                }
-                else {
-                    this.router.navigate(['/rulesets']);
-                }
-            },
-                error => {
-                    this.router.navigate(['/rulesets']);
-                });
-    }
+  }
 
 
     termsAccountCreation(): boolean {

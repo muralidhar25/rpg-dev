@@ -74,8 +74,8 @@
                                 <span class="dice-name">
                                     {{dice.dice}}
                                 </span>
-                                <span class="dice-count">
-                                    <em *ngIf="dice.rolledCount>0">{{dice.rolledCount}}</em>
+                                <span *ngIf="dice.rolledCount>0" class="dice-count">
+                                    <em >{{dice.rolledCount}}</em>
                                 </span>
                             </button>
                         </li>

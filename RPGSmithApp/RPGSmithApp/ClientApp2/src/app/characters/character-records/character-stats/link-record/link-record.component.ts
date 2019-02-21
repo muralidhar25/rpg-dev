@@ -1,18 +1,18 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
+import { CharactersCharacterStat } from '../../../../core/models/view-models/characters-character-stats.model';
 import { LocalStoreManager } from '../../../../core/common/local-store-manager.service';
+import { SharedService } from '../../../../core/services/shared.service';
+import { CharacterSpellService } from '../../../../core/services/character-spells.service';
+import { AuthService } from '../../../../core/auth/auth.service';
+import { AlertService } from '../../../../core/common/alert.service';
+import { CharacterAbilityService } from '../../../../core/services/character-abilities.service';
+import { ItemsService } from '../../../../core/services/items.service';
+import { STAT_LINK_TYPE } from '../../../../core/models/enums';
 import { User } from '../../../../core/models/user.model';
 import { DBkeys } from '../../../../core/common/db-keys';
-import { AuthService } from '../../../../core/auth/auth.service';
-import { ItemsService } from '../../../../core/services/items.service';
-import { CharacterAbilityService } from '../../../../core/services/character-abilities.service';
-import { CharacterSpellService } from '../../../../core/services/character-spells.service';
-import { MessageSeverity, AlertService } from '../../../../core/common/alert.service';
-import { SharedService } from "../../../../core/services/shared.service";
-import { FilterTilePipe } from "../../../../core/pipes/filter-tile.pipe";
 import { Ruleset } from '../../../../core/models/view-models/ruleset.model';
-import { CharactersCharacterStat } from '../../../../core/models/view-models/characters-character-stats.model';
-import { STAT_LINK_TYPE } from '../../../../core/models/enums';
+
 
 @Component({
   selector: 'app-link-record',

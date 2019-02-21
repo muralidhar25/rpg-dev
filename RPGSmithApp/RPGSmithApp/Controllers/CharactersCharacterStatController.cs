@@ -43,7 +43,8 @@ namespace RPGSmithApp.Controllers
 
             CharactersCharacterStatViewModel CharactersCharacterStatVievModel;
 
-            var data = _charactersCharacterStatServic.GetByCharacterId(characterId, page, pageSize);
+            //var data = _charactersCharacterStatServic.GetByCharacterId(characterId, page, pageSize);
+            var data = _charactersCharacterStatServic.GetByCharacterId_sp(characterId, page, pageSize);
             foreach (CharactersCharacterStat item in data)
             {
                 CharactersCharacterStatVievModel = new CharactersCharacterStatViewModel() {
@@ -82,6 +83,7 @@ namespace RPGSmithApp.Controllers
                         CreatedDate = item.CharacterStat.CreatedDate,
                         OwnerId = item.CharacterStat.OwnerId,
                         StatName = item.CharacterStat.StatName,
+                        StatDesc = item.CharacterStat.StatDesc,
                         SortOrder = item.CharacterStat.SortOrder,
                         RuleSetId = item.CharacterStat.RuleSetId,
                         ParentCharacterStatId = item.CharacterStat.ParentCharacterStatId,
@@ -105,20 +107,8 @@ namespace RPGSmithApp.Controllers
                         //    Maximum= item.CharacterStat.CharacterStatCombos.Maximum,
                         //    Minimum= item.CharacterStat.CharacterStatCombos.Minimum
                         //} ,
-                        CharacterStatConditions = item.CharacterStat.CharacterStatConditions.Select(x => new CharacterStatCondition()
-                        {
-                            CharacterStatConditionId = x.CharacterStatConditionId,
-                            CharacterStatId = x.CharacterStatId,
-                            CompareValue = x.CompareValue,
-                            ConditionOperatorID = x.ConditionOperatorID,
-                            ConditionOperator = _characterStatConditionService.GetConditionOperatorById(x.ConditionOperatorID),
-                            //IfClauseStatId = x.IfClauseStatId,
-                            //IfClauseStattype = x.IfClauseStattype,
-                            IfClauseStatText = x.IfClauseStatText,
-                            IsNumeric = x.IsNumeric,
-                            SortOrder = x.SortOrder,
-                            Result = x.Result
-                        }).OrderBy(z => z.SortOrder).ToList()
+                        CharacterStatConditions = item.CharacterStat.CharacterStatConditions.OrderBy(z => z.SortOrder).ToList(),
+                        CharacterStatDefaultValues = item.CharacterStat.CharacterStatDefaultValues,
                     },
                     Character=new Character() {
                         CharacterId= item.Character.CharacterId,
@@ -131,30 +121,30 @@ namespace RPGSmithApp.Controllers
                     }
                     
                 };
-                List<CharacterStatDefaultValue> CharacterStatDefaultValuesList = 
-                    _characterStatDefaultValueService.GetCharacterStatDefaultValue((int)CharactersCharacterStatVievModel.CharacterStatId).Result;
-                CharactersCharacterStatVievModel.CharacterStat.CharacterStatDefaultValues = new List<CharacterStatDefaultValue>();
-                if (CharacterStatDefaultValuesList != null)
-                {
-                    if (CharacterStatDefaultValuesList.Count>0)
-                    {
+                //List<CharacterStatDefaultValue> CharacterStatDefaultValuesList = 
+                //    _characterStatDefaultValueService.GetCharacterStatDefaultValue((int)CharactersCharacterStatVievModel.CharacterStatId).Result;
+                //CharactersCharacterStatVievModel.CharacterStat.CharacterStatDefaultValues = new List<CharacterStatDefaultValue>();
+                //if (CharacterStatDefaultValuesList != null)
+                //{
+                //    if (CharacterStatDefaultValuesList.Count>0)
+                //    {
                         
-                        foreach (var defv in CharacterStatDefaultValuesList)
-                        {
-                            var CharStatDefValues = new CharacterStatDefaultValue()
-                            {
-                                CharacterStatDefaultValueId = defv.CharacterStatDefaultValueId,
-                                CharacterStatId = defv.CharacterStatId,
-                                DefaultValue = defv.DefaultValue,
-                                Maximum = defv.Maximum,
-                                Minimum = defv.Minimum,
-                                Type = defv.Type,
-                                CharacterStat=null,
-                            };
-                            CharactersCharacterStatVievModel.CharacterStat.CharacterStatDefaultValues.Add(CharStatDefValues);
-                        }
-                    }
-                }
+                //        foreach (var defv in CharacterStatDefaultValuesList)
+                //        {
+                //            var CharStatDefValues = new CharacterStatDefaultValue()
+                //            {
+                //                CharacterStatDefaultValueId = defv.CharacterStatDefaultValueId,
+                //                CharacterStatId = defv.CharacterStatId,
+                //                DefaultValue = defv.DefaultValue,
+                //                Maximum = defv.Maximum,
+                //                Minimum = defv.Minimum,
+                //                Type = defv.Type,
+                //                CharacterStat=null,
+                //            };
+                //            CharactersCharacterStatVievModel.CharacterStat.CharacterStatDefaultValues.Add(CharStatDefValues);
+                //        }
+                //    }
+                //}
                
 
                 if (CharactersCharacterStatVievModel.IsCustom)

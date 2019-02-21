@@ -29,6 +29,7 @@ namespace DAL.Models.RulesetTileModels
         [Column(TypeName = "nvarchar(50)")]
         public string bodyBgColor { get; set; }
 
+        public String ImageUrl { get; set; }
         public int Shape { get; set; }
         public int SortOrder { get; set; }
         public bool IsDeleted { get; set; }

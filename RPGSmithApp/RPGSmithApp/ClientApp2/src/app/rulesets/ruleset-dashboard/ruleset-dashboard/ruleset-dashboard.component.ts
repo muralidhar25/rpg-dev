@@ -1,50 +1,44 @@
 
 import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
 import { Router, ActivatedRoute, NavigationExtras } from "@angular/router";
-import { AlertService, MessageSeverity, DialogType } from './../../../core/common/alert.service';
-import { AuthService } from "./../../../core/auth/auth.service";
-import { ConfigurationService } from './../../../core/common/configuration.service';
-import { Utilities } from './../../../core/common/utilities';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { SharedService } from "./../../../core/services/shared.service";
-
-import { DBkeys } from './../../../core/common/db-keys';
-import { User } from './../../../core/models/user.model';
-import { LocalStoreManager } from './../../../core/common/local-store-manager.service';
-import { DiceRollComponent } from './../../../shared/dice/dice-roll/dice-roll.component';
-import { DragulaService, dragula } from 'ng2-dragula/ng2-dragula';
-import { RulesetTileService } from '../../../core/services/ruleset-tile.service';
-import { RulesetDashboardLayoutService } from "./../../../core/services/ruleset-dashboard-layout.service";
-import { RulesetDashboardPageService } from "./../../../core/services/ruleset-dashboard-page.service";
-import { RulesetTileConfigService } from "../../../core/services/ruleset-tile-config.service";
-import { RulesetService } from "../../../core/services/ruleset.service";
-import { RulesetDashboardLayout } from './../../../core/models/view-models/ruleset-dashboard-layout.model';
-import { RulesetDashboardPage } from './../../../core/models/view-models/ruleset-dashboard-page.model';
-import { RulesetTile } from '../../../core/models/tiles/ruleset-tile.model';
-import { Color } from '../../../core/models/tiles/color.model';
-import { Box } from '../../../core/models/tiles/box.model';
-import { Ruleset } from '../../../core/models/view-models/ruleset.model';
-import { RulesetTileConfig } from "../../../core/models/tiles/ruleset-tile-config.model";
-
-import { VIEW, TILES, STAT_TYPE } from '../../../core/models/enums';
-import { CharacterStatTileComponent } from '../../../tile/character-stat/character-stat.component';
 import { NgGrid, NgGridItem, NgGridConfig, NgGridItemConfig, NgGridItemEvent } from 'angular2-grid';
-import { UseLinkComponent } from "../../../tile/link/use-link/use-link.component";
-import { UseExecuteComponent } from "../../../tile/execute/use-execute/use-execute.component";
+import { STAT_TYPE, TILES, VIEW } from "../../../core/models/enums";
+import { Ruleset } from "../../../core/models/view-models/ruleset.model";
+import { RulesetDashboardPage } from "../../../core/models/view-models/ruleset-dashboard-page.model";
+import { Box, config } from "../../../core/models/tiles/box.model";
+import { RulesetTileConfig } from "../../../core/models/tiles/ruleset-tile-config.model";
+import { AuthService } from "../../../core/auth/auth.service";
+import { RulesetService } from "../../../core/services/ruleset.service";
+import { DragulaService } from "ng2-dragula";
+import { AlertService, DialogType, MessageSeverity } from "../../../core/common/alert.service";
+import { RulesetTileConfigService } from "../../../core/services/ruleset-tile-config.service";
+import { ConfigurationService } from "../../../core/common/configuration.service";
+import { RulesetDashboardPageService } from "../../../core/services/ruleset-dashboard-page.service";
+import { RulesetDashboardLayoutService } from "../../../core/services/ruleset-dashboard-layout.service";
+import { LocalStoreManager } from "../../../core/common/local-store-manager.service";
+import { RulesetTileService } from "../../../core/services/ruleset-tile.service";
+import { User } from "../../../core/models/user.model";
+import { SharedService } from "../../../core/services/shared.service";
+import { DBkeys } from "../../../core/common/db-keys";
+import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
 import { RulesetLayoutComponent } from "../ruleset-layout/ruleset-layout.component";
+import { RulesetDashboardLayout } from "../../../core/models/view-models/ruleset-dashboard-layout.model";
+import { Utilities } from "../../../core/common/utilities";
 import { RulesetPageComponent } from "../ruleset-page/ruleset-page.component";
 import { RulesetTileComponent } from "../../../tile-ruleset/tile.component";
-import { RulesetNoteTileComponent } from "../../../tile-ruleset/note/note.component";
-import { RulesetImageTileComponent } from "../../../tile-ruleset/image/image.component";
-import { RulesetCounterTileComponent } from "../../../tile-ruleset/counter/counter.component";
-import { RulesetCharacterStatTileComponent } from "../../../tile-ruleset/character-stat/character-stat.component";
-import { RulesetCommandTileComponent } from "../../../tile-ruleset/command/command.component";
 import { RulesetEditNoteComponent } from "../../../tile-ruleset/note/edit-note/edit-note.component";
 import { RulesetEditImageComponent } from "../../../tile-ruleset/image/edit-image/edit-image.component";
-import { RulesetEditCounterComponent } from "../../../tile-ruleset/counter/edit-counter/edit-counter.component";
 import { RulesetEditCharacterStatComponent } from "../../../tile-ruleset/character-stat/edit-character-stat/edit-character-stat.component";
-import { RulesetEditTextComponent } from "../../../tile-ruleset/text/edit-text/edit-text.component";
+import { RulesetNoteTileComponent } from "../../../tile-ruleset/note/note.component";
+import { RulesetEditCounterComponent } from "../../../tile-ruleset/counter/edit-counter/edit-counter.component";
+import { RulesetImageTileComponent } from "../../../tile-ruleset/image/image.component";
+import { RulesetCharacterStatTileComponent } from "../../../tile-ruleset/character-stat/character-stat.component";
+import { RulesetCounterTileComponent } from "../../../tile-ruleset/counter/counter.component";
 import { RulesetTextTileComponent } from "../../../tile-ruleset/text/text.component";
+import { RulesetCommandTileComponent } from "../../../tile-ruleset/command/command.component";
+import { RulesetTile } from "../../../core/models/tiles/ruleset-tile.model";
+import { AppService1 } from "../../../app.service";
 
 @Component({
     selector: 'app-ruleset-dashboard',
@@ -74,7 +68,7 @@ export class RulesetDashboardComponent implements OnInit {
     pageSize: number = 6;
     page1: number = 1;
     pageSize1: number = 6;
-    tiles: any;
+    tiles: any = [];
     SortClick: boolean = false;
     rulesetModel: any;
     private startIndex: number = 1
@@ -101,12 +95,17 @@ export class RulesetDashboardComponent implements OnInit {
 
     private Originalboxes: Box[] = [];
     private Deletedboxes: Box[] = [];
+    private ResizeRelocateboxes: Box[] = [];
 
     hasAdded: boolean = false;
     IsMobileScreen: boolean = this.isMobile();
 
     private rgb: string = '#efefef';
     private curNum;
+    IsComputerDevice: boolean = false;
+    IsTabletDevice: boolean = false;
+    IsMobileDevice: boolean = false;
+
     public gridConfig: NgGridConfig = {
         'margins': this.getTileSize().margins,
         'draggable': true,
@@ -130,11 +129,19 @@ export class RulesetDashboardComponent implements OnInit {
         'prefer_new': true,
         'limit_to_screen': true,
         'center_to_screen': true,
-        'resize_directions': [
+        'resize_directions': this.IsMobileScreen ? [
             "bottomleft",
             "bottomright",
-            "topleft"
-        ],
+            "topright",
+            "topleft",
+            "right",
+            "left",
+            "bottom",
+            "top"
+        ] : [
+                "bottomleft",
+                "bottomright"
+            ],
     };
 
     IsTrashPage: boolean = false;
@@ -145,6 +152,11 @@ export class RulesetDashboardComponent implements OnInit {
     finalTileList: RulesetTileConfig[] = [];
     noRecordFound: boolean = false;
 
+    IsResizePage: boolean = false;
+    IsEditPage: boolean = false;
+    IsRelocatePage: boolean = false;
+    IsMobilePanel: boolean = false;
+
     private BoxesCurrentPaylod: number = 1;
     private BoxesEditedIndex: number = 0;
     private itemPositions: Array<any> = [];
@@ -152,6 +164,7 @@ export class RulesetDashboardComponent implements OnInit {
     private isRefreshed: boolean = false;
     preventClick: boolean = false;
     private currentGridItems: NgGridItemEvent[] = [];
+    
 
     constructor(
         private router: Router, private alertService: AlertService, private authService: AuthService, private sharedService: SharedService,
@@ -161,7 +174,7 @@ export class RulesetDashboardComponent implements OnInit {
         private rulesetService: RulesetService,
         private layoutService: RulesetDashboardLayoutService,
         private pageService: RulesetDashboardPageService,
-        private tileConfig: RulesetTileConfigService
+      private tileConfig: RulesetTileConfigService, public appService: AppService1
     ) {
 
         dragulaService.drop.subscribe((value: any[]) => {
@@ -197,7 +210,7 @@ export class RulesetDashboardComponent implements OnInit {
                                 this.onLayoutSelect(this.selectedlayout);
                             }
                         })
-
+                        
                         this.isLoading = false;
                     }, error => {
                         this.isLoading = false;
@@ -234,7 +247,7 @@ export class RulesetDashboardComponent implements OnInit {
                         //        this.onPageSelect(this.selectedPage);
                         //    }
                         //}
-
+                        
 
                     }, error => {
                         //this.isLoading = false;
@@ -324,6 +337,7 @@ export class RulesetDashboardComponent implements OnInit {
     ngOnInit() {
         setTimeout(() => {
             this.destroyModalOnInit();
+            this.validateDevice();
             this.initialize();
             this.showActionButtons(this.showActions);
             this.pageId = this.localStorage.localStorageGetItem('rPageID')
@@ -331,6 +345,48 @@ export class RulesetDashboardComponent implements OnInit {
             this.LayoutId = this.localStorage.localStorageGetItem('rLayoutID')
             this.localStorage.localStorageSetItem('rLayoutID', null);
         });
+        window.onorientationchange = () => {
+            setTimeout(() => {
+                this.gridConfig = {
+                    'margins': this.getTileSize().margins,
+                    'draggable': true,
+                    'resizable': true,
+                    'max_cols': this.columnsInGrid,
+                    'max_rows': 0,
+                    'visible_cols': 0,
+                    'visible_rows': 0,
+                    'min_cols': 0,
+                    'min_rows': 0,
+                    'col_width': this.getTileSize().max,
+                    'row_height': this.getTileSize().max,
+                    'cascade': 'up',
+                    'min_width': this.getTileSize().min,
+                    'min_height': this.getTileSize().min,
+                    'fix_to_grid': false,
+                    'auto_style': true,
+                    //'auto_resize': false,
+                    'auto_resize': this.IsMobileScreen,
+                    'maintain_ratio': true,
+                    'prefer_new': true,
+                    'limit_to_screen': true,
+                    'center_to_screen': true,
+                    'resize_directions': this.IsMobileScreen ? [
+                        "bottomleft",
+                        "bottomright",
+                        "topright",
+                        "topleft",
+                        "right",
+                        "left",
+                        "bottom",
+                        "top"
+                    ] : [
+                            "bottomleft",
+                            "bottomright"
+                        ],
+                };
+                this.boxes = this.mapBoxes(this.tiles);
+            }, 10);
+        }
     }
 
     private initialize() {
@@ -340,6 +396,15 @@ export class RulesetDashboardComponent implements OnInit {
             this.authService.logout();
         else {
             try {
+                if (window.outerWidth < 767) {
+                    this.gridConfig.draggable = false;
+                    this.gridConfig.resizable = false;
+                    this.IsMobilePanel = true;
+                } else {
+                    this.gridConfig.draggable = true;
+                    this.gridConfig.resizable = true;
+                    this.IsMobilePanel = false;
+                }                
                 this.isLoading = true;
                 this.rulesetService.getRulesetById<any>(this.ruleSetId)
                     .subscribe(data => {
@@ -366,11 +431,38 @@ export class RulesetDashboardComponent implements OnInit {
                             //this.selectedlayout
                         }
                         else {
+                            
+                            let isLayoutSelected = false;
                             this.rulesetlayouts.map((item) => {
-                                if (item.isDefaultLayout) {
+                                if (item.isDefaultComputer && this.IsComputerDevice) {
+                                    isLayoutSelected = true;
                                     this.selectedlayout = item;
+                                    // this.onLayoutSelect(this.selectedlayout);
+                                }
+                                else if (item.isDefaultTablet && this.IsTabletDevice) {
+                                    isLayoutSelected = true;
+                                    this.selectedlayout = item;
+                                    // this.onLayoutSelect(this.selectedlayout);
+                                }
+                                else if (item.isDefaultMobile && this.IsMobileDevice) {
+                                    isLayoutSelected = true;
+                                    this.selectedlayout = item;
+                                    //this.onLayoutSelect(this.selectedlayout);
                                 }
                             })
+                            if (!isLayoutSelected) {
+                                this.rulesetlayouts.map((item) => {
+                                    if (item.isDefaultLayout) {
+                                        this.selectedlayout = item;
+                                    }
+                                })
+                            }
+                            //this.rulesetlayouts.map((item) => {
+                            //    if (item.isDefaultLayout) {
+                            //        this.selectedlayout = item;
+                            //    }
+                            //})
+                            
                         }
                         if (this.pageId) {
                             this.rulesetlayouts.map((item) => {
@@ -384,9 +476,27 @@ export class RulesetDashboardComponent implements OnInit {
                             })
                         }
                         else {
-                            if (this.selectedlayout != null || this.selectedlayout != undefined)
+                            if (this.selectedlayout != null || this.selectedlayout != undefined) {
+                                let isLayoutSelected = false;
                                 this.rulesetlayouts.map((item) => {
-                                    if (item.isDefaultLayout) {
+                                    if (item.isDefaultComputer && this.IsComputerDevice) {
+                                        isLayoutSelected = true;
+                                        item.rulesetDashboardPages.map((pageItem) => {
+                                            if (pageItem.rulesetDashboardPageId == item.defaultPageId) {
+                                                this.selectedPage = pageItem;
+                                            }
+                                        })
+                                    }
+                                    else if (item.isDefaultTablet && this.IsTabletDevice) {
+                                        isLayoutSelected = true;
+                                        item.rulesetDashboardPages.map((pageItem) => {
+                                            if (pageItem.rulesetDashboardPageId == item.defaultPageId) {
+                                                this.selectedPage = pageItem;
+                                            }
+                                        })
+                                    }
+                                    else if (item.isDefaultMobile && this.IsMobileDevice) {
+                                        isLayoutSelected = true;
                                         item.rulesetDashboardPages.map((pageItem) => {
                                             if (pageItem.rulesetDashboardPageId == item.defaultPageId) {
                                                 this.selectedPage = pageItem;
@@ -394,14 +504,45 @@ export class RulesetDashboardComponent implements OnInit {
                                         })
                                     }
                                 })
+                                if (!isLayoutSelected) {
+                                    this.rulesetlayouts.map((item) => {
+                                        if (item.isDefaultLayout) {
+                                            item.rulesetDashboardPages.map((pageItem) => {
+                                                if (pageItem.rulesetDashboardPageId == item.defaultPageId) {
+                                                    this.selectedPage = pageItem;
+                                                }
+                                            })
+                                        }
+                                    })
+                                }
+                                
+                            }
                         }
 
                         if (!this.selectedPage && this.page1) {
+                            let isLayoutSelected = false;
                             this.rulesetlayouts.map((item) => {
-                                if (item.isDefaultLayout) {
+                                if (item.isDefaultComputer && this.IsComputerDevice) {
+                                    isLayoutSelected = true;
+                                    this.selectedPage = item.rulesetDashboardPages[0];
+                                }
+                                else if (item.isDefaultTablet && this.IsTabletDevice) {
+                                    isLayoutSelected = true;
+                                    this.selectedPage = item.rulesetDashboardPages[0];
+                                }
+                                else if (item.isDefaultMobile && this.IsMobileDevice) {
+                                    isLayoutSelected = true;
                                     this.selectedPage = item.rulesetDashboardPages[0];
                                 }
                             })
+                            if (!isLayoutSelected) {
+                                this.rulesetlayouts.map((item) => {
+                                    if (item.isDefaultLayout) {
+                                        this.selectedPage = item.rulesetDashboardPages[0];
+                                    }
+                                })
+                            }
+                           
                             //this.initialize();
                             //this.page1 = 0;
                         }
@@ -412,9 +553,13 @@ export class RulesetDashboardComponent implements OnInit {
                                 //this.rulesetTileService.getTilesByPageIdRulesetId<string>(this.selectedPage.rulesetDashboardPageId, this.ruleSetId)
                                 this.rulesetTileService.getTilesByPageIdRulesetId_sp<string>(this.selectedPage.rulesetDashboardPageId, this.ruleSetId)
                                     .subscribe(data => {
-
-                                        //this.tiles = data;
+                                        
+                                        this.tiles = data;
                                         this.boxes = this.mapBoxes(data);
+                                        if (this.IsMobilePanel) {
+                                            this.openEditGrid();
+                                        }
+                                       
                                         this.isLoading = false;
                                         try {
                                             this.noRecordFound = !data.length;
@@ -425,7 +570,7 @@ export class RulesetDashboardComponent implements OnInit {
                             } else this.isLoading = false;
 
                             if (this.selectedPage.rulesetDashboardPageId) {
-
+                                
                                 this.pageDefaultData = this.selectedPage;
                                 //this.pageService.getRulesetDashboardPageById<any>(this.selectedPage.rulesetDashboardPageId)
                                 //    .subscribe(data => {
@@ -461,7 +606,8 @@ export class RulesetDashboardComponent implements OnInit {
             headerId: ruleset.ruleSetId,
             headerLink: 'ruleset',
             hasHeader: true
-        };
+      };
+      this.appService.updateAccountSetting1(headerValues);
         this.sharedService.updateAccountSetting(headerValues);
         this.localStorage.deleteData(DBkeys.HEADER_VALUE);
         this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
@@ -521,19 +667,19 @@ export class RulesetDashboardComponent implements OnInit {
     onLayoutSelect(layout: any): void {
 
         this.selectedlayout = layout;
-        this.selectedPage = layout.rulesetDashboardPages[0];
+        this.selectedPage = layout.rulesetDashboardPages[0];  
         this.selectedlayout.rulesetDashboardPages.map((pageItem) => {
         if (pageItem.rulesetDashboardPageId == this.selectedlayout.defaultPageId) {
                     this.selectedPage = pageItem;
             }
         })
-
+          
         this.tiles = null;
         if (this.selectedPage) {
             if (this.selectedPage.rulesetDashboardPageId) {
                 this.rulesetTileService.getTilesByPageIdRulesetId_sp<string>(this.selectedPage.rulesetDashboardPageId, this.ruleSetId)
                     .subscribe(data => {
-                        //this.tiles = data;
+                        this.tiles = data;
                         this.boxes = this.mapBoxes(data);
                         try {
                             this.noRecordFound = !data.length;
@@ -654,7 +800,7 @@ export class RulesetDashboardComponent implements OnInit {
             this.rulesetTileService.getTilesByPageIdRulesetId_sp<any>(page.rulesetDashboardPageId, this.ruleSetId)
                 .subscribe(data => {
                     //getRulesetDashboardPageById
-                    //this.tiles = data;
+                    this.tiles = data;
                     this.boxes = this.mapBoxes(data);
                     this.isLoading = false;
                     try {
@@ -850,7 +996,7 @@ export class RulesetDashboardComponent implements OnInit {
     }
 
     openTile() {
-        this.UpdateTileConfigList(this.finalTileList);
+        this.UpdateTileConfigList(this.finalTileList); 
         this.bsModalRef = this.modalService.show(RulesetTileComponent, {
             class: 'modal-primary modal-md',
             ignoreBackdropClick: true,
@@ -869,19 +1015,78 @@ export class RulesetDashboardComponent implements OnInit {
         this.Deletedboxes = [];
         this.Originalboxes = Object.assign([], this.boxes);
     }
+    openResize() {
+        this.IsResizePage = true;
+        //IsEditPage: boolean = false;
+        //IsRelocatePage
+        this.gridConfig.draggable = false;
+        this.gridConfig.resizable = true;
+        this.ResizeRelocateboxes = Object.assign([], this.boxes.map((box) => {
+            box.config = Object.assign(new config, box.config);
+
+            return Object.assign(new Box, box);
+        }));
+        this.Originalboxes = Object.assign([], this.boxes.map((box) => {
+            box.config = Object.assign(new config, box.config);
+
+            return Object.assign(new Box, box);
+        }));
+    }
+    openRelocate() {
+        this.IsRelocatePage = true;
+        //IsEditPage: boolean = false;
+        //IsRelocatePage
+        this.gridConfig.draggable = true;
+        this.gridConfig.resizable = false;
+        //this.ResizeRelocateboxes = [];
+        this.Originalboxes = Object.assign([], this.boxes);
+        this.ResizeRelocateboxes = Object.assign([], this.boxes.map((box) => {
+            box.config = Object.assign(new config, box.config);
+
+            return Object.assign(new Box, box);
+        }));
+        this.Originalboxes = Object.assign([], this.boxes.map((box) => {
+            box.config = Object.assign(new config, box.config);
+
+            return Object.assign(new Box, box);
+        }));
+    }
+    openEditGrid() {
+        this.IsEditPage = true;
+        //IsEditPage: boolean = false;
+        //IsRelocatePage
+        this.gridConfig.draggable = false;
+        this.gridConfig.resizable = false;
+        this.Originalboxes = Object.assign([], this.boxes);
+        this.ResizeRelocateboxes = [];
+    }
     backToNormal() {
         this.IsTrashPage = false;
-        this.gridConfig.draggable = true;
-        this.gridConfig.resizable = true;
+        this.IsResizePage = false;
+        this.IsRelocatePage = false;
+        this.IsEditPage = false;
+        this.gridConfig.draggable = !this.IsMobilePanel;
+        this.gridConfig.resizable = !this.IsMobilePanel;
         this.Deletedboxes = [];
-        this.boxes = Object.assign([], this.Originalboxes);
+        //this.boxes = Object.assign([], this.Originalboxes);
+        if (this.ResizeRelocateboxes.length) {
+            this.boxes = Object.assign([], this.ResizeRelocateboxes.map((box) => {
+                box.config = Object.assign(new config, box.config);
+
+                return Object.assign(new Box, box);
+            }));
+            this.ResizeRelocateboxes = [];
+        }
+        else {
+            this.boxes = Object.assign([], this.Originalboxes);
+        }
     }
     moveToTrash(box: Box, index: number) {
         this.Deletedboxes.push(box);
         this.removeGridBox(index);
         this.noRecordFound = !this.Originalboxes.length;
     }
-    deleteMultipleTiles() {
+    deleteMultipleTiles() {        
         let TileIdList = [];
         this.Deletedboxes.map((box) => {
             TileIdList.push(box.tile.rulesetTileId);
@@ -892,8 +1097,12 @@ export class RulesetDashboardComponent implements OnInit {
                 .subscribe(data => {
                     //this.isLoading = false;
                     this.IsTrashPage = false;
-                    this.gridConfig.draggable = true;
-                    this.gridConfig.resizable = true;
+                    
+                    this.IsResizePage = false;
+                    this.IsRelocatePage = false;
+                    this.IsEditPage = false;
+                    this.gridConfig.draggable = !this.IsMobilePanel;
+                    this.gridConfig.resizable = !this.IsMobilePanel;
                     this.Deletedboxes = [];
                     this.save();
                 }, error => {
@@ -902,8 +1111,12 @@ export class RulesetDashboardComponent implements OnInit {
         }
         else {
             this.IsTrashPage = false;
-            this.gridConfig.draggable = true;
-            this.gridConfig.resizable = true;
+            this.IsTrashPage = false;
+            this.IsResizePage = false;
+            this.IsRelocatePage = false;
+            this.IsEditPage = false;
+            this.gridConfig.draggable = !this.IsMobilePanel;
+            this.gridConfig.resizable = !this.IsMobilePanel;
             this.Deletedboxes = [];
             this.save();
         }
@@ -979,7 +1192,7 @@ export class RulesetDashboardComponent implements OnInit {
                         break;
                     /*
                     case STAT_TYPE.RichText:
-                       //
+                       // 
                        // let characterStat = _tile.characterStatTiles.charactersCharacterStat.characterStat;
                         this.bsModalRef = this.modalService.show(EditCharacterStatComponent, {
                             class: 'modal-primary modal-lg',
@@ -1017,7 +1230,7 @@ export class RulesetDashboardComponent implements OnInit {
                 }
                 break;
             }
-            case TILES.LINK: {
+            case TILES.LINK: {                
                 break;
             }
             case TILES.EXECUTE: {
@@ -1072,7 +1285,7 @@ export class RulesetDashboardComponent implements OnInit {
         }
     }
 
-    NextPrevPage(selectedlayout: any, next: number) {
+    NextPrevPage(selectedlayout: any, next: any) {
 
         this.isLoading = true;
         let allPages = selectedlayout.rulesetDashboardPages;
@@ -1235,12 +1448,12 @@ export class RulesetDashboardComponent implements OnInit {
     }
 
     /////////////////////////////////////////////////////////
-
+   
     editTile(_editTile: any, tileType: number, boxIndex: number = 0) {
         // alert(this.preventClick);
         //if (!this.preventClick) {
         let tile: RulesetTile = _editTile;
-        this.UpdateTileConfigList(this.finalTileList);
+        this.UpdateTileConfigList(this.finalTileList); 
         this.BoxesEditedIndex = boxIndex;
         switch (tileType) {
             case TILES.NOTE: {
@@ -1431,7 +1644,7 @@ export class RulesetDashboardComponent implements OnInit {
         this.preventClick = true;
         //alert(this.preventClick);
         //  this.trashedTile = false;
-        if (this.IsMobileScreen) {
+        if (this.IsMobileScreen) {           
                 this.trashedTile = false
         }
     }
@@ -1443,16 +1656,16 @@ export class RulesetDashboardComponent implements OnInit {
         //    this.boxes[index].config.draggable = true;
         //   clearTimeout(myVar);
         //}, 1000);
-
-
+        
+        
         //this.preventClick = true;
-        //alert(this.preventClick);
+        //alert(this.preventClick);       
     }
 
     onDragStop(event: any, rulesetTile: RulesetTile, boxIndex: number = 0) {
         if (this.trashedTile) {
             this.preventClick = false;
-                this.deleteTile(rulesetTile, boxIndex);
+                this.deleteTile(rulesetTile, boxIndex);           
             this.trashedTile = false;
         }
     }
@@ -1489,7 +1702,7 @@ export class RulesetDashboardComponent implements OnInit {
     mouseout() {
         this.trashedTile = false;
     }
-
+   
     grid_onItemChange(items) {
         this.currentGridItems = items
         if (this.initial) {
@@ -1593,7 +1806,7 @@ export class RulesetDashboardComponent implements OnInit {
         else {
             this.tileConfig.createUpdateRulesetTileConfigList<RulesetTileConfig[]>(configList, update)
                 .subscribe(data => {
-
+                   
                 }, error => {
                     this.isLoading = false;
                 }, () => { });
@@ -1609,9 +1822,9 @@ export class RulesetDashboardComponent implements OnInit {
             }, () => { });
     }
     save(redirectto: any = undefined, params: any = undefined) {
-
+        
         this.createUpdateTileConfigList(this.finalTileList, true, true, redirectto, params);
-
+        
     }
     navigateTo(redirectto: any, params: any = undefined) {
 
@@ -1639,7 +1852,7 @@ export class RulesetDashboardComponent implements OnInit {
             this.router.navigate(['/ruleset/ability/', this.ruleSetId]);
         }
         else if (redirectto == 5) {
-            this.router.navigate(['/character-stats/', this.ruleSetId]);
+          this.router.navigate(['/ruleset/character-stats/', this.ruleSetId]);
         }
         else if (redirectto == 6) {
             this.onLayoutSelect(params);
@@ -1742,5 +1955,22 @@ export class RulesetDashboardComponent implements OnInit {
             maxSize = 60;
         }
         return Object.assign({}, { min: minSize, max: maxSize, margins: margin });
+    }
+    validateDevice() {
+        if (window.outerWidth <= 767) {//mobile
+            this.IsMobileDevice = true;
+            this.IsTabletDevice = false;
+            this.IsComputerDevice = false;
+        }
+        else if (window.outerWidth >= 768 && window.outerWidth <= 991) {//tablet
+            this.IsTabletDevice = true;
+            this.IsMobileDevice = false;
+            this.IsComputerDevice = false;
+        }
+        else if (window.outerWidth >= 992) {//desktop
+            this.IsComputerDevice = true;
+            this.IsTabletDevice = false;
+            this.IsMobileDevice = false;
+        }
     }
 }
