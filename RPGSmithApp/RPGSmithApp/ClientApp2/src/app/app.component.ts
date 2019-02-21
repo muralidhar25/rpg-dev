@@ -359,7 +359,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         //  headerLink: 'character',
         //  hasHeader: true
         //};
-        //debugger
+        //
         //this.app1Service.updateAccountSetting1(headerValues);
       }
     });

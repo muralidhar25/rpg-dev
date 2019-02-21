@@ -322,7 +322,7 @@ export class DiceRollComponent implements OnInit {
 
     //DICE BUTTON CLICK
   commandOnDiceClick(dice: DiceRoll) {
-      debugger
+      
         // characterCommandModel: CharacterCommand
         let _command = '';
 

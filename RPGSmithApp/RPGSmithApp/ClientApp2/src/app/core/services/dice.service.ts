@@ -1507,7 +1507,7 @@ export class DiceService {
 
   //new main-
   public static diceOnSelectOnRoll(commandText: string, hasAnd?: boolean, diceTray?: DiceTray[]): any[] {
-
+    
     if (!diceTray) {
       diceTray = [];
     }
@@ -1531,7 +1531,7 @@ export class DiceService {
       let diceValues = this.getCommandSigns(_commandText);
 
       for (var val in diceValues) {
-
+        
         //checks for null or undefined
         let value = diceValues[val]
         if (!value) continue;
@@ -2030,15 +2030,15 @@ export class DiceService {
   }
 
   public static getCommandSigns(commandText: string) {
-
-    let replace = /\+/gi;
-    commandText = commandText.replace(replace, "#+");
-    replace = /\-/gi;
-    commandText = commandText.replace(replace, "#-");
-    replace = /\*/gi;
-    commandText = commandText.replace(replace, "#*");
-    replace = /\//gi;
-    commandText = commandText.replace(replace, "#/");
+    
+    //let replace = /\+/gi;
+    commandText = commandText.replace(/\+/gi, "#+");
+    //replace = /\-/gi;
+    commandText = commandText.replace(/\-/gi, "#-");
+    //replace = /\*/gi;
+    commandText = commandText.replace(/\*/gi, "#*");
+    //replace = /\//gi;
+    commandText = commandText.replace(/\//gi, "#/");
 
     let signs: any = [];
     let _splitCommand = commandText.split('#').filter((val) => val);
