@@ -75,3 +75,43 @@
   border: 2px solid #afafaf !important;
   padding: 4px;
 }
+.header-search {
+  position: relative;
+  align-items: center;
+  display: flex;
+  display: -webkit-box;
+}
+
+.header-search i {
+  position: absolute;
+  top: 50%;
+  transform: translate(0,-50%);
+  left: 10px;
+}
+
+.header-search .form-control {
+  border: 0px;
+  padding-left: 34px;
+  width: 160px;
+}
+
+@media (max-width:767.5px) {
+  .header-search i {
+    position: initial;
+    top: 0;
+    transform: initial;
+    left: 0;
+    width: 34px;
+    height: 34px;
+    line-height: 34px;
+    text-align: center;
+  }
+
+  .header-search .form-control {
+    border: 0px;
+    padding-left: 34px;
+    width: 160px;
+    display: none;
+    position: absolute;
+  }
+}

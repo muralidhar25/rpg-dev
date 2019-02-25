@@ -801,7 +801,6 @@ export class Utilities {
     return true;
   }
   public static InvalidValueForConditionStats: number = -25163711;
-  //public static LogoImage: string = 'logo-full.png'; //for prod //beta
-  public static LogoImage: string = 'logo-full.svg'; // for dev //non-beta
-
+  //public static LogoImage: string = 'logo-full.png'; //for prod //beta //Not used now
+  public static LogoImage: string = 'logo-full.svg'; // for prod //non-beta 
 }

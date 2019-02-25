@@ -41,5 +41,12 @@ namespace DAL.Services
         void removeDiceTray(int rulesetID);
         List<RuleSet> GetRuleSetToCreateCharacterByUserId(string UserId, int page, int pageSize);
         string GetUserImageFromRulesetID(int ruleSetId);
+        List<CharacterAbility> SearchCharacterAbilities(SearchModel searchModel);
+        List<Ability> SearchRulesetAbilities(SearchModel searchModel);
+        List<CharacterSpell> SearchCharacterSpells(SearchModel searchModel);
+        List<Spell> SearchRulesetSpells(SearchModel searchModel);
+        List<Item> SearchCharacterItems(SearchModel searchModel);
+        List<ItemMaster> SearchRulesetItems(SearchModel searchModel);
+
     }
 }

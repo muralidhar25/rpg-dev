@@ -7,10 +7,12 @@ import  { SharedModule } from '../shared/shared.module';
 import { SearchRoutingModule } from "./search-routing.module";
 
 import { SearchComponent } from "./search/search.component";
+import { BasicSearchComponent } from "./basic-search/basic-search.component";
 
 @NgModule({
   declarations: [
-    SearchComponent
+    SearchComponent,
+    BasicSearchComponent
   ],
   imports: [
     SharedModule,
@@ -19,7 +21,8 @@ import { SearchComponent } from "./search/search.component";
   providers: [
   ],
   exports: [
-    SearchComponent
+    SearchComponent,
+    BasicSearchComponent
   ],
   entryComponents: [
     SearchComponent,

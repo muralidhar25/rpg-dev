@@ -9,11 +9,13 @@ import { EndpointFactory } from '../common/endpoint-factory.service';
 import { ConfigurationService } from '../common/configuration.service';
 import { FileUploadService } from "../common/file-upload.service";
 import { DBkeys } from '../common/db-keys';
+import { BasicSearch } from '../models/search.model';
 
 @Injectable()
 export class SearchService extends EndpointFactory {
 
-    private readonly searchCharacterApi: string = this.configurations.baseUrl + "/api/Search/SearchCharacter";
+  private readonly searchCharacterApi: string = this.configurations.baseUrl + "/api/Search/SearchCharacter";
+  private readonly searchRecordsApi: string = this.configurations.baseUrl + "/api/ruleset/GetSearchResults";
 
     constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
         private fileUploadService: FileUploadService) {
@@ -28,5 +30,12 @@ export class SearchService extends EndpointFactory {
                 return this.handleError(error, () => this.searchCharacters(query, userId));
             });
     }
+  searchRecords<T>(searchModel: BasicSearch): Observable<T> {
+    let endpointUrl = `${this.searchRecordsApi}`;
 
+    return this.http.post<T>(endpointUrl, JSON.stringify(searchModel), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.searchRecords(searchModel));
+      });
+  }
 }

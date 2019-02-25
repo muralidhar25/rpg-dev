@@ -7,23 +7,23 @@
 export const environment = {
   production: true,
   useMockdata: false,
-  //baseUrl: 'http://localhost:57253', //Change this to the address of your backend API if different from frontend address
-  //baseUrl: 'https://app.rpgsmith.com',
+  // baseUrl: 'http://localhost:57253', //Change this to the address of your backend API if different from frontend address
+  // baseUrl: 'https://app.rpgsmith.com',
   baseUrl: 'https://rpgsmithapp-development.azurewebsites.net',
-  //baseUrl: 'http://rpgsmithapp-stage.azurewebsites.net',
+  // baseUrl: 'http://rpgsmithapp-stage.azurewebsites.net',
   appVersion: '0.9.09',
   appBuildNo: '00015',
   PublishedDate: '21 February, 2019',
-  loginUrl: "/login",
-  registerUrl: "/register",
-  loginApi: "/connect/token",
-  //loginApi: "/myconnect/token", //for mock data
-  registerApi: "/api/account/Registration",
-  // registerApi: "/myconnect/register", // for mock data
-  forgotPassApi: "/api/account/ForgotPassword",
-  resetPassApi: "/api/account/ResetPassword",
+  loginUrl: '/login',
+  registerUrl: '/register',
+  loginApi: '/connect/token',
+  // loginApi: "/myconnect/token", //for mock data
+  registerApi: '/api/account/Registration',
+  // registerApi: '/myconnect/register', // for mock data
+  forgotPassApi: '/api/account/ForgotPassword',
+  resetPassApi: '/api/account/ResetPassword',
   grantType: {
-    facebook: "urn:ietf:params:oauth:grant-type:facebook_identity_token",
-    google: "urn:ietf:params:oauth:grant-type:google_identity_token"
+    facebook: 'urn:ietf:params:oauth:grant-type:facebook_identity_token',
+    google: 'urn:ietf:params:oauth:grant-type:google_identity_token'
   }
 };

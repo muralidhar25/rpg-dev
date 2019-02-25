@@ -212,7 +212,7 @@ namespace RPGSmithApp.Controllers
                     catch (Exception ex)
                     {
                     }
-                    if (model.CharacterStatDefaultValueViewModel != null && (model.CharacterStatTypeId!=(int)STAT_TYPE.RichText && model.CharacterStatTypeId != (int)STAT_TYPE.Toggle && model.CharacterStatTypeId != (int)STAT_TYPE.Condition && model.CharacterStatTypeId != (int)STAT_TYPE.Calculation && model.CharacterStatTypeId != (int)STAT_TYPE.Choice && model.CharacterStatTypeId != (int)STAT_TYPE.Combo && model.CharacterStatTypeId != (int)STAT_TYPE.LinkRecord && model.CharacterStatTypeId != (int)STAT_TYPE.OnOff && model.CharacterStatTypeId != (int)STAT_TYPE.YesNo))
+                    if (model.CharacterStatDefaultValueViewModel != null && (model.CharacterStatTypeId != (int)STAT_TYPE.Toggle && model.CharacterStatTypeId != (int)STAT_TYPE.Condition && model.CharacterStatTypeId != (int)STAT_TYPE.Calculation && model.CharacterStatTypeId != (int)STAT_TYPE.Choice && model.CharacterStatTypeId != (int)STAT_TYPE.Combo && model.CharacterStatTypeId != (int)STAT_TYPE.LinkRecord && model.CharacterStatTypeId != (int)STAT_TYPE.OnOff && model.CharacterStatTypeId != (int)STAT_TYPE.YesNo))
                     {
                         if (model.CharacterStatDefaultValueViewModel.Count > 0)
                         {
@@ -318,7 +318,7 @@ namespace RPGSmithApp.Controllers
                             //}
                             
                         }
-                        if (model.CharacterStatDefaultValueViewModel != null && (model.CharacterStatTypeId != (int)STAT_TYPE.RichText && model.CharacterStatTypeId != (int)STAT_TYPE.Toggle && model.CharacterStatTypeId != (int)STAT_TYPE.Condition && model.CharacterStatTypeId != (int)STAT_TYPE.Calculation && model.CharacterStatTypeId != (int)STAT_TYPE.Choice && model.CharacterStatTypeId != (int)STAT_TYPE.Combo && model.CharacterStatTypeId != (int)STAT_TYPE.LinkRecord && model.CharacterStatTypeId != (int)STAT_TYPE.OnOff && model.CharacterStatTypeId != (int)STAT_TYPE.YesNo))
+                        if (model.CharacterStatDefaultValueViewModel != null && (model.CharacterStatTypeId != (int)STAT_TYPE.Toggle && model.CharacterStatTypeId != (int)STAT_TYPE.Condition && model.CharacterStatTypeId != (int)STAT_TYPE.Calculation && model.CharacterStatTypeId != (int)STAT_TYPE.Choice && model.CharacterStatTypeId != (int)STAT_TYPE.Combo && model.CharacterStatTypeId != (int)STAT_TYPE.LinkRecord && model.CharacterStatTypeId != (int)STAT_TYPE.OnOff && model.CharacterStatTypeId != (int)STAT_TYPE.YesNo))
                         {
                             if (model.CharacterStatDefaultValueViewModel.Count > 0) {
                                 foreach (var cDefval in model.CharacterStatDefaultValueViewModel)
@@ -568,7 +568,7 @@ namespace RPGSmithApp.Controllers
                 }
             }
             catch { }
-            if (model.CharacterStatDefaultValueViewModel != null && (model.CharacterStatTypeId != (int)STAT_TYPE.RichText && model.CharacterStatTypeId != (int)STAT_TYPE.Toggle && model.CharacterStatTypeId != (int)STAT_TYPE.Condition && model.CharacterStatTypeId != (int)STAT_TYPE.Calculation && model.CharacterStatTypeId != (int)STAT_TYPE.Choice && model.CharacterStatTypeId != (int)STAT_TYPE.Combo && model.CharacterStatTypeId != (int)STAT_TYPE.LinkRecord && model.CharacterStatTypeId != (int)STAT_TYPE.OnOff && model.CharacterStatTypeId != (int)STAT_TYPE.YesNo))
+            if (model.CharacterStatDefaultValueViewModel != null && (model.CharacterStatTypeId != (int)STAT_TYPE.Toggle && model.CharacterStatTypeId != (int)STAT_TYPE.Condition && model.CharacterStatTypeId != (int)STAT_TYPE.Calculation && model.CharacterStatTypeId != (int)STAT_TYPE.Choice && model.CharacterStatTypeId != (int)STAT_TYPE.Combo && model.CharacterStatTypeId != (int)STAT_TYPE.LinkRecord && model.CharacterStatTypeId != (int)STAT_TYPE.OnOff && model.CharacterStatTypeId != (int)STAT_TYPE.YesNo))
             {
                 if (model.CharacterStatDefaultValueViewModel.Count > 0)
                 {
@@ -867,7 +867,7 @@ namespace RPGSmithApp.Controllers
                         
                     }
                 }
-                if (model.CharacterStatDefaultValueViewModel != null && (model.CharacterStatTypeId != (int)STAT_TYPE.RichText && model.CharacterStatTypeId != (int)STAT_TYPE.Toggle && model.CharacterStatTypeId != (int)STAT_TYPE.Condition && model.CharacterStatTypeId != (int)STAT_TYPE.Calculation && model.CharacterStatTypeId != (int)STAT_TYPE.Choice && model.CharacterStatTypeId != (int)STAT_TYPE.Combo && model.CharacterStatTypeId != (int)STAT_TYPE.LinkRecord && model.CharacterStatTypeId != (int)STAT_TYPE.OnOff && model.CharacterStatTypeId != (int)STAT_TYPE.YesNo))
+                if (model.CharacterStatDefaultValueViewModel != null && (model.CharacterStatTypeId != (int)STAT_TYPE.Toggle && model.CharacterStatTypeId != (int)STAT_TYPE.Condition && model.CharacterStatTypeId != (int)STAT_TYPE.Calculation && model.CharacterStatTypeId != (int)STAT_TYPE.Choice && model.CharacterStatTypeId != (int)STAT_TYPE.Combo && model.CharacterStatTypeId != (int)STAT_TYPE.LinkRecord && model.CharacterStatTypeId != (int)STAT_TYPE.OnOff && model.CharacterStatTypeId != (int)STAT_TYPE.YesNo))
                 {
                     if (model.CharacterStatDefaultValueViewModel.Count > 0)
                     {

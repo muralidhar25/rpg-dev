@@ -34,10 +34,16 @@
         </div>
 
         <div class="site-header-right-section">
-          <form class="site-header-search" *ngIf="showCharacterSearch">
+          <form class="site-header-search" *ngIf="showCharacterSearch && false">
             <i class="icon icon-search"></i>
             <input type="search" name="searchText" [(ngModel)]="searchText" placeholder="Search {{placeHolderText}}" (keyup.enter)="goToSearch(searchText)">
           </form>
+
+          <!-- Search -->
+          <div class="header-search" *ngIf="SearchType">
+            <i class="fa fa-search"></i>
+            <input type="text" name="searchCharRule" [(ngModel)]="searchCharRule" class="form-control" placeholder="Search {{ SearchTypeText }}" (keyup.enter)="navigateToSearch(SearchType, searchCharRule)" />
+          </div>
 
           <!-- User -->
           <div class="site-header-user">

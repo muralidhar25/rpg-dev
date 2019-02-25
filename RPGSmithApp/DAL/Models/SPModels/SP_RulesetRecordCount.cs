@@ -115,4 +115,54 @@ namespace DAL.Models.SPModels
         public bool? isSpellMemorized { get; set; }
         public bool? isAbilityEnabled { get; set; }
     }
+    public enum SP_SearchType
+    {
+        RulesetItems = 1,
+        CharacterItems = 2,
+        RulesetSpells = 3,
+        CharacterSpells = 4,
+        RulesetAbilities = 5,
+        CharacterAbilities = 6
+    }
+    public class SearchModel
+    {
+        public SP_SearchType SearchType { get; set; }
+        public string SearchString { get; set; }
+        public int CharacterID { get; set; }
+        public int RulesetID { get; set; }
+        public ItemFilter ItemFilters { get; set; }
+        public SpellFilter SpellFilters { get; set; }
+        public AbilityFilter AbilityFilters { get; set; }
+    }
+    public class ItemFilter
+    {
+        public bool IsItemName { get; set; }
+        public bool IsItemTags { get; set; }
+        public bool IsItemStats { get; set; }
+        public bool IsItemDesc { get; set; }
+        public bool IsItemRarity { get; set; }
+    }
+    public class SpellFilter
+    {
+        public bool IsSpellName { get; set; }
+        public bool IsSpellTags { get; set; }
+        public bool IsSpellStats { get; set; }
+        public bool IsSpellDesc { get; set; }
+        public bool IsSpellClass { get; set; }
+        public bool IsSpellSchool { get; set; }
+        public bool IsSpellLevel { get; set; }
+        public bool IsSpellCastingTime { get; set; }
+        public bool IsSpellEffectDesc { get; set; }
+        public bool IsSpellHitEffect { get; set; }
+        public bool IsSpellMissEffect { get; set; }
+    }
+    public class AbilityFilter
+    {
+
+        public bool IsAbilityName { get; set; }
+        public bool IsAbilityTags { get; set; }
+        public bool IsAbilityStats { get; set; }
+        public bool IsAbilityDesc { get; set; }
+        public bool IsAbilityLevel { get; set; }
+    }
 }

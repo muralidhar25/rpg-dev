@@ -1,10 +1,5 @@
-import { NgModule, ErrorHandler } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-
-import  { SharedModule } from '../shared/shared.module';
-
+import { NgModule } from '@angular/core';
+import { SharedModule } from '../shared/shared.module';
 import { TileComponent } from './tile.component';
 import { NoteTileComponent } from './note/note.component';
 import { CounterTileComponent } from './counter/counter.component';
@@ -20,7 +15,6 @@ import { EditCounterComponent } from './counter/edit-counter/edit-counter.compon
 import { EditCharacterStatComponent } from './character-stat/edit-character-stat/edit-character-stat.component';
 import { UseLinkComponent } from './link/use-link/use-link.component';
 import { UseExecuteComponent } from './execute/use-execute/use-execute.component';
-
 import { TextTileComponent } from './text/text.component';
 import { EditTextComponent } from './text/edit-text/edit-text.component';
 
@@ -85,7 +79,7 @@ import { EditTextComponent } from './text/edit-text/edit-text.component';
     UseLinkComponent,
     UseExecuteComponent,
     TextTileComponent,
-    EditTextComponent,    
+    EditTextComponent
   ]
 })
 export class TileModule {}

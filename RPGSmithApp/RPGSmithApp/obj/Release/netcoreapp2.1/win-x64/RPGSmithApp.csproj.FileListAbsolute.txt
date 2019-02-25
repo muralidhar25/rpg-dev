@@ -16,5 +16,3 @@ F:\Vikas\Projects\RPGSmith\OptimizedCode\RPGSmithApp\RPGSmithApp\obj\Release\net
 F:\Vikas\Projects\RPGSmith\OptimizedCode\RPGSmithApp\RPGSmithApp\obj\Release\netcoreapp2.1\win-x64\RPGSmithApp.csproj.CopyComplete
 F:\Vikas\Projects\RPGSmith\OptimizedCode\RPGSmithApp\RPGSmithApp\obj\Release\netcoreapp2.1\win-x64\RPGSmithApp.dll
 F:\Vikas\Projects\RPGSmith\OptimizedCode\RPGSmithApp\RPGSmithApp\obj\Release\netcoreapp2.1\win-x64\RPGSmithApp.pdb
-F:\Vikas\Projects\RPGSmith\OptimizedCode\RPGSmithApp\RPGSmithApp\bin\Release\netcoreapp2.1\win-x64\hostpolicy.dll
-F:\Vikas\Projects\RPGSmith\OptimizedCode\RPGSmithApp\RPGSmithApp\bin\Release\netcoreapp2.1\win-x64\hostfxr.dll

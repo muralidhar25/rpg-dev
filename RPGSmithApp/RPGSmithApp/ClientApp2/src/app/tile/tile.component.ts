@@ -45,8 +45,7 @@ export class TileComponent implements OnInit {
         if (this.pageId) {
             this.pageService.getCharacterDashboardPageById<any>(this.pageId)
                 .subscribe(data => {
-                 //   console.log(data);
-                    
+                 // console.log(data);
                     this.pageDefaultData = data;
                 }, error => {
                 }, () => { });
@@ -115,7 +114,7 @@ export class TileComponent implements OnInit {
                 break;
             }
             case TILES.CHARACTERSTAT: {
-                let char = new Characters();
+                const char = new Characters();
                 char.characterId = this.characterId;
                 char.ruleSet = this.ruleSet;
                 this.bsModalRef = this.modalService.show(CharacterStatTileComponent, {
@@ -192,20 +191,19 @@ export class TileComponent implements OnInit {
                 break;
             }
             default: break;
-        }        
+      }
     }
 
     close() {
         this.bsModalRef.hide();
-        //this.destroyModalOnInit();
+        // this.destroyModalOnInit();
     }
 
-    private destroyModalOnInit(): void {
-        try {
-            this.modalService.hide(1);
-            document.body.classList.remove('modal-open');
-            //$(".modal-backdrop").remove();
-        } catch (err) { }
-    }
+    // private destroyModalOnInit(): void {
+    //    try {
+    //        this.modalService.hide(1);
+    //        document.body.classList.remove('modal-open');
+    //    } catch (err) { }
+    // }
 
 }

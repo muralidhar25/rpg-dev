@@ -2,6 +2,7 @@ using AutoMapper;
 using DAL.Core.Interfaces;
 using DAL.Models;
 using DAL.Models.RulesetTileModels;
+using DAL.Models.SPModels;
 using DAL.Services;
 using DAL.Services.RulesetTileServices;
 using Microsoft.AspNetCore.Authorization;
@@ -269,7 +270,7 @@ namespace RPGSmithApp.Controllers
             foreach (var ruleSet in ruleSets)
                 ruleSetsVM.Add(_commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet));
 
-            return ruleSetsVM;
+            return ruleSetsVM.OrderBy(x => x.SortOrder).ThenBy(x => x.RuleSetName).ToList();
         }
 
         [HttpPost("CreateRuleSet")]
@@ -1583,5 +1584,28 @@ namespace RPGSmithApp.Controllers
         }
 
         #endregion
+
+        [HttpPost("GetSearchResults")]
+        public IActionResult GetSearchResults([FromBody] SearchModel searchModel)
+        {
+            var results = new int[] { };
+            switch (searchModel.SearchType)
+            {
+                case SP_SearchType.CharacterAbilities:
+                    return Ok(_ruleSetService.SearchCharacterAbilities(searchModel));
+                case SP_SearchType.RulesetAbilities:
+                    return Ok(_ruleSetService.SearchRulesetAbilities(searchModel));
+                case SP_SearchType.CharacterSpells:
+                    return Ok(_ruleSetService.SearchCharacterSpells(searchModel));
+                case SP_SearchType.RulesetSpells:
+                    return Ok(_ruleSetService.SearchRulesetSpells(searchModel));
+                case SP_SearchType.CharacterItems:
+                    return Ok(_ruleSetService.SearchCharacterItems(searchModel));
+                case SP_SearchType.RulesetItems:
+                    return Ok(_ruleSetService.SearchRulesetItems(searchModel));
+                default:
+                    return Ok();
+            }
+        }
     }
 }

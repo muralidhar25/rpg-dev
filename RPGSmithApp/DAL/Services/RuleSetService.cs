@@ -810,6 +810,504 @@ namespace DAL.Services
             return _context.RuleSets.Where(x=>x.RuleSetId== ruleSetId).Include(x=>x.AspNetUser).Select(x=>x.AspNetUser.ProfileImage).FirstOrDefault();
         }
         #endregion
+
+        #region Basic_Search
+        public List<CharacterAbility> SearchCharacterAbilities(SearchModel searchModel)
+        {
+            List<CharacterAbility> _CharacterAbilityList = new List<CharacterAbility>();
+            short num = 0;
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("SearchRecords", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@SearchText", searchModel.SearchString);
+                command.Parameters.AddWithValue("@RecordType", searchModel.SearchType);
+                command.Parameters.AddWithValue("@CharacterID", searchModel.CharacterID);
+
+                command.Parameters.AddWithValue("@IsAbilityName", searchModel.AbilityFilters.IsAbilityName);
+                command.Parameters.AddWithValue("@IsAbilityTags", searchModel.AbilityFilters.IsAbilityTags);
+                command.Parameters.AddWithValue("@IsAbilityStats", searchModel.AbilityFilters.IsAbilityStats);
+                command.Parameters.AddWithValue("@IsAbilityDesc", searchModel.AbilityFilters.IsAbilityDesc);
+                command.Parameters.AddWithValue("@IsAbilityLevel", searchModel.AbilityFilters.IsAbilityLevel);
+
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            if (ds.Tables.Count > 0)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+
+                        CharacterAbility _characterAbility = new CharacterAbility();
+                        _characterAbility.CharacterAbilityId = row["CharacterAbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(row["CharacterAbilityId"].ToString());
+                        _characterAbility.CharacterId = row["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["CharacterId"].ToString());
+                        _characterAbility.AbilityId = row["AbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(row["AbilityId"].ToString());
+                        //_characterAbility.CurrentNumberOfUses = row["CharacterCurrentNumberOfUses"] == DBNull.Value ? 0 : Convert.ToInt32(row["CharacterCurrentNumberOfUses"].ToString());
+                        //_characterAbility.MaxNumberOfUses = row["CharacterMaxNumberOfUses"] == DBNull.Value ? 0 : Convert.ToInt32(row["CharacterMaxNumberOfUses"].ToString());
+                        //_characterAbility.IsEnabled = row["CharacterIsEnabled"] == DBNull.Value ? false : Convert.ToBoolean(row["CharacterIsEnabled"]);
+
+                        Ability _ability = new Ability();
+                        _ability.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                        _ability.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
+                        _ability.Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString();
+                        _ability.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
+                        _ability.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
+                        _ability.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                        _ability.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+                        _ability.Level = row["Level"] == DBNull.Value ? null : row["Level"].ToString();
+                        _ability.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
+                        //_ability.IsEnabled = row["IsEnabled"] == DBNull.Value ? false : Convert.ToBoolean(row["IsEnabled"]);
+
+                        _ability.AbilityId = row["AbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(row["AbilityId"].ToString());
+                        _ability.ParentAbilityId = row["ParentAbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentAbilityId"].ToString());
+                        _ability.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
+                        //_ability.CurrentNumberOfUses = row["CurrentNumberOfUses"] == DBNull.Value ? 0 : Convert.ToInt32(row["CurrentNumberOfUses"].ToString());
+                        //_ability.MaxNumberOfUses = row["MaxNumberOfUses"] == DBNull.Value ? 0 : Convert.ToInt32(row["MaxNumberOfUses"].ToString());
+
+
+                        _characterAbility.Ability = _ability;
+                        //_characterAbility.Character = character;
+                        _CharacterAbilityList.Add(_characterAbility);
+                    }
+                }
+
+            }
+            return _CharacterAbilityList;
+        }
+        public List<Ability> SearchRulesetAbilities(SearchModel searchModel)
+        {
+            List<Ability> _abilityList = new List<Ability>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("SearchRecords", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@SearchText", searchModel.SearchString);
+                command.Parameters.AddWithValue("@RecordType", searchModel.SearchType);
+                command.Parameters.AddWithValue("@RulesetID", searchModel.RulesetID);
+
+                command.Parameters.AddWithValue("@IsAbilityName", searchModel.AbilityFilters.IsAbilityName);
+                command.Parameters.AddWithValue("@IsAbilityTags", searchModel.AbilityFilters.IsAbilityTags);
+                command.Parameters.AddWithValue("@IsAbilityStats", searchModel.AbilityFilters.IsAbilityStats);
+                command.Parameters.AddWithValue("@IsAbilityDesc", searchModel.AbilityFilters.IsAbilityDesc);
+                command.Parameters.AddWithValue("@IsAbilityLevel", searchModel.AbilityFilters.IsAbilityLevel);
+
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            if (ds.Tables.Count > 0)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        Ability _ability = new Ability();
+                        _ability.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                        _ability.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
+                        _ability.Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString();
+                        _ability.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
+                        _ability.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
+                        _ability.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                        _ability.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+                        _ability.Level = row["Level"] == DBNull.Value ? null : row["Level"].ToString();
+                        _ability.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
+                        _ability.IsEnabled = row["IsEnabled"] == DBNull.Value ? false : Convert.ToBoolean(row["IsEnabled"]);
+
+                        _ability.AbilityId = row["AbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(row["AbilityId"].ToString());
+                        _ability.ParentAbilityId = row["ParentAbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentAbilityId"].ToString());
+                        _ability.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
+                        _ability.CurrentNumberOfUses = row["CurrentNumberOfUses"] == DBNull.Value ? 0 : Convert.ToInt32(row["CurrentNumberOfUses"].ToString());
+                        _ability.MaxNumberOfUses = row["MaxNumberOfUses"] == DBNull.Value ? 0 : Convert.ToInt32(row["MaxNumberOfUses"].ToString());
+
+                        _abilityList.Add(_ability);
+                    }
+                }
+            }
+            return _abilityList;
+        }
+        public List<CharacterSpell> SearchCharacterSpells(SearchModel searchModel)
+        {
+            List<CharacterSpell> _CharacterSpellList = new List<CharacterSpell>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("SearchRecords", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@SearchText", searchModel.SearchString);
+                command.Parameters.AddWithValue("@RecordType", searchModel.SearchType);
+                command.Parameters.AddWithValue("@CharacterID", searchModel.CharacterID);
+
+                command.Parameters.AddWithValue("@IsSpellName", searchModel.SpellFilters.IsSpellName);
+                command.Parameters.AddWithValue("@IsSpellTags", searchModel.SpellFilters.IsSpellTags);
+                command.Parameters.AddWithValue("@IsSpellStats", searchModel.SpellFilters.IsSpellStats);
+                command.Parameters.AddWithValue("@IsSpellDesc", searchModel.SpellFilters.IsSpellDesc);
+                command.Parameters.AddWithValue("@IsSpellClass", searchModel.SpellFilters.IsSpellClass);
+                command.Parameters.AddWithValue("@IsSpellSchool", searchModel.SpellFilters.IsSpellSchool);
+                command.Parameters.AddWithValue("@IsSpellLevel", searchModel.SpellFilters.IsSpellLevel);
+                command.Parameters.AddWithValue("@IsSpellCastingTime", searchModel.SpellFilters.IsSpellCastingTime);
+                command.Parameters.AddWithValue("@IsSpellEffectDesc", searchModel.SpellFilters.IsSpellEffectDesc);
+                command.Parameters.AddWithValue("@IsSpellHitEffect", searchModel.SpellFilters.IsSpellHitEffect);
+                command.Parameters.AddWithValue("@IsSpellMissEffect", searchModel.SpellFilters.IsSpellMissEffect);
+
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            if (ds.Tables.Count > 0)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+
+                        CharacterSpell _characterSpell = new CharacterSpell();
+                        _characterSpell.CharacterSpellId = row["CharacterSpellId"] == DBNull.Value ? 0 : Convert.ToInt32(row["CharacterSpellId"].ToString());
+                        _characterSpell.CharacterId = row["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["CharacterId"].ToString());
+                        _characterSpell.SpellId = row["SpellId"] == DBNull.Value ? 0 : Convert.ToInt32(row["SpellId"].ToString());
+                        _characterSpell.IsMemorized = row["IsMemorized"] == DBNull.Value ? false : Convert.ToBoolean(row["IsMemorized"]);
+                        _characterSpell.IsDeleted = false;
+
+                        Spell _spell = new Spell();
+                        _spell.CastingTime = row["CastingTime"] == DBNull.Value ? null : row["CastingTime"].ToString();
+                        _spell.Class = row["Class"] == DBNull.Value ? null : row["Class"].ToString();
+                        _spell.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
+                        _spell.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
+                        _spell.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                        _spell.IsMaterialComponent = row["IsMaterialComponent"] == DBNull.Value ? false : Convert.ToBoolean(row["IsMaterialComponent"]);
+                        _spell.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
+                        _spell.IsSomaticComponent = row["IsSomaticComponent"] == DBNull.Value ? false : Convert.ToBoolean(row["IsSomaticComponent"]);
+                        _spell.IsVerbalComponent = row["IsVerbalComponent"] == DBNull.Value ? false : Convert.ToBoolean(row["IsVerbalComponent"]);
+                        _spell.Memorized = row["Memorized"] == DBNull.Value ? false : Convert.ToBoolean(row["Memorized"]);
+                        _spell.ShouldCast = row["ShouldCast"] == DBNull.Value ? false : Convert.ToBoolean(row["ShouldCast"]);
+
+                        _spell.EffectDescription = row["EffectDescription"] == DBNull.Value ? null : row["EffectDescription"].ToString();
+                        _spell.HitEffect = row["HitEffect"] == DBNull.Value ? null : row["HitEffect"].ToString();
+                        _spell.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                        _spell.Levels = row["Levels"] == DBNull.Value ? null : row["Levels"].ToString();
+                        _spell.MaterialComponent = row["MaterialComponent"] == DBNull.Value ? null : row["MaterialComponent"].ToString();
+                        _spell.Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString();
+                        _spell.MissEffect = row["MissEffect"] == DBNull.Value ? null : row["MissEffect"].ToString();
+                        _spell.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                        _spell.School = row["School"] == DBNull.Value ? null : row["School"].ToString();
+                        _spell.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
+
+                        _spell.SpellId = row["SpellId"] == DBNull.Value ? 0 : Convert.ToInt32(row["SpellId"].ToString());
+                        _spell.ParentSpellId = row["ParentSpellId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentSpellId"].ToString());
+                        _spell.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
+
+                        _characterSpell.Spell = _spell;
+                        _CharacterSpellList.Add(_characterSpell);
+                    }
+                }
+            }
+
+            return _CharacterSpellList;
+        }
+        public List<Spell> SearchRulesetSpells(SearchModel searchModel)
+        {
+            List<Spell> SpellList = new List<Spell>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("SearchRecords", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@SearchText", searchModel.SearchString);
+                command.Parameters.AddWithValue("@RecordType", searchModel.SearchType);
+                command.Parameters.AddWithValue("@RulesetID", searchModel.RulesetID);
+
+                command.Parameters.AddWithValue("@IsSpellName", searchModel.SpellFilters.IsSpellName);
+                command.Parameters.AddWithValue("@IsSpellTags", searchModel.SpellFilters.IsSpellTags);
+                command.Parameters.AddWithValue("@IsSpellStats", searchModel.SpellFilters.IsSpellStats);
+                command.Parameters.AddWithValue("@IsSpellDesc", searchModel.SpellFilters.IsSpellDesc);
+                command.Parameters.AddWithValue("@IsSpellClass", searchModel.SpellFilters.IsSpellClass);
+                command.Parameters.AddWithValue("@IsSpellSchool", searchModel.SpellFilters.IsSpellSchool);
+                command.Parameters.AddWithValue("@IsSpellLevel", searchModel.SpellFilters.IsSpellLevel);
+                command.Parameters.AddWithValue("@IsSpellCastingTime", searchModel.SpellFilters.IsSpellCastingTime);
+                command.Parameters.AddWithValue("@IsSpellEffectDesc", searchModel.SpellFilters.IsSpellEffectDesc);
+                command.Parameters.AddWithValue("@IsSpellHitEffect", searchModel.SpellFilters.IsSpellHitEffect);
+                command.Parameters.AddWithValue("@IsSpellMissEffect", searchModel.SpellFilters.IsSpellMissEffect);
+
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            if (ds.Tables.Count > 0)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        Spell _spell = new Spell();
+                        _spell.CastingTime = row["CastingTime"] == DBNull.Value ? null : row["CastingTime"].ToString();
+                        _spell.Class = row["Class"] == DBNull.Value ? null : row["Class"].ToString();
+                        _spell.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
+                        _spell.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
+                        _spell.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                        _spell.IsMaterialComponent = row["IsMaterialComponent"] == DBNull.Value ? false : Convert.ToBoolean(row["IsMaterialComponent"]);
+                        _spell.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
+                        _spell.IsSomaticComponent = row["IsSomaticComponent"] == DBNull.Value ? false : Convert.ToBoolean(row["IsSomaticComponent"]);
+                        _spell.IsVerbalComponent = row["IsVerbalComponent"] == DBNull.Value ? false : Convert.ToBoolean(row["IsVerbalComponent"]);
+                        _spell.Memorized = row["Memorized"] == DBNull.Value ? false : Convert.ToBoolean(row["Memorized"]);
+                        _spell.ShouldCast = row["ShouldCast"] == DBNull.Value ? false : Convert.ToBoolean(row["ShouldCast"]);
+
+                        _spell.EffectDescription = row["EffectDescription"] == DBNull.Value ? null : row["EffectDescription"].ToString();
+                        _spell.HitEffect = row["HitEffect"] == DBNull.Value ? null : row["HitEffect"].ToString();
+                        _spell.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                        _spell.Levels = row["Levels"] == DBNull.Value ? null : row["Levels"].ToString();
+                        _spell.MaterialComponent = row["MaterialComponent"] == DBNull.Value ? null : row["MaterialComponent"].ToString();
+                        _spell.Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString();
+                        _spell.MissEffect = row["MissEffect"] == DBNull.Value ? null : row["MissEffect"].ToString();
+                        _spell.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                        _spell.School = row["School"] == DBNull.Value ? null : row["School"].ToString();
+                        _spell.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
+
+                        _spell.SpellId = row["SpellId"] == DBNull.Value ? 0 : Convert.ToInt32(row["SpellId"].ToString());
+                        _spell.ParentSpellId = row["ParentSpellId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentSpellId"].ToString());
+                        _spell.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
+
+                        SpellList.Add(_spell);
+                    }
+                }
+            }
+            return SpellList;
+        }
+        public List<Item> SearchCharacterItems(SearchModel searchModel)
+        {
+            List<Item> _ItemList = new List<Item>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("SearchRecords", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@SearchText", searchModel.SearchString);
+                command.Parameters.AddWithValue("@RecordType", searchModel.SearchType);
+                command.Parameters.AddWithValue("@CharacterID", searchModel.CharacterID);
+
+                command.Parameters.AddWithValue("@IsItemName", searchModel.ItemFilters.IsItemName);
+                command.Parameters.AddWithValue("@IsItemTags", searchModel.ItemFilters.IsItemTags);
+                command.Parameters.AddWithValue("@IsItemStats", searchModel.ItemFilters.IsItemStats);
+                command.Parameters.AddWithValue("@IsItemDesc", searchModel.ItemFilters.IsItemDesc);
+                command.Parameters.AddWithValue("@IsItemRarity", searchModel.ItemFilters.IsItemRarity);
+
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            if (ds.Tables.Count > 0)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+
+                        Item i = new Item();
+                        i.ItemId = row["ItemId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemId"].ToString());
+                        i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                        i.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                        i.ItemImage = row["ItemImage"] == DBNull.Value ? null : row["ItemImage"].ToString();
+                        i.CharacterId = row["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["CharacterId"].ToString());
+                        i.ItemMasterId = row["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemMasterId"].ToString());
+                        i.Quantity = row["Quantity"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Quantity"]);
+                        i.TotalWeight = row["TotalWeight"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalWeight"]);
+                        i.IsIdentified = row["IsIdentified"] == DBNull.Value ? false : Convert.ToBoolean(row["IsIdentified"]);
+                        i.IsVisible = row["IsVisible"] == DBNull.Value ? false : Convert.ToBoolean(row["IsVisible"]);
+                        i.IsEquipped = row["IsEquipped"] == DBNull.Value ? false : Convert.ToBoolean(row["IsEquipped"]);
+                        i.ParentItemId = row["ParentItemId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentItemId"].ToString());
+                        i.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
+                        i.ContainedIn = row["ContainedIn"] == DBNull.Value ? 0 : Convert.ToInt32(row["ContainedIn"].ToString());
+                        i.IsConsumable = row["IsConsumable"] == DBNull.Value ? false : Convert.ToBoolean(row["IsConsumable"]);
+                        i.IsContainer = row["IsContainer"] == DBNull.Value ? false : Convert.ToBoolean(row["IsContainer"]);
+                        i.IsMagical = row["IsMagical"] == DBNull.Value ? false : Convert.ToBoolean(row["IsMagical"]);
+                        i.ItemCalculation = row["ItemCalculation"] == DBNull.Value ? null : row["ItemCalculation"].ToString();
+                        i.Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString();
+                        i.Rarity = row["Rarity"] == DBNull.Value ? null : row["Rarity"].ToString();
+                        i.Value = row["Value"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Value"]);
+                        i.Volume = row["Volume"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Volume"]);
+                        i.Weight = row["Weight"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Weight"]);
+                        i.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
+                        i.ContainerVolumeMax = row["ContainerVolumeMax"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ContainerVolumeMax"]);
+                        i.ContainerWeightMax = row["ContainerWeightMax"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ContainerWeightMax"]);
+                        i.ContainerWeightModifier = row["ContainerWeightModifier"] == DBNull.Value ? null : row["ContainerWeightModifier"].ToString();
+                        i.ItemStats = row["ItemStats"] == DBNull.Value ? null : row["ItemStats"].ToString();
+                        i.PercentReduced = row["PercentReduced"] == DBNull.Value ? 0 : Convert.ToDecimal(row["PercentReduced"]);
+                        i.TotalWeightWithContents = row["TotalWeightWithContents"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalWeightWithContents"]);
+                        i.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
+                        _ItemList.Add(i);
+                    }
+                }
+            }
+
+            return _ItemList;
+        }
+        public List<ItemMaster> SearchRulesetItems(SearchModel searchModel)
+        {
+            List<ItemMaster> itemlist = new List<ItemMaster>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("SearchRecords", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@SearchText", searchModel.SearchString);
+                command.Parameters.AddWithValue("@RecordType", searchModel.SearchType);
+                command.Parameters.AddWithValue("@RulesetID", searchModel.RulesetID);
+
+                command.Parameters.AddWithValue("@IsItemName", searchModel.ItemFilters.IsItemName);
+                command.Parameters.AddWithValue("@IsItemTags", searchModel.ItemFilters.IsItemTags);
+                command.Parameters.AddWithValue("@IsItemStats", searchModel.ItemFilters.IsItemStats);
+                command.Parameters.AddWithValue("@IsItemDesc", searchModel.ItemFilters.IsItemDesc);
+                command.Parameters.AddWithValue("@IsItemRarity", searchModel.ItemFilters.IsItemRarity);
+
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            if (ds.Tables.Count > 0)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        ItemMaster i = new ItemMaster();
+                        i.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
+                        i.ContainerVolumeMax = row["ContainerVolumeMax"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ContainerVolumeMax"]);
+                        i.ContainerWeightMax = row["ContainerWeightMax"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ContainerWeightMax"]);
+                        i.ContainerWeightModifier = row["ContainerWeightModifier"] == DBNull.Value ? null : row["ContainerWeightModifier"].ToString();
+                        i.IsConsumable = row["IsConsumable"] == DBNull.Value ? false : Convert.ToBoolean(row["IsConsumable"]);
+                        i.IsContainer = row["IsContainer"] == DBNull.Value ? false : Convert.ToBoolean(row["IsContainer"]);
+                        i.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
+                        i.IsMagical = row["IsMagical"] == DBNull.Value ? false : Convert.ToBoolean(row["IsMagical"]);
+                        i.ItemCalculation = row["ItemCalculation"] == DBNull.Value ? null : row["ItemCalculation"].ToString();
+                        i.ItemImage = row["ItemImage"] == DBNull.Value ? null : row["ItemImage"].ToString();
+                        i.ItemMasterId = row["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemMasterId"].ToString());
+                        i.ItemName = row["ItemName"] == DBNull.Value ? null : row["ItemName"].ToString();
+                        i.ItemStats = row["ItemStats"] == DBNull.Value ? null : row["ItemStats"].ToString();
+                        i.ItemVisibleDesc = row["ItemVisibleDesc"] == DBNull.Value ? null : row["ItemVisibleDesc"].ToString();
+                        i.Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString();
+                        i.ParentItemMasterId = row["ParentItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentItemMasterId"].ToString());
+                        i.PercentReduced = row["PercentReduced"] == DBNull.Value ? 0 : Convert.ToDecimal(row["PercentReduced"]);
+                        i.Rarity = row["Rarity"] == DBNull.Value ? null : row["Rarity"].ToString();
+                        i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
+                        i.TotalWeightWithContents = row["TotalWeightWithContents"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalWeightWithContents"]);
+                        i.Value = row["Value"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Value"]);
+                        i.Volume = row["Volume"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Volume"]);
+                        i.Weight = row["Weight"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Weight"]);
+
+                        i.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
+                        itemlist.Add(i);
+                    }
+                }
+            }
+
+            return itemlist;
+        }
+        #endregion
     }
 
 }

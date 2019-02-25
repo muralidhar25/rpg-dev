@@ -195,3 +195,11 @@ export enum DEVICE {
     TABLET = "Tablet",
     MOBILE = "Mobile",
 }
+export enum SearchType {
+  RULESETITEMS = 1,
+  CHARACTERITEMS = 2,
+  RULESETSPELLS = 3,
+  CHARACTERSPELLS = 4,
+  RULESETABILITIES = 5,
+  CHARACTERABILITIES = 6
+}

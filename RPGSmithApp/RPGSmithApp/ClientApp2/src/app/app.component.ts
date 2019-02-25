@@ -33,6 +33,7 @@ import { Utilities } from "./core/common/utilities";
 import { MyImagesComponent } from "./shared/my-images/my-images.component";
 import { Ruleset } from "./core/models/view-models/ruleset.model";
 import { AppService1 } from "./app.service";
+import { SearchType } from "./core/models/enums";
 //declare let ga: Function;
 
 var alertify: any = require('./assets/scripts/alertify.js');
@@ -56,6 +57,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   newNotificationCount = 0;
   isDropdownOpen: boolean = false;
   searchText: string = "";
+  searchCharRule: string = "";
+  SearchTypeText: string = "";
+  SearchType: number = 0;
 
   isChrome: boolean = Utilities.IsCrome;
   isProceedWithoutChrome: boolean = false;
@@ -171,6 +175,47 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.IsCharacterRecordScreenActive = false;
               this.IsRulesetRecordScreenActive = false;
               //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
+            }
+
+            this.SearchType = 0;
+            this.SearchTypeText = '';
+
+            if (this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1) {
+              this.SearchType = SearchType.CHARACTERITEMS;
+              this.SearchTypeText = 'Items';
+            }
+            else if (this.router.url.toUpperCase().indexOf('/RULESET/ITEM-MASTER/') > -1) {
+              this.SearchType = SearchType.RULESETITEMS;
+              this.SearchTypeText = 'Items';
+            }
+            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/SPELL/') > -1) {
+              this.SearchType = SearchType.CHARACTERSPELLS;
+              this.SearchTypeText = 'Spells';
+            }
+            else if (this.router.url.toUpperCase().indexOf('/RULESET/SPELL/') > -1) {
+              this.SearchType = SearchType.RULESETSPELLS;
+              this.SearchTypeText = 'Spells';
+            }
+            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1) {
+              this.SearchType = SearchType.CHARACTERABILITIES;
+              this.SearchTypeText = 'Abilities';
+            }
+            else if (this.router.url.toUpperCase().indexOf('/RULESET/ABILITY/') > -1) {
+              this.SearchType = SearchType.RULESETABILITIES;
+              this.SearchTypeText = 'Abilities';
+            }
+
+            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS/') > -1) {
+              this.SearchType = SearchType.RULESETITEMS;
+              this.SearchTypeText = 'Items';
+            }
+            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS/') > -1) {
+              this.SearchType = SearchType.RULESETSPELLS;
+              this.SearchTypeText = 'Spells';
+            }
+            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES/') > -1) {
+              this.SearchType = SearchType.RULESETABILITIES;
+              this.SearchTypeText = 'Abilities';
             }
           },
             error => {
@@ -352,15 +397,46 @@ export class AppComponent implements OnInit, AfterViewInit {
           //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
         }
 
-        //let headerValues = {
-        //  headerName:'name',
-        //  headerImage: 'img',
-        //  headerId: '1234',
-        //  headerLink: 'character',
-        //  hasHeader: true
-        //};
-        //
-        //this.app1Service.updateAccountSetting1(headerValues);
+        this.SearchType = 0;
+        this.SearchTypeText = '';
+
+        if (url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1) {
+          this.SearchType = SearchType.CHARACTERITEMS;
+          this.SearchTypeText = 'Items';
+        }
+        else if (url.toUpperCase().indexOf('/RULESET/ITEM-MASTER/') > -1) {
+          this.SearchType = SearchType.RULESETITEMS;
+          this.SearchTypeText = 'Items';
+        }
+        else if (url.toUpperCase().indexOf('/CHARACTER/SPELL/') > -1) {
+          this.SearchType = SearchType.CHARACTERSPELLS;
+          this.SearchTypeText = 'Spells';
+        }
+        else if (url.toUpperCase().indexOf('/RULESET/SPELL/') > -1) {
+          this.SearchType = SearchType.RULESETSPELLS;
+          this.SearchTypeText = 'Spells';
+        }
+        else if (url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1) {
+          this.SearchType = SearchType.CHARACTERABILITIES;
+          this.SearchTypeText = 'Abilities';
+        }
+        else if (url.toUpperCase().indexOf('/RULESET/ABILITY/') > -1) {
+          this.SearchType = SearchType.RULESETABILITIES;
+          this.SearchTypeText = 'Abilities';
+        }
+
+        else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS/') > -1) {
+          this.SearchType = SearchType.RULESETITEMS;
+          this.SearchTypeText = 'Items';
+        }
+        else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS/') > -1) {
+          this.SearchType = SearchType.RULESETSPELLS;
+          this.SearchTypeText = 'Spells';
+        }
+        else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES/') > -1) {
+          this.SearchType = SearchType.RULESETABILITIES;
+          this.SearchTypeText = 'Abilities';
+        }
       }
     });
 
@@ -418,6 +494,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     let searchQuery = searchText;
     this.searchText = "";
     this.router.navigate(['/search', searchQuery]);
+  }
+
+  // navigating to search page
+  navigateToSearch(searchType: string, searchTxt: string) {
+    this.router.navigate(['/search/basic/' + searchType + '/' + searchTxt]);
   }
 
   gotoDashboard() {
