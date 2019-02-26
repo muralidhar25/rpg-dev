@@ -8571,7 +8571,8 @@ li.popup-new-tile-trigger.cross-li .btn {
 }
 
 .fr-line-breaker.fr-visible {
-  left: 45px !important
+  display:none !important;
+  /*left: 45px !important*/
 }
 
 @media (min-width:767.5px) {
@@ -8580,9 +8581,9 @@ li.popup-new-tile-trigger.cross-li .btn {
     right: -50px !important;
   }
 
-    .fr-box.fr-fullscreen .fr-line-breaker.fr-visible {
+    /*.fr-box.fr-fullscreen .fr-line-breaker.fr-visible {
       left: -50px !important
-    }
+    }*/
 
   .input-color-items .form-check {
     margin-right: 0.35rem !important;
