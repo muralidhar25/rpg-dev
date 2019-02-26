@@ -1,5 +1,3 @@
-F:\Vikas\Projects\RPGSmith\OptimizedCode\RPGSmithApp\RPGSmithApp\bin\Release\netcoreapp2.1\win-x64\hostpolicy.dll
-F:\Vikas\Projects\RPGSmith\OptimizedCode\RPGSmithApp\RPGSmithApp\bin\Release\netcoreapp2.1\win-x64\hostfxr.dll
 F:\Vikas\Projects\RPGSmith\OptimizedCode\RPGSmithApp\RPGSmithApp\bin\Release\netcoreapp2.1\win-x64\RPGSmithApp.exe
 F:\Vikas\Projects\RPGSmith\OptimizedCode\RPGSmithApp\RPGSmithApp\bin\Release\netcoreapp2.1\win-x64\RPGSmithApp.deps.json
 F:\Vikas\Projects\RPGSmith\OptimizedCode\RPGSmithApp\RPGSmithApp\bin\Release\netcoreapp2.1\win-x64\RPGSmithApp.runtimeconfig.json

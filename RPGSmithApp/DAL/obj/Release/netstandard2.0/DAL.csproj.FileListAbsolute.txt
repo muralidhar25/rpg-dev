@@ -15,3 +15,4 @@ F:\Vikas\Projects\RPGSmith\OptimizedCode\RPGSmithApp\DAL\obj\Release\netstandard
 F:\Vikas\Projects\RPGSmith\OptimizedCode\RPGSmithApp\DAL\obj\Release\netstandard2.0\DAL.AssemblyInfo.cs
 F:\Vikas\Projects\RPGSmith\OptimizedCode\RPGSmithApp\DAL\obj\Release\netstandard2.0\DAL.dll
 F:\Vikas\Projects\RPGSmith\OptimizedCode\RPGSmithApp\DAL\obj\Release\netstandard2.0\DAL.pdb
+F:\Vikas\Projects\RPGSmith\OptimizedCode\RPGSmithApp\DAL\obj\Release\netstandard2.0\DAL.csprojAssemblyReference.cache
