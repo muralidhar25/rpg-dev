@@ -57,21 +57,17 @@
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Compile Remove="ClientApp2\src\app\components\character-records\abilities\create-abilities\**" />
     <Compile Remove="ClientApp2\src\app\components\character-records\spells\create-spells\**" />
-    <Compile Remove="ClientApp\**" />
     <Content Remove="$(SpaRoot)**" />
     <Content Remove="ClientApp2\src\app\components\character-records\abilities\create-abilities\**" />
     <Content Remove="ClientApp2\src\app\components\character-records\spells\create-spells\**" />
-    <Content Remove="ClientApp\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Remove="ClientApp2\src\app\components\character-records\abilities\create-abilities\**" />
     <EmbeddedResource Remove="ClientApp2\src\app\components\character-records\spells\create-spells\**" />
-    <EmbeddedResource Remove="ClientApp\**" />
     <None Remove="ClientApp2\src\app\components\character-records\abilities\create-abilities\**" />
     <None Remove="ClientApp2\src\app\components\character-records\spells\create-spells\**" />
-    <None Remove="ClientApp\**" />
   </ItemGroup>
 
   <ItemGroup>
