@@ -26,6 +26,7 @@ export class BasicSearchComponent implements OnInit {
   value: number = 1;
   allFiltersSelected: boolean = true;
   showMoreLessToggle: boolean = true;
+  isCharacterRulesetEntity: boolean = false;
   searchModal: BasicSearch = new BasicSearch();
 
   headers: HeaderValues = new HeaderValues();
@@ -40,9 +41,24 @@ export class BasicSearchComponent implements OnInit {
   }
 
   private Initialize() {
-
+    this.isCharacterRulesetEntity = false;
     this.route.params.subscribe(params => {
-      this.searchModal.searchType = params['searchType'];
+      if (params['searchType'] == SearchType.CHARACTERRULESETITEMS) {
+        this.isCharacterRulesetEntity = true;
+        this.searchModal.searchType = SearchType.RULESETITEMS;
+      }
+      else if (params['searchType'] == SearchType.CHARACTERRULESETSPELLS) {
+        this.isCharacterRulesetEntity = true;
+        this.searchModal.searchType = SearchType.RULESETSPELLS;
+      }
+      else if (params['searchType'] == SearchType.CHARACTERRULESETABILITIES) {
+        this.isCharacterRulesetEntity = true;
+        this.searchModal.searchType = SearchType.RULESETABILITIES;
+      }
+      else {
+        this.searchModal.searchType = params['searchType'];
+      }
+      
       this.searchModal.searchString = params['searchText'];
     });
 
@@ -131,7 +147,6 @@ export class BasicSearchComponent implements OnInit {
                   searchimage: x.itemImage,
                   name: x.name,
                   searchType: this.searchModal.searchType,
-                 // searchHeadingText: 'Items',
                   recordId: x.itemId,
                   record: x
                 };
@@ -144,7 +159,6 @@ export class BasicSearchComponent implements OnInit {
                   searchimage: x.itemImage,
                   name: x.itemName,
                   searchType: this.searchModal.searchType,
-                  //searchHeadingText: 'Items',
                   recordId: x.itemMasterId,
                   record: x
                 };
@@ -157,7 +171,6 @@ export class BasicSearchComponent implements OnInit {
                   searchimage: x.spell.imageUrl,
                   name: x.spell.name,
                   searchType: this.searchModal.searchType,
-                 // searchHeadingText: 'Spells',
                   recordId: x.characterSpellId,
                   record: x
                 };
@@ -170,7 +183,6 @@ export class BasicSearchComponent implements OnInit {
                   searchimage: x.imageUrl,
                   name: x.name,
                   searchType: this.searchModal.searchType,
-                  //searchHeadingText: 'Spells',
                   recordId: x.spellId,
                   record: x
                 };
@@ -228,19 +240,34 @@ export class BasicSearchComponent implements OnInit {
       this.router.navigate(['/character/inventory-details', input.recordId]);
     }
     else if (this.searchModal.searchType == SearchType.RULESETITEMS) {
-      this.router.navigate(['/ruleset/item-details', input.recordId]);
+      if (this.isCharacterRulesetEntity) {
+        this.router.navigate(['/character/ruleset/item-details', input.recordId]);
+      }
+      else {
+        this.router.navigate(['/ruleset/item-details', input.recordId]);
+      }
     }
     else if (this.searchModal.searchType == SearchType.CHARACTERSPELLS) {
       this.router.navigate(['/character/spell-details', input.recordId]);
     }
     else if (this.searchModal.searchType == SearchType.RULESETSPELLS) {
-      this.router.navigate(['/ruleset/spell-details', input.recordId]);
+      if (this.isCharacterRulesetEntity) {
+        this.router.navigate(['/character/ruleset/spell-details', input.recordId]);
+      }
+      else {
+        this.router.navigate(['/ruleset/spell-details', input.recordId]);
+      }
     }
     else if (this.searchModal.searchType == SearchType.CHARACTERABILITIES) {
       this.router.navigate(['/character/ability-details', input.recordId]);
     }
     else if (this.searchModal.searchType == SearchType.RULESETABILITIES) {
-      this.router.navigate(['/ruleset/ability-details', input.recordId]);
+      if (this.isCharacterRulesetEntity) {
+        this.router.navigate(['/character/ruleset/ability-details', input.recordId]);
+      }
+      else {
+        this.router.navigate(['/ruleset/ability-details', input.recordId]);
+      }
     }
   }
 

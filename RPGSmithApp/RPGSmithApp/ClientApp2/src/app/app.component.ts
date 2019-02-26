@@ -60,6 +60,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   searchCharRule: string = "";
   SearchTypeText: string = "";
   SearchType: number = 0;
+  isCharacterItem: number = 0;
 
   isChrome: boolean = Utilities.IsCrome;
   isProceedWithoutChrome: boolean = false;
@@ -179,6 +180,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
             this.SearchType = 0;
             this.SearchTypeText = '';
+            this.isCharacterItem = 0;
 
             if (this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1) {
               this.SearchType = SearchType.CHARACTERITEMS;
@@ -206,15 +208,15 @@ export class AppComponent implements OnInit, AfterViewInit {
             }
 
             else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS/') > -1) {
-              this.SearchType = SearchType.RULESETITEMS;
+              this.SearchType = SearchType.CHARACTERRULESETITEMS;
               this.SearchTypeText = 'Items';
             }
             else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS/') > -1) {
-              this.SearchType = SearchType.RULESETSPELLS;
+              this.SearchType = SearchType.CHARACTERRULESETSPELLS;
               this.SearchTypeText = 'Spells';
             }
             else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES/') > -1) {
-              this.SearchType = SearchType.RULESETABILITIES;
+              this.SearchType = SearchType.CHARACTERRULESETABILITIES;
               this.SearchTypeText = 'Abilities';
             }
           },
@@ -368,7 +370,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (url !== url.toLowerCase()) {
           this.router.navigateByUrl((<NavigationStart>event).url.toLowerCase());
         }
-        
+
         if (
           url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1
           ||
@@ -382,7 +384,14 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.IsRulesetRecordScreenActive = false;
           //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
         }
-        else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/') > -1) {
+        else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/') > -1
+          ||
+          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETITEMS) > -1
+          ||
+          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETSPELLS) > -1
+          ||
+          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETABILITIES) > -1) {
+         // this.showCharacterSearch = false;
           this.IsCharacterRecordScreen = true;
 
           this.IsCharacterRecordScreenActive = false;
