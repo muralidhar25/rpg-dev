@@ -65,7 +65,7 @@ export class RulesetTileComponent implements OnInit {
         switch (tileTypeId) {
             case TILES.NOTE: {
                 this.bsModalRef = this.modalService.show(RulesetNoteTileComponent, {
-                    class: 'modal-primary modal-lg tile-popup',
+                  class: 'modal-primary modal-lg tile-popup  modal-custom',
                     ignoreBackdropClick: true,
                     keyboard: false
                 });

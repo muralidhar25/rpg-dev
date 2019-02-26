@@ -16,8 +16,9 @@ export class Search {
 }
 
 export class BasicSearch {
-  constructor(searchType?: number, searchString?: string, characterID?: number, rulesetID?: number,
+  constructor(searchHeadingText?: string, searchType?: number, searchString?: string, characterID?: number, rulesetID?: number,
     itemFilters?: ItemFilter, spellFilters?: SpellFilter, abilityFilters?: AbilityFilter) {
+    this.searchHeadingText = searchHeadingText ? searchHeadingText : '';
     this.searchType = searchType ? searchType : 0;
     this.searchString = searchString ? searchString : '';
     this.characterID = characterID ? characterID : 0;
@@ -26,7 +27,7 @@ export class BasicSearch {
     this.spellFilters = spellFilters ? spellFilters : new SpellFilter();
     this.abilityFilters = abilityFilters ? abilityFilters : new AbilityFilter();
   }
-
+  public searchHeadingText: string;
   public searchType: number;
   public searchString: string;
   public characterID: number;

@@ -188,7 +188,7 @@ export class SpellsComponent implements OnInit {
         this.spellsService.getspellsCount(this.ruleSetId)
             .subscribe(data => {
                 //this.alertService.stopLoadingMessage();
-                if (data < 2000) {
+                if (data < 3000) {
                     this.bsModalRef = this.modalService.show(CreateSpellsComponent, {
                         class: 'modal-primary modal-custom',
                         ignoreBackdropClick: true,
@@ -226,7 +226,7 @@ export class SpellsComponent implements OnInit {
         this.spellsService.getspellsCount(this.ruleSetId)
             .subscribe(data => {
                 //this.alertService.stopLoadingMessage();
-                if (data < 2000) {
+                if (data < 3000) {
                     this.bsModalRef = this.modalService.show(CreateSpellsComponent, {
                         class: 'modal-primary modal-custom',
                         ignoreBackdropClick: true,

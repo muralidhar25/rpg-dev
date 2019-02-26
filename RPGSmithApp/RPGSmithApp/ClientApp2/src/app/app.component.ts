@@ -687,4 +687,16 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
   }
+  gotoRulesetView() {
+    let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+    if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS/') > -1) {
+      this.router.navigate(['/ruleset/item-master', rid]);
+    }
+    else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS/') > -1) {
+      this.router.navigate(['/ruleset/spell', rid]);
+    }
+    else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES/') > -1) {
+      this.router.navigate(['/ruleset/ability', rid]);
+    }
+  }
 }

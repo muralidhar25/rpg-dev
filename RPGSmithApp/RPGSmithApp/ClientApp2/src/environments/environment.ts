@@ -13,7 +13,7 @@ export const environment = {
   // baseUrl: 'http://rpgsmithapp-stage.azurewebsites.net',
   appVersion: '0.9.09',
   appBuildNo: '00015',
-  PublishedDate: '21 February, 2019',
+  PublishedDate: '25 February, 2019',
   loginUrl: '/login',
   registerUrl: '/register',
   loginApi: '/connect/token',

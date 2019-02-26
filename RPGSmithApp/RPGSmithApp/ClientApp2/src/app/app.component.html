@@ -28,6 +28,8 @@
                 <img [src]="ruleset?.imageUrl" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png';">
               </span>
               <span>{{ruleset?.ruleSetName}}</span>
+
+              <a *ngIf="IsCharacterRecordScreen && IsRulesetRecordScreenActive" href="javascript:void(0);" (click)="gotoRulesetView()" class="btn btn-primary">Rule Set &nbsp; <span class=" fa fa-arrow-right"></span></a>
             </div>
           </ng-container>
           <!-- End of logo -->

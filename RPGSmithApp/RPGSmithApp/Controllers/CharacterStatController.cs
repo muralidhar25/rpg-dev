@@ -118,7 +118,7 @@ namespace RPGSmithApp.Controllers
                         if (characterStats.Count > 0)
                         {
                             var _order = characterStats.OrderByDescending(o => o.SortOrder).FirstOrDefault().SortOrder;
-                            latestOrder = _order == 0 || _order == null ? latestOrder : _order + 1;
+                            //latestOrder = _order == 0 || _order == null ? latestOrder : _order + 1;
                         }
                         characterStatDomain.SortOrder = (Int16)latestOrder;
                     }
@@ -1005,7 +1005,7 @@ namespace RPGSmithApp.Controllers
                 foreach (var characterStat in characterStats)
                     CharacterStatVM.Add(_commonFuncsCoreRuleSet.GetCharacterStatViewModel(characterStat));
 
-                return Ok(CharacterStatVM.OrderBy(o => o.SortOrder).ToList());
+                return Ok(CharacterStatVM.OrderBy(o => o.SortOrder).ThenByDescending(x=>x.CreatedDate).ToList());
             }
             else
             {
@@ -1014,7 +1014,7 @@ namespace RPGSmithApp.Controllers
                 foreach (var characterStat in characterStats)
                     CharacterStatVM.Add(_commonFuncsCoreRuleSet.GetCharacterStatViewModel(characterStat));
 
-                return Ok(CharacterStatVM.OrderBy(o => o.SortOrder).ToList());
+                return Ok(CharacterStatVM.OrderBy(o => o.SortOrder).ThenByDescending(x => x.CreatedDate).ToList());
             }
         }
 

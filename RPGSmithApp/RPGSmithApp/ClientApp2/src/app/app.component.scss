@@ -75,7 +75,26 @@
   border: 2px solid #afafaf !important;
   padding: 4px;
 }
-.header-search {
+
+.rule-set-navigate-btn {
+  background: #dadada;
+  padding: 12px;
+  cursor: pointer;
+  border: 2px solid #afafaf !important;
+}
+
+.user-login-details > .btn {
+  display: inline-flex;
+  border-bottom-color: transparent;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-left: 5px;
+}
+
+.user-login-details > .btn span {
+  display: contents
+}
+/*.header-search {
   position: relative;
   align-items: center;
   display: flex;
@@ -114,4 +133,4 @@
     display: none;
     position: absolute;
   }
-}
+}*/

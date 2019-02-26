@@ -8570,11 +8570,19 @@ li.popup-new-tile-trigger.cross-li .btn {
   font-weight: bold;
 }
 
+.fr-line-breaker.fr-visible {
+  left: 45px !important
+}
+
 @media (min-width:767.5px) {
   .fr-box.fr-fullscreen {
     left: -50px !important;
     right: -50px !important;
   }
+
+    .fr-box.fr-fullscreen .fr-line-breaker.fr-visible {
+      left: -50px !important
+    }
 
   .input-color-items .form-check {
     margin-right: 0.35rem !important;
@@ -8604,6 +8612,10 @@ li.popup-new-tile-trigger.cross-li .btn {
     left: -200px !important;
     right: -200px !important;
   }
+
+    .fr-box.fr-fullscreen .fr-line-breaker.fr-visible {
+      left: -200px !important
+    }
 }
 
 @media (min-width:1200px) {
@@ -8700,10 +8712,4 @@ li.popup-new-tile-trigger.cross-li .btn {
   color: #fff !important;
   width: 62px;
   font-size: 14px;
-}
-.modal-dialog{
-  margin:30px auto !important
-}
-.c-btn.form-control {
-  height: auto !important
 }
