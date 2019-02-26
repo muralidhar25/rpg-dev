@@ -121,7 +121,8 @@ export class RulesetManageComponent implements OnInit,OnChanges {
         this.bsModalRef.content.ruleset = ruleset;
     }
 
-    gotoDashboard(ruleset: Ruleset) {
+  gotoDashboard(ruleset: Ruleset) {
+        this.close(false);
         this.router.navigate(['/ruleset/dashboard', ruleset.ruleSetId])
     }
 

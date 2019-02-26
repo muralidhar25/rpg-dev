@@ -42,9 +42,9 @@
           </form>
 
           <!-- Search -->
-          <div class="header-search" *ngIf="SearchType">
-            <i class="fa fa-search"></i>
-            <input type="text" name="searchCharRule" [(ngModel)]="searchCharRule" class="form-control" placeholder="Search {{ SearchTypeText }}" (keyup.enter)="navigateToSearch(SearchType, searchCharRule)" />
+          <div class="site-header-search" *ngIf="SearchType">
+            <i class="icon icon-search"></i>
+            <input type="text" name="searchCharRule" [(ngModel)]="searchCharRule" placeholder="Search {{ SearchTypeText }}" (keyup.enter)="navigateToSearch(SearchType, searchCharRule)" />
           </div>
 
           <!-- User -->
