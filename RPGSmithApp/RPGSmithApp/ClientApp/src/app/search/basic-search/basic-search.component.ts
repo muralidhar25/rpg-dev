@@ -6,12 +6,14 @@ import { SearchService } from '../../core/services/search.service';
 import { BasicSearch } from '../../core/models/search.model';
 import { HeaderValues } from '../../core/models/headers.model';
 import { SearchType } from '../../core/models/enums';
-import { AlertService } from '../../core/common/alert.service';
+import { AlertService, MessageSeverity } from '../../core/common/alert.service';
 import { SharedService } from '../../core/services/shared.service';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { DBkeys } from '../../core/common/db-keys';
 import { User } from '../../core/models/user.model';
+import { AppService1 } from '../../app.service';
+import { Utilities } from '../../core/common/utilities';
 
 @Component({
   selector: 'app-basic-search',
@@ -33,10 +35,16 @@ export class BasicSearchComponent implements OnInit {
   SEARCHTYPE = SearchType;
   constructor(private searchService: SearchService, private router: Router, private alertService: AlertService, private sharedService: SharedService,
     private configurations: ConfigurationService, private route: ActivatedRoute, private modalService: BsModalService,
-    private localStorage: LocalStoreManager, private authService: AuthService) { }
+    private localStorage: LocalStoreManager, private authService: AuthService, public appService: AppService1) { }
 
   ngOnInit() {
     this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+    if (this.headers) {
+      if (this.headers.headerId) {        
+        this.setHeaderValues(this.headers);
+      }
+    }
+    debugger
     this.Initialize();
   }
 
@@ -124,11 +132,53 @@ export class BasicSearchComponent implements OnInit {
         }
       }
     }
-
-    this.search(this.searchModal.searchString);
+    this.isLoading = true;
+    this.searchService.getFilters<any>(this.searchModal)
+      .subscribe(data => {
+        if (data) {
+          if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS) {
+            this.searchModal.itemFilters.isItemAbilityAssociated = data.isAssociatedAbility;
+            this.searchModal.itemFilters.isItemDesc = data.isDesc;
+            this.searchModal.itemFilters.isItemName = data.isName;
+            this.searchModal.itemFilters.isItemRarity = data.isRarity;
+            this.searchModal.itemFilters.isItemSpellAssociated = data.isAssociatedSpell;
+            this.searchModal.itemFilters.isItemStats = data.isStats;
+            this.searchModal.itemFilters.isItemTags = data.isTags;
+          }
+          else if (this.searchModal.searchType == SearchType.CHARACTERSPELLS || this.searchModal.searchType == SearchType.RULESETSPELLS) {
+            this.searchModal.spellFilters.isSpellCastingTime = data.isCastingTime;
+            this.searchModal.spellFilters.isSpellClass = data.isClass;
+            this.searchModal.spellFilters.isSpellDesc = data.isDesc;
+            this.searchModal.spellFilters.isSpellEffectDesc = data.isEffectDesc;
+            this.searchModal.spellFilters.isSpellHitEffect = data.isHitEffect;
+            this.searchModal.spellFilters.isSpellLevel = data.isLevel;
+            this.searchModal.spellFilters.isSpellMissEffect = data.isMissEffect;
+            this.searchModal.spellFilters.isSpellName = data.isName;
+            this.searchModal.spellFilters.isSpellSchool = data.isSchool;
+            this.searchModal.spellFilters.isSpellStats = data.isStats;
+            this.searchModal.spellFilters.isSpellTags = data.isTags;
+          }
+          else if (this.searchModal.searchType == SearchType.CHARACTERABILITIES || this.searchModal.searchType == SearchType.RULESETABILITIES) {
+            this.searchModal.abilityFilters.isAbilityDesc = data.isDesc;
+            this.searchModal.abilityFilters.isAbilityLevel = data.isLevel;
+            this.searchModal.abilityFilters.isAbilityName = data.isName;
+            this.searchModal.abilityFilters.isAbilityStats = data.isStats;
+            this.searchModal.abilityFilters.isAbilityTags = data.isTags;
+          }
+        }
+        
+        
+        //this.isLoading = false;
+        this.search(this.searchModal.searchString);
+      },
+        error => {
+          this.search(this.searchModal.searchString);
+        }, () => { });
+    
   }
 
   search(query: string) {
+    this.appService.updateSearchText(query);
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null) {
       this.authService.logout();
@@ -217,7 +267,17 @@ export class BasicSearchComponent implements OnInit {
 
           this.isLoading = false;
         },
-          error => { }, () => { });
+        error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let _message = "Some error occured.";
+          let Errors = Utilities.ErrorDetail(_message, error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        }, () => { });
     }
   }
 
@@ -366,5 +426,12 @@ export class BasicSearchComponent implements OnInit {
         this.searchModal.abilityFilters.isAbilityTags = true;
       }
     }
+  }
+  private setHeaderValues(model: any): any {
+    let headerValues = model;
+    this.appService.updateAccountSetting1(headerValues);
+    this.sharedService.updateAccountSetting(headerValues);
+    this.localStorage.deleteData(DBkeys.HEADER_VALUE);
+    this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
   }
 }

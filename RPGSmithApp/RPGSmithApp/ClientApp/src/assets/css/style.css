@@ -3490,8 +3490,13 @@ a {
   position: relative;
   z-index: 80;
   margin-right: -2rem;
+  z-index:1;
+  cursor:pointer
 }
-
+  .site-header-search .icon:focus + input,
+  .site-header-search .icon:hover + input {
+    background-color: #f3f2f2;
+  }
   .site-header-search .icon:before {
     color: #afa9a5;
   }

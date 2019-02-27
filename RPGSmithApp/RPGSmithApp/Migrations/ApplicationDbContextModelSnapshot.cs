@@ -2288,6 +2288,63 @@ namespace RPGSmithApp.Migrations
                     b.ToTable("RulesetTileConfig");
                 });
 
+            modelBuilder.Entity("DAL.Models.SearchFilter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("CharacterId");
+
+                    b.Property<bool>("IsAbility");
+
+                    b.Property<bool>("IsAssociatedAbility");
+
+                    b.Property<bool>("IsAssociatedSpell");
+
+                    b.Property<bool>("IsCastingTime");
+
+                    b.Property<bool>("IsCharacter");
+
+                    b.Property<bool>("IsClass");
+
+                    b.Property<bool>("IsDesc");
+
+                    b.Property<bool>("IsEffectDesc");
+
+                    b.Property<bool>("IsHitEffect");
+
+                    b.Property<bool>("IsItem");
+
+                    b.Property<bool>("IsLevel");
+
+                    b.Property<bool>("IsMissEffect");
+
+                    b.Property<bool>("IsName");
+
+                    b.Property<bool>("IsRarity");
+
+                    b.Property<bool>("IsRuleSet");
+
+                    b.Property<bool>("IsSchool");
+
+                    b.Property<bool>("IsSpell");
+
+                    b.Property<bool>("IsStats");
+
+                    b.Property<bool>("IsTags");
+
+                    b.Property<int?>("RulesetId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CharacterId");
+
+                    b.HasIndex("RulesetId");
+
+                    b.ToTable("SearchFilter");
+                });
+
             modelBuilder.Entity("DAL.Models.Spell", b =>
                 {
                     b.Property<int>("SpellId")
@@ -3277,6 +3334,17 @@ namespace RPGSmithApp.Migrations
                         .WithOne("Config")
                         .HasForeignKey("DAL.Models.RulesetTileModels.RulesetTileConfig", "RulesetTileId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("DAL.Models.SearchFilter", b =>
+                {
+                    b.HasOne("DAL.Models.Character", "Character")
+                        .WithMany("SearchFilters")
+                        .HasForeignKey("CharacterId");
+
+                    b.HasOne("DAL.Models.RuleSet", "RuleSet")
+                        .WithMany("SearchFilters")
+                        .HasForeignKey("RulesetId");
                 });
 
             modelBuilder.Entity("DAL.Models.Spell", b =>

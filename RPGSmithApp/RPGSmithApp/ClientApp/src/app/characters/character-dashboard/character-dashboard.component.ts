@@ -2172,6 +2172,22 @@ export class CharacterDashboardComponent implements OnInit {
     return imagePath;
 
   }
+ GetLinkRecordText(id, linkType) {
+    let name = "";
+    if (this.statLinkRecords) {
+      if (this.statLinkRecords.length) {
+        if (this.statLinkRecords.length > 0) {
+          this.statLinkRecords.map((link) => {
+            if (link.id == id && link.type == linkType) {
+              name = link.name;
+            }
+          })
+        }
+      }
+    }
+    return name;
+
+  }
   GetValueFromStatsByStatID(ifClauseStatId: number, ifClauseStattype: number): string {
     let result = '';
     this.ConditionsValuesList.map((ccs: CharactersCharacterStat) => {

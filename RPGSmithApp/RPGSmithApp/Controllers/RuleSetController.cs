@@ -1602,6 +1602,88 @@ namespace RPGSmithApp.Controllers
         public IActionResult GetSearchResults([FromBody] SearchModel searchModel)
         {
             var results = new int[] { };
+            try
+            {
+                _ruleSetService.SaveLastSearchFilters(searchModel);
+                string searchText = searchModel.SearchString;
+                if (!string.IsNullOrEmpty(searchText) && searchText.Length > 2)
+                {
+                    if ((searchText.ElementAt(0) == '"' && searchText.ElementAt(searchText.Length - 1) == '"'))
+                    {
+                        searchText = searchText.Remove(0, 1);
+                        searchText = searchText.Remove(searchText.Length - 1, 1);
+                        searchModel.SearchString = searchText;
+                        return GetSingleSearchResult(searchModel);
+                    }
+                }
+
+
+                List<CharacterAbility> characterAbilities = new List<CharacterAbility>();
+                List<CharacterSpell> characterSpells = new List<CharacterSpell>();
+                List<Item> items = new List<Item>();
+                List<ItemMaster> itemMasters = new List<ItemMaster>();
+                List<Spell> spells = new List<Spell>();
+                List<Ability> abilities = new List<Ability>();
+                foreach (string item in searchText.Split(' '))
+                {
+                    if (!string.IsNullOrEmpty(item))
+                    {
+                        searchModel.SearchString = item;
+                        switch (searchModel.SearchType)
+                        {
+                            case SP_SearchType.CharacterAbilities:
+                                characterAbilities.AddRange(_ruleSetService.SearchCharacterAbilities(searchModel));
+                                break;
+                            case SP_SearchType.CharacterSpells:
+                                characterSpells.AddRange(_ruleSetService.SearchCharacterSpells(searchModel));
+                                break;
+                            case SP_SearchType.CharacterItems:
+                                items.AddRange(_ruleSetService.SearchCharacterItems(searchModel));
+                                break;
+                            case SP_SearchType.RulesetItems:
+                                itemMasters.AddRange(_ruleSetService.SearchRulesetItems(searchModel));
+                                break;
+                            case SP_SearchType.RulesetSpells:
+                                spells.AddRange(_ruleSetService.SearchRulesetSpells(searchModel));
+                                break;
+                            case SP_SearchType.RulesetAbilities:
+                                abilities.AddRange(_ruleSetService.SearchRulesetAbilities(searchModel));
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                switch (searchModel.SearchType)
+                {
+                    case SP_SearchType.CharacterAbilities:
+                        return Ok(characterAbilities.GroupBy(x => x.CharacterAbilityId).Select(x => x.First()));
+
+                    case SP_SearchType.RulesetAbilities:
+                        return Ok(abilities.GroupBy(x => x.AbilityId).Select(x => x.First()));
+
+                    case SP_SearchType.CharacterSpells:
+                        return Ok(characterSpells.GroupBy(x => x.CharacterSpellId).Select(x => x.First()));
+
+                    case SP_SearchType.RulesetSpells:
+                        return Ok(spells.GroupBy(x => x.SpellId).Select(x => x.First()));
+
+                    case SP_SearchType.CharacterItems:
+                        return Ok(items.GroupBy(x => x.ItemId).Select(x => x.First()));
+
+                    case SP_SearchType.RulesetItems:
+                        return Ok(itemMasters.GroupBy(x => x.ItemMasterId).Select(x => x.First()));
+                    default:
+                        return Ok();
+                }
+            }
+            catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        private IActionResult GetSingleSearchResult(SearchModel searchModel)
+        {
             switch (searchModel.SearchType)
             {
                 case SP_SearchType.CharacterAbilities:

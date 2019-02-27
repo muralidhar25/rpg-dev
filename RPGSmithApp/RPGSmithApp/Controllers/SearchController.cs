@@ -1,6 +1,7 @@
 using AutoMapper;
 using DAL.Core.Interfaces;
 using DAL.Models;
+using DAL.Models.SPModels;
 using DAL.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -38,11 +39,16 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpGet("SearchCharacter")]
-        public async Task<IEnumerable<Character>> SearchCharacter(string q,string userId)
+        public async Task<IEnumerable<Character>> SearchCharacter(string q, string userId)
         {
             var list = _searchService.SearchCharacters(q, userId).Result;
             return list;
         }
 
+        [HttpPost("getFilters")]
+        public IActionResult getFilters([FromBody] SearchModel searchModel)
+        {
+            return Ok(_searchService.getFilters(searchModel));             
+        }
     }
 }

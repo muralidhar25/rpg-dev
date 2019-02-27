@@ -151,7 +151,7 @@
       </ng-container>
       <div class="form-row">
         <div [ngClass]="hasCommand?'col-12 col-md-6':'col-12 col-md-12'">
-          <!--<ng-container *ngIf="characterTileModel?.multiCharacterStats?.length==1 || characterTileModel.view==VIEW.EDIT">
+          <ng-container *ngIf="characterTileModel?.multiCharacterStats?.length==1 || characterTileModel.view==VIEW.EDIT">
             <ng-container *ngIf="(characterTileModel?.multiCharacterStats?.length!=1 && characterTileModel.view==VIEW.EDIT && characterStatTileFormModal?.charactersCharacterStat?.linkType) || (characterTileModel?.multiCharacterStats?.length==1 && characterTileModel?.multiCharacterStats[0]?.characterStatTypeId==STAT_TYPE.LinkRecord)">
 
               <div class="form-group">
@@ -174,7 +174,7 @@
                 </fieldset>
               </div>
             </ng-container>
-          </ng-container>-->
+          </ng-container>
           <div class="form-group">
             <fieldset class="form-group input-switch input-switch-dual">
               <legend>Show Title</legend>

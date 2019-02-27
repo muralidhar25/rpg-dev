@@ -58,6 +58,7 @@ namespace DAL.Models
         public virtual ICollection<CharacterSpell> CharacterSpells { get; set; }
 
         public virtual ICollection<Item> Items { get; set; }
+        public virtual ICollection<SearchFilter> SearchFilters { get; set; }
 
         public virtual ICollection<CharacterCommand> CharacterCommands { get; set; }
 

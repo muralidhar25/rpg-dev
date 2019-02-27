@@ -1307,6 +1307,179 @@ namespace DAL.Services
 
             return itemlist;
         }
+
+        public void SaveLastSearchFilters(SearchModel searchModel)
+        {
+            SearchFilter filter = null;
+            if (
+                searchModel.SearchType == SP_SearchType.CharacterAbilities
+                ||
+                searchModel.SearchType == SP_SearchType.CharacterSpells
+                ||
+                searchModel.SearchType == SP_SearchType.CharacterItems
+                )
+            {
+                if (searchModel.CharacterID!=0)
+                {
+                    bool isItem = (searchModel.SearchType == SP_SearchType.CharacterItems);
+                    bool isSpell = (searchModel.SearchType == SP_SearchType.CharacterSpells);
+                    bool isAbility = (searchModel.SearchType == SP_SearchType.CharacterAbilities);
+                    if (_context.SearchFilter.Any(x => x.CharacterId == searchModel.CharacterID && x.IsCharacter==true &&
+                        x.IsItem == isItem && x.IsSpell == isSpell && x.IsAbility == isAbility))
+                    {
+                       
+                        filter = _context.SearchFilter.Where(x => x.CharacterId == searchModel.CharacterID && x.IsCharacter == true && 
+                        x.IsItem== isItem && x.IsSpell== isSpell && x.IsAbility==isAbility
+                        ).FirstOrDefault();
+                        if (filter != null)
+                        {
+                            filter = setFilterValues(filter, searchModel);
+                            _context.SearchFilter.Update(filter);
+                            _context.SaveChanges();
+                        }
+                    }
+                    else {
+                        filter = setFilterValues(filter, searchModel);
+                        _context.SearchFilter.Add(filter);
+                        _context.SaveChanges();
+                    }
+                }
+            }
+            else {
+                if (searchModel.RulesetID != 0)
+                {
+                    bool isItem = (searchModel.SearchType == SP_SearchType.RulesetItems);
+                    bool isSpell = (searchModel.SearchType == SP_SearchType.RulesetSpells);
+                    bool isAbility = (searchModel.SearchType == SP_SearchType.RulesetAbilities);
+                    if (_context.SearchFilter.Any(x => x.RulesetId == searchModel.RulesetID && x.IsRuleSet == true &&
+                        x.IsItem == isItem && x.IsSpell == isSpell && x.IsAbility == isAbility))
+                    {
+                        filter = _context.SearchFilter.Where(x => x.RulesetId == searchModel.RulesetID && x.IsRuleSet == true &&
+                        x.IsItem == isItem && x.IsSpell == isSpell && x.IsAbility == isAbility).FirstOrDefault();
+                        if (filter != null)
+                        {
+                            filter = setFilterValues(filter, searchModel);
+                            _context.SearchFilter.Update(filter);
+                            _context.SaveChanges();
+                        }
+                    }
+                    else
+                    {
+                        filter = setFilterValues(filter, searchModel);
+                        _context.SearchFilter.Add(filter);
+                        _context.SaveChanges();
+                    }
+                }
+            }
+        }
+
+        private SearchFilter setFilterValues(SearchFilter filter, SearchModel searchModel)
+        {
+            if (filter==null)
+            {
+                filter = new SearchFilter();
+            }
+            if (
+                searchModel.SearchType == SP_SearchType.CharacterAbilities
+                ||
+                searchModel.SearchType == SP_SearchType.CharacterSpells
+                ||
+                searchModel.SearchType == SP_SearchType.CharacterItems
+                )
+            {
+                filter.IsCharacter = true;
+                filter.CharacterId = searchModel.CharacterID;
+
+                filter.IsRuleSet = false;
+                filter.RulesetId = null;
+
+                filter.IsItem = searchModel.SearchType == SP_SearchType.CharacterItems ? true : false;
+                filter.IsSpell = searchModel.SearchType == SP_SearchType.CharacterSpells ? true : false;
+                filter.IsAbility = searchModel.SearchType == SP_SearchType.CharacterAbilities ? true : false;
+
+                switch (searchModel.SearchType)
+                {
+                    case SP_SearchType.CharacterItems:
+                        filter.IsName = searchModel.ItemFilters.IsItemName;
+                        filter.IsTags = searchModel.ItemFilters.IsItemTags;
+                        filter.IsStats = searchModel.ItemFilters.IsItemStats;
+                        filter.IsDesc = searchModel.ItemFilters.IsItemDesc;
+                        filter.IsRarity = searchModel.ItemFilters.IsItemRarity;
+                        filter.IsAssociatedSpell = searchModel.ItemFilters.IsItemSpellAssociated;
+                        filter.IsAssociatedAbility = searchModel.ItemFilters.IsItemAbilityAssociated;
+                        break;
+                    case SP_SearchType.CharacterSpells:
+                        filter.IsName = searchModel.SpellFilters.IsSpellName;
+                        filter.IsClass = searchModel.SpellFilters.IsSpellClass;
+                        filter.IsSchool = searchModel.SpellFilters.IsSpellSchool;
+                        filter.IsLevel = searchModel.SpellFilters.IsSpellLevel;
+                        filter.IsTags = searchModel.SpellFilters.IsSpellTags;
+                        filter.IsStats = searchModel.SpellFilters.IsSpellStats;
+                        filter.IsDesc = searchModel.SpellFilters.IsSpellDesc;
+                        filter.IsCastingTime = searchModel.SpellFilters.IsSpellCastingTime;
+                        filter.IsEffectDesc = searchModel.SpellFilters.IsSpellEffectDesc;
+                        filter.IsHitEffect = searchModel.SpellFilters.IsSpellHitEffect;
+                        filter.IsMissEffect = searchModel.SpellFilters.IsSpellMissEffect;
+                        break;
+                    case SP_SearchType.CharacterAbilities:
+                        filter.IsName = searchModel.AbilityFilters.IsAbilityName;
+                        filter.IsTags = searchModel.AbilityFilters.IsAbilityTags;
+                        filter.IsLevel = searchModel.AbilityFilters.IsAbilityLevel;
+                        filter.IsStats = searchModel.AbilityFilters.IsAbilityStats;
+                        filter.IsDesc = searchModel.AbilityFilters.IsAbilityDesc;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else {
+                filter.IsRuleSet = true;
+                filter.RulesetId = searchModel.RulesetID;
+
+                filter.IsCharacter = false;
+                filter.CharacterId = null;
+
+                filter.IsItem = searchModel.SearchType == SP_SearchType.RulesetItems ? true : false;
+                filter.IsSpell = searchModel.SearchType == SP_SearchType.RulesetSpells ? true : false;
+                filter.IsAbility = searchModel.SearchType == SP_SearchType.RulesetAbilities ? true : false;
+
+                switch (searchModel.SearchType)
+                {
+                    case SP_SearchType.RulesetItems:
+                        filter.IsName = searchModel.ItemFilters.IsItemName;
+                        filter.IsTags = searchModel.ItemFilters.IsItemTags;
+                        filter.IsStats = searchModel.ItemFilters.IsItemStats;
+                        filter.IsDesc = searchModel.ItemFilters.IsItemDesc;
+                        filter.IsRarity = searchModel.ItemFilters.IsItemRarity;
+                        filter.IsAssociatedSpell = searchModel.ItemFilters.IsItemSpellAssociated;
+                        filter.IsAssociatedAbility = searchModel.ItemFilters.IsItemAbilityAssociated;
+                        break;
+                    case SP_SearchType.RulesetSpells:
+                        filter.IsName = searchModel.SpellFilters.IsSpellName;
+                        filter.IsClass = searchModel.SpellFilters.IsSpellClass;
+                        filter.IsSchool = searchModel.SpellFilters.IsSpellSchool;
+                        filter.IsLevel = searchModel.SpellFilters.IsSpellLevel;
+                        filter.IsTags = searchModel.SpellFilters.IsSpellTags;
+                        filter.IsStats = searchModel.SpellFilters.IsSpellStats;
+                        filter.IsDesc = searchModel.SpellFilters.IsSpellDesc;
+                        filter.IsCastingTime = searchModel.SpellFilters.IsSpellCastingTime;
+                        filter.IsEffectDesc = searchModel.SpellFilters.IsSpellEffectDesc;
+                        filter.IsHitEffect = searchModel.SpellFilters.IsSpellHitEffect;
+                        filter.IsMissEffect = searchModel.SpellFilters.IsSpellMissEffect;
+                        break;
+                    case SP_SearchType.RulesetAbilities:
+                        filter.IsName = searchModel.AbilityFilters.IsAbilityName;
+                        filter.IsTags = searchModel.AbilityFilters.IsAbilityTags;
+                        filter.IsLevel = searchModel.AbilityFilters.IsAbilityLevel;
+                        filter.IsStats = searchModel.AbilityFilters.IsAbilityStats;
+                        filter.IsDesc = searchModel.AbilityFilters.IsAbilityDesc;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return filter;
+        }
         #endregion
     }
 

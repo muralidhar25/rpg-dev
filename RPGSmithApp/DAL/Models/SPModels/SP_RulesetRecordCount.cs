@@ -141,6 +141,8 @@ namespace DAL.Models.SPModels
         public bool IsItemStats { get; set; }
         public bool IsItemDesc { get; set; }
         public bool IsItemRarity { get; set; }
+        public bool IsItemSpellAssociated { get; set; }
+        public bool IsItemAbilityAssociated { get; set; }
     }
     public class SpellFilter
     {

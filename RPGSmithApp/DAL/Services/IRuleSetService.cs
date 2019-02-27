@@ -47,6 +47,6 @@ namespace DAL.Services
         List<Spell> SearchRulesetSpells(SearchModel searchModel);
         List<Item> SearchCharacterItems(SearchModel searchModel);
         List<ItemMaster> SearchRulesetItems(SearchModel searchModel);
-
+        void SaveLastSearchFilters(SearchModel searchModel);
     }
 }

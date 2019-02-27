@@ -356,6 +356,7 @@ namespace DAL.Services.CharacterTileServices
                                         //CST.CharacterStatId = CST_Row["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CST_Row["CharacterStatId"]);
                                         CST.CharactersCharacterStatId = CST_Row["CharactersCharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CST_Row["CharactersCharacterStatId"]);
                                         CST.ShowTitle = CST_Row["ShowTitle"] == DBNull.Value ? false : Convert.ToBoolean(CST_Row["ShowTitle"]);
+                                        CST.DisplayLinkImage = CST_Row["DisplayLinkImage"] == DBNull.Value ? false : Convert.ToBoolean(CST_Row["DisplayLinkImage"]);
                                         CST.ImageUrl = CST_Row["ImageUrl"] == DBNull.Value ? null : CST_Row["ImageUrl"].ToString();
 
                                         CharactersCharacterStat CharCharStat = null;

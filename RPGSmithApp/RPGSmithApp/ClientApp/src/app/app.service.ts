@@ -8,6 +8,7 @@ export class AppService1 {
 
 
   private accountSetting = new Subject<any>();
+  private text = new Subject<any>();
 
 
   updateAccountSetting1(accountSetting: any) {    
@@ -15,6 +16,12 @@ export class AppService1 {
   }
   shouldUpdateAccountSetting1(): Observable<any> {
     return this.accountSetting.asObservable();
+  }
+  updateSearchText(text: string) {
+    this.text.next(text);
+  }
+  shouldUpdateSearchText(): Observable<any> {
+    return this.text.asObservable();
   }
 }
 

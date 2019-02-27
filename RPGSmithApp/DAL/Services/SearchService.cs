@@ -8,6 +8,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using DAL.Repositories;
 using System.Linq.Expressions;
+using DAL.Models.SPModels;
 
 namespace DAL.Services
 {
@@ -36,6 +37,30 @@ namespace DAL.Services
                 .ToList();
         }
 
-
+        public SearchFilter getFilters(SearchModel searchModel)
+        {
+            if (
+                searchModel.SearchType == SP_SearchType.CharacterAbilities
+                ||
+                searchModel.SearchType == SP_SearchType.CharacterSpells
+                ||
+                searchModel.SearchType == SP_SearchType.CharacterItems
+                )
+            {
+                bool isItem = (searchModel.SearchType == SP_SearchType.CharacterItems);
+                bool isSpell = (searchModel.SearchType == SP_SearchType.CharacterSpells);
+                bool isAbility = (searchModel.SearchType == SP_SearchType.CharacterAbilities);
+                return _context.SearchFilter.Where(x => x.CharacterId == searchModel.CharacterID && x.IsCharacter == true &&
+                        x.IsItem == isItem && x.IsSpell == isSpell && x.IsAbility == isAbility
+                        ).FirstOrDefault();
+            }
+            else {
+                bool isItem = (searchModel.SearchType == SP_SearchType.RulesetItems);
+                bool isSpell = (searchModel.SearchType == SP_SearchType.RulesetSpells);
+                bool isAbility = (searchModel.SearchType == SP_SearchType.RulesetAbilities);
+                return _context.SearchFilter.Where(x => x.RulesetId == searchModel.RulesetID && x.IsRuleSet == true &&
+                        x.IsItem == isItem && x.IsSpell == isSpell && x.IsAbility == isAbility).FirstOrDefault();
+            }
+        }
     }
 }

@@ -16,6 +16,8 @@ export class SearchService extends EndpointFactory {
 
   private readonly searchCharacterApi: string = this.configurations.baseUrl + "/api/Search/SearchCharacter";
   private readonly searchRecordsApi: string = this.configurations.baseUrl + "/api/ruleset/GetSearchResults";
+  private readonly getFiltersApi: string = this.configurations.baseUrl + "/api/Search/getFilters";
+  
 
     constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
         private fileUploadService: FileUploadService) {
@@ -32,6 +34,14 @@ export class SearchService extends EndpointFactory {
     }
   searchRecords<T>(searchModel: BasicSearch): Observable<T> {
     let endpointUrl = `${this.searchRecordsApi}`;
+
+    return this.http.post<T>(endpointUrl, JSON.stringify(searchModel), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.searchRecords(searchModel));
+      });
+  }
+  getFilters<T>(searchModel: BasicSearch): Observable<T> {
+    let endpointUrl = `${this.getFiltersApi}`;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(searchModel), this.getRequestHeaders())
       .catch(error => {

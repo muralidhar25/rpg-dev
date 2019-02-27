@@ -251,9 +251,9 @@
                 </ul>
                 <ul *ngIf="searchModal?.searchType == SEARCHTYPE.CHARACTERSPELLS"
                     class=" search-item-icons item-properties">
-                  <li *ngIf="search?.record?.spell.isSomaticComponent" class="item-property item-property-icon icon-ico icon-Rec-Somantic"></li>
-                  <li *ngIf="search?.record?.spell.isVerbalComponent" class="item-property item-property-icon icon-ico icon-Rec-Verbal"></li>
-                  <li *ngIf="search?.record?.spell.isMaterialComponent" class="item-property item-property-icon icon-ico icon-Rec-Material icon-rsi"></li>
+                  <li *ngIf="search?.record?.spell?.isSomaticComponent" class="item-property item-property-icon icon-ico icon-Rec-Somantic"></li>
+                  <li *ngIf="search?.record?.spell?.isVerbalComponent" class="item-property item-property-icon icon-ico icon-Rec-Verbal"></li>
+                  <li *ngIf="search?.record?.spell?.isMaterialComponent" class="item-property item-property-icon icon-ico icon-Rec-Material icon-rsi"></li>
                   <li *ngIf="search?.record?.isMemorized" class="item-property item-property-icon icon-ico icon-Rec-Memorized"></li>
                 </ul>
               </div>
