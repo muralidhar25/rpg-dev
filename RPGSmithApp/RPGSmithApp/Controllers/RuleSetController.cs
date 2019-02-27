@@ -1583,6 +1583,19 @@ namespace RPGSmithApp.Controllers
             _ruleSetService.CopyCustomDiceToNewRuleSet(CopyFromRulesetID, CopyToRulesetID);
         }
 
+        
+             [HttpGet("GetDefaultDice")]
+        public async Task<IActionResult> GetDefaultDice()
+        {
+            try
+            {                
+                return Ok(_ruleSetService.GetDefaultDices());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         #endregion
 
         [HttpPost("GetSearchResults")]

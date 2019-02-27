@@ -5,7 +5,7 @@
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <IsPackable>false</IsPackable>
-    <SpaRoot>ClientApp2\</SpaRoot>
+    <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
 
     <!-- Set this to true if you enable server-side prerendering -->
@@ -55,19 +55,19 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
-    <Compile Remove="ClientApp2\src\app\components\character-records\abilities\create-abilities\**" />
-    <Compile Remove="ClientApp2\src\app\components\character-records\spells\create-spells\**" />
+    <Compile Remove="ClientApp\src\app\components\character-records\abilities\create-abilities\**" />
+    <Compile Remove="ClientApp\src\app\components\character-records\spells\create-spells\**" />
     <Content Remove="$(SpaRoot)**" />
-    <Content Remove="ClientApp2\src\app\components\character-records\abilities\create-abilities\**" />
-    <Content Remove="ClientApp2\src\app\components\character-records\spells\create-spells\**" />
+    <Content Remove="ClientApp\src\app\components\character-records\abilities\create-abilities\**" />
+    <Content Remove="ClientApp\src\app\components\character-records\spells\create-spells\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Remove="ClientApp2\src\app\components\character-records\abilities\create-abilities\**" />
-    <EmbeddedResource Remove="ClientApp2\src\app\components\character-records\spells\create-spells\**" />
-    <None Remove="ClientApp2\src\app\components\character-records\abilities\create-abilities\**" />
-    <None Remove="ClientApp2\src\app\components\character-records\spells\create-spells\**" />
+    <EmbeddedResource Remove="ClientApp\src\app\components\character-records\abilities\create-abilities\**" />
+    <EmbeddedResource Remove="ClientApp\src\app\components\character-records\spells\create-spells\**" />
+    <None Remove="ClientApp\src\app\components\character-records\abilities\create-abilities\**" />
+    <None Remove="ClientApp\src\app\components\character-records\spells\create-spells\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -204,15 +204,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ClientApp2\src\app\common\backend-less-old.ts" />
-    <None Remove="ClientApp2\src\app\common\backend-less-old.ts" />
+    <None Remove="ClientApp\src\app\common\backend-less-old.ts" />
+    <None Remove="ClientApp\src\app\common\backend-less-old.ts" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ClientApp2\src\app\characters\character-records\abilities\ability-details\" />
-    <Folder Include="ClientApp2\src\app\characters\character-records\abilities\ability-ruleset-detail\" />
-    <Folder Include="ClientApp2\src\app\characters\character-records\abilities\add-abilities\" />
-    <Folder Include="ClientApp2\src\app\characters\character-records\abilities\create-abilities\" />
+    <Folder Include="ClientApp\src\app\characters\character-records\abilities\ability-details\" />
+    <Folder Include="ClientApp\src\app\characters\character-records\abilities\ability-ruleset-detail\" />
+    <Folder Include="ClientApp\src\app\characters\character-records\abilities\add-abilities\" />
+    <Folder Include="ClientApp\src\app\characters\character-records\abilities\create-abilities\" />
     <Folder Include="wwwroot\UploadedFiles\" />
   </ItemGroup>
 

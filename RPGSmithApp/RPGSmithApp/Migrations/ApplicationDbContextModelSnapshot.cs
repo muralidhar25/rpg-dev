@@ -777,6 +777,8 @@ namespace RPGSmithApp.Migrations
 
                     b.Property<int?>("CharactersCharacterStatId");
 
+                    b.Property<bool>("DisplayLinkImage");
+
                     b.Property<string>("ImageUrl");
 
                     b.Property<bool>("IsDeleted");

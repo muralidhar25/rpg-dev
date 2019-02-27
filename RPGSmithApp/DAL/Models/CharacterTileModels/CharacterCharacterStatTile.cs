@@ -38,6 +38,7 @@ namespace DAL.Models.CharacterTileModels
 
         public bool IsDeleted { get; set; }
 
+        public bool DisplayLinkImage { get; set; }
         public virtual CharacterTile CharacterTile { get; set; }
         public virtual CharactersCharacterStat CharactersCharacterStat { get; set; }
     }

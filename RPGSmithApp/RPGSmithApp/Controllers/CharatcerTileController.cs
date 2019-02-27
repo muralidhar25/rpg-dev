@@ -203,7 +203,8 @@ namespace RPGSmithApp.Controllers
                                     bodyBgColor = characterStatTile.bodyBgColor,
                                     bodyTextColor = characterStatTile.bodyTextColor,
                                     ShowTitle = characterStatTile.ShowTitle,
-                                    ImageUrl= cStat.Image
+                                    ImageUrl= cStat.Image,
+                                    DisplayLinkImage= characterStatTile.DisplayLinkImage
                                 });
 
                                 SaveColorsAsync(_newTile);

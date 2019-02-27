@@ -47,6 +47,7 @@ namespace DAL.Services.CharacterTileServices
                 return cstile;
 
             cstile.ShowTitle = item.ShowTitle;
+            cstile.DisplayLinkImage = item.DisplayLinkImage;
             cstile.CharactersCharacterStatId = item.CharactersCharacterStatId;
             
             //cstile.Color = item.Color;
