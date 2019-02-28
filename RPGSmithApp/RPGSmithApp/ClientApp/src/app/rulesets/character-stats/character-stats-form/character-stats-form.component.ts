@@ -12,6 +12,7 @@ import { SharedService } from '../../../core/services/shared.service';
 import { ImageSelectorComponent } from '../../../shared/image-interface/image-selector/image-selector.component';
 import { DiceComponent } from '../../../shared/dice/dice/dice.component';
 import { DiceService } from '../../../core/services/dice.service';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-character-stats-form',
@@ -55,8 +56,9 @@ export class CharacterStatsFormComponent implements OnInit {
         private router: Router, private bsModalRef: BsModalRef,
         private alertService: AlertService, private authService: AuthService,
         private charactersService: CharacterStatService, private choiceService: ChoiceService,
-        private modalService: BsModalService, private sharedService: SharedService
-    ) {
+      private modalService: BsModalService, private sharedService: SharedService,
+      private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
         this.sharedService.getCommandData().subscribe(diceCommand => {
             
             if (this.characterStatsFormModal.characterStatDefaultValueViewModel) {

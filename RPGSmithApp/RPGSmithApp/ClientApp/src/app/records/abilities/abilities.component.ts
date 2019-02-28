@@ -16,6 +16,8 @@ import { Utilities } from "../../core/common/utilities";
 import { CreateAbilitiesComponent } from "../../shared/create-abilities/create-abilities.component";
 import { AddAbilitiesComponent } from "./add-abilities/add-abilities.component";
 import { Ability } from "../../core/models/view-models/ability.model";
+import { Ruleset } from "../../core/models/view-models/ruleset.model";
+import { AppService1 } from "../../app.service";
 
 @Component({
     selector: 'app-abilities',
@@ -46,7 +48,7 @@ export class AbilitiesComponent implements OnInit {
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
         private sharedService: SharedService, private commonService: CommonService, private pageLastViewsService: PageLastViewsService,
-        private abilityService: AbilityService, private rulesetService: RulesetService
+      private abilityService: AbilityService, private rulesetService: RulesetService, public appService: AppService1
     ) {
         //this.route.params.subscribe(params => { this.abilityId = params['id']; });
         this.sharedService.shouldUpdateAbilityList().subscribe(sharedServiceJson => {
@@ -76,7 +78,8 @@ export class AbilitiesComponent implements OnInit {
                 .subscribe(data => {
                     
                     this.abilitiesList = Utilities.responseData(data.Abilities, this.pageSize);
-                    this.rulesetModel = data.RuleSet;  
+                  this.rulesetModel = data.RuleSet;
+                  this.setHeaderValues(this.rulesetModel);
                     this.abilitiesList.forEach(function (val) { val.showIcon = false; });
                     try {
                         this.noRecordFound = !data.Abilities.length;
@@ -376,5 +379,20 @@ export class AbilitiesComponent implements OnInit {
         this.timeoutHandler = setInterval(() => {
             this.editAbility(record);
         }, 1000);
-    }
+  }
+  private setHeaderValues(ruleset: Ruleset): any {
+    try {
+      let headerValues = {
+        headerName: ruleset.ruleSetName,
+        headerImage: ruleset.imageUrl ? ruleset.imageUrl : 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png',
+        headerId: ruleset.ruleSetId,
+        headerLink: 'ruleset',
+        hasHeader: true
+      };
+      this.appService.updateAccountSetting1(headerValues);
+      this.sharedService.updateAccountSetting(headerValues);
+      this.localStorage.deleteData(DBkeys.HEADER_VALUE);
+      this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+    } catch (err) { }
+  }
 }

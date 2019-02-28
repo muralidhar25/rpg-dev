@@ -13,6 +13,7 @@ import { User } from "../../../core/models/user.model";
 import { DBkeys } from "../../../core/common/db-keys";
 import { DiceSaveComponent } from "../dice-save/dice-save.component";
 import { NumericCharacterStatComponent } from "../../numeric-character-stats/numeric-character-stat.component";
+import { PlatformLocation } from "@angular/common";
 
 @Component({
     selector: "app-dice",
@@ -42,7 +43,9 @@ export class DiceComponent implements OnInit {
         public modalService: BsModalService, private bsModalRef: BsModalRef, private authService: AuthService,
         private characterCommandService: CharacterCommandService, private _diceService: DiceService, 
         private localStorage: LocalStoreManager, private sharedService: SharedService, private charactersService: CharactersService
-    ) {
+
+      , private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1)); 
         this.diceSection = true;
         this.rollSection = false;
     }

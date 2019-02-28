@@ -18,6 +18,7 @@ import { DBkeys } from '../../core/common/db-keys';
 import { Utilities } from '../../core/common/utilities';
 import { ColorsComponent } from '../../tile/colors/colors.component';
 import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-image',
@@ -62,7 +63,9 @@ export class RulesetImageTileComponent implements OnInit {
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService, private colorService: ColorService,
         private imageTileService: ImageTileService, private alertService: AlertService, private authService: AuthService,
-        private fileUploadService: FileUploadService, private localStorage: LocalStoreManager, private rulesetTileService: RulesetTileService ) {
+      private fileUploadService: FileUploadService, private localStorage: LocalStoreManager, private rulesetTileService: RulesetTileService
+      , private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
         this.color = this.selectedColor;
     }
 

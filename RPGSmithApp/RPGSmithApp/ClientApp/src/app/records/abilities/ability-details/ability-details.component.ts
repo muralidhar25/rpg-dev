@@ -15,6 +15,7 @@ import { DBkeys } from "../../../core/common/db-keys";
 import { Utilities } from "../../../core/common/utilities";
 import { CreateAbilitiesComponent } from "../../../shared/create-abilities/create-abilities.component";
 import { ImageViewerComponent } from "../../../shared/image-interface/image-viewer/image-viewer.component";
+import { PlatformLocation } from "@angular/common";
 
 @Component({
     selector: 'app-ability-details',
@@ -37,8 +38,9 @@ export class AbilityDetailsComponent implements OnInit {
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
         private sharedService: SharedService, private commonService: CommonService,
-        private abilityService: AbilityService, private rulesetService: RulesetService
-    ) {
+      private abilityService: AbilityService, private rulesetService: RulesetService,
+      private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
         this.route.params.subscribe(params => { this.abilityId = params['id']; });
         this.sharedService.shouldUpdateAbilityList().subscribe(sharedServiceJson => {
             if (sharedServiceJson) this.initialize();

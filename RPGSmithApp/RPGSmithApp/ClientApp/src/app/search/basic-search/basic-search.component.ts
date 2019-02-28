@@ -44,7 +44,7 @@ export class BasicSearchComponent implements OnInit {
         this.setHeaderValues(this.headers);
       }
     }
-    debugger
+    
     this.Initialize();
   }
 

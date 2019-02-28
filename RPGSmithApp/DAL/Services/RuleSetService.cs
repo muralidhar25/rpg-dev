@@ -1168,6 +1168,8 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@IsItemStats", searchModel.ItemFilters.IsItemStats);
                 command.Parameters.AddWithValue("@IsItemDesc", searchModel.ItemFilters.IsItemDesc);
                 command.Parameters.AddWithValue("@IsItemRarity", searchModel.ItemFilters.IsItemRarity);
+                command.Parameters.AddWithValue("@IsItemAbilityAssociated", searchModel.ItemFilters.IsItemAbilityAssociated);
+                command.Parameters.AddWithValue("@IsItemSpellAssociated", searchModel.ItemFilters.IsItemSpellAssociated);
 
                 command.CommandType = CommandType.StoredProcedure;
 
@@ -1253,6 +1255,8 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@IsItemStats", searchModel.ItemFilters.IsItemStats);
                 command.Parameters.AddWithValue("@IsItemDesc", searchModel.ItemFilters.IsItemDesc);
                 command.Parameters.AddWithValue("@IsItemRarity", searchModel.ItemFilters.IsItemRarity);
+                command.Parameters.AddWithValue("@IsItemAbilityAssociated", searchModel.ItemFilters.IsItemAbilityAssociated);
+                command.Parameters.AddWithValue("@IsItemSpellAssociated", searchModel.ItemFilters.IsItemSpellAssociated);
 
                 command.CommandType = CommandType.StoredProcedure;
 

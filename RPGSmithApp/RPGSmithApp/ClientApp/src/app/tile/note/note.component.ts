@@ -18,6 +18,7 @@ import { User } from '../../core/models/user.model';
 import { DBkeys } from '../../core/common/db-keys';
 import { Utilities } from '../../core/common/utilities';
 import { ColorsComponent } from '../colors/colors.component';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
   selector: 'app-note',
@@ -221,7 +222,8 @@ export class NoteTileComponent implements OnInit {
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private colorService: ColorService,
     private alertService: AlertService, private noteTileService: NoteTileService, private localStorage: LocalStoreManager,
     private authService: AuthService, private sharedService: SharedService, private fileUploadService: FileUploadService,
-    private configuration: ConfigurationService) {
+    private configuration: ConfigurationService,private location: PlatformLocation) {
+    location.onPopState(() => this.modalService.hide(1));
   }
 
   ngOnInit() {

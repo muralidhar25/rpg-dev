@@ -13,6 +13,8 @@ import { Utilities } from "../../core/common/utilities";
 import { AddItemMasterComponent } from "./add-item/add-item.component";
 import { CreateItemMsterComponent } from "./create-item/create-item.component";
 import { ItemMaster } from "../../core/models/view-models/item-master.model";
+import { Ruleset } from "../../core/models/view-models/ruleset.model";
+import { AppService1 } from "../../app.service";
 
 @Component({
     selector: 'app-item',
@@ -42,7 +44,7 @@ export class ItemMasterComponent implements OnInit {
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService, 
         public modalService: BsModalService, private localStorage: LocalStoreManager, private pageLastViewsService: PageLastViewsService,
-        private sharedService: SharedService, private itemMasterService: ItemMasterService
+      private sharedService: SharedService, private itemMasterService: ItemMasterService, public appService: AppService1
     ) {
         this.sharedService.shouldUpdateItemMasterList().subscribe(sharedServiceJson => {
             if (sharedServiceJson) {
@@ -67,7 +69,7 @@ export class ItemMasterComponent implements OnInit {
         this.setRulesetId(this.ruleSetId);
         this.destroyModalOnInit();
         this.initialize();
-        this.showActionButtons(this.showActions);
+      this.showActionButtons(this.showActions);      
     }
 
     private initialize() {
@@ -80,7 +82,8 @@ export class ItemMasterComponent implements OnInit {
                 .subscribe(data => {                    
                     this.ItemMasterList = Utilities.responseData(data.ItemMaster, this.pageSize);
                     this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
-                    this.RuleSet = data.RuleSet;
+                  this.RuleSet = data.RuleSet;
+                  this.setHeaderValues(this.RuleSet);
                     try {
                         this.noRecordFound = !data.ItemMaster.length;
                     } catch (err) { }
@@ -368,5 +371,20 @@ export class ItemMasterComponent implements OnInit {
         this.timeoutHandler = setInterval(() => {
             this.editItemTemplate(record);
         }, 1000);
-    }
+  }
+  private setHeaderValues(ruleset: Ruleset): any {
+    try {
+      let headerValues = {
+        headerName: ruleset.ruleSetName,
+        headerImage: ruleset.imageUrl ? ruleset.imageUrl : 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png',
+        headerId: ruleset.ruleSetId,
+        headerLink: 'ruleset',
+        hasHeader: true
+      };
+      this.appService.updateAccountSetting1(headerValues);
+      this.sharedService.updateAccountSetting(headerValues);
+      this.localStorage.deleteData(DBkeys.HEADER_VALUE);
+      this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+    } catch (err) { }
+  }
 }

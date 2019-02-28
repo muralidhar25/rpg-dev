@@ -7,6 +7,7 @@ import { AlertService, MessageSeverity } from '../../../core/common/alert.servic
 import { RulesetService } from '../../../core/services/ruleset.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { Utilities } from '../../../core/common/utilities';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'share-ruleset',
@@ -22,7 +23,8 @@ export class ShareRulesetComponent implements OnInit {
     constructor(private router: Router, private alertService: AlertService, private authService: AuthService,
         private bsModalRef: BsModalRef, private modalService: BsModalService,
         private localStorage: LocalStoreManager, private rulesetService: RulesetService,
-    ) { }
+      private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1)); }
 
     ngOnInit() {
         setTimeout(() => {            

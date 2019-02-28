@@ -5,6 +5,7 @@ import { CustomDice, DefaultDice, DiceTray } from '../../core/models/view-models
 import { DICE_ICON, DICE } from '../../core/models/enums';
 import { AlertService, MessageSeverity } from '../../core/common/alert.service';
 import { SharedService } from '../../core/services/shared.service';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-dice-tray',
@@ -20,7 +21,9 @@ export class DiceTrayComponent implements OnInit {
     diceicons = DICE;
     defaultDices: DefaultDice[] = [];
     diceTray: DiceTray[] = [];
-    constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private alertService: AlertService, private sharedService: SharedService) { }
+  constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private alertService: AlertService, private sharedService: SharedService
+    , private location: PlatformLocation) {
+    location.onPopState(() => this.modalService.hide(1)); }
 
     ngOnInit() {        
         setTimeout(() => {
@@ -40,7 +43,7 @@ export class DiceTrayComponent implements OnInit {
         //}, 0);
     }
     initialize() {
-        debugger
+        
         //this.customDice.icon = this.customDice.icon ? this.customDice.icon : DICE_ICON.DX;
         if (this.diceTray.length == 0) {
             if (!this.customDice.dices) {

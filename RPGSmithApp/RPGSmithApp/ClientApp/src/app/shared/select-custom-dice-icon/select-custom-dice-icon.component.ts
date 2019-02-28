@@ -5,6 +5,7 @@ import { CustomDice } from '../../core/models/view-models/custome-dice.model';
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
 import { AddCustomDiceComponent } from '../add-custom-dice/add-custom-dice.component';
 import { CustomDiceComponent } from '../custom-dice/custom-dice.component';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
   selector: 'app-select-custom-dice-icon',
@@ -20,7 +21,9 @@ export class SelectCustomDiceIconComponent implements OnInit {
     ruleset: Ruleset;
     view: string;
     viewType: string;
-    constructor(private bsModalRef: BsModalRef, private modalService: BsModalService) { }
+  constructor(private bsModalRef: BsModalRef, private modalService: BsModalService
+    , private location: PlatformLocation) {
+    location.onPopState(() => this.modalService.hide(1)); }
 
     ngOnInit() {
         this.getIconsList();

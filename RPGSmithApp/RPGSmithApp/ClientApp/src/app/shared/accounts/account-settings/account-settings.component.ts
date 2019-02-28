@@ -20,6 +20,7 @@ import { FileUploadService } from "../../../core/common/file-upload.service";
 import { setTimeout } from 'timers';
 import { DeleteAccountComponent } from '../delete-account/delete-account.component';
 import { AppService1 } from '../../../app.service';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'settings',
@@ -51,7 +52,9 @@ export class AccountSettingsComponent implements OnInit {
         private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
       private userService: UserService, private localStorage: LocalStoreManager, private fileUploadService: FileUploadService,
       public appService: AppService1
-    ) {
+
+      , private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1)); 
     }
 
     ngOnInit() {

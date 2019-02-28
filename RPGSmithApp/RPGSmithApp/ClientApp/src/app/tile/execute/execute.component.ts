@@ -20,6 +20,7 @@ import { User } from '../../core/models/user.model';
 import { DBkeys } from '../../core/common/db-keys';
 import { Utilities } from '../../core/common/utilities';
 import { ColorsComponent } from '../colors/colors.component';
+import { PlatformLocation } from '@angular/common';
 
 
 @Component({
@@ -75,7 +76,9 @@ export class ExecuteTileComponent implements OnInit {
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private colorService: ColorService,
         public localStorage: LocalStoreManager, private authService: AuthService, private sharedService: SharedService,
-        private itemsService: ItemsService, private characterSpellService: CharacterSpellService, private characterAbilityService: CharacterAbilityService, private executeTileService: ExecuteTileService, private alertService: AlertService) {
+      private itemsService: ItemsService, private characterSpellService: CharacterSpellService, private characterAbilityService: CharacterAbilityService,
+      private executeTileService: ExecuteTileService, private alertService: AlertService, private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
     }
 
     ngOnInit() {

@@ -11,6 +11,7 @@ import { IMAGE, VIEW } from '../../../core/models/enums';
 import { User } from '../../../core/models/user.model';
 import { Utilities } from '../../../core/common/utilities';
 import { BingSearchComponent } from '../bing-search/bing-search.component';
+import { PlatformLocation } from '@angular/common';
 
 
 @Component({
@@ -55,7 +56,8 @@ export class ImageSelectorComponent implements OnInit {
         private localStorage: LocalStoreManager,
         private imageSearchService: ImageSearchService,
         private alertService: AlertService,
-    ) {
+     private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
     }
 
     ngOnInit() {

@@ -17,6 +17,7 @@ import { User } from '../../core/models/user.model';
 import { Utilities } from '../../core/common/utilities';
 import { ColorsComponent } from '../colors/colors.component';
 import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-image',
@@ -61,7 +62,8 @@ export class ImageTileComponent implements OnInit {
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService, private colorService: ColorService,
         private imageTileService: ImageTileService, private alertService: AlertService, private authService: AuthService,
-        private fileUploadService: FileUploadService, private localStorage: LocalStoreManager  ) {
+      private fileUploadService: FileUploadService, private localStorage: LocalStoreManager, private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
         this.color = this.selectedColor;
     }
 

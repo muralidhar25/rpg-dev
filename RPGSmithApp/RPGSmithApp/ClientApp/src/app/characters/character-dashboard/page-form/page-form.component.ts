@@ -19,6 +19,7 @@ import { Color } from '../../../core/models/tiles/color.model';
 import { SharedService } from "../../../core/services/shared.service";
 import { CommonService } from "../../../core/services/shared/common.service";
 import { AuthService } from "../../../core/auth/auth.service";
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-page-form',
@@ -40,8 +41,9 @@ export class PageFormComponent implements OnInit {
         private router: Router, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, private pageService: CharacterDashboardPageService,
         private bsModalRef: BsModalRef, private modalService: BsModalService, private localStorage: LocalStoreManager,      
-        private sharedService: SharedService, private commonService: CommonService
-    ) { }
+      private sharedService: SharedService, private commonService: CommonService,
+      private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1)); }
 
     ngOnInit() {
         this.Initialize();

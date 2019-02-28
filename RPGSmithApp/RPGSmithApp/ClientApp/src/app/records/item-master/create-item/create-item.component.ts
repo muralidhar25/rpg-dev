@@ -19,6 +19,7 @@ import { User } from '../../../core/models/user.model';
 import { DBkeys } from '../../../core/common/db-keys';
 import { DiceComponent } from '../../../shared/dice/dice/dice.component';
 import { ImageSelectorComponent } from '../../../shared/image-interface/image-selector/image-selector.component';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-create-item',
@@ -60,8 +61,9 @@ export class CreateItemMsterComponent implements OnInit {
         public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
         private sharedService: SharedService, private commonService: CommonService, private abilityService: AbilityService,
         private itemMasterService: ItemMasterService, private spellsService: SpellsService,
-        private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,
-    ) {
+      private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,
+      private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
         this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
 
         this.sharedService.getCommandData().subscribe(diceCommand => {

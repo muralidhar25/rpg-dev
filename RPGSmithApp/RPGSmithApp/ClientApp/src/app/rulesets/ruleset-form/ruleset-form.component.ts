@@ -25,6 +25,7 @@ import { DiceComponent } from '../../shared/dice/dice/dice.component';
 import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
 import { ShareRulesetComponent } from '../ruleset-helper/share-ruleset/share-ruleset.component';
 import { AppService1 } from '../../app.service';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'ruleset-form',
@@ -65,8 +66,9 @@ export class RulesetFormComponent implements OnInit {
         private modalService: BsModalService, private fileUploadService: FileUploadService,
         private sharedService: SharedService, private commonService: CommonService,
         private localStorage: LocalStoreManager, private imageSearchService: ImageSearchService,
-      private modalService1: BsModalService, public appService: AppService1
-    ) {
+      private modalService1: BsModalService, public appService: AppService1,
+      private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
         this.sharedService.getCommandData().subscribe(diceCommand => {
             if (diceCommand.parentIndex === -1) {
                 this.rulesetFormModal.defaultDice = diceCommand.command;
@@ -95,7 +97,7 @@ export class RulesetFormComponent implements OnInit {
 
     ngOnInit() {
         setTimeout(() => {
-            debugger
+            
             this.title = this.bsModalRef.content.title;
             let modalContentButton = this.button = this.bsModalRef.content.button;
             let _rulesetModel = this.bsModalRef.content.rulesetModel;

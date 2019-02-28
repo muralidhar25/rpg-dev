@@ -11,6 +11,7 @@ import { LocalStoreManager } from "../../core/common/local-store-manager.service
 import { DBkeys } from "../../core/common/db-keys";
 import { User } from "../../core/models/user.model";
 import { Utilities } from "../../core/common/utilities";
+import { PlatformLocation } from "@angular/common";
 
 
 @Component({
@@ -34,7 +35,9 @@ export class NumericCharacterStatComponent implements OnInit {
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private bsModalRef: BsModalRef, private modalService: BsModalService, private localStorage: LocalStoreManager, private charactersCharacterStatService: CharactersCharacterStatService,
     private sharedService: SharedService, private commonService: CommonService, private characterStatService: CharacterStatService
-  ) {
+
+    , private location: PlatformLocation) {
+    location.onPopState(() => this.modalService.hide(1));
     this.initialize();
   }
 

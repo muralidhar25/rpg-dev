@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'use-execute',
@@ -15,7 +16,8 @@ export class UseExecuteComponent implements OnInit {
 
     executeFormModel: any;
 
-    constructor(private bsModalRef: BsModalRef, private modalService: BsModalService) { }
+  constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private location: PlatformLocation) {
+    location.onPopState(() => this.modalService.hide(1)); }
 
     ngOnInit() {
 

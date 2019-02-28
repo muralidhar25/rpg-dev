@@ -17,6 +17,7 @@ import { DBkeys } from '../../core/common/db-keys';
 import { User } from '../../core/models/user.model';
 import { ColorsComponent } from '../../tile/colors/colors.component';
 import { Utilities } from '../../core/common/utilities';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
   selector: 'app-text',
@@ -54,7 +55,9 @@ export class RulesetTextTileComponent implements OnInit {
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService, private colorService: ColorService,
         private textTileService: TextTileService, private alertService: AlertService, private authService: AuthService,
-        private fileUploadService: FileUploadService, private localStorage: LocalStoreManager, private rulesetTileService: RulesetTileService) {
+      private fileUploadService: FileUploadService, private localStorage: LocalStoreManager, private rulesetTileService: RulesetTileService
+      , private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
         this.color = this.selectedColor;
     }
 

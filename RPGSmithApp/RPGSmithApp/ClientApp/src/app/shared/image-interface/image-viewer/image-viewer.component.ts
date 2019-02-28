@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-image-viewer',
@@ -10,7 +11,9 @@ export class ImageViewerComponent implements OnInit {
     imageUrl: string;
     imageAlt: string;
     DestroyOtherModals: boolean = true;
-    constructor(private bsModalRef: BsModalRef) {
+  constructor(private bsModalRef: BsModalRef, private modalService: BsModalService
+    , private location: PlatformLocation) {
+    location.onPopState(() => this.modalService.hide(1));
     }
 
     ngOnInit() {

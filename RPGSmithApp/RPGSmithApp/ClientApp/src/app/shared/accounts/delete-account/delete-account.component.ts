@@ -11,6 +11,7 @@ import { UserService } from '../../../core/common/user.service';
 import { Utilities } from '../../../core/common/utilities';
 import { DBkeys } from '../../../core/common/db-keys';
 import { ChangePassword } from '../../../core/models/change-password.model';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-delete-account',
@@ -32,7 +33,9 @@ export class DeleteAccountComponent implements OnInit {
         private alertService: AlertService,
         private authService: AuthService, private userService: UserService,
         private router: Router, private localStorage: LocalStoreManager
-    ) {
+
+      , private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1)); 
     }
 
     ngOnInit() {

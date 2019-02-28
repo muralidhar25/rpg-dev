@@ -19,6 +19,7 @@ import { User } from '../../core/models/user.model';
 import { DBkeys } from '../../core/common/db-keys';
 import { DiceComponent } from '../dice/dice/dice.component';
 import { ImageSelectorComponent } from '../image-interface/image-selector/image-selector.component';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-create-spell',
@@ -63,7 +64,9 @@ export class CreateSpellsComponent implements OnInit {
         private sharedService: SharedService, private commonService: CommonService,
         private spellsService: SpellsService, private characterSpellService: CharacterSpellService,
         private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,
-    ) {
+    
+     private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1)); 
         this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
 
         this.sharedService.getCommandData().subscribe(diceCommand => {

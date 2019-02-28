@@ -19,6 +19,7 @@ import { Utilities } from '../../core/common/utilities';
 import { ColorsComponent } from '../colors/colors.component';
 import { DiceComponent } from '../../shared/dice/dice/dice.component';
 import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-command',
@@ -61,7 +62,8 @@ export class CommandTileComponent implements OnInit {
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService, private colorService: ColorService,
         private commandTileService: CommandTileService, private alertService: AlertService, private authService: AuthService,
-        private fileUploadService: FileUploadService, private localStorage: LocalStoreManager ) {
+      private fileUploadService: FileUploadService, private localStorage: LocalStoreManager, private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
         //this.sharedService.getCommandData().subscribe(diceCommand => {
         //    if (+diceCommand.parentIndex === -1) {
         //        this.commandTileFormModal.command = diceCommand.command;

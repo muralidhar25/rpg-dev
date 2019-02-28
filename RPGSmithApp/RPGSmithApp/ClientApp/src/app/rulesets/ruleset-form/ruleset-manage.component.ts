@@ -12,6 +12,7 @@ import { RulesetFormComponent } from './ruleset-form.component';
 import { ShareRulesetComponent } from '../ruleset-helper/share-ruleset/share-ruleset.component';
 import { VIEW } from '../../core/models/enums';
 import { AppService1 } from '../../app.service';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'ruleset-manage',
@@ -32,8 +33,9 @@ export class RulesetManageComponent implements OnInit,OnChanges {
     constructor(
         private formBuilder: FormBuilder, private router: Router, private localStorage: LocalStoreManager,
         private rulesetService: RulesetService, private bsModalRef: BsModalRef, private sharedService: SharedService,
-      private modalService: BsModalService, public appService: AppService1
-    ) {        
+      private modalService: BsModalService, public appService: AppService1,
+      private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
     }
     ngOnInit() {        
         setTimeout(() => {

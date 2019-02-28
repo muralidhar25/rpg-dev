@@ -10,6 +10,7 @@ import { AuthService } from '../../core/auth/auth.service';
 import { Utilities } from '../../core/common/utilities';
 import { AddCustomDiceComponent } from '../add-custom-dice/add-custom-dice.component';
 import { SelectCustomDiceIconComponent } from '../select-custom-dice-icon/select-custom-dice-icon.component';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-custom-dice',
@@ -24,7 +25,9 @@ export class CustomDiceComponent implements OnInit {
     CdiceTray: DiceTray[] = [];
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService,
         private sharedService: SharedService, private rulesetService: RulesetService,
-        private alertService: AlertService, private authService: AuthService) { }
+      private alertService: AlertService, private authService: AuthService
+      , private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));  }
 
     ngOnInit() {
 

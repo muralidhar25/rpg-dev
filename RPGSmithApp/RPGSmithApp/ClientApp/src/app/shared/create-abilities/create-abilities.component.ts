@@ -18,6 +18,7 @@ import { DBkeys } from '../../core/common/db-keys';
 import { User } from '../../core/models/user.model';
 import { ImageSelectorComponent } from '../image-interface/image-selector/image-selector.component';
 import { DiceComponent } from '../dice/dice/dice.component';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-create-abilities',
@@ -61,7 +62,9 @@ export class CreateAbilitiesComponent implements OnInit {
         private sharedService: SharedService, private commonService: CommonService,
         private abilityService: AbilityService, private characterAbilityService: CharacterAbilityService,
         private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,
-    ) {
+    
+     private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1)); 
         this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
 
         this.sharedService.getCommandData().subscribe(diceCommand => {

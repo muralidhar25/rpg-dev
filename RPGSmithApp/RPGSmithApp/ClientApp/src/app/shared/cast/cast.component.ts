@@ -3,6 +3,7 @@ import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-b
 import { Characters } from '../../core/models/view-models/characters.model';
 import { AlertService, DialogType } from '../../core/common/alert.service';
 import { DiceRollComponent } from '../dice/dice-roll/dice-roll.component';
+import { PlatformLocation } from '@angular/common';
 
 class Command {
     name: string = '';
@@ -29,7 +30,9 @@ export class CastComponent implements OnInit {
     buttonText: string;
     constructor(
         public modalService: BsModalService, private bsModalRef: BsModalRef, private alertService: AlertService,
-    ) {
+   
+     private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1)); 
        // console.log('Here the cast controller...');
     }
 

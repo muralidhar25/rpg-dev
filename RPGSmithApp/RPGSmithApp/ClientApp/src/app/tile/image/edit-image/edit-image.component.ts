@@ -5,6 +5,7 @@ import { ImageTile } from '../../../core/models/tiles/image-tile.model';
 import { CommandTile } from '../../../core/models/tiles/command-tile.model';
 import { ImageTileComponent } from '../image.component';
 import { VIEW } from '../../../core/models/enums';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-edit-image',
@@ -29,7 +30,8 @@ export class EditImageComponent implements OnInit {
     titleTextColor: any;
     bodyBgColor: any;
 
-    constructor(private bsModalRef: BsModalRef, private modalService: BsModalService) { }
+  constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private location: PlatformLocation) {
+    location.onPopState(() => this.modalService.hide(1)); }
 
     ngOnInit() {
         setTimeout(() => {

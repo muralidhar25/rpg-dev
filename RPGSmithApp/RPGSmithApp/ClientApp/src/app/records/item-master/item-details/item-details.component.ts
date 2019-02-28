@@ -15,6 +15,7 @@ import { DBkeys } from "../../../core/common/db-keys";
 import { Utilities } from "../../../core/common/utilities";
 import { CreateItemMsterComponent } from "../create-item/create-item.component";
 import { ImageViewerComponent } from "../../../shared/image-interface/image-viewer/image-viewer.component";
+import { PlatformLocation } from "@angular/common";
 
 @Component({
     selector: 'app-item-details',
@@ -36,8 +37,9 @@ export class ItemDetailsComponent implements OnInit {
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
         private sharedService: SharedService, private commonService: CommonService,
-        private itemMasterService: ItemMasterService, private rulesetService: RulesetService
-    ) {
+      private itemMasterService: ItemMasterService, private rulesetService: RulesetService,
+      private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
         this.route.params.subscribe(params => { this.itemMasterId = params['id']; });
         this.sharedService.shouldUpdateItemMasterList().subscribe(sharedServiceJson => {
             if (sharedServiceJson) this.initialize();

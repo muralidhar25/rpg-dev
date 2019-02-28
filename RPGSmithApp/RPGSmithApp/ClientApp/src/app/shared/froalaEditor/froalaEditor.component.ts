@@ -3,6 +3,7 @@ import { Router, NavigationExtras } from "@angular/router";
 
 import { BsModalService, BsModalRef, ModalDirective } from 'ngx-bootstrap';
 import { Utilities } from '../../core/common/utilities';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
   selector: 'app-froalaEditor',
@@ -18,7 +19,8 @@ export class froalaEditorComponent implements OnInit {
 
     constructor(
         private bsModalRef: BsModalRef, private modalService: BsModalService
-    ) { }
+      , private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1)); }
 
     ngOnInit() {
 

@@ -7,6 +7,7 @@ import { SharedService } from '../../core/services/shared.service';
 import { AlertService, MessageSeverity } from '../../core/common/alert.service';
 import { CustomDiceComponent } from '../custom-dice/custom-dice.component';
 import { SelectCustomDiceIconComponent } from '../select-custom-dice-icon/select-custom-dice-icon.component';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-add-custom-dice',
@@ -28,7 +29,9 @@ export class AddCustomDiceComponent implements OnInit {
     customDiceIndex: number;
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService,
-        private sharedService: SharedService, private alertService: AlertService) { }
+      private sharedService: SharedService, private alertService: AlertService
+      , private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));  }
 
     ngOnInit() {
         setTimeout(() => {

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'use-link',
@@ -14,7 +15,9 @@ export class UseLinkComponent implements OnInit {
 
     linkFormModel: any;
 
-    constructor(private bsModalRef: BsModalRef, private modalService: BsModalService) { }
+  constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private location: PlatformLocation) {
+    location.onPopState(() => this.modalService.hide(1));
+  }
 
     ngOnInit() {
         setTimeout(() => {

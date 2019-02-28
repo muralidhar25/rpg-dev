@@ -16,6 +16,7 @@ import { SharedService } from "../../../core/services/shared.service";
 import { CommonService } from "../../../core/services/shared/common.service";
 import { AuthService } from "../../../core/auth/auth.service";
 import { VIEW, DEVICE } from '../../../core/models/enums';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-layout-form',
@@ -47,8 +48,9 @@ export class LayoutFormComponent implements OnInit {
     private router: Router, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, private layoutService: CharacterDashboardLayoutService,
     private bsModalRef: BsModalRef, private modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private commonService: CommonService
-  ) {
+    private sharedService: SharedService, private commonService: CommonService,
+    private location: PlatformLocation) {
+    location.onPopState(() => this.modalService.hide(1));
     this.onResize();
   }
 

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using Microsoft.Extensions.Options;
+using MailKit.Security;
 
 namespace RPGSmithApp.Helpers
 {
@@ -76,7 +77,7 @@ namespace RPGSmithApp.Helpers
                     if (!config.UseSSL)
                         client.ServerCertificateValidationCallback = (object sender2, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) => true;
 
-                    await client.ConnectAsync(config.Host, config.Port, config.UseSSL).ConfigureAwait(false);
+                    await client.ConnectAsync(config.Host, config.Port, SecureSocketOptions.StartTls).ConfigureAwait(false);
                     client.AuthenticationMechanisms.Remove("XOAUTH2");
 
                     if (!string.IsNullOrWhiteSpace(config.Username))

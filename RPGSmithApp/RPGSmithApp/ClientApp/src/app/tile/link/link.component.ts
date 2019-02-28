@@ -20,6 +20,7 @@ import { DBkeys } from '../../core/common/db-keys';
 import { User } from '../../core/models/user.model';
 import { Utilities } from '../../core/common/utilities';
 import { ColorsComponent } from '../colors/colors.component';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
   selector: 'app-link',
@@ -79,7 +80,8 @@ export class LinkTileComponent implements OnInit {
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
         private localStorage: LocalStoreManager, private authService: AuthService, private itemsService: ItemsService, private colorService: ColorService,
         private characterSpellService: CharacterSpellService, private characterAbilityService: CharacterAbilityService,
-        private linkTileService: LinkTileService, private alertService: AlertService) {
+      private linkTileService: LinkTileService, private alertService: AlertService, private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
      }
 
     ngOnInit() {

@@ -13,6 +13,7 @@ import { LinkTileComponent } from './link/link.component';
 import { ExecuteTileComponent } from './execute/execute.component';
 import { CommandTileComponent } from './command/command.component';
 import { TextTileComponent } from './text/text.component';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
   selector: 'app-tile',
@@ -28,7 +29,9 @@ export class TileComponent implements OnInit {
   pageDefaultData = new CharacterDashboardPage();
 
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService
-    , private pageService: CharacterDashboardPageService) {
+    , private pageService: CharacterDashboardPageService
+    , private location: PlatformLocation) {
+    location.onPopState(() => this.modalService.hide(1));
   }
 
   ngOnInit() {

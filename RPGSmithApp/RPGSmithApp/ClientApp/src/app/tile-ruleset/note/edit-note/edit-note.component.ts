@@ -5,6 +5,7 @@ import { RulesetDashboardPage } from '../../../core/models/view-models/ruleset-d
 import { Utilities } from '../../../core/common/utilities';
 import { RulesetNoteTileComponent } from '../note.component';
 import { VIEW } from '../../../core/models/enums';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
   selector: 'edit-note',
@@ -20,7 +21,8 @@ export class RulesetEditNoteComponent implements OnInit {
     pageDefaultData = new RulesetDashboardPage();
     options: Object = Utilities.options;
 
-    constructor(private bsModalRef: BsModalRef, private modalService: BsModalService) { }
+  constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private location: PlatformLocation) {
+    location.onPopState(() => this.modalService.hide(1)); }
 
     ngOnInit() {
         setTimeout(() => {

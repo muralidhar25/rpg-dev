@@ -19,6 +19,7 @@ import { DBkeys } from '../../core/common/db-keys';
 import { VIEW } from '../../core/models/enums';
 import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
 import { Characters } from '../../core/models/view-models/characters.model';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-characters-form',
@@ -64,8 +65,9 @@ export class CharactersFormComponent implements OnInit {
         private configurations: ConfigurationService, private charactersService: CharactersService,
         private bsModalRef: BsModalRef, private modalService: BsModalService, private localStorage: LocalStoreManager,
         private fileUploadService: FileUploadService, private rulesetService: RulesetService,
-        private sharedService: SharedService, private commonService: CommonService, private imageSearchService: ImageSearchService,
-    ) {
+      private sharedService: SharedService, private commonService: CommonService, private imageSearchService: ImageSearchService,
+      private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
         this.onResize();
     }
 

@@ -151,7 +151,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           .subscribe(data => {
             
             this.ruleset = data;
-          debugger
+          
 
             if (
               this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1
@@ -166,7 +166,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               ||
               this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERABILITIES) > -1
             ) {
-              this.IsCharacterRecordScreen = true;
+              this.IsCharacterRecordScreen = this.headers.headerLink =='ruleset'?false:true;
 
               this.IsCharacterRecordScreenActive = true;
               this.IsRulesetRecordScreenActive = false;
@@ -185,7 +185,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETSPELLS) > -1
               ||
               this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETABILITIES) > -1) {
-              this.IsCharacterRecordScreen = true;
+              this.IsCharacterRecordScreen = this.headers.headerLink == 'ruleset' ? false : true;
 
               this.IsCharacterRecordScreenActive = false;
               this.IsRulesetRecordScreenActive = true;
@@ -278,7 +278,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
 
     this.app1Service.shouldUpdateSearchText().subscribe((serviceData) => {
-      debugger
+      
       this.searchCharRule = serviceData;
     });
 
@@ -428,7 +428,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (url !== url.toLowerCase()) {
           this.router.navigateByUrl((<NavigationStart>event).url.toLowerCase());
         }
-        debugger
+        
         if (
           url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1
           ||
@@ -442,7 +442,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           ||
           url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERABILITIES) > -1
         ) {
-          this.IsCharacterRecordScreen = true;
+          this.IsCharacterRecordScreen = this.headers.headerLink == 'ruleset' ? false : true;
 
           this.IsCharacterRecordScreenActive = true;
           this.IsRulesetRecordScreenActive = false;
@@ -465,7 +465,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETABILITIES) > -1
         ) {
 
-          this.IsCharacterRecordScreen = true;
+          this.IsCharacterRecordScreen = this.headers.headerLink == 'ruleset' ? false : true;
           this.IsCharacterRecordScreenActive = false;
           this.IsRulesetRecordScreenActive = true;
 

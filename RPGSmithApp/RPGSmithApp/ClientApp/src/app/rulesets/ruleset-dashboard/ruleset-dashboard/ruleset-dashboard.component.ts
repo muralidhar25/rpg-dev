@@ -39,6 +39,7 @@ import { RulesetTextTileComponent } from "../../../tile-ruleset/text/text.compon
 import { RulesetCommandTileComponent } from "../../../tile-ruleset/command/command.component";
 import { RulesetTile } from "../../../core/models/tiles/ruleset-tile.model";
 import { AppService1 } from "../../../app.service";
+import { PlatformLocation } from "@angular/common";
 
 @Component({
     selector: 'app-ruleset-dashboard',
@@ -174,8 +175,9 @@ export class RulesetDashboardComponent implements OnInit {
         private rulesetService: RulesetService,
         private layoutService: RulesetDashboardLayoutService,
         private pageService: RulesetDashboardPageService,
-      private tileConfig: RulesetTileConfigService, public appService: AppService1
-    ) {
+      private tileConfig: RulesetTileConfigService, public appService: AppService1,
+      private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
 
         dragulaService.drop.subscribe((value: any[]) => {
 

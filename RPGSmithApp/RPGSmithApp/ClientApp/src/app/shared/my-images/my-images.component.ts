@@ -13,6 +13,7 @@ import { User } from '../../core/models/user.model';
 import { DBkeys } from '../../core/common/db-keys';
 import { Utilities } from '../../core/common/utilities';
 import { ImageViewerComponent } from '../image-interface/image-viewer/image-viewer.component';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-my-images',
@@ -46,7 +47,9 @@ export class MyImagesComponent implements OnInit {
         private modalService: BsModalService, private localStorage: LocalStoreManager,
         private sharedService: SharedService, private imageSearchService: ImageSearchService,
         private userService: UserService
-    ) { }
+
+      , private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1)); }
 
     ngOnInit() {
         setTimeout(() => {

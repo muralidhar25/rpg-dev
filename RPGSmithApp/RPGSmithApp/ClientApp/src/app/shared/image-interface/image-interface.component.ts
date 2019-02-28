@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { PlatformLocation } from '@angular/common';
 //import { ImagesSearchComponent } from '../image-interface/images-search/images-search.component';
 
 @Component({
@@ -9,7 +10,9 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 })
 export class ImageInterfaceComponent implements OnInit {
     userFormModal: any;
-    constructor(private bsModalRef: BsModalRef, private modalService: BsModalService) { }
+  constructor(private bsModalRef: BsModalRef, private modalService: BsModalService
+    , private location: PlatformLocation) {
+    location.onPopState(() => this.modalService.hide(1)); }
 
   ngOnInit() {
   }

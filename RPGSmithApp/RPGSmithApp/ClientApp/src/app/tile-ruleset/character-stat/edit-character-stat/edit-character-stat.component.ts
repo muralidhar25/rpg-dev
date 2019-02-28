@@ -16,6 +16,7 @@ import { DBkeys } from '../../../core/common/db-keys';
 import { CharacterStats } from '../../../core/models/view-models/character-stats.model';
 import { DiceRollComponent } from '../../../shared/dice/dice-roll/dice-roll.component';
 import { RulesetCharacterStatTileComponent } from '../character-stat.component';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-edit-character-stat',
@@ -75,7 +76,8 @@ export class RulesetEditCharacterStatComponent implements OnInit {
     constructor(
         private bsModalRef: BsModalRef, private alertService: AlertService, private sharedService: SharedService,
         private authService: AuthService, private modalService: BsModalService, private localStorage: LocalStoreManager,
-        private CCService: CharactersCharacterStatService) {
+      private CCService: CharactersCharacterStatService, private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
     }
 
     ngOnInit() {

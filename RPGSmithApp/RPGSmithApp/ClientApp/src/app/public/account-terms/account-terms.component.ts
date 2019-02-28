@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
 import { ConfigurationService } from '../../core/common/configuration.service';
 import { Utilities } from '../../core/common/utilities';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
   selector: 'account-terms',
@@ -25,8 +26,9 @@ export class AccountTermsComponent implements OnInit {
     constructor(
         private bsModalRef: BsModalRef,
         private modalService: BsModalService,
-        private configuration: ConfigurationService
-    ) {
+      private configuration: ConfigurationService,
+      private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
     }
 
     ngOnInit() {

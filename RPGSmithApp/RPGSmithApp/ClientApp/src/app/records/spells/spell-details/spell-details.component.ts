@@ -15,6 +15,7 @@ import { DBkeys } from "../../../core/common/db-keys";
 import { Utilities } from "../../../core/common/utilities";
 import { CreateSpellsComponent } from "../../../shared/create-spells/create-spells.component";
 import { ImageViewerComponent } from "../../../shared/image-interface/image-viewer/image-viewer.component";
+import { PlatformLocation } from "@angular/common";
 
 @Component({
     selector: 'app-spell-details',
@@ -36,8 +37,9 @@ export class SpellDetailsComponent implements OnInit {
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
         private sharedService: SharedService, private commonService: CommonService,
-        private spellsService: SpellsService, private rulesetService: RulesetService
-    ) {
+      private spellsService: SpellsService, private rulesetService: RulesetService,
+      private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
         this.route.params.subscribe(params => { this.spellId = params['id']; });
         this.sharedService.shouldUpdateSpellList().subscribe(sharedServiceJson => {
             if (sharedServiceJson) this.initialize();

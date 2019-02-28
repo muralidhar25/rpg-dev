@@ -8,6 +8,7 @@ import 'rxjs/add/operator/switchMap';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { ConfigurationService } from '../../../core/common/configuration.service';
 import { Utilities } from '../../../core/common/utilities';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
   selector: 'app-help',
@@ -25,7 +26,9 @@ export class AboutHelpComponent implements OnInit {
     private modalService: BsModalService,
       private router: Router,
       private configuration: ConfigurationService
-  ) {
+
+    , private location: PlatformLocation) {
+    location.onPopState(() => this.modalService.hide(1)); 
   }
 
     ngOnInit() {

@@ -20,6 +20,7 @@ import { User } from '../../core/models/user.model';
 import { CharacterStats } from '../../core/models/view-models/character-stats.model';
 import { Utilities } from '../../core/common/utilities';
 import { ColorsComponent } from '../../tile/colors/colors.component';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-character-stat',
@@ -74,7 +75,8 @@ export class RulesetCharacterStatTileComponent implements OnInit {
         public characterStatService: CharactersCharacterStatService,
 
         private alertService: AlertService
-    ) {
+      , private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
     }
 
     ngOnInit() {

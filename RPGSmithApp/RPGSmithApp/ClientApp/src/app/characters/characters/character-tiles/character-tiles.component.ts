@@ -359,7 +359,7 @@ export class CharacterTilesComponent implements OnInit {
     this.IsEditPage = false;
     this.gridConfig.draggable = !this.IsMobilePanel;
     this.gridConfig.resizable = !this.IsMobilePanel;
-    debugger
+    
     if (this.ResizeRelocateboxes.length && doUpdate) {
       this.Deletedboxes = [];
       this.boxes = Object.assign([], this.ResizeRelocateboxes.map((box) => {

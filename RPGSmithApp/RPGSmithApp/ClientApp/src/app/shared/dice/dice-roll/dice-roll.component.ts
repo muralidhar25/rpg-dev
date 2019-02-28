@@ -21,6 +21,7 @@ import { Utilities } from "../../../core/common/utilities";
 import { CharacterLastCommand } from "../../../core/models/view-models/character-last-command.model";
 import { DiceSaveComponent } from "../dice-save/dice-save.component";
 import { NumericCharacterStatComponent } from "../../numeric-character-stats/numeric-character-stat.component";
+import { PlatformLocation } from "@angular/common";
 
 
 @Component({
@@ -86,7 +87,9 @@ export class DiceRollComponent implements OnInit {
         private localStorage: LocalStoreManager, private authService: AuthService, private sharedService: SharedService,
         private characterCommandService: CharacterCommandService, private _diceService: DiceService,
         private rulesetService: RulesetService
-    ) {
+
+      , private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1)); 
         this.diceSection = true;
         this.rollSection = false;
         this.sharedService.shouldUpdateDice().subscribe(serviceJson => {

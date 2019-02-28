@@ -14,6 +14,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { DBkeys } from '../../../core/common/db-keys';
 import { User } from '../../../core/models/user.model';
 import { Utilities } from '../../../core/common/utilities';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-ruleset-layout',
@@ -46,8 +47,9 @@ export class RulesetLayoutComponent implements OnInit {
         private router: Router, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, private layoutService: RulesetDashboardLayoutService,
         private bsModalRef: BsModalRef, private modalService: BsModalService, private localStorage: LocalStoreManager,
-        private sharedService: SharedService, private commonService: CommonService
-    ) {
+      private sharedService: SharedService, private commonService: CommonService,
+      private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
         this.onResize();
     }
 

@@ -12,6 +12,7 @@ import { AlertService, MessageSeverity } from '../../../core/common/alert.servic
 import { AuthService } from '../../../core/auth/auth.service';
 import { VIEW } from '../../../core/models/enums';
 import { Utilities } from '../../../core/common/utilities';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-edit-counter',
@@ -30,7 +31,8 @@ export class RulesetEditCounterComponent implements OnInit {
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
         private colorService: ColorService, private localStorage: LocalStoreManager, private counterTileService: CounterTileService,
-        private alertService: AlertService, private authService: AuthService) {
+      private alertService: AlertService, private authService: AuthService, private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
     }
 
     ngOnInit() {

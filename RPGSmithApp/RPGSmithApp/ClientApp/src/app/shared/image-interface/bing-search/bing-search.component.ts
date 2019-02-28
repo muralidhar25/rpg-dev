@@ -12,6 +12,7 @@ import { User } from "../../../core/models/user.model";
 import { IMAGE } from "../../../core/models/enums";
 import { DBkeys } from "../../../core/common/db-keys";
 import { Utilities } from "../../../core/common/utilities";
+import { PlatformLocation } from "@angular/common";
 
 @Component({
     selector: 'app-bing-search',
@@ -51,7 +52,8 @@ export class BingSearchComponent implements OnInit {
         private authService: AuthService, private configurations: ConfigurationService,
         private modalService: BsModalService, private localStorage: LocalStoreManager,
         private sharedService: SharedService, private imageSearchService: ImageSearchService
-    ) {
+      , private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
 
         this.sharedService.shouldUpdateCharacterList().subscribe(serviceJson => {
             if (serviceJson) { this.Initialize(); }

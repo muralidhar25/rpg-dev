@@ -10,6 +10,7 @@ import { RulesetCounterTileComponent } from './counter/counter.component';
 import { RulesetCharacterStatTileComponent } from './character-stat/character-stat.component';
 import { RulesetCommandTileComponent } from './command/command.component';
 import { RulesetTextTileComponent } from './text/text.component';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
   selector: 'app-tile',
@@ -25,7 +26,8 @@ export class RulesetTileComponent implements OnInit {
     pageDefaultData = new RulesetDashboardPage();
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService
-        , private pageService: RulesetDashboardPageService) {
+      , private pageService: RulesetDashboardPageService, private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
     }
 
     ngOnInit() {

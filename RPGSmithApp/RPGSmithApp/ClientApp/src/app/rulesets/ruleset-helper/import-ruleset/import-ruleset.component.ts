@@ -9,6 +9,7 @@ import { RulesetService } from '../../../core/services/ruleset.service';
 import { Utilities } from '../../../core/common/utilities';
 import { RulesetFormComponent } from '../../ruleset-form/ruleset-form.component';
 import { VIEW } from '../../../core/models/enums';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'import-ruleset',
@@ -21,8 +22,9 @@ export class ImportRulesetComponent implements OnInit {
 
     constructor(private router: Router, private alertService: AlertService, private authService: AuthService, 
         private bsModalRef: BsModalRef, private modalService: BsModalService,
-        private localStorage: LocalStoreManager, private rulesetService: RulesetService
-    ) { }
+      private localStorage: LocalStoreManager, private rulesetService: RulesetService,
+      private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1)); }
 
     ngOnInit() {
         setTimeout(() => {

@@ -5,6 +5,7 @@ import { CharacterDashboardPage } from '../../../core/models/view-models/charact
 import { Utilities } from '../../../core/common/utilities';
 import { NoteTileComponent } from '../note.component';
 import { VIEW } from '../../../core/models/enums';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
   selector: 'edit-note',
@@ -20,7 +21,10 @@ export class EditNoteComponent implements OnInit {
     pageDefaultData = new CharacterDashboardPage();
     options: Object = Utilities.options;
 
-    constructor(private bsModalRef: BsModalRef, private modalService: BsModalService) { }
+  constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private location: PlatformLocation) {
+    // closes modal when back button is clicked
+    location.onPopState(() => this.modalService.hide(1));
+  }
 
     ngOnInit() {
         setTimeout(() => {

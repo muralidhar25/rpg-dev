@@ -17,6 +17,8 @@ import { AddSpellsComponent } from "./add-spells/add-spells.component";
 import { CreateSpellsComponent } from "../../shared/create-spells/create-spells.component";
 import { Spell } from "../../core/models/view-models/spell.model";
 import { CastComponent } from "../../shared/cast/cast.component";
+import { Ruleset } from "../../core/models/view-models/ruleset.model";
+import { AppService1 } from "../../app.service";
 
 @Component({
     selector: 'app-spells',
@@ -47,7 +49,7 @@ export class SpellsComponent implements OnInit {
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
         private sharedService: SharedService, private commonService: CommonService, private spellsService: SpellsService,
-        private pageLastViewsService: PageLastViewsService, private rulesetService: RulesetService
+      private pageLastViewsService: PageLastViewsService, private rulesetService: RulesetService, public appService: AppService1
     ) {
         this.sharedService.shouldUpdateSpellList().subscribe(sharedServiceJson => {
             if (sharedServiceJson) {
@@ -76,7 +78,8 @@ export class SpellsComponent implements OnInit {
                 .subscribe(data => {
                     
                     this.spellsList = Utilities.responseData(data.Spells, this.pageSize);
-                    this.rulesetModel = data.RuleSet;
+                  this.rulesetModel = data.RuleSet;
+                  this.setHeaderValues(this.rulesetModel);
                     this.spellsList.forEach(function (val) { val.showIcon = false; });
                     try {
                         this.noRecordFound = !data.Spells.length;
@@ -383,5 +386,20 @@ export class SpellsComponent implements OnInit {
         this.timeoutHandler = setInterval(() => {
             this.editSpell(record);
         }, 1000);
-    }
+  }
+  private setHeaderValues(ruleset: Ruleset): any {
+    try {
+      let headerValues = {
+        headerName: ruleset.ruleSetName,
+        headerImage: ruleset.imageUrl ? ruleset.imageUrl : 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png',
+        headerId: ruleset.ruleSetId,
+        headerLink: 'ruleset',
+        hasHeader: true
+      };
+      this.appService.updateAccountSetting1(headerValues);
+      this.sharedService.updateAccountSetting(headerValues);
+      this.localStorage.deleteData(DBkeys.HEADER_VALUE);
+      this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+    } catch (err) { }
+  }
 }

@@ -21,6 +21,7 @@ import { Utilities } from '../../core/common/utilities';
 import { ColorsComponent } from '../colors/colors.component';
 import { CharactersCharacterStat } from '../../core/models/view-models/characters-character-stats.model';
 import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-character-stat',
@@ -95,14 +96,15 @@ export class CharacterStatTileComponent implements OnInit {
     constructor(private bsModalRef: BsModalRef, private route: ActivatedRoute, private sharedService: SharedService, private colorService: ColorService,
         private modalService: BsModalService, public localStorage: LocalStoreManager, private authService: AuthService, public characterStatTileService: CharacterStatTileService,
         public characterStatService: CharactersCharacterStatService, private alertService: AlertService, private fileUploadService: FileUploadService
-      ) {
+      , private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
         this.rulesetId = this.localStorage.localStorageGetItem('rulesetId');
     }
 
     ngOnInit() {
 
         setTimeout(() => {
-          debugger
+          
             this.character = this.bsModalRef.content.character ? this.bsModalRef.content.character: new Characters();
             this.characterId = this.bsModalRef.content.characterId;
             this.title = this.bsModalRef.content.title;
@@ -647,7 +649,7 @@ export class CharacterStatTileComponent implements OnInit {
                 }
             }
       }
-      debugger
+      
         this.characterStatTileService.createCharacterStatTile(modal)
             .subscribe(
                 data => {

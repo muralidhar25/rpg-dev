@@ -9,6 +9,7 @@ import { CharacterCommandService } from "../../../core/services/character-comman
 import { DiceService } from "../../../core/services/dice.service";
 import { Utilities } from "../../../core/common/utilities";
 import { DiceComponent } from "../dice/dice.component";
+import { PlatformLocation } from "@angular/common";
 
 @Component({
     selector: "app-dice-save",
@@ -34,7 +35,9 @@ export class DiceSaveComponent implements OnInit {
         public modalService: BsModalService, private bsModalRef: BsModalRef, private sharedService: SharedService,
         private alertService: AlertService, private authService: AuthService,
         private characterCommandService: CharacterCommandService
-    ) {
+
+      , private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1)); 
         this.diceSection = true;
         this.rollSection = false;
     }

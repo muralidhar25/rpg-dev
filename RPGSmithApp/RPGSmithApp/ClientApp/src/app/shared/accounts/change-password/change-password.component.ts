@@ -17,6 +17,7 @@ import { UserService } from "../../../core/common/user.service";
 import { DBkeys } from '../../../core/common/db-keys';
 import { Utilities } from '../../../core/common/utilities';
 import { EqualValidator } from "../../../core/directives/equal-validator.directive";
+import { PlatformLocation } from '@angular/common';
 
 @Component({
   selector: 'change-password',
@@ -36,8 +37,10 @@ export class ChangePasswordComponent implements OnInit {
       private alertService: AlertService,
       private authService: AuthService,
       private userService: UserService,
-      private localStorage: LocalStoreManager
-  ) {
+      private localStorage: LocalStoreManager,
+      private modalService: BsModalService
+    , private location: PlatformLocation) {
+    location.onPopState(() => this.modalService.hide(1)); 
   }
 
   ngOnInit() {

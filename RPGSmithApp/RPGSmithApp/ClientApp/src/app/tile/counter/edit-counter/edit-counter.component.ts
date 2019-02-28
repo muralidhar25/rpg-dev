@@ -13,6 +13,7 @@ import { CounterTileComponent } from '../counter.component';
 import { VIEW } from '../../../core/models/enums';
 import { Utilities } from '../../../core/common/utilities';
 import { DiceRollComponent } from '../../../shared/dice/dice-roll/dice-roll.component';
+import { PlatformLocation } from '@angular/common';
 
 @Component({
     selector: 'app-edit-counter',
@@ -33,7 +34,8 @@ export class EditCounterComponent implements OnInit {
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
         private colorService: ColorService, private localStorage: LocalStoreManager, private counterTileService: CounterTileService,
-        private alertService: AlertService, private authService: AuthService) {
+      private alertService: AlertService, private authService: AuthService, private location: PlatformLocation) {
+      location.onPopState(() => this.modalService.hide(1));
     }
 
     ngOnInit() {
