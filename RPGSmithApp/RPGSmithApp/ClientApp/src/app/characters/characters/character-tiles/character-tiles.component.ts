@@ -173,48 +173,91 @@ export class CharacterTilesComponent implements OnInit {
     });
     this.pageId = this.localStorage.getDataObject<number>('pageId');
     this.Initialize();
-    window.onorientationchange = () => {
-      setTimeout(() => {
-        this.gridConfig = {
-          'margins': this.getTileSize().margins,
-          'draggable': true,
-          'resizable': true,
-          'max_cols': this.columnsInGrid,
-          'max_rows': 0,
-          'visible_cols': 0,
-          'visible_rows': 0,
-          'min_cols': 0,
-          'min_rows': 0,
-          'col_width': this.getTileSize().max,
-          'row_height': this.getTileSize().max,
-          'cascade': 'up',
-          'min_width': this.getTileSize().min,
-          'min_height': this.getTileSize().min,
-          'fix_to_grid': false,
-          'auto_style': true,
-          //'auto_resize': false,
-          'auto_resize': this.IsMobileScreen,
-          'maintain_ratio': true,
-          'prefer_new': true,
-          'limit_to_screen': true,
-          'center_to_screen': true,
-          'resize_directions': this.IsMobileScreen ? [
+
+    window.addEventListener("resize", () => {
+      // Get screen size (inner/outerWidth, inner/outerHeight)
+      this.gridConfig = {
+        'margins': this.getTileSize().margins,
+        'draggable': true,
+        'resizable': true,
+        'max_cols': this.columnsInGrid,
+        'max_rows': 0,
+        'visible_cols': 0,
+        'visible_rows': 0,
+        'min_cols': 0,
+        'min_rows': 0,
+        'col_width': this.getTileSize().max,
+        'row_height': this.getTileSize().max,
+        'cascade': 'up',
+        'min_width': this.getTileSize().min,
+        'min_height': this.getTileSize().min,
+        'fix_to_grid': false,
+        'auto_style': true,
+        //'auto_resize': false,
+        'auto_resize': this.IsMobileScreen,
+        'maintain_ratio': true,
+        'prefer_new': true,
+        'limit_to_screen': true,
+        'center_to_screen': true,
+        'resize_directions': this.IsMobileScreen ? [
+          "bottomleft",
+          "bottomright",
+          "topright",
+          "topleft",
+          "right",
+          "left",
+          "bottom",
+          "top"
+        ] : [
             "bottomleft",
-            "bottomright",
-            "topright",
-            "topleft",
-            "right",
-            "left",
-            "bottom",
-            "top"
-          ] : [
-              "bottomleft",
-              "bottomright"
-            ],
-        };
-        this.boxes = this.mapBoxes(this.tiles);
-      }, 10);
-    }
+            "bottomright"
+          ],
+      };
+      this.boxes = this.mapBoxes(this.tiles);
+    }, false);
+
+    //window.onorientationchange = () => {
+    //  setTimeout(() => {
+    //    this.gridConfig = {
+    //      'margins': this.getTileSize().margins,
+    //      'draggable': true,
+    //      'resizable': true,
+    //      'max_cols': this.columnsInGrid,
+    //      'max_rows': 0,
+    //      'visible_cols': 0,
+    //      'visible_rows': 0,
+    //      'min_cols': 0,
+    //      'min_rows': 0,
+    //      'col_width': this.getTileSize().max,
+    //      'row_height': this.getTileSize().max,
+    //      'cascade': 'up',
+    //      'min_width': this.getTileSize().min,
+    //      'min_height': this.getTileSize().min,
+    //      'fix_to_grid': false,
+    //      'auto_style': true,
+    //      //'auto_resize': false,
+    //      'auto_resize': this.IsMobileScreen,
+    //      'maintain_ratio': true,
+    //      'prefer_new': true,
+    //      'limit_to_screen': true,
+    //      'center_to_screen': true,
+    //      'resize_directions': this.IsMobileScreen ? [
+    //        "bottomleft",
+    //        "bottomright",
+    //        "topright",
+    //        "topleft",
+    //        "right",
+    //        "left",
+    //        "bottom",
+    //        "top"
+    //      ] : [
+    //          "bottomleft",
+    //          "bottomright"
+    //        ],
+    //    };
+    //    this.boxes = this.mapBoxes(this.tiles);
+    //  }, 10);
+    //}
   }
   private Initialize() {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);

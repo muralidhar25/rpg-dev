@@ -346,49 +346,90 @@ export class RulesetDashboardComponent implements OnInit {
             this.localStorage.localStorageSetItem('rPageID', null);
             this.LayoutId = this.localStorage.localStorageGetItem('rLayoutID')
             this.localStorage.localStorageSetItem('rLayoutID', null);
-        });
-        window.onorientationchange = () => {
-            setTimeout(() => {
-                this.gridConfig = {
-                    'margins': this.getTileSize().margins,
-                    'draggable': true,
-                    'resizable': true,
-                    'max_cols': this.columnsInGrid,
-                    'max_rows': 0,
-                    'visible_cols': 0,
-                    'visible_rows': 0,
-                    'min_cols': 0,
-                    'min_rows': 0,
-                    'col_width': this.getTileSize().max,
-                    'row_height': this.getTileSize().max,
-                    'cascade': 'up',
-                    'min_width': this.getTileSize().min,
-                    'min_height': this.getTileSize().min,
-                    'fix_to_grid': false,
-                    'auto_style': true,
-                    //'auto_resize': false,
-                    'auto_resize': this.IsMobileScreen,
-                    'maintain_ratio': true,
-                    'prefer_new': true,
-                    'limit_to_screen': true,
-                    'center_to_screen': true,
-                    'resize_directions': this.IsMobileScreen ? [
-                        "bottomleft",
-                        "bottomright",
-                        "topright",
-                        "topleft",
-                        "right",
-                        "left",
-                        "bottom",
-                        "top"
-                    ] : [
-                            "bottomleft",
-                            "bottomright"
-                        ],
-                };
-                this.boxes = this.mapBoxes(this.tiles);
-            }, 10);
-        }
+      });
+      window.addEventListener("resize", () => {
+        // Get screen size (inner/outerWidth, inner/outerHeight)
+        this.gridConfig = {
+          'margins': this.getTileSize().margins,
+          'draggable': true,
+          'resizable': true,
+          'max_cols': this.columnsInGrid,
+          'max_rows': 0,
+          'visible_cols': 0,
+          'visible_rows': 0,
+          'min_cols': 0,
+          'min_rows': 0,
+          'col_width': this.getTileSize().max,
+          'row_height': this.getTileSize().max,
+          'cascade': 'up',
+          'min_width': this.getTileSize().min,
+          'min_height': this.getTileSize().min,
+          'fix_to_grid': false,
+          'auto_style': true,
+          //'auto_resize': false,
+          'auto_resize': this.IsMobileScreen,
+          'maintain_ratio': true,
+          'prefer_new': true,
+          'limit_to_screen': true,
+          'center_to_screen': true,
+          'resize_directions': this.IsMobileScreen ? [
+            "bottomleft",
+            "bottomright",
+            "topright",
+            "topleft",
+            "right",
+            "left",
+            "bottom",
+            "top"
+          ] : [
+              "bottomleft",
+              "bottomright"
+            ],
+        };
+        this.boxes = this.mapBoxes(this.tiles);
+      }, false);
+        //window.onorientationchange = () => {
+        //    setTimeout(() => {
+        //        this.gridConfig = {
+        //            'margins': this.getTileSize().margins,
+        //            'draggable': true,
+        //            'resizable': true,
+        //            'max_cols': this.columnsInGrid,
+        //            'max_rows': 0,
+        //            'visible_cols': 0,
+        //            'visible_rows': 0,
+        //            'min_cols': 0,
+        //            'min_rows': 0,
+        //            'col_width': this.getTileSize().max,
+        //            'row_height': this.getTileSize().max,
+        //            'cascade': 'up',
+        //            'min_width': this.getTileSize().min,
+        //            'min_height': this.getTileSize().min,
+        //            'fix_to_grid': false,
+        //            'auto_style': true,
+        //            //'auto_resize': false,
+        //            'auto_resize': this.IsMobileScreen,
+        //            'maintain_ratio': true,
+        //            'prefer_new': true,
+        //            'limit_to_screen': true,
+        //            'center_to_screen': true,
+        //            'resize_directions': this.IsMobileScreen ? [
+        //                "bottomleft",
+        //                "bottomright",
+        //                "topright",
+        //                "topleft",
+        //                "right",
+        //                "left",
+        //                "bottom",
+        //                "top"
+        //            ] : [
+        //                    "bottomleft",
+        //                    "bottomright"
+        //                ],
+        //        };
+        //        this.boxes = this.mapBoxes(this.tiles);
+        //    }, 10);
+        //}
     }
 
     private initialize() {
@@ -678,15 +719,18 @@ export class RulesetDashboardComponent implements OnInit {
           
         this.tiles = null;
         if (this.selectedPage) {
-            if (this.selectedPage.rulesetDashboardPageId) {
+          if (this.selectedPage.rulesetDashboardPageId) {
+            this.isLoading = true;
                 this.rulesetTileService.getTilesByPageIdRulesetId_sp<string>(this.selectedPage.rulesetDashboardPageId, this.ruleSetId)
-                    .subscribe(data => {
+                  .subscribe(data => {
+                    this.isLoading = false;
                         this.tiles = data;
                         this.boxes = this.mapBoxes(data);
                         try {
                             this.noRecordFound = !data.length;
                         } catch (err) { }
-                    }, error => {
+                  }, error => {
+                    this.isLoading = false;
                     }, () => { });
             }
             this.updateDefaultLayout(this.selectedPage.rulesetDashboardLayoutId);

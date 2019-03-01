@@ -338,41 +338,75 @@ export class CharacterDashboardComponent implements OnInit {
     this.localStorage.localStorageSetItem('cPageID', null);
     this.LayoutId = this.localStorage.localStorageGetItem('cLayoutID')
     this.localStorage.localStorageSetItem('cLayoutID', null);
-
-    window.onorientationchange = () => {
-      setTimeout(() => {
-        this.gridConfig = {
-          'margins': this.getTileSize().margins,
-          'draggable': false,
-          'resizable': false,
-          'max_cols': this.columnsInGrid,
-          'max_rows': 0,
-          'visible_cols': 0,
-          'visible_rows': 0,
-          'min_cols': 0,
-          'min_rows': 0,
-          'col_width': this.getTileSize().max,
-          'row_height': this.getTileSize().max,
-          'cascade': 'up',
-          'min_width': this.getTileSize().min,
-          'min_height': this.getTileSize().min,
-          'fix_to_grid': false,
-          'auto_style': true,
-          //'auto_resize': false,
-          'auto_resize': this.IsMobileScreen,
-          'maintain_ratio': true,
-          'prefer_new': true,
-          'limit_to_screen': true,
-          'center_to_screen': true,
-          'resize_directions': [
-            "bottomleft",
-            "bottomright",
-            "topleft"
-          ],
-        };
+    window.addEventListener("resize", () =>{
+      // Get screen size (inner/outerWidth, inner/outerHeight)
+      this.gridConfig = {
+        'margins': this.getTileSize().margins,
+        'draggable': false,
+        'resizable': false,
+        'max_cols': this.columnsInGrid,
+        'max_rows': 0,
+        'visible_cols': 0,
+        'visible_rows': 0,
+        'min_cols': 0,
+        'min_rows': 0,
+        'col_width': this.getTileSize().max,
+        'row_height': this.getTileSize().max,
+        'cascade': 'up',
+        'min_width': this.getTileSize().min,
+        'min_height': this.getTileSize().min,
+        'fix_to_grid': false,
+        'auto_style': true,
+        //'auto_resize': false,
+        'auto_resize': this.IsMobileScreen,
+        'maintain_ratio': true,
+        'prefer_new': true,
+        'limit_to_screen': true,
+        'center_to_screen': true,
+        'resize_directions': [
+          "bottomleft",
+          "bottomright",
+          "topleft"
+        ],
+      };
         this.boxes = this.mapBoxes(this.tiles);
-      }, 10);
-    }
+    }, false);
+    //window.onorientationchange = () => {
+    //  setTimeout(() => {
+    //    console.log('Width', window.outerWidth)
+    //    this.gridConfig = {
+    //      'margins': this.getTileSize().margins,
+    //      'draggable': false,
+    //      'resizable': false,
+    //      'max_cols': this.columnsInGrid,
+    //      'max_rows': 0,
+    //      'visible_cols': 0,
+    //      'visible_rows': 0,
+    //      'min_cols': 0,
+    //      'min_rows': 0,
+    //      'col_width': this.getTileSize().max,
+    //      'row_height': this.getTileSize().max,
+    //      'cascade': 'up',
+    //      'min_width': this.getTileSize().min,
+    //      'min_height': this.getTileSize().min,
+    //      'fix_to_grid': false,
+    //      'auto_style': true,
+    //      //'auto_resize': false,
+    //      'auto_resize': this.IsMobileScreen,
+    //      'maintain_ratio': true,
+    //      'prefer_new': true,
+    //      'limit_to_screen': true,
+    //      'center_to_screen': true,
+    //      'resize_directions': [
+    //        "bottomleft",
+    //        "bottomright",
+    //        "topleft"
+    //      ],
+    //    };
+    //    this.boxes = this.mapBoxes(this.tiles);
+    //    //this.initialize(true);
+    //  }, 10);
+    //}
   }
 
   private initialize() {
@@ -658,8 +692,10 @@ export class CharacterDashboardComponent implements OnInit {
     this.tiles = null;
     if (this.selectedPage) {
       if (this.selectedPage.characterDashboardPageId) {
+        this.isLoading = true;
         this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId)
           .subscribe(data => {
+            this.isLoading = false;
             let model: any = data;
             this.CharacterStatsValues = model.characterStatsValues;
             this.statLinkRecords = model.statLinkRecords;
@@ -670,6 +706,7 @@ export class CharacterDashboardComponent implements OnInit {
               this.noRecordFound = !data.length;
             } catch (err) { }
           }, error => {
+            this.isLoading = false;
           }, () => { });
       }
       this.updateDefaultLayout(this.selectedPage.characterDashboardLayoutId);

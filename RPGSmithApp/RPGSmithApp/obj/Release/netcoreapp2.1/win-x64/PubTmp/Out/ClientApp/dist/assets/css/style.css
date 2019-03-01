@@ -4087,7 +4087,7 @@ span.search-content span {
       }
 
   .tiles .tile-type-note .tile-body {
-    overflow: visible !important;
+    /*overflow: visible !important;*/
     position: relative;
   }
 
