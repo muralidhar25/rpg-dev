@@ -169,7 +169,7 @@ namespace RPGSmithApp.Controllers
             {
                 if (item.ItemId == itemId) continue;
                 else if (item.ItemId == containerItemId) continue; //cannot contain item which is selected above(ui) as container
-                else if (item.ContainedIn == null || item.ContainedIn == 0)
+                else if (item.ContainedIn == null || item.ContainedIn == 0 || item.ContainedIn== itemId)
                 {
                     var listobj = new ItemListViewModel();
                     listobj = Mapper.Map<ItemListViewModel>(item);

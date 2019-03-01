@@ -53,7 +53,8 @@ export class RulesetComponent implements OnInit {
         this.sharedService.shouldUpdateRulesetList().subscribe(ruleset => {
             if (ruleset) {
                 this.openManage = false;
-                this.initialize(ruleset);
+              this.initialize(ruleset);
+              this.sharedService.updateManageOpen(null);
             }
         });
     }
@@ -74,8 +75,9 @@ export class RulesetComponent implements OnInit {
     }
    
     ngOnInit() {
-        this.destroyModalOnInit();
-        this.initialize(null);
+      this.destroyModalOnInit();
+      let ruleset = this.localStorage.getDataObject<any>(DBkeys.CURRENT_RULESET);
+      this.initialize(ruleset);
     }
 
     private resetHeaderValues(): any {
@@ -90,7 +92,10 @@ export class RulesetComponent implements OnInit {
     private initialize(ruleset?: any) {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)
-            this.authService.logout();
+        {
+          this.authService.logout();
+          this.localStorage.deleteData(DBkeys.CURRENT_RULESET);
+        }
         else {
             this.isAdminUser = user.roles.some(function (value) { return (value === "administrator") });
           this.isLoading = true;
@@ -112,7 +117,8 @@ export class RulesetComponent implements OnInit {
                         let rulesetData = ruleset;
                         this.manageRuleset(ruleset);
                         ruleset = null;
-                        this.openManage = true;
+                      this.openManage = true;
+                      this.localStorage.deleteData(DBkeys.CURRENT_RULESET);
                     }
                 }, error => {
                     this.isLoading = false;
@@ -120,7 +126,8 @@ export class RulesetComponent implements OnInit {
                     let Errors = Utilities.ErrorDetail("", error);
                     if (Errors.sessionExpire) {
                         this.authService.logout(true);
-                    }
+                  }
+                  this.localStorage.deleteData(DBkeys.CURRENT_RULESET);	
                 }, () => { });
             //setTimeout(() => {
             //    if (ruleset && !this.isLoading) this.manageRuleset(ruleset);
@@ -153,8 +160,14 @@ export class RulesetComponent implements OnInit {
             keyboard: false
         });
         this.bsModalRef.content.title = 'Create Rule Set';
-        this.bsModalRef.content.button = 'NEXT';
-      this.bsModalRef.content.rulesetModel = { ruleSetId: 0, defaultDices:this.defaultDicesForNewUsers};
+        this.bsModalRef.content.button = 'NEXT';      
+      this.bsModalRef.content.rulesetModel = { ruleSetId: 0, defaultDices: this.defaultDicesForNewUsers };
+
+      this.bsModalRef.content.event.subscribe(data => {
+        this.localStorage.saveSyncedSessionData(data, DBkeys.CURRENT_RULESET);
+        this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
+          this.router.navigate(["rulesets"]));
+      });
     }
 
     manageRuleset(ruleset: Ruleset) {

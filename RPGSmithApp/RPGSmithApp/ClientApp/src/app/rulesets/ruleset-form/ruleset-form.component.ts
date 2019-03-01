@@ -283,7 +283,7 @@ export class RulesetFormComponent implements OnInit {
 
         }
     }
-
+  public event: EventEmitter<any> = new EventEmitter();
     private addEditRuleset(modal) {
         
         this.isLoading = true;
@@ -304,7 +304,8 @@ export class RulesetFormComponent implements OnInit {
                     this.alertService.showMessage(message, "", MessageSeverity.success);
                     this.commonService.UpdateCounts(); /*update charaters count*/
                     
-                    this.sharedService.updateRulesetList(data);
+                  //this.sharedService.updateRulesetList(data);
+                  this.event.emit(data);
                     //setTimeout(() => {
                     //    if ((modal.ruleSetId == 0 || modal.ruleSetId === undefined) && data !== null)
                     //        this.manageRuleset(data);

@@ -33,6 +33,7 @@
                             </label>
                         </li>
                     </ul>
+                  <span *ngIf="itemsList?.length > 0" class="w-100 d-block text-center my-2"><a href="javascript:void(0)" (click)="removeSelectedItem()">Remove from Container</a></span>
                 </fieldset>
             </div>
 

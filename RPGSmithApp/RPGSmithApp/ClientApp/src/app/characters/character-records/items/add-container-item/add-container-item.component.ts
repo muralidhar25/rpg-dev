@@ -75,9 +75,9 @@ export class AddContainerItemComponent implements OnInit {
         else {
             this.isLoading = true;
             this.itemsService.getAvailableItems<any>(this.characterId, this.itemId, this.containerItemId)
-                .subscribe(data => {
+              .subscribe(data => {                
                     this.itemsList = data;
-                    this.isLoading = false;
+                this.isLoading = false;
                 }, error => {
                     this.isLoading = false;
                     let Errors = Utilities.ErrorDetail("", error);
@@ -136,7 +136,7 @@ export class AddContainerItemComponent implements OnInit {
                 });
             }
         }
-    }
+  }
 
     close() {
         this.bsModalRef.hide();

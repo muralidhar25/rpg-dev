@@ -110,7 +110,15 @@ export class AddContainerComponent implements OnInit {
         }
         else
             this.containerModal.containerItemId = 0;
-    }
+  }
+
+  removeSelectedItem() {
+    this.containerModal.containerItemId = 0;
+    this.containerModal.itemName = '';
+    let ele:any = document.getElementsByName("newitem");
+    for (var i = 0; i < ele.length; i++)
+      ele[i].checked = false;
+  }
 
     close() {
         this.bsModalRef.hide();

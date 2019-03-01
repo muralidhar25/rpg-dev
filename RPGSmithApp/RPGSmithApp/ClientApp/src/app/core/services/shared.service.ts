@@ -25,6 +25,14 @@ export class SharedService {
   private pages = new Subject<any>();
   private customeDice = new Subject<any>();
 
+  updateManageOpen(accountSetting: any) {
+    this.accountSetting.next(accountSetting);
+  }
+
+  useUpdateManageOpen(): Observable<any> {
+    return this.accountSetting.asObservable();
+  }
+
   updateAccountSetting(accountSetting: any) {
     this.accountSetting.next(accountSetting);
   }
