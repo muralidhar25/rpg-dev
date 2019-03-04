@@ -229,8 +229,9 @@ export class ItemDetailsComponent implements OnInit {
         }, 200);
     }
 
-    RedirectBack() {
-        window.history.back();
+  RedirectBack() {
+    this.router.navigate(['/ruleset/item-master', this.ruleSetId]);
+       // window.history.back();
     }
     Redirect(path) {
         this.router.navigate([path, this.ruleSetId]);

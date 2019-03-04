@@ -257,7 +257,8 @@ export class CharacterSpellDetailsComponent implements OnInit {
     }
 
     RedirectBack() {
-        window.history.back();
+      this.router.navigate(['/character/spell', this.characterId]);
+        //window.history.back();
     }
 
     Redirect(path) {

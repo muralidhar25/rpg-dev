@@ -38,6 +38,13 @@
                       </div>
                     </div>
                   </div>
+                  <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Command'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                    <div class="modifier-text">
+                      <div class="mod-value">
+                        {{characterStat.command}}
+                      </div>
+                    </div>
+                  </div>
                   <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Combo'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
                     <div class="modifier-text">
                       <div class="mod-value">
@@ -87,6 +94,11 @@
                       <span class="count">  {{characterStat.calculationResult}}</span>
                     </div>
                   </div>
+                  <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Command'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                    <div class="modifier-text text-center">
+                      <span class="count"></span>
+                    </div>
+                  </div>
                   <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Combo'" class="col-lg-3 col-md-3 col-sm-3 col-10">
                     <div class="modifier-text text-center">
                       <span class="count">{{characterStat.defaultValue}}</span>
@@ -124,9 +136,14 @@
                         {{characterStat.characterStat.characterStatType.statTypeName}}
                       </div>
                     </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Command'" class="modifier-text">
+                      <div class="mod-value">
+                        {{characterStat.command}}
+                      </div>
+                    </div>
                     <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Combo'" class="modifier-text">
                       <div class="mod-value">
-                        Current
+                        Combo
                       </div>
                     </div>
                     <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Current & Max'" class="modifier-text">
@@ -158,6 +175,9 @@
                     </div>
                     <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Calculation'" class="modifier-text">
                       <span class="count">{{characterStat.calculationResult}}</span>
+                    </div>
+                    <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Command'" class="modifier-text">
+                      <span class="count"></span>
                     </div>
                     <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Combo'" class="modifier-text">
                       <span class="count">{{characterStat.defaultValue}}</span>
@@ -295,6 +315,13 @@
                       </div>
                     </div>
                   </div>
+                  <div *ngIf="characterStat.characterStatType.statTypeName =='Command'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                    <div class="modifier-text">
+                      <div class="mod-value">
+                        Command
+                      </div>
+                    </div>
+                  </div>
                   <div *ngIf="characterStat.characterStatType.statTypeName =='Combo'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
                     <div class="modifier-text">
                       <div class="mod-value">
@@ -344,6 +371,11 @@
                       <span class="count">  0</span>
                     </div>
                   </div>
+                  <div *ngIf="characterStat.characterStatType.statTypeName =='Command'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                    <div class="modifier-text text-center">
+                      <span class="count">  </span>
+                    </div>
+                  </div>
                   <div *ngIf="characterStat.characterStatType.statTypeName =='Combo'" class="col-lg-3 col-md-3 col-sm-3 col-10">
                     <div class="modifier-text text-center">
                       <span class="count">  0</span>
@@ -386,6 +418,11 @@
                         Combo
                       </div>
                     </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName =='Command'" class="modifier-text">
+                      <div class="mod-value">
+                        Command
+                      </div>
+                    </div>
                     <div *ngIf="characterStat.characterStatType.statTypeName =='Current & Max'" class="modifier-text">
                       <div class="mod-value">
                         Current
@@ -415,6 +452,9 @@
                     </div>
                     <div *ngIf="characterStat.characterStatType.statTypeName =='Calculation'" class="modifier-text">
                       <span class="count"> 0</span>
+                    </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName =='Command'" class="modifier-text">
+                      <span class="count"> </span>
                     </div>
                     <div *ngIf="characterStat.characterStatType.statTypeName =='Combo'" class="modifier-text">
                       <span class="count"> 0</span>

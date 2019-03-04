@@ -326,7 +326,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
     }
 
     RedirectBack() {
-        window.history.back();
+      this.router.navigate(['/character/inventory', this.characterId]);
     }
 
     Redirect(path) {

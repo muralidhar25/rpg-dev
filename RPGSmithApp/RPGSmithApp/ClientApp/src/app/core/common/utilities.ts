@@ -8,6 +8,8 @@ import { HttpResponseBase, HttpResponse, HttpErrorResponse } from '@angular/comm
 import { forEach } from '@angular/router/src/utils/collection';
 import { CharacterStatConditionViewModel } from '../models/view-models/character-stats.model';
 import { STAT_TYPE } from '../models/enums';
+import { Router } from '@angular/router';
+import { HeaderValues } from '../models/headers.model';
 
 
 @Injectable()
@@ -800,6 +802,56 @@ export class Utilities {
     }
     return true;
   }
+
+  public static RefreshPage(url: string, router: Router, headers: HeaderValues,rulesetID:number) {
+    let NewUrl = url;
+    if (+url.split('/')[url.split('/').length - 1]) {
+      NewUrl = url.replace('/' + url.split('/')[url.split('/').length - 1], '')
+    }
+
+    if (headers) {
+      if (headers.headerLink == 'ruleset') {
+        if (url.toUpperCase().indexOf('/RULESET/ABILITY') > -1
+          || url.toUpperCase().indexOf('/RULESET/SPELL') > -1
+          || url.toUpperCase().indexOf('/RULESET/ITEM-MASTER') > -1
+          || url.toUpperCase().indexOf('/RULESET/CHARACTER-STATS') > -1
+          || url.toUpperCase().indexOf('/RULESET/DASHBOARD') > -1
+        ) {
+          url = url + "/" + headers.headerId;
+            router.navigate([url], { skipLocationChange: true });
+          window.history.pushState('', '', NewUrl)
+        }
+      }
+      else if (headers.headerLink == 'character') {
+        if (
+          url.toUpperCase().indexOf('/CHARACTER/INVENTORY') > -1
+          || url.toUpperCase().indexOf('/CHARACTER/SPELL') > -1
+          || url.toUpperCase().indexOf('/CHARACTER/ABILITY') > -1
+          || url.toUpperCase().indexOf('/CHARACTER/CHARACTER-STATS') > -1
+          || url.toUpperCase().indexOf('/CHARACTER/DASHBOARD') > -1
+          || url.toUpperCase().indexOf('/CHARACTER/TILES') > -1
+        ) {
+          url = url + "/" + headers.headerId;
+          router.navigate([url], { skipLocationChange: true });
+          window.history.pushState('', '', NewUrl)
+        }
+
+        else if (
+          url.toUpperCase().indexOf('/CHARACTER/RULESET') > -1          
+        ){
+          url = url + "/" + rulesetID;
+          router.navigate([url], { skipLocationChange: true });
+          window.history.pushState('', '', NewUrl)
+
+        }
+      }
+    }
+    
+    
+    
+     
+  }
+
   public static InvalidValueForConditionStats: number = -25163711;
   //public static LogoImage: string = 'logo-full.png'; //for prod //beta //--Not used now
   public static LogoImage: string = 'logo-full.svg'; // for prod //non-beta 

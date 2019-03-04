@@ -286,8 +286,9 @@ export class CharacterAbilityDetailsComponent implements OnInit {
         this.bsModalRef.content.event.subscribe(result => {
         });
     }
-    RedirectBack() {
-        window.history.back();
+  RedirectBack() {
+    this.router.navigate(['/character/ability', this.characterId]);
+        //window.history.back();
     }
 
     Redirect(path) {

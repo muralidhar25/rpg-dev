@@ -95,6 +95,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   IsRulesetRecordScreenActive: boolean = false;
   IsCharacterRecordScreenActive: boolean = false;
 
+  URLFlag: boolean = false;
+  RefreshURLFlag: boolean = false;
+  previousUrl: string = ''
+  currentUrl: string = ''
+  previousUrlList: string[] = []
+
+
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
     if (window.pageYOffset > 0) {
@@ -154,11 +161,11 @@ export class AppComponent implements OnInit, AfterViewInit {
           
 
             if (
-              this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1
+              this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY') > -1
               ||
-              this.router.url.toUpperCase().indexOf('/CHARACTER/SPELL/') > -1
+              this.router.url.toUpperCase().indexOf('/CHARACTER/SPELL') > -1
               ||
-              this.router.url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1
+              this.router.url.toUpperCase().indexOf('/CHARACTER/ABILITY') > -1
               ||
               this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS) > -1
               ||
@@ -172,7 +179,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.IsRulesetRecordScreenActive = false;
               //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
             }
-            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/') > -1
+            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET') > -1
               ||
               this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETITEMS) > -1
               ||
@@ -204,40 +211,40 @@ export class AppComponent implements OnInit, AfterViewInit {
             this.SearchTypeText = '';
             this.isCharacterItem = 0;
             
-            if (this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1) {
+            if (this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY') > -1) {
               this.SearchType = SearchType.CHARACTERITEMS;
               this.SearchTypeText = 'Items';
             }
-            else if (this.router.url.toUpperCase().indexOf('/RULESET/ITEM-MASTER/') > -1) {
+            else if (this.router.url.toUpperCase().indexOf('/RULESET/ITEM-MASTER') > -1) {
               this.SearchType = SearchType.RULESETITEMS;
               this.SearchTypeText = 'Items';
             }
-            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/SPELL/') > -1) {
+            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/SPELL') > -1) {
               this.SearchType = SearchType.CHARACTERSPELLS;
               this.SearchTypeText = 'Spells';
             }
-            else if (this.router.url.toUpperCase().indexOf('/RULESET/SPELL/') > -1) {
+            else if (this.router.url.toUpperCase().indexOf('/RULESET/SPELL') > -1) {
               this.SearchType = SearchType.RULESETSPELLS;
               this.SearchTypeText = 'Spells';
             }
-            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1) {
+            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/ABILITY') > -1) {
               this.SearchType = SearchType.CHARACTERABILITIES;
               this.SearchTypeText = 'Abilities';
             }
-            else if (this.router.url.toUpperCase().indexOf('/RULESET/ABILITY/') > -1) {
+            else if (this.router.url.toUpperCase().indexOf('/RULESET/ABILITY') > -1) {
               this.SearchType = SearchType.RULESETABILITIES;
               this.SearchTypeText = 'Abilities';
             }
 
-            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS/') > -1) {
+            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS') > -1) {
               this.SearchType = SearchType.CHARACTERRULESETITEMS;
               this.SearchTypeText = 'Items';
             }
-            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS/') > -1) {
+            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS') > -1) {
               this.SearchType = SearchType.CHARACTERRULESETSPELLS;
               this.SearchTypeText = 'Spells';
             }
-            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES/') > -1) {
+            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES') > -1) {
               this.SearchType = SearchType.CHARACTERRULESETABILITIES;
               this.SearchTypeText = 'Abilities';
             }
@@ -420,21 +427,138 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
       }, 500);
     });
-
+    //this.router.events.pairwise().subscribe((e) => {
+    //  console.log('1111', e);
+    //});
+    //this.router.events.bufferCount(6).subscribe((e: any[]) => {
+    //  console.log('2222', e[1].urlAfterRedirects);
+    //});
+    //this.router.events
+    //  .filter(e => e.constructor.name === 'RoutesRecognized')
+    //  .pairwise()
+    //  .subscribe((e: any[]) => {
+    //    console.log('3333', e[0].urlAfterRedirects);
+    //  });
     this.router.events.subscribe(event => {
+      
+      if (event instanceof NavigationEnd) {
+        
+        this.previousUrl = this.currentUrl;
+        this.currentUrl = event.url;
+        
+
+        if (this.previousUrl) {
+          if (this.previousUrlList.length) {
+            if (this.previousUrlList[this.previousUrlList.length - 1] != this.previousUrl) {
+              this.previousUrlList.push(this.previousUrl);
+            }
+          }
+          else {
+            this.previousUrlList.push(this.previousUrl);
+          }
+        }
+      };
       if (event instanceof NavigationStart) {
         let url = (<NavigationStart>event).url;
+       
+        
+        if (!this.router.navigated) {
+          if (!this.RefreshURLFlag) {
+            this.RefreshURLFlag = true;
+            Utilities.RefreshPage(url, this.router, this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE), this.localStorage.getDataObject<number>(DBkeys.RULESET_ID));
+            
+          }
+          
+
+          //let lastPageAccessed = this.localStorage.localStorageGetItem("LastAccessedPage");
+          //if (lastPageAccessed) {
+          //  if (lastPageAccessed == url && !this.RefreshURLFlag) {
+          //    let NewUrl = lastPageAccessed.replace('/' + lastPageAccessed.split('/')[lastPageAccessed.split('/').length - 1], '')
+          //    this.RefreshURLFlag = true;
+          //    this.router.navigate([lastPageAccessed], { skipLocationChange: true });
+          //    window.history.pushState('', '', NewUrl)
+          //  }
+          //  else if (lastPageAccessed.indexOf(url) > -1 && !this.RefreshURLFlag) {
+          //    let NewUrl = lastPageAccessed.replace('/' + lastPageAccessed.split('/')[lastPageAccessed.split('/').length - 1], '')
+          //    this.RefreshURLFlag = true;
+          //    this.router.navigate([lastPageAccessed], { skipLocationChange: true });
+          //    window.history.pushState('', '', NewUrl)
+          //  }
+          //}
+          //this.localStorage.localStorageSetItem("LastAccessedPage", url);
+        }
+        
+        
+        
+        else if (this.router.navigated && url.toUpperCase().indexOf('/SEARCH/BASIC') == -1 ) {
+          if (+url.split('/')[url.split('/').length - 1] && !this.URLFlag) {
+            let NewUrl = url.replace('/' + url.split('/')[url.split('/').length - 1], '')
+
+            //if (+url.split('/')[url.split('/').length - 1]) {
+            //  this.lastPrevIdUsed = this.lastIdUsed;
+            //  this.lastIdUsed = +url.split('/')[url.split('/').length - 1];
+            //}
+            this.URLFlag = true;
+            this.router.navigate([url], { skipLocationChange: true });
+            window.history.pushState('', '', NewUrl)
+            //window.history.pushState('', '', url)
+            //window.history.replaceState('', '', NewUrl)
+
+          }
+          else {
+            let prevUrl = this.previousUrl
+
+            if (+this.previousUrl.split('/')[this.previousUrl.split('/').length - 1]) {
+              prevUrl = this.previousUrl.replace('/' + this.previousUrl.split('/')[this.previousUrl.split('/').length - 1], '')
+            }
+
+            if (url == prevUrl) {
+              if (this.previousUrlList) {
+                if (this.previousUrlList[this.previousUrlList.length - 1] === this.previousUrl && this.previousUrlList.length>2) {
+                  this.currentUrl = this.previousUrlList[this.previousUrlList.length - 1]
+                  this.previousUrlList.splice(this.previousUrlList.length - 1, 1);
+                }
+              }
+
+              let NewUrl = url;
+              if (+url.split('/')[url.split('/').length - 1]) {
+                NewUrl = url.replace('/' + url.split('/')[url.split('/').length - 1], '')
+              }
+              if (this.previousUrlList) {
+                if (this.previousUrlList[this.previousUrlList.length - 1] === this.previousUrl && this.previousUrlList.length > 2) {
+                  this.router.navigate([this.previousUrlList[this.previousUrlList.length - 1]], { skipLocationChange: true });
+                  window.history.pushState('', '', NewUrl)
+                }
+                else {
+                  this.router.navigate([this.previousUrl], { skipLocationChange: true });
+                  window.history.pushState('', '', NewUrl)
+                }
+              }
+              else {
+                this.router.navigate([this.previousUrl], { skipLocationChange: true });
+                window.history.pushState('', '', NewUrl)
+
+              }
+              //this.router.navigate([this.previousUrl], { skipLocationChange: true });
+              //window.history.pushState('', '', NewUrl)
+              //window.history.pushState('', '', this.previousUrl)
+              //window.history.replaceState('', '', NewUrl)
+            }
+          }
+        }
+        
+        this.URLFlag = false;
         this.showCharacterSearch = ((url.toLowerCase() == '/characters') || (url.toLowerCase() == '/'));
         if (url !== url.toLowerCase()) {
           this.router.navigateByUrl((<NavigationStart>event).url.toLowerCase());
         }
         
         if (
-          url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1
+          url.toUpperCase().indexOf('/CHARACTER/INVENTORY') > -1
           ||
-          url.toUpperCase().indexOf('/CHARACTER/SPELL/') > -1
+          url.toUpperCase().indexOf('/CHARACTER/SPELL') > -1
           ||
-          url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1
+          url.toUpperCase().indexOf('/CHARACTER/ABILITY') > -1
           ||
           url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS) > -1
           ||
@@ -450,7 +574,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           
           //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
         }
-        else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/') > -1
+        else if (url.toUpperCase().indexOf('/CHARACTER/RULESET') > -1
           ||
           url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETITEMS) > -1
           ||
@@ -486,40 +610,40 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.SearchType = 0;
         this.SearchTypeText = '';
 
-        if (url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1) {
+        if (url.toUpperCase().indexOf('/CHARACTER/INVENTORY') > -1) {
           this.SearchType = SearchType.CHARACTERITEMS;
           this.SearchTypeText = 'Items';
         }
-        else if (url.toUpperCase().indexOf('/RULESET/ITEM-MASTER/') > -1) {
+        else if (url.toUpperCase().indexOf('/RULESET/ITEM-MASTER') > -1) {
           this.SearchType = SearchType.RULESETITEMS;
           this.SearchTypeText = 'Items';
         }
-        else if (url.toUpperCase().indexOf('/CHARACTER/SPELL/') > -1) {
+        else if (url.toUpperCase().indexOf('/CHARACTER/SPELL') > -1) {
           this.SearchType = SearchType.CHARACTERSPELLS;
           this.SearchTypeText = 'Spells';
         }
-        else if (url.toUpperCase().indexOf('/RULESET/SPELL/') > -1) {
+        else if (url.toUpperCase().indexOf('/RULESET/SPELL') > -1) {
           this.SearchType = SearchType.RULESETSPELLS;
           this.SearchTypeText = 'Spells';
         }
-        else if (url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1) {
+        else if (url.toUpperCase().indexOf('/CHARACTER/ABILITY') > -1) {
           this.SearchType = SearchType.CHARACTERABILITIES;
           this.SearchTypeText = 'Abilities';
         }
-        else if (url.toUpperCase().indexOf('/RULESET/ABILITY/') > -1) {
+        else if (url.toUpperCase().indexOf('/RULESET/ABILITY') > -1) {
           this.SearchType = SearchType.RULESETABILITIES;
           this.SearchTypeText = 'Abilities';
         }
 
-        else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS/') > -1) {
+        else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS') > -1) {
           this.SearchType = SearchType.RULESETITEMS;
           this.SearchTypeText = 'Items';
         }
-        else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS/') > -1) {
+        else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS') > -1) {
           this.SearchType = SearchType.RULESETSPELLS;
           this.SearchTypeText = 'Spells';
         }
-        else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES/') > -1) {
+        else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES') > -1) {
           this.SearchType = SearchType.RULESETABILITIES;
           this.SearchTypeText = 'Abilities';
         }
@@ -834,13 +958,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   gotoRulesetViewForCharacter() {
     let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
     
-    if (this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1) {
+    if (this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY') > -1) {
       this.router.navigate(['/character/ruleset/items', rid]);
     }
-    else if (this.router.url.toUpperCase().indexOf('/CHARACTER/SPELL/') > -1) {
+    else if (this.router.url.toUpperCase().indexOf('/CHARACTER/SPELL') > -1) {
       this.router.navigate(['/character/ruleset/spells', rid]);
     }
-    else if (this.router.url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1) {
+    else if (this.router.url.toUpperCase().indexOf('/CHARACTER/ABILITY') > -1) {
       this.router.navigate(['/character/ruleset/abilities', rid]);
     }
 
@@ -872,13 +996,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
   gotoRulesetView() {
     let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-    if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS/') > -1) {
+    if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS') > -1) {
       this.router.navigate(['/ruleset/item-master', rid]);
     }
-    else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS/') > -1) {
+    else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS') > -1) {
       this.router.navigate(['/ruleset/spell', rid]);
     }
-    else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES/') > -1) {
+    else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES') > -1) {
       this.router.navigate(['/ruleset/ability', rid]);
     }
   }

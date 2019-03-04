@@ -318,7 +318,7 @@ namespace DAL.Services
                 .Include(d => d.Character)
                 .Include(d => d.CharacterStat.CharacterStatType)
                 .Include(d => d.CharacterStat.CharacterStatCalcs)
-                .Where(x => x.CharacterId == characterId && (x.CharacterStat.CharacterStatType.StatTypeName == "Combo" || x.CharacterStat.CharacterStatType.StatTypeName == "Calculation" || x.CharacterStat.CharacterStatType.StatTypeName == "Value & Sub-Value" || x.CharacterStat.CharacterStatType.StatTypeName == "Current & Max" || x.CharacterStat.CharacterStatType.StatTypeName == "Number") && x.IsDeleted != true)
+                .Where(x => x.CharacterId == characterId && (x.CharacterStat.CharacterStatType.StatTypeName == "Combo" || x.CharacterStat.CharacterStatType.StatTypeName == "Calculation" || x.CharacterStat.CharacterStatType.StatTypeName == "Value & Sub-Value" || x.CharacterStat.CharacterStatType.StatTypeName == "Current & Max" || x.CharacterStat.CharacterStatType.StatTypeName == "Number" || x.CharacterStat.CharacterStatType.StatTypeName == "Command") && x.IsDeleted != true)
                 .OrderBy(x => x.CharacterStat.SortOrder).ToList();
 
             if (page > 0 && pageSize > 0)

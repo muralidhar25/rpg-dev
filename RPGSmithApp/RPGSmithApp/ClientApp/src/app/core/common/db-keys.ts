@@ -28,4 +28,5 @@ export class DBkeys {
   public static readonly CHARACTER_ID = "character_id";
   public static readonly NOT_CHROME = "not_chrome";
   public static readonly CURRENT_RULESET = "current_ruleset";
+  public static readonly LAST_PAGE_ACCESSED = "last_page_accessed";
 }

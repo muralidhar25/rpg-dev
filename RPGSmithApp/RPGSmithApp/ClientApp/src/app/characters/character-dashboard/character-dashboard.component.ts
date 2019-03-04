@@ -184,8 +184,11 @@ export class CharacterDashboardComponent implements OnInit {
 
     dragulaService.over.subscribe((value) => { this.onOver(value.slice(1)); });
     dragulaService.out.subscribe((value) => { this.onOut(value.slice(1)); });
-
-    this.route.params.subscribe(params => { this.characterId = params['id']; });
+    
+    this.route.params.subscribe(params =>
+    {      
+        this.characterId = params['id'];
+    });
     this.sharedService.shouldUpdateCharacterDashboardLayout().subscribe(serviceJson => {
       if (serviceJson) {
 
@@ -643,6 +646,8 @@ export class CharacterDashboardComponent implements OnInit {
   }
   manageRoute(url: string) {
     this.router.navigate([url, this.characterId]);
+    //this.router.navigate([url, this.characterId], { skipLocationChange: true });
+    //window.history.pushState('', '', url + "/" + this.characterId)
   }
 
   private destroyModalOnInit(): void {

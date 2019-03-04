@@ -239,8 +239,10 @@ export class SpellDetailsComponent implements OnInit {
             this.alertService.stopLoadingMessage();
         }, 200);
     }
-    RedirectBack() {
-        window.history.back();
+  RedirectBack() {
+    
+    this.router.navigate(['/ruleset/spell', this.ruleSetId]);
+       // window.history.back();
     }
     Redirect(path) {
         this.router.navigate([path, this.ruleSetId]);

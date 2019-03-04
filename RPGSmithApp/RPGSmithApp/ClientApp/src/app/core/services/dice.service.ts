@@ -1167,7 +1167,7 @@ export class DiceService {
       // __randomNumbersList = __randomNumbersList.filter((val) => val.isKept == true);
     }
 
-    debugger
+    
     let command = '';
     let temp_randomNumbersAfter = +dice ? sortedRandomNumbers.join(" + ")
       : (diceWithoutMultipleSign ? sortedRandomNumbers.join(" * ")

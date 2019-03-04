@@ -256,6 +256,10 @@ export class NumericCharacterStatComponent implements OnInit {
       statName = "[" + name + "]";
       value = characterStat.defaultValue ? characterStat.defaultValue : 0;
     }
+    else if (chartype == "Command") {
+      statName = "[" + name + "]";
+      value = characterStat.command;
+    }
     else {
       statName = "[" + name + "]";
       value = 0;
@@ -263,6 +267,7 @@ export class NumericCharacterStatComponent implements OnInit {
 
     this.bsModalRef.hide();
     this.event.emit({
+      selectedType: chartype,
       selectedStat: statName,
       selectedStatValue: value,
       charactersCharacterStatId: characterStat.charactersCharacterStatId

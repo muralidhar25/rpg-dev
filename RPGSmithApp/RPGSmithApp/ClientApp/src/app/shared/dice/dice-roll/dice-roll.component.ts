@@ -22,6 +22,7 @@ import { CharacterLastCommand } from "../../../core/models/view-models/character
 import { DiceSaveComponent } from "../dice-save/dice-save.component";
 import { NumericCharacterStatComponent } from "../../numeric-character-stats/numeric-character-stat.component";
 import { PlatformLocation } from "@angular/common";
+import { Observable } from "rxjs";
 
 
 @Component({
@@ -444,14 +445,23 @@ export class DiceRollComponent implements OnInit {
             this.characterCommandModel.command = command;
             return false;
         }
-
+      let commandIfERROR = command;
         //////////////////////////////////////////////
         try {
             if (this.characterId > 0) {
                 ////////////////////////////////
                 let calculationString: string = command;
                 let inventoreyWeight = this.statdetails.character.inventoryWeight;
-                let finalCalcString: string = '';
+              let finalCalcString: string = '';
+
+              try {
+                commandIfERROR = calculationString;
+                this.commandStatInCommand(calculationString).subscribe(res => {
+                  calculationString = res;
+                }) ;
+              } catch (err) { }
+
+
                 calculationString.split("[INVENTORYWEIGHT]").map((item) => {
                     calculationString = calculationString.replace("[INVENTORYWEIGHT]", " " + inventoreyWeight + " ");
                 })
@@ -492,7 +502,7 @@ export class DiceRollComponent implements OnInit {
                             type = 0
                         }
                         this.statdetails.charactersCharacterStat.map((q) => {
-                            if (!flag) {
+                          if (id == q.characterStat.statName.toUpperCase()) {
                                 flag = (id == q.characterStat.statName.toUpperCase());
                                 statType = q.characterStat.characterStatTypeId
                             }
@@ -505,54 +515,57 @@ export class DiceRollComponent implements OnInit {
                         }
                     })
 
-                    IDs.map((rec) => {
-                        this.statdetails.charactersCharacterStat.map((stat) => {
-                            if (rec.id == stat.characterStat.statName.toUpperCase()) {
-                                let num = 0;
-                                switch (rec.statType) {
-                                    case 3: //Number
-                                        num = stat.number
-                                        break;
-                                    case 5: //Current Max
-                                        if (rec.type == 1)//current
-                                        {
-                                            num = stat.current
-                                        }
-                                        else if (rec.type == 2)//Max
-                                        {
-                                            num = stat.maximum
-                                        }
-                                        break;
-                                    case 7: //Val Sub-Val
-                                        if (rec.type == 3)//value
-                                        {
-                                            num = +stat.value
-                                        }
-                                        else if (rec.type == 4)//sub-value
-                                        {
-                                            num = stat.subValue
-                                        }
-                                        break;
-                                    case 12: //Calculation
-                                        num = stat.calculationResult
-                                        break;
-                                    case STAT_TYPE.Combo: //Combo
-                                        num = stat.defaultValue
-                                        break;
-                                    default:
-                                        break;
-                                }
-                                if (num)
-                                    calculationString = calculationString.replace(rec.originaltext, num.toString());
-                                else
-                                    calculationString = calculationString.replace(rec.originaltext, '0');
-                                //CalcString = CalcString.replace(rec.originaltext, "(" + num + ")");
+                  IDs.map((rec) => {
+                    //console.log('---rec.id ', rec.id)
+                    this.statdetails.charactersCharacterStat.map((stat) => {
+                      if (rec.id == stat.characterStat.statName.toUpperCase()) {
+                        let num = 0; let isCMD = false;
+                        let cmd = "";
+                        switch (rec.statType) {
+                          case STAT_TYPE.Number: //Number
+                            num = stat.number
+                            break;
+                          case STAT_TYPE.CurrentMax: //Current Max
+                            if (rec.type == 1)//current
+                            {
+                              num = stat.current
                             }
+                            else if (rec.type == 2)//Max
+                            {
+                              num = stat.maximum
+                            }
+                            break;
+                          case STAT_TYPE.ValueSubValue: //Val Sub-Val
+                            if (rec.type == 3)//value
+                            {
+                              num = +stat.value
+                            }
+                            else if (rec.type == 4)//sub-value
+                            {
+                              num = stat.subValue
+                            }
+                            break;
+                          case STAT_TYPE.Calculation: //Calculation
+                            num = stat.calculationResult
+                            break;
+                          case STAT_TYPE.Combo: //Combo
+                            num = stat.defaultValue
+                            break;
+                          default:
+                            break;
+                        }
 
-                        });
+                        if (num)
+                          calculationString = calculationString.replace(rec.originaltext, num.toString());
+                        else
+                          calculationString = calculationString.replace(rec.originaltext, '0');
+                        //CalcString = CalcString.replace(rec.originaltext, "(" + num + ")");
+                      }
 
-                        finalCalcString = calculationString;
                     });
+
+                    finalCalcString = calculationString;
+                  });
                 }
                 ////////////////////////////////                    
                 finalCalcString = finalCalcString.replace(/  +/g, ' ');
@@ -573,7 +586,8 @@ export class DiceRollComponent implements OnInit {
         });
 
         let isValidCommand = DiceService.validateCommandTextNew(commandToValidate);
-        if (!isValidCommand) {
+      if (!isValidCommand) {
+        command = commandIfERROR;
             this.alertService.resetStickyMessage();
             this.alertService.showStickyMessage('', this.COMMAND_Error, MessageSeverity.error);
             setTimeout(() => { this.alertService.resetStickyMessage(); }, 1200);
@@ -783,12 +797,186 @@ export class DiceRollComponent implements OnInit {
             this.onClickRoll(characterCommand, '', undefined);
         }
     }    
-    
+  commandStatInCommand(command: string): Observable<string> {
+    try {
+      ////////////////////////////////
+      let calculationString: string = command.toUpperCase();
+      let inventoreyWeight = this.statdetails.character.inventoryWeight;
+      let finalCalcString: string = '';
+      calculationString.split("[INVENTORYWEIGHT]").map((item) => {
+        calculationString = calculationString.replace("[INVENTORYWEIGHT]", " " + inventoreyWeight + " ");
+      })
+      let IDs: any[] = [];
+      finalCalcString = calculationString;
+      if (calculationString) {
+        calculationString.split(/\[(.*?)\]/g).map((rec) => {
+
+          let id = ''; let flag = false; let type = 0; let statType = 0;
+          let isValue = false; let isSubValue = false; let isCurrent = false; let isMax = false;
+
+          if (rec.toUpperCase().split('(V)').length > 1) { isValue = true; }
+          if (rec.toUpperCase().split('(S)').length > 1) { isSubValue = true; }
+          if (rec.toUpperCase().split('(C)').length > 1) { isCurrent = true; }
+          if (rec.toUpperCase().split('(M)').length > 1) { isMax = true; }
+
+          if (isValue || isSubValue || isCurrent || isMax) {
+            if (isValue) {
+              id = rec.toUpperCase().split('(V)')[0].replace('[', '').replace(']', '');
+              type = 3
+            }
+            else if (isSubValue) {
+              id = rec.toUpperCase().split('(S)')[0].replace('[', '').replace(']', '');
+              type = 4
+            }
+            else if (isCurrent) {
+              id = rec.toUpperCase().split('(C)')[0].replace('[', '').replace(']', '');
+              type = 1
+            }
+            else if (isMax) {
+              id = rec.toUpperCase().split('(M)')[0].replace('[', '').replace(']', '');
+              type = 2
+            }
+
+          }
+          else {
+            id = rec.replace('[', '').replace(']', '');
+            type = 0
+          }
+          this.statdetails.charactersCharacterStat.map((q) => {
+            if (id == q.characterStat.statName.toUpperCase()) {
+              flag = (id == q.characterStat.statName.toUpperCase());
+              statType = q.characterStat.characterStatTypeId
+            }
+          })
+          if (flag) {
+            IDs.push({ id: id, type: isNaN(type) ? 0 : type, originaltext: "[" + rec + "]", statType: statType })
+          }
+          else if (+id == -1) {
+            IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
+          }
+        })
+        //console.log('IDs ', IDs)
+        IDs.map((rec) => {
+          this.statdetails.charactersCharacterStat.map((stat) => {
+            if (rec.id == stat.characterStat.statName.toUpperCase()) {
+              let num = 0; let isCMD = false;
+              let whileCMD = "";
+              switch (rec.statType) {
+                case STAT_TYPE.Command:
+                  num = -1;
+                  whileCMD = stat.command;
+                  //console.log('---stat.command ', whileCMD)
+                  do {
+                    isCMD = false;
+                    this.commandStatTypeInCommand(whileCMD).subscribe((x) => {
+                      //this.cmd = x.originaltext
+                      x.map((val, i) => {
+                        this.statdetails.charactersCharacterStat.map((_stat, j) => {
+                          if (rec.id == val.characterStat.statName.toUpperCase()) { console.log('error referenced: ', rec.id) }
+                          else if (val.characterStat.statName.toUpperCase() == _stat.characterStat.statName.toUpperCase()) {
+                            switch (val.characterStat.characterStatTypeId) {
+                              case STAT_TYPE.Command:
+                                isCMD = true;
+                                whileCMD = whileCMD.replace('[' + val.characterStat.statName.toUpperCase() + ']', _stat.command);
+                                break;
+                              default:
+                                isCMD = false;
+                                //cmd = _preCMD.replace(val.originaltext, stat.command);
+                                break;
+                            }
+                          }
+                        })
+                      })
+                      //calculationString = calculationString.replace(x.originaltext, num.toString());
+                    });
+                  }
+                  while (isCMD);
+
+                  if (!isCMD) {
+                    num == -2; isCMD = true;
+                    whileCMD = whileCMD.replace(rec.originaltext, stat.command);
+                  }
+                  //while (temp != 0);
+                  break;
+                default:
+                  break;
+              }
+              if (num == -1 && isCMD) {
+                calculationString = calculationString.replace(rec.originaltext, whileCMD);
+              }
+              else if (num == -2 && isCMD) {
+                calculationString = calculationString.replace(rec.originaltext, whileCMD);
+              }
+              ////else if (num)
+              ////calculationString = calculationString.replace(rec.originaltext, num.toString());
+              //// else
+              //// calculationString = calculationString.replace(rec.originaltext, '0');
+              //CalcString = CalcString.replace(rec.originaltext, "(" + num + ")");
+            }
+
+          });
+          finalCalcString = calculationString;
+        });
+        return Observable.of(finalCalcString);
+      }
+      return Observable.of(finalCalcString);
+    } catch (err) { }
+  }
+
+  commandStatTypeInCommand(cmd: string): Observable<any> {
+    try {
+      let data = [];
+      cmd.split(/\[(.*?)\]/g).map((rec) => {
+        let id = ''; let flag = false; let type = 0; let statType = 0;
+        let isValue = false; let isSubValue = false; let isCurrent = false; let isMax = false;
+
+        if (rec.toUpperCase().split('(V)').length > 1) { isValue = true; }
+        if (rec.toUpperCase().split('(S)').length > 1) { isSubValue = true; }
+        if (rec.toUpperCase().split('(C)').length > 1) { isCurrent = true; }
+        if (rec.toUpperCase().split('(M)').length > 1) { isMax = true; }
+
+        if (isValue || isSubValue || isCurrent || isMax) {
+          if (isValue) {
+            id = rec.toUpperCase().split('(V)')[0].replace('[', '').replace(']', '');
+            type = 3
+          }
+          else if (isSubValue) {
+            id = rec.toUpperCase().split('(S)')[0].replace('[', '').replace(']', '');
+            type = 4
+          }
+          else if (isCurrent) {
+            id = rec.toUpperCase().split('(C)')[0].replace('[', '').replace(']', '');
+            type = 1
+          }
+          else if (isMax) {
+            id = rec.toUpperCase().split('(M)')[0].replace('[', '').replace(']', '');
+            type = 2
+          }
+
+        }
+        else {
+          id = rec.replace('[', '').replace(']', '');
+          type = 0
+        }
+        this.statdetails.charactersCharacterStat.map((q) => {
+          if (id == q.characterStat.statName.toUpperCase()) {
+            if (q.characterStat.characterStatTypeId == STAT_TYPE.Command) {
+              data.push(q);
+              //console.log('----------------------commandStatTypeInCommand: ', id);
+            }
+          }
+        })
+      });
+      return Observable.of(data);
+
+    } catch (err) { }
+  }
     onClickRoll(characterCommand: CharacterCommand, _mainCommandText: string, lastResultArray?: any) {
         
         let anyCommandIsCustomWithNonNumeric = false;
         this.loadingResult = false;
-        let command = characterCommand.command;
+      let command = characterCommand.command;
+      let commandIfERROR = characterCommand.command;
         if (!command && this.isFromTile) {
             this.alertService.showMessage("The command associated with this record has been removed. Please update the record to resolve.", "", MessageSeverity.error);
         }
@@ -821,7 +1009,15 @@ export class DiceRollComponent implements OnInit {
                         ////////////////////////////////
                         let calculationString: string = command;
                         let inventoreyWeight = this.statdetails.character.inventoryWeight;
-                        let finalCalcString: string = '';
+                      let finalCalcString: string = '';
+                      try {
+                        commandIfERROR = calculationString;
+                        this.commandStatInCommand(calculationString).subscribe(res => {
+                          calculationString = res;
+                        });
+                      } catch (err) { }
+
+
                         calculationString.split("[INVENTORYWEIGHT]").map((item) => {
                             calculationString = calculationString.replace("[INVENTORYWEIGHT]", " " + inventoreyWeight + " ");
                         })
@@ -945,7 +1141,8 @@ export class DiceRollComponent implements OnInit {
                 let isValidCommand = DiceService.validateCommandTextNew(commandToValidate);
                 let isValidCommand99 = DiceService.validateCommand99Limit(commandToValidate);
                 if (!isValidCommand || !isValidCommand99) {
-                    this.alertService.resetStickyMessage();
+                  this.alertService.resetStickyMessage();
+                  command = commandIfERROR;
                     this.alertService.showStickyMessage('', this.COMMAND_Error, MessageSeverity.error);
                     setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
                     this.recycleDice();
@@ -986,7 +1183,8 @@ export class DiceRollComponent implements OnInit {
                         })
                     })
                     
-                    if (!IsCmdValid) {
+                  if (!IsCmdValid) {
+                    command = commandIfERROR;
                         this.alertService.showMessage("Please enter a valid command.", "", MessageSeverity.error);
                         return false;
                     }
@@ -2655,7 +2853,7 @@ export class DiceRollComponent implements OnInit {
                 //INVALID
             }
         }
-      debugger
+      
         return diceARRAY;
     }
     public diceInterpretationArray(dice: string): any {
