@@ -8719,3 +8719,11 @@ li.popup-new-tile-trigger.cross-li .btn {
   width: 62px;
   font-size: 14px;
 }
+.modal-custom-image {
+  max-width: 96% !important;
+  text-align: center;
+}
+.modal-custom-image .modal-content {
+  display: inline-block;
+  max-width: 100%;
+}

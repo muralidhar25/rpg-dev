@@ -161,11 +161,11 @@ export class AppComponent implements OnInit, AfterViewInit {
           
 
             if (
-              this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY') > -1
+              this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1
               ||
-              this.router.url.toUpperCase().indexOf('/CHARACTER/SPELL') > -1
+              this.router.url.toUpperCase().indexOf('/CHARACTER/SPELL/') > -1
               ||
-              this.router.url.toUpperCase().indexOf('/CHARACTER/ABILITY') > -1
+              this.router.url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1
               ||
               this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS) > -1
               ||
@@ -179,7 +179,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.IsRulesetRecordScreenActive = false;
               //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
             }
-            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET') > -1
+            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/') > -1
               ||
               this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETITEMS) > -1
               ||
@@ -211,40 +211,40 @@ export class AppComponent implements OnInit, AfterViewInit {
             this.SearchTypeText = '';
             this.isCharacterItem = 0;
             
-            if (this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY') > -1) {
+            if (this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1) {
               this.SearchType = SearchType.CHARACTERITEMS;
               this.SearchTypeText = 'Items';
             }
-            else if (this.router.url.toUpperCase().indexOf('/RULESET/ITEM-MASTER') > -1) {
+            else if (this.router.url.toUpperCase().indexOf('/RULESET/ITEM-MASTER/') > -1) {
               this.SearchType = SearchType.RULESETITEMS;
               this.SearchTypeText = 'Items';
             }
-            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/SPELL') > -1) {
+            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/SPELL/') > -1) {
               this.SearchType = SearchType.CHARACTERSPELLS;
               this.SearchTypeText = 'Spells';
             }
-            else if (this.router.url.toUpperCase().indexOf('/RULESET/SPELL') > -1) {
+            else if (this.router.url.toUpperCase().indexOf('/RULESET/SPELL/') > -1) {
               this.SearchType = SearchType.RULESETSPELLS;
               this.SearchTypeText = 'Spells';
             }
-            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/ABILITY') > -1) {
+            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1) {
               this.SearchType = SearchType.CHARACTERABILITIES;
               this.SearchTypeText = 'Abilities';
             }
-            else if (this.router.url.toUpperCase().indexOf('/RULESET/ABILITY') > -1) {
+            else if (this.router.url.toUpperCase().indexOf('/RULESET/ABILITY/') > -1) {
               this.SearchType = SearchType.RULESETABILITIES;
               this.SearchTypeText = 'Abilities';
             }
 
-            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS') > -1) {
+            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS/') > -1) {
               this.SearchType = SearchType.CHARACTERRULESETITEMS;
               this.SearchTypeText = 'Items';
             }
-            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS') > -1) {
+            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS/') > -1) {
               this.SearchType = SearchType.CHARACTERRULESETSPELLS;
               this.SearchTypeText = 'Spells';
             }
-            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES') > -1) {
+            else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES/') > -1) {
               this.SearchType = SearchType.CHARACTERRULESETABILITIES;
               this.SearchTypeText = 'Abilities';
             }
@@ -554,11 +554,11 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
         
         if (
-          url.toUpperCase().indexOf('/CHARACTER/INVENTORY') > -1
+          url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1
           ||
-          url.toUpperCase().indexOf('/CHARACTER/SPELL') > -1
+          url.toUpperCase().indexOf('/CHARACTER/SPELL/') > -1
           ||
-          url.toUpperCase().indexOf('/CHARACTER/ABILITY') > -1
+          url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1
           ||
           url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS) > -1
           ||
@@ -610,40 +610,40 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.SearchType = 0;
         this.SearchTypeText = '';
 
-        if (url.toUpperCase().indexOf('/CHARACTER/INVENTORY') > -1) {
+        if (url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1) {
           this.SearchType = SearchType.CHARACTERITEMS;
           this.SearchTypeText = 'Items';
         }
-        else if (url.toUpperCase().indexOf('/RULESET/ITEM-MASTER') > -1) {
+        else if (url.toUpperCase().indexOf('/RULESET/ITEM-MASTER/') > -1) {
           this.SearchType = SearchType.RULESETITEMS;
           this.SearchTypeText = 'Items';
         }
-        else if (url.toUpperCase().indexOf('/CHARACTER/SPELL') > -1) {
+        else if (url.toUpperCase().indexOf('/CHARACTER/SPELL/') > -1) {
           this.SearchType = SearchType.CHARACTERSPELLS;
           this.SearchTypeText = 'Spells';
         }
-        else if (url.toUpperCase().indexOf('/RULESET/SPELL') > -1) {
+        else if (url.toUpperCase().indexOf('/RULESET/SPELL/') > -1) {
           this.SearchType = SearchType.RULESETSPELLS;
           this.SearchTypeText = 'Spells';
         }
-        else if (url.toUpperCase().indexOf('/CHARACTER/ABILITY') > -1) {
+        else if (url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1) {
           this.SearchType = SearchType.CHARACTERABILITIES;
           this.SearchTypeText = 'Abilities';
         }
-        else if (url.toUpperCase().indexOf('/RULESET/ABILITY') > -1) {
+        else if (url.toUpperCase().indexOf('/RULESET/ABILITY/') > -1) {
           this.SearchType = SearchType.RULESETABILITIES;
           this.SearchTypeText = 'Abilities';
         }
 
-        else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS') > -1) {
+        else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS/') > -1) {
           this.SearchType = SearchType.RULESETITEMS;
           this.SearchTypeText = 'Items';
         }
-        else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS') > -1) {
+        else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS/') > -1) {
           this.SearchType = SearchType.RULESETSPELLS;
           this.SearchTypeText = 'Spells';
         }
-        else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES') > -1) {
+        else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES/') > -1) {
           this.SearchType = SearchType.RULESETABILITIES;
           this.SearchTypeText = 'Abilities';
         }
@@ -744,6 +744,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     
     if (this.headers) {
       if (this.IsCharacterRecordScreen && this.IsRulesetRecordScreenActive) {
+        debugger
         if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEM') > -1) {
           this.router.navigate(['character/inventory', this.headers.headerId]);
         }
@@ -958,13 +959,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   gotoRulesetViewForCharacter() {
     let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
     
-    if (this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY') > -1) {
+    if (this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1) {
       this.router.navigate(['/character/ruleset/items', rid]);
     }
-    else if (this.router.url.toUpperCase().indexOf('/CHARACTER/SPELL') > -1) {
+    else if (this.router.url.toUpperCase().indexOf('/CHARACTER/SPELL/') > -1) {
       this.router.navigate(['/character/ruleset/spells', rid]);
     }
-    else if (this.router.url.toUpperCase().indexOf('/CHARACTER/ABILITY') > -1) {
+    else if (this.router.url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1) {
       this.router.navigate(['/character/ruleset/abilities', rid]);
     }
 
@@ -996,13 +997,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
   gotoRulesetView() {
     let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-    if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS') > -1) {
+    if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS/') > -1) {
       this.router.navigate(['/ruleset/item-master', rid]);
     }
-    else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS') > -1) {
+    else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS/') > -1) {
       this.router.navigate(['/ruleset/spell', rid]);
     }
-    else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES') > -1) {
+    else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES/') > -1) {
       this.router.navigate(['/ruleset/ability', rid]);
     }
   }
