@@ -25,62 +25,67 @@ export class CachingInterceptor implements HttpInterceptor {
     try {
       if (req.method == "POST" || req.method == "DELETE" || req.method == "PUT") {
 
-        //refresh count with any post/put/delete request.               
-        try {
-          this.cache.cache.forEach(data => {
-            if (data.url.toLowerCase().indexOf("api/RuleSet/GetRuleSetAndCharacterCount".toLowerCase()) > -1)
-              this.cache.cache.delete(data.url);
-          });
-        } catch (err) { }
-
-
-        var nReq = 0;
-        if (req.url.endsWith('/connect/token')) {
-          this.cache.cache.clear();
-        }
-        else if (req.method == "DELETE") {
-          this.cache.cache.clear();
-        }
-        this.cache.cache.forEach(data => {
-          nReq += 1;
-          var size = this.cache.cache.size;
-          var postReqApi = req.url.split("api/")[1].split("/")[0].toLowerCase();
-          var cachedApi = data.url.split("api/")[1].split("/")[0].toLowerCase();
-          var useCache = true;
-
-          try {
-            if (req.url === data.url && req.method != "DELETE"
-              && req.body.toLowerCase().replace(/ /g, '') === data.body.toLowerCase().replace(/ /g, '')) {
-              useCache = false;
-              //console.log(req.url + ' ' + data.method);
-            }
-          } catch (err) { }
-          if (useCache && size - nReq <= 3 && size >= nReq
-            && (postReqApi.indexOf(cachedApi) > -1 || cachedApi.indexOf(postReqApi) > -1)) {
-            this.cache.cache.delete(data.url);
-          } else if (useCache && (postReqApi.indexOf(cachedApi) > -1 || cachedApi.indexOf(postReqApi) > -1)) {
-            this.cache.cache.delete(data.url);
-          }
-          if (postReqApi == "tileconfig") {
-            if (cachedApi == "charatcertile") {
-              this.cache.cache.delete(data.url);
-            }
-          }
-          else if (postReqApi == "rulesettileconfig") {
-            if (cachedApi == "rulesettile")
-              this.cache.cache.delete(data.url);
-          }
-          else if (postReqApi == "GetCharactersById") { //Character/GetCharactersById
-            if (cachedApi == "GetCharactersById")
-              this.cache.cache.delete(data.url);
-          }
-
-          else if (postReqApi == "characterscharacterstat") {
-            if (cachedApi == "charatcertile") {
-              this.cache.cache.delete(data.url);
-            }
-          }
+        //refresh count with any post/put/delete request.
+        this.cache.cache.forEach(data => {          
+            this.cache.cache.delete(data.url);         
         });
+
+        //try {
+        //  this.cache.cache.forEach(data => {
+        //    if (data.url.toLowerCase().indexOf("api/RuleSet/GetRuleSetAndCharacterCount".toLowerCase()) > -1)
+        //      this.cache.cache.delete(data.url);
+        //  });
+        //} catch (err) { }
+
+
+        //var nReq = 0;
+        //if (req.url.endsWith('/connect/token')) {
+        //  this.cache.cache.clear();
+        //}
+        //else if (req.method == "DELETE") {
+        //  this.cache.cache.clear();
+        //}
+        
+        //this.cache.cache.forEach(data => {
+        //  nReq += 1;
+        //  var size = this.cache.cache.size;
+        //  var postReqApi = req.url.split("api/")[1].split("/")[0].toLowerCase();
+        //  var cachedApi = data.url.split("api/")[1].split("/")[0].toLowerCase();
+        //  var useCache = true;
+
+        //  try {
+        //    if (req.url === data.url && req.method != "DELETE"
+        //      && req.body.toLowerCase().replace(/ /g, '') === data.body.toLowerCase().replace(/ /g, '')) {
+        //      useCache = false;
+        //      //console.log(req.url + ' ' + data.method);
+        //    }
+        //  } catch (err) { }
+        //  if (useCache && size - nReq <= 3 && size >= nReq
+        //    && (postReqApi.indexOf(cachedApi) > -1 || cachedApi.indexOf(postReqApi) > -1)) {
+        //    this.cache.cache.delete(data.url);
+        //  } else if (useCache && (postReqApi.indexOf(cachedApi) > -1 || cachedApi.indexOf(postReqApi) > -1)) {
+        //    this.cache.cache.delete(data.url);
+        //  }
+        //  if (postReqApi == "tileconfig") {
+        //    if (cachedApi == "charatcertile") {
+        //      this.cache.cache.delete(data.url);
+        //    }
+        //  }
+        //  else if (postReqApi == "rulesettileconfig") {
+        //    if (cachedApi == "rulesettile")
+        //      this.cache.cache.delete(data.url);
+        //  }
+        //  else if (postReqApi == "GetCharactersById") { //Character/GetCharactersById
+        //    if (cachedApi == "GetCharactersById")
+        //      this.cache.cache.delete(data.url);
+        //  }
+
+        //  else if (postReqApi == "characterscharacterstat") {
+        //    if (cachedApi == "charatcertile") {
+        //      this.cache.cache.delete(data.url);
+        //    }
+        //  }
+        //});
 
       }
       else if (req.url.toLowerCase().indexOf("characterscharacterstat") > -1) { //Character/GetCharactersById

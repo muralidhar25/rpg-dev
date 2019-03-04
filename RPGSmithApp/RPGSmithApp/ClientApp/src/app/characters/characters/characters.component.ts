@@ -169,7 +169,7 @@ export class CharactersComponent implements OnInit {
     gotoDashboard(character: Characters) {        
         this.rulesetId = character.ruleSet == undefined ? 0 : character.ruleSet.ruleSetId;
         this.setRulesetId(this.rulesetId);
-        this.router.navigate(['/character/dashboard', character.characterId])
+      this.router.navigate(['/character/dashboard', , { queryParams: { id: character.characterId }, skipLocationChange: true } ])
     }
 
     editCharacter(character: Characters) {

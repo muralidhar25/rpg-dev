@@ -2655,7 +2655,7 @@ export class DiceRollComponent implements OnInit {
                 //INVALID
             }
         }
-
+      debugger
         return diceARRAY;
     }
     public diceInterpretationArray(dice: string): any {

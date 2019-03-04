@@ -726,10 +726,16 @@ export class DiceService {
     let randomNumbersAfter = "";
     let randomNumbersSumAfter = 0;
     let sortedRandomNumbers: number[] = [];
+    let sortedRandomNumbersSign: string[] = [];
     let sortedRandomNumbersToShow: number[] = [];
     let sortedRandomNumbersToShowSort: number[] = [];
     let operatorSign;
     let diceWithoutMultipleSign: boolean = false;
+
+    let isMultipleSign: boolean = false;
+    let isAddSign: boolean = false;
+    let isMinusSign: boolean = false;
+    let isDivideSign: boolean = false;
 
     //example: D4, 2D8, 4D6 KH3, 5 RD
     let diceArray = this.splitWithoutEmpty(dice, ' ');
@@ -738,6 +744,16 @@ export class DiceService {
       if (+diceArr == 0) {
         let _dice = diceArray[diceArr];
         _dice = _dice.trim().toUpperCase();
+
+        if (_dice.length > 1) {
+          //let flag = true;
+          //_dice.split('').map((x,index) => {
+          //  if (x == '(' && flag) {
+          //    _dice.substring(0,)
+          //  }
+          //})
+          _dice = _dice.replace(/\(/g,' ')
+        }
         if (_dice.indexOf('D') > -1) {
 
           let isExplodDice = false;
@@ -855,6 +871,21 @@ export class DiceService {
           randomCount = +_dice;
           randomNumbers = _dice;
           randomNumbersSum = +_dice;
+
+
+          let symbol = '+';
+          if (+diceArr != 0) {
+            if (diceArray[+diceArr - 1] == "-") {
+              symbol = diceArray[+diceArr - 1];
+            }
+            if (diceArray[+diceArr - 1] == "*") {
+              symbol = diceArray[+diceArr - 1];
+            }
+            if (diceArray[+diceArr - 1] == "/") {
+              symbol = diceArray[+diceArr - 1];
+            }
+          }
+          sortedRandomNumbersSign.push(symbol);
           sortedRandomNumbers.push(+randomNumbers);
         }
         else {
@@ -866,6 +897,112 @@ export class DiceService {
         try {
           let _dice = diceArray[diceArr];
           _dice = _dice.trim().toUpperCase();
+          if (_dice.length > 1) {
+            //let flag = true;
+            //_dice.split('').map((x,index) => {
+            //  if (x == '(' && flag) {
+            //    _dice.substring(0,)
+            //  }
+            //})
+            _dice = _dice.replace(/\(/g, ' ')
+          }
+          if ((_dice.indexOf('RU') > -1) || (_dice.indexOf('RD') > -1)) {
+            operator = diceArray[diceArr].trim();
+          }
+          else if (_dice.indexOf('KL') > -1) {
+            let __dice = diceArray[diceArr].trim();
+            let operatorValArray = this.splitWithoutEmpty(__dice, 'KL');
+            operator = "KL";
+            operatorNumber = +operatorValArray[0].trim();
+
+            if (randomCount >= operatorNumber) {
+              //sortedRandomNumbers.splice(operatorNumber, sortedRandomNumbers.length);
+            } else {
+              //INVALID
+              this.HasError = -2;
+            }
+          }
+          else if (_dice.indexOf('KH') > -1) {
+            let __dice = diceArray[diceArr].trim();
+            let operatorValArray = this.splitWithoutEmpty(__dice, 'KH');
+            operator = "KH";
+            operatorNumber = +operatorValArray[0].trim();
+
+            if (randomCount >= operatorNumber) {
+              //sortedRandomNumbers.splice(0, sortedRandomNumbers.length - operatorNumber);
+            } else {
+              //INVALID
+              this.HasError = -3;
+            }
+          }
+          else if (_dice.indexOf('DL') > -1) {
+            let __dice = diceArray[diceArr].trim();
+            let operatorValArray = this.splitWithoutEmpty(__dice, 'DL');
+            operator = "DL";
+            operatorNumber = +operatorValArray[0].trim();
+
+            if (randomCount >= operatorNumber) {
+              //sortedRandomNumbers.splice(0, operatorNumber);
+            } else {
+              //INVALID
+              this.HasError = -4;
+            }
+          }
+          else if (_dice.indexOf('DH') > -1) {
+            let __dice = diceArray[diceArr].trim();
+            let operatorValArray = this.splitWithoutEmpty(__dice, 'DH');
+            operator = "DH";
+            operatorNumber = +operatorValArray[0].trim();
+            //1,2,3,4,5
+            if (randomCount >= operatorNumber) {
+              //sortedRandomNumbers.splice(sortedRandomNumbers.length - operatorNumber, sortedRandomNumbers.length);
+            } else {
+              //INVALID
+              this.HasError = -5;
+            }
+          }
+          else if (+_dice) {
+            randomCount = +_dice;
+            randomNumbers = _dice;
+            randomNumbersSum = +_dice;            
+            diceWithoutMultipleSign = true;
+
+            let symbol = '+';
+            if (+diceArr != 0) {
+              if (diceArray[+diceArr - 1] == "-") {
+                symbol = diceArray[+diceArr - 1];
+              }
+              if (diceArray[+diceArr - 1] == "*") {
+                symbol = diceArray[+diceArr - 1];
+              }
+              if (diceArray[+diceArr - 1] == "/") {
+                symbol = diceArray[+diceArr - 1];
+              }
+            }
+            sortedRandomNumbersSign.push(symbol);
+            sortedRandomNumbers.push(+randomNumbers);
+          }
+          else {
+            //INVALID
+            this.HasError = -6;
+          }
+        } catch (err) {
+          this.HasError = -6;
+        }
+      }
+      else if (+diceArr >= 1) {
+        try {
+          let _dice = diceArray[diceArr];
+          _dice = _dice.trim().toUpperCase();
+          if (_dice.length > 1) {
+            //let flag = true;
+            //_dice.split('').map((x,index) => {
+            //  if (x == '(' && flag) {
+            //    _dice.substring(0,)
+            //  }
+            //})
+            _dice = _dice.replace(/\(/g, ' ')
+          }
           if ((_dice.indexOf('RU') > -1) || (_dice.indexOf('RD') > -1)) {
             operator = diceArray[diceArr].trim();
           }
@@ -925,8 +1062,24 @@ export class DiceService {
             randomCount = +_dice;
             randomNumbers = _dice;
             randomNumbersSum = +_dice;
-            sortedRandomNumbers.push(+randomNumbers);
+            //sortedRandomNumbers.push(+randomNumbers);
             diceWithoutMultipleSign = true;
+
+            let symbol = '+';
+            if (+diceArr != 0) {
+              if (diceArray[+diceArr - 1] =="-") {
+                symbol = diceArray[+diceArr - 1];
+              }
+              if (diceArray[+diceArr - 1] == "*") {
+                symbol = diceArray[+diceArr - 1];
+              }
+              if (diceArray[+diceArr - 1] == "/") {
+                symbol = diceArray[+diceArr - 1];
+              }
+            }
+            sortedRandomNumbersSign.push(symbol);
+            sortedRandomNumbers.push(+randomNumbers);
+            
           }
           else {
             //INVALID
@@ -1002,10 +1155,67 @@ export class DiceService {
     if (__randomNumbersList.length > 0) {
       sortedRandomNumbers = [];
       __randomNumbersList.forEach((val) => {
-        if (val.isKept) sortedRandomNumbers.push(val.number);
+        if (val.isKept) {
+          let symbol = '+';
+          //if (+diceArr != 0) {
+          //  let symbol = diceArray[+diceArr - 1];
+          //}
+          sortedRandomNumbersSign.push(symbol);
+          sortedRandomNumbers.push(val.number);
+        }
       });
       // __randomNumbersList = __randomNumbersList.filter((val) => val.isKept == true);
     }
+
+    debugger
+    let command = '';
+    let temp_randomNumbersAfter = +dice ? sortedRandomNumbers.join(" + ")
+      : (diceWithoutMultipleSign ? sortedRandomNumbers.join(" * ")
+        : (sortedRandomNumbers.length > 1 ? ' ( ' + sortedRandomNumbers.join(" + ") + ' ) ' : sortedRandomNumbers.join(" + ")));
+
+    if (sortedRandomNumbersSign.length) {
+      sortedRandomNumbers.map((x, index) => {
+        if (index == 0 && sortedRandomNumbersSign[index] != '+') {
+          command += " " + sortedRandomNumbersSign[index] + " " + x;
+        }
+        else if (index == 0 && sortedRandomNumbersSign[index] == '+') {
+          command += " " + x;
+        }
+        else {
+          command += " " + sortedRandomNumbersSign[index] + " " + x;
+        }
+      })
+
+      temp_randomNumbersAfter = command;
+    }
+   
+
+    //if (isAddSign || isMultipleSign || isMinusSign || isDivideSign) {
+    //  switch (true) {
+    //    case isAddSign:
+    //      temp_randomNumbersAfter = +dice ? sortedRandomNumbers.join(" + ")
+            
+    //          : (sortedRandomNumbers.length > 1 ? ' ( ' + sortedRandomNumbers.join(" + ") + ' ) ' : sortedRandomNumbers.join(" + "));
+    //      break;
+    //    case isMultipleSign:
+    //      temp_randomNumbersAfter = +dice ? sortedRandomNumbers.join(" * ")
+            
+    //          : (sortedRandomNumbers.length > 1 ? ' ( ' + sortedRandomNumbers.join(" * ") + ' ) ' : sortedRandomNumbers.join(" * "));
+    //      break;
+    //    case isMinusSign:
+    //      temp_randomNumbersAfter = +dice ? sortedRandomNumbers.join(" - ")
+            
+    //          : (sortedRandomNumbers.length > 1 ? ' ( ' + sortedRandomNumbers.join(" - ") + ' ) ' : sortedRandomNumbers.join(" - "));
+    //      break;
+    //    case isDivideSign:
+    //      temp_randomNumbersAfter = +dice ? sortedRandomNumbers.join(" / ")           
+    //          : (sortedRandomNumbers.length > 1 ? ' ( ' + sortedRandomNumbers.join(" / ") + ' ) ' : sortedRandomNumbers.join(" / "));
+    //      break;
+
+    //    default:
+    //      break;
+    //  }
+    //}
 
     _diceInterpretationArray = {
       diceNumber: diceNumber,
@@ -1014,9 +1224,7 @@ export class DiceService {
       randomNumbersList: __randomNumbersList, //main list
       randomNumbersListAfter: sortedRandomNumbers,
       randomNumbersSum: randomNumbersSum,
-      randomNumbersAfter: +dice ? sortedRandomNumbers.join(" + ")
-        : (diceWithoutMultipleSign ? sortedRandomNumbers.join(" * ")
-          : (sortedRandomNumbers.length > 1 ? ' ( ' + sortedRandomNumbers.join(" + ") + ' ) ' : sortedRandomNumbers.join(" + "))),
+      randomNumbersAfter: temp_randomNumbersAfter,
       randomNumbersSumAfter: diceWithoutMultipleSign ? sortedRandomNumbers.reduce((a, b) => a * b, 0)
         : sortedRandomNumbers.reduce((a, b) => a + b, 0),
       operator: operator,
@@ -1027,8 +1235,8 @@ export class DiceService {
     if (_diceInterpretationArray.diceNumber == 0 && _diceInterpretationArray.randomCount == 0) {
       _diceInterpretationArray.randomNumbers = "0";
       _diceInterpretationArray.randomNumbersAfter = "0";
-      _diceInterpretationArray.randomNumbersList = [0];
-      _diceInterpretationArray.randomNumbersListAfter = [0];
+      _diceInterpretationArray.randomNumbersList = [];
+      _diceInterpretationArray.randomNumbersListAfter = [];
     }
 
     return _diceInterpretationArray;

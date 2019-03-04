@@ -61,7 +61,7 @@ export class AddContainerItemComponent implements OnInit {
             this.isFromDetailPage = this.bsModalRef.content.isFromDetailPage ? this.bsModalRef.content.isFromDetailPage : false;
             this.itemToUpdate = this.bsModalRef.content.itemToUpdate ? this.bsModalRef.content.itemToUpdate : undefined;
             if (this.isFromDetailPage) {
-                this.button = 'Add'
+                this.button = 'Save'
             }
             this.initialize();
         }, 0);

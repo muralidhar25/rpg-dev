@@ -176,10 +176,12 @@ export class CharacterTilesComponent implements OnInit {
 
     window.addEventListener("resize", () => {
       // Get screen size (inner/outerWidth, inner/outerHeight)
+      let dragable: boolean = this.gridConfig.draggable ;
+      let resizable: boolean = this.gridConfig.resizable ;
       this.gridConfig = {
         'margins': this.getTileSize().margins,
-        'draggable': true,
-        'resizable': true,
+        'draggable': dragable,
+        'resizable': resizable,
         'max_cols': this.columnsInGrid,
         'max_rows': 0,
         'visible_cols': 0,
