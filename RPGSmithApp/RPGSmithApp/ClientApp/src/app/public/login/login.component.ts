@@ -152,7 +152,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
   loginWithFacebook(): void {
-        this.isLoading = true;
         this.alertService.startLoadingMessage("", "Logging in...");
         try {
             //if (this.termsAccountCreation()) {
@@ -164,27 +163,22 @@ export class LoginComponent implements OnInit, OnDestroy {
                 });
             //}
     } catch (err) { console.log(err); }
-
-    this.isLoading = false;
   }
 
   loginWithGoogle(): void {
-        this.isLoading = true;
-        this.alertService.startLoadingMessage("", "Logging in...");
         try {
-            this.socialService.login(Provider.GOOGLE).subscribe(user => {
+          this.socialService.login(Provider.GOOGLE).subscribe(user => {
+                this.alertService.startLoadingMessage("", "Logging in...");
                 this.socailLogin(user.accessToken, this.configurations.grantTypeGoogle, Provider.GOOGLE);
             },
-                error => {
-                    //this.alertService.showStickyMessage("Unable to login", "Something went wrong, please try again later.", MessageSeverity.error, error);
-                });
+            error => {
+                //this.alertService.showStickyMessage("Unable to login", "Something went wrong, please try again later.", MessageSeverity.error, error);
+            });
 
         } catch (err) { console.log(err); }
-
-        this.isLoading = false;
     }
 
-    socailLogin(token: string, grantType: string, provider: string) {
+  socailLogin(token: string, grantType: string, provider: string) {
         this.isLoading = true;
         this.alertService.startLoadingMessage("", "Logging " + provider + " login...");
 
