@@ -7,10 +7,10 @@
         <div class="site-header-left-section">
           <!-- Logo -->
           <div class="site-header-logo">
-            <div class="site-header-logo-full" routerLink="/characters">
+            <div class="site-header-logo-full" [routerLink]="logoPath">
               <img [src]="appLogoLarge" alt="logo">
             </div>
-            <div class="site-header-logo-small" routerLink="/characters">
+            <div class="site-header-logo-small" [routerLink]="logoPath">
               <img [src]="appLogoSmall" alt="Logo">
             </div>
           </div>

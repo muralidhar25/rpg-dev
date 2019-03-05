@@ -58,6 +58,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   isDropdownOpen: boolean = false;
   searchText: string = "";
   searchCharRule: string = "";
+  logoPath = '/characters';
   SearchTypeText: string = "";
   SearchType: number = 0;
   isCharacterItem: number = 0;
@@ -101,7 +102,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   currentUrl: string = ''
   previousUrlList: string[] = []
 
-
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
     if (window.pageYOffset > 0) {
@@ -140,7 +140,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     //        ga('send', 'pageview');
     //    }
     //});
-    
 
     this.app1Service.shouldUpdateAccountSetting1().subscribe((serviceData) => {      
       if (serviceData) {
@@ -159,7 +158,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             
             this.ruleset = data;
           
-
+            this.logoNavigation();
             if (
               this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1
               ||
@@ -384,7 +383,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-
+    //this.logoNavigation();
 
     this.isUserLoggedIn = this.authService.isLoggedIn;
     this.initialize();
@@ -459,6 +458,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
       };
       if (event instanceof NavigationStart) {
+        this.logoNavigation();
         let url = (<NavigationStart>event).url;
 
         
@@ -997,6 +997,16 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
     else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES/') > -1) {
       this.router.navigate(['/ruleset/ability', rid]);
+    }
+  }
+
+  logoNavigation() {
+    this.logoPath = '/characters';
+    debugger;
+    if (this.headers) {
+      if (this.headers.headerLink == 'character') {
+        this.logoPath = '/character/dashboard/' + this.headers.headerId;
+      }
     }
   }
 }
