@@ -262,7 +262,6 @@ export class BasicSearchComponent implements OnInit {
                 };
               });
             }
-
           }
 
           this.isLoading = false;
@@ -278,6 +277,10 @@ export class BasicSearchComponent implements OnInit {
           else
             this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
         }, () => { });
+    }
+
+    if (this.searchList.length == 0) {
+      this.showMorelessFields();
     }
   }
 
