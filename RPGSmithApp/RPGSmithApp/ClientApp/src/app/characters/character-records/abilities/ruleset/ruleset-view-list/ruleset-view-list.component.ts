@@ -267,8 +267,9 @@ export class AbilityRulesetViewListComponent implements OnInit {
             }
         }
     }
-    back() {
-        window.history.back();
+  back() {
+    this.router.navigate(['/character/ability', this.character.characterId]);
+       // window.history.back();
     }
     private setHeaderValues(character: Characters): any {
         let headerValues = {

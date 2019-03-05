@@ -150,8 +150,9 @@ export class RulesetViewAbilityDetailComponent implements OnInit {
         }
     }
     
-    RedirectBack() {
-        window.history.back();
+  RedirectBack() {
+    this.router.navigate(['/character/ruleset/abilities', this.ruleSetId]);
+        //window.history.back();
     }
     ViewImage(img) {
         if (img) {

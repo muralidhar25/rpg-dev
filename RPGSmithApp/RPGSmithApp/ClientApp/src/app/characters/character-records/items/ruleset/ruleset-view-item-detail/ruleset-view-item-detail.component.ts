@@ -149,8 +149,9 @@ export class RulesetViewItemDetailComponent implements OnInit {
         }, 200);
     }
 
-    RedirectBack() {
-        window.history.back();
+  RedirectBack() {
+    this.router.navigate(['/character/ruleset/items', this.ruleSetId]);
+        //window.history.back();
     }
     Redirect(path) {
         this.router.navigate([path, this.ruleSetId]);

@@ -10,6 +10,7 @@ import { CharacterStatConditionViewModel } from '../models/view-models/character
 import { STAT_TYPE } from '../models/enums';
 import { Router } from '@angular/router';
 import { HeaderValues } from '../models/headers.model';
+import { LocalStoreManager } from './local-store-manager.service';
 
 
 @Injectable()
@@ -803,11 +804,36 @@ export class Utilities {
     return true;
   }
 
-  public static RefreshPage(url: string, router: Router, headers: HeaderValues,rulesetID:number) {
+  public static RefreshPage(url: string, router: Router, headers: HeaderValues, rulesetID: number, localStorage: LocalStoreManager) {
+    
     let NewUrl = url;
     if (+url.split('/')[url.split('/').length - 1]) {
       NewUrl = url.replace('/' + url.split('/')[url.split('/').length - 1], '')
     }
+    
+    let lastPageAccessed = localStorage.localStorageGetItem("LastAccessedPage");
+    
+    if (lastPageAccessed) {
+      let GoToAddress = localStorage.localStorageGetItem("LastAccessedPage");
+      if (+lastPageAccessed.split('/')[lastPageAccessed.split('/').length - 1]) {
+        lastPageAccessed = lastPageAccessed.replace('/' + lastPageAccessed.split('/')[lastPageAccessed.split('/').length - 1], '')
+      }
+      if (lastPageAccessed == url) {
+        let NewUrl = lastPageAccessed;
+        localStorage.localStorageSetItem("LastAccessedPage", GoToAddress);
+        //this.RefreshURLFlag = true;
+        router.navigate([GoToAddress], { skipLocationChange: true });
+        window.history.pushState('', '', NewUrl)
+      }
+      else if (lastPageAccessed.indexOf(url) > -1) {
+        let NewUrl = lastPageAccessed;
+        localStorage.localStorageSetItem("LastAccessedPage", GoToAddress);
+        //this.RefreshURLFlag = true;
+        router.navigate([GoToAddress], { skipLocationChange: true });
+        window.history.pushState('', '', NewUrl)
+      }
+    }
+    
 
     if (headers) {
       url = url + "/" + headers.headerId;

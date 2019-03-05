@@ -272,8 +272,9 @@ export class SpellRulesetViewListComponent implements OnInit {
             }
         }
     }
-    back() {
-        window.history.back();
+  back() {
+    this.router.navigate(['/character/spell', this.character.characterId]);
+       // window.history.back();
     }
     private setHeaderValues(character: Characters): any {
         let headerValues = {

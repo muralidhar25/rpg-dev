@@ -140,8 +140,9 @@ export class RulesetViewSpellDetailComponent implements OnInit {
     }
 
 
-    RedirectBack() {
-        window.history.back();
+  RedirectBack() {
+    this.router.navigate(['/character/ruleset/spells', this.ruleSetId]);
+        //window.history.back();
     }
     ViewImage(img) {
         if (img) {

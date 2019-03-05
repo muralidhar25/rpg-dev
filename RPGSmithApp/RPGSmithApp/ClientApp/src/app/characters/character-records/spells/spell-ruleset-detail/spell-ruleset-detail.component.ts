@@ -255,8 +255,9 @@ export class SpellRulesetDetailComponent implements OnInit {
     //        this.alertService.stopLoadingMessage();
     //    }, 200);
     //}
-    RedirectBack() {
-        window.history.back();
+  RedirectBack() {
+    this.router.navigate(['/character/spell', this.character.characterId]);
+        //window.history.back();
     }
     ViewImage(img) {
         if (img) {

@@ -89,7 +89,8 @@ export class RulesetAddInterfaceComponent implements OnInit {
         //}
     }
     RedirectBack() {
-        window.history.back();
+      this.router.navigate(['/rulesets']);
+        //window.history.back();
     }
 
     htmltoPlainText(text) {

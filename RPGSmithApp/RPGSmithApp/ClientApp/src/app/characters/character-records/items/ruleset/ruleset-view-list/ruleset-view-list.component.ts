@@ -273,8 +273,9 @@ export class ItemRulesetViewListComponent implements OnInit {
         }
 
     }
-    back() {
-        window.history.back();
+  back() {
+    this.router.navigate(['/character/inventory', this.character.characterId]);
+        //window.history.back();
     }
     private setHeaderValues(character: Characters): any {
         let headerValues = {

@@ -460,37 +460,22 @@ export class AppComponent implements OnInit, AfterViewInit {
       };
       if (event instanceof NavigationStart) {
         let url = (<NavigationStart>event).url;
-       
+
         
+       
         if (!this.router.navigated) {
-          if (!this.RefreshURLFlag) {
+          if (!this.RefreshURLFlag && url!='/') {
             this.RefreshURLFlag = true;
-            Utilities.RefreshPage(url, this.router, this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE), this.localStorage.getDataObject<number>(DBkeys.RULESET_ID));
+            Utilities.RefreshPage(url, this.router, this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE), this.localStorage.getDataObject<number>(DBkeys.RULESET_ID), this.localStorage);
             
           }
-          
-
-          //let lastPageAccessed = this.localStorage.localStorageGetItem("LastAccessedPage");
-          //if (lastPageAccessed) {
-          //  if (lastPageAccessed == url && !this.RefreshURLFlag) {
-          //    let NewUrl = lastPageAccessed.replace('/' + lastPageAccessed.split('/')[lastPageAccessed.split('/').length - 1], '')
-          //    this.RefreshURLFlag = true;
-          //    this.router.navigate([lastPageAccessed], { skipLocationChange: true });
-          //    window.history.pushState('', '', NewUrl)
-          //  }
-          //  else if (lastPageAccessed.indexOf(url) > -1 && !this.RefreshURLFlag) {
-          //    let NewUrl = lastPageAccessed.replace('/' + lastPageAccessed.split('/')[lastPageAccessed.split('/').length - 1], '')
-          //    this.RefreshURLFlag = true;
-          //    this.router.navigate([lastPageAccessed], { skipLocationChange: true });
-          //    window.history.pushState('', '', NewUrl)
-          //  }
-          //}
-          //this.localStorage.localStorageSetItem("LastAccessedPage", url);
         }
         
         
         
-        else if (this.router.navigated && url.toUpperCase().indexOf('/SEARCH/BASIC') == -1 ) {
+        else if (this.router.navigated && url.toUpperCase().indexOf('/SEARCH/BASIC') == -1 && url != '/') {
+
+          this.localStorage.localStorageSetItem("LastAccessedPage", url);
           if (+url.split('/')[url.split('/').length - 1] && !this.URLFlag) {
             let NewUrl = url.replace('/' + url.split('/')[url.split('/').length - 1], '')
 
@@ -514,7 +499,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
             if (url == prevUrl) {
               if (this.previousUrlList) {
-                if (this.previousUrlList[this.previousUrlList.length - 1] === this.previousUrl && this.previousUrlList.length>2) {
+                if (this.previousUrlList[this.previousUrlList.length - 1] === this.previousUrl && this.previousUrlList.length > 2) {
                   this.currentUrl = this.previousUrlList[this.previousUrlList.length - 1]
                   this.previousUrlList.splice(this.previousUrlList.length - 1, 1);
                 }
@@ -543,6 +528,13 @@ export class AppComponent implements OnInit, AfterViewInit {
               //window.history.pushState('', '', NewUrl)
               //window.history.pushState('', '', this.previousUrl)
               //window.history.replaceState('', '', NewUrl)
+            }
+            else {
+              if (!this.URLFlag) {
+                this.URLFlag = true;
+                Utilities.RefreshPage(url, this.router, this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE), this.localStorage.getDataObject<number>(DBkeys.RULESET_ID), this.localStorage);
+
+              }
             }
           }
         }
@@ -744,7 +736,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     
     if (this.headers) {
       if (this.IsCharacterRecordScreen && this.IsRulesetRecordScreenActive) {
-        debugger
+        
         if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEM') > -1) {
           this.router.navigate(['character/inventory', this.headers.headerId]);
         }

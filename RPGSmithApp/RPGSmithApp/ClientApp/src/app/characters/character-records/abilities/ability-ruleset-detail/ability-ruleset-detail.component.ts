@@ -269,8 +269,9 @@ export class AbilityRulesetDetailComponent implements OnInit {
     //        this.alertService.stopLoadingMessage();
     //    }, 200);
     //}
-    RedirectBack() {
-        window.history.back();
+  RedirectBack() {
+    this.router.navigate(['/character/ability', this.character.characterId]);
+        //window.history.back();
     }
     ViewImage(img) {
         if (img) {
