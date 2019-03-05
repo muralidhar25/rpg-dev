@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, HostListener } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { CharacterSpells } from "../../../../../core/models/view-models/character-spells.model";
@@ -33,6 +33,7 @@ export class SpellRulesetViewListComponent implements OnInit {
     isListView: boolean = false;
     showActions: boolean = true;
     actionText: string;
+    isDropdownOpen: boolean = false;
     bsModalRef: BsModalRef;
     ruleSetId: number;
     spellsList: any;
@@ -60,6 +61,15 @@ export class SpellRulesetViewListComponent implements OnInit {
                 this.initialize();
             }
         });
+  }
+
+  @HostListener('document:click', ['$event.target'])
+    documentClick(target: any) {
+        try {
+            if (target.className.endsWith("is-show"))
+                this.isDropdownOpen = !this.isDropdownOpen;
+            else this.isDropdownOpen = false;
+        } catch (err) { this.isDropdownOpen = false; }
     }
 
     ngOnInit() {

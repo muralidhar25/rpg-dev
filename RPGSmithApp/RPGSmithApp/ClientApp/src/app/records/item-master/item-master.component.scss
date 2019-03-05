@@ -146,122 +146,151 @@
     }
 
 }
-.page-inventory .cards-inventory .card-list .card-wrapper .card:hover .item-properties, .page-inventory .cards-inventory .card-list .card-wrapper .card:hover .item-stats {
-    visibility: visible !important;
+.visible-tab {
+  display: none;
 }
-
-.card-actions-trigger{
-    margin-top: 15.4rem;
+@media(max-width:767.98px) {
+  .text-hide-tab {
+    display: inline-block
+  }
 }
-
-.view-list .card-actions-trigger{
-    margin-top: -1rem!important;
-}
-
-@media(max-width: 991.98px) {
-    .page-inventory .cards-inventory .card-list .card-wrapper .card .item-actions .btn {
-        margin-left: 10px;
+  @media(max-width:1024px) and (min-width:768px) {
+    .hidden-tab {
+      display: none;
     }
-}
 
-.page-toolbar-links {
+    .visible-tab {
+      display: initial;
+      margin-top: -10px;
+    }
+
+    .visible-tab .dropdown-buttons {
+      display: block
+    }
+
+    .page-toolbar-links > li.visible-tab:before {
+      display: none
+    }
+  }
+
+  .page-inventory .cards-inventory .card-list .card-wrapper .card:hover .item-properties, .page-inventory .cards-inventory .card-list .card-wrapper .card:hover .item-stats {
+    visibility: visible !important;
+  }
+
+  .card-actions-trigger {
+    margin-top: 15.4rem;
+  }
+
+  .view-list .card-actions-trigger {
+    margin-top: -1rem !important;
+  }
+
+  @media(max-width: 991.98px) {
+    .page-inventory .cards-inventory .card-list .card-wrapper .card .item-actions .btn {
+      margin-left: 10px;
+    }
+  }
+
+  .page-toolbar-links {
     margin-top: 0;
-}
+  }
 
-.page-toolbar-links .nav-redirection {
+  .page-toolbar-links .nav-redirection {
     color: #78706b;
     padding: 3px;
     margin-top: -5px;
-}
+  }
 
-.nav-redirection.selected{
+  .nav-redirection.selected {
     border: 2px solid #cccc !important;
     pointer-events: none;
     cursor: pointer;
     text-decoration: none;
-}
+  }
 
-.page-toolbar-links li:last-child:before {
+  .page-toolbar-links li:last-child:before {
     display: none;
-}
-@media(max-width:767.98px){
-    .page-toolbar-wrapper-toggle-trigger{
-        display: inline;
+  }
+
+  @media(max-width:767.98px) {
+    .page-toolbar-wrapper-toggle-trigger {
+      display: inline;
     }
 
-    .initial.show{
-        display: inline;
+    .initial.show {
+      display: inline;
     }
-    
-    .initial{
-        display: none;
+
+    .initial {
+      display: none;
     }
-    
+
     .page-toolbar-actions .dropdown-buttons {
-        display: none;
+      display: none;
     }
-}
+  }
 
-.item-properties .item-property-text {
+  .item-properties .item-property-text {
     text-overflow: ellipsis;
     max-width: 95px;
     overflow: hidden;
     word-wrap: break-word;
     white-space: nowrap;
-}
+  }
 
-@media (max-width:1199px) and (min-width:992px) {
+  @media (max-width:1199px) and (min-width:992px) {
     .thumbnail {
-        width: 100%
+      width: 100%
     }
-}
+  }
 
-@media (min-width:1200px) {
+  @media (min-width:1200px) {
     .page-toolbar-links {
-        /*margin-top: 0.8rem;*/
-        height: auto;
-        display: block;
+      /*margin-top: 0.8rem;*/
+      height: auto;
+      display: block;
     }
 
     .page-toolbar-links li {
-        position: relative;
-        display: inline-block;
-        padding-left: 1rem;
-        height: auto;
-        margin-top: 0 !important;
-        margin-left: 0px;
+      position: relative;
+      display: inline-block;
+      padding-left: 1rem;
+      height: auto;
+      margin-top: 0 !important;
+      margin-left: 0px;
     }
 
     .page-toolbar-links li:before {
-        position: absolute;
-        left: 0;
-        margin: 0pc;
-        top: 50%;
-        transform: translate(0,-50%);
+      position: absolute;
+      left: 0;
+      margin: 0pc;
+      top: 50%;
+      transform: translate(0,-50%);
     }
 
     .page-toolbar-links .nav-redirection {
-        color: #78706b;
-        padding: 3px;
-        margin-top: -5px;
-        margin-top: 0;
-        display: block;
-        height: auto;
+      color: #78706b;
+      padding: 3px;
+      margin-top: -5px;
+      margin-top: 0;
+      display: block;
+      height: auto;
     }
-}
-.spinner {
+  }
+
+  .spinner {
     width: 100%;
     position: relative;
     height: 70px;
     overflow: hidden;
     display: inline-block;
-}
+  }
 
-.spinner img {
+  .spinner img {
     width: 300px;
     position: absolute;
     top: 66%;
     left: 50%;
     transform: translate(-50%,-50%);
-}
+  }
 

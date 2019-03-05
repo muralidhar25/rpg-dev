@@ -18,20 +18,44 @@
                 <div class="page-toolbar-wrapper initial show recordes-menu">
                     <!-- Toolbar links -->
                     <ul class="page-toolbar-links">
-                        <li *ngIf="rulesetModel">
+                        <li *ngIf="rulesetModel" class="hidden-tab">
                             <a [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
                         </li>
-                        <li *ngIf="rulesetModel?.isItemEnabled">
+                        <li *ngIf="rulesetModel?.isItemEnabled" class="hidden-tab">
                             <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Item Templates</span></a>
                         </li>
-                        <li *ngIf="rulesetModel?.isSpellEnabled">
+                        <li *ngIf="rulesetModel?.isSpellEnabled" class="hidden-tab">
                             <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
                         </li>
-                        <li *ngIf="rulesetModel?.isAbilityEnabled">
+                        <li *ngIf="rulesetModel?.isAbilityEnabled" class="hidden-tab">
                             <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> <span>Abilities</span></a>
                         </li>
-                        <li *ngIf="rulesetModel">
+                        <li *ngIf="rulesetModel" class="hidden-tab">
                             <a [routerLink]="['/ruleset/character-stats/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
+                        </li>
+                        <li class="visible-tab">
+                          <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                            <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                              <ul class="dropdown-menu-list">
+                                <li *ngIf="rulesetModel?.isItemEnabled" class="dropdown-menu-item">
+                                  <a [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                                </li>
+                                <li *ngIf="rulesetModel?.isItemEnabled" class="dropdown-menu-item">
+                                  <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> Item Templates</a>
+                                </li>
+                                <li *ngIf="rulesetModel?.isSpellEnabled" class="dropdown-menu-item">
+                                  <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
+                                </li>
+                                <li *ngIf="rulesetModel?.isAbilityEnabled" class="dropdown-menu-item">
+                                  <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> <span>Abilities</span></a>
+                                </li>
+                                <li *ngIf="rulesetModel" class="dropdown-menu-item">
+                                  <a [routerLink]="['/ruleset/character-stats/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> Character Stats</a>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
                         </li>
                         <li>
                             <div class="dropdown dropdown-buttons">
@@ -50,7 +74,7 @@
                     </li>
                     <li>
                         <div class="dropdown dropdown-buttons">
-                            <button type="button" (click)="createAbility()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Create Ability</button>
+                            <button type="button" (click)="createAbility()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block"><span class="text-hide-tab  is-show">Create Ability</span></button>
                         </div>
                     </li>
                 </ul>
@@ -62,7 +86,7 @@
     <div class="cards cards-inventory form-row" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
          [infiniteScrollThrottle]="300" [scrollWindow]="true">
         <div class="container">
-            <div class="card-list" [ngClass]="{'view-list':isListView}">
+            <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView}">
                 <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Abilities have been added to this ruleset. Click "+New Ability" to add some.</p>
                 <ng-container *ngFor="let ability of abilitiesList">
                     <div class="card-wrapper" (mousedown)="editRecord(ability)" (mouseup)="clickAndHold(ability)" (mouseleave)="clickAndHold(ability)">

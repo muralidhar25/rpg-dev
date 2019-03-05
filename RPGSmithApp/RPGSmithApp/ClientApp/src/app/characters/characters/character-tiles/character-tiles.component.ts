@@ -424,7 +424,7 @@ export class CharacterTilesComponent implements OnInit {
     this.removeGridBox(index);
     this.noRecordFound = !this.Originalboxes.length;
   }
-  deleteMultipleTiles() {
+  deleteMultipleTiles(restrictRedirect=true) {
     let TileIdList = [];
     this.Deletedboxes.map((box) => {
       TileIdList.push(box.tile.characterTileId);
@@ -442,7 +442,7 @@ export class CharacterTilesComponent implements OnInit {
           this.gridConfig.resizable = !this.IsMobilePanel;
           this.Deletedboxes = [];
           
-          this.gotoDashboard(true);
+          this.gotoDashboard(restrictRedirect);
         }, error => {
           this.isLoading = false;
         }, () => { });
@@ -456,7 +456,7 @@ export class CharacterTilesComponent implements OnInit {
       this.gridConfig.resizable = !this.IsMobilePanel;
       this.Deletedboxes = [];
       
-      this.gotoDashboard(true);
+      this.gotoDashboard(restrictRedirect);
     }
 
   }
@@ -479,7 +479,7 @@ export class CharacterTilesComponent implements OnInit {
     this.router.navigate([url, this.characterId]);
   }
   saveAndGotoDashboard() {
-    this.deleteMultipleTiles();
+    this.deleteMultipleTiles(false);
     //this.gotoDashboard()
   }
   gotoDashboard(redriectToEditMode: boolean = false) {

@@ -30,7 +30,7 @@
             <li *ngIf="ruleSet" class="hidden-tab">
               <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
             </li>
-            <li class="visible-tab">
+            <li class="visible-tab mt-0">
               <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
                 <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
@@ -118,7 +118,7 @@
   <div class="cards cards-inventory" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
        [infiniteScrollThrottle]="300" [scrollWindow]="true">
     <div class="container">
-      <div class="card-list" [ngClass]="{'view-list':isListView}">
+      <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Spells have been added to this character. Click "+New Spell" to add some.</p>
         <ng-container *ngFor="let spell of spellsList">
           <div class="card-wrapper" (mousedown)="editRecord(spell)" (mouseup)="clickAndHold(spell)" (mouseleave)="clickAndHold(spell)">

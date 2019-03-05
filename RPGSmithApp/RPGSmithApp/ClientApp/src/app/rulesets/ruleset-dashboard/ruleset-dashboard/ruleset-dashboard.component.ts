@@ -333,7 +333,7 @@ export class RulesetDashboardComponent implements OnInit {
                     val.showIcon = false;
                 })
             }
-        }
+      }
     }
 
     ngOnInit() {

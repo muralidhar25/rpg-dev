@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter, HostListener } from '@angular/core';
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import { DragulaService, dragula } from 'ng2-dragula/ng2-dragula';
 import { BsModalService, BsModalRef, ModalDirective } from 'ngx-bootstrap';
@@ -33,6 +33,7 @@ export class CharacterStatsComponent implements OnInit {
     page?: number = 1;
     pagesize?: number = 10;
     bsModalRef: BsModalRef;
+    isDropdownOpen: boolean = false;
     characterStatTypeList: any[] = [];
     isLoading = false;
 
@@ -65,6 +66,15 @@ export class CharacterStatsComponent implements OnInit {
                 this.initialize();
             }
         });
+  }
+
+  @HostListener('document:click', ['$event.target'])
+    documentClick(target: any) {
+        try {
+            if (target.className.endsWith("is-show"))
+                this.isDropdownOpen = !this.isDropdownOpen;
+            else this.isDropdownOpen = false;
+        } catch (err) { this.isDropdownOpen = false; }
     }
 
     ngOnInit() {

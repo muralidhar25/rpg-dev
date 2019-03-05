@@ -267,6 +267,29 @@
     }
 }
 
+.visible-tab {
+  display: none;
+}
+
+@media(max-width:1024px) and (min-width:768px) {
+  .hidden-tab {
+    display: none;
+  }
+
+  .visible-tab {
+    display: initial;
+    margin-top: -10px;
+  }
+
+  .visible-tab .dropdown-buttons {
+    display: block
+  }
+
+  .page-toolbar-links > li.visible-tab:before {
+    display: none
+  }
+}
+
 .spinner {
     width: 100%;
     position: relative;

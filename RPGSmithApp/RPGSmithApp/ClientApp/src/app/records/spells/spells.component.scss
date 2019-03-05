@@ -148,6 +148,28 @@
     }
 
 }
+.visible-tab {
+  display: none;
+}
+
+@media(max-width:1024px) and (min-width:768px) {
+  .hidden-tab {
+    display: none;
+  }
+
+  .visible-tab {
+    display: initial;
+    margin-top: -10px;
+  }
+
+  .visible-tab .dropdown-buttons {
+    display: block
+  }
+
+  .page-toolbar-links > li.visible-tab:before {
+    display: none
+  }
+}
 .page-inventory .cards-inventory .card-list .card-wrapper .card:hover .item-properties, .page-inventory .cards-inventory .card-list .card-wrapper .card:hover .item-stats {
     visibility: visible !important;
 }
@@ -164,6 +186,9 @@
     .page-inventory .cards-inventory .card-list .card-wrapper .card .item-actions .btn {
         margin-left: 10px;
     }
+  .text-hide-tab {
+    display: none
+  }
 }
 
 .page-toolbar-links {
@@ -201,6 +226,10 @@
 
     .page-toolbar-actions .dropdown-buttons {
         display: none;
+    }
+
+    .text-hide-tab {
+      display: inline-block
     }
 }
 

@@ -212,6 +212,31 @@
         height: auto;
     }
 }
+.visible-tab {
+  display: none !important;
+}
+@media(max-width:1024px) and (min-width:768px) {
+  .hidden-tab {
+    display: none;
+  }
+
+  .visible-tab {
+    display: initial !important;
+    margin-top: -10px;
+  }
+
+  .visible-tab .dropdown-buttons {
+    display: block
+  }
+
+  .page-toolbar-links > li.visible-tab:before {
+    display: none
+  }
+
+  .initial .visible-tab button {
+    display: block;
+  }
+}
 .more-option-btn {
     position: absolute;
     right: 0px;

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from "@angular/core";
+import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { CharacterAbilities } from "../../../../../core/models/view-models/character-abilities.model";
@@ -34,6 +34,7 @@ export class AbilityRulesetViewListComponent implements OnInit {
     showActions: boolean = true;
     actionText: string;
     bsModalRef: BsModalRef;
+    isDropdownOpen: boolean = false;
     ruleSetId: number;
     abilityId: number;
     abilitiesList: any;
@@ -62,7 +63,16 @@ export class AbilityRulesetViewListComponent implements OnInit {
                 this.initialize();
             }
         });
-    }
+  }
+
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
+      if (target.className.endsWith("is-show"))
+        this.isDropdownOpen = !this.isDropdownOpen;
+      else this.isDropdownOpen = false;
+    } catch (err) { this.isDropdownOpen = false; }
+  }
 
     ngOnInit() {
         this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
