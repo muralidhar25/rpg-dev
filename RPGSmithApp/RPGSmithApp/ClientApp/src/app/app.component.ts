@@ -1023,7 +1023,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     if (typeof (cid) != 'undefined') {
-      //if (this.characterNavigation[cid].items != '' && this.characterNavigation[cid].spells != '' && this.characterNavigation[cid].abilities != '') {
           this.characterNavigation = Utilities.setCharacterRedirection(url,
             cid,
             rid,
@@ -1031,8 +1030,6 @@ export class AppComponent implements OnInit, AfterViewInit {
           );
 
       this.localStorage.localStorageSetItem(DBkeys.CHARACTER_NAVIGATION,this.characterNavigation );
-      console.log('this.localStorage received from utilities', this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION));
-      //}
     }
   }
 }

@@ -96,9 +96,9 @@ export class SpellRulesetViewListComponent implements OnInit {
             'spells': '/character/spell/' + char.headerId,
             'abilities': '/character/ability/' + char.headerId
           };
+        } else {
+          this.charNav = icharNav[char.headerId];
         }
-
-        this.charNav = icharNav[char.headerId];
       }
     }
 

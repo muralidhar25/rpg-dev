@@ -411,6 +411,28 @@ export class CharacterDashboardComponent implements OnInit {
     //    //this.initialize(true);
     //  }, 10);
     //}
+
+    //let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+    let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+    if (!icharNav) {
+      this.charNav = {
+        'items': '/character/inventory/' + this.characterId,
+        'spells': '/character/spell/' + this.characterId,
+        'abilities': '/character/ability/' + this.characterId
+      };
+    }
+    else {
+      if (!icharNav[this.characterId]) {
+        this.charNav = {
+          'items': '/character/inventory/' + this.characterId,
+          'spells': '/character/spell/' + this.characterId,
+          'abilities': '/character/ability/' + this.characterId
+        };
+      }
+      else {
+        this.charNav = icharNav[this.characterId];
+      }
+    }
   }
 
   private initialize() {
@@ -643,9 +665,9 @@ export class CharacterDashboardComponent implements OnInit {
           'spells': '/character/spell/' + character.characterId,
           'abilities': '/character/ability/' + character.characterId
         };
+      } else {
+        this.charNav = icharNav[character.characterId];
       }
-
-      this.charNav = icharNav[character.characterId];
     }
   }
 
