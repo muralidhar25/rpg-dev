@@ -211,7 +211,7 @@
                     </span>
                 </ng-container>-->
                 <span *ngIf="command.isResultWithCustomDice">{{command.calculationString}}</span>
-                <span *ngIf="!command.isResultWithCustomDice">{{command.calculationString}} = <b>{{beforeResultText}} {{command.calculationResult}} {{afterResultText}}</b></span>
+                <span *ngIf="!command.isResultWithCustomDice">{{command.calculationString}} = <b>{{command?.beforeResult}} {{command.calculationResult}} {{command?.afterResult}}</b></span>
 
               </div>
               <button *ngIf="loadingResult" type="button" (click)="copyCommandResultText(characterCommandModel)" class="btn icon icon-copy icon-rsi btn-simple-primary" title="Copy command result."></button>

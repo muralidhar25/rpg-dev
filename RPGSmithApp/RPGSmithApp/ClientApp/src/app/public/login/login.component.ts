@@ -94,6 +94,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 
   login() {
+    
     this.isLoading = true;
     this.alertService.startLoadingMessage("", "Logging in...");
 

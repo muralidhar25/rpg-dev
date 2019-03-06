@@ -272,6 +272,11 @@ export class DiceService {
         __IsResultWithCustomDice = true;
 
       }
+      
+      let textResult = this.fillBeforeAndAfterText(_commandInterpretationArray[cmd].command);
+      let beforeResultText = textResult.start;
+      let afterResultText = textResult.end;
+      
       _commandInterpretationArrayList.push({
         calculationString: _calculationString,
         calculationStringArray: _calculationStringArray,
@@ -281,9 +286,8 @@ export class DiceService {
         calculationIndex: +cmd,
         isResultWithCustomDice: __IsResultWithCustomDice,
         isCustomNumericCommand: _commandInterpretationArray[cmd].isCustomNumericCommand ? true : false,
-        beforeResult:'',
-        afterResult:'',
-        commandWithText:''
+        beforeResult: beforeResultText,
+        afterResult: afterResultText,
       });
     }
 
@@ -391,10 +395,14 @@ export class DiceService {
     let diceValue = "";
     let diceSign = " + ";
     let diceOperation = "";
+    let isSingleQuotes = false;
+    let isDoubleQuotes = false;
+    let isSingleQuotesStarted = false;
+    let isDoubleQuotesStarted = false;
 
     for (var x = 0; x < _commandText.length; x++) {
 
-      if (addMod || parenthesis || (_commandText[x] != '+' && _commandText[x] != "-" && _commandText[x] != "*" && _commandText[x] != "/")) {
+      if (isSingleQuotes || isDoubleQuotes|| addMod || parenthesis || (_commandText[x] != '+' && _commandText[x] != "-" && _commandText[x] != "*" && _commandText[x] != "/")) {
         diceValue += _commandText[x];
         if (_commandText[x] == '(' && !addMod) { //|| parenthesis) {
           //diceSign = _commandText[x - 1]
@@ -444,7 +452,26 @@ export class DiceService {
           addMod = false;
           diceValue = '';
         }
-
+        else if (_commandText[x] == "'" && !isSingleQuotesStarted) {
+          isSingleQuotes = true;
+          //diceValue += diceValue;
+          isSingleQuotesStarted = true;
+        }
+        else if (_commandText[x] == "'" && isSingleQuotesStarted) {
+          isSingleQuotes = false;
+          //diceValue += diceValue;
+          isSingleQuotesStarted = false;
+        }
+        else if (_commandText[x] == '"' && !isDoubleQuotesStarted) {
+          isDoubleQuotes = true;
+          //diceValue += diceValue;
+          isDoubleQuotesStarted = true;
+        }
+        else if (_commandText[x] == '"' && isDoubleQuotesStarted) {
+          isDoubleQuotes = false;
+          //diceValue += diceValue;
+          isDoubleQuotesStarted = false;
+        }
         else if (x == _commandText.length - 1) {
           if (diceValue.trim() !== '')
             diceARRAY.push({
@@ -743,6 +770,7 @@ export class DiceService {
     //example: D4, 2D8, 4D6 KH3, 5 RD
     let diceArray = this.splitWithoutEmpty(dice, ' ');
     let diceArr_fake = 0;
+    
     for (var diceArr_original in diceArray) {
       
       let _dice = diceArray[diceArr_original]
@@ -874,7 +902,7 @@ export class DiceService {
             sortedRandomNumbersToShow = sortedNumbersToShow;
             //sortedRandomNumbers = _sortedNumbers;
             randomNumbers = _sortedNumbers.join(" + ");
-          } else if (+_dice) {
+          } else if (+_dice || _dice=="0") {
             randomCount = +_dice;
             randomNumbers = _dice;
             randomNumbersSum = +_dice;
@@ -968,7 +996,7 @@ export class DiceService {
                 this.HasError = -5;
               }
             }
-            else if (+_dice) {
+            else if (+_dice || _dice == "0") {
               randomCount = +_dice;
               randomNumbers = _dice;
               randomNumbersSum = +_dice;
@@ -1065,7 +1093,7 @@ export class DiceService {
                 this.HasError = -5;
               }
             }
-            else if (+_dice) {
+            else if (+_dice || _dice == "0") {
               randomCount = +_dice;
               randomNumbers = _dice;
               randomNumbersSum = +_dice;
@@ -1247,7 +1275,7 @@ export class DiceService {
       _diceInterpretationArray.randomNumbersList = [];
       _diceInterpretationArray.randomNumbersListAfter = [];
     }
-
+    
     return _diceInterpretationArray;
   }
 
@@ -1273,14 +1301,19 @@ export class DiceService {
 
       let diceARRAY = [];
       let parenthesis = false;
+      let isSingleQuotes = false;
+      let isDoubleQuotes = false;
+      let isSingleQuotesStarted = false;
+      let isDoubleQuotesStarted = false;
       let diceValue = "";
       let diceSign = " + ";
       let diceOperation = "";
 
       _commandText = _commandText.trim().toUpperCase();
+      
       for (var x = 0; x < _commandText.length; x++) {
         this.HasError = 0;
-        if (parenthesis || (_commandText[x] != '+' && _commandText[x] != "-" && _commandText[x] != "*" && _commandText[x] != "/")) {
+        if (isSingleQuotes || isDoubleQuotes|| parenthesis || (_commandText[x] != '+' && _commandText[x] != "-" && _commandText[x] != "*" && _commandText[x] != "/")) {
           diceValue += _commandText[x];
           if (_commandText[x] == '(') { //|| parenthesis) {
             //diceSign = _commandText[x - 1]
@@ -1289,6 +1322,26 @@ export class DiceService {
           else if (_commandText[x] == ')') {
             parenthesis = false;
             diceValue = '';
+          }
+          else if (_commandText[x] == "'" && !isSingleQuotesStarted) {
+            isSingleQuotes = true;
+            //diceValue += diceValue;
+            isSingleQuotesStarted = true;
+          }
+          else if (_commandText[x] == "'" && isSingleQuotesStarted)  {
+            isSingleQuotes = false;
+            //diceValue += diceValue;
+            isSingleQuotesStarted = false;
+          }
+          else if (_commandText[x] == '"' && !isDoubleQuotesStarted) {
+            isDoubleQuotes = true;
+            //diceValue += diceValue;
+            isDoubleQuotesStarted = true;
+          }
+          else if (_commandText[x] == '"' && isDoubleQuotesStarted) {
+            isDoubleQuotes = false;
+            //diceValue += diceValue;
+            isDoubleQuotesStarted = false;
           }
           else if (x == _commandText.length - 1) {
             this.diceInterpretationArray(diceValue.trim());
@@ -2295,7 +2348,36 @@ export class DiceService {
   }
 
   public static splitWithoutEmpty(str: string, splitter: string) {
-    return str.split(splitter).filter((val) => val.trim());
+    if (splitter == ' ') {
+      var matchArr = [];
+      var myRegexp = /(["'])(?:(?=(\\?))\2.)*?\1/g;
+      var match = myRegexp.exec(str);
+      while (match != null) {
+        // matched text: match[0]
+        // match start: match.index
+        // capturing group n: match[n]
+        console.log(match[0])
+        matchArr.push(match[0])
+        match = myRegexp.exec(str);
+      }
+
+      matchArr.map((x) => {
+        if (/(["'])(?:(?=(\\?))\2.)*?\1/g.test(x)) {
+          let dummy = x.replace(/ /g, '#SPACE#');
+          str = str.replace(x, dummy);
+        }
+      })
+
+      let res = str.split(splitter).filter((val) => val.trim());
+      res=  res.map((x) => {
+        x = x.replace(/#SPACE#/g, ' ');
+        return x;
+      })
+      return res;
+    }
+    else {
+      return str.split(splitter).filter((val) => val.trim());
+    }
   }
 
   public static splitByMultiSeparator(str, separator) {
@@ -2683,5 +2765,26 @@ export class DiceService {
       return false;
     }
   }
+  public static fillBeforeAndAfterText(command: string) {
+    let commandArr = DiceService.splitWithoutEmpty(command, ' ');
+
+    let Initial_flag = true;
+    let startString = '';
+    let endString = '';
+    commandArr.map((x => {
+      if (DiceService.IsAllowedText(x)) {
+        if (Initial_flag) {
+          startString = startString + " " + x + " ";
+        } else {
+          endString = endString + " " + x + " ";
+        }
+      }
+      else {
+        Initial_flag = false;
+      }
+    }))
+    return { start: startString, end: endString };
+  }
 }
+
 

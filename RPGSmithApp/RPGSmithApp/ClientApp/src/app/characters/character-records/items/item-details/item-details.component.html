@@ -112,8 +112,8 @@
                                 <div class="item-info-props-indics">
                                     <ul class="item-info-props">
                                         <li *ngIf="ItemDetail?.rarity">{{ItemDetail.rarity}}</li>
-                                        <li *ngIf="ItemDetail?.value>=0">{{ItemDetail.value}} {{ItemDetail.currencyLabel}}</li>
-                                        <li *ngIf="ItemDetail?.totalWeight>=0">{{ItemDetail.totalWeight}} {{ItemDetail.weightLabel}}</li>
+                                        <li *ngIf="ItemDetail?.value>=0" popover="{{ItemDetail.value}} {{ItemDetail.currencyLabel}}" triggers="hover">{{ItemDetail.value}} {{ItemDetail.currencyLabel}}</li>
+                                        <li *ngIf="ItemDetail?.totalWeight>=0" popover="{{ItemDetail.totalWeight}} {{ItemDetail.weightLabel}}" triggers="hover">{{ItemDetail.totalWeight}} {{ItemDetail.weightLabel}}</li>
                                         <li *ngIf="ItemDetail?.volume>=0">{{ItemDetail.volume}} {{ItemDetail.volumeLabel}}</li>
                                     </ul>
                                     <ul class="item-info-indics">

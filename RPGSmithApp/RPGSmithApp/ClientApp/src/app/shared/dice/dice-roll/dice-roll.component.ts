@@ -82,9 +82,9 @@ export class DiceRollComponent implements OnInit {
   cascadeDiceEffectCurrentCount: number = 0;
   cascadeDiceDisplayLength: number = 0;
   totalAndLimit = 6;
-  allCommandsWithText: string[] = [];
-  beforeResultText: string = '';
-  afterResultText: string = '';
+  //allCommandsWithText: string[] = [];
+  //beforeResultText: string = '';
+  //afterResultText: string = '';
 
 
   constructor(
@@ -1296,9 +1296,9 @@ export class DiceRollComponent implements OnInit {
         this.character.lastCommand = commandTxt;
         this.character.lastCommandResult = __calculationString;
 
-        let textResult = this.fillBeforeAndAfterText(characterCommand.command, true);
-        this.beforeResultText = textResult.start;
-        this.afterResultText = textResult.end;
+        //let textResult = this.fillBeforeAndAfterText(characterCommand.command, true);
+        //this.beforeResultText = textResult.start;
+        //this.afterResultText = textResult.end;
 
         setTimeout(() => {
           //this.characterCommandModel.lastResult = __calculationResult;
@@ -1342,7 +1342,7 @@ export class DiceRollComponent implements OnInit {
             //alert(this.isFromTile);
             //if (!this.isFromTile)
             //////Save multiple command using AND keyword/////////
-
+            
             if (this.characterMultipleCommands) {
               if (this.characterMultipleCommands.length > 1) {
                 this.characterMultipleCommands.map((cmd, index) => {
@@ -1772,8 +1772,8 @@ export class DiceRollComponent implements OnInit {
     //let textResult = this.fillBeforeAndAfterText(commandTxt,false);
     //this.beforeResultText = textResult.start;
     //this.afterResultText = textResult.end;
-    this.beforeResultText = '';
-    this.afterResultText = '';
+    //this.beforeResultText = '';
+    //this.afterResultText = '';
 
     this.diceRolledData.forEach(diceRoll => {
       if (!diceRoll.static)
@@ -3123,26 +3123,10 @@ export class DiceRollComponent implements OnInit {
     return CascaseArrayOfExplodedDice;
   }
   public fillBeforeAndAfterText(command: string, IsInitialRoll: boolean = false) {
-    if (IsInitialRoll) {
-      this.allCommandsWithText = DiceService.splitWithoutEmpty(command, ' ');
-    }
-    let commandArr = DiceService.splitWithoutEmpty(command, ' ');
+    //if (IsInitialRoll) {
+    //  this.allCommandsWithText = DiceService.splitWithoutEmpty(command, ' ');
+    //}
 
-    let Initial_flag = true;
-    let startString = '';
-    let endString = '';
-    commandArr.map((x => {
-      if (DiceService.IsAllowedText(x)) {
-        if (Initial_flag) {
-          startString = startString + " " + x + " ";
-        } else {
-          endString = endString + " " + x + " ";
-        }
-      }
-      else {
-        Initial_flag = false;
-      }
-    }))
-    return { start: startString, end: endString };
+    return DiceService.fillBeforeAndAfterText(command);
   }
 }
