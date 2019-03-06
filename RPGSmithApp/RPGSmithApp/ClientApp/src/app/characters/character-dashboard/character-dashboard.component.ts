@@ -159,7 +159,8 @@ export class CharacterDashboardComponent implements OnInit {
   CharacterStatsValues: any;
   statLinkRecords: any;
   choiceArraySplitter: string = 'S###@Split@###S';
-  ConditionsValuesList: CharactersCharacterStat[] = []
+  ConditionsValuesList: CharactersCharacterStat[] = [];
+  charNav: any = {};
 
   constructor(
     private router: Router, private alertService: AlertService, private authService: AuthService, private sharedService: SharedService,
@@ -626,6 +627,26 @@ export class CharacterDashboardComponent implements OnInit {
     this.sharedService.updateAccountSetting(headerValues);
     this.localStorage.deleteData(DBkeys.HEADER_VALUE);
     this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+
+    let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+    if (!icharNav) {
+      this.charNav = {
+        'items': '/character/inventory/' + character.characterId,
+        'spells': '/character/spell/' + character.characterId,
+        'abilities': '/character/ability/' + character.characterId
+      };
+    }
+    else {
+      if (!icharNav[character.characterId]) {
+        this.charNav = {
+          'items': '/character/inventory/' + character.characterId,
+          'spells': '/character/spell/' + character.characterId,
+          'abilities': '/character/ability/' + character.characterId
+        };
+      }
+
+      this.charNav = icharNav[character.characterId];
+    }
   }
 
   showActionButtons(showActions) {
@@ -644,8 +665,15 @@ export class CharacterDashboardComponent implements OnInit {
     this.localStorage.localStorageSetItem('cLayoutID', layoutId);
     this.router.navigate([url, this.characterId]);
   }
-  manageRoute(url: string) {
-    this.router.navigate([url, this.characterId]);
+
+  manageRoute(url: string, charID = '') {
+    if (charID == 'false') {
+      this.router.navigate([url]);
+    }
+    else {
+      this.router.navigate([url, charID]);
+    }
+    
     //this.router.navigate([url, this.characterId], { skipLocationChange: true });
     //window.history.pushState('', '', url + "/" + this.characterId)
   }

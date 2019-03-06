@@ -40,6 +40,7 @@ export class SpellRulesetViewListComponent implements OnInit {
     pageLastView: any;
     noRecordFound: boolean = false;
     scrollLoading: boolean = false;
+    charNav: any = {};
 
     page: number = 1;
     pageSize: number = 28;
@@ -77,7 +78,28 @@ export class SpellRulesetViewListComponent implements OnInit {
         this.setRulesetId(this.ruleSetId);
         this.destroyModalOnInit();
         this.initialize();
-        this.showActionButtons(this.showActions);
+      this.showActionButtons(this.showActions);
+
+      let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+      let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+      if (!icharNav) {
+        this.charNav = {
+          'items': '/character/inventory/' + char.headerId,
+          'spells': '/character/spell/' + char.headerId,
+          'abilities': '/character/ability/' + char.headerId
+        };
+      }
+      else {
+        if (!icharNav[char.headerId]) {
+          this.charNav = {
+            'items': '/character/inventory/' + char.headerId,
+            'spells': '/character/spell/' + char.headerId,
+            'abilities': '/character/ability/' + char.headerId
+          };
+        }
+
+        this.charNav = icharNav[char.headerId];
+      }
     }
 
     private initialize() {
@@ -297,7 +319,8 @@ export class SpellRulesetViewListComponent implements OnInit {
       this.appService.updateAccountSetting1(headerValues);
         this.sharedService.updateAccountSetting(headerValues);
         this.localStorage.deleteData(DBkeys.HEADER_VALUE);
-        this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+      this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+      
     }
 
     openDiceRollModal() {

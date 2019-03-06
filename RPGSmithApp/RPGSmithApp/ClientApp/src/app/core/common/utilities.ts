@@ -882,5 +882,26 @@ export class Utilities {
 
   public static InvalidValueForConditionStats: number = -25163711;
   //public static LogoImage: string = 'logo-full.png'; //for prod //beta //--Not used now
-  public static LogoImage: string = 'logo-full.svg'; // for prod //non-beta 
+  public static LogoImage: string = 'logo-full.svg'; // for prod //non-beta
+
+  public static setCharacterRedirection(routerUrl, characterID, rulesetID, characterNavigation) {
+    if (routerUrl.toUpperCase().indexOf('/CHARACTER/DASHBOARD') > -1 && (typeof (characterNavigation[characterID]) == 'undefined')) {
+      characterNavigation[characterID] = {
+        'items': '/character/inventory/' + characterID,
+        'spells': '/character/spell/' + characterID,
+        'abilities': '/character/ability/' + characterID
+      };
+    }
+    else if (routerUrl.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS') > -1) {
+      characterNavigation[characterID].items = '/character/ruleset/items/' + rulesetID;
+    }
+    else if (routerUrl.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS') > -1) {
+      characterNavigation[characterID].spells = '/character/ruleset/spells/' + rulesetID;
+    }
+    else if (routerUrl.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES') > -1) {
+      characterNavigation[characterID].abilities = '/character/ruleset/abilities/' + rulesetID;
+    }
+
+    return characterNavigation;
+  }
 }

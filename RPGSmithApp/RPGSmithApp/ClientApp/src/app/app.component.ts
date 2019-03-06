@@ -21,6 +21,7 @@ import { UserService } from "./core/common/user.service";
 import { CommonService } from "./core/services/shared/common.service";
 import { ItemMasterService } from "./core/services/item-master.service";
 import { SharedService } from "./core/services/shared.service";
+import { ServiceUtil } from "./core/services/service-util";
 
 import { Permission } from './core/models/permission.model';
 import { User } from './core/models/user.model';
@@ -101,6 +102,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   previousUrl: string = ''
   currentUrl: string = ''
   previousUrlList: string[] = []
+  characterNavigation: any = {};
 
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
@@ -159,6 +161,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             this.ruleset = data;
           
             this.logoNavigation();
+            this.setCharacterRedirection(this.router.url);
             if (
               this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1
               ||
@@ -459,7 +462,9 @@ export class AppComponent implements OnInit, AfterViewInit {
       };
       if (event instanceof NavigationStart) {
         this.logoNavigation();
+
         let url = (<NavigationStart>event).url;
+        this.setCharacterRedirection(url);
 
         
        
@@ -670,7 +675,6 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
       }
     });
-
   }
 
   ngOnDestroy() {
@@ -1002,11 +1006,33 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   logoNavigation() {
     this.logoPath = '/characters';
-    debugger;
     if (this.headers) {
       if (this.headers.headerLink == 'character') {
         this.logoPath = '/character/dashboard/' + this.headers.headerId;
       }
+    }
+  }
+
+  setCharacterRedirection(url) {
+    let cid = this.headers.headerId;
+    let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+    let storageNavigation = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+    if (storageNavigation) {
+      this.characterNavigation = storageNavigation;
+    }
+
+    if (typeof (cid) != 'undefined') {
+      //if (this.characterNavigation[cid].items != '' && this.characterNavigation[cid].spells != '' && this.characterNavigation[cid].abilities != '') {
+          this.characterNavigation = Utilities.setCharacterRedirection(url,
+            cid,
+            rid,
+            this.characterNavigation
+          );
+
+      this.localStorage.localStorageSetItem(DBkeys.CHARACTER_NAVIGATION,this.characterNavigation );
+      console.log('this.localStorage received from utilities', this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION));
+      //}
     }
   }
 }

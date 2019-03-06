@@ -19,13 +19,13 @@
           <!-- Toolbar links -->
           <ul class="page-toolbar-links">
             <li *ngIf="ruleSet?.isItemEnabled" class="hidden-tab">
-              <a [routerLink]="['/character/inventory/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Inventory</span></a>
+              <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Inventory</span></a>
             </li>
             <li *ngIf="ruleSet?.isSpellEnabled" class="hidden-tab">
-              <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+              <a [routerLink]="charNav?.spells" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
             </li>
             <li *ngIf="ruleSet?.isAbilityEnabled" class="hidden-tab">
-              <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> <span>Abilities</span></a>
+              <a [routerLink]="charNav?.abilities" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> <span>Abilities</span></a>
             </li>
 
             <li *ngIf="ruleSet" class="hidden-tab">
@@ -37,13 +37,13 @@
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                   <ul class="dropdown-menu-list">
                     <li *ngIf="ruleSet?.isItemEnabled" class="dropdown-menu-item">
-                      <a [routerLink]="['/character/inventory/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> Inventory</a>
+                      <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection icon-Gen-Items"> Inventory</a>
                     </li>
                     <li *ngIf="ruleSet?.isSpellEnabled" class="dropdown-menu-item">
-                      <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
+                      <a [routerLink]="charNav?.spells" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
                     </li>
                     <li *ngIf="ruleSet?.isAbilityEnabled" class="dropdown-menu-item">
-                      <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> Abilities</a>
+                      <a [routerLink]="charNav?.abilities" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> Abilities</a>
                     </li>
 
                     <li *ngIf="ruleSet" class="dropdown-menu-item">

@@ -56,6 +56,7 @@ export class CharacterItemsComponent implements OnInit {
     icon: 'icon-Rec-Container',
     viewableCount: 0
   };
+  charNav: any = {};
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -96,6 +97,27 @@ export class CharacterItemsComponent implements OnInit {
     this.destroyModalOnInit();
     this.initialize();
     this.showActionButtons(this.showActions);
+
+    let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+    let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+    if (!icharNav) {
+      this.charNav = {
+        'items': '/character/inventory/' + char.headerId,
+        'spells': '/character/spell/' + char.headerId,
+        'abilities': '/character/ability/' + char.headerId
+      };
+    }
+    else {
+      if (!icharNav[char.headerId]) {
+        this.charNav = {
+          'items': '/character/inventory/' + char.headerId,
+          'spells': '/character/spell/' + char.headerId,
+          'abilities': '/character/ability/' + char.headerId
+        };
+      }
+
+      this.charNav = icharNav[char.headerId];
+    }
   }
 
   private initialize() {
@@ -567,6 +589,7 @@ export class CharacterItemsComponent implements OnInit {
     this.sharedService.updateAccountSetting(headerValues);
     this.localStorage.deleteData(DBkeys.HEADER_VALUE);
     this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+    
   }
 
   applyFilters(present_filter, apply_same = false) {

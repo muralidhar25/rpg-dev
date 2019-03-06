@@ -39,6 +39,7 @@ export class ItemRulesetViewListComponent implements OnInit {
     scrollLoading: boolean = false;
     pageSize: number = 28;
     offset = (this.page - 1) * this.pageSize;
+    charNav: any = {};
 
     characterItemModal: any = new Items();
     character: any = new Characters();
@@ -288,7 +289,28 @@ export class ItemRulesetViewListComponent implements OnInit {
       this.appService.updateAccountSetting1(headerValues);
         this.sharedService.updateAccountSetting(headerValues);
         this.localStorage.deleteData(DBkeys.HEADER_VALUE);
-        this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+      this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+
+      let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+      let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+      if (!icharNav) {
+        this.charNav = {
+          'items': '/character/inventory/' + char.headerId,
+          'spells': '/character/spell/' + char.headerId,
+          'abilities': '/character/ability/' + char.headerId
+        };
+      }
+      else {
+        if (!icharNav[char.headerId]) {
+          this.charNav = {
+            'items': '/character/inventory/' + char.headerId,
+            'spells': '/character/spell/' + char.headerId,
+            'abilities': '/character/ability/' + char.headerId
+          };
+        }
+
+        this.charNav = icharNav[char.headerId];
+      }
     }
 
     openDiceRollModal() {
