@@ -281,6 +281,9 @@ export class DiceService {
         calculationIndex: +cmd,
         isResultWithCustomDice: __IsResultWithCustomDice,
         isCustomNumericCommand: _commandInterpretationArray[cmd].isCustomNumericCommand ? true : false,
+        beforeResult:'',
+        afterResult:'',
+        commandWithText:''
       });
     }
 
@@ -739,164 +742,16 @@ export class DiceService {
 
     //example: D4, 2D8, 4D6 KH3, 5 RD
     let diceArray = this.splitWithoutEmpty(dice, ' ');
-    for (var diceArr in diceArray) {
-
-      if (+diceArr == 0) {
-        let _dice = diceArray[diceArr];
-        _dice = _dice.trim().toUpperCase();
-
-        if (_dice.length > 1) {
-          //let flag = true;
-          //_dice.split('').map((x,index) => {
-          //  if (x == '(' && flag) {
-          //    _dice.substring(0,)
-          //  }
-          //})
-          _dice = _dice.replace(/\(/g,' ')
-        }
-        if (_dice.indexOf('D') > -1) {
-
-          let isExplodDice = false;
-          let isDiceExploded = false;
-          let diceValArray = _dice.split('D')
-          randomCount = diceValArray[0] == "" ? 1 : (+diceValArray[0] < 1 ? 1 : +diceValArray[0]);
-          let diceValueExcludeExplode = diceValArray[1];
-          if (_dice.indexOf('!') > 1) {
-            diceValueExcludeExplode = diceValArray[1].indexOf('!') > -1 ? diceValArray[1].replace(/!/g, '') : diceValArray[1];
-
-            if (diceValArray[1].indexOf('!') > -1) {
-              if (diceValArray[1].split('!').length > 2) {
-                this.HasError = -1;
-              }
-              if (+diceValueExcludeExplode == 1) {
-                this.HasError = -1;
-              }
-              if (!(diceValArray[1].split('!').length > 2) && !(+diceValueExcludeExplode == 1)) {
-                isExplodDice = true;
-              }
-            }
-          }
-          diceNumber = diceValueExcludeExplode.trim() == "" ? 1 : +diceValueExcludeExplode;
-
-          for (var x = 1; x <= randomCount; x++) {
-            let _getRandom = this.getRandomNumber(1, diceNumber);
-
-            //if (isExplodDice) {
-            //    if (diceValueExcludeExplode == _getRandom) { // Dice is Exploded..
-            //        isDiceExploded = true;
-            //        randomCount = randomCount + 1;
-            //    }
-            //}
-            if (x == randomCount) {
-              randomNumbers += _getRandom;
-            }
-            else {
-              randomNumbers += _getRandom + ',';
-            }
-            randomNumbersSum += _getRandom;
-
-          }
-
-          //randomNumbers.split(',').map((item)=> {
-          //    if (isExplodDice) {
-          //        if (diceValueExcludeExplode == item) { // Dice is Exploded..
-          //            let New_randomCount: number = 1;
-          //            let isFirstNumberOfExplodedDice = true;                                
-          //            for (var x = 1; x <= New_randomCount; x++) {                                    
-          //                let _getRandom = this.getRandomNumber(1, diceNumber);
-
-          //                //if (isExplodDice) {
-          //                    if (diceValueExcludeExplode == _getRandom) { // Dice is Exploded..
-          //                        isDiceExploded = true;
-          //                        New_randomCount = New_randomCount + 1;
-          //                    }
-          //                //}                                    
-          //                if (x == New_randomCount) {
-          //                    if (isFirstNumberOfExplodedDice) {
-          //                        randomNumbers += ',';
-          //                        isFirstNumberOfExplodedDice = false;
-          //                    }
-          //                    randomNumbers += _getRandom;
-          //                }
-          //                else {
-          //                    if (isFirstNumberOfExplodedDice) {
-          //                        randomNumbers += ',';
-          //                        isFirstNumberOfExplodedDice = false;
-          //                    }
-          //                    randomNumbers += _getRandom + ',';
-          //                }
-
-          //                randomNumbersSum += _getRandom;
-
-          //            }
-          //        }
-          //    }
-          //});
-
-          if (isExplodDice) {
-            //randomNumbers = "4,4,4,4,5";
-            let explodeLength = randomNumbers.split(',').filter(x => x == diceValueExcludeExplode).length;
-            let CascaseArrayOfExplodedDice = [];
-            CascaseArrayOfExplodedDice.push(randomNumbers.split(','));
-
-            while (explodeLength > 0) {
-              let newArr = this.getArrayOfNumbersByLength(explodeLength, diceNumber);
-              explodeLength = newArr.filter(x => x == diceValueExcludeExplode).length;
-              CascaseArrayOfExplodedDice.push(newArr);
-            }
-            var RandomNumberListWithExplosion = [].concat.apply([], CascaseArrayOfExplodedDice);
-            randomNumbers = RandomNumberListWithExplosion.join(',')
-            randomNumbersSum = RandomNumberListWithExplosion.reduce((a, b) => +a + +b, 0);
-          }
-
-          //sort random number ASC order=1,2,3,4,5
-          let _randomNumber = randomNumbers.split(',').map(function (item) {
-            return parseInt(item, 10);
-          });
-
-          ////to remove sort from dice/////
-          var ___sortedNumbersToShowSort: number[] = Object.assign([], _randomNumber);
-          var _sortedNumbersSort = ___sortedNumbersToShowSort.sort((n1, n2) => n1 - n2);
-          _sortedNumbersSort.forEach((val) => { sortedRandomNumbersToShowSort.push(val); });
-          //////////////
-
-          var sortedNumbersToShow: number[] = [];
-          var _sortedNumbers = _randomNumber;//.sort((n1, n2) => n1 - n2);
-          _sortedNumbers.forEach((val) => { sortedNumbersToShow.push(val); });
-
-          sortedRandomNumbersToShow = sortedNumbersToShow;
-          //sortedRandomNumbers = _sortedNumbers;
-          randomNumbers = _sortedNumbers.join(" + ");
-        } else if (+_dice) {
-          randomCount = +_dice;
-          randomNumbers = _dice;
-          randomNumbersSum = +_dice;
-
-
-          let symbol = '+';
-          if (+diceArr != 0) {
-            if (diceArray[+diceArr - 1] == "-") {
-              symbol = diceArray[+diceArr - 1];
-            }
-            if (diceArray[+diceArr - 1] == "*") {
-              symbol = diceArray[+diceArr - 1];
-            }
-            if (diceArray[+diceArr - 1] == "/") {
-              symbol = diceArray[+diceArr - 1];
-            }
-          }
-          sortedRandomNumbersSign.push(symbol);
-          sortedRandomNumbers.push(+randomNumbers);
-        }
-        else {
-          //INVALID
-          this.HasError = -1;
-        }
-      }
-      else if (+diceArr == 1) {
-        try {
-          let _dice = diceArray[diceArr];
+    let diceArr_fake = 0;
+    for (var diceArr_original in diceArray) {
+      
+      let _dice = diceArray[diceArr_original]
+      if (!this.IsAllowedText(_dice)) {
+        let diceArr = diceArr_fake;
+        if (+diceArr == 0) {
+          //let _dice = diceArray[diceArr];
           _dice = _dice.trim().toUpperCase();
+
           if (_dice.length > 1) {
             //let flag = true;
             //_dice.split('').map((x,index) => {
@@ -906,66 +761,124 @@ export class DiceService {
             //})
             _dice = _dice.replace(/\(/g, ' ')
           }
-          if ((_dice.indexOf('RU') > -1) || (_dice.indexOf('RD') > -1)) {
-            operator = diceArray[diceArr].trim();
-          }
-          else if (_dice.indexOf('KL') > -1) {
-            let __dice = diceArray[diceArr].trim();
-            let operatorValArray = this.splitWithoutEmpty(__dice, 'KL');
-            operator = "KL";
-            operatorNumber = +operatorValArray[0].trim();
+          if (_dice.indexOf('D') > -1) {
 
-            if (randomCount >= operatorNumber) {
-              //sortedRandomNumbers.splice(operatorNumber, sortedRandomNumbers.length);
-            } else {
-              //INVALID
-              this.HasError = -2;
-            }
-          }
-          else if (_dice.indexOf('KH') > -1) {
-            let __dice = diceArray[diceArr].trim();
-            let operatorValArray = this.splitWithoutEmpty(__dice, 'KH');
-            operator = "KH";
-            operatorNumber = +operatorValArray[0].trim();
+            let isExplodDice = false;
+            let isDiceExploded = false;
+            let diceValArray = _dice.split('D')
+            randomCount = diceValArray[0] == "" ? 1 : (+diceValArray[0] < 1 ? 1 : +diceValArray[0]);
+            let diceValueExcludeExplode = diceValArray[1];
+            if (_dice.indexOf('!') > 1) {
+              diceValueExcludeExplode = diceValArray[1].indexOf('!') > -1 ? diceValArray[1].replace(/!/g, '') : diceValArray[1];
 
-            if (randomCount >= operatorNumber) {
-              //sortedRandomNumbers.splice(0, sortedRandomNumbers.length - operatorNumber);
-            } else {
-              //INVALID
-              this.HasError = -3;
+              if (diceValArray[1].indexOf('!') > -1) {
+                if (diceValArray[1].split('!').length > 2) {
+                  this.HasError = -1;
+                }
+                if (+diceValueExcludeExplode == 1) {
+                  this.HasError = -1;
+                }
+                if (!(diceValArray[1].split('!').length > 2) && !(+diceValueExcludeExplode == 1)) {
+                  isExplodDice = true;
+                }
+              }
             }
-          }
-          else if (_dice.indexOf('DL') > -1) {
-            let __dice = diceArray[diceArr].trim();
-            let operatorValArray = this.splitWithoutEmpty(__dice, 'DL');
-            operator = "DL";
-            operatorNumber = +operatorValArray[0].trim();
+            diceNumber = diceValueExcludeExplode.trim() == "" ? 1 : +diceValueExcludeExplode;
 
-            if (randomCount >= operatorNumber) {
-              //sortedRandomNumbers.splice(0, operatorNumber);
-            } else {
-              //INVALID
-              this.HasError = -4;
+            for (var x = 1; x <= randomCount; x++) {
+              let _getRandom = this.getRandomNumber(1, diceNumber);
+
+              //if (isExplodDice) {
+              //    if (diceValueExcludeExplode == _getRandom) { // Dice is Exploded..
+              //        isDiceExploded = true;
+              //        randomCount = randomCount + 1;
+              //    }
+              //}
+              if (x == randomCount) {
+                randomNumbers += _getRandom;
+              }
+              else {
+                randomNumbers += _getRandom + ',';
+              }
+              randomNumbersSum += _getRandom;
+
             }
-          }
-          else if (_dice.indexOf('DH') > -1) {
-            let __dice = diceArray[diceArr].trim();
-            let operatorValArray = this.splitWithoutEmpty(__dice, 'DH');
-            operator = "DH";
-            operatorNumber = +operatorValArray[0].trim();
-            //1,2,3,4,5
-            if (randomCount >= operatorNumber) {
-              //sortedRandomNumbers.splice(sortedRandomNumbers.length - operatorNumber, sortedRandomNumbers.length);
-            } else {
-              //INVALID
-              this.HasError = -5;
+
+            //randomNumbers.split(',').map((item)=> {
+            //    if (isExplodDice) {
+            //        if (diceValueExcludeExplode == item) { // Dice is Exploded..
+            //            let New_randomCount: number = 1;
+            //            let isFirstNumberOfExplodedDice = true;                                
+            //            for (var x = 1; x <= New_randomCount; x++) {                                    
+            //                let _getRandom = this.getRandomNumber(1, diceNumber);
+
+            //                //if (isExplodDice) {
+            //                    if (diceValueExcludeExplode == _getRandom) { // Dice is Exploded..
+            //                        isDiceExploded = true;
+            //                        New_randomCount = New_randomCount + 1;
+            //                    }
+            //                //}                                    
+            //                if (x == New_randomCount) {
+            //                    if (isFirstNumberOfExplodedDice) {
+            //                        randomNumbers += ',';
+            //                        isFirstNumberOfExplodedDice = false;
+            //                    }
+            //                    randomNumbers += _getRandom;
+            //                }
+            //                else {
+            //                    if (isFirstNumberOfExplodedDice) {
+            //                        randomNumbers += ',';
+            //                        isFirstNumberOfExplodedDice = false;
+            //                    }
+            //                    randomNumbers += _getRandom + ',';
+            //                }
+
+            //                randomNumbersSum += _getRandom;
+
+            //            }
+            //        }
+            //    }
+            //});
+
+            if (isExplodDice) {
+              //randomNumbers = "4,4,4,4,5";
+              let explodeLength = randomNumbers.split(',').filter(x => x == diceValueExcludeExplode).length;
+              let CascaseArrayOfExplodedDice = [];
+              CascaseArrayOfExplodedDice.push(randomNumbers.split(','));
+
+              while (explodeLength > 0) {
+                let newArr = this.getArrayOfNumbersByLength(explodeLength, diceNumber);
+                explodeLength = newArr.filter(x => x == diceValueExcludeExplode).length;
+                CascaseArrayOfExplodedDice.push(newArr);
+              }
+              var RandomNumberListWithExplosion = [].concat.apply([], CascaseArrayOfExplodedDice);
+              randomNumbers = RandomNumberListWithExplosion.join(',')
+              randomNumbersSum = RandomNumberListWithExplosion.reduce((a, b) => +a + +b, 0);
             }
-          }
-          else if (+_dice) {
+
+            //sort random number ASC order=1,2,3,4,5
+            let _randomNumber = randomNumbers.split(',').map(function (item) {
+              return parseInt(item, 10);
+            });
+
+            ////to remove sort from dice/////
+            var ___sortedNumbersToShowSort: number[] = Object.assign([], _randomNumber);
+            var _sortedNumbersSort = ___sortedNumbersToShowSort.sort((n1, n2) => n1 - n2);
+            _sortedNumbersSort.forEach((val) => { sortedRandomNumbersToShowSort.push(val); });
+            //////////////
+
+            var sortedNumbersToShow: number[] = [];
+            var _sortedNumbers = _randomNumber;//.sort((n1, n2) => n1 - n2);
+            _sortedNumbers.forEach((val) => { sortedNumbersToShow.push(val); });
+
+            sortedRandomNumbersToShow = sortedNumbersToShow;
+            //sortedRandomNumbers = _sortedNumbers;
+            randomNumbers = _sortedNumbers.join(" + ");
+          } else if (+_dice) {
             randomCount = +_dice;
             randomNumbers = _dice;
-            randomNumbersSum = +_dice;            
-            diceWithoutMultipleSign = true;
+            randomNumbersSum = +_dice;
+
 
             let symbol = '+';
             if (+diceArr != 0) {
@@ -984,110 +897,206 @@ export class DiceService {
           }
           else {
             //INVALID
+            this.HasError = -1;
+          }
+        }
+        else if (+diceArr == 1) {
+          try {
+            //let _dice = diceArray[diceArr];
+            _dice = _dice.trim().toUpperCase();
+            if (_dice.length > 1) {
+              //let flag = true;
+              //_dice.split('').map((x,index) => {
+              //  if (x == '(' && flag) {
+              //    _dice.substring(0,)
+              //  }
+              //})
+              _dice = _dice.replace(/\(/g, ' ')
+            }
+            if ((_dice.indexOf('RU') > -1) || (_dice.indexOf('RD') > -1)) {
+              operator = diceArray[diceArr].trim();
+            }
+            else if (_dice.indexOf('KL') > -1) {
+              let __dice = diceArray[diceArr].trim();
+              let operatorValArray = this.splitWithoutEmpty(__dice, 'KL');
+              operator = "KL";
+              operatorNumber = +operatorValArray[0].trim();
+
+              if (randomCount >= operatorNumber) {
+                //sortedRandomNumbers.splice(operatorNumber, sortedRandomNumbers.length);
+              } else {
+                //INVALID
+                this.HasError = -2;
+              }
+            }
+            else if (_dice.indexOf('KH') > -1) {
+              let __dice = diceArray[diceArr].trim();
+              let operatorValArray = this.splitWithoutEmpty(__dice, 'KH');
+              operator = "KH";
+              operatorNumber = +operatorValArray[0].trim();
+
+              if (randomCount >= operatorNumber) {
+                //sortedRandomNumbers.splice(0, sortedRandomNumbers.length - operatorNumber);
+              } else {
+                //INVALID
+                this.HasError = -3;
+              }
+            }
+            else if (_dice.indexOf('DL') > -1) {
+              let __dice = diceArray[diceArr].trim();
+              let operatorValArray = this.splitWithoutEmpty(__dice, 'DL');
+              operator = "DL";
+              operatorNumber = +operatorValArray[0].trim();
+
+              if (randomCount >= operatorNumber) {
+                //sortedRandomNumbers.splice(0, operatorNumber);
+              } else {
+                //INVALID
+                this.HasError = -4;
+              }
+            }
+            else if (_dice.indexOf('DH') > -1) {
+              let __dice = diceArray[diceArr].trim();
+              let operatorValArray = this.splitWithoutEmpty(__dice, 'DH');
+              operator = "DH";
+              operatorNumber = +operatorValArray[0].trim();
+              //1,2,3,4,5
+              if (randomCount >= operatorNumber) {
+                //sortedRandomNumbers.splice(sortedRandomNumbers.length - operatorNumber, sortedRandomNumbers.length);
+              } else {
+                //INVALID
+                this.HasError = -5;
+              }
+            }
+            else if (+_dice) {
+              randomCount = +_dice;
+              randomNumbers = _dice;
+              randomNumbersSum = +_dice;
+              diceWithoutMultipleSign = true;
+
+              let symbol = '+';
+              if (+diceArr != 0) {
+                if (diceArray[+diceArr - 1] == "-") {
+                  symbol = diceArray[+diceArr - 1];
+                }
+                if (diceArray[+diceArr - 1] == "*") {
+                  symbol = diceArray[+diceArr - 1];
+                }
+                if (diceArray[+diceArr - 1] == "/") {
+                  symbol = diceArray[+diceArr - 1];
+                }
+              }
+              sortedRandomNumbersSign.push(symbol);
+              sortedRandomNumbers.push(+randomNumbers);
+            }
+            else {
+              //INVALID
+              this.HasError = -6;
+            }
+          } catch (err) {
             this.HasError = -6;
           }
-        } catch (err) {
-          this.HasError = -6;
         }
-      }
-      else if (+diceArr >= 1) {
-        try {
-          let _dice = diceArray[diceArr];
-          _dice = _dice.trim().toUpperCase();
-          if (_dice.length > 1) {
-            //let flag = true;
-            //_dice.split('').map((x,index) => {
-            //  if (x == '(' && flag) {
-            //    _dice.substring(0,)
-            //  }
-            //})
-            _dice = _dice.replace(/\(/g, ' ')
-          }
-          if ((_dice.indexOf('RU') > -1) || (_dice.indexOf('RD') > -1)) {
-            operator = diceArray[diceArr].trim();
-          }
-          else if (_dice.indexOf('KL') > -1) {
-            let __dice = diceArray[diceArr].trim();
-            let operatorValArray = this.splitWithoutEmpty(__dice, 'KL');
-            operator = "KL";
-            operatorNumber = +operatorValArray[0].trim();
-
-            if (randomCount >= operatorNumber) {
-              //sortedRandomNumbers.splice(operatorNumber, sortedRandomNumbers.length);
-            } else {
-              //INVALID
-              this.HasError = -2;
+        else if (+diceArr >= 1) {
+          try {
+           // let _dice = diceArray[diceArr];
+            _dice = _dice.trim().toUpperCase();
+            if (_dice.length > 1) {
+              //let flag = true;
+              //_dice.split('').map((x,index) => {
+              //  if (x == '(' && flag) {
+              //    _dice.substring(0,)
+              //  }
+              //})
+              _dice = _dice.replace(/\(/g, ' ')
             }
-          }
-          else if (_dice.indexOf('KH') > -1) {
-            let __dice = diceArray[diceArr].trim();
-            let operatorValArray = this.splitWithoutEmpty(__dice, 'KH');
-            operator = "KH";
-            operatorNumber = +operatorValArray[0].trim();
-
-            if (randomCount >= operatorNumber) {
-              //sortedRandomNumbers.splice(0, sortedRandomNumbers.length - operatorNumber);
-            } else {
-              //INVALID
-              this.HasError = -3;
+            if ((_dice.indexOf('RU') > -1) || (_dice.indexOf('RD') > -1)) {
+              operator = diceArray[diceArr].trim();
             }
-          }
-          else if (_dice.indexOf('DL') > -1) {
-            let __dice = diceArray[diceArr].trim();
-            let operatorValArray = this.splitWithoutEmpty(__dice, 'DL');
-            operator = "DL";
-            operatorNumber = +operatorValArray[0].trim();
+            else if (_dice.indexOf('KL') > -1) {
+              let __dice = diceArray[diceArr].trim();
+              let operatorValArray = this.splitWithoutEmpty(__dice, 'KL');
+              operator = "KL";
+              operatorNumber = +operatorValArray[0].trim();
 
-            if (randomCount >= operatorNumber) {
-              //sortedRandomNumbers.splice(0, operatorNumber);
-            } else {
-              //INVALID
-              this.HasError = -4;
-            }
-          }
-          else if (_dice.indexOf('DH') > -1) {
-            let __dice = diceArray[diceArr].trim();
-            let operatorValArray = this.splitWithoutEmpty(__dice, 'DH');
-            operator = "DH";
-            operatorNumber = +operatorValArray[0].trim();
-            //1,2,3,4,5
-            if (randomCount >= operatorNumber) {
-              //sortedRandomNumbers.splice(sortedRandomNumbers.length - operatorNumber, sortedRandomNumbers.length);
-            } else {
-              //INVALID
-              this.HasError = -5;
-            }
-          }
-          else if (+_dice) {
-            randomCount = +_dice;
-            randomNumbers = _dice;
-            randomNumbersSum = +_dice;
-            //sortedRandomNumbers.push(+randomNumbers);
-            diceWithoutMultipleSign = true;
-
-            let symbol = '+';
-            if (+diceArr != 0) {
-              if (diceArray[+diceArr - 1] =="-") {
-                symbol = diceArray[+diceArr - 1];
-              }
-              if (diceArray[+diceArr - 1] == "*") {
-                symbol = diceArray[+diceArr - 1];
-              }
-              if (diceArray[+diceArr - 1] == "/") {
-                symbol = diceArray[+diceArr - 1];
+              if (randomCount >= operatorNumber) {
+                //sortedRandomNumbers.splice(operatorNumber, sortedRandomNumbers.length);
+              } else {
+                //INVALID
+                this.HasError = -2;
               }
             }
-            sortedRandomNumbersSign.push(symbol);
-            sortedRandomNumbers.push(+randomNumbers);
-            
-          }
-          else {
-            //INVALID
+            else if (_dice.indexOf('KH') > -1) {
+              let __dice = diceArray[diceArr].trim();
+              let operatorValArray = this.splitWithoutEmpty(__dice, 'KH');
+              operator = "KH";
+              operatorNumber = +operatorValArray[0].trim();
+
+              if (randomCount >= operatorNumber) {
+                //sortedRandomNumbers.splice(0, sortedRandomNumbers.length - operatorNumber);
+              } else {
+                //INVALID
+                this.HasError = -3;
+              }
+            }
+            else if (_dice.indexOf('DL') > -1) {
+              let __dice = diceArray[diceArr].trim();
+              let operatorValArray = this.splitWithoutEmpty(__dice, 'DL');
+              operator = "DL";
+              operatorNumber = +operatorValArray[0].trim();
+
+              if (randomCount >= operatorNumber) {
+                //sortedRandomNumbers.splice(0, operatorNumber);
+              } else {
+                //INVALID
+                this.HasError = -4;
+              }
+            }
+            else if (_dice.indexOf('DH') > -1) {
+              let __dice = diceArray[diceArr].trim();
+              let operatorValArray = this.splitWithoutEmpty(__dice, 'DH');
+              operator = "DH";
+              operatorNumber = +operatorValArray[0].trim();
+              //1,2,3,4,5
+              if (randomCount >= operatorNumber) {
+                //sortedRandomNumbers.splice(sortedRandomNumbers.length - operatorNumber, sortedRandomNumbers.length);
+              } else {
+                //INVALID
+                this.HasError = -5;
+              }
+            }
+            else if (+_dice) {
+              randomCount = +_dice;
+              randomNumbers = _dice;
+              randomNumbersSum = +_dice;
+              //sortedRandomNumbers.push(+randomNumbers);
+              diceWithoutMultipleSign = true;
+
+              let symbol = '+';
+              if (+diceArr != 0) {
+                if (diceArray[+diceArr - 1] == "-") {
+                  symbol = diceArray[+diceArr - 1];
+                }
+                if (diceArray[+diceArr - 1] == "*") {
+                  symbol = diceArray[+diceArr - 1];
+                }
+                if (diceArray[+diceArr - 1] == "/") {
+                  symbol = diceArray[+diceArr - 1];
+                }
+              }
+              sortedRandomNumbersSign.push(symbol);
+              sortedRandomNumbers.push(+randomNumbers);
+
+            }
+            else {
+              //INVALID
+              this.HasError = -6;
+            }
+          } catch (err) {
             this.HasError = -6;
           }
-        } catch (err) {
-          this.HasError = -6;
         }
+        diceArr_fake = diceArr_fake + 1;
       }
     }
 
@@ -2661,6 +2670,18 @@ export class DiceService {
       arr.push(number.toString());
     }
     return arr;
+  }
+  public static IsAllowedText(str: string): boolean {
+    str = str.trim();
+    if (str.startsWith('"') && str.endsWith('"')) {
+      return true;
+    }
+    else if (str.startsWith("'") && str.endsWith("'")) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 }
 
