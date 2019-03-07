@@ -986,19 +986,37 @@ export class DiceRollComponent implements OnInit {
     } catch (err) { }
   }
   onClickRoll(characterCommand: CharacterCommand, _mainCommandText: string, lastResultArray?: any) {
-
+    
     let anyCommandIsCustomWithNonNumeric = false;
     this.loadingResult = false;
     let command = characterCommand.command;
     let commandIfERROR = characterCommand.command;
     if (!command && this.isFromTile) {
       this.alertService.showMessage("The command associated with this record has been removed. Please update the record to resolve.", "", MessageSeverity.error);
+       if (this.diceSection = true) {
+            this.rollSection = false;
+          }
+          else if (this.rollSection = true) {
+            this.diceSection = false;
+            }
     }
     else if (!command) {
       this.alertService.showMessage("Please enter a command.", "", MessageSeverity.error);
+       if (this.diceSection = true) {
+            this.rollSection = false;
+          }
+          else if (this.rollSection = true) {
+            this.diceSection = false;
+            }
     }
     else if (command.trim() == '') {
       this.alertService.showMessage("Please enter a command.", "", MessageSeverity.error);
+       if (this.diceSection = true) {
+            this.rollSection = false;
+          }
+          else if (this.rollSection = true) {
+            this.diceSection = false;
+            }
     }
     else {
 
@@ -1006,6 +1024,12 @@ export class DiceRollComponent implements OnInit {
       command = this.mainCommandText.toUpperCase();
       if (command.length >= 250) {
         this.alertService.showMessage("A maximum of 250 characters is allowed for a command. Please adjust your command string and try again.", "", MessageSeverity.error);
+         if (this.diceSection = true) {
+            this.rollSection = false;
+          }
+          else if (this.rollSection = true) {
+            this.diceSection = false;
+            }
       }
       else {
 
@@ -1162,7 +1186,13 @@ export class DiceRollComponent implements OnInit {
           setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
           this.recycleDice();
           this.characterCommandModel.command = this.mainCommandText;
-          return false;
+          if (this.diceSection = true) {
+            this.rollSection = false;
+          }
+          else if (this.rollSection = true) {
+            this.diceSection = false;
+            }
+            return false;
         }
 
         if (this.customDices.length > 0) {
@@ -1201,6 +1231,12 @@ export class DiceRollComponent implements OnInit {
           if (!IsCmdValid) {
             command = commandIfERROR;
             this.alertService.showMessage("Please enter a valid command.", "", MessageSeverity.error);
+            if (this.diceSection = true) {
+              this.rollSection = false;
+            }
+            else if (this.rollSection = true) {
+              this.diceSection = false;
+            }
             return false;
           }
         }
