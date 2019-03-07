@@ -822,15 +822,19 @@ export class Utilities {
         let NewUrl = lastPageAccessed;
         localStorage.localStorageSetItem("LastAccessedPage", GoToAddress);
         //this.RefreshURLFlag = true;
-        router.navigate([GoToAddress], { skipLocationChange: true });
-        window.history.pushState('', '', NewUrl)
+
+        this.RedriectToPageWithoutId(url, NewUrl, router,5);
+        //router.navigate([GoToAddress], { skipLocationChange: true });
+        //window.history.pushState('', '', NewUrl)
       }
       else if (lastPageAccessed.indexOf(url) > -1) {
         let NewUrl = lastPageAccessed;
         localStorage.localStorageSetItem("LastAccessedPage", GoToAddress);
         //this.RefreshURLFlag = true;
-        router.navigate([GoToAddress], { skipLocationChange: true });
-        window.history.pushState('', '', NewUrl)
+
+        this.RedriectToPageWithoutId(url, NewUrl, router,6);
+        //router.navigate([GoToAddress], { skipLocationChange: true });
+        //window.history.pushState('', '', NewUrl)
       }
     }
     
@@ -844,9 +848,9 @@ export class Utilities {
           || url.toUpperCase().indexOf('/RULESET/CHARACTER-STATS/') > -1
           || url.toUpperCase().indexOf('/RULESET/DASHBOARD/') > -1
         ) {
-         
-            router.navigate([url], { skipLocationChange: true });
-          window.history.pushState('', '', NewUrl)
+          this.RedriectToPageWithoutId(url, NewUrl, router,7);
+          //  router.navigate([url], { skipLocationChange: true });
+          //window.history.pushState('', '', NewUrl)
         }
       }
       else if (headers.headerLink == 'character') {
@@ -858,9 +862,9 @@ export class Utilities {
           || url.toUpperCase().indexOf('/CHARACTER/DASHBOARD/') > -1
           || url.toUpperCase().indexOf('/CHARACTER/TILES/') > -1
         ) {
-          //url = url + "/" + headers.headerId;
-          router.navigate([url], { skipLocationChange: true });
-          window.history.pushState('', '', NewUrl)
+          this.RedriectToPageWithoutId(url, NewUrl, router,8);
+          //router.navigate([url], { skipLocationChange: true });
+          //window.history.pushState('', '', NewUrl)
         }
 
         else if (
@@ -868,16 +872,19 @@ export class Utilities {
         ) {
           url = url.replace("/" + headers.headerId, ' ');
           url = url.trim() + "/" + rulesetID;
-          router.navigate([url], { skipLocationChange: true });
-          window.history.pushState('', '', NewUrl)
+          this.RedriectToPageWithoutId(url, NewUrl, router,9);
+          //router.navigate([url], { skipLocationChange: true });
+          //window.history.pushState('', '', NewUrl)
 
         }
       }
     }
-    
-    
-    
-     
+  }
+
+  public static RedriectToPageWithoutId(originalUrl: string, displayUrl: string, router: Router,RedriectFromCode:number) {
+    console.log({ RedriectFromCode: RedriectFromCode, originalUrl: originalUrl, displayUrl: displayUrl });
+    router.navigate([originalUrl], { skipLocationChange: true });
+    window.history.pushState('', '', displayUrl);
   }
 
   public static InvalidValueForConditionStats: number = -25163711;

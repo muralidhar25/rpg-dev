@@ -489,8 +489,12 @@ export class AppComponent implements OnInit, AfterViewInit {
             //  this.lastIdUsed = +url.split('/')[url.split('/').length - 1];
             //}
             this.URLFlag = true;
-            this.router.navigate([url], { skipLocationChange: true });
-            window.history.pushState('', '', NewUrl)
+
+            Utilities.RedriectToPageWithoutId(url, NewUrl, this.router,1);
+            //this.router.navigate([url], { skipLocationChange: true });
+            //window.history.pushState('', '', NewUrl)
+
+
             //window.history.pushState('', '', url)
             //window.history.replaceState('', '', NewUrl)
 
@@ -514,19 +518,27 @@ export class AppComponent implements OnInit, AfterViewInit {
               if (+url.split('/')[url.split('/').length - 1]) {
                 NewUrl = url.replace('/' + url.split('/')[url.split('/').length - 1], '')
               }
+              debugger
               if (this.previousUrlList) {
                 if (this.previousUrlList[this.previousUrlList.length - 1] === this.previousUrl && this.previousUrlList.length > 2) {
-                  this.router.navigate([this.previousUrlList[this.previousUrlList.length - 1]], { skipLocationChange: true });
-                  window.history.pushState('', '', NewUrl)
+
+                  Utilities.RedriectToPageWithoutId(this.previousUrlList[this.previousUrlList.length - 1], NewUrl, this.router,2);
+
+                  //this.router.navigate([this.previousUrlList[this.previousUrlList.length - 1]], { skipLocationChange: true });
+                  //window.history.pushState('', '', NewUrl)
                 }
                 else {
-                  this.router.navigate([this.previousUrl], { skipLocationChange: true });
-                  window.history.pushState('', '', NewUrl)
+                  //Utilities.RedriectToPageWithoutId(this.previousUrl, NewUrl, this.router,3);
+
+                  //this.router.navigate([this.previousUrl], { skipLocationChange: true });
+                  //window.history.pushState('', '', NewUrl)
                 }
               }
               else {
-                this.router.navigate([this.previousUrl], { skipLocationChange: true });
-                window.history.pushState('', '', NewUrl)
+                Utilities.RedriectToPageWithoutId(this.previousUrl, NewUrl, this.router,4);
+
+                //this.router.navigate([this.previousUrl], { skipLocationChange: true });
+                //window.history.pushState('', '', NewUrl)
 
               }
               //this.router.navigate([this.previousUrl], { skipLocationChange: true });
@@ -547,6 +559,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.URLFlag = false;
         this.showCharacterSearch = ((url.toLowerCase() == '/characters') || (url.toLowerCase() == '/'));
         if (url !== url.toLowerCase()) {
+          console.log('AppComponentOld Redriection:', (<NavigationStart>event).url.toLowerCase());
           this.router.navigateByUrl((<NavigationStart>event).url.toLowerCase());
         }
         
