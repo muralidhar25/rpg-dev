@@ -41,6 +41,7 @@ export class RulesetViewAbilityDetailComponent implements OnInit {
     AbilityDetail: any = new Ability();
     character: Characters = new Characters();
     ruleset: Ruleset = new Ruleset();
+    charNav: any = {};
 
     characterAbilityModal: any = new CharacterAbilities();
     IsAddingRecord: boolean = false;
@@ -60,7 +61,28 @@ export class RulesetViewAbilityDetailComponent implements OnInit {
 
     ngOnInit() {
         this.initialize();
-        this.showActionButtons(this.showActions);
+      this.showActionButtons(this.showActions);
+
+      let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+        let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+        if (!icharNav) {
+          this.charNav = {
+            'items': '/character/inventory/' + char.headerId,
+            'spells': '/character/spell/' + char.headerId,
+            'abilities': '/character/ability/' + char.headerId
+          };
+        }
+        else {
+          if (!icharNav[char.headerId]) {
+            this.charNav = {
+              'items': '/character/inventory/' + char.headerId,
+              'spells': '/character/spell/' + char.headerId,
+              'abilities': '/character/ability/' + char.headerId
+            };
+          } else {
+            this.charNav = icharNav[char.headerId];
+          }
+      }
     }
 
     private initialize() {

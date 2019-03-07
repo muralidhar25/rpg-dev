@@ -46,6 +46,7 @@ export class RulesetViewSpellDetailComponent implements OnInit {
     ruleset: Ruleset = new Ruleset();
     IsAddingRecord: boolean = false;
     itemMasterId: any;
+    charNav: any = {};
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -63,6 +64,27 @@ export class RulesetViewSpellDetailComponent implements OnInit {
     ngOnInit() {
         this.initialize();
         this.showActionButtons(this.showActions);
+
+        let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+        let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+        if (!icharNav) {
+          this.charNav = {
+            'items': '/character/inventory/' + char.headerId,
+            'spells': '/character/spell/' + char.headerId,
+            'abilities': '/character/ability/' + char.headerId
+          };
+        }
+        else {
+          if (!icharNav[char.headerId]) {
+            this.charNav = {
+              'items': '/character/inventory/' + char.headerId,
+              'spells': '/character/spell/' + char.headerId,
+              'abilities': '/character/ability/' + char.headerId
+            };
+          } else {
+            this.charNav = icharNav[char.headerId];
+          }
+        }
     }
 
     private initialize() {

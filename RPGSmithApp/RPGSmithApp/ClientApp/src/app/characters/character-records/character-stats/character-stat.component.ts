@@ -62,7 +62,8 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
     STAT_LINK_TYPE = STAT_LINK_TYPE;
     statLinkRecords: any = [];
     choiceArraySplitter: string = 'S###@Split@###S';
-    ConditionsValuesList: CharactersCharacterStat[]=[]
+    ConditionsValuesList: CharactersCharacterStat[] = []
+    charNav: any = {};
 
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -102,6 +103,27 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         this.destroyModalOnInit();
         this.initialize();
         this.showActionButtons(this.showActions);
+
+        let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+        let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+        if (!icharNav) {
+          this.charNav = {
+            'items': '/character/inventory/' + char.headerId,
+            'spells': '/character/spell/' + char.headerId,
+            'abilities': '/character/ability/' + char.headerId
+          };
+        }
+        else {
+          if (!icharNav[char.headerId]) {
+            this.charNav = {
+              'items': '/character/inventory/' + char.headerId,
+              'spells': '/character/spell/' + char.headerId,
+              'abilities': '/character/ability/' + char.headerId
+            };
+          } else {
+            this.charNav = icharNav[char.headerId];
+          }
+        }
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -131,15 +153,18 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
     public cancelCallback(redirectto: any) {
         if (redirectto == 1) {
 
-            this.router.navigate(['/character/ability/', this.characterId]);
+          //this.router.navigate(['/character/ability/', this.characterId]);
+          this.router.navigate([this.charNav.items]);
         }
         else if (redirectto == 2) {
 
-            this.router.navigate(['/character/spell/', this.characterId]);
+            //this.router.navigate(['/character/spell/', this.characterId]);
+            this.router.navigate([this.charNav.spells]);
         }
         else if (redirectto == 3) {
 
-            this.router.navigate(['/character/inventory/', this.characterId]);
+            //this.router.navigate(['/character/inventory/', this.characterId]);
+            this.router.navigate([this.charNav.abilities]);
         }
         else if (redirectto == 4) {
 
@@ -1061,13 +1086,16 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                         this.router.navigate(['/character/dashboard', this.characterId]);
                     }
                     else if (redirectto == 1) {
-                        this.router.navigate(['/character/ability/', this.characterId]);
+                        //this.router.navigate(['/character/ability/', this.characterId]);
+                        this.router.navigate([this.charNav.abilities]);
                     }
                     else if (redirectto == 2) {
-                        this.router.navigate(['/character/spell/', this.characterId]);
+                        //this.router.navigate(['/character/spell/', this.characterId]);
+                      this.router.navigate([this.charNav.spells]);
                     }
                     else if (redirectto == 3) {
-                        this.router.navigate(['/character/inventory/', this.characterId]);
+                        //this.router.navigate(['/character/inventory/', this.characterId]);
+                      this.router.navigate([this.charNav.items]);
                     }
                     else if (redirectto == 4) {
                         this.router.navigate(['/character/dashboard/', this.characterId]);

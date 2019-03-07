@@ -38,6 +38,7 @@ export class AbilityRulesetDetailComponent implements OnInit {
     bsModalRef: BsModalRef;
     AbilityDetail: any = new Ability();
     character: Characters = new Characters();
+    charNav: any = {};
 
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -54,6 +55,27 @@ export class AbilityRulesetDetailComponent implements OnInit {
     ngOnInit() {
         this.initialize();
         this.showActionButtons(this.showActions);
+
+        let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+        let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+        if (!icharNav) {
+          this.charNav = {
+            'items': '/character/inventory/' + char.headerId,
+            'spells': '/character/spell/' + char.headerId,
+            'abilities': '/character/ability/' + char.headerId
+          };
+        }
+        else {
+          if (!icharNav[char.headerId]) {
+            this.charNav = {
+              'items': '/character/inventory/' + char.headerId,
+              'spells': '/character/spell/' + char.headerId,
+              'abilities': '/character/ability/' + char.headerId
+            };
+          } else {
+            this.charNav = icharNav[char.headerId];
+          }
+      }
     }
 
     private initialize() {
@@ -331,5 +353,9 @@ export class AbilityRulesetDetailComponent implements OnInit {
     }
     Redirect(path) {
         this.router.navigate([path, this.character.characterId ]);
+  }
+
+    RedirectChar(path) {
+        this.router.navigate([path]);
     }
 }
