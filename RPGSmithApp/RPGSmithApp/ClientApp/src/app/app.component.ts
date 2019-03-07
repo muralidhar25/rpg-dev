@@ -518,7 +518,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               if (+url.split('/')[url.split('/').length - 1]) {
                 NewUrl = url.replace('/' + url.split('/')[url.split('/').length - 1], '')
               }
-              debugger
+             
               if (this.previousUrlList) {
                 if (this.previousUrlList[this.previousUrlList.length - 1] === this.previousUrl && this.previousUrlList.length > 2) {
 

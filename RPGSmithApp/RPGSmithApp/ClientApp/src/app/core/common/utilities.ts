@@ -823,7 +823,7 @@ export class Utilities {
         localStorage.localStorageSetItem("LastAccessedPage", GoToAddress);
         //this.RefreshURLFlag = true;
 
-        this.RedriectToPageWithoutId(url, NewUrl, router,5);
+        this.RedriectToPageWithoutId(GoToAddress, NewUrl, router,5);
         //router.navigate([GoToAddress], { skipLocationChange: true });
         //window.history.pushState('', '', NewUrl)
       }
@@ -832,7 +832,7 @@ export class Utilities {
         localStorage.localStorageSetItem("LastAccessedPage", GoToAddress);
         //this.RefreshURLFlag = true;
 
-        this.RedriectToPageWithoutId(url, NewUrl, router,6);
+        this.RedriectToPageWithoutId(GoToAddress, NewUrl, router,6);
         //router.navigate([GoToAddress], { skipLocationChange: true });
         //window.history.pushState('', '', NewUrl)
       }
