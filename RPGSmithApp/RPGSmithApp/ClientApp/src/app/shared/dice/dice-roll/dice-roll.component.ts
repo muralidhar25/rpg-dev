@@ -1,5 +1,6 @@
 import { Component, OnInit, HostListener, EventEmitter } from "@angular/core";
 import 'rxjs/add/operator/switchMap';
+import { Router } from "@angular/router";
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { DiceService } from "../../../core/services/dice.service";
 import { FATE_DICE, TILES, STAT_TYPE, DICE_ICON, DICE } from "../../../core/models/enums";
@@ -74,6 +75,9 @@ export class DiceRollComponent implements OnInit {
   statdetails: any;
   recordName: string;
   recordImage: string;
+  recordType: string;
+  recordId: string;
+  diceNav: string;
   customDices: CustomDice[] = [];
   diceTray: DiceTray[] = [];
   defaultDices: DefaultDice[] = [];
@@ -88,7 +92,7 @@ export class DiceRollComponent implements OnInit {
 
 
   constructor(
-    public modalService: BsModalService, private bsModalRef: BsModalRef, private alertService: AlertService,
+    private router: Router, public modalService: BsModalService, private bsModalRef: BsModalRef, private alertService: AlertService,
     private charactersCharacterStatService: CharactersCharacterStatService, private charactersService: CharactersService,
     private localStorage: LocalStoreManager, private authService: AuthService, private sharedService: SharedService,
     private characterCommandService: CharacterCommandService, private _diceService: DiceService,
@@ -121,12 +125,17 @@ export class DiceRollComponent implements OnInit {
       if (this.rulesetId == undefined)
         this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 
-
+      console.log('this.bsModalRef', this.bsModalRef);
       this.showTotal = false;
       this.title = this.bsModalRef.content.title;
       this.characterId = this.bsModalRef.content.characterId;
       this.recordName = this.bsModalRef.content.recordName ? this.bsModalRef.content.recordName : '';
       this.recordImage = this.bsModalRef.content.recordImage ? this.bsModalRef.content.recordImage : '';
+      this.recordType = this.bsModalRef.content.recordType ? this.bsModalRef.content.recordType : '';
+      this.recordId = this.bsModalRef.content.recordId ? this.bsModalRef.content.recordId : '';
+
+      this.diceRedirection();
+
       //this.character = this.bsModalRef.content.character;
       //if (this.character.lastCommandResult)
       //    this.calculationStringArray = DiceService.getCalculationStringArray(this.character.lastCommandResult);
@@ -3128,5 +3137,38 @@ export class DiceRollComponent implements OnInit {
     //}
 
     return DiceService.fillBeforeAndAfterText(command);
+  }
+
+  diceRedirection() {
+    switch (this.recordType) {
+      case 'item':
+        this.diceNav = '/character/inventory-details/' + this.recordId;
+        break;
+
+      case 'spell':
+        this.diceNav = '/character/spell-details/' + this.recordId;
+        break;
+
+      case 'ability':
+        this.diceNav = '/character/ability-details/' + this.recordId;
+        break;
+
+      case 'ch-rs-ability':
+        this.diceNav = '/character/ruleset/ability-details/' + this.recordId;
+        break;
+
+      case 'ch-rs-spell':
+        this.diceNav = '/character/ruleset/spell-details/' + this.recordId;
+        break;
+
+      default:
+        this.diceNav = '/character/dashboard';
+        break;
+    }
+  }
+
+  navigateDice(diceNav) {
+    this.bsModalRef.hide();
+    this.router.navigate([diceNav]);
   }
 }

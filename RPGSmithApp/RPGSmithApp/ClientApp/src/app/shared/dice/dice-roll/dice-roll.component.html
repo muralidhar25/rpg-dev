@@ -5,7 +5,8 @@
     <div class="modal-header" style="height:3rem">
       <h5 class="modal-title" id="dicePopupTitle">
         <span>{{title}}</span>
-        <span class="manage-ruleset-header" *ngIf="recordName != '' || recordImage != ''">
+        {{diceNav}}
+        <span class="manage-ruleset-header" *ngIf="recordName != '' || recordImage != ''" (click)="navigateDice(diceNav)">
           <span>
             <img [src]="recordImage" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
           </span>
