@@ -235,7 +235,7 @@ export class CharacterSpellDetailsComponent implements OnInit {
             this.bsModalRef.content.ButtonText = 'Cast'
         }
         else {
-            this.useCommand(this.spellDetail)
+          this.useCommand(this.spellDetail, spell.characterSpellId)
         }
     }
 
@@ -248,7 +248,7 @@ export class CharacterSpellDetailsComponent implements OnInit {
         }, 200);
     }
 
-    useCommand(Command: any) {
+  useCommand(Command: any, spellId: string = '') {
         let msg = "The command value for " + Command.name
             + " has not been provided. Edit this record to input one.";
         if (Command.command == undefined || Command.command == null || Command.command == '') {
@@ -256,10 +256,10 @@ export class CharacterSpellDetailsComponent implements OnInit {
         }
         else {
             //TODO
-            this.useCommandHelper(Command);
+            this.useCommandHelper(Command, spellId);
         }
     }
-    private useCommandHelper(Command: any) {
+  private useCommandHelper(Command: any, spellId: string = '') {
         this.bsModalRef = this.modalService.show(DiceRollComponent, {
             class: 'modal-primary modal-md',
             ignoreBackdropClick: true,
@@ -273,6 +273,8 @@ export class CharacterSpellDetailsComponent implements OnInit {
         if (Command.hasOwnProperty("spellId")) {
             this.bsModalRef.content.recordName = Command.name;
             this.bsModalRef.content.recordImage = Command.imageUrl;
+            this.bsModalRef.content.recordType = 'spell';
+            this.bsModalRef.content.recordId = spellId;
         }
         this.bsModalRef.content.event.subscribe(result => {
         });

@@ -186,10 +186,12 @@ export class BasicSearchComponent implements OnInit {
     else {
       this.searchList = [];
       this.isLoading = true;
+      this.showMoreLessToggle = true;
 
       this.searchService.searchRecords<any>(this.searchModal)
         .subscribe(data => {
           if (data.length > 0) {
+            this.showMoreLessToggle = true;
             if (this.searchModal.searchType == SearchType.CHARACTERITEMS) {
               this.searchModal.searchHeadingText = 'Items';
               this.searchList = data.map(x => {
@@ -263,6 +265,9 @@ export class BasicSearchComponent implements OnInit {
               });
             }
           }
+          else {
+            this.showMoreLessToggle = false;
+          }
 
           this.isLoading = false;
         },
@@ -277,10 +282,6 @@ export class BasicSearchComponent implements OnInit {
           else
             this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
         }, () => { });
-    }
-
-    if (this.searchList.length == 0) {
-      this.showMorelessFields();
     }
   }
 

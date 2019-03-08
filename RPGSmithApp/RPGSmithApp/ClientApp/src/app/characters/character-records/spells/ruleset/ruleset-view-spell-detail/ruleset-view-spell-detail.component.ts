@@ -189,13 +189,15 @@ export class RulesetViewSpellDetailComponent implements OnInit {
             this.bsModalRef.content.Command = this.spellDetail
             this.bsModalRef.content.Character = this.character
             this.bsModalRef.content.ButtonText = 'Cast'
+            this.bsModalRef.content.recordType = 'ch-rs-spell';
+            this.bsModalRef.content.recordId = this.spellDetail.spellId;
         }
         else {
-            this.useCommand(this.spellDetail)
+          this.useCommand(this.spellDetail, this.spellDetail.spellId);
         }
     }
 
-    private castSpellHelper(spell: any) {
+    private castSpellHelper(spell: any, spellId:string='') {
         this.isLoading = true;
         this.alertService.startLoadingMessage("", "Executing the default command associated with this " + spell.name + " Spell.");
         setTimeout(() => {
@@ -204,7 +206,7 @@ export class RulesetViewSpellDetailComponent implements OnInit {
         }, 200);
     }
 
-    useCommand(Command: any) {
+  useCommand(Command: any, spellId: string = '') {
         let msg = "The command value for " + Command.name
             + " has not been provided. Edit this record to input one.";
         if (Command.command == undefined || Command.command == null || Command.command == '') {
@@ -212,10 +214,10 @@ export class RulesetViewSpellDetailComponent implements OnInit {
         }
         else {
             //TODO
-            this.useCommandHelper(Command);
+            this.useCommandHelper(Command, spellId);
         }
     }
-    private useCommandHelper(Command: any) {
+    private useCommandHelper(Command: any, spellId: string = '') {
         this.bsModalRef = this.modalService.show(DiceRollComponent, {
             class: 'modal-primary modal-md',
             ignoreBackdropClick: true,
@@ -229,6 +231,8 @@ export class RulesetViewSpellDetailComponent implements OnInit {
         if (Command.hasOwnProperty("spellId")) {
             this.bsModalRef.content.recordName = Command.name;
             this.bsModalRef.content.recordImage = Command.imageUrl;
+            this.bsModalRef.content.recordType = 'ch-rs-spell';
+            this.bsModalRef.content.recordId = spellId;
         }
         this.bsModalRef.content.event.subscribe(result => {
         });

@@ -28,6 +28,8 @@ export class CastComponent implements OnInit {
     CommandData: any = new Command();
     character: Characters = new Characters();
     buttonText: string;
+    recordType: string;
+    recordId: string;
     constructor(
         public modalService: BsModalService, private bsModalRef: BsModalRef, private alertService: AlertService,
    
@@ -44,6 +46,8 @@ export class CastComponent implements OnInit {
             this.CommandData = this.bsModalRef.content.Command;
             this.character = this.bsModalRef.content.Character;
             this.buttonText = this.bsModalRef.content.ButtonText ? this.bsModalRef.content.ButtonText : undefined;
+            this.recordType = this.bsModalRef.content.recordType;
+            this.recordId = this.bsModalRef.content.recordId;
         }, 0);
     }
     useCommand(Command: any) {
@@ -69,6 +73,8 @@ export class CastComponent implements OnInit {
         this.bsModalRef.content.characterId = this.character.characterId;
         this.bsModalRef.content.character = this.character;
         this.bsModalRef.content.command = Command.command;
+        this.bsModalRef.content.recordType = this.recordType;
+        this.bsModalRef.content.recordId = this.recordId;
         
         if (this.CommandData.hasOwnProperty("itemId")) {
             this.bsModalRef.content.recordName = this.CommandData.name;

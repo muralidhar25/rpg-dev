@@ -466,95 +466,98 @@ export class AppComponent implements OnInit, AfterViewInit {
         let url = (<NavigationStart>event).url;
         this.setCharacterRedirection(url);
 
-        
-       
-        if (!this.router.navigated) {
-          if (!this.RefreshURLFlag && url!='/') {
-            this.RefreshURLFlag = true;
-            Utilities.RefreshPage(url, this.router, this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE), this.localStorage.getDataObject<number>(DBkeys.RULESET_ID), this.localStorage);
-            
-          }
-        }
-        
-        
-        
-        else if (this.router.navigated && url.toUpperCase().indexOf('/SEARCH/BASIC') == -1 && url != '/') {
 
-          this.localStorage.localStorageSetItem("LastAccessedPage", url);
-          if (+url.split('/')[url.split('/').length - 1] && !this.URLFlag) {
-            let NewUrl = url.replace('/' + url.split('/')[url.split('/').length - 1], '')
+        if (!Utilities.isGoingToAppNonLoginRoutes(url)) {
+          if (!this.router.navigated) {
+            if (!this.RefreshURLFlag && url != '/') {
+              this.RefreshURLFlag = true;
+              Utilities.RefreshPage(url, this.router, this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE), this.localStorage.getDataObject<number>(DBkeys.RULESET_ID), this.localStorage);
 
-            //if (+url.split('/')[url.split('/').length - 1]) {
-            //  this.lastPrevIdUsed = this.lastIdUsed;
-            //  this.lastIdUsed = +url.split('/')[url.split('/').length - 1];
-            //}
-            this.URLFlag = true;
-
-            Utilities.RedriectToPageWithoutId(url, NewUrl, this.router,1);
-            //this.router.navigate([url], { skipLocationChange: true });
-            //window.history.pushState('', '', NewUrl)
-
-
-            //window.history.pushState('', '', url)
-            //window.history.replaceState('', '', NewUrl)
-
-          }
-          else {
-            let prevUrl = this.previousUrl
-
-            if (+this.previousUrl.split('/')[this.previousUrl.split('/').length - 1]) {
-              prevUrl = this.previousUrl.replace('/' + this.previousUrl.split('/')[this.previousUrl.split('/').length - 1], '')
             }
+          }
 
-            if (url == prevUrl) {
-              if (this.previousUrlList) {
-                if (this.previousUrlList[this.previousUrlList.length - 1] === this.previousUrl && this.previousUrlList.length > 2) {
-                  this.currentUrl = this.previousUrlList[this.previousUrlList.length - 1]
-                  this.previousUrlList.splice(this.previousUrlList.length - 1, 1);
+          else if (this.router.navigated && url.toUpperCase().indexOf('/SEARCH/BASIC') == -1 && url != '/') {
+
+            this.localStorage.localStorageSetItem("LastAccessedPage", url);
+            if (+url.split('/')[url.split('/').length - 1] && !this.URLFlag) {
+              let NewUrl = url.replace('/' + url.split('/')[url.split('/').length - 1], '')
+
+              //if (+url.split('/')[url.split('/').length - 1]) {
+              //  this.lastPrevIdUsed = this.lastIdUsed;
+              //  this.lastIdUsed = +url.split('/')[url.split('/').length - 1];
+              //}
+              this.URLFlag = true;
+
+              Utilities.RedriectToPageWithoutId(url, NewUrl, this.router, 1);
+              //this.router.navigate([url], { skipLocationChange: true });
+              //window.history.pushState('', '', NewUrl)
+
+
+              //window.history.pushState('', '', url)
+              //window.history.replaceState('', '', NewUrl)
+
+            }
+            else {
+              let prevUrl = this.previousUrl
+
+              if (+this.previousUrl.split('/')[this.previousUrl.split('/').length - 1]) {
+                prevUrl = this.previousUrl.replace('/' + this.previousUrl.split('/')[this.previousUrl.split('/').length - 1], '')
+              }
+
+              if (url == prevUrl) {
+                if (this.previousUrlList) {
+                  if (this.previousUrlList[this.previousUrlList.length - 1] === this.previousUrl && this.previousUrlList.length > 2) {
+                    this.currentUrl = this.previousUrlList[this.previousUrlList.length - 1]
+                    this.previousUrlList.splice(this.previousUrlList.length - 1, 1);
+                  }
                 }
-              }
 
-              let NewUrl = url;
-              if (+url.split('/')[url.split('/').length - 1]) {
-                NewUrl = url.replace('/' + url.split('/')[url.split('/').length - 1], '')
-              }
-             
-              if (this.previousUrlList) {
-                if (this.previousUrlList[this.previousUrlList.length - 1] === this.previousUrl && this.previousUrlList.length > 2) {
+                let NewUrl = url;
+                if (+url.split('/')[url.split('/').length - 1]) {
+                  NewUrl = url.replace('/' + url.split('/')[url.split('/').length - 1], '')
+                }
 
-                  Utilities.RedriectToPageWithoutId(this.previousUrlList[this.previousUrlList.length - 1], NewUrl, this.router,2);
+                if (this.previousUrlList) {
+                  if (this.previousUrlList[this.previousUrlList.length - 1] === this.previousUrl && this.previousUrlList.length > 2) {
 
-                  //this.router.navigate([this.previousUrlList[this.previousUrlList.length - 1]], { skipLocationChange: true });
-                  //window.history.pushState('', '', NewUrl)
+                    Utilities.RedriectToPageWithoutId(this.previousUrlList[this.previousUrlList.length - 1], NewUrl, this.router, 2);
+
+                    //this.router.navigate([this.previousUrlList[this.previousUrlList.length - 1]], { skipLocationChange: true });
+                    //window.history.pushState('', '', NewUrl)
+                  }
+                  else if (this.previousUrl.toUpperCase().indexOf('/CHARACTER/CHARACTER-STATS/') != -1) {
+                    Utilities.RedriectToPageWithoutId(this.previousUrl, NewUrl, this.router, 3)
+                  }
+                  else {
+                    //Utilities.RedriectToPageWithoutId(this.previousUrl, NewUrl, this.router,3);
+
+                    //this.router.navigate([this.previousUrl], { skipLocationChange: true });
+                    //window.history.pushState('', '', NewUrl)
+                  }
                 }
                 else {
-                  //Utilities.RedriectToPageWithoutId(this.previousUrl, NewUrl, this.router,3);
+                  Utilities.RedriectToPageWithoutId(this.previousUrl, NewUrl, this.router, 4);
 
                   //this.router.navigate([this.previousUrl], { skipLocationChange: true });
                   //window.history.pushState('', '', NewUrl)
-                }
-              }
-              else {
-                Utilities.RedriectToPageWithoutId(this.previousUrl, NewUrl, this.router,4);
 
+                }
                 //this.router.navigate([this.previousUrl], { skipLocationChange: true });
                 //window.history.pushState('', '', NewUrl)
-
+                //window.history.pushState('', '', this.previousUrl)
+                //window.history.replaceState('', '', NewUrl)
               }
-              //this.router.navigate([this.previousUrl], { skipLocationChange: true });
-              //window.history.pushState('', '', NewUrl)
-              //window.history.pushState('', '', this.previousUrl)
-              //window.history.replaceState('', '', NewUrl)
-            }
-            else {
-              if (!this.URLFlag) {
-                this.URLFlag = true;
-                Utilities.RefreshPage(url, this.router, this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE), this.localStorage.getDataObject<number>(DBkeys.RULESET_ID), this.localStorage);
+              else {
+                if (!this.URLFlag) {
+                  this.URLFlag = true;
+                  Utilities.RefreshPage(url, this.router, this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE), this.localStorage.getDataObject<number>(DBkeys.RULESET_ID), this.localStorage);
 
+                }
               }
             }
           }
         }
+       
         
         this.URLFlag = false;
         this.showCharacterSearch = ((url.toLowerCase() == '/characters') || (url.toLowerCase() == '/'));
@@ -1027,22 +1030,32 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   setCharacterRedirection(url) {
-    let cid = this.headers.headerId;
-    let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+    if (this.headers.headerId) {
+      let cid = 0;
+      if (this.headers.headerLink == 'character') {
+        cid = this.headers.headerId;
+      }
 
-    let storageNavigation = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
-    if (storageNavigation) {
-      this.characterNavigation = storageNavigation;
+      let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+      let storageNavigation = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+      if (storageNavigation) {
+        this.characterNavigation = storageNavigation;
+      }
+
+      if (typeof (cid) != 'undefined') {
+        this.characterNavigation = Utilities.setCharacterRedirection(url,
+          cid,
+          rid,
+          this.characterNavigation
+        );
+
+        if (cid > 0) {
+          this.localStorage.localStorageSetItem(DBkeys.CHARACTER_NAVIGATION, this.characterNavigation);
+        }
+
+      }
     }
-
-    if (typeof (cid) != 'undefined') {
-          this.characterNavigation = Utilities.setCharacterRedirection(url,
-            cid,
-            rid,
-            this.characterNavigation
-          );
-
-      this.localStorage.localStorageSetItem(DBkeys.CHARACTER_NAVIGATION,this.characterNavigation );
-    }
+    
   }
 }

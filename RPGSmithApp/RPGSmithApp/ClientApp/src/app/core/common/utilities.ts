@@ -892,6 +892,7 @@ export class Utilities {
   public static LogoImage: string = 'logo-full.svg'; // for prod //non-beta
 
   public static setCharacterRedirection(routerUrl, characterID, rulesetID, characterNavigation) {
+    
     if (routerUrl.toUpperCase().indexOf('/CHARACTER/DASHBOARD') > -1 && (typeof (characterNavigation[characterID]) == 'undefined')) {
       characterNavigation[characterID] = {
         'items': '/character/inventory/' + characterID,
@@ -908,7 +909,35 @@ export class Utilities {
     else if (routerUrl.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES') > -1) {
       characterNavigation[characterID].abilities = '/character/ruleset/abilities/' + rulesetID;
     }
+    else if (routerUrl.toUpperCase().indexOf('/CHARACTER/INVENTORY') > -1) {
+      characterNavigation[characterID].items = '/character/inventory/' + characterID;
+    }
+    else if (routerUrl.toUpperCase().indexOf('/CHARACTER/SPELL') > -1) {
+      characterNavigation[characterID].spells = '/character/spell/' + characterID;
+    }
+    else if (routerUrl.toUpperCase().indexOf('/CHARACTER/ABILITY') > -1) {
+      characterNavigation[characterID].abilities = '/character/ability/' + characterID;
+    }
 
     return characterNavigation;
+  }
+  public static isGoingToAppNonLoginRoutes(url:string):boolean {
+    if (
+      url.toUpperCase().indexOf('/LOGIN') != -1 
+      || url.toUpperCase().indexOf('/REGISTER') != -1
+      || url.toUpperCase().indexOf('/FORGOTPASSWORD') != -1
+      || url.toUpperCase().indexOf('/FORGOT-PASSWORD-EMAIL') != -1
+      || url.toUpperCase().indexOf('/RESETPASSWORD') != -1
+      || url.toUpperCase().indexOf('/RESET-PASSWORD-SUCCESS') != -1
+      || url.toUpperCase().indexOf('/REGISTER-EMAIL-CONFIRMATION') != -1
+      || url.toUpperCase().indexOf('/EMAIL-CONFIRMATION') != -1
+      || url.toUpperCase().indexOf('/EMAIL-CONFIRMATION-SUCCESS') != -1
+      || url.toUpperCase().indexOf('/PRIVACYPOLICY') != -1
+      || url.toUpperCase().indexOf('/TERMSCONDITION') != -1
+      || url.toUpperCase().indexOf('/LOGONWARNING') != -1
+    ) {
+      return true;
+    }
+    return false;
   }
 }

@@ -390,14 +390,16 @@ export class CharacterSpellsComponent implements OnInit {
             this.bsModalRef.content.Command = spell.spell;
             this.bsModalRef.content.Character = this.character;
             this.bsModalRef.content.ButtonText = 'Cast';
+            this.bsModalRef.content.recordType = 'spell';
+            this.bsModalRef.content.recordId = spell.characterSpellId;
           } else {
-            this.useCommand(spell.spell)
+            this.useCommand(spell.spell, spell.characterSpellId)
           }
         }, error => { }, () => { });
     }
 
   }
-  useCommand(Command: any) {
+  useCommand(Command: any, spellId:string='') {
     let msg = "The command value for " + Command.name
       + " has not been provided. Edit this record to input one.";
     if (Command.command == undefined || Command.command == null || Command.command == '') {
@@ -405,10 +407,10 @@ export class CharacterSpellsComponent implements OnInit {
     }
     else {
       //TODO
-      this.useCommandHelper(Command);
+      this.useCommandHelper(Command, spellId);
     }
   }
-  private useCommandHelper(Command: any) {
+  private useCommandHelper(Command: any, spellId: string = '') {
     this.bsModalRef = this.modalService.show(DiceRollComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -422,6 +424,8 @@ export class CharacterSpellsComponent implements OnInit {
     if (Command.hasOwnProperty("spellId")) {
       this.bsModalRef.content.recordName = Command.name;
       this.bsModalRef.content.recordImage = Command.imageUrl;
+      this.bsModalRef.content.recordType = 'spell';
+      this.bsModalRef.content.recordId = spellId;
     }
     this.bsModalRef.content.event.subscribe(result => {
     });
@@ -468,7 +472,28 @@ export class CharacterSpellsComponent implements OnInit {
     this.sharedService.updateAccountSetting(headerValues);
     this.localStorage.deleteData(DBkeys.HEADER_VALUE);
     this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
-    
+
+
+    //let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+    let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+    if (!icharNav) {
+      this.charNav = {
+        'items': '/character/inventory/' + character.characterId,
+        'spells': '/character/spell/' + character.characterId,
+        'abilities': '/character/ability/' + character.characterId
+      };
+    }
+    else {
+      if (!icharNav[character.characterId]) {
+        this.charNav = {
+          'items': '/character/inventory/' + character.characterId,
+          'spells': '/character/spell/' + character.characterId,
+          'abilities': '/character/ability/' + character.characterId
+        };
+      } else {
+        this.charNav = icharNav[character.characterId];
+      }
+    }
   }
 
   applyFilters(present_filter, apply_same = false) {

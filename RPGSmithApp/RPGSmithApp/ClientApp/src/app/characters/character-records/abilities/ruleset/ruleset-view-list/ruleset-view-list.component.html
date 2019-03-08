@@ -38,13 +38,13 @@
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                               <ul class="dropdown-menu-list">
                                 <li *ngIf="rulesetModel?.isItemEnabled" class="dropdown-menu-item">
-                                  <a [routerLink]="['/character/inventory/', character.characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Inventory</span></a>
+                                  <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Inventory</span></a>
                                 </li>
                                 <li *ngIf="rulesetModel?.isSpellEnabled" class="dropdown-menu-item">
-                                  <a [routerLink]="['/character/spell/', character.characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+                                  <a [routerLink]="charNav?.spells" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
                                 </li>
                                 <li *ngIf="rulesetModel?.isAbilityEnabled" class="dropdown-menu-item">
-                                  <a [routerLink]="['/character/ability/', character.characterId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> <span>Abilities</span></a>
+                                  <a [routerLink]="charNav?.abilities" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> <span>Abilities</span></a>
                                 </li>
                                 <li *ngIf="rulesetModel" class="dropdown-menu-item">
                                   <a [routerLink]="['/character/character-stats/', character.characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>

@@ -472,7 +472,7 @@ export class DiceService {
           //diceValue += diceValue;
           isDoubleQuotesStarted = false;
         }
-        else if (x == _commandText.length - 1) {
+        if (x == _commandText.length - 1 && !isDoubleQuotesStarted && !isSingleQuotesStarted ) {
           if (diceValue.trim() !== '')
             diceARRAY.push({
               dice: diceValue.trim(),
@@ -2356,7 +2356,7 @@ export class DiceService {
         // matched text: match[0]
         // match start: match.index
         // capturing group n: match[n]
-        console.log(match[0])
+        //console.log(match[0])
         matchArr.push(match[0])
         match = myRegexp.exec(str);
       }
