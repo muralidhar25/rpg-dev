@@ -1606,6 +1606,7 @@ namespace RPGSmithApp.Controllers
             {
                 _ruleSetService.SaveLastSearchFilters(searchModel);
                 string searchText = searchModel.SearchString;
+                
                 if (!string.IsNullOrEmpty(searchText) && searchText.Length > 2)
                 {
                     if ((searchText.ElementAt(0) == '"' && searchText.ElementAt(searchText.Length - 1) == '"'))
@@ -1615,6 +1616,10 @@ namespace RPGSmithApp.Controllers
                         searchModel.SearchString = searchText;
                         return GetSingleSearchResult(searchModel);
                     }
+                }
+                else if (string.IsNullOrEmpty(searchText))
+                {
+                    searchText = string.Empty;
                 }
 
 

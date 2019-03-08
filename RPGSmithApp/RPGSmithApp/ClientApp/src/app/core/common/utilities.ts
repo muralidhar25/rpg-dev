@@ -882,7 +882,7 @@ export class Utilities {
   }
 
   public static RedriectToPageWithoutId(originalUrl: string, displayUrl: string, router: Router,RedriectFromCode:number) {
-    console.log({ RedriectFromCode: RedriectFromCode, originalUrl: originalUrl, displayUrl: displayUrl });
+    //console.log({ RedriectFromCode: RedriectFromCode, originalUrl: originalUrl, displayUrl: displayUrl });
     router.navigate([originalUrl], { skipLocationChange: true });
     window.history.pushState('', '', displayUrl);
   }

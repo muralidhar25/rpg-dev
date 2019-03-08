@@ -177,6 +177,17 @@
       padding-right:4px !important;
       margin-right:0px !important;
     }
+    .site-header-search{
+      display:flex;
+      align-items:center;
+      margin-right:10px;
+    }
+    .site-header-search input{
+      display:none
+    }
+    .site-header-search .icon{
+      margin-right:0px;
+    }
   }
   @media (max-width:575px){
     .user-login-details{

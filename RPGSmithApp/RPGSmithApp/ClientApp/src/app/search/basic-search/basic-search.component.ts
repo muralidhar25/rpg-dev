@@ -178,6 +178,16 @@ export class BasicSearchComponent implements OnInit {
   }
 
   search(query: string) {
+    
+    if (this.searchModal) {
+      if (!this.searchModal.searchString) {
+        this.searchModal.searchString = '';        
+      }
+      if (!query) {
+        query = '';
+      }
+    }
+   
     this.appService.updateSearchText(query);
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null) {
