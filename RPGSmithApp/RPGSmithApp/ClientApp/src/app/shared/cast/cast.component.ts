@@ -75,8 +75,6 @@ export class CastComponent implements OnInit {
         this.bsModalRef.content.command = Command.command;
         this.bsModalRef.content.recordType = this.recordType;
         this.bsModalRef.content.recordId = this.recordId;
-        console.log('this.bsModalRef.content.recordType', this.bsModalRef.content.recordType);
-        console.log('this.bsModalRef.content.recordId', this.bsModalRef.content.recordId);
         
         if (this.CommandData.hasOwnProperty("itemId")) {
             this.bsModalRef.content.recordName = this.CommandData.name;
