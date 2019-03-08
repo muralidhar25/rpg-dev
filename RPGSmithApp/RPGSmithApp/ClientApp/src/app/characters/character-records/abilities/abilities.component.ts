@@ -415,8 +415,10 @@ export class CharacterAbilitiesComponent implements OnInit {
             this.bsModalRef.content.AbilityId = ability.abilityId;
             this.bsModalRef.content.Command = ability.ability;
             this.bsModalRef.content.Character = this.character;
+            this.bsModalRef.content.recordType = 'ability';
+            this.bsModalRef.content.recordId = ability.characterAbilityId;
           } else {
-            this.useCommand(ability.ability)
+            this.useCommand(ability.ability, ability.characterAbilityId)
           }
         }, error => { }, () => { });
     }
@@ -437,7 +439,7 @@ export class CharacterAbilitiesComponent implements OnInit {
     //    this.useCommand(ability.ability)
     //}
   }
-  useCommand(Command: any) {
+  useCommand(Command: any, abilityId: string='') {
     let msg = "The command value for " + Command.name
       + " has not been provided. Edit this record to input one.";
     if (Command.command == undefined || Command.command == null || Command.command == '') {
@@ -445,10 +447,10 @@ export class CharacterAbilitiesComponent implements OnInit {
     }
     else {
       //TODO
-      this.useCommandHelper(Command);
+      this.useCommandHelper(Command, abilityId);
     }
   }
-  private useCommandHelper(Command: any) {
+  private useCommandHelper(Command: any, abilityId: string = '') {
     this.bsModalRef = this.modalService.show(DiceRollComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -462,6 +464,8 @@ export class CharacterAbilitiesComponent implements OnInit {
     if (Command.hasOwnProperty("abilityId")) {
       this.bsModalRef.content.recordName = Command.name;
       this.bsModalRef.content.recordImage = Command.imageUrl;
+      this.bsModalRef.content.recordType = 'ability';
+      this.bsModalRef.content.recordId = abilityId;
     }
     this.bsModalRef.content.event.subscribe(result => {
     });

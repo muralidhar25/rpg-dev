@@ -271,10 +271,10 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
             this.bsModalRef.content.Command = this.ItemDetail
             this.bsModalRef.content.Character = this.character
         } else {
-            this.useCommand(this.ItemDetail)
+          this.useCommand(this.ItemDetail, item.itemId)
         }
     }
-    useCommand(Command: any) {
+  useCommand(Command: any, itemId: string = '') {
         let msg = "The command value for " + Command.name
             + " has not been provided. Edit this record to input one.";
         if (Command.command == undefined || Command.command == null || Command.command == '') {
@@ -282,10 +282,10 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
         }
         else {
             //TODO
-            this.useCommandHelper(Command);
+          this.useCommandHelper(Command, itemId);
         }
     }
-    private useCommandHelper(Command: any) {
+  private useCommandHelper(Command: any, itemId: string = '') {
         this.bsModalRef = this.modalService.show(DiceRollComponent, {
             class: 'modal-primary modal-md',
             ignoreBackdropClick: true,
@@ -299,6 +299,8 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
         if (Command.hasOwnProperty("itemId")) {
             this.bsModalRef.content.recordName = Command.name;
             this.bsModalRef.content.recordImage = Command.itemImage;
+            this.bsModalRef.content.recordType = 'item';
+            this.bsModalRef.content.recordId = itemId;
         }
         this.bsModalRef.content.event.subscribe(result => {
         });
