@@ -296,7 +296,7 @@ export class BasicSearchComponent implements OnInit {
   //}
 
   showMorelessFields() {
-    //this.showMoreLessToggle = !this.showMoreLessToggle;
+    this.showMoreLessToggle = !this.showMoreLessToggle;
   }
 
   gotoPage(input: any) {
