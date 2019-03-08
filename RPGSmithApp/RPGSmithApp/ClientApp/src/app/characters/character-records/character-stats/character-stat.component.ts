@@ -212,7 +212,9 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                     try {
                         this.noRecordFound = !data.length;
                     } catch (err) { }
-                    this.isLoading = false;
+                  this.isLoading = false;
+
+                 //this.save(this.charactersCharacterStats, 99);
                 }, error => {                    
                     this.isLoading = false;
                     let Errors = Utilities.ErrorDetail("", error);
@@ -688,8 +690,11 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         }
     }
 
-    save(characterstats: any, redirectto: any) {
-        
+  save(characterstats: any, redirectto: any) {
+    
+    //if (redirectto == 99) {
+    //  this.isLoading = true;
+    //  }
         let valid = true;
         characterstats.map((cs) => {
             if (cs.characterStat.characterStatTypeId == STAT_TYPE.Combo) {
@@ -754,8 +759,13 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         }
         
         let _msg = "Updating Character Stats..";
-        this.isLoading = true;
-        this.alertService.startLoadingMessage("", _msg);
+      this.isLoading = true;
+
+    this.alertService.startLoadingMessage("", _msg);
+      //if (redirectto != 99) {
+      //  this.alertService.startLoadingMessage("", _msg);
+      //}
+        
 
         characterstats.forEach(item => {
 
@@ -1068,7 +1078,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
             }
 
         });
-
+    
         this.charactersCharacterStatService.updateCharactersCharacterStatList(characterstats)
             .subscribe(
                 data => {
@@ -1076,8 +1086,12 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                     this.pageSize = 30;
                     //console.log("data: ", data);
                     this.alertService.stopLoadingMessage();
-                    let message = "Characters stats has been updated successfully.";
-                    this.alertService.showMessage(message, "", MessageSeverity.success);
+                  let message = "Characters stats has been updated successfully.";
+                  this.alertService.showMessage(message, "", MessageSeverity.success);
+                  //if (redirectto != 99) {
+                  //  this.alertService.showMessage(message, "", MessageSeverity.success);
+                  //}
+                    
                     
                     if (redirectto == 0) {
 
@@ -1103,6 +1117,9 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                     else if (redirectto == 5) {
                       this.router.navigate(['/ruleset/character-stats', this.rulesetId]);
                     }
+                    //else if (redirectto == 99) {
+                    //  this.isLoading = false;
+                    //}
                     else {
                         this.router.navigate(['/character/dashboard', this.characterId]);
                     }
@@ -1832,7 +1849,29 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
       this.appService.updateAccountSetting1(headerValues);
         this.sharedService.updateAccountSetting(headerValues);
         this.localStorage.deleteData(DBkeys.HEADER_VALUE);
-        this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+      this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+
+      
+      //let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+      let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+      if (!icharNav) {
+        this.charNav = {
+          'items': '/character/inventory/' + character.characterId,
+          'spells': '/character/spell/' + character.characterId,
+          'abilities': '/character/ability/' + character.characterId
+        };
+      }
+      else {
+        if (!icharNav[character.characterId]) {
+          this.charNav = {
+            'items': '/character/inventory/' + character.characterId,
+            'spells': '/character/spell/' + character.characterId,
+            'abilities': '/character/ability/' + character.characterId
+          };
+        } else {
+          this.charNav = icharNav[character.characterId];
+        }
+      }
     }
     newCharacterStat() {
         this.bsModalRef = this.modalService.show(CharacterStatsFormComponent, {

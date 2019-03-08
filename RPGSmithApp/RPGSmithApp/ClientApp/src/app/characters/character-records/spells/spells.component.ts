@@ -468,7 +468,28 @@ export class CharacterSpellsComponent implements OnInit {
     this.sharedService.updateAccountSetting(headerValues);
     this.localStorage.deleteData(DBkeys.HEADER_VALUE);
     this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
-    
+
+
+    //let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+    let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+    if (!icharNav) {
+      this.charNav = {
+        'items': '/character/inventory/' + character.characterId,
+        'spells': '/character/spell/' + character.characterId,
+        'abilities': '/character/ability/' + character.characterId
+      };
+    }
+    else {
+      if (!icharNav[character.characterId]) {
+        this.charNav = {
+          'items': '/character/inventory/' + character.characterId,
+          'spells': '/character/spell/' + character.characterId,
+          'abilities': '/character/ability/' + character.characterId
+        };
+      } else {
+        this.charNav = icharNav[character.characterId];
+      }
+    }
   }
 
   applyFilters(present_filter, apply_same = false) {

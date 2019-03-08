@@ -8612,7 +8612,9 @@ li.popup-new-tile-trigger.cross-li .btn {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-
+.modal-custom{
+  margin:30px auto !important
+}
 @media (min-width:1024px) {
   .fr-box.fr-fullscreen {
     left: -200px !important;
