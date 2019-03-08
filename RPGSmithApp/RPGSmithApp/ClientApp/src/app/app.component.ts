@@ -465,7 +465,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
         let url = (<NavigationStart>event).url;
         this.setCharacterRedirection(url);
-
+        
 
         if (!Utilities.isGoingToAppNonLoginRoutes(url)) {
           if (!this.router.navigated) {
@@ -477,7 +477,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           }
 
           else if (this.router.navigated && url.toUpperCase().indexOf('/SEARCH/BASIC') == -1 && url != '/') {
-
+            
             this.localStorage.localStorageSetItem("LastAccessedPage", url);
             if (+url.split('/')[url.split('/').length - 1] && !this.URLFlag) {
               let NewUrl = url.replace('/' + url.split('/')[url.split('/').length - 1], '')
@@ -525,7 +525,9 @@ export class AppComponent implements OnInit, AfterViewInit {
                     //this.router.navigate([this.previousUrlList[this.previousUrlList.length - 1]], { skipLocationChange: true });
                     //window.history.pushState('', '', NewUrl)
                   }
-                  else if (this.previousUrl.toUpperCase().indexOf('/CHARACTER/CHARACTER-STATS/') != -1) {
+                  else if (this.previousUrl.toUpperCase().indexOf('/CHARACTER/CHARACTER-STATS/') != -1
+                    || this.previousUrl.toUpperCase().indexOf('/CHARACTER/') != -1
+                    || this.previousUrl.toUpperCase().indexOf('/RULESET/') != -1) {
                     Utilities.RedriectToPageWithoutId(this.previousUrl, NewUrl, this.router, 3)
                   }
                   else {
@@ -562,7 +564,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.URLFlag = false;
         this.showCharacterSearch = ((url.toLowerCase() == '/characters') || (url.toLowerCase() == '/'));
         if (url !== url.toLowerCase()) {
-          console.log('AppComponentOld Redriection:', (<NavigationStart>event).url.toLowerCase());
+          //console.log('AppComponentOld Redriection:', (<NavigationStart>event).url.toLowerCase());
           this.router.navigateByUrl((<NavigationStart>event).url.toLowerCase());
         }
         
@@ -749,6 +751,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   // navigating to search page
   navigateToSearch(searchType: string, searchTxt: string) {
+    if (!searchTxt) {
+      searchTxt = '';
+    }
     this.router.navigate(['/search/basic/' + searchType + '/' + searchTxt]);
   }
 
@@ -969,6 +974,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
   }
   gotoRulesetViewForCharacter() {
+    
     let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
     
     if (this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1) {
@@ -1008,6 +1014,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
   gotoRulesetView() {
+    
     let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
     if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS/') > -1) {
       this.router.navigate(['/ruleset/item-master', rid]);

@@ -3846,12 +3846,12 @@ span.search-content span {
 .page-toolbar-links > li, .page-toolbar-actions > li {
   display: flex;
   list-style-type: none;
-  margin-top: 0.5rem;
+  margin-top: 0.5rem !important;
 }
 
 @media screen and (min-width: 767.5px) {
   .page-toolbar-links > li, .page-toolbar-actions > li {
-    margin-top: 0;
+    /*margin-top: 0;*/
     margin-left: 1rem;
   }
 }
@@ -4755,7 +4755,7 @@ span.search-content span {
 
   .page-inventory .page-toolbar-actions li.view-switch {
     order: 1;
-    margin-top: 16px;
+    margin-top: 0.5rem !important;
   }
 
 @media screen and (min-width: 767.5px) {

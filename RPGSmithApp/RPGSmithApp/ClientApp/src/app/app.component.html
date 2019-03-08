@@ -43,7 +43,8 @@
 
           <!-- Search -->
           <div class="site-header-search" *ngIf="SearchType">
-            <i class="icon icon-search"></i>
+            <i class="icon icon-search d-md-none" (click)="navigateToSearch(SearchType, '')"></i>
+            <i class="icon icon-search d-none d-md-block"></i>
             <input type="text" name="searchCharRule" [(ngModel)]="searchCharRule" placeholder="Search {{ SearchTypeText }}" (keyup.enter)="navigateToSearch(SearchType, searchCharRule)" />
           </div>
 
