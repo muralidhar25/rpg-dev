@@ -8729,3 +8729,6 @@ li.popup-new-tile-trigger.cross-li .btn {
   display: inline-block;
   max-width: 100%;
 }
+.text-overflow-hidden {
+  overflow:visible !important
+}

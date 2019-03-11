@@ -299,7 +299,7 @@
                                         {{box.tile.characterStatTiles?.characterStat?.statName}}
                                     </h5>
 
-                                    <div class="tile-body" popover="{{box.tile.characterStatTiles?.characterStat?.statName}}" [triggers]="!box.tile.characterStatTiles?.showTitle ? 'hover' : ''">
+                                    <div class="tile-body text-overflow-hidden" popover="{{box.tile.characterStatTiles?.characterStat?.statName}}" [triggers]="!box.tile.characterStatTiles?.showTitle ? 'hover' : ''">
                                         <div [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':''" [style.color]="box.tile.characterStatTiles.bodyTextColor"
                                              [style.background-color]="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.RichText ? '' : box.tile.characterStatTiles.bodyBgColor">
 

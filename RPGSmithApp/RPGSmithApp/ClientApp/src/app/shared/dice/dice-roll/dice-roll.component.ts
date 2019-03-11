@@ -482,6 +482,7 @@ export class DiceRollComponent implements OnInit {
         let IDs: any[] = [];
         finalCalcString = calculationString;
         if (calculationString) {
+          calculationString = DiceService.hideTextCommandSquareBraces(calculationString);
           calculationString.split(/\[(.*?)\]/g).map((rec) => {
 
             let id = ''; let flag = false; let type = 0; let statType = 0;
@@ -528,7 +529,7 @@ export class DiceRollComponent implements OnInit {
               IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
             }
           })
-
+          calculationString = DiceService.showTextCommandSquareBraces(calculationString);
           IDs.map((rec) => {
             //console.log('---rec.id ', rec.id)
             this.statdetails.charactersCharacterStat.map((stat) => {
@@ -823,6 +824,8 @@ export class DiceRollComponent implements OnInit {
       let IDs: any[] = [];
       finalCalcString = calculationString;
       if (calculationString) {
+
+        calculationString = DiceService.hideTextCommandSquareBraces(calculationString);
         calculationString.split(/\[(.*?)\]/g).map((rec) => {
 
           let id = ''; let flag = false; let type = 0; let statType = 0;
@@ -869,6 +872,9 @@ export class DiceRollComponent implements OnInit {
             IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
           }
         })
+
+        calculationString = DiceService.showTextCommandSquareBraces(calculationString);
+
         //console.log('IDs ', IDs)
         IDs.map((rec) => {
           this.statdetails.charactersCharacterStat.map((stat) => {
@@ -940,6 +946,8 @@ export class DiceRollComponent implements OnInit {
   commandStatTypeInCommand(cmd: string): Observable<any> {
     try {
       let data = [];
+
+      cmd = DiceService.hideTextCommandSquareBraces(cmd);
       cmd.split(/\[(.*?)\]/g).map((rec) => {
         let id = ''; let flag = false; let type = 0; let statType = 0;
         let isValue = false; let isSubValue = false; let isCurrent = false; let isMax = false;
@@ -981,12 +989,13 @@ export class DiceRollComponent implements OnInit {
           }
         })
       });
+      cmd = DiceService.showTextCommandSquareBraces(cmd);
       return Observable.of(data);
 
     } catch (err) { }
   }
   onClickRoll(characterCommand: CharacterCommand, _mainCommandText: string, lastResultArray?: any) {
-    
+    debugger
     let anyCommandIsCustomWithNonNumeric = false;
     this.loadingResult = false;
     let command = characterCommand.command;
@@ -1063,8 +1072,10 @@ export class DiceRollComponent implements OnInit {
             let IDs: any[] = [];
             finalCalcString = calculationString;
             if (calculationString) {
+              debugger
+              calculationString= DiceService.hideTextCommandSquareBraces(calculationString);
               calculationString.split(/\[(.*?)\]/g).map((rec) => {
-
+                
                 let id = ''; let flag = false; let type = 0; let statType = 0;
                 let isValue = false; let isSubValue = false; let isCurrent = false; let isMax = false;
 
@@ -1109,6 +1120,9 @@ export class DiceRollComponent implements OnInit {
                   IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
                 }
               })
+
+              debugger
+              calculationString = DiceService.showTextCommandSquareBraces(calculationString);
 
               IDs.map((rec) => {
                 this.statdetails.charactersCharacterStat.map((stat) => {
@@ -1155,7 +1169,7 @@ export class DiceRollComponent implements OnInit {
                   }
 
                 });
-
+                
                 finalCalcString = calculationString;
               });
             }
@@ -2624,6 +2638,9 @@ export class DiceRollComponent implements OnInit {
         let IDs: any[] = [];
         finalCalcString = calculationString;
         if (calculationString) {
+
+          calculationString = DiceService.hideTextCommandSquareBraces(calculationString);
+
           calculationString.split(/\[(.*?)\]/g).map((rec) => {
 
             let id = ''; let flag = false; let type = 0; let statType = 0;
@@ -2670,6 +2687,7 @@ export class DiceRollComponent implements OnInit {
               IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
             }
           })
+          calculationString = DiceService.showTextCommandSquareBraces(calculationString);
 
           IDs.map((rec) => {
             this.statdetails.charactersCharacterStat.map((stat) => {
@@ -2985,7 +3003,7 @@ export class DiceRollComponent implements OnInit {
           operator = diceArray[diceArr].trim();
         }
         else if (_dice.indexOf('KL') > -1) {
-          let __dice = diceArray[diceArr].trim();
+          let __dice = _dice.trim(); // diceArray[diceArr].trim();
           let operatorValArray = this.splitWithoutEmpty(__dice, 'KL');
           operator = "KL";
           operatorNumber = +operatorValArray[0].trim();
@@ -2998,7 +3016,7 @@ export class DiceRollComponent implements OnInit {
           }
         }
         else if (_dice.indexOf('KH') > -1) {
-          let __dice = diceArray[diceArr].trim();
+          let __dice = _dice.trim(); // diceArray[diceArr].trim();
           let operatorValArray = this.splitWithoutEmpty(__dice, 'KH');
           operator = "KH";
           operatorNumber = +operatorValArray[0].trim();
@@ -3011,7 +3029,7 @@ export class DiceRollComponent implements OnInit {
           }
         }
         else if (_dice.indexOf('DL') > -1) {
-          let __dice = diceArray[diceArr].trim();
+          let __dice = _dice.trim(); // diceArray[diceArr].trim();
           let operatorValArray = this.splitWithoutEmpty(__dice, 'DL');
           operator = "DL";
           operatorNumber = +operatorValArray[0].trim();
@@ -3024,7 +3042,7 @@ export class DiceRollComponent implements OnInit {
           }
         }
         else if (_dice.indexOf('DH') > -1) {
-          let __dice = diceArray[diceArr].trim();
+          let __dice = _dice.trim(); // diceArray[diceArr].trim();
           let operatorValArray = this.splitWithoutEmpty(__dice, 'DH');
           operator = "DH";
           operatorNumber = +operatorValArray[0].trim();

@@ -252,7 +252,7 @@
               </div>
 
               <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.CHARACTERSTAT && box.tile.characterStatTiles" [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatTiles?.shape=='100')?'grid-circle':''">
-                <div class="tile tile-type-note tile-color-6" (click)="viewTile(box.tile, box.tile.tileTypeId)"
+                <div class="tile tile-type-note  tile-color-6" (click)="viewTile(box.tile, box.tile.tileTypeId)"
                      [style.background-color]="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Command?((box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl)?box.tile.characterStatTiles.titleBgColor:box.tile.characterStatTiles.bodyBgColor):box.tile.characterStatTiles.bodyBgColor">
 
                   <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.characterStatTiles?.titleTextColor, 'background-color': box.tile.characterStatTiles.titleBgColor}"
@@ -262,7 +262,7 @@
                     {{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.statName}}
                   </h5>
 
-                  <div class="tile-body">
+                  <div class="tile-body text-overflow-hidden">
                     <div [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':''" [style.color]="box.tile.characterStatTiles.bodyTextColor"
                          [style.background-color]="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.RichText ? '' : (box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Command && box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl)?box.tile.characterStatTiles.titleBgColor:box.tile.characterStatTiles.bodyBgColor">
 

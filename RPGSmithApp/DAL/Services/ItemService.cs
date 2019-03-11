@@ -439,7 +439,7 @@ namespace DAL.Services
                 {
                     item.IsEquipped = false;
                 }
-                else if (item.IsEquipped == false)
+                else 
                 {
                     item.IsEquipped = true;
                 }

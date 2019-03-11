@@ -149,7 +149,7 @@
                                             {{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.statName}}
                                         </h5>
 
-                                        <div class="tile-body">
+                                        <div class="tile-body text-overflow-hidden">
                                             <div [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':''" [style.color]="box.tile.characterStatTiles.bodyTextColor"
                                                  [style.background-color]="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.RichText ? '' : (box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Command && box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl)?box.tile.characterStatTiles.titleBgColor:box.tile.characterStatTiles.bodyBgColor">
 

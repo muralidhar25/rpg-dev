@@ -389,6 +389,7 @@ export class DiceService {
   }
 
   public static splitCommandToArray(_commandText: string, customDices: CustomDice[] = []): any[] {
+    debugger
     let diceARRAY = [];
     let parenthesis = false;
     let addMod = false;
@@ -404,11 +405,11 @@ export class DiceService {
 
       if (isSingleQuotes || isDoubleQuotes|| addMod || parenthesis || (_commandText[x] != '+' && _commandText[x] != "-" && _commandText[x] != "*" && _commandText[x] != "/")) {
         diceValue += _commandText[x];
-        if (_commandText[x] == '(' && !addMod) { //|| parenthesis) {
+        if (_commandText[x] == '(' && !addMod && !isSingleQuotesStarted && !isDoubleQuotesStarted) { //|| parenthesis) {
           //diceSign = _commandText[x - 1]
           parenthesis = true;
         }
-        else if (_commandText[x] == ')' && !addMod) {
+        else if (_commandText[x] == ')' && !addMod && !isSingleQuotesStarted && !isDoubleQuotesStarted) {
           if (diceValue.trim() !== '')
             diceARRAY.push({
               dice: diceValue.trim(),
@@ -423,11 +424,11 @@ export class DiceService {
           diceValue = '';
         }
 
-        else if (_commandText[x] == '[') { //|| parenthesis) {
+        else if (_commandText[x] == '[' && !isSingleQuotesStarted && !isDoubleQuotesStarted) { //|| parenthesis) {
           //diceSign = _commandText[x - 1]
           addMod = true;
         }
-        else if (_commandText[x] == ']') {
+        else if (_commandText[x] == ']' && !isSingleQuotesStarted && !isDoubleQuotesStarted) {
           if (diceValue.trim() !== '')
             diceARRAY.push({
               dice: diceValue.trim(),
@@ -945,7 +946,7 @@ export class DiceService {
               operator = diceArray[diceArr].trim();
             }
             else if (_dice.indexOf('KL') > -1) {
-              let __dice = diceArray[diceArr].trim();
+              let __dice = _dice.trim(); //diceArray[diceArr].trim();
               let operatorValArray = this.splitWithoutEmpty(__dice, 'KL');
               operator = "KL";
               operatorNumber = +operatorValArray[0].trim();
@@ -958,7 +959,7 @@ export class DiceService {
               }
             }
             else if (_dice.indexOf('KH') > -1) {
-              let __dice = diceArray[diceArr].trim();
+              let __dice = _dice.trim(); //diceArray[diceArr].trim();
               let operatorValArray = this.splitWithoutEmpty(__dice, 'KH');
               operator = "KH";
               operatorNumber = +operatorValArray[0].trim();
@@ -971,7 +972,7 @@ export class DiceService {
               }
             }
             else if (_dice.indexOf('DL') > -1) {
-              let __dice = diceArray[diceArr].trim();
+              let __dice = _dice.trim(); //diceArray[diceArr].trim();
               let operatorValArray = this.splitWithoutEmpty(__dice, 'DL');
               operator = "DL";
               operatorNumber = +operatorValArray[0].trim();
@@ -984,7 +985,7 @@ export class DiceService {
               }
             }
             else if (_dice.indexOf('DH') > -1) {
-              let __dice = diceArray[diceArr].trim();
+              let __dice = _dice.trim(); //diceArray[diceArr].trim();
               let operatorValArray = this.splitWithoutEmpty(__dice, 'DH');
               operator = "DH";
               operatorNumber = +operatorValArray[0].trim();
@@ -1042,7 +1043,7 @@ export class DiceService {
               operator = diceArray[diceArr].trim();
             }
             else if (_dice.indexOf('KL') > -1) {
-              let __dice = diceArray[diceArr].trim();
+              let __dice = _dice.trim(); //diceArray[diceArr].trim();
               let operatorValArray = this.splitWithoutEmpty(__dice, 'KL');
               operator = "KL";
               operatorNumber = +operatorValArray[0].trim();
@@ -1055,7 +1056,7 @@ export class DiceService {
               }
             }
             else if (_dice.indexOf('KH') > -1) {
-              let __dice = diceArray[diceArr].trim();
+              let __dice = _dice.trim(); // diceArray[diceArr].trim();
               let operatorValArray = this.splitWithoutEmpty(__dice, 'KH');
               operator = "KH";
               operatorNumber = +operatorValArray[0].trim();
@@ -1068,7 +1069,7 @@ export class DiceService {
               }
             }
             else if (_dice.indexOf('DL') > -1) {
-              let __dice = diceArray[diceArr].trim();
+              let __dice = _dice.trim(); //diceArray[diceArr].trim();
               let operatorValArray = this.splitWithoutEmpty(__dice, 'DL');
               operator = "DL";
               operatorNumber = +operatorValArray[0].trim();
@@ -1081,7 +1082,7 @@ export class DiceService {
               }
             }
             else if (_dice.indexOf('DH') > -1) {
-              let __dice = diceArray[diceArr].trim();
+              let __dice = _dice.trim(); // diceArray[diceArr].trim();
               let operatorValArray = this.splitWithoutEmpty(__dice, 'DH');
               operator = "DH";
               operatorNumber = +operatorValArray[0].trim();
@@ -1280,10 +1281,21 @@ export class DiceService {
   }
 
   public static validateCommandTextNew(commandText: string): boolean {
-
+    debugger
     if (commandText.trim() === '+' || commandText.trim() === '/' || commandText.trim() === '*') return false;
-    else if (commandText.split("(").length - 1 !== commandText.split(")").length - 1) return false;
-    else if (commandText.split("/").length - 1 < ((commandText.split("RU").length - 1) + (commandText.split("RD").length - 1))) return false;
+    //else if (commandText.split("(").length - 1 !== commandText.split(")").length - 1) {
+    //  debugger
+    //  console.log('commandText.split("(").length - 1',commandText.split("(").length - 1)
+    //  console.log('commandText.split(")").length - 1',commandText.split(")").length - 1)
+    //  return false
+    //}
+    else if ((commandText.split("/").length - 1 < ((commandText.split("RU").length - 1) + (commandText.split("RD").length - 1))) && !this.RU_RD_ContainsInQuotes(commandText)) {
+      debugger
+      console.log('commandText.split(" / ").length - 1', commandText.split("/").length - 1)
+      console.log('commandText.split("RU").length - 1', commandText.split("RU").length - 1)
+      console.log('commandText.split("RD").length - 1', commandText.split("RD").length - 1)
+      return false
+    }
 
     commandText = commandText.trim().toUpperCase(); //
     //for multiple command
@@ -1315,11 +1327,11 @@ export class DiceService {
         this.HasError = 0;
         if (isSingleQuotes || isDoubleQuotes|| parenthesis || (_commandText[x] != '+' && _commandText[x] != "-" && _commandText[x] != "*" && _commandText[x] != "/")) {
           diceValue += _commandText[x];
-          if (_commandText[x] == '(') { //|| parenthesis) {
+          if (_commandText[x] == '(' && !isSingleQuotesStarted && !isDoubleQuotesStarted) { //|| parenthesis) {
             //diceSign = _commandText[x - 1]
             parenthesis = true;
           }
-          else if (_commandText[x] == ')') {
+          else if (_commandText[x] == ')' && !isSingleQuotesStarted && !isDoubleQuotesStarted) {
             parenthesis = false;
             diceValue = '';
           }
@@ -2376,7 +2388,7 @@ export class DiceService {
       return res;
     }
     if (splitter.toUpperCase() == 'AND') {
-      debugger
+      
       var matchArr = [];
       var myRegexp = /(["'])(?:(?=(\\?))\2.)*?\1/g;
       var match = myRegexp.exec(str);
@@ -2403,6 +2415,29 @@ export class DiceService {
       })
       return res;
     }
+    //if (splitter.toUpperCase() == 'KL' || splitter.toUpperCase() == 'KH' || splitter.toUpperCase() == 'DL' || splitter.toUpperCase() ==  'DH') {
+    //  debugger
+    //  var matchArr = [];
+    //  var myRegexp = /(["'])(?:(?=(\\?))\2.)*?\1/g;
+    //  var match = myRegexp.exec(str);
+    //  while (match != null) {
+    //    // matched text: match[0]
+    //    // match start: match.index
+    //    // capturing group n: match[n]
+    //    //console.log(match[0])
+    //    matchArr.push(match[0])
+    //    match = myRegexp.exec(str);
+    //  }
+
+    //  matchArr.map((x) => {
+    //    if (/(["'])(?:(?=(\\?))\2.)*?\1/g.test(x)) {
+    //      str = str.replace(x,'')
+    //    }
+    //  })
+
+    //  let res = str.split(splitter).filter((val) => val.trim());     
+    //  return res;
+    //}
     else {
       return str.split(splitter).filter((val) => val.trim());
     }
@@ -2812,6 +2847,137 @@ export class DiceService {
       }
     }))
     return { start: startString, end: endString };
+  }
+
+  //public static RU_RD_OnlyContainsInQuotes(commandText): boolean {
+  //  debugger
+  //  let RU_totalCount: number = (commandText.match(/RU/g) || []).length;
+  //  let RD_totalCount: number = (commandText.match(/RD/g) || []).length;
+
+  //  let Quotes_RU_Count: number = 0;
+  //  let Quotes_RD_Count: number = 0;
+
+  //  var matchArr = [];
+  //  var myRegexp = /(["'])(?:(?=(\\?))\2.)*?\1/g;
+  //  var match = myRegexp.exec(commandText);
+  //  while (match != null) {
+  //    // matched text: match[0]
+  //    // match start: match.index
+  //    // capturing group n: match[n]
+  //    //console.log(match[0])
+  //    matchArr.push(match[0])
+  //    match = myRegexp.exec(commandText);
+  //  }
+
+  //  matchArr.map((x) => {
+  //    if (/(["'])(?:(?=(\\?))\2.)*?\1/g.test(x)) {
+  //      Quotes_RU_Count += (x.match(/RU/g) || []).length;
+  //      Quotes_RD_Count += (x.match(/RD/g) || []).length;
+  //    }
+  //  })
+  //  if (RU_totalCount === Quotes_RU_Count && RD_totalCount === Quotes_RD_Count) {
+  //    return true;
+  //  }
+  //  return false;
+  //}
+  public static RU_RD_ContainsInQuotes(commandText): boolean {
+    debugger
+    //let RU_totalCount: number = (commandText.match(/RU/g) || []).length;
+    //let RD_totalCount: number = (commandText.match(/RD/g) || []).length;
+
+    let Quotes_RU_Count: number = 0;
+    let Quotes_RD_Count: number = 0;
+
+    var matchArr = [];
+    var myRegexp = /(["'])(?:(?=(\\?))\2.)*?\1/g;
+    var match = myRegexp.exec(commandText);
+    while (match != null) {
+      // matched text: match[0]
+      // match start: match.index
+      // capturing group n: match[n]
+      //console.log(match[0])
+      matchArr.push(match[0])
+      match = myRegexp.exec(commandText);
+    }
+
+    matchArr.map((x) => {
+      if (/(["'])(?:(?=(\\?))\2.)*?\1/g.test(x)) {
+        Quotes_RU_Count += (x.match(/RU/g) || []).length;
+        Quotes_RD_Count += (x.match(/RD/g) || []).length;
+      }
+    })
+    if (Quotes_RU_Count || Quotes_RD_Count) {
+      return true;
+    }
+    return false;
+  }
+  //public static isSquareBracesEndInQuotes(commandText) {
+  //  let BracketEnd_totalCount: number = (commandText.match(/\[/g) || []).length;
+
+  //  let Quotes_BracketEnd_Count: number = 0;
+
+  //  let flag = false;
+  //  var matchArr = [];
+  //  var myRegexp = /(["'])(?:(?=(\\?))\2.)*?\1/g;
+  //  var match = myRegexp.exec(commandText);
+  //  while (match != null) {
+  //    matchArr.push(match[0])
+  //    match = myRegexp.exec(commandText);
+  //  }
+
+  //  matchArr.map((x) => {
+  //    if (/(["'])(?:(?=(\\?))\2.)*?\1/g.test(x) && !flag) {
+  //      flag = x.split(']').length>0 ? true : false
+  //    }
+  //  })
+  //}
+  public static hideTextCommandSquareBraces(calculationString:string):string {
+    var matchArr = [];
+    var myRegexp = /(["'])(?:(?=(\\?))\2.)*?\1/g;
+    var match = myRegexp.exec(calculationString);
+    while (match != null) {
+      // matched text: match[0]
+      // match start: match.index
+      // capturing group n: match[n]
+      //console.log(match[0])
+      matchArr.push(match[0])
+      match = myRegexp.exec(calculationString);
+    }
+
+    matchArr.map((x) => {
+      if (/(["'])(?:(?=(\\?))\2.)*?\1/g.test(x)) {
+        let temp = x;
+        temp = temp.replace(/\[/g, '_SqrBrktStart_')
+        temp = temp.replace(/\]/g, '_SqrBrktEnd_')
+        calculationString = calculationString.replace(x, temp);
+       
+      }
+    })
+    return calculationString;
+  }
+  public static showTextCommandSquareBraces(calculationString: string): string {
+    var matchArr = [];
+    var myRegexp = /(["'])(?:(?=(\\?))\2.)*?\1/g;
+    var match = myRegexp.exec(calculationString);
+    while (match != null) {
+      // matched text: match[0]
+      // match start: match.index
+      // capturing group n: match[n]
+      //console.log(match[0])
+      matchArr.push(match[0])
+      match = myRegexp.exec(calculationString);
+    }
+
+    matchArr.map((x) => {
+      if (/(["'])(?:(?=(\\?))\2.)*?\1/g.test(x)) {
+        let temp = x;
+        temp = temp.replace(/_SqrBrktStart_/g, '[')
+        temp = temp.replace(/_SqrBrktEnd_/g, ']')
+        calculationString = calculationString.replace(x, temp);
+
+      }
+    })
+    return calculationString;
   }
 }
 
