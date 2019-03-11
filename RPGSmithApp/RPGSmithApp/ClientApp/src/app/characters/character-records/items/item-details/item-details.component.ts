@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy, HostListener } from "@angular/core";
 import { Router,  ActivatedRoute, NavigationEnd } from "@angular/router";
 import { BsModalService, BsModalRef} from 'ngx-bootstrap';
 import { Characters } from "../../../../core/models/view-models/characters.model";
@@ -31,7 +31,8 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
 
     bsModalRef: BsModalRef;
     isLoading: boolean = false;
-    showActions: boolean = true;
+  showActions: boolean = true;
+  isDropdownOpen: boolean = false;
     actionText: string;
     itemId: number;
     ruleSetId: number;
@@ -58,7 +59,15 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
                 this.initialize();
             }
         })
-    }
+  }
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
+      if (target.className.endsWith("is-show"))
+        this.isDropdownOpen = !this.isDropdownOpen;
+      else this.isDropdownOpen = false;
+    } catch (err) { this.isDropdownOpen = false; }
+  }
 
     ngOnInit() {
         this.showActionButtons(this.showActions);
@@ -89,7 +98,8 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         if (this.navigationSubscription)
             this.navigationSubscription.unsubscribe();
-    }
+  }
+  
 
     private initialize() {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);

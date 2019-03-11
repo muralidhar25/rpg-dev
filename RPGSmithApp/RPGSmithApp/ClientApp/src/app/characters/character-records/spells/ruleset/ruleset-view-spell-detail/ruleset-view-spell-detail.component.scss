@@ -156,3 +156,17 @@ p {
     width: 100%;
     z-index: 9;
 }
+.visible-tab {
+  display: none;
+}
+@media (max-width: 1200px) and (min-width: 768px) {
+  .visible-tab {
+    display: initial;
+    margin-top: -10px;
+  }
+
+  .hidden-tab {
+    display: none !important;
+  }
+}
+

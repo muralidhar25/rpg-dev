@@ -1,4 +1,4 @@
-import { Component, OnInit} from "@angular/core";
+import { Component, OnInit, HostListener} from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { Spell } from "../../../../../core/models/view-models/spell.model";
@@ -45,7 +45,8 @@ export class RulesetViewSpellDetailComponent implements OnInit {
     characterSpellModal: any = new CharacterSpells();
     ruleset: Ruleset = new Ruleset();
     IsAddingRecord: boolean = false;
-    itemMasterId: any;
+  itemMasterId: any;
+  isDropdownOpen: boolean = false;
     charNav: any = {};
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -61,6 +62,14 @@ export class RulesetViewSpellDetailComponent implements OnInit {
         });
     }
 
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
+      if (target.className.endsWith("is-show"))
+        this.isDropdownOpen = !this.isDropdownOpen;
+      else this.isDropdownOpen = false;
+    } catch (err) { this.isDropdownOpen = false; }
+  }
     ngOnInit() {
         this.initialize();
         this.showActionButtons(this.showActions);

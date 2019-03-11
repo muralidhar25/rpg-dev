@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, HostListener } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { ItemMaster } from "../../../../../core/models/view-models/item-master.model";
@@ -33,7 +33,8 @@ export class RulesetViewItemDetailComponent implements OnInit {
     actionText: string;
     itemMasterId: number;
     ruleSetId: number;
-    bsModalRef: BsModalRef;
+  bsModalRef: BsModalRef;
+  isDropdownOpen: boolean = false;
     ItemMasterDetail: any = new ItemMaster();
     ruleset: Ruleset = new Ruleset();
     charNav: any = {};
@@ -52,7 +53,15 @@ export class RulesetViewItemDetailComponent implements OnInit {
         this.sharedService.shouldUpdateItemMasterList().subscribe(sharedServiceJson => {
             if (sharedServiceJson) this.initialize();
         });
-    }
+  }
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
+      if (target.className.endsWith("is-show"))
+        this.isDropdownOpen = !this.isDropdownOpen;
+      else this.isDropdownOpen = false;
+    } catch (err) { this.isDropdownOpen = false; }
+  }
 
     ngOnInit() {
         this.initialize();

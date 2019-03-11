@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from "@angular/core";
+import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { ItemMaster } from "../../../core/models/view-models/item-master.model";
@@ -28,7 +28,8 @@ export class ItemDetailsComponent implements OnInit {
     isLoading = false;
     showActions: boolean = true;
     actionText: string;
-    itemMasterId: number;
+  itemMasterId: number;
+  isDropdownOpen: boolean = false;
     ruleSetId: number;
     bsModalRef: BsModalRef;
     ItemMasterDetail: any = new ItemMaster();
@@ -44,7 +45,15 @@ export class ItemDetailsComponent implements OnInit {
         this.sharedService.shouldUpdateItemMasterList().subscribe(sharedServiceJson => {
             if (sharedServiceJson) this.initialize();
         });
-    }
+  }
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
+      if (target.className.endsWith("is-show"))
+        this.isDropdownOpen = !this.isDropdownOpen;
+      else this.isDropdownOpen = false;
+    } catch (err) { this.isDropdownOpen = false; }
+  }
 
     ngOnInit() {
         this.initialize();
