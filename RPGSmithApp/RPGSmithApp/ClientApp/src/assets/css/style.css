@@ -4157,7 +4157,8 @@ span.search-content span {
 
   .tiles.manage .tile-actions .btn[data-action="edit"] {
     top: 0;
-    right: 0;
+    right: 50% !important;
+    transform: translate(50%,0) !important;
   }
 
   .tiles.manage .tile-actions .btn[data-action="resize-left"] {

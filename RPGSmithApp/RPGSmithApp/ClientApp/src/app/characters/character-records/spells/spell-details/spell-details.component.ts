@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, HostListener} from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { BsModalService, BsModalRef} from 'ngx-bootstrap';
 import { Characters } from "../../../../core/models/view-models/characters.model";
@@ -30,7 +30,8 @@ export class CharacterSpellDetailsComponent implements OnInit {
 
     bsModalRef: BsModalRef;
     isLoading = false;
-    showActions: boolean = true;
+  showActions: boolean = true;
+  isDropdownOpen: boolean = false;
     actionText: string;
     spellId: number;
     ruleSetId: number;
@@ -52,6 +53,14 @@ export class CharacterSpellDetailsComponent implements OnInit {
         });
     }
 
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
+      if (target.className.endsWith("is-show"))
+        this.isDropdownOpen = !this.isDropdownOpen;
+      else this.isDropdownOpen = false;
+    } catch (err) { this.isDropdownOpen = false; }
+  }
     ngOnInit() {
         this.initialize();
         this.showActionButtons(this.showActions);

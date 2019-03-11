@@ -63,7 +63,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   SearchTypeText: string = "";
   SearchType: number = 0;
   isCharacterItem: number = 0;
-
+  search: any;
   isChrome: boolean = Utilities.IsCrome;
   isProceedWithoutChrome: boolean = false;
 
@@ -454,10 +454,14 @@ export class AppComponent implements OnInit, AfterViewInit {
       
       if (event instanceof NavigationEnd) {
         
-        this.previousUrl = this.currentUrl;
+       this.previousUrl = this.currentUrl;
         this.currentUrl = event.url;
         
-
+        if (this.previousUrl == this.currentUrl) {
+          console.log('here is tied');
+          this.router.navigate(['/search/basic/' + this.search + '/' +this.searchCharRule])
+        }
+        
         if (this.previousUrl) {
           if (this.previousUrlList.length) {
             if (this.previousUrlList[this.previousUrlList.length - 1] != this.previousUrl) {
@@ -768,10 +772,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   // navigating to search page
-  navigateToSearch(searchType: string, searchTxt: string) {
+  navigateToSearch(searchType: number, searchTxt: string) {
     if (!searchTxt) {
       searchTxt = '';
     }
+    this.search = searchType;
     this.router.navigate(['/search/basic/' + searchType + '/' + searchTxt]);
   }
 

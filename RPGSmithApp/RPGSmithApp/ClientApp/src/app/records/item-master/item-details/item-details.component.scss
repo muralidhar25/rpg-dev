@@ -145,3 +145,16 @@ p {
 .page-item-details .item-info-top-section ul li .icon:before {
     margin-right: 8px !important
 }
+.visible-tab {
+  display: none;
+}
+@media (max-width: 1200px) and (min-width: 768px) {
+  .visible-tab {
+    display: initial;
+    margin-top: -10px;
+  }
+
+  .hidden-tab {
+    display: none !important;
+  }
+}

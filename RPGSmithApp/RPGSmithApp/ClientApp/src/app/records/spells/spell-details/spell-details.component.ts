@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from "@angular/core";
+import { Component, OnInit, OnDestroy, Input, HostListener} from "@angular/core";
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { Spell } from "../../../core/models/view-models/spell.model";
@@ -28,7 +28,8 @@ export class SpellDetailsComponent implements OnInit {
     isLoading = false;
     showActions: boolean = true;
     actionText: string;
-    spellId: number;
+  spellId: number;
+  isDropdownOpen: boolean = false;
     ruleSetId: number;
     bsModalRef: BsModalRef;
     spellDetail: any = new Spell();
@@ -46,6 +47,14 @@ export class SpellDetailsComponent implements OnInit {
         });
     }
 
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
+      if (target.className.endsWith("is-show"))
+        this.isDropdownOpen = !this.isDropdownOpen;
+      else this.isDropdownOpen = false;
+    } catch (err) { this.isDropdownOpen = false; }
+  }
     ngOnInit() {
         this.initialize();
         this.showActionButtons(this.showActions);
