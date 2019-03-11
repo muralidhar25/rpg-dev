@@ -2375,6 +2375,34 @@ export class DiceService {
       })
       return res;
     }
+    if (splitter.toUpperCase() == 'AND') {
+      debugger
+      var matchArr = [];
+      var myRegexp = /(["'])(?:(?=(\\?))\2.)*?\1/g;
+      var match = myRegexp.exec(str);
+      while (match != null) {
+        // matched text: match[0]
+        // match start: match.index
+        // capturing group n: match[n]
+        //console.log(match[0])
+        matchArr.push(match[0])
+        match = myRegexp.exec(str);
+      }
+
+      matchArr.map((x) => {
+        if (/(["'])(?:(?=(\\?))\2.)*?\1/g.test(x)) {
+          let dummy = x.replace(/AND/g, '#AN#');
+          str = str.replace(x, dummy);
+        }
+      })
+
+      let res = str.split(splitter).filter((val) => val.trim());
+      res = res.map((x) => {
+        x = x.replace(/#AN#/g, 'AND');
+        return x;
+      })
+      return res;
+    }
     else {
       return str.split(splitter).filter((val) => val.trim());
     }

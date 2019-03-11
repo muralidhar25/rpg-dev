@@ -5,14 +5,14 @@
     <div class="modal-header" style="height:3rem">
       <h5 class="modal-title" id="dicePopupTitle">
         <span>{{title}}</span>
-        <span class="manage-ruleset-header" *ngIf="recordName != '' || recordImage != ''" (click)="navigateDice(diceNav)">
+        <span class="manage-ruleset-header crsr-pointer" *ngIf="recordName != '' || recordImage != ''" (click)="navigateDice(diceNav)">
           <span>
             <img [src]="recordImage" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
           </span>
           <span>{{recordName}}</span>
         </span>
       </h5>
-      <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+      <button type="button" (click)="close(true)" class="btn icon icon-cross btn-simple-primary close"></button>
     </div>
 
     <div class="modal-body" style="padding-top: 0.5rem" *ngIf="!isLoading">

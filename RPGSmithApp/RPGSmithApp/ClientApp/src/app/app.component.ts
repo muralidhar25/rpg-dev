@@ -1055,32 +1055,33 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   setCharacterRedirection(url) {
-    if (this.headers.headerId) {
-      let cid = 0;
-      if (this.headers.headerLink == 'character') {
-        cid = this.headers.headerId;
-      }
-
-      let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-
-      let storageNavigation = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
-      if (storageNavigation) {
-        this.characterNavigation = storageNavigation;
-      }
-
-      if (typeof (cid) != 'undefined') {
-        this.characterNavigation = Utilities.setCharacterRedirection(url,
-          cid,
-          rid,
-          this.characterNavigation
-        );
-
-        if (cid > 0) {
-          this.localStorage.localStorageSetItem(DBkeys.CHARACTER_NAVIGATION, this.characterNavigation);
+    if (this.headers) {
+      if (this.headers.headerId) {
+        let cid = 0;
+        if (this.headers.headerLink == 'character') {
+          cid = this.headers.headerId;
         }
 
+        let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+        let storageNavigation = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+        if (storageNavigation) {
+          this.characterNavigation = storageNavigation;
+        }
+
+        if (typeof (cid) != 'undefined') {
+          this.characterNavigation = Utilities.setCharacterRedirection(url,
+            cid,
+            rid,
+            this.characterNavigation
+          );
+
+          if (cid > 0) {
+            this.localStorage.localStorageSetItem(DBkeys.CHARACTER_NAVIGATION, this.characterNavigation);
+          }
+
+        }
       }
     }
-    
   }
 }

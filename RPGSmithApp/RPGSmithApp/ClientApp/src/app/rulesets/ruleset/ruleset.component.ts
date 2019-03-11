@@ -212,7 +212,13 @@ export class RulesetComponent implements OnInit {
         this.bsModalRef.content.title = 'Edit Rule Set';
         this.bsModalRef.content.button = 'UPDATE';
         this.bsModalRef.content.ruleSetImage = ruleset.ruleSetImage;
-        this.bsModalRef.content.rulesetModel = ruleset;
+      this.bsModalRef.content.rulesetModel = ruleset;
+
+      //this.bsModalRef.content.event.subscribe(data => {
+      //  this.localStorage.saveSyncedSessionData(data, DBkeys.CURRENT_RULESET);
+      //  this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
+      //    this.router.navigate(["rulesets"]));
+      //});
     }
 
     duplicateRuleset(ruleset: Ruleset) {

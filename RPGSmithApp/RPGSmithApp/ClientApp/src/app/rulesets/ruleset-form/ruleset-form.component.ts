@@ -303,8 +303,8 @@ export class RulesetFormComponent implements OnInit {
                         : "Rule Set has been updated successfully.";
                     this.alertService.showMessage(message, "", MessageSeverity.success);
                     this.commonService.UpdateCounts(); /*update charaters count*/
-                    
-                  //this.sharedService.updateRulesetList(data);
+                  
+                  this.sharedService.updateRulesetList(data);
                   this.event.emit(data);
                     //setTimeout(() => {
                     //    if ((modal.ruleSetId == 0 || modal.ruleSetId === undefined) && data !== null)
