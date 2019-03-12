@@ -162,13 +162,19 @@ p {
         transform: translate(0, -50%);
     }
 }
+.visible-tab {
+  display: none !important;
+}
 @media (max-width: 1200px) and (min-width: 768px) {
   .visible-tab {
-    display: initial;
+    display: initial !important;
     margin-top: -10px;
   }
 
   .hidden-tab {
     display: none !important;
+  }
+  .page-toolbar-links li:last-child:before{
+    display:none;
   }
 }

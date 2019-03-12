@@ -149,16 +149,21 @@ p {
     width: 100%;
     z-index: 9;
 }
-.visible-tab{
-  display:none;
+.visible-tab {
+  display: none !important;
 }
+
 @media (max-width: 1200px) and (min-width: 768px) {
   .visible-tab {
-    display: initial;
+    display: initial !important;
     margin-top: -10px;
   }
 
   .hidden-tab {
     display: none !important;
+  }
+
+  .page-toolbar-links li:last-child:before {
+    display: none;
   }
 }
