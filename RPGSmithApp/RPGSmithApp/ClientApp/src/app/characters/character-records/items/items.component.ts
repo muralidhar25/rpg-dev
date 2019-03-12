@@ -22,6 +22,7 @@ import { Items } from "../../../core/models/view-models/items.model";
 import { CastComponent } from "../../../shared/cast/cast.component";
 import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
 import { AppService1 } from "../../../app.service";
+import { HeaderValues } from "../../../core/models/headers.model";
 
 
 @Component({
@@ -44,6 +45,7 @@ export class CharacterItemsComponent implements OnInit {
   ruleSet: any;
   pageLastView: any;
   timeoutHandler: any;
+  headers: HeaderValues = new HeaderValues();
   character: any = new Characters();
   noRecordFound: boolean = false;
   scrollLoading: boolean = false;
@@ -64,7 +66,7 @@ export class CharacterItemsComponent implements OnInit {
     private sharedService: SharedService, private itemMasterService: ItemMasterService, private rulesetService: RulesetService,
     private itemsService: ItemsService, private charactersService: CharactersService, public appService: AppService1
   ) {
-    this.sharedService.shouldUpdateItemsList().subscribe(sharedServiceJson => {
+      this.sharedService.shouldUpdateItemsList().subscribe(sharedServiceJson => {
       if (sharedServiceJson) {
         this.page = 1;
         this.pageSize = 28;
@@ -92,7 +94,11 @@ export class CharacterItemsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params.subscribe(params => { this.characterId = params['id']; });
+
+    this.route.params.subscribe(params => {
+      this.characterId = params['id'];
+
+ });
     this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
     this.destroyModalOnInit();
     this.initialize();
@@ -122,7 +128,7 @@ export class CharacterItemsComponent implements OnInit {
 
   private initialize() {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-    let localStorageFilters = this.localStorage.getDataObject<number>('inventoryFilter');
+   let localStorageFilters = this.localStorage.getDataObject<number>('inventoryFilter');
     if (localStorageFilters != null) {
       this.inventoryFilter = localStorageFilters;
     }
@@ -130,6 +136,13 @@ export class CharacterItemsComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
+     this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+      if (this.headers) {
+        if (this.headers.headerId && this.headers.headerLink == 'character') {
+          this.characterId = this.headers.headerId;
+        }
+      }
+     
       this.isLoading = true;
       this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize)
         .subscribe(data => {
@@ -288,6 +301,7 @@ export class CharacterItemsComponent implements OnInit {
   }
 
   addItem() {
+    //this.sharedServiceSubscriber.unsubscribe();
     this.bsModalRef = this.modalService.show(AddItemComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -297,6 +311,7 @@ export class CharacterItemsComponent implements OnInit {
     this.bsModalRef.content.button = 'ADD';
     this.bsModalRef.content.itemVM = { characterId: this.characterId };
     this.bsModalRef.content.characterItems = this.ItemsList;
+    
   }
 
   createItem() {

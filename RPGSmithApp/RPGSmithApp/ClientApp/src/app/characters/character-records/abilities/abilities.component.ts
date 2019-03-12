@@ -20,6 +20,7 @@ import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.comp
 import { CharactersService } from "../../../core/services/characters.service";
 import { CreateAbilitiesComponent } from "../../../shared/create-abilities/create-abilities.component";
 import { AppService1 } from "../../../app.service";
+import { HeaderValues } from "../../../core/models/headers.model";
 
 @Component({
     selector: 'app-abilities',
@@ -45,6 +46,7 @@ export class CharacterAbilitiesComponent implements OnInit {
   noRecordFound: boolean = false;
   scrollLoading: boolean = false;
   page: number = 1;
+  headers: HeaderValues = new HeaderValues();
   pageSize: number = 28;
   abilityFilter: any = {
     type: 1,
@@ -131,6 +133,12 @@ export class CharacterAbilitiesComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
+        this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+        if (this.headers) {
+          if (this.headers.headerId && this.headers.headerLink == 'character') {
+            this.characterId = this.headers.headerId;
+          }
+        }
       this.isLoading = true;
       this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize)
         .subscribe(data => {

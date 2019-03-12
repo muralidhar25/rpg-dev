@@ -21,6 +21,7 @@ import { CastComponent } from "../../../shared/cast/cast.component";
 import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
 import { CreateSpellsComponent } from "../../../shared/create-spells/create-spells.component";
 import { AppService1 } from "../../../app.service";
+import { HeaderValues } from "../../../core/models/headers.model";
 
 @Component({
     selector: 'app-spells',
@@ -45,6 +46,7 @@ export class CharacterSpellsComponent implements OnInit {
   timeoutHandler: any;
   noRecordFound: boolean = false;
   scrollLoading: boolean = false;
+  headers: HeaderValues = new HeaderValues();
   page: number = 1;
   pageSize: number = 28;
   spellFilter: any = {
@@ -122,6 +124,12 @@ export class CharacterSpellsComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
+      this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+      if (this.headers) {
+        if (this.headers.headerId && this.headers.headerLink == 'character') {
+          this.characterId = this.headers.headerId;
+        }
+      }
       this.isLoading = true;
       this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize)
         .subscribe(data => {
