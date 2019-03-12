@@ -47,14 +47,14 @@ export class AbilityDetailsComponent implements OnInit {
         });
     }
 
-  @HostListener('document:click', ['$event.target'])
-  documentClick(target: any) {
-    try {
-      if (target.className.endsWith("is-show"))
-        this.isDropdownOpen = !this.isDropdownOpen;
-      else this.isDropdownOpen = false;
-    } catch (err) { this.isDropdownOpen = false; }
-  }
+  //@HostListener('document:click', ['$event.target'])
+  //documentClick(target: any) {
+  //  try {
+  //    if (target.className.endsWith("is-show"))
+  //      this.isDropdownOpen = !this.isDropdownOpen;
+  //    else this.isDropdownOpen = false;
+  //  } catch (err) { this.isDropdownOpen = false; }
+  //}
 
     ngOnInit() {
         this.initialize();

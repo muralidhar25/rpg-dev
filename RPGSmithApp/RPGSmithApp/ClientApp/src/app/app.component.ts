@@ -457,10 +457,10 @@ export class AppComponent implements OnInit, AfterViewInit {
        this.previousUrl = this.currentUrl;
         this.currentUrl = event.url;
         
-        if (this.previousUrl == this.currentUrl) {
-          console.log('here is tied');
-          this.router.navigate(['/search/basic/' + this.search + '/' +this.searchCharRule])
-        }
+        //if (this.previousUrl == this.currentUrl) {
+        // // console.log('here is tied');
+        //  this.router.navigate(['/search/basic/' + this.search + '/' +this.searchCharRule])
+        //}
         
         if (this.previousUrl) {
           if (this.previousUrlList.length) {

@@ -37,7 +37,7 @@ export class RulesetViewAbilityDetailComponent implements OnInit {
     actionText: string;
     abilityId: number;
   ruleSetId: number;
-  isDropdownOpen: boolean = false;
+  //isDropdownOpen: boolean = false;
     bsModalRef: BsModalRef;
     AbilityDetail: any = new Ability();
     character: Characters = new Characters();
@@ -59,14 +59,14 @@ export class RulesetViewAbilityDetailComponent implements OnInit {
             if (sharedServiceJson) this.initialize();
         });
   }
-  @HostListener('document:click', ['$event.target'])
-  documentClick(target: any) {
-    try {
-      if (target.className.endsWith("is-show"))
-        this.isDropdownOpen = !this.isDropdownOpen;
-      else this.isDropdownOpen = false;
-    } catch (err) { this.isDropdownOpen = false; }
-  }
+  //@HostListener('document:click', ['$event.target'])
+  //documentClick(target: any) {
+  //  try {
+  //    if (target.className.endsWith("is-show"))
+  //      this.isDropdownOpen = !this.isDropdownOpen;
+  //    else this.isDropdownOpen = false;
+  //  } catch (err) { this.isDropdownOpen = false; }
+  //}
     
     ngOnInit() {
         this.initialize();

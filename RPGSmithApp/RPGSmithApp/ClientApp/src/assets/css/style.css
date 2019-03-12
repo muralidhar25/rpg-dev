@@ -1,4 +1,4 @@
-@charset "UTF-8";
+﻿@charset "UTF-8";
 /**
  * Fonts -----------------------------------------------------------------------
  */
@@ -4155,10 +4155,14 @@ span.search-content span {
     color: #ffffff;
   }
 
-  .tiles.manage .tile-actions .btn[data-action="edit"] {
+  /*.tiles.manage .tile-actions .btn[data-action="edit"] {
     top: 0;
     right: 50% !important;
     transform: translate(50%,0) !important;
+  }*/
+  .tiles.manage .tile-actions .btn[data-action="edit"] {
+    top: 0;
+    right: 0;
   }
 
   .tiles.manage .tile-actions .btn[data-action="resize-left"] {

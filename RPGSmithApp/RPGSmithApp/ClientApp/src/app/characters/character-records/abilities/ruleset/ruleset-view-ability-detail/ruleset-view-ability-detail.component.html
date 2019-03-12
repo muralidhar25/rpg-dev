@@ -44,17 +44,17 @@
                         <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                           <ul class="dropdown-menu-list">
-                            <li  class="dropdown-menu-item">
-                              <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection selected icon-Gen-Items"> Inventory</a>
+                            <li  class="dropdown-menu-item" *ngIf="ruleset?.isItemEnabled">
+                              <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection  icon-Gen-Items"> Inventory</a>
                             </li>
-                            <li  class="dropdown-menu-item">
+                            <li  class="dropdown-menu-item" *ngIf="ruleset?.isSpellEnabled">
                               <a [routerLink]="charNav?.spells" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
                             </li>
-                            <li class="dropdown-menu-item">
-                              <a [routerLink]="charNav?.abilities" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
+                            <li class="dropdown-menu-item" *ngIf="ruleset?.isAbilityEnabled">
+                              <a [routerLink]="charNav?.abilities" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> Abilities</a>
                             </li>
 
-                            <li  class="dropdown-menu-item">
+                            <li  class="dropdown-menu-item" *ngIf="ruleset">
                               <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> Character Stats</a>
                             </li>
                           </ul>
