@@ -30,4 +30,5 @@ export class DBkeys {
   public static readonly CURRENT_RULESET = "current_ruleset";
   public static readonly LAST_PAGE_ACCESSED = "last_page_accessed";
   public static readonly CHARACTER_NAVIGATION = "character_navigation";
+  public static readonly IsLogonKickedOut = "is_logon_kicked_out";
 }

@@ -440,7 +440,17 @@ export class AppComponent implements OnInit, AfterViewInit {
 
       setTimeout(() => {
         if (!this.isUserLoggedIn) {
-          this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          try {
+            if (this.localStorage.localStorageGetItem(DBkeys.IsLogonKickedOut)) {
+              this.alertService.showMessage("Auto Logout Occurred Due to Session Inactivity", "", MessageSeverity.default);
+            }
+            else {
+              this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            }
+          }
+          catch (e) {
+            this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          }
         }
       }, 500);
     });
@@ -481,7 +491,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       };
       if (event instanceof NavigationStart) {
         this.logoNavigation();
-
+        
         let url = (<NavigationStart>event).url;
        
         this.setCharacterRedirection(url);
@@ -489,6 +499,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
         if (!Utilities.isGoingToAppNonLoginRoutes(url)) {
           if (!this.router.navigated) {
+            debugger
             if (!this.RefreshURLFlag && url != '/') {
               this.RefreshURLFlag = true;
               Utilities.RefreshPage(url, this.router, this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE), this.localStorage.getDataObject<number>(DBkeys.RULESET_ID), this.localStorage);

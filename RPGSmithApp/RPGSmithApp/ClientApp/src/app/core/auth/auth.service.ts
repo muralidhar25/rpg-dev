@@ -202,6 +202,10 @@ export class AuthService {
     this.localStorage.deleteData(DBkeys.USER_PERMISSIONS);
     this.localStorage.deleteData(DBkeys.CURRENT_USER);
     this.localStorage.deleteData(DBkeys.SOCIAL_LOGIN);
+    this.localStorage.deleteData(DBkeys.HEADER_VALUE);
+    if (relogin) {
+      this.localStorage.localStorageSetItem(DBkeys.IsLogonKickedOut, true);
+    }
 
     this.configurations.clearLocalChanges();
     this.reevaluateLoginStatus();
