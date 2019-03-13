@@ -285,7 +285,10 @@ export class Utilities {
       if (error.toLowerCase().includes(NullValue)) return true;
     } catch (err) { }
     try {
-      if (error.toLowerCase().includes(NullIdentity)) return true;
+      if (error.toLowerCase().includes(NullIdentity)) {
+        //alert("Auto Logout Occurred Due to Session Inactivity")
+        return true;
+      }
     } catch (err) { }
     return false;
   }
@@ -840,44 +843,49 @@ export class Utilities {
     
 
     if (headers) {
-      url = url + "/" + headers.headerId;
-      if (headers.headerLink == 'ruleset') {
-        if (url.toUpperCase().indexOf('/RULESET/ABILITY/') > -1
-          || url.toUpperCase().indexOf('/RULESET/SPELL/') > -1
-          || url.toUpperCase().indexOf('/RULESET/ITEM-MASTER/') > -1
-          || url.toUpperCase().indexOf('/RULESET/CHARACTER-STATS/') > -1
-          || url.toUpperCase().indexOf('/RULESET/DASHBOARD/') > -1
-        ) {
-          this.RedriectToPageWithoutId(url, NewUrl, router,7);
-          //  router.navigate([url], { skipLocationChange: true });
-          //window.history.pushState('', '', NewUrl)
+      if (headers.headerId) {
+        url = url + "/" + headers.headerId;
+        if (headers.headerLink == 'ruleset') {
+          if (url.toUpperCase().indexOf('/RULESET/ABILITY/') > -1
+            || url.toUpperCase().indexOf('/RULESET/SPELL/') > -1
+            || url.toUpperCase().indexOf('/RULESET/ITEM-MASTER/') > -1
+            || url.toUpperCase().indexOf('/RULESET/CHARACTER-STATS/') > -1
+            || url.toUpperCase().indexOf('/RULESET/DASHBOARD/') > -1
+          ) {
+            this.RedriectToPageWithoutId(url, NewUrl, router, 7);
+            //  router.navigate([url], { skipLocationChange: true });
+            //window.history.pushState('', '', NewUrl)
+          }
+        }
+        else if (headers.headerLink == 'character') {
+          if (
+            url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1
+            || url.toUpperCase().indexOf('/CHARACTER/SPELL/') > -1
+            || url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1
+            || url.toUpperCase().indexOf('/CHARACTER/CHARACTER-STATS/') > -1
+            || url.toUpperCase().indexOf('/CHARACTER/DASHBOARD/') > -1
+            || url.toUpperCase().indexOf('/CHARACTER/TILES/') > -1
+          ) {
+            this.RedriectToPageWithoutId(url, NewUrl, router, 8);
+            //router.navigate([url], { skipLocationChange: true });
+            //window.history.pushState('', '', NewUrl)
+          }
+
+          else if (
+            url.toUpperCase().indexOf('/CHARACTER/RULESET') > -1
+            && url.toUpperCase().indexOf('DETAILS') == -1
+          ) {
+            
+            url = url.replace("/" + headers.headerId, ' ');
+            url = url.trim() + "/" + rulesetID;
+            this.RedriectToPageWithoutId(url, NewUrl, router, 9);
+            //router.navigate([url], { skipLocationChange: true });
+            //window.history.pushState('', '', NewUrl)
+
+          }
         }
       }
-      else if (headers.headerLink == 'character') {
-        if (
-          url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1
-          || url.toUpperCase().indexOf('/CHARACTER/SPELL/') > -1
-          || url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1
-          || url.toUpperCase().indexOf('/CHARACTER/CHARACTER-STATS/') > -1
-          || url.toUpperCase().indexOf('/CHARACTER/DASHBOARD/') > -1
-          || url.toUpperCase().indexOf('/CHARACTER/TILES/') > -1
-        ) {
-          this.RedriectToPageWithoutId(url, NewUrl, router,8);
-          //router.navigate([url], { skipLocationChange: true });
-          //window.history.pushState('', '', NewUrl)
-        }
-
-        else if (
-          url.toUpperCase().indexOf('/CHARACTER/RULESET') > -1          
-        ) {
-          url = url.replace("/" + headers.headerId, ' ');
-          url = url.trim() + "/" + rulesetID;
-          this.RedriectToPageWithoutId(url, NewUrl, router,9);
-          //router.navigate([url], { skipLocationChange: true });
-          //window.history.pushState('', '', NewUrl)
-
-        }
-      }
+     
     }
   }
 
