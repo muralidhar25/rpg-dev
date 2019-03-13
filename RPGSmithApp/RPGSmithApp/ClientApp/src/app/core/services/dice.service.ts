@@ -2166,8 +2166,10 @@ export class DiceService {
   **/
 
   public static containsDice(value: string): boolean {
+    
     if (!value) return false;
-    value = value.trim();
+    //value = value.trim();
+    value = this.removeQuotesContent(value.trim());
     for (const _dice in DICE) {
       if (!Number(_dice)) {
         if (value.endsWith(_dice)) {
@@ -2203,11 +2205,12 @@ export class DiceService {
   }
 
   public static containsDiceInDiceTray(value: string, diceTray?: DiceTray[]): boolean {
+    
     if (!diceTray) {
       diceTray = [];
     }
     if (!value) return false;
-    value = value.trim();
+    value = this.removeQuotesContent(value.trim());
     for (const dice in diceTray) {
       // if (!Number(_dice)) {
       let _dice = diceTray[dice].name.toUpperCase()
@@ -2324,7 +2327,7 @@ export class DiceService {
 
     let signs: any = [];
     let _splitCommand = commandText.split('#').filter((val) => val);
-
+    
     for (var val in _splitCommand) {
       let sign = _splitCommand[val] ? _splitCommand[val].trim().charAt(0) : '';
       //not implementing divide as we already have symbol divide(/) in RU/RD 
@@ -2333,11 +2336,11 @@ export class DiceService {
         case '-':
         case '*':
         case '/': {
-          signs.push({ dice: _splitCommand[val].substring(1).trim(), sign: sign, index: +val + 1 });
+          signs.push({ dice: _splitCommand[val].substring(1).trim(), sign: sign, index: +val + 1, diceText: _splitCommand[val].substring(1).trim()});
           break;
         }
         default: {
-          signs.push({ dice: _splitCommand[val].trim(), sign: '+', index: +val + 1 });
+          signs.push({ dice: _splitCommand[val].trim(), sign: '+', index: +val + 1, diceText: _splitCommand[val].trim() });
           break;
         }
       }
@@ -3062,6 +3065,27 @@ export class DiceService {
     let DECK = new CustomDice(-2, "DECK", DICE_ICON.DECK, false, DeckResults)
 
     return { DOC: DOC, DECK: DECK };
+  }
+  public static removeQuotesContent(str): string {
+    var matchArr = [];
+    var myRegexp = /(["'])(?:(?=(\\?))\2.)*?\1/g;
+    var match = myRegexp.exec(str);
+    while (match != null) {
+      // matched text: match[0]
+      // match start: match.index
+      // capturing group n: match[n]
+      //console.log(match[0])
+      matchArr.push(match[0])
+      match = myRegexp.exec(str);
+    }
+
+    matchArr.map((x) => {
+      if (/(["'])(?:(?=(\\?))\2.)*?\1/g.test(x)) {
+        str = str.replace(x, '');
+
+      }
+    })
+  return str.trim();
   }
 }
 

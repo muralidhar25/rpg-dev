@@ -163,7 +163,7 @@
               <!--<ng-container *ngFor="let NumbersList of dice.randomNumbersList;let j = index;"></ng-container>-->
               <ng-container *ngFor="let NumbersList of dice.randomNumbersList;let j = index;">
                 <li *ngIf="!NumbersList.hideExplode">
-                  <button class="btn outline" type="button" (click)="showReroll(dice,NumbersList,j)">
+                  <button class="btn outline" type="button" [ngClass]="dice.diceIcon=='icon-Dice-deck'?'dice-small-font':''"  (click)="showReroll(dice,NumbersList,j)">
                     <em *ngIf="dice.dice.toUpperCase().split('D')[1]?.startsWith('F')" [style.color]="'white'"
                         [style.font-weight]="NumbersList.isMax ? 'bold' : (NumbersList.isMin ? 'bold' : 'normal')">{{ NumbersList?.number==1?FATE.plus:NumbersList?.number==-1?FATE.minus:FATE.zero}}</em>
                     <em *ngIf="!dice.dice.toUpperCase().split('D')[1]?.startsWith('F')" [style.color]="NumbersList.isMax ? 'green' : (NumbersList.isMin ? 'red' : 'white')"
