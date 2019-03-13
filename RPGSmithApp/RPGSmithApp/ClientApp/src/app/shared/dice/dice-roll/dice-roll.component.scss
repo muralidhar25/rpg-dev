@@ -213,10 +213,13 @@
     font-size: 20px;
     padding: 5px;
 }
+.popup-dice .new-command.result .command-canvas ul li .btn.dice-small-font em{
+  /*font-size:16px;*/word-break:unset;
+}
 @media (max-width:480px) {
-    .popup-dice .new-command.result .command-canvas ul li .btn em {
-        font-size: 12px;
-    }    
+  .popup-dice .new-command.result .command-canvas ul li .btn em {
+    font-size: 12px;
+  }
 }
 .icon-Dice-Explode:before {
     position: absolute;

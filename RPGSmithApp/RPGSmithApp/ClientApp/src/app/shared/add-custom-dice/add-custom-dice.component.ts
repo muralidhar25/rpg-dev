@@ -128,6 +128,16 @@ export class AddCustomDiceComponent implements OnInit {
             this.alertService.showMessage("", "The Dice name 'DF' is already reserved for Fate/Fudge Dice, please select a different name to continue.", MessageSeverity.error);
             return false;
         }
+        else if (name.toUpperCase()=='DECK') {
+          this.customDice.name = '';
+          this.alertService.showMessage("", "The Dice name 'DECK' is already reserved for DECK Dice, please select a different name to continue.", MessageSeverity.error);
+          return false;
+        }
+        else if (name.toUpperCase()=='DOC') {
+          this.customDice.name = '';
+          this.alertService.showMessage("", "The Dice name 'DOC' is already reserved for DOC Dice, please select a different name to continue.", MessageSeverity.error);
+          return false;
+        }
         else {
             this.customDice.name = 'D' + this.customDice.name;
             if (this.view == 'Save')
@@ -224,6 +234,16 @@ export class AddCustomDiceComponent implements OnInit {
             this.customDice.name = '';
             this.alertService.showMessage("", "The Dice name 'DF' is already reserved for Fate/Fudge Dice, please select a different name to continue.", MessageSeverity.error);
             return false;
-        }
+      }
+      else if (e.target.value.toUpperCase()=='OC') {
+        this.customDice.name = '';
+          this.alertService.showMessage("", "The Dice name 'DOC' is already reserved for DOC Dice, please select a different name to continue.", MessageSeverity.error);
+        return false;
+      }
+      else if (e.target.value.toUpperCase()=='ECK') {
+        this.customDice.name = '';
+          this.alertService.showMessage("", "The Dice name 'DECK' is already reserved for DECK Dice, please select a different name to continue.", MessageSeverity.error);
+        return false;
+      }
     }
 }

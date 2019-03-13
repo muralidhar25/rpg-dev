@@ -189,6 +189,12 @@ export class CharacterCommandService extends EndpointFactory {
           if (diceExist.startsWith('F')) {
             diceIcon = "icon-Dice-d6-bg";
           }
+          else if (diceExist=="ECK") {
+            diceIcon = "icon-Dice-deck";
+          }
+          else if (diceExist == "OC") {
+            diceIcon = "icon-Dice-deck";
+          }
         }
       }
       else if (dt.isDefaultDice) {
@@ -209,6 +215,12 @@ export class CharacterCommandService extends EndpointFactory {
         if (diceExist) {
           if (diceExist.startsWith('F'))
             diceIcon = "icon-Dice-d6-bg";
+          else if (diceExist == "ECK") {
+            diceIcon = "icon-Dice-deck";
+          }
+          else if (diceExist == "OC") {
+            diceIcon = "icon-Dice-deck";
+          }
           else
             diceIcon = "icon-Gen-dx";
         }

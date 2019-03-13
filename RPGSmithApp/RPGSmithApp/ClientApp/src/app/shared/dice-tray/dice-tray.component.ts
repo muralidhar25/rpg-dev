@@ -193,6 +193,22 @@ export class DiceTrayComponent implements OnInit {
                 d.iconClass = diceTrayItem.icon;
                 d.isValidCommandName = true;
             }
+            else if (d.name.toUpperCase()=='DECK' || d.name.toUpperCase()=='DOC') {  //Dice eg. DFxyz, Fate dice                
+              diceTrayItem = {
+                diceTrayId: 0,
+                customDiceId: null,
+                defaultDiceId: null,
+                icon: "icon-Dice-deck",
+                isCustomDice: false,
+                isDefaultDice: false,
+                name: d.name,
+                ruleSetId: this.ruleset.ruleSetId,
+                isValidCommandName: true,
+                sortOrder: index
+              };
+              d.iconClass = diceTrayItem.icon;
+              d.isValidCommandName = true;
+            }
             else {  //Dice eg. CustomDice
 
                 this.DTcustomDices.map((cd) => {

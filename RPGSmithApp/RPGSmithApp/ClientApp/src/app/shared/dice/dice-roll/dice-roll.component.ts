@@ -170,6 +170,8 @@ export class DiceRollComponent implements OnInit {
           let model: any = data;
           this.statdetails = model.characterCharacterstats;
           this.customDices = model.customDices;
+          
+          this.customDices= DiceService.BindDeckCustomDices(this.customDices);
           this.diceTray = model.diceTray;
           this.defaultDices = model.defaultDices;
           let ruleset = model.ruleSet;
@@ -995,7 +997,7 @@ export class DiceRollComponent implements OnInit {
     } catch (err) { }
   }
   onClickRoll(characterCommand: CharacterCommand, _mainCommandText: string, lastResultArray?: any) {
-    debugger
+    
     let anyCommandIsCustomWithNonNumeric = false;
     this.loadingResult = false;
     let command = characterCommand.command;
@@ -1072,7 +1074,7 @@ export class DiceRollComponent implements OnInit {
             let IDs: any[] = [];
             finalCalcString = calculationString;
             if (calculationString) {
-              debugger
+              
               calculationString= DiceService.hideTextCommandSquareBraces(calculationString);
               calculationString.split(/\[(.*?)\]/g).map((rec) => {
                 
@@ -1121,7 +1123,7 @@ export class DiceRollComponent implements OnInit {
                 }
               })
 
-              debugger
+              
               calculationString = DiceService.showTextCommandSquareBraces(calculationString);
 
               IDs.map((rec) => {

@@ -104,14 +104,15 @@ export enum DICE {
 }
 
 export enum DICE_ICON {
-    D4 = "icon-d4-thin",
-    D6 = "icon-d6-thin",
-    D8 = "icon-d8-thin",
-    D10 = "icon-d10-thin",
-    D12 = "icon-d12-thin",
-    D20 = "icon-d20-thin",
-    D100 = "icon-d100-thin",
-    DX = "icon-Gen-dx"
+  D4 = "icon-d4-thin",
+  D6 = "icon-d6-thin",
+  D8 = "icon-d8-thin",
+  D10 = "icon-d10-thin",
+  D12 = "icon-d12-thin",
+  D20 = "icon-d20-thin",
+  D100 = "icon-d100-thin",
+  DX = "icon-Gen-dx",
+  DECK = "icon-Dice-deck"
 }
 
 export enum COMMAND_OPERATOR {

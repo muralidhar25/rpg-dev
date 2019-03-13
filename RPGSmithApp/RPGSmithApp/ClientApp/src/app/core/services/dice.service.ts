@@ -6,7 +6,7 @@ import { DICE, DICE_ICON, COMMAND_OPERATOR } from '../models/enums';
 import { CharacterCommand, DiceCommand } from '../models/view-models/character-command.model';
 import { DiceRoll } from '../models/view-models/dice-roll.model';
 import { forEach } from '@angular/router/src/utils/collection';
-import { CustomDice, DefaultDice, DiceTray } from '../models/view-models/custome-dice.model';
+import { CustomDice, DefaultDice, DiceTray, Results } from '../models/view-models/custome-dice.model';
 import { Utilities } from '../common/utilities';
 
 @Injectable()
@@ -389,7 +389,7 @@ export class DiceService {
   }
 
   public static splitCommandToArray(_commandText: string, customDices: CustomDice[] = []): any[] {
-    debugger
+    
     let diceARRAY = [];
     let parenthesis = false;
     let addMod = false;
@@ -1281,16 +1281,16 @@ export class DiceService {
   }
 
   public static validateCommandTextNew(commandText: string): boolean {
-    debugger
+    
     if (commandText.trim() === '+' || commandText.trim() === '/' || commandText.trim() === '*') return false;
     //else if (commandText.split("(").length - 1 !== commandText.split(")").length - 1) {
-    //  debugger
+    //  
     //  console.log('commandText.split("(").length - 1',commandText.split("(").length - 1)
     //  console.log('commandText.split(")").length - 1',commandText.split(")").length - 1)
     //  return false
     //}
     else if ((commandText.split("/").length - 1 < ((commandText.split("RU").length - 1) + (commandText.split("RD").length - 1))) && !this.RU_RD_ContainsInQuotes(commandText)) {
-      debugger
+      
       console.log('commandText.split(" / ").length - 1', commandText.split("/").length - 1)
       console.log('commandText.split("RU").length - 1', commandText.split("RU").length - 1)
       console.log('commandText.split("RD").length - 1', commandText.split("RD").length - 1)
@@ -2416,7 +2416,7 @@ export class DiceService {
       return res;
     }
     //if (splitter.toUpperCase() == 'KL' || splitter.toUpperCase() == 'KH' || splitter.toUpperCase() == 'DL' || splitter.toUpperCase() ==  'DH') {
-    //  debugger
+    //  
     //  var matchArr = [];
     //  var myRegexp = /(["'])(?:(?=(\\?))\2.)*?\1/g;
     //  var match = myRegexp.exec(str);
@@ -2850,7 +2850,7 @@ export class DiceService {
   }
 
   //public static RU_RD_OnlyContainsInQuotes(commandText): boolean {
-  //  debugger
+  //  
   //  let RU_totalCount: number = (commandText.match(/RU/g) || []).length;
   //  let RD_totalCount: number = (commandText.match(/RD/g) || []).length;
 
@@ -2881,7 +2881,7 @@ export class DiceService {
   //  return false;
   //}
   public static RU_RD_ContainsInQuotes(commandText): boolean {
-    debugger
+    
     //let RU_totalCount: number = (commandText.match(/RU/g) || []).length;
     //let RD_totalCount: number = (commandText.match(/RD/g) || []).length;
 
@@ -2978,6 +2978,90 @@ export class DiceService {
       }
     })
     return calculationString;
+  }
+
+  public static BindDeckCustomDices(customDices: CustomDice[]): CustomDice[] {
+    let DeckDices = this.GetDeckDices();
+    if (customDices) {
+      if (customDices.length) {
+        customDices.push(DeckDices.DOC)
+        customDices.push(DeckDices.DECK)
+        return customDices;
+      }
+    }
+    let newDices: CustomDice[] = [];
+    newDices.push(DeckDices.DOC)
+    newDices.push(DeckDices.DECK)
+    return newDices;
+  }
+
+  public static GetDeckDices() {
+    let DocResults: Results[] = [
+      { customDiceResultId: 1, name: 'Two of Spades' },
+      { customDiceResultId: 2, name: 'Three of Spades' },
+      { customDiceResultId: 3, name: 'Four of Spades' },
+      { customDiceResultId: 4, name: 'Five of Spades' },
+      { customDiceResultId: 5, name: 'Six of Spades' },
+      { customDiceResultId: 6, name: 'Seven of Spades' },
+      { customDiceResultId: 7, name: 'Eight of Spades' },
+      { customDiceResultId: 8, name: 'Nine of Spades' },
+      { customDiceResultId: 9, name: 'Ten of Spades' },
+      { customDiceResultId: 10, name: 'Jack of Spades' },
+      { customDiceResultId: 11, name: 'Queen of Spades' },
+      { customDiceResultId: 12, name: 'King of Spades' },
+      { customDiceResultId: 13, name: 'Ace of Spades' },
+      { customDiceResultId: 14, name: 'Two of Hearts' },
+      { customDiceResultId: 15, name: 'Three of Hearts' },
+      { customDiceResultId: 16, name: 'Four of Hearts' },
+      { customDiceResultId: 17, name: 'Five of Hearts' },
+      { customDiceResultId: 18, name: 'Six of Hearts' },
+      { customDiceResultId: 19, name: 'Seven of Hearts' },
+      { customDiceResultId: 20, name: 'Eight of Hearts' },
+      { customDiceResultId: 21, name: 'Nine of Hearts' },
+      { customDiceResultId: 22, name: 'Ten of Hearts' },
+      { customDiceResultId: 23, name: 'Jack of Hearts' },
+      { customDiceResultId: 24, name: 'Queen of Hearts' },
+      { customDiceResultId: 25, name: 'King of Hearts' },
+      { customDiceResultId: 26, name: 'Ace of Hearts' },
+      { customDiceResultId: 27, name: 'Two of Diamonds' },
+      { customDiceResultId: 28, name: 'Three of Diamonds' },
+      { customDiceResultId: 29, name: 'Four of Diamonds' },
+      { customDiceResultId: 30, name: 'Five of Diamonds' },
+      { customDiceResultId: 31, name: 'Six of Diamonds' },
+      { customDiceResultId: 32, name: 'Seven of Diamonds' },
+      { customDiceResultId: 33, name: 'Eight of Diamonds' },
+      { customDiceResultId: 34, name: 'Nine of Diamonds' },
+      { customDiceResultId: 35, name: 'Ten of Diamonds' },
+      { customDiceResultId: 36, name: 'Jack of Diamonds' },
+      { customDiceResultId: 37, name: 'Queen of Diamonds' },
+      { customDiceResultId: 38, name: 'King of Diamonds' },
+      { customDiceResultId: 39, name: 'Ace of Diamonds' },
+      { customDiceResultId: 40, name: 'Two of Clubs' },
+      { customDiceResultId: 41, name: 'Three of Clubs' },
+      { customDiceResultId: 42, name: 'Four of Clubs' },
+      { customDiceResultId: 43, name: 'Five of Clubs' },
+      { customDiceResultId: 44, name: 'Six of Clubs' },
+      { customDiceResultId: 45, name: 'Seven of Clubs' },
+      { customDiceResultId: 46, name: 'Eight of Clubs' },
+      { customDiceResultId: 47, name: 'Nine of Clubs' },
+      { customDiceResultId: 48, name: 'Ten of Clubs' },
+      { customDiceResultId: 49, name: 'Jack of Clubs' },
+      { customDiceResultId: 50, name: 'Queen of Clubs' },
+      { customDiceResultId: 51, name: 'King of Clubs' },
+      { customDiceResultId: 52, name: 'Ace of Clubs' },
+    ];
+
+    let DOC = new CustomDice(-1, "DOC", DICE_ICON.DECK, false, DocResults);
+
+
+    let DeckResults = DocResults;
+    DeckResults.push({ customDiceResultId: 53, name: 'Joker' })
+    DeckResults.push({ customDiceResultId: 54, name: 'Joker' })
+
+    
+    let DECK = new CustomDice(-2, "DECK", DICE_ICON.DECK, false, DeckResults)
+
+    return { DOC: DOC, DECK: DECK };
   }
 }
 
