@@ -342,7 +342,7 @@ export class DiceRollComponent implements OnInit {
 
   //DICE BUTTON CLICK
   commandOnDiceClick(dice: DiceRoll) {
-
+    
     // characterCommandModel: CharacterCommand
     let _command = '';
 
@@ -371,7 +371,9 @@ export class DiceRollComponent implements OnInit {
         let selectedStat: string = mod.selectedStat;
         commandToValidate = commandToValidate.replace(selectedStat.toUpperCase(), "D");
       });
-
+      
+        commandToValidate = commandToValidate.replace(/\[([^\]]+)\]/g, '1');
+      
       let isValidCommand = DiceService.validateCommandTextNew(commandToValidate);
       if (!isValidCommand) {
         this.alertService.resetStickyMessage();
@@ -416,19 +418,55 @@ export class DiceRollComponent implements OnInit {
             _diceRollModel.command = _diceRollModel.rolledCount + diceRollList[val].dice;
 
             diceRollList[val].diceRolledCount += 1;
-            diceRollList[val].commandText = _diceRollModel.rolledCount + diceRollList[val].dice;
+            diceRollList[val].commandText = this.getQuotesCommandText(
+              diceRollList[val].commandText, _diceRollModel.rolledCount, diceRollList[val].dice);
             //this.characterCommandModel.command += ' + ' + dice.dice;
             diceExist = true;
-            cmdText = cmdText == '' ? (diceRollList[val].sign.trim() == '-' ? diceRollList[val].sign + diceRollList[val].commandText : diceRollList[val].commandText)
-              : (cmdText.trim().endsWith('AND') ? (diceRollList[val].sign.trim() == '-' ? cmdText + diceRollList[val].sign + diceRollList[val].commandText : cmdText + diceRollList[val].commandText)
-                : cmdText + diceRollList[val].sign + diceRollList[val].commandText);
+            cmdText = cmdText == ''
+              ?
+              (
+                diceRollList[val].sign.trim() == '-'
+                  ?
+                  diceRollList[val].sign + diceRollList[val].commandText
+                  :
+                  diceRollList[val].commandText
+              )
+              :
+              (
+                cmdText.trim().endsWith('AND')
+                  ? (
+                    diceRollList[val].sign.trim() == '-'
+                      ?
+                      cmdText + diceRollList[val].sign + diceRollList[val].commandText
+                      :
+                      cmdText + diceRollList[val].commandText
+                  )
+                  :
+                  cmdText + diceRollList[val].sign + diceRollList[val].commandText
+              );
           }
         } else if (diceRollList[val].isStatic && diceRollList[val].commandText.trim() == 'AND') {
           cmdText = cmdText == '' ? diceRollList[val].commandText : cmdText + ' ' + diceRollList[val].commandText + ' ';
         } else {
-          cmdText = cmdText == '' ? (diceRollList[val].sign.trim() == '-' ? diceRollList[val].sign + diceRollList[val].commandText : diceRollList[val].commandText)
-            : cmdText.trim().endsWith('AND') ? (diceRollList[val].sign.trim() == '-' ? cmdText + diceRollList[val].sign + diceRollList[val].commandText : cmdText + diceRollList[val].commandText)
-              : cmdText + diceRollList[val].sign + diceRollList[val].commandText;
+          cmdText = cmdText == '' ?
+            (
+              diceRollList[val].sign.trim() == '-'
+                ? diceRollList[val].sign + diceRollList[val].commandText
+                :
+                diceRollList[val].commandText
+            )
+            :
+            cmdText.trim().endsWith('AND')
+              ?
+              (
+                diceRollList[val].sign.trim() == '-'
+                  ?
+                  cmdText + diceRollList[val].sign + diceRollList[val].commandText
+                  :
+                  cmdText + diceRollList[val].commandText
+              )
+              :
+              cmdText + diceRollList[val].sign + diceRollList[val].commandText;
         }
       }
       this.characterCommandModel.command = cmdText;
@@ -3226,5 +3264,13 @@ export class DiceRollComponent implements OnInit {
   navigateDice(diceNav) {
     this.bsModalRef.hide();
     this.router.navigate([diceNav]);
+  }
+  getQuotesCommandText(oldText: string, NewDiceCountNumber: number, Dice: string): string {
+    if (NewDiceCountNumber>2) {
+      let OldUpdatedDiceValue = (NewDiceCountNumber - 1).toString() + Dice;
+      let newUpdatedDiceValue = NewDiceCountNumber.toString() + Dice;
+      return oldText.replace(OldUpdatedDiceValue, newUpdatedDiceValue);
+    }    
+    return NewDiceCountNumber.toString() + Dice;
   }
 }
