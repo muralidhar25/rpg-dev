@@ -100,7 +100,7 @@ namespace DAL.Services
 
         public CharacterSpell GetById(int? id)
         {
-            return _context.CharacterSpells.Include(d => d.Character).Include(d => d.Spell).ThenInclude(d => d.SpellCommand).FirstOrDefault(x => x.CharacterSpellId == id && x.IsDeleted!=true);
+            return _context.CharacterSpells.Include(d => d.Character).ThenInclude(d => d.RuleSet).Include(d => d.Spell).ThenInclude(d => d.SpellCommand).FirstOrDefault(x => x.CharacterSpellId == id && x.IsDeleted!=true);
         }
 
         public CharacterSpell GetBySpellId(int spellId)

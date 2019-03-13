@@ -121,7 +121,7 @@ export class RulesetFormComponent implements OnInit {
                 this.IsCopiedFromCoreRuleset = _rulesetModel.shareCode == null ? true : false;
             }
             if (modalContentButton === 'DUPLICATE' || modalContentButton === 'UPDATE'
-                || modalContentButton === 'IMPORT') {
+              || modalContentButton === 'IMPORT') {
                 this.rulesetFormModal = {
                     ruleSetId: _rulesetModel.ruleSetId,
                     ruleSetName: (modalContentButton === 'UPDATE' || modalContentButton === 'IMPORT') ? _rulesetModel.ruleSetName : '',
@@ -151,7 +151,8 @@ export class RulesetFormComponent implements OnInit {
                     view: VIEW.ADD,
                     isItemEnabled: true,
                     isSpellEnabled: true,
-                    isAbilityEnabled: true
+                  isAbilityEnabled: true,
+                  imageUrl: 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png'
                 };
             }
             this.bingImageUrl = this.rulesetFormModal.imageUrl;
@@ -499,7 +500,7 @@ export class RulesetFormComponent implements OnInit {
         this.bsModalRef.content.title = 'ruleset';
         this.bsModalRef.content.image = img;
         this.bsModalRef.content.view = view;
-        this.bsModalRef.content.errorImage = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png';
+      this.bsModalRef.content.errorImage = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';
         //this.bsModalRef.content.imageChangedEvent = this.imageChangedEvent; //base 64 || URL
         this.bsModalRef.content.event.subscribe(data => {
             this.rulesetFormModal.imageUrl = data.base64;

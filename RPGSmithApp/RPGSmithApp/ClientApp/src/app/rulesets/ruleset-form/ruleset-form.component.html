@@ -48,7 +48,8 @@
                         <div class="input-image-control input-image-note input-image-trigger" (click)="cropImage(null,true,'VIEW.ADD')"
                              *ngIf="((rulesetFormModal.ruleSetId === undefined || rulesetFormModal.ruleSetId === 0) && !showWebButtons && rulesetFormModal.imageUrl === undefined)
                             || (!showWebButtons && (rulesetFormModal.imageUrl === undefined || rulesetFormModal.imageUrl === null))">
-                            <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
+                          <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
+                         
                         </div>
                         <div class="form-group input-image-note input-image-trigger" (click)="cropImage(rulesetFormModal.imageUrl,true,'VIEW.EDIT')"
                              *ngIf="(!showWebButtons && rulesetFormModal.imageUrl !== undefined && rulesetFormModal.imageUrl !== null)">

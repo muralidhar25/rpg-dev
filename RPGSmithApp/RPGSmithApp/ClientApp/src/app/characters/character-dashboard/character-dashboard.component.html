@@ -229,7 +229,7 @@
                   </h5>
 
                   <div class="tile-body">
-                    <img onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png';" [src]="box.tile.imageTiles?.imageUrl" [alt]="box.tile.imageTiles?.title" class="imgwidth">
+                    <img onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" [src]="box.tile.imageTiles?.imageUrl" [alt]="box.tile.imageTiles?.title" class="imgwidth">
                   </div>
                 </div>
               </div>
@@ -379,7 +379,7 @@
                                   </p>
                                 </ng-container>
                                 <ng-container *ngIf="toggleVal.image">
-                                  <img class="imgwidth" [src]="toggleVal.image" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png';" />
+                                  <img class="imgwidth" [src]="toggleVal.image" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
                                 </ng-container>
                               </ng-container>
 
@@ -391,7 +391,7 @@
 
                       <div *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.LinkRecord">
 
-                        <img *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue && box.tile.characterStatTiles?.displayLinkImage" class="imgwidth" [src]="GetLinkRecordImage(box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue,box.tile.characterStatTiles?.charactersCharacterStat?.linkType)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png';" />
+                        <img *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue && box.tile.characterStatTiles?.displayLinkImage" class="imgwidth" [src]="GetLinkRecordImage(box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue,box.tile.characterStatTiles?.charactersCharacterStat?.linkType)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
 
                         <p [style.color]="box.tile.characterStatTiles.bodyTextColor"
                            [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 14 ? 16 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 14 ? 16 : box.config.sizex*4 ) "

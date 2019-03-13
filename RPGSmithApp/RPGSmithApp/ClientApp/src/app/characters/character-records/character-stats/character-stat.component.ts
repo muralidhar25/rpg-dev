@@ -2040,7 +2040,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                     break;
 
                 default:
-                    imagePath = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png';
+                imagePath = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';
                     break;
             }
         }

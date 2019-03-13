@@ -499,7 +499,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
         if (!Utilities.isGoingToAppNonLoginRoutes(url)) {
           if (!this.router.navigated) {
-            debugger
+           
             if (!this.RefreshURLFlag && url != '/') {
               this.RefreshURLFlag = true;
               Utilities.RefreshPage(url, this.router, this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE), this.localStorage.getDataObject<number>(DBkeys.RULESET_ID), this.localStorage);

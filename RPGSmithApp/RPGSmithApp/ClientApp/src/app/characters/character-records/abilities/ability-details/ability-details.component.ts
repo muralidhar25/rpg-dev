@@ -19,7 +19,7 @@ import { CastComponent } from "../../../../shared/cast/cast.component";
 import { DiceRollComponent } from "../../../../shared/dice/dice-roll/dice-roll.component";
 import { ImageViewerComponent } from "../../../../shared/image-interface/image-viewer/image-viewer.component";
 import { CreateAbilitiesComponent } from "../../../../shared/create-abilities/create-abilities.component";
-
+import { HeaderValues } from "../../../../core/models/headers.model";
 
 
 @Component({
@@ -41,6 +41,7 @@ export class CharacterAbilityDetailsComponent implements OnInit {
     character: Characters = new Characters();
     AbilityDetail: any = new Ability();
     charNav: any = {};
+    headers: HeaderValues = new HeaderValues();
 
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -95,10 +96,16 @@ export class CharacterAbilityDetailsComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
+            this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+            if (this.headers) {
+              if (this.headers.headerId && this.headers.headerLink == 'character') {
+                this.characterId = this.headers.headerId;
+              }
+            }
             this.isLoading = true;
             this.characterAbilityService.getCharacterAbilityById<any>(this.abilityId)
                 .subscribe(data => {
-
+                  debugger;
                     this.AbilityDetail = this.characterAbilityService.abilityModelDetailData(data, "UPDATE");
                     this.AbilityDetail.currentNumberOfUses = data.currentNumberOfUses ? data.currentNumberOfUses : 0;
                     this.AbilityDetail.maxNumberOfUses = data.maxNumberOfUses ? data.maxNumberOfUses : 0;

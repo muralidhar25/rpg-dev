@@ -29,7 +29,7 @@
                                 <!--<input class="form-check-input" type="radio" name="newRuleset" (change)="setRuleset($event,ruleset)"/>-->
                                 <span>
                                     <img [alt]="ruleset.name" [src]="ruleset?.imageUrl"
-                                         onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png';">
+                                         onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
                                     <em>{{ruleset?.ruleSetName}}</em>
                                     <i *ngIf="addedRuleset | contains : ruleset?.ruleSetId : 'parentRuleSetId'" class="icon" title="Already Added"
                                        style="background-color:#aaa39e!important;cursor:not-allowed;"></i>

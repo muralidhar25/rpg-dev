@@ -20,6 +20,7 @@ import { DiceRollComponent } from "../../../../shared/dice/dice-roll/dice-roll.c
 import { ImageViewerComponent } from "../../../../shared/image-interface/image-viewer/image-viewer.component";
 import { AddContainerComponent } from "../add-container/add-container.component";
 import { AddContainerItemComponent } from "../add-container-item/add-container-item.component";
+import { HeaderValues } from "../../../../core/models/headers.model";
 
 @Component({
     selector: 'app-item-details',
@@ -39,7 +40,8 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
     characterId: number;
     character: Characters = new Characters();
     ItemDetail: any = new Items;
-    navigationSubscription;
+  navigationSubscription;
+  headers: HeaderValues = new HeaderValues();
     charNav: any = {};
 
     constructor(
@@ -106,10 +108,17 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
         if (user == null)
             this.authService.logout();
         else {
+              this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+              if (this.headers) {
+                if (this.headers.headerId && this.headers.headerLink == 'character') {
+                  this.characterId = this.headers.headerId;
+                }
+              }
             this.isLoading = true;
             this.itemsService.getItemById<any>(this.itemId)
                 .subscribe(data => {
-                    
+                  debugger;
+                  
                     this.ItemDetail = this.itemsService.itemModelData(data, "UPDATE");
                     this.ruleSetId = this.ItemDetail.ruleSetId;
                     this.characterId = this.ItemDetail.characterId;

@@ -66,9 +66,12 @@ export class SpellDetailsComponent implements OnInit {
             this.authService.logout();
         else {
             this.isLoading = true;
-            this.spellsService.getspellsById<any[]>(this.spellId)
-                .subscribe(data => {
-                    this.spellDetail = this.spellsService.spellModelData(data, "UPDATE");                    
+            this.spellsService.getspellsById<any>(this.spellId)
+              .subscribe(data => {
+                this.spellDetail = this.spellsService.spellModelData(data, "UPDATE");
+                if (!this.spellDetail.ruleset) {
+                  this.spellDetail.ruleset = data.ruleSet;
+                }
                     //this.spellDetail.forEach(function (val) { val.showIcon = false; });
                     this.rulesetService.GetCopiedRulesetID(this.spellDetail.ruleSetId, user.id).subscribe(data => {
                         let id: any = data

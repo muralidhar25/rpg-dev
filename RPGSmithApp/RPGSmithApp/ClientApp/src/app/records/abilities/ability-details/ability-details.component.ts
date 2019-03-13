@@ -67,10 +67,13 @@ export class AbilityDetailsComponent implements OnInit {
             this.authService.logout();
         else {
             this.isLoading = true;
-            this.abilityService.getAbilityById<any[]>(this.abilityId)
+            this.abilityService.getAbilityById<any>(this.abilityId)
                 .subscribe(data => {
-                    
-                    this.AbilityDetail = this.abilityService.abilityModelData(data, "UPDATE");;
+                  this.AbilityDetail = this.abilityService.abilityModelData(data, "UPDATE");
+                  if (!this.AbilityDetail.ruleset) {
+                    this.AbilityDetail.ruleset = data.ruleSet;
+                  }
+
                     this.ruleSetId = this.AbilityDetail.ruleSetId;
                     //this.AbilityDetail.forEach(function (val) { val.showIcon = false; });
                     this.rulesetService.GetCopiedRulesetID(this.AbilityDetail.ruleSetId, user.id).subscribe(data => {

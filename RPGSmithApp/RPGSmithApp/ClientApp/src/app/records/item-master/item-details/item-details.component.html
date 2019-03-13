@@ -20,19 +20,19 @@
                 <div class="page-toolbar-wrapper initial show recordes-menu">
                     <!-- Toolbar links -->
                   <ul class="page-toolbar-links">
-                    <li class="hidden-tab">
+                    <li  *ngIf="ItemMasterDetail?.ruleSet"  class="hidden-tab">
                       <a [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
                     </li>
-                    <li (click)="Redirect('/ruleset/item-master/')" class="hidden-tab">
+                    <li *ngIf="ItemMasterDetail?.ruleSet?.isItemEnabled" (click)="Redirect('/ruleset/item-master/')" class="hidden-tab">
                       <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Items"> <span>Item Templates</span></a>
                     </li>
-                    <li (click)="Redirect('/ruleset/spell/')" class="hidden-tab">
+                    <li *ngIf="ItemMasterDetail?.ruleSet?.isSpellEnabled"  (click)="Redirect('/ruleset/spell/')" class="hidden-tab">
                       <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
                     </li>
-                    <li (click)="Redirect('/ruleset/ability/')" class="hidden-tab">
+                    <li  *ngIf="ItemMasterDetail?.ruleSet?.isAbilityEnabled" (click)="Redirect('/ruleset/ability/')" class="hidden-tab">
                       <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
                     </li>
-                    <li class="hidden-tab">
+                    <li  *ngIf="ItemMasterDetail?.ruleSet" class="hidden-tab">
                       <a [routerLink]="['/ruleset/character-stats/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
                     </li>
                     <li class="visible-tab mt-0">
@@ -40,17 +40,17 @@
                         <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                           <ul class="dropdown-menu-list">
-                            <li class="dropdown-menu-item">
+                            <li class="dropdown-menu-item" *ngIf="ItemMasterDetail?.ruleSet?.isItemEnabled">
                               <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection selected icon-Gen-Items"> Inventory</a>
                             </li>
-                            <li class="dropdown-menu-item">
+                            <li class="dropdown-menu-item" *ngIf="ItemMasterDetail?.ruleSet?.isSpellEnabled">
                               <a [routerLink]="charNav?.spells" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
                             </li>
-                            <li class="dropdown-menu-item">
+                            <li class="dropdown-menu-item" *ngIf="ItemMasterDetail?.ruleSet?.isAbilityEnabled">
                               <a [routerLink]="charNav?.abilities" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
                             </li>
 
-                            <li class="dropdown-menu-item">
+                            <li class="dropdown-menu-item" *ngIf="ItemMasterDetail?.ruleSet">
                               <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> Character Stats</a>
                             </li>
                           </ul>

@@ -1597,7 +1597,7 @@ export class CharacterTilesComponent implements OnInit {
     return Object.assign({}, { min: minSize, max: maxSize, margins: margin });
   }
   GetLinkRecordImage(id, linkType) {
-    let imagePath = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png';
+    let imagePath = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';
     if (this.statLinkRecords) {
       if (this.statLinkRecords.length) {
         if (this.statLinkRecords.length > 0) {

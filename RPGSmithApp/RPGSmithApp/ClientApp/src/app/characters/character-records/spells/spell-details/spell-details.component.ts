@@ -19,6 +19,7 @@ import { CastComponent } from "../../../../shared/cast/cast.component";
 import { DiceRollComponent } from "../../../../shared/dice/dice-roll/dice-roll.component";
 import { ImageViewerComponent } from "../../../../shared/image-interface/image-viewer/image-viewer.component";
 import { CreateSpellsComponent } from "../../../../shared/create-spells/create-spells.component";
+import { HeaderValues } from "../../../../core/models/headers.model";
 
 @Component({
     selector: 'app-spell-details',
@@ -30,8 +31,8 @@ export class CharacterSpellDetailsComponent implements OnInit {
 
     bsModalRef: BsModalRef;
     isLoading = false;
-  showActions: boolean = true;
-  isDropdownOpen: boolean = false;
+    showActions: boolean = true;
+    isDropdownOpen: boolean = false;
     actionText: string;
     spellId: number;
     ruleSetId: number;
@@ -39,6 +40,7 @@ export class CharacterSpellDetailsComponent implements OnInit {
     character: Characters = new Characters();
     spellDetail: any = new Spell();
     charNav: any = {};
+    headers: HeaderValues = new HeaderValues();
 
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -92,9 +94,16 @@ export class CharacterSpellDetailsComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
+              this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+              if (this.headers) {
+                if (this.headers.headerId && this.headers.headerLink == 'character') {
+                  this.characterId = this.headers.headerId;
+                }
+              }
             this.isLoading = true;
             this.characterSpellService.getCharacterSpellById<any>(this.spellId)
-                .subscribe(data => {
+              .subscribe(data => {
+                  debugger;
                     this.spellDetail = this.characterSpellService.spellModelDetailData(data, "UPDATE");
                    // this.ruleSetId = this.spellDetail.ruleSetId;
                     this.characterId = this.spellDetail.characterId;

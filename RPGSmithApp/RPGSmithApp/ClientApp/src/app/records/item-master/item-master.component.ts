@@ -376,7 +376,7 @@ export class ItemMasterComponent implements OnInit {
     try {
       let headerValues = {
         headerName: ruleset.ruleSetName,
-        headerImage: ruleset.imageUrl ? ruleset.imageUrl : 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png',
+        headerImage: ruleset.imageUrl ? ruleset.imageUrl : 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png',
         headerId: ruleset.ruleSetId,
         headerLink: 'ruleset',
         hasHeader: true

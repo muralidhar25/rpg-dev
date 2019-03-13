@@ -101,7 +101,7 @@ namespace DAL.Services
 
         public CharacterAbility GetById(int? id)
         {
-            return _context.CharacterAbilities.Include(d => d.Character).Include(d => d.Ability).ThenInclude(d => d.AbilityCommand).FirstOrDefault(x => x.CharacterAbilityId == id && x.IsDeleted!=true);
+            return _context.CharacterAbilities.Include(d => d.Character).ThenInclude(d => d.RuleSet).Include(d => d.Ability).ThenInclude(d => d.AbilityCommand).FirstOrDefault(x => x.CharacterAbilityId == id && x.IsDeleted!=true);
         }
 
         public CharacterAbility GetByAbilityId(int abilityId)
