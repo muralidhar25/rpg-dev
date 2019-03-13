@@ -314,7 +314,8 @@ namespace RPGSmithApp.Controllers
                                         BodyTextColor = commandTile.BodyTextColor,
                                         TitleBgColor = commandTile.TitleBgColor,
                                         TitleTextColor = commandTile.TitleTextColor,
-                                        IsDeleted = false
+                                        IsDeleted = false,
+                                        Command = commandTile.Command,
                                     });
                                     //SaveColorsAsync(Tile);
                                     break;
