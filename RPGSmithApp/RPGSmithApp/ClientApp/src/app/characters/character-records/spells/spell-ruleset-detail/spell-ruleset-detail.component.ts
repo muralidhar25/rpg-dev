@@ -85,9 +85,9 @@ export class SpellRulesetDetailComponent implements OnInit {
             this.isLoading = true;
             this.charactersService.getCharactersById<any>(this.character.characterId)
                 .subscribe(data => {
-                    this.character = data;
-                    
-                }, error => {
+                  this.character = data;
+
+                  }, error => {
                     this.isLoading = false;
                     let Errors = Utilities.ErrorDetail("", error);
                     if (Errors.sessionExpire) {

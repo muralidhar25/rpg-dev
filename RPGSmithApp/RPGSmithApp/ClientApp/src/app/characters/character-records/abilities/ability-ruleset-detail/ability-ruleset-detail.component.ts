@@ -98,8 +98,10 @@ export class AbilityRulesetDetailComponent implements OnInit {
                     }
                 }, () => { });
             this.abilityService.getAbilityById<any[]>(this.abilityId)
-                .subscribe(data => {
-                    this.AbilityDetail = this.abilityService.abilityModelData(data, "UPDATE");;
+              .subscribe(data => {
+               
+                   this.AbilityDetail = this.abilityService.abilityModelData(data, "UPDATE");
+
                     this.ruleSetId = this.AbilityDetail.ruleSetId;
                     //this.AbilityDetail.forEach(function (val) { val.showIcon = false; });
                     this.rulesetService.GetCopiedRulesetID(this.AbilityDetail.ruleSetId, user.id).subscribe(data => {

@@ -42,10 +42,13 @@ export class ExecuteTileComponent implements OnInit {
     tileColor: any;
     shapeClass: string;
     isLoading: boolean = false;
+    isItemloaded: boolean = false;
+    isIspellloaded: boolean = false;
+    isAbilityloaded: boolean = false;
     items: any;
     spells: any;
     abilities: any;
-    spellsList: boolean = true;;
+    spellsList: boolean = true;
     itemsList: boolean;
     abilitiesList: boolean;
     selectedColor: string;
@@ -117,7 +120,8 @@ export class ExecuteTileComponent implements OnInit {
             this.setColorOnInit();
             if (this.ruleSet.isItemEnabled) {
                 this.itemsService.getItemsByCharacterId<any[]>(this.characterId)
-                    .subscribe(data => {
+                  .subscribe(data => {
+                        this.isItemloaded = true;
                         this.items = data.filter(function (val) { return val.command; });
                         if (this.items.length) {
                             this.items = Object.assign([], this.items.map((x) => {
@@ -128,15 +132,18 @@ export class ExecuteTileComponent implements OnInit {
                         }
                         //console.log(this.items);
                         if (this._linkType == "Item")
-                            this.isLoading = false;
-                    }, error => {
                         this.isLoading = false;
+                          
+                    }, error => {
+                      this.isLoading = false;
+                      this.isItemloaded = true;
                     }, () => { });
             }
             // getting spell data
             if (this.ruleSet.isSpellEnabled) {
                 this.characterSpellService.getCharacterSpellsByCharacterId<any[]>(this.characterId)
-                    .subscribe(data => {
+                  .subscribe(data => {
+                      this.isIspellloaded = true;
                         this.spells = data.filter(function (val) { return val.spell.command; });
                         if (this.spells.length) {
                             this.spells = Object.assign([], this.spells.map((x) => {
@@ -147,14 +154,17 @@ export class ExecuteTileComponent implements OnInit {
                         }
                         //console.log(this.spells);
                         if (this._linkType == "Spell")
-                            this.isLoading = false;
-                    }, error => {
                         this.isLoading = false;
+                       
+                    }, error => {
+                      this.isLoading = false;
+                      this.isIspellloaded = true;
                     }, () => { });
             }
             if (this.ruleSet.isAbilityEnabled) {
                 this.characterAbilityService.getCharacterAbilitiesByCharacterId<any[]>(this.characterId)
-                    .subscribe(data => {
+                  .subscribe(data => {
+                      this.isAbilityloaded = true;
                         this.abilities = data.filter(function (val) { return val.ability.command; });
                         if (this.abilities.length) {
                             this.abilities = Object.assign([], this.abilities.map((x) => {
@@ -164,9 +174,11 @@ export class ExecuteTileComponent implements OnInit {
                             this.showMoreCommands('ability', this.abilities.length, "Show more");
                         }
                         if (this._linkType == "Ability")
-                            this.isLoading = false;
-                    }, error => {
                         this.isLoading = false;
+                        
+                    }, error => {
+                       this.isLoading = false;
+                       this.isAbilityloaded = true;
                     }, () => { });
             }
             this.colorService.getRecentColors<any>()

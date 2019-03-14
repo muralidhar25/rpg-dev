@@ -50,10 +50,13 @@ export class LinkTileComponent implements OnInit {
     tileColor: any;
     title: string;
     isLoading: boolean = false;
+    isItemloaded: boolean = false;
+    isIspellloaded: boolean = false;
+    isAbilityloaded: boolean = false;
     items: any;
     spells: any;
     abilities: any;
-    spellsList: boolean = true;;
+    spellsList: boolean = true;
     itemsList: boolean;
     abilitiesList: boolean;
     showMoreLessColorToggle: boolean = true;
@@ -119,7 +122,7 @@ export class LinkTileComponent implements OnInit {
                     .subscribe(data => {
                         //console.log(data);
                         this.items = data;
-
+                      this.isItemloaded = true;
                         if (this.items.length) {
                             this.items = Object.assign([], this.items.map((x) => {
                                 x.selected = false;
@@ -128,11 +131,12 @@ export class LinkTileComponent implements OnInit {
                             this.showMoreCommands('item', this.items.length, "Show more");
                         }
                         if (this._linkType == "Item") {
-                            this.isLoading = false;                            
+                          this.isLoading = false; 
                         }
 
                     }, error => {
-                        this.isLoading = false;
+                      this.isLoading = false;
+                      this.isItemloaded = true;
                     }, () => { });
             }
             // getting spell data
@@ -140,7 +144,8 @@ export class LinkTileComponent implements OnInit {
                 this.characterSpellService.getCharacterSpellsByCharacterId<any[]>(this.characterId)
                     .subscribe(data => {
                         //console.log(data);
-                        this.spells = data;
+                      this.spells = data;
+                      this.isIspellloaded = true;
                         if (this.spells.length) {
                             this.spells = Object.assign([], this.spells.map((x) => {
                                 x.selected = false;
@@ -149,17 +154,19 @@ export class LinkTileComponent implements OnInit {
                             this.showMoreCommands('spell', this.spells.length, "Show more");
                         }
                         if (this._linkType == "Spell") {
-                            this.isLoading = false;                           
+                          this.isLoading = false;
                         }
                     }, error => {
-                        this.isLoading = false;
+                      this.isLoading = false;
+                      this.isIspellloaded = true;
                     }, () => { });
             }
             if (this.ruleSet.isAbilityEnabled) {
                 this.characterAbilityService.getCharacterAbilitiesByCharacterId<any[]>(this.characterId)
                     .subscribe(data => {
                         //console.log(data);
-                        this.abilities = data;
+                      this.abilities = data;
+                      this.isAbilityloaded = true;
                         if (this.abilities.length) {
                             this.abilities = Object.assign([], this.abilities.map((x) => {
                                 x.selected = false;
@@ -168,10 +175,12 @@ export class LinkTileComponent implements OnInit {
                             this.showMoreCommands('ability', this.abilities.length, "Show more");
                         }
                         if (this._linkType == "Ability") {
-                            this.isLoading = false;                            
+                          this.isLoading = false;
+                         
                         }
                     }, error => {
-                        this.isLoading = false;
+                      this.isLoading = false;
+                      this.isAbilityloaded = true;
                     }, () => { });
             }
             //this.isLoading = true;

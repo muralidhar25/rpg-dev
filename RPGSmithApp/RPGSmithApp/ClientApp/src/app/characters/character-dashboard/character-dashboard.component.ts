@@ -53,6 +53,7 @@ import { CharactersCharacterStatService } from "../../core/services/characters-c
 import { EditTextComponent } from "../../tile/text/edit-text/edit-text.component";
 import { CharacterStatConditionViewModel } from "../../core/models/view-models/character-stats.model";
 import { AppService1 } from "../../app.service";
+import { HeaderValues } from "../../core/models/headers.model";
 
 @Component({
     selector: 'app-character-dashboard',
@@ -88,6 +89,7 @@ export class CharacterDashboardComponent implements OnInit {
   private BoxesCurrentRow: number = this.startIndex;
   private BoxesCurrentColumn: number = this.startIndex;
   private columnsInGrid: number = 14;
+  headers: HeaderValues = new HeaderValues();
 
   IsMobileScreen: boolean = this.isMobile();
   //public gridConfig: NgGridConfig = {
@@ -441,6 +443,12 @@ export class CharacterDashboardComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
+        this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+        if (this.headers) {
+          if (this.headers.headerId && this.headers.headerLink == 'character') {
+              this.characterId = this.headers.headerId;
+          }
+        }
       try {
         this.CCService.getConditionsValuesList<any[]>(this.characterId)
           .subscribe(data => {

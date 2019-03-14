@@ -16,104 +16,111 @@
         </div>
 
         <div class="form-row">
-            <div class="col">
-                <fieldset class="form-group input-switch">
-                    <legend>Property</legend>
-                    <ul class="input-switch-items">
-                        <li class="form-check" *ngIf="ruleSet?.isItemEnabled">
-                            <label class="form-check-label">
-                                <input class="form-check-input" type="radio" name="Items" [checked]="_linkType=='Item'" [value]="_linkType" (change)="showProperty('Items')">
-                                <span>Items</span>
-                            </label>
-                        </li>
-                        <li class="form-check" *ngIf="ruleSet?.isSpellEnabled">
-                            <label class="form-check-label">
-                                <input class="form-check-input" type="radio" name="Spells" [checked]="_linkType=='Spell'" [value]="_linkType" (change)="showProperty('Spells')">
-                                <span>Spells</span>
-                            </label>
-                        </li>
-                        <li class="form-check" *ngIf="ruleSet?.isAbilityEnabled">
-                            <label class="form-check-label">
-                                <input class="form-check-input" type="radio" name="Abilites" [checked]="_linkType=='Ability'" [value]="_linkType" (change)="showProperty('Abilites')">
-                                <span>Abilities</span>
-                            </label>
-                        </li>
-                    </ul>
-                </fieldset>
-                <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='Spell' && ruleSet?.isSpellEnabled">
-                    <ul class="input-list-items">
-                        <ng-container *ngFor="let spell of spells | filterTile : query : 'spell';let i=index;">
-                            <li class="form-check linkli" popover="{{spell.spell.name}}" triggers="hover" *ngIf="i<limitSpell">
-                                <label class="form-check-label">
-                                    <input *ngIf="characterTileModel.view===VIEW.EDIT" class="form-check-input" type="radio" name="newLinkProperties" value="spell" (change)="getSpellValue(spell)" [checked]="spell.characterSpellId == executeTileFormModal.spellId">
-                                    <input *ngIf="characterTileModel.view===VIEW.ADD" class="form-check-input" type="checkbox" name="newLinkProperties" (change)="getSpellValueList($event,spell)" [checked]="spell.selected" />
+          <div class="col">
+            <fieldset class="form-group input-switch">
+              <legend>Property</legend>
+              <ul class="input-switch-items">
+                <li class="form-check" *ngIf="ruleSet?.isItemEnabled">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="Items" [checked]="_linkType=='Item'" [value]="_linkType" (change)="showProperty('Items')">
+                    <span>Items</span>
+                  </label>
+                </li>
+                <li class="form-check" *ngIf="ruleSet?.isSpellEnabled">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="Spells" [checked]="_linkType=='Spell'" [value]="_linkType" (change)="showProperty('Spells')">
+                    <span>Spells</span>
+                  </label>
+                </li>
+                <li class="form-check" *ngIf="ruleSet?.isAbilityEnabled">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="Abilites" [checked]="_linkType=='Ability'" [value]="_linkType" (change)="showProperty('Abilites')">
+                    <span>Abilities</span>
+                  </label>
+                </li>
+              </ul>
+            </fieldset>
+            <ng-container *ngIf="(isItemloaded && isIspellloaded && isAbilityloaded)">
+              <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='Spell' && ruleSet?.isSpellEnabled">
+                <ul class="input-list-items">
+                  <ng-container *ngFor="let spell of spells | filterTile : query : 'spell';let i=index;">
+                    <li class="form-check linkli" popover="{{spell.spell.name}}" triggers="hover" *ngIf="i<limitSpell">
+                      <label class="form-check-label">
+                        <input *ngIf="characterTileModel.view===VIEW.EDIT" class="form-check-input" type="radio" name="newLinkProperties" value="spell" (change)="getSpellValue(spell)" [checked]="spell.characterSpellId == executeTileFormModal.spellId">
+                        <input *ngIf="characterTileModel.view===VIEW.ADD" class="form-check-input" type="checkbox" name="newLinkProperties" (change)="getSpellValueList($event,spell)" [checked]="spell.selected" />
 
-                                    <span [ngClass]="{'card-equip':spell.isMemorized}">
-                                        <img src="{{spell.spell.imageUrl}}" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';">
-                                        <em>
-                                            {{spell.spell.name}}
-                                        </em>
-                                        <i class="icon"></i>
-                                    </span>
-                                </label>
-                            </li>
-                        </ng-container>
-                        <li *ngIf="spells?.length == 0" style="list-style-type: none;">No Spells Available With A Command</li>
-                    </ul>
-                    <div class="input-extend">
-                        <button type="button" *ngIf="spells?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitSpell==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('spell', spells?.length,limitTextSpell)"><span>{{limitTextSpell}}</span></button>
-                    </div>
-                </fieldset>
-                <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='Item' && ruleSet?.isItemEnabled">
-                    <ul class="input-list-items">
-                        <ng-container *ngFor="let item of items | filterTile : query : 'item';let i=index;">
-                            <li class="form-check linkli" popover="{{item.name}}" triggers="hover" *ngIf="i<limitItem">
-                                <label class="form-check-label">
-                                    <input *ngIf="characterTileModel.view===VIEW.EDIT" class="form-check-input" type="radio" name="newLinkProperties" value="item" (change)="getItemValue(item)"
-                                           [checked]="item.itemId == executeTileFormModal.itemId">
-                                    <input *ngIf="characterTileModel.view===VIEW.ADD" class="form-check-input" type="checkbox" name="newLinkProperties" (change)="getItemValueList($event,item)" [checked]="item.selected" />
+                        <span [ngClass]="{'card-equip':spell.isMemorized}">
+                          <img src="{{spell.spell.imageUrl}}" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';">
+                          <em>
+                            {{spell.spell.name}}
+                          </em>
+                          <i class="icon"></i>
+                        </span>
+                      </label>
+                    </li>
+                  </ng-container>
+                  <li *ngIf="spells?.length == 0" style="list-style-type: none;">No Spells Available With A Command</li>
+                </ul>
+                <div class="input-extend">
+                  <button type="button" *ngIf="spells?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitSpell==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('spell', spells?.length,limitTextSpell)"><span>{{limitTextSpell}}</span></button>
+                </div>
+              </fieldset>
+              <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='Item' && ruleSet?.isItemEnabled">
+                <ul class="input-list-items">
+                  <ng-container *ngFor="let item of items | filterTile : query : 'item';let i=index;">
+                    <li class="form-check linkli" popover="{{item.name}}" triggers="hover" *ngIf="i<limitItem">
+                      <label class="form-check-label">
+                        <input *ngIf="characterTileModel.view===VIEW.EDIT" class="form-check-input" type="radio" name="newLinkProperties" value="item" (change)="getItemValue(item)"
+                               [checked]="item.itemId == executeTileFormModal.itemId">
+                        <input *ngIf="characterTileModel.view===VIEW.ADD" class="form-check-input" type="checkbox" name="newLinkProperties" (change)="getItemValueList($event,item)" [checked]="item.selected" />
 
-                                    <span [ngClass]="{'card-equip':item?.isEquipped}">
-                                        <img src="{{item.itemImage}}" onerror="this.src='../assets/images/DefaultImages/Item.jpg';">
-                                        <em>
-                                            {{item.name}}
-                                        </em>
-                                        <i class="icon"></i>
-                                    </span>
-                                </label>
-                            </li>
-                        </ng-container>
-                        <li *ngIf="items?.length == 0" style="list-style-type: none;">No Items Available With A Command</li>
-                    </ul>
-                    <div class="input-extend">
-                        <button type="button" *ngIf="items?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitItem==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('item', items?.length,limitTextItem)"><span>{{limitTextItem}}</span></button>
-                    </div>
-                </fieldset>
-                <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='Ability' && ruleSet?.isAbilityEnabled">
-                    <ul class="input-list-items">
-                        <ng-container *ngFor="let ability of abilities | filterTile : query : 'ability';let i=index;">
-                            <li class="form-check linkli" popover="{{ability.ability.name}}" triggers="hover" *ngIf="i<limitAbility">
-                                <label class="form-check-label">
-                                    <input *ngIf="characterTileModel.view===VIEW.EDIT" class="form-check-input" type="radio" name="newLinkProperties" value="ability" (change)="getAbilityValue(ability)" [checked]="ability.characterAbilityId == executeTileFormModal.abilityId">
-                                    <input *ngIf="characterTileModel.view===VIEW.ADD" class="form-check-input" type="checkbox" name="newLinkProperties" (change)="getAbilityValueList($event,ability)" [checked]="ability.selected" />
+                        <span [ngClass]="{'card-equip':item?.isEquipped}">
+                          <img src="{{item.itemImage}}" onerror="this.src='../assets/images/DefaultImages/Item.jpg';">
+                          <em>
+                            {{item.name}}
+                          </em>
+                          <i class="icon"></i>
+                        </span>
+                      </label>
+                    </li>
+                  </ng-container>
+                  <li *ngIf="items?.length == 0" style="list-style-type: none;">No Items Available With A Command</li>
+                </ul>
+                <div class="input-extend">
+                  <button type="button" *ngIf="items?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitItem==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('item', items?.length,limitTextItem)"><span>{{limitTextItem}}</span></button>
+                </div>
+              </fieldset>
+              <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='Ability' && ruleSet?.isAbilityEnabled">
+                <ul class="input-list-items">
+                  <ng-container *ngFor="let ability of abilities | filterTile : query : 'ability';let i=index;">
+                    <li class="form-check linkli" popover="{{ability.ability.name}}" triggers="hover" *ngIf="i<limitAbility">
+                      <label class="form-check-label">
+                        <input *ngIf="characterTileModel.view===VIEW.EDIT" class="form-check-input" type="radio" name="newLinkProperties" value="ability" (change)="getAbilityValue(ability)" [checked]="ability.characterAbilityId == executeTileFormModal.abilityId">
+                        <input *ngIf="characterTileModel.view===VIEW.ADD" class="form-check-input" type="checkbox" name="newLinkProperties" (change)="getAbilityValueList($event,ability)" [checked]="ability.selected" />
 
-                                    <span [ngClass]="{'card-equip':ability.isEnabled}">
-                                        <img src="{{ability.ability.imageUrl}}" onerror="this.src='../assets/images/DefaultImages/ability.png';">
-                                        <em>
-                                            {{ability.ability.name}}
-                                        </em>
-                                        <i class="icon"></i>
-                                    </span>
-                                </label>
-                            </li>
-                        </ng-container>
-                        <li *ngIf="abilities?.length == 0" style="list-style-type: none;">No Abilities Available With A Command</li>
-                    </ul>
-                    <div class="input-extend">
-                        <button type="button" *ngIf="abilities?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitAbility==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('ability', abilities?.length,limitTextAbility)"><span>{{limitTextAbility}}</span></button>
-                    </div>
-                </fieldset>
-            </div>
+                        <span [ngClass]="{'card-equip':ability.isEnabled}">
+                          <img src="{{ability.ability.imageUrl}}" onerror="this.src='../assets/images/DefaultImages/ability.png';">
+                          <em>
+                            {{ability.ability.name}}
+                          </em>
+                          <i class="icon"></i>
+                        </span>
+                      </label>
+                    </li>
+                  </ng-container>
+                  <li *ngIf="abilities?.length == 0" style="list-style-type: none;">No Abilities Available With A Command</li>
+                </ul>
+                <div class="input-extend">
+                  <button type="button" *ngIf="abilities?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitAbility==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('ability', abilities?.length,limitTextAbility)"><span>{{limitTextAbility}}</span></button>
+                </div>
+              </fieldset>
+            </ng-container>
+            <ng-container *ngIf="!(isItemloaded && isIspellloaded && isAbilityloaded)">
+              <fieldset class="form-group input-list input-list-wrap properties">
+                <app-loader [isLoading]="!(isItemloaded && isIspellloaded && isAbilityloaded)"></app-loader>
+              </fieldset>
+            </ng-container>
+          </div>
         </div>
 
         <div class="form-row">
