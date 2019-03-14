@@ -68,8 +68,9 @@ export class EditCharacterStatComponent implements OnInit {
     interval: any;
     isNotValidNumber: boolean = false;
 
-    options(placeholder?: string, initOnClick?: boolean): Object {
-        return Utilities.optionsFloala(200, placeholder, initOnClick);
+  options(placeholder?: string, initOnClick?: boolean): Object {
+    //console.log(Utilities.optionsFloala(200, placeholder, initOnClick, true))
+        return Utilities.optionsFloala(200, placeholder, initOnClick,true);
     }
 
     constructor(
@@ -93,7 +94,8 @@ export class EditCharacterStatComponent implements OnInit {
             //this.defaultCharacterStats = this.CharacterStatTile.charactersCharacterStat.character.charactersCharacterStats;
 
             this.pageId = this.bsModalRef.content.pageId;
-            this.pageDefaultData = this.bsModalRef.content.pageDefaultData;
+          this.pageDefaultData = this.bsModalRef.content.pageDefaultData;
+          this.showRichEditor = this.bsModalRef.content.showEditor ? this.bsModalRef.content.showEditor : false;
 
             this.Initialize();
         }, 0);

@@ -20,16 +20,16 @@
                 <div class="page-toolbar-wrapper initial show">
                     <!-- Toolbar links -->
                     <ul class="page-toolbar-links">
-                        <li (click)="RedirectChar(charNav?.items)" *ngIf="RuleSet?.isItemEnabled">
+                        <li (click)="RedirectChar(charNav?.items)" >
                             <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Inventory</span></a>
                         </li>
-                        <li (click)="RedirectChar(charNav?.spells)" *ngIf="RuleSet?.isSpellEnabled">
+                        <li (click)="RedirectChar(charNav?.spells)" >
                             <a [routerLink]="charNav?.spells" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
                         </li>
-                        <li (click)="RedirectChar(charNav?.abilities)" *ngIf="RuleSet?.isAbilityEnabled">
+                        <li (click)="RedirectChar(charNav?.abilities)">
                             <a [routerLink]="charNav?.abilities" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> <span>Abilities</span></a>
                         </li>
-                        <li *ngIf="RuleSet">
+                        <li >
                             <a [routerLink]="['/character/character-stats/',  character.characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
                         </li>
                     </ul>

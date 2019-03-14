@@ -52,6 +52,7 @@ export class NoteTileComponent implements OnInit {
 
   //options: Object = Utilities.optionsNoteTile;
   uploadingFile: boolean = false;
+  autoFocusEditor: boolean = false;
 
   public mobileToolbarButton = ['bold', 'italic', 'underline', 'insertImage', 'paragraphStyle', 'paragraphFormat', 'undo', 'redo'];
   public options: Object = {
@@ -115,7 +116,10 @@ export class NoteTileComponent implements OnInit {
     //videoAllowedTypes: ['webm', 'ogg', 'mp4'],
     //lineBreakerTags: ['table', 'hr', 'form'],
     events: {
-      'froalaEditor.initialized': () => {
+      'froalaEditor.initialized': (e, editor) => {
+        if (this.autoFocusEditor) {
+          editor.events.focus(true);
+        }
         console.log('froalaEditor.initialized');
       },
       'froalaEditor.image.uploaded': (e, editor, response) => {
@@ -241,7 +245,7 @@ export class NoteTileComponent implements OnInit {
       this.noteFormModel.color = this.characterTileModel.color;
       this.noteFormModel.shape = this.characterTileModel.shape;
       this.shapeClass = this.characterTileModel.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.characterTileModel.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
-
+      this.autoFocusEditor = this.bsModalRef.content.autoFocusEditor ? this.bsModalRef.content.autoFocusEditor : false;
       this.Initialize(this.noteFormModel);
     }, 0);
   }

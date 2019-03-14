@@ -120,8 +120,7 @@ export class Utilities {
     //quickInsertTags: ['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'pre', 'blockquote'],
     //pluginsEnabled: ['quickInsert', 'image', 'table', 'lists']
   }
-  public static optionsFloala(height: number = 300, placeholder: string = 'Type something..',
-    initOnClick: boolean = false): Object {
+  public static optionsFloala(height: number = 300, placeholder: string = 'Type something..', initOnClick: boolean = false, FocusOnInitialize:boolean=false): Object {
     return {
       key: 'FD3G3B2C2uB5A2A1C3A5E1H5E1J4B16hgfpktsotB5B-16pm==',
       //key: 'Fwvh1H-8dcC-21dA6mg1B-8==',
@@ -151,6 +150,7 @@ export class Utilities {
       quickInsertButtons: ['embedly', 'table', 'ul', 'ol'], //'image', 'video', , 'hr'
       //quickInsertTags: ['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'pre', 'blockquote'],
       //pluginsEnabled: ['quickInsert', 'image', 'table', 'lists']
+      events: this.FocusOnInitializeEditor(FocusOnInitialize)
     }
   }
 
@@ -805,6 +805,17 @@ export class Utilities {
       return false;
     }
     return true;
+  }
+  public static FocusOnInitializeEditor(flag): any {
+    if (flag) {
+      return {
+        'froalaEditor.initialized': (e, editor) => {
+          console.log('froalaEditor.initialized');
+          editor.events.focus(true);
+        }
+      }
+    }
+    return {};
   }
 
   public static RefreshPage(url: string, router: Router, headers: HeaderValues, rulesetID: number, localStorage: LocalStoreManager) {

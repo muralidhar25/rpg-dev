@@ -1092,20 +1092,33 @@ export class CharacterDashboardComponent implements OnInit {
     let _tile = Object.assign({}, tile);
     switch (tileType) {
       case TILES.NOTE: {
-        this.bsModalRef = this.modalService.show(EditNoteComponent, {
-          class: 'modal-primary modal-lg',
+        //this.bsModalRef = this.modalService.show(EditNoteComponent, {
+        //  class: 'modal-primary modal-lg',
+        //  ignoreBackdropClick: true,
+        //  keyboard: false
+        //});
+        //this.bsModalRef.content.tile = _tile;
+        //this.bsModalRef.content.noteTile = _tile.noteTiles;
+        //this.bsModalRef.content.characterId = this.characterId;
+        //this.bsModalRef.content.view = VIEW.MANAGE;
+        //this.bsModalRef.content.tileName = 'note';
+
+        //this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ?
+        //  this.selectedPage.characterDashboardPageId : this.pageId;
+        //this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+
+        this.bsModalRef = this.modalService.show(NoteTileComponent, {
+          class: 'modal-primary modal-lg modal-custom',
           ignoreBackdropClick: true,
           keyboard: false
         });
+        this.bsModalRef.content.title = "Edit Note Tile";
         this.bsModalRef.content.tile = _tile;
-        this.bsModalRef.content.noteTile = _tile.noteTiles;
         this.bsModalRef.content.characterId = this.characterId;
-        this.bsModalRef.content.view = VIEW.MANAGE;
-        this.bsModalRef.content.tileName = 'note';
-
-        this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ?
-          this.selectedPage.characterDashboardPageId : this.pageId;
+        this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ? this.selectedPage.characterDashboardPageId : this.pageId;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.EDIT;
+        this.bsModalRef.content.autoFocusEditor = true;
         break;
       }
       case TILES.IMAGE: {
@@ -1172,6 +1185,7 @@ export class CharacterDashboardComponent implements OnInit {
             this.bsModalRef.content.pageId = this.pageId;
             this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
             this.bsModalRef.content.view = VIEW.MANAGE;
+            this.bsModalRef.content.showEditor = true;
             break;
           case STAT_TYPE.Toggle:
 

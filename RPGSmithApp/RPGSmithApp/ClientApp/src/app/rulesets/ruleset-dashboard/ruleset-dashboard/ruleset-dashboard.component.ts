@@ -40,6 +40,7 @@ import { RulesetCommandTileComponent } from "../../../tile-ruleset/command/comma
 import { RulesetTile } from "../../../core/models/tiles/ruleset-tile.model";
 import { AppService1 } from "../../../app.service";
 import { PlatformLocation } from "@angular/common";
+import { HeaderValues } from "../../../core/models/headers.model";
 
 @Component({
     selector: 'app-ruleset-dashboard',
@@ -165,7 +166,8 @@ export class RulesetDashboardComponent implements OnInit {
     private isRefreshed: boolean = false;
     preventClick: boolean = false;
     private currentGridItems: NgGridItemEvent[] = [];
-    
+  headers: HeaderValues = new HeaderValues();
+
 
     constructor(
         private router: Router, private alertService: AlertService, private authService: AuthService, private sharedService: SharedService,
@@ -440,6 +442,12 @@ export class RulesetDashboardComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
+          this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+          if (this.headers) {
+            if (this.headers.headerId && this.headers.headerLink == 'ruleset') {
+              this.ruleSetId = this.headers.headerId;
+            }
+          }
             try {
                 if (window.outerWidth < 767) {
                     this.gridConfig.draggable = false;
@@ -1480,7 +1488,8 @@ export class RulesetDashboardComponent implements OnInit {
             }
             let box: Box = { config: ngGridItemConfig, tile: item, IsCharacter: false };
             boxes.push(box);
-        })
+      })
+      console.log(boxes)
         return boxes;
     }
 
