@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RulesetTile } from '../../core/models/tiles/ruleset-tile.model';
 import { Color } from '../../core/models/tiles/color.model';
 import { CharacterStatTile } from '../../core/models/tiles/character-stat-tile.model';
-import { VIEW, SHAPE_CLASS, SHAPE } from '../../core/models/enums';
+import { VIEW, SHAPE_CLASS, SHAPE, STAT_TYPE, BLOB_TYPE } from '../../core/models/enums';
 import { RulesetDashboardPage } from '../../core/models/view-models/ruleset-dashboard-page.model';
 import { SharedService } from '../../core/services/shared.service';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
@@ -21,6 +21,8 @@ import { CharacterStats } from '../../core/models/view-models/character-stats.mo
 import { Utilities } from '../../core/common/utilities';
 import { ColorsComponent } from '../../tile/colors/colors.component';
 import { PlatformLocation } from '@angular/common';
+import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
+import { FileUploadService } from '../../core/common/file-upload.service';
 
 @Component({
     selector: 'app-character-stat',
@@ -61,6 +63,10 @@ export class RulesetCharacterStatTileComponent implements OnInit {
     colorModel: Color = new Color();
     showDemo: boolean = false;
     tile: number;
+  hasCommand: boolean;
+  showWebButtons: boolean;
+  imageUrl: string;
+  fileToUpload: File = null;
 
     constructor(private bsModalRef: BsModalRef, private route: ActivatedRoute, private sharedService: SharedService,
         private colorService: ColorService, private modalService: BsModalService, public localStorage: LocalStoreManager,
@@ -75,7 +81,7 @@ export class RulesetCharacterStatTileComponent implements OnInit {
         public characterStatService: CharactersCharacterStatService,
 
         private alertService: AlertService
-      , private location: PlatformLocation) {
+      , private location: PlatformLocation, private fileUploadService: FileUploadService) {
       location.onPopState(() => this.modalService.hide(1));
     }
 
@@ -92,7 +98,9 @@ export class RulesetCharacterStatTileComponent implements OnInit {
             this.rulesetTileModel = this.characterStatTileService.rulesetCharacterStatTileModelData(model, this.rulesetId, this.pageId, view, this.pageDefaultData);
             this.characterStatTileFormModal = Object.assign({}, this.rulesetTileModel.characterStatTile);
             this.characterStatTileFormModal.color = this.rulesetTileModel.color;
-            this.characterStatTileFormModal.shape = this.rulesetTileModel.shape;
+          this.characterStatTileFormModal.shape = this.rulesetTileModel.shape;
+
+          this.imageUrl = this.characterStatTileFormModal.imageUrl;
 
             this.Initialize(view, this.characterStatTileFormModal);
 
@@ -112,7 +120,18 @@ export class RulesetCharacterStatTileComponent implements OnInit {
             this.charactersService.getCharacterStatsByRuleset<CharacterStats[]>(this.rulesetId)
                 .subscribe(data => {
                     this.isLoading = false;
-                    this.statsList = data;
+                  this.statsList = data;
+                  //changes for #540
+                  let countCommandSTAT = 0;
+                  this.statsList.map((x) => {
+                    debugger
+                    if (x.characterStatTypeViewModel.characterStatTypeId === STAT_TYPE.Command
+                      && x.characterStatId === this.rulesetTileModel.characterStatTile.characterStatId) {
+                      countCommandSTAT += 1;
+                      if (countCommandSTAT === 1) this.hasCommand = true;
+                      else this.hasCommand = false;
+                    }
+                  });
                 }, error => {
                     this.isLoading = false;
                     let Errors = Utilities.ErrorDetail("", error);
@@ -356,6 +375,10 @@ export class RulesetCharacterStatTileComponent implements OnInit {
             image: undefined
         });
 
+      debugger
+      if (stat.characterStatTypeViewModel.characterStatTypeId == STAT_TYPE.Command) {
+        this.hasCommand = true;
+      } else this.hasCommand = false;
     }
 
     getStatValue(event: any, stat: any) {
@@ -370,15 +393,31 @@ export class RulesetCharacterStatTileComponent implements OnInit {
                 characterStatId: stat.characterStatId,
                 characterStatTypeId: stat.characterStatTypeViewModel.characterStatTypeId,
                 image: undefined
-            });
+          });
+
+          debugger
+          let countCommandSTAT = 0;
+          this.rulesetTileModel.multiCharacterStats.map((x) => {
+            if (x.characterStatTypeId === STAT_TYPE.Command) {
+              countCommandSTAT += 1;
+            }
+          });
+          if (countCommandSTAT === 1) {
+            this.hasCommand = true;
+          } else this.hasCommand = false;
         }
         else {
-            this.rulesetTileModel.multiCharacterStats = this.rulesetTileModel.multiCharacterStats.filter(x => x.characterStatId != stat.charactersCharacterStatId);
+          this.rulesetTileModel.multiCharacterStats = this.rulesetTileModel.multiCharacterStats.filter(x => x.characterStatId != stat.characterStatId);
             //this.rulesetTileModel.multiCharacterStats
             //    .splice(this.rulesetTileModel.multiCharacterStats.indexOf({
             //        characterStatId: stat.characterStatId,
             //        characterStatTypeId: stat.characterStatTypeViewModel.characterStatTypeId
             //    }), 1);
+
+          debugger
+          if (stat.characterStatTypeViewModel.characterStatTypeId == STAT_TYPE.Command) {
+            this.hasCommand = false;
+          }
         }
     }
 
@@ -433,12 +472,18 @@ export class RulesetCharacterStatTileComponent implements OnInit {
             let _msg = this.characterStatTileFormModal.characterStatTileId == 0 || this.characterStatTileFormModal.characterStatTileId === undefined
                 ? "Creating Character Stat Tile..." : "Updating Character Stat Tile...";
 
-            this.alertService.startLoadingMessage("", _msg);
+          this.alertService.startLoadingMessage("", _msg);
+
+
+          if (this.imageUrl != null)  /*image upload then submit */
+            this.fileUpload();
+          else            
             this.addEditCharacterStatTile(this.rulesetTileModel);
         }
     }
 
-    private addEditCharacterStatTile(modal) {
+  private addEditCharacterStatTile(modal) {
+      debugger
         this.isLoading = true;
         this.rulesetTileService.createRulesetCharacterStatTile(modal)
             .subscribe(
@@ -486,5 +531,92 @@ export class RulesetCharacterStatTileComponent implements OnInit {
             }
         }
         return false;
+  }
+  cropImage(img: string, OpenDirectPopup: boolean, view: string) {
+
+    this.bsModalRef = this.modalService.show(ImageSelectorComponent, {
+      class: 'modal-primary modal-sm selectPopUpModal',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'none';
+    this.bsModalRef.content.image = img;
+    this.bsModalRef.content.view = view;
+    this.bsModalRef.content.errorImage = 'https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';
+    //this.bsModalRef.content.imageChangedEvent = this.imageChangedEvent; //base 64 || URL
+    this.bsModalRef.content.event.subscribe(data => {
+      //this.commandTileFormModal.imageUrl = data.base64;
+      this.imageUrl = data.base64;
+      this.fileToUpload = data.base64;
+      this.showWebButtons = false;
+    });
+  }
+  private fileUpload() {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout(true);
+    else {
+      debugger
+      if (this.imageUrl.indexOf(BLOB_TYPE.blob) > -1) {
+        if (this.rulesetTileModel.view == VIEW.EDIT) this.characterStatTileFormModal.imageUrl = this.imageUrl;
+        else
+          this.rulesetTileModel.multiCharacterStats.map((x) => {
+            if (x.characterStatTypeId === STAT_TYPE.Command && this.hasCommand) {
+              x.image = this.imageUrl;
+              this.characterStatTileFormModal.imageUrl = this.imageUrl;
+            }
+          });
+        this.addEditCharacterStatTile(this.rulesetTileModel);
+      } else {
+        let type = "base64";
+        let file = this.imageUrl;
+        let extension = 'jpg';
+        if (this.imageUrl.indexOf(BLOB_TYPE.base64) > -1) {
+          type = "base64";
+        }
+        else {
+          type = "url";
+          try {
+            var regex = /(?:\.([^.]+))?$/;
+            extension = regex.exec(this.imageUrl)[1];
+            extension = extension ? extension : 'jpg';
+          } catch{ }
+        }
+
+        let data = {
+          userId: user.id,
+          file: this.imageUrl,
+          extension: extension,
+          type: type
+        }
+
+        this.fileUploadService.uploadImageToBlob<any>(data)
+          .subscribe(
+            data => {
+              //this.characterTileModel.imageUrl = data.ImageUrl;
+              this.imageUrl = data.ImageUrl;
+              this.rulesetTileModel.multiCharacterStats.map((x) => {
+                if (x.characterStatTypeId === STAT_TYPE.Command && this.hasCommand) {
+                  x.image = this.imageUrl;
+                  this.characterStatTileFormModal.imageUrl = this.imageUrl;
+                }
+              });
+              this.rulesetTileModel.characterStatTile.imageUrl = data.ImageUrl;
+              this.addEditCharacterStatTile(this.rulesetTileModel);
+            },
+            error => {
+              let Errors = Utilities.ErrorDetail('Error', error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
+              else this.addEditCharacterStatTile(this.rulesetTileModel);
+            });
+      }
+
     }
+  }
+  removeImage() {
+    this.imageUrl = null;
+    this.characterStatTileFormModal.imageUrl = null;
+  }
 }

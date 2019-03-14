@@ -303,7 +303,8 @@ namespace RPGSmithApp.Controllers
                                         bodyTextColor = characterStatTile.bodyTextColor,
                                         titleBgColor = characterStatTile.titleBgColor,
                                         titleTextColor = characterStatTile.titleTextColor,
-                                        IsDeleted = false
+                                        IsDeleted = false,
+                                        ImageUrl = characterStatTile.ImageUrl
                                     });
                                     //SaveColorsAsync(Tile);
                                     break;
