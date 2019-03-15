@@ -349,7 +349,7 @@ namespace RPGSmithApp.Controllers
                         });
                         //await _colorService.Create(Tile.tileColor);
                     }
-                    _characterDashboardLayoutService.UpdateDefaultLayoutPage((int)_characterDashboardPage.CharacterDashboardLayoutId, _characterDashboardPage.CharacterDashboardPageId);
+                    //_characterDashboardLayoutService.UpdateDefaultLayoutPage((int)_characterDashboardPage.CharacterDashboardLayoutId, _characterDashboardPage.CharacterDashboardPageId);
                 }
                 catch (Exception ex)
                 {

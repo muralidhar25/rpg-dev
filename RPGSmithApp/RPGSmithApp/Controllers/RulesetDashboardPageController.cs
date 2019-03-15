@@ -149,7 +149,7 @@ namespace RPGSmithApp.Controllers
 
                     _RulesetDashboardPage = await _rulesetDashboardPageService.Create(_RulesetDashboardPage);
 
-                    _rulesetDashboardLayoutService.UpdateDefaultLayoutPage((int)_RulesetDashboardPage.RulesetDashboardLayoutId, _RulesetDashboardPage.RulesetDashboardPageId);
+                    //_rulesetDashboardLayoutService.UpdateDefaultLayoutPage((int)_RulesetDashboardPage.RulesetDashboardLayoutId, _RulesetDashboardPage.RulesetDashboardPageId);
                     var RulesetTiles = _tileService.GetByPageIdRulesetId(PageId, _RulesetDashboardPage.RulesetId ?? 0);
                     foreach (var _tile in RulesetTiles)
                     {

@@ -305,7 +305,7 @@ export class EditCharacterStatComponent implements OnInit {
                     });
                     charactersCharacterStat.multiChoice = _multiChoice;
                 } else {
-                    charactersCharacterStat.choice = this.selectedChoiceId.toString();
+                  charactersCharacterStat.choice = this.selectedChoiceId ? this.selectedChoiceId.toString():'';
                 }
                 this.updateStatService(charactersCharacterStat);
                 break;
