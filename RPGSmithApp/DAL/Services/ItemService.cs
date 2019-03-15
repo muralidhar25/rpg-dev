@@ -340,6 +340,10 @@ namespace DAL.Services
                 .Include(d => d.ItemAbilities).ThenInclude(d => d.Ability)
                 .Where(x => x.CharacterId == characterId && x.IsDeleted.GetValueOrDefault() != true).OrderBy(o => o.Name).ToList();         
         }
+        public List<Item> getItemByCharacterId(int characterId) {
+            return _context.Items
+              .Where(x => x.CharacterId == characterId && x.IsDeleted.GetValueOrDefault() != true).OrderBy(o => o.Name).ToList();
+        }
         public List<Item> GetItemsByCharacterId(int characterId)
         {
             return _context.Items                

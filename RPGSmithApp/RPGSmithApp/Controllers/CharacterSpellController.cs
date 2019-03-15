@@ -70,6 +70,19 @@ namespace RPGSmithApp.Controllers
             return Utilities.CleanModel<CharacterSpell>(characterSpells);
             //return characterSpells;
         }
+        
+             [HttpGet("GetSpellByCharacterId")]
+        // [ProducesResponseType(200, Type = typeof(IEnumerable<CharacterSpell>))]
+        public IEnumerable<CharacterSpell> GetSpellByCharacterId(int characterId)
+        {
+            List<CharacterSpell> characterSpells = _characterSpellService.GetSpellByCharacterId(characterId);
+
+            if (characterSpells == null || characterSpells.Count == 0)
+                return new List<CharacterSpell>();
+            
+            return characterSpells;
+            //return characterSpells;
+        }
 
         [HttpGet("getAllByCharacterId")]
         public IEnumerable<CharacterSpell> GetAllByCharacterId(int characterId, int page = 1, int pageSize = 6)

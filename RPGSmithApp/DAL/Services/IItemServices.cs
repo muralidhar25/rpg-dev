@@ -14,6 +14,7 @@ namespace DAL.Services
         List<Item> GetAll();
         Item GetById(int? id);
         List<Item> GetByCharacterId(int characterId);
+        List<Item> getItemByCharacterId(int characterId);        
         List<Item> GetByCharacterId(int characterId,int page, int pageSize);
         int GetCountByCharacterId(int characterId);
         Task<bool> DeleteItem(int id);

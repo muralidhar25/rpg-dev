@@ -118,7 +118,7 @@ export class LinkTileComponent implements OnInit {
             this.setColorOnInit();
             // getting items data
             if (this.ruleSet.isItemEnabled) {
-                this.itemsService.getItemsByCharacterId<any[]>(this.characterId)
+                this.itemsService.getItemByCharacterId<any[]>(this.characterId)
                     .subscribe(data => {
                         //console.log(data);
                         this.items = data;
@@ -141,7 +141,7 @@ export class LinkTileComponent implements OnInit {
             }
             // getting spell data
             if (this.ruleSet.isSpellEnabled) {
-                this.characterSpellService.getCharacterSpellsByCharacterId<any[]>(this.characterId)
+                this.characterSpellService.getCharacterSpellByCharacterId<any[]>(this.characterId)
                     .subscribe(data => {
                         //console.log(data);
                       this.spells = data;
@@ -162,7 +162,7 @@ export class LinkTileComponent implements OnInit {
                     }, () => { });
             }
             if (this.ruleSet.isAbilityEnabled) {
-                this.characterAbilityService.getCharacterAbilitiesByCharacterId<any[]>(this.characterId)
+              this.characterAbilityService.getCharacterAbilityByCharacterId<any[]>(this.characterId)
                     .subscribe(data => {
                         //console.log(data);
                       this.abilities = data;

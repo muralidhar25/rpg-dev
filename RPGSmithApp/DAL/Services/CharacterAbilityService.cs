@@ -88,6 +88,12 @@ namespace DAL.Services
                 .Where(x => x.CharacterId == characterId && x.IsDeleted!=true)
                 .OrderBy(o => o.Ability.Name).ToList();
         }
+        public List<CharacterAbility> GetAbilityByCharacterId(int characterId) {
+            return _context.CharacterAbilities
+               .Include(d => d.Ability)
+               .Where(x => x.CharacterId == characterId && x.IsDeleted != true)
+               .OrderBy(o => o.Ability.Name).ToList();
+        }
 
         public List<CharacterAbility> GetByCharacterId(int characterId, int page, int pageSize)
         {

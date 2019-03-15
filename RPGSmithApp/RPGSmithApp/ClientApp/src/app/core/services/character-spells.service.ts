@@ -20,6 +20,8 @@ export class CharacterSpellService extends EndpointFactory {
   private readonly _getAllUrl: string = "/api/CharacterSpell/getall";
   private readonly _getByIdUrl: string = "/api/CharacterSpell/GetById";
   private readonly _getByCharacterIdUrl: string = "/api/CharacterSpell/GetByCharacterId";
+  private readonly _getSpellByCharacterIdUrl: string = "/api/CharacterSpell/GetSpellByCharacterId";
+  
   private readonly _getCountUrl: string = "/api/CharacterSpell/getCountByCharacterId";
   private readonly _createUrl: string = "/api/CharacterSpell/create";
   private readonly _updateUrl: string = "/api/CharacterSpell/update";
@@ -33,6 +35,8 @@ export class CharacterSpellService extends EndpointFactory {
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getByIdUrl() { return this.configurations.baseUrl + this._getByIdUrl; }
   get getByCharacterIdUrl() { return this.configurations.baseUrl + this._getByCharacterIdUrl; }
+  get getSpellByCharacterIdUrl() { return this.configurations.baseUrl + this._getSpellByCharacterIdUrl; }
+  
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
   get createUrl() { return this.configurations.baseUrl + this._createUrl; }
   get updateUrl() { return this.configurations.baseUrl + this._updateUrl; }
@@ -78,6 +82,14 @@ export class CharacterSpellService extends EndpointFactory {
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getCharacterSpellsByCharacterId(Id));
+      });
+  }
+  getCharacterSpellByCharacterId<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getSpellByCharacterIdUrl}?characterId=${Id}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getCharacterSpellByCharacterId(Id));
       });
   }
 

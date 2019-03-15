@@ -87,7 +87,12 @@ namespace DAL.Services
                 .Where(x => x.CharacterId == characterId && x.IsDeleted!=true)
                 .OrderBy(o => o.Spell.Name).ToList();
         }
-
+        public List<CharacterSpell> GetSpellByCharacterId(int characterId) {
+            return _context.CharacterSpells              
+                .Include(d => d.Spell)
+                .Where(x => x.CharacterId == characterId && x.IsDeleted != true)
+                .OrderBy(o => o.Spell.Name).ToList();
+        }
         public List<CharacterSpell> GetByCharacterId(int characterId, int page, int pageSize)
         {
             return _context.CharacterSpells

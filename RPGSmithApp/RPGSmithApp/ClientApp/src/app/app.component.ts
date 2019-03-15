@@ -35,7 +35,7 @@ import { MyImagesComponent } from "./shared/my-images/my-images.component";
 import { Ruleset } from "./core/models/view-models/ruleset.model";
 import { AppService1 } from "./app.service";
 import { SearchType } from "./core/models/enums";
-//declare let ga: Function;
+declare let ga: Function;
 
 var alertify: any = require('./assets/scripts/alertify.js');
 

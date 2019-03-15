@@ -126,26 +126,26 @@ namespace RPGSmithApp.Controllers
             return Utilities.CleanModel<ItemListViewModel>(itemlist);
             // return itemlist;
         }
-        //[HttpGet("getItemByCharacterId")] //to bind listing of records on Link/execute records on tile and character stat screen 
-        //public IEnumerable<ItemListViewModel> getItemByCharacterId(int characterId)
-        //{
-        //    var items = _itemService.getItemByCharacterId(characterId);
+        [HttpGet("getItemByCharacterId")] //to bind listing of records on Link/execute records on tile and character stat screen 
+        public IEnumerable<ItemListViewModel> getItemByCharacterId(int characterId)
+        {
+            var items = _itemService.getItemByCharacterId(characterId);
 
-        //    if (items == null || items.Count == 0)
-        //        return new List<ItemListViewModel>();
+            if (items == null || items.Count == 0)
+                return new List<ItemListViewModel>();
 
-        //    List<ItemListViewModel> itemlist = new List<ItemListViewModel>();
-        //    itemlist = Mapper.Map<List<ItemListViewModel>>(items);
-        //    //foreach (Item item in items)
-        //    //{
-        //    //    var listobj = new ItemListViewModel();
-        //    //    listobj = Mapper.Map<ItemListViewModel>(item);  
-        //    //    itemlist.Add(listobj);
-        //    //}
+            List<ItemListViewModel> itemlist = new List<ItemListViewModel>();
+            itemlist = Mapper.Map<List<ItemListViewModel>>(items);
+            //foreach (Item item in items)
+            //{
+            //    var listobj = new ItemListViewModel();
+            //    listobj = Mapper.Map<ItemListViewModel>(item);  
+            //    itemlist.Add(listobj);
+            //}
           
-        //    return itemlist;
-        //    // return itemlist;
-        //}
+            return itemlist;
+            // return itemlist;
+        }
         [HttpGet("getAllByCharacterId")]
         public IEnumerable<ItemListViewModel> GetAllByCharacterId(int characterId, int page = 1, int pageSize = 6)
         {

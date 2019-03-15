@@ -112,7 +112,7 @@ export class ItemsService extends EndpointFactory {
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.getItemsByCharacterId(Id));
+        return this.handleError(error, () => this.getItemByCharacterId(Id));
       });
   }
 

@@ -21,5 +21,6 @@ namespace DAL.Services
         (bool, string) CheckCharacterAbilityExist(int characterId, int abilityId);
         CharacterAbility GetByAbilityId(int abilityId);
         (List<CharacterAbility>, Character, RuleSet) SP_CharacterAbility_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize, int sortType = 1);
+        List<CharacterAbility> GetAbilityByCharacterId(int characterId);
     }
 }

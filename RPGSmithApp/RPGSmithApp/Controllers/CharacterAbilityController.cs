@@ -77,6 +77,25 @@ namespace RPGSmithApp.Controllers
             return characterAbilities;
 
         }
+        [HttpGet("GetAbilityByCharacterId")]
+        //[ProducesResponseType(200, Type = typeof(IEnumerable<CharacterAbility>))]
+        public IEnumerable<CharacterAbility> GetAbilityByCharacterId(int characterId)
+        {
+            List<CharacterAbility> characterAbilities = _characterAbilityService.GetAbilityByCharacterId(characterId);
+
+            if (characterAbilities == null || characterAbilities.Count == 0)
+                return new List<CharacterAbility>();
+
+            //foreach (var item in characterAbilities)
+            //{
+            //    item.Character.CharacterAbilities = null;
+            //}
+            // return Utilities.CleanModel <CharacterAbility> (characterAbilities);
+
+            return characterAbilities;
+
+        }
+        
 
         [HttpGet("getAllByCharacterId")]
       

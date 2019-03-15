@@ -119,7 +119,7 @@ export class ExecuteTileComponent implements OnInit {
             // getting items data
             this.setColorOnInit();
             if (this.ruleSet.isItemEnabled) {
-                this.itemsService.getItemsByCharacterId<any[]>(this.characterId)
+                this.itemsService.getItemByCharacterId<any[]>(this.characterId)
                   .subscribe(data => {
                         this.isItemloaded = true;
                         this.items = data.filter(function (val) { return val.command; });
@@ -141,7 +141,7 @@ export class ExecuteTileComponent implements OnInit {
             }
             // getting spell data
             if (this.ruleSet.isSpellEnabled) {
-                this.characterSpellService.getCharacterSpellsByCharacterId<any[]>(this.characterId)
+                this.characterSpellService.getCharacterSpellByCharacterId<any[]>(this.characterId)
                   .subscribe(data => {
                       this.isIspellloaded = true;
                         this.spells = data.filter(function (val) { return val.spell.command; });
@@ -162,7 +162,7 @@ export class ExecuteTileComponent implements OnInit {
                     }, () => { });
             }
             if (this.ruleSet.isAbilityEnabled) {
-                this.characterAbilityService.getCharacterAbilitiesByCharacterId<any[]>(this.characterId)
+              this.characterAbilityService.getCharacterAbilityByCharacterId<any[]>(this.characterId)
                   .subscribe(data => {
                       this.isAbilityloaded = true;
                         this.abilities = data.filter(function (val) { return val.ability.command; });
