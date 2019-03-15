@@ -75,7 +75,7 @@
         <ul class="page-toolbar-actions">
           <li class="view-switch">
             <div class="btn-group" role="group">
-              <button type="button" id="filtersToggleBtn" class="btn filter-toggle-btn" (click)="applyFilters(inventoryFilter.type)" popover="{{inventoryFilter.name}}" triggers="hover click">
+              <button type="button" id="filtersToggleBtn" class="btn filter-toggle-btn" [disabled]="isLoading" (click)="applyFilters(inventoryFilter.type,false,true)" popover="{{inventoryFilter.name}}" triggers="hover click">
                 &nbsp;{{inventoryFilter.viewableCount}}
                 <span *ngIf="inventoryFilter.type == 3 && !inventoryFilter.icon"><i>A</i></span>
                 <span *ngIf="inventoryFilter.icon && inventoryFilter.type != 3" [ngClass]="inventoryFilter.icon"></span>

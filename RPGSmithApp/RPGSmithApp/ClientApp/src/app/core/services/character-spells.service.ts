@@ -81,12 +81,12 @@ export class CharacterSpellService extends EndpointFactory {
       });
   }
 
-  getCharacterSpellsByCharacterId_sp<T>(characterId: number, rulesetId: number, page: number, pageSize: number): Observable<T> {
-    let endpointUrl = `${this.getByCharacterId_api}?characterId=${characterId}&rulesetId=${rulesetId}&page=${page}&pageSize=${pageSize}`;
+  getCharacterSpellsByCharacterId_sp<T>(characterId: number, rulesetId: number, page: number, pageSize: number, sortType: number): Observable<T> {
+    let endpointUrl = `${this.getByCharacterId_api}?characterId=${characterId}&rulesetId=${rulesetId}&page=${page}&pageSize=${pageSize}&sortType=${sortType}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.getCharacterSpellsByCharacterId_sp(characterId, rulesetId, page, pageSize));
+        return this.handleError(error, () => this.getCharacterSpellsByCharacterId_sp(characterId, rulesetId, page, pageSize, sortType));
       });
   }
 

@@ -35,6 +35,7 @@ export class ItemsService extends EndpointFactory {
   private readonly GetNestedContainerItems_url: string = this.configurations.baseUrl + "/api/Item/GetNestedContainerItems";
   private readonly getByIdUrl: string = this.configurations.baseUrl + "/api/Item/GetById";
   private readonly getByCharacterIdUrl: string = this.configurations.baseUrl + "/api/Item/getByCharacterId";
+  private readonly getItemByCharacterIdUrl: string = this.configurations.baseUrl + "/api/Item/getItemByCharacterId";
   private readonly getAvailableContainerItemsUrl: string = this.configurations.baseUrl + "/api/Item/getAvailableContainerItems";
   private readonly getAvailableItemsUrl: string = this.configurations.baseUrl + "/api/Item/GetAvailableItems";
   private readonly toggleEquippedUrl: string = this.configurations.baseUrl + "/api/Item/toggleEquippedItem";
@@ -106,12 +107,21 @@ export class ItemsService extends EndpointFactory {
       });
   }
 
-  getItemsByCharacterId_sp<T>(characterId: number, rulesetId: number, page: number, pageSize: number): Observable<T> {
-    let endpointUrl = `${this.getByCharacterId_api}?characterId=${characterId}&rulesetId=${rulesetId}&page=${page}&pageSize=${pageSize}`;
+  getItemByCharacterId<T>(Id: number): Observable<T> { //No Circular reference data
+    let endpointUrl = `${this.getItemByCharacterIdUrl}?characterId=${Id}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.getItemsByCharacterId_sp(characterId, rulesetId, page, pageSize));
+        return this.handleError(error, () => this.getItemsByCharacterId(Id));
+      });
+  }
+
+  getItemsByCharacterId_sp<T>(characterId: number, rulesetId: number, page: number, pageSize: number, sortType: number): Observable<T> {
+    let endpointUrl = `${this.getByCharacterId_api}?characterId=${characterId}&rulesetId=${rulesetId}&page=${page}&pageSize=${pageSize}&sortType=${sortType}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getItemsByCharacterId_sp(characterId, rulesetId, page, pageSize, sortType));
       });
   }
 

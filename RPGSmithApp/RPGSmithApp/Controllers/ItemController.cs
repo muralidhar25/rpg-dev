@@ -126,7 +126,26 @@ namespace RPGSmithApp.Controllers
             return Utilities.CleanModel<ItemListViewModel>(itemlist);
             // return itemlist;
         }
+        //[HttpGet("getItemByCharacterId")] //to bind listing of records on Link/execute records on tile and character stat screen 
+        //public IEnumerable<ItemListViewModel> getItemByCharacterId(int characterId)
+        //{
+        //    var items = _itemService.getItemByCharacterId(characterId);
 
+        //    if (items == null || items.Count == 0)
+        //        return new List<ItemListViewModel>();
+
+        //    List<ItemListViewModel> itemlist = new List<ItemListViewModel>();
+        //    itemlist = Mapper.Map<List<ItemListViewModel>>(items);
+        //    //foreach (Item item in items)
+        //    //{
+        //    //    var listobj = new ItemListViewModel();
+        //    //    listobj = Mapper.Map<ItemListViewModel>(item);  
+        //    //    itemlist.Add(listobj);
+        //    //}
+          
+        //    return itemlist;
+        //    // return itemlist;
+        //}
         [HttpGet("getAllByCharacterId")]
         public IEnumerable<ItemListViewModel> GetAllByCharacterId(int characterId, int page = 1, int pageSize = 6)
         {
@@ -790,10 +809,10 @@ namespace RPGSmithApp.Controllers
         #region API_UsingSP
 
         [HttpGet("getByCharacterId_sp")]
-        public async Task<IActionResult> getByCharacterId_sp(int characterId, int rulesetId, int page = 1, int pageSize = 30)
+        public async Task<IActionResult> getByCharacterId_sp(int characterId, int rulesetId, int page = 1, int pageSize = 30,int sortType=1)
         {
             dynamic Response = new ExpandoObject();
-            (List<Item> itemsList, Character _character, RuleSet _ruleSet) = _itemService.SP_Items_GetByCharacterId(characterId, rulesetId, page, pageSize);
+            (List<Item> itemsList, Character _character, RuleSet _ruleSet) = _itemService.SP_Items_GetByCharacterId(characterId, rulesetId, page, pageSize, sortType);
 
             
             List<ItemListViewModel> ___itemlist = new List<ItemListViewModel>();

@@ -246,10 +246,10 @@ namespace RPGSmithApp.Controllers
 
         #region API_UsingSP
         [HttpGet("getByCharacterId_sp")]
-        public async Task<IActionResult> getByCharacterId_sp(int characterId, int rulesetId, int page = 1, int pageSize = 30)
+        public async Task<IActionResult> getByCharacterId_sp(int characterId, int rulesetId, int page = 1, int pageSize = 30, int sortType = 1)
         {
             dynamic Response = new ExpandoObject();
-            (List<CharacterSpell> CharacterSpellList, Character _character, RuleSet _ruleSet) = _characterSpellService.SP_CharacterSpell_GetByCharacterId(characterId, rulesetId, page, pageSize);
+            (List<CharacterSpell> CharacterSpellList, Character _character, RuleSet _ruleSet) = _characterSpellService.SP_CharacterSpell_GetByCharacterId(characterId, rulesetId, page, pageSize, sortType);
 
             Response.CharacterSpellList = CharacterSpellList;
             Response.Character = _character;

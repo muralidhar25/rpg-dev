@@ -20,7 +20,7 @@ namespace DAL.Services
         void ToggleMemorizedCharacterSpell(int id);
         (bool, string) CheckCharacterSpellExist(int characterId, int spellId);
         CharacterSpell GetBySpellId(int spellId);
-        (List<CharacterSpell>, Character, RuleSet) SP_CharacterSpell_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize);
+        (List<CharacterSpell>, Character, RuleSet) SP_CharacterSpell_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize, int sortType = 1);
 
     }
 }

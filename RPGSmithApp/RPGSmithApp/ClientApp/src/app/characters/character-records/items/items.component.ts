@@ -144,7 +144,7 @@ export class CharacterItemsComponent implements OnInit {
       }
      
       this.isLoading = true;
-      this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize)
+      this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, this.inventoryFilter.type)
         .subscribe(data => {
 
           this.ItemsList = Utilities.responseData(data.ItemsList, this.pageSize);
@@ -232,7 +232,7 @@ export class CharacterItemsComponent implements OnInit {
     ++this.page;
     this.scrollLoading = true;
 
-    this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize)
+    this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, this.inventoryFilter.type)
       .subscribe(data => {
 
         var _ItemsList = data.ItemsList;
@@ -632,7 +632,7 @@ export class CharacterItemsComponent implements OnInit {
     }
   }
 
-  applyFilters(present_filter, apply_same = false) {
+  applyFilters(present_filter, apply_same = false, IsCalledFromClickFunction=false) {
     if (apply_same) {
       this.inventoryFilter.type = present_filter;
     } else {
@@ -644,6 +644,63 @@ export class CharacterItemsComponent implements OnInit {
       }
     }
 
+    if (IsCalledFromClickFunction) {
+      this.isLoading = true;
+      this.page = 1
+      this.pageSize = 28;
+      this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, this.inventoryFilter.type)
+        .subscribe(data => {
+
+          this.ItemsList = Utilities.responseData(data.ItemsList, this.pageSize);
+          try {
+            this.ItemsList.forEach(function (val) {
+              val.showIcon = false;
+              val.showUse = val.command == null || val.command == undefined || val.command == '' ? false : true;
+            });
+          } catch (err) { }
+          try { this.noRecordFound = !data.ItemsList.length; } catch (err) { }
+
+          this.ImplementFilter();
+          this.isLoading = false;
+
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => { });
+    }
+    else {
+      this.ImplementFilter();
+    }
+
+
+
+    
+
+    
+   
+  }
+
+  private scrollToTop() {
+    jQuery('html, body').animate({ scrollTop: 0 }, 500);
+  }
+
+  public clickAndHold(item: any) {
+    if (this.timeoutHandler) {
+      clearInterval(this.timeoutHandler);
+      this.timeoutHandler = null;
+    }
+  }
+
+  public editRecord(item: any) {
+    this.timeoutHandler = setInterval(() => {
+      this.editItem(item);
+    }, 1000);
+  }
+  ImplementFilter() {
     this.inventoryFilter.viewableCount = this.ItemsList.length;
 
     switch (this.inventoryFilter.type) {
@@ -660,14 +717,14 @@ export class CharacterItemsComponent implements OnInit {
         this.inventoryFilter.icon = 'icon-Rec-Container';
         break;
       case 2: // Equipped
-        this.ItemsList.sort(function (a, b) {
-          if (a["isEquipped"] == b["isEquipped"]) {
-            return (a["name"] < b["name"]) ? -1 : (a["name"] > b["name"]) ? 1 : 0;
-          }
-          else {
-            return (a["isEquipped"] > b["isEquipped"]) ? -1 : 1;
-          }
-        });
+        //this.ItemsList.sort(function (a, b) {
+        //  if (a["isEquipped"] == b["isEquipped"]) {
+        //    return (a["name"] < b["name"]) ? -1 : (a["name"] > b["name"]) ? 1 : 0;
+        //  }
+        //  else {
+        //    return (a["isEquipped"] > b["isEquipped"]) ? -1 : 1;
+        //  }
+        //});
 
         this.inventoryFilter.viewableCount = 0;
         this.ItemsList.map((item) => {
@@ -680,12 +737,12 @@ export class CharacterItemsComponent implements OnInit {
         this.inventoryFilter.icon = 'icon-Rec-Equipped';
         break;
       case 3: // Alphabetical
-        this.ItemsList.sort(function (a, b) {
-          if (a["name"] == b["name"]) {
-            return 0;
-          }
-          return (a["name"] < b["name"]) ? -1 : 1;
-        });
+        //this.ItemsList.sort(function (a, b) {
+        //  if (a["name"] == b["name"]) {
+        //    return 0;
+        //  }
+        //  return (a["name"] < b["name"]) ? -1 : 1;
+        //});
 
         this.inventoryFilter.name = 'Alphabetical';
         this.inventoryFilter.icon = '';
@@ -704,22 +761,5 @@ export class CharacterItemsComponent implements OnInit {
     }
 
     this.localStorage.saveSyncedSessionData(this.inventoryFilter, 'inventoryFilter');
-  }
-
-  private scrollToTop() {
-    jQuery('html, body').animate({ scrollTop: 0 }, 500);
-  }
-
-  public clickAndHold(item: any) {
-    if (this.timeoutHandler) {
-      clearInterval(this.timeoutHandler);
-      this.timeoutHandler = null;
-    }
-  }
-
-  public editRecord(item: any) {
-    this.timeoutHandler = setInterval(() => {
-      this.editItem(item);
-    }, 1000);
   }
 }

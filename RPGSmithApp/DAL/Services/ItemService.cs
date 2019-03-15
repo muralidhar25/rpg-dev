@@ -508,7 +508,7 @@ namespace DAL.Services
         }
         #region SP relate methods
 
-        public (List<Item>, Character, RuleSet) SP_Items_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize)
+        public (List<Item>, Character, RuleSet) SP_Items_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize,  int sortType = 1)
         {
             List<Item> _ItemList = new List<Item>();
             RuleSet ruleset = new RuleSet();
@@ -532,6 +532,7 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@RulesetID", rulesetId);
                 command.Parameters.AddWithValue("@page", page);
                 command.Parameters.AddWithValue("@size", pageSize);
+                command.Parameters.AddWithValue("@SortType", sortType);
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;

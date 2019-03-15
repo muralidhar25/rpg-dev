@@ -140,7 +140,7 @@ export class CharacterAbilitiesComponent implements OnInit {
           }
         }
       this.isLoading = true;
-      this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize)
+      this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.abilityFilter.type)
         .subscribe(data => {
           this.abilitiesList = Utilities.responseData(data.characterAbilityList, this.pageSize);
 
@@ -194,7 +194,7 @@ export class CharacterAbilitiesComponent implements OnInit {
     ++this.page;
     this.scrollLoading = true;
 
-    this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize)
+    this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.abilityFilter.type)
       .subscribe(data => {
 
         var _characterAbilityList = data.characterAbilityList;
@@ -535,7 +535,7 @@ export class CharacterAbilitiesComponent implements OnInit {
     }
   }
 
-  applyFilters(present_filter, apply_same = false) {
+  applyFilters(present_filter, apply_same = false, IsCalledFromClickFunction = false) {
     if (apply_same) {
       this.abilityFilter.type = present_filter;
     } else {
@@ -547,65 +547,44 @@ export class CharacterAbilitiesComponent implements OnInit {
       }
     }
 
-    this.abilityFilter.viewableCount = this.abilitiesList.length;
 
-    switch (this.abilityFilter.type) {
-      case 1: // Alphabetical
-      default:
-        this.abilitiesList.sort(function (a, b) {
-          if (a["ability"]["name"] == b["ability"]["name"]) {
-            return 0;
-          }
-          return (a["ability"]["name"] < b["ability"]["name"]) ? -1 : 1;
-        });
+    if (IsCalledFromClickFunction) {
+      this.isLoading = true;
+      this.page = 1
+      this.pageSize = 28;
 
-        this.abilityFilter.name = 'Alphabetical';
-        this.abilityFilter.icon = '';
-        break;
-      case 2: // Enabled
-        this.abilitiesList.sort(function (a, b) {
-          if (a["isEnabled"] == b["isEnabled"]) {
-            return 0;
-          }
-          return (a["isEnabled"] > b["isEnabled"]) ? -1 : 1;
-        });
+      this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.abilityFilter.type)
+        .subscribe(data => {
+          this.abilitiesList = Utilities.responseData(data.characterAbilityList, this.pageSize);
+        
+          try {
+            this.abilitiesList.forEach(function (val) {
+              val.showIcon = false;
+              val.showUse = val.ability.command == null || val.ability.command == undefined || val.ability.command == '' ? false : true;
+            });
+          } catch (err) { }
+          try {
+            this.noRecordFound = !data.characterAbilityList.length;
+          } catch (err) { }
 
-        this.abilityFilter.viewableCount = 0;
-        this.abilitiesList.map((item) => {
-          if (item.isEnabled) {
-            this.abilityFilter.viewableCount++;
-          }
-        });
 
-        this.abilityFilter.name = 'Enabled';
-        this.abilityFilter.icon = 'icon-Rec-Enabled';
-        break;
-      case 3: // Level Sort
-        this.abilitiesList.sort(function ($a, $b) {
-          var aLevel = 0;
-          if ($a["ability"]["level"]) {
-            aLevel = parseInt($a["ability"]["level"]);
+          this.ImplementFilter();
+          this.isLoading = false;
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
           }
-
-          var bLevel = 0;
-          if ($b["ability"]["level"]) {
-            bLevel = parseInt($b["ability"]["level"]);
-          }
-
-          if (aLevel == bLevel) {
-            return ($a["ability"]["name"] < $b["ability"]["name"]) ? -1 : ($a["ability"]["name"] > $b["ability"]["name"]) ? 1 : 0;
-          }
-          else {
-            return (aLevel > bLevel) ? -1 : 1;
-          }
-        });
-
-        this.abilityFilter.name = 'Level';
-        this.abilityFilter.icon = '';
-        break;
+        }, () => { });
+     
+    }
+    else {
+      this.ImplementFilter();
     }
 
-    this.localStorage.saveSyncedSessionData(this.abilityFilter, 'abilityFilter');
+
+    
   }
 
   private scrollToTop() {
@@ -623,5 +602,66 @@ export class CharacterAbilitiesComponent implements OnInit {
     this.timeoutHandler = setInterval(() => {
       this.editAbility(record);
     }, 1000);
+  }
+  ImplementFilter() {
+    this.abilityFilter.viewableCount = this.abilitiesList.length;
+
+    switch (this.abilityFilter.type) {
+      case 1: // Alphabetical
+      default:
+        //this.abilitiesList.sort(function (a, b) {
+        //  if (a["ability"]["name"] == b["ability"]["name"]) {
+        //    return 0;
+        //  }
+        //  return (a["ability"]["name"] < b["ability"]["name"]) ? -1 : 1;
+        //});
+
+        this.abilityFilter.name = 'Alphabetical';
+        this.abilityFilter.icon = '';
+        break;
+      case 2: // Enabled
+        //this.abilitiesList.sort(function (a, b) {
+        //  if (a["isEnabled"] == b["isEnabled"]) {
+        //    return 0;
+        //  }
+        //  return (a["isEnabled"] > b["isEnabled"]) ? -1 : 1;
+        //});
+
+        this.abilityFilter.viewableCount = 0;
+        this.abilitiesList.map((item) => {
+          if (item.isEnabled) {
+            this.abilityFilter.viewableCount++;
+          }
+        });
+
+        this.abilityFilter.name = 'Enabled';
+        this.abilityFilter.icon = 'icon-Rec-Enabled';
+        break;
+      case 3: // Level Sort
+        //this.abilitiesList.sort(function ($a, $b) {
+        //  var aLevel = 0;
+        //  if ($a["ability"]["level"]) {
+        //    aLevel = parseInt($a["ability"]["level"]);
+        //  }
+
+        //  var bLevel = 0;
+        //  if ($b["ability"]["level"]) {
+        //    bLevel = parseInt($b["ability"]["level"]);
+        //  }
+
+        //  if (aLevel == bLevel) {
+        //    return ($a["ability"]["name"] < $b["ability"]["name"]) ? -1 : ($a["ability"]["name"] > $b["ability"]["name"]) ? 1 : 0;
+        //  }
+        //  else {
+        //    return (aLevel > bLevel) ? -1 : 1;
+        //  }
+        //});
+
+        this.abilityFilter.name = 'Level';
+        this.abilityFilter.icon = '';
+        break;
+    }
+
+    this.localStorage.saveSyncedSessionData(this.abilityFilter, 'abilityFilter');
   }
 }

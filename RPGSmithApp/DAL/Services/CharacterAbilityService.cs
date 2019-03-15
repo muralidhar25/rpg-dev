@@ -199,7 +199,7 @@ namespace DAL.Services
 
         #region SP relate methods
 
-        public (List<CharacterAbility>, Character, RuleSet) SP_CharacterAbility_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize)
+        public (List<CharacterAbility>, Character, RuleSet) SP_CharacterAbility_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize, int sortType = 1)
         {
             List<CharacterAbility> _CharacterAbilityList = new List<CharacterAbility>();
             RuleSet ruleset = new RuleSet();
@@ -223,6 +223,7 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@RulesetID", rulesetId);
                 command.Parameters.AddWithValue("@page", page);
                 command.Parameters.AddWithValue("@size", pageSize);
+                command.Parameters.AddWithValue("@SortType", sortType);
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;

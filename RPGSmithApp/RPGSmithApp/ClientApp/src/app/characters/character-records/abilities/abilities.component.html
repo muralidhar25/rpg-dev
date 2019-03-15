@@ -78,7 +78,7 @@
         <ul class="page-toolbar-actions">
           <li class="view-switch">
             <div class="btn-group" role="group">
-              <button type="button" id="filtersToggleBtn" class="btn filter-toggle-btn" (click)="applyFilters(abilityFilter.type)" popover="{{abilityFilter.name}}" triggers="hover click">
+              <button type="button" id="filtersToggleBtn" class="btn filter-toggle-btn" [disabled]="isLoading"  (click)="applyFilters(abilityFilter.type,false,true)" popover="{{abilityFilter.name}}" triggers="hover click">
                 &nbsp;{{abilityFilter.viewableCount}}
                 <span *ngIf="abilityFilter.type == 1"><i>A</i></span>
                 <span *ngIf="abilityFilter.type == 3"><i>L</i></span>

@@ -32,7 +32,7 @@ namespace DAL.Services
         Task<bool> DeleteContainer(int itemId);
         Task<ItemMaster> Core_CreateItemMasterUsingItem(int ItemMasterID, int RulesetID);
         Task<int> Core_updateParentIDForAllRelatedItems(int characterId, int oldParentItemMasterID, int itemMasterIDInserted, char type);
-        (List<Item>, Character, RuleSet) SP_Items_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize);
+        (List<Item>, Character, RuleSet) SP_Items_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize, int sortType = 1);
         SP_AbilitySpellForItemMaster AbilitySpellForItemsByRuleset_sp(int characterId, int rulesetId, int itemId);
         void ManageContainer(int itemId, List<CommonID> list);
         CharacterSpell GetCharSpellIDUrl(int rulesetSpellID, int characterId);

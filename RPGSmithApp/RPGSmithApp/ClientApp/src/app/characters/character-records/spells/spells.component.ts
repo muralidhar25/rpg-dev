@@ -131,7 +131,7 @@ export class CharacterSpellsComponent implements OnInit {
         }
       }
       this.isLoading = true;
-      this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize)
+      this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.spellFilter.type)
         .subscribe(data => {
           this.spellsList = Utilities.responseData(data.CharacterSpellList, this.pageSize);
 
@@ -175,7 +175,7 @@ export class CharacterSpellsComponent implements OnInit {
     ++this.page;
     this.scrollLoading = true;
 
-    this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize)
+    this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.spellFilter.type)
       .subscribe(data => {
 
         var _characterSpellList = data.CharacterSpellList;
@@ -504,7 +504,7 @@ export class CharacterSpellsComponent implements OnInit {
     }
   }
 
-  applyFilters(present_filter, apply_same = false) {
+  applyFilters(present_filter, apply_same = false, IsCalledFromClickFunction = false) {
     if (apply_same) {
       this.spellFilter.type = present_filter;
     } else {
@@ -516,68 +516,43 @@ export class CharacterSpellsComponent implements OnInit {
       }
     }
 
-    this.spellFilter.viewableCount = this.spellsList.length;
+    if (IsCalledFromClickFunction) {
+      this.isLoading = true;
+      this.page = 1
+      this.pageSize = 28;
 
-    switch (this.spellFilter.type) {
-      case 1: // Alphabetical
-      default:
-        this.spellsList.sort(function (a, b) {
-          if (a["spell"]["name"] == b["spell"]["name"]) {
-            return 0;
-          }
+      this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.spellFilter.type)
+        .subscribe(data => {
+          this.spellsList = Utilities.responseData(data.CharacterSpellList, this.pageSize);
 
-          return (a["spell"]["name"] < b["spell"]["name"]) ? -1 : 1;
-        });
+          
+          try {
+            this.spellsList.forEach(function (val) {
+              val.showIcon = false;
+              val.showCast = val.spell.command == null || val.spell.command == undefined || val.spell.command == '' ? false : true;
+            });
+          } catch (err) { }
+          try {
+            this.noRecordFound = !data.CharacterSpellList.length;
+          } catch (err) { }
 
-        this.spellFilter.name = 'Alphabetical';
-        this.spellFilter.icon = '';
-        break;
-      case 2: // Readied
-        this.spellsList.sort(function (a, b) {
-          if (a["isMemorized"] == b["isMemorized"]) {
-            return (a["spell"]["name"] < b["spell"]["name"]) ? -1 : (a["spell"]["name"] > b["spell"]["name"]) ? 1 : 0;
+          this.ImplementFilter();
+          this.isLoading = false;
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
           }
-          else {
-            return (a["isMemorized"] > b["isMemorized"]) ? -1 : 1;
-          }
-        });
-
-        this.spellFilter.viewableCount = 0;
-        this.spellsList.map((item) => {
-          if (item.isMemorized) {
-            this.spellFilter.viewableCount++;
-          }
-        });
-
-        this.spellFilter.name = 'Readied';
-        this.spellFilter.icon = 'icon-Rec-Memorized';
-        break;
-      case 3: // Level Sort
-        this.spellsList.sort(function ($a, $b) {
-          var aLevel = 0;
-          if ($a["spell"]["levels"]) {
-            aLevel = parseInt($a["spell"]["levels"]);
-          }
-
-          var bLevel = 0;
-          if ($b["spell"]["levels"]) {
-            bLevel = parseInt($b["spell"]["levels"]);
-          }
-
-          if (aLevel == bLevel) {
-            return ($a["spell"]["name"] < $b["spell"]["name"]) ? -1 : ($a["spell"]["name"] > $b["spell"]["name"]) ? 1 : 0;
-          }
-          else {
-            return (aLevel > bLevel) ? -1 : 1;
-          }
-        });
-
-        this.spellFilter.name = 'Level';
-        this.spellFilter.icon = '';
-        break;
+        }, () => { });
+    
+    }
+    else {
+      this.ImplementFilter();
     }
 
-    this.localStorage.saveSyncedSessionData(this.spellFilter, 'spellFilter');
+
+   
   }
 
   private scrollToTop() {
@@ -596,4 +571,67 @@ export class CharacterSpellsComponent implements OnInit {
       this.editSpell(record);
     }, 1000);
   }
+  ImplementFilter() {
+    this.spellFilter.viewableCount = this.spellsList.length;
+
+    switch (this.spellFilter.type) {
+      case 1: // Alphabetical
+      default:
+        //this.spellsList.sort(function (a, b) {
+        //  if (a["spell"]["name"] == b["spell"]["name"]) {
+        //    return 0;
+        //  }
+
+        //  return (a["spell"]["name"] < b["spell"]["name"]) ? -1 : 1;
+        //});
+
+        this.spellFilter.name = 'Alphabetical';
+        this.spellFilter.icon = '';
+        break;
+      case 2: // Readied
+        //this.spellsList.sort(function (a, b) {
+        //  if (a["isMemorized"] == b["isMemorized"]) {
+        //    return (a["spell"]["name"] < b["spell"]["name"]) ? -1 : (a["spell"]["name"] > b["spell"]["name"]) ? 1 : 0;
+        //  }
+        //  else {
+        //    return (a["isMemorized"] > b["isMemorized"]) ? -1 : 1;
+        //  }
+        //});
+
+        this.spellFilter.viewableCount = 0;
+        this.spellsList.map((item) => {
+          if (item.isMemorized) {
+            this.spellFilter.viewableCount++;
+          }
+        });
+
+        this.spellFilter.name = 'Readied';
+        this.spellFilter.icon = 'icon-Rec-Memorized';
+        break;
+      case 3: // Level Sort
+        //this.spellsList.sort(function ($a, $b) {
+        //  var aLevel = 0;
+        //  if ($a["spell"]["levels"]) {
+        //    aLevel = parseInt($a["spell"]["levels"]);
+        //  }
+
+        //  var bLevel = 0;
+        //  if ($b["spell"]["levels"]) {
+        //    bLevel = parseInt($b["spell"]["levels"]);
+        //  }
+
+        //  if (aLevel == bLevel) {
+        //    return ($a["spell"]["name"] < $b["spell"]["name"]) ? -1 : ($a["spell"]["name"] > $b["spell"]["name"]) ? 1 : 0;
+        //  }
+        //  else {
+        //    return (aLevel > bLevel) ? -1 : 1;
+        //  }
+        //});
+
+        this.spellFilter.name = 'Level';
+        this.spellFilter.icon = '';
+        break;
+    }
+
+    this.localStorage.saveSyncedSessionData(this.spellFilter, 'spellFilter');}
 }
