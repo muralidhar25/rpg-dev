@@ -824,9 +824,9 @@ export class AppComponent implements OnInit, AfterViewInit {
           ||
           (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETITEMS) > -1)
         ) {
-          this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
+          //this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
             this.router.navigate(['/search/basic/' + SearchType.CHARACTERITEMS + '/', this.searchCharRule])
-          );
+          //);
           
         }
         //else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS) > -1) {
@@ -837,9 +837,9 @@ export class AppComponent implements OnInit, AfterViewInit {
           ||
           (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETSPELLS) > -1)
         ) {
-          this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
+          //this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
             this.router.navigate(['/search/basic/' + SearchType.CHARACTERSPELLS + '/', this.searchCharRule])
-          );
+          //);
           
         }
         //else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERSPELLS) > -1) {
@@ -850,9 +850,9 @@ export class AppComponent implements OnInit, AfterViewInit {
           ||
           (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETABILITIES) > -1)
         ) {
-          this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
+          //this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
             this.router.navigate(['/search/basic/' + SearchType.CHARACTERABILITIES + '/', this.searchCharRule])
-          );
+          //);
         }
         //else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERABILITIES) > -1) {
         //  this.router.navigate(['/character/ability', this.headers.headerId]);
@@ -1038,25 +1038,25 @@ export class AppComponent implements OnInit, AfterViewInit {
       (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS) > -1)
       
     ) {
-      this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
+      //this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
         this.router.navigate(['/search/basic/' + SearchType.CHARACTERRULESETITEMS + '/', this.searchCharRule])
-      );
+      //);
       
     }
     else if (
       (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERSPELLS) > -1)
     ) {
-      this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
+      //this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
         this.router.navigate(['/search/basic/' + SearchType.CHARACTERRULESETSPELLS + '/', this.searchCharRule])
-      );
+      //);
       
     }
     else if (
       (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERABILITIES) > -1)
     ) {
-      this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
+      //this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
         this.router.navigate(['/search/basic/' + SearchType.CHARACTERRULESETABILITIES + '/', this.searchCharRule])
-      );
+      //);
       
     }
   }

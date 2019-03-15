@@ -35,17 +35,22 @@ export class BasicSearchComponent implements OnInit {
   SEARCHTYPE = SearchType;
   constructor(private searchService: SearchService, private router: Router, private alertService: AlertService, private sharedService: SharedService,
     private configurations: ConfigurationService, private route: ActivatedRoute, private modalService: BsModalService,
-    private localStorage: LocalStoreManager, private authService: AuthService, public appService: AppService1) { }
+    private localStorage: LocalStoreManager, private authService: AuthService, public appService: AppService1) {
+
+    route.params.subscribe(val => {
+      this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+      if (this.headers) {
+        if (this.headers.headerId) {
+          this.setHeaderValues(this.headers);
+        }
+      }
+
+      this.Initialize();
+      // put the code from `ngOnInit` here
+    });}
 
   ngOnInit() {
-    this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
-    if (this.headers) {
-      if (this.headers.headerId) {        
-        this.setHeaderValues(this.headers);
-      }
-    }
-    
-    this.Initialize();
+  
   }
 
   private Initialize() {
