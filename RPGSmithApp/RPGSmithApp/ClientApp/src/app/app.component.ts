@@ -442,14 +442,15 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (!this.isUserLoggedIn) {
           try {
             if (this.localStorage.localStorageGetItem(DBkeys.IsLogonKickedOut)) {
-              this.alertService.showMessage("Auto Logout Occurred Due to Session Inactivity", "", MessageSeverity.default);
+              this.localStorage.localStorageSetItem(DBkeys.IsLogonKickedOut, false);
+              this.alertService.showMessage("Auto Logout Occurred Due to Session Inactivity.", "", MessageSeverity.default);
             }
             else {
-              this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.alertService.showMessage("Logged Out Successfully.", "", MessageSeverity.default);
             }
           }
           catch (e) {
-            this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.alertService.showMessage("Logged Out Successfully.", "", MessageSeverity.default);
           }
         }
       }, 500);
