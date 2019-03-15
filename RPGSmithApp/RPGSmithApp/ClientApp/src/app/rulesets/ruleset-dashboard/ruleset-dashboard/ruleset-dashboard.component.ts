@@ -243,7 +243,7 @@ export class RulesetDashboardComponent implements OnInit {
                                 val.rulesetDashboardPages = data;
                             }
                         });
-                        this.initialize();
+                        this.initialize(false);
                         //if (viewtype === "duplicate" || viewtype === "add") {
                         //    let model: any = data;
                         //    if (model.length > 0) {
@@ -271,7 +271,7 @@ export class RulesetDashboardComponent implements OnInit {
                 else {
                     this.addBox(serviceJson);
                 }
-                this.initialize();
+                this.initialize(false);
             }
         });
     }
@@ -342,7 +342,7 @@ export class RulesetDashboardComponent implements OnInit {
         setTimeout(() => {
             this.destroyModalOnInit();
             this.validateDevice();
-            this.initialize();
+            this.initialize(true);
             this.showActionButtons(this.showActions);
             this.pageId = this.localStorage.localStorageGetItem('rPageID')
             this.localStorage.localStorageSetItem('rPageID', null);
@@ -436,7 +436,7 @@ export class RulesetDashboardComponent implements OnInit {
         //}
     }
 
-    private initialize() {
+    private initialize(IsInitialLoad) {
 
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)
@@ -485,24 +485,27 @@ export class RulesetDashboardComponent implements OnInit {
                         }
                         else {
                             
-                            let isLayoutSelected = false;
+                          let isLayoutSelected = false;
+                          if (IsInitialLoad) {
                             this.rulesetlayouts.map((item) => {
-                                if (item.isDefaultComputer && this.IsComputerDevice) {
-                                    isLayoutSelected = true;
-                                    this.selectedlayout = item;
-                                    // this.onLayoutSelect(this.selectedlayout);
-                                }
-                                else if (item.isDefaultTablet && this.IsTabletDevice) {
-                                    isLayoutSelected = true;
-                                    this.selectedlayout = item;
-                                    // this.onLayoutSelect(this.selectedlayout);
-                                }
-                                else if (item.isDefaultMobile && this.IsMobileDevice) {
-                                    isLayoutSelected = true;
-                                    this.selectedlayout = item;
-                                    //this.onLayoutSelect(this.selectedlayout);
-                                }
+                              if (item.isDefaultComputer && this.IsComputerDevice) {
+                                isLayoutSelected = true;
+                                this.selectedlayout = item;
+                                // this.onLayoutSelect(this.selectedlayout);
+                              }
+                              else if (item.isDefaultTablet && this.IsTabletDevice) {
+                                isLayoutSelected = true;
+                                this.selectedlayout = item;
+                                // this.onLayoutSelect(this.selectedlayout);
+                              }
+                              else if (item.isDefaultMobile && this.IsMobileDevice) {
+                                isLayoutSelected = true;
+                                this.selectedlayout = item;
+                                //this.onLayoutSelect(this.selectedlayout);
+                              }
                             })
+                          }
+                            
                             if (!isLayoutSelected) {
                                 this.rulesetlayouts.map((item) => {
                                     if (item.isDefaultLayout) {
@@ -530,33 +533,35 @@ export class RulesetDashboardComponent implements OnInit {
                         }
                         else {
                             if (this.selectedlayout != null || this.selectedlayout != undefined) {
-                                let isLayoutSelected = false;
+                              let isLayoutSelected = false;
+                              if (IsInitialLoad) {
                                 this.rulesetlayouts.map((item) => {
-                                    if (item.isDefaultComputer && this.IsComputerDevice) {
-                                        isLayoutSelected = true;
-                                        item.rulesetDashboardPages.map((pageItem) => {
-                                            if (pageItem.rulesetDashboardPageId == item.defaultPageId) {
-                                                this.selectedPage = pageItem;
-                                            }
-                                        })
-                                    }
-                                    else if (item.isDefaultTablet && this.IsTabletDevice) {
-                                        isLayoutSelected = true;
-                                        item.rulesetDashboardPages.map((pageItem) => {
-                                            if (pageItem.rulesetDashboardPageId == item.defaultPageId) {
-                                                this.selectedPage = pageItem;
-                                            }
-                                        })
-                                    }
-                                    else if (item.isDefaultMobile && this.IsMobileDevice) {
-                                        isLayoutSelected = true;
-                                        item.rulesetDashboardPages.map((pageItem) => {
-                                            if (pageItem.rulesetDashboardPageId == item.defaultPageId) {
-                                                this.selectedPage = pageItem;
-                                            }
-                                        })
-                                    }
+                                  if (item.isDefaultComputer && this.IsComputerDevice) {
+                                    isLayoutSelected = true;
+                                    item.rulesetDashboardPages.map((pageItem) => {
+                                      if (pageItem.rulesetDashboardPageId == item.defaultPageId) {
+                                        this.selectedPage = pageItem;
+                                      }
+                                    })
+                                  }
+                                  else if (item.isDefaultTablet && this.IsTabletDevice) {
+                                    isLayoutSelected = true;
+                                    item.rulesetDashboardPages.map((pageItem) => {
+                                      if (pageItem.rulesetDashboardPageId == item.defaultPageId) {
+                                        this.selectedPage = pageItem;
+                                      }
+                                    })
+                                  }
+                                  else if (item.isDefaultMobile && this.IsMobileDevice) {
+                                    isLayoutSelected = true;
+                                    item.rulesetDashboardPages.map((pageItem) => {
+                                      if (pageItem.rulesetDashboardPageId == item.defaultPageId) {
+                                        this.selectedPage = pageItem;
+                                      }
+                                    })
+                                  }
                                 })
+                              }
                                 if (!isLayoutSelected) {
                                     this.rulesetlayouts.map((item) => {
                                         if (item.isDefaultLayout) {
@@ -573,21 +578,24 @@ export class RulesetDashboardComponent implements OnInit {
                         }
 
                         if (!this.selectedPage && this.page1) {
-                            let isLayoutSelected = false;
+                          let isLayoutSelected = false;
+                          if (IsInitialLoad) {
                             this.rulesetlayouts.map((item) => {
-                                if (item.isDefaultComputer && this.IsComputerDevice) {
-                                    isLayoutSelected = true;
-                                    this.selectedPage = item.rulesetDashboardPages[0];
-                                }
-                                else if (item.isDefaultTablet && this.IsTabletDevice) {
-                                    isLayoutSelected = true;
-                                    this.selectedPage = item.rulesetDashboardPages[0];
-                                }
-                                else if (item.isDefaultMobile && this.IsMobileDevice) {
-                                    isLayoutSelected = true;
-                                    this.selectedPage = item.rulesetDashboardPages[0];
-                                }
+                              if (item.isDefaultComputer && this.IsComputerDevice) {
+                                isLayoutSelected = true;
+                                this.selectedPage = item.rulesetDashboardPages[0];
+                              }
+                              else if (item.isDefaultTablet && this.IsTabletDevice) {
+                                isLayoutSelected = true;
+                                this.selectedPage = item.rulesetDashboardPages[0];
+                              }
+                              else if (item.isDefaultMobile && this.IsMobileDevice) {
+                                isLayoutSelected = true;
+                                this.selectedPage = item.rulesetDashboardPages[0];
+                              }
                             })
+                          }
+                            
                             if (!isLayoutSelected) {
                                 this.rulesetlayouts.map((item) => {
                                     if (item.isDefaultLayout) {

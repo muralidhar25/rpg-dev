@@ -258,7 +258,7 @@ export class CharacterDashboardComponent implements OnInit {
               }
 
             });
-            this.initialize();
+            this.initialize(false);
           }, error => {
             this.isLoading = false;
           }, () => {
@@ -268,7 +268,7 @@ export class CharacterDashboardComponent implements OnInit {
 
     this.sharedService.shouldUpdateCharacterList().subscribe(serviceJson => {
       if (serviceJson) {
-        this.initialize();
+        this.initialize(false);
       }
     });
   }
@@ -338,7 +338,7 @@ export class CharacterDashboardComponent implements OnInit {
   ngOnInit() {
     this.destroyModalOnInit();
     this.validateDevice();
-    this.initialize();
+    this.initialize(true);
     this.showActionButtons(this.showActions);
     this.pageId = this.localStorage.localStorageGetItem('cPageID')
     this.localStorage.localStorageSetItem('cPageID', null);
@@ -437,7 +437,7 @@ export class CharacterDashboardComponent implements OnInit {
     }
   }
 
-  private initialize() {
+  private initialize(IsInitialLoad) {
 
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
@@ -488,23 +488,26 @@ export class CharacterDashboardComponent implements OnInit {
             else {
 
               let isLayoutSelected = false;
-              this.characterlayouts.map((item) => {
-                if (item.isDefaultComputer && this.IsComputerDevice) {
-                  isLayoutSelected = true;
-                  this.selectedlayout = item;
-                  // this.onLayoutSelect(this.selectedlayout);
-                }
-                else if (item.isDefaultTablet && this.IsTabletDevice) {
-                  isLayoutSelected = true;
-                  this.selectedlayout = item;
-                  // this.onLayoutSelect(this.selectedlayout);
-                }
-                else if (item.isDefaultMobile && this.IsMobileDevice) {
-                  isLayoutSelected = true;
-                  this.selectedlayout = item;
-                  //this.onLayoutSelect(this.selectedlayout);
-                }
-              })
+              if (IsInitialLoad) {
+                this.characterlayouts.map((item) => {
+                  if (item.isDefaultComputer && this.IsComputerDevice) {
+                    isLayoutSelected = true;
+                    this.selectedlayout = item;
+                    // this.onLayoutSelect(this.selectedlayout);
+                  }
+                  else if (item.isDefaultTablet && this.IsTabletDevice) {
+                    isLayoutSelected = true;
+                    this.selectedlayout = item;
+                    // this.onLayoutSelect(this.selectedlayout);
+                  }
+                  else if (item.isDefaultMobile && this.IsMobileDevice) {
+                    isLayoutSelected = true;
+                    this.selectedlayout = item;
+                    //this.onLayoutSelect(this.selectedlayout);
+                  }
+                })
+              }
+              
               if (!isLayoutSelected) {
                 this.characterlayouts.map((item) => {
                   if (item.isDefaultLayout) {
@@ -528,32 +531,35 @@ export class CharacterDashboardComponent implements OnInit {
             else {
               if (this.selectedlayout != null || this.selectedlayout != undefined) {
                 let isLayoutSelected = false;
-                this.characterlayouts.map((item) => {
-                  if (item.isDefaultComputer && this.IsComputerDevice) {
-                    isLayoutSelected = true;
-                    item.characterDashboardPages.map((pageItem) => {
-                      if (pageItem.characterDashboardPageId == item.defaultPageId) {
-                        this.selectedPage = pageItem;
-                      }
-                    })
-                  }
-                  else if (item.isDefaultTablet && this.IsTabletDevice) {
-                    isLayoutSelected = true;
-                    item.characterDashboardPages.map((pageItem) => {
-                      if (pageItem.characterDashboardPageId == item.defaultPageId) {
-                        this.selectedPage = pageItem;
-                      }
-                    })
-                  }
-                  else if (item.isDefaultMobile && this.IsMobileDevice) {
-                    isLayoutSelected = true;
-                    item.characterDashboardPages.map((pageItem) => {
-                      if (pageItem.characterDashboardPageId == item.defaultPageId) {
-                        this.selectedPage = pageItem;
-                      }
-                    })
-                  }
-                })
+                if (IsInitialLoad) {
+                  this.characterlayouts.map((item) => {
+                    if (item.isDefaultComputer && this.IsComputerDevice) {
+                      isLayoutSelected = true;
+                      item.characterDashboardPages.map((pageItem) => {
+                        if (pageItem.characterDashboardPageId == item.defaultPageId) {
+                          this.selectedPage = pageItem;
+                        }
+                      })
+                    }
+                    else if (item.isDefaultTablet && this.IsTabletDevice) {
+                      isLayoutSelected = true;
+                      item.characterDashboardPages.map((pageItem) => {
+                        if (pageItem.characterDashboardPageId == item.defaultPageId) {
+                          this.selectedPage = pageItem;
+                        }
+                      })
+                    }
+                    else if (item.isDefaultMobile && this.IsMobileDevice) {
+                      isLayoutSelected = true;
+                      item.characterDashboardPages.map((pageItem) => {
+                        if (pageItem.characterDashboardPageId == item.defaultPageId) {
+                          this.selectedPage = pageItem;
+                        }
+                      })
+                    }
+                  })
+                }
+                
                 if (!isLayoutSelected) {
                   this.characterlayouts.map((item) => {
                     if (item.isDefaultLayout) {
@@ -570,20 +576,23 @@ export class CharacterDashboardComponent implements OnInit {
             }
             if (!this.selectedPage && this.page1) {
               let isLayoutSelected = false;
-              this.characterlayouts.map((item) => {
-                if (item.isDefaultComputer && this.IsComputerDevice) {
-                  isLayoutSelected = true;
-                  this.selectedPage = item.characterDashboardPages[0];
-                }
-                else if (item.isDefaultTablet && this.IsTabletDevice) {
-                  isLayoutSelected = true;
-                  this.selectedPage = item.characterDashboardPages[0];
-                }
-                else if (item.isDefaultMobile && this.IsMobileDevice) {
-                  isLayoutSelected = true;
-                  this.selectedPage = item.characterDashboardPages[0];
-                }
-              })
+              if (IsInitialLoad) {
+                this.characterlayouts.map((item) => {
+                  if (item.isDefaultComputer && this.IsComputerDevice) {
+                    isLayoutSelected = true;
+                    this.selectedPage = item.characterDashboardPages[0];
+                  }
+                  else if (item.isDefaultTablet && this.IsTabletDevice) {
+                    isLayoutSelected = true;
+                    this.selectedPage = item.characterDashboardPages[0];
+                  }
+                  else if (item.isDefaultMobile && this.IsMobileDevice) {
+                    isLayoutSelected = true;
+                    this.selectedPage = item.characterDashboardPages[0];
+                  }
+                })
+              }
+              
               if (!isLayoutSelected) {
                 this.characterlayouts.map((item) => {
                   if (item.isDefaultLayout) {
