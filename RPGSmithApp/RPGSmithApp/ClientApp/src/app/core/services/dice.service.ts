@@ -3057,7 +3057,7 @@ export class DiceService {
     let DOC = new CustomDice(-1, "DOC", DICE_ICON.DECK, false, DocResults);
 
 
-    let DeckResults = DocResults;
+    let DeckResults = Object.assign([], DocResults);
     DeckResults.push({ customDiceResultId: 53, name: 'Joker' })
     DeckResults.push({ customDiceResultId: 54, name: 'Joker' })
 
