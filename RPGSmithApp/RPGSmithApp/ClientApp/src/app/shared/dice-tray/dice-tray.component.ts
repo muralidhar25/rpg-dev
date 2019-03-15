@@ -101,13 +101,15 @@ export class DiceTrayComponent implements OnInit {
     //        }
     //    }
     //}
-    UpdateDice(event:any, dice: any,indexNumber:number) {      
+  UpdateDice(event: any, dice: any, indexNumber: number) {
+      debugger
         this.customDice.dices.map((d,index) => {
             if (index == indexNumber) {
                 d.name = event.target.value;
             }
         })
-        this.BindDiceTray(this.customDice.dices);
+    this.BindDiceTray(this.customDice.dices);
+    debugger
     }
     BindDiceTray(dices: any) {
         
@@ -132,16 +134,21 @@ export class DiceTrayComponent implements OnInit {
             let defaultDiceId = null;
             let icon = null;
             let name = null;
-            let customDiceId = null;
+          let customDiceId = null;
 
-            if (d.name.charAt(0).toUpperCase() == 'D' && d.name.substring(1, d.name.length) && /^[0-9]*$/g.test(d.name.substring(1, d.name.length))) {  //Dice eg. D1,D2,D{Num}
+          let tempValue:string = d.name;
+          if (tempValue.endsWith('!')) {
+            tempValue = tempValue.substring(0, tempValue.length-1);
+          }
+
+          if (tempValue.charAt(0).toUpperCase() == 'D' && tempValue.substring(1, tempValue.length) && /^[0-9]*$/g.test(tempValue.substring(1, tempValue.length))) {  //Dice eg. D1,D2,D{Num}
 
                 this.defaultDices.map((val) => {
-                    if (val.name.toUpperCase() == d.name.toUpperCase()) {
+                  if (val.name.toUpperCase() == tempValue.toUpperCase()) {
                         IsDefaultDice = true;
                         defaultDiceId = val.defaultDiceId;
                         icon = val.icon;
-                        name = val.name;
+                    name = d.name;
                     }
                 });
                 if (IsDefaultDice) { //eg. D4,D6,D8,D10,D12,D20,D100
@@ -281,7 +288,8 @@ export class DiceTrayComponent implements OnInit {
     }
     submit() {
         
-        this.bsModalRef.hide();
+      this.bsModalRef.hide();
+      debugger
         this.sharedService.updateCustomeDice({diceTray: this.diceTray, isDiceTray:true })
     }
 }
