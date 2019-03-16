@@ -829,7 +829,7 @@ namespace DAL.Services
 
                 // Add the parameters for the SelectCommand.
                 command.Parameters.AddWithValue("@SearchText", searchModel.SearchString);
-                command.Parameters.AddWithValue("@RecordType", searchModel.SearchType);
+                command.Parameters.AddWithValue("@RecordType", SP_SearchType.CharacterAbilities);
                 command.Parameters.AddWithValue("@CharacterID", searchModel.CharacterID);
                 if (searchModel.SearchType == SP_SearchType.Everything)
                 {
@@ -919,7 +919,7 @@ namespace DAL.Services
 
                 // Add the parameters for the SelectCommand.
                 command.Parameters.AddWithValue("@SearchText", searchModel.SearchString);
-                command.Parameters.AddWithValue("@RecordType", searchModel.SearchType);
+                command.Parameters.AddWithValue("@RecordType", SP_SearchType.RulesetAbilities);
                 command.Parameters.AddWithValue("@RulesetID", searchModel.RulesetID);
 
                 if (searchModel.SearchType == SP_SearchType.Everything)
@@ -1000,7 +1000,7 @@ namespace DAL.Services
 
                 // Add the parameters for the SelectCommand.
                 command.Parameters.AddWithValue("@SearchText", searchModel.SearchString);
-                command.Parameters.AddWithValue("@RecordType", searchModel.SearchType);
+                command.Parameters.AddWithValue("@RecordType", SP_SearchType.CharacterSpells);
                 command.Parameters.AddWithValue("@CharacterID", searchModel.CharacterID);
 
                 if (searchModel.SearchType == SP_SearchType.Everything)
@@ -1109,7 +1109,7 @@ namespace DAL.Services
 
                 // Add the parameters for the SelectCommand.
                 command.Parameters.AddWithValue("@SearchText", searchModel.SearchString);
-                command.Parameters.AddWithValue("@RecordType", searchModel.SearchType);
+                command.Parameters.AddWithValue("@RecordType", SP_SearchType.RulesetSpells);
                 command.Parameters.AddWithValue("@RulesetID", searchModel.RulesetID);
 
 
@@ -1208,7 +1208,7 @@ namespace DAL.Services
 
                 // Add the parameters for the SelectCommand.
                 command.Parameters.AddWithValue("@SearchText", searchModel.SearchString);
-                command.Parameters.AddWithValue("@RecordType", searchModel.SearchType);
+                command.Parameters.AddWithValue("@RecordType", SP_SearchType.CharacterItems);
                 command.Parameters.AddWithValue("@CharacterID", searchModel.CharacterID);
 
 
@@ -1308,7 +1308,7 @@ namespace DAL.Services
 
                 // Add the parameters for the SelectCommand.
                 command.Parameters.AddWithValue("@SearchText", searchModel.SearchString);
-                command.Parameters.AddWithValue("@RecordType", searchModel.SearchType);
+                command.Parameters.AddWithValue("@RecordType", SP_SearchType.RulesetItems);
                 command.Parameters.AddWithValue("@RulesetID", searchModel.RulesetID);
 
 
