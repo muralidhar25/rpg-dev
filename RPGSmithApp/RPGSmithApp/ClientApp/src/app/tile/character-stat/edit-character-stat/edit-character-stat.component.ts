@@ -66,8 +66,8 @@ export class EditCharacterStatComponent implements OnInit {
     showRichEditor: boolean = false;
     isMouseDown: boolean = false;
     interval: any;
-    isNotValidNumber: boolean = false;
-
+  isNotValidNumber: boolean = false;
+    
   options(placeholder?: string, initOnClick?: boolean): Object {
     //console.log(Utilities.optionsFloala(200, placeholder, initOnClick, true))
         return Utilities.optionsFloala(200, placeholder, initOnClick,true);
@@ -395,8 +395,14 @@ export class EditCharacterStatComponent implements OnInit {
                 //this.CharacterStatTile.charactersCharacterStat
                 //    = Object.assign(this.CharacterStatTile.charactersCharacterStat, charactersCharacterStat);
                 this.alertService.stopLoadingMessage();
-                this.alertService.showMessage("Character stat has been saved successfully.", "", MessageSeverity.success);
-                this.sharedService.updateCharacterList(true);
+              this.alertService.showMessage("Character stat has been saved successfully.", "", MessageSeverity.success);
+              
+                 let  result:any = {
+                      status: true,
+                      perventLoading: true
+                 }
+             
+              this.sharedService.updateCharacterList(result);
                 this.close(true);
             },
             error => {

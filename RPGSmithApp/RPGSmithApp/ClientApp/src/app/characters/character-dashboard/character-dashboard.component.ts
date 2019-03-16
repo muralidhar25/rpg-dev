@@ -268,7 +268,11 @@ export class CharacterDashboardComponent implements OnInit {
 
     this.sharedService.shouldUpdateCharacterList().subscribe(serviceJson => {
       if (serviceJson) {
-        this.initialize(false);
+        if (typeof serviceJson === 'object' && serviceJson.hasOwnProperty('perventLoading')) {
+          this.initialize(false, serviceJson.perventLoading);
+        }else {
+          this.initialize(false);
+        }
       }
     });
   }
@@ -437,18 +441,18 @@ export class CharacterDashboardComponent implements OnInit {
     }
   }
 
-  private initialize(IsInitialLoad) {
-
+  private initialize(IsInitialLoad,preventLoading = false) {
+   
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
       this.authService.logout();
     else {
-        this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
-        if (this.headers) {
-          if (this.headers.headerId && this.headers.headerLink == 'character') {
-              this.characterId = this.headers.headerId;
-          }
+      this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+      if (this.headers) {
+        if (this.headers.headerId && this.headers.headerLink == 'character') {
+          this.characterId = this.headers.headerId;
         }
+      }
       try {
         this.CCService.getConditionsValuesList<any[]>(this.characterId)
           .subscribe(data => {
@@ -460,8 +464,12 @@ export class CharacterDashboardComponent implements OnInit {
               this.authService.logout(true);
             }
           }, () => { });
-        this.isLoading = true;
-        this.charactersService.getCharactersById<any>(this.characterId)
+        if (preventLoading) {
+          this.isLoading = false;
+        } else {
+          this.isLoading = true;
+        }
+          this.charactersService.getCharactersById<any>(this.characterId)
           .subscribe(data => {
             this.character = data;
             this.rulesetModel = data.ruleSet;
@@ -471,7 +479,12 @@ export class CharacterDashboardComponent implements OnInit {
             this.character = new Characters();
             this.isLoading = false;
           }, () => { });
-        this.isLoading = true;
+        if (preventLoading) {
+          this.isLoading = false;
+        } else {
+          this.isLoading = true;
+        }
+        
         this.layoutService.getLayoutsByCharacterId(this.characterId, -1, -1)
           .subscribe(data => {
 
@@ -507,7 +520,7 @@ export class CharacterDashboardComponent implements OnInit {
                   }
                 })
               }
-              
+
               if (!isLayoutSelected) {
                 this.characterlayouts.map((item) => {
                   if (item.isDefaultLayout) {
@@ -559,7 +572,7 @@ export class CharacterDashboardComponent implements OnInit {
                     }
                   })
                 }
-                
+
                 if (!isLayoutSelected) {
                   this.characterlayouts.map((item) => {
                     if (item.isDefaultLayout) {
@@ -592,7 +605,7 @@ export class CharacterDashboardComponent implements OnInit {
                   }
                 })
               }
-              
+
               if (!isLayoutSelected) {
                 this.characterlayouts.map((item) => {
                   if (item.isDefaultLayout) {
@@ -607,7 +620,11 @@ export class CharacterDashboardComponent implements OnInit {
 
             if (this.selectedPage) {
               if (this.selectedPage.characterDashboardPageId) {
-                this.isLoading = true;
+                if (preventLoading) {
+                  this.isLoading = false;
+                } else {
+                  this.isLoading = true;
+                }
                 this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId)
                   .subscribe(data => {
                     let model: any = data;
@@ -1105,7 +1122,6 @@ export class CharacterDashboardComponent implements OnInit {
 
   viewTile(tile: any, tileType: number) {
     //let _tile: any;
-
     let _tile = Object.assign({}, tile);
     switch (tileType) {
       case TILES.NOTE: {
