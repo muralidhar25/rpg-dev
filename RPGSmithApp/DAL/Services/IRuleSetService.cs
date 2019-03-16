@@ -48,5 +48,7 @@ namespace DAL.Services
         List<Item> SearchCharacterItems(SearchModel searchModel);
         List<ItemMaster> SearchRulesetItems(SearchModel searchModel);
         void SaveLastSearchFilters(SearchModel searchModel);
+        List<SearchEverything> bindEveryThingModel(List<CharacterAbility> characterAbilities, List<Ability> abilities, List<CharacterSpell> characterSpells, List<Spell> spells, List<Item> items, List<ItemMaster> itemMasters);
+        List<SearchEverything> SearchEveryThing(SearchModel searchModel);
     }
 }

@@ -1654,6 +1654,14 @@ namespace RPGSmithApp.Controllers
                             case SP_SearchType.RulesetAbilities:
                                 abilities.AddRange(_ruleSetService.SearchRulesetAbilities(searchModel));
                                 break;
+                            case SP_SearchType.Everything:
+                                characterAbilities.AddRange(_ruleSetService.SearchCharacterAbilities(searchModel));
+                                characterSpells.AddRange(_ruleSetService.SearchCharacterSpells(searchModel));
+                                items.AddRange(_ruleSetService.SearchCharacterItems(searchModel));
+                                itemMasters.AddRange(_ruleSetService.SearchRulesetItems(searchModel));
+                                spells.AddRange(_ruleSetService.SearchRulesetSpells(searchModel));
+                                abilities.AddRange(_ruleSetService.SearchRulesetAbilities(searchModel));
+                                break;
                             default:
                                 break;
                         }
@@ -1678,6 +1686,15 @@ namespace RPGSmithApp.Controllers
 
                     case SP_SearchType.RulesetItems:
                         return Ok(itemMasters.GroupBy(x => x.ItemMasterId).Select(x => x.First()));
+                    case SP_SearchType.Everything:
+                        characterAbilities= characterAbilities.GroupBy(x => x.CharacterAbilityId).Select(x => x.First()).ToList();
+                        abilities= abilities.GroupBy(x => x.AbilityId).Select(x => x.First()).ToList();
+                        characterSpells= characterSpells.GroupBy(x => x.CharacterSpellId).Select(x => x.First()).ToList();
+                        spells= spells.GroupBy(x => x.SpellId).Select(x => x.First()).ToList();
+                        items= items.GroupBy(x => x.ItemId).Select(x => x.First()).ToList();
+                        itemMasters= itemMasters.GroupBy(x => x.ItemMasterId).Select(x => x.First()).ToList();
+                        return Ok(_ruleSetService.bindEveryThingModel(characterAbilities, abilities, characterSpells, spells, items, itemMasters));
+                        break;
                     default:
                         return Ok();
                 }
@@ -1703,6 +1720,9 @@ namespace RPGSmithApp.Controllers
                     return Ok(_ruleSetService.SearchCharacterItems(searchModel));
                 case SP_SearchType.RulesetItems:
                     return Ok(_ruleSetService.SearchRulesetItems(searchModel));
+                case SP_SearchType.Everything:
+                    return Ok(_ruleSetService.SearchEveryThing(searchModel));                                       
+                    break;
                 default:
                     return Ok();
             }

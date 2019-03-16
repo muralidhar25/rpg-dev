@@ -1484,6 +1484,91 @@ namespace DAL.Services
             }
             return filter;
         }
+
+        public List<SearchEverything> bindEveryThingModel(List<CharacterAbility> characterAbilities, List<Ability> abilities,
+            List<CharacterSpell> characterSpells, List<Spell> spells, List<Item> items, List<ItemMaster> itemMasters)
+        {
+            List<SearchEverything> results = new List<SearchEverything>();
+            foreach (var item in characterAbilities)
+            {
+                SearchEverything obj = new SearchEverything() {
+                    id = item.CharacterAbilityId,
+                    image = item.Ability.ImageUrl,
+                    name = item.Ability.Name,
+                    RecordType = SP_SearchType.CharacterAbilities,
+                    CharacterAbility = item
+                };    
+            }
+            foreach (var item in abilities)
+            {
+                SearchEverything obj = new SearchEverything()
+                {
+                    id = item.AbilityId,
+                    image = item.ImageUrl,
+                    name = item.Name,
+                    RecordType = SP_SearchType.RulesetAbilities,
+                    RulesetAbility = item
+                };
+            }
+            foreach (var item in characterSpells)
+            {
+                SearchEverything obj = new SearchEverything()
+                {
+                    id = item.CharacterSpellId,
+                    image = item.Spell.ImageUrl,
+                    name = item.Spell.Name,
+                    RecordType = SP_SearchType.CharacterSpells,
+                    CharacterSpell = item
+                };
+            }
+            foreach (var item in spells)
+            {
+                SearchEverything obj = new SearchEverything()
+                {
+                    id = item.SpellId,
+                    image = item.ImageUrl,
+                    name = item.Name,
+                    RecordType = SP_SearchType.RulesetSpells,
+                    RulesetSpell = item
+                };
+            }
+            foreach (var item in items)
+            {
+                SearchEverything obj = new SearchEverything()
+                {
+                    id = item.ItemId,
+                    image = item.ItemImage,
+                    name = item.Name,
+                    RecordType = SP_SearchType.CharacterItems,
+                    CharacterItem = item
+                };
+            }
+            foreach (var item in itemMasters)
+            {
+                SearchEverything obj = new SearchEverything()
+                {
+                    id = item.ItemMasterId,
+                    image = item.ItemImage,
+                    name = item.ItemName,
+                    RecordType = SP_SearchType.RulesetItems,
+                    RulesetItem = item
+                };
+            }
+
+
+            return results.OrderBy(x=>x.name).ToList();
+        }
+        public List<SearchEverything> SearchEveryThing(SearchModel searchModel)
+        {
+            List<CharacterAbility> characterAbilities= SearchCharacterAbilities(searchModel);
+            List<Ability> abilities= SearchRulesetAbilities(searchModel);
+            List<CharacterSpell> characterSpells= SearchCharacterSpells(searchModel);
+            List<Spell> spells= SearchRulesetSpells(searchModel);
+            List<Item> items= SearchCharacterItems(searchModel);
+            List<ItemMaster> itemMasters= SearchRulesetItems(searchModel);
+            List<SearchEverything> results = bindEveryThingModel(characterAbilities, abilities, characterSpells, spells, items, itemMasters);
+            return results;
+        }
         #endregion
     }
 

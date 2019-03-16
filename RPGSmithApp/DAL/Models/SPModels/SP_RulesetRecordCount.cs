@@ -117,6 +117,7 @@ namespace DAL.Models.SPModels
     }
     public enum SP_SearchType
     {
+        Everything = -1,
         RulesetItems = 1,
         CharacterItems = 2,
         RulesetSpells = 3,
@@ -166,5 +167,19 @@ namespace DAL.Models.SPModels
         public bool IsAbilityStats { get; set; }
         public bool IsAbilityDesc { get; set; }
         public bool IsAbilityLevel { get; set; }
+    }
+    public class SearchEverything
+    {
+        public int id { get; set; }
+        public string image { get; set; }
+        public string name { get; set; }
+        public SP_SearchType RecordType { get; set; }
+
+        public CharacterAbility CharacterAbility { get; set; }
+        public CharacterSpell CharacterSpell { get; set; }
+        public Item CharacterItem { get; set; }
+        public ItemMaster RulesetItem { get; set; }
+        public Ability RulesetAbility { get; set; }
+        public Spell RulesetSpell { get; set; }
     }
 }
