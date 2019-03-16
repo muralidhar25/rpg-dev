@@ -1578,7 +1578,8 @@ namespace DAL.Services
                     name = item.Ability.Name,
                     RecordType = SP_SearchType.CharacterAbilities,
                     CharacterAbility = item
-                };    
+                };
+                results.Add(obj);
             }
             foreach (var item in abilities)
             {
@@ -1589,7 +1590,7 @@ namespace DAL.Services
                     name = item.Name,
                     RecordType = SP_SearchType.RulesetAbilities,
                     RulesetAbility = item
-                };
+                }; results.Add(obj);
             }
             foreach (var item in characterSpells)
             {
@@ -1600,7 +1601,7 @@ namespace DAL.Services
                     name = item.Spell.Name,
                     RecordType = SP_SearchType.CharacterSpells,
                     CharacterSpell = item
-                };
+                }; results.Add(obj);
             }
             foreach (var item in spells)
             {
@@ -1611,7 +1612,7 @@ namespace DAL.Services
                     name = item.Name,
                     RecordType = SP_SearchType.RulesetSpells,
                     RulesetSpell = item
-                };
+                }; results.Add(obj);
             }
             foreach (var item in items)
             {
@@ -1622,7 +1623,7 @@ namespace DAL.Services
                     name = item.Name,
                     RecordType = SP_SearchType.CharacterItems,
                     CharacterItem = item
-                };
+                }; results.Add(obj);
             }
             foreach (var item in itemMasters)
             {
@@ -1633,7 +1634,7 @@ namespace DAL.Services
                     name = item.ItemName,
                     RecordType = SP_SearchType.RulesetItems,
                     RulesetItem = item
-                };
+                }; results.Add(obj);
             }
 
 
