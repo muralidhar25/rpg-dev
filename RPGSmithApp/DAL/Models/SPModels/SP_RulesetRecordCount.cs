@@ -134,6 +134,7 @@ namespace DAL.Models.SPModels
         public ItemFilter ItemFilters { get; set; }
         public SpellFilter SpellFilters { get; set; }
         public AbilityFilter AbilityFilters { get; set; }
+        public EveryThingFilter EverythingFilters { get; set; }
     }
     public class ItemFilter
     {
@@ -167,6 +168,13 @@ namespace DAL.Models.SPModels
         public bool IsAbilityStats { get; set; }
         public bool IsAbilityDesc { get; set; }
         public bool IsAbilityLevel { get; set; }
+    }
+    public class EveryThingFilter
+    {
+        public bool IsEverythingName { get; set; }
+        public bool IsEverythingTags { get; set; }
+        public bool IsEverythingStats { get; set; }
+        public bool IsEverythingDesc { get; set; }
     }
     public class SearchEverything
     {

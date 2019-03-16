@@ -831,12 +831,21 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@SearchText", searchModel.SearchString);
                 command.Parameters.AddWithValue("@RecordType", searchModel.SearchType);
                 command.Parameters.AddWithValue("@CharacterID", searchModel.CharacterID);
-
-                command.Parameters.AddWithValue("@IsAbilityName", searchModel.AbilityFilters.IsAbilityName);
-                command.Parameters.AddWithValue("@IsAbilityTags", searchModel.AbilityFilters.IsAbilityTags);
-                command.Parameters.AddWithValue("@IsAbilityStats", searchModel.AbilityFilters.IsAbilityStats);
-                command.Parameters.AddWithValue("@IsAbilityDesc", searchModel.AbilityFilters.IsAbilityDesc);
-                command.Parameters.AddWithValue("@IsAbilityLevel", searchModel.AbilityFilters.IsAbilityLevel);
+                if (searchModel.SearchType == SP_SearchType.Everything)
+                {
+                    command.Parameters.AddWithValue("@IsEverything",true);
+                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName );
+                    command.Parameters.AddWithValue("@IsEverythingTag",  searchModel.EverythingFilters.IsEverythingTags);
+                    command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
+                    command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                }
+                else {
+                    command.Parameters.AddWithValue("@IsAbilityName", searchModel.AbilityFilters.IsAbilityName);
+                    command.Parameters.AddWithValue("@IsAbilityTags", searchModel.AbilityFilters.IsAbilityTags);
+                    command.Parameters.AddWithValue("@IsAbilityStats", searchModel.AbilityFilters.IsAbilityStats);
+                    command.Parameters.AddWithValue("@IsAbilityDesc", searchModel.AbilityFilters.IsAbilityDesc);
+                    command.Parameters.AddWithValue("@IsAbilityLevel", searchModel.AbilityFilters.IsAbilityLevel);
+                }
 
                 command.CommandType = CommandType.StoredProcedure;
 
@@ -913,11 +922,24 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@RecordType", searchModel.SearchType);
                 command.Parameters.AddWithValue("@RulesetID", searchModel.RulesetID);
 
-                command.Parameters.AddWithValue("@IsAbilityName", searchModel.AbilityFilters.IsAbilityName);
-                command.Parameters.AddWithValue("@IsAbilityTags", searchModel.AbilityFilters.IsAbilityTags);
-                command.Parameters.AddWithValue("@IsAbilityStats", searchModel.AbilityFilters.IsAbilityStats);
-                command.Parameters.AddWithValue("@IsAbilityDesc", searchModel.AbilityFilters.IsAbilityDesc);
-                command.Parameters.AddWithValue("@IsAbilityLevel", searchModel.AbilityFilters.IsAbilityLevel);
+                if (searchModel.SearchType == SP_SearchType.Everything)
+                {
+                    command.Parameters.AddWithValue("@IsEverything", true);
+                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName );
+                    command.Parameters.AddWithValue("@IsEverythingTag",  searchModel.EverythingFilters.IsEverythingTags);
+                    command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
+                    command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                }
+                else
+                {
+                    command.Parameters.AddWithValue("@IsAbilityName", searchModel.AbilityFilters.IsAbilityName);
+                    command.Parameters.AddWithValue("@IsAbilityTags", searchModel.AbilityFilters.IsAbilityTags);
+                    command.Parameters.AddWithValue("@IsAbilityStats", searchModel.AbilityFilters.IsAbilityStats);
+                    command.Parameters.AddWithValue("@IsAbilityDesc", searchModel.AbilityFilters.IsAbilityDesc);
+                    command.Parameters.AddWithValue("@IsAbilityLevel", searchModel.AbilityFilters.IsAbilityLevel);
+                }
+
+               
 
                 command.CommandType = CommandType.StoredProcedure;
 
@@ -981,17 +1003,30 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@RecordType", searchModel.SearchType);
                 command.Parameters.AddWithValue("@CharacterID", searchModel.CharacterID);
 
-                command.Parameters.AddWithValue("@IsSpellName", searchModel.SpellFilters.IsSpellName);
-                command.Parameters.AddWithValue("@IsSpellTags", searchModel.SpellFilters.IsSpellTags);
-                command.Parameters.AddWithValue("@IsSpellStats", searchModel.SpellFilters.IsSpellStats);
-                command.Parameters.AddWithValue("@IsSpellDesc", searchModel.SpellFilters.IsSpellDesc);
-                command.Parameters.AddWithValue("@IsSpellClass", searchModel.SpellFilters.IsSpellClass);
-                command.Parameters.AddWithValue("@IsSpellSchool", searchModel.SpellFilters.IsSpellSchool);
-                command.Parameters.AddWithValue("@IsSpellLevel", searchModel.SpellFilters.IsSpellLevel);
-                command.Parameters.AddWithValue("@IsSpellCastingTime", searchModel.SpellFilters.IsSpellCastingTime);
-                command.Parameters.AddWithValue("@IsSpellEffectDesc", searchModel.SpellFilters.IsSpellEffectDesc);
-                command.Parameters.AddWithValue("@IsSpellHitEffect", searchModel.SpellFilters.IsSpellHitEffect);
-                command.Parameters.AddWithValue("@IsSpellMissEffect", searchModel.SpellFilters.IsSpellMissEffect);
+                if (searchModel.SearchType == SP_SearchType.Everything)
+                {
+                    command.Parameters.AddWithValue("@IsEverything", true);
+                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName );
+                    command.Parameters.AddWithValue("@IsEverythingTag",  searchModel.EverythingFilters.IsEverythingTags);
+                    command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
+                    command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                }
+                else
+                {
+                    command.Parameters.AddWithValue("@IsSpellName", searchModel.SpellFilters.IsSpellName);
+                    command.Parameters.AddWithValue("@IsSpellTags", searchModel.SpellFilters.IsSpellTags);
+                    command.Parameters.AddWithValue("@IsSpellStats", searchModel.SpellFilters.IsSpellStats);
+                    command.Parameters.AddWithValue("@IsSpellDesc", searchModel.SpellFilters.IsSpellDesc);
+                    command.Parameters.AddWithValue("@IsSpellClass", searchModel.SpellFilters.IsSpellClass);
+                    command.Parameters.AddWithValue("@IsSpellSchool", searchModel.SpellFilters.IsSpellSchool);
+                    command.Parameters.AddWithValue("@IsSpellLevel", searchModel.SpellFilters.IsSpellLevel);
+                    command.Parameters.AddWithValue("@IsSpellCastingTime", searchModel.SpellFilters.IsSpellCastingTime);
+                    command.Parameters.AddWithValue("@IsSpellEffectDesc", searchModel.SpellFilters.IsSpellEffectDesc);
+                    command.Parameters.AddWithValue("@IsSpellHitEffect", searchModel.SpellFilters.IsSpellHitEffect);
+                    command.Parameters.AddWithValue("@IsSpellMissEffect", searchModel.SpellFilters.IsSpellMissEffect);
+                }
+
+               
 
                 command.CommandType = CommandType.StoredProcedure;
 
@@ -1077,17 +1112,30 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@RecordType", searchModel.SearchType);
                 command.Parameters.AddWithValue("@RulesetID", searchModel.RulesetID);
 
-                command.Parameters.AddWithValue("@IsSpellName", searchModel.SpellFilters.IsSpellName);
-                command.Parameters.AddWithValue("@IsSpellTags", searchModel.SpellFilters.IsSpellTags);
-                command.Parameters.AddWithValue("@IsSpellStats", searchModel.SpellFilters.IsSpellStats);
-                command.Parameters.AddWithValue("@IsSpellDesc", searchModel.SpellFilters.IsSpellDesc);
-                command.Parameters.AddWithValue("@IsSpellClass", searchModel.SpellFilters.IsSpellClass);
-                command.Parameters.AddWithValue("@IsSpellSchool", searchModel.SpellFilters.IsSpellSchool);
-                command.Parameters.AddWithValue("@IsSpellLevel", searchModel.SpellFilters.IsSpellLevel);
-                command.Parameters.AddWithValue("@IsSpellCastingTime", searchModel.SpellFilters.IsSpellCastingTime);
-                command.Parameters.AddWithValue("@IsSpellEffectDesc", searchModel.SpellFilters.IsSpellEffectDesc);
-                command.Parameters.AddWithValue("@IsSpellHitEffect", searchModel.SpellFilters.IsSpellHitEffect);
-                command.Parameters.AddWithValue("@IsSpellMissEffect", searchModel.SpellFilters.IsSpellMissEffect);
+
+                if (searchModel.SearchType == SP_SearchType.Everything)
+                {
+                    command.Parameters.AddWithValue("@IsEverything", true);
+                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName );
+                    command.Parameters.AddWithValue("@IsEverythingTag",  searchModel.EverythingFilters.IsEverythingTags);
+                    command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
+                    command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                }
+                else
+                {
+                    command.Parameters.AddWithValue("@IsSpellName", searchModel.SpellFilters.IsSpellName);
+                    command.Parameters.AddWithValue("@IsSpellTags", searchModel.SpellFilters.IsSpellTags);
+                    command.Parameters.AddWithValue("@IsSpellStats", searchModel.SpellFilters.IsSpellStats);
+                    command.Parameters.AddWithValue("@IsSpellDesc", searchModel.SpellFilters.IsSpellDesc);
+                    command.Parameters.AddWithValue("@IsSpellClass", searchModel.SpellFilters.IsSpellClass);
+                    command.Parameters.AddWithValue("@IsSpellSchool", searchModel.SpellFilters.IsSpellSchool);
+                    command.Parameters.AddWithValue("@IsSpellLevel", searchModel.SpellFilters.IsSpellLevel);
+                    command.Parameters.AddWithValue("@IsSpellCastingTime", searchModel.SpellFilters.IsSpellCastingTime);
+                    command.Parameters.AddWithValue("@IsSpellEffectDesc", searchModel.SpellFilters.IsSpellEffectDesc);
+                    command.Parameters.AddWithValue("@IsSpellHitEffect", searchModel.SpellFilters.IsSpellHitEffect);
+                    command.Parameters.AddWithValue("@IsSpellMissEffect", searchModel.SpellFilters.IsSpellMissEffect);
+                }
+               
 
                 command.CommandType = CommandType.StoredProcedure;
 
@@ -1163,13 +1211,26 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@RecordType", searchModel.SearchType);
                 command.Parameters.AddWithValue("@CharacterID", searchModel.CharacterID);
 
-                command.Parameters.AddWithValue("@IsItemName", searchModel.ItemFilters.IsItemName);
-                command.Parameters.AddWithValue("@IsItemTags", searchModel.ItemFilters.IsItemTags);
-                command.Parameters.AddWithValue("@IsItemStats", searchModel.ItemFilters.IsItemStats);
-                command.Parameters.AddWithValue("@IsItemDesc", searchModel.ItemFilters.IsItemDesc);
-                command.Parameters.AddWithValue("@IsItemRarity", searchModel.ItemFilters.IsItemRarity);
-                command.Parameters.AddWithValue("@IsItemAbilityAssociated", searchModel.ItemFilters.IsItemAbilityAssociated);
-                command.Parameters.AddWithValue("@IsItemSpellAssociated", searchModel.ItemFilters.IsItemSpellAssociated);
+
+                if (searchModel.SearchType == SP_SearchType.Everything)
+                {
+                    command.Parameters.AddWithValue("@IsEverything", true);
+                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName );
+                    command.Parameters.AddWithValue("@IsEverythingTag",  searchModel.EverythingFilters.IsEverythingTags);
+                    command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
+                    command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                }
+                else
+                {
+                    command.Parameters.AddWithValue("@IsItemName", searchModel.ItemFilters.IsItemName);
+                    command.Parameters.AddWithValue("@IsItemTags", searchModel.ItemFilters.IsItemTags);
+                    command.Parameters.AddWithValue("@IsItemStats", searchModel.ItemFilters.IsItemStats);
+                    command.Parameters.AddWithValue("@IsItemDesc", searchModel.ItemFilters.IsItemDesc);
+                    command.Parameters.AddWithValue("@IsItemRarity", searchModel.ItemFilters.IsItemRarity);
+                    command.Parameters.AddWithValue("@IsItemAbilityAssociated", searchModel.ItemFilters.IsItemAbilityAssociated);
+                    command.Parameters.AddWithValue("@IsItemSpellAssociated", searchModel.ItemFilters.IsItemSpellAssociated);
+                }
+               
 
                 command.CommandType = CommandType.StoredProcedure;
 
@@ -1250,13 +1311,26 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@RecordType", searchModel.SearchType);
                 command.Parameters.AddWithValue("@RulesetID", searchModel.RulesetID);
 
-                command.Parameters.AddWithValue("@IsItemName", searchModel.ItemFilters.IsItemName);
-                command.Parameters.AddWithValue("@IsItemTags", searchModel.ItemFilters.IsItemTags);
-                command.Parameters.AddWithValue("@IsItemStats", searchModel.ItemFilters.IsItemStats);
-                command.Parameters.AddWithValue("@IsItemDesc", searchModel.ItemFilters.IsItemDesc);
-                command.Parameters.AddWithValue("@IsItemRarity", searchModel.ItemFilters.IsItemRarity);
-                command.Parameters.AddWithValue("@IsItemAbilityAssociated", searchModel.ItemFilters.IsItemAbilityAssociated);
-                command.Parameters.AddWithValue("@IsItemSpellAssociated", searchModel.ItemFilters.IsItemSpellAssociated);
+
+                if (searchModel.SearchType == SP_SearchType.Everything)
+                {
+                    command.Parameters.AddWithValue("@IsEverything", true);
+                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName );
+                    command.Parameters.AddWithValue("@IsEverythingTag",  searchModel.EverythingFilters.IsEverythingTags);
+                    command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
+                    command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                }
+                else
+                {
+                    command.Parameters.AddWithValue("@IsItemName", searchModel.ItemFilters.IsItemName);
+                    command.Parameters.AddWithValue("@IsItemTags", searchModel.ItemFilters.IsItemTags);
+                    command.Parameters.AddWithValue("@IsItemStats", searchModel.ItemFilters.IsItemStats);
+                    command.Parameters.AddWithValue("@IsItemDesc", searchModel.ItemFilters.IsItemDesc);
+                    command.Parameters.AddWithValue("@IsItemRarity", searchModel.ItemFilters.IsItemRarity);
+                    command.Parameters.AddWithValue("@IsItemAbilityAssociated", searchModel.ItemFilters.IsItemAbilityAssociated);
+                    command.Parameters.AddWithValue("@IsItemSpellAssociated", searchModel.ItemFilters.IsItemSpellAssociated);
+                }
+              
 
                 command.CommandType = CommandType.StoredProcedure;
 
