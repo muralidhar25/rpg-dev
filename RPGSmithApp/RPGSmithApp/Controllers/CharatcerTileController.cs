@@ -305,6 +305,7 @@ namespace RPGSmithApp.Controllers
                                     SpellId = model.LinkTile.SpellId,
                                     TitleBgColor = model.LinkTile.TitleBgColor,
                                     TitleTextColor = model.LinkTile.TitleTextColor,
+                                    DisplayLinkImage = model.LinkTile.DisplayLinkImage
                                 };
 
                                 var linkTile = _LinkTile;
@@ -414,7 +415,8 @@ namespace RPGSmithApp.Controllers
                                     TitleBgColor = model.ExecuteTile.TitleBgColor,
                                     TitleTextColor = model.ExecuteTile.TitleTextColor,
                                     CommandId= model.ExecuteTile.CommandId,
-                                    
+                                    DisplayLinkImage = model.ExecuteTile.DisplayLinkImage
+
                                 };
 
                                 var executeTile = _ExecuteTile;
