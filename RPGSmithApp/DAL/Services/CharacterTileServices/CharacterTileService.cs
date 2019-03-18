@@ -548,6 +548,7 @@ namespace DAL.Services.CharacterTileServices
                                         CLT.SpellId = CLT_Row["SpellId"] == DBNull.Value ? null : (int?)(CLT_Row["SpellId"]);
                                         CLT.TitleBgColor = CLT_Row["TitleBgColor"] == DBNull.Value ? null : CLT_Row["TitleBgColor"].ToString();
                                         CLT.TitleTextColor = CLT_Row["TitleTextColor"] == DBNull.Value ? null : CLT_Row["TitleTextColor"].ToString();
+                                        CLT.DisplayLinkImage = CLT_Row["DisplayLinkImage"] == DBNull.Value ? false : Convert.ToBoolean(CLT_Row["DisplayLinkImage"]);
                                         CLT.Ability = null;
                                         CLT.Item = null;
                                         CLT.Spell = null;
@@ -668,6 +669,7 @@ namespace DAL.Services.CharacterTileServices
                                         CEXT.CommandId = CEXT_Row["CommandId"] == DBNull.Value ? null : (int?)(CEXT_Row["CommandId"]);
                                         CEXT.TitleBgColor = CEXT_Row["TitleBgColor"] == DBNull.Value ? null : CEXT_Row["TitleBgColor"].ToString();
                                         CEXT.TitleTextColor = CEXT_Row["TitleTextColor"] == DBNull.Value ? null : CEXT_Row["TitleTextColor"].ToString();
+                                        CEXT.DisplayLinkImage = CEXT_Row["DisplayLinkImage"] == DBNull.Value ? false : Convert.ToBoolean(CEXT_Row["DisplayLinkImage"]);
                                         CEXT.Ability = null;
                                         CEXT.Item = null;
                                         CEXT.Spell = null;
