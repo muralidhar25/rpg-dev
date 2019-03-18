@@ -148,7 +148,7 @@ export class NumericCharacterStatComponent implements OnInit {
           'inventoryWeight': data.inventoryWeight
         };
         this.numericCharacterStats = this.numericCharacterStats.filter(val => val.charactersCharacterStatId !== -1);
-        this.numericCharacterStats.push(inventoryWeight);
+        //this.numericCharacterStats.push(inventoryWeight);
         this.numericCharacterStats.forEach((val) => {
           val.inventoryWeight = data.inventoryWeight;
         });

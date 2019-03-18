@@ -10,7 +10,7 @@
 
       <ul style="height:auto;max-height:500px;" class="input-list-items border-none" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
           [infiniteScrollThrottle]="300" [scrollWindow]="false" *ngIf="numericCharacterStats && characterId">
-        <li class="form-check" *ngFor="let characterStat of numericCharacterStats">
+        <li class="form-check" *ngFor="let characterStat of numericCharacterStats; let i=index">
           <div (click)="selectCharacterStat(characterStat.characterStat.characterStatType.statTypeName,characterStat.characterStat.statName,1,characterStat)" class="card">
 
             <div class="dektop-show">
@@ -24,11 +24,11 @@
                   </div>
 
                   <div class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
-                    <div class="modifier-text">
+                    <div class="modifier-text"  [placement]="i==0 ? 'bottom' : 'top'"  popover="{{characterStat.characterStat.statDesc ? characterStat.characterStat.statDesc : characterStat.characterStat.statName}}" triggers="hover" >
                       <span class="current-value">
                         {{characterStat.characterStat.statName}}
                       </span>
-                      {{characterStat.characterStat.statDesc}}
+                      <!--{{characterStat.characterStat.statDesc}}-->
                     </div>
                   </div>
                   <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Number' || characterStat.characterStat.characterStatType.statTypeName=='Calculation'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
@@ -125,11 +125,11 @@
                   </div>
 
                   <div class="col-lg-10 col-md-10 col-sm-10 col-9">
-                    <div class="modifier-text">
-                      <span class="current-value">
+                    <div class="modifier-text" >
+                      <span class="current-value" [placement]="i==0 ? 'bottom' : 'top'" popover="{{characterStat.characterStat.statDesc? characterStat.characterStat.statDesc : characterStat.characterStat.statName }}" triggers="hover">
                         {{characterStat.characterStat.statName}}
                       </span>
-                      {{characterStat.characterStat.statDesc}}
+                      <!--{{characterStat.characterStat.statDesc}}-->
                     </div>
                     <div *ngIf="characterStat.characterStat.characterStatType.statTypeName =='Number' || characterStat.characterStat.characterStatType.statTypeName=='Calculation'" class="modifier-text">
                       <div class="mod-value">
@@ -207,7 +207,7 @@
 
                   <div class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
                     <div class="modifier-text">
-                      <span class="current-value">
+                      <span class="current-value" [placement]="i==0 ? 'bottom' : 'top'" popover="{{characterStat.characterStat.statDesc ? characterStat.characterStat.statDesc : characterStat.characterStat.statDesc }}" trigger="hover">
                         {{characterStat.characterStat.statName}}
                       </span>
                       {{characterStat.characterStat.statDesc}}
@@ -254,7 +254,7 @@
 
                   <div class="col-lg-10 col-md-10 col-sm-10 col-9">
                     <div class="modifier-text">
-                      <span class="current-value">
+                      <span class="current-value" [placement]="i==0 ? 'bottom' : 'top'" popover=" {{characterStat.characterStat.statDesc ? characterStat.characterStat.statDesc : characterStat.characterStat.statName }}" trigger="">
                         {{characterStat.characterStat.statName}}
                       </span>
                       {{characterStat.characterStat.statDesc}}
@@ -287,7 +287,7 @@
       </ul>
       <ul style="height:auto;max-height:500px;" class="input-list-items border-none" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
           [infiniteScrollThrottle]="300" [scrollWindow]="false" *ngIf="numericCharacterStats && !characterId">
-        <li class="form-check" *ngFor="let characterStat of numericCharacterStats">
+        <li class="form-check" *ngFor="let characterStat of numericCharacterStats ; let i = index">
           <div (click)="selectCharacterStat(characterStat.characterStatType.statTypeName,characterStat.statName,1,characterStat)" class="card">
 
             <div class="dektop-show">
@@ -302,10 +302,10 @@
 
                   <div class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
                     <div class="modifier-text">
-                      <span class="current-value">
+                      <span class="current-value"  [placement]="i==0 ? 'bottom' : 'top'"   popover="{{characterStat.statDesc? characterStat.statDesc : characterStat.statName }}"  trigger="hover">
                         {{characterStat.statName}}
                       </span>
-                      {{characterStat.statDesc}}
+                      <!--{{characterStat.statDesc}}-->
                     </div>
                   </div>
                   <div *ngIf="characterStat.characterStatType.statTypeName =='Number' || characterStat.characterStatType.statTypeName=='Calculation'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
@@ -403,7 +403,7 @@
 
                   <div class="col-lg-10 col-md-10 col-sm-10 col-9">
                     <div class="modifier-text">
-                      <span class="current-value">
+                      <span class="current-value"  [placement]="i==0 ? 'bottom' : 'top'"  popover=" {{characterStat.statDesc ? characterStat.statDesc : characterStat.statName }}" trigger="hover">
                         {{characterStat.statName}}
                       </span>
                       {{characterStat.statDesc}}
@@ -484,7 +484,7 @@
 
                   <div class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
                     <div class="modifier-text">
-                      <span class="current-value">
+                      <span class="current-value"  [placement]="i==0 ? 'bottom' : 'top'"  popover="{{characterStat.statDesc ? characterStat.statDesc : characterStat.statName }}" trigger="hover">
                         {{characterStat.statName}}
                       </span>
                       {{characterStat.statDesc}}
@@ -531,7 +531,7 @@
 
                   <div class="col-lg-10 col-md-10 col-sm-10 col-9">
                     <div class="modifier-text">
-                      <span class="current-value">
+                      <span class="current-value"  [placement]="i==0 ? 'bottom' : 'top'"  popover="{{characterStat.statDesc ? characterStat.statDesc : characterStat.statName  }}" trigger="hover">
                         {{characterStat.statName}}
                       </span>
                       {{characterStat.statDesc}}
