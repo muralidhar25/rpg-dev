@@ -1409,11 +1409,11 @@ namespace DAL.Services
                     bool isItem = (searchModel.SearchType == SP_SearchType.CharacterItems);
                     bool isSpell = (searchModel.SearchType == SP_SearchType.CharacterSpells);
                     bool isAbility = (searchModel.SearchType == SP_SearchType.CharacterAbilities);
-                    if (_context.SearchFilter.Any(x => x.CharacterId == searchModel.CharacterID && x.IsCharacter==true &&
+                    if (_context.SearchFilter.Any(x => x.CharacterId == searchModel.CharacterID && x.IsCharacter==true && x.IsRuleSet == false &&
                         x.IsItem == isItem && x.IsSpell == isSpell && x.IsAbility == isAbility))
                     {
                        
-                        filter = _context.SearchFilter.Where(x => x.CharacterId == searchModel.CharacterID && x.IsCharacter == true && 
+                        filter = _context.SearchFilter.Where(x => x.CharacterId == searchModel.CharacterID && x.IsCharacter == true && x.IsRuleSet == false && 
                         x.IsItem== isItem && x.IsSpell== isSpell && x.IsAbility==isAbility
                         ).FirstOrDefault();
                         if (filter != null)
@@ -1430,16 +1430,41 @@ namespace DAL.Services
                     }
                 }
             }
+            else if (searchModel.SearchType == SP_SearchType.Everything)
+            {
+                if (searchModel.CharacterID != 0 && searchModel.RulesetID != 0)
+                {
+                    if (_context.SearchFilter.Any(x => x.CharacterId == searchModel.CharacterID && x.RulesetId == searchModel.RulesetID 
+                    && x.IsCharacter == true && x.IsRuleSet == true))
+                    {
+
+                        filter = _context.SearchFilter.Where(x => x.CharacterId == searchModel.CharacterID && x.RulesetId == searchModel.RulesetID
+                    && x.IsCharacter == true && x.IsRuleSet == true).FirstOrDefault();
+                        if (filter != null)
+                        {
+                            filter = setFilterValues(filter, searchModel);
+                            _context.SearchFilter.Update(filter);
+                            _context.SaveChanges();
+                        }
+                    }
+                    else
+                    {
+                        filter = setFilterValues(filter, searchModel);
+                        _context.SearchFilter.Add(filter);
+                        _context.SaveChanges();
+                    }
+                }
+            }
             else {
                 if (searchModel.RulesetID != 0)
                 {
                     bool isItem = (searchModel.SearchType == SP_SearchType.RulesetItems);
                     bool isSpell = (searchModel.SearchType == SP_SearchType.RulesetSpells);
                     bool isAbility = (searchModel.SearchType == SP_SearchType.RulesetAbilities);
-                    if (_context.SearchFilter.Any(x => x.RulesetId == searchModel.RulesetID && x.IsRuleSet == true &&
+                    if (_context.SearchFilter.Any(x => x.RulesetId == searchModel.RulesetID && x.IsRuleSet == true && x.IsCharacter == false &&
                         x.IsItem == isItem && x.IsSpell == isSpell && x.IsAbility == isAbility))
                     {
-                        filter = _context.SearchFilter.Where(x => x.RulesetId == searchModel.RulesetID && x.IsRuleSet == true &&
+                        filter = _context.SearchFilter.Where(x => x.RulesetId == searchModel.RulesetID && x.IsRuleSet == true && x.IsCharacter == false &&
                         x.IsItem == isItem && x.IsSpell == isSpell && x.IsAbility == isAbility).FirstOrDefault();
                         if (filter != null)
                         {
@@ -1513,6 +1538,26 @@ namespace DAL.Services
                         filter.IsStats = searchModel.AbilityFilters.IsAbilityStats;
                         filter.IsDesc = searchModel.AbilityFilters.IsAbilityDesc;
                         break;
+                    default:
+                        break;
+                }
+            }
+           else   if (searchModel.SearchType == SP_SearchType.Everything)
+            {
+                filter.IsCharacter = true;
+                filter.CharacterId = searchModel.CharacterID;
+
+                filter.IsRuleSet = true;
+                filter.RulesetId = searchModel.RulesetID;
+
+                switch (searchModel.SearchType)
+                {
+                    case SP_SearchType.Everything:
+                        filter.IsName = searchModel.EverythingFilters.IsEverythingName;
+                        filter.IsTags = searchModel.EverythingFilters.IsEverythingTags;
+                        filter.IsStats = searchModel.EverythingFilters.IsEverythingStats;
+                        filter.IsDesc = searchModel.EverythingFilters.IsEverythingDesc;                        
+                        break;                    
                     default:
                         break;
                 }

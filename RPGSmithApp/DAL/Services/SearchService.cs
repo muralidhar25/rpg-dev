@@ -50,15 +50,20 @@ namespace DAL.Services
                 bool isItem = (searchModel.SearchType == SP_SearchType.CharacterItems);
                 bool isSpell = (searchModel.SearchType == SP_SearchType.CharacterSpells);
                 bool isAbility = (searchModel.SearchType == SP_SearchType.CharacterAbilities);
-                return _context.SearchFilter.Where(x => x.CharacterId == searchModel.CharacterID && x.IsCharacter == true &&
+                return _context.SearchFilter.Where(x => x.CharacterId == searchModel.CharacterID && x.IsCharacter == true && x.IsRuleSet == false && 
                         x.IsItem == isItem && x.IsSpell == isSpell && x.IsAbility == isAbility
                         ).FirstOrDefault();
+            }
+           else if (searchModel.SearchType == SP_SearchType.Everything)
+            {               
+                return _context.SearchFilter.Where(x => x.CharacterId == searchModel.CharacterID && x.RulesetId == searchModel.RulesetID 
+                && x.IsCharacter == true && x.IsRuleSet == true).FirstOrDefault();
             }
             else {
                 bool isItem = (searchModel.SearchType == SP_SearchType.RulesetItems);
                 bool isSpell = (searchModel.SearchType == SP_SearchType.RulesetSpells);
                 bool isAbility = (searchModel.SearchType == SP_SearchType.RulesetAbilities);
-                return _context.SearchFilter.Where(x => x.RulesetId == searchModel.RulesetID && x.IsRuleSet == true &&
+                return _context.SearchFilter.Where(x => x.RulesetId == searchModel.RulesetID && x.IsRuleSet == true && x.IsCharacter == false &&
                         x.IsItem == isItem && x.IsSpell == isSpell && x.IsAbility == isAbility).FirstOrDefault();
             }
         }
