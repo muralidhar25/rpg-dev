@@ -36,7 +36,7 @@
         </div>
 
         <div class="site-header-right-section">
-          <form class="site-header-search" *ngIf="showCharacterSearch && false">
+          <form class="site-header-search" *ngIf="showCharacterSearch">
             <i class="icon icon-search"></i>
             <input type="search" name="searchText" [(ngModel)]="searchText" placeholder="Search {{placeHolderText}}" (keyup.enter)="goToSearch(searchText)">
           </form>

@@ -17,7 +17,7 @@ export class Search {
 
 export class BasicSearch {
   constructor(searchHeadingText?: string, searchType?: number, searchString?: string, characterID?: number, rulesetID?: number,
-    itemFilters?: ItemFilter, spellFilters?: SpellFilter, abilityFilters?: AbilityFilter) {
+    itemFilters?: ItemFilter, spellFilters?: SpellFilter, abilityFilters?: AbilityFilter, everything?: EverythingFilter) {
     this.searchHeadingText = searchHeadingText ? searchHeadingText : '';
     this.searchType = searchType ? searchType : 0;
     this.searchString = searchString ? searchString : '';
@@ -26,6 +26,7 @@ export class BasicSearch {
     this.itemFilters = itemFilters ? itemFilters : new ItemFilter();
     this.spellFilters = spellFilters ? spellFilters : new SpellFilter();
     this.abilityFilters = abilityFilters ? abilityFilters : new AbilityFilter();
+    this.everythingFilters = everything ? everything : new EverythingFilter();
   }
   public searchHeadingText: string;
   public searchType: number;
@@ -35,6 +36,7 @@ export class BasicSearch {
   public itemFilters: ItemFilter;
   public spellFilters: SpellFilter;
   public abilityFilters: AbilityFilter;
+  public everythingFilters: EverythingFilter;
 }
 export class ItemFilter {
   constructor(isItemName?: boolean, isItemTags?: boolean, isItemStats?: boolean, isItemDesc?: boolean, isItemRarity?: boolean,
@@ -103,4 +105,21 @@ export class AbilityFilter {
   public isAbilityStats: boolean;
   public isAbilityDesc: boolean;
   public isAbilityLevel: boolean;
+}
+
+export class EverythingFilter {
+  constructor(isEverythingName?: boolean, isEverythingTags?: boolean, isEverythingStats?: boolean, isEverythingDesc?: boolean) {
+
+    this.isEverythingName = isEverythingName ? isEverythingName : false;
+    this.isEverythingTags = isEverythingTags ? isEverythingTags : false;
+    this.isEverythingStats = isEverythingStats ? isEverythingStats : false;
+    this.isEverythingDesc = isEverythingDesc ? isEverythingDesc : false;
+    
+  }
+
+  public isEverythingName: boolean;
+  public isEverythingTags: boolean;
+  public isEverythingStats: boolean;
+  public isEverythingDesc: boolean;
+  
 }

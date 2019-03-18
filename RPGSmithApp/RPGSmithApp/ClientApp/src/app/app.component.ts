@@ -51,7 +51,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   showCharacterSearch: boolean = false;
   bsModalRef: BsModalRef;
   isAppLoaded: boolean;
-  placeHolderText: string = 'Characters';
+  placeHolderText: string = '';
   isUserLoggedIn: boolean;
   shouldShowLoginModal: boolean;
   removePrebootScreen: boolean;
@@ -594,9 +594,18 @@ export class AppComponent implements OnInit, AfterViewInit {
        
         
         this.URLFlag = false;
-        this.showCharacterSearch = ((url.toLowerCase() == '/characters') || (url.toLowerCase() == '/'));
+      
+        this.showCharacterSearch = ((url.toLowerCase() == '/character/dashboard'));
+        if (url.toUpperCase().indexOf('/CHARACTER/DASHBOARD/') > -1) {
+          this.showCharacterSearch = true;
+        } else {
+          this.showCharacterSearch = false;
+        }
+           
+        
+       
         if (url !== url.toLowerCase()) {
-          //console.log('AppComponentOld Redriection:', (<NavigationStart>event).url.toLowerCase());
+      
           this.router.navigateByUrl((<NavigationStart>event).url.toLowerCase());
         }
         
