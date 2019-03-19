@@ -425,35 +425,38 @@ export class SearchComponent implements OnInit {
       if (this.searchModal.searchType == SearchType.CHARACTERITEMS) {
         console.log(this.searchModal.searchType);
         this.router.navigate(['/character/inventory-details', input.recordId]);
-      }else if (this.searchModal.searchType == SearchType.RULESETITEMS) {
-        if (this.isCharacterRulesetEntity) {
-          this.router.navigate(['/character/ruleset/item-details', input.recordId]);
-        }
-        else {
-          this.router.navigate(['/ruleset/item-details', input.recordId]);
-        }
+      } else if (this.searchModal.searchType == SearchType.RULESETITEMS) {
+        this.router.navigate(['/character/ruleset/item-details', input.recordId]);
+        //if (this.isCharacterRulesetEntity) {
+        //  this.router.navigate(['/character/ruleset/item-details', input.recordId]);
+        //}
+        //else {
+        //  this.router.navigate(['/ruleset/item-details', input.recordId]);
+        //}
       }
       else if (this.searchModal.searchType == SearchType.CHARACTERSPELLS) {
         this.router.navigate(['/character/spell-details', input.recordId]);
       }
       else if (this.searchModal.searchType == SearchType.RULESETSPELLS) {
-        if (this.isCharacterRulesetEntity) {
-          this.router.navigate(['/character/ruleset/spell-details', input.recordId]);
-        }
-        else {
-          this.router.navigate(['/ruleset/spell-details', input.recordId]);
-        }
+        this.router.navigate(['/character/ruleset/spell-details', input.recordId]);
+        //if (this.isCharacterRulesetEntity) {
+        //  this.router.navigate(['/character/ruleset/spell-details', input.recordId]);
+        //}
+        //else {
+        //  this.router.navigate(['/ruleset/spell-details', input.recordId]);
+        //}
       }
       else if (this.searchModal.searchType == SearchType.CHARACTERABILITIES) {
         this.router.navigate(['/character/ability-details', input.recordId]);
       }
       else if (this.searchModal.searchType == SearchType.RULESETABILITIES) {
-        if (this.isCharacterRulesetEntity) {
-          this.router.navigate(['/character/ruleset/ability-details', input.recordId]);
-        }
-        else {
-          this.router.navigate(['/ruleset/ability-details', input.recordId]);
-        }
+        this.router.navigate(['/character/ruleset/ability-details', input.recordId]);
+        //if (this.isCharacterRulesetEntity) {
+        //  this.router.navigate(['/character/ruleset/ability-details', input.recordId]);
+        //}
+        //else {
+        //  this.router.navigate(['/ruleset/ability-details', input.recordId]);
+        //}
       }
     }
 
