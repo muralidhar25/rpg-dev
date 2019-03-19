@@ -9,7 +9,7 @@
       <div class="page-toolbar-dropdown">
         <!-- Filter dropdown -->
         <div class="dropdown">
-          <div class="dropdown-toggle" id="pageLayoutNavigationToggle" data-toggle="dropdown">
+          <div class="dropdown-toggle" id="pageLayoutNavigationToggle" data-toggle="dropdown" [ngClass]="{'disabled': isLoading}">
             <span>Show <em>{{defaultText}}</em></span>
           </div>
           <div class="dropdown-menu dropdown-menu-right w-200p" aria-labelledby="pageLayoutNavigationToggle">
@@ -247,6 +247,8 @@
   <!-- End of search field -->
   <!-- Result cards -->
   <app-loader [isLoading]="isLoading"></app-loader>
+  <br />
+  <br />
   <div class="cards" *ngIf="!isLoading">
     <div class="container">
       <div class="row">

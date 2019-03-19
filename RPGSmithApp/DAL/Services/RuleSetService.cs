@@ -812,8 +812,17 @@ namespace DAL.Services
         #endregion
 
         #region Basic_Search
-        public List<CharacterAbility> SearchCharacterAbilities(SearchModel searchModel)
+        public List<CharacterAbility> SearchCharacterAbilities(SearchModel searchModel, int[] idsToSearch = null)
         {
+            DataTable dt_ids = new DataTable();
+            if (idsToSearch!=null)
+            {
+                if (idsToSearch.Length>0)
+                {
+                    dt_ids = ConvertIntArrayToDataTable(idsToSearch);
+                    //dt_ids = utility.ToDataTable<int>(idsToSearch.ToList());
+                }
+            }
             List<CharacterAbility> _CharacterAbilityList = new List<CharacterAbility>();
             short num = 0;
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -847,6 +856,14 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsAbilityStats", searchModel.AbilityFilters.IsAbilityStats);
                     command.Parameters.AddWithValue("@IsAbilityDesc", searchModel.AbilityFilters.IsAbilityDesc);
                     command.Parameters.AddWithValue("@IsAbilityLevel", searchModel.AbilityFilters.IsAbilityLevel);
+                }
+
+                if (idsToSearch != null)
+                {
+                    if (idsToSearch.Length > 0 && dt_ids.Rows.Count>0)
+                    {
+                        command.Parameters.AddWithValue("@OldSearchIds", dt_ids);
+                    }
                 }
 
                 command.CommandType = CommandType.StoredProcedure;
@@ -906,8 +923,33 @@ namespace DAL.Services
             }
             return _CharacterAbilityList;
         }
-        public List<Ability> SearchRulesetAbilities(SearchModel searchModel)
+
+        private DataTable ConvertIntArrayToDataTable(int[] idsToSearch)
         {
+            
+            DataTable dt = new DataTable();
+            dt.Columns.Add("ID");
+            DataRow row;
+            for (int i = 0; i < idsToSearch.Length; i++)
+            {
+                row = dt.NewRow();
+                row["ID"] = idsToSearch[i];
+                dt.Rows.Add(row);
+            }
+            return dt;
+        }
+
+        public List<Ability> SearchRulesetAbilities(SearchModel searchModel, int[] idsToSearch = null)
+        {
+            DataTable dt_ids = new DataTable();
+            if (idsToSearch != null)
+            {
+                if (idsToSearch.Length > 0)
+                {
+                    dt_ids = ConvertIntArrayToDataTable(idsToSearch);
+                    //dt_ids = utility.ToDataTable<int>(idsToSearch.ToList());
+                }
+            }
             List<Ability> _abilityList = new List<Ability>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             SqlConnection connection = new SqlConnection(connectionString);
@@ -941,8 +983,14 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsAbilityDesc", searchModel.AbilityFilters.IsAbilityDesc);
                     command.Parameters.AddWithValue("@IsAbilityLevel", searchModel.AbilityFilters.IsAbilityLevel);
                 }
+                if (idsToSearch != null)
+                {
+                    if (idsToSearch.Length > 0 && dt_ids.Rows.Count > 0)
+                    {
+                        command.Parameters.AddWithValue("@OldSearchIds", dt_ids);
+                    }
+                }
 
-               
 
                 command.CommandType = CommandType.StoredProcedure;
 
@@ -987,8 +1035,17 @@ namespace DAL.Services
             }
             return _abilityList;
         }
-        public List<CharacterSpell> SearchCharacterSpells(SearchModel searchModel)
+        public List<CharacterSpell> SearchCharacterSpells(SearchModel searchModel, int[] idsToSearch = null)
         {
+            DataTable dt_ids = new DataTable();
+            if (idsToSearch != null)
+            {
+                if (idsToSearch.Length > 0)
+                {
+                    dt_ids = ConvertIntArrayToDataTable(idsToSearch);
+                    //dt_ids = utility.ToDataTable<int>(idsToSearch.ToList());
+                }
+            }
             List<CharacterSpell> _CharacterSpellList = new List<CharacterSpell>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
 
@@ -1030,7 +1087,13 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsSpellMissEffect", searchModel.SpellFilters.IsSpellMissEffect);
                 }
 
-               
+                if (idsToSearch != null)
+                {
+                    if (idsToSearch.Length > 0 && dt_ids.Rows.Count > 0)
+                    {
+                        command.Parameters.AddWithValue("@OldSearchIds", dt_ids);
+                    }
+                }
 
                 command.CommandType = CommandType.StoredProcedure;
 
@@ -1097,8 +1160,17 @@ namespace DAL.Services
 
             return _CharacterSpellList;
         }
-        public List<Spell> SearchRulesetSpells(SearchModel searchModel)
+        public List<Spell> SearchRulesetSpells(SearchModel searchModel, int[] idsToSearch = null)
         {
+            DataTable dt_ids = new DataTable();
+            if (idsToSearch != null)
+            {
+                if (idsToSearch.Length > 0)
+                {
+                    dt_ids = ConvertIntArrayToDataTable(idsToSearch);
+                    //dt_ids = utility.ToDataTable<int>(idsToSearch.ToList());
+                }
+            }
             List<Spell> SpellList = new List<Spell>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
 
@@ -1140,7 +1212,13 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsSpellHitEffect", searchModel.SpellFilters.IsSpellHitEffect);
                     command.Parameters.AddWithValue("@IsSpellMissEffect", searchModel.SpellFilters.IsSpellMissEffect);
                 }
-               
+                if (idsToSearch != null)
+                {
+                    if (idsToSearch.Length > 0 && dt_ids.Rows.Count > 0)
+                    {
+                        command.Parameters.AddWithValue("@OldSearchIds", dt_ids);
+                    }
+                }
 
                 command.CommandType = CommandType.StoredProcedure;
 
@@ -1197,8 +1275,17 @@ namespace DAL.Services
             }
             return SpellList;
         }
-        public List<Item> SearchCharacterItems(SearchModel searchModel)
+        public List<Item> SearchCharacterItems(SearchModel searchModel, int[] idsToSearch = null)
         {
+            DataTable dt_ids = new DataTable();
+            if (idsToSearch != null)
+            {
+                if (idsToSearch.Length > 0)
+                {
+                    dt_ids = ConvertIntArrayToDataTable(idsToSearch);
+                    //dt_ids = utility.ToDataTable<int>(idsToSearch.ToList());
+                }
+            }
             List<Item> _ItemList = new List<Item>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
 
@@ -1236,7 +1323,13 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsItemAbilityAssociated", searchModel.ItemFilters.IsItemAbilityAssociated);
                     command.Parameters.AddWithValue("@IsItemSpellAssociated", searchModel.ItemFilters.IsItemSpellAssociated);
                 }
-               
+                if (idsToSearch != null)
+                {
+                    if (idsToSearch.Length > 0 && dt_ids.Rows.Count > 0)
+                    {
+                        command.Parameters.AddWithValue("@OldSearchIds", dt_ids);
+                    }
+                }
 
                 command.CommandType = CommandType.StoredProcedure;
 
@@ -1298,8 +1391,17 @@ namespace DAL.Services
 
             return _ItemList;
         }
-        public List<ItemMaster> SearchRulesetItems(SearchModel searchModel)
+        public List<ItemMaster> SearchRulesetItems(SearchModel searchModel, int[] idsToSearch = null)
         {
+            DataTable dt_ids = new DataTable();
+            if (idsToSearch != null)
+            {
+                if (idsToSearch.Length > 0)
+                {
+                    dt_ids = ConvertIntArrayToDataTable(idsToSearch);
+                    //dt_ids = utility.ToDataTable<int>(idsToSearch.ToList());
+                }
+            }
             List<ItemMaster> itemlist = new List<ItemMaster>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
 
@@ -1337,8 +1439,14 @@ namespace DAL.Services
                     command.Parameters.AddWithValue("@IsItemAbilityAssociated", searchModel.ItemFilters.IsItemAbilityAssociated);
                     command.Parameters.AddWithValue("@IsItemSpellAssociated", searchModel.ItemFilters.IsItemSpellAssociated);
                 }
-              
 
+                if (idsToSearch != null)
+                {
+                    if (idsToSearch.Length > 0 && dt_ids.Rows.Count > 0)
+                    {
+                        command.Parameters.AddWithValue("@OldSearchIds", dt_ids);
+                    }
+                }
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;
@@ -1635,7 +1743,12 @@ namespace DAL.Services
                     name = item.Name,
                     RecordType = SP_SearchType.RulesetAbilities,
                     RulesetAbility = item
-                }; results.Add(obj);
+                };
+                if (!characterAbilities.Any(x=>x.AbilityId== item.AbilityId &&  x.Ability.Name== item.Name))
+                {
+                    results.Add(obj);
+                }
+                
             }
             foreach (var item in characterSpells)
             {
@@ -1657,7 +1770,11 @@ namespace DAL.Services
                     name = item.Name,
                     RecordType = SP_SearchType.RulesetSpells,
                     RulesetSpell = item
-                }; results.Add(obj);
+                };
+                if (!characterSpells.Any(x => x.SpellId == item.SpellId && x.Spell.Name == item.Name))
+                {
+                    results.Add(obj);
+                }
             }
             foreach (var item in items)
             {
@@ -1679,7 +1796,11 @@ namespace DAL.Services
                     name = item.ItemName,
                     RecordType = SP_SearchType.RulesetItems,
                     RulesetItem = item
-                }; results.Add(obj);
+                };
+                if (!items.Any(x => x.ItemMasterId == item.ItemMasterId && x.Name == item.ItemName))
+                {
+                    results.Add(obj);
+                }
             }
 
 

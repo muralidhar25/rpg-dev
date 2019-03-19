@@ -266,8 +266,8 @@ export class AbilityDetailsComponent implements OnInit {
         }, 200);
     }
     RedirectBack() {
-      this.router.navigate(['/ruleset/ability', this.ruleSetId]);
-       // window.history.back();
+      //this.router.navigate(['/ruleset/ability', this.ruleSetId]);
+        window.history.back();
     }
     Redirect(path) {
         this.router.navigate([path, this.ruleSetId]);

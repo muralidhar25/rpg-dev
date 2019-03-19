@@ -41,12 +41,13 @@ namespace DAL.Services
         void removeDiceTray(int rulesetID);
         List<RuleSet> GetRuleSetToCreateCharacterByUserId(string UserId, int page, int pageSize);
         string GetUserImageFromRulesetID(int ruleSetId);
-        List<CharacterAbility> SearchCharacterAbilities(SearchModel searchModel);
-        List<Ability> SearchRulesetAbilities(SearchModel searchModel);
-        List<CharacterSpell> SearchCharacterSpells(SearchModel searchModel);
-        List<Spell> SearchRulesetSpells(SearchModel searchModel);
-        List<Item> SearchCharacterItems(SearchModel searchModel);
-        List<ItemMaster> SearchRulesetItems(SearchModel searchModel);
+        List<CharacterAbility> SearchCharacterAbilities(SearchModel searchModel, int [] idsToSearch=null);
+        List<Ability> SearchRulesetAbilities(SearchModel searchModel, int[] idsToSearch = null);
+        List<CharacterSpell> SearchCharacterSpells(SearchModel searchModel, int[] idsToSearch = null);
+        List<Spell> SearchRulesetSpells(SearchModel searchModel, int[] idsToSearch = null);
+        List<Item> SearchCharacterItems(SearchModel searchModel, int[] idsToSearch = null);
+        List<ItemMaster> SearchRulesetItems(SearchModel searchModel, int[] idsToSearch = null);
+
         void SaveLastSearchFilters(SearchModel searchModel);
         List<SearchEverything> bindEveryThingModel(List<CharacterAbility> characterAbilities, List<Ability> abilities, List<CharacterSpell> characterSpells, List<Spell> spells, List<Item> items, List<ItemMaster> itemMasters);
         List<SearchEverything> SearchEveryThing(SearchModel searchModel);

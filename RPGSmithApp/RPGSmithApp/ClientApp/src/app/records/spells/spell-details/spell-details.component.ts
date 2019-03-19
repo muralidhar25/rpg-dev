@@ -253,8 +253,8 @@ export class SpellDetailsComponent implements OnInit {
     }
   RedirectBack() {
     
-    this.router.navigate(['/ruleset/spell', this.ruleSetId]);
-       // window.history.back();
+   // this.router.navigate(['/ruleset/spell', this.ruleSetId]);
+        window.history.back();
     }
     Redirect(path) {
         this.router.navigate([path, this.ruleSetId]);

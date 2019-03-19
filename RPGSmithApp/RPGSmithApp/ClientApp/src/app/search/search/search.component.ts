@@ -51,6 +51,9 @@ export class SearchComponent implements OnInit {
 
     this.route.params.subscribe(params => {
       this.searchModal.searchString = params['searchText'];
+      if (this.searchModal.searchString) {
+        this.searchModal.searchString = decodeURIComponent(this.searchModal.searchString)
+      }
     });
   }
 

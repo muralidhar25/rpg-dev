@@ -240,8 +240,8 @@ export class ItemDetailsComponent implements OnInit {
     }
 
   RedirectBack() {
-    this.router.navigate(['/ruleset/item-master', this.ruleSetId]);
-       // window.history.back();
+   // this.router.navigate(['/ruleset/item-master', this.ruleSetId]);
+        window.history.back();
     }
     Redirect(path) {
         this.router.navigate([path, this.ruleSetId]);

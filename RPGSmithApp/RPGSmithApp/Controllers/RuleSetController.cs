@@ -1604,6 +1604,7 @@ namespace RPGSmithApp.Controllers
             var results = new int[] { };
             try
             {
+                searchModel.SearchString = addSingleQuoteforSPIfNeeded(searchModel.SearchString);
                 _ruleSetService.SaveLastSearchFilters(searchModel);
                 string searchText = searchModel.SearchString;
                 
@@ -1629,43 +1630,96 @@ namespace RPGSmithApp.Controllers
                 List<ItemMaster> itemMasters = new List<ItemMaster>();
                 List<Spell> spells = new List<Spell>();
                 List<Ability> abilities = new List<Ability>();
+                bool skipGettingRecords = false;
+                bool FlagIsInitailItemOfList = true;
                 foreach (string item in searchText.Split(' '))
                 {
                     if (!string.IsNullOrEmpty(item))
                     {
                         searchModel.SearchString = item;
+
+                        int[] idsToSearch = new int[] { };
                         switch (searchModel.SearchType)
                         {
                             case SP_SearchType.CharacterAbilities:
-                                characterAbilities.AddRange(_ruleSetService.SearchCharacterAbilities(searchModel));
+                                if (characterAbilities.Select(x => x.CharacterAbilityId).ToArray().Length==0 && !FlagIsInitailItemOfList)
+                                {
+                                    skipGettingRecords = true;
+                                }
+                                if (!skipGettingRecords)
+                                {
+                                    characterAbilities = (_ruleSetService.SearchCharacterAbilities(searchModel, characterAbilities.Select(x => x.CharacterAbilityId).ToArray()));
+
+                                }
                                 break;
                             case SP_SearchType.CharacterSpells:
-                                characterSpells.AddRange(_ruleSetService.SearchCharacterSpells(searchModel));
+                                if (characterSpells.Select(x => x.CharacterSpellId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                {
+                                    skipGettingRecords = true;
+                                }
+                                if (!skipGettingRecords)
+                                {
+                                    characterSpells = (_ruleSetService.SearchCharacterSpells(searchModel, characterSpells.Select(x => x.CharacterSpellId).ToArray()));
+
+                                }
                                 break;
                             case SP_SearchType.CharacterItems:
-                                items.AddRange(_ruleSetService.SearchCharacterItems(searchModel));
+                                if (items.Select(x => x.ItemId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                {
+                                    skipGettingRecords = true;
+                                }
+                                if (!skipGettingRecords)
+                                {
+                                    items = (_ruleSetService.SearchCharacterItems(searchModel, items.Select(x => x.ItemId).ToArray()));
+
+                                }
                                 break;
                             case SP_SearchType.RulesetItems:
-                                itemMasters.AddRange(_ruleSetService.SearchRulesetItems(searchModel));
+                                if (itemMasters.Select(x => x.ItemMasterId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                {
+                                    skipGettingRecords = true;
+                                }
+                                if (!skipGettingRecords)
+                                {
+                                    itemMasters = (_ruleSetService.SearchRulesetItems(searchModel, itemMasters.Select(x => x.ItemMasterId).ToArray()));
+
+                                }
                                 break;
                             case SP_SearchType.RulesetSpells:
-                                spells.AddRange(_ruleSetService.SearchRulesetSpells(searchModel));
+                                if (spells.Select(x => x.SpellId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                {
+                                    skipGettingRecords = true;
+                                }
+                                if (!skipGettingRecords)
+                                {
+                                    spells = (_ruleSetService.SearchRulesetSpells(searchModel, spells.Select(x => x.SpellId).ToArray()));
+
+                                }
                                 break;
                             case SP_SearchType.RulesetAbilities:
-                                abilities.AddRange(_ruleSetService.SearchRulesetAbilities(searchModel));
+                                if (abilities.Select(x => x.AbilityId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                {
+                                    skipGettingRecords = true;
+                                }
+                                if (!skipGettingRecords)
+                                {
+                                    abilities = (_ruleSetService.SearchRulesetAbilities(searchModel, abilities.Select(x => x.AbilityId).ToArray()));
+
+                                }
                                 break;
                             case SP_SearchType.Everything:
-                                characterAbilities.AddRange(_ruleSetService.SearchCharacterAbilities(searchModel));
-                                characterSpells.AddRange(_ruleSetService.SearchCharacterSpells(searchModel));
-                                items.AddRange(_ruleSetService.SearchCharacterItems(searchModel));
-                                itemMasters.AddRange(_ruleSetService.SearchRulesetItems(searchModel));
-                                spells.AddRange(_ruleSetService.SearchRulesetSpells(searchModel));
-                                abilities.AddRange(_ruleSetService.SearchRulesetAbilities(searchModel));
+                                characterAbilities=(_ruleSetService.SearchCharacterAbilities(searchModel, characterAbilities.Select(x => x.CharacterAbilityId).ToArray()));
+                                characterSpells=(_ruleSetService.SearchCharacterSpells(searchModel, characterSpells.Select(x => x.CharacterSpellId).ToArray()));
+                                items=(_ruleSetService.SearchCharacterItems(searchModel, items.Select(x => x.ItemId).ToArray()));
+                                itemMasters=(_ruleSetService.SearchRulesetItems(searchModel, itemMasters.Select(x => x.ItemMasterId).ToArray()));
+                                spells=(_ruleSetService.SearchRulesetSpells(searchModel, spells.Select(x => x.SpellId).ToArray()));
+                                abilities=(_ruleSetService.SearchRulesetAbilities(searchModel, abilities.Select(x => x.AbilityId).ToArray()));
                                 break;
                             default:
                                 break;
                         }
                     }
+                    FlagIsInitailItemOfList = false;
                 }
                 switch (searchModel.SearchType)
                 {
@@ -1702,6 +1756,15 @@ namespace RPGSmithApp.Controllers
             catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
+        }
+
+        private string addSingleQuoteforSPIfNeeded(string searchString)
+        {
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                return searchString.Replace("'", "''");
+            }
+            return searchString;
         }
 
         private IActionResult GetSingleSearchResult(SearchModel searchModel)

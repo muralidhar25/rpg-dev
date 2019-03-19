@@ -268,6 +268,7 @@ namespace RPGSmithApp.Controllers
                                     BodyTextColor = linkTile.BodyTextColor,
                                     TitleBgColor = linkTile.TitleBgColor,
                                     TitleTextColor = linkTile.TitleTextColor,
+                                    DisplayLinkImage= linkTile.DisplayLinkImage,
                                     IsDeleted = false
                                 });
                                 //SaveColorsAsync(Tile);
@@ -292,6 +293,7 @@ namespace RPGSmithApp.Controllers
                                     TitleBgColor = executeTile.TitleBgColor,
                                     TitleTextColor = executeTile.TitleTextColor,
                                     CommandId = executeTile.CommandId,
+                                    DisplayLinkImage = executeTile.DisplayLinkImage,
                                     IsDeleted = false
                                 });
                                 //SaveColorsAsync(Tile);
