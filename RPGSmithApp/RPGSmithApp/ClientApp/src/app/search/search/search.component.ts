@@ -290,7 +290,6 @@ export class SearchComponent implements OnInit {
             } else if (this.searchModal.searchType == SearchType.CHARACTERSPELLS) {
               this.searchModal.searchHeadingText = 'Spells';
               this.searchList = data.map(x => {
-                
                 return {
                   searchimage: x.spell.imageUrl,
                   name: x.spell.name,
@@ -405,19 +404,19 @@ export class SearchComponent implements OnInit {
           this.router.navigate(['/character/inventory-details', input.recordId]);
         }
         else if (input.searchType == SearchType.RULESETITEMS) {
-          this.router.navigate(['/ruleset/item-details', input.recordId]);
+          this.router.navigate(['/character/ruleset/item-details', input.recordId]);
         }
         else if (input.searchType == SearchType.CHARACTERSPELLS) {
           this.router.navigate(['/character/spell-details', input.recordId]);
         }
         else if (input.searchType == SearchType.RULESETSPELLS) {
-          this.router.navigate(['/ruleset/spell-details', input.recordId]);
+          this.router.navigate(['/character/ruleset/spell-details', input.recordId]);
         }
         else if (input.searchType == SearchType.CHARACTERABILITIES) {
           this.router.navigate(['/character/ability-details', input.recordId]);
         }
         else if (input.searchType == SearchType.RULESETABILITIES) {
-          this.router.navigate(['/ruleset/ability-details', input.recordId]);
+          this.router.navigate(['/character/ruleset/ability-details', input.recordId]);
         }
     } else {
       if (this.searchModal.searchType == SearchType.CHARACTERITEMS) {
