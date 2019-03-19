@@ -46,6 +46,7 @@ namespace DAL.Services.CharacterTileServices
 
             extile.CommandId = item.CommandId;
             extile.ShowTitle = item.ShowTitle;
+            extile.DisplayLinkImage = item.DisplayLinkImage;
             extile.LinkType = item.LinkType;
             extile.AbilityId = item.AbilityId;
             extile.SpellId = item.SpellId;

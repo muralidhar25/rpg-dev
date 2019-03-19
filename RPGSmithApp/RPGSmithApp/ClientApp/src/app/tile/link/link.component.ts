@@ -35,7 +35,7 @@ export class LinkTileComponent implements OnInit {
     limitTextAbility: string = "Show more";
     showMoreLessColorText: string = "Advanced";
     color: any;
-
+    
     colorModel: Color = new Color();
     view: any;
     showDemo: boolean = false;
@@ -76,8 +76,8 @@ export class LinkTileComponent implements OnInit {
     query: string = '';
     pageDefaultData = new CharacterDashboardPage();
     VIEW = VIEW;
-
-    
+    displayboth: boolean = false;
+  displayLinkImage: boolean = true;
 
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
@@ -88,7 +88,8 @@ export class LinkTileComponent implements OnInit {
      }
 
     ngOnInit() {
-        setTimeout(() => {
+      setTimeout(() => {
+      
             this.characterId = this.bsModalRef.content.characterId;
             this.title = this.bsModalRef.content.title;
             this.pageId = this.bsModalRef.content.pageId;
@@ -96,13 +97,16 @@ export class LinkTileComponent implements OnInit {
             let view = this.bsModalRef.content.view;
             this.pageDefaultData = this.bsModalRef.content.pageDefaultData;
             this.ruleSet = this.bsModalRef.content.ruleSet;
-            
             this.characterTileModel = this.linkTileService.linkTileModelData(model, this.characterId, this.pageId, view, this.pageDefaultData);
             this.linkTileFormModal = Object.assign({}, this.characterTileModel.linkTile);
             this.linkTileFormModal.color = this.characterTileModel.color;
             this.linkTileFormModal.shape = this.characterTileModel.shape;           
             this._linkType = this.ruleSet.isItemEnabled ? "Item" : this.ruleSet.isSpellEnabled ? "Spell" : "Ability";            
             this.showTitle = this.linkTileFormModal.showTitle;
+            this.displayLinkImage = this.linkTileFormModal.displayLinkImage;
+            if (this.showTitle && this.displayLinkImage ) {
+              this.displayboth   = true;
+            }
             this.shapeClass = this.linkTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.linkTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE); 
             
             this.initialize(this.linkTileFormModal);
@@ -241,13 +245,35 @@ export class LinkTileComponent implements OnInit {
         }
     }
 
-    setShowTitle(_showTitle: boolean) {
-        this.showTitle = _showTitle;
-        this.linkTileFormModal.showTitle = _showTitle;
-    }
+    //setShowTitle(_showTitle: boolean) {
+    //    this.showTitle = _showTitle;
+    //    this.linkTileFormModal.showTitle = _showTitle;
+    //}
+
+  setShowTitle(_showTitle: boolean) {
+    this.displayboth = false;
+    this.showTitle = _showTitle;
+    this.displayLinkImage = false;
+   this.linkTileFormModal.displayLinkImage = this.displayLinkImage;
+    this.linkTileFormModal.showTitle = _showTitle;
+  }
+  setbothDisplayLinkImage(displayboth: boolean) {
+    this.displayboth = true;
+    this.showTitle = displayboth;
+    this.displayLinkImage = displayboth;
+    this.linkTileFormModal.showTitle = displayboth;
+    this.linkTileFormModal.displayLinkImage = displayboth;
+   }
+  setDisplayLinkImage(_displayLinkImage: boolean) {
+    this.displayboth = false;
+    this.showTitle = false;
+    this.displayLinkImage = _displayLinkImage;
+    this.linkTileFormModal.showTitle = false;
+    this.linkTileFormModal.displayLinkImage = _displayLinkImage;
+  }
 
     showMoreCommands(fieldName: any, _limit: number, _limitText: string) {
-        //console.log(fieldName);
+       
         if (fieldName == 'spell') {
             if (_limitText == "Show more") {
                 this.limitTextSpell = "Show less";
@@ -614,19 +640,19 @@ export class LinkTileComponent implements OnInit {
             this.alertService.showMessage("", "Link Type property is not selected.", MessageSeverity.error);
         }
         else {
-
+         
             this.linkTileFormModal.color = this.tileColor ? this.tileColor : '#343038';
             this.characterTileModel.color = this.linkTileFormModal.color;
             this.characterTileModel.shape = this.linkTileFormModal.shape;
             this.characterTileModel.linkTile = this.linkTileFormModal;
             //this.setDefaultColors(this.linkTileFormModal.color);
             this.linkTileFormModal.showTitle = this.showTitle;
+          this.linkTileFormModal.displayLinkImage = this.displayLinkImage;
 
             this.isLoading = true;
             let _msg = this.linkTileFormModal.linkTileId == 0 || this.linkTileFormModal.linkTileId === undefined
                 ? "Creating Link Tile..." : "Updating Link Tile...";
-
-            this.alertService.startLoadingMessage("", _msg);
+       this.alertService.startLoadingMessage("", _msg);
             this.addEditLinkTile(this.characterTileModel);
         }
     }
@@ -638,11 +664,11 @@ export class LinkTileComponent implements OnInit {
         modal.spellIDS = this.linkTileFormModal.multiSpellIds;
         modal.abilityIDS = this.linkTileFormModal.multiAbilityIds
         modal.itemIDS = this.linkTileFormModal.multiItemIds
-        
+      
         this.linkTileService.createlinkTile(modal)
             .subscribe(
                 data => {
-                   // console.log(data);
+                  
                     this.isLoading = false;
                     this.alertService.stopLoadingMessage();
 

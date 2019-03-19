@@ -16,6 +16,7 @@ export class LinkTile {
         shape?: number,
         sortOrder?: number,
         showTitle?: boolean,
+        displayLinkImage?: boolean,
         view?: VIEW,
         multiSpellIds?: number[],
         multiAbilityIds?: number[],
@@ -28,6 +29,7 @@ export class LinkTile {
         this.abilityId = abilityId;
         this.itemId = itemId;
         this.showTitle = showTitle;
+       this.displayLinkImage = displayLinkImage;
         this.color = color;
         this.bgColor = bgColor;
         this.titleTextColor = titleTextColor;
@@ -50,6 +52,7 @@ export class LinkTile {
     public abilityId: number;
     public itemId: number;
     public showTitle: boolean;
+  public displayLinkImage: boolean;
     public color: string;
     public bgColor: string;
     public titleTextColor: string;

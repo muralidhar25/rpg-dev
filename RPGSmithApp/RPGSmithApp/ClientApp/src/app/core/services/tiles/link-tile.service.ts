@@ -99,6 +99,7 @@ export class LinkTileService extends EndpointFactory {
           abilityId: 0,
           itemId: 0,
           showTitle: true,
+          displayLinkImage: true,
           color: model.color ? model.color : '',
           bgColor: model.bgColor ? model.bgColor : '',
           shape: 0,

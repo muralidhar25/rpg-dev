@@ -99,6 +99,7 @@ export class ExecuteTileService extends EndpointFactory {
           itemId: 0,
           commandId: 0,
           showTitle: true,
+          displayLinkImage: true,
           color: model.color ? model.color : '',
           bgColor: model.bgColor ? model.bgColor : '',
           shape: 0,

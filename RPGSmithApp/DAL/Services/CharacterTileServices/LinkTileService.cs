@@ -39,6 +39,7 @@ namespace DAL.Services.CharacterTileServices
                 return linktile;
 
             linktile.ShowTitle = item.ShowTitle;
+            linktile.DisplayLinkImage = item.DisplayLinkImage;
             linktile.LinkType = item.LinkType;
             linktile.AbilityId = item.AbilityId ;
             linktile.SpellId = item.SpellId;

@@ -129,22 +129,46 @@
           <div class="form-row">
             <div class="col-12">
               <fieldset class="form-group input-switch input-switch-dual">
-                <legend>Show Title</legend>
+                <legend>Display link Image or Title</legend>
                 <ul class="input-switch-items">
                   <li class="form-check">
                     <label class="form-check-label">
-                      <input class="form-check-input" type="radio" name="show" [checked]="showTitle" (change)="setShowTitle(true)" [value]="showTitle">
-                      <span>Yes</span>
+                      <input class="form-check-input" type="radio" name="displayLinkImage" [checked]="!displayboth && !displayLinkImage" (change)="setShowTitle(true)" [value]="!displayboth && !displayLinkImage">
+                      <span>Title Only</span>
                     </label>
                   </li>
                   <li class="form-check">
                     <label class="form-check-label">
-                      <input class="form-check-input" type="radio" name="show" [checked]="!showTitle" (change)="setShowTitle(false)" [value]="!showTitle">
-                      <span>No</span>
+                      <input class="form-check-input" type="radio" name="displayLinkImage" [checked]="displayboth" (change)="setbothDisplayLinkImage(true)" [value]="displayboth">
+                      <span>Both Title and Image</span>
+                    </label>
+                  </li>
+
+                  <li class="form-check">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="displayLinkImage" [checked]="!displayboth && displayLinkImage" (change)="setDisplayLinkImage(true)" [value]="!displayboth && displayLinkImage">
+                      <span>Image Only </span>
                     </label>
                   </li>
                 </ul>
               </fieldset>
+              <!--<fieldset class="form-group input-switch input-switch-dual">
+            <legend>Show Title</legend>
+            <ul class="input-switch-items">
+              <li class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="show" [checked]="showTitle" (change)="setShowTitle(true)" [value]="showTitle">
+                  <span>Yes</span>
+                </label>
+              </li>
+              <li class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="show" [checked]="!showTitle" (change)="setShowTitle(false)" [value]="!showTitle">
+                  <span>No</span>
+                </label>
+              </li>
+            </ul>
+          </fieldset>-->
               <!-- End of link show title switch -->
             </div>
           </div>

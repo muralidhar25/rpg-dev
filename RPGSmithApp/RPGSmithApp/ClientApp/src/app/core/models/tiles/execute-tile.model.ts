@@ -17,7 +17,8 @@ export class ExecuteTile {
         shape?: number,
         sortOrder?: number,
         commandId?: number,
-        showTitle?: boolean,
+      showTitle?: boolean,
+      displayLinkImage?: boolean,
         view?: VIEW,
         multiSpellIds?: number[],
         multiAbilityIds?: number[],
@@ -29,7 +30,8 @@ export class ExecuteTile {
         this.spellId = spellId;
         this.abilityId = abilityId;
         this.itemId = itemId;
-        this.showTitle = showTitle;
+      this.showTitle = showTitle;
+      this.displayLinkImage = displayLinkImage;
         this.commandId = commandId;
         this.color = color;
         this.bgColor = bgColor;
@@ -59,8 +61,8 @@ export class ExecuteTile {
     public titleTextColor: string;
     public titleBgColor: string;
     public bodyTextColor: string;
-    public bodyBgColor: string;
-
+  public bodyBgColor: string;
+  public displayLinkImage: boolean;
     public shape: number;
     public sortOrder: number;
     public view: VIEW;

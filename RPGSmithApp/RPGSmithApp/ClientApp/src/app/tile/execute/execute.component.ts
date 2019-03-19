@@ -76,6 +76,8 @@ export class ExecuteTileComponent implements OnInit {
     tile: number;
     selectedStatType: number = 0;
     selectedIndex: number;
+    displayboth: boolean = false;
+    displayLinkImage: boolean = true;
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private colorService: ColorService,
         public localStorage: LocalStoreManager, private authService: AuthService, private sharedService: SharedService,
@@ -103,8 +105,12 @@ export class ExecuteTileComponent implements OnInit {
 
             //this.setPropertyType(this.executeTileFormModal.spellId ? 'spell' : this.executeTileFormModal.abilityId ? 'ability' : this.executeTileFormModal.itemId ? 'item' : 'spell');
 
-            this.showTitle = this.executeTileFormModal.showTitle;
-            this.shapeClass = this.executeTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.executeTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
+          this.showTitle = this.executeTileFormModal.showTitle;
+          this.displayLinkImage = this.executeTileFormModal.displayLinkImage;
+          if (this.showTitle  && this.displayLinkImage) {
+             this.displayboth = true;
+          }
+          this.shapeClass = this.executeTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.executeTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
 
             this.initialize(this.executeTileFormModal);
         }, 0);
@@ -239,10 +245,28 @@ export class ExecuteTileComponent implements OnInit {
         }
     }
 
-    setShowTitle(_showTitle: boolean) {
-        this.showTitle = _showTitle;
-        this.executeTileFormModal.showTitle = _showTitle;
-    }
+   
+  setShowTitle(_showTitle: boolean) {
+    this.displayboth = false;
+    this.showTitle = _showTitle;
+    this.displayLinkImage = false;
+    this.executeTileFormModal.displayLinkImage = this.displayLinkImage;
+    this.executeTileFormModal.showTitle = _showTitle;
+   }
+  setbothDisplayLinkImage(displayboth: boolean) {
+    this.displayboth = true;
+    this.showTitle = displayboth;
+    this.displayLinkImage = displayboth;
+    this.executeTileFormModal.showTitle = displayboth;
+    this.executeTileFormModal.displayLinkImage = displayboth;
+   }
+  setDisplayLinkImage(_displayLinkImage: boolean) {
+    this.displayboth = false;
+    this.showTitle = false;
+    this.displayLinkImage = _displayLinkImage;
+    this.executeTileFormModal.showTitle = false;
+    this.executeTileFormModal.displayLinkImage = _displayLinkImage;
+  }
 
     showMoreCommands(fieldName: any, _limit: number, _limitText: string) {
         //console.log(fieldName);
@@ -624,7 +648,7 @@ export class ExecuteTileComponent implements OnInit {
             this.characterTileModel.executeTile = this.executeTileFormModal;
             //this.setDefaultColors(this.executeTileFormModal.color);
             this.executeTileFormModal.showTitle = this.showTitle;
-
+            this.executeTileFormModal.displayLinkImage = this.displayLinkImage;
             this.isLoading = true;
             let _msg = this.executeTileFormModal.executeTileId == 0 || this.executeTileFormModal.executeTileId === undefined ? "Creating Execute Tile..." : "Updating Execute Tile...";
 
