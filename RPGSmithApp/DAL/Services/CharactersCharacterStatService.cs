@@ -314,15 +314,18 @@ namespace DAL.Services
         }
         public List<CharactersCharacterStat> GetNumericStatsByCharacterId(int characterId, int page, int pageSize)
         {
-            List<CharactersCharacterStat> CharactersCharacterStats = _context.CharactersCharacterStats
-                .Include(d => d.Character)
-                .Include(d => d.CharacterStat.CharacterStatType)
-                .Include(d => d.CharacterStat.CharacterStatCalcs)
-                .Where(x => x.CharacterId == characterId && (x.CharacterStat.CharacterStatType.StatTypeName == "Combo" || x.CharacterStat.CharacterStatType.StatTypeName == "Calculation" || x.CharacterStat.CharacterStatType.StatTypeName == "Value & Sub-Value" || x.CharacterStat.CharacterStatType.StatTypeName == "Current & Max" || x.CharacterStat.CharacterStatType.StatTypeName == "Number" || x.CharacterStat.CharacterStatType.StatTypeName == "Command") && x.IsDeleted != true)
-                .OrderBy(x => x.CharacterStat.SortOrder).ToList();
+            //List<CharactersCharacterStat> CharactersCharacterStats = _context.CharactersCharacterStats
+            //    .Include(d => d.Character)
+            //    .Include(d => d.CharacterStat.CharacterStatType)
+            //    .Include(d => d.CharacterStat.CharacterStatCalcs)
+            //    .Where(x => x.CharacterId == characterId && (x.CharacterStat.CharacterStatType.StatTypeName == "Combo" || x.CharacterStat.CharacterStatType.StatTypeName == "Calculation" || x.CharacterStat.CharacterStatType.StatTypeName == "Value & Sub-Value" || x.CharacterStat.CharacterStatType.StatTypeName == "Current & Max" || x.CharacterStat.CharacterStatType.StatTypeName == "Number" || x.CharacterStat.CharacterStatType.StatTypeName == "Command") && x.IsDeleted != true)
+            //    .OrderBy(x => x.CharacterStat.SortOrder).ToList();
 
-            if (page > 0 && pageSize > 0)
-                CharactersCharacterStats = CharactersCharacterStats.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
+            //if (page > 0 && pageSize > 0)
+            //    CharactersCharacterStats = CharactersCharacterStats.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
+
+            List<CharactersCharacterStat> CharactersCharacterStats = GetByCharacterId_sp(characterId, page, pageSize)
+                .Where(x =>(x.CharacterStat.CharacterStatType.StatTypeName == "Combo" || x.CharacterStat.CharacterStatType.StatTypeName == "Calculation" || x.CharacterStat.CharacterStatType.StatTypeName == "Value & Sub-Value" || x.CharacterStat.CharacterStatType.StatTypeName == "Current & Max" || x.CharacterStat.CharacterStatType.StatTypeName == "Number" || x.CharacterStat.CharacterStatType.StatTypeName == "Command") && x.IsDeleted != true).ToList();
 
 
             return CharactersCharacterStats;
@@ -335,14 +338,20 @@ namespace DAL.Services
             if (_ruleset != null)
                 parentRulesetId = _ruleset.ParentRuleSetId == null ? parentRulesetId : _ruleset.ParentRuleSetId ?? 0;
 
-            List<CharacterStat> CharacterStats = _context.CharacterStats
-                .Include(d => d.CharacterStatType)
-                .Include(d => d.CharacterStatCalcs)
-                .Where(x => (x.RuleSetId == rulesetId || x.RuleSetId == parentRulesetId) && (x.CharacterStatType.StatTypeName == "Calculation" || x.CharacterStatType.StatTypeName == "Value & Sub-Value" || x.CharacterStatType.StatTypeName == "Current & Max" || x.CharacterStatType.StatTypeName == "Number") && x.IsDeleted != true)
-                .OrderBy(x => x.SortOrder).ToList();
+            //List<CharacterStat> CharacterStats = _context.CharacterStats
+            //    .Include(d => d.CharacterStatType)
+            //    .Include(d => d.CharacterStatCalcs)
+            //    .Where(x => (x.RuleSetId == rulesetId || x.RuleSetId == parentRulesetId) && (x.CharacterStatType.StatTypeName == "Calculation" || x.CharacterStatType.StatTypeName == "Value & Sub-Value" || x.CharacterStatType.StatTypeName == "Current & Max" || x.CharacterStatType.StatTypeName == "Number") && x.IsDeleted != true)
+            //    .OrderBy(x => x.SortOrder).ToList();
 
-            if (page > 0 && pageSize > 0)
-                CharacterStats = CharacterStats.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
+            //      if (page > 0 && pageSize > 0)
+            //    CharacterStats = CharacterStats.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
+
+            List<CharacterStat> CharacterStats = GetByRulesetId_sp(rulesetId, parentRulesetId, page, pageSize)
+                .Where(x => (x.CharacterStatType.StatTypeName == "Calculation" || x.CharacterStatType.StatTypeName == "Value & Sub-Value" || x.CharacterStatType.StatTypeName == "Current & Max" || x.CharacterStatType.StatTypeName == "Number") && x.IsDeleted != true)
+                .ToList();
+
+            
 
 
             return CharacterStats;
@@ -673,6 +682,123 @@ namespace DAL.Services
             }
             //////////////////////////////////////////////////////////////////////////////////////////////////////
             return CharactersCharacterStatsList;
+        }
+        public List<CharacterStat> GetByRulesetId_sp(int RulesetID, int ParentRulesetID, int page = 1, int pageSize = 10)
+        {
+            List<CharacterStat> CharacterStatsList = new List<CharacterStat>();
+
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            //string qry = "EXEC Character_GetTilesByPageID @CharacterID = '" + characterId + "' ,@PageID='" + pageId + "'";
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("CharStatReferenced_GetByRulesetID", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@RulesetID", RulesetID);
+                command.Parameters.AddWithValue("@ParentRulesetID", ParentRulesetID);
+                command.Parameters.AddWithValue("@page", page);
+                command.Parameters.AddWithValue("@size", pageSize);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            if (ds.Tables[1].Rows.Count > 0)
+            {
+                foreach (DataRow CharStat_Row in ds.Tables[1].Rows)
+                {
+                    
+                    int? nullInt = null;
+                    CharacterStat CharStat = null;
+                    short num = 0;
+                    int characterstatID = CharStat_Row["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CharStat_Row["CharacterStatId"]);
+                   
+                        CharStat = new CharacterStat()
+                        {
+                            CharacterStatId = characterstatID,
+                            RuleSetId = CharStat_Row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(CharStat_Row["RuleSetId"]),
+                            StatName = CharStat_Row["StatName"] == DBNull.Value ? null : CharStat_Row["StatName"].ToString(),
+                            StatDesc = CharStat_Row["StatDesc"] == DBNull.Value ? null : CharStat_Row["StatDesc"].ToString(),
+                            isActive = CharStat_Row["isActive"] == DBNull.Value ? false : Convert.ToBoolean(CharStat_Row["isActive"]),
+                            CharacterStatTypeId = CharStat_Row["CharacterStatTypeId"] == DBNull.Value ? num : (short)(CharStat_Row["CharacterStatTypeId"]),
+                            isMultiSelect = CharStat_Row["isMultiSelect"] == DBNull.Value ? false : Convert.ToBoolean(CharStat_Row["isMultiSelect"]),
+                            ParentCharacterStatId = CharStat_Row["ParentCharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CharStat_Row["ParentCharacterStatId"]),
+                            SortOrder = CharStat_Row["SortOrder"] == DBNull.Value ? num : (short)(CharStat_Row["SortOrder"]),
+                            IsDeleted = CharStat_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CharStat_Row["IsDeleted"]),
+                            CreatedBy = CharStat_Row["CreatedBy"] == DBNull.Value ? null : CharStat_Row["CreatedBy"].ToString(),
+                            CreatedDate = CharStat_Row["CreatedDate"] == DBNull.Value ? new DateTime() : Convert.ToDateTime(CharStat_Row["CreatedDate"]),
+                            OwnerId = CharStat_Row["OwnerId"] == DBNull.Value ? null : CharStat_Row["OwnerId"].ToString(),
+                        };
+
+                        List<CharacterStatCalc> calcs = new List<CharacterStatCalc>();
+                        if (ds.Tables[3].Rows.Count > 0)
+                        {
+                            foreach (DataRow r in ds.Tables[3].Rows)
+                            {
+                                int calcCharacterStat = r["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatId"]);
+                                if (characterstatID == calcCharacterStat)
+                                {
+                                    CharacterStatCalc cal = new CharacterStatCalc();
+                                    cal.CharacterStatCalcId = r["CharacterStatCalcId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatCalcId"]);
+                                    cal.StatCalculation = r["StatCalculation"] == DBNull.Value ? null : r["StatCalculation"].ToString();
+                                    cal.CharacterStatId = r["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatId"]);
+                                    cal.IsDeleted = r["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(r["IsDeleted"]);
+                                    cal.StatCalculationIds = r["StatCalculationIds"] == DBNull.Value ? null : r["StatCalculationIds"].ToString();
+                                    calcs.Add(cal);
+                                }
+                            }
+                        }
+                        CharStat.CharacterStatCalcs = calcs;
+
+                        CharacterStatType statType = new CharacterStatType();
+                        if (ds.Tables[2].Rows.Count > 0)
+                        {
+                            foreach (DataRow r in ds.Tables[2].Rows)
+                            {
+                                short CharacterStatTypeID = r["CharacterStatTypeId"] == DBNull.Value ? num : (short)(r["CharacterStatTypeId"]);
+                                if (CharacterStatTypeID == CharStat.CharacterStatTypeId)
+                                {
+                                    statType = new CharacterStatType();
+                                    statType.CharacterStatTypeId = CharacterStatTypeID;
+                                    statType.StatTypeName = r["StatTypeName"] == DBNull.Value ? null : r["StatTypeName"].ToString();
+                                    statType.StatTypeDesc = r["StatTypeDesc"] == DBNull.Value ? null : r["StatTypeDesc"].ToString();
+                                    statType.isNumeric = r["isNumeric"] == DBNull.Value ? false : Convert.ToBoolean(r["isNumeric"]);
+                                    statType.TypeId = r["TypeId"] == DBNull.Value ? num : (short)(r["TypeId"]);
+                                }
+                            }
+                        }
+                        CharStat.CharacterStatType = statType;
+
+
+
+                    CharStat.RuleSet = new RuleSet();
+
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        CharStat.RuleSet = _repo.GetRuleset(ds.Tables[0], num);                      
+                    }
+                    CharacterStatsList.Add(CharStat);
+                }
+            }
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            return CharacterStatsList;
         }
     }
 }
