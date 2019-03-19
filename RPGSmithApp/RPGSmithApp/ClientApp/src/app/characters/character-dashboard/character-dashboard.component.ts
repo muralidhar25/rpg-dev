@@ -226,6 +226,7 @@ export class CharacterDashboardComponent implements OnInit {
             //if (!isLayoutSelected) {
             this.characterlayouts.map((item) => {
               if (item.isDefaultLayout) {
+
                 this.selectedlayout = item;
                 this.onLayoutSelect(this.selectedlayout);
               }
@@ -247,7 +248,7 @@ export class CharacterDashboardComponent implements OnInit {
           .subscribe(data => {
             this.selectedlayout.characterDashboardPages = data;
             var selectedLayoutId = this.selectedlayout.characterDashboardLayoutId;
-            if (this.selectedlayout.characterDashboardPages.length == 1) {
+            if (this.selectedlayout.characterDashboardPages.length == 1) {              
               this.selectedPage = this.selectedlayout.characterDashboardPages[0];
             }
 
@@ -271,7 +272,7 @@ export class CharacterDashboardComponent implements OnInit {
         if (typeof serviceJson === 'object' && serviceJson.hasOwnProperty('perventLoading')) {
           this.initialize(false, serviceJson.perventLoading);
         }else {
-          this.initialize(false);
+          this.initialize(false,false);
         }
       }
     });
@@ -383,7 +384,6 @@ export class CharacterDashboardComponent implements OnInit {
     }, false);
     //window.onorientationchange = () => {
     //  setTimeout(() => {
-    //    console.log('Width', window.outerWidth)
     //    this.gridConfig = {
     //      'margins': this.getTileSize().margins,
     //      'draggable': false,
@@ -441,7 +441,7 @@ export class CharacterDashboardComponent implements OnInit {
     }
   }
 
-  private initialize(IsInitialLoad,preventLoading = false) {
+  private initialize(IsInitialLoad, preventLoading = false) {
    
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
@@ -617,7 +617,6 @@ export class CharacterDashboardComponent implements OnInit {
               //this.initialize();
               //this.page1 = 0;
             }
-
             if (this.selectedPage) {
               if (this.selectedPage.characterDashboardPageId) {
                 if (preventLoading) {
@@ -625,6 +624,14 @@ export class CharacterDashboardComponent implements OnInit {
                 } else {
                   this.isLoading = true;
                 }
+
+                //#641 start
+                this.updateDefaultLayout(this.selectedPage.characterDashboardLayoutId)
+                if (this.selectedPage.characterDashboardLayoutId && this.selectedPage.characterDashboardPageId)
+                  this.updateDefaultLayoutPage(this.selectedPage.characterDashboardLayoutId, this.selectedPage.characterDashboardPageId);
+                //#641 end
+
+
                 this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId)
                   .subscribe(data => {
                     let model: any = data;
@@ -756,7 +763,6 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   manageIcon(id: number) {
-    //console.log("1", this.characterlayouts[0].showIcon)
     this.characterlayouts.forEach(function (val) {
       if (id === val.characterDashboardLayoutId) {
         val.showIcon = true;
@@ -765,17 +771,18 @@ export class CharacterDashboardComponent implements OnInit {
         val.showIcon = false;
       }
     })
-    //console.log("1.1", this.characterlayouts[0].showIcon)
 
   }
 
   onLayoutSelect(layout: any): void {
 
     this.selectedlayout = layout;
+    
     this.selectedPage = layout.characterDashboardPages[0];
     this.selectedlayout.characterDashboardPages.map((pageItem) => {
       if (pageItem.characterDashboardPageId == this.selectedlayout.defaultPageId) {
         this.selectedPage = pageItem;
+        
       }
     })
     this.tiles = null;
@@ -889,7 +896,6 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   managePageIcon(id: number) {
-    // console.log("2", this.selectedlayout.characterDashboardPages[0].showIcon)
 
     this.selectedlayout.characterDashboardPages.forEach(function (val) {
       if (id == val.characterDashboardPageId) {
@@ -899,7 +905,6 @@ export class CharacterDashboardComponent implements OnInit {
         val.showIcon = false;
       }
     })
-    //console.log("2.1", this.selectedlayout.characterDashboardPages[0].showIcon)
 
   }
 
