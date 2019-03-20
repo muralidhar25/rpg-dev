@@ -14,7 +14,7 @@
           </div>
           <div class="dropdown-menu dropdown-menu-right w-200p" aria-labelledby="pageLayoutNavigationToggle">
             <ul class="dropdown-menu-list dropdown-menu-item-contain-actions">
-              <li class="dropdown-menu-item" *ngFor="let text of dropDownText" (click)="setText(text)" [ngClass]="{'active': text.selected }">
+              <li class="dropdown-menu-item" *ngFor="let text of dropDownText" (click)="setText(text,searchModal.searchString)" [ngClass]="{'active': text.selected }">
                 <span class="dropdown-menu-item-title">{{text.text}}</span>
                 <span class="w-95p" *ngIf="text?.imageurl !== '' ">
                   <img [src]="text?.imageurl" [alt]="text?.imageurl" class="img-fluid">
@@ -33,7 +33,7 @@
     <div class="container">
       <form>
         <i class="icon icon-search"></i>
-        <input type="search" placeholder="Search" [autofocus] [(ngModel)]="searchModal.searchString" name="searchText" (keyup.enter)="search(searchModal.searchString)">
+        <input type="search" placeholder="Search" [autofocus] [(ngModel)]="searchModal.searchString" name="searchText" (keyup.enter)="search(searchModal.searchString,true)">
       </form>
     </div>
     <div class="container">

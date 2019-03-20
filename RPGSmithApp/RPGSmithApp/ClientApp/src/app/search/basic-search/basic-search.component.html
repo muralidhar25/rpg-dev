@@ -14,7 +14,7 @@
     <div class="container">
       <form>
         <i class="icon icon-search"></i>
-        <input type="search" placeholder="Search" [autofocus] [(ngModel)]="searchModal.searchString" #searchString="ngModel" name="searchString" (keyup.enter)="search(searchModal.searchString)">
+        <input type="search" placeholder="Search" [autofocus] [(ngModel)]="searchModal.searchString" #searchString="ngModel" name="searchString" (keyup.enter)="search(searchModal.searchString,true)">
       </form>
     </div>
     <div class="container">

@@ -798,8 +798,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   goToSearch(searchText: string) {
     let searchQuery = searchText;
     this.searchText = "";
-    
-    this.router.navigate(['/search', searchQuery]);
+    this.router.navigate(['/search/' + SearchType.EVERYTHING + '/' + searchText]);
   }
 
   // navigating to search page

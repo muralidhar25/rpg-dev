@@ -30,21 +30,23 @@ export class BasicSearchComponent implements OnInit {
   showMoreLessToggle: boolean = true;
   isCharacterRulesetEntity: boolean = false;
   searchModal: BasicSearch = new BasicSearch();
-
   headers: HeaderValues = new HeaderValues();
   SEARCHTYPE = SearchType;
+  searchTypeParam : any;
   constructor(private searchService: SearchService, private router: Router, private alertService: AlertService, private sharedService: SharedService,
     private configurations: ConfigurationService, private route: ActivatedRoute, private modalService: BsModalService,
     private localStorage: LocalStoreManager, private authService: AuthService, public appService: AppService1) {
 
     route.params.subscribe(val => {
+     
+      this.searchTypeParam = val.searchType;
       this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
       if (this.headers) {
         if (this.headers.headerId) {
           this.setHeaderValues(this.headers);
         }
       }
-
+     
       this.Initialize();
       // put the code from `ngOnInit` here
     });}
@@ -181,9 +183,9 @@ export class BasicSearchComponent implements OnInit {
         }, () => { });
     
   }
-
-  search(query: string) {
-    
+  
+  search(query: string, isSearched: boolean = false) {
+   
     if (this.searchModal) {
       if (!this.searchModal.searchString) {
         this.searchModal.searchString = '';        
@@ -284,6 +286,10 @@ export class BasicSearchComponent implements OnInit {
             this.showMoreLessToggle = false;
           }
 
+          if (isSearched) {
+            this.router.navigate(['/search/basic/' + this.searchTypeParam + '/' + query]);
+          }
+          
           this.isLoading = false;
         },
         error => {

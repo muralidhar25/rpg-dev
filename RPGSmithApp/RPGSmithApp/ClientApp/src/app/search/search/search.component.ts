@@ -33,7 +33,7 @@ export class SearchComponent implements OnInit {
   dropDownText: any;
   selected: boolean;
   value: number = 1;
-  defaultText: string = 'Everything';
+  defaultText: string = '';
   characterId: number;
   searchModal: BasicSearch = new BasicSearch();
   headers: HeaderValues = new HeaderValues();
@@ -47,43 +47,42 @@ export class SearchComponent implements OnInit {
   constructor(private searchService: SearchService, private router: Router, private alertService: AlertService, private sharedService: SharedService,
     private configurations: ConfigurationService, private route: ActivatedRoute, private modalService: BsModalService,
     private localStorage: LocalStoreManager, private authService: AuthService, private charactersService: CharactersService, public appService: AppService1) {
-    this.searchModal.searchType = this.everthing;
-
+   
     this.route.params.subscribe(params => {
       this.searchModal.searchString = params['searchText'];
+      this.searchModal.searchType = params.searchType;
+      this.defaultText = this.setDefaulttext(this.searchModal.searchType);
       if (this.searchModal.searchString) {
         this.searchModal.searchString = decodeURIComponent(this.searchModal.searchString)
       }
+      this.Initialize(this.searchModal.searchType);
     });
+  
   }
 
-  ngOnInit() {
-    this.Initialize(true);
-  }
+  ngOnInit() { }
 
-  private Initialize(isInitalload) {
-     this.isLoading = true;
+  private Initialize( searchType) {
+    this.isLoading = true;
     this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
     if (this.headers) {
       if (this.headers.headerId && this.headers.headerLink == 'character') {
-        console.log(this.headers);
-        this.characterId = this.headers.headerId;
-        this.searchModal.characterID = this.characterId;
-        
-        this.charactersService.getCharactersById<any>(this.characterId)
+          this.characterId = this.headers.headerId;
+          this.searchModal.characterID = this.characterId;
+          this.charactersService.getCharactersById<any>(this.characterId)
           .subscribe(data => {
             this.character = data;
             this.searchModal.rulesetID = this.character.ruleSet.ruleSetId;
-            if (isInitalload) {
-                this.dropDownText = [
-                  { value: 1, text: 'Everything', type: this.everthing, selected: true, imageurl: '' },
-                  { value: 2, text: 'Inventory', type: SearchType.CHARACTERITEMS, selected: false, imageurl: this.character.imageUrl },
-                  { value: 3, text: 'Spells', type: SearchType.CHARACTERSPELLS, selected: false, imageurl: this.character.imageUrl },
-                  { value: 4, text: 'Abilities', type: SearchType.CHARACTERABILITIES, selected: false, imageurl: this.character.imageUrl },
-                  { value: 5, text: 'Items', type: SearchType.RULESETITEMS, selected: false, imageurl: this.character.ruleSet.imageUrl },
-                  { value: 6, text: 'Spells', type: SearchType.RULESETSPELLS, selected: false, imageurl: this.character.ruleSet.imageUrl },
-                  { value: 7, text: 'Abilities', type: SearchType.RULESETABILITIES, selected: false, imageurl: this.character.ruleSet.imageUrl }
+              this.dropDownText = [
+                { value: 1, text: 'Everything', type: SearchType.EVERYTHING, selected: searchType == SearchType.EVERYTHING ? true:false, imageurl: '' },
+                { value: 2, text: 'Inventory', type: SearchType.CHARACTERITEMS, selected: searchType == SearchType.CHARACTERITEMS ? true : false, imageurl: this.character.imageUrl },
+                { value: 3, text: 'Spells', type: SearchType.CHARACTERSPELLS, selected: searchType == SearchType.CHARACTERSPELLS ? true : false, imageurl: this.character.imageUrl },
+                { value: 4, text: 'Abilities', type: SearchType.CHARACTERABILITIES, selected: searchType == SearchType.CHARACTERABILITIES ? true : false, imageurl: this.character.imageUrl },
+                { value: 5, text: 'Items', type: SearchType.RULESETITEMS, selected: searchType == SearchType.RULESETITEMS ? true : false, imageurl: this.character.ruleSet.imageUrl },
+                { value: 6, text: 'Spells', type: SearchType.RULESETSPELLS, selected: searchType == SearchType.RULESETSPELLS ? true : false, imageurl: this.character.ruleSet.imageUrl },
+                { value: 7, text: 'Abilities', type: SearchType.RULESETABILITIES, selected: searchType == SearchType.RULESETABILITIES ? true : false, imageurl: this.character.ruleSet.imageUrl }
               ];
+              
               if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS) {
                 this.searchModal.itemFilters.isItemAbilityAssociated = true;
                 this.searchModal.itemFilters.isItemDesc = true;
@@ -113,14 +112,12 @@ export class SearchComponent implements OnInit {
                 this.searchModal.abilityFilters.isAbilityStats = true;
                 this.searchModal.abilityFilters.isAbilityTags = true;
               }
-
-            }
-            this.isLoading = true;
-            if (this.headers) {
-              if (this.headers.headerLink == 'ruleset') {
-                this.searchModal.rulesetID = this.headers.headerId
-              }
-              else if (this.headers.headerLink == 'character') {
+               this.isLoading = true;
+              if (this.headers) {
+                if (this.headers.headerLink == 'ruleset') {
+                  this.searchModal.rulesetID = this.headers.headerId
+                }
+                else if (this.headers.headerLink == 'character') {
                 if (
                   this.searchModal.searchType == SearchType.RULESETITEMS
                   ||
@@ -140,7 +137,7 @@ export class SearchComponent implements OnInit {
            
             this.searchService.getFilters<any>(this.searchModal)
               .subscribe(data => {
-                console.log('filters',data);
+                
                 if (data) {
                   if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS) {
                     this.searchModal.itemFilters.isItemAbilityAssociated = data.isAssociatedAbility;
@@ -172,6 +169,7 @@ export class SearchComponent implements OnInit {
                     this.searchModal.abilityFilters.isAbilityTags = data.isTags;
                   }
                   else if (this.searchModal.searchType == SearchType.EVERYTHING) {
+                   
                     this.searchModal.everythingFilters.isEverythingDesc = data.isDesc;
                     this.searchModal.everythingFilters.isEverythingTags = data.isTags;
                     this.searchModal.everythingFilters.isEverythingName = data.isName;
@@ -180,6 +178,7 @@ export class SearchComponent implements OnInit {
                   }
                 }
                 //this.isLoading = false;
+                
                 this.search(this.searchModal.searchString);
               },
                 error => {
@@ -198,9 +197,10 @@ export class SearchComponent implements OnInit {
     }
 
   }
+ 
   
 
-  search(query: any) {
+  search(query: any, isSearched :boolean = false) {
     
     if (this.searchModal) {
       
@@ -224,7 +224,6 @@ export class SearchComponent implements OnInit {
      
       this.searchService.searchRecords<any>(this.searchModal)
         .subscribe(data => {
-         
           if (data && data.length > 0) {
             this.showMoreLessToggle = true;
             if (this.searchModal.searchType == SearchType.EVERYTHING) {
@@ -341,6 +340,9 @@ export class SearchComponent implements OnInit {
           } else {
             this.showMoreLessToggle = false;
           }
+          if (isSearched) {
+             this.router.navigate(['/search/' + this.searchModal.searchType + '/' + query]);
+          }
           this.isLoading = false;
 
         }, error => {
@@ -359,12 +361,12 @@ export class SearchComponent implements OnInit {
 
   }
 
-  setText(text) {
+  setText(text, searchedtext) {
     this.showMoreLessToggle = true;
-    this.dropDownText.forEach(function (val) {
-      val.selected = false;
-    });
-    text.selected = true;
+      this.dropDownText.forEach(function (val) {
+        val.selected = false;
+      });
+      text.selected = true;
 
     this.isCharacterRulesetEntity = false;
     this.defaultText = text.text;
@@ -395,9 +397,10 @@ export class SearchComponent implements OnInit {
     } else {
       this.searchModal.searchType = text.type;
     }
-    //this.searchModal.searchString = params['searchText'];
     text.selected = true;
-     this.Initialize(false);
+    this.router.navigate(['/search/' + this.searchModal.searchType + '/' + searchedtext]);
+    this.Initialize(this.searchModal.searchType);
+   
   }
 
   gotoPage(input: any) {
@@ -549,7 +552,26 @@ export class SearchComponent implements OnInit {
       }
     }
   }
+  setDefaulttext(type) {
+    switch (+type) {
+      case SearchType.CHARACTERABILITIES:
+        return 'Ability';
+      case SearchType.CHARACTERITEMS:
+        return 'Inventory';
+      case SearchType.CHARACTERSPELLS:
+        return 'Spells';
+      case SearchType.RULESETABILITIES:
+        return 'Ability';
+      case SearchType.RULESETITEMS:
+        return 'Items';
+      case SearchType.RULESETSPELLS:
+        return 'Spells';
 
+
+      default:
+        return 'Everything';
+    }
+  }
 
 
 }
