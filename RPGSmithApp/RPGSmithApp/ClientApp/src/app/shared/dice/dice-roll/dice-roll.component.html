@@ -228,12 +228,16 @@
         </div>
 
         <div class="command-actions form-row" style="margin-top: 2%;">
-          <div class="d-flex col-12 col-md-6">
+          <div class="d-flex col-12"  [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'" >
             <button type="button" id="diceShowDiceTrigger" class="btn btn-accent btn-block" (click)="onClickDice(mainCommandText)">Show Dice</button>
           </div>
-          <div class="d-flex col-12 col-md-6">
-            <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block" (click)="onClickRoll(characterCommandModel,'')">Roll Again</button>
+          <div class="d-flex col-12 " [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'" >
+            <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block" (click)="onClickRoll(characterCommandModel,'')"> {{rollAgainBtnText}} </button>
           </div>
+          <div class="d-flex col-12 " *ngIf="displayCurrentRollBtn" [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'">
+            <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block" (click)="onClickRollAll(characterCommandModel,mainCommandText)"> Roll  All  Again </button>
+          </div>
+
         </div>
       </div> 
       <!---- END DICE RESULT INTERFACE ---->

@@ -64,7 +64,7 @@ export class DiceRollComponent implements OnInit {
   showDetailsByDefault: boolean = false;
   numberToAdd: number;
   showShowDiceBtn: boolean = false;
-  isFromTile: boolean = false;
+  isFromTile: boolean = false;  
   oldCommandSaved: string = undefined;
   private readonly AND_Error_Message: string = "Only 5 ‘AND’s allowed in one command string. Please update your command and try again.";
   private readonly COMMAND_Error = "Invalid Command. Please check the command string and try again.";
@@ -89,6 +89,8 @@ export class DiceRollComponent implements OnInit {
   //allCommandsWithText: string[] = [];
   //beforeResultText: string = '';
   //afterResultText: string = '';
+  displayCurrentRollBtn: boolean = false;
+  rollAgainBtnText: string = 'Roll Again';
 
 
   constructor(
@@ -98,7 +100,7 @@ export class DiceRollComponent implements OnInit {
     private characterCommandService: CharacterCommandService, private _diceService: DiceService,
     private rulesetService: RulesetService
 
-    , private location: PlatformLocation) {
+    , private location: PlatformLocation) {   
     location.onPopState(() => this.modalService.hide(1));
     this.diceSection = true;
     this.rollSection = false;
@@ -143,7 +145,7 @@ export class DiceRollComponent implements OnInit {
       //this.character = undefined;
       this.charactersService.getCharactersById<any>(this.characterId)
         .subscribe(data => {
-          this.character = data;
+          this.character = data;          
           this.showTotal = true;
           try {
             if (this.character.lastCommandResult)
@@ -158,7 +160,7 @@ export class DiceRollComponent implements OnInit {
       this.diceRolledData = this.characterCommandService.DiceRollData(this.characterId);
 
       this.isFromTile = this.bsModalRef.content.tile ? true : false;
-
+     
       if (this.isFromTile) {
         this.rollSection = true;
         this.isLoading = true;
@@ -166,7 +168,7 @@ export class DiceRollComponent implements OnInit {
 
       this.charactersService.getRuleset_charStats_ById<any>(this.rulesetId, this.characterId)
         .subscribe(data => {
-
+          
           let model: any = data;
           this.statdetails = model.characterCharacterstats;
           this.customDices = model.customDices;
@@ -191,28 +193,28 @@ export class DiceRollComponent implements OnInit {
               this.characterCommandModel.command = executeTile.command;
               this.onClickRoll(this.characterCommandModel, executeTile.command);
             }
-            else if (+this.bsModalRef.content.tile == TILES.COMMAND) {
+            else if (+this.bsModalRef.content.tile == TILES.COMMAND) {            
               let commandTile = this.bsModalRef.content.commandTile;
 
               this.characterCommandModel.command = commandTile.command;
               this.onClickRoll(this.characterCommandModel, commandTile.command);
             }
-            else if (+this.bsModalRef.content.tile == TILES.CHARACTERSTAT) {
+            else if (+this.bsModalRef.content.tile == TILES.CHARACTERSTAT) {             
               let characterStatTile = this.bsModalRef.content.characterStatTile;
 
               this.characterCommandModel.command = characterStatTile.charactersCharacterStat.command;
               this.onClickRoll(this.characterCommandModel, this.characterCommandModel.command);
             }
-            else if (+this.bsModalRef.content.tile == -1) {
+            else if (+this.bsModalRef.content.tile == -1) {              
               this.numberToAdd = undefined;// this.bsModalRef.content.numberToAdd
               this.showShowDiceBtn = this.showDetailsByDefault = true;
             }
-            else if (+this.bsModalRef.content.tile == -2) {
+            else if (+this.bsModalRef.content.tile == -2) {              
               let command = this.bsModalRef.content.command;
               this.characterCommandModel.command = command;
               this.onClickRoll(this.characterCommandModel, command);
             }
-            else if (+this.bsModalRef.content.tile == -3) {
+            else if (+this.bsModalRef.content.tile == -3) {              
               //this.numberToAdd = this.bsModalRef.content.numberToAdd
               this.showShowDiceBtn = true;
               this.showDetailsByDefault = false;
@@ -269,7 +271,7 @@ export class DiceRollComponent implements OnInit {
 
               //    })
               //    command = str;
-              //}
+              //}              
               this.characterCommandModel.command = command;
               this.onClickRoll(this.characterCommandModel, command);
 
@@ -480,7 +482,7 @@ export class DiceRollComponent implements OnInit {
   }
 
   generateCommandOnChange(command: string, diceRollModel: DiceRoll[]) {
-
+    
     if (!command) {
       this.recycleDice();
       return false;
@@ -1035,7 +1037,7 @@ export class DiceRollComponent implements OnInit {
     } catch (err) { }
   }
   onClickRoll(characterCommand: CharacterCommand, _mainCommandText: string, lastResultArray?: any) {
-    
+  
     let anyCommandIsCustomWithNonNumeric = false;
     this.loadingResult = false;
     let command = characterCommand.command;
@@ -1068,7 +1070,7 @@ export class DiceRollComponent implements OnInit {
             }
     }
     else {
-
+     
       this.mainCommandText = !_mainCommandText || _mainCommandText == "" ? command : _mainCommandText;
       command = this.mainCommandText.toUpperCase();
       if (command.length >= 250) {
@@ -1115,7 +1117,7 @@ export class DiceRollComponent implements OnInit {
               
               calculationString= DiceService.hideTextCommandSquareBraces(calculationString);
               calculationString.split(/\[(.*?)\]/g).map((rec) => {
-                
+              
                 let id = ''; let flag = false; let type = 0; let statType = 0;
                 let isValue = false; let isSubValue = false; let isCurrent = false; let isMax = false;
 
@@ -1398,7 +1400,16 @@ export class DiceRollComponent implements OnInit {
         //let textResult = this.fillBeforeAndAfterText(characterCommand.command, true);
         //this.beforeResultText = textResult.start;
         //this.afterResultText = textResult.end;
-
+        if (this.characterMultipleCommands) {
+          if (this.characterMultipleCommands.length > 1) {
+            this.displayCurrentRollBtn = true;
+            this.rollAgainBtnText = 'Roll Current  Again';
+          } else {
+            this.displayCurrentRollBtn = false;
+            this.rollAgainBtnText = 'Roll Again';
+          }
+        }
+        
         setTimeout(() => {
           //this.characterCommandModel.lastResult = __calculationResult;
           //this.characterCommandModel.lastResultNumbers = __calculationString;
@@ -1490,7 +1501,7 @@ export class DiceRollComponent implements OnInit {
 
             this.diceRolledData.forEach(diceRoll => {
               if (!diceRoll.static)
-                diceRoll.randomNumbersList.forEach(num => {
+               diceRoll.randomNumbersList.forEach(num => {
                   num.isAnimated = num.hideExplode ? true : false;
                   num.isMax = diceRoll.diceNumber === num.number ? true : false;
                   num.isMin = num.number === 1 ? true : false;
@@ -3272,5 +3283,9 @@ export class DiceRollComponent implements OnInit {
       return oldText.replace(OldUpdatedDiceValue, newUpdatedDiceValue);
     }    
     return NewDiceCountNumber.toString() + Dice;
+  }
+
+  onClickRollAll(characterCommandModel, mainCommandText) {
+    this.onClickRoll(characterCommandModel, mainCommandText);
   }
 }
