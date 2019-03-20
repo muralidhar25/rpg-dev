@@ -181,8 +181,8 @@ export class CharacterStatsFormComponent implements OnInit {
         let characterStatDefaultValue: CharacterStatDefaultValue[] = [];
         characterStatDefaultValue.push(new CharacterStatDefaultValue());
         characterStatDefaultValue.push(new CharacterStatDefaultValue());
-        this.LoadDefaultValues(characterStatDefaultValue, characterStatsFormModal, _type.characterStatTypeId);
-        
+      this.LoadDefaultValues(characterStatDefaultValue, characterStatsFormModal, _type.characterStatTypeId);
+      
      }
 
      onSelect(event) {
@@ -589,27 +589,49 @@ export class CharacterStatsFormComponent implements OnInit {
             case STAT_TYPE.Number:
                 characterStatsFormModal.characterStatDefaultValueViewModel = [];
                 defValues[0].type = DefaultValue_STAT_TYPE.Number;
-                characterStatsFormModal.characterStatDefaultValueViewModel.push(defValues[0])
+            characterStatsFormModal.characterStatDefaultValueViewModel.push(defValues[0])
+            if (characterStatsFormModal.view == VIEW.ADD) {
+              characterStatsFormModal.addToModScreen = true;
+            }            
                 break;
             case STAT_TYPE.CurrentMax:
                 characterStatsFormModal.characterStatDefaultValueViewModel = [];
                 defValues[0].type = DefaultValue_STAT_TYPE.Current;
                 characterStatsFormModal.characterStatDefaultValueViewModel.push(Object.assign({}, defValues[0]));
                 defValues[1].type = DefaultValue_STAT_TYPE.Max;
-                characterStatsFormModal.characterStatDefaultValueViewModel.push(Object.assign({}, defValues[1]))
+            characterStatsFormModal.characterStatDefaultValueViewModel.push(Object.assign({}, defValues[1]))
+            if (characterStatsFormModal.view == VIEW.ADD) {
+              characterStatsFormModal.addToModScreen = true;
+            }    
                 break;
             case STAT_TYPE.ValueSubValue:
                 characterStatsFormModal.characterStatDefaultValueViewModel = [];
                 defValues[0].type = DefaultValue_STAT_TYPE.Value;
                 characterStatsFormModal.characterStatDefaultValueViewModel.push(Object.assign({}, defValues[0]))
                 defValues[1].type = DefaultValue_STAT_TYPE.SubValue;
-                characterStatsFormModal.characterStatDefaultValueViewModel.push(Object.assign({}, defValues[1]))
+            characterStatsFormModal.characterStatDefaultValueViewModel.push(Object.assign({}, defValues[1]))
+            if (characterStatsFormModal.view == VIEW.ADD) {
+              characterStatsFormModal.addToModScreen = true;
+            }    
                 break;
             case STAT_TYPE.Command:
                 characterStatsFormModal.characterStatDefaultValueViewModel = [];
                 defValues[0].type = DefaultValue_STAT_TYPE.Command;
-                characterStatsFormModal.characterStatDefaultValueViewModel.push(defValues[0])
-                break;
+            characterStatsFormModal.characterStatDefaultValueViewModel.push(defValues[0])
+            if (characterStatsFormModal.view == VIEW.ADD) {
+              characterStatsFormModal.addToModScreen = true;
+            }    
+            break;
+          case STAT_TYPE.Calculation:            
+            if (characterStatsFormModal.view == VIEW.ADD) {
+              characterStatsFormModal.addToModScreen = true;
+            }    
+            break;
+          case STAT_TYPE.Combo:            
+            if (characterStatsFormModal.view == VIEW.ADD) {
+              characterStatsFormModal.addToModScreen = true;
+            }    
+            break;
 
 
             default:

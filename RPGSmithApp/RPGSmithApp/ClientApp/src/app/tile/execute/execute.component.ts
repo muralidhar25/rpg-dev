@@ -144,29 +144,35 @@ export class ExecuteTileComponent implements OnInit {
                       this.isLoading = false;
                       this.isItemloaded = true;
                     }, () => { });
+          }
+            else {
+              this.isItemloaded = true;
             }
             // getting spell data
-            if (this.ruleSet.isSpellEnabled) {
-                this.characterSpellService.getCharacterSpellByCharacterId<any[]>(this.characterId)
-                  .subscribe(data => {
-                      this.isIspellloaded = true;
-                        this.spells = data.filter(function (val) { return val.spell.command; });
-                        if (this.spells.length) {
-                            this.spells = Object.assign([], this.spells.map((x) => {
-                                x.selected = false;
-                                return x;
-                            }));
-                            this.showMoreCommands('spell', this.spells.length, "Show more");
-                        }
-                        //console.log(this.spells);
-                        if (this._linkType == "Spell")
-                        this.isLoading = false;
-                       
-                    }, error => {
-                      this.isLoading = false;
-                      this.isIspellloaded = true;
-                    }, () => { });
-            }
+          if (this.ruleSet.isSpellEnabled) {
+            this.characterSpellService.getCharacterSpellByCharacterId<any[]>(this.characterId)
+              .subscribe(data => {
+                this.isIspellloaded = true;
+                this.spells = data.filter(function (val) { return val.spell.command; });
+                if (this.spells.length) {
+                  this.spells = Object.assign([], this.spells.map((x) => {
+                    x.selected = false;
+                    return x;
+                  }));
+                  this.showMoreCommands('spell', this.spells.length, "Show more");
+                }
+                //console.log(this.spells);
+                if (this._linkType == "Spell")
+                  this.isLoading = false;
+
+              }, error => {
+                this.isLoading = false;
+                this.isIspellloaded = true;
+              }, () => { });
+          }
+          else {
+            this.isIspellloaded = true;
+          }
             if (this.ruleSet.isAbilityEnabled) {
               this.characterAbilityService.getCharacterAbilityByCharacterId<any[]>(this.characterId)
                   .subscribe(data => {
@@ -186,6 +192,8 @@ export class ExecuteTileComponent implements OnInit {
                        this.isLoading = false;
                        this.isAbilityloaded = true;
                     }, () => { });
+            } else {
+              this.isAbilityloaded = true;
             }
             this.colorService.getRecentColors<any>()
                 .subscribe(data => {

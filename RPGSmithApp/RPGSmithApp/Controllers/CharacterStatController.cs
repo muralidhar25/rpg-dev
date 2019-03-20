@@ -462,6 +462,7 @@ namespace RPGSmithApp.Controllers
             characterStatDomain.CreatedBy = userId;
             characterStatDomain.CreatedDate = DateTime.Now;
             characterStatDomain.ModifiedBy = userId;
+            characterStatDomain.AddToModScreen = model.AddToModScreen;
 
             //try
             //{

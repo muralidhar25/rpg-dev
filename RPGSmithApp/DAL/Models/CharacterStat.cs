@@ -43,6 +43,7 @@ namespace DAL.Models
         public short SortOrder { get; set; }
 
         public bool? IsDeleted { get; set; }
+        public bool AddToModScreen { get; set; }
 
         public virtual RuleSet RuleSet { get; set; }
 

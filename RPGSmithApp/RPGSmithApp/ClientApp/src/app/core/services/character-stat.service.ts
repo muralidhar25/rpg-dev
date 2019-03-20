@@ -273,7 +273,8 @@ export class CharacterStatService extends EndpointFactory {
         characterStatDefaultValueViewModel: _characterStatsVM.characterStatDefaultValueViewModel ? _characterStatsVM.characterStatDefaultValueViewModel : [],
         characterStatConditionViewModel: _characterStatsVM.characterStatConditionViewModel ? _characterStatsVM.characterStatConditionViewModel : this.GetDefaultConditionValues(),
         view: _view === 'DUPLICATE' ? VIEW.DUPLICATE : VIEW.EDIT,
-        icon: _characterStatsVM.icon  //_characterStatsVM.characterStatTypeViewModel.statTypeName //for now
+        icon: _characterStatsVM.icon,  //_characterStatsVM.characterStatTypeViewModel.statTypeName //for now
+        addToModScreen: _characterStatsVM.addToModScreen
       }
       //this.title = _view === 'DUPLICATE' ? 'Duplicate Character Stat' : 'Update Character Stat';
     }
@@ -305,7 +306,8 @@ export class CharacterStatService extends EndpointFactory {
         characterStatDefaultValueViewModel: [],
         characterStatConditionViewModel: this.GetDefaultConditionValues(),
         view: VIEW.ADD,
-        icon: ICON.Text
+        icon: ICON.Text,
+        addToModScreen: true
       }
       //this.title = 'Add Character Stat';
     }

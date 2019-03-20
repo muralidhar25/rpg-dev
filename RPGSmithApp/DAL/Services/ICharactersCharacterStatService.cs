@@ -13,7 +13,7 @@ namespace DAL.Services
         Task<CharactersCharacterStat> Update(CharactersCharacterStat item);
         void Update(List<CharactersCharacterStat> characterStats);
         List<CharactersCharacterStat> GetByCharacterId(int characterId, int page, int pageSize);
-        List<CharactersCharacterStat> GetByCharacterId_sp(int characterId, int page = 1, int pageSize = 10);
+        List<CharactersCharacterStat> GetByCharacterId_sp(int characterId, int page = 1, int pageSize = 10, bool getResultForAddModScreen = false);
         List<CharactersCharacterStat> GetNumericStatsByCharacterId(int characterId, int page, int pageSize);
         List<CharactersCharacterStat> GetByCharacterStatId(int characterStatId, int characterId);
         List<CharacterStat> GetNumericStatsByRulesetId(int rulesetId, int page, int pageSize);

@@ -174,6 +174,7 @@ namespace DAL.Services
             characterStat.ModifiedBy = CharacterStatDomain.ModifiedBy;
             characterStat.CharacterStatTypeId = CharacterStatDomain.CharacterStatTypeId;
             characterStat.ParentCharacterStatId = CharacterStatDomain.ParentCharacterStatId;
+            characterStat.AddToModScreen = CharacterStatDomain.AddToModScreen;
 
             try
             {

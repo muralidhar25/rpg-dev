@@ -9,8 +9,8 @@ export class CharacterStats {
         , characterStatTypeId?: number, characterStatTypeName?: string, characterStatCalculation?: string, characterStatCommand?: string,
         characterStatTypeViewModel?: CharacterStatTypeViewModel, characterStatCalsComndViewModel?: CharacterStatCalsComndViewModel[],
         characterStatChoicesViewModels?: CharacterStatChoicesViewModels[], view?: VIEW, icon?: ICON, characterStatChoices?: characterStatChoices[],
-        characterStatCalcs?: characterStatCalcs[], characterStatToggleViewModel?: CharacterStatToggle, characterStatDefaultValueViewModel?: CharacterStatDefaultValue[], characterStatConditionViewModel?: CharacterStatConditionViewModel[]
-    ) {
+        characterStatCalcs?: characterStatCalcs[], characterStatToggleViewModel?: CharacterStatToggle, characterStatDefaultValueViewModel?: CharacterStatDefaultValue[], characterStatConditionViewModel?: CharacterStatConditionViewModel[],
+ addToModScreen?: boolean   ) {
         this.characterStatId = characterStatId;
         this.ruleSetId = ruleSetId;
         this.statName = statName; 
@@ -36,7 +36,8 @@ export class CharacterStats {
         this.characterStatComboViewModel = characterStatComboViewModel;
         this.characterStatToggleViewModel = characterStatToggleViewModel;
         this.characterStatDefaultValueViewModel = characterStatDefaultValueViewModel;
-        this.characterStatConditionViewModel = characterStatConditionViewModel;
+      this.characterStatConditionViewModel = characterStatConditionViewModel;
+      this.addToModScreen = addToModScreen;
     }
 
     public characterStatId: number;
@@ -65,7 +66,8 @@ export class CharacterStats {
     public view: VIEW;
     public icon: ICON;
     public characterStatChoices: characterStatChoices[];
-    public characterStatCalcs: characterStatCalcs[];
+  public characterStatCalcs: characterStatCalcs[];
+  public addToModScreen: boolean;
 }  
 
 export class CharacterStatTypeViewModel{

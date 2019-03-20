@@ -324,8 +324,8 @@ namespace DAL.Services
             //if (page > 0 && pageSize > 0)
             //    CharactersCharacterStats = CharactersCharacterStats.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
 
-            List<CharactersCharacterStat> CharactersCharacterStats = GetByCharacterId_sp(characterId, page, pageSize)
-                .Where(x =>(x.CharacterStat.CharacterStatType.StatTypeName == "Combo" || x.CharacterStat.CharacterStatType.StatTypeName == "Calculation" || x.CharacterStat.CharacterStatType.StatTypeName == "Value & Sub-Value" || x.CharacterStat.CharacterStatType.StatTypeName == "Current & Max" || x.CharacterStat.CharacterStatType.StatTypeName == "Number" || x.CharacterStat.CharacterStatType.StatTypeName == "Command") && x.IsDeleted != true).ToList();
+            List<CharactersCharacterStat> CharactersCharacterStats = GetByCharacterId_sp(characterId, page, pageSize, true);
+              
 
 
             return CharactersCharacterStats;
@@ -347,9 +347,7 @@ namespace DAL.Services
             //      if (page > 0 && pageSize > 0)
             //    CharacterStats = CharacterStats.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
 
-            List<CharacterStat> CharacterStats = GetByRulesetId_sp(rulesetId, parentRulesetId, page, pageSize)
-                .Where(x => (x.CharacterStatType.StatTypeName == "Calculation" || x.CharacterStatType.StatTypeName == "Value & Sub-Value" || x.CharacterStatType.StatTypeName == "Current & Max" || x.CharacterStatType.StatTypeName == "Number") && x.IsDeleted != true)
-                .ToList();
+            List<CharacterStat> CharacterStats = GetByRulesetId_sp(rulesetId, parentRulesetId, page, pageSize,true);
 
             
 
@@ -436,7 +434,7 @@ namespace DAL.Services
             else
                 return obj;
         }
-        public List<CharactersCharacterStat> GetByCharacterId_sp(int characterId, int page = 1, int pageSize = 10)
+        public List<CharactersCharacterStat> GetByCharacterId_sp(int characterId, int page = 1, int pageSize = 10,bool getResultForAddModScreen = false)
         {
             List<CharactersCharacterStat> CharactersCharacterStatsList = new List<CharactersCharacterStat>();
 
@@ -456,6 +454,7 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@CharacterID", characterId);
                 command.Parameters.AddWithValue("@page", page);
                 command.Parameters.AddWithValue("@size", pageSize);
+                command.Parameters.AddWithValue("@getResultForAddModScreen", getResultForAddModScreen);
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;
@@ -532,6 +531,7 @@ namespace DAL.Services
                             CreatedBy = CharCharStat_Row["CreatedBy"] == DBNull.Value ? null : CharCharStat_Row["CreatedBy"].ToString(),
                             CreatedDate = CharCharStat_Row["CreatedDate"] == DBNull.Value ? new DateTime() : Convert.ToDateTime(CharCharStat_Row["CreatedDate"]),
                             OwnerId = CharCharStat_Row["OwnerId"] == DBNull.Value ? null : CharCharStat_Row["OwnerId"].ToString(),
+                            AddToModScreen = CharCharStat_Row["AddToModScreen"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["AddToModScreen"]),
                         };
 
                         List<CharacterStatDefaultValue> defVals = new List<CharacterStatDefaultValue>();
@@ -683,7 +683,7 @@ namespace DAL.Services
             //////////////////////////////////////////////////////////////////////////////////////////////////////
             return CharactersCharacterStatsList;
         }
-        public List<CharacterStat> GetByRulesetId_sp(int RulesetID, int ParentRulesetID, int page = 1, int pageSize = 10)
+        public List<CharacterStat> GetByRulesetId_sp(int RulesetID, int ParentRulesetID, int page = 1, int pageSize = 10,bool getResultForAddModScreen = false)
         {
             List<CharacterStat> CharacterStatsList = new List<CharacterStat>();
 
@@ -704,6 +704,7 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@ParentRulesetID", ParentRulesetID);
                 command.Parameters.AddWithValue("@page", page);
                 command.Parameters.AddWithValue("@size", pageSize);
+                command.Parameters.AddWithValue("@getResultForAddModScreen", getResultForAddModScreen);
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;
@@ -745,6 +746,7 @@ namespace DAL.Services
                             CreatedBy = CharStat_Row["CreatedBy"] == DBNull.Value ? null : CharStat_Row["CreatedBy"].ToString(),
                             CreatedDate = CharStat_Row["CreatedDate"] == DBNull.Value ? new DateTime() : Convert.ToDateTime(CharStat_Row["CreatedDate"]),
                             OwnerId = CharStat_Row["OwnerId"] == DBNull.Value ? null : CharStat_Row["OwnerId"].ToString(),
+                            AddToModScreen = CharStat_Row["AddToModScreen"] == DBNull.Value ? false : Convert.ToBoolean(CharStat_Row["AddToModScreen"]),
                         };
 
                         List<CharacterStatCalc> calcs = new List<CharacterStatCalc>();

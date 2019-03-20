@@ -56,6 +56,7 @@ namespace RPGSmithApp.Helpers
                 ModifiedDate = CharacterStat.ModifiedDate,
                 StatIdentifier = CharacterStat.StatIdentifier,
                 ParentCharacterStatId = CharacterStat.ParentCharacterStatId,
+                AddToModScreen= CharacterStat.AddToModScreen,
                 CharacterStatTypeViewModel = CharacterStat.CharacterStatType == null ? new CharacterStatTypeViewModel() :
                     new CharacterStatTypeViewModel()
                     {
