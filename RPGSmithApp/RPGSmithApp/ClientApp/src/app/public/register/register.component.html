@@ -18,7 +18,7 @@
                 <div class="main-login-form">
                   <div class="login-group">
                     <div class="form-group has-feedback" [ngClass]="{ 'has-success': f.submitted && username.valid, 'has-error': f.submitted && !username.valid }">
-                      <input type="text" id="register-username" name="username" placeholder="Enter username" class="form-control" [autofocus] [(ngModel)]="userRegisterModel.username" #username="ngModel" required />
+                      <input type="text" id="register-username" name="username" placeholder="Enter username" class="form-control" [autofocus] [(ngModel)]="userRegisterModel.username" #username="ngModel" required  pattern="^\S*$"/>
                       <!--<span *ngIf="f.submitted" class="glyphicon form-control-feedback" [ngClass]="{'glyphicon-ok ': username.valid, 'glyphicon-remove' : !username.valid}" aria-hidden="true"></span>-->
                     </div>
                     <div class="form-group has-feedback" [ngClass]="{ 'has-success': f.submitted && !email.valid, 'has-error': f.submitted && !email.valid }">
