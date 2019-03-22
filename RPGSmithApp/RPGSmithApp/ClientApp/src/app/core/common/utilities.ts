@@ -959,4 +959,9 @@ export class Utilities {
     }
     return false;
   }
+  public static Kickstarterlink() {
+    console.log('kickstarter');
+    let url = 'https://www.kickstarter.com/';
+    window.open(url, "_blank");
+  }
 }

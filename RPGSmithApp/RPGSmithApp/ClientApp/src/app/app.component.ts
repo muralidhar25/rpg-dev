@@ -1122,4 +1122,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
     }
   }
+
+  RedirecttoUrl() {
+    Utilities.Kickstarterlink();
+  }
 }

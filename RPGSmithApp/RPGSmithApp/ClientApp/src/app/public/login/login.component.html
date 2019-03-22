@@ -17,15 +17,15 @@
                       <input type="text" id="login-email" name="email" placeholder="Enter username or email" class="form-control" [autofocus] [(ngModel)]="userLogin.email" #email="ngModel" required />
                       <!--<span *ngIf="f.submitted" class="glyphicon form-control-feedback" [ngClass]="{'glyphicon-ok ': email.valid, 'glyphicon-remove' : !email.valid}" aria-hidden="true"></span>-->
                       <!--<span class="errorMessage" *ngIf="f.submitted && !email.valid">
-                          Email is required
-                      </span>-->
+              Email is required
+          </span>-->
                     </div>
                     <div class="form-group has-feedback login-input" [ngClass]="{'has-success': f.submitted && password.valid, 'has-error' : f.submitted && !password.valid}">
                       <input type="password" id="login-password" name="password" placeholder="Enter password" class="form-control" [(ngModel)]="userLogin.password" #password="ngModel" required />
                       <!--<span *ngIf="f.submitted" class="glyphicon form-control-feedback" [ngClass]="{'glyphicon-ok ': password.valid, 'glyphicon-remove' : !password.valid}" aria-hidden="true"></span>-->
                       <!--<span class="errorMessage" *ngIf="f.submitted && !password.valid">
-                          Password is required
-                      </span>-->
+              Password is required
+          </span>-->
                     </div>
                     <div class="has-feedback login-input">
                       <div class="checkbox">
@@ -63,6 +63,9 @@
                   <span><a [routerLink]="['/termscondition']"> Terms and Conditions </a></span>
                   <span>  View the <a [routerLink]="['/privacypolicy']"> Privacy Policy </a></span>
                 </p>
+              </div>
+              <div class="col-12  p-10">
+                <img border="0" src='../assets/images/BUKS_Grey_opt.png' class="img-fluid" (click)="RedirecttoUrl()">
               </div>
             </div>
           </div>
