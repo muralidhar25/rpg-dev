@@ -706,6 +706,10 @@
   content: "\e95b";
 }
 
+.icon-Rec-EmptyContainer:before {
+  content: "\e95c";
+}
+
 .icon-Gen-Check:before {
   content: "\e956";
 }

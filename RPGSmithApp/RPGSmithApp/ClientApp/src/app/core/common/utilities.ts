@@ -961,7 +961,7 @@ export class Utilities {
   }
   public static Kickstarterlink() {
     console.log('kickstarter');
-    let url = 'https://www.kickstarter.com/';
+    let url = 'https://www.kickstarter.com/projects/rpgsmith/rpgsmith-gm-campaigns';
     window.open(url, "_blank");
   }
 }
