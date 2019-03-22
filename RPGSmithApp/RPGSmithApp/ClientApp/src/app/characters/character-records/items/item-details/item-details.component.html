@@ -139,27 +139,33 @@
                                         <li *ngIf="ItemDetail?.volume>=0">{{ItemDetail.volume}} {{ItemDetail.volumeLabel}}</li>
                                     </ul>
                                     <ul class="item-info-indics">
-                                        <li *ngIf="ItemDetail?.isConsumable" title="Consumable" data-toggle="tooltip">
-                                            <i class="item-property item-property-icon icon icon-Rec-consumable icon-ico"></i>
-                                        </li>
-                                        <li *ngIf="ItemDetail?.isMagical" title="Magical" data-toggle="tooltip">
-                                            <i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i>
-                                        </li>
-                                        <li *ngIf="ItemDetail?.isIdentified" title="Unidentified" data-toggle="tooltip">
-                                            <i class="item-property item-property-icon icon icon-Rec-Unidentified icon-ico"></i>
-                                        </li>
-                                        <li *ngIf="ItemDetail?.isContainer" title="Container" data-toggle="tooltip">
-                                            <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
-                                        </li>
-                                        <li *ngIf="ItemDetail?.isVisible" title="Visible" data-toggle="tooltip">
-                                            <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
-                                        </li>
-                                        <li *ngIf="ItemDetail?.isEquipped" title="Equipped" data-toggle="tooltip">
-                                            <i class="item-property item-property-icon icon icon-Rec-Equipped icon-ico"></i>
-                                        </li>
-                                        <li *ngIf="ItemDetail?.containedIn" title="Contained" data-toggle="tooltip">
-                                            <i class="item-property item-property-icon icon icon-Rec-Contained icon-ico"></i>
-                                        </li>
+                                      <li *ngIf="ItemDetail?.isConsumable" title="Consumable" data-toggle="tooltip">
+                                        <i class="item-property item-property-icon icon icon-Rec-consumable icon-ico"></i>
+                                      </li>
+                                      <li *ngIf="ItemDetail?.isMagical" title="Magical" data-toggle="tooltip">
+                                        <i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i>
+                                      </li>
+                                      <li *ngIf="ItemDetail?.isIdentified" title="Unidentified" data-toggle="tooltip">
+                                        <i class="item-property item-property-icon icon icon-Rec-Unidentified icon-ico"></i>
+                                      </li>
+                                      <li *ngIf="ItemDetail?.isContainer && !ItemDetail?.containerItems?.length" title="Container" data-toggle="tooltip">
+                                        <i class="item-property item-property-icon icon  icon-Rec-EmptyContainer icon-ico text-dark"></i>
+                                      </li>
+                                      <li *ngIf="ItemDetail?.isContainer  && ItemDetail?.containerItems?.length" title="Container" data-toggle="tooltip">
+                                        <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
+                                      </li>
+                                      <!--<li *ngIf="ItemDetail?.isContainer" title="Container" data-toggle="tooltip">
+                                        <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
+                                      </li>-->
+                                      <li *ngIf="ItemDetail?.isVisible" title="Visible" data-toggle="tooltip">
+                                        <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
+                                      </li>
+                                      <li *ngIf="ItemDetail?.isEquipped" title="Equipped" data-toggle="tooltip">
+                                        <i class="item-property item-property-icon icon icon-Rec-Equipped icon-ico"></i>
+                                      </li>
+                                      <li *ngIf="ItemDetail?.containedIn" title="Contained" data-toggle="tooltip">
+                                        <i class="item-property item-property-icon icon icon-Rec-Contained icon-ico"></i>
+                                      </li>
                                     </ul>
                                 </div>
                                 <!--<div class="item-info-props-indics item-info-props-indics-discription">

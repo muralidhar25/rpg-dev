@@ -222,6 +222,7 @@ namespace RPGSmithApp
             services.AddScoped<ICharacterStatConditionService, CharacterStatConditionService>();
             
             services.AddScoped<ICustomToggleService, CustomToggleService>();
+            services.AddScoped<IItemMasterBundleService, ItemMasterBundleService>();
 
             services.AddScoped<IItemMasterService, ItemMasterService>();
             services.AddScoped<IAbilityService, AbilityService>();

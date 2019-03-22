@@ -15,6 +15,7 @@ import { CreateItemMsterComponent } from "./create-item/create-item.component";
 import { ItemMaster } from "../../core/models/view-models/item-master.model";
 import { Ruleset } from "../../core/models/view-models/ruleset.model";
 import { AppService1 } from "../../app.service";
+import { CreateBundleComponent } from "./create-bundle/create-bundle.component";
 
 @Component({
     selector: 'app-item',
@@ -386,5 +387,32 @@ export class ItemMasterComponent implements OnInit {
       this.localStorage.deleteData(DBkeys.HEADER_VALUE);
       this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
     } catch (err) { }
+  }
+  createBundle() {
+    // this.alertService.startLoadingMessage("", "Checking records");      
+    this.itemMasterService.getItemMasterCount(this.ruleSetId)
+      .subscribe(data => {
+        //this.alertService.stopLoadingMessage();
+        if (data < 2000) {
+          this.bsModalRef = this.modalService.show(CreateBundleComponent, {
+            class: 'modal-primary modal-custom',
+            ignoreBackdropClick: true,
+            keyboard: false
+          });
+          this.bsModalRef.content.title = 'Create Bundle';
+          this.bsModalRef.content.button = 'CREATE';
+          this.bsModalRef.content.ruleSetId = this.ruleSetId;
+          this.bsModalRef.content.itemMasterVM = {
+            ruleSetId: this.ruleSetId,
+            ruleSet: this.RuleSet
+          };
+        }
+        else {
+          //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
+          this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
+        }
+      }, error => { }, () => { });
+
+
   }
 }

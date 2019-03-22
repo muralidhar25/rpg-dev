@@ -15,6 +15,7 @@ import { SpellsComponent } from './spells/spells.component';
 import { AddSpellsComponent } from './spells/add-spells/add-spells.component';
 import { AbilitiesComponent } from './abilities/abilities.component';
 import { AddAbilitiesComponent } from './abilities/add-abilities/add-abilities.component';
+import { CreateBundleComponent } from './item-master/create-bundle/create-bundle.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { AddAbilitiesComponent } from './abilities/add-abilities/add-abilities.c
     SpellsComponent,
     AddSpellsComponent,
     AbilitiesComponent,
-    AddAbilitiesComponent
+    AddAbilitiesComponent,
+    CreateBundleComponent
   ],
   imports: [
     SharedModule
@@ -44,13 +46,15 @@ import { AddAbilitiesComponent } from './abilities/add-abilities/add-abilities.c
     SpellsComponent,
     AddSpellsComponent,
     AbilitiesComponent,
-    AddAbilitiesComponent
+    AddAbilitiesComponent,
+    CreateBundleComponent
   ],
   entryComponents: [
     AddItemMasterComponent,
     CreateItemMsterComponent,
     AddSpellsComponent,
-    AddAbilitiesComponent
+    AddAbilitiesComponent,
+    CreateBundleComponent
   ]
 })
 export class RecordsModule {}

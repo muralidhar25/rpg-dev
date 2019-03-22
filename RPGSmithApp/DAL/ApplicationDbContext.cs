@@ -107,6 +107,8 @@ namespace DAL
         public virtual DbSet<CharacterStatCondition> CharacterStatConditions { get; set; }
         public virtual DbSet<ConditionOperator> ConditionOperators { get; set; }
         public virtual DbSet<SearchFilter> SearchFilter { get; set; }
+        public virtual DbSet<ItemMasterBundle> ItemMasterBundles { get; set; }
+        public virtual DbSet<ItemMasterBundleItem> ItemMasterBundleItems { get; set; }
         
 
         public ApplicationDbContext(DbContextOptions options) : base(options)

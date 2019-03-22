@@ -194,6 +194,9 @@ namespace DAL.Services
 
             im.IsDeleted = true;
 
+            // Delete item from ItemMasterBundleItems
+            _context.ItemMasterBundleItems.RemoveRange(_context.ItemMasterBundleItems.Where(x => x.ItemMasterId == id).ToList());
+
             try
             {
                 _context.SaveChanges();
