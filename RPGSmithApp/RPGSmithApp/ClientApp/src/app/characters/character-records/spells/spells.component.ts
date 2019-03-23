@@ -33,6 +33,7 @@ export class CharacterSpellsComponent implements OnInit {
 
   isLoading = false;
   isListView: boolean = false;
+  isDenseView: boolean = false; 
   showActions: boolean = true;
   actionText: string;
   bsModalRef: BsModalRef;
@@ -56,6 +57,9 @@ export class CharacterSpellsComponent implements OnInit {
     viewableCount: 0
   };
   charNav: any = {};
+  LevelCount: number;
+  alphabetCount: number; 
+  ReadiedCount: number;
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -131,12 +135,21 @@ export class CharacterSpellsComponent implements OnInit {
         }
       }
       this.isLoading = true;
+      this.getFilters();
       this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.spellFilter.type)
         .subscribe(data => {
           this.spellsList = Utilities.responseData(data.CharacterSpellList, this.pageSize);
-
+          if (this.spellFilter.type == 1) {
+            this.alphabetCount = this.spellsList.length;
+          }
+          if (this.spellFilter.type == 2) {
+            let result = this.spellsList.filter(s => s.isMemorized);
+            this.ReadiedCount = result.length;
+          }
+          if (this.spellFilter.type == 3) {
+            this.LevelCount = this.spellsList.length;
+          }
           this.applyFilters(this.spellFilter.type, true);
-
           this.ruleSet = data.RuleSet;
           this.character = data.Character;
           this.setHeaderValues(this.character);
@@ -177,7 +190,7 @@ export class CharacterSpellsComponent implements OnInit {
 
     this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.spellFilter.type)
       .subscribe(data => {
-
+       
         var _characterSpellList = data.CharacterSpellList;
         for (var i = 0; i < _characterSpellList.length; i++) {
           _characterSpellList[i].showIcon = false;
@@ -187,6 +200,17 @@ export class CharacterSpellsComponent implements OnInit {
           this.spellsList.push(_characterSpellList[i]);
         }
         this.scrollLoading = false;
+
+        if (this.spellFilter.type == 1) {
+          this.alphabetCount = this.spellsList.length;
+        }
+        if (this.spellFilter.type == 2) {
+          let result = this.spellsList.filter(s => s.isMemorized);
+          this.ReadiedCount = result.length;
+        }
+        if (this.spellFilter.type == 3) {
+          this.LevelCount = this.spellsList.length;
+        }
 
         this.applyFilters(this.spellFilter.type, true);
 
@@ -213,6 +237,7 @@ export class CharacterSpellsComponent implements OnInit {
 
   showListView(view: boolean) {
     this.isListView = view;
+    this.isDenseView = false;
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
 
     this.pageLastView = {
@@ -232,6 +257,28 @@ export class CharacterSpellsComponent implements OnInit {
       });
   }
 
+
+  showDenseview(view: boolean) {
+    this.isListView = false;
+    this.isDenseView = view;
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+
+    this.pageLastView = {
+      pageName: 'CharacterSpells',
+      viewType: 'Dense',
+      UserId: user.id
+    }
+    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+      .subscribe(data => {
+        if (data !== null) this.isDenseView = data.viewType == 'Dense' ? true : false;
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      });
+
+  }
   manageIcon(id: number) {
     this.spellsList.forEach(function (val) {
       if (id === val.characterSpellId) {
@@ -505,17 +552,17 @@ export class CharacterSpellsComponent implements OnInit {
   }
 
   applyFilters(present_filter, apply_same = false, IsCalledFromClickFunction = false) {
-    if (apply_same) {
-      this.spellFilter.type = present_filter;
-    } else {
-      if (present_filter == 3) {
-        this.spellFilter.type = 1;
-      }
-      else {
-        this.spellFilter.type = present_filter + 1;
-      }
-    }
-
+    //if (apply_same) {
+    //  this.spellFilter.type = present_filter;
+    //} else {
+    //  if (present_filter == 3) {
+    //    this.spellFilter.type = 1;
+    //  }
+    //  else {
+    //    this.spellFilter.type = present_filter + 1;
+    //  }
+    //}
+    this.spellFilter.type = present_filter;
     if (IsCalledFromClickFunction) {
       this.isLoading = true;
       this.page = 1
@@ -524,8 +571,7 @@ export class CharacterSpellsComponent implements OnInit {
       this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.spellFilter.type)
         .subscribe(data => {
           this.spellsList = Utilities.responseData(data.CharacterSpellList, this.pageSize);
-
-          
+     
           try {
             this.spellsList.forEach(function (val) {
               val.showIcon = false;
@@ -550,9 +596,6 @@ export class CharacterSpellsComponent implements OnInit {
     else {
       this.ImplementFilter();
     }
-
-
-   
   }
 
   private scrollToTop() {
@@ -633,5 +676,32 @@ export class CharacterSpellsComponent implements OnInit {
         break;
     }
 
-    this.localStorage.saveSyncedSessionData(this.spellFilter, 'spellFilter');}
+    this.localStorage.saveSyncedSessionData(this.spellFilter, 'spellFilter');
+  }
+ 
+  getFilters() {
+    if (this.spellFilter.type == 2 || this.spellFilter.type == 3 ) {
+      this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 1)
+        .subscribe(data => {
+          this.alphabetCount = data.CharacterSpellList.length;
+        }, error => {
+        }, () => { });
+    }
+    if (this.spellFilter.type == 1 || this.spellFilter.type == 3) {
+      this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 2)
+        .subscribe(data => {
+          let result = data.CharacterSpellList.filter(s => s.isMemorized);
+          this.ReadiedCount = result.length;
+        }, error => {
+        }, () => { });
+    }
+    if (this.spellFilter.type == 1 || this.spellFilter.type == 2 ) {
+      this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 3)
+        .subscribe(data => {
+          this.LevelCount = data.CharacterSpellList.length;
+        }, error => {
+        }, () => { });
+    }
+
+  }
 }

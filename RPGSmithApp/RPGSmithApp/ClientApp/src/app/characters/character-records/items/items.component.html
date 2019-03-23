@@ -73,15 +73,36 @@
           <!-- End of toolbar links -->
         </div>
         <ul class="page-toolbar-actions">
-          <li class="view-switch">
+         <li class="view-switch">
             <div class="btn-group" role="group">
-              <button type="button" id="filtersToggleBtn" class="btn filter-toggle-btn" [disabled]="isLoading" (click)="applyFilters(inventoryFilter.type,false,true)" popover="{{inventoryFilter.name}}" triggers="hover click">
-                &nbsp;{{inventoryFilter.viewableCount}}
-                <span *ngIf="inventoryFilter.type == 3 && !inventoryFilter.icon"><i>A</i></span>
-                <span *ngIf="inventoryFilter.icon && inventoryFilter.type != 3" [ngClass]="inventoryFilter.icon"></span>
-              </button>
-              <button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="{'selected':!isListView}" (click)="showListView(false)"></button>
-              <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="{'selected':isListView}" (click)="showListView(true)"></button>
+             <div class="dropdown">
+                <!--<button class="btn dropdown-toggle filter-toggle-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                   30 <i>A</i>
+                  </button>-->
+                <button class="btn dropdown-toggle filter-toggle-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" popover="{{inventoryFilter.name}}" triggers="hover click">
+                  &nbsp;{{inventoryFilter.viewableCount}}
+                  <span *ngIf="inventoryFilter.type == 3 && !inventoryFilter.icon"><i>A</i></span>
+                  <span *ngIf="inventoryFilter.icon && inventoryFilter.type != 3" [ngClass]="inventoryFilter.icon"></span>
+                </button>
+                <div class="dropdown-menu filter-toggle-btn-menu" aria-labelledby="dropdownMenuButton">
+                  <button type="button" id="listViewTrigger" class="btn icon icon-Rec-Container" (click)="applyFilters(1,false,true)">Uncontained<span>{{containerCount}}</span></button>
+                  <button type="button" id="equippedViewTrigger" class="btn icon icon-Rec-Equipped" (click)="applyFilters(2,false,true)">Equipped<span>{{equippedCount}}</span></button>
+                  <button type="button" id="listViewTrigger" class="btn" (click)="applyFilters(3,false,true)"><i>A</i>Alphabetical <span>{{alphabetCount}}</span></button>
+                  <button type="button" id="gridViewTrigger" class="btn icon icon-Rec-Visible" (click)="applyFilters(4,false,true)"> Visible <span>{{visibleCount}}</span></button>
+                </div>
+              </div>
+              <div class="dropdown">
+                <button class="btn dropdown-toggle filter-toggle-btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i [ngClass]="isDenseView ? 'icon-Rec-Dense': '' "  ></i>
+                  <i  [ngClass]="!isListView && !isDenseView ? 'icon icon-grid' :''" ></i>
+                  <i [ngClass]="isListView && !isDenseView ? 'icon icon-list' :''" ></i>
+                </button>
+                <div class="dropdown-menu filter-toggle-btn-light-menu" aria-labelledby="dropdownMenuButton">
+                  <button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="!isListView && !isDenseView ? 'selected' :''"  (click)="showListView(false)">Grid</button>
+                  <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="isListView && !isDenseView ? 'selected' :''"  (click)="showListView(true)">List</button>
+                  <button type="button" id="denseViewTrigger" class="btn icon icon-Rec-Dense" [ngClass]="isDenseView ? 'selected': '' " (click)="showDenseview(true)" > Dense</button>
+                </div>
+              </div>
             </div>
           </li>
           <li>
@@ -111,7 +132,7 @@
   <div class="cards cards-inventory" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
        [infiniteScrollThrottle]="300" [scrollWindow]="true">
     <div class="container">
-      <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView}">
+      <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Items have been added to this character. Click "+NEW ITEM" to add some.</p>
         <ng-container *ngFor="let Item of ItemsList">
           <div class="card-wrapper" *ngIf="(this.inventoryFilter.type == 1 && Item.containedIn == 0) || (this.inventoryFilter.type != 1 && this.inventoryFilter.type != 4) || (this.inventoryFilter.type == 4 && Item.isVisible == 1)" (mousedown)="editRecord(Item)" (mouseup)="clickAndHold(Item)" (mouseleave)="clickAndHold(Item)">
@@ -144,7 +165,7 @@
                   </li>
                   <li *ngIf="Item?.isContainer && Item?.containerItems?.length" title="Container" data-toggle="tooltip">
                     <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
-                  </li>                 
+                  </li>
                   <li *ngIf="Item?.isMagical" title="Magical" data-toggle="tooltip">
                     <i class="item-property item-property-icon icon icon-Rec-Magical icon-ico"></i>
                   </li>

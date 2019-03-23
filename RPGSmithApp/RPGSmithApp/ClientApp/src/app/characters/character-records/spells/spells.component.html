@@ -76,14 +76,42 @@
         <ul class="page-toolbar-actions">
           <li class="view-switch">
             <div class="btn-group" role="group">
-              <button type="button" id="filtersToggleBtn" class="btn filter-toggle-btn" [disabled]="isLoading"  (click)="applyFilters(spellFilter.type,false,true)" popover="{{spellFilter.name}}" triggers="hover click">
+              <!--<button type="button" id="filtersToggleBtn" class="btn filter-toggle-btn" [disabled]="isLoading" (click)="applyFilters(spellFilter.type,false,true)" popover="{{spellFilter.name}}" triggers="hover click">
                 &nbsp;{{spellFilter.viewableCount}}
                 <span *ngIf="spellFilter.type == 1"><i>A</i></span>
                 <span *ngIf="spellFilter.type == 3"><i>L</i></span>
                 <span [ngClass]="spellFilter.icon"></span>
-              </button>
-              <button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="{'selected':!isListView}" (click)="showListView(false)"></button>
-              <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="{'selected':isListView}" (click)="showListView(true)"></button>
+              </button>-->
+              <div class="dropdown">
+                <!--<button class="btn dropdown-toggle filter-toggle-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                 30 <i>A</i>
+                </button>-->
+                <button class="btn dropdown-toggle filter-toggle-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" popover="{{spellFilter.name}}" triggers="hover click">
+                  &nbsp;{{spellFilter.viewableCount}}
+                  <span *ngIf="spellFilter.type == 1"><i>A</i></span>
+                  <span *ngIf="spellFilter.type == 3"><i>L</i></span>
+                  <span [ngClass]="spellFilter.icon"></span>
+                </button>
+                <div class="dropdown-menu filter-toggle-btn-menu" aria-labelledby="dropdownMenuButton">
+                  <button type="button" id="listViewTrigger" class="btn" (click)="applyFilters(1,false,true)"><i>A</i>Alphabetical <span>{{alphabetCount}}</span></button>
+                  <button type="button" id="equippedViewTrigger" class="btn icon icon-Rec-Equipped" (click)="applyFilters(2,false,true)">Readied<span>{{ReadiedCount}}</span></button>
+                  <button type="button" id="gridViewTrigger" class="btn icon icon-Rec-Visible" (click)="applyFilters(3,false,true)"> Level <span>{{LevelCount}}</span></button>
+                </div>
+              </div>
+              <!--<button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="{'selected':!isListView}" (click)="showListView(false)"></button>
+              <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="{'selected':isListView}" (click)="showListView(true)"></button>-->
+              <div class="dropdown">
+                <button class="btn dropdown-toggle filter-toggle-btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i [ngClass]="isDenseView ? 'icon icon-Rec-Dense': '' "></i>
+                  <i [ngClass]="!isListView && !isDenseView ? 'icon icon-grid' :''"></i>
+                  <i [ngClass]="isListView && !isDenseView ? 'icon icon-list' :''"></i>
+                </button>
+                <div class="dropdown-menu filter-toggle-btn-light-menu" aria-labelledby="dropdownMenuButton">
+                  <button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="!isListView && !isDenseView ? 'selected' :''" (click)="showListView(false)">Grid</button>
+                  <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="isListView && !isDenseView ? 'selected' :''" (click)="showListView(true)">List</button>
+                  <button type="button" id="denseViewTrigger" class="btn icon icon-Rec-Dense" [ngClass]="isDenseView ? 'selected': '' " (click)="showDenseview(true)"> Dense</button>
+                </div>
+              </div>
             </div>
           </li>
           <li>
@@ -118,7 +146,7 @@
   <div class="cards cards-inventory" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
        [infiniteScrollThrottle]="300" [scrollWindow]="true">
     <div class="container">
-      <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView}">
+      <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
         <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Spells have been added to this character. Click "+New Spell" to add some.</p>
         <ng-container *ngFor="let spell of spellsList">
           <div class="card-wrapper" (mousedown)="editRecord(spell)" (mouseup)="clickAndHold(spell)" (mouseleave)="clickAndHold(spell)">
@@ -197,3 +225,5 @@
   </div>
 
 </div>
+
+

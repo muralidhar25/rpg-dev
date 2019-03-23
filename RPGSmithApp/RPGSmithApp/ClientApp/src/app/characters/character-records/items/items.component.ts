@@ -35,6 +35,7 @@ export class CharacterItemsComponent implements OnInit {
 
   isLoading = false;
   isListView: boolean = false;
+  isDenseView: boolean = false; 
   showActions: boolean = true;
   actionText: string;
   bsModalRef: BsModalRef;
@@ -59,6 +60,10 @@ export class CharacterItemsComponent implements OnInit {
     viewableCount: 0
   };
   charNav: any = {};
+  containerCount: number;
+  alphabetCount: number;
+  equippedCount : number;
+  visibleCount: number;
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -142,13 +147,30 @@ export class CharacterItemsComponent implements OnInit {
           this.characterId = this.headers.headerId;
         }
       }
+      this.getFilters();
      
       this.isLoading = true;
       this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, this.inventoryFilter.type)
         .subscribe(data => {
 
           this.ItemsList = Utilities.responseData(data.ItemsList, this.pageSize);
-
+         
+          if (this.inventoryFilter.type == 1) {
+            this.containerCount = this.ItemsList.length;
+          }
+          if (this.inventoryFilter.type == 2) {
+            let result = data.ItemsList.filter(s => s.isEquipped);
+            this.equippedCount = result.length;
+          }
+          if (this.inventoryFilter.type == 3) {
+              this.alphabetCount = this.ItemsList.length;
+          }
+          if (this.inventoryFilter.type == 4) {
+          
+            let result = this.ItemsList.filter(s => s.isVisible);
+            this.visibleCount = result.length;
+           
+          }
           this.applyFilters(this.inventoryFilter.type, true);
 
           this.ruleSet = data.RuleSet;
@@ -236,6 +258,7 @@ export class CharacterItemsComponent implements OnInit {
       .subscribe(data => {
 
         var _ItemsList = data.ItemsList;
+       
         for (var i = 0; i < _ItemsList.length; i++) {
           _ItemsList[i].showIcon = false;
           try {
@@ -245,8 +268,24 @@ export class CharacterItemsComponent implements OnInit {
         }
         this.scrollLoading = false;
 
+        if (this.inventoryFilter.type == 1) {
+          
+          this.containerCount = this.ItemsList.length;
+        }
+        if (this.inventoryFilter.type == 2) {
+          let result = this.ItemsList.filter(s => s.isEquipped);
+          this.equippedCount = result.length;
+        }
+        if (this.inventoryFilter.type == 3) {
+          this.alphabetCount = this.ItemsList.length;
+        }
+        if (this.inventoryFilter.type == 4) {
+          let result = this.ItemsList.filter(s => s.isVisible);
+          this.visibleCount = result.length;
+        }
         this.applyFilters(this.inventoryFilter.type, true);
-
+      
+        
       }, error => {
         this.scrollLoading = false;
         this.isLoading = false;
@@ -269,7 +308,9 @@ export class CharacterItemsComponent implements OnInit {
   }
 
   showListView(view: boolean) {
+
     this.isListView = view;
+    this.isDenseView = false;
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
 
     this.pageLastView = {
@@ -289,6 +330,27 @@ export class CharacterItemsComponent implements OnInit {
       });
   }
 
+  showDenseview(view: boolean) {
+    this.isListView = false;
+    this.isDenseView = view;
+      let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+
+      this.pageLastView = {
+        pageName: 'CharacterItems',
+        viewType:  'Dense',
+        UserId: user.id
+      }
+    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+      .subscribe(data => {
+        if (data !== null) this.isDenseView = data.viewType == 'Dense' ? true : false;
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      });
+      
+  }
 
   manageIcon(id: number) {
     this.ItemsList.forEach(function (val) {
@@ -633,17 +695,17 @@ export class CharacterItemsComponent implements OnInit {
   }
 
   applyFilters(present_filter, apply_same = false, IsCalledFromClickFunction=false) {
-    if (apply_same) {
-      this.inventoryFilter.type = present_filter;
-    } else {
-      if (present_filter == 4) {
-        this.inventoryFilter.type = 1;
-      }
-      else {
-        this.inventoryFilter.type = present_filter + 1;
-      }
-    }
-
+    //if (apply_same) {
+    //  this.inventoryFilter.type = present_filter;
+    //} else {
+    //  if (present_filter == 4) {
+    //    this.inventoryFilter.type = 1;
+    //  }
+    //  else {
+    //    this.inventoryFilter.type = present_filter + 1;
+    //  }
+    //}
+    this.inventoryFilter.type = present_filter;
     if (IsCalledFromClickFunction) {
       this.isLoading = true;
       this.page = 1
@@ -676,12 +738,6 @@ export class CharacterItemsComponent implements OnInit {
       this.ImplementFilter();
     }
 
-
-
-    
-
-    
-   
   }
 
   private scrollToTop() {
@@ -761,5 +817,39 @@ export class CharacterItemsComponent implements OnInit {
     }
 
     this.localStorage.saveSyncedSessionData(this.inventoryFilter, 'inventoryFilter');
+  }
+   
+  getFilters() {
+    if (this.inventoryFilter.type == 2 || this.inventoryFilter.type == 3 || this.inventoryFilter.type == 4 ) {
+
+      this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, 1)
+        .subscribe(data => {
+          this.containerCount = data.ItemsList.length;
+        }, error => {
+        }, () => { });
+    }
+    if (this.inventoryFilter.type == 1 || this.inventoryFilter.type == 3 || this.inventoryFilter.type == 4) {
+      this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, 2)
+        .subscribe(data => {
+         let result = data.ItemsList.filter(s => s.isEquipped);
+          this.equippedCount = result.length;
+        }, error => {
+        }, () => { });
+    }
+    if (this.inventoryFilter.type == 1 || this.inventoryFilter.type == 2 || this.inventoryFilter.type == 4) {
+      this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, 3)
+        .subscribe(data => {
+          this.alphabetCount = data.ItemsList.length;
+        }, error => {
+        }, () => { });
+    }
+    if (this.inventoryFilter.type == 1 || this.inventoryFilter.type == 2 || this.inventoryFilter.type == 2) {
+      this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, 4)
+        .subscribe(data => {
+          let result = data.ItemsList.filter(s => s.isVisible);
+          this.visibleCount = result.length;
+        }, error => {
+        }, () => { });
+    }
   }
 }

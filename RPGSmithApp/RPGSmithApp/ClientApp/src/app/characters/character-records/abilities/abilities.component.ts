@@ -33,6 +33,7 @@ export class CharacterAbilitiesComponent implements OnInit {
   isLoading = false;
   isListView: boolean = false;
   showActions: boolean = true;
+  isDenseView: boolean = false;
   actionText: string;
   bsModalRef: BsModalRef;
   characterId: number;
@@ -55,7 +56,9 @@ export class CharacterAbilitiesComponent implements OnInit {
     viewableCount: 0
   };
   charNav: any = {};
-
+  AlphabeticalCount: number;
+  EnableCount: number;
+  LevelCount: number;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private rulesetService: RulesetService, private charactersService: CharactersService,
@@ -138,12 +141,24 @@ export class CharacterAbilitiesComponent implements OnInit {
           if (this.headers.headerId && this.headers.headerLink == 'character') {
             this.characterId = this.headers.headerId;
           }
-        }
+      }
+      this.getFilters();
+
       this.isLoading = true;
       this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.abilityFilter.type)
         .subscribe(data => {
           this.abilitiesList = Utilities.responseData(data.characterAbilityList, this.pageSize);
-
+        
+          if (this.abilityFilter.type == 1) {
+            this.AlphabeticalCount = this.abilitiesList.length;
+          }
+          if (this.abilityFilter.type == 2) {
+            let result = this.abilitiesList.filter(s => s.isEnabled);
+            this.EnableCount = result.length;
+          }
+          if (this.abilityFilter.type == 3) {
+            this.LevelCount = this.abilitiesList.length;
+          }
           this.applyFilters(this.abilityFilter.type, true);
 
           this.ruleSet = data.RuleSet;
@@ -209,6 +224,16 @@ export class CharacterAbilitiesComponent implements OnInit {
 
         this.applyFilters(this.abilityFilter.type, true);
 
+        if (this.abilityFilter.type == 1) {
+          this.AlphabeticalCount = this.abilitiesList.length;
+        }
+        if (this.abilityFilter.type == 2) {
+          let result = this.abilitiesList.filter(s => s.isEnabled);
+          this.EnableCount = result.length;
+        }
+        if (this.abilityFilter.type == 3) {
+          this.LevelCount = this.abilitiesList.length;
+        }
       }, error => {
         this.scrollLoading = false;
         this.isLoading = false;
@@ -232,6 +257,7 @@ export class CharacterAbilitiesComponent implements OnInit {
 
   showListView(view: boolean) {
     this.isListView = view;
+    this.isDenseView = false;
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
 
     this.pageLastView = {
@@ -251,6 +277,28 @@ export class CharacterAbilitiesComponent implements OnInit {
       });
   }
 
+  showDenseview(view: boolean) {
+    this.isListView = false;
+    this.isDenseView = view;
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+
+    this.pageLastView = {
+      pageName: 'CharacterAbilities',
+      viewType: 'Dense',
+      UserId: user.id
+    }
+    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+      .subscribe(data => {
+      
+        if (data !== null) this.isDenseView = data.viewType == 'Dense' ? true : false;
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      });
+
+  }
   manageIcon(id: number) {
 
     this.abilitiesList.forEach(function (val) {
@@ -536,17 +584,17 @@ export class CharacterAbilitiesComponent implements OnInit {
   }
 
   applyFilters(present_filter, apply_same = false, IsCalledFromClickFunction = false) {
-    if (apply_same) {
-      this.abilityFilter.type = present_filter;
-    } else {
-      if (present_filter == 3) {
-        this.abilityFilter.type = 1;
-      }
-      else {
-        this.abilityFilter.type = present_filter + 1;
-      }
-    }
-
+    //if (apply_same) {
+    //  this.abilityFilter.type = present_filter;
+    //} else {
+    //  if (present_filter == 3) {
+    //    this.abilityFilter.type = 1;
+    //  }
+    //  else {
+    //    this.abilityFilter.type = present_filter + 1;
+    //  }
+    //}
+    this.abilityFilter.type = present_filter;
 
     if (IsCalledFromClickFunction) {
       this.isLoading = true;
@@ -664,4 +712,30 @@ export class CharacterAbilitiesComponent implements OnInit {
 
     this.localStorage.saveSyncedSessionData(this.abilityFilter, 'abilityFilter');
   }
+    
+  getFilters() {
+    if (this.abilityFilter.type == 2 || this.abilityFilter.type == 3) {
+      this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize,1)
+        .subscribe(data => {
+          this.AlphabeticalCount = data.characterAbilityList.length;
+        }, error => {
+        }, () => { });
+    }
+    if (this.abilityFilter.type == 1 || this.abilityFilter.type == 3) {
+      this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 2)
+        .subscribe(data => {
+          let result = data.characterAbilityList.filter(s => s.isEnabled);
+          this.EnableCount = result.length;
+        }, error => {
+        }, () => { });
+    }
+    if (this.abilityFilter.type == 1 || this.abilityFilter.type == 2) {
+      this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize,3)
+        .subscribe(data => {
+          this.LevelCount = data.characterAbilityList.length;
+        }, error => {
+        }, () => { });
+    }
+  }
+
 }
