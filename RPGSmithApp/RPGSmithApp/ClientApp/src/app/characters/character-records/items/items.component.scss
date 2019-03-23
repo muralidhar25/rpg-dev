@@ -458,7 +458,7 @@
 }
 
 .dense-list .card-image {
-  width: 5rem;
+  width: 5rem !important;
   border-bottom-width: 0;
   border-right-width: 1px;
   height: 5rem;
@@ -499,11 +499,15 @@
   -webkit-line-clamp: unset;
   -webkit-box-orient: unset;
 }
-
+@media (max-width:991px){
+  .card-list.dense-list .card-wrapper .card .card-title {
+    font-size: .8rem;
+  }
+}
 @media (max-width:767px) {
   .dropdown-menu.filter-toggle-btn-light-menu,
   .dropdown-menu.filter-toggle-btn-menu {
     left: 0px;
     right: unset;
   }
-}
+  }
