@@ -64,7 +64,10 @@ export class CharacterItemsComponent implements OnInit {
   alphabetCount: number;
   equippedCount : number;
   visibleCount: number;
-
+  Uncontained: boolean = false;
+  Equipped: boolean = false;
+  Alphabetical: boolean = false;
+  Visible: boolean = false;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private pageLastViewsService: PageLastViewsService,
@@ -705,6 +708,31 @@ export class CharacterItemsComponent implements OnInit {
     //    this.inventoryFilter.type = present_filter + 1;
     //  }
     //}
+    if (present_filter == 1) {
+      this.Uncontained = true;
+      this.Equipped= false;
+      this.Alphabetical= false;
+      this.Visible= false;
+    }
+    else if (present_filter == 2) {
+      this.Uncontained = false;
+      this.Equipped = true;
+      this.Alphabetical = false;
+      this.Visible = false;
+    }
+    else if (present_filter == 3) {
+      this.Uncontained = false;
+      this.Equipped = false;
+      this.Alphabetical = true;
+      this.Visible = false;
+    }
+    else{
+      this.Uncontained = false;
+      this.Equipped = false;
+      this.Alphabetical = false;
+      this.Visible = true;
+    }
+     
     this.inventoryFilter.type = present_filter;
     if (IsCalledFromClickFunction) {
       this.isLoading = true;

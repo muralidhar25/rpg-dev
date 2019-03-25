@@ -21,6 +21,7 @@ import { CharactersService } from "../../../core/services/characters.service";
 import { CreateAbilitiesComponent } from "../../../shared/create-abilities/create-abilities.component";
 import { AppService1 } from "../../../app.service";
 import { HeaderValues } from "../../../core/models/headers.model";
+import { fadeInOut } from "../../../core/services/animations";
 
 @Component({
     selector: 'app-abilities',
@@ -59,6 +60,11 @@ export class CharacterAbilitiesComponent implements OnInit {
   AlphabeticalCount: number;
   EnableCount: number;
   LevelCount: number;
+  Alphabetical: boolean = false;
+  Enabled: boolean = false;
+  Level: boolean = false;
+
+
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private rulesetService: RulesetService, private charactersService: CharactersService,
@@ -594,6 +600,26 @@ export class CharacterAbilitiesComponent implements OnInit {
     //    this.abilityFilter.type = present_filter + 1;
     //  }
     //}
+
+    if (present_filter == 1) {
+      this.Alphabetical = true;
+      this.Enabled = false;
+      this.Level = false;
+    
+    }
+    else if (present_filter == 2) {
+      this.Alphabetical = false;
+      this.Enabled = true;
+      this.Level = false;
+    }
+    else{
+      this.Alphabetical = false;
+      this.Enabled = false;
+      this.Level = true;
+    }
+
+
+
     this.abilityFilter.type = present_filter;
 
     if (IsCalledFromClickFunction) {

@@ -429,6 +429,10 @@
   justify-content: space-between;
   text-transform: capitalize
 }
+.dropdown-menu.filter-toggle-btn-menu .btn.selected {
+  background-color: #38312d !important;
+}
+
 
 .dropdown-menu.filter-toggle-btn-menu .btn span {
   width: 32px;

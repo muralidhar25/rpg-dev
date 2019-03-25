@@ -85,10 +85,10 @@
                   <span *ngIf="inventoryFilter.icon && inventoryFilter.type != 3" [ngClass]="inventoryFilter.icon"></span>
                 </button>
                 <div class="dropdown-menu filter-toggle-btn-menu" aria-labelledby="dropdownMenuButton">
-                  <button type="button" id="listViewTrigger" class="btn icon icon-Rec-Container" (click)="applyFilters(1,false,true)">Uncontained<span>{{containerCount}}</span></button>
-                  <button type="button" id="equippedViewTrigger" class="btn icon icon-Rec-Equipped" (click)="applyFilters(2,false,true)">Equipped<span>{{equippedCount}}</span></button>
-                  <button type="button" id="listViewTrigger" class="btn" (click)="applyFilters(3,false,true)"><i>A</i>Alphabetical <span>{{alphabetCount}}</span></button>
-                  <button type="button" id="gridViewTrigger" class="btn icon icon-Rec-Visible" (click)="applyFilters(4,false,true)"> Visible <span>{{visibleCount}}</span></button>
+                  <button type="button" id="listViewTrigger" class="btn icon icon-Rec-Container" [ngClass]="Uncontained ? 'selected' :''" (click)="applyFilters(1,false,true)">Uncontained<span>{{containerCount}}</span></button>
+                  <button type="button" id="equippedViewTrigger" class="btn icon icon-Rec-Equipped" [ngClass]="Equipped ? 'selected' :''" (click)="applyFilters(2,false,true)">Equipped<span>{{equippedCount}}</span></button>
+                  <button type="button" id="listViewTrigger" class="btn" [ngClass]="Alphabetical ? 'selected' :''" (click)="applyFilters(3,false,true)"><i>A</i>Alphabetical <span>{{alphabetCount}}</span></button>
+                  <button type="button" id="gridViewTrigger" class="btn icon icon-Rec-Visible" [ngClass]="Visible ? 'selected' :''" (click)="applyFilters(4,false,true)"> Visible <span>{{visibleCount}}</span></button>
                 </div>
               </div>
               <div class="dropdown">
@@ -97,10 +97,10 @@
                   <i  [ngClass]="!isListView && !isDenseView ? 'icon icon-grid' :''" ></i>
                   <i [ngClass]="isListView && !isDenseView ? 'icon icon-list' :''" ></i>
                 </button>
-                <div class="dropdown-menu filter-toggle-btn-light-menu" aria-labelledby="dropdownMenuButton">
-                  <button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="!isListView && !isDenseView ? 'selected' :''"  (click)="showListView(false)">Grid</button>
-                  <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="isListView && !isDenseView ? 'selected' :''"  (click)="showListView(true)">List</button>
-                  <button type="button" id="denseViewTrigger" class="btn icon icon-Rec-Dense" [ngClass]="isDenseView ? 'selected': '' " (click)="showDenseview(true)" > Dense</button>
+                <div class="dropdown-menu filter-toggle-btn-menu" aria-labelledby="dropdownMenuButton">
+                  <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="isListView && !isDenseView ? 'selected' :''" (click)="showListView(true)">List</button>
+                  <button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="!isListView && !isDenseView ? 'selected' :''" (click)="showListView(false)">Grid</button>
+                  <button type="button" id="denseViewTrigger" class="btn icon icon-Rec-Dense" [ngClass]="isDenseView ? 'selected': '' " (click)="showDenseview(true)"> Dense</button>
                 </div>
               </div>
             </div>

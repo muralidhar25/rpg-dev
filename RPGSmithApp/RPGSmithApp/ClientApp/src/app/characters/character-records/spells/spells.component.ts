@@ -60,7 +60,9 @@ export class CharacterSpellsComponent implements OnInit {
   LevelCount: number;
   alphabetCount: number; 
   ReadiedCount: number;
-
+  Alphabetical: boolean = false;
+  Readied: boolean = false;
+  Level: boolean = false;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -562,6 +564,24 @@ export class CharacterSpellsComponent implements OnInit {
     //    this.spellFilter.type = present_filter + 1;
     //  }
     //}
+    if (present_filter == 1) {
+      this.Alphabetical = true;
+      this.Readied = false;
+      this.Level = false;
+
+    }
+    else if (present_filter == 2) {
+      this.Alphabetical = false;
+      this.Readied = true;
+      this.Level = false;
+    }
+    else {
+      this.Alphabetical = false;
+      this.Readied = false;
+      this.Level = true;
+    }
+
+
     this.spellFilter.type = present_filter;
     if (IsCalledFromClickFunction) {
       this.isLoading = true;

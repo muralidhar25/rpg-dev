@@ -137,7 +137,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
 
     editItem(item: any) {
         this.bsModalRef = this.modalService.show(EditItemComponent, {
-            class: 'modal-primary modal-md',
+            class: 'modal-primary modal-custom',
             ignoreBackdropClick: true,
             keyboard: false
         });
@@ -154,7 +154,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
                 //this.alertService.stopLoadingMessage();
                 if (data < 2000) {
                     this.bsModalRef = this.modalService.show(EditItemComponent, {
-                        class: 'modal-primary modal-md',
+                        class: 'modal-primary modal-custom',
                         ignoreBackdropClick: true,
                         keyboard: false
                     });

@@ -122,7 +122,7 @@ export class AbilityDetailsComponent implements OnInit {
 
     editAbility(ability: Ability) {
         this.bsModalRef = this.modalService.show(CreateAbilitiesComponent, {
-            class: 'modal-primary modal-md',
+            class: 'modal-primary modal-custom',
             ignoreBackdropClick: true,
             keyboard: false
         });
