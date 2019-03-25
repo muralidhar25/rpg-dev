@@ -200,6 +200,7 @@ export class CharacterDashboardComponent implements OnInit {
 
         this.layoutService.getLayoutsByCharacterId(this.characterId, -1, -1)
           .subscribe(data => {
+            debugger;
             this.characterlayouts = data;
             //if (this.characterlayouts.length == 1) {
             //    this.selectedlayout = this.characterlayouts[0];
@@ -1636,12 +1637,11 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   private mapBoxes(List) {
-
+ 
     let boxes: Box[] = [];
     let ngGridItemConfig: NgGridItemConfig;
     List.map((item, index) => {
       index = index + 1;
-
       if (item.hasOwnProperty("config") && item.config) { //Values set in DB
         ngGridItemConfig = { dragHandle: ".handle", payload: item.config.characterTileId, col: item.config.col, row: item.config.row, sizex: item.config.sizeX, sizey: item.config.sizeY, };
         this.BoxesCurrentColumn = item.config.col
@@ -2040,121 +2040,122 @@ export class CharacterDashboardComponent implements OnInit {
         let _SqrBrktEnd = "_SQRBRKTEND";
         let _InventoryWeight = "INVENTORYWEIGHT";
         let text = item.textTiles.text;
-        this.CharacterStatsValues.charactersCharacterStat.map((stat) => {
-          if (item.textTiles.text) {
-            if (item.textTiles.text.toUpperCase().indexOf("[" + _InventoryWeight + "]") > -1) {
-              text = text.replace(/\[/g, _SqrBrktStart);
-              text = text.replace(/\]/g, _SqrBrktEnd);
-              let expText: string = (_SqrBrktStart + _InventoryWeight.toUpperCase() + _SqrBrktEnd).toUpperCase();
-              if (text.toUpperCase().indexOf(expText) > -1) {
-                let expression = new RegExp(expText, 'g');
+        if (this.CharacterStatsValues.charactersCharacterStat) {
+          this.CharacterStatsValues.charactersCharacterStat.map((stat) => {
+            if (item.textTiles.text) {
+              if (item.textTiles.text.toUpperCase().indexOf("[" + _InventoryWeight + "]") > -1) {
+                text = text.replace(/\[/g, _SqrBrktStart);
+                text = text.replace(/\]/g, _SqrBrktEnd);
+                let expText: string = (_SqrBrktStart + _InventoryWeight.toUpperCase() + _SqrBrktEnd).toUpperCase();
+                if (text.toUpperCase().indexOf(expText) > -1) {
+                  let expression = new RegExp(expText, 'g');
 
-                let value: string = this.CharacterStatsValues.character.inventoryWeight;
+                  let value: string = this.CharacterStatsValues.character.inventoryWeight;
 
-                text = text.toUpperCase().replace(expression, value);
-                item.textTiles.displaytext = text;
-                item.textTiles.displaytext = item.textTiles.displaytext.replace(new RegExp(_SqrBrktStart, 'g'), "[");
-                item.textTiles.displaytext = item.textTiles.displaytext.replace(new RegExp(_SqrBrktEnd, 'g'), "]");
-                //})
+                  text = text.toUpperCase().replace(expression, value);
+                  item.textTiles.displaytext = text;
+                  item.textTiles.displaytext = item.textTiles.displaytext.replace(new RegExp(_SqrBrktStart, 'g'), "[");
+                  item.textTiles.displaytext = item.textTiles.displaytext.replace(new RegExp(_SqrBrktEnd, 'g'), "]");
+                  //})
+                }
               }
-            }
-            if (item.textTiles.text.toUpperCase().indexOf("[" + stat.characterStat.statName.toUpperCase() + "]") > -1) {
-              text = text.replace(/\[/g, _SqrBrktStart);
-              text = text.replace(/\]/g, _SqrBrktEnd);
-              //let expression = new RegExp("\[" + stat.characterStat.statName.toUpperCase() +"\]", 'g');
-              let expText: string = (_SqrBrktStart + stat.characterStat.statName.toUpperCase() + _SqrBrktEnd).toUpperCase();
-              if (text.toUpperCase().indexOf(expText) > -1) {
-                let expression = new RegExp(expText, 'g');
-                //item.textTiles.text.split(expression).map((x) => {
-                let value: string = "";
-                let defVal = expText.replace(new RegExp(_SqrBrktStart, 'g'), "[").replace(new RegExp(_SqrBrktEnd, 'g'), "]");
-                switch (stat.characterStat.characterStatTypeId) {
-                  case STAT_TYPE.Choice:
-                    if (stat.choice) {
-                      AllChoices.map((ach) => {
-                        if (stat.choice == ach.characterStatChoiceId) {
-                          value = ach.statChoiceValue;
-                        }
-                      })
-
-                    }
-                    else if (stat.multiChoice) {
-                      stat.multiChoice.split(';').map((mchid) => {
-                        AllChoices.map((ach, index) => {
-                          if (mchid == ach.characterStatChoiceId) {
-                            value += ach.statChoiceValue + ", ";
+              if (item.textTiles.text.toUpperCase().indexOf("[" + stat.characterStat.statName.toUpperCase() + "]") > -1) {
+                text = text.replace(/\[/g, _SqrBrktStart);
+                text = text.replace(/\]/g, _SqrBrktEnd);
+                //let expression = new RegExp("\[" + stat.characterStat.statName.toUpperCase() +"\]", 'g');
+                let expText: string = (_SqrBrktStart + stat.characterStat.statName.toUpperCase() + _SqrBrktEnd).toUpperCase();
+                if (text.toUpperCase().indexOf(expText) > -1) {
+                  let expression = new RegExp(expText, 'g');
+                  //item.textTiles.text.split(expression).map((x) => {
+                  let value: string = "";
+                  let defVal = expText.replace(new RegExp(_SqrBrktStart, 'g'), "[").replace(new RegExp(_SqrBrktEnd, 'g'), "]");
+                  switch (stat.characterStat.characterStatTypeId) {
+                    case STAT_TYPE.Choice:
+                      if (stat.choice) {
+                        AllChoices.map((ach) => {
+                          if (stat.choice == ach.characterStatChoiceId) {
+                            value = ach.statChoiceValue;
                           }
                         })
-                      })
-                      if (value.length) {
-                        value = value.substring(0, value.length - 2)
+
                       }
-                    }
-                    break;
-                  case STAT_TYPE.Command:
-                    value = stat.command;
-                    break;
-                  case STAT_TYPE.OnOff:
-                    value = stat.onOff;
-                    break;
-                  case STAT_TYPE.RichText:
-                    value = defVal;
-                    break;
-                  case STAT_TYPE.Text:
-                    value = stat.text;
-                    break;
-                  case STAT_TYPE.YesNo:
-                    value = stat.yesNo;
-                    break;
-                  case STAT_TYPE.Number:
-                    value = stat.number
-                    break;
-                  case STAT_TYPE.CurrentMax:
-                    value = stat.current + " / " + stat.maximum;
-                    break;
-                  case STAT_TYPE.ValueSubValue:
-                    value = stat.value + " (" + stat.subValue + ")";
-                    break;
-                  case STAT_TYPE.Calculation:
-                    value = stat.calculationResult
-                    break;
-                  case STAT_TYPE.Combo:
-                    let defaultValue = +stat.defaultValue;
-                    let combotext = stat.comboText ? stat.comboText : '';
-                    value = (defaultValue + " / " + combotext).toString();
-                    break;
-                  case STAT_TYPE.Toggle:
-                    switch (true) {
-                      case stat.display:
-                        value = defVal;
-                        break;
-                      case stat.yesNo:
-                        value = stat.isYes ? "Yes" : "No";
-                        break;
-                      case stat.onOff:
-                        value = stat.isOn ? "On" : "Off";
-                        break;
-                      case stat.isCustom:
-                        value = defVal;
-                        break;
-                      default:
-                    }
-                    break;
-                  default:
-                    break;
+                      else if (stat.multiChoice) {
+                        stat.multiChoice.split(';').map((mchid) => {
+                          AllChoices.map((ach, index) => {
+                            if (mchid == ach.characterStatChoiceId) {
+                              value += ach.statChoiceValue + ", ";
+                            }
+                          })
+                        })
+                        if (value.length) {
+                          value = value.substring(0, value.length - 2)
+                        }
+                      }
+                      break;
+                    case STAT_TYPE.Command:
+                      value = stat.command;
+                      break;
+                    case STAT_TYPE.OnOff:
+                      value = stat.onOff;
+                      break;
+                    case STAT_TYPE.RichText:
+                      value = defVal;
+                      break;
+                    case STAT_TYPE.Text:
+                      value = stat.text;
+                      break;
+                    case STAT_TYPE.YesNo:
+                      value = stat.yesNo;
+                      break;
+                    case STAT_TYPE.Number:
+                      value = stat.number
+                      break;
+                    case STAT_TYPE.CurrentMax:
+                      value = stat.current + " / " + stat.maximum;
+                      break;
+                    case STAT_TYPE.ValueSubValue:
+                      value = stat.value + " (" + stat.subValue + ")";
+                      break;
+                    case STAT_TYPE.Calculation:
+                      value = stat.calculationResult
+                      break;
+                    case STAT_TYPE.Combo:
+                      let defaultValue = +stat.defaultValue;
+                      let combotext = stat.comboText ? stat.comboText : '';
+                      value = (defaultValue + " / " + combotext).toString();
+                      break;
+                    case STAT_TYPE.Toggle:
+                      switch (true) {
+                        case stat.display:
+                          value = defVal;
+                          break;
+                        case stat.yesNo:
+                          value = stat.isYes ? "Yes" : "No";
+                          break;
+                        case stat.onOff:
+                          value = stat.isOn ? "On" : "Off";
+                          break;
+                        case stat.isCustom:
+                          value = defVal;
+                          break;
+                        default:
+                      }
+                      break;
+                    default:
+                      break;
+                  }
+                  text = text.toUpperCase().replace(expression, value);
+                  item.textTiles.displaytext = text;
+                  item.textTiles.displaytext = item.textTiles.displaytext.replace(new RegExp(_SqrBrktStart, 'g'), "[");
+                  item.textTiles.displaytext = item.textTiles.displaytext.replace(new RegExp(_SqrBrktEnd, 'g'), "]");
+                  //})
                 }
-                text = text.toUpperCase().replace(expression, value);
-                item.textTiles.displaytext = text;
-                item.textTiles.displaytext = item.textTiles.displaytext.replace(new RegExp(_SqrBrktStart, 'g'), "[");
-                item.textTiles.displaytext = item.textTiles.displaytext.replace(new RegExp(_SqrBrktEnd, 'g'), "]");
-                //})
+
               }
 
             }
-
-          }
-        })
-
+          })
+        }
       }
       ////////////////////////////////
       let box: Box = { config: ngGridItemConfig, tile: item, IsCharacter: false };

@@ -14,7 +14,7 @@
               <img [src]="appLogoSmall" alt="Logo">
             </div>
           </div>
-          <ng-container *ngIf="headers && !showCharacterSearch">
+          <ng-container *ngIf="(headers && !showCharacterSearch) ||(dashbaordUser)">
             <div class="user-login-details" *ngIf="headers.hasHeader" (click)="gotoDashboard()" [ngClass]="IsCharacterRecordScreenActive?'active-profile':''">
               <span>
                 <img [src]="headers?.headerImage" [alt]="headers?.headerName" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
@@ -23,7 +23,7 @@
             </div>
           </ng-container>
           <ng-container *ngIf="IsCharacterRecordScreen">
-            <div class="user-login-details" *ngIf="headers.hasHeader" (click)="gotoRulesetViewForCharacter()" [ngClass]="IsRulesetRecordScreenActive?'active-profile':''">
+            <div class="user-login-details" *ngIf="headers?.hasHeader" (click)="gotoRulesetViewForCharacter()" [ngClass]="IsRulesetRecordScreenActive?'active-profile':''">
               <span>
                 <img [src]="ruleset?.imageUrl" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
               </span>

@@ -30,7 +30,7 @@ import { FileUploadService } from '../../core/common/file-upload.service';
     styleUrls: ['./character-stat.component.scss']
 })
 export class RulesetCharacterStatTileComponent implements OnInit {
-
+    
     content: any;
     color: any;
     limitText: string = "Show more";
@@ -86,7 +86,7 @@ export class RulesetCharacterStatTileComponent implements OnInit {
     }
 
     ngOnInit() {
-
+      console.log('in rule setssssss');
         setTimeout(() => {
             this.rulesetId = this.bsModalRef.content.rulesetId;
             this.title = this.bsModalRef.content.title;

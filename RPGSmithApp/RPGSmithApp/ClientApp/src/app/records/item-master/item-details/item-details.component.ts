@@ -107,7 +107,7 @@ export class ItemDetailsComponent implements OnInit {
     
     editItemTemplate(itemMaster: ItemMaster) {
         this.bsModalRef = this.modalService.show(CreateItemMsterComponent, {
-            class: 'modal-primary modal-md',
+            class: 'modal-primary modal-custom',
             ignoreBackdropClick: true,
             keyboard: false
         });

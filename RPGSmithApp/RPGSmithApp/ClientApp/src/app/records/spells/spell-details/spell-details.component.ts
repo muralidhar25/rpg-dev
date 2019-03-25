@@ -109,7 +109,7 @@ export class SpellDetailsComponent implements OnInit {
 
     editSpell(spell: Spell) {
         this.bsModalRef = this.modalService.show(CreateSpellsComponent, {
-            class: 'modal-primary modal-md',
+            class: 'modal-primary modal-custom',
             ignoreBackdropClick: true,
             keyboard: false
         });

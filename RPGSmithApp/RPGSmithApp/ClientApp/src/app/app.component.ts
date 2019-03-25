@@ -103,6 +103,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   currentUrl: string = ''
   previousUrlList: string[] = []
   characterNavigation: any = {};
+  dashbaordUser: boolean = false;
 
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
@@ -598,6 +599,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.showCharacterSearch = ((url.toLowerCase() == '/character/dashboard'));
         if (url.toUpperCase().indexOf('/CHARACTER/DASHBOARD/') > -1) {
           this.showCharacterSearch = true;
+          this.dashbaordUser = true;
         } else {
           this.showCharacterSearch = false;
         }
