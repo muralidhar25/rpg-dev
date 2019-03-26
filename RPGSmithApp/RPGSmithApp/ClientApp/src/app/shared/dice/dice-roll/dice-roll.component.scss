@@ -214,7 +214,8 @@
     padding: 5px;
 }
 .popup-dice .new-command.result .command-canvas ul li .btn.dice-small-font em{
-  /*font-size:16px;*/word-break:unset;
+  /*font-size:16px;*/
+  //word-break:unset;
 }
 @media (max-width:480px) {
   .popup-dice .new-command.result .command-canvas ul li .btn em {

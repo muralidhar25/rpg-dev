@@ -480,13 +480,32 @@
   .page-inventory .cards-inventory .card-list.dense-list .card-actions-trigger {
     display: none !important
   }
-
-  .page-inventory .cards-inventory .card-list.dense-list .card-body {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
-    padding: 0 1rem !important;
-  }
+.page-inventory .cards-inventory .card-list.dense-list .item-properties:nth-child(3) {
+  display: block !important;
+  margin: 6px 0px !important;
+  height: auto;
+  line-height: 0;
+}
+.page-inventory .cards-inventory .card-list.dense-list .item-properties:nth-child(3) li{
+  margin:2px 0 !important; 
+}
+.page-inventory .cards-inventory .card-list.dense-list .item-properties:nth-child(3) li i:before {
+  font-size: 16px !important
+}
+.page-inventory .cards-inventory .card-list .card-wrapper .card:hover .item-properties:nth-child(3) {
+  visibility: visible !important
+}
+.page-inventory .cards-inventory .card-list .card-wrapper .card .item-properties:nth-child(3) .item-property-icon {
+  padding-bottom: 0;
+  padding-left: 1px;
+  padding-right: 1px;
+}
+.page-inventory .cards-inventory .card-list.dense-list .card-body {
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  padding: 0 1rem !important;
+}
 
   .card-list.dense-list .card-wrapper .card {
     flex-direction: row;

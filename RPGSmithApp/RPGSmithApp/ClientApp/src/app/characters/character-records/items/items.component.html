@@ -156,7 +156,7 @@
                   <li *ngIf="Item?.volume>=0" class="item-property item-property-text volume" title="Volume" data-toggle="Volume">{{Item.volume}} <small *ngIf="ruleSet?.volumeLabel">({{ruleSet?.volumeLabel}})</small></li>
                 </ul>
 
-                <ul class="item-properties " *ngIf="isListView">
+                <ul class="item-properties " *ngIf="isListView || isDenseView">
                   <li *ngIf="Item?.isConsumable" title="Consumable" data-toggle="tooltip">
                     <i class="item-property item-property-icon icon icon-Rec-consumable icon-ico"></i>
                   </li>

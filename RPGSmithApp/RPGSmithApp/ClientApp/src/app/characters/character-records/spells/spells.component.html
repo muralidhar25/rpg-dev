@@ -171,7 +171,7 @@
                   <li *ngIf="spell.spell.levels" class="item-property item-property-text levels">{{spell.spell.levels}}</li>
                   <li *ngIf="spell.spell.castingTime && isListView" class="item-property item-property-text levels">{{spell.spell.castingTime}}</li>
                 </ul>
-                <ul class="item-properties mb-4 " *ngIf="isListView">
+                <ul class="item-properties mb-4 " *ngIf="isListView || isDenseView">
                   <li *ngIf="spell.spell.isSomaticComponent" class="item-property item-property-icon icon-ico icon-Rec-Somantic" title="Somatic Component" data-toggle="tooltip"></li>
                   <li *ngIf="spell.spell.isVerbalComponent" class="item-property item-property-icon icon-ico icon-Rec-Verbal" title="Verbal Component" data-toggle="tooltip"></li>
                   <li *ngIf="spell.spell.isMaterialComponent" class="item-property item-property-icon icon-ico icon-Rec-Material icon-rsi" title="Material Component" data-toggle="tooltip"></li>
