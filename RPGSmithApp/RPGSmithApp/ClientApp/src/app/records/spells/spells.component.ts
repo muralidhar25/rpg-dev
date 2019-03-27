@@ -30,7 +30,8 @@ export class SpellsComponent implements OnInit {
 
     rulesetModel: any;
     isLoading = false;
-    isListView: boolean = false;
+  isListView: boolean = false;
+  isDenseView: boolean = false;
     showActions: boolean = true;
     actionText: string;
     bsModalRef: BsModalRef;
@@ -106,7 +107,21 @@ export class SpellsComponent implements OnInit {
 
             this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetSpells')
                 .subscribe(data => {
-                    if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
+                   // if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
+                  if (data !== null) {
+                    if (data.viewType == 'List') {
+                      this.isListView = true;
+                      this.isDenseView = false;
+                    }
+                    else if (data.viewType == 'Dense') {
+                      this.isDenseView = true;
+                      this.isListView = false;
+                    }
+                    else {
+                      this.isListView = false;
+                      this.isDenseView = false;
+                    }
+                  }
                 }, error => {
                     let Errors = Utilities.ErrorDetail("", error);
                     if (Errors.sessionExpire) {
@@ -158,7 +173,8 @@ export class SpellsComponent implements OnInit {
     }
 
     showListView(view: boolean) {
-        this.isListView = view;
+      this.isListView = view;
+      this.isDenseView = false;
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
 
         this.pageLastView = {
@@ -176,8 +192,29 @@ export class SpellsComponent implements OnInit {
                     this.authService.logout(true);
                 }
             });
+  }
+
+  showDenseview(view: boolean) {
+    this.isDenseView = view;
+    this.isListView = false;
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+
+    this.pageLastView = {
+      pageName: 'RulesetSpells',
+      viewType: 'Dense',
+      UserId: user.id
     }
 
+    this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
+      .subscribe(data => {
+        if (data !== null) this.isDenseView = data.viewType == 'Dense' ? true : false;
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      });
+  }
     manageIcon(id: number) {
         this.spellsList.forEach(function (val) {
             if (id === val.spellId) {

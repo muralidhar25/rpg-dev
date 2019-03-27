@@ -529,7 +529,7 @@
 }
 @media (max-width:991px) {
   .card-list.dense-list .card-wrapper .card .card-title {
-    font-size: .8rem;
+    width: 100px;
   }
 }
 @media (max-width:767px) {
@@ -539,3 +539,5 @@
     right: unset;
   }
 }
+
+

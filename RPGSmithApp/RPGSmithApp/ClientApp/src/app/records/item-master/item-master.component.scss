@@ -312,3 +312,217 @@
     transform: translate(-50%,-50%);
   }
 
+/*dropdownFilter css*/
+.dropdown-menu.filter-toggle-btn-light-menu {
+  background-color: #d3cfce !important;
+  box-shadow: none;
+  margin-top: 3px;
+}
+
+.dropdown-menu.filter-toggle-btn-light-menu .btn {
+  width: 100%;
+  background-color: transparent !important;
+  text-align: left;
+  padding: 6px 10px 6px 32px;
+  position: relative;
+  border-bottom: 1px solid #38312d;
+}
+
+.dropdown-menu.filter-toggle-btn-light-menu .btn:last-child {
+  border-bottom: 0px;
+}
+
+.dropdown-menu.filter-toggle-btn-light-menu .btn.selected {
+  background-color: #7f7f7f !important;
+  color: #fff;
+}
+
+.dropdown-menu.filter-toggle-btn-light-menu .btn.selected:before {
+  color: #fff;
+}
+
+.dropdown-menu.filter-toggle-btn-light-menu .btn:before {
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  -webkit-transform: translate(0, -50%);
+  transform: translate(0, -52%);
+}
+
+.dropdown-menu.filter-toggle-btn-menu {
+  background-color: #7f7f7f !important;
+  box-shadow: none;
+  margin-top: 3px;
+  max-width: 200px;
+}
+
+.dropdown-menu.filter-toggle-btn-menu .btn {
+  width: 100%;
+  background-color: transparent !important;
+  text-align: left;
+  padding: 6px 10px 6px 32px;
+  position: relative;
+  border-bottom: 1px solid #38312d;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  text-transform: capitalize
+}
+
+.dropdown-menu.filter-toggle-btn-menu .btn.selected {
+  background-color: #38312d !important;
+}
+
+.dropdown-menu.filter-toggle-btn-menu .btn span {
+  width: 32px;
+  background: #938c88;
+  padding: 1px 0px;
+  display: inline-block;
+  text-align: center;
+  margin-left: 21px;
+}
+
+.dropdown-menu.filter-toggle-btn-menu .btn:last-child {
+  border-bottom: 0px;
+}
+
+.dropdown-menu.filter-toggle-btn-light-menu .btn.selected {
+  background-color: #38312d !important;
+  color: #fff;
+}
+
+.dropdown-menu.filter-toggle-btn-menu .btn.selected:before {
+  color: #fff;
+}
+
+.dropdown-menu.filter-toggle-btn-menu .btn:before,
+.dropdown-menu.filter-toggle-btn-menu .btn > i {
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  -webkit-transform: translate(0, -50%);
+  transform: translate(0, -52%);
+  color: #fff;
+}
+
+.dropdown-toggle:after {
+  display: none !important;
+}
+
+
+/*Dense-list css*/
+.dense-list .card-image {
+  width: 5rem !important;
+  border-bottom-width: 0;
+  border-right-width: 1px;
+  height: 5rem
+}
+
+.page-inventory .cards-inventory .card-list.dense-list .item-properties,
+.page-inventory .cards-inventory .card-list.dense-list .discription-tick,
+.page-inventory .cards-inventory .card-list.dense-list .item-properties,
+.page-inventory .cards-inventory .card-list.dense-list .item-actions,
+.page-inventory .cards-inventory .card-list.dense-list .item-stats,
+.page-inventory .cards-inventory .card-list.dense-list .card-actions-trigger {
+  display: none !important
+}
+
+.page-inventory .cards-inventory .card-list.dense-list .card-body {
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  padding: 0 1rem !important;
+}
+
+.card-list.dense-list .card-wrapper .card {
+  flex-direction: row;
+  align-items: center;
+}
+
+.card-list.dense-list .card-wrapper .card .card-title {
+  width: 100%;
+  font-size: 1rem;
+  height: 20px;
+  white-space: normal;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+@media (max-width:991px) {
+  .card-list.dense-list .card-wrapper .card .card-title {
+    width: 100px;
+  }
+}
+
+
+.dense-list .card-image {
+  width: 5rem !important;
+  border-bottom-width: 0;
+  border-right-width: 1px;
+  height: 5rem;
+  min-height: 0px !important;
+}
+
+.cards-inventory .card-list.dense-list .card-wrapper .card-equip .card-image {
+  min-height: 0px !important
+}
+
+.page-inventory .cards-inventory .card-list.dense-list .item-properties,
+.page-inventory .cards-inventory .card-list.dense-list .discription-tick,
+.page-inventory .cards-inventory .card-list.dense-list .item-properties,
+.page-inventory .cards-inventory .card-list.dense-list .item-actions,
+.page-inventory .cards-inventory .card-list.dense-list .item-stats,
+.page-inventory .cards-inventory .card-list.dense-list .card-actions-trigger {
+  display: none !important
+}
+
+.page-inventory .cards-inventory .card-list.dense-list .card-body {
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  padding: 0 1rem !important;
+}
+
+.card-list.dense-list .card-wrapper .card {
+  flex-direction: row;
+  align-items: center;
+}
+
+
+
+
+@media (max-width:767px) {
+  .dropdown-menu.filter-toggle-btn-light-menu,
+  .dropdown-menu.filter-toggle-btn-menu {
+    left: 0px;
+    right: unset;
+  }
+}
+
+/*hide Show items*/
+.page-inventory .cards-inventory .card-list.dense-list .item-properties:nth-child(3) {
+  display: block !important;
+  margin: 6px 0px !important;
+  height: auto;
+  line-height: 0;
+}
+
+.page-inventory .cards-inventory .card-list.dense-list .item-properties:nth-child(3) li {
+  margin: 2px 0 !important;
+}
+
+.page-inventory .cards-inventory .card-list.dense-list .item-properties:nth-child(3) li i:before {
+  font-size: 16px !important
+}
+
+.page-inventory .cards-inventory .card-list .card-wrapper .card:hover .item-properties:nth-child(3) {
+  visibility: visible !important
+}
+
+.page-inventory .cards-inventory .card-list .card-wrapper .card .item-properties:nth-child(3) .item-property-icon {
+  padding-bottom: 0;
+  padding-left: 1px;
+  padding-right: 1px;
+}

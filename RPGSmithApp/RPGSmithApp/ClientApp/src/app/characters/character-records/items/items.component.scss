@@ -524,11 +524,11 @@
   -webkit-box-orient: vertical;
 }
 
-  @media (max-width:991px) {
-    .card-list.dense-list .card-wrapper .card .card-title {
-      font-size: .8rem;
-    }
+@media (max-width:991px) {
+  .card-list.dense-list .card-wrapper .card .card-title {
+    width: 100px;
   }
+}
 
   @media (max-width:767px) {
     .dropdown-menu.filter-toggle-btn-light-menu,

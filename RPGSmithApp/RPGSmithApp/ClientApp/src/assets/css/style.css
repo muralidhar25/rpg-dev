@@ -3456,13 +3456,13 @@ a {
   display: none;
 }
 
-@media screen and (min-width: 767.5px) {
+@media screen and (min-width: 991.5px) {
   .site-header-logo-full {
     display: block;
   }
 }
 
-@media screen and (min-width: 767.5px) {
+@media screen and (min-width: 991.5px) {
   .site-header-logo-small {
     display: none;
   }

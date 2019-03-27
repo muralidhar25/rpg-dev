@@ -206,3 +206,25 @@
     margin-left:.5rem
   }
 }
+@media screen and (min-width: 768px) {
+  .site-header-logo-full {
+    display: none !important;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .site-header-logo-small {
+    display: block !important;
+  }
+}
+@media screen and (min-width: 991.5px) {
+  .site-header-logo-full {
+    display: block !important;
+  }
+}
+
+@media screen and (min-width: 991.5px) {
+  .site-header-logo-small {
+    display: none !important;
+  }
+}
