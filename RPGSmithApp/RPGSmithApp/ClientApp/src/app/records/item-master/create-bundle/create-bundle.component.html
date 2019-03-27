@@ -143,14 +143,13 @@
         <div class="form-group">
 
           <label for="contains">Contains</label>
-          <div class="form-group form-group-unlabelled">
+          <div class="form-group form-group-unlabelled" (click)="addContainerItem(bundleFormModal)">
             <span class="input-group-btn">
-              <button type="button" title="Select Item" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"
-                      (click)="addContainerItem(bundleFormModal)"></button>
+              <button type="button" title="Select Item" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
             </span>
             <!---THIS TAG INPUT IS USED FOR CONTAINS ITEMS SELECTED FROM POPUP-->
             <tag-input name="contains" theme='dark' inputId="contains" inputClass="form-control metatags-field" class="form-control"
-                       disable="true" [identifyBy]="'value'" [displayBy]="'text'" placeholder="" secondaryPlaceholder="Select Item"></tag-input>
+              [identifyBy]="'value'" [displayBy]="'text'" placeholder="" secondaryPlaceholder="Select Item"></tag-input>
           </div>
 
         </div>

@@ -78,8 +78,9 @@ export class CreateBundleComponent implements OnInit {
         if (sharedServiceJson.length) {
           debugger
           sharedServiceJson.map((x) => {
-            x.quantityToAdd = 0
+            x.quantityToAdd = 1
             this.SelectedItemsList.push(x)
+            this.quantityChanged(x);
           })
           
         }
