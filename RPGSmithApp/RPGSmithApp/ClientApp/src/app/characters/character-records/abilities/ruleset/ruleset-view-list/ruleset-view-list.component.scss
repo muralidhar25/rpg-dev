@@ -342,6 +342,17 @@
     z-index: 9;
 }
   /*dropdown css*/
+filter-toggle-btn-light {
+  padding: 3px 10px;
+  background-color: #d3cfce !important;
+  color: #313131;
+  font-size: 25px;
+}
+
+.filter-toggle-btn-light i:before {
+  font-size: 1.4rem !important
+}
+
 .dropdown-menu.filter-toggle-btn-light-menu {
   background-color: #d3cfce !important;
   box-shadow: none;
