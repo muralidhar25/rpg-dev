@@ -45,7 +45,6 @@ import { ItemRulesetViewListComponent } from "./character-records/items/ruleset/
 import { SpellRulesetViewListComponent } from "./character-records/spells/ruleset/ruleset-view-list/ruleset-view-list.component";
 import { RulesetViewSpellDetailComponent } from "./character-records/spells/ruleset/ruleset-view-spell-detail/ruleset-view-spell-detail.component";
 
-
 @NgModule({
   declarations: [
     CharactersComponent,

@@ -16,6 +16,7 @@ import { ItemMaster } from "../../core/models/view-models/item-master.model";
 import { Ruleset } from "../../core/models/view-models/ruleset.model";
 import { AppService1 } from "../../app.service";
 import { CreateBundleComponent } from "./create-bundle/create-bundle.component";
+import { Bundle } from "../../core/models/view-models/bundle.model";
 
 @Component({
     selector: 'app-item',
@@ -215,45 +216,105 @@ export class ItemMasterComponent implements OnInit {
         
     }
 
-    editItemTemplate(itemMaster: ItemMaster) {
-        this.bsModalRef = this.modalService.show(CreateItemMsterComponent, {
-            class: 'modal-primary modal-custom',
-            ignoreBackdropClick: true,
-            keyboard: false
-        });
-        this.bsModalRef.content.title = 'Edit Item Template';
-        this.bsModalRef.content.button = 'UPDATE';
-        this.bsModalRef.content.itemMasterVM = itemMaster;
+  editItemTemplate(itemMaster: ItemMaster) {
+    debugger
+    if (itemMaster.isBundle) {
+      this.bsModalRef = this.modalService.show(CreateBundleComponent, {
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Edit Bundle';
+      this.bsModalRef.content.button = 'UPDATE';
+      this.bsModalRef.content.ruleSetId = this.ruleSetId;
+      this.bsModalRef.content.bundleVM ={
+        bundleId : itemMaster.itemMasterId,
+        ruleSetId: this.ruleSetId,
+        bundleName: itemMaster.itemName,
+        bundleImage: itemMaster.itemImage,
+        bundleVisibleDesc: itemMaster.itemVisibleDesc,
+        value: itemMaster.value,
+        volume: itemMaster.volume,
+        totalWeight: itemMaster.weight,
+        metatags: itemMaster.metatags,
+        rarity: itemMaster.rarity,
+        ruleSet : this.RuleSet,
+        weightLabel: itemMaster.weightLabel,
+        currencyLabel: itemMaster.currencyLabel,
+        volumeLabel: itemMaster.volumeLabel
+      };
+    }
+    else {
+      this.bsModalRef = this.modalService.show(CreateItemMsterComponent, {
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Edit Item Template';
+      this.bsModalRef.content.button = 'UPDATE';
+      this.bsModalRef.content.itemMasterVM = itemMaster;
 
-        this.bsModalRef.content.rulesetID = this.ruleSetId;
+      this.bsModalRef.content.rulesetID = this.ruleSetId;
+    }
+       
         
     }
 
-    duplicateItemTemplate(itemMaster: ItemMaster) {
-        // this.alertService.startLoadingMessage("", "Checking records");      
-        this.itemMasterService.getItemMasterCount(this.ruleSetId)
-            .subscribe(data => {
-                //this.alertService.stopLoadingMessage();
-                if (data < 2000) {
-                    this.bsModalRef = this.modalService.show(CreateItemMsterComponent, {
-                        class: 'modal-primary modal-custom',
-                        ignoreBackdropClick: true,
-                        keyboard: false
-                    });
-                    this.bsModalRef.content.title = 'Duplicate Item Template';
-                    this.bsModalRef.content.button = 'DUPLICATE';
-                    this.bsModalRef.content.itemMasterVM = itemMaster;
-                    this.bsModalRef.content.rulesetID = this.ruleSetId;
-                }
-                else {
-                    //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
-                    this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
-                }
-            }, error => { }, () => { });    
-       
-    }   
+  duplicateItemTemplate(itemMaster: ItemMaster) {
+    debugger
+    // this.alertService.startLoadingMessage("", "Checking records");      
+    this.itemMasterService.getItemMasterCount(this.ruleSetId)
+      .subscribe(data => {
+        //this.alertService.stopLoadingMessage();
+        if (data < 2000) {
+          if (itemMaster.isBundle) {
+            this.bsModalRef = this.modalService.show(CreateBundleComponent, {
+              class: 'modal-primary modal-custom',
+              ignoreBackdropClick: true,
+              keyboard: false
+            });
+            this.bsModalRef.content.title = 'Edit Bundle';
+            this.bsModalRef.content.button = 'DUPLICATE';
+            this.bsModalRef.content.ruleSetId = this.ruleSetId;
+            this.bsModalRef.content.bundleVM = {
+              bundleId: itemMaster.itemMasterId,
+              ruleSetId: this.ruleSetId,
+              bundleName: itemMaster.itemName,
+              bundleImage: itemMaster.itemImage,
+              bundleVisibleDesc: itemMaster.itemVisibleDesc,
+              value: itemMaster.value,
+              volume: itemMaster.volume,
+              totalWeight: itemMaster.weight,
+              metatags: itemMaster.metatags,
+              rarity: itemMaster.rarity,
+              ruleSet: this.RuleSet,
+              weightLabel: itemMaster.weightLabel,
+              currencyLabel: itemMaster.currencyLabel,
+              volumeLabel: itemMaster.volumeLabel
+            };
+          }
+          else {
+            this.bsModalRef = this.modalService.show(CreateItemMsterComponent, {
+              class: 'modal-primary modal-custom',
+              ignoreBackdropClick: true,
+              keyboard: false
+            });
+            this.bsModalRef.content.title = 'Duplicate Item Template';
+            this.bsModalRef.content.button = 'DUPLICATE';
+            this.bsModalRef.content.itemMasterVM = itemMaster;
+            this.bsModalRef.content.rulesetID = this.ruleSetId;
+          }
+        }
+        else {
+          //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
+          this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
+        }
+      }, error => { }, () => { });
 
-    deleteItemTemplate(itemMaster: ItemMaster) {
+  } 
+
+  deleteItemTemplate(itemMaster: ItemMaster) {
+      debugger
         let message = "Are you sure you want to delete this " + itemMaster.itemName
             + " item template? Note: Any item(s) previously deployed from this template will not be affected.";
 
@@ -263,7 +324,39 @@ export class ItemMasterComponent implements OnInit {
 
     private deleteItemTemplateHelper(itemMaster: ItemMaster) {
         itemMaster.ruleSetId = this.ruleSetId;
-        this.isLoading = true;
+      this.isLoading = true;
+      if (itemMaster.isBundle) {
+        this.alertService.startLoadingMessage("", "Deleting Bundle");
+        this.itemMasterService.deleteBundle(itemMaster.itemMasterId)
+          .subscribe(
+            data => {
+              setTimeout(() => {
+                this.isLoading = false;
+                this.alertService.stopLoadingMessage();
+              }, 200);
+              this.alertService.showMessage("Bundle has been deleted successfully.", "", MessageSeverity.success);
+              this.ItemMasterList = this.ItemMasterList.filter((val) => val.itemMasterId != itemMaster.itemMasterId);
+              try {
+                this.noRecordFound = !this.ItemMasterList.length;
+              } catch (err) { }
+              //this.initialize();
+            },
+            error => {
+              setTimeout(() => {
+                this.isLoading = false;
+                this.alertService.stopLoadingMessage();
+              }, 200);
+              let _message = "Unable to Delete";
+              let Errors = Utilities.ErrorDetail(_message, error);
+              if (Errors.sessionExpire) {
+                //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                this.authService.logout(true);
+              }
+              else
+                this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+            });
+      }
+      else {
         this.alertService.startLoadingMessage("", "Deleting Item");
 
         //this.itemMasterService.deleteItemMaster(itemMaster.itemMasterId)
@@ -292,35 +385,37 @@ export class ItemMasterComponent implements OnInit {
         //            else
         //                this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
         //        });
-        
+
         this.itemMasterService.deleteItemMaster_up(itemMaster)
-            .subscribe(
-                data => {
-                    setTimeout(() => {
-                        this.isLoading = false;
-                        this.alertService.stopLoadingMessage();
-                    }, 200);
-                    this.alertService.showMessage("Item Template has been deleted successfully.", "", MessageSeverity.success);
-                    this.ItemMasterList = this.ItemMasterList.filter((val) => val.itemMasterId != itemMaster.itemMasterId);
-                    try {
-                        this.noRecordFound = !this.ItemMasterList.length;
-                    } catch (err) { }
-                    //this.initialize();
-                },
-                error => {
-                    setTimeout(() => {
-                        this.isLoading = false;
-                        this.alertService.stopLoadingMessage();
-                    }, 200);
-                    let _message = "Unable to Delete";
-                    let Errors = Utilities.ErrorDetail(_message, error);
-                    if (Errors.sessionExpire) {
-                        //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-                        this.authService.logout(true);
-                    }
-                    else
-                        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-                });
+          .subscribe(
+            data => {
+              setTimeout(() => {
+                this.isLoading = false;
+                this.alertService.stopLoadingMessage();
+              }, 200);
+              this.alertService.showMessage("Item Template has been deleted successfully.", "", MessageSeverity.success);
+              this.ItemMasterList = this.ItemMasterList.filter((val) => val.itemMasterId != itemMaster.itemMasterId);
+              try {
+                this.noRecordFound = !this.ItemMasterList.length;
+              } catch (err) { }
+              //this.initialize();
+            },
+            error => {
+              setTimeout(() => {
+                this.isLoading = false;
+                this.alertService.stopLoadingMessage();
+              }, 200);
+              let _message = "Unable to Delete";
+              let Errors = Utilities.ErrorDetail(_message, error);
+              if (Errors.sessionExpire) {
+                //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                this.authService.logout(true);
+              }
+              else
+                this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+            });
+      }
+        
     }
 
     useItemTemplate(itemMaster: any) {
@@ -402,7 +497,7 @@ export class ItemMasterComponent implements OnInit {
           this.bsModalRef.content.title = 'Create Bundle';
           this.bsModalRef.content.button = 'CREATE';
           this.bsModalRef.content.ruleSetId = this.ruleSetId;
-          this.bsModalRef.content.itemMasterVM = {
+          this.bsModalRef.content.bundleVM= {
             ruleSetId: this.ruleSetId,
             ruleSet: this.RuleSet
           };
@@ -414,5 +509,13 @@ export class ItemMasterComponent implements OnInit {
       }, error => { }, () => { });
 
 
+  }
+  GoToDetails(item: ItemMaster) {
+    if (item.isBundle) {
+      this.router.navigate(['/ruleset/bundle-details', item.itemMasterId]);
+    }
+    else {
+      this.router.navigate(['/ruleset/item-details', item.itemMasterId]);
+    }    
   }
 }

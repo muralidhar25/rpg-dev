@@ -1,4 +1,4 @@
-<form name="itemMasterForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm(itemMasterFormModal)">
+<form name="itemMasterForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm(bundleFormModal)">
   <div class="modal-header">
     <h5 class="modal-title" id="createItemPopupTitle">{{title}}</h5>
     <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
@@ -9,8 +9,8 @@
       <div class="col-12 col-md-12">
         <div class="form-group">
           <label for="newItemName">Name</label>
-          <input *ngIf="itemMasterFormModal.view != 'edit'" type="text" id="newItemName" name="newItemName" class="form-control" placeholder="Item Template Name" [ngStyle]="{'border-color': f.submitted && !newItemName.valid ? 'red' : '#d3cfce'}" [autofocus] [(ngModel)]="itemMasterFormModal.itemName" #newItemName="ngModel" required>
-          <input *ngIf="itemMasterFormModal.view == 'edit'" type="text" id="newItemName" name="newItemName" class="form-control" placeholder="Item Template Name" [ngStyle]="{'border-color': f.submitted && !newItemName.valid ? 'red' : '#d3cfce'}" [(ngModel)]="itemMasterFormModal.itemName" #newItemName="ngModel" required>
+          <input *ngIf="bundleFormModal.view != 'edit'" type="text" id="newItemName" name="newItemName" class="form-control" placeholder="Bundle Name" [ngStyle]="{'border-color': f.submitted && !newItemName.valid ? 'red' : '#d3cfce'}" [autofocus] [(ngModel)]="bundleFormModal.bundleName" #newItemName="ngModel" required>
+          <input *ngIf="bundleFormModal.view == 'edit'" type="text" id="newItemName" name="newItemName" class="form-control" placeholder="Bundle Name" [ngStyle]="{'border-color': f.submitted && !newItemName.valid ? 'red' : '#d3cfce'}" [(ngModel)]="bundleFormModal.bundleName" #newItemName="ngModel" required>
         </div>
       </div>
     </div>
@@ -18,28 +18,28 @@
     <div class="form-row">
       <div class="col-12 col-md-6">
         <div class="form-group">
-          <label for="newItemValue">Value {{itemMasterFormModal.currencyLabel}}</label>
+          <label for="newItemValue">Value {{bundleFormModal.currencyLabel}}</label>
           <input type="number" id="newItemValue" name="newItemValue" class="form-control" placeholder="Value"
-                 [(ngModel)]="itemMasterFormModal.value" #newItemValue="ngModel" [pattern]="numberRegex" />
+                 [(ngModel)]="bundleFormModal.value" #newItemValue="ngModel" [pattern]="numberRegex" />
           <small style="color:#a94442;" [hidden]="newItemValue.valid || (newItemValue.pristine && !f.submitted)">
             Only valid numbers are allowed.
           </small>
         </div>
         <div class="form-group">
-          <!--<label for="newItemWeight">Weight {{itemMasterFormModal.weightLabel}}</label>-->
+          <!--<label for="newItemWeight">Weight {{bundleFormModal.weightLabel}}</label>-->
           <label for="newItemWeight">Total Weight</label>
           <input type="number" id="newItemWeight" name="newItemWeight" class="form-control" placeholder="Weight"
-                 [(ngModel)]="itemMasterFormModal.weight" #newItemWeight="ngModel" [pattern]="numberRegex" />
+                 [(ngModel)]="bundleFormModal.totalWeight" #newItemWeight="ngModel" [pattern]="numberRegex" readonly/>
           <small style="color:#a94442;" [hidden]="newItemWeight.valid || (newItemWeight.pristine && !f.submitted)">
             Only valid numbers are allowed.
           </small>
         </div>
         <div class="form-group">
-          <label>Volume {{itemMasterFormModal.volumeLabel}}</label>
+          <label>Volume {{bundleFormModal.volumeLabel}}</label>
           <div class="form-row">
             <div class="col">
               <input type="number" id="newItemVolume" name="newItemVolume" class="form-control" placeholder="Volume"
-                     [(ngModel)]="itemMasterFormModal.volume" #newItemVolume="ngModel" [pattern]="numberRegex" />
+                     [(ngModel)]="bundleFormModal.volume" #newItemVolume="ngModel" [pattern]="numberRegex" />
               <small style="color:#a94442;" [hidden]="newItemVolume.valid || (newItemVolume.pristine && !f.submitted)">
                 Only valid numbers are allowed.
               </small>
@@ -52,20 +52,18 @@
         <div class="form-group input-image input-image-alt">
           <label for="newItemImageFile">Image (optional)</label>
           <div class="input-image-control input-image-note input-image-trigger" (click)="cropImage(null,true,'VIEW.ADD')"
-               *ngIf="((itemMasterFormModal.itemMasterId === undefined || itemMasterFormModal.itemMasterId === 0)
-                        && !showWebButtons && itemMasterFormModal.itemImage === undefined)
-                        || (!showWebButtons && (itemMasterFormModal.itemImage === undefined || itemMasterFormModal.itemImage === null))">
+               *ngIf="((bundleFormModal.bundleId === undefined || bundleFormModal.bundleId === 0)
+                        && !showWebButtons && bundleFormModal.bundleImage === undefined)
+                        || (!showWebButtons && (bundleFormModal.bundleImage === undefined || bundleFormModal.bundleImage === null))">
             <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
           </div>
-          <div class="form-group input-image-note input-image-trigger" (click)="cropImage(itemMasterFormModal.itemImage,true,'VIEW.EDIT')"
-               *ngIf="(!showWebButtons && itemMasterFormModal.itemImage !== undefined && itemMasterFormModal.itemImage !== null)">
-            <img class="item-master-img" [src]="itemMasterFormModal.itemImage"
+          <div class="form-group input-image-note input-image-trigger" (click)="cropImage(bundleFormModal.bundleImage,true,'VIEW.EDIT')"
+               *ngIf="(!showWebButtons && bundleFormModal.bundleImage !== undefined && bundleFormModal.bundleImage !== null)">
+            <img class="item-master-img" [src]="bundleFormModal.bundleImage"
                  onerror="this.src='../assets/images/DefaultImages/stock-defimg-items/Backpack.jpg';" />
-          </div>
-          <!--<div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons"
-          [ngStyle]="{'background-image': 'url('+itemMasterFormModal.itemImage+')','background-position':'center center', 'background-repeat':'no-repeat'}">-->
+          </div>          
           <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
-            <img [src]="itemMasterFormModal.itemImage" class="bg-image" />
+            <img [src]="bundleFormModal.bundleImage" class="bg-image" />
           </div>
           <input type="file" id="newItemImagePortrait" class="form-control-file">
         </div>
@@ -77,9 +75,7 @@
       <div class="col-12">
         <div class="form-group">
           <label for="newItemDescription">Description</label>
-          <div [froalaEditor]="options('Description')" [(ngModel)]="itemMasterFormModal.itemVisibleDesc" name="itemVisibleDesc"></div>
-          <!--<textarea id="newItemDescription" name="newItemDescription" class="form-control" placeholder="Description" rows="5"
-          [(ngModel)]="itemMasterFormModal.itemVisibleDesc" #newItemDescription="ngModel"></textarea>-->
+          <div [froalaEditor]="options('Description')" [(ngModel)]="bundleFormModal.bundleVisibleDesc" name="bundleVisibleDesc"></div>
         </div>
       </div>
     </div>
@@ -108,28 +104,28 @@
           <ul class="input-switch-items">
             <li class="form-check">
               <label class="form-check-label">
-                <input class="form-check-input" type="radio" name="newItemRarity1" [checked]="itemMasterFormModal.rarity == 'Common'"
+                <input class="form-check-input" type="radio" name="newItemRarity1" [checked]="bundleFormModal.rarity == 'Common'"
                        (click)="itemRarity('Common')">
                 <span>Common</span>
               </label>
             </li>
             <li class="form-check">
               <label class="form-check-label">
-                <input class="form-check-input" type="radio" name="newItemRarity2" [checked]="itemMasterFormModal.rarity == 'Uncommon'"
+                <input class="form-check-input" type="radio" name="newItemRarity2" [checked]="bundleFormModal.rarity == 'Uncommon'"
                        (click)="itemRarity('Uncommon')">
                 <span>Uncommon</span>
               </label>
             </li>
             <li class="form-check">
               <label class="form-check-label">
-                <input class="form-check-input" type="radio" name="newItemRarity3" [checked]="itemMasterFormModal.rarity == 'Rare'"
+                <input class="form-check-input" type="radio" name="newItemRarity3" [checked]="bundleFormModal.rarity == 'Rare'"
                        (click)="itemRarity('Rare')">
                 <span>Rare</span>
               </label>
             </li>
             <li class="form-check">
               <label class="form-check-label">
-                <input class="form-check-input" type="radio" name="newItemRarity4" [checked]="itemMasterFormModal.rarity == 'Unique'"
+                <input class="form-check-input" type="radio" name="newItemRarity4" [checked]="bundleFormModal.rarity == 'Unique'"
                        (click)="itemRarity('Unique')">
                 <span>Unique</span>
               </label>
@@ -139,7 +135,7 @@
       </div>
     </div>
 
-    
+
 
     <div class="form-row">
 
@@ -150,16 +146,34 @@
           <div class="form-group form-group-unlabelled">
             <span class="input-group-btn">
               <button type="button" title="Select Item" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"
-                      (click)="addContainerItem(itemMasterFormModal)"></button>
+                      (click)="addContainerItem(bundleFormModal)"></button>
             </span>
             <!---THIS TAG INPUT IS USED FOR CONTAINS ITEMS SELECTED FROM POPUP-->
-            <tag-input name="contains" [(ngModel)]='itemMasterFormModal.contains' theme='dark' inputId="contains" inputClass="form-control metatags-field" class="form-control"
+            <tag-input name="contains" theme='dark' inputId="contains" inputClass="form-control metatags-field" class="form-control"
                        disable="true" [identifyBy]="'value'" [displayBy]="'text'" placeholder="" secondaryPlaceholder="Select Item"></tag-input>
           </div>
 
         </div>
       </div>
 
+      <div class="col-12 col-md-12">
+        <div class="form-group">
+          <ul class="input-list-items row">
+            <li class="form-check col-md-6 col-sm-12" *ngFor="let item of SelectedItemsList;let i = index;" popover="{{item.itemName}}" triggers="hover">
+              <label class="form-check-label">
+                <span>
+                  <img [alt]="item.itemName" [src]="item.itemImage"
+                       onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
+                  <em>{{item.itemName}}</em>
+                  <span class="input-box">
+                    <input type="number" max="99999" class="w-100 h-100 text-center border-0" id="qty{{i}}" name="qty{{i}}" [(ngModel)]="item.quantityToAdd" #qty="ngModel" (change)="quantityChanged(item)" />
+                  </span>
+                </span>
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 

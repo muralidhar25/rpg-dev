@@ -223,7 +223,8 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.SearchTypeText = 'Items';
             }
             else if ((this.router.url.toUpperCase().indexOf('/RULESET/ITEM-MASTER/') > -1 ||
-              this.router.url.toUpperCase().indexOf('/RULESET/ITEM-DETAILS') > -1) && this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/') == -1) {
+              this.router.url.toUpperCase().indexOf('/RULESET/ITEM-DETAILS') > -1 ||
+              this.router.url.toUpperCase().indexOf('/RULESET/BUNDLE-DETAILS') > -1)&& this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/') == -1) {
               this.SearchType = SearchType.RULESETITEMS;
               this.SearchTypeText = 'Items';
             }
@@ -674,7 +675,8 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.SearchTypeText = 'Items';
         }
         else if ((url.toUpperCase().indexOf('/RULESET/ITEM-MASTER/') > -1 ||
-          url.toUpperCase().indexOf('/RULESET/ITEM-DETAILS') > -1)
+          url.toUpperCase().indexOf('/RULESET/ITEM-DETAILS') > -1 ||
+          url.toUpperCase().indexOf('/RULESET/BUNDLE-DETAILS') > -1)
           && this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/') == -1) {
           this.SearchType = SearchType.RULESETITEMS;
           this.SearchTypeText = 'Items';

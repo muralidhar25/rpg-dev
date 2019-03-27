@@ -166,7 +166,11 @@ namespace RPGSmithApp.ViewModels
                 .ForMember(d => d.NoteTiles, map => map.Ignore())
                 .ForMember(d => d.ImageTiles, map => map.Ignore()
               );
-
+            CreateMap<ItemMasterBundleViewModel, ItemMasterBundle>()
+                //.ForMember(d => d.RulesetTileId, map => map.Ignore())
+                .ForMember(d => d.ItemMasterBundleItems, map => map.Ignore())
+                .ForMember(d => d.RuleSet, map => map.Ignore()
+              );
         }
     }
 }

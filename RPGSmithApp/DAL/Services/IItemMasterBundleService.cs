@@ -11,9 +11,11 @@ namespace DAL.Services
     {
         Task<ItemMasterBundle> GetDuplicateItemMasterBundle(string name, int? ruleSetId,int? BundleId = 0);
         Task<bool> CheckDuplicateItemMasterBundle(string name, int? ruleSetId, int? BundleId = 0);
-        Task<ItemMasterBundle> CreateBundle(ItemMasterBundle bundle);
+        Task<ItemMasterBundle> CreateBundle(ItemMasterBundle bundle, ICollection<ItemMasterBundleItem> itemMasterBundleItems);
         ItemMasterBundle GetBundleById(int bundleId);
         Task<ItemMasterBundle> UpdateBundle(ItemMasterBundle bundle, ICollection<ItemMasterBundleItem> itemMasterBundleItems);
         Task DeleteBundle(int bundleId);
+        List<ItemMasterBundleItem> getItemsByBundleID(int bundleId);
+        ItemMasterBundle getBundleByBundleID(int id);
     }
 }

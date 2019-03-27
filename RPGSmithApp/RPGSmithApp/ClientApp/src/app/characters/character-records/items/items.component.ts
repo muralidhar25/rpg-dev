@@ -232,7 +232,22 @@ export class CharacterItemsComponent implements OnInit {
 
       this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'CharacterItems')
         .subscribe(data => {
-          if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
+          if (data !== null) {
+            if (data.viewType == 'List') {
+              this.isListView = true;
+              this.isDenseView = false;
+            }
+            else if (data.viewType == 'Dense') {
+              this.isDenseView = true;
+              this.isListView = false;
+            }
+            else {
+              this.isListView = false;
+              this.isDenseView = false;
+            }
+          }
+          
+          //if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
         }, error => {
           let Errors = Utilities.ErrorDetail("", error);
           if (Errors.sessionExpire) {

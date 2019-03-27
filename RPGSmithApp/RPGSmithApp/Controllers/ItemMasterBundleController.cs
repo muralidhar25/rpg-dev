@@ -56,7 +56,7 @@ namespace RPGSmithApp.Controllers
                     }
                     else
                     {
-                        result = await _itemMasterBundleService.CreateBundle(Bundle);
+                        result = await _itemMasterBundleService.CreateBundle(Bundle, model.BundleItems);
                     }
                 }
                 catch (Exception ex)
@@ -94,7 +94,7 @@ namespace RPGSmithApp.Controllers
                     return BadRequest("Bundle not found");
 
                 var bundle = Mapper.Map<ItemMasterBundle>(model);
-                var result = await _itemMasterBundleService.UpdateBundle(bundle, bundle.ItemMasterBundleItems);
+                var result = await _itemMasterBundleService.UpdateBundle(bundle, model.BundleItems);
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
@@ -142,8 +142,8 @@ namespace RPGSmithApp.Controllers
 
         }
 
-        [AllowAnonymous]
-        [HttpPost("DuplicateItemMaster")]
+
+        [HttpPost("DuplicateBundle")]
         public async Task<IActionResult> DuplicateItemMaster([FromBody] ItemMasterBundleViewModel model)
         {
             if (ModelState.IsValid)
@@ -157,7 +157,7 @@ namespace RPGSmithApp.Controllers
 
                     model.BundleId = 0;
                     ItemMasterBundle bundleModel = Mapper.Map<ItemMasterBundle>(model);
-                    var result = await _itemMasterBundleService.CreateBundle(bundleModel);
+                    var result = await _itemMasterBundleService.CreateBundle(bundleModel, model.BundleItems);
                 }
                 catch (Exception ex)
                 { return BadRequest(ex.Message); }
@@ -168,5 +168,78 @@ namespace RPGSmithApp.Controllers
 
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
+
+        
+            [HttpGet("getItemsByBundleId")]
+        public async Task<IActionResult> getItemsByBundleId(int bundleId)
+        {
+            return Ok(_itemMasterBundleService.getItemsByBundleID(bundleId));
+        }
+        
+             [HttpGet("getDetailById")]
+        public async Task<IActionResult> getDetailById(int id)
+        {
+            //ItemMasterBundle obj = _itemMasterBundleService.getBundleByBundleID(id);
+            //ItemMasterBundleViewModel model = new ItemMasterBundleViewModel();
+            //if (obj != null)
+            //{
+            //    model = new ItemMasterBundleViewModel() {
+            //        BundleId=obj.BundleId,
+            //        BundleImage=obj.BundleImage,
+            //        BundleName=obj.BundleName,
+            //        BundleVisibleDesc=obj.BundleVisibleDesc,
+            //        BundleItems=obj.ItemMasterBundleItems,
+            //        Metatags=obj.Metatags,
+            //        Rarity=obj.Rarity,
+            //        RuleSetId=obj.RuleSetId,
+            //        TotalWeight=obj.TotalWeight,
+            //        Value=obj.Value,
+            //        Volume=obj.Volume                    
+            //    };
+            //    if (model.BundleItems.Count>0)
+            //    {
+            //        foreach (var item in model.BundleItems)
+            //        {
+            //            ItemMasterBundleItemDetailsViewModel det = new ItemMasterBundleItemDetailsViewModel() {
+            //                BundleId=obj.,
+            //                BundleItemId=obj.,
+            //                =obj.,
+            //                =obj.,
+            //                =obj.,
+            //                =obj.,
+            //                =obj.,
+            //                =obj.,
+            //                =obj.,
+            //            };
+                        
+            //        }
+            //    }
+                
+               
+
+
+            //}
+            
+
+            return Ok(_itemMasterBundleService.getBundleByBundleID(id));
+        }
+
+        //[HttpDelete("delete")]
+        //public async Task<IActionResult> DeleteBundle(int Id)
+        //{
+        //    //int rulesetID = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
+        //    //if (_coreRulesetService.IsCopiedFromCoreRuleset(rulesetID))
+        //    //{
+        //    //    int ItemMasterID = model.ItemMasterId == null ? 0 : (int)model.ItemMasterId;
+        //    //    if (!_coreRulesetService.IsItemCopiedFromCoreRuleset(ItemMasterID, rulesetID))
+        //    //    {
+        //    //        await CreateItemMasterForCopiedRuleset(model,true);
+        //    //        return Ok();
+        //    //        // await UpdateItemMasterCommon(model);
+        //    //    }
+        //    //}           
+        //    await _itemMasterBundleService.DeleteBundle(Id);
+        //    return Ok();
+        //}
     }
 }

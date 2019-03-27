@@ -21,6 +21,7 @@ import { DiceComponent } from '../../../shared/dice/dice/dice.component';
 import { ImageSelectorComponent } from '../../../shared/image-interface/image-selector/image-selector.component';
 import { PlatformLocation } from '@angular/common';
 import { AddItemMasterComponent } from '../add-item/add-item.component';
+import { Bundle } from '../../../core/models/view-models/bundle.model';
 
 @Component({
   selector: 'app-create-bundle',
@@ -34,7 +35,7 @@ export class CreateBundleComponent implements OnInit {
   title: string;
   _ruleSetId: number;
   showWebButtons: boolean = false;
-  itemMasterFormModal: any = new ItemMaster();
+  bundleFormModal: Bundle = new Bundle();
   fileToUpload: File = null;
   numberRegex = "^(?:[0-9]+(?:\.[0-9]{0,8})?)?$";// "^((\\+91-?)|0)?[0-9]{0,2}$"; 
   fromDetail: boolean = false;
@@ -55,6 +56,9 @@ export class CreateBundleComponent implements OnInit {
   defaultImageSelected: string = '';
   button: string
   isFromCharacterId: any;
+  SelectedItemsList: any[] = [];
+  itemsList: any[] = [];
+
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
   }
@@ -68,17 +72,16 @@ export class CreateBundleComponent implements OnInit {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
 
-    this.sharedService.getCommandData().subscribe(diceCommand => {
-      if (diceCommand.parentIndex === -1) {
-        this.itemMasterFormModal.command = diceCommand.command;
-      } else {
-        if (this.itemMasterFormModal.itemMasterCommandVM.length > 0) {
-          this.itemMasterFormModal.itemMasterCommandVM.forEach(item => {
-            var index = this.itemMasterFormModal.itemMasterCommandVM.indexOf(item);
-            if (index === diceCommand.parentIndex) {
-              this.itemMasterFormModal.itemMasterCommandVM[index].command = diceCommand.command;
-            }
-          });
+
+    this.sharedService.shouldUpdateAddItemMastersList().subscribe(sharedServiceJson => {
+      if (sharedServiceJson) {
+        if (sharedServiceJson.length) {
+          debugger
+          sharedServiceJson.map((x) => {
+            x.quantityToAdd = 0
+            this.SelectedItemsList.push(x)
+          })
+          
         }
       }
     });
@@ -89,24 +92,20 @@ export class CreateBundleComponent implements OnInit {
       this.fromDetail = this.bsModalRef.content.fromDetail == undefined ? false : this.bsModalRef.content.fromDetail;
       this.title = this.bsModalRef.content.title;
       let _view = this.button = this.bsModalRef.content.button;
-      let _itemTemplateVM = this.bsModalRef.content.itemMasterVM;
-      this.itemMasterFormModal = this.itemMasterService.itemMasterModelData(_itemTemplateVM, _view);
-      this.itemMasterFormModal.itemMasterCommandVM = this.itemMasterFormModal.itemMasterCommand
+      let _bundleVM = this.bsModalRef.content.bundleVM;
+      this.bundleFormModal = this.itemMasterService.bundleModelData(_bundleVM, _view);
 
       if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
-        this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.itemMasterFormModal.ruleSetId;
+        this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.bundleFormModal.ruleSetId;
       }
       else {
-        this._ruleSetId = this.itemMasterFormModal.ruleSetId;
+        this._ruleSetId = this.bundleFormModal.ruleSetId;
       }
-      this.percentReduced = this.itemMasterFormModal.containerWeightModifier == 'Percent of Contents' ? true : false;
-      this.weightWithContent = this.itemMasterFormModal.containerWeightModifier == 'Maximum Weight of' ? true : false;
-      this.selectedAbilities = this.itemMasterFormModal.itemMasterAbilities.map(x => { return x.abilitiy; });
-      this.selectedSpells = this.itemMasterFormModal.itemMasterSpell.map(x => { return x.spell; });
+      
 
-      if (this.itemMasterFormModal.metatags !== '' && this.itemMasterFormModal.metatags !== undefined)
-        this.metatags = this.itemMasterFormModal.metatags.split(",");
-      this.bingImageUrl = this.itemMasterFormModal.itemImage;
+      if (this.bundleFormModal.metatags !== '' && this.bundleFormModal.metatags !== undefined)
+        this.metatags = this.bundleFormModal.metatags.split(",");
+      this.bingImageUrl = this.bundleFormModal.bundleImage;
 
       this.initialize();
     }, 0);
@@ -117,112 +116,68 @@ export class CreateBundleComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
-      this.isLoading = true;
-      this.itemMasterService.getAbilitySpellForItemsByRuleset_sp<any[]>(this.itemMasterFormModal.ruleSetId, this.itemMasterFormModal.itemMasterId)
-        .subscribe(data => {
-          let dataobj: any = data
-          this.abilitiesList = dataobj.abilityList;
-          this.spellsList = dataobj.spellList;
-          this.selectedAbilities = dataobj.selectedAbilityList.map(x => { return x; });
-          this.selectedSpells = dataobj.selectedSpellList.map(x => { return x; });
-          this.itemMasterFormModal.itemMasterCommandVM = dataobj.selectedItemMasterCommand;
-          this.isLoading = false;
-        }, error => { }, () => { });
-      //this.abilityService.getAbilityByRuleset<any[]>(this.itemMasterFormModal.ruleSetId)
-      //    .subscribe(data => {
-      //        this.abilitiesList = data;
-      //    }, error => { }, () => { });
-      //this.spellsService.getspellsByRuleset<any[]>(this.itemMasterFormModal.ruleSetId)
-      //    .subscribe(data => {
-      //        this.spellsList = data;
-      //    }, error => { }, () => { });
-      if (!this.itemMasterFormModal.itemImage) {
+      this.isLoading = true;      
+     
+      if (!this.bundleFormModal.bundleImage) {        
         this.imageSearchService.getDefaultImage<any>('item')
           .subscribe(data => {
             this.defaultImageSelected = data.imageUrl.result
-            this.isLoading = false;
+            //this.isLoading = false;
           }, error => {
           },
             () => { });
       }
+      this.itemMasterService.getItemMasterByRuleset_add<any>(this._ruleSetId, false)
+        .subscribe(data => {
+          this.itemsList = data.ItemMaster;
+
+          this.itemsList.forEach(function (val) { val.showIcon = false; val.selected = false; });
+          if (this.bundleFormModal.view === VIEW.EDIT || this.bundleFormModal.view === VIEW.DUPLICATE) {
+            this.itemMasterService.getBundleItems<any>(this.bundleFormModal.bundleId)
+              .subscribe(data => {
+                debugger
+                if (data) {
+                  if (data.length) {
+                    this.SelectedItemsList = [];
+                    this.bundleFormModal.totalWeight = 0;
+                    data.map((x) => {
+                      let item = this.itemsList.filter(y => y.itemMasterId == x.itemMasterId)[0];
+                      item.quantityToAdd = x.quantity;
+                      this.SelectedItemsList.push(item)
+                      this.quantityChanged(item);
+                    })
+                  }
+                }
+                
+              }, error => {
+                this.isLoading = false;
+                let Errors = Utilities.ErrorDetail("", error);
+                if (Errors.sessionExpire) {
+                  //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                  this.authService.logout(true);
+                }
+              }, () => { });
+          }
+          this.isLoading = false;
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => { });
+      
     }
   }
 
   itemRarity(_rarity: string) {
-    this.itemMasterFormModal.rarity = _rarity;
-  }
-
-  IsContainer(_isContainer: boolean) {
-
-    this.itemMasterFormModal.isContainer = _isContainer;
-    if (!_isContainer) {
-      //this.itemMasterFormModal.containerWeightMax = null;
-      //this.itemMasterFormModal.containerWeightModifier = null;
-      //this.itemMasterFormModal.containerVolumeMax = null;
-    }
-  }
+    this.bundleFormModal.rarity = _rarity;
+  } 
 
   removeTag(tagData: any, tag: any, index: number): void {
     tagData.splice(index, 1);
   }
-
-  onSelectWeightReduction(event) {
-
-    if (event.currentTarget.value == 'Percent of Contents') {
-      this.percentReduced = true;
-      this.weightWithContent = false;
-      this.itemMasterFormModal.totalWeightWithContents = 0;
-    }
-    else if (event.currentTarget.value == 'Maximum Weight of') {
-      this.weightWithContent = true;
-      this.percentReduced = false;
-      this.itemMasterFormModal.percentReduced = 0;
-    } else {
-      this.weightWithContent = false;
-      this.percentReduced = false;
-      this.itemMasterFormModal.percentReduced = 0;
-      this.itemMasterFormModal.totalWeightWithContents = 0;
-    }
-
-    this.itemMasterFormModal.containerWeightModifier = event.currentTarget.value;
-  }
-
-  setAssociatedSpell(event, itemMasterId) {
-    if (event.currentTarget.value == 'Select Spell') {
-      this.itemMasterFormModal.itemMasterSpellVM = [];
-    }
-    else {
-      let _itemMasterSpellVM = [];
-      let _spellId: number = event.currentTarget.value;
-      _itemMasterSpellVM.push({ itemMasterId: itemMasterId, spellId: +_spellId });
-      this.itemMasterFormModal.itemMasterSpellVM = _itemMasterSpellVM;
-    }
-  }
-
-  setAssociatedAbility(event, itemMasterId) {
-    if (event.currentTarget.value == 'Select Ability') {
-      this.itemMasterFormModal.itemMasterAbilityVM = [];
-    }
-    else {
-      let _itemMasterAbilityVM = [];
-      let _abilityId: number = event.currentTarget.value;
-      _itemMasterAbilityVM.push({ itemMasterId: itemMasterId, abilityId: +_abilityId });
-      this.itemMasterFormModal.itemMasterAbilityVM = _itemMasterAbilityVM;
-    }
-  }
-
-
-  addCommand(itemCommand: any): void {
-    let _itemCommand = itemCommand == undefined ? [] : itemCommand;
-    _itemCommand.push({ itemMasterCommandId: 0, command: '', name: '' });
-    this.itemMasterFormModal.itemMasterCommandVM = _itemCommand;
-  }
-
-  removeCommand(command: any): void {
-    this.itemMasterFormModal.itemMasterCommandVM
-      .splice(this.itemMasterFormModal.itemMasterCommandVM.indexOf(command), 1);
-  }
-
   fileInput(_files: FileList) {
     this.fileToUpload = _files.item(0);
     this.showWebButtons = false;
@@ -233,14 +188,7 @@ export class CreateBundleComponent implements OnInit {
     }
     return false;
   }
-  validateSubmit(itemMaster: any) {
-    itemMaster.itemMasterAbilityVM = this.selectedAbilities.map(x => {
-      return { abilityId: x.abilityId, itemMasterId: itemMaster.itemMasterId };
-    });
-    itemMaster.itemMasterSpellVM = this.selectedSpells.map(x => {
-      return { spellId: x.spellId, itemMasterId: itemMaster.itemMasterId };
-    });
-
+  validateSubmit(itemMaster: any) { 
     let tagsValue = this.metatags.map(x => {
       if (x.value == undefined) return x;
       else return x.value;
@@ -248,37 +196,24 @@ export class CreateBundleComponent implements OnInit {
     itemMaster.metatags = tagsValue.join(', ');
 
     if (itemMaster.ruleSetId == 0 || itemMaster.ruleSetId === undefined)
-      itemMaster.ruleSetId = this._ruleSetId;
-
-    if (!itemMaster.isContainer) {
-      itemMaster.containerWeightMax = 0;
-      itemMaster.containerVolumeMax = 0;
-      itemMaster.containerWeightModifier = 'None';
-    }
-    //if (itemMaster.itemMasterAbilities.length == 0 && itemMaster.itemMasterAbilityVM.length > 0)
-    itemMaster.itemMasterAbilities = itemMaster.itemMasterAbilityVM;
-    // else if (itemMaster.itemMasterAbilities.length > 0 && itemMaster.itemMasterAbilityVM.length == 0)
-    //    itemMaster.itemMasterAbilityVM = itemMaster.itemMasterAbilities;
-    //if (itemMaster.itemMasterSpell.length == 0 && itemMaster.itemMasterSpellVM.length > 0)
-    itemMaster.itemMasterSpell = itemMaster.itemMasterSpellVM;
-    //else if (itemMaster.itemMasterSpell.length > 0 && itemMaster.itemMasterSpellVM.length == 0)
-    //   itemMaster.itemMasterSpellVM = itemMaster.itemMasterSpell;
+      itemMaster.ruleSetId = this._ruleSetId;   
+    
 
     this.isLoading = true;
-    let _msg = itemMaster.itemMasterId == 0 || itemMaster.itemMasterId === undefined ? "Creating Item Template.." : "Updating Item Template..";
-    if (this.itemMasterFormModal.view === VIEW.DUPLICATE) _msg = "Duplicating Item Template..";
+    let _msg = itemMaster.itemMasterId == 0 || itemMaster.itemMasterId === undefined ? "Creating Bundle.." : "Updating Bundle..";
+    if (this.bundleFormModal.view === VIEW.DUPLICATE) _msg = "Duplicating Bundle..";
     this.alertService.startLoadingMessage("", _msg);
 
     if (this.fileToUpload != null) {
       this.fileUpload(itemMaster);
     }
-    else if (this.bingImageUrl !== this.itemMasterFormModal.itemImage) {
+    else if (this.bingImageUrl !== this.bundleFormModal.bundleImage) {
       try {
         var regex = /(?:\.([^.]+))?$/;
-        var extension = regex.exec(this.itemMasterFormModal.itemImage)[1];
+        var extension = regex.exec(this.bundleFormModal.bundleImage)[1];
         extension = extension ? extension : 'jpg';
       } catch{ }
-      this.fileUploadFromBing(this.itemMasterFormModal.itemImage, extension, itemMaster);
+      this.fileUploadFromBing(this.bundleFormModal.bundleImage, extension, itemMaster);
     }
     else {
       this.submit(itemMaster);
@@ -296,7 +231,7 @@ export class CreateBundleComponent implements OnInit {
       this.fileUploadService.fileUploadFromURL<any>(user.id, file, ext)
         .subscribe(
           data => {
-            this.itemMasterFormModal.itemImage = data.ImageUrl;
+            this.bundleFormModal.bundleImage = data.ImageUrl;
             //this.rulesetFormModal.thumbnailUrl = data.ThumbnailUrl;
             this.submit(itemMaster);
           },
@@ -317,7 +252,7 @@ export class CreateBundleComponent implements OnInit {
       this.fileUploadService.fileUploadByUser<any>(user.id, this.fileToUpload)
         .subscribe(
           data => {
-            this.itemMasterFormModal.itemImage = data.ImageUrl;
+            this.bundleFormModal.bundleImage = data.ImageUrl;
             this.submit(itemMaster);
           },
           error => {
@@ -342,12 +277,17 @@ export class CreateBundleComponent implements OnInit {
         });
   }
 
-  private submit(itemMaster: any) {
-    if (this.itemMasterFormModal.view === VIEW.DUPLICATE) {
+  private submit(itemMaster) {
+    itemMaster.bundleItems = this.SelectedItemsList.map((x) => {
+      debugger
+      return { itemMasterId: x.itemMasterId, quantity: x.quantityToAdd};
+    })
+    debugger
+    if (this.bundleFormModal.view === VIEW.DUPLICATE) {
       this.duplicateItemMaster(itemMaster);
     }
     else {
-      if (this.defaultImageSelected && !this.itemMasterFormModal.itemImage) {
+      if (this.defaultImageSelected && !this.bundleFormModal.bundleImage) {
         let model = Object.assign({}, itemMaster)
         model.itemImage = this.defaultImageSelected
         this.addEditItemMaster(model);
@@ -362,36 +302,38 @@ export class CreateBundleComponent implements OnInit {
     modal.RuleSetId = this._ruleSetId;
     // modal.userID = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER).id
     this.isLoading = true;
-    this.itemMasterService.createItemMaster<any>(modal)
+    this.itemMasterService.createBundle<any>(modal)
       .subscribe(
-        data => {
+      data => {
+          debugger
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          let message = modal.itemMasterId == 0 || modal.itemMasterId === undefined ? "Item Template has been created successfully." : "Item Template has been updated successfully.";
-          if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
+        let message = modal.bundleId == 0 || modal.bundleId === undefined ? "Bundle has been created successfully." : "Bundle has been updated successfully.";
+          //if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
           this.close();
-          if (this.fromDetail) {
-            if (data) {
-              let id = data;
-              if (!isNaN(parseInt(id))) {
-                this.router.navigate(['/ruleset/item-details', id]);
-                this.event.emit({ itemMasterId: id });
-                //this.sharedService.updateItemMasterDetailList(true);
-              }
-              else
-                this.sharedService.updateItemMasterDetailList(true);
-            }
-            else {
-              this.sharedService.updateItemMasterDetailList(true);
-            }
-          }
-          else this.sharedService.updateItemMasterList(true);
+          //if (this.fromDetail) {
+          //  if (data) {
+          //    let id = data;
+          //    if (!isNaN(parseInt(id))) {
+          //      this.router.navigate(['/ruleset/item-details', id]);
+          //      this.event.emit({ itemMasterId: id });
+          //      //this.sharedService.updateItemMasterDetailList(true);
+          //    }
+          //    else
+          //      this.sharedService.updateItemMasterDetailList(true);
+          //  }
+          //  else {
+          //    this.sharedService.updateItemMasterDetailList(true);
+          //  }
+          //}
+        //else
+        this.sharedService.updateItemMasterList(true);
         },
         error => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          let _message = modal.itemMasterId == 0 || modal.itemMasterId === undefined ? "Unable to Create " : "Unable to Update ";
+          let _message = modal.bundleId == 0 || modal.bundleId === undefined ? "Unable to Create " : "Unable to Update ";
           let Errors = Utilities.ErrorDetail(_message, error);
           if (Errors.sessionExpire) {
             //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
@@ -406,19 +348,21 @@ export class CreateBundleComponent implements OnInit {
   duplicateItemMaster(modal: any) {
     modal.RuleSetId = this._ruleSetId;
     this.isLoading = true;
-    this.itemMasterService.duplicateItemMaster<any>(modal)
+    this.itemMasterService.duplicateBundle<any>(modal)
       .subscribe(
-        data => {
+      data => {
+          debugger
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          let message = "Item Template has been duplicated successfully.";
-          if (data !== "" && data !== null && data !== undefined)
-            message = data;
+          let message = "Bundle has been duplicated successfully.";
+          //if (data !== "" && data !== null && data !== undefined)
+          //  message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
           this.close();
-          if (this.fromDetail)
-            this.router.navigate(['/ruleset/item-master', this._ruleSetId]);
-          else this.sharedService.updateItemMasterList(true);
+          //if (this.fromDetail)
+          //  this.router.navigate(['/ruleset/item-master', this._ruleSetId]);
+        //else
+        this.sharedService.updateItemMasterList(true);
         },
         error => {
           this.isLoading = false;
@@ -452,7 +396,7 @@ export class CreateBundleComponent implements OnInit {
       var reader = new FileReader();
 
       reader.onload = (event: any) => {
-        this.itemMasterFormModal.itemImage = event.target.result;
+        this.bundleFormModal.bundleImage = event.target.result;
       }
 
       reader.readAsDataURL(event.target.files[0]);
@@ -473,73 +417,23 @@ export class CreateBundleComponent implements OnInit {
       keyboard: false
     });
 
-    this.bsModalRef.content.title = 'Select Item';
-    this.bsModalRef.content.button = 'SELECT';
-    this.bsModalRef.content.characterId = this.isFromCharacterId;
-    this.bsModalRef.content.itemId = 0;
-    this.bsModalRef.content.itemName = itemMaster.containerName;
-    this.bsModalRef.content.contains = itemMaster.contains;
-    this.bsModalRef.content.containerItemId = itemMaster.containerItemId;
-  }
-
-  get abilitiesSettings() {
-    return {
-      primaryKey: "abilityId",
-      labelKey: "name",
-      text: "Search abiliti(es)",
-      enableCheckAll: true,
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      singleSelection: false,
-      limitSelection: false,
-      enableSearchFilter: true,
-      classes: "myclass custom-class",
-      showCheckbox: true,
-      position: "top"
-    };
-  }
-
-  get spellsSettings() {
-    return {
-      primaryKey: "spellId",
-      labelKey: "name",
-      text: "Search Spell(s)",
-      enableCheckAll: true,
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      singleSelection: false,
-      limitSelection: false,
-      enableSearchFilter: true,
-      classes: "myclass custom-class ",
-      showCheckbox: true,
-      position: "top"
-    };
-  }
-
-  //Here the multiselect methods
-  onItemSelect(item: any) {
-    // console.log(item);
-  }
-  OnItemDeSelect(item: any) {
-    //  console.log(item);
-  }
-  onSelectAll(items: any) {
-    //console.log(items);
-  }
-  onDeSelectAll(items: any) {
-    //  console.log(items);
-  }
-
-  openDiceModal(index, command) {
-    this.bsModalRef = this.modalService.show(DiceComponent, {
-      class: 'modal-primary modal-md dice-screen',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
-    this.bsModalRef.content.title = "Dice";
-    this.bsModalRef.content.parentCommand = command;
-    this.bsModalRef.content.inputIndex = index;
     this.bsModalRef.content.rulesetId = this._ruleSetId;
+    let ItemList = Object.assign([], this.itemsList);
+    this.SelectedItemsList.map((x) => {
+      ItemList = ItemList.filter(y => y.itemMasterId != x.itemMasterId);
+    })
+    this.bsModalRef.content.itemsList = ItemList;
+  }
+  quantityChanged(item: any) {
+    let totalWeight:number = 0;
+
+    this.SelectedItemsList.map((x) => {
+      if (+x.quantityToAdd) {
+        totalWeight += (+x.quantityToAdd * +x.weight);
+      }
+    })
+    this.bundleFormModal.totalWeight = totalWeight;
+    
   }
 
   private destroyModalOnInit(): void {
@@ -561,7 +455,7 @@ export class CreateBundleComponent implements OnInit {
     this.bsModalRef.content.errorImage = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Backpack.jpg';
     //this.bsModalRef.content.imageChangedEvent = this.imageChangedEvent; //base 64 || URL
     this.bsModalRef.content.event.subscribe(data => {
-      this.itemMasterFormModal.itemImage = data.base64;
+      this.bundleFormModal.bundleImage = data.base64;
       this.fileToUpload = data.file;
       this.showWebButtons = false;
     });

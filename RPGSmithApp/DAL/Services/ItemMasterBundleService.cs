@@ -42,10 +42,20 @@ namespace DAL.Services
                 return _context.ItemMasterBundles.Where(x => x.BundleName.ToLower() == name.ToLower()).FirstOrDefault() == null ? false : true;
         }
 
-        public async Task<ItemMasterBundle> CreateBundle(ItemMasterBundle bundle)
+        public async Task<ItemMasterBundle> CreateBundle(ItemMasterBundle bundle, ICollection<ItemMasterBundleItem> itemMasterBundleItems)
         {
             await _repo.Add(bundle);
-            await _repoBundleItems.AddRange(bundle.ItemMasterBundleItems);
+            if (itemMasterBundleItems.Count>0)
+            {
+                foreach (var item in itemMasterBundleItems)
+                {
+                    item.BundleId = bundle.BundleId;
+                    //_context.ItemMasterBundleItems.Add(item);
+                }
+                await _context.ItemMasterBundleItems.AddRangeAsync(itemMasterBundleItems);
+                _context.SaveChanges();
+            }
+            
             return bundle;
         }
 
@@ -102,9 +112,25 @@ namespace DAL.Services
         }
         public async Task DeleteBundle(int bundleId)
         {
-            await _repoBundleItems.RemoveRange(_context.ItemMasterBundleItems.Where(x => x.BundleId == bundleId));
-            await _repo.Remove(bundleId);
-        }
+            _context.ItemMasterBundleItems.RemoveRange(_context.ItemMasterBundleItems.Where(x => x.BundleId == bundleId));
+            _context.ItemMasterBundles.Remove(_context.ItemMasterBundles.Where(x => x.BundleId == bundleId).FirstOrDefault());
 
+            _context.SaveChanges();
+        }
+        public List<ItemMasterBundleItem> getItemsByBundleID(int bundleId) {
+            return _context.ItemMasterBundleItems.Where(x => x.BundleId == bundleId).ToList();
+        }
+        public ItemMasterBundle getBundleByBundleID(int id)
+        {
+            ItemMasterBundle obj= _context.ItemMasterBundles.Include(x => x.ItemMasterBundleItems).Where(x => x.BundleId == id).FirstOrDefault();
+            if (obj.ItemMasterBundleItems.Count>0)
+            {
+                foreach (var item in obj.ItemMasterBundleItems)
+                {
+                    item.ItemMaster = _context.ItemMasters.Where(x => x.ItemMasterId == item.ItemMasterId).FirstOrDefault();
+                }
+            }           
+            return obj;
+        }
     }
 }

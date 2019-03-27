@@ -13,6 +13,7 @@ import { DBkeys } from '../common/db-keys';
 
 import { ItemMaster } from '../models/view-models/item-master.model';
 import { ICON, VIEW } from '../models/enums';
+import { Bundle } from '../models/view-models/bundle.model';
 
 @Injectable()
 export class ItemMasterService extends EndpointFactory {
@@ -23,16 +24,23 @@ export class ItemMasterService extends EndpointFactory {
   private readonly getCountUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getItemsCount";
   private readonly createUrl: string = this.configurations.baseUrl + "/api/ItemMaster/create";
   private readonly updateUrl: string = this.configurations.baseUrl + "/api/ItemMaster/update";
+  private readonly createBundleUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/create";
+  private readonly updateBundleUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/update";
   private readonly deleteUrl: string = this.configurations.baseUrl + "/api/ItemMaster/delete";
+  private readonly deleteBundleUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/delete";
+  
   private readonly deleteUrl_up: string = this.configurations.baseUrl + "/api/ItemMaster/delete_up";
   private readonly getByIdUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getById";
+  private readonly getDetailByIdUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/getDetailById";  
   private readonly getByRulesetUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getByRuleSetId";
   private readonly getByRulesetUrl_add: string = this.configurations.baseUrl + "/api/ItemMaster/getByRuleSetId_add";
   private readonly getByRulesetUrl_sp: string = this.configurations.baseUrl + "/api/ItemMaster/getByRuleSetId_sp";
   private readonly uploadUrl: string = this.configurations.baseUrl + "/api/ItemMaster/uploadItemTemplateImage";
   private readonly duplicateUrl: string = this.configurations.baseUrl + "/api/ItemMaster/DuplicateItemMaster";
+  private readonly duplicateBundleUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/DuplicateBundle";  
   private readonly AbilitySpellForItemsByRuleset_sp: string = this.configurations.baseUrl + "/api/ItemMaster/AbilitySpellForItemsByRuleset_sp";
-
+  private readonly getByBundleUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/getItemsByBundleId";
+  
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
     private fileUploadService: FileUploadService) {
     super(http, configurations, injector);
@@ -63,7 +71,14 @@ export class ItemMasterService extends EndpointFactory {
         return this.handleError(error, () => this.getItemMasterById(Id));
       });
   }
+  getBundleById<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getDetailByIdUrl}?id=${Id}`;
 
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getBundleById(Id));
+      });
+  }
   getItemMasterByRuleset<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getByRulesetUrl}?rulesetId=${Id}`;
 
@@ -72,12 +87,20 @@ export class ItemMasterService extends EndpointFactory {
         return this.handleError(error, () => this.getItemMasterByRuleset(Id));
       });
   }
-  getItemMasterByRuleset_add<T>(Id: number): Observable<T> {
-    let endpointUrl = `${this.getByRulesetUrl_add}?rulesetId=${Id}`;
+  getItemMasterByRuleset_add<T>(Id: number,includeBundles:boolean =false): Observable<T> {
+    let endpointUrl = `${this.getByRulesetUrl_add}?rulesetId=${Id}&includeBundles=${includeBundles}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getItemMasterByRuleset_add(Id));
+      });
+  }
+  getBundleItems<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getByBundleUrl}?bundleId=${Id}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getBundleItems(Id));
       });
   }
 
@@ -113,6 +136,20 @@ export class ItemMasterService extends EndpointFactory {
         return this.handleError(error, () => this.createItemMaster(itemMaster));
       });
   }
+  createBundle<T>(bundle: Bundle): Observable<T> {
+
+    let endpointUrl = this.createBundleUrl;
+
+    if (bundle.bundleId == 0 || bundle.bundleId === undefined)
+      endpointUrl = this.createBundleUrl;
+    else
+      endpointUrl = this.updateBundleUrl;
+
+    return this.http.post(endpointUrl, JSON.stringify(bundle), { headers: this.getRequestHeadersNew(), responseType: "text" })
+      .catch(error => {
+        return this.handleError(error, () => this.createBundle(bundle));
+      });
+  }
 
   duplicateItemMaster<T>(itemMaster: ItemMaster): Observable<T> {
     //itemMaster.itemMasterId = 0;
@@ -121,6 +158,15 @@ export class ItemMasterService extends EndpointFactory {
     return this.http.post(endpointUrl, JSON.stringify(itemMaster), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {
         return this.handleError(error, () => this.duplicateItemMaster(itemMaster));
+      });
+  }
+  duplicateBundle<T>(itemMaster: ItemMaster): Observable<T> {
+    //itemMaster.itemMasterId = 0;
+    let endpointUrl = this.duplicateBundleUrl;
+
+    return this.http.post(endpointUrl, JSON.stringify(itemMaster), { headers: this.getRequestHeadersNew(), responseType: "text" })
+      .catch(error => {
+        return this.handleError(error, () => this.duplicateBundle(itemMaster));
       });
   }
 
@@ -146,6 +192,14 @@ export class ItemMasterService extends EndpointFactory {
     return this.http.post<T>(endpointUrl, JSON.stringify(itemMaster), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.deleteItemMaster_up(itemMaster));
+      });
+  }
+  deleteBundle<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.deleteBundleUrl}?id=${Id}`;
+
+    return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deleteBundle(Id));
       });
   }
 
@@ -261,6 +315,54 @@ export class ItemMasterService extends EndpointFactory {
         return this.handleError(error, () => this.getAbilitySpellForItemsByRuleset_sp(Id, ItemId));
       });
   }
+  public bundleModelData(_bundleTemplateVM: any, _view: string): any {
 
+    if (_bundleTemplateVM == null) return { bundleId: 0, ruleSetId: 0 };
+
+    let bundleFormModal: any;
+
+    if (_view === 'DUPLICATE' || _view === 'UPDATE') {
+      bundleFormModal = {
+        bundleId: _bundleTemplateVM.bundleId,
+        ruleSetId: _bundleTemplateVM.ruleSetId,
+        bundleName: _view === 'DUPLICATE' ? '' : _bundleTemplateVM.bundleName,
+        bundleImage: _bundleTemplateVM.bundleImage,
+        bundleVisibleDesc: _bundleTemplateVM.bundleVisibleDesc,
+        value: _bundleTemplateVM.value,
+        volume: _bundleTemplateVM.volume,
+        totalWeight: _bundleTemplateVM.totalWeight,
+        metatags: _bundleTemplateVM.metatags == null ? '' : _bundleTemplateVM.metatags,
+        rarity: _bundleTemplateVM.rarity,
+        ruleSet: _bundleTemplateVM.ruleSet,
+        view: _view === 'DUPLICATE' ? VIEW.DUPLICATE : VIEW.EDIT,
+        
+        currencyLabel: _bundleTemplateVM.ruleSet == undefined ? ''
+          : _bundleTemplateVM.ruleSet.currencyLabel == undefined || _bundleTemplateVM.ruleSet.currencyLabel == null ? '' : '(' + _bundleTemplateVM.ruleSet.currencyLabel + ')',
+        weightLabel: _bundleTemplateVM.ruleSet == undefined ? ''
+          : _bundleTemplateVM.ruleSet.weightLabel == undefined || _bundleTemplateVM.ruleSet.weightLabel == null ? '' : '(' + _bundleTemplateVM.ruleSet.weightLabel + ')',
+        volumeLabel: _bundleTemplateVM.ruleSet == undefined ? ''
+          : _bundleTemplateVM.ruleSet.volumeLabel == undefined || _bundleTemplateVM.ruleSet.volumeLabel == null ? '' : '(' + _bundleTemplateVM.ruleSet.volumeLabel + ')',
+               
+      }
+    }
+    else {
+      bundleFormModal = {
+        bundleId: 0,
+        ruleSetId: _bundleTemplateVM.ruleSetId,
+        view: VIEW.ADD,
+        rarity: 'Common',       
+        ruleSet: _bundleTemplateVM.ruleSet,
+        currencyLabel: _bundleTemplateVM.ruleSet == undefined ? ''
+          : _bundleTemplateVM.ruleSet.currencyLabel == undefined || _bundleTemplateVM.ruleSet.currencyLabel == null ? '' : '(' + _bundleTemplateVM.ruleSet.currencyLabel + ')',
+        weightLabel: _bundleTemplateVM.ruleSet == undefined ? ''
+          : _bundleTemplateVM.ruleSet.weightLabel == undefined || _bundleTemplateVM.ruleSet.weightLabel == null ? '' : '(' + _bundleTemplateVM.ruleSet.weightLabel + ')',
+        volumeLabel: _bundleTemplateVM.ruleSet == undefined ? ''
+          : _bundleTemplateVM.ruleSet.volumeLabel == undefined || _bundleTemplateVM.ruleSet.volumeLabel == null ? '' : '(' + _bundleTemplateVM.ruleSet.volumeLabel + ')',
+               
+        metatags: '',
+      }
+    }
+    return bundleFormModal;
+  }
 }
 

@@ -646,7 +646,7 @@ namespace DAL.Services
             return itemList;
         }
 
-        public List<ItemMaster> GetItemMastersByRuleSetId_add(int rulesetId)
+        public List<ItemMaster> GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false)
         {
             List<ItemMaster> itemList = new List<ItemMaster>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -663,6 +663,7 @@ namespace DAL.Services
 
                 // Add the parameters for the SelectCommand.
                 command.Parameters.AddWithValue("@RulesetID", rulesetId);
+                command.Parameters.AddWithValue("@includeBundles", includeBundles);
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;
@@ -823,9 +824,9 @@ namespace DAL.Services
             //return _context.ItemMasters.Where(x => x.ItemMasterId == itemMasterID && x.ParentItemMasterId != null && x.IsDeleted != true).Any();
         }
 
-        public List<ItemMaster> SP_GetItemMastersByRuleSetId(int rulesetId, int page, int pageSize)
+        public List<ItemMaster_Bundle> SP_GetItemMastersByRuleSetId(int rulesetId, int page, int pageSize)
         {
-            List<ItemMaster> itemlist = new List<ItemMaster>();
+            List<ItemMaster_Bundle> itemlist = new List<ItemMaster_Bundle>();
             RuleSet ruleset = new RuleSet();
 
             short num = 0;
@@ -845,6 +846,8 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@RulesetID", rulesetId);
                 command.Parameters.AddWithValue("@page", page);
                 command.Parameters.AddWithValue("@size", pageSize);
+                command.Parameters.AddWithValue("@includeBundles", true);
+                
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;
@@ -867,7 +870,7 @@ namespace DAL.Services
 
                 foreach (DataRow row in ds.Tables[0].Rows)
                 {
-                    ItemMaster i = new ItemMaster();
+                    ItemMaster_Bundle i = new ItemMaster_Bundle();
                     i.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
                     i.ContainerVolumeMax = row["ContainerVolumeMax"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ContainerVolumeMax"]);
                     i.ContainerWeightMax = row["ContainerWeightMax"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ContainerWeightMax"]);
@@ -894,6 +897,7 @@ namespace DAL.Services
 
                     i.RuleSet = ruleset;
                     i.CommandName= row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
+                    i.IsBundle = row["IsBundle"] == DBNull.Value ? false : Convert.ToBoolean(row["IsBundle"]);
                     itemlist.Add(i);
                 }
             }

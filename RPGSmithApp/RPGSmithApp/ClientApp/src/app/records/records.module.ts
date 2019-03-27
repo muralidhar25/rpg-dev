@@ -16,6 +16,7 @@ import { AddSpellsComponent } from './spells/add-spells/add-spells.component';
 import { AbilitiesComponent } from './abilities/abilities.component';
 import { AddAbilitiesComponent } from './abilities/add-abilities/add-abilities.component';
 import { CreateBundleComponent } from './item-master/create-bundle/create-bundle.component';
+import { BundleDetailsComponent } from './item-master/bundle-details/bundle-details.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { CreateBundleComponent } from './item-master/create-bundle/create-bundle
     AddSpellsComponent,
     AbilitiesComponent,
     AddAbilitiesComponent,
-    CreateBundleComponent
+    CreateBundleComponent,
+    BundleDetailsComponent
   ],
   imports: [
     SharedModule
@@ -47,7 +49,8 @@ import { CreateBundleComponent } from './item-master/create-bundle/create-bundle
     AddSpellsComponent,
     AbilitiesComponent,
     AddAbilitiesComponent,
-    CreateBundleComponent
+    CreateBundleComponent,
+    BundleDetailsComponent
   ],
   entryComponents: [
     AddItemMasterComponent,

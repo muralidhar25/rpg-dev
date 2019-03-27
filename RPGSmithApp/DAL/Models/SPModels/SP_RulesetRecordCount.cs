@@ -190,4 +190,7 @@ namespace DAL.Models.SPModels
         public Ability RulesetAbility { get; set; }
         public Spell RulesetSpell { get; set; }
     }
+    public class ItemMaster_Bundle : ItemMaster {
+        public bool IsBundle { get; set; }
+    }
 }

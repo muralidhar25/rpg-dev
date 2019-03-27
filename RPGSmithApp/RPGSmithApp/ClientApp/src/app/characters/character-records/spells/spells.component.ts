@@ -175,7 +175,21 @@ export class CharacterSpellsComponent implements OnInit {
 
       this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'CharacterSpells')
         .subscribe(data => {
-          if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
+          //if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
+          if (data !== null) {
+            if (data.viewType == 'List') {
+              this.isListView = true;
+              this.isDenseView = false;
+            }
+            else if (data.viewType == 'Dense') {
+              this.isDenseView = true;
+              this.isListView = false;
+            }
+            else {
+              this.isListView = false;
+              this.isDenseView = false;
+            }
+          }
         }, error => {
           let Errors = Utilities.ErrorDetail("", error);
           if (Errors.sessionExpire) {

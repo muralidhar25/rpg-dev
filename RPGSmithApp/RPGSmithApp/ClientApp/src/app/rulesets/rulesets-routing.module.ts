@@ -12,6 +12,7 @@ import { RulesetDashboardComponent } from './ruleset-dashboard/ruleset-dashboard
 import { CharacterStatsComponent } from "./character-stats/character-stats/character-stats.component";
 import { RulesetAddInterfaceComponent } from "./ruleset-helper/ruleset-add-interface/ruleset-add-interface.component";
 import { AuthGuard } from "../core/auth/auth-guard.service";
+import { BundleDetailsComponent } from "../records/item-master/bundle-details/bundle-details.component";
 
 const routes: Routes = [
   { path: "", component: RulesetComponent, data: { title: "Rulesets" } },
@@ -20,6 +21,8 @@ const routes: Routes = [
   { path: "ability/:id", component: AbilitiesComponent,  data: { title: "Abilities" } },
 
   { path: "item-details/:id", component: ItemDetailsComponent,  data: { title: "Item Details" } },
+  { path: "item-details/:id", component: ItemDetailsComponent,  data: { title: "Item Details" } },
+  { path: "bundle-details/:id", component: BundleDetailsComponent,  data: { title: "Bundle Details" } },
   { path: "spell-details/:id", component: SpellDetailsComponent,  data: { title: "Spell Details" } },
   { path: "ability-details/:id", component: AbilityDetailsComponent,  data: { title: "Ability Details" } },
 

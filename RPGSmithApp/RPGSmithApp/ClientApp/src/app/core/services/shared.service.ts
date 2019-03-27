@@ -228,5 +228,12 @@ export class SharedService {
   shouldUpdateCustomeDice(): Observable<any> {
     return this.pages.asObservable();
   }
+  updateAddItemMastersList(itemsList: any) {
+    this.itemsList.next(itemsList);
+  }
+
+  shouldUpdateAddItemMastersList(): Observable<any> {
+    return this.itemsList.asObservable();
+  }
 }
 

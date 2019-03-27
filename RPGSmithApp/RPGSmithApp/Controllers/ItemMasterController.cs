@@ -105,11 +105,11 @@ namespace RPGSmithApp.Controllers
             }
         }
         [HttpGet("getByRuleSetId_add")]
-        public async Task<IActionResult> getByRuleSetId_add(int rulesetId)
+        public async Task<IActionResult> getByRuleSetId_add(int rulesetId,bool includeBundles=false)
         {
             
                 dynamic Response = new ExpandoObject();
-                var ItemList = _coreRulesetService.GetItemMastersByRuleSetId_add(rulesetId);
+                var ItemList = _coreRulesetService.GetItemMastersByRuleSetId_add(rulesetId, includeBundles);
               
                 Response.ItemMaster = Utilities.CleanModel<ItemMaster>(ItemList);
                 Response.RuleSet = Utilities.CleanModel<RuleSet>(_ruleSetService.GetRuleSetById(rulesetId).Result);

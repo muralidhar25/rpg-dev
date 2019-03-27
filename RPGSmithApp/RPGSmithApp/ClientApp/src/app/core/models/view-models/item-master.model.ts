@@ -14,7 +14,7 @@ export class ItemMaster {
         isContainer?: boolean, isMagical?: boolean, isConsumable?: boolean, containerWeightMax?: number, containerWeightModifier?: string, containerVolumeMax?: number,
         metatags?: string, rarity?: string, showIcon?: boolean, ruleset?: Ruleset, view?: VIEW, //associatedSpellId?: any[], associatedAbilityId?: any[],
         itemMasterAbilityVM?: itemMasterAbility[], itemMasterPlayerVM?: itemMasterPlayer[], itemMasterSpellVM?: itemMasterSpell[],
-        currencyLabel?: string, weightLabel?: string, volumeLabel?: string, percentReduced?: number, totalWeightWithContents?: number
+      currencyLabel?: string, weightLabel?: string, volumeLabel?: string, percentReduced?: number, totalWeightWithContents?: number, isBundle?: boolean
     ) {
         this.itemMasterId = itemMasterId;
         this.ruleSetId = ruleSetId;
@@ -50,7 +50,8 @@ export class ItemMaster {
 
         this.currencyLabel= currencyLabel;
         this.weightLabel= weightLabel;
-        this.volumeLabel= volumeLabel;
+      this.volumeLabel = volumeLabel;
+      this.isBundle = isBundle;
     }
 
     public itemMasterId: number;
@@ -88,7 +89,8 @@ export class ItemMaster {
 
     public currencyLabel: string;
     public weightLabel: string;
-    public volumeLabel: string;
+  public volumeLabel: string;
+  public isBundle: boolean;
 }
 
 

@@ -23,8 +23,8 @@ namespace DAL.Services
         List<ItemMaster> Core_GetItemMastersByRuleSetId(int ruleSetId, int ParentID);
         Task<ItemMaster> Core_CreateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities);
         bool Core_ItemMasterWithParentIDExists(int itemMasterID, int RulesetID);
-        List<ItemMaster> SP_GetItemMastersByRuleSetId(int rulesetId, int page, int pageSize);
+        List<ItemMaster_Bundle> SP_GetItemMastersByRuleSetId(int rulesetId, int page, int pageSize);
         SP_AbilitySpellForItemMaster AbilitySpellForItemsByRuleset_sp(int rulesetId, int itemMasterId);
-        List<ItemMaster> GetItemMastersByRuleSetId_add(int rulesetId);
+        List<ItemMaster> GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false);
     }
 }
