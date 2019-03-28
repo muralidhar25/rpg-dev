@@ -42,10 +42,10 @@ namespace DAL.Models
 
         [Column(TypeName = "nvarchar(20)")]
         public string Rarity { get; set; }
-        
 
-        
-
+        public int? ParentItemMasterBundleId { get; set; }
+        public bool? IsDeleted { get; set; }
+        public virtual ItemMasterBundle ParentItemMasterBundle { get; set; }
         public virtual RuleSet RuleSet { get; set; }
         public virtual ICollection<ItemMasterBundleItem> ItemMasterBundleItems { get; set; }
 

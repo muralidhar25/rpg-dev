@@ -1627,7 +1627,7 @@ namespace RPGSmithApp.Controllers
                 List<CharacterAbility> characterAbilities = new List<CharacterAbility>();
                 List<CharacterSpell> characterSpells = new List<CharacterSpell>();
                 List<Item> items = new List<Item>();
-                List<ItemMaster> itemMasters = new List<ItemMaster>();
+                List<ItemMaster_Bundle> itemMasters = new List<ItemMaster_Bundle>();
                 List<Spell> spells = new List<Spell>();
                 List<Ability> abilities = new List<Ability>();
                 bool skipGettingRecords = false;

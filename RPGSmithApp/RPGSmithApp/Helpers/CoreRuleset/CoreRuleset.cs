@@ -15,6 +15,7 @@ namespace RPGSmithApp.Helpers.CoreRuleset
     {
         bool IsCopiedFromCoreRuleset(int RulesetID);
         bool IsItemCopiedFromCoreRuleset(int ItemMasterID, int rulesetID);
+        bool IsBundleCopiedFromCoreRuleset(int bundleId, int rulesetID);
         RulesetRecordCount GetRulesetRecordCounts(int RulesetID);
         List<CharacterStat> Character_GetCharacterStatByRuleSetId(int RulesetID);
         List<ItemMaster> GetItemMastersByRuleSetId(int RulesetID);
@@ -34,9 +35,10 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         Task<int> _updateParentIDForAllRelatedItems(int characterId, int oldParentItemMasterID, int itemMasterIDInserted, char Type);
         Task<List<Character>> GetCharactersByRulesetID(int ruleSetId);
         int GetItemCountByRuleSetId(int rulesetId);
-        List<ItemMaster> GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false);
+        List<ItemMaster_Bundle> GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false);
         List<Spell> GetSpellsByRuleSetId_add(int rulesetId);
         List<Ability> GetAbilitiesByRuleSetId_add(int rulesetId);
+        Task<ItemMasterBundle> CreateItemMasterBundle(ItemMasterBundle bundle, List<ItemMasterBundleItem> bundleItems);
     }
 
     public class CoreRuleset : ICoreRuleset
@@ -44,6 +46,7 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         private readonly IRuleSetService _ruleSetService;
         private readonly IAbilityService _abilityService;
         private readonly IItemMasterService _itemMasterService;
+        private readonly IItemMasterBundleService _itemMasterBundleService;
         private readonly ISpellService _spellService;
         private readonly ICharacterStatService _characterStatService;
         private readonly IRulesetDashboardLayoutService _rulesetDashboardLayoutService;
@@ -55,6 +58,7 @@ namespace RPGSmithApp.Helpers.CoreRuleset
             ICharacterStatService characterStatService,
             IAbilityService abilityService,
             IItemMasterService itemMasterService,
+            IItemMasterBundleService itemMasterBundleService,
             ISpellService spellService,
             IRulesetDashboardLayoutService rulesetDashboardLayoutService,
             IItemService itemService,
@@ -66,6 +70,7 @@ namespace RPGSmithApp.Helpers.CoreRuleset
             _characterStatService = characterStatService;
             _abilityService = abilityService;
             _itemMasterService = itemMasterService;
+            _itemMasterBundleService = itemMasterBundleService;
             _spellService = spellService;
             _rulesetDashboardLayoutService = rulesetDashboardLayoutService;
             _itemService = itemService;
@@ -79,6 +84,10 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         public bool IsItemCopiedFromCoreRuleset(int ItemMasterID, int rulesetID)
         {
             return _itemMasterService.Core_ItemMasterWithParentIDExists(ItemMasterID, rulesetID);
+        }
+        public bool IsBundleCopiedFromCoreRuleset(int bundleId, int rulesetID)
+        {
+            return _itemMasterService.Core_BundleWithParentIDExists(bundleId, rulesetID);
         }
         public bool IsSpellCopiedFromCoreRuleset(int spellID, int RulesetID)
         {
@@ -198,6 +207,9 @@ namespace RPGSmithApp.Helpers.CoreRuleset
             return await _itemMasterService.Core_CreateItemMaster(itemMaster, itemMasterSpellVM, itemMasterAbilityVM);
             //return _abilityService.Core_GetCountByRuleSetId(RulesetID, (int)parentID);
         }
+        public async Task<ItemMasterBundle> CreateItemMasterBundle(ItemMasterBundle bundle, List<ItemMasterBundleItem> bundleItems) {
+            return await _itemMasterBundleService.Core_CreateItemMasterBundle(bundle, bundleItems);
+        }
         public async Task<ItemMaster> CreateItemMasterUsingItem(int ItemMasterId, int RulesetID)
         {
             return await _itemService.Core_CreateItemMasterUsingItem(ItemMasterId, RulesetID);
@@ -234,7 +246,7 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         {
             return await _CharacterService.GetOnlyCharactersByRulesetID(ruleSetId);
         }
-        public List<ItemMaster> GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false)
+        public List<ItemMaster_Bundle> GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false)
         {
             return _itemMasterService.GetItemMastersByRuleSetId_add(rulesetId,includeBundles);
         }

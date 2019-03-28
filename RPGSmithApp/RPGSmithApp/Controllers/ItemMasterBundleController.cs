@@ -73,16 +73,26 @@ namespace RPGSmithApp.Controllers
 
             if (ModelState.IsValid)
             {
-                int rulesetID = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
+                //int rulesetID = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
                
-                    return await UpdateItemMasterCommon(model);
-                
+                //    return await UpdateItemMasterCommon(model);
+
+                int rulesetID = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
+                if (_coreRulesetService.IsCopiedFromCoreRuleset(rulesetID))
+                {
+                    return await Core_UpdateItemMasterBundle(model);
+                }
+                else
+                {
+                    return await UpdateItemMasterBundleCommon(model);
+                }
+
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
 
         }
 
-        private async Task<IActionResult> UpdateItemMasterCommon(ItemMasterBundleViewModel model)
+        private async Task<IActionResult> UpdateItemMasterBundleCommon(ItemMasterBundleViewModel model)
         {
             try {
                 if (_itemMasterBundleService.CheckDuplicateItemMasterBundle(model.BundleName, model.RuleSetId, model.BundleId).Result)
@@ -106,6 +116,23 @@ namespace RPGSmithApp.Controllers
         public async Task<IActionResult> DeleteItemMaster(int Id)
         {
             await _itemMasterBundleService.DeleteBundle(Id);
+            return Ok();
+        }
+        [HttpPost("delete_up")]
+        public async Task<IActionResult> DeleteItemMaster([FromBody] ItemMasterBundleViewModel model)
+        {
+            int rulesetID = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
+            if (_coreRulesetService.IsCopiedFromCoreRuleset(rulesetID))
+            {
+                int bundleID = model.BundleId;
+                if (!_coreRulesetService.IsBundleCopiedFromCoreRuleset(bundleID, rulesetID))
+                {
+                    await CreateItemMasterBundleForCopiedRuleset(model, true);
+                    return Ok();
+                    // await UpdateItemMasterCommon(model);
+                }
+            }
+            await _itemMasterBundleService.DeleteBundle((int)model.BundleId);
             return Ok();
         }
         [HttpPost("uploadItemTemplateImage")]
@@ -241,5 +268,54 @@ namespace RPGSmithApp.Controllers
         //    await _itemMasterBundleService.DeleteBundle(Id);
         //    return Ok();
         //}
+        private async Task<IActionResult> Core_UpdateItemMasterBundle(ItemMasterBundleViewModel model)
+        {
+            try
+            {                
+                if (_coreRulesetService.IsBundleCopiedFromCoreRuleset(model.BundleId, (int)model.RuleSetId))
+                {
+                    return await UpdateItemMasterBundleCommon(model);
+                }
+                else
+                {
+                    return await CreateItemMasterBundleForCopiedRuleset(model);
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        private async Task<IActionResult> CreateItemMasterBundleForCopiedRuleset(ItemMasterBundleViewModel model, bool? IsDeleted = null)
+        {
+            //CreateItemMasterModel itemModel = Mapper.Map<CreateItemMasterModel>(model);
+            ItemMasterBundle bundle = new ItemMasterBundle();
+            bundle.BundleId = model.BundleId;
+            
+            
+            bundle.BundleImage = model.BundleImage;
+           
+            bundle.BundleName = model.BundleName;
+           
+            bundle.BundleVisibleDesc = model.BundleVisibleDesc;
+            bundle.Metatags = model.Metatags;
+           
+            bundle.Rarity = model.Rarity;
+            bundle.RuleSetId = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
+            
+            bundle.Value = model.Value;
+            bundle.Volume = model.Volume;
+            bundle.TotalWeight = model.TotalWeight;
+            bundle.IsDeleted = IsDeleted;
+            model.BundleItems = _itemMasterBundleService.getItemsByBundleID(model.BundleId);
+
+
+            ItemMasterBundle result = await _coreRulesetService.CreateItemMasterBundle(bundle,model.BundleItems.ToList());
+
+            
+            return Ok(result.BundleId);
+        }
     }
 }

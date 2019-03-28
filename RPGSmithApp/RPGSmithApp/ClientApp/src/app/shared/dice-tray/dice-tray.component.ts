@@ -102,14 +102,14 @@ export class DiceTrayComponent implements OnInit {
     //    }
     //}
   UpdateDice(event: any, dice: any, indexNumber: number) {
-      debugger
+      
         this.customDice.dices.map((d,index) => {
             if (index == indexNumber) {
                 d.name = event.target.value;
             }
         })
     this.BindDiceTray(this.customDice.dices);
-    debugger
+    
     }
     BindDiceTray(dices: any) {
         
@@ -289,7 +289,7 @@ export class DiceTrayComponent implements OnInit {
     submit() {
         
       this.bsModalRef.hide();
-      debugger
+      
         this.sharedService.updateCustomeDice({diceTray: this.diceTray, isDiceTray:true })
     }
 }

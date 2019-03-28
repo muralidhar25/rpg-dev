@@ -111,7 +111,7 @@ namespace RPGSmithApp.Controllers
                 dynamic Response = new ExpandoObject();
                 var ItemList = _coreRulesetService.GetItemMastersByRuleSetId_add(rulesetId, includeBundles);
               
-                Response.ItemMaster = Utilities.CleanModel<ItemMaster>(ItemList);
+                Response.ItemMaster = Utilities.CleanModel<ItemMaster_Bundle>(ItemList);
                 Response.RuleSet = Utilities.CleanModel<RuleSet>(_ruleSetService.GetRuleSetById(rulesetId).Result);
                 return Ok(Response);
           

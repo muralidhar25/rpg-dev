@@ -25,6 +25,7 @@ namespace DAL.Services
         bool Core_ItemMasterWithParentIDExists(int itemMasterID, int RulesetID);
         List<ItemMaster_Bundle> SP_GetItemMastersByRuleSetId(int rulesetId, int page, int pageSize);
         SP_AbilitySpellForItemMaster AbilitySpellForItemsByRuleset_sp(int rulesetId, int itemMasterId);
-        List<ItemMaster> GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false);
+        List<ItemMaster_Bundle> GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false);
+        bool Core_BundleWithParentIDExists(int bundleId, int rulesetID);
     }
 }

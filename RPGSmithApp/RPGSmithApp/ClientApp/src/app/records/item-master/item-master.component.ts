@@ -17,6 +17,7 @@ import { Ruleset } from "../../core/models/view-models/ruleset.model";
 import { AppService1 } from "../../app.service";
 import { CreateBundleComponent } from "./create-bundle/create-bundle.component";
 import { Bundle } from "../../core/models/view-models/bundle.model";
+import { VIEW } from "../../core/models/enums";
 
 @Component({
     selector: 'app-item',
@@ -255,7 +256,7 @@ export class ItemMasterComponent implements OnInit {
     }
 
   editItemTemplate(itemMaster: ItemMaster) {
-    debugger
+    
     if (itemMaster.isBundle) {
       this.bsModalRef = this.modalService.show(CreateBundleComponent, {
         class: 'modal-primary modal-custom',
@@ -264,7 +265,7 @@ export class ItemMasterComponent implements OnInit {
       });
       this.bsModalRef.content.title = 'Edit Bundle';
       this.bsModalRef.content.button = 'UPDATE';
-      this.bsModalRef.content.ruleSetId = this.ruleSetId;
+      this.bsModalRef.content.rulesetID = this.ruleSetId;
       this.bsModalRef.content.bundleVM ={
         bundleId : itemMaster.itemMasterId,
         ruleSetId: this.ruleSetId,
@@ -299,7 +300,7 @@ export class ItemMasterComponent implements OnInit {
     }
 
   duplicateItemTemplate(itemMaster: ItemMaster) {
-    debugger
+    
     // this.alertService.startLoadingMessage("", "Checking records");      
     this.itemMasterService.getItemMasterCount(this.ruleSetId)
       .subscribe(data => {
@@ -313,7 +314,7 @@ export class ItemMasterComponent implements OnInit {
             });
             this.bsModalRef.content.title = 'Edit Bundle';
             this.bsModalRef.content.button = 'DUPLICATE';
-            this.bsModalRef.content.ruleSetId = this.ruleSetId;
+            this.bsModalRef.content.rulesetID = this.ruleSetId;
             this.bsModalRef.content.bundleVM = {
               bundleId: itemMaster.itemMasterId,
               ruleSetId: this.ruleSetId,
@@ -352,7 +353,7 @@ export class ItemMasterComponent implements OnInit {
   } 
 
   deleteItemTemplate(itemMaster: ItemMaster) {
-      debugger
+      
         let message = "Are you sure you want to delete this " + itemMaster.itemName
             + " item template? Note: Any item(s) previously deployed from this template will not be affected.";
 
@@ -365,7 +366,11 @@ export class ItemMasterComponent implements OnInit {
       this.isLoading = true;
       if (itemMaster.isBundle) {
         this.alertService.startLoadingMessage("", "Deleting Bundle");
-        this.itemMasterService.deleteBundle(itemMaster.itemMasterId)
+      let bundleObj: Bundle = new Bundle(
+          itemMaster.itemMasterId, itemMaster.ruleSetId, itemMaster.itemName, itemMaster.itemImage, itemMaster.itemVisibleDesc, itemMaster.value,
+          itemMaster.volume, itemMaster.weight, new Ruleset(), VIEW.ADD, '', itemMaster.metatags, itemMaster.rarity, '', '', []
+        );
+        this.itemMasterService.deleteBundle(bundleObj)
           .subscribe(
             data => {
               setTimeout(() => {

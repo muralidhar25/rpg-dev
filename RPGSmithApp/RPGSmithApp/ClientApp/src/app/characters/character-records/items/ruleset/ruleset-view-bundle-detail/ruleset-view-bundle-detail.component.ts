@@ -1,49 +1,57 @@
-import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
-import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { ItemMaster } from "../../../core/models/view-models/item-master.model";
-import { ConfigurationService } from "../../../core/common/configuration.service";
-import { AlertService, DialogType, MessageSeverity } from "../../../core/common/alert.service";
-import { LocalStoreManager } from "../../../core/common/local-store-manager.service";
-import { AuthService } from "../../../core/auth/auth.service";
-import { SharedService } from "../../../core/services/shared.service";
-import { CommonService } from "../../../core/services/shared/common.service";
-import { RulesetService } from "../../../core/services/ruleset.service";
-import { ItemMasterService } from "../../../core/services/item-master.service";
-import { User } from "../../../core/models/user.model";
-import { DBkeys } from "../../../core/common/db-keys";
-import { Utilities } from "../../../core/common/utilities";
-import { CreateItemMsterComponent } from "../create-item/create-item.component";
-import { ImageViewerComponent } from "../../../shared/image-interface/image-viewer/image-viewer.component";
-import { PlatformLocation } from "@angular/common";
-import { Bundle } from "../../../core/models/view-models/bundle.model";
-import { CreateBundleComponent } from "../create-bundle/create-bundle.component";
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
+import { ItemMaster } from "../../../../../core/models/view-models/item-master.model";
+import { Ruleset } from "../../../../../core/models/view-models/ruleset.model";
+import { Characters } from "../../../../../core/models/view-models/characters.model";
+import { SharedService } from "../../../../../core/services/shared.service";
+import { LocalStoreManager } from "../../../../../core/common/local-store-manager.service";
+import { ConfigurationService } from "../../../../../core/common/configuration.service";
+import { ItemMasterService } from "../../../../../core/services/item-master.service";
+import { Items } from "../../../../../core/models/view-models/items.model";
+import { CommonService } from "../../../../../core/services/shared/common.service";
+import { ItemsService } from "../../../../../core/services/items.service";
+import { AuthService } from "../../../../../core/auth/auth.service";
+import { AlertService, DialogType, MessageSeverity } from "../../../../../core/common/alert.service";
+import { RulesetService } from "../../../../../core/services/ruleset.service";
+import { DBkeys } from "../../../../../core/common/db-keys";
+import { User } from "../../../../../core/models/user.model";
+import { Utilities } from "../../../../../core/common/utilities";
+import { ImageViewerComponent } from "../../../../../shared/image-interface/image-viewer/image-viewer.component";
+import { CreateItemMsterComponent } from "../../../../../records/item-master/create-item/create-item.component";
+import { AppService1 } from "../../../../../app.service";
+import { Bundle } from "../../../../../core/models/view-models/bundle.model";
+import { CreateBundleComponent } from "../../../../../records/item-master/create-bundle/create-bundle.component";
 
 @Component({
-  selector: 'app-bundle-details',
-  templateUrl: './bundle-details.component.html',
-  styleUrls: ['./bundle-details.component.scss']
+  selector: 'app-ruleset-view-bundle-detail',
+  templateUrl: './ruleset-view-bundle-detail.component.html',
+  styleUrls: ['./ruleset-view-bundle-detail.component.scss']
 })
-export class BundleDetailsComponent implements OnInit {
+export class RulesetViewBundleDetailComponent implements OnInit {
 
   isLoading = false;
   showActions: boolean = true;
   actionText: string;
   bundleId: number;
-  isDropdownOpen: boolean = false;
   ruleSetId: number;
   bsModalRef: BsModalRef;
+  isDropdownOpen: boolean = false;
   bundleDetail: any = new Bundle();
-  bundleItems: any[]= [];
+  ruleset: Ruleset = new Ruleset();
+  charNav: any = {};
 
-
+  characterItemModal: any = new Items();
+  character: any = new Characters();
+  IsAddingRecord: boolean = false;
+  bundleItems: any[] = [];
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService, private commonService: CommonService,
-    private itemMasterService: ItemMasterService, private rulesetService: RulesetService,
-    private location: PlatformLocation) {
-    location.onPopState(() => this.modalService.hide(1));
+    private itemMasterService: ItemMasterService, private rulesetService: RulesetService, private itemsService: ItemsService
+    , public appService: AppService1
+  ) {
     this.route.params.subscribe(params => { this.bundleId = params['id']; });
     this.sharedService.shouldUpdateItemMasterList().subscribe(sharedServiceJson => {
       if (sharedServiceJson) this.initialize();
@@ -61,14 +69,55 @@ export class BundleDetailsComponent implements OnInit {
   ngOnInit() {
     this.initialize();
     this.showActionButtons(this.showActions);
+
+    let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+    let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+    if (!icharNav) {
+      this.charNav = {
+        'items': '/character/inventory/' + char.headerId,
+        'spells': '/character/spell/' + char.headerId,
+        'abilities': '/character/ability/' + char.headerId
+      };
+    }
+    else {
+      if (!icharNav[char.headerId]) {
+        this.charNav = {
+          'items': '/character/inventory/' + char.headerId,
+          'spells': '/character/spell/' + char.headerId,
+          'abilities': '/character/ability/' + char.headerId
+        };
+      } else {
+        this.charNav = icharNav[char.headerId];
+      }
+    }
   }
 
   private initialize() {
+
+    let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+    if (char) {
+      if (char.headerId) {
+        this.character.characterName = char.headerName;
+        this.character.imageUrl = char.headerImage;
+        this.character.characterId = char.headerId;
+        this.setHeaderValues(this.character);
+      }
+    }
+
+
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
       this.authService.logout();
     else {
+      this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
       this.isLoading = true;
+      this.rulesetService.getRulesetById<any>(this.ruleSetId)
+        .subscribe(data => {
+          this.ruleset = data;
+        },
+          error => {
+          });   
+
       this.itemMasterService.getBundleById<any[]>(this.bundleId)
         .subscribe(data => {
 
@@ -90,7 +139,7 @@ export class BundleDetailsComponent implements OnInit {
             }
           }, () => { });
 
-          
+
         }, error => {
           this.isLoading = false;
           let Errors = Utilities.ErrorDetail("", error);
@@ -110,6 +159,75 @@ export class BundleDetailsComponent implements OnInit {
       this.actionText = 'HIDE';//'Hide Actions';
     }
   }
+  RedirectBack() {
+    //this.router.navigate(['/character/ruleset/items', this.ruleSetId]);
+    window.history.back();
+  }
+  Redirect(path) {
+    this.router.navigate([path, this.ruleSetId]);
+  }
+  ViewImage(img) {
+    if (img) {
+      this.bsModalRef = this.modalService.show(ImageViewerComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.ViewImageUrl = img.src;
+      this.bsModalRef.content.ViewImageAlt = img.alt;
+    }
+  }
+  AddItem(bundle: Bundle) {
+    this.IsAddingRecord = true;
+
+    this.alertService.startLoadingMessage("", "Adding item to character");
+    let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+    if (char) {
+      if (char.headerId) {
+        this.characterItemModal.multiItemMasters = [];
+        //this.characterItemModal.multiItemMasters.push({ itemMasterId: itemMaster.itemMasterId });
+        
+          this.characterItemModal.multiItemMasterBundles.push({ itemMasterBundleId: bundle.bundleId });
+        
+        this.characterItemModal.characterId = char.headerId;
+        this.characterItemModal.itemMasterId = bundle.bundleId;
+        this.itemsService.addItem(this.characterItemModal)
+          .subscribe(
+            data => {
+              this.IsAddingRecord = false;
+              this.alertService.stopLoadingMessage();
+              let message = "This item has been added to your character.";
+              this.alertService.showMessage(message, "", MessageSeverity.success);
+              //this.sharedService.updateItemsList(true);
+            },
+            error => {
+              this.IsAddingRecord = false;
+              this.alertService.stopLoadingMessage();
+              let Errors = Utilities.ErrorDetail("Unable to Add", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
+              else
+                this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+            },
+          );
+      }
+    }
+
+  }
+  private setHeaderValues(character: Characters): any {
+    let headerValues = {
+      headerName: character.characterName,
+      headerImage: character.imageUrl,
+      headerId: character.characterId,
+      headerLink: 'character',
+      hasHeader: true
+    };
+    this.appService.updateAccountSetting1(headerValues);
+    this.sharedService.updateAccountSetting(headerValues);
+    this.localStorage.deleteData(DBkeys.HEADER_VALUE);
+    this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+  }
 
   editItemTemplate(bundle: Bundle) {
     //this.bsModalRef = this.modalService.show(CreateItemMsterComponent, {
@@ -123,7 +241,7 @@ export class BundleDetailsComponent implements OnInit {
     //this.bsModalRef.content.itemMasterVM = itemMaster;
     //this.bsModalRef.content.rulesetID = this.ruleSetId;
     //this.bsModalRef.content.event.subscribe(data => {
-    //  this.bundleId = data.bundleId;
+    //  this.bundleId = data.itemMasterId;
     //  this.initialize();
     //});
     this.bsModalRef = this.modalService.show(CreateBundleComponent, {
@@ -203,7 +321,7 @@ export class BundleDetailsComponent implements OnInit {
           this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
         }
       }, error => { }, () => { });
-    
+
   }
 
   deleteItemTemplate(bundle: Bundle) {
@@ -219,7 +337,8 @@ export class BundleDetailsComponent implements OnInit {
     this.isLoading = true;
 
     this.alertService.startLoadingMessage("", "Deleting Bundle");
-    
+
+   
     this.itemMasterService.deleteBundle(bundle)
       .subscribe(
         data => {
@@ -245,29 +364,5 @@ export class BundleDetailsComponent implements OnInit {
           else
             this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
         });
-
-
-
-  }
-
-  
-
-  RedirectBack() {
-    // this.router.navigate(['/ruleset/item-master', this.ruleSetId]);
-    window.history.back();
-  }
-  Redirect(path) {
-    this.router.navigate([path, this.ruleSetId]);
-  }
-  ViewImage(img) {
-    if (img) {
-      this.bsModalRef = this.modalService.show(ImageViewerComponent, {
-        class: 'modal-primary modal-md',
-        ignoreBackdropClick: true,
-        keyboard: false
-      });
-      this.bsModalRef.content.ViewImageUrl = img.src;
-      this.bsModalRef.content.ViewImageAlt = img.alt;
-    }
   }
 }

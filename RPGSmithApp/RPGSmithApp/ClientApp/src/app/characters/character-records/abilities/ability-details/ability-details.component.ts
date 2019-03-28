@@ -105,7 +105,7 @@ export class CharacterAbilityDetailsComponent implements OnInit {
             this.isLoading = true;
             this.characterAbilityService.getCharacterAbilityById<any>(this.abilityId)
                 .subscribe(data => {
-                  debugger;
+                  
                     this.AbilityDetail = this.characterAbilityService.abilityModelDetailData(data, "UPDATE");
                     this.AbilityDetail.currentNumberOfUses = data.currentNumberOfUses ? data.currentNumberOfUses : 0;
                     this.AbilityDetail.maxNumberOfUses = data.maxNumberOfUses ? data.maxNumberOfUses : 0;

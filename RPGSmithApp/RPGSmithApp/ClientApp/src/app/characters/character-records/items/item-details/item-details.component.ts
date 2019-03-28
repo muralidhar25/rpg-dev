@@ -117,7 +117,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
             this.isLoading = true;
             this.itemsService.getItemById<any>(this.itemId)
                 .subscribe(data => {
-                  debugger;
+                  
                   
                     this.ItemDetail = this.itemsService.itemModelData(data, "UPDATE");
                     this.ruleSetId = this.ItemDetail.ruleSetId;

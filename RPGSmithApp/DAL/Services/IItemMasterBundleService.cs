@@ -17,5 +17,7 @@ namespace DAL.Services
         Task DeleteBundle(int bundleId);
         List<ItemMasterBundleItem> getItemsByBundleID(int bundleId);
         ItemMasterBundle getBundleByBundleID(int id);
+        List<ItemMasterBundleItem> GetItemMasterIdsFromBundles(List<ItemMasterBundleIds> multiItemMasterBundles);
+        Task<ItemMasterBundle> Core_CreateItemMasterBundle(ItemMasterBundle bundle, List<ItemMasterBundleItem> bundleItems);
     }
 }

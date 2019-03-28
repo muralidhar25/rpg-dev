@@ -646,9 +646,9 @@ namespace DAL.Services
             return itemList;
         }
 
-        public List<ItemMaster> GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false)
+        public List<ItemMaster_Bundle> GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false)
         {
-            List<ItemMaster> itemList = new List<ItemMaster>();
+            List<ItemMaster_Bundle> itemList = new List<ItemMaster_Bundle>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
            // string qry = "EXEC ItemMasterGetAllDetailsByRulesetID_add @RulesetID = '" + rulesetId + "'";
 
@@ -681,7 +681,7 @@ namespace DAL.Services
             {
                 foreach (DataRow ItemRow in ds.Tables[0].Rows)
                 {
-                    ItemMaster itemM = new ItemMaster();
+                    ItemMaster_Bundle itemM = new ItemMaster_Bundle();
                     itemM.Command = ItemRow["Command"] == DBNull.Value ? null : ItemRow["Command"].ToString();
                     itemM.ContainerVolumeMax = ItemRow["ContainerVolumeMax"] == DBNull.Value ? 0 : Convert.ToDecimal(ItemRow["ContainerVolumeMax"]);
                     itemM.ContainerWeightMax = ItemRow["ContainerVolumeMax"] == DBNull.Value ? 0 : Convert.ToDecimal(ItemRow["ContainerVolumeMax"]);
@@ -705,6 +705,7 @@ namespace DAL.Services
                     itemM.Value = ItemRow["Value"] == DBNull.Value ? 0 : Convert.ToDecimal(ItemRow["Value"]);
                     itemM.Volume = ItemRow["Volume"] == DBNull.Value ? 0 : Convert.ToDecimal(ItemRow["Volume"]);
                     itemM.Weight = ItemRow["Weight"] == DBNull.Value ? 0 : Convert.ToDecimal(ItemRow["Weight"]);
+                    itemM.IsBundle = ItemRow["IsBundle"] == DBNull.Value ? false : Convert.ToBoolean(ItemRow["IsBundle"]);
 
                     itemList.Add(itemM);
                 }
@@ -720,7 +721,9 @@ namespace DAL.Services
 
         public int GetCountByRuleSetId(int ruleSetId)
         {
-            return _context.ItemMasters.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted != true).Count();
+            return (_context.ItemMasters.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted != true).Count()
+                +
+                _context.ItemMasterBundles.Where(x => x.RuleSetId == ruleSetId).Count());
         }
         public int Core_GetCountByRuleSetId(int ruleSetId, int parentID)
         {
@@ -822,6 +825,21 @@ namespace DAL.Services
             return false;
             //var rec = _context.ItemMasters.Where(x => x.ItemMasterId == itemMasterID && x.ParentItemMasterId != null && x.IsDeleted != true).FirstOrDefault().
             //return _context.ItemMasters.Where(x => x.ItemMasterId == itemMasterID && x.ParentItemMasterId != null && x.IsDeleted != true).Any();
+        }
+        public bool Core_BundleWithParentIDExists(int bundleId, int rulesetID) {
+            if (_context.ItemMasterBundles.Where(x => x.BundleId == bundleId && x.ParentItemMasterBundleId != null).Any())
+            {
+                return true;
+            }
+            else
+            {
+                var model = _context.ItemMasterBundles.Where(x => x.BundleId == bundleId && x.ParentItemMasterBundleId == null);
+                if (model.FirstOrDefault().RuleSetId == rulesetID)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public List<ItemMaster_Bundle> SP_GetItemMastersByRuleSetId(int rulesetId, int page, int pageSize)

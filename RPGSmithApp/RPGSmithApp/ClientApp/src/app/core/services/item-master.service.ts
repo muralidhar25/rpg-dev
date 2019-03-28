@@ -27,7 +27,7 @@ export class ItemMasterService extends EndpointFactory {
   private readonly createBundleUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/create";
   private readonly updateBundleUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/update";
   private readonly deleteUrl: string = this.configurations.baseUrl + "/api/ItemMaster/delete";
-  private readonly deleteBundleUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/delete";
+  private readonly deleteBundleUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/delete_up";
   
   private readonly deleteUrl_up: string = this.configurations.baseUrl + "/api/ItemMaster/delete_up";
   private readonly getByIdUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getById";
@@ -194,12 +194,12 @@ export class ItemMasterService extends EndpointFactory {
         return this.handleError(error, () => this.deleteItemMaster_up(itemMaster));
       });
   }
-  deleteBundle<T>(Id: number): Observable<T> {
-    let endpointUrl = `${this.deleteBundleUrl}?id=${Id}`;
+  deleteBundle<T>(bundle: Bundle): Observable<T> {
+    let endpointUrl = this.deleteBundleUrl;// `${this.deleteBundleUrl}?id=${Id}`;
 
-    return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
+    return this.http.post<T>(endpointUrl, JSON.stringify(bundle), this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.deleteBundle(Id));
+        return this.handleError(error, () => this.deleteBundle(bundle));
       });
   }
 

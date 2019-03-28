@@ -44,6 +44,7 @@ import { RulesetViewItemDetailComponent } from "./character-records/items/rulese
 import { ItemRulesetViewListComponent } from "./character-records/items/ruleset/ruleset-view-list/ruleset-view-list.component";
 import { SpellRulesetViewListComponent } from "./character-records/spells/ruleset/ruleset-view-list/ruleset-view-list.component";
 import { RulesetViewSpellDetailComponent } from "./character-records/spells/ruleset/ruleset-view-spell-detail/ruleset-view-spell-detail.component";
+import { RulesetViewBundleDetailComponent } from './character-records/items/ruleset/ruleset-view-bundle-detail/ruleset-view-bundle-detail.component';
 
 @NgModule({
   declarations: [
@@ -77,7 +78,8 @@ import { RulesetViewSpellDetailComponent } from "./character-records/spells/rule
     RulesetViewItemDetailComponent,
     ItemRulesetViewListComponent,
     SpellRulesetViewListComponent,
-    RulesetViewSpellDetailComponent
+    RulesetViewSpellDetailComponent,
+    RulesetViewBundleDetailComponent
   ],
   imports: [
     SharedModule,

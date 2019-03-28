@@ -8,7 +8,7 @@ export class Items {
         itemId?: number, characterId?: number, itemMasterId?: number, containedIn?: number, contains?: string, quantity?: number, totalWeight?: number,
         isIdentified?: boolean, isVisible?: boolean, isEquipped?: boolean, characters?: Characters, itemMaster?: ItemMaster,
         name?: string, description?: string, itemImage?: string, view?: VIEW, showIcon?: boolean,
-        multiItemMasters?: number[],
+      multiItemMasters?: number[], multiItemMasterBundles?: number[],
         isContainer?: boolean, isConsumable?: boolean, isMagical?: boolean,
         itemCalculation?: string, metatags?: string,
         rarity?: string, value?: number, volume?: number,
@@ -44,6 +44,7 @@ export class Items {
         this.view = view;
         this.showIcon = showIcon;
         this.multiItemMasters = multiItemMasters;
+      this.multiItemMasterBundles = multiItemMasterBundles ? multiItemMasterBundles:[];
         this.containerItems = containerItems
     }
 
@@ -77,6 +78,7 @@ export class Items {
     public view: VIEW;
     public showIcon: boolean;
     public multiItemMasters: number[];
+  public multiItemMasterBundles: number[];
     public containerItems:any[]
 }
 

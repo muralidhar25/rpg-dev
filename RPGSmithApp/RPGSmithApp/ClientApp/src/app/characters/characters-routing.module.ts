@@ -20,6 +20,7 @@ import { AbilityRulesetViewListComponent } from "./character-records/abilities/r
 import { RulesetViewItemDetailComponent } from "./character-records/items/ruleset/ruleset-view-item-detail/ruleset-view-item-detail.component";
 import { RulesetViewSpellDetailComponent } from "./character-records/spells/ruleset/ruleset-view-spell-detail/ruleset-view-spell-detail.component";
 import { RulesetViewAbilityDetailComponent } from "./character-records/abilities/ruleset/ruleset-view-ability-detail/ruleset-view-ability-detail.component";
+import { RulesetViewBundleDetailComponent } from "./character-records/items/ruleset/ruleset-view-bundle-detail/ruleset-view-bundle-detail.component";
 
 const routes: Routes = [
   { path: "", component: CharactersComponent , data: { title: "Home" }},
@@ -41,6 +42,7 @@ const routes: Routes = [
   { path: "ruleset/spells/:id", component: SpellRulesetViewListComponent, canActivate: [AuthGuard], data: { title: "Spells" } },
   { path: "ruleset/abilities/:id", component: AbilityRulesetViewListComponent, canActivate: [AuthGuard], data: { title: "Abilities" } },
   { path: "ruleset/item-details/:id", component: RulesetViewItemDetailComponent, canActivate: [AuthGuard], data: { title: "Items" } },
+  { path: "ruleset/item-detail/:id", component: RulesetViewBundleDetailComponent, canActivate: [AuthGuard], data: { title: "Items" } },
   { path: "ruleset/spell-details/:id", component: RulesetViewSpellDetailComponent, canActivate: [AuthGuard], data: { title: "Spells" } },
   { path: "ruleset/ability-details/:id", component: RulesetViewAbilityDetailComponent, canActivate: [AuthGuard], data: { title: "Abilities" } },
 

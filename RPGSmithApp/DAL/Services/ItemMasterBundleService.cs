@@ -31,15 +31,15 @@ namespace DAL.Services
         public async Task<ItemMasterBundle> GetDuplicateItemMasterBundle(string name, int? ruleSetId, int? BundleId = 0)
         {
             if (ruleSetId > 0)
-                return await _context.ItemMasterBundles.Where(x => x.BundleName.ToLower() == name.ToLower() && x.RuleSetId == ruleSetId && x.BundleId != BundleId).FirstOrDefaultAsync();
+                return await _context.ItemMasterBundles.Where(x => x.BundleName.ToLower() == name.ToLower() && x.RuleSetId == ruleSetId && x.BundleId != BundleId && x.IsDeleted != true).FirstOrDefaultAsync();
             else
-                return await _context.ItemMasterBundles.Where(x => x.BundleName.ToLower() == name.ToLower()).FirstOrDefaultAsync();
+                return await _context.ItemMasterBundles.Where(x => x.BundleName.ToLower() == name.ToLower() && x.IsDeleted != true).FirstOrDefaultAsync();
         }
         public async Task<bool> CheckDuplicateItemMasterBundle(string name, int? ruleSetId, int? BundleId = 0) {
             if (ruleSetId > 0)
-                return _context.ItemMasterBundles.Where(x => x.BundleName.ToLower() == name.ToLower() && x.RuleSetId == ruleSetId && x.BundleId != BundleId).FirstOrDefault() == null ? false : true;
+                return _context.ItemMasterBundles.Where(x => x.BundleName.ToLower() == name.ToLower() && x.RuleSetId == ruleSetId && x.BundleId != BundleId && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
             else
-                return _context.ItemMasterBundles.Where(x => x.BundleName.ToLower() == name.ToLower()).FirstOrDefault() == null ? false : true;
+                return _context.ItemMasterBundles.Where(x => x.BundleName.ToLower() == name.ToLower() && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
         }
 
         public async Task<ItemMasterBundle> CreateBundle(ItemMasterBundle bundle, ICollection<ItemMasterBundleItem> itemMasterBundleItems)
@@ -58,12 +58,36 @@ namespace DAL.Services
             
             return bundle;
         }
+        public async Task<ItemMasterBundle> Core_CreateItemMasterBundle(ItemMasterBundle bundle, List<ItemMasterBundleItem> bundleItems)
+        {
+            bundle.ParentItemMasterBundleId = bundle.BundleId;
+            bundle.BundleId = 0;
+
+            try
+            {
+                bundle.ItemMasterBundleItems = new List<ItemMasterBundleItem>();                
+                await _repo.Add(bundle);
+                int bundleId = bundle.BundleId;
+                if (bundleId > 0)
+                {
+                    if (bundleItems != null && bundleItems.Count > 0)
+                    {
+                         bundleItems.ForEach(a => a.BundleId = bundleId);
+                        await _context.ItemMasterBundleItems.AddRangeAsync(bundleItems);
+                        _context.SaveChanges();
+                    }
+                   
+                }
+            }
+            catch (Exception ex) { }
+            return bundle;
+        }
 
         public ItemMasterBundle GetBundleById(int bundleId) {
             var bundle = _context.ItemMasterBundles
              .Include(d => d.RuleSet)
              .Include(d => d.ItemMasterBundleItems)
-             .Where(d => d.BundleId == bundleId)
+             .Where(d => d.BundleId == bundleId && d.IsDeleted != true)
              .FirstOrDefault();
 
             if (bundle == null) return bundle;
@@ -76,7 +100,7 @@ namespace DAL.Services
             {
                 bundle.ItemMasterBundleItems = new List<ItemMasterBundleItem>();
 
-                var bundleToUpdate = _context.ItemMasterBundles.Include(x => x.ItemMasterBundleItems).Where(x => x.BundleId == bundle.BundleId).FirstOrDefault();
+                var bundleToUpdate = _context.ItemMasterBundles.Include(x => x.ItemMasterBundleItems).Where(x => x.BundleId == bundle.BundleId && x.IsDeleted != true).FirstOrDefault();
 
                 if (bundleToUpdate == null)
                     return bundleToUpdate;
@@ -113,7 +137,10 @@ namespace DAL.Services
         public async Task DeleteBundle(int bundleId)
         {
             _context.ItemMasterBundleItems.RemoveRange(_context.ItemMasterBundleItems.Where(x => x.BundleId == bundleId));
-            _context.ItemMasterBundles.Remove(_context.ItemMasterBundles.Where(x => x.BundleId == bundleId).FirstOrDefault());
+
+            ItemMasterBundle bundle = _context.ItemMasterBundles.Where(x => x.BundleId == bundleId && x.IsDeleted != true).FirstOrDefault();
+            bundle.IsDeleted = true;
+            //_context.ItemMasterBundles.Remove(_context.ItemMasterBundles.Where(x => x.BundleId == bundleId).FirstOrDefault());
 
             _context.SaveChanges();
         }
@@ -122,7 +149,7 @@ namespace DAL.Services
         }
         public ItemMasterBundle getBundleByBundleID(int id)
         {
-            ItemMasterBundle obj= _context.ItemMasterBundles.Include(x => x.ItemMasterBundleItems).Where(x => x.BundleId == id).FirstOrDefault();
+            ItemMasterBundle obj= _context.ItemMasterBundles.Include(x => x.ItemMasterBundleItems).Where(x => x.BundleId == id && x.IsDeleted != true).FirstOrDefault();
             if (obj.ItemMasterBundleItems.Count>0)
             {
                 foreach (var item in obj.ItemMasterBundleItems)
@@ -131,6 +158,15 @@ namespace DAL.Services
                 }
             }           
             return obj;
+        }
+        public List<ItemMasterBundleItem> GetItemMasterIdsFromBundles(List<ItemMasterBundleIds> multiItemMasterBundles)
+        {
+            List<ItemMasterBundleItem> result = new List<ItemMasterBundleItem>();
+            foreach (var item in multiItemMasterBundles)
+            {
+                result.AddRange(_context.ItemMasterBundleItems.Where(x => x.BundleId == item.ItemMasterBundleId));
+            }
+            return result;
         }
     }
 }

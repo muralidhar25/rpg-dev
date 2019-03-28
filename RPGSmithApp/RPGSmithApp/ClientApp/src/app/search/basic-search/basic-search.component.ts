@@ -326,7 +326,13 @@ export class BasicSearchComponent implements OnInit {
     }
     else if (this.searchModal.searchType == SearchType.RULESETITEMS) {
       if (this.isCharacterRulesetEntity) {
-        this.router.navigate(['/character/ruleset/item-details', input.recordId]);
+        if (input.record.isBundle) {
+          this.router.navigate(['/character/ruleset/item-detail', input.recordId]);
+        }
+        else {
+          this.router.navigate(['/character/ruleset/item-details', input.recordId]);
+        }
+        
       }
       else {
         this.router.navigate(['/ruleset/item-details', input.recordId]);

@@ -28,10 +28,12 @@ namespace RPGSmithApp.Controllers
         private readonly IItemCommandService _itemCommandService;
         private readonly ICharacterService _characterService;
         private readonly ICoreRuleset _coreRulesetService;
+        private readonly IItemMasterBundleService _itemMasterBundleService;
 
         public ItemController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager,
             IItemService itemService, IItemCommandService itemCommandService,
-            IItemMasterService itemMasterService, ICharacterService characterService, ICoreRuleset coreRulesetService)
+            IItemMasterService itemMasterService, ICharacterService characterService, ICoreRuleset coreRulesetService,
+            IItemMasterBundleService itemMasterBundleService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._accountManager = accountManager;
@@ -40,6 +42,7 @@ namespace RPGSmithApp.Controllers
             this._characterService = characterService;
             this._itemCommandService = itemCommandService;
             this._coreRulesetService = coreRulesetService;
+            this._itemMasterBundleService = itemMasterBundleService;
         }
 
         [HttpGet("getall")]
@@ -217,105 +220,119 @@ namespace RPGSmithApp.Controllers
             {                
                 foreach (var item in model.MultiItemMasters)
                 {
-                    //count += 1;
-                    var ItemTemplate = _itemMasterService.GetItemMasterById(item.ItemMasterId);
-                    var _ItemName = ItemTemplate.ItemName;
-                    var existingNameItems = _itemService.getDuplicateItems(model.CharacterId, ItemTemplate.ItemMasterId);
-                    //if (await _itemService.CheckDuplicateItem(ItemTemplate.ItemName, model.CharacterId))
-                    //    _ItemName = ItemTemplate.ItemName + "_" + count;
-
-
-                    if (existingNameItems != null)
-                    {
-                        int count = 0;
-                        if (existingNameItems.Where(p => p.Name == ItemTemplate.ItemName).Any())
-                        {
-
-                            foreach (var rec in existingNameItems)
-                            {
-                                count++;
-                                if (count > 0 && existingNameItems.Count != 0)
-                                {
-                                    if (!existingNameItems.Where(p => p.Name == ItemTemplate.ItemName + "_" + count).Any())
-                                        _ItemName = ItemTemplate.ItemName + "_" + count;
-                                }
-
-                            }
-                        }
-                        //int count = existingNameItems.Count;
-                        //if (count > 0)
-                        //    _ItemName = ItemTemplate.ItemName + "_" + count;
-                    }
-
-                    var ItemAbilities = new List<ItemAbility>();
-                    foreach (var ability in ItemTemplate.ItemMasterAbilities)
-                    {
-                        ItemAbilities.Add(new ItemAbility
-                        {
-                            AbilityId = ability.AbilityId
-                        });
-                    }
-                    var ItemSpells = new List<ItemSpell>();
-                    foreach (var spell in ItemTemplate.ItemMasterSpell)
-                    {
-                        ItemSpells.Add(new ItemSpell
-                        {
-                            SpellId = spell.SpellId
-                        });
-                    }
-                    var ItemCommands = new List<ItemCommand>();
-                    foreach (var command in ItemTemplate.ItemMasterCommand)
-                    {
-                        ItemCommands.Add(new ItemCommand
-                        {
-                            Command = command.Command,
-                            Name=command.Name,
-                        });
-                    }
-                    //no container whiling adding item master
-                    var result = await _itemService.InsertItem(new Item
-                    {
-                        Name = _ItemName,
-                        Description = ItemTemplate.ItemVisibleDesc,
-                        ItemImage = ItemTemplate.ItemImage,
-                        CharacterId = model.CharacterId,
-                        ItemMasterId = ItemTemplate.ItemMasterId,
-                        //ContainerId = _container.ContainerId,
-                        IsIdentified = model.IsIdentified,
-                        IsVisible = model.IsVisible,
-                        IsEquipped = model.IsEquipped,
-                        ParentItemId = item.ItemMasterId,
-                        Command= ItemTemplate.Command,
-                        IsContainer = ItemTemplate.IsContainer,
-                        IsConsumable = ItemTemplate.IsConsumable,
-                        IsMagical = ItemTemplate.IsMagical,
-                        ItemCalculation = ItemTemplate.ItemCalculation,
-                        Metatags = ItemTemplate.Metatags,
-                        Rarity = ItemTemplate.Rarity,
-                        Value = ItemTemplate.Value,
-                        Volume = ItemTemplate.Volume,
-                        Weight = ItemTemplate.Weight,
-                        Quantity = model.Quantity == 0 ? 1 : model.Quantity,
-                        TotalWeight = ItemTemplate.Weight * (model.Quantity == 0 ? 1 : model.Quantity),
-
-                        ItemStats = ItemTemplate.ItemStats,
-                        ContainerWeightMax = ItemTemplate.ContainerWeightMax,
-                        ContainerVolumeMax = ItemTemplate.ContainerVolumeMax,
-                        PercentReduced = ItemTemplate.PercentReduced,
-                        TotalWeightWithContents = ItemTemplate.TotalWeightWithContents,
-                        ContainerWeightModifier = ItemTemplate.ContainerWeightModifier,
-                        CommandName= ItemTemplate.CommandName
-                    },
-                    ItemSpells,
-                    ItemAbilities, ItemCommands);
+                    await AddItemToCharacter(model, item);
                 }
-
+                List<ItemMasterBundleItem> itemMastersListInBundles =_itemMasterBundleService.GetItemMasterIdsFromBundles(model.MultiItemMasterBundles);
+                foreach (var item in itemMastersListInBundles)
+                {                    
+                    if (item.ItemMasterId!=null)
+                    {
+                        model.Quantity = item.Quantity;
+                        await AddItemToCharacter(model, (new ItemMasterIds() { ItemMasterId = (int)item.ItemMasterId }));
+                    }
+                
+                }
                 await this._characterService.UpdateCharacterInventoryWeight(model.CharacterId ?? 0);
                 return Ok();
             }
 
             return BadRequest(Utilities.ModelStateError(ModelState));
 
+        }
+
+        private async Task AddItemToCharacter(ItemViewModel model, ItemMasterIds item)
+        {
+            //count += 1;
+            var ItemTemplate = _itemMasterService.GetItemMasterById(item.ItemMasterId);
+            var _ItemName = ItemTemplate.ItemName;
+            var existingNameItems = _itemService.getDuplicateItems(model.CharacterId, ItemTemplate.ItemMasterId);
+            //if (await _itemService.CheckDuplicateItem(ItemTemplate.ItemName, model.CharacterId))
+            //    _ItemName = ItemTemplate.ItemName + "_" + count;
+
+
+            if (existingNameItems != null)
+            {
+                int count = 0;
+                if (existingNameItems.Where(p => p.Name == ItemTemplate.ItemName).Any())
+                {
+
+                    foreach (var rec in existingNameItems)
+                    {
+                        count++;
+                        if (count > 0 && existingNameItems.Count != 0)
+                        {
+                            if (!existingNameItems.Where(p => p.Name == ItemTemplate.ItemName + "_" + count).Any())
+                                _ItemName = ItemTemplate.ItemName + "_" + count;
+                        }
+
+                    }
+                }
+                //int count = existingNameItems.Count;
+                //if (count > 0)
+                //    _ItemName = ItemTemplate.ItemName + "_" + count;
+            }
+
+            var ItemAbilities = new List<ItemAbility>();
+            foreach (var ability in ItemTemplate.ItemMasterAbilities)
+            {
+                ItemAbilities.Add(new ItemAbility
+                {
+                    AbilityId = ability.AbilityId
+                });
+            }
+            var ItemSpells = new List<ItemSpell>();
+            foreach (var spell in ItemTemplate.ItemMasterSpell)
+            {
+                ItemSpells.Add(new ItemSpell
+                {
+                    SpellId = spell.SpellId
+                });
+            }
+            var ItemCommands = new List<ItemCommand>();
+            foreach (var command in ItemTemplate.ItemMasterCommand)
+            {
+                ItemCommands.Add(new ItemCommand
+                {
+                    Command = command.Command,
+                    Name = command.Name,
+                });
+            }
+            //no container whiling adding item master
+            var result = await _itemService.InsertItem(new Item
+            {
+                Name = _ItemName,
+                Description = ItemTemplate.ItemVisibleDesc,
+                ItemImage = ItemTemplate.ItemImage,
+                CharacterId = model.CharacterId,
+                ItemMasterId = ItemTemplate.ItemMasterId,
+                //ContainerId = _container.ContainerId,
+                IsIdentified = model.IsIdentified,
+                IsVisible = model.IsVisible,
+                IsEquipped = model.IsEquipped,
+                ParentItemId = item.ItemMasterId,
+                Command = ItemTemplate.Command,
+                IsContainer = ItemTemplate.IsContainer,
+                IsConsumable = ItemTemplate.IsConsumable,
+                IsMagical = ItemTemplate.IsMagical,
+                ItemCalculation = ItemTemplate.ItemCalculation,
+                Metatags = ItemTemplate.Metatags,
+                Rarity = ItemTemplate.Rarity,
+                Value = ItemTemplate.Value,
+                Volume = ItemTemplate.Volume,
+                Weight = ItemTemplate.Weight,
+                Quantity = model.Quantity == 0 ? 1 : model.Quantity,
+                TotalWeight = ItemTemplate.Weight * (model.Quantity == 0 ? 1 : model.Quantity),
+
+                ItemStats = ItemTemplate.ItemStats,
+                ContainerWeightMax = ItemTemplate.ContainerWeightMax,
+                ContainerVolumeMax = ItemTemplate.ContainerVolumeMax,
+                PercentReduced = ItemTemplate.PercentReduced,
+                TotalWeightWithContents = ItemTemplate.TotalWeightWithContents,
+                ContainerWeightModifier = ItemTemplate.ContainerWeightModifier,
+                CommandName = ItemTemplate.CommandName
+            },
+            ItemSpells,
+            ItemAbilities, ItemCommands);
         }
 
         [HttpPost("create")]

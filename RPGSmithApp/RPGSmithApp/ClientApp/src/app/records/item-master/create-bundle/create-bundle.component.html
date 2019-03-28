@@ -167,6 +167,9 @@
                   <span class="input-box">
                     <input type="number" max="99999" class="w-100 h-100 text-center border-0" id="qty{{i}}" name="qty{{i}}" [(ngModel)]="item.quantityToAdd" #qty="ngModel" (change)="quantityChanged(item)" />
                   </span>
+                  
+                    <button type="button" class="icon icon-Gen-Trash text-orange btn px-2" (click)="removeItemFromBundle(item)"></button>                    
+                  
                 </span>
               </label>
             </li>

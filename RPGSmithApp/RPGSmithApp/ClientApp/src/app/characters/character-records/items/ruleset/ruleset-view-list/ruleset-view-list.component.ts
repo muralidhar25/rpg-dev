@@ -283,8 +283,17 @@ export class ItemRulesetViewListComponent implements OnInit {
         let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
         if (char) {
             if (char.headerId) {
-                this.characterItemModal.multiItemMasters = [];
+              this.characterItemModal.multiItemMasters = [];
+              this.characterItemModal.multiItemMasterBundles = [];
+              //this.characterItemModal.multiItemMasters.push({ itemMasterId: itemMaster.itemMasterId });
+              if (itemMaster.isBundle) {
+                this.characterItemModal.multiItemMasterBundles.push({ itemMasterBundleId: itemMaster.itemMasterId });
+                }
+                else {
                 this.characterItemModal.multiItemMasters.push({ itemMasterId: itemMaster.itemMasterId });
+                }
+              
+
                 this.characterItemModal.characterId = char.headerId;
                 this.characterItemModal.itemMasterId = itemMaster.itemMasterId;
                 this.itemsService.addItem(this.characterItemModal)
@@ -469,5 +478,13 @@ export class ItemRulesetViewListComponent implements OnInit {
                     else
                         this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
                 });
+  }
+  GoToDetails(item: ItemMaster) {
+    if (item.isBundle) {
+      this.router.navigate(['/character/ruleset/item-detail', item.itemMasterId]);
     }
+    else {
+      this.router.navigate(['/character/ruleset/item-details', item.itemMasterId]);
+    }
+  }
 }

@@ -253,7 +253,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             }
 
             else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS/') > -1 ||
-              this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEM-DETAILS') > -1) {
+              this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEM-DETAIL') > -1) {
               this.SearchType = SearchType.CHARACTERRULESETITEMS;
               this.SearchTypeText = 'Items';
             }
@@ -704,7 +704,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
 
         else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS/') > -1 ||
-          this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEM-DETAILS') > -1) {
+          this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEM-DETAIL') > -1) {
           this.SearchType = SearchType.RULESETITEMS;
           this.SearchTypeText = 'Items';
         }

@@ -1391,7 +1391,7 @@ namespace DAL.Services
 
             return _ItemList;
         }
-        public List<ItemMaster> SearchRulesetItems(SearchModel searchModel, int[] idsToSearch = null)
+        public List<ItemMaster_Bundle> SearchRulesetItems(SearchModel searchModel, int[] idsToSearch = null)
         {
             DataTable dt_ids = new DataTable();
             if (idsToSearch != null)
@@ -1402,7 +1402,7 @@ namespace DAL.Services
                     //dt_ids = utility.ToDataTable<int>(idsToSearch.ToList());
                 }
             }
-            List<ItemMaster> itemlist = new List<ItemMaster>();
+            List<ItemMaster_Bundle> itemlist = new List<ItemMaster_Bundle>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
 
             SqlConnection connection = new SqlConnection(connectionString);
@@ -1467,7 +1467,7 @@ namespace DAL.Services
 
                     foreach (DataRow row in ds.Tables[0].Rows)
                     {
-                        ItemMaster i = new ItemMaster();
+                        ItemMaster_Bundle i = new ItemMaster_Bundle();
                         i.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
                         i.ContainerVolumeMax = row["ContainerVolumeMax"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ContainerVolumeMax"]);
                         i.ContainerWeightMax = row["ContainerWeightMax"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ContainerWeightMax"]);
@@ -1491,6 +1491,7 @@ namespace DAL.Services
                         i.Value = row["Value"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Value"]);
                         i.Volume = row["Volume"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Volume"]);
                         i.Weight = row["Weight"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Weight"]);
+                        i.IsBundle = row["IsBundle"] == DBNull.Value ? false : Convert.ToBoolean(row["IsBundle"]);
 
                         i.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
                         itemlist.Add(i);
@@ -1720,7 +1721,7 @@ namespace DAL.Services
         }
 
         public List<SearchEverything> bindEveryThingModel(List<CharacterAbility> characterAbilities, List<Ability> abilities,
-            List<CharacterSpell> characterSpells, List<Spell> spells, List<Item> items, List<ItemMaster> itemMasters)
+            List<CharacterSpell> characterSpells, List<Spell> spells, List<Item> items, List<ItemMaster_Bundle> itemMasters)
         {
             List<SearchEverything> results = new List<SearchEverything>();
             foreach (var item in characterAbilities)
@@ -1813,7 +1814,7 @@ namespace DAL.Services
             List<CharacterSpell> characterSpells= SearchCharacterSpells(searchModel);
             List<Spell> spells= SearchRulesetSpells(searchModel);
             List<Item> items= SearchCharacterItems(searchModel);
-            List<ItemMaster> itemMasters= SearchRulesetItems(searchModel);
+            List<ItemMaster_Bundle> itemMasters= SearchRulesetItems(searchModel);
             List<SearchEverything> results = bindEveryThingModel(characterAbilities, abilities, characterSpells, spells, items, itemMasters);
             return results;
         }

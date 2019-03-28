@@ -46,10 +46,10 @@ namespace DAL.Services
         List<CharacterSpell> SearchCharacterSpells(SearchModel searchModel, int[] idsToSearch = null);
         List<Spell> SearchRulesetSpells(SearchModel searchModel, int[] idsToSearch = null);
         List<Item> SearchCharacterItems(SearchModel searchModel, int[] idsToSearch = null);
-        List<ItemMaster> SearchRulesetItems(SearchModel searchModel, int[] idsToSearch = null);
+        List<ItemMaster_Bundle> SearchRulesetItems(SearchModel searchModel, int[] idsToSearch = null);
 
         void SaveLastSearchFilters(SearchModel searchModel);
-        List<SearchEverything> bindEveryThingModel(List<CharacterAbility> characterAbilities, List<Ability> abilities, List<CharacterSpell> characterSpells, List<Spell> spells, List<Item> items, List<ItemMaster> itemMasters);
+        List<SearchEverything> bindEveryThingModel(List<CharacterAbility> characterAbilities, List<Ability> abilities, List<CharacterSpell> characterSpells, List<Spell> spells, List<Item> items, List<ItemMaster_Bundle> itemMasters);
         List<SearchEverything> SearchEveryThing(SearchModel searchModel);
     }
 }

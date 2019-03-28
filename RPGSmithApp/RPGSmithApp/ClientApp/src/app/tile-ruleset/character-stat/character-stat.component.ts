@@ -124,7 +124,7 @@ export class RulesetCharacterStatTileComponent implements OnInit {
                   //changes for #540
                   let countCommandSTAT = 0;
                   this.statsList.map((x) => {
-                    debugger
+                    
                     if (x.characterStatTypeViewModel.characterStatTypeId === STAT_TYPE.Command
                       && x.characterStatId === this.rulesetTileModel.characterStatTile.characterStatId) {
                       countCommandSTAT += 1;
@@ -375,7 +375,7 @@ export class RulesetCharacterStatTileComponent implements OnInit {
             image: undefined
         });
 
-      debugger
+      
       if (stat.characterStatTypeViewModel.characterStatTypeId == STAT_TYPE.Command) {
         this.hasCommand = true;
       } else this.hasCommand = false;
@@ -395,7 +395,7 @@ export class RulesetCharacterStatTileComponent implements OnInit {
                 image: undefined
           });
 
-          debugger
+          
           let countCommandSTAT = 0;
           this.rulesetTileModel.multiCharacterStats.map((x) => {
             if (x.characterStatTypeId === STAT_TYPE.Command) {
@@ -414,7 +414,7 @@ export class RulesetCharacterStatTileComponent implements OnInit {
             //        characterStatTypeId: stat.characterStatTypeViewModel.characterStatTypeId
             //    }), 1);
 
-          debugger
+          
           if (stat.characterStatTypeViewModel.characterStatTypeId == STAT_TYPE.Command) {
             this.hasCommand = false;
           }
@@ -483,7 +483,7 @@ export class RulesetCharacterStatTileComponent implements OnInit {
     }
 
   private addEditCharacterStatTile(modal) {
-      debugger
+      
         this.isLoading = true;
         this.rulesetTileService.createRulesetCharacterStatTile(modal)
             .subscribe(
@@ -556,7 +556,7 @@ export class RulesetCharacterStatTileComponent implements OnInit {
     if (user == null)
       this.authService.logout(true);
     else {
-      debugger
+      
       if (this.imageUrl.indexOf(BLOB_TYPE.blob) > -1) {
         if (this.rulesetTileModel.view == VIEW.EDIT) this.characterStatTileFormModal.imageUrl = this.imageUrl;
         else

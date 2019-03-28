@@ -76,11 +76,11 @@ export class CreateBundleComponent implements OnInit {
     this.sharedService.shouldUpdateAddItemMastersList().subscribe(sharedServiceJson => {
       if (sharedServiceJson) {
         if (sharedServiceJson.length) {
-          debugger
+          
           sharedServiceJson.map((x) => {
             x.quantityToAdd = 1
             this.SelectedItemsList.push(x)
-            this.quantityChanged(x);
+            this.quantityChanged();
           })
           
         }
@@ -119,14 +119,15 @@ export class CreateBundleComponent implements OnInit {
     else {
       this.isLoading = true;      
      
-      if (!this.bundleFormModal.bundleImage) {        
-        this.imageSearchService.getDefaultImage<any>('item')
-          .subscribe(data => {
-            this.defaultImageSelected = data.imageUrl.result
-            //this.isLoading = false;
-          }, error => {
-          },
-            () => { });
+      if (!this.bundleFormModal.bundleImage) {
+        this.defaultImageSelected = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Backpack.jpg';
+        //this.imageSearchService.getDefaultImage<any>('item')
+        //  .subscribe(data => {
+        //    this.defaultImageSelected = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Backpack.jpg';
+        //    //this.isLoading = false;
+        //  }, error => {
+        //  },
+        //    () => { });
       }
       this.itemMasterService.getItemMasterByRuleset_add<any>(this._ruleSetId, false)
         .subscribe(data => {
@@ -136,7 +137,7 @@ export class CreateBundleComponent implements OnInit {
           if (this.bundleFormModal.view === VIEW.EDIT || this.bundleFormModal.view === VIEW.DUPLICATE) {
             this.itemMasterService.getBundleItems<any>(this.bundleFormModal.bundleId)
               .subscribe(data => {
-                debugger
+                
                 if (data) {
                   if (data.length) {
                     this.SelectedItemsList = [];
@@ -145,7 +146,7 @@ export class CreateBundleComponent implements OnInit {
                       let item = this.itemsList.filter(y => y.itemMasterId == x.itemMasterId)[0];
                       item.quantityToAdd = x.quantity;
                       this.SelectedItemsList.push(item)
-                      this.quantityChanged(item);
+                      this.quantityChanged();
                     })
                   }
                 }
@@ -279,11 +280,16 @@ export class CreateBundleComponent implements OnInit {
   }
 
   private submit(itemMaster) {
+    if (!this.bundleFormModal.bundleImage) {
+      this.bundleFormModal.bundleImage = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Backpack.jpg';
+      itemMaster.itemImage = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Backpack.jpg';
+    }
+    console.log(this.bundleFormModal.bundleImage);
     itemMaster.bundleItems = this.SelectedItemsList.map((x) => {
-      debugger
+      
       return { itemMasterId: x.itemMasterId, quantity: x.quantityToAdd};
     })
-    debugger
+    
     if (this.bundleFormModal.view === VIEW.DUPLICATE) {
       this.duplicateItemMaster(itemMaster);
     }
@@ -306,29 +312,29 @@ export class CreateBundleComponent implements OnInit {
     this.itemMasterService.createBundle<any>(modal)
       .subscribe(
       data => {
-          debugger
+          
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
         let message = modal.bundleId == 0 || modal.bundleId === undefined ? "Bundle has been created successfully." : "Bundle has been updated successfully.";
           //if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
           this.close();
-          //if (this.fromDetail) {
-          //  if (data) {
-          //    let id = data;
-          //    if (!isNaN(parseInt(id))) {
-          //      this.router.navigate(['/ruleset/item-details', id]);
-          //      this.event.emit({ itemMasterId: id });
-          //      //this.sharedService.updateItemMasterDetailList(true);
-          //    }
-          //    else
-          //      this.sharedService.updateItemMasterDetailList(true);
-          //  }
-          //  else {
-          //    this.sharedService.updateItemMasterDetailList(true);
-          //  }
-          //}
-        //else
+          if (this.fromDetail) {
+            if (data) {
+              let id = data;
+              if (!isNaN(parseInt(id))) {
+                this.router.navigate(['/ruleset/detail-details', id]);
+                this.event.emit({ bundleId: id });
+                //this.sharedService.updateItemMasterDetailList(true);
+              }
+              else
+                this.sharedService.updateItemMasterDetailList(true);
+            }
+            else {
+              this.sharedService.updateItemMasterDetailList(true);
+            }
+          }
+        else
         this.sharedService.updateItemMasterList(true);
         },
         error => {
@@ -352,7 +358,7 @@ export class CreateBundleComponent implements OnInit {
     this.itemMasterService.duplicateBundle<any>(modal)
       .subscribe(
       data => {
-          debugger
+          
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           let message = "Bundle has been duplicated successfully.";
@@ -360,9 +366,9 @@ export class CreateBundleComponent implements OnInit {
           //  message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
           this.close();
-          //if (this.fromDetail)
-          //  this.router.navigate(['/ruleset/item-master', this._ruleSetId]);
-        //else
+          if (this.fromDetail)
+            this.router.navigate(['/ruleset/item-master', this._ruleSetId]);
+        else
         this.sharedService.updateItemMasterList(true);
         },
         error => {
@@ -425,7 +431,7 @@ export class CreateBundleComponent implements OnInit {
     })
     this.bsModalRef.content.itemsList = ItemList;
   }
-  quantityChanged(item: any) {
+  quantityChanged() {
     let totalWeight:number = 0;
 
     this.SelectedItemsList.map((x) => {
@@ -435,6 +441,11 @@ export class CreateBundleComponent implements OnInit {
     })
     this.bundleFormModal.totalWeight = totalWeight;
     
+  }
+  removeItemFromBundle(item: any) {
+    
+    this.SelectedItemsList = this.SelectedItemsList.filter(x => x.itemMasterId != item.itemMasterId);
+    this.quantityChanged();
   }
 
   private destroyModalOnInit(): void {

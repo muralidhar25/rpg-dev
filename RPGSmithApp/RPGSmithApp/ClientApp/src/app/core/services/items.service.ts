@@ -346,7 +346,8 @@ export class ItemsService extends EndpointFactory {
         itemSpells: [],
 
         commandName: 'Default',
-        multiItemMasters: []
+        multiItemMasters: [],
+        multiItemMasterBundles: []
       }
     }
     return itemFormModal;

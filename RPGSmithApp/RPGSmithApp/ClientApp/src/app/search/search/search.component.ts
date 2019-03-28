@@ -404,13 +404,19 @@ export class SearchComponent implements OnInit {
   }
 
   gotoPage(input: any) {
-
+    
     if (this.searchModal.searchType == SearchType.EVERYTHING) {
         if ( input.searchType == SearchType.CHARACTERITEMS) {
           this.router.navigate(['/character/inventory-details', input.recordId]);
         }
         else if (input.searchType == SearchType.RULESETITEMS) {
-          this.router.navigate(['/character/ruleset/item-details', input.recordId]);
+          if (input.record.isBundle) {
+            this.router.navigate(['/character/ruleset/item-detail', input.recordId]);
+          }
+          else {
+            this.router.navigate(['/character/ruleset/item-details', input.recordId]);
+          }
+          
         }
         else if (input.searchType == SearchType.CHARACTERSPELLS) {
           this.router.navigate(['/character/spell-details', input.recordId]);
@@ -429,7 +435,13 @@ export class SearchComponent implements OnInit {
         console.log(this.searchModal.searchType);
         this.router.navigate(['/character/inventory-details', input.recordId]);
       } else if (this.searchModal.searchType == SearchType.RULESETITEMS) {
-        this.router.navigate(['/character/ruleset/item-details', input.recordId]);
+        if (input.record.isBundle) {
+          this.router.navigate(['/character/ruleset/item-detail', input.recordId]);
+        }
+        else {
+          this.router.navigate(['/character/ruleset/item-details', input.recordId]);
+        }
+        
         //if (this.isCharacterRulesetEntity) {
         //  this.router.navigate(['/character/ruleset/item-details', input.recordId]);
         //}

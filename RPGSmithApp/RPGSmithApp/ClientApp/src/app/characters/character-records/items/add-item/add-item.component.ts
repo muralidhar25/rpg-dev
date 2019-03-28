@@ -63,7 +63,7 @@ export class AddItemComponent implements OnInit {
             this.authService.logout();
         else {
             this.isLoading = true;
-            this.itemMasterService.getItemMasterByRuleset_add<any>(this.rulesetId,false)//true
+          this.itemMasterService.getItemMasterByRuleset_add<any>(this.rulesetId, true)//true
                 .subscribe(data => {
                     this.itemsList = data.ItemMaster;
                     
@@ -99,19 +99,26 @@ export class AddItemComponent implements OnInit {
         this.characterItemModal.itemMasterId = itemMaster.itemMasterId;
     }
 
-    submitForm(itemMaster: any) {
+  submitForm(itemMaster: any) {
+    
+    this.characterItemModal.multiItemMasterBundles = [];
         this.itemsList.map((item) => {
-            if (item.selected) {
-                this.characterItemModal.multiItemMasters.push({ itemMasterId: item.itemMasterId });
+          if (item.selected) {
+            if (item.isBundle) {
+              this.characterItemModal.multiItemMasterBundles.push({ itemMasterBundleId: item.itemMasterId });
             }
+            else {
+              this.characterItemModal.multiItemMasters.push({  itemMasterId: item.itemMasterId });
+            }
+          }
             return item;
         })
-        if (this.characterItemModal.multiItemMasters == undefined) {
+    if (this.characterItemModal.multiItemMasters == undefined && this.characterItemModal.multiItemMasterBundles.length == 0) {
             this.alertService.showMessage("Please select new Item Template to Add.", "", MessageSeverity.error);
         }
-        else if (this.characterItemModal.multiItemMasters.length == 0) {
+    else if (this.characterItemModal.multiItemMasters.length == 0 && this.characterItemModal.multiItemMasterBundles.length == 0) {
             this.alertService.showMessage("Please select new Item Template to Add.", "", MessageSeverity.error);
-        }
+        }        
         else {
             if (this.characterItemModal.view === VIEW.DUPLICATE) {
                 //this.duplicateAbility(ability);

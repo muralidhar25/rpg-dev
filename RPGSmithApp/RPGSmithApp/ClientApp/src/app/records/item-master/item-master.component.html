@@ -59,9 +59,24 @@
                           </div>
                         </li>
                         <li>
-                            <div class="dropdown dropdown-buttons">
+                            <!--<div class="dropdown dropdown-buttons">
                                 <button type="button" (click)="createItem()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block "> <span>Create Item</span></button>
+                            </div>-->
+                          <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                            <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle is-show">
+                              <span class="text-hide-tab  is-show">Create</span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                              <ul class="dropdown-menu-list">
+                                <li class="dropdown-menu-item">
+                                  <button type="button" (click)="createItem()" class="btn btn-accent icon-Gen-Edit"> Item</button>
+                                </li>
+                                <li class="dropdown-menu-item">
+                                  <button type="button" (click)="createBundle()" class="btn btn-accent icon-Gen-Edit"> Bundle</button>
+                                </li>
+                              </ul>
                             </div>
+                          </div>
                         </li>
                     </ul>
                     <!-- End of toolbar links -->

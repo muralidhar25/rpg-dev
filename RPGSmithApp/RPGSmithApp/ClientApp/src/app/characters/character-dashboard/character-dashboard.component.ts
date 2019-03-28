@@ -200,7 +200,7 @@ export class CharacterDashboardComponent implements OnInit {
 
         this.layoutService.getLayoutsByCharacterId(this.characterId, -1, -1)
           .subscribe(data => {
-            debugger;
+            
             this.characterlayouts = data;
             //if (this.characterlayouts.length == 1) {
             //    this.selectedlayout = this.characterlayouts[0];

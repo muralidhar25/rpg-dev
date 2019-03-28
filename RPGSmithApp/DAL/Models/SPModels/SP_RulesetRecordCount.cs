@@ -193,4 +193,8 @@ namespace DAL.Models.SPModels
     public class ItemMaster_Bundle : ItemMaster {
         public bool IsBundle { get; set; }
     }
+    public class ItemMasterBundleIds
+    {
+        public int ItemMasterBundleId { get; set; }
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using DAL.Models.SPModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -55,6 +56,7 @@ namespace RPGSmithApp.ViewModels
         public decimal TotalWeightWithContents { get; set; }
 
         public List<ItemMasterIds> MultiItemMasters { get; set; }
+        public List<ItemMasterBundleIds> MultiItemMasterBundles { get; set; }
 
         public virtual Character Character { get; set; }
         public virtual ItemMaster ItemMaster { get; set; }
@@ -68,4 +70,5 @@ namespace RPGSmithApp.ViewModels
     {
         public int ItemMasterId { get; set; }
     }
+    
 }

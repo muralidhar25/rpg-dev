@@ -98,7 +98,7 @@
                         <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
                             <img class="card-img-top portrait" [src]="ItemMaster.itemImage" [alt]="ItemMaster.itemName"
                                  onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';"
-                                 [routerLink]="['/character/ruleset/item-details', ItemMaster.itemMasterId]">
+                                 (click)="GoToDetails(ItemMaster)">
                             <div class="card-actions show" *ngIf="ItemMaster.showIcon && !isListView">
                                 <button type="button" (click)="editItemTemplate(ItemMaster)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
                                 <button type="button" (click)="duplicateItemTemplate(ItemMaster)" title="Duplicate" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
@@ -106,7 +106,7 @@
                                 <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
                             </div>
                         </div>
-                        <div class="card-body" [routerLink]="['/character/ruleset/item-details', ItemMaster.itemMasterId]">
+                        <div class="card-body" (click)="GoToDetails(ItemMaster)">
                             <h4 class="card-title" popover="{{ItemMaster.itemName}}" triggers="hover">{{ItemMaster.itemName}}</h4>
                             <ul class="item-properties">
                                 <li *ngIf="ItemMaster.value>=0" class="item-property item-property-text value " title="Value" data-toggle="Value">{{ItemMaster.value}} <small *ngIf="ItemMaster.ruleSet.currencyLabel">({{ItemMaster.ruleSet.currencyLabel}})</small></li>
