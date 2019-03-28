@@ -496,7 +496,7 @@
   font-size: 16px !important
 }
 
-.page-inventory .cards-inventory .card-list .card-wrapper .card:hover .item-properties:nth-child(3) {
+.page-inventory .cards-inventory .card-list.dense-list .card-wrapper .card:hover .item-properties:nth-child(3) {
   visibility: visible !important
 }
 .page-inventory .cards-inventory .card-list .card-wrapper .card .item-properties:nth-child(3) .item-property-icon {
@@ -510,6 +510,7 @@
   align-items: flex-start !important;
   justify-content: flex-start !important;
   padding: 0 1rem !important;
+  outline: none;
 }
 
 .card-list.dense-list .card-wrapper .card {

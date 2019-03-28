@@ -1,3 +1,4 @@
+/*charcter RuleSET Ability CSSS*/
 .page-toolbar-title a {
     margin-top: 0.5rem;
 }
@@ -300,7 +301,7 @@
     left: 50%;
     transform: translate(-50%,-50%);
 }
-.page-inventory .cards-inventory .card-list .card-wrapper .card:hover .item-actions.d-block {
+.page-inventory .cards-inventory .card-list.dense-list .card-wrapper .card:hover .item-actions.d-block {
   display: block !important;
   background: rgba(91, 91, 91, 0.46);
   height: 100%;
@@ -310,7 +311,7 @@
   box-shadow: none !important;
 }
 
-.page-inventory .cards-inventory .card-list .card-wrapper .card:hover .item-actions.d-block .btn {
+.page-inventory .cards-inventory .card-list.dense-list .card-wrapper .card:hover .item-actions.d-block .btn {
   padding-left: 1.5rem !important;
   padding-right: 1.5rem !important;
   position: absolute;
@@ -319,6 +320,15 @@
   transform: translate(-50%,-50%);
   margin: 0px !important;
 }
+
+.page-inventory .cards-inventory .card-list .card-wrapper .card:hover .item-actions.d-block {
+  display: block !important;
+  align-items: center;
+  outline: none;
+  box-shadow: none !important;
+}
+
+
 .page-inventory .cards-inventory .card-list .card-wrapper .card .item-actions.d-block .btn {
     padding-left: 1.5rem !important;
     padding-right: 1.5rem !important;
@@ -565,7 +575,7 @@ filter-toggle-btn-light {
   font-size: 16px !important
 }
 
-.page-inventory .cards-inventory .card-list .card-wrapper .card:hover .item-properties:nth-child(3) {
+.page-inventory .cards-inventory .card-list.dense-list  .card-wrapper .card:hover .item-properties:nth-child(3) {
   visibility: visible !important
 }
 

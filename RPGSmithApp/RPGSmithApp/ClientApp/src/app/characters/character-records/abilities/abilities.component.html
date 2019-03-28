@@ -110,8 +110,8 @@
                   <i [ngClass]="isListView && !isDenseView ? 'icon icon-list' :''"></i>
                 </button>
                 <div class="dropdown-menu filter-toggle-btn-menu" aria-labelledby="dropdownMenuButton">
-                  <button type="button" id="gridViewTrigger" class="btn icon icon-grid" [ngClass]="isListView && !isDenseView ? 'selected' :''" (click)="showListView(true)"> List</button>
-                  <button type="button" id="listViewTrigger" class="btn icon icon-list" [ngClass]="!isListView && !isDenseView ? 'selected' :''" (click)="showListView(false)"> Grid </button>
+                  <button type="button" id="gridViewTrigger" class="btn icon icon-list" [ngClass]="isListView && !isDenseView ? 'selected' :''" (click)="showListView(true)"> List</button>
+                  <button type="button" id="listViewTrigger" class="btn icon icon-grid" [ngClass]="!isListView && !isDenseView ? 'selected' :''" (click)="showListView(false)"> Grid </button>
                   <button type="button" id="denseViewTrigger" class="btn icon icon-Rec-Dense" [ngClass]="isDenseView ? 'selected': '' " (click)="showDenseview(true)"> Dense</button>
                 </div>
               </div>
