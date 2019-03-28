@@ -1,11 +1,19 @@
+.page-search-result .search-field form {
+  margin-bottom: 0px;
+  position: relative;
+}
+
+.page-search-result .search-field form input + i {
+  position: absolute;
+  right: 3rem;
+  font-size: 18px;
+ 
+}
 .w-200p{
   width: 200px;
 }
 .w-95p{
   width:95px;
-}
-.page-search-result .search-field form {
-  margin-bottom: 0px;
 }
 
 .advance-fields {
