@@ -91,6 +91,8 @@ namespace RPGSmithApp.Controllers
                         IsDeleted = item.CharacterStat.IsDeleted,
                         isActive = item.CharacterStat.isActive,
                         CharacterStatCalcs = item.CharacterStat.CharacterStatCalcs,
+                        IsChoiceNumeric=item.CharacterStat.IsChoiceNumeric,
+                        IsChoicesFromAnotherStat = item.CharacterStat.IsChoicesFromAnotherStat,
                         //CharactersCharacterStats= item.CharacterStat.CharactersCharacterStats,
                         CharacterStatChoices = item.CharacterStat.CharacterStatChoices.Select(z => new CharacterStatChoice
                         {

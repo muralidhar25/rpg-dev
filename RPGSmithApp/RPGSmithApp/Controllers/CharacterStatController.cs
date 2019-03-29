@@ -936,7 +936,7 @@ namespace RPGSmithApp.Controllers
                                     Minimum = defvalue.Minimum,
                                     Type = defvalue.Type
                                 });
-                                if (defvalue.Type == 1 || defvalue.Type == 2 || defvalue.Type == 3 || defvalue.Type == 8)
+                                if (defvalue.Type == 1 || defvalue.Type == 2 || defvalue.Type == 3 || defvalue.Type == 8 || defvalue.Type == 14)
                                 {
                                     break;
                                 }

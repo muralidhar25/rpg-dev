@@ -532,6 +532,8 @@ namespace DAL.Services
                             CreatedDate = CharCharStat_Row["CreatedDate"] == DBNull.Value ? new DateTime() : Convert.ToDateTime(CharCharStat_Row["CreatedDate"]),
                             OwnerId = CharCharStat_Row["OwnerId"] == DBNull.Value ? null : CharCharStat_Row["OwnerId"].ToString(),
                             AddToModScreen = CharCharStat_Row["AddToModScreen"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["AddToModScreen"]),
+                            IsChoiceNumeric = CharCharStat_Row["IsChoiceNumeric"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsChoiceNumeric"]),
+                            IsChoicesFromAnotherStat = CharCharStat_Row["IsChoicesFromAnotherStat"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsChoicesFromAnotherStat"]),
                         };
 
                         List<CharacterStatDefaultValue> defVals = new List<CharacterStatDefaultValue>();
