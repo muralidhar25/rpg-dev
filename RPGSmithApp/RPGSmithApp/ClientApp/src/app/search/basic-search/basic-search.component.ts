@@ -335,7 +335,13 @@ export class BasicSearchComponent implements OnInit {
         
       }
       else {
-        this.router.navigate(['/ruleset/item-details', input.recordId]);
+        if (input.record.isBundle) {
+          this.router.navigate(['/ruleset/bundle-details', input.recordId]);
+        }
+        else {
+          this.router.navigate(['/ruleset/item-details', input.recordId]);
+        }
+        
       }
     }
     else if (this.searchModal.searchType == SearchType.CHARACTERSPELLS) {

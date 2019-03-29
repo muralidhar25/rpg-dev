@@ -303,21 +303,22 @@
 }
 .page-inventory .cards-inventory .card-list.dense-list .card-wrapper .card:hover .item-actions.d-block {
   display: block !important;
-  background: rgba(91, 91, 91, 0.46);
+  /*background: rgba(91, 91, 91, 0.46);
   height: 100%;
   bottom: 0px !important;
   align-items: center;
   outline: none;
-  box-shadow: none !important;
+  box-shadow: none !important;*/
+  bottom:0px !important;
 }
 
 .page-inventory .cards-inventory .card-list.dense-list .card-wrapper .card:hover .item-actions.d-block .btn {
   padding-left: 1.5rem !important;
   padding-right: 1.5rem !important;
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%,-50%);
+  right: 0%;
+  bottom: 0%;
+  /*transform: translate(-50%,-50%);*/
   margin: 0px !important;
 }
 
@@ -528,7 +529,9 @@ filter-toggle-btn-light {
   flex-direction: column !important;
   align-items: flex-start !important;
   justify-content: flex-start !important;
-  /*padding: 0 1rem !important;*/
+  padding: .6rem !important;
+  height: 100%;
+  outline: none;
 }
 
 .card-list.dense-list .card-wrapper .card {

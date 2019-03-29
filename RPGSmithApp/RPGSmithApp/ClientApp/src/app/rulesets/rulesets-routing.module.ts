@@ -21,7 +21,6 @@ const routes: Routes = [
   { path: "ability/:id", component: AbilitiesComponent,  data: { title: "Abilities" } },
 
   { path: "item-details/:id", component: ItemDetailsComponent,  data: { title: "Item Details" } },
-  { path: "item-details/:id", component: ItemDetailsComponent,  data: { title: "Item Details" } },
   { path: "bundle-details/:id", component: BundleDetailsComponent,  data: { title: "Bundle Details" } },
   { path: "spell-details/:id", component: SpellDetailsComponent,  data: { title: "Spell Details" } },
   { path: "ability-details/:id", component: AbilityDetailsComponent,  data: { title: "Ability Details" } },
