@@ -308,6 +308,13 @@ export class CreateBundleComponent implements OnInit {
   addEditItemMaster(modal: any) {
     modal.RuleSetId = this._ruleSetId;
     // modal.userID = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER).id
+    
+    if (modal.bundleItems) {
+      if (modal.bundleItems.length) {
+        modal.bundleItems = modal.bundleItems.filter(x => x.quantity);
+      }
+    }
+    
     this.isLoading = true;
     this.itemMasterService.createBundle<any>(modal)
       .subscribe(
@@ -355,6 +362,12 @@ export class CreateBundleComponent implements OnInit {
   duplicateItemMaster(modal: any) {
     modal.RuleSetId = this._ruleSetId;
     this.isLoading = true;
+    
+    if (modal.bundleItems) {
+      if (modal.bundleItems.length) {
+        modal.bundleItems = modal.bundleItems.filter(x => x.quantity);
+      }
+    }
     this.itemMasterService.duplicateBundle<any>(modal)
       .subscribe(
       data => {
