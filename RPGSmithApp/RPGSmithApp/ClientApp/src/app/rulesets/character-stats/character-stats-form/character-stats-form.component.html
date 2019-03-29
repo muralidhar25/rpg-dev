@@ -103,20 +103,23 @@
                       </label>
                     </li>
                   </ul>
-                  <div class="form-group input-check">
-                    <button type="button" class="btn btn-accent btn-choice" (click)="addChoice(characterStatsFormModal.characterStatChoicesViewModels)">Add Choice</button>
-                    <div class="input-check-items" style="float:right;margin-top:-30px;">
-                      <div class="form-check">
-                        <label class="form-check-label">
-                          <input class="form-check-input" id="newStatChoiceMultiSelect" type="checkbox" [checked]="characterStatsFormModal.isMultiSelect"
-                                 [value]="characterStatsFormModal.isMultiSelect" (change)="checkMultipleChoice($event)">
-                          <span>
-                            <i class="icon"></i>
-                            <em>Enable multi-select</em>
-                          </span>
-                        </label>
+                  <div class="form-group justify-content-between align-content-center input-check">
+                    <div class="row m-0 mt-3 justify-content-between align-items-center">
+                      <button type="button" class="btn btn-accent btn-choice" (click)="addChoice(characterStatsFormModal.characterStatChoicesViewModels)">Add Choice</button>
+                      <div class="input-check-items">
+                        <div class="form-check">
+                          <label class="form-check-label">
+                            <input class="form-check-input" id="newStatChoiceMultiSelect" type="checkbox" [checked]="characterStatsFormModal.isMultiSelect"
+                                   [value]="characterStatsFormModal.isMultiSelect" (change)="checkMultipleChoice($event)">
+                            <span>
+                              <i class="icon"></i>
+                              <em>Enable multi-select</em>
+                            </span>
+                          </label>
+                        </div>
                       </div>
                     </div>
+                    
                   </div>
                 </fieldset>
                 <ng-container *ngIf="characterStatsFormModal.isChoicesFromAnotherStat">
@@ -143,7 +146,7 @@
     </div>-->
                   </div>
                   <div class="form-group input-check">
-                    <div class="input-check-items" style="float:right;margin-top:-30px;">
+                    <div class="input-check-items" style="float:right;margin-top: -20px;">
                       <div class="form-check">
                         <label class="form-check-label">
                           <input class="form-check-input" id="newStatChoiceMultiSelect" type="checkbox" [checked]="characterStatsFormModal.isMultiSelect"
@@ -366,6 +369,7 @@
                   </div>
                   <div class="col-12 col-sm-6">
                     <div class="form-group">
+                      <label>&nbsp;</label><br />
                       <span class="custom-checkbox">
                         <input type="checkbox" name="addToModScreen" id="addToModScreen" #addToModScreen="ngModel" [(ngModel)]="characterStatsFormModal.addToModScreen" /> <span>Add this stat to the dice 'ADD MOD' screen</span>
                       </span>

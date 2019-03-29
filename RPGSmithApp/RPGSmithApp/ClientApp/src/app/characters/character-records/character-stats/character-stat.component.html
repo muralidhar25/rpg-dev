@@ -264,80 +264,104 @@
             </div>
 
             <div class="form-row" *ngIf="characterstat.characterStat.characterStatType.statTypeName =='Choice' && characterstat.characterStat.isMultiSelect !=true">
-                <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
-                    <div class="modifier-icon">
-                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
-                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
-                    </div>
+               
+                <div class="col-lg-1 col-md-1 col-sm-1 col-1  icon-charstat">
+                  <div class="modifier-icon">
+                    <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+                    <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
+                  </div>
                 </div>
-
                 <div class="col-lg-3 col-md-3 col-sm-3 col-3">
-                    <div class="form-group desktop-view">
-                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
-                            {{characterstat.displayStatName }}
-                        </label>
+                  <div class="form-group desktop-view">
+                    <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+                      {{characterstat.displayStatName }}
+                    </label>
 
-                    </div>
-                    <div class="form-group mobile-view">
-                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
-                            {{characterstat.mobiledisplayStatName }}
-                        </label>
-                    </div>
+                  </div>
+                  <div class="form-group mobile-view">
+                    <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+                      {{characterstat.mobiledisplayStatName }}
+                    </label>
+                  </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-2" *ngIf="characterstat.characterStat.isChoiceNumeric==true">
+                  <div class="form-group">
+                    <!--<input placeholder="Number" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'number')" (ngModelChange)="mychange($event)" class="form-control" type="text" [(ngModel)]="characterstat.maximum">-->
+                    <input placeholder="Default Value" [(ngModel)]="characterstat.defaultValue" class="form-control" type="text" >
+                  </div>
+                </div>
+                <div class="col-lg-5 col-md-5 col-sm-6 col-6" [ngClass]="{'col-lg-5 col-md-5 col-sm-6 col-6': characterstat.characterStat.isChoiceNumeric==true ,'col-lg-7 col-md-7 col-sm-8 col-8': characterstat.characterStat.isChoiceNumeric==false}">
+                  <div class="form-group">
+
+                    <angular2-multiselect (ngModelChange)="mychange($event)" id="multiChoiceList-{{characterstat.charactersCharacterStatId}}" [data]="characterstat.characterStat.characterStatChoices" [(ngModel)]="characterstat.selectedCharacterChoices" name="characterstatsinglechoice-{{characterstat.charactersCharacterStatId}}" [settings]="singlechoiceSettings" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)">
+                      <c-item id="spell">
+                        <ng-template let-item="item">
+                          <span class="associate-label-name">{{item.statChoiceValue}}</span>
+
+                        </ng-template>
+                      </c-item>
+                    </angular2-multiselect>
+
+                  </div>
                 </div>
 
-
-                <div class="col-lg-7 col-md-7 col-sm-8 col-8">
-                    <div class="form-group">
-
-                        <angular2-multiselect (ngModelChange)="mychange($event)" id="multiChoiceList-{{characterstat.charactersCharacterStatId}}" [data]="characterstat.characterStat.characterStatChoices" [(ngModel)]="characterstat.selectedCharacterChoices" name="characterstatsinglechoice-{{characterstat.charactersCharacterStatId}}" [settings]="singlechoiceSettings" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)">
-                            <c-item id="spell">
-                                <ng-template let-item="item">
-                                    <span class="associate-label-name">{{item.statChoiceValue}}</span>
-
-                                </ng-template>
-                            </c-item>
-                        </angular2-multiselect>
-
-                    </div>
-                </div>
             </div>
 
             <div class="form-row" *ngIf="characterstat.characterStat.characterStatType.statTypeName =='Choice' && characterstat.characterStat.isMultiSelect ==true">
 
-                <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
-                    <div class="modifier-icon">
-                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
-                        <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
-                    </div>
+              <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+                <div class="modifier-icon">
+                  <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon !== 'icon-CharStat-Text'" class="card-icon icon iconstat icon-rsi" [ngClass]="characterstat.icon"></div>
+                  <div popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" *ngIf="characterstat.icon === 'icon-CharStat-Text'" class="card-icon icon iconstat icon-ico" [ngClass]="characterstat.icon"></div>
                 </div>
+              </div>
 
-                <div class="col-lg-3 col-md-3 col-sm-3 col-3">
-                    <div class="form-group desktop-view">
-                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
-                            {{characterstat.displayStatName }}
-                        </label>
+              <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+                <div class="form-group desktop-view">
+                  <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+                    {{characterstat.displayStatName }}
+                  </label>
 
-                    </div>
-                    <div class="form-group mobile-view">
-                        <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
-                            {{characterstat.mobiledisplayStatName }}
-                        </label>
-                    </div>
                 </div>
-
-
-                <div class="col-lg-7 col-md-7 col-col-sm-8 col-8">
-                    <div class="form-group">
-                        <angular2-multiselect (ngModelChange)="mychange($event)" id="multiChoiceList-{{characterstat.charactersCharacterStatId}}" [data]="characterstat.characterStat.characterStatChoices" [(ngModel)]="characterstat.selectedCharacterChoices" name="characterstatmultichoice-{{characterstat.charactersCharacterStatId}}" [settings]="multichoiceSettings" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)">
-                            <c-item id="spell">
-                                <ng-template let-item="item">
-                                    <span class="associate-label-name">{{item.statChoiceValue}}</span>
-
-                                </ng-template>
-                            </c-item>
-                        </angular2-multiselect>
-                    </div>
+                <div class="form-group mobile-view">
+                  <label popoverTitle="{{characterstat.displayStatName }}" [popover]="!characterstat.characterStat.statDesc ? characterstat.displayStatName : characterstat.characterStat.statDesc" triggers="hover" class="labelcharstat">
+                    {{characterstat.mobiledisplayStatName }}
+                  </label>
                 </div>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-2 col-2">
+                <div class="form-group">
+                  <!--<input placeholder="Number" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'number')" (ngModelChange)="mychange($event)" class="form-control" type="text" [(ngModel)]="characterstat.maximum">-->
+                  <input placeholder="Default Value" [(ngModel)]="characterstat.defaultValue" class="form-control" type="text">
+                </div>
+              </div>
+              <div class="col-lg-5 col-md-5 col-sm-6 col-6">
+                <div class="form-group">
+
+                  <angular2-multiselect (ngModelChange)="mychange($event)" id="multiChoiceList-{{characterstat.charactersCharacterStatId}}" [data]="characterstat.characterStat.characterStatChoices" [(ngModel)]="characterstat.selectedCharacterChoices" name="characterstatmultichoice-{{characterstat.charactersCharacterStatId}}" [settings]="multichoiceSettings" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)">
+                    <c-item id="spell">
+                      <ng-template let-item="item">
+                        <span class="associate-label-name">{{item.statChoiceValue}}</span>
+
+                      </ng-template>
+                    </c-item>
+                  </angular2-multiselect>
+
+                </div>
+              </div>
+
+              <!--<div class="col-lg-7 col-md-7 col-col-sm-8 col-8">
+    <div class="form-group">
+      <angular2-multiselect (ngModelChange)="mychange($event)" id="multiChoiceList-{{characterstat.charactersCharacterStatId}}" [data]="characterstat.characterStat.characterStatChoices" [(ngModel)]="characterstat.selectedCharacterChoices" name="characterstatmultichoice-{{characterstat.charactersCharacterStatId}}" [settings]="multichoiceSettings" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)">
+        <c-item id="spell">
+          <ng-template let-item="item">
+            <span class="associate-label-name">{{item.statChoiceValue}}</span>
+
+          </ng-template>
+        </c-item>
+      </angular2-multiselect>
+    </div>
+  </div>-->
 
             </div>
 
