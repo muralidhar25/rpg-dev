@@ -10,7 +10,7 @@ export class CharacterStats {
         characterStatTypeViewModel?: CharacterStatTypeViewModel, characterStatCalsComndViewModel?: CharacterStatCalsComndViewModel[],
         characterStatChoicesViewModels?: CharacterStatChoicesViewModels[], view?: VIEW, icon?: ICON, characterStatChoices?: characterStatChoices[],
         characterStatCalcs?: characterStatCalcs[], characterStatToggleViewModel?: CharacterStatToggle, characterStatDefaultValueViewModel?: CharacterStatDefaultValue[], characterStatConditionViewModel?: CharacterStatConditionViewModel[],
- addToModScreen?: boolean   ) {
+      addToModScreen?: boolean, isChoiceNumeric?: boolean, isChoicesFromAnotherStat?: boolean) {
         this.characterStatId = characterStatId;
         this.ruleSetId = ruleSetId;
         this.statName = statName; 
@@ -38,6 +38,8 @@ export class CharacterStats {
         this.characterStatDefaultValueViewModel = characterStatDefaultValueViewModel;
       this.characterStatConditionViewModel = characterStatConditionViewModel;
       this.addToModScreen = addToModScreen;
+      this.isChoiceNumeric = isChoiceNumeric;
+      this.isChoicesFromAnotherStat = isChoicesFromAnotherStat;
     }
 
     public characterStatId: number;
@@ -45,7 +47,7 @@ export class CharacterStats {
     public statName: string;
     public statDesc: string;
     public isMultiSelect: boolean;
-    public isActive: boolean;
+    public isActive: boolean;  
     public sortOrder: any; 
     public createdDate: any;
     public modifiedDate: any;
@@ -68,6 +70,8 @@ export class CharacterStats {
     public characterStatChoices: characterStatChoices[];
   public characterStatCalcs: characterStatCalcs[];
   public addToModScreen: boolean;
+  public isChoiceNumeric: boolean;
+  public isChoicesFromAnotherStat: boolean;
 }  
 
 export class CharacterStatTypeViewModel{

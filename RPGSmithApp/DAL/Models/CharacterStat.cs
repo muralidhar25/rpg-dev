@@ -44,6 +44,8 @@ namespace DAL.Models
 
         public bool? IsDeleted { get; set; }
         public bool AddToModScreen { get; set; }
+        public bool IsChoiceNumeric { get; set; }
+        public bool IsChoicesFromAnotherStat { get; set; }
 
         public virtual RuleSet RuleSet { get; set; }
 

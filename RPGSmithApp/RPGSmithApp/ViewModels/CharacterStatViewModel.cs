@@ -22,6 +22,8 @@ namespace RPGSmithApp.ViewModels
         public bool isMultiSelect { get; set; }
         public bool isActive { get; set; }
         public bool AddToModScreen { get; set; }
+        public bool IsChoiceNumeric { get; set; }
+        public bool IsChoicesFromAnotherStat { get; set; }
         public short SortOrder { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }

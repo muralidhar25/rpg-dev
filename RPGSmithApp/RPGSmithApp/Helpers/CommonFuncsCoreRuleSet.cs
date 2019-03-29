@@ -57,6 +57,8 @@ namespace RPGSmithApp.Helpers
                 StatIdentifier = CharacterStat.StatIdentifier,
                 ParentCharacterStatId = CharacterStat.ParentCharacterStatId,
                 AddToModScreen= CharacterStat.AddToModScreen,
+                IsChoiceNumeric= CharacterStat.IsChoiceNumeric,
+                IsChoicesFromAnotherStat = CharacterStat.IsChoicesFromAnotherStat,
                 CharacterStatTypeViewModel = CharacterStat.CharacterStatType == null ? new CharacterStatTypeViewModel() :
                     new CharacterStatTypeViewModel()
                     {

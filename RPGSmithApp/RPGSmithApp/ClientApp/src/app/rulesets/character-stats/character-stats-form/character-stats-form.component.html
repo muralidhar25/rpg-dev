@@ -69,50 +69,104 @@
             </div>
             <div class="form-row">
                 <!-- Character choice section -->
-                <div class="col" *ngIf="characterStatsFormModal.characterStatTypeName==='Choice'">
-                    <fieldset class="form-group input-list stat-types">
-                        <legend>Choices</legend>
-                        <ul class="input-list-items">
-                            <li class="form-check" *ngFor="let choice of characterStatsFormModal.characterStatChoicesViewModels;let i = index;"
-                                [ngClass]="{ 'has-success': f.submitted && newStatChoice.valid, 'has-error': f.submitted && !newStatChoice.valid &&
-                            characterStatsFormModal.characterStatTypeName==='Choice'}">
-                                <label class="form-check-label">
-                                    <input type="text" [id]="'newStatChoice-'+i" [name]="'newStatChoice'+i" class="form-control" [ngStyle]="{'border-color': f.submitted && !newStatChoice.valid ? 'red' : '#d3cfce'}"
-                                           placeholder="Enter Choice" [(ngModel)]="choice.statChoiceValue" #newStatChoice="ngModel"
-                                           [required]="characterStatsFormModal.characterStatTypeName==='Choice' && i==0">
-                                    <span>
-                                        <button type="button" *ngIf="i!==0" (click)="removeChoice(choice)" tooltip="Remove"
-                                                class="btn icon icon-trash btn-simple-primary pull-right"></button>
-                                    </span>
-                                </label>
-                            </li>
-                        </ul>
-                    </fieldset>
-                    <div class="form-group input-check">
-                        <button type="button" class="btn btn-accent btn-choice" (click)="addChoice(characterStatsFormModal.characterStatChoicesViewModels)">Add Choice</button>
-                        <div class="input-check-items" style="float:right;margin-top:-30px;">
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" id="newStatChoiceMultiSelect" type="checkbox" [checked]="characterStatsFormModal.isMultiSelect"
-                                           [value]="characterStatsFormModal.isMultiSelect" (change)="checkMultipleChoice($event)">
-                                    <span>
-                                        <i class="icon"></i>
-                                        <em>Enable multi-select</em>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
+              <div class="col" *ngIf="characterStatsFormModal.characterStatTypeName==='Choice'">
+                <fieldset class="form-group input-list stat-types">
+                  <legend>Choices</legend>
+                  <ul class="input-switch-items">
+                    <li class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="" [checked]="!characterStatsFormModal.isChoicesFromAnotherStat" (change)="defineChoices(true)">
+                        <span>Define Choices Here</span>
+                      </label>
+                    </li>
+                    <li class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="" [checked]="characterStatsFormModal.isChoicesFromAnotherStat" (change)="choicesfromOtherStat(true)">
+                        <span>Get Choices From Another Stat</span>
+                      </label>
+                    </li>
+                  </ul>
+                </fieldset>
+                <fieldset *ngIf="!characterStatsFormModal.isChoicesFromAnotherStat">
+                  <ul class="input-list-items">
+                    <li class="form-check" *ngFor="let choice of characterStatsFormModal.characterStatChoicesViewModels;let i = index;"
+                        [ngClass]="{ 'has-success': f.submitted && newStatChoice.valid, 'has-error': f.submitted && !newStatChoice.valid &&
+                        characterStatsFormModal.characterStatTypeName==='Choice'}">
+                      <label class="form-check-label">
+                        <input type="text" [id]="'newStatChoice-'+i" [name]="'newStatChoice'+i" class="form-control" [ngStyle]="{'border-color': f.submitted && !newStatChoice.valid ? 'red' : '#d3cfce'}"
+                               placeholder="Enter Choice" [(ngModel)]="choice.statChoiceValue" #newStatChoice="ngModel"
+                               [required]="characterStatsFormModal.characterStatTypeName==='Choice' && i==0">
+                        <span>
+                          <button type="button" *ngIf="i!==0" (click)="removeChoice(choice)" tooltip="Remove"
+                                  class="btn icon icon-trash btn-simple-primary pull-right"></button>
+                        </span>
+                      </label>
+                    </li>
+                  </ul>
+                  <div class="form-group input-check">
+                    <button type="button" class="btn btn-accent btn-choice" (click)="addChoice(characterStatsFormModal.characterStatChoicesViewModels)">Add Choice</button>
+                    <div class="input-check-items" style="float:right;margin-top:-30px;">
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input class="form-check-input" id="newStatChoiceMultiSelect" type="checkbox" [checked]="characterStatsFormModal.isMultiSelect"
+                                 [value]="characterStatsFormModal.isMultiSelect" (change)="checkMultipleChoice($event)">
+                          <span>
+                            <i class="icon"></i>
+                            <em>Enable multi-select</em>
+                          </span>
+                        </label>
+                      </div>
                     </div>
-                    <!-- <div class="form-group">
-                <label for="choices">Choices</label>
-                <div class="form-group input-choice" *ngFor="let choice of characterStatsFormModal.characterStatChoicesViewModels;let i = index;"
-                    [ngClass]="{ 'has-success': f.submitted && newStatChoice.valid, 'has-error': f.submitted && !newStatChoice.valid && characterStatsFormModal.characterStatTypeName==='Choice'}">
-                    <input type="text" [id]="'newStatChoice-'+i" [name]="'newStatChoice'+i" class="form-control" placeholder="Enter Choice"
-                        [(ngModel)]="choice.statChoiceValue" #newStatChoice="ngModel" [required]="characterStatsFormModal.characterStatTypeName==='Choice'">
-                    <button type="button" *ngIf="i!==0" (click)="removeChoice(choice)" tooltip="Remove" class="btn icon icon-trash btn-simple-primary"></button>
-                </div>
-            </div> -->
-                </div>
+                  </div>
+                </fieldset>
+                <ng-container *ngIf="characterStatsFormModal.isChoicesFromAnotherStat">
+                  <div class="form-row form-group">
+                    <div class="col-md-6" *ngFor="let choicelist of choiceList">
+                      <fieldset class="form-group input-list stat-types">
+                        <ul class="input-list-items">
+                          <li class="form-check">
+                            <label class="form-check-label">
+                              <input class="form-check-input" type="checkbox" name="options"
+                                     [checked]="choicelist.selected"
+                                     (change)="updateCheckedOptions(choicelist, $event)" />
+                              <span>
+                                <em class="icon icon-with-text icon-rsi">&nbsp; {{choicelist.statChoiceValue}}</em>
+                                <i class="icon" style="border-radius: 0.75rem;"></i>
+                              </span>
+                            </label>
+                          </li>
+                        </ul>
+                      </fieldset>
+                    </div>
+                    <!--<div class="col-md-6" *ngIf="!choicelist?.length">
+      <p class="text-center">No Other Choice Fields Currently Exist on this Rule Set </p>
+    </div>-->
+                  </div>
+                  <div class="form-group input-check">
+                    <div class="input-check-items" style="float:right;margin-top:-30px;">
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input class="form-check-input" id="newStatChoiceMultiSelect" type="checkbox" [checked]="characterStatsFormModal.isMultiSelect"
+                                 [value]="characterStatsFormModal.isMultiSelect" (change)="checkMultipleChoice($event)">
+                          <span>
+                            <i class="icon"></i>
+                            <em>Enable multi-select</em>
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+                <!-- <div class="form-group">
+      <label for="choices">Choices</label>
+      <div class="form-group input-choice" *ngFor="let choice of characterStatsFormModal.characterStatChoicesViewModels;let i = index;"
+          [ngClass]="{ 'has-success': f.submitted && newStatChoice.valid, 'has-error': f.submitted && !newStatChoice.valid && characterStatsFormModal.characterStatTypeName==='Choice'}">
+          <input type="text" [id]="'newStatChoice-'+i" [name]="'newStatChoice'+i" class="form-control" placeholder="Enter Choice"
+              [(ngModel)]="choice.statChoiceValue" #newStatChoice="ngModel" [required]="characterStatsFormModal.characterStatTypeName==='Choice'">
+          <button type="button" *ngIf="i!==0" (click)="removeChoice(choice)" tooltip="Remove" class="btn icon icon-trash btn-simple-primary"></button>
+      </div>
+  </div> -->
+              </div>
                 <!-- End of character choice section -->
                 <!-- Character calculation section -->
                 <div class="col" *ngIf="characterStatsFormModal.characterStatTypeName==='Calculation'">
@@ -140,9 +194,9 @@
                       </div>
                     </div>
                   </div>
-                  <div class="form-row" >
+                  <div class="form-row">
                     <div class="col-12">
-                      <div class="form-group">                        
+                      <div class="form-group">
                         <span class="custom-checkbox">
                           <input type="checkbox" name="addToModScreen" id="addToModScreen" #addToModScreen="ngModel" [(ngModel)]="characterStatsFormModal.addToModScreen" /> <span>Add this stat to the dice 'ADD MOD' screen</span>
                         </span>
@@ -153,36 +207,36 @@
                 <!-- End of character calculation section -->
                 <!-- Character command section -->
                 <div class="col" *ngIf="false">
-                    <div class="form-group">
-                        <label>Formula</label>
-                        <div class="form-row">
-                            <div class="col-9">
-                                <div class="input-core-stat">
-                                    <select class='form-control' (change)='onSelect($event)'>
-                                        <option>Select character stat</option>
-                                        <option *ngFor='let type of typeOptions' [value]="type.name">{{type.name}}</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-3">
-                                <button type="button" class="btn btn-insert btn-primary" (click)="onInsert(characterStatsFormModal.characterStatTypeName)">Insert</button>
-                            </div>
-                        </div>
-                    </div>
+                  <div class="form-group">
+                    <label>Formula</label>
                     <div class="form-row">
-                        <div class="col-12 input-choice">
-                            <div class="form-group" [ngClass]="{ 'has-success': f.submitted && characterStatCommand.valid, 'has-error': f.submitted && !characterStatCommand.valid && characterStatsFormModal.characterStatTypeName==='Command'}">
-                                <input type="text" id="characterStatCommand" name="characterStatCommand" class="form-control" placeholder="Enter formula" [ngStyle]="{'border-color': f.submitted && !characterStatCommand.valid ? 'red' : '#d3cfce'}"
-                                       [(ngModel)]="characterStatsFormModal.characterStatCommand" #characterStatCommand="ngModel" [required]="characterStatsFormModal.characterStatTypeName==='Command'">
-                                <span class="pull-right">
-                                    <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
-                                </span>
-                            </div>
+                      <div class="col-9">
+                        <div class="input-core-stat">
+                          <select class='form-control' (change)='onSelect($event)'>
+                            <option>Select character stat</option>
+                            <option *ngFor='let type of typeOptions' [value]="type.name">{{type.name}}</option>
+                          </select>
                         </div>
+                      </div>
+                      <div class="col-3">
+                        <button type="button" class="btn btn-insert btn-primary" (click)="onInsert(characterStatsFormModal.characterStatTypeName)">Insert</button>
+                      </div>
                     </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="col-12 input-choice">
+                      <div class="form-group" [ngClass]="{ 'has-success': f.submitted && characterStatCommand.valid, 'has-error': f.submitted && !characterStatCommand.valid && characterStatsFormModal.characterStatTypeName==='Command'}">
+                        <input type="text" id="characterStatCommand" name="characterStatCommand" class="form-control" placeholder="Enter formula" [ngStyle]="{'border-color': f.submitted && !characterStatCommand.valid ? 'red' : '#d3cfce'}"
+                               [(ngModel)]="characterStatsFormModal.characterStatCommand" #characterStatCommand="ngModel" [required]="characterStatsFormModal.characterStatTypeName==='Command'">
+                        <span class="pull-right">
+                          <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <!-- End of character command section -->
-            </div>
+              </div>
             <div class="form-row">
                 <div class="col" *ngIf="characterStatsFormModal.characterStatTypeId===STAT.Toggle">
                     <div class="form-row">
@@ -263,7 +317,14 @@
             </div>
 
             <!-- Below section is for #382 Default Value for stats -->
-            <div class="form-row" *ngIf="characterStatsFormModal.characterStatTypeId===STAT.CurrentMax || characterStatsFormModal.characterStatTypeId===STAT.ValueSubValue || characterStatsFormModal.characterStatTypeId===STAT.Number || characterStatsFormModal.characterStatTypeId===STAT.Command || characterStatsFormModal.characterStatTypeId===STAT.Text || characterStatsFormModal.characterStatTypeId===STAT.RichText || characterStatsFormModal.characterStatTypeId===STAT.Combo">
+            <div class="form-row" *ngIf="characterStatsFormModal.characterStatTypeId===STAT.CurrentMax
+                 || characterStatsFormModal.characterStatTypeId===STAT.ValueSubValue
+                 || characterStatsFormModal.characterStatTypeId===STAT.Number
+                 || characterStatsFormModal.characterStatTypeId===STAT.Command
+                 || characterStatsFormModal.characterStatTypeId===STAT.Text
+                 || characterStatsFormModal.characterStatTypeId===STAT.RichText
+                 || characterStatsFormModal.characterStatTypeId===STAT.Combo
+                 || characterStatsFormModal.characterStatTypeId===STAT.Choice">
                 <div class="col-12 mb-3">
                     <div class="input-extend">
                         <button type="button" class="btn btn-link-primary btn-underline" (click)="showAdvancedFeatures()"><span>{{showAdvancedFeaturesText}}</span></button>
@@ -271,212 +332,253 @@
                 </div>
             </div>
             <div class="form-row" *ngIf="showAdvancedFeaturesToggle">
-                <div class="col" *ngIf="characterStatsFormModal.characterStatTypeId===STAT.Combo">
-                  <div class="form-row">
-                    <div class="col-12 col-sm-6">
-                      <div class="form-group">
-                        <label for="Minimum">Minimum Number Value (optional)</label>
-                        <input type="text" id="minimum" name="minimum" class="form-control" placeholder="Minimum Value"
-                               [(ngModel)]="characterStatsFormModal.characterStatComboViewModel.minimum" #Minimum="ngModel">
-                      </div>
-                    </div>
-                    <div class="col-12 col-sm-6">
-                      <div class="form-group">
-                        <label for="Maximum">Maximum Number Value (optional)</label>
-                        <input type="text" id="maximum" name="maximum" class="form-control" placeholder="Maximum Value"
-                               [(ngModel)]="characterStatsFormModal.characterStatComboViewModel.maximum" #Maximum="ngModel">
-                      </div>
-                    </div>
-                    <div class="col-12 col-sm-6">
-                      <div class="form-group">
-                        <label for="default">Default Number Value (optional)</label>
-                        <input type="text" id="default" name="default" class="form-control" placeholder="Default Value"
-                               [(ngModel)]="characterStatsFormModal.characterStatComboViewModel.defaultValue" #default="ngModel">
-                      </div>
-                    </div>
-                    <div class="col-12 col-sm-6">
-                      <div class="form-group">
-                        <label for="default">Default Text Value (optional)</label>
-                        <input type="text" id="default" name="defaultText" class="form-control" placeholder="Default Value"
-                               [(ngModel)]="characterStatsFormModal.characterStatComboViewModel.defaultText" #default="ngModel">
-                      </div>
-                    </div>
-                    <div class="col-12"  >
-                      <div class="form-group">
-                        <span class="custom-checkbox">
-                          <input type="checkbox" name="addToModScreen" id="addToModScreen" #addToModScreen="ngModel" [(ngModel)]="characterStatsFormModal.addToModScreen" /> <span>Add this stat to the dice 'ADD MOD' screen</span>
-                        </span>
-                      </div>
+              <div class="col" *ngIf="characterStatsFormModal.characterStatTypeId===STAT.Choice">
+                <div class="form-row">
+                  <div class="col-12">
+                    <div class="form-group">
+                      <span class="custom-checkbox">
+                        <input type="checkbox" name="addNumericvalue" id="addNumericvalue" #addNumericvalue="ngModel" [(ngModel)]="characterStatsFormModal.isChoiceNumeric" /> <span>Add Numeric Value to stat</span>
+                      </span>
                     </div>
                   </div>
                 </div>
-                <div class="col" *ngIf="characterStatsFormModal.characterStatTypeId===STAT.CurrentMax">
-                  <div class="form-row">
-                    <div class="col-12 col-sm-6">
-                      <!-- Character stat name -->
-                      <h2 class="formfiled-heading">CURRENT</h2>
-                      <div class="form-group">
-                        <label>Minimum Value (optional)</label>
-                        <input type="text" class="form-control" placeholder="Minimum Value" name="MinimumMinText" id="MinimumMinText" #MinimumMinText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].minimum">
-                      </div>
-                      <div class="form-group">
-                        <label>Maximum Value (optional)</label>
-                        <input type="text" class="form-control" placeholder="Maximum Value" name="MinimumMaxText" id="MinimumMaxText" #MinimumMaxText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].maximum">
-                      </div>
-                      <div class="form-group">
-                        <label>Default Value (optional)</label>
-                        <input type="text" class="form-control" placeholder="Default Value" name="MinimumdefaultText" id="MinimumdefaultText" #MinimumdefaultText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].defaultValue">
-                      </div>
-                      <!-- End of character stat name -->
+                <div class="form-row" *ngIf="characterStatsFormModal.characterStatTypeId===STAT.Choice && characterStatsFormModal.isChoiceNumeric">
+                  <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                      <label for="Minimum">Minimum  Value (optional)</label>
+                      <input type="text" id="minimum" name="minimum" class="form-control" placeholder="Minimum Value"
+                             [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].minimum" #Minimum="ngModel">
                     </div>
-                    <div class="col-12 col-sm-6">
-                      <!-- Character stat name -->
-                      <h2 class="formfiled-heading">MAX</h2>
-                      <div class="form-group">
-                        <label>Minimum Value (optional)</label>
-                        <input type="text" class="form-control" placeholder="Minimum Value" name="MaximumMinText" id="MaximumMinText" #MaximumMinText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[1].minimum">
-                      </div>
-                      <div class="form-group">
-                        <label>Maximum Value (optional)</label>
-                        <input type="text" class="form-control" placeholder="Maximum Value" name="MaximumMaxText" id="MaximumMaxText" #MaximumMaxText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[1].maximum">
-                      </div>
-                      <div class="form-group">
-                        <label>Default Value (optional)</label>
-                        <input type="text" class="form-control" placeholder="Default Value" name="MaximumdefaultText" id="MaximumdefaultText" #MaximumdefaultText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[1].defaultValue">
-                      </div>
-                      <!-- End of character stat name -->
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                      <label for="Maximum">Maximum  Value (optional)</label>
+                      <input type="text" id="maximum" name="maximum" class="form-control" placeholder="Maximum Value"
+                             [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].maximum" #Maximum="ngModel">
                     </div>
-                    <div class="col-12"  >
-                      <div class="form-group">
-                        <span class="custom-checkbox">
-                          <input type="checkbox" name="addToModScreen" id="addToModScreen" #addToModScreen="ngModel" [(ngModel)]="characterStatsFormModal.addToModScreen" /> <span>Add this stat to the dice 'ADD MOD' screen</span>
-                        </span>
-                      </div>
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                      <label for="default">Default  Value (optional)</label>
+                      <input type="text" id="default" name="default" class="form-control" placeholder="Default Value"
+                             [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].defaultValue" #default="ngModel">
+                    </div>
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                      <span class="custom-checkbox">
+                        <input type="checkbox" name="addToModScreen" id="addToModScreen" #addToModScreen="ngModel" [(ngModel)]="characterStatsFormModal.addToModScreen" /> <span>Add this stat to the dice 'ADD MOD' screen</span>
+                      </span>
                     </div>
                   </div>
                 </div>
-                <div class="col" *ngIf="characterStatsFormModal.characterStatTypeId===STAT.ValueSubValue">
-                  <div class="form-row">
-                    <div class="col-12 col-sm-6">
-                      <!-- Character stat name -->
-                      <h2 class="formfiled-heading">Value</h2>
-                      <div class="form-group">
-                        <label>Minimum Value (optional)</label>
-                        <input type="text" class="form-control" placeholder="Minimum Value" name="ValueMinText" id="ValueMinText" #ValueMinText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].minimum">
-                      </div>
-                      <div class="form-group">
-                        <label>Maximum Value (optional)</label>
-                        <input type="text" class="form-control" placeholder="Maximum Value" name="ValueMaxText" id="ValueMaxText" #ValueMaxText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].maximum">
-                      </div>
-                      <div class="form-group">
-                        <label>Default Value (optional)</label>
-                        <input type="text" class="form-control" placeholder="Default Value" name="ValuedefaultText" id="ValuedefaultText" #ValuedefaultText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].defaultValue">
-                      </div>
-                      <!-- End of character stat name -->
+              </div>
+              <div class="col" *ngIf="characterStatsFormModal.characterStatTypeId===STAT.Combo">
+                <div class="form-row">
+                  <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                      <label for="Minimum">Minimum Number Value (optional)</label>
+                      <input type="text" id="minimum" name="minimum" class="form-control" placeholder="Minimum Value"
+                             [(ngModel)]="characterStatsFormModal.characterStatComboViewModel.minimum" #Minimum="ngModel">
                     </div>
-                    <div class="col-12 col-sm-6">
-                      <!-- Character stat name -->
-                      <h2 class="formfiled-heading">Sub-Value</h2>
-                      <div class="form-group">
-                        <label>Minimum Value (optional)</label>
-                        <input type="text" class="form-control" placeholder="Minimum Value" name="SubMinText" id="SubMinText" #SubMinText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[1].minimum">
-                      </div>
-                      <div class="form-group">
-                        <label>Maximum Value (optional)</label>
-                        <input type="text" class="form-control" placeholder="Maximum Value" name="SubMaxText" id="SubMaxText" #SubMaxText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[1].maximum">
-                      </div>
-                      <div class="form-group">
-                        <label>Default Value (optional)</label>
-                        <input type="text" class="form-control" placeholder="Default Value" name="SubdefaultText" id="SubdefaultText" #SubdefaultText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[1].defaultValue">
-                      </div>
-                      <!-- End of character stat name -->
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                      <label for="Maximum">Maximum Number Value (optional)</label>
+                      <input type="text" id="maximum" name="maximum" class="form-control" placeholder="Maximum Value"
+                             [(ngModel)]="characterStatsFormModal.characterStatComboViewModel.maximum" #Maximum="ngModel">
                     </div>
-                    <div class="col-12" >
-                      <div class="form-group">
-                        <span class="custom-checkbox">
-                          <input type="checkbox" name="addToModScreen" id="addToModScreen" #addToModScreen="ngModel" [(ngModel)]="characterStatsFormModal.addToModScreen" /> <span>Add this stat to the dice 'ADD MOD' screen</span>
-                        </span>
-                      </div>
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                      <label for="default">Default Number Value (optional)</label>
+                      <input type="text" id="default" name="default" class="form-control" placeholder="Default Value"
+                             [(ngModel)]="characterStatsFormModal.characterStatComboViewModel.defaultValue" #default="ngModel">
+                    </div>
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                      <label for="default">Default Text Value (optional)</label>
+                      <input type="text" id="default" name="defaultText" class="form-control" placeholder="Default Value"
+                             [(ngModel)]="characterStatsFormModal.characterStatComboViewModel.defaultText" #default="ngModel">
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group">
+                      <span class="custom-checkbox">
+                        <input type="checkbox" name="addToModScreen" id="addToModScreen" #addToModScreen="ngModel" [(ngModel)]="characterStatsFormModal.addToModScreen" /> <span>Add this stat to the dice 'ADD MOD' screen</span>
+                      </span>
                     </div>
                   </div>
                 </div>
-                <div class="col" *ngIf="characterStatsFormModal.characterStatTypeId===STAT.Number">
-                  <div class="form-row">
-                    <div class="col-12 col-sm-6">
-                      <div class="form-group">
-                        <label>Minimum Value (optional)</label>
-                        <input type="text" class="form-control" placeholder="Minimum Value" name="NumberMinText" id="NumberMinText" #NumberMinText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].minimum">
-                      </div>
+              </div>
+              <div class="col" *ngIf="characterStatsFormModal.characterStatTypeId===STAT.CurrentMax">
+                <div class="form-row">
+                  <div class="col-12 col-sm-6">
+                    <!-- Character stat name -->
+                    <h2 class="formfiled-heading">CURRENT</h2>
+                    <div class="form-group">
+                      <label>Minimum Value (optional)</label>
+                      <input type="text" class="form-control" placeholder="Minimum Value" name="MinimumMinText" id="MinimumMinText" #MinimumMinText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].minimum">
                     </div>
-                    <div class="col-12 col-sm-6">
-                      <div class="form-group">
-                        <label>Maximum Value (optional)</label>
-                        <input type="text" class="form-control" placeholder="Maximum Value" name="NumberMaxText" id="NumberMaxText" #NumberMaxText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].maximum">
-                      </div>
+                    <div class="form-group">
+                      <label>Maximum Value (optional)</label>
+                      <input type="text" class="form-control" placeholder="Maximum Value" name="MinimumMaxText" id="MinimumMaxText" #MinimumMaxText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].maximum">
                     </div>
-                    <div class="col-12 col-sm-6">
-                      <div class="form-group">
-                        <label>Default Value (optional)</label>
-                        <input type="text" class="form-control" placeholder="Default Value" name="NumberdefaultText" id="NumberdefaultText" #NumberdefaultText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].defaultValue">
-                      </div>
+                    <div class="form-group">
+                      <label>Default Value (optional)</label>
+                      <input type="text" class="form-control" placeholder="Default Value" name="MinimumdefaultText" id="MinimumdefaultText" #MinimumdefaultText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].defaultValue">
                     </div>
-                    <div class="col-12 col-sm-6" >
-                      <div class="form-group">
-                        <label>&nbsp;</label><br />
-                        <span class="custom-checkbox">
-                          <input type="checkbox" name="addToModScreen" id="addToModScreen" #addToModScreen="ngModel" [(ngModel)]="characterStatsFormModal.addToModScreen" /> <span>Add this stat to the dice 'ADD MOD' screen</span>
-                        </span>
-                      </div>
+                    <!-- End of character stat name -->
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <!-- Character stat name -->
+                    <h2 class="formfiled-heading">MAX</h2>
+                    <div class="form-group">
+                      <label>Minimum Value (optional)</label>
+                      <input type="text" class="form-control" placeholder="Minimum Value" name="MaximumMinText" id="MaximumMinText" #MaximumMinText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[1].minimum">
+                    </div>
+                    <div class="form-group">
+                      <label>Maximum Value (optional)</label>
+                      <input type="text" class="form-control" placeholder="Maximum Value" name="MaximumMaxText" id="MaximumMaxText" #MaximumMaxText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[1].maximum">
+                    </div>
+                    <div class="form-group">
+                      <label>Default Value (optional)</label>
+                      <input type="text" class="form-control" placeholder="Default Value" name="MaximumdefaultText" id="MaximumdefaultText" #MaximumdefaultText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[1].defaultValue">
+                    </div>
+                    <!-- End of character stat name -->
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group">
+                      <span class="custom-checkbox">
+                        <input type="checkbox" name="addToModScreen" id="addToModScreen" #addToModScreen="ngModel" [(ngModel)]="characterStatsFormModal.addToModScreen" /> <span>Add this stat to the dice 'ADD MOD' screen</span>
+                      </span>
                     </div>
                   </div>
                 </div>
-                <div class="col" *ngIf="characterStatsFormModal.characterStatTypeId===STAT.Command">
-                    <!--<div class="form-row">
-                        <div class="col-12 col-sm-6">
-                            <label>Standard Attack</label>
-                        </div>
-                    </div>-->
-                  <div class="form-row">
-                    <div class="col-12 col-sm-6">
-                      <div class="form-group">
-                        <label>Default Value (optional)</label>
-                        <span class="input-group-btn">
-                          <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,characterStatsFormModal.characterStatDefaultValueViewModel[0].defaultValue)"></button>
-                        </span>
-                        <input type="text" class="form-control" placeholder="Default Value" name="defaultCommand" id="defaultCommand" #defaultCommand="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].defaultValue">
-                      </div>
+              </div>
+              <div class="col" *ngIf="characterStatsFormModal.characterStatTypeId===STAT.ValueSubValue">
+                <div class="form-row">
+                  <div class="col-12 col-sm-6">
+                    <!-- Character stat name -->
+                    <h2 class="formfiled-heading">Value</h2>
+                    <div class="form-group">
+                      <label>Minimum Value (optional)</label>
+                      <input type="text" class="form-control" placeholder="Minimum Value" name="ValueMinText" id="ValueMinText" #ValueMinText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].minimum">
                     </div>
-                    <div class="col-12 col-sm-6">
-                      <div class="form-group">
-                        <label>&nbsp;</label><br />
-                        <span class="custom-checkbox">
-                          <input type="checkbox" name="addToModScreen" id="addToModScreen" #addToModScreen="ngModel" [(ngModel)]="characterStatsFormModal.addToModScreen" /> <span>Add this stat to the dice 'ADD MOD' screen</span>
-                        </span>
-                      </div>
+                    <div class="form-group">
+                      <label>Maximum Value (optional)</label>
+                      <input type="text" class="form-control" placeholder="Maximum Value" name="ValueMaxText" id="ValueMaxText" #ValueMaxText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].maximum">
+                    </div>
+                    <div class="form-group">
+                      <label>Default Value (optional)</label>
+                      <input type="text" class="form-control" placeholder="Default Value" name="ValuedefaultText" id="ValuedefaultText" #ValuedefaultText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].defaultValue">
+                    </div>
+                    <!-- End of character stat name -->
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <!-- Character stat name -->
+                    <h2 class="formfiled-heading">Sub-Value</h2>
+                    <div class="form-group">
+                      <label>Minimum Value (optional)</label>
+                      <input type="text" class="form-control" placeholder="Minimum Value" name="SubMinText" id="SubMinText" #SubMinText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[1].minimum">
+                    </div>
+                    <div class="form-group">
+                      <label>Maximum Value (optional)</label>
+                      <input type="text" class="form-control" placeholder="Maximum Value" name="SubMaxText" id="SubMaxText" #SubMaxText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[1].maximum">
+                    </div>
+                    <div class="form-group">
+                      <label>Default Value (optional)</label>
+                      <input type="text" class="form-control" placeholder="Default Value" name="SubdefaultText" id="SubdefaultText" #SubdefaultText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[1].defaultValue">
+                    </div>
+                    <!-- End of character stat name -->
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group">
+                      <span class="custom-checkbox">
+                        <input type="checkbox" name="addToModScreen" id="addToModScreen" #addToModScreen="ngModel" [(ngModel)]="characterStatsFormModal.addToModScreen" /> <span>Add this stat to the dice 'ADD MOD' screen</span>
+                      </span>
                     </div>
                   </div>
                 </div>
-                <div class="col" *ngIf="characterStatsFormModal.characterStatTypeId===STAT.Text">
-                    <div class="form-row">
-                        <div class="col-12 col-sm-6">
-                            <div class="form-group">
-                                <label>Default Value (optional)</label>
-                                <input type="text" class="form-control" placeholder="Default Value" name="TextdefaultText" id="TextdefaultText" #TextdefaultText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].defaultValue">
-                            </div>
-                        </div>
+              </div>
+              <div class="col" *ngIf="characterStatsFormModal.characterStatTypeId===STAT.Number">
+                <div class="form-row">
+                  <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                      <label>Minimum Value (optional)</label>
+                      <input type="text" class="form-control" placeholder="Minimum Value" name="NumberMinText" id="NumberMinText" #NumberMinText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].minimum">
                     </div>
-                </div>
-                <div class="col" *ngIf="characterStatsFormModal.characterStatTypeId===STAT.RichText">
-                    <div class="form-row">
-                        <div class="col-12 col-sm-12">
-                            <div class="form-group">
-                                <label>Default Value (optional)</label>
-                                <div id="eg-royal-theme" [froalaEditor]="options('Description')" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].defaultValue" name="RichTextdefaultText"></div>
-                                <!--<input type="text" class="form-control" placeholder="Default Value" name="RichTextdefaultText" id="RichTextdefaultText" #RichTextdefaultText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].defaultValue">-->
-                            </div>
-                        </div>
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                      <label>Maximum Value (optional)</label>
+                      <input type="text" class="form-control" placeholder="Maximum Value" name="NumberMaxText" id="NumberMaxText" #NumberMaxText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].maximum">
                     </div>
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                      <label>Default Value (optional)</label>
+                      <input type="text" class="form-control" placeholder="Default Value" name="NumberdefaultText" id="NumberdefaultText" #NumberdefaultText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].defaultValue">
+                    </div>
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                      <label>&nbsp;</label><br />
+                      <span class="custom-checkbox">
+                        <input type="checkbox" name="addToModScreen" id="addToModScreen" #addToModScreen="ngModel" [(ngModel)]="characterStatsFormModal.addToModScreen" /> <span>Add this stat to the dice 'ADD MOD' screen</span>
+                      </span>
+                    </div>
+                  </div>
                 </div>
+              </div>
+              <div class="col" *ngIf="characterStatsFormModal.characterStatTypeId===STAT.Command">
+                <!--<div class="form-row">
+        <div class="col-12 col-sm-6">
+            <label>Standard Attack</label>
+        </div>
+    </div>-->
+                <div class="form-row">
+                  <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                      <label>Default Value (optional)</label>
+                      <span class="input-group-btn">
+                        <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,characterStatsFormModal.characterStatDefaultValueViewModel[0].defaultValue)"></button>
+                      </span>
+                      <input type="text" class="form-control" placeholder="Default Value" name="defaultCommand" id="defaultCommand" #defaultCommand="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].defaultValue">
+                    </div>
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                      <label>&nbsp;</label><br />
+                      <span class="custom-checkbox">
+                        <input type="checkbox" name="addToModScreen" id="addToModScreen" #addToModScreen="ngModel" [(ngModel)]="characterStatsFormModal.addToModScreen" /> <span>Add this stat to the dice 'ADD MOD' screen</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col" *ngIf="characterStatsFormModal.characterStatTypeId===STAT.Text">
+                <div class="form-row">
+                  <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                      <label>Default Value (optional)</label>
+                      <input type="text" class="form-control" placeholder="Default Value" name="TextdefaultText" id="TextdefaultText" #TextdefaultText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].defaultValue">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col" *ngIf="characterStatsFormModal.characterStatTypeId===STAT.RichText">
+                <div class="form-row">
+                  <div class="col-12 col-sm-12">
+                    <div class="form-group">
+                      <label>Default Value (optional)</label>
+                      <div id="eg-royal-theme" [froalaEditor]="options('Description')" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].defaultValue" name="RichTextdefaultText"></div>
+                      <!--<input type="text" class="form-control" placeholder="Default Value" name="RichTextdefaultText" id="RichTextdefaultText" #RichTextdefaultText="ngModel" [(ngModel)]="characterStatsFormModal.characterStatDefaultValueViewModel[0].defaultValue">-->
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- Condition Character Stat-->

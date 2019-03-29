@@ -7,7 +7,7 @@
                 <div class="manage-ruleset-header" *ngIf="(!showWebButtons && rulesetFormModal.imageUrl !== undefined && rulesetFormModal.imageUrl !== null) && rulesetFormModal.view=='edit'">
                             
                     <span>
-                        <img class="ruleset-img" [src]="rulesetFormModal.imageUrl" />
+                        <img class="ruleset-img" [src]="rulesetFormModal.imageUrl"  onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
                     </span>
                     <span>{{rulesetFormModal.ruleSetName}}</span>
                 </div>

@@ -253,7 +253,7 @@ export class CharacterStatService extends EndpointFactory {
         statName: _view === 'DUPLICATE' ? '' : _characterStatsVM.statName,
         statDesc: _characterStatsVM.statDesc,
         isMultiSelect: _characterStatsVM.isMultiSelect,
-        isActive: _characterStatsVM.isActive,
+        isActive: _characterStatsVM.isActive,        
         sortOrder: _characterStatsVM.sortOrder,
         createdDate: _characterStatsVM.createdDate,
         modifiedDate: _characterStatsVM.modifiedDate,
@@ -274,7 +274,9 @@ export class CharacterStatService extends EndpointFactory {
         characterStatConditionViewModel: _characterStatsVM.characterStatConditionViewModel ? _characterStatsVM.characterStatConditionViewModel : this.GetDefaultConditionValues(),
         view: _view === 'DUPLICATE' ? VIEW.DUPLICATE : VIEW.EDIT,
         icon: _characterStatsVM.icon,  //_characterStatsVM.characterStatTypeViewModel.statTypeName //for now
-        addToModScreen: _characterStatsVM.addToModScreen
+        addToModScreen: _characterStatsVM.addToModScreen,
+        isChoiceNumeric: _characterStatsVM.isChoiceNumeric,
+        isChoicesFromAnotherStat: _characterStatsVM.isChoicesFromAnotherStat
       }
       //this.title = _view === 'DUPLICATE' ? 'Duplicate Character Stat' : 'Update Character Stat';
     }
@@ -307,7 +309,9 @@ export class CharacterStatService extends EndpointFactory {
         characterStatConditionViewModel: this.GetDefaultConditionValues(),
         view: VIEW.ADD,
         icon: ICON.Text,
-        addToModScreen: true
+        addToModScreen: true,
+        isChoiceNumeric: true,
+        isChoicesFromAnotherStat:false
       }
       //this.title = 'Add Character Stat';
     }

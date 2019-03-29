@@ -102,5 +102,19 @@ namespace DAL.Services
 
             return  new List<CharacterStatChoice>();
             }
+        public async Task<bool> DeleteChoiceByStatID(int characterStatId) {
+            _context.CharacterStatChoices.RemoveRange(_context.CharacterStatChoices.Where(p => p.CharacterStatId == characterStatId));
+
+            
+            try
+            {
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

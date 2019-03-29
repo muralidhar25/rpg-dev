@@ -64,7 +64,8 @@ export enum DefaultValue_STAT_TYPE {
     YesNo = 10,
     Calculation = 11,    
     Toggle = 12,
-    Combo = 12,
+  Combo = 12,
+  choice = 14
 }
 export enum STAT_NAME {
     Text = "Text",
@@ -207,4 +208,10 @@ export enum SearchType {
   CHARACTERRULESETSPELLS = 8,
   CHARACTERRULESETABILITIES = 9,
   EVERYTHING = -1
+}
+
+export enum CustomDiceResultType {
+  NUMBER = "number",
+  TEXT = "text",
+  IMAGE = "image",
 }

@@ -116,7 +116,7 @@ export class CharacterStatsComponent implements OnInit {
             .subscribe(data => {
                 this.isLoading = false;
                 this.characterStats = data;
-                
+              
                 this.characterStats.forEach((val) => {                    
                     val.characterStatTypeId = val.characterStatTypeViewModel.characterStatTypeId
                     val.icon = this.charactersService.getIcon(val.characterStatTypeViewModel.statTypeName);
@@ -192,7 +192,9 @@ export class CharacterStatsComponent implements OnInit {
         this.bsModalRef.content.characterStats = this.characterStats.filter(x => x.characterStatTypeId != STAT_TYPE.Condition).map((x) => {
             return { characterStatId: x.characterStatId, statName: x.statName, typeId: x.characterStatTypeId }
         });
-        this.bsModalRef.content.ConditionOperators = this.ConditionOperators;
+      this.bsModalRef.content.ConditionOperators = this.ConditionOperators;
+      let result = this.characterStats.filter(s => s.characterStatTypeViewModel.characterStatTypeId == STAT_TYPE.Choice);
+      this.bsModalRef.content.Choices = result;
     }
 
     editCharacterStat(CharacterStat: CharacterStats) {
@@ -210,7 +212,9 @@ export class CharacterStatsComponent implements OnInit {
         this.bsModalRef.content.characterStats = this.characterStats.filter(x => x.characterStatTypeId != STAT_TYPE.Condition).map((x) => {
             return { characterStatId: x.characterStatId, statName: x.statName, typeId: x.characterStatTypeId }
         });
-        this.bsModalRef.content.ConditionOperators = this.ConditionOperators;
+      this.bsModalRef.content.ConditionOperators = this.ConditionOperators;
+      let result = this.characterStats.filter(s => s.characterStatTypeViewModel.characterStatTypeId == STAT_TYPE.Choice);
+      this.bsModalRef.content.Choices = result;
     }
 
     duplicateCharacterStat(CharacterStat: CharacterStats) {
@@ -228,7 +232,9 @@ export class CharacterStatsComponent implements OnInit {
         this.bsModalRef.content.characterStats = this.characterStats.filter(x => x.characterStatTypeId != STAT_TYPE.Condition).map((x) => {
             return { characterStatId: x.characterStatId, statName: x.statName, typeId: x.characterStatTypeId }
         });
-        this.bsModalRef.content.ConditionOperators = this.ConditionOperators;
+      this.bsModalRef.content.ConditionOperators = this.ConditionOperators;
+      let result = this.characterStats.filter(s => s.characterStatTypeViewModel.characterStatTypeId == STAT_TYPE.Choice);
+      this.bsModalRef.content.Choices = result;
     }
 
     deleteCharacterStat(CharacterStat: CharacterStats) {

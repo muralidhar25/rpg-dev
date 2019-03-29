@@ -13,5 +13,6 @@ namespace DAL.Services
         Task<bool> DeleteCharacterStatChoice(int id);
         bool DeleteCharacterStatChoiceNotAsync(int id);
         List<CharacterStatChoice> GetByIds(string selectedIds);
+        Task<bool> DeleteChoiceByStatID(int characterStatId);
     }
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { Router, NavigationExtras } from "@angular/router";
 import { BsModalService, BsModalRef, ModalDirective } from 'ngx-bootstrap';
-import { CharacterStats, CustomToggle, CharacterStatCombo, CharacterStatToggle, StatsList, ConditionOperatorsList, CharacterStatConditionViewModel, CharacterStatDefaultValue } from '../../../core/models/view-models/character-stats.model';
+import { CharacterStats, CustomToggle, CharacterStatCombo, CharacterStatToggle, StatsList, ConditionOperatorsList, CharacterStatConditionViewModel, CharacterStatDefaultValue, CharacterStatChoicesViewModels } from '../../../core/models/view-models/character-stats.model';
 import { STAT_TYPE, DefaultValue_STAT_TYPE, STAT_NAME, TOGGLE_TYPE, VIEW } from '../../../core/models/enums';
 import { Utilities } from '../../../core/common/utilities';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -48,6 +48,10 @@ export class CharacterStatsFormComponent implements OnInit {
     defaultCommandDice: string = '';
     characterStatsForConditions: StatsList[];
     ConditionOperators: ConditionOperatorsList[];
+    displayChoices: boolean = false;
+    otherStatchoice: boolean = false;
+
+      choiceList: any[] = [];
     options(placeholder?: string, initOnClick?: boolean): Object {
         return Utilities.optionsFloala(160, placeholder, initOnClick);
     }
@@ -72,7 +76,15 @@ export class CharacterStatsFormComponent implements OnInit {
     }
 
     ngOnInit() {
-        setTimeout(() => {
+      setTimeout(() => {
+      
+            this.choiceList = this.bsModalRef.content.Choices;
+            let results = this.choiceList.map(s =>s.characterStatChoicesViewModels);
+        this.choiceList = [].concat.apply([], results);
+        this.choiceList.map((x) => {
+          x.selected = false;
+        })
+          
             this.defaultCommandDice = '';
             this.characterStatTypeList = this.bsModalRef.content.characterStatTypeList;
             this.typeOptions = this.bsModalRef.content.typeOptions;
@@ -88,8 +100,7 @@ export class CharacterStatsFormComponent implements OnInit {
             
             this.characterStatsFormModal = this.charactersService.getCharacterStatsFormModal(_characterStatsVM, _view);
             this.characterStatsFormModal.ruleSetId = this._ruleSetId;
-
-            
+           
             if (this.characterStatsFormModal.characterStatConditionViewModel) {
                 if (this.characterStatsFormModal.characterStatConditionViewModel.length) {
                     this.characterStatsFormModal.characterStatConditionViewModel.map((x: CharacterStatConditionViewModel) => {
@@ -99,7 +110,25 @@ export class CharacterStatsFormComponent implements OnInit {
                         x.ifClauseStatText_isValid = true;
                     })
                 }
-            }
+        }
+        if (this.characterStatsFormModal.characterStatChoicesViewModels) {
+          if (this.characterStatsFormModal.characterStatChoicesViewModels.length) {
+            this.characterStatsFormModal.characterStatChoicesViewModels.map((x: CharacterStatChoicesViewModels) => {
+              debugger
+              this.choiceList.map((Ch) => {
+                if (!Ch.selected) {
+                  if (Ch.characterStatChoiceId === x.characterStatChoiceId) {
+                    Ch.selected = true;
+                  }
+                  else { Ch.selected = false; }
+                }
+               
+               
+              })
+            })
+          }
+        }
+        console.log(this.choiceList,'choicesListselected')
             this.ConditionOperators = this.bsModalRef.content.ConditionOperators
             let characterStatsForConditions: StatsList[] = this.bsModalRef.content.characterStats;
             characterStatsForConditions = characterStatsForConditions.filter(x => x.typeId == STAT_TYPE.Text || x.typeId == STAT_TYPE.Number || x.typeId == STAT_TYPE.CurrentMax || x.typeId == STAT_TYPE.Choice || x.typeId == STAT_TYPE.ValueSubValue || x.typeId == STAT_TYPE.Combo || x.typeId == STAT_TYPE.Calculation)
@@ -168,7 +197,8 @@ export class CharacterStatsFormComponent implements OnInit {
     }
 
     typeSelection(characterStatsFormModal: CharacterStats, _type: any) {
-        if (_type.statTypeName == 'Choice' && characterStatsFormModal.characterStatChoicesViewModels.length == 0) {
+      if (_type.statTypeName == 'Choice' && characterStatsFormModal.characterStatChoicesViewModels.length == 0) {
+       
             characterStatsFormModal.characterStatChoicesViewModels
                 .push({ characterStatChoiceId: 0, statChoiceValue: '' });
         }
@@ -249,7 +279,8 @@ export class CharacterStatsFormComponent implements OnInit {
             .splice(this.characterStatsFormModal.characterStatToggleViewModel.customToggles.indexOf(toggle), 1);
     }
 
-    addToggleImage(toggle: CustomToggle) {
+  addToggleImage(toggle: CustomToggle) {
+    console.log('here Toggleimg',toggle);
         this.bsModalRef = this.modalService.show(ImageSelectorComponent, {
             class: 'modal-primary modal-sm selectPopUpModal',
             ignoreBackdropClick: true,
@@ -321,8 +352,11 @@ export class CharacterStatsFormComponent implements OnInit {
         return true;
     }
 
-    submitForm(characterStat: CharacterStats) {
-        
+  
+  submitForm(characterStat: CharacterStats) {
+    
+    console.log('herer ----------', characterStat.characterStatChoicesViewModels);
+   
         //InventoryWeight name check
         if (characterStat.statName == STAT_NAME.InventoryWeight) {
             this.alertService.showMessage("Invalid Character Stat Name", "InventoryWeight is an existing built-in variable. Please select a different name.", MessageSeverity.error);
@@ -368,7 +402,10 @@ export class CharacterStatsFormComponent implements OnInit {
                 validForm = this.validateDefaultValue(characterStat.characterStatDefaultValueViewModel);
             }
             else if (characterStat.characterStatTypeName == STAT_NAME.ValueSubValue || characterStat.characterStatTypeName == "Value & Sub-Value") {
-                validForm = this.validateDefaultValue(characterStat.characterStatDefaultValueViewModel);
+              validForm = this.validateDefaultValue(characterStat.characterStatDefaultValueViewModel);
+            }
+            else if (characterStat.characterStatTypeName == STAT_NAME.Choice) {
+              validForm = this.validateDefaultValue(characterStat.characterStatDefaultValueViewModel);
             }
             else {
                 characterStat.characterStatCalsComndViewModel = [];
@@ -632,14 +669,21 @@ export class CharacterStatsFormComponent implements OnInit {
               characterStatsFormModal.addToModScreen = true;
             }    
             break;
-
+          case STAT_TYPE.Choice:
+            characterStatsFormModal.characterStatDefaultValueViewModel = [];
+            defValues[0].type = DefaultValue_STAT_TYPE.choice;
+            characterStatsFormModal.characterStatDefaultValueViewModel.push(defValues[0])
+            if (characterStatsFormModal.view == VIEW.ADD) {
+              characterStatsFormModal.addToModScreen = true;
+            }
+            break;
 
             default:
         }
     }
     private validateDefaultValue(characterStatDefaultValues: CharacterStatDefaultValue[]):boolean {
         let valid = true;
-        
+        debugger
         characterStatDefaultValues.map((characterStatDefaultValue) => {
             if (characterStatDefaultValue.minimum !== undefined) {
                 if (characterStatDefaultValue.minimum === null) {
@@ -1065,7 +1109,8 @@ export class CharacterStatsFormComponent implements OnInit {
         }
        
     }
-    public CheckConditionsAreValid():boolean {
+  public CheckConditionsAreValid(): boolean {
+    
         if (this.characterStatsFormModal.characterStatTypeId == STAT_TYPE.Condition) {
             let res = true;
             if (this.characterStatsFormModal.characterStatConditionViewModel) {
@@ -1094,5 +1139,38 @@ export class CharacterStatsFormComponent implements OnInit {
             matches.push(match[index]);
         }
         return matches;
+  }
+
+  defineChoices(defineChoices: boolean) {
+   
+    console.log(this.characterStatsFormModal.characterStatChoicesViewModels);
+    this.choiceList.map((x) => {
+      x.selected = false;
+    })
+    this.characterStatsFormModal.characterStatChoicesViewModels = [];
+    this.characterStatsFormModal.characterStatChoicesViewModels
+      .push({ characterStatChoiceId: 0, statChoiceValue: '' });
+    this.characterStatsFormModal.isChoicesFromAnotherStat = false;
+    
+  }
+
+  choicesfromOtherStat(choicesFromOther: boolean) {
+    this.choiceList.map((x) => {
+      x.selected = false;
+    })
+    this.characterStatsFormModal.characterStatChoicesViewModels = [];
+    this.characterStatsFormModal.characterStatChoicesViewModels
+      .push({ characterStatChoiceId: 0, statChoiceValue: '' });
+    this.characterStatsFormModal.isChoicesFromAnotherStat = true;
+  }
+  updateCheckedOptions(option, event) {
+    option.selected = event.target.checked
+    if (event.target.checked) {
+      this.characterStatsFormModal.characterStatChoicesViewModels.push(option);
+    } else {
+      this.characterStatsFormModal.characterStatChoicesViewModels = this.characterStatsFormModal.characterStatChoicesViewModels.filter(e => e !== option);
+    
     }
+    
+  }
 }
