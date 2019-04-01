@@ -918,6 +918,10 @@ export class CharacterTilesComponent implements OnInit {
                           case STAT_TYPE.Combo: //Combo
                             num = stat.defaultValue
                             break;
+                          case STAT_TYPE.Choice: //Choice
+
+                            num = stat.defaultValue
+                            break;
                           default:
                             break;
                         }
@@ -1029,6 +1033,10 @@ export class CharacterTilesComponent implements OnInit {
                           num = stat.calculationResult
                           break;
                         case STAT_TYPE.Combo: //Combo
+                          num = stat.defaultValue
+                          break;
+                        case STAT_TYPE.Choice: //Choice
+
                           num = stat.defaultValue
                           break;
                         default:

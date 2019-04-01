@@ -337,7 +337,9 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                                         case STAT_TYPE.Combo: //Combo
                                                             num = stat.defaultValue
                                                             break;
-
+                                                      case STAT_TYPE.Choice: //Choice
+                                                        num = stat.defaultValue
+                                                        break;
                                                         default:
                                                             break;
                                                     }
@@ -885,7 +887,10 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                                 break;
                                             case STAT_TYPE.Combo: //Combo
                                                 num = stat.defaultValue
-                                                break;
+                                            break;
+                                          case STAT_TYPE.Choice: //Choice
+                                            num = stat.defaultValue
+                                            break;
                                             default:
                                                 break;
                                         }
@@ -1399,7 +1404,10 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                                         break;
                                                     case STAT_TYPE.Combo: //Combo
                                                         num = stat.defaultValue
-                                                        break;
+                                                    break;
+                                                  case STAT_TYPE.Choice: //Choice
+                                                    num = stat.defaultValue
+                                                    break;
                                                     default:
                                                         break;
                                                 }
@@ -2120,7 +2128,10 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                         else {
                             result = ccs.defaultValue.toString();
                         }
-                        break;
+                    break;
+                  case STAT_TYPE.Choice: //Choice
+                    result = ccs.defaultValue.toString();
+                    break;
                     case STAT_TYPE.Calculation:
                         result = ccs.calculationResult.toString();
                         break;

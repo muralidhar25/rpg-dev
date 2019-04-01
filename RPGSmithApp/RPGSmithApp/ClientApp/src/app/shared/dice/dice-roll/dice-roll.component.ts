@@ -608,6 +608,9 @@ export class DiceRollComponent implements OnInit {
                   case STAT_TYPE.Combo: //Combo
                     num = stat.defaultValue
                     break;
+                  case STAT_TYPE.Choice: //Combo
+                    num = stat.defaultValue
+                    break;
                   default:
                     break;
                 }
@@ -1199,6 +1202,9 @@ export class DiceRollComponent implements OnInit {
                         num = stat.calculationResult
                         break;
                       case STAT_TYPE.Combo: //Combo
+                        num = stat.defaultValue
+                        break;
+                      case STAT_TYPE.Choice: //Combo
                         num = stat.defaultValue
                         break;
                       default:
@@ -2773,6 +2779,9 @@ export class DiceRollComponent implements OnInit {
                     num = stat.calculationResult
                     break;
                   case STAT_TYPE.Combo: //Combo
+                    num = stat.defaultValue
+                    break;
+                  case STAT_TYPE.Choice: //Combo
                     num = stat.defaultValue
                     break;
                   default:
