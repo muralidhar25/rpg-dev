@@ -124,7 +124,9 @@ export class EditCharacterStatComponent implements OnInit {
                 this.valCurrentMax = Object.assign({}, rescurrentMax);
                 this.defValCurrentMax = Object.assign({}, rescurrentMax);
                 break;
-            case STAT_TYPE.Choice:
+          case STAT_TYPE.Choice:
+            this.valNumber = this.charactersCharacterStat.defaultValue == null ? "" : this.charactersCharacterStat.defaultValue.toString();
+            this.defValNumber = this.charactersCharacterStat.defaultValue == null ? "" : this.charactersCharacterStat.defaultValue.toString();
                 if (characterStat.isMultiSelect) {
                     let tempIds: number[] = [];
                     if (this.charactersCharacterStat.multiChoice) {
@@ -294,7 +296,33 @@ export class EditCharacterStatComponent implements OnInit {
                 }
                 
                 break;
-            case STAT_TYPE.Choice:
+          case STAT_TYPE.Choice:
+            let save_flag = false;
+            let choicemax = 0;
+            let choicemin = 0;
+            if (DefaultValuesList) {
+              if (DefaultValuesList.length) {
+                choicemax = DefaultValuesList[0].maximum;
+                choicemin = DefaultValuesList[0].minimum;
+              }
+            }
+
+
+            if (!(choicemax == 0 && choicemin == 0)) {
+              if (parseInt(this.valNumber) >= choicemin && parseInt(this.valNumber) <= choicemax) {
+                charactersCharacterStat.defaultValue = +this.valNumber;
+                //this.updateStatService(charactersCharacterStat);
+                save_flag = true;
+              }
+              else {
+                this.alertService.showMessage("", "The value for this field must be between " + choicemin + " and " + choicemax + " value.", MessageSeverity.error);
+                return false;
+              }
+            }
+            else {
+              charactersCharacterStat.defaultValue = this.valNumber == null ? null : +this.valNumber;
+              save_flag = true;//this.updateStatService(charactersCharacterStat);
+            }
                 if (this.charactersCharacterStat.characterStat.isMultiSelect) {
                     let _multiChoice = '';
                     this.valChoices.map((val, index) => {
@@ -306,8 +334,11 @@ export class EditCharacterStatComponent implements OnInit {
                     charactersCharacterStat.multiChoice = _multiChoice;
                 } else {
                   charactersCharacterStat.choice = this.selectedChoiceId ? this.selectedChoiceId.toString():'';
-                }
-                this.updateStatService(charactersCharacterStat);
+            }
+            if (save_flag) {
+              this.updateStatService(charactersCharacterStat);
+            }
+                
                 break;
             case STAT_TYPE.ValueSubValue:
                 let valmax = 0;
@@ -491,7 +522,11 @@ export class EditCharacterStatComponent implements OnInit {
                 break;
             case STAT_TYPE.Combo:
                 this.valNumber = this.defValNumber;
-                break;
+            break;
+          case STAT_TYPE.Choice:
+            this.valNumber = this.defValNumber;
+            //this.updateCharacterStat(type);
+            break;
         }
     }
 
@@ -713,7 +748,30 @@ export class EditCharacterStatComponent implements OnInit {
                 else {
                     this.valNumber = (parseInt(this.valNumber) + 1).toString();
                 }
-                break;
+            break;
+          case STAT_TYPE.Choice:
+            let choicemax = 0;
+            let choicemin = 0;
+            if (DefaultValuesList) {
+              if (DefaultValuesList.length) {
+                choicemax = DefaultValuesList[0].maximum;
+                choicemin = DefaultValuesList[0].minimum;
+              }
+            }
+            if (!(choicemax == 0 && choicemin == 0)) {
+              if (parseInt(this.valNumber) >= choicemin && parseInt(this.valNumber) < choicemax) {
+                this.valNumber = (parseInt(this.valNumber) + 1).toString();
+              }
+              else {
+                this.valNumber = (parseInt(this.valNumber)).toString();
+              }
+            }
+            else {
+              this.valNumber = (parseInt(this.valNumber) + 1).toString();
+            }
+
+            //this.updateCharacterStat(type);
+            break;
         }
     }
 
@@ -853,7 +911,30 @@ export class EditCharacterStatComponent implements OnInit {
                 else {
                     this.valNumber = (parseInt(this.valNumber) - 1).toString();
                 }
-                break;
+            break;
+          case STAT_TYPE.Choice:
+            let choicemax = 0;
+            let choicemin = 0;
+            if (DefaultValuesList) {
+              if (DefaultValuesList.length) {
+                choicemax = DefaultValuesList[0].maximum;
+                choicemin = DefaultValuesList[0].minimum;
+              }
+            }
+            if (!(choicemax == 0 && choicemin == 0)) {
+              if (parseInt(this.valNumber) > choicemin && parseInt(this.valNumber) <= choicemax) {
+                this.valNumber = (parseInt(this.valNumber) - 1).toString();
+              }
+              else {
+                this.valNumber = (parseInt(this.valNumber)).toString();
+              }
+            }
+            else {
+              this.valNumber = (parseInt(this.valNumber) - 1).toString();
+            }
+            //this.valNumber = (parseInt(this.valNumber) - 1).toString();
+            //this.updateCharacterStat(type);
+            break;
         }
     }
 

@@ -434,6 +434,7 @@ namespace DAL.Services.CharacterTileServices
                                                         CharStat.ParentCharacterStatId = CharCharStat_Row["ParentCharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["ParentCharacterStatId"]);
                                                         CharStat.SortOrder = CharCharStat_Row["SortOrder"] == DBNull.Value ? num : (short)(CharCharStat_Row["SortOrder"]);
                                                         CharStat.IsDeleted = CharCharStat_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsDeleted"]);
+                                                        CharStat.IsChoiceNumeric = CharCharStat_Row["IsChoiceNumeric"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsChoiceNumeric"]);
                                                         List<CharacterStatChoice> Choices = new List<CharacterStatChoice>();
                                                         if (ds.Tables[10].Rows.Count > 0)
                                                         {

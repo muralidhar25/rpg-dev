@@ -287,10 +287,11 @@
                 <div class="col-lg-2 col-md-2 col-sm-2 col-2" *ngIf="characterstat.characterStat.isChoiceNumeric==true">
                   <div class="form-group">
                     <!--<input placeholder="Number" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'number')" (ngModelChange)="mychange($event)" class="form-control" type="text" [(ngModel)]="characterstat.maximum">-->
-                    <input placeholder="Default Value" [(ngModel)]="characterstat.defaultValue" class="form-control" type="text" >
+                    <input placeholder="Number" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'choice')" (ngModelChange)="mychange($event)"
+                           [(ngModel)]="characterstat.defaultValue" class="form-control" type="text" (change)="DefaultDefValueOnchange($event, characterstat,DefVal_STATTYPE.choice);">
                   </div>
                 </div>
-                <div class="col-lg-5 col-md-5 col-sm-6 col-6" [ngClass]="{'col-lg-5 col-md-5 col-sm-6 col-6': characterstat.characterStat.isChoiceNumeric==true ,'col-lg-7 col-md-7 col-sm-8 col-8': characterstat.characterStat.isChoiceNumeric==false}">
+                <div [ngClass]="{'col-lg-5 col-md-5 col-sm-6 col-6': characterstat.characterStat.isChoiceNumeric==true ,'col-lg-7 col-md-7 col-sm-8 col-8': characterstat.characterStat.isChoiceNumeric==false}">
                   <div class="form-group">
 
                     <angular2-multiselect (ngModelChange)="mychange($event)" id="multiChoiceList-{{characterstat.charactersCharacterStatId}}" [data]="characterstat.characterStat.characterStatChoices" [(ngModel)]="characterstat.selectedCharacterChoices" name="characterstatsinglechoice-{{characterstat.charactersCharacterStatId}}" [settings]="singlechoiceSettings" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)">
@@ -329,13 +330,15 @@
                   </label>
                 </div>
               </div>
-              <div class="col-lg-2 col-md-2 col-sm-2 col-2">
+              <div class="col-lg-2 col-md-2 col-sm-2 col-2" *ngIf="characterstat.characterStat.isChoiceNumeric==true">
                 <div class="form-group">
                   <!--<input placeholder="Number" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'number')" (ngModelChange)="mychange($event)" class="form-control" type="text" [(ngModel)]="characterstat.maximum">-->
-                  <input placeholder="Default Value" [(ngModel)]="characterstat.defaultValue" class="form-control" type="text">
+                  <input placeholder="Number" (input)="inputValidator($event,characterstat.charactersCharacterStatId,'choice')" (ngModelChange)="mychange($event)"
+                         [(ngModel)]="characterstat.defaultValue" class="form-control" type="text" (change)="DefaultDefValueOnchange($event, characterstat,DefVal_STATTYPE.choice);">
+
                 </div>
               </div>
-              <div class="col-lg-5 col-md-5 col-sm-6 col-6">
+              <div [ngClass]="{'col-lg-5 col-md-5 col-sm-6 col-6': characterstat.characterStat.isChoiceNumeric==true ,'col-lg-7 col-md-7 col-sm-8 col-8': characterstat.characterStat.isChoiceNumeric==false}">
                 <div class="form-group">
 
                   <angular2-multiselect (ngModelChange)="mychange($event)" id="multiChoiceList-{{characterstat.charactersCharacterStatId}}" [data]="characterstat.characterStat.characterStatChoices" [(ngModel)]="characterstat.selectedCharacterChoices" name="characterstatmultichoice-{{characterstat.charactersCharacterStatId}}" [settings]="multichoiceSettings" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)">

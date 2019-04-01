@@ -369,6 +369,7 @@ namespace DAL.Services.RulesetTileServices
                                                     CharStat.ParentCharacterStatId = CharStat_Row["ParentCharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CharStat_Row["ParentCharacterStatId"]);
                                                     CharStat.SortOrder = CharStat_Row["SortOrder"] == DBNull.Value ? num : (short)(CharStat_Row["SortOrder"]);
                                                     CharStat.IsDeleted = CharStat_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CharStat_Row["IsDeleted"]);
+                                                    CharStat.IsChoiceNumeric = CharStat_Row["IsChoiceNumeric"] == DBNull.Value ? false : Convert.ToBoolean(CharStat_Row["IsChoiceNumeric"]);
                                                     List<CharacterStatChoice> Choices = new List<CharacterStatChoice>();
                                                     if (ds.Tables[10].Rows.Count > 0)
                                                     {

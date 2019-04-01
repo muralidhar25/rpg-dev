@@ -292,12 +292,29 @@
                                 <span *ngIf="choice?.characterStatChoiceId===+mChoice && box.tile.characterStatTiles?.charactersCharacterStat?.multiChoice?.split(';')?.length>1"
                                       [style.font-size.px]="((box.config.sizey+box.config.sizex)*2) < 16 ? 18 : ((box.config.sizey+box.config.sizex)*2)"
                                       [style.line-height.px]="((box.config.sizey+box.config.sizex)*2+5)  < 18 ? 20 : ((box.config.sizey+box.config.sizex)*2+5)">
-                                  {{choice.statChoiceValue}}
+                                  <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isChoiceNumeric">
+                                    <ng-container *ngIf="i==0">
+                                      {{box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue}} /
+                                    </ng-container>
+                                    {{choice.statChoiceValue}}
+                                  </ng-container>
+                                  <ng-container *ngIf="!box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isChoiceNumeric">
+                                    {{choice.statChoiceValue}}
+                                  </ng-container>
+
                                 </span>
                                 <span *ngIf="choice?.characterStatChoiceId===+mChoice && box.tile.characterStatTiles?.charactersCharacterStat?.multiChoice?.split(';')?.length<=1"
                                       [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
                                       [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
-                                  {{choice.statChoiceValue}}
+                                  <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isChoiceNumeric">
+                                    <ng-container *ngIf="i==0">
+                                      {{box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue}} /
+                                    </ng-container>
+                                    {{choice.statChoiceValue}}
+                                  </ng-container>
+                                  <ng-container *ngIf="!box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isChoiceNumeric">
+                                    {{choice.statChoiceValue}}
+                                  </ng-container>
 
                                 </span>
                               </ng-container>
@@ -309,7 +326,15 @@
                             <ng-container *ngFor="let choice of box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatChoices; let i = index">
                               <span *ngIf="choice?.characterStatChoiceId===+box.tile.characterStatTiles?.charactersCharacterStat?.choice" [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
                                     [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
-                                {{choice.statChoiceValue}}
+                                <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isChoiceNumeric">
+                                  <ng-container *ngIf="i==0">
+                                    {{box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue}} /
+                                  </ng-container>
+                                  {{choice.statChoiceValue}}
+                                </ng-container>
+                                <ng-container *ngIf="!box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isChoiceNumeric">
+                                  {{choice.statChoiceValue}}
+                                </ng-container>
                               </span>
                             </ng-container>
                           </p>

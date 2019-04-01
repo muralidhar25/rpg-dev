@@ -1795,6 +1795,17 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                 event.target.value = event.target.value.replace(/--/g, "-");
                             }
                         }
+                  }
+                    else if (type == "choice") {
+                      if (event.target.value !== "-") {
+                        if (!(/^-?\d*\.?\d+$/g.test(event.target.value))) {
+                          val.defaultValue = event.target.value.replace(/[^0-9]/g, "")
+                        }
+                        if (IsNegative) {
+                          event.target.value = '-' + event.target.value;
+                          event.target.value = event.target.value.replace(/--/g, "-");
+                        }
+                      }
                     }
 
 
@@ -1938,7 +1949,10 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                     break;
                 case DefaultValue_STAT_TYPE.SubValue:
                     DefVal = characterstat.characterStat.characterStatDefaultValues[1];
-                    break;
+                break;
+              case DefaultValue_STAT_TYPE.choice:
+                DefVal = characterstat.characterStat.characterStatDefaultValues[0];
+                break;
                 default:
             }
             let defaultTextboxValue = event.target.value;

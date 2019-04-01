@@ -99,19 +99,31 @@
             </div>
 
             <div class="form-row" *ngIf="CharacterStatTypeID==STAT_TYPE.Choice">
-                <fieldset class="form-group input-switch input-switch-vertical w-100">
+              <fieldset class="form-group input-switch input-switch-vertical w-100">
+                <div class="input-group">
+                  <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDown(-1,CharacterStatTypeID)" (mouseup)="mouseUp()" (click)="decrement(CharacterStatTypeID)"></button>
+                  <input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" [(ngModel)]="valNumber" name="valNumber" (change)="onChange()">
+                  <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (mousedown)="mouseDown(1,CharacterStatTypeID)" (mouseup)="mouseUp()" (click)="increment(CharacterStatTypeID)"></button>
+                </div>
+                <div class="row">
+                  <div class="col text-right">
+                    <button type="button" class="btn icon icon-with-text icon-reset btn-link-primary" (click)="reset(CharacterStatTypeID)"><small><span>Reset to {{defValNumber}}</span></small></button>
+                  </div>
+                  <div class="col">
+                    <button type="button" class="float-right  btn icon icon-with-text icon-dice icon-rsi btn-link-primary" (click)="dice(valNumber,CharacterStatTypeID)"><small><span>Dice</span></small></button>
+                  </div>
+                </div><br />
+                <ul class="input-switch-items">
+                  <li class="form-check" *ngFor="let choice of valChoices; let i = index">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="checkbox" name="newItemRarity" [checked]="choice.selected"
+                             (click)="onChange(CharacterStatTypeID, choice, $event)" />
+                      <span class="choice-span">{{choice.value}}</span>
+                    </label>
 
-                    <ul class="input-switch-items">
-                        <li class="form-check" *ngFor="let choice of valChoices; let i = index">
-                            <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" name="newItemRarity" [checked]="choice.selected"
-                                       (click)="onChange(CharacterStatTypeID, choice, $event)" />
-                                <span class="choice-span">{{choice.value}}</span>
-                            </label>
-
-                        </li>
-                    </ul>
-                </fieldset>
+                  </li>
+                </ul>
+              </fieldset>
             </div>
 
             <div class="form-row" *ngIf="CharacterStatTypeID==STAT_TYPE.ValueSubValue">
