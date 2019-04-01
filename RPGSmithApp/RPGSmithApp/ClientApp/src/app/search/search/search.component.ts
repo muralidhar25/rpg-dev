@@ -41,7 +41,7 @@ export class SearchComponent implements OnInit {
   SEARCHTYPE = SearchType;
   everthing: number = -1;
   showMoreLessToggle: boolean = true;
-  allFiltersSelected: boolean = true;
+  allFiltersSelected: boolean = false;
   isCharacterRulesetEntity: boolean = false;
 
   constructor(private searchService: SearchService, private router: Router, private alertService: AlertService, private sharedService: SharedService,
@@ -221,7 +221,9 @@ export class SearchComponent implements OnInit {
      
       this.isLoading = true;
       this.showMoreLessToggle = true;
-     
+      //used to enable (check) the 'Name' checkbox
+      this.checkFilters();
+
       this.searchService.searchRecords<any>(this.searchModal)
         .subscribe(data => {
           if (data && data.length > 0) {
@@ -583,6 +585,53 @@ export class SearchComponent implements OnInit {
       default:
         return 'Everything';
     }
+  }
+
+  checkFilters() {
+    if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS) {
+      let values = Object.values(this.searchModal.itemFilters);
+      var found = values.find(function (element) {
+        return element == true;
+      });
+
+      if (!found) {
+        //console.log('founded items', found);
+        this.searchModal.itemFilters.isItemName = true;
+      }
+    }
+    else if (this.searchModal.searchType == SearchType.CHARACTERSPELLS || this.searchModal.searchType == SearchType.RULESETSPELLS) {
+
+      let values = Object.values(this.searchModal.spellFilters);
+      var found = values.find(function (element) {
+        return element == true;
+      });
+
+      if (!found) {
+        //console.log('founded spells', found);
+        this.searchModal.spellFilters.isSpellName = true;
+      }
+    }
+    else if (this.searchModal.searchType == SearchType.CHARACTERABILITIES || this.searchModal.searchType == SearchType.RULESETABILITIES) {
+      let values = Object.values(this.searchModal.abilityFilters);
+      var found = values.find(function (element) {
+        return element == true;
+      });
+      if (!found) {
+       // console.log('founded spells', found);
+        this.searchModal.abilityFilters.isAbilityName = true;
+      }
+    }
+    else if (this.searchModal.searchType == SearchType.EVERYTHING) {
+      let values = Object.values(this.searchModal.everythingFilters);
+      var found = values.find(function (element) {
+        return element == true;
+      });
+      if (!found) {
+        //console.log('founded Everything', found);
+        this.searchModal.everythingFilters.isEverythingName = true;
+      }
+    }
+
   }
 
 
