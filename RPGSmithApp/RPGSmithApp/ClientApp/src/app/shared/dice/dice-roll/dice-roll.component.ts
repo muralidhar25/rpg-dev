@@ -1073,8 +1073,9 @@ export class DiceRollComponent implements OnInit {
      
       this.mainCommandText = !_mainCommandText || _mainCommandText == "" ? command : _mainCommandText;
       command = this.mainCommandText.toUpperCase();
-      if (command.length >= 250) {
-        this.alertService.showMessage("A maximum of 250 characters is allowed for a command. Please adjust your command string and try again.", "", MessageSeverity.error);
+      console.log('here is command length', command.length );
+      if (command.length >= 500) {
+        this.alertService.showMessage("A maximum of 500 characters is allowed for a command. Please adjust your command string and try again.", "", MessageSeverity.error);
          if (this.diceSection = true) {
             this.rollSection = false;
           }

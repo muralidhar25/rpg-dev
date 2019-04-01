@@ -244,6 +244,7 @@ export class CharacterDashboardComponent implements OnInit {
     });
 
     this.sharedService.shouldUpdateCharacterDashboardPage().subscribe(serviceJson => {
+    
       if (serviceJson) {
         this.pageService.getPagesByLayoutId(this.selectedlayout.characterDashboardLayoutId)
           .subscribe(data => {
@@ -269,12 +270,21 @@ export class CharacterDashboardComponent implements OnInit {
     });
 
     this.sharedService.shouldUpdateCharacterList().subscribe(serviceJson => {
+     
       if (serviceJson) {
+       // console.log(serviceJson);
         if (typeof serviceJson === 'object' && serviceJson.hasOwnProperty('perventLoading')) {
-          this.initialize(false, serviceJson.perventLoading);
-        }else {
-          this.initialize(false,false);
-        }
+            this.initialize(false, serviceJson.perventLoading);
+          } else if (typeof serviceJson === 'object' && serviceJson.hasOwnProperty('counterTiles')) {
+          if (serviceJson.counterTiles) {
+            this.initialize(false, true);
+          } else {
+            this.initialize(false, false);
+          }
+        } else {
+         
+            this.initialize(false,false);
+          }
       }
     });
   }
@@ -1637,7 +1647,7 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   private mapBoxes(List) {
- 
+
     let boxes: Box[] = [];
     let ngGridItemConfig: NgGridItemConfig;
     List.map((item, index) => {
@@ -2421,6 +2431,12 @@ export class CharacterDashboardComponent implements OnInit {
       this.IsComputerDevice = true;
       this.IsTabletDevice = false;
       this.IsMobileDevice = false;
+    }
+  }
+  description(text) {
+    if (text) {
+      text = text.replace(/<{1}[^<>]{1,}>{1}/g, " ")
+      return text;
     }
   }
 }

@@ -602,7 +602,7 @@ namespace DAL.Services.CharacterTileServices
                                                         i.ParentItemId = CI_Row["ParentItemId"] == DBNull.Value ? 0 : Convert.ToInt32(CI_Row["ParentItemId"]);
                                                         i.IsDeleted = CI_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CI_Row["IsDeleted"]);
                                                         i.Command = CI_Row["Command"] == DBNull.Value ? null : CI_Row["Command"].ToString();
-
+                                                        i.Description = CI_Row["Description"] == DBNull.Value ? null : CI_Row["Description"].ToString();
                                                         CLT.Item = i;
                                                     }
                                                 }

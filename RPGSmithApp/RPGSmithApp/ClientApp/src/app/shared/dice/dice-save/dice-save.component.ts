@@ -66,9 +66,10 @@ export class DiceSaveComponent implements OnInit {
         }
         else {
             let commandToValidate = command.trim();
-            commandToValidate = commandToValidate.toUpperCase();
-            if (commandToValidate.length >= 250) {
-                this.alertService.showMessage("A maximum of 250 characters is allowed for a command. Please adjust your command string and try again.", "", MessageSeverity.error);
+          commandToValidate = commandToValidate.toUpperCase();
+         // console.log('Here ------------------', commandToValidate.length);
+            if (commandToValidate.length >= 500) {
+                this.alertService.showMessage("A maximum of 500 characters is allowed for a command. Please adjust your command string and try again.", "", MessageSeverity.error);
                 return false;
             }
             else {
@@ -113,8 +114,8 @@ export class DiceSaveComponent implements OnInit {
         else {
             let commandToValidate = command.trim();
             commandToValidate = commandToValidate.toUpperCase();
-            if (commandToValidate.length >= 250) {
-                this.alertService.showMessage("A maximum of 250 characters is allowed for a command. Please adjust your command string and try again.", "", MessageSeverity.error);
+            if (commandToValidate.length >= 500 ) {
+                this.alertService.showMessage("A maximum of 500 characters is allowed for a command. Please adjust your command string and try again.", "", MessageSeverity.error);
                 return false;
             }
             else {
