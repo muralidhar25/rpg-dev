@@ -305,6 +305,10 @@ export class ServiceUtil {
 
                 num = stat.defaultValue
                 break;
+              case STAT_TYPE.Choice:
+
+                num = stat.defaultValue
+                break;
               default:
                 break;
             }

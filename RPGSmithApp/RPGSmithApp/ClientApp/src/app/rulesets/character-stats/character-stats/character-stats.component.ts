@@ -123,7 +123,8 @@ export class CharacterStatsComponent implements OnInit {
                 });
                 try {
                     this.noRecordFound = !data.length;
-                } catch (err) { }
+              } catch (err) { }
+              debugger
                 this._typeOptions = this.charactersService.getOptions(data);
             }, error => {
                 this.isLoading = false;

@@ -210,8 +210,8 @@ export class CharacterStatService extends EndpointFactory {
     Options.push({ characterStatId: -1, type: 'InventoryWeight ', name: 'InventoryWeight', statIdentifier: 'InventoryWeight' });
 
     typeOptions = characterStats.map(x => {
-      return { id: x.characterStatId, type: x.characterStatTypeViewModel.statTypeName, name: x.statName, statIdentifier: x.statIdentifier };
-    }).filter(y => y.type == 'Number' || y.type.startsWith('Value') || y.type.startsWith('Current') || y.type.startsWith('Calculation') || y.type.startsWith('Combo'));
+      return { id: x.characterStatId, type: x.characterStatTypeViewModel.statTypeName, name: x.statName, statIdentifier: x.statIdentifier, isChoiceNumeric: x.isChoiceNumeric };
+    }).filter(y => y.type == 'Number' || y.type.startsWith('Value') || y.type.startsWith('Current') || y.type.startsWith('Calculation') || y.type.startsWith('Combo') || (y.type.startsWith('Choice') && y.isChoiceNumeric));
 
     typeOptions.forEach((val) => {
       Options = this.optionsList(val, Options);
