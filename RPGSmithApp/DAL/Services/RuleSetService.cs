@@ -767,25 +767,29 @@ namespace DAL.Services
                     }
                     else if (model.IsCustomDice)
                     {
+                        int checkcustomdiceID = 0;
                         int customdiceID = 0;
                         foreach (var cd in customDices)
                         {
-                            if (cd.Name== model.Name)
+                            if (cd.Name == model.Name)
                             {
                                 customdiceID = cd.CustomDiceId;
+                                checkcustomdiceID = 1;
                             }
                         }
-
-                        _context.DiceTrays.Add(new DiceTray()
+                        if (checkcustomdiceID > 0)
                         {
-                            CustomDiceId = customdiceID,
-                            DefaultDiceId = null,
-                            IsCustomDice = true,
-                            IsDefaultDice = false,
-                            Name = model.Name,
-                            RuleSetId = rulesetID,
-                            SortOrder = model.SortOrder,
-                        });
+                            _context.DiceTrays.Add(new DiceTray()
+                            {
+                                CustomDiceId = customdiceID,
+                                DefaultDiceId = null,
+                                IsCustomDice = true,
+                                IsDefaultDice = false,
+                                Name = model.Name,
+                                RuleSetId = rulesetID,
+                                SortOrder = model.SortOrder,
+                            });
+                        }
                     }
                     else {
                         _context.DiceTrays.Add(new DiceTray()
