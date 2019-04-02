@@ -2443,7 +2443,12 @@ export class CharacterDashboardComponent implements OnInit {
   }
   description(text) {
     if (text) {
-      text = text.replace(/<{1}[^<>]{1,}>{1}/g, " ")
+      text = text.replace(/<{1}[^<>]{1,}>{1}/g, " ");
+      if (text.length >= 100) {
+        let trimmedString = text.substring(0, 100);
+        trimmedString += '...';
+        return trimmedString;
+      }
       return text;
     }
   }
