@@ -1040,11 +1040,12 @@ export class DiceRollComponent implements OnInit {
     } catch (err) { }
   }
   onClickRoll(characterCommand: CharacterCommand, _mainCommandText: string, lastResultArray?: any) {
-  
+    
     let anyCommandIsCustomWithNonNumeric = false;
     this.loadingResult = false;
     let command = characterCommand.command;
     let commandIfERROR = characterCommand.command;
+   
     if (!command && this.isFromTile) {
       this.alertService.showMessage("The command associated with this record has been removed. Please update the record to resolve.", "", MessageSeverity.error);
        if (this.diceSection = true) {
@@ -1076,7 +1077,6 @@ export class DiceRollComponent implements OnInit {
      
       this.mainCommandText = !_mainCommandText || _mainCommandText == "" ? command : _mainCommandText;
       command = this.mainCommandText.toUpperCase();
-      console.log('here is command length', command.length );
       if (command.length >= 500) {
         this.alertService.showMessage("A maximum of 500 characters is allowed for a command. Please adjust your command string and try again.", "", MessageSeverity.error);
          if (this.diceSection = true) {
@@ -1263,10 +1263,15 @@ export class DiceRollComponent implements OnInit {
           let IsCmdValid = true;
           dArray.map((darr) => {
             darr.calculationArray.map((d) => {
+
               let valid = true;
               if (d.dice.length >= 2) {
                 valid = false
-                let arr = d.dice.split('D');
+                 //skip letter D from Dice Name------Start--------
+                //let arr = d.dice.split('D');
+                let arr = d.dice.replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_');
+                 //skip letter D from Dice Name------End--------
+                 
                 let CountOfDice = 1;
                 if (arr.length > 1) {
                   if (/^-?[0-9]\d*(\\d+)?$/g.test(arr[0])) {
@@ -1281,7 +1286,10 @@ export class DiceRollComponent implements OnInit {
                   })
 
                   try {
-                    if (!valid && !d.dice.toUpperCase().split('D')[1].startsWith('F')) {
+                     //skip letter D from Dice Name------Start--------
+                   // if (!valid && !d.dice.toUpperCase().split('D')[1].startsWith('F')) {
+                    if (!valid && !d.dice.toUpperCase().replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_')[1].startsWith('F')) {
+                      //skip letter D from Dice Name------End--------
                       IsCmdValid = false;
                     }
                   } catch { if (!valid) IsCmdValid = false; }
@@ -2054,7 +2062,15 @@ export class DiceRollComponent implements OnInit {
           }
         })
         //If FATE dice
-        let diceExist = dice.dice.toUpperCase().split('D')[1];
+
+            //skip letter D from Dice Name------Start--------
+
+        //let diceExist = dice.dice.toUpperCase().split('D')[1];
+
+        let diceExist = dice.dice.toUpperCase().replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_')[1];
+
+
+            //skip letter D from Dice Name------End--------
         if (diceExist) {
           if (diceExist.startsWith('F')) {
             let randomIndex = (Math.floor((Math.random() * (3)) + 1)) - 1;
@@ -3019,7 +3035,15 @@ export class DiceRollComponent implements OnInit {
         let _dice = diceArray[diceArr];
         _dice = _dice.trim().toUpperCase();
         if (_dice.indexOf('D') > -1) {
-          let diceValArray = _dice.split('D')
+
+          //skip letter D from Dice Name------Start--------
+
+         // let diceValArray = _dice.split('D');
+
+          let diceValArray = _dice.replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_')
+
+          //skip letter D from Dice Name------End--------
+
           randomCount = diceValArray[0] == "" ? 1 : (+diceValArray[0] < 1 ? 1 : +diceValArray[0]);
           diceNumber = diceValArray[1].trim() == "" ? 1 : +diceValArray[1];
           for (var x = 1; x <= randomCount; x++) {
@@ -3221,8 +3245,6 @@ export class DiceRollComponent implements OnInit {
 
     let CascaseArrayOfExplodedDice = [];
     let numArray = diceRoll.randomNumbersListAfter;
-    console.log(diceRoll.randomNumbersListAfter);
-
     let mainNumArr = numArray.slice(0, diceRoll.randomCount);
     CascaseArrayOfExplodedDice.push(mainNumArr);
 
@@ -3243,7 +3265,7 @@ export class DiceRollComponent implements OnInit {
     //        }
     //    })
     //}
-    console.log(CascaseArrayOfExplodedDice);
+
     return CascaseArrayOfExplodedDice;
   }
   public fillBeforeAndAfterText(command: string, IsInitialRoll: boolean = false) {

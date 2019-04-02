@@ -38,6 +38,7 @@ export class DiceService {
   */
 
   public static commandInterpretation(command: string, numberToAdd?: number, modArray?: any, customDices: CustomDice[] = []): any {
+  
     let _commandInterpretationArrayList = [];
     let _calculationCommand = "";
 
@@ -348,13 +349,14 @@ export class DiceService {
 
     //Split multiple commands -AND
     let multiCommandArray = this.splitWithoutEmpty(commandText, 'AND');
-
+   
     let diceARRAY = [];
     for (var cmd in multiCommandArray) {
       let _commandText = multiCommandArray[cmd];
       _commandText = _commandText.trim();
 
       diceARRAY = this.splitCommandToArray(_commandText, customDices);
+  
       //split command again if it has parenthesis
       for (var arr in diceARRAY) {
         if (diceARRAY[arr].parenthesis) {
@@ -384,7 +386,7 @@ export class DiceService {
       });
     }
 
-
+    
     return _commandInterpretationArray;
   }
 
@@ -473,7 +475,7 @@ export class DiceService {
           //diceValue += diceValue;
           isDoubleQuotesStarted = false;
         }
-        if (x == _commandText.length - 1 && !isDoubleQuotesStarted && !isSingleQuotesStarted ) {
+        if (x == _commandText.length - 1 && !isDoubleQuotesStarted && !isSingleQuotesStarted) {
           if (diceValue.trim() !== '')
             diceARRAY.push({
               dice: diceValue.trim(),
@@ -509,13 +511,21 @@ export class DiceService {
 
     if (diceARRAY.length > 0 && customDices.length > 0) {
       diceARRAY.map((d) => {
-
         d.isCustomDice = false;
         d.isCustomNumeric = false;
         //Explode
         d.isExploded = false;
         //let exRandomCount = 0;
-        let diceValArray = d.dice.split('D')
+
+        //skip letter D from Dice Name------Start--------
+
+        //let diceValArray = d.dice.split('D')
+   
+        let diceValArray = d.dice.replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_')
+
+        //skip letter D from Dice Name------End--------
+
+
         //exRandomCount = diceValArray[0] == "" ? 1 : (+diceValArray[0] < 1 ? 1 : +diceValArray[0]);
         if (d.dice.indexOf('!') > 1) {
           let diceValueExcludeExplode = diceValArray[1].indexOf('!') > -1 ? diceValArray[1].replace(/!/g, '') : diceValArray[1];
@@ -528,7 +538,15 @@ export class DiceService {
         }
         // End Explode
         if (d.dice.length >= 2) {
-          let arr = d.dice.split('D');
+
+          //skip letter D from Dice Name------Start--------
+
+          //let arr = d.dice.split('D');
+
+          let arr = d.dice.replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_');
+
+          //skip letter D from Dice Name------End--------
+
           let CountOfDice = 1;
           if (arr.length > 1) {
             if (/^-?[0-9]\d*(\\d+)?$/g.test(arr[0])) {
@@ -670,7 +688,13 @@ export class DiceService {
         //Explode
         d.isExploded = false;
         //let exRandomCount = 0;
-        let diceValArray = d.dice.split('D')
+          //skip letter D from Dice Name------Start--------
+
+        // let diceValArray = d.dice.split('D')
+
+        let diceValArray = d.dice.replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_');
+        
+          //skip letter D from Dice Name------End--------
         //exRandomCount = diceValArray[0] == "" ? 1 : (+diceValArray[0] < 1 ? 1 : +diceValArray[0]);
         if (d.dice.indexOf('!') > 1) {
           let diceValueExcludeExplode = diceValArray[1].indexOf('!') > -1 ? diceValArray[1].replace(/!/g, '') : diceValArray[1];
@@ -684,7 +708,12 @@ export class DiceService {
 
         // End Explode
         if (d.dice.length >= 2) {
-          let arr = d.dice.split('D');
+            //skip letter D from Dice Name------Start--------
+
+          //let arr = d.dice.split('D');
+
+          let arr = d.dice.replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_');
+          //skip letter D from Dice Name------End--------
           let CountOfDice = 1;
           if (arr.length > 1) {
             if (/^-?[0-9]\d*(\\d+)?$/g.test(arr[0])) {
@@ -746,7 +775,6 @@ export class DiceService {
   }
 
   public static diceInterpretationArray(dice: string): any {
-
     let _diceInterpretationArray: any;
     let diceNumber = 0; //2D4 = 4
     let randomCount = 0;//2D4 = 2
@@ -770,10 +798,10 @@ export class DiceService {
 
     //example: D4, 2D8, 4D6 KH3, 5 RD
     let diceArray = this.splitWithoutEmpty(dice, ' ');
+    
     let diceArr_fake = 0;
     
     for (var diceArr_original in diceArray) {
-      
       let _dice = diceArray[diceArr_original]
       if (!this.IsAllowedText(_dice)) {
         let diceArr = diceArr_fake;
@@ -791,10 +819,18 @@ export class DiceService {
             _dice = _dice.replace(/\(/g, ' ')
           }
           if (_dice.indexOf('D') > -1) {
-
+            
             let isExplodDice = false;
             let isDiceExploded = false;
-            let diceValArray = _dice.split('D')
+
+            //skip letter D from Dice Name------Start--------
+            //let diceValArray = _dice.split('D');
+            
+            let diceValArray = _dice.replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_');
+
+            //skip letter D from Dice Name----- End---------
+
+           
             randomCount = diceValArray[0] == "" ? 1 : (+diceValArray[0] < 1 ? 1 : +diceValArray[0]);
             let diceValueExcludeExplode = diceValArray[1];
             if (_dice.indexOf('!') > 1) {
