@@ -111,7 +111,7 @@ namespace DAL.Services
         {
             return await _repo.Add(CharacterDomain);
         }
-        public void Create_SP(Character model, int layoutHeight, int layoutWidth)
+        public void Create_SP(Character model, int layoutHeight, int layoutWidth, int CharIdToDuplicate = 0)
         {
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
 
@@ -134,6 +134,7 @@ namespace DAL.Services
                     cmd.Parameters.AddWithValue("@LastCommandValues", GetNull(model.LastCommandValues));
                     cmd.Parameters.AddWithValue("@LayoutHeight", GetNull(layoutHeight));
                     cmd.Parameters.AddWithValue("@LayoutWidth", GetNull(layoutWidth));
+                    cmd.Parameters.AddWithValue("@CharIdToDuplicate", CharIdToDuplicate);
                     con.Open();
                     try
                     {
