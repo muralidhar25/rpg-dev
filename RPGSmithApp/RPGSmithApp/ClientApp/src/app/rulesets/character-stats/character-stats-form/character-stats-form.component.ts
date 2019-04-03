@@ -56,6 +56,7 @@ export class CharacterStatsFormComponent implements OnInit {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
   }
   erMessage: string = '';
+
   constructor(
     private router: Router, private bsModalRef: BsModalRef,
     private alertService: AlertService, private authService: AuthService,
@@ -80,8 +81,8 @@ export class CharacterStatsFormComponent implements OnInit {
       debugger
 
       this.choiceList = this.bsModalRef.content.Choices;
-      let results = this.choiceList.map(s => s.characterStatChoicesViewModels);
-      this.choiceList = [].concat.apply([], results);
+      //let results = this.choiceList.map(s => s.characterStatChoicesViewModels);
+      //this.choiceList = [].concat.apply([], results);
       this.choiceList.map((x) => {
         x.selected = false;
       })
@@ -125,19 +126,18 @@ export class CharacterStatsFormComponent implements OnInit {
           //// ///
           this.getUniqueCharacterStatsChoices(this.characterStatsFormModal.characterStatChoicesViewModels);
 
-          this.characterStatsFormModal.characterStatChoicesViewModels.map((x: CharacterStatChoicesViewModels) => {
-
-            this.choiceList.map((Ch) => {
-              if (!Ch.selected) {
-                if (Ch.characterStatChoiceId === x.characterStatChoiceId) {
-                  Ch.selected = true;
-                }
-                else { Ch.selected = false; }
-              }
-
-
-            })
-          })
+          ////////this.characterStatsFormModal.characterStatChoicesViewModels.map((x: CharacterStatChoicesViewModels) => {
+          ////////  this.choiceList.map((Ch) => {
+          ////////    if (!Ch.selected) {
+          ////////      if (Ch.characterStatChoiceId === x.characterStatChoiceId) {
+          ////////        Ch.selected = true;
+          ////////      }
+          ////////      else { Ch.selected = false; }
+          ////////    }
+          ////////
+          ////////
+          ////////  })
+          ////////})
         }
       }
 
@@ -217,18 +217,18 @@ export class CharacterStatsFormComponent implements OnInit {
     const map = new Map();
     if (characteStatChoices)
       characteStatChoices.filter(x => {
-        map.set(x.statChoiceValue, true);
-        Uniqueresult.push(x);
-      })
+        map.set(x.statName, true);
+        Uniqueresult.push(x);      
 
     this.choiceList.filter(x => {
-      if (!map.has(x.statChoiceValue)) {
-        map.set(x.statChoiceValue, true);    // set any value to Map
+      if (!map.has(x.statName)) {
+        map.set(x.statName, true);    // set any value to Map
         Uniqueresult.push(x);
       }
     });
 
     this.choiceList = Uniqueresult.sort((a, b) => a.statChoiceValue.localeCompare(b.statChoiceValue));
+})
 
   }
 
@@ -1145,6 +1145,7 @@ export class CharacterStatsFormComponent implements OnInit {
   }
   public CheckConditionsAreValid(): boolean {
 
+
     if (this.characterStatsFormModal.characterStatTypeId == STAT_TYPE.Condition) {
       let res = true;
       if (this.characterStatsFormModal.characterStatConditionViewModel) {
@@ -1198,13 +1199,16 @@ export class CharacterStatsFormComponent implements OnInit {
     this.characterStatsFormModal.isChoicesFromAnotherStat = true;
   }
   updateCheckedOptions(option, event) {
-    option.selected = event.target.checked
-    if (event.target.checked) {
-      this.characterStatsFormModal.characterStatChoicesViewModels.push(option);
-    } else {
-      this.characterStatsFormModal.characterStatChoicesViewModels = this.characterStatsFormModal.characterStatChoicesViewModels.filter(e => e !== option);
-
-    }
-
-  }
+if (event.target.checked)
+this.characterStatsFormModal.selectedChoiceCharacterStatId=option.characterStatId;
+//   option.selected = event.target.checked
+//   if (event.target.checked) {
+//     this.characterStatsFormModal.characterStatChoicesViewModels.push(option);
+//   } else {
+//     this.characterStatsFormModal.characterStatChoicesViewModels =
+//this.characterStatsFormModal.characterStatChoicesViewModels.filter(e => e !== option);
+//
+//   }
+//
+ }
 }
