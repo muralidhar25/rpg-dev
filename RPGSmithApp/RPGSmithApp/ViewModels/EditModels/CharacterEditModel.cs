@@ -31,6 +31,7 @@ namespace RPGSmithApp.ViewModels
         public string LastCommandResult { get; set; }
         public string LastCommandValues { get; set; }
         public decimal InventoryWeight { get; set; }
+        public string View { get; set; }
 
     }
 }

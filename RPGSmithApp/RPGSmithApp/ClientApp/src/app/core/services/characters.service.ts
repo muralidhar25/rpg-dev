@@ -134,7 +134,7 @@ export class CharactersService extends EndpointFactory {
   }
 
   duplicateCharacters<T>(characters: Characters): Observable<Characters> {
-    characters.characterId = 0;
+    //characters.characterId = 0;
     let endpointUrl = this.createUrl;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(characters), this.getRequestHeaders())
