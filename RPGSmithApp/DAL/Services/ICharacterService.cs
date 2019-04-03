@@ -24,7 +24,7 @@ namespace DAL.Services
         Task<List<Character>> GetOnlyCharactersByRulesetID(int ruleSetId);
         (List<Character>, List<RuleSet>) SP_Character_GetByUserId(string userId, int page, int pageSize);
         Character GetCharacterByIdDice(int Id);
-        void Create_SP(Character characterDomain, int layoutHeight, int layoutWidth);
+        void Create_SP(Character characterDomain, int layoutHeight, int layoutWidth,int CharIdToDuplicate=0);
         bool IsNewRulesetToAdd(int ruleSetId, string userId);
     }
 }

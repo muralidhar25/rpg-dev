@@ -577,6 +577,7 @@ namespace DAL.Services.CharacterTileServices
                                                         a.ImageUrl = CA_Row["ImageUrl"] == DBNull.Value ? null : CA_Row["ImageUrl"].ToString();
                                                         a.ParentAbilityId = CA_Row["ParentAbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(CA_Row["ParentAbilityId"]);
                                                         a.IsDeleted = CA_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CA_Row["IsDeleted"]);
+                                                        a.Description = CA_Row["Description"] == DBNull.Value ? null : CA_Row["Description"].ToString();
                                                         ca.Ability = a;
 
                                                         CLT.Ability = ca;
@@ -632,6 +633,7 @@ namespace DAL.Services.CharacterTileServices
                                                         s.ImageUrl = CS_Row["ImageUrl"] == DBNull.Value ? null : CS_Row["ImageUrl"].ToString();
                                                         s.ParentSpellId = CS_Row["ParentSpellId"] == DBNull.Value ? 0 : Convert.ToInt32(CS_Row["ParentSpellId"]);
                                                         s.IsDeleted = CS_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CS_Row["IsDeleted"]);
+                                                        s.Description = CS_Row["Description"] == DBNull.Value ? null : CS_Row["Description"].ToString();
                                                         cs.Spell = s;
 
                                                         CLT.Spell = cs;
