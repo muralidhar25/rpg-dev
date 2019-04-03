@@ -134,9 +134,14 @@ namespace RPGSmithApp.Controllers
         public async Task<IActionResult> CreateCharacter([FromBody] CharacterEditModel model)
         {
             if (ModelState.IsValid)
-            {
+            { int CharIdToDuplicate = 0;
                 var userId = GetUserId();
-
+                if (model.View.ToUpper() == "DUPLICATE")
+                {
+                    CharIdToDuplicate=model.CharacterId;
+                    model.CharacterId = 0;
+                }
+                
                 //Limit user to have max 3 characters & //purchase for more set
                 if (await _CharacterService.GetCharactersCountByUserId(userId) >= 3 && !IsAdminUser())
                     return BadRequest("Only three slots of Characters are allowed. For more slots, please contact administrator.");
@@ -163,7 +168,8 @@ namespace RPGSmithApp.Controllers
 
                 try
                 {
-                    _CharacterService.Create_SP(characterDomain, model.LayoutHeight, model.LayoutWidth);
+                    _CharacterService.Create_SP(characterDomain, model.LayoutHeight, model.LayoutWidth, CharIdToDuplicate);
+                    
                 }
                 catch (Exception ex)
                 {
