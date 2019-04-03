@@ -55,6 +55,8 @@ import { CharacterStatConditionViewModel } from "../../core/models/view-models/c
 import { AppService1 } from "../../app.service";
 import { HeaderValues } from "../../core/models/headers.model";
 
+
+
 @Component({
     selector: 'app-character-dashboard',
     templateUrl: './character-dashboard.component.html',
@@ -90,6 +92,7 @@ export class CharacterDashboardComponent implements OnInit {
   private BoxesCurrentColumn: number = this.startIndex;
   private columnsInGrid: number = 14;
   headers: HeaderValues = new HeaderValues();
+ 
 
   IsMobileScreen: boolean = this.isMobile();
   //public gridConfig: NgGridConfig = {
@@ -2442,14 +2445,16 @@ export class CharacterDashboardComponent implements OnInit {
     }
   }
   description(text) {
+
     if (text) {
       text = text.replace(/<{1}[^<>]{1,}>{1}/g, " ");
-      if (text.length >= 100) {
-        let trimmedString = text.substring(0, 100);
-        trimmedString += '...';
-        return trimmedString;
-      }
+      //if (text.length >= 100) {
+      //  let trimmedString = text.substring(0, 100);
+      //  trimmedString += '...';
+      //  return trimmedString;
+      //}
       return text;
     }
+    return '';
   }
 }
