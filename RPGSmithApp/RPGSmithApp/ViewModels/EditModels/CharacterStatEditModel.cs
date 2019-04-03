@@ -45,6 +45,7 @@ namespace RPGSmithApp.ViewModels
         public bool AddToModScreen { get; set; }
         public bool IsChoiceNumeric { get; set; }
         public bool IsChoicesFromAnotherStat { get; set; }
+        public int? SelectedChoiceCharacterStatId { get; set; }
 
         public List<CharacterStatCalsComndViewModel> CharacterStatCalsComndViewModel { get; set; }
         public List<CharacterStatChoicesViewModel> CharacterStatChoicesViewModels { get; set; }

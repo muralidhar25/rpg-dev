@@ -10,7 +10,8 @@ export class CharacterStats {
         characterStatTypeViewModel?: CharacterStatTypeViewModel, characterStatCalsComndViewModel?: CharacterStatCalsComndViewModel[],
         characterStatChoicesViewModels?: CharacterStatChoicesViewModels[], view?: VIEW, icon?: ICON, characterStatChoices?: characterStatChoices[],
         characterStatCalcs?: characterStatCalcs[], characterStatToggleViewModel?: CharacterStatToggle, characterStatDefaultValueViewModel?: CharacterStatDefaultValue[], characterStatConditionViewModel?: CharacterStatConditionViewModel[],
-      addToModScreen?: boolean, isChoiceNumeric?: boolean, isChoicesFromAnotherStat?: boolean) {
+      addToModScreen?: boolean, isChoiceNumeric?: boolean, isChoicesFromAnotherStat?: boolean,
+selectedChoiceCharacterStatId? : number) {
         this.characterStatId = characterStatId;
         this.ruleSetId = ruleSetId;
         this.statName = statName; 
@@ -40,6 +41,7 @@ export class CharacterStats {
       this.addToModScreen = addToModScreen;
       this.isChoiceNumeric = isChoiceNumeric;
       this.isChoicesFromAnotherStat = isChoicesFromAnotherStat;
+this.selectedChoiceCharacterStatId=selectedChoiceCharacterStatId;
     }
 
     public characterStatId: number;
@@ -72,6 +74,7 @@ export class CharacterStats {
   public addToModScreen: boolean;
   public isChoiceNumeric: boolean;
   public isChoicesFromAnotherStat: boolean;
+public selectedChoiceCharacterStatId :number;
 }  
 
 export class CharacterStatTypeViewModel{

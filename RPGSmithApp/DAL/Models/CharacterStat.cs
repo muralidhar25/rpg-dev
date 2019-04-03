@@ -46,6 +46,7 @@ namespace DAL.Models
         public bool AddToModScreen { get; set; }
         public bool IsChoiceNumeric { get; set; }
         public bool IsChoicesFromAnotherStat { get; set; }
+        public int? SelectedChoiceCharacterStatId { get; set; }
 
         public virtual RuleSet RuleSet { get; set; }
 
@@ -72,6 +73,7 @@ namespace DAL.Models
         public virtual ICollection<CharacterStat> CharacterStats1 { get; set; }
 
         public virtual CharacterStat CharacterStat1 { get; set; }
+        public virtual CharacterStat SelectedChoiceCharacterStat { get; set; }
 
         public virtual ICollection<CharactersCharacterStat> CharactersCharacterStats { get; set; }
 

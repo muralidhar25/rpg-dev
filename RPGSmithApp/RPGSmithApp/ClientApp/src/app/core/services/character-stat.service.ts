@@ -276,7 +276,8 @@ export class CharacterStatService extends EndpointFactory {
         icon: _characterStatsVM.icon,  //_characterStatsVM.characterStatTypeViewModel.statTypeName //for now
         addToModScreen: _characterStatsVM.addToModScreen,
         isChoiceNumeric: _characterStatsVM.isChoiceNumeric,
-        isChoicesFromAnotherStat: _characterStatsVM.isChoicesFromAnotherStat
+        isChoicesFromAnotherStat: _characterStatsVM.isChoicesFromAnotherStat,
+selectedChoiceCharacterStatId: _characterStatsVM.selectedChoiceCharacterStatId
       }
       //this.title = _view === 'DUPLICATE' ? 'Duplicate Character Stat' : 'Update Character Stat';
     }
@@ -311,7 +312,9 @@ export class CharacterStatService extends EndpointFactory {
         icon: ICON.Text,
         addToModScreen: true,
         isChoiceNumeric: true,
-        isChoicesFromAnotherStat:false
+        isChoicesFromAnotherStat:false,
+selectedChoiceCharacterStatId:0
+
       }
       //this.title = 'Add Character Stat';
     }
