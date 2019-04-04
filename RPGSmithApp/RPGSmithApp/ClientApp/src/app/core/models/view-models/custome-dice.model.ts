@@ -1,11 +1,11 @@
-
 export class CustomDice {
     dices: any;
-    constructor(customDiceId?: number,name?: string, icon?: string, isNumeric?: boolean, results?: Results[]) {        
+  constructor(customDiceId?: number, name?: string, icon?: string, isNumeric?: boolean, customDicetype? : string, results?: Results[]) {        
         this.customDiceId = customDiceId;
         this.name = name;
         this.icon = icon;
         this.isNumeric = isNumeric;
+        this.customDicetype = customDicetype;
         this.results = results;
     }
 
@@ -13,12 +13,15 @@ export class CustomDice {
     public name: string;
     public icon: string;
     public isNumeric: boolean;
+    public customDicetype: string;
     public results: Results[];
 }
 
 export class Results {
     public customDiceResultId: number;
     public name: string;
+    public number: number;
+    public image: string;
     //public IsNumeric: boolean;
 }
 export class DefaultDice {

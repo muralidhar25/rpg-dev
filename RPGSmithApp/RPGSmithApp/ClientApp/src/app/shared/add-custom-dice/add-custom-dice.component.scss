@@ -62,7 +62,21 @@
 .modal-title .manage-ruleset-header {
     min-width: 115px;
 }
-
+/*.input-2-field input:nth-child(1) {
+  width: calc(100% - 104px);
+  display: inline-block;
+  float: left;
+}*/
+.input-2-field input:nth-child(1) {
+  width: calc(100% - 176px);
+  display: inline-block;
+  float: left;
+}
+.input-2-field input:nth-child(2) {
+  width: 100px;
+  display: inline-block;
+  margin-right: 0px !important;
+}
 @media (max-width:768px) {
     .modal-title .manage-ruleset-header {
         min-width: 115px;
