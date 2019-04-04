@@ -177,6 +177,7 @@ namespace DAL.Services
             characterStat.AddToModScreen = CharacterStatDomain.AddToModScreen;
             characterStat.IsChoiceNumeric = CharacterStatDomain.IsChoiceNumeric;
             characterStat.IsChoicesFromAnotherStat = CharacterStatDomain.IsChoicesFromAnotherStat;
+            characterStat.SelectedChoiceCharacterStatId = CharacterStatDomain.SelectedChoiceCharacterStatId;
 
             try
             {

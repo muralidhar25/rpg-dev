@@ -52,6 +52,7 @@ export class CharacterStatsFormComponent implements OnInit {
   otherStatchoice: boolean = false;
 
   choiceList: any[] = [];
+  IsThisStatAlreayAssignedtoOtherStat: boolean = false;
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
   }
@@ -78,17 +79,6 @@ export class CharacterStatsFormComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      debugger
-
-      this.choiceList = this.bsModalRef.content.Choices;
-      //let results = this.choiceList.map(s => s.characterStatChoicesViewModels);
-      //this.choiceList = [].concat.apply([], results);
-      this.choiceList.map((x) => {
-        x.selected = false;
-      })
-
-
-
       this.defaultCommandDice = '';
       this.characterStatTypeList = this.bsModalRef.content.characterStatTypeList;
       this.typeOptions = this.bsModalRef.content.typeOptions;
@@ -105,6 +95,29 @@ export class CharacterStatsFormComponent implements OnInit {
 
       this.characterStatsFormModal = this.charactersService.getCharacterStatsFormModal(_characterStatsVM, _view);
       this.characterStatsFormModal.ruleSetId = this._ruleSetId;
+
+      this.choiceList = this.bsModalRef.content.Choices;
+      this.IsThisStatAlreayAssignedtoOtherStat = false;
+      debugger
+      if (this.choiceList) {
+        if (this.choiceList.length) {
+
+          this.IsThisStatAlreayAssignedtoOtherStat =
+            this.choiceList.filter(x =>
+              x.isChoicesFromAnotherStat && x.selectedChoiceCharacterStatId == this.characterStatsFormModal.characterStatId
+            ).length ? true : false;
+
+          this.choiceList = this.choiceList.filter(x => x.characterStatId != this.characterStatsFormModal.characterStatId && !x.isChoicesFromAnotherStat)
+          this.choiceList.map((x) => {
+            x.selected = false;
+            if (this.characterStatsFormModal.view == VIEW.DUPLICATE || this.characterStatsFormModal.view == VIEW.EDIT) {
+              if (this.characterStatsFormModal.selectedChoiceCharacterStatId == x.characterStatId) {
+                x.selected = true;
+              }              
+            }
+          })
+        }
+      }
 
 
 
@@ -124,7 +137,7 @@ export class CharacterStatsFormComponent implements OnInit {
 
 
           //// ///
-          this.getUniqueCharacterStatsChoices(this.characterStatsFormModal.characterStatChoicesViewModels);
+          //this.getUniqueCharacterStatsChoices(this.characterStatsFormModal.characterStatChoicesViewModels);
 
           ////////this.characterStatsFormModal.characterStatChoicesViewModels.map((x: CharacterStatChoicesViewModels) => {
           ////////  this.choiceList.map((Ch) => {
@@ -164,7 +177,7 @@ export class CharacterStatsFormComponent implements OnInit {
         this.title = _view === 'DUPLICATE' ? 'Duplicate Character Stat' : 'Update Character Stat';
       else {
         this.title = 'Add Character Stat';
-        this.getUniqueCharacterStatsChoices(null); // Get unique Choices on Add View
+        //this.getUniqueCharacterStatsChoices(null); // Get unique Choices on Add View
       }
 
       this.typeOptions.map((item) => {
@@ -212,25 +225,25 @@ export class CharacterStatsFormComponent implements OnInit {
     }, 0);
   }
 
-  getUniqueCharacterStatsChoices(characteStatChoices) {
-    var Uniqueresult = [];
-    const map = new Map();
-    if (characteStatChoices)
-      characteStatChoices.filter(x => {
-        map.set(x.statName, true);
-        Uniqueresult.push(x);      
+//  getUniqueCharacterStatsChoices(characteStatChoices) {
+//    var Uniqueresult = [];
+//    const map = new Map();
+//    if (characteStatChoices)
+//      characteStatChoices.filter(x => {
+//        map.set(x.statName, true);
+//        Uniqueresult.push(x);      
 
-    this.choiceList.filter(x => {
-      if (!map.has(x.statName)) {
-        map.set(x.statName, true);    // set any value to Map
-        Uniqueresult.push(x);
-      }
-    });
+//    this.choiceList.filter(x => {
+//      if (!map.has(x.statName)) {
+//        map.set(x.statName, true);    // set any value to Map
+//        Uniqueresult.push(x);
+//      }
+//    });
 
-    this.choiceList = Uniqueresult.sort((a, b) => a.statChoiceValue.localeCompare(b.statChoiceValue));
-})
+//    this.choiceList = Uniqueresult.sort((a, b) => a.statChoiceValue.localeCompare(b.statChoiceValue));
+//})
 
-  }
+//  }
 
   typeSelection(characterStatsFormModal: CharacterStats, _type: any) {
     if (_type.statTypeName == 'Choice' && characterStatsFormModal.characterStatChoicesViewModels.length == 0) {
@@ -1176,9 +1189,7 @@ export class CharacterStatsFormComponent implements OnInit {
     return matches;
   }
 
-  defineChoices(defineChoices: boolean) {
-
-    console.log(this.characterStatsFormModal.characterStatChoicesViewModels);
+  defineChoices(defineChoices: boolean) {    
     this.choiceList.map((x) => {
       x.selected = false;
     })
@@ -1186,6 +1197,7 @@ export class CharacterStatsFormComponent implements OnInit {
     this.characterStatsFormModal.characterStatChoicesViewModels
       .push({ characterStatChoiceId: 0, statChoiceValue: '' });
     this.characterStatsFormModal.isChoicesFromAnotherStat = false;
+    this.characterStatsFormModal.selectedChoiceCharacterStatId = 0;
 
   }
 
@@ -1197,6 +1209,7 @@ export class CharacterStatsFormComponent implements OnInit {
     this.characterStatsFormModal.characterStatChoicesViewModels
       .push({ characterStatChoiceId: 0, statChoiceValue: '' });
     this.characterStatsFormModal.isChoicesFromAnotherStat = true;
+    this.characterStatsFormModal.selectedChoiceCharacterStatId = 0;
   }
   updateCheckedOptions(option, event) {
 if (event.target.checked)

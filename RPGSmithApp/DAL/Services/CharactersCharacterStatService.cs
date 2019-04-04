@@ -534,6 +534,7 @@ namespace DAL.Services
                             AddToModScreen = CharCharStat_Row["AddToModScreen"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["AddToModScreen"]),
                             IsChoiceNumeric = CharCharStat_Row["IsChoiceNumeric"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsChoiceNumeric"]),
                             IsChoicesFromAnotherStat = CharCharStat_Row["IsChoicesFromAnotherStat"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsChoicesFromAnotherStat"]),
+                            SelectedChoiceCharacterStatId = CharCharStat_Row["SelectedChoiceCharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["SelectedChoiceCharacterStatId"]),
                         };
 
                         List<CharacterStatDefaultValue> defVals = new List<CharacterStatDefaultValue>();
@@ -610,6 +611,18 @@ namespace DAL.Services
                                     ch.IsDeleted = r["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(r["IsDeleted"]);
 
                                     Choices.Add(ch);
+                                }
+                                else {
+                                    if (CharStat.SelectedChoiceCharacterStatId== choiceCharacterStat && CharStat.IsChoicesFromAnotherStat==true)
+                                    {
+                                        CharacterStatChoice ch = new CharacterStatChoice();
+                                        ch.CharacterStatChoiceId = r["CharacterStatChoiceId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatChoiceId"]);
+                                        ch.StatChoiceValue = r["StatChoiceValue"] == DBNull.Value ? null : r["StatChoiceValue"].ToString();
+                                        ch.CharacterStatId = choiceCharacterStat;
+                                        ch.IsDeleted = r["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(r["IsDeleted"]);
+
+                                        Choices.Add(ch);
+                                    }
                                 }
                             }
                         }

@@ -435,6 +435,9 @@ namespace DAL.Services.CharacterTileServices
                                                         CharStat.SortOrder = CharCharStat_Row["SortOrder"] == DBNull.Value ? num : (short)(CharCharStat_Row["SortOrder"]);
                                                         CharStat.IsDeleted = CharCharStat_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsDeleted"]);
                                                         CharStat.IsChoiceNumeric = CharCharStat_Row["IsChoiceNumeric"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsChoiceNumeric"]);
+                                                        CharStat.IsChoicesFromAnotherStat = CharCharStat_Row["IsChoicesFromAnotherStat"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsChoicesFromAnotherStat"]);
+                                                        CharStat.SelectedChoiceCharacterStatId = CharCharStat_Row["SelectedChoiceCharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["SelectedChoiceCharacterStatId"]);
+
                                                         List<CharacterStatChoice> Choices = new List<CharacterStatChoice>();
                                                         if (ds.Tables[10].Rows.Count > 0)
                                                         {
@@ -450,6 +453,19 @@ namespace DAL.Services.CharacterTileServices
                                                                     ch.IsDeleted = r["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(r["IsDeleted"]);
 
                                                                     Choices.Add(ch);
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (CharStat.SelectedChoiceCharacterStatId == choiceCharacterStat && CharStat.IsChoicesFromAnotherStat == true)
+                                                                    {
+                                                                        CharacterStatChoice ch = new CharacterStatChoice();
+                                                                        ch.CharacterStatChoiceId = r["CharacterStatChoiceId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatChoiceId"]);
+                                                                        ch.StatChoiceValue = r["StatChoiceValue"] == DBNull.Value ? null : r["StatChoiceValue"].ToString();
+                                                                        ch.CharacterStatId = choiceCharacterStat;
+                                                                        ch.IsDeleted = r["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(r["IsDeleted"]);
+
+                                                                        Choices.Add(ch);
+                                                                    }
                                                                 }
                                                             }
                                                         }

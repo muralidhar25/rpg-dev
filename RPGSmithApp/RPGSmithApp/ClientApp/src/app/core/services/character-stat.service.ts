@@ -311,7 +311,7 @@ selectedChoiceCharacterStatId: _characterStatsVM.selectedChoiceCharacterStatId
         view: VIEW.ADD,
         icon: ICON.Text,
         addToModScreen: true,
-        isChoiceNumeric: true,
+        isChoiceNumeric: false,
         isChoicesFromAnotherStat:false,
 selectedChoiceCharacterStatId:0
 

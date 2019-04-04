@@ -80,8 +80,8 @@
                       </label>
                     </li>
                     <li class="form-check">
-                      <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="" [checked]="characterStatsFormModal.isChoicesFromAnotherStat" (change)="choicesfromOtherStat(true)">
+                      <label class="form-check-label" [ngClass]="IsThisStatAlreayAssignedtoOtherStat?'disabled':''" [title]="IsThisStatAlreayAssignedtoOtherStat?'This choice stat already assigned to other character stats':''">
+                        <input class="form-check-input"  [disabled]="IsThisStatAlreayAssignedtoOtherStat"  type="radio" name="" [checked]="characterStatsFormModal.isChoicesFromAnotherStat" (change)="choicesfromOtherStat(true)">
                         <span>Get Choices From Another Stat</span>
                       </label>
                     </li>

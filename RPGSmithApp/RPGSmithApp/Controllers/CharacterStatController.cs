@@ -88,6 +88,10 @@ namespace RPGSmithApp.Controllers
         {
             try
             {
+                if (model.SelectedChoiceCharacterStatId==0)
+                {
+                    model.SelectedChoiceCharacterStatId = null;
+                }
                 if (ModelState.IsValid)
                 {
 
@@ -140,7 +144,7 @@ namespace RPGSmithApp.Controllers
                         }
                     }
 
-                    if (model.CharacterStatChoicesViewModels != null && model.CharacterStatChoicesViewModels.Count > 0)
+                    if (model.CharacterStatChoicesViewModels != null && model.CharacterStatChoicesViewModels.Count > 0 && !model.IsChoicesFromAnotherStat)
                     {
                         foreach (var cscViewModels in model.CharacterStatChoicesViewModels)
                         {
@@ -408,6 +412,10 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (model.SelectedChoiceCharacterStatId == 0)
+                {
+                    model.SelectedChoiceCharacterStatId = null;
+                }
                 int rulesetID = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
                 if (_coreRulesetService.IsCopiedFromCoreRuleset(rulesetID))
                 {
@@ -484,6 +492,7 @@ namespace RPGSmithApp.Controllers
             characterStatDomain.AddToModScreen = model.AddToModScreen;
             characterStatDomain.IsChoiceNumeric = model.IsChoiceNumeric;
             characterStatDomain.IsChoicesFromAnotherStat = model.IsChoicesFromAnotherStat;
+            characterStatDomain.SelectedChoiceCharacterStatId = model.SelectedChoiceCharacterStatId;
 
             //try
             //{
@@ -519,7 +528,7 @@ namespace RPGSmithApp.Controllers
                 }
             }
 
-            if (model.CharacterStatChoicesViewModels != null && model.CharacterStatChoicesViewModels.Count > 0)
+            if (model.CharacterStatChoicesViewModels != null && model.CharacterStatChoicesViewModels.Count > 0 && !model.IsChoicesFromAnotherStat)
             {
                 foreach (var cscViewModels in model.CharacterStatChoicesViewModels)
                 {
@@ -738,8 +747,11 @@ namespace RPGSmithApp.Controllers
                     }
                 }
             }
-
-            if (model.CharacterStatChoicesViewModels != null && model.CharacterStatChoicesViewModels.Count > 0)
+            if (model.IsChoicesFromAnotherStat)
+            {
+                await _CharacterStatChoiceService.DeleteChoiceByStatID(characterStat.CharacterStatId);
+            }
+            if (model.CharacterStatChoicesViewModels != null && model.CharacterStatChoicesViewModels.Count > 0 && !model.IsChoicesFromAnotherStat)
             {
                 if (choiceIds.Count > 0)
                 {
@@ -749,10 +761,7 @@ namespace RPGSmithApp.Controllers
                             await _CharacterStatChoiceService.DeleteCharacterStatChoice(id);
                     }
                 }
-                if (model.IsChoicesFromAnotherStat)
-                {                    
-                    await _CharacterStatChoiceService.DeleteChoiceByStatID(characterStat.CharacterStatId);
-                }
+                
                 foreach (var cscViewModels in model.CharacterStatChoicesViewModels)
                 {
                     if (model.IsChoicesFromAnotherStat)

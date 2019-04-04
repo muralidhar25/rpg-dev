@@ -93,6 +93,7 @@ namespace RPGSmithApp.Controllers
                         CharacterStatCalcs = item.CharacterStat.CharacterStatCalcs,
                         IsChoiceNumeric=item.CharacterStat.IsChoiceNumeric,
                         IsChoicesFromAnotherStat = item.CharacterStat.IsChoicesFromAnotherStat,
+                        SelectedChoiceCharacterStatId = item.CharacterStat.SelectedChoiceCharacterStatId,
                         //CharactersCharacterStats= item.CharacterStat.CharactersCharacterStats,
                         CharacterStatChoices = item.CharacterStat.CharacterStatChoices.Select(z => new CharacterStatChoice
                         {
