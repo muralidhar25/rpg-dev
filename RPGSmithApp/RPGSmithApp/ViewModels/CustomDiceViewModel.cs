@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -20,6 +21,8 @@ namespace RPGSmithApp.ViewModels
 
         public int RuleSetId { get; set; }
 
+        public CustomDicetypeEnum CustomDicetype { get; set; }
+
         public virtual ICollection<CustomDiceResultViewModel> Results { get; set; }
     }
     public class CustomDiceResultViewModel
@@ -28,6 +31,8 @@ namespace RPGSmithApp.ViewModels
 
         
         public string Name { get; set; }
+
+        public string DisplayContent { get; set; }
 
         public int CustomDiceId { get; set; }
     }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
-import { DICE, DICE_ICON, COMMAND_OPERATOR } from '../models/enums';
+import { DICE, DICE_ICON, COMMAND_OPERATOR, CustomDiceResultType } from '../models/enums';
 import { CharacterCommand, DiceCommand } from '../models/view-models/character-command.model';
 import { DiceRoll } from '../models/view-models/dice-roll.model';
 import { forEach } from '@angular/router/src/utils/collection';
@@ -141,9 +141,19 @@ export class DiceService {
           } catch (err) { }
 
           //if (!_commandArray[cmdArr].isCustomDice)
-          _calculationString += _calculationString == "" ? (_commandArray[cmdArr].sign.trim() == '-' ? _sign : '') + _commandArray[cmdArr].diceInterpretationArray.randomNumbersAfter
-            : _sign + _commandArray[cmdArr].diceInterpretationArray.randomNumbersAfter;
-
+          
+          if (this.IsImageDiceWithNonNumeric(_commandArray[cmdArr].dice, customDices)) {
+            _calculationString +=
+              _calculationString == "" ?
+                (_commandArray[cmdArr].sign.trim() == '-' ? _sign : '') + '[Image]'
+                :
+              _sign + '[Image]';
+          }
+          else {
+            _calculationString += _calculationString == "" ? (_commandArray[cmdArr].sign.trim() == '-' ? _sign : '') + _commandArray[cmdArr].diceInterpretationArray.randomNumbersAfter
+              : _sign + _commandArray[cmdArr].diceInterpretationArray.randomNumbersAfter;
+          }
+          
           _finalInterpretationArray.push(this.calsInterpretationArray(_commandArray[cmdArr], +cmd));
 
           _calculationStringForResult = _calculationString.replace(/  /g, ' ');
@@ -3036,69 +3046,69 @@ export class DiceService {
 
   public static GetDeckDices() {
     let DocResults: Results[] = [
-      { customDiceResultId: 1, name: 'Two of Spades' },
-      { customDiceResultId: 2, name: 'Three of Spades' },
-      { customDiceResultId: 3, name: 'Four of Spades' },
-      { customDiceResultId: 4, name: 'Five of Spades' },
-      { customDiceResultId: 5, name: 'Six of Spades' },
-      { customDiceResultId: 6, name: 'Seven of Spades' },
-      { customDiceResultId: 7, name: 'Eight of Spades' },
-      { customDiceResultId: 8, name: 'Nine of Spades' },
-      { customDiceResultId: 9, name: 'Ten of Spades' },
-      { customDiceResultId: 10, name: 'Jack of Spades' },
-      { customDiceResultId: 11, name: 'Queen of Spades' },
-      { customDiceResultId: 12, name: 'King of Spades' },
-      { customDiceResultId: 13, name: 'Ace of Spades' },
-      { customDiceResultId: 14, name: 'Two of Hearts' },
-      { customDiceResultId: 15, name: 'Three of Hearts' },
-      { customDiceResultId: 16, name: 'Four of Hearts' },
-      { customDiceResultId: 17, name: 'Five of Hearts' },
-      { customDiceResultId: 18, name: 'Six of Hearts' },
-      { customDiceResultId: 19, name: 'Seven of Hearts' },
-      { customDiceResultId: 20, name: 'Eight of Hearts' },
-      { customDiceResultId: 21, name: 'Nine of Hearts' },
-      { customDiceResultId: 22, name: 'Ten of Hearts' },
-      { customDiceResultId: 23, name: 'Jack of Hearts' },
-      { customDiceResultId: 24, name: 'Queen of Hearts' },
-      { customDiceResultId: 25, name: 'King of Hearts' },
-      { customDiceResultId: 26, name: 'Ace of Hearts' },
-      { customDiceResultId: 27, name: 'Two of Diamonds' },
-      { customDiceResultId: 28, name: 'Three of Diamonds' },
-      { customDiceResultId: 29, name: 'Four of Diamonds' },
-      { customDiceResultId: 30, name: 'Five of Diamonds' },
-      { customDiceResultId: 31, name: 'Six of Diamonds' },
-      { customDiceResultId: 32, name: 'Seven of Diamonds' },
-      { customDiceResultId: 33, name: 'Eight of Diamonds' },
-      { customDiceResultId: 34, name: 'Nine of Diamonds' },
-      { customDiceResultId: 35, name: 'Ten of Diamonds' },
-      { customDiceResultId: 36, name: 'Jack of Diamonds' },
-      { customDiceResultId: 37, name: 'Queen of Diamonds' },
-      { customDiceResultId: 38, name: 'King of Diamonds' },
-      { customDiceResultId: 39, name: 'Ace of Diamonds' },
-      { customDiceResultId: 40, name: 'Two of Clubs' },
-      { customDiceResultId: 41, name: 'Three of Clubs' },
-      { customDiceResultId: 42, name: 'Four of Clubs' },
-      { customDiceResultId: 43, name: 'Five of Clubs' },
-      { customDiceResultId: 44, name: 'Six of Clubs' },
-      { customDiceResultId: 45, name: 'Seven of Clubs' },
-      { customDiceResultId: 46, name: 'Eight of Clubs' },
-      { customDiceResultId: 47, name: 'Nine of Clubs' },
-      { customDiceResultId: 48, name: 'Ten of Clubs' },
-      { customDiceResultId: 49, name: 'Jack of Clubs' },
-      { customDiceResultId: 50, name: 'Queen of Clubs' },
-      { customDiceResultId: 51, name: 'King of Clubs' },
-      { customDiceResultId: 52, name: 'Ace of Clubs' },
+      { customDiceResultId: 1, name: 'Two of Spades', displayContent:'' },
+      { customDiceResultId: 2, name: 'Three of Spades', displayContent:'' },
+      { customDiceResultId: 3, name: 'Four of Spades', displayContent:'' },
+      { customDiceResultId: 4, name: 'Five of Spades', displayContent:'' },
+      { customDiceResultId: 5, name: 'Six of Spades', displayContent:'' },
+      { customDiceResultId: 6, name: 'Seven of Spades', displayContent:'' },
+      { customDiceResultId: 7, name: 'Eight of Spades', displayContent:'' },
+      { customDiceResultId: 8, name: 'Nine of Spades', displayContent:'' },
+      { customDiceResultId: 9, name: 'Ten of Spades', displayContent:'' },
+      { customDiceResultId: 10, name: 'Jack of Spades', displayContent:'' },
+      { customDiceResultId: 11, name: 'Queen of Spades', displayContent:'' },
+      { customDiceResultId: 12, name: 'King of Spades', displayContent:'' },
+      { customDiceResultId: 13, name: 'Ace of Spades', displayContent:'' },
+      { customDiceResultId: 14, name: 'Two of Hearts', displayContent:'' },
+      { customDiceResultId: 15, name: 'Three of Hearts', displayContent:'' },
+      { customDiceResultId: 16, name: 'Four of Hearts', displayContent:'' },
+      { customDiceResultId: 17, name: 'Five of Hearts', displayContent:'' },
+      { customDiceResultId: 18, name: 'Six of Hearts', displayContent:'' },
+      { customDiceResultId: 19, name: 'Seven of Hearts', displayContent:'' },
+      { customDiceResultId: 20, name: 'Eight of Hearts', displayContent:'' },
+      { customDiceResultId: 21, name: 'Nine of Hearts', displayContent:'' },
+      { customDiceResultId: 22, name: 'Ten of Hearts', displayContent:'' },
+      { customDiceResultId: 23, name: 'Jack of Hearts', displayContent:'' },
+      { customDiceResultId: 24, name: 'Queen of Hearts', displayContent:'' },
+      { customDiceResultId: 25, name: 'King of Hearts', displayContent:'' },
+      { customDiceResultId: 26, name: 'Ace of Hearts', displayContent:'' },
+      { customDiceResultId: 27, name: 'Two of Diamonds', displayContent:'' },
+      { customDiceResultId: 28, name: 'Three of Diamonds', displayContent:'' },
+      { customDiceResultId: 29, name: 'Four of Diamonds', displayContent:'' },
+      { customDiceResultId: 30, name: 'Five of Diamonds', displayContent:'' },
+      { customDiceResultId: 31, name: 'Six of Diamonds', displayContent:'' },
+      { customDiceResultId: 32, name: 'Seven of Diamonds', displayContent:'' },
+      { customDiceResultId: 33, name: 'Eight of Diamonds', displayContent:'' },
+      { customDiceResultId: 34, name: 'Nine of Diamonds', displayContent:'' },
+      { customDiceResultId: 35, name: 'Ten of Diamonds', displayContent:'' },
+      { customDiceResultId: 36, name: 'Jack of Diamonds', displayContent:'' },
+      { customDiceResultId: 37, name: 'Queen of Diamonds', displayContent:'' },
+      { customDiceResultId: 38, name: 'King of Diamonds', displayContent:'' },
+      { customDiceResultId: 39, name: 'Ace of Diamonds', displayContent:'' },
+      { customDiceResultId: 40, name: 'Two of Clubs', displayContent:'' },
+      { customDiceResultId: 41, name: 'Three of Clubs', displayContent:'' },
+      { customDiceResultId: 42, name: 'Four of Clubs', displayContent:'' },
+      { customDiceResultId: 43, name: 'Five of Clubs', displayContent:'' },
+      { customDiceResultId: 44, name: 'Six of Clubs', displayContent:'' },
+      { customDiceResultId: 45, name: 'Seven of Clubs', displayContent:'' },
+      { customDiceResultId: 46, name: 'Eight of Clubs', displayContent:'' },
+      { customDiceResultId: 47, name: 'Nine of Clubs', displayContent:'' },
+      { customDiceResultId: 48, name: 'Ten of Clubs', displayContent:'' },
+      { customDiceResultId: 49, name: 'Jack of Clubs', displayContent:'' },
+      { customDiceResultId: 50, name: 'Queen of Clubs', displayContent:'' },
+      { customDiceResultId: 51, name: 'King of Clubs', displayContent:'' },
+      { customDiceResultId: 52, name: 'Ace of Clubs', displayContent:'' },
     ];
 
-    let DOC = new CustomDice(-1, "DOC", DICE_ICON.DECK, false, DocResults);
+    let DOC = new CustomDice(-1, "DOC", DICE_ICON.DECK, false, CustomDiceResultType.TEXT, DocResults);
 
 
     let DeckResults = Object.assign([], DocResults);
-    DeckResults.push({ customDiceResultId: 53, name: 'Joker' })
-    DeckResults.push({ customDiceResultId: 54, name: 'Joker' })
+    DeckResults.push({ customDiceResultId: 53, name: 'Joker', displayContent: ''})
+    DeckResults.push({ customDiceResultId: 54, name: 'Joker', displayContent: ''})
 
     
-    let DECK = new CustomDice(-2, "DECK", DICE_ICON.DECK, false, DeckResults)
+    let DECK = new CustomDice(-2, "DECK", DICE_ICON.DECK, false,CustomDiceResultType.TEXT, DeckResults)
 
     return { DOC: DOC, DECK: DECK };
   }
@@ -3122,6 +3132,21 @@ export class DiceService {
       }
     })
   return str.trim();
+  }
+  public static IsImageDiceWithNonNumeric(diceName, customDices:CustomDice[]):boolean {
+    if (diceName) {
+      let Cdice_s: CustomDice[] = customDices.filter(x => x.name == diceName);
+      if (Cdice_s.length) {
+        let Cdice: CustomDice = Cdice_s[0];
+        if (Cdice.customDicetype == CustomDiceResultType.IMAGE) {
+          if (!Cdice.isNumeric) {
+            return true;
+          }
+          
+        }
+      }
+    }
+    return false;
   }
 }
 

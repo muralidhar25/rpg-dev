@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { CustomDice } from '../../core/models/view-models/custome-dice.model';
+import { CustomDice, Results } from '../../core/models/view-models/custome-dice.model';
 import { DICE_ICON, VIEW, CustomDiceResultType } from '../../core/models/enums';
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
 import { SharedService } from '../../core/services/shared.service';
@@ -9,6 +9,12 @@ import { CustomDiceComponent } from '../custom-dice/custom-dice.component';
 import { SelectCustomDiceIconComponent } from '../select-custom-dice-icon/select-custom-dice-icon.component';
 import { PlatformLocation } from '@angular/common';
 import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
+import { User } from '../../core/models/user.model';
+import { DBkeys } from '../../core/common/db-keys';
+import { Utilities } from '../../core/common/utilities';
+import { LocalStoreManager } from '../../core/common/local-store-manager.service';
+import { FileUploadService } from '../../core/common/file-upload.service';
+import { AuthService } from '../../core/auth/auth.service';
 
 
 @Component({
@@ -28,20 +34,21 @@ export class AddCustomDiceComponent implements OnInit {
     ruleset: Ruleset;
     IsFirstLetterNumeric: boolean = false;
     customDiceIndex: number;
-    displayboth: boolean = false;
-    displayLinkImage: boolean = false;
+    //displayboth: boolean = false;
+    //displayLinkImage: boolean = false;
     showTitle: boolean = true;
     hideNolabel: boolean = false;
-  image: any;
-    constructor(private bsModalRef: BsModalRef, private modalService: BsModalService,
-      private sharedService: SharedService, private alertService: AlertService
+  //image: any;
+  CUSTOM_DICE_RESULT_TYPE = CustomDiceResultType;
+  constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService, private alertService: AlertService, private fileUploadService: FileUploadService, private authService: AuthService
       , private location: PlatformLocation) {
       location.onPopState(() => this.modalService.hide(1));  }
 
-  ngOnInit() {
-    console.log('here is AddCustomDiceComponent');
-        setTimeout(() => {
-          console.log(this.customDices);
+  ngOnInit() {   
+    setTimeout(() => {
+          
+          
             this.customDices.map((d, index) => {
                 if (d.name == this.customDice.name) {
                     this.customDiceIndex = index
@@ -49,7 +56,8 @@ export class AddCustomDiceComponent implements OnInit {
             })            
           this.customDice = Object.assign({}, this.bsModalRef.content.customDice);
             if (this.customDice.name == undefined) {
-                this.customDice.isNumeric = true;
+              this.customDice.isNumeric = true;
+              this.customDice.customDicetype = CustomDiceResultType.NUMBER;
                 this.addResult(this.customDice.results)
                 this.addResult(this.customDice.results)
             }
@@ -83,7 +91,12 @@ export class AddCustomDiceComponent implements OnInit {
             //    return old;
             //}));
             this.ruleset = this.bsModalRef.content.ruleset;
-            this.view = this.bsModalRef.content.view == VIEW.ADD || !this.bsModalRef.content.view ? 'Save' : 'Update';
+      this.view = this.bsModalRef.content.view == VIEW.ADD || !this.bsModalRef.content.view ? 'Save' : 'Update';
+      //if (this.bsModalRef.content.view == VIEW.EDIT) {
+        if (this.customDice.customDicetype == CustomDiceResultType.IMAGE || this.customDice.customDicetype == CustomDiceResultType.TEXT) {
+          this.hideNolabel = true;
+        }
+      //}
             this.initialize();
         }, 0);
     }
@@ -92,13 +105,13 @@ export class AddCustomDiceComponent implements OnInit {
         this.customDice.icon = this.customDice.icon ? this.customDice.icon : this.ICON.DX;
         if (!this.customDice.results) {
           this.customDice.results = [];
-          this.customDice.results.push({ customDiceResultId: 0, name: '', number: null, image: '' });
+          this.customDice.results.push({ customDiceResultId: 0, name: '', displayContent:'' });
         }
     }
 
     addResult(results: any): void {
         let _results = Object.assign([], results);
-        _results.push({ customDiceResultId: 0, name: '' });
+      _results.push({ customDiceResultId: 0, name: '', displayContent: '' });
         this.customDice.results = _results;
     }
 
@@ -167,13 +180,15 @@ export class AddCustomDiceComponent implements OnInit {
                 })
                 this.customDices = Object.assign([], dices);
             }
-            this.bsModalRef.hide();
+          this.bsModalRef.hide();
+          this.destroyModal();
             this.bsModalRef = this.modalService.show(CustomDiceComponent, {
                 class: 'modal-primary modal-md',
                 ignoreBackdropClick: true,
                 keyboard: false
             });
-            this.bsModalRef.content.customDices = this.customDices;
+          this.bsModalRef.content.customDices = this.customDices;
+          
             this.bsModalRef.content.ruleset = this.ruleset;
         }
         //this.event.emit(this.customDice);
@@ -181,7 +196,8 @@ export class AddCustomDiceComponent implements OnInit {
     }
 
     openSelectDiceIcon(ruleset: Ruleset, customDice: CustomDice) {
-        this.bsModalRef.hide();
+      this.bsModalRef.hide();
+      this.destroyModal();
         this.bsModalRef = this.modalService.show(SelectCustomDiceIconComponent, {
             class: 'modal-primary modal-md',
             ignoreBackdropClick: true,
@@ -212,7 +228,7 @@ export class AddCustomDiceComponent implements OnInit {
       //this.modalService.hide(3);
      
       this.bsModalRef.hide();
-    
+      //this.modalService.hide(1)
         this.bsModalRef = this.modalService.show(CustomDiceComponent, {
             class: 'modal-primary modal-md',
             ignoreBackdropClick: true,
@@ -221,6 +237,7 @@ export class AddCustomDiceComponent implements OnInit {
         this.bsModalRef.content.customDices = this.OldcustomDices;
         this.bsModalRef.content.ruleset = ruleset;
         //this.destroyModalOnInit();
+      this.destroyModal();
     }
 
     checkName(e: any) {
@@ -237,7 +254,17 @@ export class AddCustomDiceComponent implements OnInit {
             this.IsFirstLetterNumeric = false;
         }
     }
-
+  private destroyModal(): void {
+    try {
+      for (var i = 0; i < document.getElementsByClassName('selectDiceModal').length; i++) {
+        document.getElementsByClassName('selectDiceModal')[i].parentElement.classList.remove('modal')
+        document.getElementsByClassName('selectDiceModal')[i].parentElement.classList.remove('fade')
+        document.getElementsByClassName('selectDiceModal')[i].parentElement.classList.remove('show')
+        //document.getElementsByClassName('selectPopUpModal')[i].parentElement.remove()
+        document.getElementsByClassName('selectDiceModal')[i].parentElement.style.display = 'none'
+      }
+    } catch (err) { }
+  }
     private destroyModalOnInit(): void {
         try {
             this.modalService.hide(1);
@@ -269,45 +296,93 @@ export class AddCustomDiceComponent implements OnInit {
         return false;
       }
   }
-  setShowNumber(_shownumber: boolean) {
-    if (!this.customDice.isNumeric) {
-      this.customDice.isNumeric = true;
+  setDiceType(diceType:number) {    
+    this.customDice.customDicetype = diceType;
+    this.customDice.results = [];
+    this.addResult(this.customDice.results)
+    this.addResult(this.customDice.results)
+    switch (diceType) {
+      case CustomDiceResultType.NUMBER:
+        this.customDice.isNumeric = true;
+        this.hideNolabel = false;
+        break;
+      case CustomDiceResultType.TEXT:
+        this.hideNolabel = true;
+        break;
+      case CustomDiceResultType.IMAGE:
+        this.hideNolabel = true;
+        break;
+      default:
     }
-    this.customDice.customDicetype = CustomDiceResultType.NUMBER;
-    console.log(this.customDice.customDicetype);
-    this.displayboth = false;
-    this.showTitle = _shownumber;
-    this.displayLinkImage = false;
-    this.hideNolabel = false;
   }
-  setText(text: boolean) {
+  //setText() {
    
-    this.displayboth = true;
-    this.showTitle = false;
-    this.displayLinkImage = false;
-    this.hideNolabel = text;
-  }
-  setImage(_displayImage: boolean) {
-    this.displayboth = false;
-    this.showTitle = false;
-    this.displayLinkImage = _displayImage;
-    this.hideNolabel = _displayImage;
-  }
-  addToggleImage( result, i) {
-        console.log(result);
+  //  this.displayboth = true;
+  //  this.showTitle = false;
+  //  this.displayLinkImage = false;
+  //  this.hideNolabel = text;
+  //}
+  //setImage() {
+  //  this.displayboth = false;
+  //  this.showTitle = false;
+  //  this.displayLinkImage = _displayImage;
+  //  this.hideNolabel = _displayImage;
+  //}
+  addToggleImage(result: Results, customDice: CustomDice) {
+    console.log(result);
+    
+    let Image = '';
+    if (!customDice.isNumeric && customDice.customDicetype == CustomDiceResultType.IMAGE) {
+      Image = result.name;
+    }
+    else {
+      Image = result.displayContent;
+    }
+   
         this.bsModalRef = this.modalService.show(ImageSelectorComponent, {
           class: 'modal-primary modal-sm selectPopUpModal',
           ignoreBackdropClick: true,
           keyboard: false
         });
         this.bsModalRef.content.title = 'item';
-        this.bsModalRef.content.image = result.image;
-        //this.bsModalRef.content.toggle = true;
-        this.bsModalRef.content.view = result.image ? VIEW.EDIT : VIEW.ADD;
-        this.bsModalRef.content.event.subscribe(data => {
-          this.image = data.base64;
-          result.image = data.base64;
-          // this.fileToUpload = data.file;
+    this.bsModalRef.content.image = Image;   
+    this.bsModalRef.content.view = Image ? VIEW.EDIT : VIEW.ADD;
+    this.bsModalRef.content.event.subscribe(data => {
+      
+      if (data.base64.indexOf('data:image') > -1) {
+        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+        if (user == null)
+          this.authService.logout(true);
+        else {
+          this.fileUploadService.fileUploadByUser<any>(user.id, data.file)
+            .subscribe(
+            data => {
+              if (!customDice.isNumeric && customDice.customDicetype == CustomDiceResultType.IMAGE) {
+                result.name = data.ImageUrl;
+              }
+              else {
+                result.displayContent = data.ImageUrl;
+              }                
+              },
+              error => {
+                let Errors = Utilities.ErrorDetail('Error', error);
+                if (Errors.sessionExpire) {
+                  this.authService.logout(true);
+                }
+              });
+        }
+      }
+      else {
+        //this.image = data.base64;
+        //result.image = data.base64;
+        if (!customDice.isNumeric && customDice.customDicetype == CustomDiceResultType.IMAGE) {
+          result.name = data.base64;
+        }
+        else {
+          result.displayContent = data.base64;
+        }}
+          
+          
         });
   }
 }

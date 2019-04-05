@@ -3,11 +3,11 @@ import 'rxjs/add/operator/switchMap';
 import { Router } from "@angular/router";
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { DiceService } from "../../../core/services/dice.service";
-import { FATE_DICE, TILES, STAT_TYPE, DICE_ICON, DICE } from "../../../core/models/enums";
+import { FATE_DICE, TILES, STAT_TYPE, DICE_ICON, DICE, CustomDiceResultType } from "../../../core/models/enums";
 import { Characters } from "../../../core/models/view-models/characters.model";
 import { CharacterCommand } from "../../../core/models/view-models/character-command.model";
 import { DiceRoll } from "../../../core/models/view-models/dice-roll.model";
-import { CustomDice, DiceTray, DefaultDice } from "../../../core/models/view-models/custome-dice.model";
+import { CustomDice, DiceTray, DefaultDice, Results } from "../../../core/models/view-models/custome-dice.model";
 import { LocalStoreManager } from "../../../core/common/local-store-manager.service";
 import { AlertService, MessageSeverity } from "../../../core/common/alert.service";
 import { CharactersCharacterStatService } from "../../../core/services/characters-character-stat.service";
@@ -1553,7 +1553,7 @@ export class DiceRollComponent implements OnInit {
           //    _maxNum = +_maxN > _maxNum ? +_maxN : _maxNum;
           //    _minNum = +_minN > _minNum ? (_minNum == 0 ? +_minN : _minNum) : +_minN;
           //});
-
+          
           this.loadingResult = true;
         }, 1200);
 
@@ -2229,9 +2229,15 @@ export class DiceRollComponent implements OnInit {
           checkLastCommandString += _characterMultipleCommands[cmdArr].sign + rNumAfter;
 
           _operator = _characterMultipleCommands[cmdArr].operator;
-
-          __calculationString += __calculationString == "" ? rNumAfter
-            : _characterMultipleCommands[cmdArr].sign + rNumAfter;
+          if (this.IsImageDiceWithNonNumeric(_characterMultipleCommands[cmdArr].dice)) {
+            __calculationString += __calculationString == "" ? '[Image]'
+              : _characterMultipleCommands[cmdArr].sign + '[Image]';
+          }
+          else {
+            __calculationString += __calculationString == "" ? rNumAfter
+              : _characterMultipleCommands[cmdArr].sign + rNumAfter;
+          }
+         
 
           _calculationStringForResult = __calculationString;
           if (checkLastCommandStringReplaceTo !== "") {
@@ -2271,9 +2277,15 @@ export class DiceRollComponent implements OnInit {
           } else if (_operator == 'RD') {
             checkLastCommandStringReplaceTo = Math.floor(eval(checkLastCommandString)).toString();
           }
-
-          __calculationString += __calculationString == "" ? rNumAfter
-            : _characterMultipleCommands[cmdArr].sign + rNumAfter;
+          if (this.IsImageDiceWithNonNumeric(_characterMultipleCommands[cmdArr].dice)) {
+            __calculationString += __calculationString == "" ? '[Image]'
+              : _characterMultipleCommands[cmdArr].sign + '[Image]';
+          }
+          else {
+            __calculationString += __calculationString == "" ? rNumAfter
+              : _characterMultipleCommands[cmdArr].sign + rNumAfter;
+          }
+         
 
           _calculationStringForResult = __calculationString;
           if (checkLastCommandStringReplaceTo !== "") {
@@ -3319,5 +3331,66 @@ export class DiceRollComponent implements OnInit {
 
   onClickRollAll(characterCommandModel, mainCommandText) {
     this.onClickRoll(characterCommandModel, mainCommandText);
+  }
+  GetDiceDisplayContent(diceName, DiceCalculativeContent) {
+    
+    if (this.customDices) {
+      if (this.customDices.length) {
+        if (diceName) {
+          let Cdice_s: CustomDice[] = this.customDices.filter(x => x.name == diceName);
+          if (Cdice_s.length) {
+            let Cdice: CustomDice = Cdice_s[0];
+            if (Cdice.customDicetype == CustomDiceResultType.IMAGE) {
+              if (Cdice.isNumeric) {
+                return this.GetDisplayContentFromResultName(DiceCalculativeContent, Cdice.results);
+              }
+              return DiceCalculativeContent;
+              //var x = document.createElement("IMG");
+              //x.setAttribute("src", "https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/Assassin.jpg");
+              //x.setAttribute("width", "304");
+              //x.setAttribute("height", "228");
+              //x.setAttribute("alt", "The Pulpit Rock");
+              //return "<img src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/Assassin.jpg'>";
+            }
+            else if (Cdice.customDicetype == CustomDiceResultType.TEXT) {
+              if (Cdice.isNumeric) {
+                return this.GetDisplayContentFromResultName(DiceCalculativeContent, Cdice.results);
+              }
+              return DiceCalculativeContent;
+            }
+          }
+          
+        }
+      }
+    }
+    return DiceCalculativeContent;
+  }
+  GetDisplayContentFromResultName(ResultName, Results: Results[]) {
+    if (Results) {
+      if (Results.length) {
+        let Result_s: Results[] = Results.filter(x => x.name == ResultName);
+        if (Result_s.length) {
+          let Result: Results = Result_s[0];
+          return Result.displayContent;
+        }
+      }
+    }
+    return ResultName;
+  }
+  IsImageDice(diceName):boolean {
+    
+    if (diceName) {
+      let Cdice_s: CustomDice[] = this.customDices.filter(x => x.name == diceName);
+      if (Cdice_s.length) {
+        let Cdice: CustomDice = Cdice_s[0];
+        if (Cdice.customDicetype == CustomDiceResultType.IMAGE) {
+          return true;
+        }        
+      }
+    }
+    return false;
+  }
+  IsImageDiceWithNonNumeric(diceName): boolean {
+    return DiceService.IsImageDiceWithNonNumeric(diceName, this.customDices);
   }
 }

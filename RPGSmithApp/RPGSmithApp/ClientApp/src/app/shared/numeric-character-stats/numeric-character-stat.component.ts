@@ -60,7 +60,7 @@ export class NumericCharacterStatComponent implements OnInit {
             .subscribe(data => {
               this.numericCharacterStats = [];
               data.forEach((val) => {
-                debugger
+                
                 val.inventoryWeight = 0;
                 val.icon = this.characterStatService.getIcon(val.characterStat.characterStatType.statTypeName);
                 this.numericCharacterStats.push(val);

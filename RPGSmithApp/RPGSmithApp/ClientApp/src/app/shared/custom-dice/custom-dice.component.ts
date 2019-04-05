@@ -67,7 +67,7 @@ export class CustomDiceComponent implements OnInit {
     openAddCustomDice(ruleset: Ruleset, customDice?: CustomDice) {
         this.bsModalRef.hide();
         this.bsModalRef = this.modalService.show(AddCustomDiceComponent, {
-            class: 'modal-primary modal-md',
+          class: 'modal-primary modal-md selectDiceModal',
             ignoreBackdropClick: true,
             keyboard: false
         });
@@ -132,7 +132,7 @@ export class CustomDiceComponent implements OnInit {
         //            }
         //        }, () => { });
         //}
-        //else {
+        //else {      
         this.isLoading = false;
         this.bsModalRef.hide();
         this.sharedService.updateCustomeDice(this.customDices);

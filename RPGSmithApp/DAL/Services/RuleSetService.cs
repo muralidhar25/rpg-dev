@@ -690,15 +690,22 @@ namespace DAL.Services
         {
             foreach (var dice in diceList)
             {
-                CustomDice d = new CustomDice() { Icon = dice.Icon, IsNumeric = dice.IsNumeric, Name = dice.Name, RuleSetId = rulesetID };
-                _context.CustomDices.Add(d);
+                CustomDice d = new CustomDice() { Icon = dice.Icon, IsNumeric = dice.IsNumeric, Name = dice.Name,CustomDicetype=dice.CustomDicetype, RuleSetId = rulesetID };
+                _context.CustomDices.Add(d);               
                 foreach (var res in dice.CustomDiceResults)
                 {
-                    CustomDiceResult r = new CustomDiceResult() { Name = res.Name, CustomDiceId = d.CustomDiceId };
-                    _context.CustomDiceResults.Add(r);
-                }
+                    CustomDiceResult r = new CustomDiceResult() { Name = res.Name, CustomDiceId = d.CustomDiceId ,DisplayContent=res.DisplayContent};
+                    _context.CustomDiceResults.Add(r);                    
+                }                
             }
-            _context.SaveChanges();
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
             return GetCustomDice(rulesetID);
         }
         public void removeAllDice(int rulesetID)
@@ -721,11 +728,11 @@ namespace DAL.Services
             List<DiceTray> oldDiceTrays = GetDiceTray(copyFromRulesetID);
             foreach (var dice in oldCustomDices)
             {
-                CustomDice d = new CustomDice() { Icon = dice.Icon, IsNumeric = dice.IsNumeric, Name = dice.Name, RuleSetId = copyToRulesetID };
+                CustomDice d = new CustomDice() { Icon = dice.Icon, IsNumeric = dice.IsNumeric, Name = dice.Name,CustomDicetype=dice.CustomDicetype, RuleSetId = copyToRulesetID };
                 _context.CustomDices.Add(d);
                 foreach (var res in dice.CustomDiceResults)
                 {
-                    CustomDiceResult r = new CustomDiceResult() { Name = res.Name, CustomDiceId = d.CustomDiceId };
+                    CustomDiceResult r = new CustomDiceResult() { Name = res.Name, CustomDiceId = d.CustomDiceId ,DisplayContent=res.DisplayContent};
                     _context.CustomDiceResults.Add(r);
                 }
             }            

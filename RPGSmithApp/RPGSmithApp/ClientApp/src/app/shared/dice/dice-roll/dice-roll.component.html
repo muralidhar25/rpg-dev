@@ -125,7 +125,15 @@
                     <em *ngIf="!dice.dice.toUpperCase().split('D')[1]?.startsWith('F')"
                         [style.color]="NumbersList.isMax ? 'green' : (NumbersList.isMin ? 'red' : 'white')"
                         [style.font-weight]="NumbersList.isMax ? 'bold' : (NumbersList.isMin ? 'bold' : 'normal')"
-                        [ngClass]="(dice.isExploded && dice.diceNumber==NumbersList?.number)?'icon-Dice-Explode':''">{{ NumbersList?.number}}</em>
+                        [ngClass]="(dice.isExploded && dice.diceNumber==NumbersList?.number)?'icon-Dice-Explode':''">
+                      <ng-container *ngIf="IsImageDice(dice.dice)">
+                        <img class="img-fluid"  [src]="GetDiceDisplayContent(dice.dice,NumbersList?.number)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';"/>
+                       
+                      </ng-container>
+                      <ng-container *ngIf="!IsImageDice(dice.dice)">                        
+                        {{GetDiceDisplayContent(dice.dice,NumbersList?.number)}}
+                      </ng-container>
+                    </em>
                     <span class="icon icon-with-text icon-rsi outline" [ngClass]="dice.diceIcon"> &nbsp;{{dice.dice}}</span>
                   </button>
                   <div class="result-reroll outline" [ngClass]="{'d-flex': NumbersList.isShowReroll}">
@@ -168,7 +176,16 @@
                         [style.font-weight]="NumbersList.isMax ? 'bold' : (NumbersList.isMin ? 'bold' : 'normal')">{{ NumbersList?.number==1?FATE.plus:NumbersList?.number==-1?FATE.minus:FATE.zero}}</em>
                     <em *ngIf="!dice.dice.toUpperCase().split('D')[1]?.startsWith('F')" [style.color]="NumbersList.isMax ? 'green' : (NumbersList.isMin ? 'red' : 'white')"
                         [style.font-weight]="NumbersList.isMax ? 'bold' : (NumbersList.isMin ? 'bold' : 'normal')"
-                        [ngClass]="(dice.isExploded && dice.diceNumber==NumbersList?.number)?'icon-Dice-Explode':''">{{ NumbersList?.number}}</em>
+                        [ngClass]="(dice.isExploded && dice.diceNumber==NumbersList?.number)?'icon-Dice-Explode':''">
+                      <ng-container *ngIf="IsImageDice(dice.dice)">
+                        <img class="img-fluid" [src]="GetDiceDisplayContent(dice.dice,NumbersList?.number)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
+
+                      </ng-container>
+                      <ng-container *ngIf="!IsImageDice(dice.dice)">                        
+                        {{GetDiceDisplayContent(dice.dice,NumbersList?.number)}}
+                      </ng-container>
+                      
+                    </em>
                     <span class="icon icon-with-text icon-rsi outline" [ngClass]="dice.diceIcon">{{dice.dice}}</span>
                   </button>
                   <div class="result-reroll outline" [ngClass]="{'d-flex': NumbersList.isShowReroll && NumbersList.index==j}">

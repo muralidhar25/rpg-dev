@@ -47,7 +47,7 @@ export class SelectCustomDiceIconComponent implements OnInit {
         
         if (this.view == "AddCustomDice") {
             this.bsModalRef = this.modalService.show(AddCustomDiceComponent, {
-                class: 'modal-primary modal-md',
+              class: 'modal-primary modal-md selectDiceModal',
                 ignoreBackdropClick: true,
                 keyboard: false
             });

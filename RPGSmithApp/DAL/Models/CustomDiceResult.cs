@@ -12,9 +12,12 @@ namespace DAL.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CustomDiceResultId { get; set; }
 
-        
-        [Column(TypeName = "nvarchar(100)")]
+
+        [Column(TypeName = "nvarchar(2048)")]
         public string Name { get; set; }
+        
+        [Column(TypeName = "nvarchar(2048)")]
+        public string DisplayContent { get; set; }
 
         public int CustomDiceId { get; set; }
         public virtual CustomDice CustomDice { get; set; }

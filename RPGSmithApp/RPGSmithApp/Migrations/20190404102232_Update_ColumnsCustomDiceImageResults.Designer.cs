@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace RPGSmithApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190404102232_Update_ColumnsCustomDiceImageResults")]
+    partial class Update_ColumnsCustomDiceImageResults
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1285,7 +1287,7 @@ namespace RPGSmithApp.Migrations
                         .HasColumnType("nvarchar(2048)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(2048)");
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("CustomDiceResultId");
 

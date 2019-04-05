@@ -98,7 +98,7 @@ export class CharacterStatsFormComponent implements OnInit {
 
       this.choiceList = this.bsModalRef.content.Choices;
       this.IsThisStatAlreayAssignedtoOtherStat = false;
-      debugger
+      
       if (this.choiceList) {
         if (this.choiceList.length) {
 

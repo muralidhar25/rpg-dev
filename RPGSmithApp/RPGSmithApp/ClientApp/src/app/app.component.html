@@ -15,7 +15,7 @@
             </div>
           </div>
           <ng-container *ngIf="(headers && !showCharacterSearch) ||(dashbaordUser)">
-            <div class="user-login-details" *ngIf="headers.hasHeader" (click)="gotoDashboard()" [ngClass]="IsCharacterRecordScreenActive?'active-profile':''">
+            <div class="user-login-details" *ngIf="headers?.hasHeader" (click)="gotoDashboard()" [ngClass]="IsCharacterRecordScreenActive?'active-profile':''">
               <span>
                 <img [src]="headers?.headerImage" [alt]="headers?.headerName" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
               </span>

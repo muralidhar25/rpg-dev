@@ -211,7 +211,7 @@ export enum SearchType {
 }
 
 export enum CustomDiceResultType {
-  NUMBER = "number",
-  TEXT = "text",
-  IMAGE = "image",
+  NUMBER = 1,
+  TEXT = 2,
+  IMAGE = 3,
 }

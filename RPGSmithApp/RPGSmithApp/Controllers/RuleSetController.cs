@@ -1540,6 +1540,7 @@ namespace RPGSmithApp.Controllers
                     Icon = dice.Icon,
                     IsNumeric = dice.IsNumeric,
                     Name = dice.Name,
+                    CustomDicetype=dice.CustomDicetype,
                     RuleSetId = rulesetID
                 };
                 List<CustomDiceResult> diceResList = new List<CustomDiceResult>();
@@ -1549,7 +1550,8 @@ namespace RPGSmithApp.Controllers
                     {
                         //CustomDiceResultId=res.CustomDiceResultId,
                         //CustomDiceId=res.CustomDiceId,
-                        Name = res.Name
+                        Name = res.Name,
+                        DisplayContent =res.DisplayContent
                     };
                     diceResList.Add(CDres);
                 }

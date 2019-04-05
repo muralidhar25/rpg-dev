@@ -236,6 +236,7 @@ namespace RPGSmithApp.Helpers
                     Icon = dice.Icon,
                     IsNumeric = dice.IsNumeric,
                     Name = dice.Name,
+                    CustomDicetype=dice.CustomDicetype,
                     RuleSetId = dice.RuleSetId
                 };
                 List<CustomDiceResultViewModel> diceResList = new List<CustomDiceResultViewModel>();
@@ -245,7 +246,8 @@ namespace RPGSmithApp.Helpers
                     {
                         CustomDiceResultId = res.CustomDiceResultId,
                         CustomDiceId = res.CustomDiceId,
-                        Name = res.Name
+                        Name = res.Name,
+                        DisplayContent=res.DisplayContent
                     };
                     diceResList.Add(CDres);
                 }
