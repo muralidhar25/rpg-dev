@@ -86,7 +86,7 @@ export class RulesetCharacterStatTileComponent implements OnInit {
     }
 
     ngOnInit() {
-      console.log('in rule setssssss');
+      
         setTimeout(() => {
             this.rulesetId = this.bsModalRef.content.rulesetId;
             this.title = this.bsModalRef.content.title;

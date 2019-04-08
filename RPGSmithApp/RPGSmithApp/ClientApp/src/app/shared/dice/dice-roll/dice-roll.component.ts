@@ -127,7 +127,6 @@ export class DiceRollComponent implements OnInit {
       if (this.rulesetId == undefined)
         this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 
-      console.log('this.bsModalRef', this.bsModalRef);
       this.showTotal = false;
       this.title = this.bsModalRef.content.title;
       this.characterId = this.bsModalRef.content.characterId;
@@ -573,7 +572,6 @@ export class DiceRollComponent implements OnInit {
           })
           calculationString = DiceService.showTextCommandSquareBraces(calculationString);
           IDs.map((rec) => {
-            //console.log('---rec.id ', rec.id)
             this.statdetails.charactersCharacterStat.map((stat) => {
               if (rec.id == stat.characterStat.statName.toUpperCase()) {
                 let num = 0; let isCMD = false;
@@ -920,7 +918,7 @@ export class DiceRollComponent implements OnInit {
 
         calculationString = DiceService.showTextCommandSquareBraces(calculationString);
 
-        //console.log('IDs ', IDs)
+        
         IDs.map((rec) => {
           this.statdetails.charactersCharacterStat.map((stat) => {
             if (rec.id == stat.characterStat.statName.toUpperCase()) {
@@ -930,7 +928,7 @@ export class DiceRollComponent implements OnInit {
                 case STAT_TYPE.Command:
                   num = -1;
                   whileCMD = stat.command;
-                  //console.log('---stat.command ', whileCMD)
+                  
                   do {
                     isCMD = false;
                     this.commandStatTypeInCommand(whileCMD).subscribe((x) => {
@@ -1029,7 +1027,6 @@ export class DiceRollComponent implements OnInit {
           if (id == q.characterStat.statName.toUpperCase()) {
             if (q.characterStat.characterStatTypeId == STAT_TYPE.Command) {
               data.push(q);
-              //console.log('----------------------commandStatTypeInCommand: ', id);
             }
           }
         })
@@ -1090,6 +1087,7 @@ export class DiceRollComponent implements OnInit {
 
         let AND_LIMIT = DiceService.splitWithoutEmpty(command.trim().toUpperCase(), 'AND');
         if (AND_LIMIT.length > this.totalAndLimit) {
+          debugger
           this.alertService.resetStickyMessage();
           this.alertService.showStickyMessage('', this.AND_Error_Message, MessageSeverity.error);
           setTimeout(() => { this.alertService.resetStickyMessage(); }, 1000);
@@ -1327,7 +1325,6 @@ export class DiceRollComponent implements OnInit {
         //if (this.customDices.length>0) {
 
         //}
-
 
         let __calculationCommand = __characterMultipleCommands.calculationCommand.toString();
         let __calculationResult = __characterMultipleCommands.calculationResult;
@@ -2034,7 +2031,7 @@ export class DiceRollComponent implements OnInit {
   }
 
   singleDiceReRoll(dice: any, numberList: any, diceIndex: number, numberIndex: number) {
-
+    debugger
     this.loadingResult = false;
 
     numberList = dice.randomNumbersList[numberIndex];
@@ -2080,6 +2077,16 @@ export class DiceRollComponent implements OnInit {
       }
       else {
         numberList.number = DiceService.getRandomNumber(1, dice.diceNumber);
+        if (dice.operator == "FE") {
+          try {
+            numberList.number = DiceService.diceInterpretationArray(dice.feCommand, true).randomNumbersList[0].number;
+          }
+          catch (ex) {
+            console.log('some error for single reroll of FE Dice');
+            numberList.number = DiceService.getRandomNumber(1, dice.diceNumber);
+          }
+          
+        }
       }
 
       numberList.isKept = false;
@@ -2132,7 +2139,8 @@ export class DiceRollComponent implements OnInit {
       var ___sortedNumbersToShowSort = Object.assign([], dice.randomNumbersList);
       var _sortedNumbersSort = ___sortedNumbersToShowSort.sort(function (a, b) { return (a.number > b.number) ? 1 : ((b.number > a.number) ? -1 : 0); });
       //.sort((n1, n2) => n1 - n2);
-
+      
+      
       var sortedRandomNumbersToShowSort: any = [];
       _sortedNumbersSort.forEach((val) => { sortedRandomNumbersToShowSort.push(val); });
 
@@ -2693,7 +2701,7 @@ export class DiceRollComponent implements OnInit {
   saveDiceCommand(characterCommandModel: any) {
 
     let command = characterCommandModel.command;
-    if (!command) {
+    if (!command) {      
       this.alertService.showStickyMessage('', 'Please enter a command.', MessageSeverity.error);
       setTimeout(() => { this.alertService.resetStickyMessage(); }, 1800);
       return false;

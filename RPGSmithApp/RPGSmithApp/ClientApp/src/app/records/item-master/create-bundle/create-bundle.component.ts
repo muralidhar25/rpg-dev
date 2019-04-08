@@ -284,7 +284,7 @@ export class CreateBundleComponent implements OnInit {
       this.bundleFormModal.bundleImage = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Backpack.jpg';
       itemMaster.itemImage = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Backpack.jpg';
     }
-    console.log(this.bundleFormModal.bundleImage);
+    //console.log(this.bundleFormModal.bundleImage);
     itemMaster.bundleItems = this.SelectedItemsList.map((x) => {
       
       return { itemMasterId: x.itemMasterId, quantity: x.quantityToAdd};

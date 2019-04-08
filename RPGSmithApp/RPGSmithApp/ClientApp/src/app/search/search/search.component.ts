@@ -434,7 +434,7 @@ export class SearchComponent implements OnInit {
         }
     } else {
       if (this.searchModal.searchType == SearchType.CHARACTERITEMS) {
-        console.log(this.searchModal.searchType);
+        //console.log(this.searchModal.searchType);
         this.router.navigate(['/character/inventory-details', input.recordId]);
       } else if (this.searchModal.searchType == SearchType.RULESETITEMS) {
         if (input.record.isBundle) {

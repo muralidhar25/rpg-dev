@@ -1497,7 +1497,7 @@ export class RulesetDashboardComponent implements OnInit {
             let box: Box = { config: ngGridItemConfig, tile: item, IsCharacter: false };
             boxes.push(box);
       })
-      console.log(boxes)
+      //console.log(boxes)
         return boxes;
     }
 
@@ -1716,7 +1716,7 @@ export class RulesetDashboardComponent implements OnInit {
     }
 
     onChangeStart(event: NgGridItemEvent,index): void {
-        console.log('onChangeStart', event);
+        //console.log('onChangeStart', event);
         //this.boxes[index].config.draggable = false;
         //let myVar = setTimeout(() => {
         //    this.boxes[index].config.draggable = true;
