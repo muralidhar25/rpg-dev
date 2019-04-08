@@ -171,7 +171,7 @@ export class AbilityRulesetDetailComponent implements OnInit {
                 //this.alertService.stopLoadingMessage();
                 if (data < 2000) {
                     this.bsModalRef = this.modalService.show(CreateAbilitiesComponent, {
-                        class: 'modal-primary modal-md',
+                        class: 'modal-primary modal-custom',
                         ignoreBackdropClick: true,
                         keyboard: false
                     });

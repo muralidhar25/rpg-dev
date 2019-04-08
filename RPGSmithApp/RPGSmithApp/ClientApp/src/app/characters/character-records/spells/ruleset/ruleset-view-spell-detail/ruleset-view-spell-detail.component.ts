@@ -323,7 +323,7 @@ export class RulesetViewSpellDetailComponent implements OnInit {
                 //this.alertService.stopLoadingMessage();
                 if (data < 3000) {
                     this.bsModalRef = this.modalService.show(CreateSpellsComponent, {
-                        class: 'modal-primary modal-md',
+                        class: 'modal-primary modal-custom',
                         ignoreBackdropClick: true,
                         keyboard: false
                     });
