@@ -1325,7 +1325,23 @@ export class DiceRollComponent implements OnInit {
         //if (this.customDices.length>0) {
 
         //}
-
+        let isInvalidFECommand = false;
+        if (this.characterMultipleCommands) {
+          if (this.characterMultipleCommands.length) {
+            debugger
+            this.characterMultipleCommands.map((x) => {
+              if (x.isInvalidFECommand) {
+                this.alertService.showMessage("Please enter a valid command.", "", MessageSeverity.error);
+                isInvalidFECommand = true;
+                return false;
+              }
+            })
+          }
+        }
+        if (isInvalidFECommand) {
+          this.alertService.showMessage("Please enter a valid command.", "", MessageSeverity.error);          
+          return false;
+        }
         let __calculationCommand = __characterMultipleCommands.calculationCommand.toString();
         let __calculationResult = __characterMultipleCommands.calculationResult;
         let __calculationString = __characterMultipleCommands.calculationString;
