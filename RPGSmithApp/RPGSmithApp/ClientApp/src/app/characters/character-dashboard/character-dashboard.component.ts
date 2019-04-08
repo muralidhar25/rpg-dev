@@ -2447,13 +2447,24 @@ export class CharacterDashboardComponent implements OnInit {
   description(text) {
 
     if (text) {
-      text = text.replace(/<{1}[^<>]{1,}>{1}/g, " ");
-      //if (text.length >= 100) {
-      //  let trimmedString = text.substring(0, 100);
-      //  trimmedString += '...';
-      //  return trimmedString;
-      //}
-      return text;
+      
+      var encodedStr = text;
+
+      var parser = new DOMParser;
+      var dom = parser.parseFromString(
+        '<!doctype html><body>' + encodedStr,
+        'text/html');
+      var decodedString = dom.body.textContent;
+      
+      //console.log(decodedString);
+      return decodedString;
+      //text = text.replace(/<{1}[^<>]{1,}>{1}/g, " ");
+      ////if (text.length >= 100) {
+      ////  let trimmedString = text.substring(0, 100);
+      ////  trimmedString += '...';
+      ////  return trimmedString;
+      ////}
+      //return text;
     }
     return '';
   }
