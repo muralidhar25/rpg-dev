@@ -7,7 +7,8 @@
 <div class="modal-header" [style.background-color]="CharacterStatTypeID==STAT_TYPE.RichText ? CharacterStatTile.titleBgColor :null"
      [style.border-radius]="CharacterStatTypeID==STAT_TYPE.RichText ?'0px' :null" style="border-bottom-color:transparent">
     <h5 class="modal-title" id="viewAttributePopupTitle" [style.color]="CharacterStatTypeID==STAT_TYPE.RichText ? CharacterStatTile.bodyTextColor :null">{{title}}</h5>
-    <button type="button" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+    <a href="https://rpgsmith.com/help/#charstattile" class="help-icon  icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+  <button type="button" class=" btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
 
 </div>
 <!--<div class="toplabel"></div>-->

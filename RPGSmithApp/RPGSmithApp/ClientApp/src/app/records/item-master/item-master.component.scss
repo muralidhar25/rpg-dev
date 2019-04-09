@@ -496,6 +496,7 @@ filter-toggle-btn-light {
   padding: .6rem !important;
   height: 100%;
   outline: none;
+  width: calc(100% - 80px);
 }
 
 .card-list.dense-list .card-wrapper .card {

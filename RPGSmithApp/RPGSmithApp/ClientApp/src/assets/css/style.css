@@ -1066,7 +1066,9 @@
 .icon-Tile-Note:before {
   content: "\e92c";
 }
-
+.icon-Gen-Help:before {
+  content: "\e967";
+}
 
 /**
  * Icons -----------------------------------------------------------------------
