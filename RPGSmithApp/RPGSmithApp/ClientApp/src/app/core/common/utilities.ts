@@ -966,7 +966,7 @@ export class Utilities {
   }
 
   public static getHelpLinkUrl(url) {
-   
+
     if (url == '/characters' || url == '/character') {
       return 'https://rpgsmith.com/help/#CharacterCreation';
     }
@@ -986,31 +986,43 @@ export class Utilities {
       console.log('charcter inventory');
       return 'https://rpgsmith.com/help/#items';
     }
-    else if (url.toUpperCase().indexOf('/CHARACTER/SPELL/') > -1 || url.toUpperCase().indexOf('/CHARACTER/SPELL-DETAILS') > -1) {
-      console.log('charcter spells');
+    
+    else if ((url.toUpperCase().indexOf('/RULESET/ITEM-MASTER/') > -1 ||
+      url.toUpperCase().indexOf('/RULESET/ITEM-DETAILS') > -1 ||
+      url.toUpperCase().indexOf('/RULESET/BUNDLE-DETAILS') > -1)
+      && url.toUpperCase().indexOf('/CHARACTER/RULESET/') == -1) {
+
+    }
+    else if (url.toUpperCase().indexOf('/CHARACTER/SPELL/') > -1 ||
+      url.toUpperCase().indexOf('/CHARACTER/SPELL-DETAILS') > -1) {
       return 'https://rpgsmith.com/help/#Spells';
     }
-    else if (url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1 || url.toUpperCase().indexOf('/CHARACTER/ABILITY-DETAILS') > -1) {
+    else if ((url.toUpperCase().indexOf('/RULESET/SPELL/') > -1 ||
+      url.toUpperCase().indexOf('/RULESET/SPELL-DETAILS') > -1)
+      && url.toUpperCase().indexOf('/CHARACTER/RULESET/') == -1) {
+      return 'https://rpgsmith.com/help/#Spells';
+
+    }
+    else if (url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1 ||
+      url.toUpperCase().indexOf('/CHARACTER/ABILITY-DETAILS') > -1) {
       return 'https://rpgsmith.com/help/#abilities';
     }
-    else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS/') > -1 || url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEM-DETAIL') > -1) {
-      return 'https://rpgsmith.com/help/#ItemTemp';
-    }
-    else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS/') > -1 || url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS-DETAIL/') > -1) {
-      return 'https://rpgsmith.com/help/#Spells';
-    }
-    else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES/') > -1 || url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES-DETAIL/') > -1) {
+    else if ((url.toUpperCase().indexOf('/RULESET/ABILITY/') > -1 ||
+      url.toUpperCase().indexOf('/RULESET/ABILITY-DETAILS') > -1) && url.toUpperCase().indexOf('/CHARACTER/RULESET/') == -1) {
       return 'https://rpgsmith.com/help/#abilities';
     }
-    else if (url.toUpperCase().indexOf('/RULESET/ITEM-MASTER/') > -1 ||
-              url.toUpperCase().indexOf('/RULESET/ITEM-DETAILS') > -1 ||
-              url.toUpperCase().indexOf('/RULESET/BUNDLE-DETAILS') > -1) {
+
+    else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS/') > -1 ||
+      url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEM-DETAIL') > -1) {
       return 'https://rpgsmith.com/help/#ItemTemp';
     }
-    else if (url.toUpperCase().indexOf('/RULESET/SPELLS/') > -1 || url.toUpperCase().indexOf('/RULESET/SPELLS-DETAIL/') > -1) {
+    else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS/') > -1 ||
+      url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELL-DETAILS') > -1) {
       return 'https://rpgsmith.com/help/#Spells';
+
     }
-    else if (url.toUpperCase().indexOf('/RULESET/ABILITIES/') > -1 || url.toUpperCase().indexOf('/RULESET/ABILITIES-DETAIL/') > -1) {
+    else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES/') > -1 ||
+      url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITY-DETAILS') > -1) {
       return 'https://rpgsmith.com/help/#abilities';
     }
   }
