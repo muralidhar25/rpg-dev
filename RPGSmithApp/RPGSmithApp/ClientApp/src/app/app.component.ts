@@ -104,7 +104,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   previousUrlList: string[] = []
   characterNavigation: any = {};
   dashbaordUser: boolean = false;
-
+  redirectUrl: string = '';
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
     if (window.pageYOffset > 0) {
@@ -1129,5 +1129,8 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   RedirecttoUrl() {
     Utilities.Kickstarterlink();
+  }
+  gotoUrl() {
+    this.redirectUrl = Utilities.getHelpLinkUrl(this.router.url);
   }
 }

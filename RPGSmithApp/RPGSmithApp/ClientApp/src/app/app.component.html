@@ -37,7 +37,7 @@
 
         <div class="site-header-right-section">
           <div class="site-header-user mr-1 mr-sm-3 crsr-pointer">
-              <img border="0" src='../assets/images/k_opt.jpg' class="mr-2 redirect-url" width="50"  (click)="RedirecttoUrl()">
+            <img border="0" src='../assets/images/k_opt.jpg' class="mr-2 redirect-url" width="50" (click)="RedirecttoUrl()">
           </div>
           <form class="site-header-search" *ngIf="showCharacterSearch">
             <i class="icon icon-search"></i>
@@ -61,6 +61,7 @@
             </div>
             <div class="site-header-user-name">{{userName}}</div>
           </div>
+          <a href="{{redirectUrl}}" class="d-flex ml-2 align-items-center help-icon icon icon-Gen-Help crsr-pointer" target="_blank" (click)="gotoUrl()"></a>
           <!-- End of user -->
           <!-- Site navigation -->
           <nav class="site-header-navigation">
