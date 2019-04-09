@@ -198,7 +198,7 @@ export class EditCounterComponent implements OnInit {
     }
 
     decrement() {
-        console.log("click");
+        //console.log("click");
         let step: number = this.counterFormModel.step ? this.counterFormModel.step : 1;
         if (this.counterFormModel.minimum && this.counterFormModel.maximum) {
 

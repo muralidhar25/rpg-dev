@@ -172,7 +172,7 @@ export class RulesetComponent implements OnInit {
 
     manageRuleset(ruleset: Ruleset) {
         
-        console.log('mange ruleset popup');
+        //console.log('mange ruleset popup');
         if (!document.getElementsByClassName('mng-ruleset-popup').length) {
             this.setRulesetId(ruleset.ruleSetId);
             setTimeout(() => {

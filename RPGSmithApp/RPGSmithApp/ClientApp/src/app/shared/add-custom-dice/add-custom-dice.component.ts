@@ -123,7 +123,6 @@ export class AddCustomDiceComponent implements OnInit {
 
     this.customDice.isNumeric = _isNumeric;
     if (!_isNumeric) {
-      console.log(_isNumeric);
       this.hideNolabel = true;
     }
         //let regex = /^-?[0-9]\d*(\\d+)?$/g; // negative positive number expression.
@@ -137,7 +136,6 @@ export class AddCustomDiceComponent implements OnInit {
         //})
     }
     submitForm() {
-       console.log(this.customDice);
 
         let name = 'D' + this.customDice.name;
         let index = this.customDices.findIndex(x => x.name.toLowerCase() == name.toLowerCase());
@@ -222,9 +220,6 @@ export class AddCustomDiceComponent implements OnInit {
       })
       
     
-      console.log(this.bsModalRef.content);
-      console.log(this.modalService);
-      console.log(this.modalService.getModalsCount());
       //this.modalService.hide(3);
      
       this.bsModalRef.hide();
@@ -329,7 +324,6 @@ export class AddCustomDiceComponent implements OnInit {
   //  this.hideNolabel = _displayImage;
   //}
   addToggleImage(result: Results, customDice: CustomDice) {
-    console.log(result);
     
     let Image = '';
     if (!customDice.isNumeric && customDice.customDicetype == CustomDiceResultType.IMAGE) {

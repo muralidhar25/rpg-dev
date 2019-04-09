@@ -960,7 +960,7 @@ export class Utilities {
     return false;
   }
   public static Kickstarterlink() {
-    console.log('kickstarter');
+    //console.log('kickstarter');
     let url = 'https://www.kickstarter.com/projects/rpgsmith/rpgsmith-gm-campaigns';
     window.open(url, "_blank");
   }

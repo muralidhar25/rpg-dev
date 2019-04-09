@@ -17,6 +17,7 @@ export class DiceService {
   private static Error: string = "";
   private static HasError: number;
   public static totalAndLimit: number = 6;
+  //public static isInvalidFECommand: boolean = false;
   public static copyToClipboard(value: string) {
     let copiedBox = document.createElement('textarea');
     copiedBox.style.position = 'fixed';
@@ -45,18 +46,21 @@ export class DiceService {
     if (!command) return [];
     //example command:  d4 + 2d6 * d8 - 2d10 kh1 / d12 + (d20 + d100 / 5) AND (4d6 kh3 / 5 ru) + (4d6 kh2 / 5 rd)
     let _commandInterpretationArray = this.commandInterpretationArray(command, customDices);
-
     let diceARRAY = [];
-
+    let isInvalidFECommand = false;
     //iteration for AND
     for (var cmd in _commandInterpretationArray) {
-
+      if (_commandInterpretationArray[cmd].isInvalidFECommand) {
+        isInvalidFECommand = true;
+      }
+     
       let _finalInterpretationArray = [];
       let _calculationString = "";
       let _calculationStringForResult = "";
       let _operator = "";
       let _commandArray = _commandInterpretationArray[cmd].commandArray;
       let checkLastCommandString = '';
+      
       //iteration for command
       for (var cmdArr in _commandArray) {
         let _sign = ' ' + _commandArray[cmdArr].sign + ' ';
@@ -65,9 +69,16 @@ export class DiceService {
           let _diceArray = _commandArray[cmdArr].diceArray;
 
           for (var diceArr in _diceArray) {
-
-            __calculationString += __calculationString == "" ? (_calculationString == "" ? (_sign.trim() == '-' ? _sign : '') : _sign) + ' ( ' + (_diceArray[diceArr].sign.trim() == '-' ? _diceArray[diceArr].sign : '') + _diceArray[diceArr].diceInterpretationArray.randomNumbersAfter
-              : _diceArray[diceArr].sign + _diceArray[diceArr].diceInterpretationArray.randomNumbersAfter;
+            if (_diceArray[diceArr].isFeDice) {
+              __calculationString += __calculationString == "" ? (_calculationString == "" ? (_sign.trim() == '-' ? _sign : '') : _sign) + ' ( ' + (_diceArray[diceArr].sign.trim() == '-' ? _diceArray[diceArr].sign : '') + _diceArray[diceArr].diceInterpretationArray.feTotal
+                : _diceArray[diceArr].sign + _diceArray[diceArr].diceInterpretationArray.feTotal;
+              //'( ' + _diceArray[diceArr].diceInterpretationArray.feTotal + ' ';
+            }
+            else {
+              __calculationString += __calculationString == "" ? (_calculationString == "" ? (_sign.trim() == '-' ? _sign : '') : _sign) + ' ( ' + (_diceArray[diceArr].sign.trim() == '-' ? _diceArray[diceArr].sign : '') + _diceArray[diceArr].diceInterpretationArray.randomNumbersAfter
+                : _diceArray[diceArr].sign + _diceArray[diceArr].diceInterpretationArray.randomNumbersAfter;
+            }
+            
 
             _finalInterpretationArray.push(this.calsInterpretationArray(_diceArray[diceArr], +cmd));
 
@@ -287,7 +298,6 @@ export class DiceService {
       let textResult = this.fillBeforeAndAfterText(_commandInterpretationArray[cmd].command);
       let beforeResultText = textResult.start;
       let afterResultText = textResult.end;
-      
       _commandInterpretationArrayList.push({
         calculationString: _calculationString,
         calculationStringArray: _calculationStringArray,
@@ -299,14 +309,13 @@ export class DiceService {
         isCustomNumericCommand: _commandInterpretationArray[cmd].isCustomNumericCommand ? true : false,
         beforeResult: beforeResultText,
         afterResult: afterResultText,
+        isInvalidFECommand: isInvalidFECommand,
       });
     }
-
     return _commandInterpretationArrayList;
   }
 
   private static calsInterpretationArray(_commandArray: any, _calculationIndex: number): any {
-
     let _diceInterpretationArray = _commandArray.diceInterpretationArray;
     if (_commandArray.isCustomDice) {
       return {
@@ -328,6 +337,8 @@ export class DiceService {
         isCustomDice: true,
         isCustomNumeric: _commandArray.isCustomNumeric,
         isExploded: _commandArray.isExploded,
+        feCommand: '',
+        allDicesPresentInFE:[]
       }
     }
     return {
@@ -349,6 +360,8 @@ export class DiceService {
       isCustomDice: false,
       isCustomNumeric: false,
       isExploded: _commandArray.isExploded,
+      feCommand: _commandArray.dice,
+      allDicesPresentInFE:_diceInterpretationArray.allDicesPresentInFE
     };
   }
 
@@ -369,30 +382,49 @@ export class DiceService {
   
       //split command again if it has parenthesis
       for (var arr in diceARRAY) {
+        
         if (diceARRAY[arr].parenthesis) {
           let _commandTxt = diceARRAY[arr].dice.replace('(', '').replace(')', '');
           _commandTxt = diceARRAY[arr].sign + _commandTxt;
-          diceARRAY[arr].diceArray = this.splitCommandToArray(_commandTxt);
+          
+          let IsFEDice = _commandTxt.indexOf('FE') > -1 ? true : false;
+          diceARRAY[arr].diceArray = this.splitCommandToArray(_commandTxt, [], IsFEDice);
+          //diceARRAY[arr].FeCommand = _commandTxt;
+         // console.log('diceARRAY[arr].diceArray', diceARRAY[arr].diceArray )
         }
       }
 
       let IsCustomNumericCommand = false;
+      let isInvalidFECommand = false;
       if (customDices.length > 0) {
         IsCustomNumericCommand = true;
 
         diceARRAY.map((cmd) => {
           if (!cmd.isCustomNumeric) {
             IsCustomNumericCommand = false;
-          }
+          }          
         })
       }
-
+      diceARRAY.map((cmd) => {        
+        if (cmd.diceArray) {
+          if (cmd.diceArray.length) {
+            cmd.diceArray.map((x) => {
+              if (x.isInvalidFECommand) {
+                isInvalidFECommand = true;
+              }
+            })
+           
+          }
+          
+        }
+      })
       _commandInterpretationArray.push({
         command: _commandText,
         commandArray: diceARRAY,
         calculationString: "",
         calculationResult: 0,
-        isCustomNumericCommand: IsCustomNumericCommand
+        isCustomNumericCommand: IsCustomNumericCommand,
+        isInvalidFECommand: isInvalidFECommand
       });
     }
 
@@ -400,7 +432,7 @@ export class DiceService {
     return _commandInterpretationArray;
   }
 
-  public static splitCommandToArray(_commandText: string, customDices: CustomDice[] = []): any[] {
+  public static splitCommandToArray(_commandText: string, customDices: CustomDice[] = [], IsFeDice = false): any[] {
     
     let diceARRAY = [];
     let parenthesis = false;
@@ -414,15 +446,16 @@ export class DiceService {
     let isDoubleQuotesStarted = false;
 
     for (var x = 0; x < _commandText.length; x++) {
-
-      if (isSingleQuotes || isDoubleQuotes|| addMod || parenthesis || (_commandText[x] != '+' && _commandText[x] != "-" && _commandText[x] != "*" && _commandText[x] != "/")) {
+      
+      if (isSingleQuotes || isDoubleQuotes || addMod || parenthesis || (_commandText[x] != '+' && _commandText[x] != "-" && _commandText[x] != "*" && _commandText[x] != "/") || (IsFeDice && diceValue.toUpperCase().indexOf('FE')>-1)) {
         diceValue += _commandText[x];
         if (_commandText[x] == '(' && !addMod && !isSingleQuotesStarted && !isDoubleQuotesStarted) { //|| parenthesis) {
           //diceSign = _commandText[x - 1]
           parenthesis = true;
         }
         else if (_commandText[x] == ')' && !addMod && !isSingleQuotesStarted && !isDoubleQuotesStarted) {
-          if (diceValue.trim() !== '')
+          if (diceValue.trim() !== '') {
+            
             diceARRAY.push({
               dice: diceValue.trim(),
               sign: diceSign,
@@ -432,6 +465,7 @@ export class DiceService {
               static: +diceValue.trim() ? true : false, // : (+diceValue.split("D")[1] > 0 ? false : true),
               diceInterpretationArray: {}
             });
+          }
           parenthesis = false;
           diceValue = '';
         }
@@ -441,7 +475,8 @@ export class DiceService {
           addMod = true;
         }
         else if (_commandText[x] == ']' && !isSingleQuotesStarted && !isDoubleQuotesStarted) {
-          if (diceValue.trim() !== '')
+          if (diceValue.trim() !== '') {
+            
             diceARRAY.push({
               dice: diceValue.trim(),
               sign: diceSign,
@@ -459,9 +494,12 @@ export class DiceService {
                 randomNumbersAfter: "0",
                 randomNumbersSumAfter: "0",
                 operator: '',
-                operatorNumber: 0
+                operatorNumber: 0,
+                isInvalidFECommand: false,
+                isFeDice:false
               }
             });
+          }
           addMod = false;
           diceValue = '';
         }
@@ -485,8 +523,11 @@ export class DiceService {
           //diceValue += diceValue;
           isDoubleQuotesStarted = false;
         }
+        
+
         if (x == _commandText.length - 1 && !isDoubleQuotesStarted && !isSingleQuotesStarted) {
-          if (diceValue.trim() !== '')
+          if (diceValue.trim() !== '') {
+            let temp_diceInterpretationArray = this.diceInterpretationArray(diceValue.trim(), IsFeDice);
             diceARRAY.push({
               dice: diceValue.trim(),
               sign: diceSign,
@@ -494,13 +535,17 @@ export class DiceService {
               parenthesis: false,
               addMod: false,
               static: +diceValue.trim() ? true : false, //(+diceValue.split("D")[1] > 0 ? false : true),
-              diceInterpretationArray: this.diceInterpretationArray(diceValue.trim())
+              diceInterpretationArray: temp_diceInterpretationArray,
+              isInvalidFECommand: this.CheckValidFECommand(temp_diceInterpretationArray),
+              isFeDice: this.CheckIsFECommand(temp_diceInterpretationArray)
             });
+          }
           diceValue = '';
         }
       }
-      else if (_commandText[x] == '+' || _commandText[x] == "-" || _commandText[x] == "*" || _commandText[x] == "/") {
-        if (diceValue.trim() !== '')
+      else if ((_commandText[x] == '+' || _commandText[x] == "-" || _commandText[x] == "*" || _commandText[x] == "/") && !IsFeDice) {
+        if (diceValue.trim() !== '') {
+          let temp_diceInterpretationArray = this.diceInterpretationArray(diceValue.trim(), IsFeDice);
           diceARRAY.push({
             dice: diceValue.trim(),
             sign: diceSign,
@@ -509,8 +554,11 @@ export class DiceService {
             addMod: false,
             //isCustom: false,
             static: +diceValue.trim() ? true : false, //(+diceValue.split("D")[1] > 0 ? false : true),
-            diceInterpretationArray: this.diceInterpretationArray(diceValue.trim())
+            diceInterpretationArray: temp_diceInterpretationArray,
+            isInvalidFECommand: this.CheckValidFECommand(temp_diceInterpretationArray),
+            isFeDice: this.CheckIsFECommand(temp_diceInterpretationArray)
           });
+        }
         diceSign = ' ' + _commandText[x] + ' ';
         diceValue = '';
       }
@@ -691,7 +739,6 @@ export class DiceService {
     }
     else {
       diceARRAY.map((d) => {
-
         d.isCustomDice = false;
         d.isCustomNumeric = false;
 
@@ -780,11 +827,11 @@ export class DiceService {
         }
       })
     }
-
     return diceARRAY;
   }
 
-  public static diceInterpretationArray(dice: string): any {
+  public static diceInterpretationArray(dice: string, IsFeDice: boolean = false): any {
+    let isInvalidFECommand = false;
     let _diceInterpretationArray: any;
     let diceNumber = 0; //2D4 = 4
     let randomCount = 0;//2D4 = 2
@@ -807,7 +854,47 @@ export class DiceService {
     let isDivideSign: boolean = false;
 
     //example: D4, 2D8, 4D6 KH3, 5 RD
-    let diceArray = this.splitWithoutEmpty(dice, ' ');
+    //let diceArray = this.splitWithoutEmpty(dice, ' ');
+
+    let diceArray: any;
+    let IsFE_Dice: boolean=false;
+    
+    if (IsFeDice) {
+      IsFE_Dice = true;
+      let FEArray = this.splitWithoutEmpty(dice, 'FE');
+      diceArray = FEArray;
+      let FE_New_Array: any[] = [];
+      FEArray.map((fe) => {
+        let flag = true;
+        if (fe) {
+          if (fe.toUpperCase().indexOf('D')>-1) {
+            let fe_variables_arr = this.splitWithoutEmpty(fe, ' ');
+            if (fe_variables_arr.length>1) {
+              fe_variables_arr.map((fe_var) => {
+                if (fe_var) {
+                  if (fe_var.toUpperCase().indexOf('D') > -1) {
+                    flag = false;
+
+                    let tmpVal = fe.replace(fe_var, '');
+                    FE_New_Array.push(tmpVal);
+                    FE_New_Array.push(fe_var);
+                  }
+                }
+              })
+            }
+          }
+        }
+        if (flag && fe) {
+          FE_New_Array.push(fe);
+        }  
+      })
+      if (FE_New_Array.length) {
+        diceArray = FE_New_Array;
+      }
+    }
+    else {
+      diceArray = this.splitWithoutEmpty(dice, ' ');
+    }
     
     let diceArr_fake = 0;
     
@@ -988,6 +1075,7 @@ export class DiceService {
               //})
               _dice = _dice.replace(/\(/g, ' ')
             }
+            
             if ((_dice.indexOf('RU') > -1) || (_dice.indexOf('RD') > -1)) {
               operator = diceArray[diceArr].trim();
             }
@@ -1042,6 +1130,19 @@ export class DiceService {
                 //INVALID
                 this.HasError = -5;
               }
+            }
+            else if (IsFE_Dice) {
+              let __dice = _dice.trim(); //diceArray[diceArr].trim();
+              let operatorValArray = this.splitWithoutEmpty(__dice, 'FE');
+              operator = "FE";
+              //operatorNumber = +operatorValArray[0].trim();
+              //1,2,3,4,5
+              //if (randomCount >= operatorNumber) {
+              //  //sortedRandomNumbers.splice(sortedRandomNumbers.length - operatorNumber, sortedRandomNumbers.length);
+              //} else {
+              //  //INVALID
+              //  this.HasError = -5;
+              //}
             }
             else if (+_dice || _dice == "0") {
               randomCount = +_dice;
@@ -1085,6 +1186,7 @@ export class DiceService {
               //})
               _dice = _dice.replace(/\(/g, ' ')
             }
+            
             if ((_dice.indexOf('RU') > -1) || (_dice.indexOf('RD') > -1)) {
               operator = diceArray[diceArr].trim();
             }
@@ -1140,6 +1242,19 @@ export class DiceService {
                 this.HasError = -5;
               }
             }
+            else if (IsFE_Dice) {
+              let __dice = _dice.trim(); //diceArray[diceArr].trim();
+              let operatorValArray = this.splitWithoutEmpty(__dice, 'FE');
+              operator = "FE";
+              //operatorNumber = +operatorValArray[0].trim();
+              ////1,2,3,4,5
+              //if (randomCount >= operatorNumber) {
+              //  //sortedRandomNumbers.splice(sortedRandomNumbers.length - operatorNumber, sortedRandomNumbers.length);
+              //} else {
+              //  //INVALID
+              //  this.HasError = -5;
+              //}
+            }
             else if (+_dice || _dice == "0") {
               randomCount = +_dice;
               randomNumbers = _dice;
@@ -1180,61 +1295,261 @@ export class DiceService {
     let _minNum = Math.min.apply(Math, sortedRandomNumbersToShow);
     operator = operator.toUpperCase();
 
-    //to check KH,KL,DH,DL with sorting
-    let _randmLIST = sortedRandomNumbersToShowSort.map((x, index) => {
-      num += 1;
-      return {
-        index: index,
-        number: x,
-        isChecked: false,
-        isKept: operator == "KH" ? (num > (randomCount - operatorNumber) ? true : false)
-          : (operator == "KL" ? (num > operatorNumber ? false : true)
-            : (operator == "DH" ? (num > (randomCount - operatorNumber) ? false : true)
-              : (operator == "DL" ? (num > operatorNumber ? true : false)
-                : true)))
-      };
-    });
+   
+    let CalculativeString = '';
+    let AllDicesPresentInFE: any[] = [];
+    let _randmLIST:any[]=[]
+    let __randomNumbersList: any[] = []
 
-    let keptCount = 0;
-    let __randomNumbersList = sortedRandomNumbersToShow.map((x, index) => {
+    if (IsFeDice) {
 
-      let _isKept = false;
-      switch (operator) {
-        case "KH": case "KL": case "DH": case "DL":
-          for (var nmbr in _randmLIST) {
-            if (_randmLIST[nmbr].number === x && _randmLIST[nmbr].isKept == true) {
-              if (_randmLIST[nmbr].isChecked == false) {
-                // && +nmbr >= index
-                //&& keptCount <= operatorNumber) {
-                _isKept = true;
-                keptCount += 1;
-                _randmLIST[nmbr].isChecked = true;
-                break;
+
+      let CurrentDiceNewResults: any;
+      let New_sortedRandomNumbersToShowSort = [];
+      let NewRandomNumList: any[] = [];
+      let Flag_ToInsertNumbrersInNewRandomNumList = false;
+      diceArray.map((Fe_Instance, index) => {
+
+        if (Fe_Instance.toUpperCase().indexOf('D') > -1) {
+          CurrentDiceNewResults = this.diceInterpretationArray(Fe_Instance, false)
+          AllDicesPresentInFE.push(CurrentDiceNewResults);
+          Flag_ToInsertNumbrersInNewRandomNumList = true;
+        }
+        else if (Fe_Instance.toUpperCase().indexOf('D') == -1) {
+          //let diceValue = '';
+          //if (Fe_Instance.toUpperCase().indexOf('D') > -1) {
+          //  let temp_arr = this.splitWithoutEmpty(Fe_Instance, ' ');
+          //  temp_arr.map((x) => {
+          //    if (x.toUpperCase().indexOf('D') > -1) {
+
+          //    }
+          //  })
+
+          //}
+          //else {
+          //  let arr = this.splitWithoutEmpty(Fe_Instance, ' ');
+          //  arr= arr.map((x) => {
+          //    if (x.trim()) {
+          //      return x;
+          //    }
+          //  })
+          //}
+          Fe_Instance = Fe_Instance.replace('+', ' + ').replace('-', ' - ').replace('>', ' > ').replace('<', ' < ').replace('=', ' = ');
+          let arr = this.splitWithoutEmpty(Fe_Instance, ' ');
+
+
+
+          if (arr.length == 4) {
+
+
+
+            if (arr[0].trim() != '>' && arr[0].trim() != '<' && arr[0].trim() != '=') {
+              isInvalidFECommand = true;
+              //alert('wrong commnd1')
+            }
+            if (arr[1].trim() == '') {
+              isInvalidFECommand = true;
+              // alert('wrong commnd2')
+            }
+            if (isNaN(+arr[1].trim())) {
+              isInvalidFECommand = true;
+              //alert('wrong commnd2.1')
+            }
+            if (arr[2].trim() != '+' && arr[2].trim() != '-') {
+              isInvalidFECommand = true;
+              //alert('wrong commnd3')
+            }
+            if (arr[3].trim() == '') {
+              isInvalidFECommand = true;
+              // alert('wrong commnd4')
+            }
+            if (isNaN(+arr[3].trim())) {
+              isInvalidFECommand = true;
+              //alert('wrong commnd4.1')
+            }
+
+
+            let FE_Comparison = arr[0];
+            let FE_ComparisonValue = arr[1];
+            let FE_Result = arr[2];
+            FE_Result = FE_Result + arr[3];
+
+
+
+
+            New_sortedRandomNumbersToShowSort = CurrentDiceNewResults.randomNumbersListAfter
+            ////////////////////////////console.log('sortedRandomNumbersToShowSort', New_sortedRandomNumbersToShowSort)
+            
+            New_sortedRandomNumbersToShowSort.map((RandomNum) => {
+              if (Flag_ToInsertNumbrersInNewRandomNumList) {
+                NewRandomNumList.push({ randomNum: RandomNum, diceNumber: CurrentDiceNewResults.diceNumber });
+              }
+
+              if (FE_Comparison == "=") {
+                FE_Comparison = '==';
+              }
+              let comparisonString = RandomNum + ' ' + FE_Comparison + ' ' + FE_ComparisonValue;
+              //////////////////////////////// console.log('comparisonString', comparisonString)
+              try {
+                if (eval(comparisonString)) {
+                  CalculativeString += FE_Result;
+                } else {
+                  CalculativeString += '+0';
+                }
+              }
+              catch (ex) {
+                isInvalidFECommand = true;
+              }
+            })
+
+            Flag_ToInsertNumbrersInNewRandomNumList = false;
+            //let newRndmList = {
+            //  index: 0,
+            //  number: +eval(CalculativeString),
+            //  isChecked: false,
+            //  isKept: false,
+            //};
+
+          }
+          else {
+            isInvalidFECommand = true; //this variable is used in diceroll.ts file
+            //alert('wrong commnd5')
+          }
+        }
+      })
+     /////////////////////// console.log('CalculativeString', CalculativeString)
+     /////////////////////// console.log('CalculativeStringResult', +eval(CalculativeString))
+      //let newRndmList: number[] = [];
+      //newRndmList.push(+eval(CalculativeString));
+
+
+      //sortedRandomNumbersToShowSort = newRndmList;
+      //sortedRandomNumbersToShow = newRndmList;
+
+      //sortedRandomNumbersToShowSort = [];
+      //sortedRandomNumbersToShow = [];
+      //sortedRandomNumbersToShowSort = NewRandomNumList;
+      //sortedRandomNumbersToShow = NewRandomNumList;
+
+      _randmLIST = NewRandomNumList.map((x, index) => {
+        num += 1;
+        return {
+          index: index,
+          number: x.randomNum,
+          isChecked: false,
+          isKept: operator == "KH" ? (num > (randomCount - operatorNumber) ? true : false)
+            : (operator == "KL" ? (num > operatorNumber ? false : true)
+              : (operator == "DH" ? (num > (randomCount - operatorNumber) ? false : true)
+                : (operator == "DL" ? (num > operatorNumber ? true : false)
+                  : true))),
+          diceNumber: x.diceNumber
+        };
+      });
+      //to check KH,KL,DH,DL with sorting
+      let keptCount = 0;
+      __randomNumbersList = NewRandomNumList.map((x, index) => {
+
+        let _isKept = false;
+        switch (operator) {
+          case "KH": case "KL": case "DH": case "DL":
+            for (var nmbr in _randmLIST) {
+              if (_randmLIST[nmbr].number === x && _randmLIST[nmbr].isKept == true) {
+                if (_randmLIST[nmbr].isChecked == false) {
+                  // && +nmbr >= index
+                  //&& keptCount <= operatorNumber) {
+                  _isKept = true;
+                  keptCount += 1;
+                  _randmLIST[nmbr].isChecked = true;
+                  break;
+                }
               }
             }
-          }
-          break;
-        default: _isKept = true; break;
-      }
+            break;
+          default: _isKept = true; break;
+        }
 
-      return {
-        index: index,
-        number: x,
-        isMax: +_maxNum === x ? true : false,
-        isMin: +_minNum === x ? true : false,
-        isHighest: false,
-        isLowest: false,
-        isShowReroll: false,
-        isAnimated: false,
-        isKept: _isKept
-        //isKept: operator == "KH" ? (num > (randomCount - operatorNumber) ? true : false)
-        //    : (operator == "KL" ? (num > operatorNumber ? false : true)
-        //        : (operator == "DH" ? (num > (randomCount-operatorNumber) ? false : true)
-        //            : (operator == "DL" ? (num > operatorNumber ? true : false)
-        //                : true))),
+        return {
+          index: index,
+          number: x.randomNum,
+          isMax: +_maxNum === x ? true : false,
+          isMin: +_minNum === x ? true : false,
+          isHighest: false,
+          isLowest: false,
+          isShowReroll: false,
+          isAnimated: false,
+          isKept: _isKept,
+          diceNumber: x.diceNumber
+          //isKept: operator == "KH" ? (num > (randomCount - operatorNumber) ? true : false)
+          //    : (operator == "KL" ? (num > operatorNumber ? false : true)
+          //        : (operator == "DH" ? (num > (randomCount-operatorNumber) ? false : true)
+          //            : (operator == "DL" ? (num > operatorNumber ? true : false)
+          //                : true))),
 
-      };
-    });
+        };
+      });
+    }
+    else {
+      _randmLIST = sortedRandomNumbersToShowSort.map((x, index) => {
+        num += 1;
+        return {
+          index: index,
+          number: x,
+          isChecked: false,
+          isKept: operator == "KH" ? (num > (randomCount - operatorNumber) ? true : false)
+            : (operator == "KL" ? (num > operatorNumber ? false : true)
+              : (operator == "DH" ? (num > (randomCount - operatorNumber) ? false : true)
+                : (operator == "DL" ? (num > operatorNumber ? true : false)
+                  : true))),
+          diceNumber: 0
+        };
+      });
+      //to check KH,KL,DH,DL with sorting
+      let keptCount = 0;
+      __randomNumbersList = sortedRandomNumbersToShow.map((x, index) => {
+
+        let _isKept = false;
+        switch (operator) {
+          case "KH": case "KL": case "DH": case "DL":
+            for (var nmbr in _randmLIST) {
+              if (_randmLIST[nmbr].number === x && _randmLIST[nmbr].isKept == true) {
+                if (_randmLIST[nmbr].isChecked == false) {
+                  // && +nmbr >= index
+                  //&& keptCount <= operatorNumber) {
+                  _isKept = true;
+                  keptCount += 1;
+                  _randmLIST[nmbr].isChecked = true;
+                  break;
+                }
+              }
+            }
+            break;
+          default: _isKept = true; break;
+        }
+
+        return {
+          index: index,
+          number: x,
+          isMax: +_maxNum === x ? true : false,
+          isMin: +_minNum === x ? true : false,
+          isHighest: false,
+          isLowest: false,
+          isShowReroll: false,
+          isAnimated: false,
+          isKept: _isKept,
+          diceNumber:0
+          //isKept: operator == "KH" ? (num > (randomCount - operatorNumber) ? true : false)
+          //    : (operator == "KL" ? (num > operatorNumber ? false : true)
+          //        : (operator == "DH" ? (num > (randomCount-operatorNumber) ? false : true)
+          //            : (operator == "DL" ? (num > operatorNumber ? true : false)
+          //                : true))),
+
+        };
+      });
+    }
+
+
+
+
 
     if (__randomNumbersList.length > 0) {
       sortedRandomNumbers = [];
@@ -1300,6 +1615,10 @@ export class DiceService {
     //      break;
     //  }
     //}
+    let feTotal = 0;
+    try {
+      feTotal = +eval(CalculativeString);
+    } catch (ex) { feTotal = 0; }
 
     _diceInterpretationArray = {
       diceNumber: diceNumber,
@@ -1312,7 +1631,11 @@ export class DiceService {
       randomNumbersSumAfter: diceWithoutMultipleSign ? sortedRandomNumbers.reduce((a, b) => a * b, 0)
         : sortedRandomNumbers.reduce((a, b) => a + b, 0),
       operator: operator,
-      operatorNumber: operatorNumber
+      operatorNumber: operatorNumber,
+      isInvalidFECommand: isInvalidFECommand,
+      feTotal: feTotal,
+      allDicesPresentInFE: AllDicesPresentInFE,
+      isFeDice: IsFeDice
     };
 
     //handle 0 - as dice
@@ -1337,9 +1660,9 @@ export class DiceService {
     //}
     else if ((commandText.split("/").length - 1 < ((commandText.split("RU").length - 1) + (commandText.split("RD").length - 1))) && !this.RU_RD_ContainsInQuotes(commandText)) {
       
-      console.log('commandText.split(" / ").length - 1', commandText.split("/").length - 1)
-      console.log('commandText.split("RU").length - 1', commandText.split("RU").length - 1)
-      console.log('commandText.split("RD").length - 1', commandText.split("RD").length - 1)
+      //console.log('commandText.split(" / ").length - 1', commandText.split("/").length - 1)
+      //console.log('commandText.split("RU").length - 1', commandText.split("RU").length - 1)
+      //console.log('commandText.split("RD").length - 1', commandText.split("RD").length - 1)
       return false
     }
 
@@ -3145,6 +3468,18 @@ export class DiceService {
           
         }
       }
+    }
+    return false;
+  }
+  public static CheckValidFECommand(temp_diceInterpretationArray) {
+    if (temp_diceInterpretationArray.isInvalidFECommand) {
+      return true;
+    }
+    return false;
+  }
+  public static CheckIsFECommand(temp_diceInterpretationArray) {
+    if (temp_diceInterpretationArray.isFeDice) {
+      return true;
     }
     return false;
   }

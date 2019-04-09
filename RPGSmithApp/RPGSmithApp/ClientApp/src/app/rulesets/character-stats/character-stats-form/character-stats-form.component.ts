@@ -154,7 +154,7 @@ export class CharacterStatsFormComponent implements OnInit {
         }
       }
 
-      console.log(this.choiceList, 'choicesListselected')
+      
       this.ConditionOperators = this.bsModalRef.content.ConditionOperators
       let characterStatsForConditions: StatsList[] = this.bsModalRef.content.characterStats;
       characterStatsForConditions = characterStatsForConditions.filter(x => x.typeId == STAT_TYPE.Text || x.typeId == STAT_TYPE.Number || x.typeId == STAT_TYPE.CurrentMax || x.typeId == STAT_TYPE.Choice || x.typeId == STAT_TYPE.ValueSubValue || x.typeId == STAT_TYPE.Combo || x.typeId == STAT_TYPE.Calculation)

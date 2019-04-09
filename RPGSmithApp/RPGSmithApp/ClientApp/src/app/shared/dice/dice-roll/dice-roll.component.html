@@ -135,7 +135,7 @@
                         {{GetDiceDisplayContent(dice.dice,NumbersList?.number)}}
                       </ng-container>
                     </em>
-                    <span class="icon icon-with-text icon-rsi outline" [ngClass]="dice.diceIcon"> &nbsp;{{dice.dice}}</span>
+                    <span class="icon icon-with-text icon-rsi outline" [ngClass]="dice.diceIcon"> &nbsp;{{dice.operator=="FE"?('D'+NumbersList?.diceNumber):dice.dice}}</span>
                   </button>
                   <div class="result-reroll outline" [ngClass]="{'d-flex': NumbersList.isShowReroll}">
                     <a (click)="singleDiceReRoll(dice,NumbersList,i,j)">Reroll</a>
@@ -187,7 +187,7 @@
                       </ng-container>
                       
                     </em>
-                    <span class="icon icon-with-text icon-rsi outline" [ngClass]="dice.diceIcon">{{dice.dice}}</span>
+                    <span class="icon icon-with-text icon-rsi outline" [ngClass]="dice.diceIcon">{{dice.operator=="FE"?('D'+NumbersList?.diceNumber):dice.dice}}</span>
                   </button>
                   <div class="result-reroll outline" [ngClass]="{'d-flex': NumbersList.isShowReroll && NumbersList.index==j}">
                     <a (click)="singleDiceReRoll(dice,NumbersList,i,j)">Reroll</a>
