@@ -60,6 +60,7 @@ export class DiceService {
       let _operator = "";
       let _commandArray = _commandInterpretationArray[cmd].commandArray;
       let checkLastCommandString = '';
+      
       //iteration for command
       for (var cmdArr in _commandArray) {
         let _sign = ' ' + _commandArray[cmdArr].sign + ' ';
@@ -68,9 +69,16 @@ export class DiceService {
           let _diceArray = _commandArray[cmdArr].diceArray;
 
           for (var diceArr in _diceArray) {
-
-            __calculationString += __calculationString == "" ? (_calculationString == "" ? (_sign.trim() == '-' ? _sign : '') : _sign) + ' ( ' + (_diceArray[diceArr].sign.trim() == '-' ? _diceArray[diceArr].sign : '') + _diceArray[diceArr].diceInterpretationArray.randomNumbersAfter
-              : _diceArray[diceArr].sign + _diceArray[diceArr].diceInterpretationArray.randomNumbersAfter;
+            if (_diceArray[diceArr].isFeDice) {
+              __calculationString += __calculationString == "" ? (_calculationString == "" ? (_sign.trim() == '-' ? _sign : '') : _sign) + ' ( ' + (_diceArray[diceArr].sign.trim() == '-' ? _diceArray[diceArr].sign : '') + _diceArray[diceArr].diceInterpretationArray.feTotal
+                : _diceArray[diceArr].sign + _diceArray[diceArr].diceInterpretationArray.feTotal;
+              //'( ' + _diceArray[diceArr].diceInterpretationArray.feTotal + ' ';
+            }
+            else {
+              __calculationString += __calculationString == "" ? (_calculationString == "" ? (_sign.trim() == '-' ? _sign : '') : _sign) + ' ( ' + (_diceArray[diceArr].sign.trim() == '-' ? _diceArray[diceArr].sign : '') + _diceArray[diceArr].diceInterpretationArray.randomNumbersAfter
+                : _diceArray[diceArr].sign + _diceArray[diceArr].diceInterpretationArray.randomNumbersAfter;
+            }
+            
 
             _finalInterpretationArray.push(this.calsInterpretationArray(_diceArray[diceArr], +cmd));
 
@@ -329,7 +337,8 @@ export class DiceService {
         isCustomDice: true,
         isCustomNumeric: _commandArray.isCustomNumeric,
         isExploded: _commandArray.isExploded,
-        feCommand:''
+        feCommand: '',
+        allDicesPresentInFE:[]
       }
     }
     return {
@@ -351,7 +360,8 @@ export class DiceService {
       isCustomDice: false,
       isCustomNumeric: false,
       isExploded: _commandArray.isExploded,
-      feCommand: _commandArray.dice
+      feCommand: _commandArray.dice,
+      allDicesPresentInFE:_diceInterpretationArray.allDicesPresentInFE
     };
   }
 
@@ -380,7 +390,7 @@ export class DiceService {
           let IsFEDice = _commandTxt.indexOf('FE') > -1 ? true : false;
           diceARRAY[arr].diceArray = this.splitCommandToArray(_commandTxt, [], IsFEDice);
           //diceARRAY[arr].FeCommand = _commandTxt;
-          console.log('diceARRAY[arr].diceArray', diceARRAY[arr].diceArray )
+         // console.log('diceARRAY[arr].diceArray', diceARRAY[arr].diceArray )
         }
       }
 
@@ -485,7 +495,8 @@ export class DiceService {
                 randomNumbersSumAfter: "0",
                 operator: '',
                 operatorNumber: 0,
-                isInvalidFECommand: false
+                isInvalidFECommand: false,
+                isFeDice:false
               }
             });
           }
@@ -525,7 +536,8 @@ export class DiceService {
               addMod: false,
               static: +diceValue.trim() ? true : false, //(+diceValue.split("D")[1] > 0 ? false : true),
               diceInterpretationArray: temp_diceInterpretationArray,
-              isInvalidFECommand: this.CheckValidFECommand(temp_diceInterpretationArray)
+              isInvalidFECommand: this.CheckValidFECommand(temp_diceInterpretationArray),
+              isFeDice: this.CheckIsFECommand(temp_diceInterpretationArray)
             });
           }
           diceValue = '';
@@ -543,7 +555,8 @@ export class DiceService {
             //isCustom: false,
             static: +diceValue.trim() ? true : false, //(+diceValue.split("D")[1] > 0 ? false : true),
             diceInterpretationArray: temp_diceInterpretationArray,
-            isInvalidFECommand: this.CheckValidFECommand(temp_diceInterpretationArray)
+            isInvalidFECommand: this.CheckValidFECommand(temp_diceInterpretationArray),
+            isFeDice: this.CheckIsFECommand(temp_diceInterpretationArray)
           });
         }
         diceSign = ' ' + _commandText[x] + ' ';
@@ -556,7 +569,6 @@ export class DiceService {
 
     if (diceARRAY.length > 0 && customDices.length > 0) {
       diceARRAY.map((d) => {
-        //d.isInvalidFECommand= false;
         d.isCustomDice = false;
         d.isCustomNumeric = false;
         //Explode
@@ -727,7 +739,6 @@ export class DiceService {
     }
     else {
       diceARRAY.map((d) => {
-        //d.isInvalidFECommand= false;
         d.isCustomDice = false;
         d.isCustomNumeric = false;
 
@@ -1284,18 +1295,27 @@ export class DiceService {
     let _minNum = Math.min.apply(Math, sortedRandomNumbersToShow);
     operator = operator.toUpperCase();
 
-    //to check KH,KL,DH,DL with sorting
-    
+   
+    let CalculativeString = '';
+    let AllDicesPresentInFE: any[] = [];
+    let _randmLIST:any[]=[]
+    let __randomNumbersList: any[] = []
+
     if (IsFeDice) {
-      
-      let CalculativeString = '';
+
+
       let CurrentDiceNewResults: any;
+      let New_sortedRandomNumbersToShowSort = [];
+      let NewRandomNumList: any[] = [];
+      let Flag_ToInsertNumbrersInNewRandomNumList = false;
       diceArray.map((Fe_Instance, index) => {
-        
+
         if (Fe_Instance.toUpperCase().indexOf('D') > -1) {
-          CurrentDiceNewResults= this.diceInterpretationArray(Fe_Instance, false)
+          CurrentDiceNewResults = this.diceInterpretationArray(Fe_Instance, false)
+          AllDicesPresentInFE.push(CurrentDiceNewResults);
+          Flag_ToInsertNumbrersInNewRandomNumList = true;
         }
-        else if (Fe_Instance.toUpperCase().indexOf('D')==-1) {
+        else if (Fe_Instance.toUpperCase().indexOf('D') == -1) {
           //let diceValue = '';
           //if (Fe_Instance.toUpperCase().indexOf('D') > -1) {
           //  let temp_arr = this.splitWithoutEmpty(Fe_Instance, ' ');
@@ -1304,7 +1324,7 @@ export class DiceService {
 
           //    }
           //  })
-           
+
           //}
           //else {
           //  let arr = this.splitWithoutEmpty(Fe_Instance, ' ');
@@ -1316,10 +1336,9 @@ export class DiceService {
           //}
           Fe_Instance = Fe_Instance.replace('+', ' + ').replace('-', ' - ').replace('>', ' > ').replace('<', ' < ').replace('=', ' = ');
           let arr = this.splitWithoutEmpty(Fe_Instance, ' ');
-          
-          console.log('arr.length', arr.length)
-          console.log('arr', arr)
-          
+
+
+
           if (arr.length == 4) {
 
 
@@ -1330,7 +1349,7 @@ export class DiceService {
             }
             if (arr[1].trim() == '') {
               isInvalidFECommand = true;
-             // alert('wrong commnd2')
+              // alert('wrong commnd2')
             }
             if (isNaN(+arr[1].trim())) {
               isInvalidFECommand = true;
@@ -1342,7 +1361,7 @@ export class DiceService {
             }
             if (arr[3].trim() == '') {
               isInvalidFECommand = true;
-             // alert('wrong commnd4')
+              // alert('wrong commnd4')
             }
             if (isNaN(+arr[3].trim())) {
               isInvalidFECommand = true;
@@ -1354,19 +1373,23 @@ export class DiceService {
             let FE_ComparisonValue = arr[1];
             let FE_Result = arr[2];
             FE_Result = FE_Result + arr[3];
-            let NewRandomNumList: any[] = [];
 
 
 
-            sortedRandomNumbersToShowSort = CurrentDiceNewResults.randomNumbersListAfter
-            console.log('sortedRandomNumbersToShowSort', sortedRandomNumbersToShowSort)
 
-            sortedRandomNumbersToShowSort.map((RandomNum) => {
+            New_sortedRandomNumbersToShowSort = CurrentDiceNewResults.randomNumbersListAfter
+            ////////////////////////////console.log('sortedRandomNumbersToShowSort', New_sortedRandomNumbersToShowSort)
+            
+            New_sortedRandomNumbersToShowSort.map((RandomNum) => {
+              if (Flag_ToInsertNumbrersInNewRandomNumList) {
+                NewRandomNumList.push({ randomNum: RandomNum, diceNumber: CurrentDiceNewResults.diceNumber });
+              }
+
               if (FE_Comparison == "=") {
                 FE_Comparison = '==';
               }
               let comparisonString = RandomNum + ' ' + FE_Comparison + ' ' + FE_ComparisonValue;
-              console.log('comparisonString', comparisonString)
+              //////////////////////////////// console.log('comparisonString', comparisonString)
               try {
                 if (eval(comparisonString)) {
                   CalculativeString += FE_Result;
@@ -1378,6 +1401,8 @@ export class DiceService {
                 isInvalidFECommand = true;
               }
             })
+
+            Flag_ToInsertNumbrersInNewRandomNumList = false;
             //let newRndmList = {
             //  index: 0,
             //  number: +eval(CalculativeString),
@@ -1392,69 +1417,138 @@ export class DiceService {
           }
         }
       })
-     console.log('CalculativeString', CalculativeString)
-      let newRndmList: number[] = [];
-      newRndmList.push(+eval(CalculativeString));
+     /////////////////////// console.log('CalculativeString', CalculativeString)
+     /////////////////////// console.log('CalculativeStringResult', +eval(CalculativeString))
+      //let newRndmList: number[] = [];
+      //newRndmList.push(+eval(CalculativeString));
 
-      sortedRandomNumbersToShowSort = newRndmList;
-      sortedRandomNumbersToShow = newRndmList;
+
+      //sortedRandomNumbersToShowSort = newRndmList;
+      //sortedRandomNumbersToShow = newRndmList;
+
+      //sortedRandomNumbersToShowSort = [];
+      //sortedRandomNumbersToShow = [];
+      //sortedRandomNumbersToShowSort = NewRandomNumList;
+      //sortedRandomNumbersToShow = NewRandomNumList;
+
+      _randmLIST = NewRandomNumList.map((x, index) => {
+        num += 1;
+        return {
+          index: index,
+          number: x.randomNum,
+          isChecked: false,
+          isKept: operator == "KH" ? (num > (randomCount - operatorNumber) ? true : false)
+            : (operator == "KL" ? (num > operatorNumber ? false : true)
+              : (operator == "DH" ? (num > (randomCount - operatorNumber) ? false : true)
+                : (operator == "DL" ? (num > operatorNumber ? true : false)
+                  : true))),
+          diceNumber: x.diceNumber
+        };
+      });
+      //to check KH,KL,DH,DL with sorting
+      let keptCount = 0;
+      __randomNumbersList = NewRandomNumList.map((x, index) => {
+
+        let _isKept = false;
+        switch (operator) {
+          case "KH": case "KL": case "DH": case "DL":
+            for (var nmbr in _randmLIST) {
+              if (_randmLIST[nmbr].number === x && _randmLIST[nmbr].isKept == true) {
+                if (_randmLIST[nmbr].isChecked == false) {
+                  // && +nmbr >= index
+                  //&& keptCount <= operatorNumber) {
+                  _isKept = true;
+                  keptCount += 1;
+                  _randmLIST[nmbr].isChecked = true;
+                  break;
+                }
+              }
+            }
+            break;
+          default: _isKept = true; break;
+        }
+
+        return {
+          index: index,
+          number: x.randomNum,
+          isMax: +_maxNum === x ? true : false,
+          isMin: +_minNum === x ? true : false,
+          isHighest: false,
+          isLowest: false,
+          isShowReroll: false,
+          isAnimated: false,
+          isKept: _isKept,
+          diceNumber: x.diceNumber
+          //isKept: operator == "KH" ? (num > (randomCount - operatorNumber) ? true : false)
+          //    : (operator == "KL" ? (num > operatorNumber ? false : true)
+          //        : (operator == "DH" ? (num > (randomCount-operatorNumber) ? false : true)
+          //            : (operator == "DL" ? (num > operatorNumber ? true : false)
+          //                : true))),
+
+        };
+      });
+    }
+    else {
+      _randmLIST = sortedRandomNumbersToShowSort.map((x, index) => {
+        num += 1;
+        return {
+          index: index,
+          number: x,
+          isChecked: false,
+          isKept: operator == "KH" ? (num > (randomCount - operatorNumber) ? true : false)
+            : (operator == "KL" ? (num > operatorNumber ? false : true)
+              : (operator == "DH" ? (num > (randomCount - operatorNumber) ? false : true)
+                : (operator == "DL" ? (num > operatorNumber ? true : false)
+                  : true))),
+          diceNumber: 0
+        };
+      });
+      //to check KH,KL,DH,DL with sorting
+      let keptCount = 0;
+      __randomNumbersList = sortedRandomNumbersToShow.map((x, index) => {
+
+        let _isKept = false;
+        switch (operator) {
+          case "KH": case "KL": case "DH": case "DL":
+            for (var nmbr in _randmLIST) {
+              if (_randmLIST[nmbr].number === x && _randmLIST[nmbr].isKept == true) {
+                if (_randmLIST[nmbr].isChecked == false) {
+                  // && +nmbr >= index
+                  //&& keptCount <= operatorNumber) {
+                  _isKept = true;
+                  keptCount += 1;
+                  _randmLIST[nmbr].isChecked = true;
+                  break;
+                }
+              }
+            }
+            break;
+          default: _isKept = true; break;
+        }
+
+        return {
+          index: index,
+          number: x,
+          isMax: +_maxNum === x ? true : false,
+          isMin: +_minNum === x ? true : false,
+          isHighest: false,
+          isLowest: false,
+          isShowReroll: false,
+          isAnimated: false,
+          isKept: _isKept,
+          diceNumber:0
+          //isKept: operator == "KH" ? (num > (randomCount - operatorNumber) ? true : false)
+          //    : (operator == "KL" ? (num > operatorNumber ? false : true)
+          //        : (operator == "DH" ? (num > (randomCount-operatorNumber) ? false : true)
+          //            : (operator == "DL" ? (num > operatorNumber ? true : false)
+          //                : true))),
+
+        };
+      });
     }
 
 
-    let _randmLIST = sortedRandomNumbersToShowSort.map((x, index) => {
-      num += 1;
-      return {
-        index: index,
-        number: x,
-        isChecked: false,
-        isKept: operator == "KH" ? (num > (randomCount - operatorNumber) ? true : false)
-          : (operator == "KL" ? (num > operatorNumber ? false : true)
-            : (operator == "DH" ? (num > (randomCount - operatorNumber) ? false : true)
-              : (operator == "DL" ? (num > operatorNumber ? true : false)
-                : true)))
-      };
-    });
 
-    let keptCount = 0;
-    let __randomNumbersList = sortedRandomNumbersToShow.map((x, index) => {
-
-      let _isKept = false;
-      switch (operator) {
-        case "KH": case "KL": case "DH": case "DL":
-          for (var nmbr in _randmLIST) {
-            if (_randmLIST[nmbr].number === x && _randmLIST[nmbr].isKept == true) {
-              if (_randmLIST[nmbr].isChecked == false) {
-                // && +nmbr >= index
-                //&& keptCount <= operatorNumber) {
-                _isKept = true;
-                keptCount += 1;
-                _randmLIST[nmbr].isChecked = true;
-                break;
-              }
-            }
-          }
-          break;
-        default: _isKept = true; break;
-      }
-
-      return {
-        index: index,
-        number: x,
-        isMax: +_maxNum === x ? true : false,
-        isMin: +_minNum === x ? true : false,
-        isHighest: false,
-        isLowest: false,
-        isShowReroll: false,
-        isAnimated: false,
-        isKept: _isKept
-        //isKept: operator == "KH" ? (num > (randomCount - operatorNumber) ? true : false)
-        //    : (operator == "KL" ? (num > operatorNumber ? false : true)
-        //        : (operator == "DH" ? (num > (randomCount-operatorNumber) ? false : true)
-        //            : (operator == "DL" ? (num > operatorNumber ? true : false)
-        //                : true))),
-
-      };
-    });
 
 
     if (__randomNumbersList.length > 0) {
@@ -1521,6 +1615,10 @@ export class DiceService {
     //      break;
     //  }
     //}
+    let feTotal = 0;
+    try {
+      feTotal = +eval(CalculativeString);
+    } catch (ex) { feTotal = 0; }
 
     _diceInterpretationArray = {
       diceNumber: diceNumber,
@@ -1534,7 +1632,10 @@ export class DiceService {
         : sortedRandomNumbers.reduce((a, b) => a + b, 0),
       operator: operator,
       operatorNumber: operatorNumber,
-      isInvalidFECommand: isInvalidFECommand
+      isInvalidFECommand: isInvalidFECommand,
+      feTotal: feTotal,
+      allDicesPresentInFE: AllDicesPresentInFE,
+      isFeDice: IsFeDice
     };
 
     //handle 0 - as dice
@@ -3372,6 +3473,12 @@ export class DiceService {
   }
   public static CheckValidFECommand(temp_diceInterpretationArray) {
     if (temp_diceInterpretationArray.isInvalidFECommand) {
+      return true;
+    }
+    return false;
+  }
+  public static CheckIsFECommand(temp_diceInterpretationArray) {
+    if (temp_diceInterpretationArray.isFeDice) {
       return true;
     }
     return false;
