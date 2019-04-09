@@ -2258,7 +2258,12 @@ export class DiceRollComponent implements OnInit {
             //    }
             //  })
             //}
-            Fe_Instance = Fe_Instance.replace('+', ' + ').replace('-', ' - ').replace('>', ' > ').replace('<', ' < ').replace('=', ' = ');
+            if (Fe_Instance.indexOf('>=') > -1 || Fe_Instance.indexOf('<=') > -1) {
+              Fe_Instance = Fe_Instance.replace('+', ' + ').replace('-', ' - ').replace('>=', ' >= ').replace('<=', ' <= ');
+            } else {
+              Fe_Instance = Fe_Instance.replace('+', ' + ').replace('-', ' - ').replace('>', ' > ').replace('<', ' < ').replace('=', ' = ');
+            }
+            
             let arr = this.splitWithoutEmpty(Fe_Instance, ' ');
 
 
@@ -2267,7 +2272,7 @@ export class DiceRollComponent implements OnInit {
 
 
 
-              if (arr[0].trim() != '>' && arr[0].trim() != '<' && arr[0].trim() != '=') {
+              if (arr[0].trim() != '>' && arr[0].trim() != '<' && arr[0].trim() != '=' && arr[0].trim() != '>=' && arr[0].trim() != '<=') {
                 isInvalidFECommand = true;
                 //alert('wrong commnd1')
               }
