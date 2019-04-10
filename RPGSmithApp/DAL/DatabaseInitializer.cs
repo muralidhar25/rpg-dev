@@ -41,7 +41,7 @@ namespace DAL
         public async Task SeedAsync()
         {
             await _context.Database.MigrateAsync().ConfigureAwait(false);
-
+            
             if (!await _context.Users.AnyAsync())
             {
                 _logger.LogInformation("Generating inbuilt accounts");
@@ -88,6 +88,13 @@ namespace DAL
                 conditionOperators.Add(new ConditionOperator() { IsNumeric = true, Symbol = "<=", Name = "Equal to or less than" });
                 _context.ConditionOperators.AddRange(conditionOperators);
                 await _context.SaveChangesAsync();
+            }
+            if (!await _context.Roles.Where(x => x.Name == "gm").AnyAsync())
+            {
+                const string gmRoleName = "gm";
+
+                await EnsureRoleAsync(gmRoleName, "gm", new string[] { });
+
             }
         }
 
