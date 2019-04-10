@@ -966,14 +966,15 @@ export class Utilities {
   }
 
   public static getHelpLinkUrl(url) {
-
+    
     if (url == '/characters' || url == '/character') {
       return 'https://rpgsmith.com/help/#CharacterCreation';
     }
     else if (url == '/rulesets') {
       return 'https://rpgsmith.com/help/#RuleSets';
     }
-    else if (url.toUpperCase().indexOf('/CHARACTER/DASHBOARD') > -1) {
+    else if (url.toUpperCase().indexOf('/CHARACTER/DASHBOARD') > -1 ||
+      url.toUpperCase().indexOf('/RULESET/DASHBOARD') > -1 || url.toUpperCase().indexOf('/CHARACTER/TILES/') > -1) {
       return 'https://rpgsmith.com/help/#Dashboard';
     }
     else if (url.toUpperCase().indexOf('/SEARCH/BASIC/') > -1 || url.toUpperCase().indexOf('/SEARCH/') > -1) {
@@ -983,10 +984,9 @@ export class Utilities {
       return 'https://rpgsmith.com/help/#RSCharStats';
 
     } else if (url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1 || url.toUpperCase().indexOf('/CHARACTER/INVENTORY-DETAILS/') > -1) {
-      console.log('charcter inventory');
+     
       return 'https://rpgsmith.com/help/#items';
     }
-    
     else if ((url.toUpperCase().indexOf('/RULESET/ITEM-MASTER/') > -1 ||
       url.toUpperCase().indexOf('/RULESET/ITEM-DETAILS') > -1 ||
       url.toUpperCase().indexOf('/RULESET/BUNDLE-DETAILS') > -1)
