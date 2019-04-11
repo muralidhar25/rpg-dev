@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DAL.Models
 {
-   public class UserRecordsCount
+   public class UserSubscription
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -15,6 +15,7 @@ namespace DAL.Models
         public string UserId { get; set; }
         public virtual ApplicationUser User { get; set; }
         public int RulesetCount { get; set; }
+        public int CampaignCount { get; set; }
         public int CharacterCount { get; set; }
         public int PlayerCount { get; set; }
     }

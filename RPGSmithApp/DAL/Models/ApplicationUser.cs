@@ -45,6 +45,12 @@ namespace DAL.Models
         public string ProfileImage { get; set; }
         public string TempUserName { get; set; }
 
+        public bool IsGm { get; set; }
+        public DateTime GmEndDate { get; set; }
+        public bool IsGmPermanent { get; set; }
+        public bool RemoveAds { get; set; }
+        public string StripeCustomerId { get; set; }
+        public string StripeSubscriptionID { get; set; }
 
 
         /// <summary>

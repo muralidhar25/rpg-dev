@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace RPGSmithApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190410080954_GM_Account_Initials")]
+    partial class GM_Account_Initials
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -151,7 +153,7 @@ namespace RPGSmithApp.Migrations
                     b.Property<string>("FullName")
                         .HasMaxLength(150);
 
-                    b.Property<DateTime>("GmEndDate");
+                    b.Property<DateTime?>("GmEndDate");
 
                     b.Property<bool>("HasSubscribedNewsletter");
 
@@ -189,13 +191,7 @@ namespace RPGSmithApp.Migrations
                     b.Property<string>("ProfileImage")
                         .HasMaxLength(2048);
 
-                    b.Property<bool>("RemoveAds");
-
                     b.Property<string>("SecurityStamp");
-
-                    b.Property<string>("StripeCustomerId");
-
-                    b.Property<string>("StripeSubscriptionID");
 
                     b.Property<string>("TempUserName");
 

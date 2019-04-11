@@ -119,7 +119,9 @@ namespace DAL.Core
             var result = await _userManager.CreateAsync(user, password);
             if (!result.Succeeded)
                 return Tuple.Create(false, result.Errors.Select(e => e.Description).ToArray());
-
+            else {
+                await _context.UserSubscriptions.AddAsync(new UserSubscription {UserId=user.Id,CharacterCount=3,RulesetCount=3 });
+            }
 
             user = await _userManager.FindByNameAsync(user.UserName);
 

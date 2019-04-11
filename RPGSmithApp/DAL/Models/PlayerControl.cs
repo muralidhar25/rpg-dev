@@ -14,8 +14,8 @@ namespace DAL.Models
 
         public int CampaignID { get; set; }
         public virtual RuleSet Campaign { get; set; }
-        public int CharacterID { get; set; }
-        public virtual Character Character { get; set; }
+        public int? PlayerCharacterID { get; set; }
+        public virtual Character PlayerCharacter { get; set; }
         public bool PauseGame { get; set; }
         public bool PauseItemCreate { get; set; }
         public bool PauseItemAdd { get; set; }

@@ -49,8 +49,8 @@ namespace RPGSmithApp.Controllers
         private readonly ICharacterService _characterService;
 
 
-        public AccountController(IAccountManager accountManager, IAuthorizationService authorizationService, 
-            ILogger<AccountController> logger, IEmailer emailer, IHttpContextAccessor httpContextAccessor, 
+        public AccountController(IAccountManager accountManager, IAuthorizationService authorizationService,
+            ILogger<AccountController> logger, IEmailer emailer, IHttpContextAccessor httpContextAccessor,
             UserManager<ApplicationUser> userManager,
             IRuleSetService ruleSetService, ICharacterService characterService)
         {
@@ -64,14 +64,14 @@ namespace RPGSmithApp.Controllers
             _characterService = characterService;
 
         }
-        
+
         [HttpGet("users/me")]
         [Produces(typeof(UserViewModel))]
         public async Task<IActionResult> GetCurrentUser()
         {
             return await GetUserByUserName(this.User.Identity.Name);
         }
-        
+
         [HttpGet("users/{id}", Name = GetUserByIdActionName)]
         [Produces(typeof(UserViewModel))]
         public async Task<IActionResult> GetUserById(string id)
@@ -87,7 +87,7 @@ namespace RPGSmithApp.Controllers
             else
                 return NotFound(id);
         }
-        
+
         [HttpGet("users/username/{userName}")]
         [Produces(typeof(UserViewModel))]
         public async Task<IActionResult> GetUserByUserName(string userName)
@@ -102,7 +102,7 @@ namespace RPGSmithApp.Controllers
 
             return await GetUserById(appUser.Id);
         }
-        
+
         [HttpGet("users")]
         [Produces(typeof(List<UserViewModel>))]
         [Authorize(Authorization.Policies.ViewAllUsersPolicy)]
@@ -110,7 +110,7 @@ namespace RPGSmithApp.Controllers
         {
             return await GetUsers(-1, -1);
         }
-        
+
         [HttpGet("users/{page:int}/{pageSize:int}")]
         [Produces(typeof(List<UserViewModel>))]
         [Authorize(Authorization.Policies.ViewAllUsersPolicy)]
@@ -130,13 +130,13 @@ namespace RPGSmithApp.Controllers
 
             return Ok(usersVM);
         }
-        
+
         [HttpPut("users/me")]
         public async Task<IActionResult> UpdateCurrentUser([FromBody] UserEditViewModel user)
         {
             return await UpdateUser(Utilities.GetUserId(this.User), user);
         }
-        
+
         [HttpPut("users/{id}")]
         public async Task<IActionResult> UpdateUser(string id, [FromBody] UserEditViewModel user)
         {
@@ -208,13 +208,13 @@ namespace RPGSmithApp.Controllers
 
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
-        
+
         [HttpPatch("users/me")]
         public async Task<IActionResult> UpdateCurrentUser([FromBody] JsonPatchDocument<UserPatchViewModel> patch)
         {
             return await UpdateUser(Utilities.GetUserId(this.User), patch);
         }
-        
+
         [HttpPatch("users/{id}")]
         public async Task<IActionResult> UpdateUser(string id, [FromBody] JsonPatchDocument<UserPatchViewModel> patch)
         {
@@ -284,10 +284,10 @@ namespace RPGSmithApp.Controllers
                     //var callbackUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}{HttpContext.Request.PathBase.ToUriComponent()}/" + "email-confirmation?id=" + user.Id;// + "&code=" + WebUtility.UrlEncode(code);
                     //await _emailer.SendEmailAsync(user.FullName, user.Email, "Confirm your account", $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
 
-                    
+
                     var mailTemplatePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/mail-templates/account-verification.html");
                     var EmailContent = System.IO.File.ReadAllText(mailTemplatePath);
-                    EmailContent = EmailContent.Replace("#CONFIRM-URL", $"{url}/"+ "email-confirmation-success?id=" + user.Id);
+                    EmailContent = EmailContent.Replace("#CONFIRM-URL", $"{url}/" + "email-confirmation-success?id=" + user.Id);
 
                     var callbackUrl = $"{url}/" + "email-confirmation?id=" + user.Id;// + "&code=" + WebUtility.UrlEncode(code);
                     (bool successMail, string errorMail) = await _emailer.SendEmailAsync(user.FullName, user.Email, emailSubject, EmailContent, isHtml: true);
@@ -309,17 +309,18 @@ namespace RPGSmithApp.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ActiveUserByConfirmEmail([FromBody]ConfirmEmailFromAppViewModel ConfirmEmailModel)
         {
-          //  var co = WebUtility.UrlDecode(ConfirmEmailModel.userId);
+            //  var co = WebUtility.UrlDecode(ConfirmEmailModel.userId);
 
 
 
             ApplicationUser appUser = await _accountManager.GetUserByIdAsync(ConfirmEmailModel.userId);
             //var code = await _userManager.GenerateEmailConfirmationTokenAsync(appUser);
 
-            if(appUser==null)
+            if (appUser == null)
             {
                 return BadRequest("User not available please do the registration");
-            }else if(appUser.EmailConfirmed)
+            }
+            else if (appUser.EmailConfirmed)
             {
                 return Ok("Your Account Has Been Confirmed.");
             }
@@ -328,8 +329,8 @@ namespace RPGSmithApp.Controllers
 
             if (users.Where(x => x.Item1.UserName == appUser.TempUserName && x.Item1.EmailConfirmed == true && x.Item1.IsDeleted != true).Count() > 0)
             {
-               await _accountManager.DeleteUserAsync(appUser);
-                return BadRequest("The username <"+ appUser.TempUserName + "> selected is no longer available please start the registration process again and select a new username");
+                await _accountManager.DeleteUserAsync(appUser);
+                return BadRequest("The username <" + appUser.TempUserName + "> selected is no longer available please start the registration process again and select a new username");
             }
 
             //await _userManager.ConfirmEmailAsync(appUser,  code);
@@ -339,15 +340,15 @@ namespace RPGSmithApp.Controllers
             await _accountManager.UpdateUserAsync(appUser);
             return Ok("Your Account Has Been Confirmed.");
         }
-        
+
         [HttpGet("~/api/account/resetpassword/{userId}")]
         [AllowAnonymous]
         public async Task<IActionResult> ResetPasswordGet(string userId)
         {
 
-                ApplicationUser appUser = await _accountManager.GetUserByIdAsync(userId);
+            ApplicationUser appUser = await _accountManager.GetUserByIdAsync(userId);
             return Ok(appUser.Email);
-            
+
         }
 
         [HttpPost("ResetPassword")]
@@ -365,7 +366,7 @@ namespace RPGSmithApp.Controllers
             // If we got this far, something failed, redisplay form
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
-        
+
         [HttpPost("ForgotPassword")]
         [AllowAnonymous]
         public async Task<IActionResult> ForgotPassword([FromBody]  ForgotPasswordEmailViewModel model)
@@ -384,11 +385,11 @@ namespace RPGSmithApp.Controllers
                 var host = request.Host.ToUriComponent();
                 var pathBase = request.PathBase.ToUriComponent();
 
-               // var code = await _userManager.GeneratePasswordResetTokenAsync(appUser);
+                // var code = await _userManager.GeneratePasswordResetTokenAsync(appUser);
 
                 //var baseUrlOfApp = $"{request.Scheme}://{host}{pathBase}/" + "forgot-password-email?id=" + appUser.Id;// + "&code=" + WebUtility.UrlEncode(code);
                 //(bool success, string errorMsg) response = await _emailer.SendEmailAsync(appUser.FullName, appUser.Email, "Reset Your Password", "Please <a href=\"" + baseUrlOfApp + "\">click here</a> to reset your password.", isHtml: true);
-                
+
                 var mailTemplatePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/mail-templates/reset-password.html");
                 var EmailContent = System.IO.File.ReadAllText(mailTemplatePath);
 
@@ -396,7 +397,7 @@ namespace RPGSmithApp.Controllers
                 EmailContent = EmailContent.Replace("#RESET-URL", reset_url);
 
                 (bool success, string errorMsg) response = await _emailer.SendEmailAsync(appUser.FullName, appUser.Email, "Reset Your Password", EmailContent, isHtml: true);
-                
+
                 if (response.success) return Ok();
                 else return BadRequest(response.errorMsg + " Please try again.");
             }
@@ -433,7 +434,7 @@ namespace RPGSmithApp.Controllers
 
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
-        
+
         //delete user
         [HttpDelete("users/{id}")]
         [Produces(typeof(UserViewModel))]
@@ -463,7 +464,7 @@ namespace RPGSmithApp.Controllers
 
             return Ok(userVM);
         }
-        
+
         [HttpPut("users/unblock/{id}")]
         [Authorize(Authorization.Policies.ManageAllUsersPolicy)]
         public async Task<IActionResult> UnblockUser(string id)
@@ -481,7 +482,7 @@ namespace RPGSmithApp.Controllers
 
             return NoContent();
         }
-        
+
         [HttpGet("users/me/preferences")]
         [Produces(typeof(string))]
         public async Task<IActionResult> UserPreferences()
@@ -494,7 +495,7 @@ namespace RPGSmithApp.Controllers
             else
                 return NotFound(userId);
         }
-        
+
         [HttpPut("users/me/preferences")]
         public async Task<IActionResult> UserPreferences([FromBody] string data)
         {
@@ -512,7 +513,7 @@ namespace RPGSmithApp.Controllers
 
             return NoContent();
         }
-        
+
         [HttpGet("roles/{id}", Name = GetRoleByIdActionName)]
         [Produces(typeof(RoleViewModel))]
         public async Task<IActionResult> GetRoleById(string id)
@@ -543,7 +544,7 @@ namespace RPGSmithApp.Controllers
 
             return Ok(roleVM);
         }
-        
+
         [HttpGet("roles")]
         [Produces(typeof(List<RoleViewModel>))]
         [Authorize(Authorization.Policies.ViewAllRolesPolicy)]
@@ -551,7 +552,7 @@ namespace RPGSmithApp.Controllers
         {
             return await GetRoles(-1, -1);
         }
-        
+
         [HttpGet("roles/{page:int}/{pageSize:int}")]
         [Produces(typeof(List<RoleViewModel>))]
         [Authorize(Authorization.Policies.ViewAllRolesPolicy)]
@@ -560,7 +561,7 @@ namespace RPGSmithApp.Controllers
             var roles = await _accountManager.GetRolesLoadRelatedAsync(page, pageSize);
             return Ok(Mapper.Map<List<RoleViewModel>>(roles));
         }
-        
+
         [HttpPut("roles/{id}")]
         [Authorize(Authorization.Policies.ManageAllRolesPolicy)]
         public async Task<IActionResult> UpdateRole(string id, [FromBody] RoleViewModel role)
@@ -593,7 +594,7 @@ namespace RPGSmithApp.Controllers
 
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
-        
+
         [HttpPost("roles")]
         [Authorize(Authorization.Policies.ManageAllRolesPolicy)]
         public async Task<IActionResult> CreateRole([FromBody] RoleViewModel role)
@@ -618,7 +619,7 @@ namespace RPGSmithApp.Controllers
 
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
-        
+
         [HttpDelete("roles/{id}")]
         [Produces(typeof(RoleViewModel))]
         [Authorize(Authorization.Policies.ManageAllRolesPolicy)]
@@ -645,7 +646,7 @@ namespace RPGSmithApp.Controllers
 
             return Ok(roleVM);
         }
-        
+
         [HttpGet("permissions")]
         [Produces(typeof(List<PermissionViewModel>))]
         [Authorize(Authorization.Policies.ViewAllRolesPolicy)]
@@ -653,7 +654,7 @@ namespace RPGSmithApp.Controllers
         {
             return Ok(Mapper.Map<List<PermissionViewModel>>(ApplicationPermissions.AllPermissions));
         }
-        
+
         private async Task<UserViewModel> GetUserViewModelHelper(string userId)
         {
             var userAndRoles = await _accountManager.GetUserAndRolesAsync(userId);
@@ -675,7 +676,7 @@ namespace RPGSmithApp.Controllers
 
             return null;
         }
-        
+
         private void AddErrors(IEnumerable<string> errors)
         {
             foreach (var error in errors)
@@ -719,7 +720,7 @@ namespace RPGSmithApp.Controllers
 
 
             var rulesetList = this._ruleSetService.GetRuleSetByUserId(id).Result;
-            foreach(var ruleset in rulesetList)
+            foreach (var ruleset in rulesetList)
             {
                 this._ruleSetService.DeleteRuleSet(ruleset.RuleSetId);
             }
@@ -873,7 +874,7 @@ namespace RPGSmithApp.Controllers
                     //appUser.IsEnabled = false;
                     appUser.EmailConfirmed = false;
                 }
-                dynamic Response = new ExpandoObject();                
+                dynamic Response = new ExpandoObject();
 
                 (bool success, string[] errorMsg) = await _accountManager.UpdateUserAsync(appUser);
                 if (success && _isEmailChanged)
@@ -962,6 +963,6 @@ namespace RPGSmithApp.Controllers
             string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
             ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
             return appUser.Id;
-        }
+        }        
     }
 }

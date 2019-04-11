@@ -109,6 +109,9 @@ namespace DAL
         public virtual DbSet<SearchFilter> SearchFilter { get; set; }
         public virtual DbSet<ItemMasterBundle> ItemMasterBundles { get; set; }
         public virtual DbSet<ItemMasterBundleItem> ItemMasterBundleItems { get; set; }
+        public virtual DbSet<PlayerControl> PlayerControls { get; set; }
+        public virtual DbSet<PlayerInvite> PlayerInvites { get; set; }
+        public virtual DbSet<UserSubscription> UserSubscriptions { get; set; }
         
 
         public ApplicationDbContext(DbContextOptions options) : base(options)

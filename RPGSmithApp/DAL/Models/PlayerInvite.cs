@@ -17,7 +17,7 @@ namespace DAL.Models
         public virtual ApplicationUser PlayerUser { get; set; }
         public int PlayerCampaignID { get; set; }
         public virtual RuleSet PlayerCampaign { get; set; }
-        public int PlayerCharacterID { get; set; }
+        public int? PlayerCharacterID { get; set; }
         public virtual Character PlayerCharacter { get; set; }
         public bool IsAccepted { get; set; }
 
