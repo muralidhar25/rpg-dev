@@ -44,7 +44,14 @@ namespace DAL.Services
         {
             try
             {
-                AddSlotsToUsers(applicationUser.Id, SlotType.RULESET_SLOT, qty);
+                if (applicationUser.IsGm)
+                {
+                    AddSlotsToUsers(applicationUser.Id, SlotType.RULESET_SLOT, qty);
+                }
+                else {
+                    AddSlotsToUsers(applicationUser.Id, SlotType.CAMPAIGN_SLOT, qty);
+                }
+                
             }
             catch (Exception ex)
             {
@@ -63,6 +70,7 @@ namespace DAL.Services
                     user.RemoveAds = true;                    
                     _context.SaveChanges();
                     AddSlotsToUsers(UserID, SlotType.PLAYER_SLOT, 5);
+                    AddSlotsToUsers(UserID, SlotType.CAMPAIGN_SLOT, 3,true);
                 }
                 
             }
@@ -85,7 +93,7 @@ namespace DAL.Services
                     user.StripeSubscriptionID = StripeSubscriptionId;
                     _context.SaveChanges();
                     AddSlotsToUsers(UserID, SlotType.PLAYER_SLOT, 5);
-                    AddSlotsToUsers(UserID, SlotType.CAMPAIGN_SLOT, 3);
+                    AddSlotsToUsers(UserID, SlotType.CAMPAIGN_SLOT, 3,true);
                 }
 
             }
@@ -110,25 +118,29 @@ namespace DAL.Services
                 throw ex;
             }            
         }
-        private bool AddSlotsToUsers(string UserID, SlotType slotType,int SlotsCountToAdd) {
+        private bool AddSlotsToUsers(string UserID, SlotType slotType,int SlotsCountToAdd,bool isGMCase=false) {
             try
             {
                 UserSubscription subs = _context.UserSubscriptions.Where(x => x.UserId == UserID).FirstOrDefault();
                 if (subs != null)
-                {
+                {                    
                     switch (slotType)
                     {
                         case SlotType.RULESET_SLOT:
-                            subs.RulesetCount = subs.RulesetCount + SlotsCountToAdd;
+                            int oldRulesetCount = isGMCase == true ? 0 : subs.RulesetCount;
+                            subs.RulesetCount = oldRulesetCount + SlotsCountToAdd;
                             break;
                         case SlotType.CAMPAIGN_SLOT:
-                            subs.CampaignCount = subs.CampaignCount + SlotsCountToAdd;
+                            int oldCampaignCount = isGMCase == true ? 0 : subs.CampaignCount;
+                            subs.CampaignCount = oldCampaignCount + SlotsCountToAdd;
                             break;
                         case SlotType.CHARACTER_SLOT:
-                            subs.CharacterCount = subs.CharacterCount + SlotsCountToAdd;
+                            int oldCharacterCount = isGMCase == true ? 0 : subs.CharacterCount;
+                            subs.CharacterCount = oldCharacterCount + SlotsCountToAdd;
                             break;
                         case SlotType.PLAYER_SLOT:
-                            subs.PlayerCount = subs.PlayerCount + SlotsCountToAdd;
+                            int oldPlayerCount = isGMCase == true ? 0 : subs.PlayerCount;
+                            subs.PlayerCount = oldPlayerCount + SlotsCountToAdd;
                             break;
                         default:
                             break;

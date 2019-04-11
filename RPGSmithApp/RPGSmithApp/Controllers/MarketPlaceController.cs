@@ -59,7 +59,7 @@ namespace RPGSmithApp.Controllers
                     var SubsService = new SubscriptionService();
                     Subscription subscription = SubsService.Create(Subsoptions);
                     paymentSuccess = true;
-                    if (subscription.Status == "succeeded")
+                    if (subscription.Status == "active")
                     {
                         UpdateUser_GmFor1Year(customer.Id, subscription.Id,subscription.CurrentPeriodEnd);
                         updateUserDetailSuccess = true;
