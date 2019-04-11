@@ -38,5 +38,9 @@ namespace DAL.Core
         public const string IsGm = "isgm";
         
         public const string RemoveAds = "removeads";
+        public const string CharacterSlot = "characterslot";
+        public const string PlayerSlot = "playerslot";
+        public const string RulesetSlot = "rulesetslot";
+        public const string CampaignSlot = "campaignslot";
     }
 }
