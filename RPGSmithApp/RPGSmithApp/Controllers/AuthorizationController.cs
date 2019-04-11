@@ -381,6 +381,12 @@ namespace RPGSmithApp.Controllers
 
                 if (!string.IsNullOrWhiteSpace(user.ProfileImage))
                     identity.AddClaim(CustomClaimTypes.ProfileImage, user.ProfileImage, OpenIdConnectConstants.Destinations.IdentityToken);
+
+                if (user.IsGm)
+                    identity.AddClaim(CustomClaimTypes.IsGm, user.IsGm.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+
+                if (user.RemoveAds)
+                    identity.AddClaim(CustomClaimTypes.RemoveAds, user.RemoveAds.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
             }
 
             if (ticket.HasScope(OpenIdConnectConstants.Scopes.Email))

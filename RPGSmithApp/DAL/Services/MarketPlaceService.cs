@@ -9,6 +9,8 @@ namespace DAL.Services
 {
     public class MarketPlaceService : IMarketPlaceService
     {
+        const int defaultPlayerCount = 5;
+        const int defaultCampaignCount = 3;
         protected readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
         public MarketPlaceService(ApplicationDbContext context, IConfiguration configuration)
@@ -69,8 +71,8 @@ namespace DAL.Services
                     user.IsGmPermanent = true;
                     user.RemoveAds = true;                    
                     _context.SaveChanges();
-                    AddSlotsToUsers(UserID, SlotType.PLAYER_SLOT, 5);
-                    AddSlotsToUsers(UserID, SlotType.CAMPAIGN_SLOT, 3,true);
+                    AddSlotsToUsers(UserID, SlotType.PLAYER_SLOT, defaultPlayerCount);
+                    AddSlotsToUsers(UserID, SlotType.CAMPAIGN_SLOT, defaultCampaignCount, true);
                 }
                 
             }
@@ -92,8 +94,8 @@ namespace DAL.Services
                     user.StripeCustomerId = StripeCustomerId;
                     user.StripeSubscriptionID = StripeSubscriptionId;
                     _context.SaveChanges();
-                    AddSlotsToUsers(UserID, SlotType.PLAYER_SLOT, 5);
-                    AddSlotsToUsers(UserID, SlotType.CAMPAIGN_SLOT, 3,true);
+                    AddSlotsToUsers(UserID, SlotType.PLAYER_SLOT, defaultPlayerCount);
+                    AddSlotsToUsers(UserID, SlotType.CAMPAIGN_SLOT, defaultCampaignCount, true);
                 }
 
             }
@@ -140,7 +142,15 @@ namespace DAL.Services
                             break;
                         case SlotType.PLAYER_SLOT:
                             int oldPlayerCount = isGMCase == true ? 0 : subs.PlayerCount;
-                            subs.PlayerCount = oldPlayerCount + SlotsCountToAdd;
+                            if (isGMCase && oldPlayerCount >= defaultPlayerCount)
+                            {
+
+                            }
+                            else
+                            {
+                                subs.PlayerCount = oldPlayerCount + SlotsCountToAdd;
+                            }
+                            
                             break;
                         default:
                             break;
