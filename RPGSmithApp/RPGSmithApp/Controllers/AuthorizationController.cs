@@ -382,11 +382,25 @@ namespace RPGSmithApp.Controllers
                 if (!string.IsNullOrWhiteSpace(user.ProfileImage))
                     identity.AddClaim(CustomClaimTypes.ProfileImage, user.ProfileImage, OpenIdConnectConstants.Destinations.IdentityToken);
 
-                if (user.IsGm)
-                    identity.AddClaim(CustomClaimTypes.IsGm, user.IsGm.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
-
-                if (user.RemoveAds)
+               
+                    identity.AddClaim(CustomClaimTypes.IsGm, user.IsGm.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);                                
                     identity.AddClaim(CustomClaimTypes.RemoveAds, user.RemoveAds.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+
+                UserSubscription userSubscription =await _accountManager.userSubscriptions(user.Id);
+                if (userSubscription != null)
+                {
+                    identity.AddClaim(CustomClaimTypes.CampaignSlot, userSubscription.CampaignCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+                    identity.AddClaim(CustomClaimTypes.RulesetSlot, userSubscription.RulesetCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+                    identity.AddClaim(CustomClaimTypes.CharacterSlot, userSubscription.CharacterCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+                    identity.AddClaim(CustomClaimTypes.PlayerSlot, userSubscription.PlayerCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+                }
+                else {
+                    identity.AddClaim(CustomClaimTypes.CampaignSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
+                    identity.AddClaim(CustomClaimTypes.RulesetSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
+                    identity.AddClaim(CustomClaimTypes.CharacterSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
+                    identity.AddClaim(CustomClaimTypes.PlayerSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
+                }
+                
             }
 
             if (ticket.HasScope(OpenIdConnectConstants.Scopes.Email))

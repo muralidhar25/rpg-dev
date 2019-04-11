@@ -396,5 +396,8 @@ namespace DAL.Core
             var result = await _roleManager.DeleteAsync(role);
             return Tuple.Create(result.Succeeded, result.Errors.Select(e => e.Description).ToArray());
         }
+        public async Task<UserSubscription> userSubscriptions(string id) {
+            return await _context.UserSubscriptions.Where(x => x.UserId == id).SingleOrDefaultAsync();
+        }
     }
 }

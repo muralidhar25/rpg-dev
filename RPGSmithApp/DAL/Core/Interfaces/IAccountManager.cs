@@ -39,5 +39,6 @@ namespace DAL.Core.Interfaces
         Task<Tuple<bool, string[]>> UpdateRoleAsync(ApplicationRole role, IEnumerable<string> claims);
         Task<Tuple<bool, string[]>> UpdateUserAsync(ApplicationUser user);
         Task<Tuple<bool, string[]>> UpdateUserAsync(ApplicationUser user, IEnumerable<string> roles);
+        Task<UserSubscription> userSubscriptions(string id);
     }
 }
