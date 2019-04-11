@@ -27,6 +27,7 @@ namespace RPGSmithApp.Controllers
     [Route("api/[controller]")]
     public class RuleSetController : Controller
     {
+        private int TotalRuleSetSlotsAvailable = 3;
         private readonly IRuleSetService _ruleSetService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAccountManager _accountManager;
@@ -107,21 +108,37 @@ namespace RPGSmithApp.Controllers
             _rulesetTileConfigService = rulesetTileConfigService;
             _emailer = emailer;
             _coreRulesetService = coreRulesetService;
-            _commonFuncsCoreRuleSet = commonFuncsCoreRuleSet;
+            _commonFuncsCoreRuleSet = commonFuncsCoreRuleSet;            
         }
 
         [HttpGet("GetRuleSetsCount")]
         public async Task<IActionResult> GetRuleSetsCount(string Id)
         {
+            await TotalRuleSetSlotsAvailableForCurrentUser();
             var _ruleSets = _ruleSetService.GetRuleSetsByUserId(Id);
 
             if (_ruleSets == null) return Ok(0);
 
             //If Limited edition
-            _ruleSets = _ruleSets.Take(_ruleSets.Count >= 3 ? 3 : _ruleSets.Count).ToList();
+            _ruleSets = _ruleSets.Take(_ruleSets.Count >= TotalRuleSetSlotsAvailable ? TotalRuleSetSlotsAvailable : _ruleSets.Count).ToList();
 
             return Ok(_ruleSets.Count);
         }
+
+        private async Task TotalRuleSetSlotsAvailableForCurrentUser()
+        {
+            ApplicationUser user = GetUser();
+            UserSubscription userSubscription = await _accountManager.userSubscriptions(user.Id);
+            if (user.IsGm)
+            {
+                TotalRuleSetSlotsAvailable = userSubscription.CampaignCount;
+            }
+            else
+            {
+                TotalRuleSetSlotsAvailable = userSubscription.RulesetCount;
+            }
+        }
+
         [HttpGet("GetRuleSetAndCharacterCount")]
         public async Task<IActionResult> GetRuleSetAndCharacterCount(string Id)
         {
@@ -142,11 +159,12 @@ namespace RPGSmithApp.Controllers
         {
             try
             {
+                await TotalRuleSetSlotsAvailableForCurrentUser();
                 var ruleSets = await _ruleSetService.GetRuleSets(page, pageSize);
 
                 //If Limited edition
                 if (ruleSets != null && !IsAdminUser())
-                    ruleSets = ruleSets.Take(ruleSets.Count >= 3 ? 3 : ruleSets.Count).ToList();
+                    ruleSets = ruleSets.Take(ruleSets.Count >= TotalRuleSetSlotsAvailable ? TotalRuleSetSlotsAvailable : ruleSets.Count).ToList();
 
                 List<RuleSetViewModel> ruleSetsVM = new List<RuleSetViewModel>();
                 foreach (var ruleSet in ruleSets)
@@ -166,11 +184,12 @@ namespace RPGSmithApp.Controllers
         {
             try
             {
+                await TotalRuleSetSlotsAvailableForCurrentUser();
                 var ruleSets = await _ruleSetService.GetRuleSets();
 
                 //If Limited edition
                 if (ruleSets != null && !IsAdminUser())
-                    ruleSets = ruleSets.Take(ruleSets.Count >= 3 ? 3 : ruleSets.Count).ToList();
+                    ruleSets = ruleSets.Take(ruleSets.Count >= TotalRuleSetSlotsAvailable ? TotalRuleSetSlotsAvailable : ruleSets.Count).ToList();
 
                 List<RuleSetViewModel> ruleSetsVM = new List<RuleSetViewModel>();
                 foreach (var ruleSet in ruleSets)
@@ -204,7 +223,10 @@ namespace RPGSmithApp.Controllers
 
                 //If Limited edition
                 if (ruleSets != null && !IsAdminUser())
-                    ruleSets = ruleSets.Take(ruleSets.Count >= 3 ? 3 : ruleSets.Count).ToList();
+                {
+                    await TotalRuleSetSlotsAvailableForCurrentUser();
+                    ruleSets = ruleSets.Take(ruleSets.Count >= TotalRuleSetSlotsAvailable ? TotalRuleSetSlotsAvailable : ruleSets.Count).ToList();
+                }
 
 
                 foreach (var ruleSet in ruleSets)
@@ -225,8 +247,10 @@ namespace RPGSmithApp.Controllers
 
                 //If Limited edition
                 if (ruleSets != null && !IsAdminUser())
-                    ruleSets = ruleSets.Take(ruleSets.Count >= 3 ? 3 : ruleSets.Count).ToList();
-
+                {
+                    await TotalRuleSetSlotsAvailableForCurrentUser();
+                    ruleSets = ruleSets.Take(ruleSets.Count >= TotalRuleSetSlotsAvailable ? TotalRuleSetSlotsAvailable : ruleSets.Count).ToList();
+                }
                 var ruleSetsVM = new List<RuleSetViewModel>();
                 foreach (var ruleSet in ruleSets)
                     ruleSetsVM.Add(_commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet));
@@ -246,7 +270,7 @@ namespace RPGSmithApp.Controllers
 
                 ////If Limited edition
                 //if (ruleSets != null && !IsAdminUser())
-                //    ruleSets = ruleSets.Take(ruleSets.Count >= 3 ? 3 : ruleSets.Count).ToList();
+                //    ruleSets = ruleSets.Take(ruleSets.Count >= TotalRuleSetSlotsAvailable ? TotalRuleSetSlotsAvailable : ruleSets.Count).ToList();
 
                 var ruleSetsVM = new List<RuleSetViewModel>();
                 foreach (var ruleSet in ruleSets)
@@ -264,7 +288,7 @@ namespace RPGSmithApp.Controllers
 
             //If Limited edition
             //if (ruleSets != null && !IsAdminUser())
-            //    ruleSets = ruleSets.Take(ruleSets.Count >= 3 ? 3 : ruleSets.Count).ToList();
+            //    ruleSets = ruleSets.Take(ruleSets.Count >= TotalRuleSetSlotsAvailable ? TotalRuleSetSlotsAvailable : ruleSets.Count).ToList();
 
             var ruleSetsVM = new List<RuleSetViewModel>();
             foreach (var ruleSet in ruleSets)
@@ -283,9 +307,10 @@ namespace RPGSmithApp.Controllers
                     var _userId = GetUserId();
                     var ruleSetDomain = Mapper.Map<RuleSet>(model);
 
+                    await TotalRuleSetSlotsAvailableForCurrentUser();
                     //Limit user to have max 3 ruleset & //purchase for more sets
-                    if (await _ruleSetService.GetRuleSetsCountByUserId(_userId) >= 3 && !IsAdminUser())
-                        return BadRequest("Only three slots of Rule Sets are allowed. For more slots, please contact administrator.");
+                    if (await _ruleSetService.GetRuleSetsCountByUserId(_userId) >= TotalRuleSetSlotsAvailable && !IsAdminUser())
+                        return BadRequest("Only "+ TotalRuleSetSlotsAvailable + " slots of Rule Sets are allowed.");
 
                     if (IsAdminUser()) ruleSetDomain.IsCoreRuleset = true;
                     else ruleSetDomain.IsCoreRuleset = false;
@@ -335,9 +360,10 @@ namespace RPGSmithApp.Controllers
             {
                 var _userId = GetUserId();
 
+                await TotalRuleSetSlotsAvailableForCurrentUser();
                 //Limit user to have max 3 ruleset & //purchase for more sets
-                if (await _ruleSetService.GetRuleSetsCountByUserId(_userId) >= 3 && !IsAdminUser())
-                    return BadRequest("Only three slots of Rule Sets are allowed. For more slots, please contact administrator.");
+                if (await _ruleSetService.GetRuleSetsCountByUserId(_userId) >= TotalRuleSetSlotsAvailable && !IsAdminUser())
+                    return BadRequest("Only "+ TotalRuleSetSlotsAvailable + " slots of Rule Sets are allowed.");
 
                 foreach (var _id in rulesetIds)
                 {
@@ -892,9 +918,9 @@ namespace RPGSmithApp.Controllers
                 try
                 {
                     var userId = GetUserId();
-
-                    if (await _ruleSetService.GetRuleSetsCountByUserId(userId) >= 3 && !IsAdminUser())
-                        return BadRequest("Only three slots of Rule Sets are allowed. For more slots, please contact administrator.");
+                    await TotalRuleSetSlotsAvailableForCurrentUser();
+                    if (await _ruleSetService.GetRuleSetsCountByUserId(userId) >= TotalRuleSetSlotsAvailable && !IsAdminUser())
+                        return BadRequest("Only "+ TotalRuleSetSlotsAvailable + " slots of Rule Sets are allowed. For more slots, please contact administrator.");
 
 
                     if (_ruleSetService.IsRuleSetExist(model.RuleSetName, userId).Result)

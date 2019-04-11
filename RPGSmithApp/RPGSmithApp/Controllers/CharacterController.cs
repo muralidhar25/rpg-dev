@@ -27,6 +27,7 @@ namespace RPGSmithApp.Controllers
     [Route("api/[controller]")]
     public class CharacterController : Controller
     {
+        private int TotalCharacterSlotsAvailable = 3;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAccountManager _accountManager;
         private readonly ICharacterService _CharacterService;
@@ -141,10 +142,11 @@ namespace RPGSmithApp.Controllers
                     CharIdToDuplicate=model.CharacterId;
                     model.CharacterId = 0;
                 }
-                
+
+                await TotalCharacterSlotsAvailableForCurrentUser();
                 //Limit user to have max 3 characters & //purchase for more set
-                if (await _CharacterService.GetCharactersCountByUserId(userId) >= 3 && !IsAdminUser())
-                    return BadRequest("Only three slots of Characters are allowed. For more slots, please contact administrator.");
+                if (await _CharacterService.GetCharactersCountByUserId(userId) >= TotalCharacterSlotsAvailable && !IsAdminUser())
+                    return BadRequest("Only "+ TotalCharacterSlotsAvailable + " slots of Characters are allowed");
 
                 var characterDomain = Mapper.Map<Character>(model);
                 characterDomain.UserId = userId;
@@ -157,7 +159,7 @@ namespace RPGSmithApp.Controllers
                     var NewRuleset =await AddCoreRuleSetsCommon(new int[] { model.RuleSetId });
                     if (NewRuleset==null)
                     {
-                        return BadRequest("The maximum number of Rule Sets (3) already exist on this account. Please delete one of the existing Rule Sets to allow for the addition of another. Rule Sets can be deleted from the Rule Sets screen");
+                        return BadRequest("The maximum number of Rule Sets ("+ TotalCharacterSlotsAvailable + ") already exist on this account. Please delete one of the existing Rule Sets to allow for the addition of another. Rule Sets can be deleted from the Rule Sets screen");
                     }
                     else 
                     {
@@ -515,8 +517,10 @@ namespace RPGSmithApp.Controllers
             var characters = _CharacterService.GetCharacterRuleSetId(id);
 
             //If Limited edition
-            if (characters != null && !IsAdminUser())
-                characters = characters.Take(characters.Count >= 3 ? 3 : characters.Count).ToList();
+            if (characters != null && !IsAdminUser()) {
+                await TotalCharacterSlotsAvailableForCurrentUser();
+                characters = characters.Take(characters.Count >= TotalCharacterSlotsAvailable ? TotalCharacterSlotsAvailable : characters.Count).ToList();
+            }
 
             List<CharacterViewModel> CharacterVM = new List<CharacterViewModel>();
             foreach (var character in characters)
@@ -531,8 +535,10 @@ namespace RPGSmithApp.Controllers
             var characters = _CharacterService.GetCharacterUserId(id);
 
             //If Limited edition
-            if (characters != null && !IsAdminUser())
-                characters = characters.Take(characters.Count >= 3 ? 3 : characters.Count).ToList();
+            if (characters != null && !IsAdminUser()) {
+                await TotalCharacterSlotsAvailableForCurrentUser();
+                characters = characters.Take(characters.Count >= TotalCharacterSlotsAvailable ? TotalCharacterSlotsAvailable : characters.Count).ToList();
+            }
 
             List<CharacterViewModel> CharacterVM = new List<CharacterViewModel>();
             foreach (var character in characters)
@@ -636,9 +642,10 @@ namespace RPGSmithApp.Controllers
             {
                 var userId = GetUserId();
 
+                await TotalCharacterSlotsAvailableForCurrentUser();
                 //Limit user to have max 3 characters & //purchase for more set
-                if (await _CharacterService.GetCharactersCountByUserId(userId) >= 3 && !IsAdminUser())
-                    return BadRequest("Only three slots of Characters are allowed. For more slots, please contact administrator.");
+                if (await _CharacterService.GetCharactersCountByUserId(userId) >= TotalCharacterSlotsAvailable && !IsAdminUser())
+                    return BadRequest("Only "+ TotalCharacterSlotsAvailable + " slots of Characters are allowed.");
 
 
                 if (_CharacterService.IsCharacterExist(model.CharacterName, userId).Result)
@@ -837,8 +844,9 @@ namespace RPGSmithApp.Controllers
             RuleSet res = null;
             var _userId = GetUserId();
 
+            //await TotalCharacterSlotsAvailableForCurrentUser(); //Already being called from previsous method
             //Limit user to have max 3 ruleset & //purchase for more sets
-            if (await _ruleSetService.GetRuleSetsCountByUserId(_userId) >= 3 && !IsAdminUser())
+            if (await _ruleSetService.GetRuleSetsCountByUserId(_userId) >= TotalCharacterSlotsAvailable && !IsAdminUser())
                 return null;
 
             foreach (var _id in rulesetIds)
@@ -875,7 +883,13 @@ namespace RPGSmithApp.Controllers
             }
             return res;
         }
-
+        private async Task TotalCharacterSlotsAvailableForCurrentUser()
+        {
+            ApplicationUser user = GetUserDetails();
+            UserSubscription userSubscription = await _accountManager.userSubscriptions(user.Id);   
+            TotalCharacterSlotsAvailable = userSubscription.CharacterCount;
+           
+        }
         #region API Using SP
         [HttpGet("getByUserId_sp")]
         public async Task<IActionResult> getByUserId_sp(string userId, int page = 1, int pageSize = 30)

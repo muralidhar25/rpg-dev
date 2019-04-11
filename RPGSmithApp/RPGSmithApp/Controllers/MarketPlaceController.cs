@@ -30,6 +30,36 @@ namespace RPGSmithApp.Controllers
             this._stripeConfig = stripeConfig.Value;
             this._marketPlace = marketPlace;
         }
+        [HttpGet("GetMarketPlaceList")]
+        public async Task<IActionResult> GetMarketPlaceList()
+        {
+            try
+            {
+                ApplicationUser user = GetUser();
+                List<MarketPlaceItems> results = await _marketPlace.GetList();
+                if (user.IsGm)
+                {
+
+                    if (user.IsGmPermanent)
+                    {
+                        results = results.Where(x => x.MarketPlaceId != MarketPlaceType.GMPERMANENT || x.MarketPlaceId != MarketPlaceType.GM_1_YEAR).ToList();
+                    }
+                    else
+                    {
+                        results = results.Where(x => x.MarketPlaceId != MarketPlaceType.GM_1_YEAR).ToList();
+                    }
+                }
+                else {
+                    results = results.Where(x => x.MarketPlaceId != MarketPlaceType.PLAYER_SLOT).ToList();
+                }
+                              
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpPost("ChargePayment")]
         public async Task<IActionResult> ChargePayment([FromBody] MarketPlace model)
         {

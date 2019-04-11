@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using DAL.Models;
 using Microsoft.Extensions.Configuration;
 
@@ -17,6 +18,109 @@ namespace DAL.Services
         {
             _context = context;
             this._configuration = configuration;
+        }
+        public async Task<List<MarketPlaceItems>> GetList()
+        {
+            List<MarketPlaceItems> res = new List<MarketPlaceItems>();
+            res.Add(new MarketPlaceItems {
+                Id=1,
+                MarketPlaceId = MarketPlaceType.GMPERMANENT,
+                Title = "GM Account(Permanent)",
+                Image = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png",
+                Description = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
+                Price = 50,
+                Tag = "Permanent",
+                Subscribed = false,
+                Qty=1
+
+            });            
+            res.Add(new MarketPlaceItems
+            {
+                Id = 2,
+                MarketPlaceId = MarketPlaceType.GM_1_YEAR,
+                Title = "GM Account (Subscription 1-Year)",
+                Image = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png",
+                Description = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
+                Price = 20,
+                Tag = "Permanent",
+                Subscribed = false,
+                Qty = 1
+
+            });
+            res.Add(new MarketPlaceItems
+            {
+                Id = 3,
+                MarketPlaceId = MarketPlaceType.CAMPAIGN_RULE_SET,
+                Title = "+1 Campaign/Rule Set",
+                Image = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png",
+                Description = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
+                Price = 5,
+                Tag = "Permanent",
+                Subscribed = false,
+                Qty = 1
+            });
+            res.Add(new MarketPlaceItems
+            {
+                Id = 4,
+                MarketPlaceId = MarketPlaceType.PLAYER_SLOT,
+                Title = "+1 Player Slot",
+                Image = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png",
+                Description = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
+                Price = 5,
+                Tag = "Permanent",
+                Subscribed = false,
+                Qty = 1
+            });
+            res.Add(new MarketPlaceItems
+            {
+                Id = 5,
+                MarketPlaceId = MarketPlaceType.CHARACTER_SLOT,
+                Title = "+1 Character Slot",
+                Image = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png",
+                Description = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
+                Price = 3,
+                Tag = "Permanent",
+                Subscribed = false,
+                Qty = 1
+            });
+            res.Add(new MarketPlaceItems
+            {
+                Id = 6,
+                MarketPlaceId = MarketPlaceType.REMOVE_ADDS,
+                Title = "Remove Adds",
+                Image = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png",
+                Description = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
+                Price = 5,
+                Tag = "Permanent",
+                Subscribed = false,
+                Qty = 1
+            });
+            res.Add(new MarketPlaceItems
+            {
+                Id = 7,
+                MarketPlaceId = MarketPlaceType.ADDITIONAL_STORAGE,
+                Title = "Additional Storage Space",
+                Image = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png",
+                Description = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
+                Price = 0,
+                Tag = "Permanent",
+                Subscribed = false,
+                Qty = 1
+            });
+            res.Add(new MarketPlaceItems
+            {
+                Id = 8,
+                MarketPlaceId = MarketPlaceType.BUY_US_A_COFFEE,
+                Title = "Buy us a coffee?",
+                Image = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png",
+                Description = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
+                Price = 0,
+                Tag = "Permanent",
+                Subscribed = false,
+                Qty = 1
+            });
+
+            return res;
         }
         public void AddCharacterSlot(ApplicationUser applicationUser, int qty)
         {
@@ -165,5 +269,7 @@ namespace DAL.Services
             }
             
         }
+
+        
     }
 }

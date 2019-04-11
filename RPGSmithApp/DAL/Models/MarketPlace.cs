@@ -11,6 +11,18 @@ namespace DAL.Models
         public string SourceToken { get; set; }
         public string Description { get; set; }
     }
+    public class MarketPlaceItems
+    {
+        public int Id { get; set; }
+        public MarketPlaceType MarketPlaceId { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Tag { get; set; }
+        public decimal Price { get; set; }
+        public int Qty { get; set; }
+        public string Image { get; set; }
+        public bool Subscribed { get; set; }
+    }
     public enum MarketPlaceType
     {
         GMPERMANENT = 1,
