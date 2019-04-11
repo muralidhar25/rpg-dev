@@ -270,6 +270,7 @@ namespace RPGSmithApp
             services.AddScoped<DAL.Services.CharacterTileServices.IExecuteTileService, DAL.Services.CharacterTileServices.ExecuteTileService>();
 
             services.AddScoped<IMarketPlaceService, MarketPlaceService>();
+            services.AddScoped<ICampaignService, CampaignService>();
 
             // Register Hosted Services
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, BackgroundProcesses>();

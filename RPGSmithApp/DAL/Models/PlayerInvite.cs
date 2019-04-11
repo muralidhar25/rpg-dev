@@ -20,6 +20,12 @@ namespace DAL.Models
         public int? PlayerCharacterID { get; set; }
         public virtual Character PlayerCharacter { get; set; }
         public bool IsAccepted { get; set; }
+        public string PlayerEmail { get; set; }
 
+    }
+    public class PlayerInviteEmail {
+        public string UserName { get; set; }
+        public string SendByUserId { get; set; }
+        public int CampaignId { get; set; }
     }
 }

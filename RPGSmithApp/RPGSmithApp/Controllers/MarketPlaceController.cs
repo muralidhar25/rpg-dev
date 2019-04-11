@@ -42,7 +42,7 @@ namespace RPGSmithApp.Controllers
 
                     if (user.IsGmPermanent)
                     {
-                        results = results.Where(x => x.MarketPlaceId != MarketPlaceType.GMPERMANENT || x.MarketPlaceId != MarketPlaceType.GM_1_YEAR).ToList();
+                        results = results.Where(x => x.MarketPlaceId != MarketPlaceType.GMPERMANENT && x.MarketPlaceId != MarketPlaceType.GM_1_YEAR).ToList();
                     }
                     else
                     {
