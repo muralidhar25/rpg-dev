@@ -191,6 +191,7 @@ namespace RPGSmithApp
 
             // Configurations
             services.Configure<SmtpConfig>(Configuration.GetSection("SmtpConfig"));
+            services.Configure<StripeConfig>(Configuration.GetSection("StripeConfig"));
             // DB Creation and Seeding
             services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
             // Auth Handlers
@@ -268,6 +269,7 @@ namespace RPGSmithApp
             services.AddScoped<DAL.Services.CharacterTileServices.ILinkTileService, DAL.Services.CharacterTileServices.LinkTileService>();
             services.AddScoped<DAL.Services.CharacterTileServices.IExecuteTileService, DAL.Services.CharacterTileServices.ExecuteTileService>();
 
+            services.AddScoped<IMarketPlaceService, MarketPlaceService>();
 
             // Register Hosted Services
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, BackgroundProcesses>();
