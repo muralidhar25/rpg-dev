@@ -219,10 +219,11 @@ export enum CustomDiceResultType {
 export enum MarketPlaceItemsType {
   GMPERMANENT = 1,
   GM_1_YEAR = 2,
-  CAMPAIGN_RULE_SET = 3,
+  CAMPAIGN_SLOT = 3,
   PLAYER_SLOT = 4,
   CHARACTER_SLOT = 5,
   REMOVE_ADDS = 6,
   ADDITIONAL_STORAGE = 7,
-  BUY_US_A_COFFEE  = 8
+  BUY_US_A_COFFEE = 8,
+  RULESET_SLOT = 9
 }

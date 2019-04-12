@@ -46,3 +46,20 @@ form.checkout button:active {
 .StripeElement--webkit-autofill {
   background-color: #fefde5 !important;
 }
+
+.modal-footer{
+  padding: 12px 15px 10px;
+  border-top: 1px solid #dedbda;
+}
+table th,
+table td {
+  border-color: #d3d3d3;
+}
+.qty-input{
+  width:70px
+}
+.qty-input[type=number]::-webkit-inner-spin-button,
+.qty-input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

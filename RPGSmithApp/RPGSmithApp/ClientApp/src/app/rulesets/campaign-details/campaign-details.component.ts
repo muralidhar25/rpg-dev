@@ -17,6 +17,8 @@ import { PlayerControlsComponent } from '../player-controls/player-controls.comp
 import { InvitePlayerComponent } from '../invite-player/invite-player.component';
 import { ImageViewerComponent } from '../../shared/image-interface/image-viewer/image-viewer.component';
 import { CampaignInviteComponent } from '../campaign-invite/campaign-invite.component';
+import { User } from '../../core/models/user.model';
+import { AuthService } from '../../core/auth/auth.service';
  
 @Component({
   selector: 'app-campaign-details',
@@ -35,9 +37,10 @@ export class CampaignDetailsComponent implements OnInit {
   public event: EventEmitter<any> = new EventEmitter();
   invitedUsers = [];
   showIcon: boolean = false;
+  playersSlots: number = 0;
   
   constructor( private formBuilder: FormBuilder, private router: Router, private localStorage: LocalStoreManager,
-    private rulesetService: RulesetService, private sharedService: SharedService,
+    private rulesetService: RulesetService, private sharedService: SharedService, private authService: AuthService,
     private modalService: BsModalService, public appService: AppService1,
     private location: PlatformLocation, private route: ActivatedRoute) {
 
@@ -46,10 +49,11 @@ export class CampaignDetailsComponent implements OnInit {
       
     });
     
-    this.initialize();
+   
   }
 
   ngOnInit() {
+    this.initialize();
   }
 
   playersControls() {
@@ -62,6 +66,12 @@ export class CampaignDetailsComponent implements OnInit {
   }
 
   initialize() {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null) {
+      this.authService.logout();
+      this.localStorage.deleteData(DBkeys.CURRENT_RULESET);
+    } else { this.playersSlots = user.playerSlot }
+    
     this.isLoading = true;
     this.rulesetService.getRulesetById<any>(this.ruleSetId)
       .subscribe(data => {
@@ -103,7 +113,7 @@ export class CampaignDetailsComponent implements OnInit {
         data: ruleset
       }
     });
-    this.bsModalRef.content.title = 'Edit RuleSet';
+    this.bsModalRef.content.title = 'Edit Campaign';
     this.bsModalRef.content.button = 'UPDATE';
     this.bsModalRef.content.ruleSetImage = ruleset.ruleSetImage;
     ruleset.view = VIEW.MANAGE;

@@ -111,3 +111,17 @@
     line-height: 9px;
   }
 }
+
+.qty-input {
+  display: inline-block;
+  width: 50px;
+  background:#fff;
+  border:0px;
+  outline:none !important;
+  box-shadow:none
+}
+.qty-input[type=number]::-webkit-inner-spin-button,
+.qty-input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

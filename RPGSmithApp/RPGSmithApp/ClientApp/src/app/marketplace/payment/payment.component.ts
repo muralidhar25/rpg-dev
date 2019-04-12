@@ -9,7 +9,7 @@ import {
   ChangeDetectorRef } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { NgForm } from '@angular/forms';
-import { marketplaceModel } from '../../core/models/marketplace.model';
+import { marketplaceModel, marketplaceListModel } from '../../core/models/marketplace.model';
 import { MarketPlaceService } from '../../core/services/maketplace.service';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
 import { User } from '../../core/models/user.model';
@@ -17,6 +17,8 @@ import { DBkeys } from '../../core/common/db-keys';
 import { Utilities } from '../../core/common/utilities';
 import { AuthService } from "../../core/auth/auth.service";
 import { AlertService, MessageSeverity, DialogType } from '../../core/common/alert.service';
+import { MarketPlaceItemsType } from '../../core/models/enums';
+import { retry } from 'rxjs/operators';
 
 declare var stripe: any;
 declare var elements: any;
@@ -33,9 +35,10 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
   card: any;
   cardHandler = this.onChange.bind(this);
   error: string;
-  paymentInfo: any;
+  paymentInfo: marketplaceListModel = new marketplaceListModel();
   userId: string;
   marketplaceDetails: marketplaceModel = new marketplaceModel();
+  MARKETPLACEITEMSTYPE = MarketPlaceItemsType;
   constructor(private bsModalRef: BsModalRef,
     private cd: ChangeDetectorRef,
     private authService: AuthService,
@@ -45,13 +48,18 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-      if (user != null) {
+      let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);      
+      if (user == null) {
+        this.authService.logout();
+      }
+      else {
         this.userId = user.id;
       }
+      debugger
       this.paymentInfo = this.bsModalRef.content.paymentInfo;
       this.marketplaceDetails.marketPlaceId = this.paymentInfo.marketPlaceId;
       this.marketplaceDetails.price = this.paymentInfo.price;
+      this.marketplaceDetails.qty = this.paymentInfo.qty;
       this.marketplaceDetails.description = this.paymentInfo.title + ' for UserID: ' + this.userId;
     }, 0);
   }
@@ -103,8 +111,10 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
         this.alertService.stopLoadingMessage();
         //  { "paymentSuccessed": true, "userUpdated": true, "message": "Payment Successful." }
         if (paymentdetails.paymentSuccessed && paymentdetails.userUpdated) {
+          this.paymentInfo.qty=this.marketplaceDetails.qty ;
             this.event.emit({
-              payment_done: details
+              payment_done: details,
+              item: this.paymentInfo
           });
           this.alertService.showMessage(paymentdetails.message, "", MessageSeverity.success);
           
@@ -125,7 +135,33 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
     );
     
   }
-  
+  public inputValidator(event: any) {
+    debugger
+    let eventInstance = event;
+    eventInstance = eventInstance || window.event;
+    let key = eventInstance.keyCode || eventInstance.which;
+    if ((47 < key) && (key < 58) || key == 8) {
+      return true;
+    } else {
+      if (eventInstance.preventDefault)
+        eventInstance.preventDefault();
+      eventInstance.returnValue = false;
+      return false;
+    } //if
+  }
+  getTotal(price, qty) {
+    return +price * +qty;
+  }
+  getTotalIsNotValid(price, qty) {
+    try {
+      if ((+price * +qty) <= 0) {
+        return true;
+      }
+      return isNaN(+price * +qty);
+    } catch (e) {
+      return true;
+    }
+  }
 
 }
 

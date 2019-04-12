@@ -12,6 +12,7 @@ namespace DAL.Services
         void AddCharacterSlot(ApplicationUser applicationUser,int qty);
         void AddPlayerSlot(ApplicationUser applicationUser, int qty);
         void AddRuleSetSlot(ApplicationUser applicationUser, int qty);
+        void AddCampaignSlot(ApplicationUser applicationUser, int qty);
         void UpdateUserToGMPermanent(string UserID);
         void UpdateUserToGMFor1Year(string UserID,string StripeCustomerId, string StripeSubscriptionId, DateTime GMEndDate);
         Task<List<MarketPlaceItems>> GetList();

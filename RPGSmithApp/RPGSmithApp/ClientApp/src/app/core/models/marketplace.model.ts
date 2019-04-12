@@ -1,22 +1,24 @@
 export class marketplaceModel {
-  constructor(marketPlaceId?: number, price?: number, sourceToken?: string, description ? : string
+  constructor(marketPlaceId?: number, price?: number, sourceToken?: string, description?: string, qty?: number
     ) {
     this.marketPlaceId = marketPlaceId;
     this.price = price;
     this.sourceToken = sourceToken;
     this.description = description;
+    this.qty = qty;
   }
   public marketPlaceId: number;
   public price: number;
   public sourceToken: string;
   public description: string;
+  public qty: number;
 }
 
 
 export class marketplaceListModel {
 
   constructor(id?: number,
-    marketplaceType?: number,
+    marketPlaceId?: number,
     title?: string,
     description?: string,
     tag?: string,
@@ -27,7 +29,7 @@ export class marketplaceListModel {
 
   ) {
     this.id = id;
-    this.marketplaceType = marketplaceType;
+    this.marketPlaceId = marketPlaceId;
     this.title = title;
     this.description = description;
     this.tag = tag;
@@ -37,7 +39,7 @@ export class marketplaceListModel {
     this.subscribed = subscribed;
   }
   public id: number;
-  public marketplaceType: number;
+  public marketPlaceId: number;
   public title: string;
   public description: string;
   public tag: string;

@@ -98,45 +98,51 @@ export class RulesetComponent implements OnInit {
         }
       
         else {
-          this.rulesetSlots = user.rulesetSlot;
+          if (user.isGm) {
+            this.router.navigate(['/rulesets/campaigns']);
+          }
+          else {
+            this.rulesetSlots = user.rulesetSlot;
             this.isAdminUser = user.roles.some(function (value) { return (value === "administrator") });
-          this.isLoading = true;
-          this.rulesetService.getDefaultDices()
-            .subscribe(data => {
-              this.defaultDicesForNewUsers = data;
-            }, error => {              
-              this.alertService.stopLoadingMessage();
-              let Errors = Utilities.ErrorDetail("", error);
-              if (Errors.sessionExpire) {
-                this.authService.logout(true);
-              }
-            }, () => { });
+            this.isLoading = true;
+            this.rulesetService.getDefaultDices()
+              .subscribe(data => {
+                this.defaultDicesForNewUsers = data;
+              }, error => {
+                this.alertService.stopLoadingMessage();
+                let Errors = Utilities.ErrorDetail("", error);
+                if (Errors.sessionExpire) {
+                  this.authService.logout(true);
+                }
+              }, () => { });
             this.rulesetService.getRulesetsByUserId(user.id)
-                .subscribe(data => {
-                    this.rulesets = data;
-                    this.isLoading = false;
-                    if (ruleset && !this.openManage) {
-                        let rulesetData = ruleset;
-                        this.manageRuleset(ruleset);
-                        ruleset = null;
-                      this.openManage = true;
-                      this.localStorage.deleteData(DBkeys.CURRENT_RULESET);
-                    }
-                }, error => {
-                    this.isLoading = false;
-                    this.alertService.stopLoadingMessage();
-                    let Errors = Utilities.ErrorDetail("", error);
-                    if (Errors.sessionExpire) {
-                        this.authService.logout(true);
-                  }
-                  this.localStorage.deleteData(DBkeys.CURRENT_RULESET);	
-                }, () => { });
+              .subscribe(data => {
+                this.rulesets = data;
+                this.isLoading = false;
+                if (ruleset && !this.openManage) {
+                  let rulesetData = ruleset;
+                  this.manageRuleset(ruleset);
+                  ruleset = null;
+                  this.openManage = true;
+                  this.localStorage.deleteData(DBkeys.CURRENT_RULESET);
+                }
+              }, error => {
+                this.isLoading = false;
+                this.alertService.stopLoadingMessage();
+                let Errors = Utilities.ErrorDetail("", error);
+                if (Errors.sessionExpire) {
+                  this.authService.logout(true);
+                }
+                this.localStorage.deleteData(DBkeys.CURRENT_RULESET);
+              }, () => { });
             //setTimeout(() => {
             //    if (ruleset && !this.isLoading) this.manageRuleset(ruleset);
             //}, 200);
 
             //resting headers
             this.resetHeaderValues();
+          }
+          
         }
     }
 

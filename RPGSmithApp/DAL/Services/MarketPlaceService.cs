@@ -25,9 +25,9 @@ namespace DAL.Services
             res.Add(new MarketPlaceItems {
                 Id=1,
                 MarketPlaceId = MarketPlaceType.GMPERMANENT,
-                Title = "GM Account(Permanent)",
-                Image = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png",
-                Description = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
+                Title = "GM Account ($50)",
+                Image = "https://rpgsmithsa.blob.core.windows.net/stock-marketplace/gm.jpg",
+                Description = "Purchase a Base GM Account that lasts forever. Any and all Rule Sets currently on your player account are automatically converted to Campaigns in the GM account. This purchase also Removes Ads.",
                 Price = 50,
                 Tag = "Permanent",
                 Subscribed = false,
@@ -38,11 +38,11 @@ namespace DAL.Services
             {
                 Id = 2,
                 MarketPlaceId = MarketPlaceType.GM_1_YEAR,
-                Title = "GM Account (Subscription 1-Year)",
-                Image = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png",
-                Description = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
+                Title = "GM Account (Subscription 1-Year) ($20)",
+                Image = "https://rpgsmithsa.blob.core.windows.net/stock-marketplace/gm.jpg",
+                Description = "Don’t want to shill out for a permanent account? 20 bucks will get you the same features for a whole year. Auto-renews at the same rate but you can turn that off if you like. Also Removes Ads as long as you have an active GM account.",
                 Price = 20,
-                Tag = "Permanent",
+                Tag = "1 Year",
                 Subscribed = false,
                 Qty = 1
 
@@ -50,10 +50,22 @@ namespace DAL.Services
             res.Add(new MarketPlaceItems
             {
                 Id = 3,
-                MarketPlaceId = MarketPlaceType.CAMPAIGN_RULE_SET,
-                Title = "+1 Campaign/Rule Set",
-                Image = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png",
-                Description = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
+                MarketPlaceId = MarketPlaceType.CAMPAIGN_SLOT,
+                Title = "+1 Campaign / Rule Set ($5)",
+                Image = "https://rpgsmithsa.blob.core.windows.net/stock-marketplace/campaign.jpg",
+                Description = "Add a permanent Campaign / Rule Set for this account. For GMs you get an extra Campaign slot, for Player accounts you’ll get another Rule Set slot. Now you can play all kinds of different games. Permanent on this account.",
+                Price = 5,
+                Tag = "Permanent",
+                Subscribed = false,
+                Qty = 1
+            });
+            res.Add(new MarketPlaceItems
+            {
+                Id = 9,
+                MarketPlaceId = MarketPlaceType.RULESET_SLOT,
+                Title = "+1 Campaign / Rule Set ($5)",
+                Image = "https://rpgsmithsa.blob.core.windows.net/stock-marketplace/campaign.jpg",
+                Description = "Add a permanent Campaign / Rule Set for this account. For GMs you get an extra Campaign slot, for Player accounts you’ll get another Rule Set slot. Now you can play all kinds of different games. Permanent on this account.",
                 Price = 5,
                 Tag = "Permanent",
                 Subscribed = false,
@@ -63,9 +75,9 @@ namespace DAL.Services
             {
                 Id = 4,
                 MarketPlaceId = MarketPlaceType.PLAYER_SLOT,
-                Title = "+1 Player Slot",
-                Image = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png",
-                Description = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
+                Title = "+1 Player Slot (GM Account Required) ($5)",
+                Image = "https://rpgsmithsa.blob.core.windows.net/stock-marketplace/player.jpg",
+                Description = "Want to invite even more player accounts to join in your campaign, purchase an extra player slot to get them in on the action. This will add another player slot for each campaign on your account. Permanent.",
                 Price = 5,
                 Tag = "Permanent",
                 Subscribed = false,
@@ -75,9 +87,9 @@ namespace DAL.Services
             {
                 Id = 5,
                 MarketPlaceId = MarketPlaceType.CHARACTER_SLOT,
-                Title = "+1 Character Slot",
-                Image = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png",
-                Description = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
+                Title = "+1 Character Slot ($3)",
+                Image = "https://rpgsmithsa.blob.core.windows.net/stock-marketplace/character.jpg",
+                Description = "This allows you to create another character for use with any of your Rule Sets (Player accounts) or Campaigns (GM Accounts). Don’t get this confused with “Player Slots”. This allows an additional character to be created. If you’re a GM and need to invite an additional person to your campaign you’ll need an available Player Slot to do so.",
                 Price = 3,
                 Tag = "Permanent",
                 Subscribed = false,
@@ -87,9 +99,9 @@ namespace DAL.Services
             {
                 Id = 6,
                 MarketPlaceId = MarketPlaceType.REMOVE_ADDS,
-                Title = "Remove Adds",
-                Image = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png",
-                Description = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
+                Title = "Remove Ads ($5)",
+                Image = "https://rpgsmithsa.blob.core.windows.net/stock-marketplace/adremove.jpg",
+                Description = "Don’t want to see ads? Yea it pains us to have to put those in the app in the first place. For 5 bucks you won’t have to see one ever again in RPGSmith.",
                 Price = 5,
                 Tag = "Permanent",
                 Subscribed = false,
@@ -99,10 +111,10 @@ namespace DAL.Services
             {
                 Id = 7,
                 MarketPlaceId = MarketPlaceType.ADDITIONAL_STORAGE,
-                Title = "Additional Storage Space",
-                Image = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png",
-                Description = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
-                Price = 0,
+                Title = "+1 Gigabyte of Storage Space ($5)",
+                Image = "https://rpgsmithsa.blob.core.windows.net/stock-marketplace/storage.jpg",
+                Description = "Need more room to store your handouts, images, and other content? Purchase an extra gig of space and now you won’t have to clean up your storage contents. You probably should anyways though, it’s just a good habit. Permanent.",
+                Price = 5,
                 Tag = "Permanent",
                 Subscribed = false,
                 Qty = 1
@@ -111,15 +123,15 @@ namespace DAL.Services
             {
                 Id = 8,
                 MarketPlaceId = MarketPlaceType.BUY_US_A_COFFEE,
-                Title = "Buy us a coffee?",
-                Image = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png",
-                Description = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
+                Title = "Buy us a Coffee ($?)",
+                Image = "https://rpgsmithsa.blob.core.windows.net/stock-marketplace/coffee.jpg",
+                Description = "Please don’t be offended if we use any donations you kick our way on something other than coffee. Some of us would prefer a muffin instead.",
                 Price = 0,
-                Tag = "Permanent",
+                Tag = "",
                 Subscribed = false,
                 Qty = 1
             });
-
+            
             return res;
         }
         public void AddCharacterSlot(ApplicationUser applicationUser, int qty)
@@ -150,14 +162,18 @@ namespace DAL.Services
         {
             try
             {
-                if (applicationUser.IsGm)
-                {
-                    AddSlotsToUsers(applicationUser.Id, SlotType.RULESET_SLOT, qty);
-                }
-                else {
-                    AddSlotsToUsers(applicationUser.Id, SlotType.CAMPAIGN_SLOT, qty);
-                }
-                
+                AddSlotsToUsers(applicationUser.Id, SlotType.RULESET_SLOT, qty); 
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public void AddCampaignSlot(ApplicationUser applicationUser, int qty)
+        {
+            try
+            {
+                AddSlotsToUsers(applicationUser.Id, SlotType.CAMPAIGN_SLOT, qty);
             }
             catch (Exception ex)
             {
@@ -176,7 +192,13 @@ namespace DAL.Services
                     user.RemoveAds = true;                    
                     _context.SaveChanges();
                     AddSlotsToUsers(UserID, SlotType.PLAYER_SLOT, defaultPlayerCount);
-                    AddSlotsToUsers(UserID, SlotType.CAMPAIGN_SLOT, defaultCampaignCount, true);
+                    UserSubscription subs = _context.UserSubscriptions.Where(x => x.UserId == UserID).FirstOrDefault();
+                    int CampaignCount = defaultCampaignCount;
+                    if (subs!=null)
+                    {
+                        CampaignCount = subs.RulesetCount;
+                    }
+                    AddSlotsToUsers(UserID, SlotType.CAMPAIGN_SLOT, CampaignCount, true);
                 }
                 
             }
@@ -199,7 +221,13 @@ namespace DAL.Services
                     user.StripeSubscriptionID = StripeSubscriptionId;
                     _context.SaveChanges();
                     AddSlotsToUsers(UserID, SlotType.PLAYER_SLOT, defaultPlayerCount);
-                    AddSlotsToUsers(UserID, SlotType.CAMPAIGN_SLOT, defaultCampaignCount, true);
+                    UserSubscription subs = _context.UserSubscriptions.Where(x => x.UserId == UserID).FirstOrDefault();
+                    int CampaignCount = defaultCampaignCount;
+                    if (subs != null)
+                    {
+                        CampaignCount = subs.RulesetCount;
+                    }
+                    AddSlotsToUsers(UserID, SlotType.CAMPAIGN_SLOT, CampaignCount, true);
                 }
 
             }

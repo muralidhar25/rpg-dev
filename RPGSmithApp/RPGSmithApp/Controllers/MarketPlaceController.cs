@@ -39,18 +39,28 @@ namespace RPGSmithApp.Controllers
                 List<MarketPlaceItems> results = await _marketPlace.GetList();
                 if (user.IsGm)
                 {
-
+                    results = results.Where(x => 
+                    x.MarketPlaceId != MarketPlaceType.GM_1_YEAR 
+                    && x.MarketPlaceId != MarketPlaceType.REMOVE_ADDS
+                    && x.MarketPlaceId != MarketPlaceType.RULESET_SLOT
+                    ).ToList();
                     if (user.IsGmPermanent)
                     {
-                        results = results.Where(x => x.MarketPlaceId != MarketPlaceType.GMPERMANENT && x.MarketPlaceId != MarketPlaceType.GM_1_YEAR).ToList();
+                        results = results.Where(x =>
+                        x.MarketPlaceId != MarketPlaceType.GMPERMANENT                        
+                        ).ToList();
                     }
-                    else
-                    {
-                        results = results.Where(x => x.MarketPlaceId != MarketPlaceType.GM_1_YEAR).ToList();
-                    }
+                    
+                }                
+                else 
+                {
+                    //Normal User
+                    results = results.Where(x => x.MarketPlaceId != MarketPlaceType.PLAYER_SLOT && x.MarketPlaceId != MarketPlaceType.CAMPAIGN_SLOT).ToList();
                 }
-                else {
-                    results = results.Where(x => x.MarketPlaceId != MarketPlaceType.PLAYER_SLOT).ToList();
+
+                if (user.RemoveAds)
+                {
+                    results = results.Where(x => x.MarketPlaceId != MarketPlaceType.REMOVE_ADDS).ToList();
                 }
                               
                 return Ok(results);
@@ -99,7 +109,7 @@ namespace RPGSmithApp.Controllers
                 {
                     var options = new ChargeCreateOptions
                     {
-                        Amount = Convert.ToInt64(model.Price * 100),
+                        Amount = Convert.ToInt64(model.Price * model.qty * 100),
                         Currency = "usd",
                         Description = model.Description,
                         SourceId = model.SourceToken // obtained with Stripe.js,
@@ -115,20 +125,23 @@ namespace RPGSmithApp.Controllers
                             case MarketPlaceType.GMPERMANENT:
                                 UpdateUser_GmPermanently();
                                 break;
-                            case MarketPlaceType.CAMPAIGN_RULE_SET:
-                                UpdateUser_AddRuleSetSlot(1);
+                            case MarketPlaceType.CAMPAIGN_SLOT:
+                                UpdateUser_AddCampaignSlot(model.qty);
+                                break;
+                            case MarketPlaceType.RULESET_SLOT:
+                                UpdateUser_AddRuleSetSlot(model.qty);
                                 break;
                             case MarketPlaceType.PLAYER_SLOT:
-                                UpdateUser_AddPlayerSlot(1);
+                                UpdateUser_AddPlayerSlot(model.qty);
                                 break;
                             case MarketPlaceType.CHARACTER_SLOT:
-                                UpdateUser_AddCharacterSlot(1);
+                                UpdateUser_AddCharacterSlot(model.qty);
                                 break;
                             case MarketPlaceType.REMOVE_ADDS:
                                 UpdateUser_RemoveAds();
                                 break;
                             case MarketPlaceType.ADDITIONAL_STORAGE:
-                                UpdateUser_AddStorage(1);
+                                UpdateUser_AddStorage(model.qty);
                                 break;
                             case MarketPlaceType.BUY_US_A_COFFEE:
                                 break;
@@ -184,6 +197,10 @@ namespace RPGSmithApp.Controllers
         private void UpdateUser_AddRuleSetSlot(int qty)
         {
             _marketPlace.AddRuleSetSlot(GetUser(), qty);
+        }
+        private void UpdateUser_AddCampaignSlot(int qty)
+        {
+            _marketPlace.AddCampaignSlot(GetUser(), qty);
         }
 
         private void UpdateUser_GmPermanently()

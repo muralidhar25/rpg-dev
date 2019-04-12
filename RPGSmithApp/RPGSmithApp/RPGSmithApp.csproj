@@ -41,6 +41,7 @@
     <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="2.0.0-rc2-final" />
     <PackageReference Include="OpenIddict.Mvc" Version="2.0.0-rc2-final" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.1.0" />
+    <PackageReference Include="Stripe.net" Version="25.6.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
   </ItemGroup>
 
@@ -201,6 +202,14 @@
     <Compile Remove="Migrations\20190116055437_UpdateCharCustomToggleRelation_fix.Designer.cs" />
     <Compile Remove="Migrations\20190116065306_UpdateCharacterStatToggleRemoveCustomToggleField.cs" />
     <Compile Remove="Migrations\20190116065306_UpdateCharacterStatToggleRemoveCustomToggleField.Designer.cs" />
+    <Compile Remove="Migrations\20190410071302_GM_Account_Initials.cs" />
+    <Compile Remove="Migrations\20190410071302_GM_Account_Initials.Designer.cs" />
+    <Compile Remove="Migrations\20190410073927_GM_Account_Initials.cs" />
+    <Compile Remove="Migrations\20190410073927_GM_Account_Initials.Designer.cs" />
+    <Compile Remove="Migrations\20190410075750_GM_Account_Initials.cs" />
+    <Compile Remove="Migrations\20190410075750_GM_Account_Initials.Designer.cs" />
+    <Compile Remove="Migrations\20190411054152_updateUser.cs" />
+    <Compile Remove="Migrations\20190411054152_updateUser.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

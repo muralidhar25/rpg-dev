@@ -66,12 +66,27 @@ export class RulesetAddInterfaceComponent implements OnInit {
         ruleSets.push(ruleSetId);
         this.rulesetService.addRuleSets<any>(ruleSets)
             .subscribe(
-            data => {
+          data => {
+            let IsGM: boolean = false;
+            let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+            if (user == null)
+              this.authService.logout();
+            else {
+              if (user.isGm) {
+                IsGM = true;
+              }              
+            }
                // this.isLoading = false;
                 this.alertService.stopLoadingMessage();
                 let message = "Rule Set(s) have been added successfully.";
-                this.alertService.showMessage(message, "", MessageSeverity.success);
-                this.RedirectBack();
+              this.alertService.showMessage(message, "", MessageSeverity.success);
+
+            if (IsGM) {
+              this.router.navigate(['/rulesets/campaigns']);
+              }
+              else {
+                this.router.navigate(['/rulesets']);
+              }
                     //this.eventEmitter.emit(true);
                 },
             error => {

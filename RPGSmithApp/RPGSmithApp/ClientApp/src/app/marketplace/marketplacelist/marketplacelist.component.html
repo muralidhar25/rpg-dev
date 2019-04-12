@@ -42,16 +42,20 @@
               <div class="w-100 h-100 ">
                 <div class="row m-0 align-items-center h-100 ">
                   <div class="col-12 mb-1 justify-content-end align-items-center">
-                    <span class="ruleset-count">
+                    <span class="ruleset-count" *ngIf="productdetail?.tag">
                       {{productdetail?.tag}}
                     </span>
-                    <span class="ruleset-count text-success" *ngIf="productdetail.title != 'Buy us a coffee?'">
+                    <span class="ruleset-count text-success" *ngIf="productdetail.marketPlaceId != MARKETPLACEITEMSTYPE.BUY_US_A_COFFEE">
                       ${{productdetail?.price}}
                     </span>
-                    <input type="text" placeholder="$" *ngIf="productdetail.title == 'Buy us a coffee?'" [(ngModel)]="productdetail.price" />
+                    <span class="ruleset-count" *ngIf="productdetail.marketPlaceId == MARKETPLACEITEMSTYPE.BUY_US_A_COFFEE">
+                      $
+                      <input type="number" class="qty-input"  [(ngModel)]="productdetail.price"
+                         (keypress)="inputValidator($event)" />
+                    </span>
                   </div>
                   <div class="col-12 justify-content-end">
-                    <button type="button" (click)="select(productdetail);" class="btn btn-accent" [ngClass]="{disabled : productdetail.price == 0}">Select</button>
+                    <button type="button" (click)="select(productdetail);" class="btn btn-accent" [disabled]="!productdetail.price" [ngClass]="{disabled : !productdetail.price}">Select</button>
                   </div>
                 </div>
               </div>

@@ -70,6 +70,7 @@ import { RequestCache } from './services/shared/request-cache.service';
 import { CachingInterceptor } from './services/shared/caching-interceptor.service';
 import { TextTileService } from "./services/tiles/text-tile.service";
 import { MarketPlaceService } from "./services/maketplace.service";
+import { CampaignService } from "./services/campaign.service";
 
 @NgModule({
   declarations: [
@@ -134,7 +135,8 @@ import { MarketPlaceService } from "./services/maketplace.service";
     RulesetTileConfigService,
     RulesetTileService,
     TextTileService,
-    MarketPlaceService
+    MarketPlaceService,
+    CampaignService
     ],
   exports: [
     EqualValidator,

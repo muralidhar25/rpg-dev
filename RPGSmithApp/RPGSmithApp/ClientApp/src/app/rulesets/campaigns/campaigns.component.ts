@@ -161,14 +161,14 @@ export class CampaignsComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Create Rule Set';
+    this.bsModalRef.content.title = 'Create Campaign';
     this.bsModalRef.content.button = 'NEXT';
     this.bsModalRef.content.rulesetModel = { ruleSetId: 0, defaultDices: this.defaultDicesForNewUsers };
 
     this.bsModalRef.content.event.subscribe(data => {
       this.localStorage.saveSyncedSessionData(data, DBkeys.CURRENT_RULESET);
-      this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
-        this.router.navigate(["rulesets"]));
+      //this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
+      //  this.router.navigate(["rulesets"]));
     });
   }
 
@@ -196,7 +196,7 @@ export class CampaignsComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Edit Rule Set';
+    this.bsModalRef.content.title = 'Edit Campaign';
     this.bsModalRef.content.button = 'UPDATE';
     this.bsModalRef.content.ruleSetImage = ruleset.ruleSetImage;
     this.bsModalRef.content.rulesetModel = ruleset;
@@ -214,20 +214,20 @@ export class CampaignsComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Duplicate Rule Set';
+    this.bsModalRef.content.title = 'Duplicate Campaign';
     this.bsModalRef.content.button = 'DUPLICATE';
     this.bsModalRef.content.ruleSetImage = ruleset.ruleSetImage;
     this.bsModalRef.content.rulesetModel = ruleset;
   }
 
   deleteRuleset(ruleset: Ruleset) {
-    this.alertService.showDialog('Are you sure you want to delete "' + ruleset.ruleSetName + '" ruleset and all its characters?',
+    this.alertService.showDialog('Are you sure you want to delete "' + ruleset.ruleSetName + '" campaign and all its characters?',
       DialogType.confirm, () => this.deleteRulesetHelper(ruleset), null, 'Yes', 'No');
   }
 
   private deleteRulesetHelper(ruleset: Ruleset) {
     this.isLoading = true;
-    this.alertService.startLoadingMessage("", "Deleting Ruleset");
+    this.alertService.startLoadingMessage("", "Deleting Campaign");
 
     this.rulesetService.deleteRuleset(ruleset.ruleSetId)
       .subscribe(
@@ -235,7 +235,7 @@ export class CampaignsComponent implements OnInit {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           this.commonService.UpdateCounts(); /*update charaters count*/
-          this.alertService.showMessage("Ruleset has been deleted successfully.", "", MessageSeverity.success);
+          this.alertService.showMessage("Campaign has been deleted successfully.", "", MessageSeverity.success);
           this.rulesets = this.rulesets.filter((val) => val.ruleSetId != ruleset.ruleSetId);
           //this.initialize();
         },

@@ -11,7 +11,8 @@ import { DBkeys } from '../../core/common/db-keys';
 import { MarketPlaceItemsType } from '../../core/models/enums';
 import { PaymentComponent } from '../payment/payment.component';
 import { MarketPlaceService } from '../../core/services/maketplace.service';
-import { marketplaceListModel } from '../../core/models/marketplace.model';
+import { marketplaceListModel, marketplaceModel } from '../../core/models/marketplace.model';
+import { Utilities } from '../../core/common/utilities';
 
 
 @Component({
@@ -23,7 +24,7 @@ export class MarketplacelistComponent implements OnInit {
 
   marketplacelist: marketplaceListModel[] = [];
 
-  MarketPlaceItemsType = MarketPlaceItemsType;
+  MARKETPLACEITEMSTYPE = MarketPlaceItemsType;
   bsModalRef: BsModalRef;
   userId: string = '';
   isLoading: boolean = false;
@@ -49,7 +50,10 @@ export class MarketplacelistComponent implements OnInit {
   initialize() {
     //user id 
    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-    if (user != null) {
+    if (user == null) {
+      this.authService.logout();
+    }
+    else {
       this.userId = user.id;
     }
     this.getmarketplacelist();
@@ -118,12 +122,16 @@ export class MarketplacelistComponent implements OnInit {
     this.marketPlaceService.getmarketplaceItems<any>().subscribe(data => {
      
       this.marketplacelist = data;
-      console.log(this.marketplacelist);
       this.isLoading = false;
     },
       error => {
-        console.log(error);
         this.isLoading = false;
+        this.alertService.stopLoadingMessage();
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+        this.localStorage.deleteData(DBkeys.CURRENT_RULESET);
       }
     );
   }
@@ -133,7 +141,7 @@ export class MarketplacelistComponent implements OnInit {
   }
 
   select(paymentInfo) {   
-
+    debugger
     this.bsModalRef = this.modalService.show(PaymentComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -143,7 +151,66 @@ export class MarketplacelistComponent implements OnInit {
     this.bsModalRef.content.paymentInfo = paymentInfo;
 
     this.bsModalRef.content.event.subscribe(data => {
-      
+      let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+      if (user == null) {
+        this.authService.logout();
+      }
+
+      let paymentDoneForItem: marketplaceListModel = data.item;
+      switch (paymentDoneForItem.marketPlaceId) {
+        case MarketPlaceItemsType.GMPERMANENT:
+          user.isGm = true;
+          user.removeAds = true;
+          user.campaignSlot = user.rulesetSlot;
+          break;
+        case MarketPlaceItemsType.GM_1_YEAR:
+          user.isGm = true;
+          user.removeAds = true;
+          user.campaignSlot = user.rulesetSlot;
+          break;
+        case MarketPlaceItemsType.CAMPAIGN_SLOT:
+          user.campaignSlot = user.campaignSlot + paymentDoneForItem.qty;
+          break;
+        case MarketPlaceItemsType.RULESET_SLOT:
+          user.rulesetSlot = user.rulesetSlot + paymentDoneForItem.qty;
+          break;
+        case MarketPlaceItemsType.PLAYER_SLOT:
+          user.playerSlot = user.playerSlot + paymentDoneForItem.qty;
+          break;
+        case MarketPlaceItemsType.CHARACTER_SLOT:
+          user.characterSlot = user.characterSlot + paymentDoneForItem.qty;
+          break;
+        case MarketPlaceItemsType.REMOVE_ADDS:
+          user.removeAds = true;
+          break;
+        case MarketPlaceItemsType.ADDITIONAL_STORAGE:
+          break;
+        case MarketPlaceItemsType.BUY_US_A_COFFEE:
+          break;
+
+
+        default:
+          break;
+      }
+      debugger
+      this.localStorage.saveSyncedSessionData(user, DBkeys.CURRENT_USER);
+      this.initialize();
     });
   }
+  public inputValidator(event: any) {
+    debugger
+    let eventInstance= event;
+      eventInstance = eventInstance || window.event;
+     let key = eventInstance.keyCode || eventInstance.which;
+      if ((47 < key) && (key < 58) || key == 8) {
+        return true;
+      } else {
+        if (eventInstance.preventDefault)
+          eventInstance.preventDefault();
+        eventInstance.returnValue = false;
+        return false;
+      } //if
+    } 
+  
+
 }

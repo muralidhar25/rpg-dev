@@ -81,8 +81,8 @@ namespace RPGSmithApp.Controllers
                 await  SendInviteEmail(model.SendByUserName, model.SendByCampaignName, model.SendByCampaignImage, PlayerName, model.UserName);
                 
                 PlayerInvite invite=  await _campaign.CreatePlayerInvite(model, PlayerUserId);
-
-                return Ok(invite);
+                
+                return Ok(invite );
             }
             catch (Exception ex)
             {
