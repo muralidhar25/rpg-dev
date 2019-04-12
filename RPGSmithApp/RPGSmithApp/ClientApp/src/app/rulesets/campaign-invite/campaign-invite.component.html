@@ -1,0 +1,48 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="colorSelectionPopupTitle">Campaign Invite</h5>
+    <a href="https://rpgsmith.com/help/#CampaignInvite" class="help-icon icon icon-Gen-Help" target="_blank"></a>
+    <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+  </div>
+</div>
+<div class="modal-body players-component">
+  <div class="align-items-center">
+    <div class="">
+      <p>
+        <b> {{userName}} </b>  has invited you to their <b> {{rulesetModel?.ruleSetName}} </b> Campaign!
+      </p>
+      <p>
+        To accept this invite select 'ACCEPT' below and you will be taken to the character creation screen.
+        <br />
+        To decline this invite select 'Decline' below and the GM will have their feelings hurt.
+        <br />
+        To postpone answering this invite select click 'Answer Later' to close this window.
+        <br />
+      </p>
+    </div>
+    <div class="">
+      <div class="form-group">
+        <div class="user-login-details invite-login-popup" >
+          <span>
+            <img [src]="rulesetModel?.imageUrl " [alt]="rulesetModel?.ruleSetName" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+          </span>
+          <span class="d-md-block">
+            <span class="user-name">{{rulesetModel?.ruleSetName}}</span>
+          </span>
+        </div>
+        <p class="mt-3">After accepting and creating a character, you can leave this campaign at any time by deleting your character. Do so will remove you from the campaign, the GM would need to re-invite you to create a new character.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer justify-content-between invite-footer-popup">
+  <div class="next-prev-btns">
+    <span></span>
+    <span></span>
+  </div>
+  <button type="button" class="btn btn-outline-accent small-btns" (click)="AnswerLater()">Answer Later</button>
+  <div class="d-flex">
+    <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="Decline()">Decline</button>
+    <button type="button" class="btn btn-accent" (click)="AcceptInvite()">Aceept</button>
+  </div>
+</div>

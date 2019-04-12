@@ -19,6 +19,7 @@ import { AppComponent } from './app.component';
 
 import { IncompatibleBrowserComponent } from "./incompatible-browser/incompatible-browser.component";
 
+//import { AdsenseModule } from 'ng2-adsense';
 import {
   AppTranslationService,
   TranslateLanguageLoader
@@ -59,6 +60,10 @@ import { AppService1 } from './app.service';
             }
         }
     ),
+    //AdsenseModule.forRoot({
+    //  adClient: 'ca-pub-2730708357991854',
+    //  adSlot: 2668335997,
+    //}),
     AuthModule,
     CommonModule,
     PublicModule,

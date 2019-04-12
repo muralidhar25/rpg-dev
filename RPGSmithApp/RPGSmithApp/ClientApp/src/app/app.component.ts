@@ -104,6 +104,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   previousUrlList: string[] = []
   characterNavigation: any = {};
   dashbaordUser: boolean = false;
+  isGmUser: boolean = false;
   redirectUrl: string = '';
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
@@ -375,6 +376,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.rulesetsCount = undefined;
     this.charactersCount = undefined;
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+   
+    if (user) {
+      this.isGmUser = user.isGm;
+    }
     this.rulesetService.getRulesetAndCharactrCount(user.id)
       .subscribe(data => {
         let model: any = data;
@@ -389,7 +394,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   private initialize() {
-
+   
     if (this.isUserLoggedIn) this.updateCount();
 
     if (this.isUserLoggedIn) {
@@ -597,7 +602,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         
         this.URLFlag = false;
       
-        this.showCharacterSearch = ((url.toLowerCase() == '/character/dashboard'));
+        this.showCharacterSearch = ((url.toLowerCase() == '/character/dashboard'));   
         if (url.toUpperCase().indexOf('/CHARACTER/DASHBOARD/') > -1) {
           this.showCharacterSearch = true;
           this.dashbaordUser = true;

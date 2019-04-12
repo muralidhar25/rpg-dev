@@ -1,7 +1,7 @@
 <div id="app_container" class="{{configurations.theme | lowercase}}-theme" [ngClass]="IsRulesetRecordScreenActive?'body-manila ':''">
   <!-- Site header -->
+  
   <header class="site-header" *ngIf="isUserLoggedIn">
-
     <div class="container-fluid">
       <div class="site-header-wrapper">
         <div class="site-header-left-section">
@@ -71,13 +71,19 @@
               </div>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="siteNavigationToggle" *ngIf="isDropdownOpen">
                 <ul class="dropdown-menu-list dropdown-menu-item-contain-links">
-                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" [routerLink]="['/characters']" [routerLinkActive]="['active']" (click)="setPlaceholderText('Characters')">
+                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom"  *ngIf="isGmUser" [routerLink]="['rulesets/campaigns']" [routerLinkActive]="['active']" (click)="setPlaceholderText('Characters')">
+                    <a class="dropdown-menu-item-link">
+                      <span class="dropdown-menu-item-title">Campaigns</span>
+                      <span class="dropdown-menu-item-count" *ngIf="rulesetsCount !== undefined">{{rulesetsCount}}</span>
+                    </a>
+                  </li>
+                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom"  [routerLink]="['/characters']" [routerLinkActive]="['active']" (click)="setPlaceholderText('Characters')">
                     <a class="dropdown-menu-item-link">
                       <span class="dropdown-menu-item-title">Characters</span>
                       <span class="dropdown-menu-item-count" *ngIf="charactersCount !== undefined">{{charactersCount}}</span>
                     </a>
                   </li>
-                  <li class="dropdown-menu-item site-header-navigation-item-inventory prevent-click-custom" [routerLink]="['/rulesets']" [routerLinkActive]="['active']" (click)="setPlaceholderText('Rule Sets')">
+                  <li class="dropdown-menu-item site-header-navigation-item-inventory prevent-click-custom" *ngIf="!isGmUser" [routerLink]="['/rulesets']" [routerLinkActive]="['active']" (click)="setPlaceholderText('Rule Sets')">
                     <a class="dropdown-menu-item-link">
                       <span class="dropdown-menu-item-title">Rule Sets</span>
                       <span class="dropdown-menu-item-count" *ngIf="rulesetsCount !== undefined">{{rulesetsCount}}</span>
@@ -98,6 +104,11 @@
                       <span class="dropdown-menu-item-title">About / Help</span>
                     </a>
                   </li>
+                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" [routerLink]="['/marketplace']" [routerLinkActive]="['active']">
+                    <a class="dropdown-menu-item-link">
+                      <span class="dropdown-menu-item-title">Upgrades</span>
+                    </a>
+                  </li>
                   <li class="dropdown-menu-item site-header-navigation-item-logout prevent-click-custom" (click)="logout()">
                     <a class="dropdown-menu-item-link">
                       <span class="dropdown-menu-item-title">Logout</span>
@@ -115,10 +126,10 @@
   <!-- End of site header -->
   <ng2-toasty [position]="'top-center'"></ng2-toasty>
   <div class="container">
+    <!--<ng-adsense></ng-adsense>-->
+   
     <router-outlet></router-outlet>
 
     <a href="javascript:void(0);" *ngIf="showScrollButton" class="icon icon-arrow-up fade-in back-to-top" (click)="scrollToTop()"></a>
   </div>
 </div>
-
-

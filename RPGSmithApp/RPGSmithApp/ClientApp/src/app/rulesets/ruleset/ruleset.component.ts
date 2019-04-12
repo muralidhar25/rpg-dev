@@ -40,7 +40,7 @@ export class RulesetComponent implements OnInit {
     showPlus: boolean = true;
   isAdminUser: boolean = false;
   defaultDicesForNewUsers: DefaultDice[] =[];
-
+  rulesetSlots: number;
     constructor(
         private router: Router, private alertService: AlertService, private localStorage: LocalStoreManager,
         private authService: AuthService, private configurations: ConfigurationService,
@@ -96,7 +96,9 @@ export class RulesetComponent implements OnInit {
           this.authService.logout();
           this.localStorage.deleteData(DBkeys.CURRENT_RULESET);
         }
+      
         else {
+          this.rulesetSlots = user.rulesetSlot;
             this.isAdminUser = user.roles.some(function (value) { return (value === "administrator") });
           this.isLoading = true;
           this.rulesetService.getDefaultDices()

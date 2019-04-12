@@ -159,14 +159,17 @@ export class AuthService {
       decodedIdToken.phone,
       decodedIdToken.profileimage,
       Array.isArray(decodedIdToken.role) ? decodedIdToken.role : [decodedIdToken.role]);
-    user.isEnabled = true;
-
-    //  console.log('user'); console.log(user);
-
+      user.isEnabled = true;
+      user.isGm = decodedIdToken.isgm.toLowerCase() == 'true' ? true : false;
+      user.removeAds = decodedIdToken.removeads.toLowerCase() == 'true' ? true : false;
+      user.rulesetSlot = +decodedIdToken.rulesetslot;
+      user.playerSlot = +decodedIdToken.playerslot;
+      user.characterSlot = +decodedIdToken.characterslot;
+      user.campaignSlot = +decodedIdToken.campaignslot;
     this.saveUserDetails(user, permissions, accessToken, idToken, refreshToken, accessTokenExpiry, rememberMe);
 
     this.reevaluateLoginStatus(user);
-
+  
     return user;
   }
 

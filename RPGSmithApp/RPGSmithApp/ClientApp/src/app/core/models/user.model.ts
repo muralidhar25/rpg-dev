@@ -2,8 +2,16 @@
 export class User {
     // Note: Using only optional constructor properties without backing store disables typescript's type checking for the type
     constructor(id?: string, userName?: string, fullName?: string, email?: string, jobTitle?: string,
-        phoneNumber?: string, profileImage?: string, roles?: string[], password?: string, createdDate?: Date, url?: string,
-        isSocialLogin?: boolean, hasSubscribedNewsletter?: boolean, isAdmin?: boolean) {
+      phoneNumber?: string, profileImage?: string, roles?: string[], password?: string, createdDate?: Date, url?: string,
+      isSocialLogin?: boolean, hasSubscribedNewsletter?: boolean,
+      isAdmin?: boolean,
+      isGm?: boolean,
+      removeAds?: boolean,
+      rulesetSlot?: number,
+      playerSlot?: number,
+      characterSlot?: number,
+      campaignSlot?:number
+    ) {
 
         this.id = id;
         this.userName = userName;
@@ -19,6 +27,12 @@ export class User {
         this.isSocialLogin = isSocialLogin;
         this.hasSubscribedNewsletter = hasSubscribedNewsletter;
         this.isAdmin = isAdmin;
+        this.isGm = isGm;
+        this.removeAds = removeAds;
+      this.rulesetSlot = rulesetSlot;
+      this.playerSlot = playerSlot;
+      this.characterSlot = characterSlot;
+      this.campaignSlot = campaignSlot;
     }
 
 
@@ -48,4 +62,10 @@ export class User {
     public createdDate: Date;
     public url: string;
     public isAdmin: boolean;
+    public isGm: boolean;
+  public removeAds: boolean;
+  public rulesetSlot: number;
+  public playerSlot: number;
+  public characterSlot: number;
+  public campaignSlot: number;
 }

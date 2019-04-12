@@ -26,4 +26,10 @@ export interface IdToken {
     role: string | string[];
     permission: PermissionValues | PermissionValues[];
     configuration: string;
+    isgm: string;
+  removeads: string;
+  rulesetslot: string;
+  playerslot: string;
+  characterslot: string;
+  campaignslot: string;
 }

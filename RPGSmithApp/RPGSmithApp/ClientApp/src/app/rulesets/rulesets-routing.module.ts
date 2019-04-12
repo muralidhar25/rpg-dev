@@ -13,6 +13,8 @@ import { CharacterStatsComponent } from "./character-stats/character-stats/chara
 import { RulesetAddInterfaceComponent } from "./ruleset-helper/ruleset-add-interface/ruleset-add-interface.component";
 import { AuthGuard } from "../core/auth/auth-guard.service";
 import { BundleDetailsComponent } from "../records/item-master/bundle-details/bundle-details.component";
+import { CampaignsComponent } from "./campaigns/campaigns.component";
+import { CampaignDetailsComponent } from './campaign-details/campaign-details.component';
 
 const routes: Routes = [
   { path: "", component: RulesetComponent, data: { title: "Rulesets" } },
@@ -28,7 +30,8 @@ const routes: Routes = [
   { path: "dashboard/:id", component: RulesetDashboardComponent, data: { title: "Ruleset Dashboard" } },
   { path: "character-stats/:id", component: CharacterStatsComponent, data: { title: "Character Stats" } },
   { path: "add", component: RulesetAddInterfaceComponent, canActivate: [AuthGuard], data: { title: "Add Ruleset" } },
-
+  { path: "campaigns", component: CampaignsComponent, data: { title: "Campaigns" } },
+  { path: "campaign-details/:id", component: CampaignDetailsComponent, data: { title: "CampaignDetails" } },
 ];
 
 @NgModule({

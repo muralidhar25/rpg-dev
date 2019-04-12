@@ -37,6 +37,8 @@ export class CharactersComponent implements OnInit {
     hasAuth: boolean = false;
     isAdminUser: boolean = false;
     totalRuleSets: number = 1;
+    isGmUser: boolean = false;
+  characterSlot: number;
     constructor(
         private router: Router, private alertService: AlertService,
         private authService: AuthService, private rulesetService: RulesetService,
@@ -65,10 +67,15 @@ export class CharactersComponent implements OnInit {
     }
 
     private initialize() {
-        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+      let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)
             this.authService.logout();
         else {
+          if (user && user.isGm) {
+            this.isGmUser = true;
+          }
+          this.characterSlot = user.characterSlot;
+
             this.isAdminUser = user.roles.some(function (value) { return (value === "administrator") });
             this.isLoading = true;
             this.hasAuth = true;

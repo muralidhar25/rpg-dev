@@ -29,6 +29,8 @@ import { LogonWarningComponent } from './public/logon-warning/logon-warning.comp
 const charactersModule = "./characters/characters.module#CharactersModule";
 const searchModule = "./search/search.module#SearchModule";
 const rulesetsModule = "./rulesets/rulesets.module#RulesetsModule";
+//const campaignsModule = "./campaign/campaigns.module#CampaignsModule";
+const marketplaceModule = "./marketplace/marketplace.module#MarketplaceModule";
 
 const routes: Routes = [
   {
@@ -75,6 +77,21 @@ const routes: Routes = [
       {
         path: "character",
         loadChildren: charactersModule,
+        canActivate: [AuthGuard]
+      },
+      //{
+      //  path: "campaigns",
+      //  loadChildren: campaignsModule,
+      //  canActivate: [AuthGuard]
+      //},
+      //{
+      //  path: "campaign",
+      //  loadChildren: campaignsModule,
+      //  canActivate: [AuthGuard]
+      //},
+      {
+        path: "marketplace",
+        loadChildren: marketplaceModule,
         canActivate: [AuthGuard]
       },
       {

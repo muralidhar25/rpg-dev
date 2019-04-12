@@ -67,7 +67,7 @@
                 <div class="col-12" *ngIf="rulesets?.length<=0 && false">
                     <p class="alert alert-important d-block w-100" >At least 1 Rule Set is needed before a character can be created. Please Add, Create, or Import a Rule Set.</p>
                 </div>
-                <div class="col-sm-12 col-md-4 col-lg-3" *ngIf="rulesets?.length<3 || isAdminUser">
+                <div class="col-sm-12 col-md-4 col-lg-3" *ngIf="rulesets?.length< rulesetSlots || isAdminUser">
                    
                     <div class="card-wrapper">
                         <div class="card">
@@ -94,7 +94,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-12 col-md-4 col-lg-3" *ngIf="rulesets?.length>=3 && !isAdminUser">
+                <div class="col-sm-12 col-md-4 col-lg-3" *ngIf="rulesets?.length>= rulesetSlots && !isAdminUser">
                     <div class="card-wrapper">
                         <div class="card" >
                             <div class="card-image thumbnail bg-white">

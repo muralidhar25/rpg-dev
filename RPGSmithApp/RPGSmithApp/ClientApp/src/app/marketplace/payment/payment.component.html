@@ -1,0 +1,23 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="colorSelectionPopupTitle">Payment</h5>
+    <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+  </div>
+</div>
+<div class="modal-body players-component">
+  {{paymentInfo?.title}}
+  <div class="align-items-center">
+    <form #checkout="ngForm" (ngSubmit)="onSubmit(checkout)" class="checkout">
+      <div class="form-row">
+        <label for="card-info">Card Info</label>
+        <div id="card-info" #cardInfo class="w-100"></div>
+
+        <div id="card-errors" role="alert" *ngIf="error">{{ error }}</div>
+      </div>
+
+      <button type="submit">Pay ${{paymentInfo?.price}}</button>
+    </form>
+  </div>
+</div>
+
+

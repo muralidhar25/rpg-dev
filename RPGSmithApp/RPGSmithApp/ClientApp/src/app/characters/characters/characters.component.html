@@ -2,9 +2,12 @@
 <div class="page-toolbar" *ngIf="hasAuth">
     <div class="container">
         <div class="page-toolbar-wrapper">
-            <div class="page-toolbar-title">
-                <h1>Characters</h1>
-            </div>
+          <div class="page-toolbar-title">
+            <!--used at the time of GM user-->
+            <a [routerLink]="['/rulesets/campaigns']" class="icon icon-back" *ngIf="isGmUser"> </a>
+            <h1 class="d-inline-block">Characters</h1>
+
+          </div>
             <ul class="page-toolbar-actions" *ngIf="false">
                 <li>
                     <button type="button" class="btn icon icon-with-text icon-plus btn-primary" (click)="newCharacter()">New Character</button>
@@ -55,7 +58,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-12 col-md-4 col-lg-3" *ngIf="characters?.length<3 || isAdminUser">
+                <div class="col-sm-12 col-md-4 col-lg-3" *ngIf="characters?.length < characterSlot  || isAdminUser">
                     <div class="card-wrapper">
                         <div class="card" (click)="newCharacter()">
                             <div class="card-image thumbnail bg-white h-280">
@@ -70,7 +73,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-12 col-md-4 col-lg-3" *ngIf="characters?.length>=3 && !isAdminUser">
+                <div class="col-sm-12 col-md-4 col-lg-3" *ngIf="characters?.length>= characterSlot && !isAdminUser">
                     <div class="card-wrapper">
                         <div class="card">
                             <div class="card-image thumbnail bg-white h-280">
@@ -84,7 +87,7 @@
                     </div>
                 </div>
             </div>
-            <div class="page-toolbar-wrapper center-block">
+            <div class="page-toolbar-wrapper center-block" *ngIf="!isGmUser">
                 <ul class="page-toolbar-actions">
                     <li>
                         <button type="button" class="btn btn-accent btn-ruleset" [routerLink]="['/rulesets']">Rule Sets</button>

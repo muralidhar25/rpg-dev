@@ -21,6 +21,11 @@ import { RulesetAddComponent } from './ruleset-helper/ruleset-add/ruleset-add.co
 import { CharacterStatsFormComponent } from "./character-stats/character-stats-form/character-stats-form.component";
 import { CharacterStatsComponent } from "./character-stats/character-stats/character-stats.component";
 import { RulesetAddInterfaceComponent } from "./ruleset-helper/ruleset-add-interface/ruleset-add-interface.component";
+import { CampaignsComponent } from "./campaigns/campaigns.component";
+import { CampaignDetailsComponent } from "./campaign-details/campaign-details.component";
+import { PlayerControlsComponent } from "./player-controls/player-controls.component";
+import { InvitePlayerComponent } from './invite-player/invite-player.component';
+import { CampaignInviteComponent } from './campaign-invite/campaign-invite.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +40,12 @@ import { RulesetAddInterfaceComponent } from "./ruleset-helper/ruleset-add-inter
     RulesetAddComponent,
     CharacterStatsComponent,
     CharacterStatsFormComponent,
-    RulesetAddInterfaceComponent 
+    RulesetAddInterfaceComponent,
+    CampaignsComponent,
+    CampaignDetailsComponent,
+    PlayerControlsComponent,
+    InvitePlayerComponent,
+    CampaignInviteComponent
   ],
   imports: [
     SharedModule,
@@ -58,7 +68,12 @@ import { RulesetAddInterfaceComponent } from "./ruleset-helper/ruleset-add-inter
     RulesetAddComponent,
     CharacterStatsComponent,
     CharacterStatsFormComponent,
-    RulesetAddInterfaceComponent 
+    RulesetAddInterfaceComponent,
+    CampaignsComponent,
+    CampaignDetailsComponent,
+    PlayerControlsComponent,
+    InvitePlayerComponent,
+    CampaignInviteComponent
   ],
   entryComponents: [
     RulesetFormComponent,
@@ -69,6 +84,9 @@ import { RulesetAddInterfaceComponent } from "./ruleset-helper/ruleset-add-inter
     CharacterStatsFormComponent,
     RulesetLayoutComponent,
     RulesetPageComponent,
+    PlayerControlsComponent,
+    InvitePlayerComponent,
+    CampaignInviteComponent
   ]
 })
 export class RulesetsModule {}

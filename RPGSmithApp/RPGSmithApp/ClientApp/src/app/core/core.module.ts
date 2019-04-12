@@ -69,6 +69,7 @@ import { ColorService } from "./services/tiles/color.service";
 import { RequestCache } from './services/shared/request-cache.service';
 import { CachingInterceptor } from './services/shared/caching-interceptor.service';
 import { TextTileService } from "./services/tiles/text-tile.service";
+import { MarketPlaceService } from "./services/maketplace.service";
 
 @NgModule({
   declarations: [
@@ -132,7 +133,8 @@ import { TextTileService } from "./services/tiles/text-tile.service";
     RulesetDashboardPageService,
     RulesetTileConfigService,
     RulesetTileService,
-    TextTileService
+    TextTileService,
+    MarketPlaceService
     ],
   exports: [
     EqualValidator,
