@@ -27,5 +27,8 @@ namespace DAL.Models
         public string UserName { get; set; }
         public string SendByUserId { get; set; }
         public int CampaignId { get; set; }
+        public string SendByUserName { get; set; }
+        public string SendByCampaignName { get; set; }
+        public string SendByCampaignImage { get; set; }
     }
 }

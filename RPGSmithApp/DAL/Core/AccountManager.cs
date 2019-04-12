@@ -119,8 +119,9 @@ namespace DAL.Core
             var result = await _userManager.CreateAsync(user, password);
             if (!result.Succeeded)
                 return Tuple.Create(false, result.Errors.Select(e => e.Description).ToArray());
-            else {
-                await _context.UserSubscriptions.AddAsync(new UserSubscription {UserId=user.Id,CharacterCount=3,RulesetCount=3 });
+            else
+            {
+                await CreateUserSlotsAndUpdateInvites(user);
             }
 
             user = await _userManager.FindByNameAsync(user.UserName);
@@ -145,6 +146,28 @@ namespace DAL.Core
             return Tuple.Create(true, new string[] { });
         }
 
+        public async Task CreateUserSlotsAndUpdateInvites(ApplicationUser user)
+        {
+            try
+            {
+                await _context.UserSubscriptions.AddAsync(new UserSubscription { UserId = user.Id, CharacterCount = 3, RulesetCount = 3 });
+                await UpdateInviteIfExistsForUser(user);
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        public async Task UpdateInviteIfExistsForUser(ApplicationUser user)
+        {
+            List<PlayerInvite> invites =await _context.PlayerInvites.Where(x => x.PlayerEmail == user.Email && x.PlayerUserID == null && x.IsAccepted==false).ToListAsync();
+            foreach (var item in invites)
+            {
+                item.PlayerUserID = user.Id;
+            }
+           await _context.SaveChangesAsync();
+        }
 
         public async Task<Tuple<bool, string[]>> UpdateUserAsync(ApplicationUser user)
         {

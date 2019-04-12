@@ -8,6 +8,7 @@ namespace DAL.Services
 {
     public interface ICampaignService
     {
-        Task<PlayerInvite> CreatePlayerInvite(PlayerInviteEmail model,string PlayerUserId, string PlayerEmail);
+        Task<PlayerInvite> CreatePlayerInvite(PlayerInviteEmail model,string PlayerUserId);
+        Task<bool> SameInviteAlreadyExists(PlayerInviteEmail model, string playerUserId);
     }
 }

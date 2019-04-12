@@ -201,6 +201,7 @@ namespace RPGSmithApp.Controllers
                     else {
                         user = await _userManager.FindByEmailAsync(facebookAccount.email);
                         Utilities.AddDefaultCoreRuleset(user.Id, _ruleSetService);
+                        await _accountManager.CreateUserSlotsAndUpdateInvites(user);
                     }
                 }
 
@@ -257,6 +258,7 @@ namespace RPGSmithApp.Controllers
                     {
                         user = await _userManager.FindByEmailAsync(googleAccount.emails.FirstOrDefault().value);
                         Utilities.AddDefaultCoreRuleset(user.Id, _ruleSetService);
+                        await _accountManager.CreateUserSlotsAndUpdateInvites(user);
                     }
                 }
 

@@ -886,8 +886,15 @@ namespace RPGSmithApp.Controllers
         private async Task TotalCharacterSlotsAvailableForCurrentUser()
         {
             ApplicationUser user = GetUserDetails();
-            UserSubscription userSubscription = await _accountManager.userSubscriptions(user.Id);   
-            TotalCharacterSlotsAvailable = userSubscription.CharacterCount;
+            UserSubscription userSubscription = await _accountManager.userSubscriptions(user.Id);
+            if (userSubscription != null)
+            {
+                TotalCharacterSlotsAvailable = userSubscription.CharacterCount;
+            }
+            else {
+                TotalCharacterSlotsAvailable = 3;
+            }
+            
            
         }
         #region API Using SP

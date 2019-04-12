@@ -129,14 +129,21 @@ namespace RPGSmithApp.Controllers
         {
             ApplicationUser user = GetUser();
             UserSubscription userSubscription = await _accountManager.userSubscriptions(user.Id);
-            if (user.IsGm)
+            if (userSubscription != null)
             {
-                TotalRuleSetSlotsAvailable = userSubscription.CampaignCount;
+                if (user.IsGm)
+                {
+                    TotalRuleSetSlotsAvailable = userSubscription.CampaignCount;
+                }
+                else
+                {
+                    TotalRuleSetSlotsAvailable = userSubscription.RulesetCount;
+                }
             }
-            else
-            {
-                TotalRuleSetSlotsAvailable = userSubscription.RulesetCount;
+            else {
+                TotalRuleSetSlotsAvailable = 3;
             }
+            
         }
 
         [HttpGet("GetRuleSetAndCharacterCount")]
