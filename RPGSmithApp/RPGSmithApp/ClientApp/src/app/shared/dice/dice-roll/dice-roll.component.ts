@@ -3568,7 +3568,7 @@ export class DiceRollComponent implements OnInit {
     this.onClickRoll(characterCommandModel, mainCommandText);
   }
   GetDiceDisplayContent(diceName, DiceCalculativeContent) {
-    
+    debugger
     if (this.customDices) {
       if (this.customDices.length) {
         if (diceName) {
@@ -3577,7 +3577,7 @@ export class DiceRollComponent implements OnInit {
             let Cdice: CustomDice = Cdice_s[0];
             if (Cdice.customDicetype == CustomDiceResultType.IMAGE) {
               if (Cdice.isNumeric) {
-                return this.GetDisplayContentFromResultName(DiceCalculativeContent, Cdice.results);
+                return this.GetDisplayContentFromResultName(DiceCalculativeContent, Cdice.results,true);
               }
               return DiceCalculativeContent;
               //var x = document.createElement("IMG");
@@ -3600,13 +3600,23 @@ export class DiceRollComponent implements OnInit {
     }
     return DiceCalculativeContent;
   }
-  GetDisplayContentFromResultName(ResultName, Results: Results[]) {
+  GetDisplayContentFromResultName(ResultName, Results: Results[],IsNumericImage=false) {
     if (Results) {
       if (Results.length) {
+        
         let Result_s: Results[] = Results.filter(x => x.name == ResultName);
         if (Result_s.length) {
           let Result: Results = Result_s[0];
           return Result.displayContent;
+        }
+        else if (IsNumericImage) {
+          ResultName = ResultName == "0" ? "" : ResultName;
+          let Result_s: Results[] = Results.filter(x => x.name == ResultName);
+          if (Result_s.length) {
+            
+            let Result: Results = Result_s[0];
+            return Result.displayContent;
+          }
         }
       }
     }
