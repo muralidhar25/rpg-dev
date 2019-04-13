@@ -128,11 +128,11 @@
                         [style.font-weight]="NumbersList.isMax ? 'bold' : (NumbersList.isMin ? 'bold' : 'normal')"
                         [ngClass]="(dice.isExploded && dice.diceNumber==NumbersList?.number)?'icon-Dice-Explode':''">
                       <ng-container *ngIf="IsImageDice(dice.dice)">
-                        <img class="img-fluid"  [src]="GetDiceDisplayContent(dice.dice,NumbersList?.number)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';"/>
+                        <img class="img-fluid"  [src]="GetDiceDisplayContent(dice,NumbersList)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';"/>
                        
                       </ng-container>
                       <ng-container *ngIf="!IsImageDice(dice.dice)">                        
-                        {{GetDiceDisplayContent(dice.dice,NumbersList?.number)}}
+                        {{GetDiceDisplayContent(dice,NumbersList)}}
                       </ng-container>
                     </em>
                     <span class="icon icon-with-text icon-rsi outline" [ngClass]="dice.diceIcon"> &nbsp;{{dice.operator=="FE"?('D'+NumbersList?.diceNumber):dice.dice}}</span>
@@ -179,11 +179,11 @@
                         [style.font-weight]="NumbersList.isMax ? 'bold' : (NumbersList.isMin ? 'bold' : 'normal')"
                         [ngClass]="(dice.isExploded && dice.diceNumber==NumbersList?.number)?'icon-Dice-Explode':''">
                       <ng-container *ngIf="IsImageDice(dice.dice)">
-                        <img class="img-fluid" [src]="GetDiceDisplayContent(dice.dice,NumbersList?.number)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
+                        <img class="img-fluid" [src]="GetDiceDisplayContent(dice,NumbersList)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
 
                       </ng-container>
                       <ng-container *ngIf="!IsImageDice(dice.dice)">                        
-                        {{GetDiceDisplayContent(dice.dice,NumbersList?.number)}}
+                        {{GetDiceDisplayContent(dice,NumbersList)}}
                       </ng-container>
                       
                     </em>

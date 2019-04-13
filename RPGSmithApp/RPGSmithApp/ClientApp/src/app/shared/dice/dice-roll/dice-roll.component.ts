@@ -2047,7 +2047,9 @@ export class DiceRollComponent implements OnInit {
 
   singleDiceReRoll(dice: any, numberList: any, diceIndex: number, numberIndex: number) {    
     this.loadingResult = false;
-
+    if (dice.randomNumbersList[numberIndex].resultIndex) {
+      dice.randomNumbersList[numberIndex].resultIndex = 0;
+    }
     numberList = dice.randomNumbersList[numberIndex];
     numberList.index = numberIndex;
     numberList.isAnimated = true;
@@ -2070,6 +2072,11 @@ export class DiceRollComponent implements OnInit {
             let randomIndex = (Math.floor((Math.random() * (d.results.length)) + 1)) - 1;
             let randomResult = d.results[randomIndex].name;
             numberList.number = randomResult;
+            if (d.isNumeric) {
+              if (!numberList.number) {
+                numberList.number = 0;
+              }
+            }
           }
         })
         //If FATE dice
@@ -3567,8 +3574,12 @@ export class DiceRollComponent implements OnInit {
   onClickRollAll(characterCommandModel, mainCommandText) {
     this.onClickRoll(characterCommandModel, mainCommandText);
   }
-  GetDiceDisplayContent(diceName, DiceCalculativeContent) {
+  GetDiceDisplayContent(dice, result) {
+    //let resultIndex = result.index;
+
     debugger
+    let diceName = dice.dice;   
+    let DiceCalculativeContent = result.number;
     if (this.customDices) {
       if (this.customDices.length) {
         if (diceName) {
@@ -3577,7 +3588,7 @@ export class DiceRollComponent implements OnInit {
             let Cdice: CustomDice = Cdice_s[0];
             if (Cdice.customDicetype == CustomDiceResultType.IMAGE) {
               if (Cdice.isNumeric) {
-                return this.GetDisplayContentFromResultName(DiceCalculativeContent, Cdice.results,true);
+                return this.GetDisplayContentFromResultName(DiceCalculativeContent, Cdice.results, true, result);
               }
               return DiceCalculativeContent;
               //var x = document.createElement("IMG");
@@ -3589,7 +3600,7 @@ export class DiceRollComponent implements OnInit {
             }
             else if (Cdice.customDicetype == CustomDiceResultType.TEXT) {
               if (Cdice.isNumeric) {
-                return this.GetDisplayContentFromResultName(DiceCalculativeContent, Cdice.results);
+                return this.GetDisplayContentFromResultName(DiceCalculativeContent, Cdice.results, false, result);
               }
               return DiceCalculativeContent;
             }
@@ -3600,21 +3611,32 @@ export class DiceRollComponent implements OnInit {
     }
     return DiceCalculativeContent;
   }
-  GetDisplayContentFromResultName(ResultName, Results: Results[],IsNumericImage=false) {
+  GetDisplayContentFromResultName(ResultName, Results: Results[], IsNumericImage = false, result) {
+    let resultIndex = 0;
+    
     if (Results) {
-      if (Results.length) {
-        
+      if (Results.length) {        
         let Result_s: Results[] = Results.filter(x => x.name == ResultName);
+        if (!result.resultIndex) {
+          console.log("1", result.resultIndex)
+          result.resultIndex = Math.ceil((Math.random() * (Result_s.length-1)) + 0)
+        }
         if (Result_s.length) {
-          let Result: Results = Result_s[0];
+          
+          let Result: Results = Result_s[result.resultIndex];
           return Result.displayContent;
         }
         else if (IsNumericImage) {
           ResultName = ResultName == "0" ? "" : ResultName;
           let Result_s: Results[] = Results.filter(x => x.name == ResultName);
+          if (!result.resultIndex) {
+            console.log("2", result.resultIndex)
+            result.resultIndex = Math.ceil((Math.random() * (Result_s.length - 1)) + 0)
+          }
+          
           if (Result_s.length) {
             
-            let Result: Results = Result_s[0];
+            let Result: Results = Result_s[result.resultIndex];
             return Result.displayContent;
           }
         }
