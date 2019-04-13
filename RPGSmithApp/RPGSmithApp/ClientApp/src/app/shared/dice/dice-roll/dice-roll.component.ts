@@ -3618,7 +3618,7 @@ export class DiceRollComponent implements OnInit {
       if (Results.length) {        
         let Result_s: Results[] = Results.filter(x => x.name == ResultName);
         if (!result.resultIndex) {
-          console.log("1", result.resultIndex)
+          //console.log("1", result.resultIndex)
           result.resultIndex = Math.ceil((Math.random() * (Result_s.length-1)) + 0)
         }
         if (Result_s.length) {
@@ -3630,7 +3630,7 @@ export class DiceRollComponent implements OnInit {
           ResultName = ResultName == "0" ? "" : ResultName;
           let Result_s: Results[] = Results.filter(x => x.name == ResultName);
           if (!result.resultIndex) {
-            console.log("2", result.resultIndex)
+            //console.log("2", result.resultIndex)
             result.resultIndex = Math.ceil((Math.random() * (Result_s.length - 1)) + 0)
           }
           
