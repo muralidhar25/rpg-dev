@@ -10,7 +10,8 @@ export class User {
       rulesetSlot?: number,
       playerSlot?: number,
       characterSlot?: number,
-      campaignSlot?:number
+      campaignSlot?: number,
+      storageSpace?: number
     ) {
 
         this.id = id;
@@ -33,6 +34,7 @@ export class User {
       this.playerSlot = playerSlot;
       this.characterSlot = characterSlot;
       this.campaignSlot = campaignSlot;
+      this.storageSpace = storageSpace;
     }
 
 
@@ -68,4 +70,6 @@ export class User {
   public playerSlot: number;
   public characterSlot: number;
   public campaignSlot: number;
+  public storageSpace: number;
+  
 }

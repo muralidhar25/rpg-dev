@@ -46,6 +46,7 @@ export class AccountSettingsComponent implements OnInit {
     croppedImage: any = '';
     imageErrorMessage: string = 'high resolution images will affect loading times and diminish performance';
     usedSpace: string = '0';
+  availableSpace: number = 0;
 
     constructor(
         private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -66,6 +67,7 @@ export class AccountSettingsComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
+          this.availableSpace = user.storageSpace;
             this.isLoading = true;
             this.userService.getBlobSpaceUsed<number>(user.id)
                 .subscribe(

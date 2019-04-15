@@ -18,5 +18,6 @@ namespace DAL.Models
         public int CampaignCount { get; set; }
         public int CharacterCount { get; set; }
         public int PlayerCount { get; set; }
+        public int StorageSpaceInMB { get; set; }
     }
 }

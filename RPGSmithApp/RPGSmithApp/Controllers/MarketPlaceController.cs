@@ -176,7 +176,7 @@ namespace RPGSmithApp.Controllers
 
         private void UpdateUser_AddStorage(int qty)
         {
-            throw new NotImplementedException();
+            _marketPlace.AddStorageSpace(GetUser(), qty);
         }
 
         private void UpdateUser_RemoveAds()

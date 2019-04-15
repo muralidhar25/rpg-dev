@@ -13,11 +13,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Reflection;
+using DAL.Models;
+using DAL.Core.Interfaces;
 
 namespace RPGSmithApp.Helpers
 {
     public class BlobService
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IAccountManager _accountManager;
+        const string StorageFullMessage = "Your account storage space is full. Please buy more space to upload more files.";
+      
+        public BlobService(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager) {
+            _httpContextAccessor = httpContextAccessor;
+            _accountManager = accountManager;
+        }
         public async Task<CloudBlobContainer> GetCloudBlobContainer(string containerName = "media")
         {
             CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=rpgsmithsa;AccountKey=aW0FB0jHDNqCMwNYowsKxjlBwqs+3WxUcTG5sAdr29vrCO/4c8FA+3603WQ1PuHEAj5+MAq4cHC62tbiG9bmCA==;EndpointSuffix=core.windows.net");
@@ -67,6 +77,10 @@ namespace RPGSmithApp.Helpers
 
         public async Task<string> UploadImages(IFormFile httpPostedFile, string fileName, CloudBlobContainer cloudBlobContainer)
         {
+            if (!doesUserHaveEnoughSpace(cloudBlobContainer.Name))
+            {
+                throw new System.InvalidOperationException(StorageFullMessage);
+            }
             CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(fileName + "" + Path.GetExtension(httpPostedFile.FileName));
             using (System.Drawing.Image img = System.Drawing.Image.FromStream(httpPostedFile.OpenReadStream()))
             {
@@ -81,6 +95,10 @@ namespace RPGSmithApp.Helpers
         }
         public async Task<string> Uploadvideos(IFormFile httpPostedFile, string fileName, CloudBlobContainer cloudBlobContainer)
         {
+            if (!doesUserHaveEnoughSpace(cloudBlobContainer.Name))
+            {
+                throw new System.InvalidOperationException(StorageFullMessage);
+            }
             CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(fileName + "" + Path.GetExtension(httpPostedFile.FileName));
 
             //HttpWebRequest request;
@@ -114,6 +132,10 @@ namespace RPGSmithApp.Helpers
 
         public async Task<string> UploadThumbnail(IFormFile httpPostedFile, string fileName, CloudBlobContainer cloudBlobContainer)
         {
+            if (!doesUserHaveEnoughSpace(cloudBlobContainer.Name))
+            {
+                throw new System.InvalidOperationException(StorageFullMessage);
+            }
             Image myThumbnail150;
             Image.GetThumbnailImageAbort myCallback = new Image.GetThumbnailImageAbort(ThumbnailCallback);
             Image imagesize = Image.FromStream(httpPostedFile.OpenReadStream());
@@ -156,6 +178,10 @@ namespace RPGSmithApp.Helpers
 
         public async Task<string> UploadImage_URL(string file, string fileName, CloudBlobContainer cloudBlobContainer)
         {
+            if (!doesUserHaveEnoughSpace(cloudBlobContainer.Name))
+            {
+                throw new System.InvalidOperationException(StorageFullMessage);
+            }
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(file);
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             Stream inputStream = response.GetResponseStream();
@@ -170,8 +196,13 @@ namespace RPGSmithApp.Helpers
 
         public async Task<string> UploadImage_URL(string file, string fileName)
         {
-
             CloudBlobContainer cloudBlobContainer = await GetCloudBlobContainer();
+            if (!doesUserHaveEnoughSpace(cloudBlobContainer.Name))
+            {
+                throw new System.InvalidOperationException(StorageFullMessage);
+            }
+
+            
             try { 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(file);
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -193,6 +224,10 @@ namespace RPGSmithApp.Helpers
         public async Task<string> UploadImage_Base64(string file, string fileName)
         {
             CloudBlobContainer cloudBlobContainer = await GetCloudBlobContainer();
+            if (!doesUserHaveEnoughSpace(cloudBlobContainer.Name))
+            {
+                throw new System.InvalidOperationException(StorageFullMessage);
+            }
             try
             {
                 byte[] bytes = Convert.FromBase64String(file.Split("base64,")[1]);
@@ -212,6 +247,10 @@ namespace RPGSmithApp.Helpers
         public async Task<string> UploadImage_Base64(string file, string fileName, CloudBlobContainer cloudBlobContainer)
         {
             //CloudBlobContainer cloudBlobContainer = await GetCloudBlobContainer();
+            if (!doesUserHaveEnoughSpace(cloudBlobContainer.Name))
+            {
+                throw new System.InvalidOperationException(StorageFullMessage);
+            }
             try
             {
                 byte[] bytes = Convert.FromBase64String(file.Split("base64,")[1]);
@@ -230,6 +269,10 @@ namespace RPGSmithApp.Helpers
 
         public async Task<string> UploadThumbnail_URL(string file, string fileName, CloudBlobContainer cloudBlobContainer)
         {
+            if (!doesUserHaveEnoughSpace(cloudBlobContainer.Name))
+            {
+                throw new System.InvalidOperationException(StorageFullMessage);
+            }
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(file);
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             Stream inputStream = response.GetResponseStream();
@@ -668,5 +711,20 @@ namespace RPGSmithApp.Helpers
 
         public double ConvertBytesToMegabytes(long bytes) => (bytes / 1024f) / 1024f;
         public double ConvertKilobytesToMegabytes(long kilobytes) => kilobytes / 1024f;
+        private bool doesUserHaveEnoughSpace(string container)
+        {
+            bool res = true;
+            string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
+            ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
+            UserSubscription subs = _accountManager.userSubscriptions(appUser.Id).Result;
+            if (subs!=null)
+            {
+                if (GetSpaceUsed(container)>=subs.StorageSpaceInMB)
+                {
+                    res = false;
+                }
+            }
+            return res;
+        }
     }
 }

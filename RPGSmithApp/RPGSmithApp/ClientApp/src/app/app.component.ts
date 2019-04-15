@@ -145,7 +145,18 @@ export class AppComponent implements OnInit, AfterViewInit {
     //    }
     //});
 
-    this.app1Service.shouldUpdateAccountSetting1().subscribe((serviceData) => {      
+    this.app1Service.shouldUpdateAccountSetting1().subscribe((serviceData) => {
+      let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+      if (user) {
+        if (user.isGm) {
+          this.logoPath = '/rulesets/campaigns';
+          if (this.headers) {
+            if (this.headers.headerLink == 'ruleset') {
+              this.logoPath = '/ruleset/campaign-details/' + this.headers.headerId;
+            }
+          }
+        }
+      }
       if (serviceData) {
         this.headers = serviceData;
       }
@@ -498,6 +509,17 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
       };
       if (event instanceof NavigationStart) {
+        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+        if (user) {
+          if (user.isGm) {
+            this.logoPath = '/rulesets/campaigns';
+            if (this.headers) {
+              if (this.headers.headerLink == 'ruleset') {
+                this.logoPath = '/ruleset/campaign-details/' + this.headers.headerId;
+              }
+            }
+          }
+        }
         this.logoNavigation();
         
         let url = (<NavigationStart>event).url;
@@ -1094,6 +1116,18 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   logoNavigation() {
     this.logoPath = '/characters';
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user) {
+      if (user.isGm) {
+        this.logoPath = '/rulesets/campaigns';
+        if (this.headers) {
+          if (this.headers.headerLink == 'ruleset') {
+            this.logoPath = '/ruleset/campaign-details/' + this.headers.headerId;
+          }
+        }
+      }
+    }
+
     if (this.headers) {
       if (this.headers.headerLink == 'character') {
         this.logoPath = '/character/dashboard/' + this.headers.headerId;
@@ -1132,9 +1166,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  RedirecttoUrl() {
-    Utilities.Kickstarterlink();
-  }
+  //RedirecttoUrl() {
+  //  Utilities.Kickstarterlink();
+  //}
   gotoUrl() {
     this.redirectUrl = Utilities.getHelpLinkUrl(this.router.url);
   }

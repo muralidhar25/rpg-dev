@@ -42,5 +42,7 @@ namespace DAL.Core
         public const string PlayerSlot = "playerslot";
         public const string RulesetSlot = "rulesetslot";
         public const string CampaignSlot = "campaignslot";
+        public const string StorageSpaceInMB = "storagespaceinmb";
+        
     }
 }

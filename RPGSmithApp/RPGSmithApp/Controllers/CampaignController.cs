@@ -97,6 +97,8 @@ namespace RPGSmithApp.Controllers
             EmailContent = EmailContent.Replace("[#GM_AccountName#]", gMAccountUserName);
             EmailContent = EmailContent.Replace("[#Camapign_Name#]", campaignName);
             EmailContent = EmailContent.Replace("[#Camapign_Image#]", campaignImage);
+            EmailContent = EmailContent.Replace("[#currentYear#]", DateTime.Now.Year.ToString());
+            
             string emailSubject = "RPG Smith Invitation to join Campaign.";
             
             (bool successMail, string errorMail) = await _emailer.SendEmailAsync(receiverName, receiverEmail, emailSubject, EmailContent, isHtml: true);

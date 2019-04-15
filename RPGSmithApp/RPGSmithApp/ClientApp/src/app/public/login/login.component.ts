@@ -304,8 +304,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  RedirecttoUrl() {
-    Utilities.Kickstarterlink();
-  }
+  //RedirecttoUrl() {
+  //  Utilities.Kickstarterlink();
+  //}
 
 }

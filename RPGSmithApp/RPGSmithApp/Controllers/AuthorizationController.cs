@@ -39,7 +39,7 @@ namespace RPGSmithApp.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IAccountManager _accountManager;
-        private readonly BlobService _blobService = new BlobService();
+        private readonly BlobService _blobService = new BlobService(null,null);
         private readonly IRuleSetService _ruleSetService;
 
         public AuthorizationController(
@@ -383,26 +383,6 @@ namespace RPGSmithApp.Controllers
 
                 if (!string.IsNullOrWhiteSpace(user.ProfileImage))
                     identity.AddClaim(CustomClaimTypes.ProfileImage, user.ProfileImage, OpenIdConnectConstants.Destinations.IdentityToken);
-
-               
-                    identity.AddClaim(CustomClaimTypes.IsGm, user.IsGm.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);                                
-                    identity.AddClaim(CustomClaimTypes.RemoveAds, user.RemoveAds.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
-
-                UserSubscription userSubscription =await _accountManager.userSubscriptions(user.Id);
-                if (userSubscription != null)
-                {
-                    identity.AddClaim(CustomClaimTypes.CampaignSlot, userSubscription.CampaignCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
-                    identity.AddClaim(CustomClaimTypes.RulesetSlot, userSubscription.RulesetCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
-                    identity.AddClaim(CustomClaimTypes.CharacterSlot, userSubscription.CharacterCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
-                    identity.AddClaim(CustomClaimTypes.PlayerSlot, userSubscription.PlayerCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
-                }
-                else {
-                    identity.AddClaim(CustomClaimTypes.CampaignSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
-                    identity.AddClaim(CustomClaimTypes.RulesetSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
-                    identity.AddClaim(CustomClaimTypes.CharacterSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
-                    identity.AddClaim(CustomClaimTypes.PlayerSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
-                }
-                
             }
 
             if (ticket.HasScope(OpenIdConnectConstants.Scopes.Email))
@@ -416,7 +396,26 @@ namespace RPGSmithApp.Controllers
                 if (!string.IsNullOrWhiteSpace(user.PhoneNumber))
                     identity.AddClaim(CustomClaimTypes.Phone, user.PhoneNumber, OpenIdConnectConstants.Destinations.IdentityToken);
             }
+            identity.AddClaim(CustomClaimTypes.IsGm, user.IsGm.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+            identity.AddClaim(CustomClaimTypes.RemoveAds, user.RemoveAds.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
 
+            UserSubscription userSubscription = await _accountManager.userSubscriptions(user.Id);
+            if (userSubscription != null)
+            {
+                identity.AddClaim(CustomClaimTypes.CampaignSlot, userSubscription.CampaignCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+                identity.AddClaim(CustomClaimTypes.RulesetSlot, userSubscription.RulesetCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+                identity.AddClaim(CustomClaimTypes.CharacterSlot, userSubscription.CharacterCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+                identity.AddClaim(CustomClaimTypes.PlayerSlot, userSubscription.PlayerCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+                identity.AddClaim(CustomClaimTypes.StorageSpaceInMB, userSubscription.StorageSpaceInMB.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+            }
+            else
+            {
+                identity.AddClaim(CustomClaimTypes.CampaignSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
+                identity.AddClaim(CustomClaimTypes.RulesetSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
+                identity.AddClaim(CustomClaimTypes.CharacterSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
+                identity.AddClaim(CustomClaimTypes.PlayerSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
+                identity.AddClaim(CustomClaimTypes.StorageSpaceInMB, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
+            }
 
             return ticket;
         }

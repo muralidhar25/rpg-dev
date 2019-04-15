@@ -39,7 +39,7 @@ namespace RPGSmithApp.Controllers
         private readonly ICommonFuncsCoreRuleSet _commonFuncsCoreRuleSet;
         private readonly IRuleSetService _ruleSetService;
 
-        private readonly BlobService bs = new BlobService();
+        //private readonly BlobService bs = new BlobService();
 
         public CharacterStatController(ICharacterStatService CharacterStatService, ICharacterStatCalcService CharacterStatCalcService,
             ICharacterStatChoiceService CharacterStatChoiceService, ICharacterStatTypeService CharacterStatTypeService, ICharacterStatComboService CharacterStatComboService,
@@ -194,6 +194,7 @@ namespace RPGSmithApp.Controllers
                                     {
                                         if (!ctoggle.Image.Contains("rpgsmithsa.blob.core.windows.net"))
                                         {
+                                            BlobService bs = new BlobService(_httpContextAccessor,_accountManager);
                                             string imageName = Guid.NewGuid().ToString() + ".jpg";
                                             if (ctoggle.Image.StartsWith("data:image"))
                                             {
@@ -579,6 +580,7 @@ namespace RPGSmithApp.Controllers
                             {
                                 if (!ctoggle.Image.Contains("rpgsmithsa.blob.core.windows.net"))
                                 {
+                                    BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
                                     string imageName = Guid.NewGuid().ToString() + ".jpg";
                                     if (ctoggle.Image.StartsWith("data:image"))
                                     {
@@ -837,6 +839,7 @@ namespace RPGSmithApp.Controllers
                             if (ctoggle.Image != "" && ctoggle.Image != null ) {
                                 if (!ctoggle.Image.Contains("rpgsmithsa.blob.core.windows.net"))
                                 {
+                                    BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
                                     string imageName = Guid.NewGuid().ToString() + ".jpg";
                                     if (ctoggle.Image.StartsWith("data:image"))
                                     {

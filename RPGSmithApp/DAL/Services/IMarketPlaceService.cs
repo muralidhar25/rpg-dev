@@ -16,5 +16,6 @@ namespace DAL.Services
         void UpdateUserToGMPermanent(string UserID);
         void UpdateUserToGMFor1Year(string UserID,string StripeCustomerId, string StripeSubscriptionId, DateTime GMEndDate);
         Task<List<MarketPlaceItems>> GetList();
+        void AddStorageSpace(ApplicationUser applicationUser, int qty);
     }
 }

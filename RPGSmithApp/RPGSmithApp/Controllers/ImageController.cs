@@ -29,7 +29,7 @@ namespace RPGSmithApp.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAccountManager _accountManager;
         private readonly IImageService _imageService;
-        private readonly BlobService bs = new BlobService();
+        private readonly BlobService bs = new BlobService(null,null);
 
         public ImageController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager,
             IImageService imageService)
@@ -37,6 +37,7 @@ namespace RPGSmithApp.Controllers
             _httpContextAccessor = httpContextAccessor;
             _accountManager = accountManager;
             _imageService = imageService;
+            bs = new BlobService(_httpContextAccessor, _accountManager);
         }
 
         [HttpGet("BingSearch")]
@@ -87,7 +88,7 @@ namespace RPGSmithApp.Controllers
                 {
                     try
                     {
-                        BlobService bs = new BlobService();
+                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
                         var container = bs.GetCloudBlobContainer().Result;
                         string imageName = Guid.NewGuid().ToString();
                         dynamic Response = new ExpandoObject();
@@ -121,7 +122,7 @@ namespace RPGSmithApp.Controllers
                 {
                     try
                     {
-                        BlobService bs = new BlobService();
+                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
                         var container = bs.GetCloudBlobContainer("user-" + userId).Result;
                         string imageName = Guid.NewGuid().ToString();
                         dynamic Response = new ExpandoObject();
@@ -154,7 +155,7 @@ namespace RPGSmithApp.Controllers
                 {
                     try
                     {
-                        BlobService bs = new BlobService();
+                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
                         var container = bs.GetCloudBlobContainer("user-" + userId).Result;
                         string imageName = Guid.NewGuid().ToString();
                         return Ok(bs.Uploadvideos(httpPostedFile, imageName, container).Result);
@@ -325,7 +326,7 @@ namespace RPGSmithApp.Controllers
 
                     try
                     {
-                        BlobService bs = new BlobService();
+                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
                         var container = bs.GetCloudBlobContainer("user-" + userId).Result;
                         string imageName = Guid.NewGuid().ToString();
                         return Ok(bs.UploadImages(_httpPostedFile, imageName, container).Result);
@@ -375,7 +376,7 @@ namespace RPGSmithApp.Controllers
                     {
                         try
                         {
-                            BlobService bs = new BlobService();
+                            BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
                             var container = bs.GetCloudBlobContainer("user-" + userId).Result;
                             string imageName = Guid.NewGuid().ToString();
                             dynamic Response = new ExpandoObject();

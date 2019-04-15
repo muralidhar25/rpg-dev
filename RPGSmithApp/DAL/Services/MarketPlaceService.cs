@@ -180,6 +180,17 @@ namespace DAL.Services
                 throw ex;
             }
         }
+        public void AddStorageSpace(ApplicationUser applicationUser, int qty)
+        {
+            try
+            {
+                AddSlotsToUsers(applicationUser.Id, SlotType.STORAGE_SPACE, qty);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
         public void UpdateUserToGMPermanent(string UserID)
         {
@@ -284,6 +295,10 @@ namespace DAL.Services
                             }
                             
                             break;
+                        case SlotType.STORAGE_SPACE:
+                            //int oldCharacterCount = isGMCase == true ? 0 : subs.CharacterCount;
+                            subs.StorageSpaceInMB = subs.StorageSpaceInMB + (SlotsCountToAdd*1000);
+                            break;
                         default:
                             break;
                     }
@@ -297,7 +312,5 @@ namespace DAL.Services
             }
             
         }
-
-        
     }
 }

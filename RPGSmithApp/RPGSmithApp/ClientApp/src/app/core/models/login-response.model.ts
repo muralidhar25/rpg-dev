@@ -32,4 +32,5 @@ export interface IdToken {
   playerslot: string;
   characterslot: string;
   campaignslot: string;
+  storagespaceinmb: string;
 }

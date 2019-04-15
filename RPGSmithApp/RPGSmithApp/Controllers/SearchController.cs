@@ -28,7 +28,7 @@ namespace RPGSmithApp.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAccountManager _accountManager;
         private readonly ISearchService _searchService;
-        private readonly BlobService bs = new BlobService();
+        //private readonly BlobService bs = new BlobService();
 
         public SearchController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager,
             ISearchService searchService)

@@ -94,11 +94,11 @@
       <div class="col-12">
         <div class="form-group">
           <label for="AccountType">Space Usage</label>
-          <p class="text-center mb-0">{{usedSpace}} / 1000 MB</p>
+          <p class="text-center mb-0">{{usedSpace}} / {{availableSpace}} MB</p>
           <div class="progressbar-custom">
             <span>E</span>
             <span class="progress-bar-inner">
-              <span class="inner-bar-progrss" [ngStyle]="{'width': +usedSpace/1000*100 + '%'}"></span>
+              <span class="inner-bar-progrss" [ngStyle]="{'width': +usedSpace/availableSpace*100 + '%'}"></span>
             </span>
             <span>F</span>
           </div>

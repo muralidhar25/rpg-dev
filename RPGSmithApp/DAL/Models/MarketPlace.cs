@@ -41,5 +41,6 @@ namespace DAL.Models
         CAMPAIGN_SLOT = 2,
         CHARACTER_SLOT = 3,
         PLAYER_SLOT = 4,
+        STORAGE_SPACE = 5,
     }
 }

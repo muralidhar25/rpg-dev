@@ -150,7 +150,7 @@ namespace DAL.Core
         {
             try
             {
-                await _context.UserSubscriptions.AddAsync(new UserSubscription { UserId = user.Id, CharacterCount = 3, RulesetCount = 3 });
+                await _context.UserSubscriptions.AddAsync(new UserSubscription { UserId = user.Id, CharacterCount = 3, RulesetCount = 3,StorageSpaceInMB=1000 });
                 await UpdateInviteIfExistsForUser(user);
             }
             catch (Exception ex)

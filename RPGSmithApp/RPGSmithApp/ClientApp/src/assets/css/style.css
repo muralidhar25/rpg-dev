@@ -1774,7 +1774,18 @@
 .icon-Gen-Uncheck:before {
   content: "\e957";
 }
-
+.icon-Gen-Controls:before {
+  content: "\e95f";
+}
+.icon-Gen-Tiles:before {
+  content: "\e962";
+}
+.icon-Gen-Pouch:before {
+  content: "\e961";
+}
+.icon-Gen-Handouts:before {
+  content: "\e963";
+}
 /**
  * Global Styles --------------------------------------------------------------
  */

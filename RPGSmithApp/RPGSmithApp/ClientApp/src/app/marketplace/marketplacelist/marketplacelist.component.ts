@@ -184,6 +184,7 @@ export class MarketplacelistComponent implements OnInit {
           user.removeAds = true;
           break;
         case MarketPlaceItemsType.ADDITIONAL_STORAGE:
+          user.storageSpace = user.storageSpace + (paymentDoneForItem.qty*1000);
           break;
         case MarketPlaceItemsType.BUY_US_A_COFFEE:
           break;

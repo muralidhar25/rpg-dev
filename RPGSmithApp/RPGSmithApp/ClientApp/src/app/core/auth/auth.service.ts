@@ -166,6 +166,7 @@ export class AuthService {
       user.playerSlot = +decodedIdToken.playerslot;
       user.characterSlot = +decodedIdToken.characterslot;
       user.campaignSlot = +decodedIdToken.campaignslot;
+    user.storageSpace = +decodedIdToken.storagespaceinmb;
     this.saveUserDetails(user, permissions, accessToken, idToken, refreshToken, accessTokenExpiry, rememberMe);
 
     this.reevaluateLoginStatus(user);

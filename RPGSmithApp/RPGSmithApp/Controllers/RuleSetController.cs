@@ -798,7 +798,7 @@ namespace RPGSmithApp.Controllers
 
                 if (httpPostedFile != null)
                 {
-                    BlobService bs = new BlobService();
+                    BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
                     var container = bs.GetCloudBlobContainer().Result;
                     string imageName = Guid.NewGuid().ToString();
                     dynamic Response = new ExpandoObject();
