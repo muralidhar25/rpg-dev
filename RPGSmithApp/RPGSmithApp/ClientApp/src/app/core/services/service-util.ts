@@ -6,12 +6,13 @@
 import { Injectable } from '@angular/core';
 import { forEach } from '@angular/router/src/utils/collection';
 import { CharacterStatConditionViewModel } from '../models/view-models/character-stats.model';
-import { STAT_TYPE } from '../models/enums';
+import { STAT_TYPE, CONDITION_OPERATOR_ENUM } from '../models/enums';
 import { DiceService } from './dice.service';
 import { CharactersCharacterStat } from '../models/view-models/characters-character-stats.model';
 
 @Injectable()
 export class ServiceUtil {
+  ConditionsValuesList: CharactersCharacterStat[] = [];
 
   //inventoryWeight=this.character.inventoryWeight
   //CharacterStatsValues=this.charactersCharacterStats
@@ -365,5 +366,130 @@ export class ServiceUtil {
     }
     result = result ? result.substring(0, result.length - 2) : '';
     return result;
+  }
+
+  public static conditionStat(item, _character, charactersCharacterStats) {
+    //let _character: any = this.character;
+    console.log(_character);
+    let result = '';
+    if (item.characterStat.characterStatConditions) {
+
+      //debugger;
+      if (item.characterStat.characterStatConditions.length) {
+
+        let SkipNextEntries: boolean = false;
+
+        item.characterStat.characterStatConditions.map((Condition: CharacterStatConditionViewModel) => {
+
+          if (!SkipNextEntries) {
+            //let ConditionStatValue: string = this.GetValueFromStatsByStatID(Condition.ifClauseStatId, Condition.ifClauseStattype);
+
+            let ConditionStatValue: string = '';
+            if (Condition.ifClauseStatText) {
+
+              ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(_character.inventoryWeight, charactersCharacterStats, Condition, false);
+            }
+            let operator = "";
+            let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(_character.inventoryWeight, charactersCharacterStats, Condition, true);//Condition.compareValue;
+
+            let ConditionTrueResult = Condition.result;
+
+
+            if (Condition.sortOrder != item.characterStat.characterStatConditions.length) {//if and Else If Part
+              if (Condition.conditionOperator) {
+                //////////////////////////////////////////////////////////////////
+                debugger
+                if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.EQUALS ||
+                  Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.NOT_EQUALS ||
+                  Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.GREATER_THAN ||
+                  Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.EQUAL_TO_OR_GREATER_THAN ||
+                  Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.LESS_THAN ||
+                  Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.EQUAL_TO_OR_LESS_THAN) {
+
+                  operator = Condition.conditionOperator.symbol;
+                  let ConditionCheckString = '';
+                  if (Condition.isNumeric) {
+                    ConditionStatValue = ConditionStatValue ? ConditionStatValue : "0";
+                    ValueToCompare = ValueToCompare ? ValueToCompare : "0";
+                    ConditionCheckString = ConditionStatValue + ' ' + operator + ' ' + ValueToCompare;
+                  }
+                  else {
+                    ConditionCheckString = ' "' + ConditionStatValue + '" ' + operator + ' "' + ValueToCompare + '" ';
+                  }
+                  ConditionCheckString = ConditionCheckString.toUpperCase();
+                  let conditionCheck = eval(ConditionCheckString);
+                  if ((typeof (conditionCheck)) == "boolean") {
+                    if (conditionCheck) {
+                      result = ConditionTrueResult;
+                      SkipNextEntries = true;
+                    }
+                  }
+                }
+
+
+                else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.IS_BLANK) {
+                  if (!ConditionStatValue) {
+                    result = ConditionTrueResult;
+                    SkipNextEntries = true;
+                  }
+                }
+                else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.IS_NOT_BLANK) {
+                  if (ConditionStatValue) {
+                    result = ConditionTrueResult;
+                    SkipNextEntries = true;
+                  }
+                }
+                
+                else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.CONTAINS) {
+                  ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                  ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                  if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+
+
+                    if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
+                      result = ConditionTrueResult;
+                      SkipNextEntries = true;
+                    }
+                  }
+                  else {
+                    if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
+                      result = ConditionTrueResult;
+                      SkipNextEntries = true;
+                    }
+                  }
+                }
+                else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.DOES_NOT_CONTAIN) {
+                  ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                  ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                  if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+
+
+                    if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
+                      result = ConditionTrueResult;
+                      SkipNextEntries = true;
+                    }
+                  }
+                  else {
+                    if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
+                      result = ConditionTrueResult;
+                      SkipNextEntries = true;
+                    }
+                  }
+                }
+                //////////////////////////////////////////////////////////////////
+              }
+            }
+            else {
+              let ConditionFalseResult = Condition.result;
+              result = ConditionFalseResult;
+              SkipNextEntries = true;
+            }
+          }
+        })
+      }
+    }
+
+    return result;
+    
   }
 }

@@ -12,7 +12,9 @@ import { DBkeys } from "../../core/common/db-keys";
 import { User } from "../../core/models/user.model";
 import { Utilities } from "../../core/common/utilities";
 import { PlatformLocation } from "@angular/common";
-
+import { ServiceUtil } from "../../core/services/service-util";
+import { Characters } from "../../core/models/view-models/characters.model";
+import { CharactersService } from "../../core/services/characters.service";
 
 @Component({
   selector: 'app-numeric-character-stat',
@@ -30,8 +32,11 @@ export class NumericCharacterStatComponent implements OnInit {
   isLoading = false;
   rulesetId: number;
   scrollLoading: boolean = false;
+  characterCharStats:any=null
+  character: Characters = new Characters();
 
   constructor(
+    private charactersService: CharactersService,
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private bsModalRef: BsModalRef, private modalService: BsModalService, private localStorage: LocalStoreManager, private charactersCharacterStatService: CharactersCharacterStatService,
     private sharedService: SharedService, private commonService: CommonService, private characterStatService: CharacterStatService
@@ -42,13 +47,23 @@ export class NumericCharacterStatComponent implements OnInit {
   }
 
   ngOnInit() {
+    
     this.initialize();
-    //this.characterId = this.bsModalRef.content.characterId;
+    
+    setTimeout(() => {
+      this.character = this.bsModalRef.content.character ? this.bsModalRef.content.character : new Characters();
+      this.characterCharStats = this.bsModalRef.content.characterCharStats ? this.bsModalRef.content.characterCharStats : null;
+      console.log(this.character);
+    
+    }, 0);
     if (this.rulesetId == undefined)
       this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+    console.log(this.rulesetId);
   }
 
+  
   private initialize() {
+    let num=0;
     setTimeout(() => {
       let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
       if (user == null)
@@ -56,13 +71,36 @@ export class NumericCharacterStatComponent implements OnInit {
       else {
         this.isLoading = true;
         if (this.characterId) {
+        
           this.charactersCharacterStatService.getNumericCharactersCharacterStat<any[]>(this.characterId, this.page, this.pageSize)
             .subscribe(data => {
               this.numericCharacterStats = [];
               data.forEach((val) => {
-                
+                console.log(data);
                 val.inventoryWeight = 0;
                 val.icon = this.characterStatService.getIcon(val.characterStat.characterStatType.statTypeName);
+                
+                if (val.characterStat.characterStatType.statTypeName == 'Condition') {
+                  let characterStatConditions = val.characterStat.characterStatConditions;
+                  val.characterStat.characterStatConditions.sort((a, b) => {
+
+                    return a.sortOrder - b.sortOrder})
+                  console.log(characterStatConditions);
+                  if (this.characterCharStats) {
+                    
+                    let result = ServiceUtil.conditionStat(val, this.character, this.characterCharStats);
+
+                    if (isNaN(+result)) {
+                      num = 0;
+                    } else {
+                      num = +result;
+                    }
+                    console.log(num);
+                    val.defaultValue = num;
+                  }
+                  
+                }
+               
                 this.numericCharacterStats.push(val);
               });
 
@@ -83,7 +121,6 @@ export class NumericCharacterStatComponent implements OnInit {
         else {
           this.charactersCharacterStatService.getNumericCharactersCharacterStatRuleset<any[]>(this.rulesetId, this.page, this.pageSize)
             .subscribe(data => {
-
               this.numericCharacterStats = [];
               data.forEach((val) => {
                 val.inventoryWeight = 0;
@@ -169,9 +206,30 @@ export class NumericCharacterStatComponent implements OnInit {
     if (this.characterId) {
       this.charactersCharacterStatService.getNumericCharactersCharacterStat<any[]>(this.characterId, this.page, this.pageSize)
         .subscribe(data => {
-
+          let num=0;
           data.forEach((val) => {
             val.icon = this.characterStatService.getIcon(val.characterStat.characterStatType.statTypeName);
+            if (val.characterStat.characterStatType.statTypeName == 'Condition') {
+              let characterStatConditions = val.characterStat.characterStatConditions;
+              val.characterStat.characterStatConditions.sort((a, b) => {
+
+                return a.sortOrder - b.sortOrder
+              })
+              console.log(characterStatConditions);
+              if (this.characterCharStats) {
+
+                let result = ServiceUtil.conditionStat(val, this.character, this.characterCharStats);
+
+                if (isNaN(+result)) {
+                  num = 0;
+                } else {
+                  num = +result;
+                }
+                console.log(num);
+                val.defaultValue = num;
+              }
+
+            }
           });
 
           for (var i = 0; i < data.length; i++) {

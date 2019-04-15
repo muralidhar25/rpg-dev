@@ -3,7 +3,7 @@ import 'rxjs/add/operator/switchMap';
 import { Router } from "@angular/router";
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { DiceService } from "../../../core/services/dice.service";
-import { FATE_DICE, TILES, STAT_TYPE, DICE_ICON, DICE, CustomDiceResultType } from "../../../core/models/enums";
+import { FATE_DICE, TILES, STAT_TYPE, DICE_ICON, DICE, CustomDiceResultType, CONDITION_OPERATOR_ENUM } from "../../../core/models/enums";
 import { Characters } from "../../../core/models/view-models/characters.model";
 import { CharacterCommand } from "../../../core/models/view-models/character-command.model";
 import { DiceRoll } from "../../../core/models/view-models/dice-roll.model";
@@ -24,6 +24,9 @@ import { DiceSaveComponent } from "../dice-save/dice-save.component";
 import { NumericCharacterStatComponent } from "../../numeric-character-stats/numeric-character-stat.component";
 import { PlatformLocation } from "@angular/common";
 import { Observable } from "rxjs";
+import { CharacterStatConditionViewModel, CharacterStats, CharacterStatDefaultValue } from "../../../core/models/view-models/character-stats.model";
+import { ServiceUtil } from "../../../core/services/service-util";
+import { CharactersCharacterStat } from "../../../core/models/view-models/characters-character-stats.model";
 
 
 @Component({
@@ -91,7 +94,7 @@ export class DiceRollComponent implements OnInit {
   //afterResultText: string = '';
   displayCurrentRollBtn: boolean = false;
   rollAgainBtnText: string = 'Roll Again';
-
+  ConditionsValuesList: CharactersCharacterStat[] = [];
 
   constructor(
     private router: Router, public modalService: BsModalService, private bsModalRef: BsModalRef, private alertService: AlertService,
@@ -167,9 +170,9 @@ export class DiceRollComponent implements OnInit {
 
       this.charactersService.getRuleset_charStats_ById<any>(this.rulesetId, this.characterId)
         .subscribe(data => {
-          
           let model: any = data;
           this.statdetails = model.characterCharacterstats;
+       
           this.customDices = model.customDices;
           
           this.customDices= DiceService.BindDeckCustomDices(this.customDices);
@@ -609,6 +612,20 @@ export class DiceRollComponent implements OnInit {
                   case STAT_TYPE.Choice: //Combo
                     num = stat.defaultValue
                     break;
+                  case STAT_TYPE.Condition:
+                    debugger;
+                    let characterStatConditionsfilter = this.charactersCharacterStats.filter((stat) => stat.characterStat.statName.toUpperCase() == rec.id);
+                    let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
+                    let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.charactersCharacterStats);
+                    //let result = this.conditionStat(characterStatConditions);
+                    console.log(result);
+                    if (isNaN(+result)) {
+                      num = 0;
+                    } else {
+                      num = +result;
+                    }
+
+                    break;
                   default:
                     break;
                 }
@@ -1037,7 +1054,7 @@ export class DiceRollComponent implements OnInit {
     } catch (err) { }
   }
   onClickRoll(characterCommand: CharacterCommand, _mainCommandText: string, lastResultArray?: any) {
-    
+   
     let anyCommandIsCustomWithNonNumeric = false;
     this.loadingResult = false;
     let command = characterCommand.command;
@@ -1115,7 +1132,7 @@ export class DiceRollComponent implements OnInit {
             let IDs: any[] = [];
             finalCalcString = calculationString;
             if (calculationString) {
-              
+            //  debugger;
               calculationString= DiceService.hideTextCommandSquareBraces(calculationString);
               calculationString.split(/\[(.*?)\]/g).map((rec) => {
               
@@ -1164,9 +1181,9 @@ export class DiceRollComponent implements OnInit {
                 }
               })
 
-              
+             
               calculationString = DiceService.showTextCommandSquareBraces(calculationString);
-
+              
               IDs.map((rec) => {
                 this.statdetails.charactersCharacterStat.map((stat) => {
                   if (rec.id == stat.characterStat.statName.toUpperCase()) {
@@ -1204,13 +1221,33 @@ export class DiceRollComponent implements OnInit {
                       case STAT_TYPE.Choice: //Combo
                         num = stat.defaultValue
                         break;
+                      case STAT_TYPE.Condition:
+                        debugger;
+                        let characterStatConditionsfilter = this.charactersCharacterStats.filter((stat) => stat.characterStat.statName.toUpperCase() == rec.id);
+                        let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
+                        let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.charactersCharacterStats);
+                        //let result = this.conditionStat(characterStatConditions);
+                        console.log(result);
+                        if (isNaN(+result)) {
+                          num = 0;
+                        } else {
+                          num = +result;
+                        }
+                        
+                        break;
                       default:
                         break;
                     }
-                    if (num)
+                    
+                    if (num) {
+                     
                       calculationString = calculationString.replace(rec.originaltext, num.toString());
-                    else
+                    }
+
+                    else {
                       calculationString = calculationString.replace(rec.originaltext, '0');
+                    }
+                     
                     //CalcString = CalcString.replace(rec.originaltext, "(" + num + ")");
                   }
 
@@ -1230,6 +1267,7 @@ export class DiceRollComponent implements OnInit {
         //////////////////////////////////////////////
         //add mod & validate command            
         let commandToValidate = command.trim();
+ 
         this.addModArray.map(mod => {
           //let charactersCharacterStatId = mod.charactersCharacterStatId;
           //let selectedStatValue = mod.selectedStatValue;
@@ -1423,7 +1461,6 @@ export class DiceRollComponent implements OnInit {
 
         this.character.lastCommand = commandTxt;
         this.character.lastCommandResult = __calculationString;
-
         //let textResult = this.fillBeforeAndAfterText(characterCommand.command, true);
         //this.beforeResultText = textResult.start;
         //this.afterResultText = textResult.end;
@@ -3054,6 +3091,20 @@ export class DiceRollComponent implements OnInit {
                   case STAT_TYPE.Choice: //Combo
                     num = stat.defaultValue
                     break;
+                  case STAT_TYPE.Condition:
+                    debugger;
+                    let characterStatConditionsfilter = this.charactersCharacterStats.filter((stat) => stat.characterStat.statName.toUpperCase() == rec.id);
+                    let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
+                    let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.charactersCharacterStats);
+                    //let result = this.conditionStat(characterStatConditions);
+                    //console.log(result);
+                    if (isNaN(+result)) {
+                      num = 0;
+                    } else {
+                      num = +result;
+                    }
+
+                    break;
                   default:
                     break;
                 }
@@ -3127,12 +3178,16 @@ export class DiceRollComponent implements OnInit {
 
 
   addMod() {
+    console.log('here');
     this.bsModalRef = this.modalService.show(NumericCharacterStatComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
       keyboard: false
     });
     this.bsModalRef.content.characterId = this.characterId;
+    //charcter 
+    this.bsModalRef.content.character = this.character;
+    this.bsModalRef.content.characterCharStats = this.charactersCharacterStats;
 
     this.bsModalRef.content.event.subscribe(data => {
       //let _selectedStat: string = data.selectedStat;

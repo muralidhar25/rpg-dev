@@ -707,7 +707,8 @@
                                             <input class="form-control" type="text" placeholder="Default State" [(ngModel)]="condition.result"  [name]="'result1'+i" />
                                         </div>
                                         <div class="col-12 col-sm-4 mb-2">
-                                            <button *ngIf="characterStatsFormModal?.characterStatConditionViewModel?.length<=10" type="button" class="btn btn-accent btn-block" (click)="AddElseIfCondition(i)">ADD CONDITION</button>
+                                          <!--<button *ngIf="characterStatsFormModal?.characterStatConditionViewModel?.length<=10" type="button" class="btn btn-accent btn-block" (click)="AddElseIfCondition(i)">ADD CONDITION</button>-->
+                                          <button *ngIf="characterStatsFormModal?.characterStatConditionViewModel?.length" type="button" class="btn btn-accent btn-block" (click)="AddElseIfCondition(i)">ADD CONDITION</button>
                                         </div>
                                     </div>
                                 </ng-container>
