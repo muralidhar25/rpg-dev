@@ -39,6 +39,7 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
   userId: string;
   marketplaceDetails: marketplaceModel = new marketplaceModel();
   MARKETPLACEITEMSTYPE = MarketPlaceItemsType;
+  isLoading: boolean = false;
   constructor(private bsModalRef: BsModalRef,
     private cd: ChangeDetectorRef,
     private authService: AuthService,
@@ -85,10 +86,12 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
     this.cd.detectChanges();
   }
   async onSubmit(form: NgForm) {
+    this.isLoading = true;
     const { token, error } = await stripe.createToken(this.card);
 
     if (error) {
       console.log('Something is wrong:', error);
+      this.isLoading = false;
     } else {
       let stripe_tokenid = token.id;
       this.marketplaceDetails.sourceToken = stripe_tokenid;
@@ -101,11 +104,12 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
   }
 
   chargePayment(details) {
+    this.isLoading = true;
     this.alertService.startLoadingMessage("", "Processing payment...");
     this.marketplaceService.marketplacePayment<any>(details)
       .subscribe(
       data => {
-       
+        
         let paymentdetails = JSON.parse(data);
       
         this.alertService.stopLoadingMessage();
@@ -121,10 +125,12 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
           } else {
          
           this.alertService.showMessage(paymentdetails.message, "", MessageSeverity.error);
-          }
+        }
+        this.isLoading = false;
         this.close();
         },
       error => {
+        this.isLoading = false;
         this.alertService.stopLoadingMessage();
           let Errors = Utilities.ErrorDetail("", error);
           if (Errors.sessionExpire) {

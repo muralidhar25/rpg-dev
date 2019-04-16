@@ -52,7 +52,7 @@
   </div>
   <div class="modal-footer">
     <button type="button"  data-dismiss="modal" class="btn btn-outline-accent" (click)="close()">Cancel</button>
-    <button type="submit" [disabled]="getTotalIsNotValid(paymentInfo?.price,marketplaceDetails.qty)" [ngClass]="{disabled : getTotalIsNotValid(paymentInfo?.price,marketplaceDetails.qty)}" class="btn btn-accent ml-2">Pay ${{getTotal(paymentInfo?.price,marketplaceDetails.qty)}}</button>
+    <button type="submit" [disabled]="getTotalIsNotValid(paymentInfo?.price,marketplaceDetails.qty) || isLoading" [ngClass]="{disabled : getTotalIsNotValid(paymentInfo?.price,marketplaceDetails.qty)}" class="btn btn-accent ml-2">Pay ${{getTotal(paymentInfo?.price,marketplaceDetails.qty)}}</button>
   </div>
 </form>
   </div>

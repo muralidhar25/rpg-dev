@@ -74,7 +74,23 @@ namespace DAL.Services
 
         public async Task<List<PlayerInvite>> getReceivedInvites(string userid)
         {
-            var res=await _context.PlayerInvites.Where(x => x.PlayerUserID == userid && x.IsDeclined==false).Include(x => x.PlayerCampaign).Include(x=>x.SendByUser).ToListAsync();
+            var res=await _context.PlayerInvites.Where(x => x.PlayerUserID == userid && x.IsDeclined==false).Include(x => x.PlayerCampaign).Include(x=>x.SendByUser)
+                .ToListAsync();
+            foreach (var invite in res)
+            {
+                invite.PlayerCampaign = new RuleSet()
+                {
+                    RuleSetId = invite.PlayerCampaign.RuleSetId,
+                    RuleSetName = invite.PlayerCampaign.RuleSetName,
+                    ImageUrl = invite.PlayerCampaign.ImageUrl,
+                };
+                invite.SendByUser = new ApplicationUser()
+                {
+                    FullName = invite.SendByUser.FullName,
+                    UserName = invite.SendByUser.UserName,
+                    Id = invite.SendByUser.Id,
+                };
+            }
             return res;
         }
 
