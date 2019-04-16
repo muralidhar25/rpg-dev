@@ -175,12 +175,19 @@ namespace DAL.Services
 
                 if (_context.PlayerControls.Where(x=>x.CampaignID== invite.PlayerCampaignID).Any())
                 {
-                    control = _context.PlayerControls.Where(x => x.CampaignID == invite.PlayerCampaignID).FirstOrDefault();
-                    control.Id = 0;
-                    control.PlayerCharacterID = characterID;
-                    control.CampaignID = invite.PlayerCampaignID;
-                    control.PlayerCharacter = null;
-                    control.Campaign = null;
+                    PlayerControl OldControl = _context.PlayerControls.Where(x => x.CampaignID == invite.PlayerCampaignID).FirstOrDefault();
+                    control = new PlayerControl()
+                    {
+                        PlayerCharacterID = characterID,
+                        CampaignID = invite.PlayerCampaignID,
+                        PauseAbilityAdd = OldControl.PauseAbilityAdd,
+                        PauseAbilityCreate = OldControl.PauseAbilityCreate,
+                        PauseGame = OldControl.PauseGame,
+                        PauseItemAdd = OldControl.PauseItemAdd,
+                        PauseItemCreate = OldControl.PauseItemCreate,
+                        PauseSpellAdd = OldControl.PauseSpellAdd,
+                        PauseSpellCreate = OldControl.PauseSpellCreate,
+                    };
                 }
                 await _context.PlayerControls.AddAsync(control);
                 await _context.SaveChangesAsync();
