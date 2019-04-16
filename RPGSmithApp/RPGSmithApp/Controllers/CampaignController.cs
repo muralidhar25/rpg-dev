@@ -53,6 +53,22 @@ namespace RPGSmithApp.Controllers
             return Ok(_campaign.cancelInvite(inviteID));
         }
 
+        [HttpPost("DeclineInvite")]
+        public async Task<IActionResult> DeclineInvite(int inviteID)
+        {
+            return Ok(await _campaign.DeclineInvite(inviteID));
+        }
+        [HttpPost("AcceptInvite")]
+        public async Task<IActionResult> AcceptInvite(int inviteID)
+        {
+            return Ok(await _campaign.AcceptInvite(inviteID));
+        }
+        [HttpPost("AnswerLaterInvite")]
+        public async Task<IActionResult> AnswerLaterInvite(int inviteID)
+        {
+            return Ok(await _campaign.AnswerLaterInvite(inviteID));
+        }
+
         [HttpPost("removePlayerFromCampaign")]
         public async Task<IActionResult> removePlayerFromCampaign(int inviteID)
         {

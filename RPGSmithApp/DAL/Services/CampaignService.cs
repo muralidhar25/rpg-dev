@@ -127,5 +127,35 @@ namespace DAL.Services
             }
             return false;
         }
+        public async Task<PlayerInvite> DeclineInvite(int inviteID) {
+            PlayerInvite invite = _context.PlayerInvites.Where(x => x.Id == inviteID).FirstOrDefault();
+            if (invite!=null)
+            {
+                invite.IsDeclined = true;
+                await _context.SaveChangesAsync();
+                return invite;
+            }
+            return new PlayerInvite();
+        }
+        public async Task<PlayerInvite> AcceptInvite(int inviteID) {
+            PlayerInvite invite = _context.PlayerInvites.Where(x => x.Id == inviteID).FirstOrDefault();
+            if (invite != null)
+            {
+                invite.IsAccepted = true;
+                await _context.SaveChangesAsync();
+                return invite;
+            }
+            return new PlayerInvite();
+        }
+        public async Task<PlayerInvite> AnswerLaterInvite(int inviteID) {
+            PlayerInvite invite = _context.PlayerInvites.Where(x => x.Id == inviteID).FirstOrDefault();
+            if (invite != null)
+            {
+                invite.IsAnswerLater = true;
+                await _context.SaveChangesAsync();
+                return invite;
+            }
+            return new PlayerInvite();
+        }
     }
 }
