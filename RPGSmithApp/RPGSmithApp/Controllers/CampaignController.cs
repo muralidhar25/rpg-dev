@@ -47,6 +47,21 @@ namespace RPGSmithApp.Controllers
         {
             return Ok(await _campaign.getReceivedInvites(userid));
         }
+        [HttpGet("getPlayerControlsByCampaignId")]
+        public async Task<IActionResult> getPlayerControlsByCampaignId(int campaignID)
+        {
+            return Ok(await _campaign.getPlayerControlsByCampaignId(campaignID));
+        }
+        [HttpGet("getPlayerControlsByCharacterId")]
+        public async Task<IActionResult> getPlayerControlsByCharacterId(int characterID)
+        {
+            return Ok(await _campaign.getPlayerControlsByCharacterId(characterID));
+        }
+        [HttpPost("updatePlayerControls")]
+        public async Task<IActionResult> updatePlayerControls([FromBody] PlayerControl model)
+        {
+            return Ok(await _campaign.updatePlayerControls(model));
+        }
 
         [HttpPost("cancelInvite")]
         public async Task<IActionResult> cancelInvite(int inviteID) {

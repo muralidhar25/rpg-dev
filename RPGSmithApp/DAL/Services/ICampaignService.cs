@@ -20,5 +20,8 @@ namespace DAL.Services
         Task<PlayerInvite> AcceptInvite(int inviteID,int characterID);
         Task<PlayerInvite> AnswerLaterInvite(int inviteID);
         Task<bool> isInvitedPlayerCharacter(int characterId);
+        Task<PlayerControl> getPlayerControlsByCampaignId(int campaignID);
+        Task<PlayerControl> getPlayerControlsByCharacterId(int characterID);
+        Task<PlayerControl> updatePlayerControls(PlayerControl model);
     }
 }

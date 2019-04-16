@@ -74,7 +74,7 @@ namespace DAL.Services
 
         public async Task<List<PlayerInvite>> getReceivedInvites(string userid)
         {
-            var res=await _context.PlayerInvites.Where(x => x.PlayerUserID == userid && x.IsDeclined==false).Include(x => x.PlayerCampaign).Include(x=>x.SendByUser)
+            var res=await _context.PlayerInvites.Where(x => x.PlayerUserID == userid && x.IsDeclined==false && x.IsAccepted==false).Include(x => x.PlayerCampaign).Include(x=>x.SendByUser)
                 .ToListAsync();
             foreach (var invite in res)
             {
@@ -143,6 +143,31 @@ namespace DAL.Services
             {
                 invite.IsAccepted = true;
                 invite.PlayerCharacterID = characterID;
+
+                //add player Controls
+                PlayerControl control = new PlayerControl()
+                {
+                    PlayerCharacterID = characterID,
+                    CampaignID = invite.PlayerCampaignID,
+                    PauseAbilityAdd = false,
+                    PauseAbilityCreate = false,
+                    PauseGame = false,
+                    PauseItemAdd = false,
+                    PauseItemCreate = false,
+                    PauseSpellAdd = false,
+                    PauseSpellCreate = false,
+                };
+
+                if (_context.PlayerControls.Where(x=>x.CampaignID== invite.PlayerCampaignID).Any())
+                {
+                    control = _context.PlayerControls.Where(x => x.CampaignID == invite.PlayerCampaignID).FirstOrDefault();
+                    control.Id = 0;
+                    control.PlayerCharacterID = characterID;
+                    control.CampaignID = invite.PlayerCampaignID;
+                    control.PlayerCharacter = null;
+                    control.Campaign = null;
+                }
+                await _context.PlayerControls.AddAsync(control);
                 await _context.SaveChangesAsync();
                 return invite;
             }
@@ -160,6 +185,31 @@ namespace DAL.Services
         }
         public async Task<bool> isInvitedPlayerCharacter(int characterId) {
             return await _context.PlayerInvites.Where(x => x.PlayerCharacterID == characterId).AnyAsync();
+        }
+        public async Task<PlayerControl> getPlayerControlsByCampaignId(int campaignID) {
+            var res = await _context.PlayerControls.Where(x => x.CampaignID == campaignID).FirstOrDefaultAsync();
+            if (res!=null)
+            {
+                res.PlayerCharacterID = 0;
+            }
+            return res;
+        }
+        public async Task<PlayerControl> getPlayerControlsByCharacterId(int characterID) {
+            return await _context.PlayerControls.Where(x => x.PlayerCharacterID == characterID).FirstOrDefaultAsync();
+        }
+        public async Task<PlayerControl> updatePlayerControls(PlayerControl model) {
+            //List<PlayerControl> list = _context.PlayerControls.Where(x => x.CampaignID == model.CampaignID).ToListAsync();
+            //foreach (var playerControl in list)
+            //{
+            //    playerControl.PauseAbilityAdd = false;
+            //    playerControl.PauseAbilityCreate = false;
+            //    playerControl.PauseGame = false;
+            //    playerControl.PauseItemAdd = false;
+            //    playerControl.PauseItemCreate = false;
+            //    playerControl.PauseSpellAdd = false;
+            //    playerControl.PauseSpellCreate = false;
+            //}
+            return new PlayerControl();
         }
     }
 }
