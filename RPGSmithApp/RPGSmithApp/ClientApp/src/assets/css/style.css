@@ -1786,6 +1786,9 @@
 .icon-Gen-Handouts:before {
   content: "\e963";
 }
+.icon-Gen-Email:before {
+  content: "\e95d";
+}
 /**
  * Global Styles --------------------------------------------------------------
  */

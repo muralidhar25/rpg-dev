@@ -35,6 +35,8 @@ import { MyImagesComponent } from "./shared/my-images/my-images.component";
 import { Ruleset } from "./core/models/view-models/ruleset.model";
 import { AppService1 } from "./app.service";
 import { SearchType } from "./core/models/enums";
+import { CampaignService } from "./core/services/campaign.service";
+import { playerInviteListModel } from "./core/models/campaign.model";
 //declare let ga: Function;
 
 var alertify: any = require('./assets/scripts/alertify.js');
@@ -106,6 +108,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   dashbaordUser: boolean = false;
   isGmUser: boolean = false;
   redirectUrl: string = '';
+  haveNewInvitation: boolean = false;
+  haveCheckedNewInvitation: boolean = false;
+  invitationList: playerInviteListModel[] = [];
+
+
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
     if (window.pageYOffset > 0) {
@@ -133,7 +140,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     private appTitleService: AppTitleService, private authService: AuthService, private translationService: AppTranslationService, private sharedService: SharedService,
     public configurations: ConfigurationService, public router: Router, private modalService: BsModalService, private commonService: CommonService,
     private rulesetService: RulesetService, private userService: UserService, private charactersService: CharactersService, private localStorage: LocalStoreManager,
-    private app1Service: AppService1, private activatedroute: ActivatedRoute,
+    private app1Service: AppService1, private activatedroute: ActivatedRoute, public campaignService: CampaignService,
     //public googleAnalyticsEventsService: GoogleAnalyticsEventsService,
     @Inject(DOCUMENT) private document: Document
   ) {
@@ -149,13 +156,33 @@ export class AppComponent implements OnInit, AfterViewInit {
       let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
       if (user) {
         if (user.isGm) {
-          this.logoPath = '/rulesets/campaigns';
+          //this.logoPath = '/rulesets/campaigns';
           if (this.headers) {
             if (this.headers.headerLink == 'ruleset') {
               this.logoPath = '/ruleset/campaign-details/' + this.headers.headerId;
             }
           }
         }
+
+        if (!this.haveCheckedNewInvitation) {
+          this.campaignService.CheckInvites<any>(user.id)
+            .subscribe(data => {
+              this.haveCheckedNewInvitation = true;
+              
+              if (data) {
+                if (data.length) {
+                  this.invitationList = data;
+                  this.haveNewInvitation = true;
+                }
+              }            
+            }, error => {
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
+            }, () => { });
+        }
+        
       }
       if (serviceData) {
         this.headers = serviceData;
@@ -408,13 +435,13 @@ export class AppComponent implements OnInit, AfterViewInit {
    
     if (this.isUserLoggedIn) this.updateCount();
 
-    if (this.isUserLoggedIn) {
+    if (this.isUserLoggedIn) {      
       this.commonService.GetUserDetail();
       let _user = this.commonService.getUserDetails();
       if (_user != null) {
         this._username = _user.userName == undefined ? _user.fullName : _user.userName;
         this._profileImage = _user.profileImage;
-      }
+      }  
     }
   }
 
@@ -512,12 +539,30 @@ export class AppComponent implements OnInit, AfterViewInit {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user) {
           if (user.isGm) {
-            this.logoPath = '/rulesets/campaigns';
+            //this.logoPath = '/rulesets/campaigns';
             if (this.headers) {
               if (this.headers.headerLink == 'ruleset') {
                 this.logoPath = '/ruleset/campaign-details/' + this.headers.headerId;
               }
             }
+          }
+          if (!this.haveCheckedNewInvitation) {
+            this.campaignService.CheckInvites<any>(user.id)
+              .subscribe(data => {
+                this.haveCheckedNewInvitation = true;
+                
+                if (data) {
+                  if (data.length) {
+                    this.invitationList = data;
+                    this.haveNewInvitation = true;
+                  }
+                }
+              }, error => {
+                let Errors = Utilities.ErrorDetail("", error);
+                if (Errors.sessionExpire) {
+                  this.authService.logout(true);
+                }
+              }, () => { });
           }
         }
         this.logoNavigation();
@@ -1119,7 +1164,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user) {
       if (user.isGm) {
-        this.logoPath = '/rulesets/campaigns';
+        //this.logoPath = '/rulesets/campaigns';
         if (this.headers) {
           if (this.headers.headerLink == 'ruleset') {
             this.logoPath = '/ruleset/campaign-details/' + this.headers.headerId;
@@ -1171,5 +1216,14 @@ export class AppComponent implements OnInit, AfterViewInit {
   //}
   gotoUrl() {
     this.redirectUrl = Utilities.getHelpLinkUrl(this.router.url);
+  }
+  checkInvites() {
+    this.bsModalRef = this.modalService.show(AccountSettingsComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.invitationList = this.invitationList;
+    
   }
 }

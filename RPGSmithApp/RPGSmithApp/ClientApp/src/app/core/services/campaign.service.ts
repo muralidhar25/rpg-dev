@@ -10,10 +10,15 @@ import { playerInviteSendModel } from '../models/campaign.model';
 @Injectable()
 export class CampaignService extends EndpointFactory {
   private readonly _sendInviteUrlUrl: string = '/api/campaign/SendPlayerInvite';
-  //private readonly _getmarketplacelistUrl: string = '/api/marketplace/GetMarketPlaceList';
+  private readonly _getPlayerInviteListUrl: string = '/api/campaign/getInvitedPlayers';
+  private readonly _cancelInviteUrl: string = '/api/campaign/cancelInvite';
+  private readonly _getCheckInvitesListUrl: string = '/api/campaign/getReceivedInvites';
 
   get sendInviteUrl() { return this.configurations.baseUrl + this._sendInviteUrlUrl; }
-  //get getmarketplacelistUrl() { return this.configurations.baseUrl + this._getmarketplacelistUrl; }
+  get getPlayerInviteListUrl() { return this.configurations.baseUrl + this._getPlayerInviteListUrl; }
+  get cancelInviteUrl() { return this.configurations.baseUrl + this._cancelInviteUrl; }
+  get getCheckInvitesListUrl() { return this.configurations.baseUrl + this._getCheckInvitesListUrl; }
+  
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
     super(http, configurations, injector);
@@ -23,20 +28,39 @@ export class CampaignService extends EndpointFactory {
     
     let endpointUrl = this.sendInviteUrl;
    
-    return this.http.post(endpointUrl, JSON.stringify(playerInviteSendModel), { headers: this.getRequestHeadersNew(), responseType: "text" })
+    return this.http.post(endpointUrl, JSON.stringify(playerInviteSendModel), { headers: this.getRequestHeadersNew() })
       .catch(error => {
         return this.handleError(error, () => this.sendInvite(playerInviteSendModel));
       });
    
   }
 
-  //getmarketplaceItems<T>(): Observable<T> {
+  getPlayerInviteList<T>(rulesetId:number): Observable<T> {
 
-  //  let endpointUrl = this.getmarketplacelistUrl;
+    let endpointUrl = `${this.getPlayerInviteListUrl}?rulesetId=${rulesetId}`;
 
-  //  return this.http.get<T>(endpointUrl, this.getRequestHeaders())
-  //    .catch(error => {
-  //      return this.handleError(error, () => this.getmarketplaceItems());
-  //    });
-  //}
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getPlayerInviteList(rulesetId));
+      });
+  }
+  CheckInvites<T>(userId: string): Observable<T> {
+
+    let endpointUrl = `${this.getCheckInvitesListUrl}?userid=${userId}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.CheckInvites(userId));
+      });
+  }
+  cancelInvite<T>(inviteId: number): Observable<T> {
+
+    let endpointUrl = `${this.cancelInviteUrl}?inviteID=${inviteId}`;
+
+    return this.http.post(endpointUrl, JSON.stringify({}), { headers: this.getRequestHeadersNew() })
+      .catch(error => {
+        return this.handleError(error, () => this.cancelInvite(inviteId));
+      });
+
+  }
 }

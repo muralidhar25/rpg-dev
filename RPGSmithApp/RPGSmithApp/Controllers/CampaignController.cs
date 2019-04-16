@@ -21,6 +21,7 @@ namespace RPGSmithApp.Controllers
     {
         const string UserDoesNotExists= "Username does not exists.";
         const string InviteAlreadySend = "Invite already sent.";
+        const string NoPlayerSlotAvailable = "Please buy more player slots to send invites";
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAccountManager _accountManager;
         private readonly ICampaignService _campaign;
@@ -35,11 +36,39 @@ namespace RPGSmithApp.Controllers
             _logger = logger;
             _emailer = emailer;
         }
+
+        [HttpGet("getInvitedPlayers")]
+        public async Task<IActionResult> getCountByRuleSetId(int rulesetId)
+        {
+            return Ok(_campaign.getInvitedPlayers(rulesetId));
+        }
+        [HttpGet("getReceivedInvites")]
+        public async Task<IActionResult> getReceivedInvites(string userid)
+        {
+            return Ok(await _campaign.getReceivedInvites(userid));
+        }
+
+        [HttpPost("cancelInvite")]
+        public async Task<IActionResult> cancelInvite(int inviteID) {
+            return Ok(_campaign.cancelInvite(inviteID));
+        }
+
+        [HttpPost("removePlayerFromCampaign")]
+        public async Task<IActionResult> removePlayerFromCampaign(int inviteID)
+        {
+            return Ok(_campaign.removePlayerFromCampaign(inviteID));
+        }
+
         [HttpPost("SendPlayerInvite")]
         public async Task<IActionResult> SendPlayerInvite([FromBody] PlayerInviteEmail model)
         {
             try
-            {                
+            {
+                if (!isPlayerSlotAvailableToSendInvite(model.CampaignId))
+                {
+                    return BadRequest(NoPlayerSlotAvailable);
+                }
+                bool IsInviteSentUsingUserName = false;
                 string emailId = model.UserName;
                 string PlayerUserId = null;                
                 string PlayerName = null;                
@@ -51,6 +80,7 @@ namespace RPGSmithApp.Controllers
                         emailId = user.Email;
                         PlayerUserId = user.Id;
                         PlayerName = user.FullName;
+                        IsInviteSentUsingUserName = true;
                     }
                     else {
                         return BadRequest(UserDoesNotExists);
@@ -80,9 +110,10 @@ namespace RPGSmithApp.Controllers
 
                 await  SendInviteEmail(model.SendByUserName, model.SendByCampaignName, model.SendByCampaignImage, PlayerName, model.UserName);
                 
-                PlayerInvite invite=  await _campaign.CreatePlayerInvite(model, PlayerUserId);
-                
-                return Ok(invite );
+                PlayerInvite invite=  await _campaign.CreatePlayerInvite(model, PlayerUserId, IsInviteSentUsingUserName);
+                //invite = _campaign.getInvitedPlayerById(invite.Id);
+                //PlayerInviteList obj = _campaign.getInvitedPlayerById(invite.Id);
+                return Ok(_campaign.getInvitedPlayerById(invite.Id));
             }
             catch (Exception ex)
             {
@@ -90,8 +121,13 @@ namespace RPGSmithApp.Controllers
             }
         }
 
-        private async Task<bool> SendInviteEmail(string gMAccountUserName, string campaignName, string campaignImage,string receiverName, string receiverEmail)
+        private bool isPlayerSlotAvailableToSendInvite(int campaignID)
         {
+            return _campaign.isPlayerSlotAvailableToSendInvite(GetUserId(), campaignID);
+        }
+
+        private async Task<bool> SendInviteEmail(string gMAccountUserName, string campaignName, string campaignImage,string receiverName, string receiverEmail)
+        {            
             var mailTemplatePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/mail-templates/playerInviteEmail.html");
             var EmailContent = System.IO.File.ReadAllText(mailTemplatePath);
             EmailContent = EmailContent.Replace("[#GM_AccountName#]", gMAccountUserName);

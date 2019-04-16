@@ -83,10 +83,8 @@ export class InvitePlayerComponent implements OnInit {
           //  this.bsModalRef.hide();
           //} else {
           //  this.errorMsg = true;
-          //}
-          this.event.emit({
-            Username: username
-          });
+          //}        
+        this.event.emit(data);
         },
       error => {
           debugger

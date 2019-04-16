@@ -45,7 +45,7 @@ export class AbilitiesComponent implements OnInit {
     timeoutHandler: any;
     pageSize: number = 28;
     offset = (this.page - 1) * this.pageSize;
-
+  backURL: string = '/rulesets';
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -83,7 +83,10 @@ export class AbilitiesComponent implements OnInit {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)
             this.authService.logout();
-        else { 
+        else {
+          if (user.isGm) {
+            this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
+          }
             this.isLoading = true;
             this.abilityService.getAbilityByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
                 .subscribe(data => {

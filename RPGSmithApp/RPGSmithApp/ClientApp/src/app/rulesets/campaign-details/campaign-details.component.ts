@@ -19,6 +19,11 @@ import { ImageViewerComponent } from '../../shared/image-interface/image-viewer/
 import { CampaignInviteComponent } from '../campaign-invite/campaign-invite.component';
 import { User } from '../../core/models/user.model';
 import { AuthService } from '../../core/auth/auth.service';
+import { CampaignService } from '../../core/services/campaign.service';
+import { Utilities } from '../../core/common/utilities';
+import { playerInviteListModel } from '../../core/models/campaign.model';
+import { MessageSeverity, AlertService } from '../../core/common/alert.service';
+import { ImageSearchService } from '../../core/services/shared/image-search.service';
  
 @Component({
   selector: 'app-campaign-details',
@@ -35,14 +40,14 @@ export class CampaignDetailsComponent implements OnInit {
   rulesetRecordCount: any = new RulesetRecordCount();
   ruleset: any = new Ruleset();
   public event: EventEmitter<any> = new EventEmitter();
-  invitedUsers = [];
-  showIcon: boolean = false;
+  invitedUsers: playerInviteListModel[]= [];
+  //showIcon: boolean = false;
   playersSlots: number = 0;
   
   constructor( private formBuilder: FormBuilder, private router: Router, private localStorage: LocalStoreManager,
     private rulesetService: RulesetService, private sharedService: SharedService, private authService: AuthService,
-    private modalService: BsModalService, public appService: AppService1,
-    private location: PlatformLocation, private route: ActivatedRoute) {
+    private modalService: BsModalService, public appService: AppService1, public campaignService: CampaignService,
+    private location: PlatformLocation, private route: ActivatedRoute, private alertService: AlertService, private imageSearchService: ImageSearchService,) {
 
     this.route.params.subscribe(params => {
       this.ruleSetId = params['id'];
@@ -79,7 +84,31 @@ export class CampaignDetailsComponent implements OnInit {
         this.rulesetModel = data;
         this.setHeaderValues(this.ruleset);
         this.rulesetRecordCount = this.ruleset.recordCount;
-        this.isLoading = false;
+        //this.isLoading = false;
+
+        this.campaignService.getPlayerInviteList<any>(this.ruleSetId)
+          .subscribe(data => {
+            this.isLoading = false
+            
+            this.invitedUsers = data;
+            this.invitedUsers.map((x: playerInviteListModel,index) => {
+              x.showIcon = false;
+              if (x.sendOn) {
+                let date = new Date(x.sendOn.replace('T', ' '));
+                let string = this.formatAMPM(date) ;
+                string += ' ' + date.toDateString().replace(' ', '##').split('##')[1];
+                x.sendOn = string;
+                
+              }
+              this.bindInvitedPlayerImage(index);
+              
+            })
+          }, error => {
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              this.authService.logout(true);
+            }
+          }, () => { });
       }, error => {
         this.isLoading = false;
         this.ruleset = new Ruleset();
@@ -126,7 +155,11 @@ export class CampaignDetailsComponent implements OnInit {
     this.router.navigate(['/ruleset/character-stats', ruleset.ruleSetId]);
   }
 
+  gotoDashboard(ruleset: Ruleset) {
 
+    this.rulesetService.ruleset = ruleset;
+    this.router.navigate(['/ruleset/dashboard', ruleset.ruleSetId]);
+  }
   item(ruleset: Ruleset) {
 
     this.rulesetService.ruleset = ruleset;
@@ -179,11 +212,21 @@ export class CampaignDetailsComponent implements OnInit {
     this.bsModalRef.content.ruleSetImage = this.ruleset.ruleSetImage;
     this.bsModalRef.content.rulesetModel = this.ruleset;
     this.bsModalRef.content.event.subscribe(data => {
-     
+      
       if (data) {
+       
+        data.showIcon = false;
+        if (data.sendOn) {
+          let date = new Date(data.sendOn.replace('T', ' '));
+          let string = this.formatAMPM(date);
+          string += ' ' + date.toDateString().replace(' ', '##').split('##')[1];
+          data.sendOn = string;
+          
+        }
+        this.bindInvitedPlayerImage(this.invitedUsers.length);
         this.invitedUsers.push(data);
       }
-      console.log(this.invitedUsers);
+      
     });
   }
 
@@ -199,8 +242,9 @@ export class CampaignDetailsComponent implements OnInit {
       this.bsModalRef.content.ViewImageAlt = img.alt;
     }
   }
-  manageIcon() {
-    this.showIcon = true;
+  manageIcon(invite: playerInviteListModel) {
+    
+    invite.showIcon = !invite.showIcon;
     //this.rulesets.forEach(function (val) {
     //  if (id === val.ruleSetId) {
     //    val.showIcon = true;
@@ -210,9 +254,24 @@ export class CampaignDetailsComponent implements OnInit {
    // })
   }
 
-  cancleInvite(index) {
-    console.log(index, "Cancle Invite clicked");
-    this.invitedUsers.splice(index, 1);
+  cancleInvite(index, invite) {    
+    this.campaignService.cancelInvite<any>(invite.inviteId)
+      .subscribe(data => {
+        
+        this.isLoading = false
+        if (data == true) {
+          this.invitedUsers.splice(index, 1);
+        } else {
+          this.alertService.showStickyMessage('', "Unable to cancel invitation", MessageSeverity.error);
+          setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+        }     
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      }, () => { });
+   
   }
   Invitepopup() {
     this.bsModalRef = this.modalService.show(CampaignInviteComponent, {
@@ -228,5 +287,23 @@ export class CampaignDetailsComponent implements OnInit {
   }
   
 
-
+  formatAMPM(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    var strTime = hours + ':' + minutes + ' ' + ampm;
+    return strTime;
+  }
+  bindInvitedPlayerImage(index) {
+    this.imageSearchService.getDefaultImage<any>('char')
+      .subscribe(data => {
+        this.invitedUsers[index].playerCharacterImage = data.imageUrl.result;        
+      }, error => {
+        this.invitedUsers[index].playerCharacterImage = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg";
+      },
+        () => { });
+  }
 }

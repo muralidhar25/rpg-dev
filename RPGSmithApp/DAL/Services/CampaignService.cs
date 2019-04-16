@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace DAL.Services
@@ -17,7 +18,7 @@ namespace DAL.Services
             _context = context;
             this._configuration = configuration;
         }
-        public async Task<PlayerInvite> CreatePlayerInvite(PlayerInviteEmail model, string PlayerUserId)
+        public async Task<PlayerInvite> CreatePlayerInvite(PlayerInviteEmail model, string PlayerUserId, bool IsInviteSentUsingUserName)
         {
             PlayerInvite invite = new PlayerInvite();
             invite.IsAccepted = false;
@@ -26,10 +27,57 @@ namespace DAL.Services
             invite.PlayerUserID = PlayerUserId;
             invite.SendByUserID = model.SendByUserId;
             invite.PlayerEmail = model.UserName;
+            invite.IsSendToUserName = IsInviteSentUsingUserName;
+            invite.SendOn = DateTime.Now;
             await _context.PlayerInvites.AddAsync(invite);
             await _context.SaveChangesAsync();
             return invite;
         }
+
+        public List<PlayerInviteList> getInvitedPlayers(int rulesetId)
+        {
+            return _context.PlayerInvites.Where(x => x.PlayerCampaignID == rulesetId).Include(x=>x.PlayerCharacter).Include(x => x.PlayerUser).Select(
+                x=>new PlayerInviteList() {
+                    InviteId=x.Id,
+                    isAccepted=x.IsAccepted,
+                    isAnswerLater=x.IsAnswerLater,
+                    isDeclined=x.IsDeclined,
+                    isSendToUserName=x.IsSendToUserName,
+                    playerCharacterImage=x.PlayerCharacter!=null? x.PlayerCharacter.ImageUrl :"",
+                    playerCharacterName= x.PlayerCharacter != null ? x.PlayerCharacter.CharacterName : "",
+                    playerUserImage= x.PlayerUser != null ? x.PlayerUser.ProfileImage : "",
+                    playerUserName= x.PlayerUser != null ? x.PlayerUser.UserName : "",
+                    playerUserEmail=x.PlayerEmail,
+                    sendOn =x.SendOn,
+                }
+                ).ToList();
+        }
+        public PlayerInviteList getInvitedPlayerById(int inviteId)
+        {
+            return _context.PlayerInvites.Where(x => x.Id == inviteId).Include(x => x.PlayerCharacter).Include(x => x.PlayerUser).Select(
+                x => new PlayerInviteList()
+                {
+                    InviteId=x.Id,
+                    isAccepted = x.IsAccepted,
+                    isAnswerLater = x.IsAnswerLater,
+                    isDeclined = x.IsDeclined,
+                    isSendToUserName = x.IsSendToUserName,
+                    playerCharacterImage = x.PlayerCharacter != null ? x.PlayerCharacter.ImageUrl : "",
+                    playerCharacterName = x.PlayerCharacter != null ? x.PlayerCharacter.CharacterName : "",
+                    playerUserImage = x.PlayerUser != null ? x.PlayerUser.ProfileImage : "",
+                    playerUserName = x.PlayerUser != null ? x.PlayerUser.UserName : "",
+                    playerUserEmail = x.PlayerEmail,
+                    sendOn = x.SendOn,
+                }
+                ).FirstOrDefault();
+        }
+
+        public async Task<List<PlayerInvite>> getReceivedInvites(string userid)
+        {
+            var res=await _context.PlayerInvites.Where(x => x.PlayerUserID == userid && x.IsDeclined==false).Include(x => x.PlayerCampaign).Include(x=>x.SendByUser).ToListAsync();
+            return res;
+        }
+
         public async Task<bool> SameInviteAlreadyExists(PlayerInviteEmail model, string playerUserId) {
             return _context.PlayerInvites.Where(x =>
              x.PlayerCampaignID == model.CampaignId
@@ -37,6 +85,31 @@ namespace DAL.Services
              && x.PlayerUserID == playerUserId
              && x.PlayerEmail == model.UserName
              ).Any();
+        }
+        public bool cancelInvite(int inviteID)
+        {
+            if (_context.PlayerInvites.Where(x => x.Id == inviteID).Any())
+            {
+                _context.PlayerInvites.Remove(_context.PlayerInvites.Where(x => x.Id == inviteID).SingleOrDefault());
+                _context.SaveChanges();
+                return true;
+            }
+            
+            return false;
+        }
+        public bool removePlayerFromCampaign(int inviteID)
+        {
+            return false;
+        }
+        public bool isPlayerSlotAvailableToSendInvite(string userId, int campaignID)
+        {
+            int totalPlayerSlots = _context.UserSubscriptions.Where(x=>x.UserId== userId).SingleOrDefault().PlayerCount;
+            int UsedPlayerSlots = _context.PlayerInvites.Where(x => x.PlayerCampaignID == campaignID).Count();
+            if (totalPlayerSlots> UsedPlayerSlots)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -44,7 +44,7 @@ export class ItemMasterComponent implements OnInit {
     pageSize: number = 28;
     timeoutHandler: any;
     offset = (this.page - 1) * this.pageSize;
-
+  backURL: string = '/rulesets';
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService, 
         public modalService: BsModalService, private localStorage: LocalStoreManager, private pageLastViewsService: PageLastViewsService,
@@ -81,6 +81,9 @@ export class ItemMasterComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
+          if (user.isGm) {
+            this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
+          }
             this.isLoading = true;
             this.itemMasterService.getItemMasterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
                 .subscribe(data => {                    
