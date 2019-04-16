@@ -26,6 +26,8 @@ namespace RPGSmithApp.ViewModels
         public int LayoutHeight { get; set; }
         public int LayoutWidth { get; set; }
 
+        public int InviteId { get; set; }
+
 
         public string LastCommand { get; set; }
         public string LastCommandResult { get; set; }

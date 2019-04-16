@@ -111,10 +111,13 @@ namespace DAL.Services
         {
             return await _repo.Add(CharacterDomain);
         }
-        public void Create_SP(Character model, int layoutHeight, int layoutWidth, int CharIdToDuplicate = 0)
+        public Character Create_SP(Character model, int layoutHeight, int layoutWidth, int CharIdToDuplicate = 0)
         {
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
 
+            Character character = null;
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
             using (SqlConnection con = new SqlConnection(consString))
             {
                 //string qry = "EXEC Character_Create @CharacterName='"+ GetNull(model.CharacterName) + "', @CharacterDescription='"+GetNull(model.CharacterDescription)+ "', @ImageUrl='" + GetNull(model.ImageUrl) + "', @ThumbnailUrl='" + GetNull(model.ThumbnailUrl) + "', @UserId='" + GetNull(model.UserId) + "', @RuleSetId='" + GetNull(model.RuleSetId) + "', @LastCommand='" + GetNull(model.LastCommand) + "',  @LastCommandResult='" + GetNull(model.LastCommandResult) + "', @InventoryWeight='" + GetNull(model.InventoryWeight) + "', @LastCommandValues='" + GetNull(model.LastCommandValues) + "', @LayoutHeight='" + GetNull(layoutHeight) + "', @LayoutWidth='" + GetNull(layoutWidth) + "' ";
@@ -138,7 +141,10 @@ namespace DAL.Services
                     con.Open();
                     try
                     {
-                        var a = cmd.ExecuteNonQuery();
+                       
+                        adapter.SelectCommand = cmd;
+                        adapter.Fill(ds);
+                        //var a = cmd.ExecuteNonQuery();
                     }
                     catch (Exception ex)
                     {
@@ -148,6 +154,11 @@ namespace DAL.Services
                     con.Close();                    
                 }
             }
+            if (ds.Tables.Count > 0)
+            {
+                character = _repo.GetCharacter(ds.Tables[0]);
+            }
+            return character;
         }
         private object GetNull(object obj)
         {

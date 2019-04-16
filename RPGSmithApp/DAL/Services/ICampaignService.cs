@@ -17,7 +17,8 @@ namespace DAL.Services
         Task<List<PlayerInvite>> getReceivedInvites(string userid);
         bool isPlayerSlotAvailableToSendInvite(string userId,int campaignID);
         Task<PlayerInvite> DeclineInvite(int inviteID);
-        Task<PlayerInvite> AcceptInvite(int inviteID);
+        Task<PlayerInvite> AcceptInvite(int inviteID,int characterID);
         Task<PlayerInvite> AnswerLaterInvite(int inviteID);
+        Task<bool> isInvitedPlayerCharacter(int characterId);
     }
 }

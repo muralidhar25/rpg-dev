@@ -107,7 +107,7 @@
                       <span class="dropdown-menu-item-title">About / Help</span>
                     </a>
                   </li>
-                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" [routerLink]="['/marketplace']" [routerLinkActive]="['active']">
+                  <li *ngIf="!isAdmin" class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" [routerLink]="['/marketplace']" [routerLinkActive]="['active']">
                     <a class="dropdown-menu-item-link">
                       <span class="dropdown-menu-item-title">Upgrades</span>
                     </a>

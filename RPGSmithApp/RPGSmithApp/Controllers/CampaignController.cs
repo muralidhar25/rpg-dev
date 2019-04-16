@@ -19,7 +19,7 @@ namespace RPGSmithApp.Controllers
     [Route("api/[controller]")]
     public class CampaignController : Controller
     {
-        const string UserDoesNotExists= "Username does not exists.";
+        const string UserDoesNotExists= "No RPGSmith User could be found matching that name. Please supply a different RPGSmith user name or provide an email address.";
         const string InviteAlreadySend = "Invite already sent.";
         const string NoPlayerSlotAvailable = "Please buy more player slots to send invites";
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -58,11 +58,11 @@ namespace RPGSmithApp.Controllers
         {
             return Ok(await _campaign.DeclineInvite(inviteID));
         }
-        [HttpPost("AcceptInvite")]
-        public async Task<IActionResult> AcceptInvite(int inviteID)
-        {
-            return Ok(await _campaign.AcceptInvite(inviteID));
-        }
+        //[HttpPost("AcceptInvite")]
+        //public async Task<IActionResult> AcceptInvite(int inviteID)
+        //{
+        //    return Ok(await _campaign.AcceptInvite(inviteID));
+        //}
         [HttpPost("AnswerLaterInvite")]
         public async Task<IActionResult> AnswerLaterInvite(int inviteID)
         {

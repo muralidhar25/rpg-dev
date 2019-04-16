@@ -275,7 +275,7 @@ export class LocalStoreManager {
 
 
   public saveSessionData(data: any, key = LocalStoreManager.DBKEY_USER_DATA) {
-
+    //console.log(key)
     this.testForInvalidKeys(key);
 
     this.removeFromSyncKeys(key);
@@ -285,7 +285,7 @@ export class LocalStoreManager {
 
 
   public saveSyncedSessionData(data: any, key = LocalStoreManager.DBKEY_USER_DATA) {
-
+   // console.log(key)
     this.testForInvalidKeys(key);
 
     localStorage.removeItem(key);
@@ -349,6 +349,14 @@ export class LocalStoreManager {
     if (data == null)
       data = localStorage.getItem(key);
 
+    return data != null;
+  }
+  public sessionExists(key = LocalStoreManager.DBKEY_USER_DATA) {
+    let data = sessionStorage.getItem(key);  
+    return data != null;
+  }
+  public localStorageExists(key = LocalStoreManager.DBKEY_USER_DATA) {
+    let data = localStorage.getItem(key);
     return data != null;
   }
 

@@ -111,7 +111,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   haveNewInvitation: boolean = false;
   haveCheckedNewInvitation: boolean = false;
   invitationList: playerInviteListModel[] = [];
-
+  isAdmin: boolean = false;
 
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
@@ -155,6 +155,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.app1Service.shouldUpdateAccountSetting1().subscribe((serviceData) => {
       let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
       if (user) {
+        this.isAdmin = user.roles.some(function (value) { return (value === "administrator") });
+        
+        if (!user.hasOwnProperty("isGm")) {
+          if (this.authService.idToken) {
+            this.authService.updateSocialLoginUserValuesFromToken(this.authService.idToken, user)
+          }
+        }
         if (user.isGm) {
           //this.logoPath = '/rulesets/campaigns';
           if (this.headers) {
@@ -163,7 +170,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             }
           }
         }
-
+        
         if (!this.haveCheckedNewInvitation) {
           this.campaignService.CheckInvites<any>(user.id)
             .subscribe(data => {
@@ -538,6 +545,14 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (event instanceof NavigationStart) {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user) {
+          this.isAdmin = user.roles.some(function (value) { return (value === "administrator") });
+          
+          if (!user.hasOwnProperty("isGm")) {
+            if (this.authService.idToken) {
+              this.authService.updateSocialLoginUserValuesFromToken(this.authService.idToken, user)
+            }
+           
+          }
           if (user.isGm) {
             //this.logoPath = '/rulesets/campaigns';
             if (this.headers) {
@@ -1218,12 +1233,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.redirectUrl = Utilities.getHelpLinkUrl(this.router.url);
   }
   checkInvites() {
-    this.bsModalRef = this.modalService.show(AccountSettingsComponent, {
-      class: 'modal-primary modal-md',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
-    this.bsModalRef.content.invitationList = this.invitationList;
+    //this.bsModalRef = this.modalService.show(AccountSettingsComponent, {
+    //  class: 'modal-primary modal-md',
+    //  ignoreBackdropClick: true,
+    //  keyboard: false
+    //});
+    //this.bsModalRef.content.invitationList = this.invitationList;
     
   }
 }

@@ -137,11 +137,12 @@ namespace DAL.Services
             }
             return new PlayerInvite();
         }
-        public async Task<PlayerInvite> AcceptInvite(int inviteID) {
+        public async Task<PlayerInvite> AcceptInvite(int inviteID, int characterID) {
             PlayerInvite invite = _context.PlayerInvites.Where(x => x.Id == inviteID).FirstOrDefault();
             if (invite != null)
             {
                 invite.IsAccepted = true;
+                invite.PlayerCharacterID = characterID;
                 await _context.SaveChangesAsync();
                 return invite;
             }
@@ -156,6 +157,9 @@ namespace DAL.Services
                 return invite;
             }
             return new PlayerInvite();
+        }
+        public async Task<bool> isInvitedPlayerCharacter(int characterId) {
+            return await _context.PlayerInvites.Where(x => x.PlayerCharacterID == characterId).AnyAsync();
         }
     }
 }

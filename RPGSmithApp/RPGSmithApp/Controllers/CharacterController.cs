@@ -52,7 +52,8 @@ namespace RPGSmithApp.Controllers
         private readonly INoteTileService _noteTileService;
         private readonly ITileConfigService _tileConfigService;
         private readonly ICommonFuncsCoreRuleSet _commonFuncsCoreRuleSet;
-
+        private readonly ICampaignService _campaignService;
+        const string CharacterCannotDuplicated = "This character cannot be duplicated.";
         public CharacterController(ICharacterService CharacterService, IHttpContextAccessor httpContextAccessor,
             IAccountManager accountManager, ICharacterSpellService characterSpellService,
             ICharacterAbilityService characterAbilityService, IItemService itemService,
@@ -65,7 +66,7 @@ namespace RPGSmithApp.Controllers
             ICommandTileService commandTileService,
             ICounterTileService counterTileService,
             IImageTileService imageTileService,
-            INoteTileService noteTileService,
+            INoteTileService noteTileService, ICampaignService campaignService,
             ICommonFuncsCoreRuleSet commonFuncsCoreRuleSet)
         {
             _CharacterService = CharacterService;
@@ -91,6 +92,7 @@ namespace RPGSmithApp.Controllers
             _noteTileService = noteTileService;
             _tileConfigService = tileConfigService;
             _commonFuncsCoreRuleSet = commonFuncsCoreRuleSet;
+            _campaignService = campaignService;
         }
 
         [HttpGet("GetCharactersCount")]
@@ -154,7 +156,7 @@ namespace RPGSmithApp.Controllers
                 if (_CharacterService.IsCharacterExist(model.CharacterName, userId).Result)
                     return BadRequest("The Character Name '" + model.CharacterName + "' had already been used in this Rule Set. Please select another name.");
 
-                if (IsNewRulesetToAdd(model.RuleSetId, userId))
+                if (IsNewRulesetToAdd(model.RuleSetId, userId) && model.InviteId==0)
                 {
                     var NewRuleset =await AddCoreRuleSetsCommon(new int[] { model.RuleSetId });
                     if (NewRuleset==null)
@@ -170,8 +172,12 @@ namespace RPGSmithApp.Controllers
 
                 try
                 {
-                    _CharacterService.Create_SP(characterDomain, model.LayoutHeight, model.LayoutWidth, CharIdToDuplicate);
-                    
+                    Character NewCharacter= _CharacterService.Create_SP(characterDomain, model.LayoutHeight, model.LayoutWidth, CharIdToDuplicate);
+                    if (NewCharacter != null)
+                    {
+                        await _campaignService.AcceptInvite(model.InviteId, NewCharacter.CharacterId);
+                    }
+                    //////////////InviteId
                 }
                 catch (Exception ex)
                 {
@@ -646,6 +652,11 @@ namespace RPGSmithApp.Controllers
                 //Limit user to have max 3 characters & //purchase for more set
                 if (await _CharacterService.GetCharactersCountByUserId(userId) >= TotalCharacterSlotsAvailable && !IsAdminUser())
                     return BadRequest("Only "+ TotalCharacterSlotsAvailable + " slots of Characters are allowed.");
+
+                if (await _campaignService.isInvitedPlayerCharacter(model.CharacterId))                    
+                {
+                    return BadRequest(CharacterCannotDuplicated);
+                }
 
 
                 if (_CharacterService.IsCharacterExist(model.CharacterName, userId).Result)

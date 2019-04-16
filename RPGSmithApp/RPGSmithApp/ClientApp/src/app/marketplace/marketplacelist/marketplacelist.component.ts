@@ -194,7 +194,13 @@ export class MarketplacelistComponent implements OnInit {
           break;
       }
       debugger
-      this.localStorage.saveSyncedSessionData(user, DBkeys.CURRENT_USER);
+      
+      if (this.localStorage.sessionExists(DBkeys.CURRENT_USER)) {
+        this.localStorage.saveSyncedSessionData(user, DBkeys.CURRENT_USER);
+      }
+      else {
+        this.localStorage.savePermanentData(user, DBkeys.CURRENT_USER);
+      }
       this.initialize();
     });
   }

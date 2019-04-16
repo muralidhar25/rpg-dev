@@ -400,22 +400,34 @@ namespace RPGSmithApp.Controllers
             identity.AddClaim(CustomClaimTypes.RemoveAds, user.RemoveAds.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
 
             UserSubscription userSubscription = await _accountManager.userSubscriptions(user.Id);
-            if (userSubscription != null)
+            if (IsAdminUser(user.Id))
             {
-                identity.AddClaim(CustomClaimTypes.CampaignSlot, userSubscription.CampaignCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
-                identity.AddClaim(CustomClaimTypes.RulesetSlot, userSubscription.RulesetCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
-                identity.AddClaim(CustomClaimTypes.CharacterSlot, userSubscription.CharacterCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
-                identity.AddClaim(CustomClaimTypes.PlayerSlot, userSubscription.PlayerCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
-                identity.AddClaim(CustomClaimTypes.StorageSpaceInMB, userSubscription.StorageSpaceInMB.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+                identity.AddClaim(CustomClaimTypes.CampaignSlot, 9999.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+                identity.AddClaim(CustomClaimTypes.RulesetSlot, 9999.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+                identity.AddClaim(CustomClaimTypes.CharacterSlot, 9999.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+                identity.AddClaim(CustomClaimTypes.PlayerSlot, 9999.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+                identity.AddClaim(CustomClaimTypes.StorageSpaceInMB, 9999.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+
             }
-            else
-            {
-                identity.AddClaim(CustomClaimTypes.CampaignSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
-                identity.AddClaim(CustomClaimTypes.RulesetSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
-                identity.AddClaim(CustomClaimTypes.CharacterSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
-                identity.AddClaim(CustomClaimTypes.PlayerSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
-                identity.AddClaim(CustomClaimTypes.StorageSpaceInMB, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
+            else {
+                if (userSubscription != null)
+                {
+                    identity.AddClaim(CustomClaimTypes.CampaignSlot, userSubscription.CampaignCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+                    identity.AddClaim(CustomClaimTypes.RulesetSlot, userSubscription.RulesetCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+                    identity.AddClaim(CustomClaimTypes.CharacterSlot, userSubscription.CharacterCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+                    identity.AddClaim(CustomClaimTypes.PlayerSlot, userSubscription.PlayerCount.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+                    identity.AddClaim(CustomClaimTypes.StorageSpaceInMB, userSubscription.StorageSpaceInMB.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
+                }
+                else
+                {
+                    identity.AddClaim(CustomClaimTypes.CampaignSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
+                    identity.AddClaim(CustomClaimTypes.RulesetSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
+                    identity.AddClaim(CustomClaimTypes.CharacterSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
+                    identity.AddClaim(CustomClaimTypes.PlayerSlot, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
+                    identity.AddClaim(CustomClaimTypes.StorageSpaceInMB, string.Empty, OpenIdConnectConstants.Destinations.IdentityToken);
+                }
             }
+           
 
             return ticket;
         }
@@ -426,6 +438,11 @@ namespace RPGSmithApp.Controllers
                 return await _blobService.GetCloudBlobContainer(UserIdAsContainer);
             else return null;
         }
-                   
+        private bool IsAdminUser(string userID)
+        {
+            (ApplicationUser user, string[] role) = _accountManager.GetUserAndRolesAsync(userID).Result;
+            if (string.Join("", role).Contains("administrator")) return true;
+            return false;
+        }
     }
 }

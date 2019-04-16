@@ -118,7 +118,7 @@ export class AuthService {
 
   }
 
-  loginSocialPlatform(token: string, grantType: string) {
+  loginSocialPlatform(token: string, grantType: string) {    
     if (this.isLoggedIn)
       this.logout();
 
@@ -127,7 +127,7 @@ export class AuthService {
   }
 
 
-  private processLoginResponse(response: LoginResponse, rememberMe: boolean) {
+  private processLoginResponse(response: LoginResponse, rememberMe: boolean) {    
     let accessToken = response.access_token;
 
     if (accessToken == null)
@@ -309,5 +309,35 @@ export class AuthService {
   }
   //
 
+  public updateSocialLoginUserValuesFromToken(id_token, currentUserDetails: User) {
+    //let idToken = id_token;
+    
 
+
+    let jwtHelper = new JwtHelper();
+    let decodedIdToken = <IdToken>jwtHelper.decodeToken(id_token);
+
+    let permissions: PermissionValues[] = Array.isArray(decodedIdToken.permission) ? decodedIdToken.permission : [decodedIdToken.permission];
+
+    if (!this.isLoggedIn)
+      this.configurations.import(decodedIdToken.configuration);
+
+    let user = currentUserDetails;
+    user.isGm = decodedIdToken.isgm.toLowerCase() == 'true' ? true : false;
+    user.removeAds = decodedIdToken.removeads.toLowerCase() == 'true' ? true : false;
+    user.rulesetSlot = +decodedIdToken.rulesetslot;
+    user.playerSlot = +decodedIdToken.playerslot;
+    user.characterSlot = +decodedIdToken.characterslot;
+    user.campaignSlot = +decodedIdToken.campaignslot;
+    user.storageSpace = +decodedIdToken.storagespaceinmb;
+    
+    if (this.localStorage.sessionExists(DBkeys.CURRENT_USER)) {
+      this.localStorage.saveSyncedSessionData(user, DBkeys.CURRENT_USER);
+    }
+    else  {
+      this.localStorage.savePermanentData(user, DBkeys.CURRENT_USER);
+    }
+    //this.saveUserDetails(user, permissions, accessToken, idToken, refreshToken, accessTokenExpiry, rememberMe);
+
+  }
 }
