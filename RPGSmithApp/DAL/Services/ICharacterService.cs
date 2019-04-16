@@ -22,7 +22,7 @@ namespace DAL.Services
         Task<Character> UpdateLastCommand(int characterId, string lastcommand, string lastcommandresult, string lastCommandValues, int lastCommandTotal);
         int GetCharacterCountUserId(string userId);
         Task<List<Character>> GetOnlyCharactersByRulesetID(int ruleSetId);
-        (List<Character>, List<RuleSet>) SP_Character_GetByUserId(string userId, int page, int pageSize);
+        (List<CharecterWithInvites>, List<RuleSet>) SP_Character_GetByUserId(string userId, int page, int pageSize);
         Character GetCharacterByIdDice(int Id);
         Character Create_SP(Character characterDomain, int layoutHeight, int layoutWidth,int CharIdToDuplicate=0);
         bool IsNewRulesetToAdd(int ruleSetId, string userId);

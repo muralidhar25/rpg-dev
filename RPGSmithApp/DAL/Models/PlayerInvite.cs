@@ -41,6 +41,7 @@ namespace DAL.Models
         public int InviteId { get; set; }
         public string playerCharacterImage { get; set; }
         public string playerCharacterName { get; set; }
+        public int PlayerCharacterId { get; set; }
         public DateTime sendOn { get; set; }
         public bool isAccepted { get; set; }
         public bool isDeclined { get; set; }

@@ -913,7 +913,7 @@ namespace RPGSmithApp.Controllers
         public async Task<IActionResult> getByUserId_sp(string userId, int page = 1, int pageSize = 30)
         {
             dynamic Response = new ExpandoObject();
-            (List<Character> CharactersList, List<RuleSet> _ruleSet) = _CharacterService.SP_Character_GetByUserId(userId, page, pageSize);
+            (List<CharecterWithInvites> CharactersList, List<RuleSet> _ruleSet) = _CharacterService.SP_Character_GetByUserId(userId, page, pageSize);
 
             Response.CharactersList = CharactersList;
             Response.RuleSet = _ruleSet;

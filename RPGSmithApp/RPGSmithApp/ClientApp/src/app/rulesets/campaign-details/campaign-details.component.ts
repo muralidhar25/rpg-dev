@@ -100,7 +100,10 @@ export class CampaignDetailsComponent implements OnInit {
                 x.sendOn = string;
                 
               }
-              this.bindInvitedPlayerImage(index);
+              if (!x.isAccepted) {
+                this.bindInvitedPlayerImage(index);
+              }
+              
               
             })
           }, error => {
@@ -306,4 +309,11 @@ export class CampaignDetailsComponent implements OnInit {
       },
         () => { });
   }
+  refreshCampaign() {
+    this.initialize();
+  }
+  goToCharacter(characterID:number) {
+    this.router.navigate(['/character/dashboard', characterID]);
+  }
+
 }

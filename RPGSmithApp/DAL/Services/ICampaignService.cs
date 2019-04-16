@@ -10,7 +10,7 @@ namespace DAL.Services
     {
         Task<PlayerInvite> CreatePlayerInvite(PlayerInviteEmail model,string PlayerUserId,bool IsInviteSentUsingUserName);
         Task<bool> SameInviteAlreadyExists(PlayerInviteEmail model, string playerUserId);
-        List<PlayerInviteList> getInvitedPlayers(int rulesetId);
+        List<PlayerInviteList> getInvitedPlayers(int rulesetId, ApplicationUser user);
         PlayerInviteList getInvitedPlayerById(int inviteId);
         bool cancelInvite(int inviteID);
         bool removePlayerFromCampaign(int inviteID);

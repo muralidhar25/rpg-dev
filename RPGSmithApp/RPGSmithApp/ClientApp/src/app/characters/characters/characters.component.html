@@ -39,7 +39,7 @@
                                 </div>
                                 <div class="card-actions show" *ngIf="character.showIcon">
                                     <button type="button" (click)="editCharacter(character)" tooltip="Edit" class="btn icon icon-pencil btn-simple-primary"></button>
-                                    <button type="button" (click)="duplicateCharacter(character)" tooltip="Duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                                    <button type="button" [disabled]="character.inviteId" (click)="duplicateCharacter(character)" tooltip="Duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
                                     <button type="button" (click)="deleteCharacter(character)" tooltip="Delete" class="btn icon icon-trash btn-simple-primary"></button>
                                     <button type="button" (click)="manageIcon(false)" tooltip="Close" class="btn icon icon-cross btn-simple-primary"></button>
                                 </div>

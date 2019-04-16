@@ -40,7 +40,7 @@ namespace RPGSmithApp.Controllers
         [HttpGet("getInvitedPlayers")]
         public async Task<IActionResult> getCountByRuleSetId(int rulesetId)
         {
-            return Ok(_campaign.getInvitedPlayers(rulesetId));
+            return Ok(_campaign.getInvitedPlayers(rulesetId,GetUser()));
         }
         [HttpGet("getReceivedInvites")]
         public async Task<IActionResult> getReceivedInvites(string userid)

@@ -28,6 +28,7 @@ export class playerInviteListModel {
     inviteId?: number,
     playerCharacterImage?: string,
     playerCharacterName?: string,
+    playerCharacterId?: number,
     sendOn?: string,
     isAccepted?: boolean,
     isDeclined?: boolean,
@@ -39,6 +40,7 @@ export class playerInviteListModel {
     this.inviteId = inviteId
     this.playerCharacterImage = playerCharacterImage
     this.playerCharacterName = playerCharacterName
+    this.playerCharacterId = playerCharacterId
     this.sendOn = sendOn
     this.isAccepted = isAccepted
     this.isDeclined = isDeclined
@@ -52,6 +54,7 @@ export class playerInviteListModel {
   public inviteId: number;
   public playerCharacterImage: string;
   public playerCharacterName: string;
+  public playerCharacterId: number;
   public sendOn: string;
   public isAccepted: boolean;
   public isDeclined: boolean;

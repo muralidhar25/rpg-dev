@@ -492,9 +492,9 @@ namespace DAL.Services
 
         #region SP relate methods
 
-        public (List<Character>, List<RuleSet>) SP_Character_GetByUserId(string userId, int page, int pageSize)
+        public (List<CharecterWithInvites>, List<RuleSet>) SP_Character_GetByUserId(string userId, int page, int pageSize)
         {
-            List<Character> _CharacterList = new List<Character>();
+            List<CharecterWithInvites> _CharacterList = new List<CharecterWithInvites>();
             List<RuleSet> ruleset = new List<RuleSet>();
 
             short num = 0;
@@ -550,7 +550,7 @@ namespace DAL.Services
                     __ruleset.ShareCode = row["ShareCode"] == DBNull.Value ? new Guid() : new Guid(row["ShareCode"].ToString());
                     __ruleset.ThumbnailUrl = row["RuleSetThumbnailUrl"] == DBNull.Value ? null : row["RuleSetThumbnailUrl"].ToString();
 
-                    Character _character = new Character();
+                    CharecterWithInvites _character = new CharecterWithInvites();
                     _character.CharacterId = row["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["CharacterId"]);
                     _character.CharacterName = row["CharacterName"] == DBNull.Value ? null : row["CharacterName"].ToString();
                     _character.CharacterDescription = row["CharacterDescription"] == DBNull.Value ? null : row["CharacterDescription"].ToString();
@@ -565,6 +565,7 @@ namespace DAL.Services
                     _character.LastCommandValues = row["LastCommandValues"] == DBNull.Value ? null : row["LastCommandValues"].ToString();
                     _character.LastCommandTotal = row["LastCommandTotal"] == DBNull.Value ? 0 : Convert.ToInt32(row["LastCommandTotal"]);
                     _character.InventoryWeight = row["InventoryWeight"] == DBNull.Value ? 0 : Convert.ToDecimal(row["InventoryWeight"]);
+                    _character.InviteId= row["InviteID"] == DBNull.Value ? 0 : Convert.ToInt32(row["InviteID"]);
 
                     _character.RuleSet = __ruleset;
                     _CharacterList.Add(_character);

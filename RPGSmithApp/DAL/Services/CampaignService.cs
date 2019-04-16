@@ -34,9 +34,9 @@ namespace DAL.Services
             return invite;
         }
 
-        public List<PlayerInviteList> getInvitedPlayers(int rulesetId)
+        public List<PlayerInviteList> getInvitedPlayers(int rulesetId, ApplicationUser user)
         {
-            return _context.PlayerInvites.Where(x => x.PlayerCampaignID == rulesetId).Include(x=>x.PlayerCharacter).Include(x => x.PlayerUser).Select(
+            var res= _context.PlayerInvites.Where(x => x.PlayerCampaignID == rulesetId).Include(x=>x.PlayerCharacter).Include(x => x.PlayerUser).Select(
                 x=>new PlayerInviteList() {
                     InviteId=x.Id,
                     isAccepted=x.IsAccepted,
@@ -45,12 +45,27 @@ namespace DAL.Services
                     isSendToUserName=x.IsSendToUserName,
                     playerCharacterImage=x.PlayerCharacter!=null? x.PlayerCharacter.ImageUrl :"",
                     playerCharacterName= x.PlayerCharacter != null ? x.PlayerCharacter.CharacterName : "",
+                    PlayerCharacterId = x.PlayerCharacter != null ? x.PlayerCharacter.CharacterId : 0,
                     playerUserImage= x.PlayerUser != null ? x.PlayerUser.ProfileImage : "",
                     playerUserName= x.PlayerUser != null ? x.PlayerUser.UserName : "",
                     playerUserEmail=x.PlayerEmail,
                     sendOn =x.SendOn,
                 }
                 ).ToList();
+
+            List<Character> ownCharacters = _context.Characters.Where(x => x.RuleSetId == rulesetId && x.UserId==user.Id && x.IsDeleted != true).ToList();
+            foreach (var item in ownCharacters)
+            {
+                res.Add(new PlayerInviteList() {
+                    isAccepted=true,
+                    PlayerCharacterId=item.CharacterId,
+                    playerCharacterImage = item.ImageUrl,
+                    playerCharacterName= item.CharacterName,
+                    playerUserImage= user.ProfileImage,
+                    playerUserName=user.UserName,
+                });
+            }
+            return res;
         }
         public PlayerInviteList getInvitedPlayerById(int inviteId)
         {
@@ -198,18 +213,19 @@ namespace DAL.Services
             return await _context.PlayerControls.Where(x => x.PlayerCharacterID == characterID).FirstOrDefaultAsync();
         }
         public async Task<PlayerControl> updatePlayerControls(PlayerControl model) {
-            //List<PlayerControl> list = _context.PlayerControls.Where(x => x.CampaignID == model.CampaignID).ToListAsync();
-            //foreach (var playerControl in list)
-            //{
-            //    playerControl.PauseAbilityAdd = false;
-            //    playerControl.PauseAbilityCreate = false;
-            //    playerControl.PauseGame = false;
-            //    playerControl.PauseItemAdd = false;
-            //    playerControl.PauseItemCreate = false;
-            //    playerControl.PauseSpellAdd = false;
-            //    playerControl.PauseSpellCreate = false;
-            //}
-            return new PlayerControl();
+            List<PlayerControl> list =await _context.PlayerControls.Where(x => x.CampaignID == model.CampaignID).ToListAsync();
+            foreach (var playerControl in list)
+            {
+                playerControl.PauseAbilityAdd = model.PauseAbilityAdd;
+                playerControl.PauseAbilityCreate = model.PauseAbilityCreate;
+                playerControl.PauseGame = model.PauseGame;
+                playerControl.PauseItemAdd = model.PauseItemAdd;
+                playerControl.PauseItemCreate = model.PauseItemCreate;
+                playerControl.PauseSpellAdd = model.PauseSpellAdd;
+                playerControl.PauseSpellCreate = model.PauseSpellCreate;
+            }
+            await _context.SaveChangesAsync();
+            return await _context.PlayerControls.Where(x => x.CampaignID == model.CampaignID).FirstOrDefaultAsync();
         }
     }
 }

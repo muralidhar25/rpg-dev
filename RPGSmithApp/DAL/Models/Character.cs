@@ -24,7 +24,7 @@ namespace DAL.Models
         public string ImageUrl { get; set; }
 
         public string ThumbnailUrl { get; set; }
-               
+
         public string UserId { get; set; }
 
         public virtual ApplicationUser AspNetUser { get; set; }
@@ -41,7 +41,7 @@ namespace DAL.Models
         public string LastCommandResult { get; set; }
 
         //[DefaultValue(0)]
-        public int LastCommandTotal { get; set; } 
+        public int LastCommandTotal { get; set; }
 
         public string LastCommandValues { get; set; }
 
@@ -68,5 +68,8 @@ namespace DAL.Models
 
         public virtual ICollection<CharacterTileModels.CharacterTile> CharacterTiles { get; set; }
 
+    }
+    public class CharecterWithInvites : Character {
+        public int InviteId { get; set; }
     }
 }
