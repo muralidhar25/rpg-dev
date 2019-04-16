@@ -25,7 +25,7 @@ export class InvitePlayerComponent implements OnInit {
 
   public event: EventEmitter<any> = new EventEmitter();
   rulesetModel = new Ruleset();
-
+  isloading : boolean = false;
   rulesetRecordCount: any = new RulesetRecordCount();
   loggedInUserId: string;
   loggedInUsername: string;
@@ -62,7 +62,9 @@ export class InvitePlayerComponent implements OnInit {
     this.bsModalRef.hide();
   }
 
+
   SendInvite(username: string) {
+    
     let modal: playerInviteSendModel = new playerInviteSendModel();
     modal.campaignId = this.rulesetModel.ruleSetId;
     modal.sendByCampaignImage = this.rulesetModel.imageUrl ? this.rulesetModel.imageUrl : 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';
@@ -70,7 +72,7 @@ export class InvitePlayerComponent implements OnInit {
     modal.sendByUserId = this.loggedInUserId;
     modal.sendByUserName = this.loggedInUsername;
     modal.userName = username;
-
+    this.isloading = true;
     this.alertService.startLoadingMessage("", "Sending invite...");
     this.campaignService.sendInvite<any>(modal)
       .subscribe(
@@ -83,11 +85,13 @@ export class InvitePlayerComponent implements OnInit {
           //  this.bsModalRef.hide();
           //} else {
           //  this.errorMsg = true;
-          //}        
+          //}
+        console.log(data);
         this.event.emit(data);
+        this.isloading = false;
         },
       error => {
-          debugger
+        this.isloading = false;
           this.alertService.stopLoadingMessage();
           let Errors = Utilities.ErrorDetail("", error);
           if (Errors.sessionExpire) {

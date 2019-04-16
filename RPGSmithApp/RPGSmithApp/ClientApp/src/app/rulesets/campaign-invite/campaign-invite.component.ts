@@ -7,6 +7,14 @@ import { LocalStoreManager } from '../../core/common/local-store-manager.service
 import { SharedService } from '../../core/services/shared.service';
 import { DBkeys } from '../../core/common/db-keys';
 import { User } from "../../core/models/user.model";
+import { playerInviteListModel } from '../../core/models/campaign.model';
+import { CampaignService } from '../../core/services/campaign.service';
+import { Utilities } from '../../core/common/utilities';
+import { AuthService } from '../../core/auth/auth.service';
+import { AlertService, MessageSeverity } from '../../core/common/alert.service';
+import { InviteAddCharctersFormComponent } from '../../shared/invite-add-charcters-form/invite-add-charcters-form.component';
+
+
 
 @Component({
   selector: 'app-campaign-invite',
@@ -16,11 +24,21 @@ import { User } from "../../core/models/user.model";
 export class CampaignInviteComponent implements OnInit {
   rulesetModel = new Ruleset();
   rulesetRecordCount: any = new RulesetRecordCount();
-  userName: string; 
+  invitationList: playerInviteListModel[] = [];
+  userName: string;
+  showIndicator = false;
+  rulesets: Ruleset[];
+  rulesetid: number;
+  invitedid: number;
+  public event: EventEmitter<any> = new EventEmitter();
   constructor(private bsModalRef: BsModalRef,
             private sharedService: SharedService,
             private localStorage: LocalStoreManager,
-            public appService: AppService1
+            public appService: AppService1,
+    public campaignService: CampaignService,
+    private alertService: AlertService,
+    public authService: AuthService,
+    private modalService: BsModalService
   ) {}
 
   ngOnInit() {
@@ -29,10 +47,14 @@ export class CampaignInviteComponent implements OnInit {
     this.userName = user.userName;
 
     setTimeout(() => {
+     
+      this.invitationList = this.bsModalRef.content.invitationList;
+      console.log(this.invitationList);
       this.rulesetModel = this.bsModalRef.content.rulesetModel == undefined
         ? new Ruleset() : this.bsModalRef.content.rulesetModel;
      
       this.setHeaderValues(this.rulesetModel);
+      
     }, 0);
     
   }
@@ -56,14 +78,77 @@ export class CampaignInviteComponent implements OnInit {
     // this.destroyModalOnInit();
   }
 
-  AcceptInvite() {
-    console.log('AcceptInvite');
+ 
+  Decline(index, inviteId) {
+    this.campaignService.declineInvite<any>(inviteId)
+      .subscribe(data => {
+        if (data.isDeclined) {
+          this.alertService.showStickyMessage('', "invitation decline", MessageSeverity.success);
+          setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+          this.invitationList.splice(index, 1);
+          if (this.invitationList.length == 0) {
+            this.close();
+          }
+        } else {
+          this.alertService.showStickyMessage('', "Unable to decline invitation", MessageSeverity.error);
+          setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+        }
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      }, () => { })
+  
+  }
+  AnswerLater(inviteId) {
+    console.log('Answer later', inviteId);
+    this.campaignService.answerLaterInvite<any>(inviteId)
+      .subscribe(data => {
+        console.log(data);
+      })
   }
 
-  Decline() {
-    console.log('Decline');
+  AcceptInvite(inviteId, invites) {
+    this.rulesetid = invites.playerCampaignID;
+    this.invitedid = invites.id;
+    this.rulesets = [];
+    this.rulesets.push(invites.playerCampaign);
+    console.log(this.rulesets);
+   // this.close();
+    this.bsModalRef = this.modalService.show(InviteAddCharctersFormComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'New Character';
+    this.bsModalRef.content.button = 'CREATE';
+    this.bsModalRef.content.charactersModel = {
+      characterId: 0,
+      ruleSets: this.rulesets,
+      rulesetid: this.rulesetid,
+      inviteid: this.invitedid
+    };
+    this.bsModalRef.content.ruleSet = this.rulesets;
+    this.bsModalRef.content.rulesetid = this.rulesetid;
+    this.bsModalRef.content.inviteid = this.invitedid;
+    //this.bsModalRef.content.invitationList = this.invitationList;
+    
+    this.bsModalRef.content.event.subscribe(data => {
+      console.log(data);
+      this.invitationList = this.invitationList.filter(x => x.id != data);
+      if (!this.invitationList.length) {
+        this.close();
+      }
+      
+    });
   }
-  AnswerLater() {
-    console.log('Answer later');
+
+
+  backward() {
+    console.log('backward');
+  }
+  forward() {
+    console.log('forward');
   }
 }

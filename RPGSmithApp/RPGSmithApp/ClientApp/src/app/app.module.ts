@@ -5,6 +5,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { ToastyModule } from 'ng2-toasty';
 import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
 import { NgxSocialLoginModule } from 'ngx-social-login';
@@ -19,17 +20,22 @@ import { AppComponent } from './app.component';
 
 import { IncompatibleBrowserComponent } from "./incompatible-browser/incompatible-browser.component";
 
+
 //import { AdsenseModule } from 'ng2-adsense';
 import {
   AppTranslationService,
   TranslateLanguageLoader
 } from './core/common/app-translation.service';
 import { AppService1 } from './app.service';
+import { CampaignInviteComponent } from './rulesets/campaign-invite/campaign-invite.component';
+import { CharactersFormComponent } from './characters/characters-form/characters-form.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    IncompatibleBrowserComponent
+    IncompatibleBrowserComponent,
+    CampaignInviteComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -44,6 +50,7 @@ import { AppService1 } from './app.service';
         }
     }),
     ModalModule.forRoot(),
+    CarouselModule.forRoot(),
     NgxSocialLoginModule.init(
         {
             //'648640285849-3labmk96l8d4q372jc82ljrfcg73f9fs.apps.googleusercontent.com'
@@ -74,6 +81,12 @@ import { AppService1 } from './app.service';
 AppService1
   ],
   exports: [
+    CampaignInviteComponent,
+
+  ],
+  entryComponents: [
+    CampaignInviteComponent,
+
   ],
   bootstrap: [AppComponent]
 })

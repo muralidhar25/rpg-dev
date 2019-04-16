@@ -37,6 +37,7 @@ import { AppService1 } from "./app.service";
 import { SearchType } from "./core/models/enums";
 import { CampaignService } from "./core/services/campaign.service";
 import { playerInviteListModel } from "./core/models/campaign.model";
+import { CampaignInviteComponent } from "./rulesets/campaign-invite/campaign-invite.component";
 //declare let ga: Function;
 
 var alertify: any = require('./assets/scripts/alertify.js');
@@ -172,12 +173,14 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
         
         if (!this.haveCheckedNewInvitation) {
+          console.log('check invite');
           this.campaignService.CheckInvites<any>(user.id)
             .subscribe(data => {
               this.haveCheckedNewInvitation = true;
               
               if (data) {
                 if (data.length) {
+                  
                   this.invitationList = data;
                   this.haveNewInvitation = true;
                 }
@@ -562,6 +565,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             }
           }
           if (!this.haveCheckedNewInvitation) {
+            console.log('check invite');
             this.campaignService.CheckInvites<any>(user.id)
               .subscribe(data => {
                 this.haveCheckedNewInvitation = true;
@@ -1233,12 +1237,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.redirectUrl = Utilities.getHelpLinkUrl(this.router.url);
   }
   checkInvites() {
-    //this.bsModalRef = this.modalService.show(AccountSettingsComponent, {
-    //  class: 'modal-primary modal-md',
-    //  ignoreBackdropClick: true,
-    //  keyboard: false
-    //});
-    //this.bsModalRef.content.invitationList = this.invitationList;
-    
+    this.bsModalRef = this.modalService.show(CampaignInviteComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.invitationList = this.invitationList;
+
   }
 }

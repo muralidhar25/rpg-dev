@@ -1,0 +1,92 @@
+<!-- New character popup -->
+<form name="charactersForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+
+  <div class="modal-header">
+    <h5 class="modal-title" id="newCharacterPopupTitle">{{title}}</h5>
+    <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
+  </div>
+  <div class="modal-body">
+
+    <div class="form-row">
+      <div class="col">
+        <!-- Character name -->
+        <div class="form-group">
+          <label for="newCharacterName">Name (required)</label>
+          <input *ngIf="charactersFormModal.view != 'edit'" type="text" id="newCharacterName" name="newCharacterName" class="form-control" placeholder="Character Name" [ngStyle]="{'border-color': f.submitted && !newCharacterName.valid ? 'red' : '#d3cfce'}" [autofocus] [(ngModel)]="charactersFormModal.characterName" #newCharacterName="ngModel" required>
+          <input *ngIf="charactersFormModal.view == 'edit'" type="text" id="newCharacterName" name="newCharacterName" class="form-control" placeholder="Character Name" [ngStyle]="{'border-color': f.submitted && !newCharacterName.valid ? 'red' : '#d3cfce'}" [(ngModel)]="charactersFormModal.characterName" #newCharacterName="ngModel" required>
+          <input type="hidden" id="characterId" name="characterId" [(ngModel)]="charactersFormModal.characterId" #characterId="ngModel">
+
+        </div>
+        <!-- End of character name -->
+        <!-- Character description -->
+        <div class="form-group">
+          <label for="newCharacterDescription">Description</label>
+          <div id="eg-royal-theme" [froalaEditor]="options('Description')" [(ngModel)]="charactersFormModal.characterDescription" name="characterDescription"></div>
+          <!--<input type="text" id="newCharacterDescription" name="newCharacterDescription" class="form-control" placeholder="Description"
+                 [(ngModel)]="charactersFormModal.characterDescription" #newCharacterDescription="ngModel">-->
+        </div>
+        <!-- End of character description -->
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-12 col-md-6">
+        <!-- Character ruleset -->
+        <fieldset class="form-group input-list">
+          <legend>Rule Set</legend>
+          <div class="form-check" *ngIf="!charactersFormModal?.hasRuleset">
+            <span>NOTE: <small>At least 1 Rule Set must exist before a Character can be created.</small></span>
+          </div>
+          <!--<div class="form-group form-group-unlabelled search-rule-set" *ngIf="button == 'CREATE'">
+            <span class="input-group-btn">
+              <button class="btn icon icon-search btn-simple-primary" type="button"></button>
+            </span>
+            <input class="form-control ng-untouched ng-pristine ng-valid" placeholder="Search ruleset" type="text" name="searchTextBox" [(ngModel)]="searchText" />
+          </div>-->
+          <ul class="input-list-items"  >
+            <li class="form-check" *ngFor="let ruleset of charactersFormModal?.ruleSets;let i = index;">
+              <label class="form-check-label" (click)="setCharacterRuleset(ruleset)">
+                <input class="form-check-input" type="radio" name="newCharacterRuleset" [checked]="charactersFormModal.ruleSetId">
+                <input type="hidden" id="ruleSetId" name="ruleSetId" [(ngModel)]="charactersFormModal.ruleSetId" #ruleSetId="ngModel">
+                <span class="text-cut" [ngClass]="ruleset.isCoreRuleset?'':'bg-white'">
+                  <img [alt]="ruleset.ruleSetName" [src]="ruleset.imageUrl"
+                       onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+                  <em>{{ruleset.ruleSetName}}</em> <i class="icon"></i>
+                </span>
+              </label>
+            </li>
+          </ul>
+          <div class="input-extend">
+           <!-- <a (click)="manageRuleSets()" class="btn icon icon-with-text icon-external btn-link-primary"><span style="color:#be8917;">RuleSets</span></a>-->
+          </div>
+        </fieldset>
+        <!-- End of character ruleset -->
+      </div>
+      <div class="col-12 col-md-6">
+        <!-- Character portrait -->
+        <div class="form-group input-image input-image-alt">
+          <label for="newCharacterImage">Portrait (optional)</label>
+          <div class="input-image-control input-image-note input-image-trigger" (click)="cropImage(null,true,'VIEW.ADD')"
+               *ngIf="((charactersFormModal.characterId === undefined || charactersFormModal.characterId === 0) && !showWebButtons && charactersFormModal.imageUrl === undefined)
+                                || (!showWebButtons && (charactersFormModal.imageUrl === undefined || charactersFormModal.imageUrl === null))">
+            <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
+          </div>
+          <div class="form-group input-image-note input-image-trigger" (click)="cropImage(charactersFormModal.imageUrl,true,'VIEW.EDIT')"
+               *ngIf="(!showWebButtons && charactersFormModal.imageUrl !== undefined && charactersFormModal.imageUrl !== null)">
+            <img class="character-img" [src]="charactersFormModal.imageUrl" />
+          </div>
+          <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
+            <img [src]="charactersFormModal.imageUrl" class="bg-image" />
+          </div>
+          <input type="file" id="newCharacterPortrait" class="form-control-file">
+        </div>
+        <!-- End of character portrait -->
+      </div>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <!--<button type="button"  [disabled]="!imageChangedEvent" class="btn icon icon-with-text icon-globe btn-primary btn-block input-image-button-web" (click)="cropImage(charactersFormModal.imageUrl)">Crop Image</button>-->
+    <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+    <button type="submit" [disabled]="isLoading" [ngStyle]="{'cursor': charactersFormModal.hasRuleset ? 'pointer' : 'not-allowed'}" class="btn btn-accent">{{button}}</button>
+  </div>
+</form>

@@ -13,12 +13,16 @@ export class CampaignService extends EndpointFactory {
   private readonly _getPlayerInviteListUrl: string = '/api/campaign/getInvitedPlayers';
   private readonly _cancelInviteUrl: string = '/api/campaign/cancelInvite';
   private readonly _getCheckInvitesListUrl: string = '/api/campaign/getReceivedInvites';
+  private readonly _declineInvitesListUrl: string = '/api/Campaign/DeclineInvite';
+  private readonly _answerLaterInvitesListUrl: string = '/api/Campaign/AnswerLaterInvite';
+
 
   get sendInviteUrl() { return this.configurations.baseUrl + this._sendInviteUrlUrl; }
   get getPlayerInviteListUrl() { return this.configurations.baseUrl + this._getPlayerInviteListUrl; }
   get cancelInviteUrl() { return this.configurations.baseUrl + this._cancelInviteUrl; }
   get getCheckInvitesListUrl() { return this.configurations.baseUrl + this._getCheckInvitesListUrl; }
-  
+  get getDeclineInviteUrl() { return this.configurations.baseUrl + this._declineInvitesListUrl; }
+  get getAnswerlaterInviteUrl() { return this.configurations.baseUrl + this._answerLaterInvitesListUrl; }
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
     super(http, configurations, injector);
@@ -63,4 +67,27 @@ export class CampaignService extends EndpointFactory {
       });
 
   }
+
+  declineInvite<T>(inviteId: number): Observable<T> {
+
+    let endpointUrl = `${this.getDeclineInviteUrl}?inviteID=${inviteId}`;
+    console.log(endpointUrl);
+    return this.http.post(endpointUrl, JSON.stringify({}), { headers: this.getRequestHeadersNew() })
+      .catch(error => {
+        return this.handleError(error, () => this.declineInvite(inviteId));
+      });
+
+  }
+
+  answerLaterInvite<T>(inviteId: number): Observable<T> {
+   
+    let endpointUrl = `${this.getAnswerlaterInviteUrl}?inviteID=${inviteId}`;
+    console.log(endpointUrl);
+    return this.http.post(endpointUrl, JSON.stringify({}), { headers: this.getRequestHeadersNew() })
+      .catch(error => {
+        return this.handleError(error, () => this.answerLaterInvite(inviteId));
+      });
+
+  }
+
 }

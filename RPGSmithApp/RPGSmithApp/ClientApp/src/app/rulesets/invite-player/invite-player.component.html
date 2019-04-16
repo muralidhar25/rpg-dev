@@ -1,7 +1,8 @@
 <div class="modal-content">
   <div class="modal-header">
     <h5 class="modal-title" id="colorSelectionPopupTitle">
-      Invite Player
+      Invite Player 
+
       <div class="manage-ruleset-header">
         <span>
           <img [src]="rulesetModel.imageUrl"
@@ -33,6 +34,7 @@
 </div>
 <div class="modal-footer">
   <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
-  <button type="button" class="btn btn-accent" (click)="SendInvite(username)">Send</button>
+
+  <button type="button" class="btn btn-accent" [disabled]="isloading" (click)="SendInvite(username)">Send</button>
 </div>
 

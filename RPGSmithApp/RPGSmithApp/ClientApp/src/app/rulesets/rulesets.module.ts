@@ -25,7 +25,7 @@ import { CampaignsComponent } from "./campaigns/campaigns.component";
 import { CampaignDetailsComponent } from "./campaign-details/campaign-details.component";
 import { PlayerControlsComponent } from "./player-controls/player-controls.component";
 import { InvitePlayerComponent } from './invite-player/invite-player.component';
-import { CampaignInviteComponent } from './campaign-invite/campaign-invite.component';
+//import { CampaignInviteComponent } from './campaign-invite/campaign-invite.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +45,7 @@ import { CampaignInviteComponent } from './campaign-invite/campaign-invite.compo
     CampaignDetailsComponent,
     PlayerControlsComponent,
     InvitePlayerComponent,
-    CampaignInviteComponent
+    //CampaignInviteComponent
   ],
   imports: [
     SharedModule,
@@ -73,7 +73,7 @@ import { CampaignInviteComponent } from './campaign-invite/campaign-invite.compo
     CampaignDetailsComponent,
     PlayerControlsComponent,
     InvitePlayerComponent,
-    CampaignInviteComponent
+    //CampaignInviteComponent
   ],
   entryComponents: [
     RulesetFormComponent,
@@ -86,7 +86,7 @@ import { CampaignInviteComponent } from './campaign-invite/campaign-invite.compo
     RulesetPageComponent,
     PlayerControlsComponent,
     InvitePlayerComponent,
-    CampaignInviteComponent
+    //CampaignInviteComponent
   ]
 })
 export class RulesetsModule {}

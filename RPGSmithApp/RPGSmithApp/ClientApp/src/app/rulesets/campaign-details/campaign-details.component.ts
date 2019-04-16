@@ -16,7 +16,7 @@ import { PlatformLocation } from '@angular/common';
 import { PlayerControlsComponent } from '../player-controls/player-controls.component';
 import { InvitePlayerComponent } from '../invite-player/invite-player.component';
 import { ImageViewerComponent } from '../../shared/image-interface/image-viewer/image-viewer.component';
-import { CampaignInviteComponent } from '../campaign-invite/campaign-invite.component';
+//import { CampaignInviteComponent } from '../campaign-invite/campaign-invite.component';
 import { User } from '../../core/models/user.model';
 import { AuthService } from '../../core/auth/auth.service';
 import { CampaignService } from '../../core/services/campaign.service';
@@ -276,18 +276,18 @@ export class CampaignDetailsComponent implements OnInit {
       }, () => { });
    
   }
-  Invitepopup() {
-    this.bsModalRef = this.modalService.show(CampaignInviteComponent, {
-      class: 'modal-primary modal-md',
-      ignoreBackdropClick: true,
-      keyboard: false,
-      initialState: {
-        data: this.ruleset
-      }
-    });
-    this.bsModalRef.content.ruleSetImage = this.ruleset.ruleSetImage;
-    this.bsModalRef.content.rulesetModel = this.ruleset;
-  }
+  //Invitepopup() {
+  //  this.bsModalRef = this.modalService.show(CampaignInviteComponent, {
+  //    class: 'modal-primary modal-md',
+  //    ignoreBackdropClick: true,
+  //    keyboard: false,
+  //    initialState: {
+  //      data: this.ruleset
+  //    }
+  //  });
+  //  this.bsModalRef.content.ruleSetImage = this.ruleset.ruleSetImage;
+  //  this.bsModalRef.content.rulesetModel = this.ruleset;
+  //}
   
 
   formatAMPM(date) {

@@ -8761,3 +8761,41 @@ li.popup-new-tile-trigger.cross-li .btn {
 .disabled {
   cursor: not-allowed !important;
 }
+
+.modal-dialog  .carousel-control-prev {
+  top: calc(100% - 45px);
+  border: unset;
+  z-index: 99;
+  opacity: 0;
+  background: rgba(0,0,0,.4);
+  width: 35px;
+  height: 30px;
+  left: 17px;
+}
+
+.modal-dialog .carousel-control-next {
+  top: calc(100% - 45px);
+  border: unset;
+  z-index: 99;
+  opacity: 0;
+  background: rgba(0,0,0,.4);
+  width: 35px;
+  height: 30px;
+  left: 53px;
+  right: unset
+}
+@media (max-width:767px) {
+  .modal-dialog .carousel-control-prev {
+    top: calc(100% - 92px);
+  }
+
+  .modal-dialog .carousel-control-next {
+    top: calc(100% - 92px);
+  }
+}
+.icon-green {
+  color: #1b8d3d !important;
+}
+.icon-notifications:before {
+  font-size: 32px !important;
+}

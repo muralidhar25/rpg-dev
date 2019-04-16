@@ -56,6 +56,7 @@ import { RouterModule } from "@angular/router";
 import { AuthModule } from "../core/auth/auth.module";
 import { CreateAbilitiesComponent } from "./create-abilities/create-abilities.component";
 import { CreateSpellsComponent } from "./create-spells/create-spells.component";
+import { InviteAddCharctersFormComponent } from "./invite-add-charcters-form/invite-add-charcters-form.component";
 
 @NgModule({
   declarations: [
@@ -81,7 +82,8 @@ import { CreateSpellsComponent } from "./create-spells/create-spells.component";
     DiceSaveComponent,
     NumericCharacterStatComponent,
     CreateAbilitiesComponent,
-    CreateSpellsComponent
+    CreateSpellsComponent,
+    InviteAddCharctersFormComponent
   ],
   imports: [
     CommonModule,
@@ -163,7 +165,8 @@ import { CreateSpellsComponent } from "./create-spells/create-spells.component";
     DiceSaveComponent,
     NumericCharacterStatComponent,
     CreateAbilitiesComponent,
-    CreateSpellsComponent
+    CreateSpellsComponent,
+    InviteAddCharctersFormComponent
   ],
   entryComponents: [
     AccountSettingsComponent,
@@ -186,7 +189,9 @@ import { CreateSpellsComponent } from "./create-spells/create-spells.component";
     DiceSaveComponent,
     NumericCharacterStatComponent, 
     CreateAbilitiesComponent,
-    CreateSpellsComponent
+    CreateSpellsComponent,
+    InviteAddCharctersFormComponent
+
   ]
 })
 export class SharedModule {}
