@@ -73,12 +73,12 @@
           <!-- End of toolbar links -->
         </div>
         <ul class="page-toolbar-actions">
-         <li class="view-switch">
+          <li class="view-switch">
             <div class="btn-group" role="group">
-             <div class="dropdown">
+              <div class="dropdown">
                 <!--<button class="btn dropdown-toggle filter-toggle-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                   30 <i>A</i>
-                  </button>-->
+           30 <i>A</i>
+          </button>-->
                 <button class="btn dropdown-toggle filter-toggle-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" popover="{{inventoryFilter.name}}" triggers="hover click">
                   &nbsp;{{inventoryFilter.viewableCount}}
                   <span *ngIf="inventoryFilter.type == 3 && !inventoryFilter.icon"><i>A</i></span>
@@ -93,9 +93,9 @@
               </div>
               <div class="dropdown">
                 <button class="btn dropdown-toggle filter-toggle-btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i [ngClass]="isDenseView ? 'icon-Rec-Dense': '' "  ></i>
-                  <i  [ngClass]="!isListView && !isDenseView ? 'icon icon-grid' :''" ></i>
-                  <i [ngClass]="isListView && !isDenseView ? 'icon icon-list' :''" ></i>
+                  <i [ngClass]="isDenseView ? 'icon-Rec-Dense': '' "></i>
+                  <i [ngClass]="!isListView && !isDenseView ? 'icon icon-grid' :''"></i>
+                  <i [ngClass]="isListView && !isDenseView ? 'icon icon-list' :''"></i>
                 </button>
                 <div class="dropdown-menu filter-toggle-btn-menu" aria-labelledby="dropdownMenuButton">
                   <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="isListView && !isDenseView ? 'selected' :''" (click)="showListView(true)">List</button>
@@ -120,6 +120,9 @@
               </div>
             </div>
           </li>
+          <!--<li class="refresh-btn">
+            <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh"></button>
+          </li>-->
           <li>
             <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary"><span class="text-hide-tab">Dice</span></button>
           </li>

@@ -142,9 +142,12 @@
           <li>
             <button [disabled]="isLoading" type="button" id="manageTilesTrigger" class="btn btn-outline-primary icon-Gen-Edit" (click)="checkTile('character/tiles',selectedPage?.characterDashboardPageId,selectedlayout.characterDashboardLayoutId)"> Manage Tiles</button>
           </li>
-          <!--<li>
-              <button type="button" data-toggle="modal" data-target="#manageCoreStatsPopup" class="btn btn-outline-primary">Manage Core Stats</button>
+          <!--<li class="refresh-btn"> 
+            <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh"></button>
           </li>-->
+          <!--<li>
+                <button type="button" data-toggle="modal" data-target="#manageCoreStatsPopup" class="btn btn-outline-primary">Manage Core Stats</button>
+            </li>-->
           <li>
             <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>
           </li>

@@ -37,10 +37,19 @@
 
         <div class="site-header-right-section">
           <!--<div class="site-header-user mr-1 mr-sm-3 crsr-pointer">
+            <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Pouch"></a>
+          </div>
+          <div class="site-header-user mr-1 mr-sm-3 crsr-pointer">
+            <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Chat"></a>
+          </div>
+          <div class="site-header-user mr-1 mr-sm-3 crsr-pointer">
+            <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Email"></a>
+          </div>-->
+          <!--<div class="site-header-user mr-1 mr-sm-3 crsr-pointer">
             <img border="0" src='../assets/images/k_opt.jpg' class="mr-2 redirect-url" width="50" (click)="RedirecttoUrl()">
           </div>-->
-           <div class="site-header-user mr-1 mr-sm-3 crsr-pointer" *ngIf="haveNewInvitation">
-             <a class="d-flex ml-2 align-items-center help-icon icon icon-Gen-Email crsr-pointer icon-green icon-notifications" (click)="checkInvites()"  href="javascript:void(0)"></a>
+          <div class="site-header-user mr-1 mr-sm-3 crsr-pointer" *ngIf="haveNewInvitation">
+            <a class="d-flex ml-2 align-items-center help-icon icon icon-Gen-Email crsr-pointer icon-green icon-notifications" (click)="checkInvites()" href="javascript:void(0)"></a>
           </div>
           <form class="site-header-search" *ngIf="showCharacterSearch">
             <i class="icon icon-search"></i>
@@ -74,13 +83,13 @@
               </div>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="siteNavigationToggle" *ngIf="isDropdownOpen">
                 <ul class="dropdown-menu-list dropdown-menu-item-contain-links">
-                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom"  *ngIf="isGmUser" [routerLink]="['rulesets/campaigns']" [routerLinkActive]="['active']" (click)="setPlaceholderText('Characters')">
+                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" *ngIf="isGmUser" [routerLink]="['rulesets/campaigns']" [routerLinkActive]="['active']" (click)="setPlaceholderText('Characters')">
                     <a class="dropdown-menu-item-link">
                       <span class="dropdown-menu-item-title">Campaigns</span>
                       <span class="dropdown-menu-item-count" *ngIf="rulesetsCount !== undefined">{{rulesetsCount}}</span>
                     </a>
                   </li>
-                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom"  [routerLink]="['/characters']" [routerLinkActive]="['active']" (click)="setPlaceholderText('Characters')">
+                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" [routerLink]="['/characters']" [routerLinkActive]="['active']" (click)="setPlaceholderText('Characters')">
                     <a class="dropdown-menu-item-link">
                       <span class="dropdown-menu-item-title">Characters</span>
                       <span class="dropdown-menu-item-count" *ngIf="charactersCount !== undefined">{{charactersCount}}</span>

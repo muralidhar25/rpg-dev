@@ -76,9 +76,9 @@
                 <ul class="page-toolbar-actions">
                   <li class="view-switch">
                     <!--<div class="btn-group" role="group">
-                      <button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="{'selected':!isListView}" (click)="showListView(false)"></button>
-                      <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="{'selected':isListView}" (click)="showListView(true)"></button>
-                    </div>-->
+      <button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="{'selected':!isListView}" (click)="showListView(false)"></button>
+      <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="{'selected':isListView}" (click)="showListView(true)"></button>
+    </div>-->
                     <div class="btn-group" role="group">
                       <div class="dropdown">
                         <button class="btn dropdown-toggle filter-toggle-btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -94,14 +94,17 @@
                       </div>
                     </div>
                   </li>
-                    <!--<li>
-                        <div class="dropdown dropdown-buttons">
-                            <button type="button" (click)="createAbility()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Create Ability</button>
-                        </div>
-                    </li>-->
-                    <li>
-                        <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary"><span class="text-hide-tab">Dice</span></button>
-                    </li>
+                  <!--<li>
+                      <div class="dropdown dropdown-buttons">
+                          <button type="button" (click)="createAbility()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Create Ability</button>
+                      </div>
+                  </li>-->
+                  <!--<li class="refresh-btn">
+                    <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh"></button>
+                  </li>-->
+                  <li>
+                    <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary"><span class="text-hide-tab">Dice</span></button>
+                  </li>
                 </ul>
             </div>
         </div>
