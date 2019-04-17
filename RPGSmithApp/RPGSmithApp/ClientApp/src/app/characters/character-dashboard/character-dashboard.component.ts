@@ -2173,9 +2173,9 @@ export class CharacterDashboardComponent implements OnInit {
                       }
                       break;
                     case STAT_TYPE.Condition: 
-                      let characterStatConditionsfilter = this.ConditionsValuesList.filter((stat) => stat.characterStatId == rec.id);
+                      let characterStatConditionsfilter = this.ConditionsValuesList.filter((Cs) => Cs.characterStatId == stat.characterStat.characterStatId);
                       let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.CharacterStatsValues.charactersCharacterStat);
-                      num = +result;
+                      value = result;
                       break;
                     default:
                       break;
