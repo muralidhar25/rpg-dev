@@ -370,7 +370,7 @@ export class ServiceUtil {
 
   public static conditionStat(item, _character, charactersCharacterStats) {
     //let _character: any = this.character;
-    console.log(_character);
+   
     let result = '';
     if (item.characterStat.characterStatConditions) {
 

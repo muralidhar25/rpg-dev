@@ -180,7 +180,8 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         this.isModelChange = true;
     }
 
-    private initialize() {
+  private initialize() {
+       
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)
             this.authService.logout();
@@ -240,6 +241,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                             item.subValue = "";
                         }
 
+                      
                         if (item.characterStat.characterStatType.statTypeName == 'Command') {
                             if (item.command != null && item.command != "")
                                 item.displaycommand = item.command; //this.manageCommandDisplay(item.command);
@@ -265,9 +267,9 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                         }                        
 
                         if (item.characterStat.characterStatType.statTypeName == 'Calculation') {
-                           
+
                             if (item.characterStat.characterStatCalcs.length) {
-                                
+                             
                                 let finalCalcString = '';
                                 if (item.characterStat.characterStatCalcs[0].statCalculation != null && item.characterStat.characterStatCalcs[0].statCalculation != undefined) {  //&& item.characterStat.characterStatCalcs[0].statCalculation.length > 34) {
                                     item.displayCalculation = item.characterStat.characterStatCalcs[0].statCalculation; //.substr(0, 34) + "...";
@@ -276,7 +278,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                     
                                     if (item.characterStat.characterStatCalcs[0].statCalculationIds) {
                                         item.characterStat.characterStatCalcs[0].statCalculationIds.split(/\[(.*?)\]/g).map((rec) => {
-
+                                          
                                             let id = ''; let flag = false; let type = 0; let statType = 0;
                                             if (rec.split('_').length > 1) {
                                                 id = rec.split('_')[0].replace('[', '').replace(']', '');
@@ -286,28 +288,32 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                                 id = rec.replace('[', '').replace(']', '');
                                                 type = 0
                                             }
+                                  
                                             this.charactersCharacterStats.map((q) => {
                                                 if (!flag) {
                                                     flag = (parseInt(id) == q.characterStatId);
                                                     statType = q.characterStat.characterStatTypeId
                                                 }
-                                            })
+                                          })
+                                         // debugger
                                             if (flag) {
                                                 IDs.push({ id: id, type: isNaN(type) ? 0 : type, originaltext: "[" + rec + "]", statType: statType })
                                             }
                                             else if (+id == -1) {
                                                 IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
                                             }
-                                        })
+                                      })
+                                     
                                     }
-                                    IDs.map((rec) => {
+                                  IDs.map((rec) => {
+                                   
                                         if (+rec.id == -1 && this.character.inventoryWeight) {
                                             CalcString = CalcString.replace(rec.originaltext, this.character.inventoryWeight);
                                         } else {
                                             this.charactersCharacterStats.map((stat) => {
                                                 if (rec.id == stat.characterStatId) {
-                                                    let num = 0;
-                                                    switch (rec.statType) {
+                                                  let num = 0;
+                                                   switch (rec.statType) {
                                                         case 3: //Number
                                                             num = stat.number
                                                             break;
@@ -331,14 +337,23 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                                                 num = stat.subValue
                                                             }
                                                             break;
-                                                        case 12: //Calculation
-                                                            num = stat.calculationResult
-                                                            break;
+                                                      case 12: //Calculation
+                                                       // debugger;
+                                                       
+                                                        num = stat.calculationResult
+                                                         break;
                                                         case STAT_TYPE.Combo: //Combo
                                                             num = stat.defaultValue
                                                             break;
                                                       case STAT_TYPE.Choice: //Choice
                                                         num = stat.defaultValue
+                                                        break;
+                                                      case STAT_TYPE.Condition: //condition
+                                                        debugger;
+                                                        let characterStatConditionsfilter = this.charactersCharacterStats.filter((stat) => stat.characterStat.characterStatId == rec.id);
+                                                       let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
+                                                        let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.charactersCharacterStats);
+                                                        num = +result;
                                                         break;
                                                         default:
                                                             break;
@@ -891,6 +906,12 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                           case STAT_TYPE.Choice: //Choice
                                             num = stat.defaultValue
                                             break;
+                                          case STAT_TYPE.Condition: //condition
+                                            let characterStatConditionsfilter = this.charactersCharacterStats.filter((stat) => stat.characterStat.characterStatId == rec.id);
+                                            let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
+                                            let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.charactersCharacterStats);
+                                            num = +result;
+                                            break;
                                             default:
                                                 break;
                                         }
@@ -1407,6 +1428,12 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                                     break;
                                                   case STAT_TYPE.Choice: //Choice
                                                     num = stat.defaultValue
+                                                    break;
+                                                  case STAT_TYPE.Condition: //condition
+                                                    let characterStatConditionsfilter = this.charactersCharacterStats.filter((stat) => stat.characterStat.characterStatId == rec.id);
+                                                    let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
+                                                    let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.charactersCharacterStats);
+                                                    num = +result;
                                                     break;
                                                     default:
                                                         break;

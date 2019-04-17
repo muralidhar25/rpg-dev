@@ -922,6 +922,11 @@ export class CharacterTilesComponent implements OnInit {
 
                             num = stat.defaultValue
                             break;
+                          case STAT_TYPE.Condition: //Condition
+                            let characterStatConditionsfilter = this.ConditionsValuesList.filter((stat) => stat.characterStatId == rec.id);
+                            let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.CharacterStatsValues.charactersCharacterStat);
+                            num = +result;
+                            break;
                           default:
                             break;
                         }
@@ -1038,6 +1043,11 @@ export class CharacterTilesComponent implements OnInit {
                         case STAT_TYPE.Choice: //Choice
 
                           num = stat.defaultValue
+                          break;
+                        case STAT_TYPE.Condition: //Condition
+                          let characterStatConditionsfilter = this.ConditionsValuesList.filter((stat) => stat.characterStatId == rec.id);
+                          let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.CharacterStatsValues.charactersCharacterStat);
+                          num = +result;
                           break;
                         default:
                           break;
@@ -1323,6 +1333,10 @@ export class CharacterTilesComponent implements OnInit {
                         default:
                       }
                       break;
+                    case STAT_TYPE.Condition: //Condition
+                      let characterStatConditionsfilter = this.ConditionsValuesList.filter((stat) => stat.characterStatId == rec.id);
+                      let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.CharacterStatsValues.charactersCharacterStat);
+                      value = result;
                     default:
                       break;
                   }

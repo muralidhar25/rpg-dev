@@ -1764,6 +1764,11 @@ export class CharacterDashboardComponent implements OnInit {
 
                             num = stat.defaultValue
                             break;
+                          case STAT_TYPE.Condition:
+                               let characterStatConditionsfilter = this.ConditionsValuesList.filter((stat) => stat.characterStatId == rec.id);
+                                let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.CharacterStatsValues.charactersCharacterStat);
+                                num = +result;
+                                 break;
                           default:
                             break;
                         }
@@ -1878,6 +1883,11 @@ export class CharacterDashboardComponent implements OnInit {
 
                           num = stat.defaultValue
                           break;
+                        case STAT_TYPE.Condition:
+                            let characterStatConditionsfilter = this.ConditionsValuesList.filter((stat) => stat.characterStatId == rec.id);
+                            let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.CharacterStatsValues.charactersCharacterStat);
+                            num = +result;
+                            break;
                         default:
                           break;
                       }
@@ -2161,6 +2171,11 @@ export class CharacterDashboardComponent implements OnInit {
                           break;
                         default:
                       }
+                      break;
+                    case STAT_TYPE.Condition: 
+                      let characterStatConditionsfilter = this.ConditionsValuesList.filter((stat) => stat.characterStatId == rec.id);
+                      let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.CharacterStatsValues.charactersCharacterStat);
+                      num = +result;
                       break;
                     default:
                       break;
