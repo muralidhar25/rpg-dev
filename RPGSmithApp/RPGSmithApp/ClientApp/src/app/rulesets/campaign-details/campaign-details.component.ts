@@ -253,8 +253,9 @@ export class CampaignDetailsComponent implements OnInit {
           data.sendOn = string;
           
         }
-        this.bindInvitedPlayerImage(this.invitedUsers.length);
+       
         this.invitedUsers.push(data);
+        this.bindInvitedPlayerImage(this.invitedUsers.length - 1);
       }
       
     });

@@ -30,8 +30,8 @@ export class CampaignInviteComponent implements OnInit {
   rulesets: Ruleset[];
   rulesetid: number;
   invitedid: number;
-  public event: EventEmitter<any> = new EventEmitter();
-  constructor(private bsModalRef: BsModalRef,
+  isloading: boolean = false;
+ constructor(private bsModalRef: BsModalRef,
             private sharedService: SharedService,
             private localStorage: LocalStoreManager,
             public appService: AppService1,
@@ -75,17 +75,18 @@ export class CampaignInviteComponent implements OnInit {
   }
   close() {
     this.bsModalRef.hide();
-    // this.destroyModalOnInit();
   }
 
  
   Decline(index, inviteId) {
+    this.isloading = true;
     this.campaignService.declineInvite<any>(inviteId)
       .subscribe(data => {
         if (data.isDeclined) {
           this.alertService.showStickyMessage('', "invitation decline", MessageSeverity.success);
           setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
           this.invitationList.splice(index, 1);
+          this.appService.updateInvitationlist(this.invitationList);
           if (this.invitationList.length == 0) {
             this.close();
           }
@@ -93,6 +94,7 @@ export class CampaignInviteComponent implements OnInit {
           this.alertService.showStickyMessage('', "Unable to decline invitation", MessageSeverity.error);
           setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
         }
+        this.isloading = false;
       }, error => {
         let Errors = Utilities.ErrorDetail("", error);
         if (Errors.sessionExpire) {
@@ -102,21 +104,25 @@ export class CampaignInviteComponent implements OnInit {
   
   }
   AnswerLater(inviteId) {
+    this.isloading = true;
     console.log('Answer later', inviteId);
     this.campaignService.answerLaterInvite<any>(inviteId)
       .subscribe(data => {
         console.log(data);
       })
     this.close();
+    this.isloading = false;
   }
 
   AcceptInvite(inviteId, invites) {
+    this.isloading = true;
     this.rulesetid = invites.playerCampaignID;
     this.invitedid = invites.id;
     this.rulesets = [];
     this.rulesets.push(invites.playerCampaign);
-    console.log(this.rulesets);
-   // this.close();
+   
+    this.close();
+    this.isloading = false;
     this.bsModalRef = this.modalService.show(InviteAddCharctersFormComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -133,16 +139,8 @@ export class CampaignInviteComponent implements OnInit {
     this.bsModalRef.content.ruleSet = this.rulesets;
     this.bsModalRef.content.rulesetid = this.rulesetid;
     this.bsModalRef.content.inviteid = this.invitedid;
-    //this.bsModalRef.content.invitationList = this.invitationList;
+    this.bsModalRef.content.invitationList = this.invitationList;
     
-    this.bsModalRef.content.event.subscribe(data => {
-      console.log(data);
-      this.invitationList = this.invitationList.filter((x:any) => x.id != data);
-      if (!this.invitationList.length) {
-        this.close();
-      }
-      
-    });
   }
 
 
@@ -152,4 +150,5 @@ export class CampaignInviteComponent implements OnInit {
   forward() {
     console.log('forward');
   }
+ 
 }

@@ -24,6 +24,7 @@ import { User } from '../../core/models/user.model';
 import { ImageSelectorComponent } from '../image-interface/image-selector/image-selector.component';
 import { playerInviteListModel } from '../../core/models/campaign.model';
 import { CampaignInviteComponent } from '../../rulesets/campaign-invite/campaign-invite.component';
+import { AppService1 } from '../../app.service';
 
 @Component({
   selector: 'app-invite-add-charcters-form',
@@ -72,7 +73,7 @@ export class InviteAddCharctersFormComponent implements OnInit {
     private bsModalRef: BsModalRef, private modalService: BsModalService, private localStorage: LocalStoreManager,
     private fileUploadService: FileUploadService, private rulesetService: RulesetService,
     private sharedService: SharedService, private commonService: CommonService, private imageSearchService: ImageSearchService,
-    private location: PlatformLocation
+    private location: PlatformLocation, private appService: AppService1
   ) {
     location.onPopState(() => this.modalService.hide(1));
     this.onResize();
@@ -264,25 +265,12 @@ export class InviteAddCharctersFormComponent implements OnInit {
           let message = modal.characterId == 0 || modal.characterId === undefined ? "Character has been added successfully." : "Character has been updated successfully.";
           this.alertService.showMessage(message, "", MessageSeverity.success);
           this.commonService.UpdateCounts(); /*update charaters count*/
+          console.log(modal.inviteId, this.inviteid);
+          this.invitationList = this.invitationList.filter((x : any) => x.id != this.inviteid);
+          console.log(this.invitationList);
+          this.appService.updateInvitationlist(this.invitationList);
           this.close();
-          //  debugger;
-          //this.invitationList = this.invitationList.filter(x => x.inviteId != this.inviteid);
-          this.event.emit(this.inviteid);
-          //this.bsModalRef = this.modalService.show(CampaignInviteComponent, {
-          //  class: 'modal-primary modal-md',
-          //  ignoreBackdropClick: true,
-          //  keyboard: false
-          //});
-          //this.bsModalRef.content.invitationList = this.invitationList;
           
-
-          
-          //this.sharedService.updateCharacterList(true);
-          //this.sharedService.updateCharactersCount(true);
-         // this.router.navigate(['/characters'])
-          //this.router.navigateByUrl('/characters', { skipLocationChange: true });
-          //this.router.navigateByUrl('/rulesets', { skipLocationChange: true }).then(() => this.router.navigate(['/ruleset']));
-          // window.location.reload();
         },
         error => {
 
@@ -310,7 +298,7 @@ export class InviteAddCharctersFormComponent implements OnInit {
 
   close() {
     this.bsModalRef.hide();
-    //this.destroyModalOnInit();
+    this.destroyModalOnInit();
   }
 
   manageRuleSets() {
