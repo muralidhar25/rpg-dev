@@ -57,6 +57,7 @@ import { AuthModule } from "../core/auth/auth.module";
 import { CreateAbilitiesComponent } from "./create-abilities/create-abilities.component";
 import { CreateSpellsComponent } from "./create-spells/create-spells.component";
 import { InviteAddCharctersFormComponent } from "./invite-add-charcters-form/invite-add-charcters-form.component";
+import { PaymentComponent } from "./payment/payment.component";
 
 @NgModule({
   declarations: [
@@ -83,7 +84,8 @@ import { InviteAddCharctersFormComponent } from "./invite-add-charcters-form/inv
     NumericCharacterStatComponent,
     CreateAbilitiesComponent,
     CreateSpellsComponent,
-    InviteAddCharctersFormComponent
+    InviteAddCharctersFormComponent,
+    PaymentComponent
   ],
   imports: [
     CommonModule,
@@ -166,7 +168,8 @@ import { InviteAddCharctersFormComponent } from "./invite-add-charcters-form/inv
     NumericCharacterStatComponent,
     CreateAbilitiesComponent,
     CreateSpellsComponent,
-    InviteAddCharctersFormComponent
+    InviteAddCharctersFormComponent,
+    PaymentComponent
   ],
   entryComponents: [
     AccountSettingsComponent,
@@ -190,7 +193,8 @@ import { InviteAddCharctersFormComponent } from "./invite-add-charcters-form/inv
     NumericCharacterStatComponent, 
     CreateAbilitiesComponent,
     CreateSpellsComponent,
-    InviteAddCharctersFormComponent
+    InviteAddCharctersFormComponent,
+    PaymentComponent
 
   ]
 })

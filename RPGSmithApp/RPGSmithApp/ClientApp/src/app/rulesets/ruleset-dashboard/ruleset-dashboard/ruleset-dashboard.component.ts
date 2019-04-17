@@ -448,6 +448,7 @@ export class RulesetDashboardComponent implements OnInit {
               this.ruleSetId = this.headers.headerId;
             }
           }
+          this.setRulesetId(this.ruleSetId);
             try {
                 if (window.outerWidth < 767) {
                     this.gridConfig.draggable = false;
@@ -2041,5 +2042,9 @@ export class RulesetDashboardComponent implements OnInit {
             this.IsTabletDevice = false;
             this.IsMobileDevice = false;
         }
-    }
+  }
+  private setRulesetId(rulesetId: number) {
+    this.localStorage.deleteData(DBkeys.RULESET_ID);
+    this.localStorage.saveSyncedSessionData(rulesetId, DBkeys.RULESET_ID);
+  }
 }

@@ -8882,3 +8882,14 @@ li.popup-new-tile-trigger.cross-li .btn {
 .icon-notifications:before {
   font-size: 32px !important;
 }
+
+.disable-div:after {
+  content: '';
+  position: absolute;
+  top: 0px;
+  left: 15px;
+  width: calc(100% - 30px);
+  height: 100%;
+  z-index: 99;
+  cursor:not-allowed;
+}

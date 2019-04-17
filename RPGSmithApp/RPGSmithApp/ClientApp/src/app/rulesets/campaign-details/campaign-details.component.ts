@@ -10,7 +10,7 @@ import { SharedService } from '../../core/services/shared.service';
 import { DBkeys } from '../../core/common/db-keys';
 import { RulesetFormComponent } from '../ruleset-form/ruleset-form.component';
 import { ShareRulesetComponent } from '../ruleset-helper/share-ruleset/share-ruleset.component';
-import { VIEW } from '../../core/models/enums';
+import { VIEW, MarketPlaceItemsType } from '../../core/models/enums';
 import { AppService1 } from '../../app.service';
 import { PlatformLocation } from '@angular/common';
 import { PlayerControlsComponent } from '../player-controls/player-controls.component';
@@ -24,6 +24,9 @@ import { Utilities } from '../../core/common/utilities';
 import { playerInviteListModel } from '../../core/models/campaign.model';
 import { MessageSeverity, AlertService } from '../../core/common/alert.service';
 import { ImageSearchService } from '../../core/services/shared/image-search.service';
+import { PaymentComponent } from '../../shared/payment/payment.component';
+import { marketplaceListModel } from '../../core/models/marketplace.model';
+import { MarketPlaceService } from '../../core/services/maketplace.service';
  
 @Component({
   selector: 'app-campaign-details',
@@ -43,8 +46,9 @@ export class CampaignDetailsComponent implements OnInit {
   invitedUsers: playerInviteListModel[]= [];
   //showIcon: boolean = false;
   playersSlots: number = 0;
-  
-  constructor( private formBuilder: FormBuilder, private router: Router, private localStorage: LocalStoreManager,
+  marketplacelist: marketplaceListModel[] = [];
+  randomImageList : string[]= [];
+  constructor(private formBuilder: FormBuilder, private router: Router, private localStorage: LocalStoreManager, private marketPlaceService: MarketPlaceService,
     private rulesetService: RulesetService, private sharedService: SharedService, private authService: AuthService,
     private modalService: BsModalService, public appService: AppService1, public campaignService: CampaignService,
     private location: PlatformLocation, private route: ActivatedRoute, private alertService: AlertService, private imageSearchService: ImageSearchService,) {
@@ -78,6 +82,14 @@ export class CampaignDetailsComponent implements OnInit {
     } else { this.playersSlots = user.playerSlot }
     
     this.isLoading = true;
+    this.setRulesetId(this.ruleSetId);
+    this.imageSearchService.getDefaultImageList<any>('char')
+      .subscribe(data => {
+        this.randomImageList = data;
+      }, error => {
+      
+      },
+        () => { });
     this.rulesetService.getRulesetById<any>(this.ruleSetId)
       .subscribe(data => {
         this.ruleset = data;
@@ -116,6 +128,21 @@ export class CampaignDetailsComponent implements OnInit {
         this.isLoading = false;
         this.ruleset = new Ruleset();
       }, () => { });
+    this.marketPlaceService.getmarketplaceItems<any>().subscribe(data => {
+
+      this.marketplacelist = data;
+      
+    },
+      error => {
+        this.isLoading = false;
+        this.alertService.stopLoadingMessage();
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+        this.localStorage.deleteData(DBkeys.CURRENT_RULESET);
+      }
+    );
   }
 
   private setHeaderValues(ruleset: Ruleset): any {
@@ -301,13 +328,13 @@ export class CampaignDetailsComponent implements OnInit {
     return strTime;
   }
   bindInvitedPlayerImage(index) {
-    this.imageSearchService.getDefaultImage<any>('char')
-      .subscribe(data => {
-        this.invitedUsers[index].playerCharacterImage = data.imageUrl.result;        
-      }, error => {
-        this.invitedUsers[index].playerCharacterImage = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg";
-      },
-        () => { });
+    if (this.randomImageList.length) {
+      let randomNum = Math.ceil((Math.random() * (this.randomImageList.length - 1)) + 0);
+      this.invitedUsers[index].playerCharacterImage = this.randomImageList[randomNum];
+    }
+    else {
+      this.invitedUsers[index].playerCharacterImage = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg";
+    }
   }
   refreshCampaign() {
     this.initialize();
@@ -315,5 +342,48 @@ export class CampaignDetailsComponent implements OnInit {
   goToCharacter(characterID:number) {
     this.router.navigate(['/character/dashboard', characterID]);
   }
+  BuyPlayerSlot() {   
+    debugger
+    let paymentInfo = this.marketplacelist.filter(x => x.marketPlaceId == MarketPlaceItemsType.PLAYER_SLOT)[0];
+      this.bsModalRef = this.modalService.show(PaymentComponent, {
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'payment';
+      this.bsModalRef.content.paymentInfo = paymentInfo;
 
+      this.bsModalRef.content.event.subscribe(data => {
+        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+        if (user == null) {
+          this.authService.logout();
+        }
+
+        let paymentDoneForItem: marketplaceListModel = data.item;
+        switch (paymentDoneForItem.marketPlaceId) {          
+          case MarketPlaceItemsType.PLAYER_SLOT:
+            user.playerSlot = user.playerSlot + paymentDoneForItem.qty;
+            break;
+          default:
+            break;
+        }
+        debugger
+
+        if (this.localStorage.sessionExists(DBkeys.CURRENT_USER)) {
+          this.localStorage.saveSyncedSessionData(user, DBkeys.CURRENT_USER);
+        }
+        else {
+          this.localStorage.savePermanentData(user, DBkeys.CURRENT_USER);
+        }
+        this.playersSlots = this.playersSlots + paymentDoneForItem.qty;
+      });
+    
+  }
+  private setRulesetId(rulesetId: number) {
+    this.localStorage.deleteData(DBkeys.RULESET_ID);
+    this.localStorage.saveSyncedSessionData(rulesetId, DBkeys.RULESET_ID);
+  }
+  removePlayerAndDeleteCharacter(invite: playerInviteListModel) {
+    debugger
+  }
 }

@@ -17,6 +17,7 @@ import { Utilities } from "../../core/common/utilities";
 import { SearchType } from '../../core/models/enums';
 import { BasicSearch } from '../../core/models/search.model';
 import { AppService1 } from '../../app.service';
+import { RulesetService } from '../../core/services/ruleset.service';
 
 @Component({
   selector: 'app-search',
@@ -45,7 +46,7 @@ export class SearchComponent implements OnInit {
   isCharacterRulesetEntity: boolean = false;
 
   constructor(private searchService: SearchService, private router: Router, private alertService: AlertService, private sharedService: SharedService,
-    private configurations: ConfigurationService, private route: ActivatedRoute, private modalService: BsModalService,
+    private configurations: ConfigurationService, private route: ActivatedRoute, private modalService: BsModalService, private rulesetService: RulesetService,
     private localStorage: LocalStoreManager, private authService: AuthService, private charactersService: CharactersService, public appService: AppService1) {
    
     this.route.params.subscribe(params => {
@@ -63,10 +64,11 @@ export class SearchComponent implements OnInit {
   ngOnInit() { }
 
   private Initialize( searchType) {
-    this.isLoading = true;
+    
     this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
     if (this.headers) {
       if (this.headers.headerId && this.headers.headerLink == 'character') {
+        this.isLoading = true;
           this.characterId = this.headers.headerId;
           this.searchModal.characterID = this.characterId;
           this.charactersService.getCharactersById<any>(this.characterId)
@@ -194,6 +196,136 @@ export class SearchComponent implements OnInit {
             }
           }, () => { });
       }
+
+      //else if (this.headers.headerId && this.headers.headerLink == 'ruleset') {
+      //  this.isLoading = true;
+
+      //  this.rulesetService.getRulesetById<any>(this.headers.headerId)
+      //    .subscribe(rulesetData => {
+      //      let ruleset = rulesetData;
+      //  this.searchModal.rulesetID =  this.headers.headerId;
+      //  //this.searchModal.characterID = this.characterId;
+       
+      //     // this.character = data;
+      //      //this.searchModal.rulesetID = this.character.ruleSet.ruleSetId;
+      //      this.dropDownText = [
+      //        { value: 1, text: 'Everything', type: SearchType.EVERYTHING, selected: searchType == SearchType.EVERYTHING ? true : false, imageurl: '' },
+      //        { value: 5, text: 'Items', type: SearchType.RULESETITEMS, selected: searchType == SearchType.RULESETITEMS ? true : false, imageurl: ruleset.imageUrl },
+      //        { value: 6, text: 'Spells', type: SearchType.RULESETSPELLS, selected: searchType == SearchType.RULESETSPELLS ? true : false, imageurl: ruleset.imageUrl },
+      //        { value: 7, text: 'Abilities', type: SearchType.RULESETABILITIES, selected: searchType == SearchType.RULESETABILITIES ? true : false, imageurl: ruleset.imageUrl }
+      //      ];
+
+      //      if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS) {
+      //        this.searchModal.itemFilters.isItemAbilityAssociated = true;
+      //        this.searchModal.itemFilters.isItemDesc = true;
+      //        this.searchModal.itemFilters.isItemName = true;
+      //        this.searchModal.itemFilters.isItemRarity = true;
+      //        this.searchModal.itemFilters.isItemSpellAssociated = true;
+      //        this.searchModal.itemFilters.isItemStats = true;
+      //        this.searchModal.itemFilters.isItemTags = true;
+      //      }
+      //      else if (this.searchModal.searchType == SearchType.CHARACTERSPELLS || this.searchModal.searchType == SearchType.RULESETSPELLS) {
+      //        this.searchModal.spellFilters.isSpellCastingTime = true;
+      //        this.searchModal.spellFilters.isSpellClass = true;
+      //        this.searchModal.spellFilters.isSpellDesc = true;
+      //        this.searchModal.spellFilters.isSpellEffectDesc = true;
+      //        this.searchModal.spellFilters.isSpellHitEffect = true;
+      //        this.searchModal.spellFilters.isSpellLevel = true;
+      //        this.searchModal.spellFilters.isSpellMissEffect = true;
+      //        this.searchModal.spellFilters.isSpellName = true;
+      //        this.searchModal.spellFilters.isSpellSchool = true;
+      //        this.searchModal.spellFilters.isSpellStats = true;
+      //        this.searchModal.spellFilters.isSpellTags = true;
+      //      }
+      //      else if (this.searchModal.searchType == SearchType.CHARACTERABILITIES || this.searchModal.searchType == SearchType.RULESETABILITIES) {
+      //        this.searchModal.abilityFilters.isAbilityDesc = true;
+      //        this.searchModal.abilityFilters.isAbilityLevel = true;
+      //        this.searchModal.abilityFilters.isAbilityName = true;
+      //        this.searchModal.abilityFilters.isAbilityStats = true;
+      //        this.searchModal.abilityFilters.isAbilityTags = true;
+      //      }
+      //      this.isLoading = true;
+      //      if (this.headers) {
+      //        if (this.headers.headerLink == 'ruleset') {
+      //          this.searchModal.rulesetID = this.headers.headerId
+      //        }
+      //        else if (this.headers.headerLink == 'character') {
+      //          if (
+      //            this.searchModal.searchType == SearchType.RULESETITEMS
+      //            ||
+      //            this.searchModal.searchType == SearchType.RULESETSPELLS
+      //            ||
+      //            this.searchModal.searchType == SearchType.RULESETABILITIES
+
+      //          ) {
+      //            let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+      //            this.searchModal.rulesetID = rid;
+      //          }
+      //          else {
+      //            //this.searchModal.characterID = this.headers.headerId
+      //          }
+      //        }
+      //      }
+
+      //      this.searchService.getFilters<any>(this.searchModal)
+      //        .subscribe(data => {
+
+      //          if (data) {
+      //            if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS) {
+      //              this.searchModal.itemFilters.isItemAbilityAssociated = data.isAssociatedAbility;
+      //              this.searchModal.itemFilters.isItemDesc = data.isDesc;
+      //              this.searchModal.itemFilters.isItemName = data.isName;
+      //              this.searchModal.itemFilters.isItemRarity = data.isRarity;
+      //              this.searchModal.itemFilters.isItemSpellAssociated = data.isAssociatedSpell;
+      //              this.searchModal.itemFilters.isItemStats = data.isStats;
+      //              this.searchModal.itemFilters.isItemTags = data.isTags;
+      //            }
+      //            else if (this.searchModal.searchType == SearchType.CHARACTERSPELLS || this.searchModal.searchType == SearchType.RULESETSPELLS) {
+      //              this.searchModal.spellFilters.isSpellCastingTime = data.isCastingTime;
+      //              this.searchModal.spellFilters.isSpellClass = data.isClass;
+      //              this.searchModal.spellFilters.isSpellDesc = data.isDesc;
+      //              this.searchModal.spellFilters.isSpellEffectDesc = data.isEffectDesc;
+      //              this.searchModal.spellFilters.isSpellHitEffect = data.isHitEffect;
+      //              this.searchModal.spellFilters.isSpellLevel = data.isLevel;
+      //              this.searchModal.spellFilters.isSpellMissEffect = data.isMissEffect;
+      //              this.searchModal.spellFilters.isSpellName = data.isName;
+      //              this.searchModal.spellFilters.isSpellSchool = data.isSchool;
+      //              this.searchModal.spellFilters.isSpellStats = data.isStats;
+      //              this.searchModal.spellFilters.isSpellTags = data.isTags;
+      //            }
+      //            else if (this.searchModal.searchType == SearchType.CHARACTERABILITIES || this.searchModal.searchType == SearchType.RULESETABILITIES) {
+      //              this.searchModal.abilityFilters.isAbilityDesc = data.isDesc;
+      //              this.searchModal.abilityFilters.isAbilityLevel = data.isLevel;
+      //              this.searchModal.abilityFilters.isAbilityName = data.isName;
+      //              this.searchModal.abilityFilters.isAbilityStats = data.isStats;
+      //              this.searchModal.abilityFilters.isAbilityTags = data.isTags;
+      //            }
+      //            else if (this.searchModal.searchType == SearchType.EVERYTHING) {
+
+      //              this.searchModal.everythingFilters.isEverythingDesc = data.isDesc;
+      //              this.searchModal.everythingFilters.isEverythingTags = data.isTags;
+      //              this.searchModal.everythingFilters.isEverythingName = data.isName;
+      //              this.searchModal.everythingFilters.isEverythingStats = data.isStats;
+
+      //            }
+      //          }
+      //          //this.isLoading = false;
+
+      //          this.search(this.searchModal.searchString);
+      //        },
+      //          error => {
+      //            this.search(this.searchModal.searchString);
+      //          }, () => { });
+      //    }, error => {
+      //      this.isLoading = false;
+      //      let Errors = Utilities.ErrorDetail("", error);
+      //      if (Errors.sessionExpire) {
+      //        //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+      //        this.authService.logout(true);
+      //      }
+      //    }, () => { });
+       
+      //}
     }
 
   }
@@ -406,7 +538,6 @@ export class SearchComponent implements OnInit {
   }
 
   gotoPage(input: any) {
-    
     if (this.searchModal.searchType == SearchType.EVERYTHING) {
         if ( input.searchType == SearchType.CHARACTERITEMS) {
           this.router.navigate(['/character/inventory-details', input.recordId]);

@@ -232,7 +232,7 @@
                     <div class="characters-description-inner fr-view"></div>
                   </div>
                   <div class="card-actions show" *ngIf="invite.showIcon">
-                    <button type="button" (click)="cancleInvite(i,invite)" tooltip="Cancle Invite" class="btn icon  icon-Rec-Disable btn-simple-primary"></button>
+                    <button type="button" (click)="cancleInvite(i,invite)" tooltip="Cancel Invite" class="btn icon  icon-Rec-Disable btn-simple-primary"></button>
                   </div>
                 </div>
                 <div class="card-body justify-content-between">
@@ -249,7 +249,7 @@
                     </svg>
                     <img onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';" [src]="invite.playerUserImage" alt="">
                   </div>
-                  <em class="">{{invite.isSendToUserName? invite.playerUserName : invite.playerUserEmail}}</em>
+                  <em popover="{{invite.isSendToUserName? invite.playerUserName : invite.playerUserEmail}}" triggers="hover" class="">{{invite.isSendToUserName? invite.playerUserName : invite.playerUserEmail}}</em>
                 </span>
 
               </div>
@@ -262,11 +262,11 @@
                     <div class="characters-description-inner fr-view"></div>
                   </div>
                   <div class="card-actions show" *ngIf="invite.showIcon">
-                    <button type="button"  tooltip="Remove Player from Campaign" class="btn icon  icon-Rec-Disable btn-simple-primary"></button>
+                    <button type="button" (click)="removePlayerAndDeleteCharacter(invite)" tooltip="Remove Player from Campaign / Delete Character" class="btn icon  icon-Rec-Disable btn-simple-primary"></button>
                   </div>
                 </div>
                 <div class="card-body justify-content-between" >
-                  <h4 class="card-title" triggers="hover" (click)="goToCharacter(invite.playerCharacterId)">{{invite.playerCharacterName}}</h4>
+                  <h4 class="card-title" popover="{{invite.playerCharacterName}}" triggers="hover" (click)="goToCharacter(invite.playerCharacterId)">{{invite.playerCharacterName}}</h4>
 
                   <div class="card-actions-trigger">
                     <button type="button" (click)="manageIcon(invite)" tooltip="Manage" class="btn icon icon-more btn-simple-primary"></button>
@@ -279,7 +279,7 @@
                     </svg>
                     <img onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';" [src]="invite.playerUserImage" alt="">
                   </div>
-                  <em class="">{{invite.playerUserName}}</em>
+                  <em popover="{{invite.playerUserName}}" triggers="hover" class="">{{invite.playerUserName}}</em>
                 </span>
 
               </div>
@@ -299,7 +299,7 @@
               </div>
             </div>
           </div>
-          <div class="col-12 col-sm-6 col-lg-3 mb-3" [routerLink]="['/marketplace']" *ngIf="playersSlots<=invitedUsers?.length">
+          <div class="col-12 col-sm-6 col-lg-3 mb-3" [ngClass]="marketplacelist?.length? '' : disable-div" (click)="BuyPlayerSlot()"  *ngIf="playersSlots<=invitedUsers?.length">
             <div class="w-100 card-wrapper">
               <div class="card">
                 <div class="card-image thumbnail bg-white h-191">

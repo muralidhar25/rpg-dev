@@ -18,6 +18,10 @@ import { Ruleset } from "../../core/models/view-models/ruleset.model";
 import { ImportRulesetComponent } from "../ruleset-helper/import-ruleset/import-ruleset.component";
 import { AppService1 } from "../../app.service";
 import { DefaultDice } from "../../core/models/view-models/custome-dice.model";
+import { MarketPlaceService } from "../../core/services/maketplace.service";
+import { marketplaceListModel } from "../../core/models/marketplace.model";
+import { MarketPlaceItemsType } from "../../core/models/enums";
+import { PaymentComponent } from "../../shared/payment/payment.component";
 
 
 @Component({
@@ -41,9 +45,10 @@ export class CampaignsComponent implements OnInit {
   isAdminUser: boolean = false;
   defaultDicesForNewUsers: DefaultDice[] = [];
   campaignSlots: number;
+  marketplacelist: marketplaceListModel[] = [];
   constructor(
     private router: Router, private alertService: AlertService, private localStorage: LocalStoreManager,
-    private authService: AuthService, private configurations: ConfigurationService,
+    private authService: AuthService, private configurations: ConfigurationService, private marketPlaceService: MarketPlaceService,
     private rulesetService: RulesetService, private modalService: BsModalService, private modalService1: BsModalService,
     private sharedService: SharedService, private commonService: CommonService, public appService: AppService1
   ) {
@@ -131,6 +136,21 @@ export class CampaignsComponent implements OnInit {
           }
           this.localStorage.deleteData(DBkeys.CURRENT_RULESET);
         }, () => { });
+      this.marketPlaceService.getmarketplaceItems<any>().subscribe(data => {
+
+        this.marketplacelist = data;
+
+      },
+        error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+          this.localStorage.deleteData(DBkeys.CURRENT_RULESET);
+        }
+      );
       //setTimeout(() => {
       //    if (ruleset && !this.isLoading) this.manageRuleset(ruleset);
       //}, 200);
@@ -274,5 +294,41 @@ export class CampaignsComponent implements OnInit {
     this.bsModalRef.content.rulesetModel = { ruleSetId: 0 };
   }
 
-  
+  BuyCampaignSlot() {
+    debugger
+    let paymentInfo = this.marketplacelist.filter(x => x.marketPlaceId == MarketPlaceItemsType.CAMPAIGN_SLOT)[0];
+    this.bsModalRef = this.modalService.show(PaymentComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'payment';
+    this.bsModalRef.content.paymentInfo = paymentInfo;
+
+    this.bsModalRef.content.event.subscribe(data => {
+      let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+      if (user == null) {
+        this.authService.logout();
+      }
+
+      let paymentDoneForItem: marketplaceListModel = data.item;
+      switch (paymentDoneForItem.marketPlaceId) {
+        case MarketPlaceItemsType.CAMPAIGN_SLOT:
+          user.campaignSlot = user.campaignSlot + paymentDoneForItem.qty;
+          break;
+        default:
+          break;
+      }
+      debugger
+
+      if (this.localStorage.sessionExists(DBkeys.CURRENT_USER)) {
+        this.localStorage.saveSyncedSessionData(user, DBkeys.CURRENT_USER);
+      }
+      else {
+        this.localStorage.savePermanentData(user, DBkeys.CURRENT_USER);
+      }
+      this.campaignSlots = this.campaignSlots + paymentDoneForItem.qty;
+    });
+
+  }
 }

@@ -15,10 +15,13 @@ import { Utilities } from "../../core/common/utilities";
 import { RulesetFormComponent } from "../ruleset-form/ruleset-form.component";
 import { Ruleset } from "../../core/models/view-models/ruleset.model";
 import { RulesetManageComponent } from "../ruleset-form/ruleset-manage.component";
-import { VIEW } from "../../core/models/enums";
+import { VIEW, MarketPlaceItemsType } from "../../core/models/enums";
 import { ImportRulesetComponent } from "../ruleset-helper/import-ruleset/import-ruleset.component";
 import { AppService1 } from "../../app.service";
 import { DefaultDice } from "../../core/models/view-models/custome-dice.model";
+import { MarketPlaceService } from "../../core/services/maketplace.service";
+import { marketplaceListModel } from "../../core/models/marketplace.model";
+import { PaymentComponent } from "../../shared/payment/payment.component";
 
 @Component({
   selector: 'app-ruleset',
@@ -41,9 +44,10 @@ export class RulesetComponent implements OnInit {
   isAdminUser: boolean = false;
   defaultDicesForNewUsers: DefaultDice[] =[];
   rulesetSlots: number;
+  marketplacelist: marketplaceListModel[] = [];
     constructor(
         private router: Router, private alertService: AlertService, private localStorage: LocalStoreManager,
-        private authService: AuthService, private configurations: ConfigurationService,
+      private authService: AuthService, private configurations: ConfigurationService, private marketPlaceService: MarketPlaceService,
         private rulesetService: RulesetService, private modalService: BsModalService, private modalService1: BsModalService,
       private sharedService: SharedService, private commonService: CommonService, public appService: AppService1
     ) {
@@ -135,6 +139,21 @@ export class RulesetComponent implements OnInit {
                 }
                 this.localStorage.deleteData(DBkeys.CURRENT_RULESET);
               }, () => { });
+            this.marketPlaceService.getmarketplaceItems<any>().subscribe(data => {
+
+              this.marketplacelist = data;
+
+            },
+              error => {
+                this.isLoading = false;
+                this.alertService.stopLoadingMessage();
+                let Errors = Utilities.ErrorDetail("", error);
+                if (Errors.sessionExpire) {
+                  this.authService.logout(true);
+                }
+                this.localStorage.deleteData(DBkeys.CURRENT_RULESET);
+              }
+            );
             //setTimeout(() => {
             //    if (ruleset && !this.isLoading) this.manageRuleset(ruleset);
             //}, 200);
@@ -293,5 +312,42 @@ export class RulesetComponent implements OnInit {
             keyboard: false
         });    
         this.bsModalRef.content.rulesetModel = { ruleSetId: 0 };
-    }
+  }
+  BuyCharacterSlot() {
+    debugger
+    let paymentInfo = this.marketplacelist.filter(x => x.marketPlaceId == MarketPlaceItemsType.RULESET_SLOT)[0];
+    this.bsModalRef = this.modalService.show(PaymentComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'payment';
+    this.bsModalRef.content.paymentInfo = paymentInfo;
+
+    this.bsModalRef.content.event.subscribe(data => {
+      let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+      if (user == null) {
+        this.authService.logout();
+      }
+
+      let paymentDoneForItem: marketplaceListModel = data.item;
+      switch (paymentDoneForItem.marketPlaceId) {
+        case MarketPlaceItemsType.RULESET_SLOT:
+          user.rulesetSlot = user.rulesetSlot + paymentDoneForItem.qty;
+          break;
+        default:
+          break;
+      }
+      debugger
+
+      if (this.localStorage.sessionExists(DBkeys.CURRENT_USER)) {
+        this.localStorage.saveSyncedSessionData(user, DBkeys.CURRENT_USER);
+      }
+      else {
+        this.localStorage.savePermanentData(user, DBkeys.CURRENT_USER);
+      }
+      this.rulesetSlots = this.rulesetSlots + paymentDoneForItem.qty;
+    });
+
+  }
 }

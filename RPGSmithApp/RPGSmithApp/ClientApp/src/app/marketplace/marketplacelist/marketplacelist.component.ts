@@ -9,10 +9,10 @@ import { CommonService } from '../../core/services/shared/common.service';
 import { User } from '../../core/models/user.model';
 import { DBkeys } from '../../core/common/db-keys';
 import { MarketPlaceItemsType } from '../../core/models/enums';
-import { PaymentComponent } from '../payment/payment.component';
 import { MarketPlaceService } from '../../core/services/maketplace.service';
 import { marketplaceListModel, marketplaceModel } from '../../core/models/marketplace.model';
 import { Utilities } from '../../core/common/utilities';
+import { PaymentComponent } from '../../shared/payment/payment.component';
 
 
 @Component({

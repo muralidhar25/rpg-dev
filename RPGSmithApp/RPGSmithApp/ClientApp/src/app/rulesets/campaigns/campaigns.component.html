@@ -95,7 +95,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-12 col-md-4 col-lg-3" *ngIf="rulesets?.length>= campaignSlots && !isAdminUser">
+        <div class="col-sm-12 col-md-4 col-lg-3" [ngClass]="marketplacelist?.length? '' : disable-div" (click)="BuyCampaignSlot()" *ngIf="rulesets?.length>= campaignSlots && !isAdminUser">
           <div class="card-wrapper">
             <div class="card">
               <div class="card-image thumbnail bg-white">
@@ -103,7 +103,7 @@
                 <p class="comming-soon-text w-75">Purchase Another Campaign Slot</p>
               </div>
               <div class="card-body btn-primary">
-                <a [routerLink]="['/marketplace']" class=""><h4 class="card-title text-white">Purchase</h4></a>
+                <a class=""><h4 class="card-title text-white">Purchase</h4></a>
                 
               </div>
             </div>

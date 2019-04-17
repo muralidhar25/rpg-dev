@@ -688,7 +688,60 @@ namespace RPGSmithApp.Helpers
                 return null;
             }
         }
-
+        public async Task<List<string>> BlobGetDefaultImageList(string type = "")
+        {
+            List<Items> _items = new List<Items>();
+            try
+            {
+                // List the blobs in the container.
+                BlobContinuationToken blobContinuationToken = null;
+                CloudBlobContainer cloudBlobContainer = null;// GetCloudBlobContainer().Result;
+                switch (type.ToLower())
+                {
+                    case "char":
+                        cloudBlobContainer = GetCloudBlobContainer("stock-defimg-chars").Result;
+                        break;
+                    case "item":
+                        cloudBlobContainer = GetCloudBlobContainer("stock-defimg-items").Result;
+                        break;
+                    case "spell":
+                        cloudBlobContainer = GetCloudBlobContainer("stock-defimg-spells").Result;
+                        break;
+                    case "ability":
+                        cloudBlobContainer = GetCloudBlobContainer("stock-defimg-abilities").Result;
+                        break;
+                    case "ruleset":
+                        cloudBlobContainer = GetCloudBlobContainer("stock-defimg-rulesets").Result;
+                        break;
+                    case "stock":
+                        cloudBlobContainer = GetCloudBlobContainer().Result;
+                        break;
+                    case "myimage":
+                        cloudBlobContainer = GetCloudBlobContainer().Result;
+                        break;
+                        //default:
+                        //    cloudBlobContainer = GetCloudBlobContainer().Result;
+                        //    break;
+                }
+                var results = cloudBlobContainer.ListBlobsSegmentedAsync(null, blobContinuationToken).Result.Results;
+                //if (results.Any())
+                //{
+                //    Random rnd = new Random();
+                //    int randomIndex = rnd.Next(results.Count());
+                //    return results.ToList()[randomIndex].Uri.AbsoluteUri;
+                //}
+                List<string> res = new List<string>();
+                foreach (var item in results)
+                {
+                    res.Add(item.Uri.AbsoluteUri);
+                }
+                return res;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         public double GetSpaceUsed(string container)
         {
             try

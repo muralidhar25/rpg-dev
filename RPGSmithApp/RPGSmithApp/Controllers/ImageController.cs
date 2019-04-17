@@ -271,6 +271,20 @@ namespace RPGSmithApp.Controllers
             }
             return BadRequest("No Image Selected");
         }
+        [HttpGet("BlobGetDefaultImageList")]
+        public async Task<IActionResult> BlobGetDefaultImageList(string type = "")
+        {
+            try
+            {
+                
+                List<string> result=await bs.BlobGetDefaultImageList(type);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+            }
+            return BadRequest("No Image Selected");
+        }
 
         [HttpGet("ConvertImageURLToBase64")]
         public string ConvertImageURLToBase64(string url)

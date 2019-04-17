@@ -107,6 +107,7 @@ export class CampaignInviteComponent implements OnInit {
       .subscribe(data => {
         console.log(data);
       })
+    this.close();
   }
 
   AcceptInvite(inviteId, invites) {

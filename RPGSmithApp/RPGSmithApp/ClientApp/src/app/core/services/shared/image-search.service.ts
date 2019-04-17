@@ -23,6 +23,8 @@ export class ImageSearchService extends EndpointFactory {
   private readonly _myImagesPagingApi: string = this.configurations.baseUrl + "/api/Image/MyImagesPaging";
   private readonly _baseStringApi: string = this.configurations.baseUrl + "/api/Image/ConvertImageURLToBase64";
   private readonly _blobDefaultImageApi: string = this.configurations.baseUrl + "/api/Image/BlobGetDefaultImage";
+  private readonly _blobDefaultImageListApi: string = this.configurations.baseUrl + "/api/Image/BlobGetDefaultImageList";
+  
   private readonly deleteImagesUrl: string = this.configurations.baseUrl + "/api/Image/DeleteBlob";
   private readonly uploadImagesUrl: string = this.configurations.baseUrl + "/api/Image/UploadImages";
 
@@ -102,7 +104,14 @@ export class ImageSearchService extends EndpointFactory {
         return this.handleError(error, () => this.getDefaultImage(query));
       });
   }
+  getDefaultImageList<T>(query: string): Observable<T> {
+    let endpointUrl = `${this._blobDefaultImageListApi}?type=${query}`;
 
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getDefaultImage(query));
+      });
+  }
   deleteImages<T>(blobs: any): Observable<T> {
 
     let endpointUrl = this.deleteImagesUrl;
