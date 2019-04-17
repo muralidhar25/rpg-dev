@@ -136,7 +136,7 @@ export class CampaignInviteComponent implements OnInit {
     
     this.bsModalRef.content.event.subscribe(data => {
       console.log(data);
-      this.invitationList = this.invitationList.filter(x => x.id != data);
+      this.invitationList = this.invitationList.filter((x:any) => x.id != data);
       if (!this.invitationList.length) {
         this.close();
       }

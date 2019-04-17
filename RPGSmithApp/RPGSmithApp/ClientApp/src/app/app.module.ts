@@ -28,7 +28,6 @@ import {
 } from './core/common/app-translation.service';
 import { AppService1 } from './app.service';
 import { CampaignInviteComponent } from './rulesets/campaign-invite/campaign-invite.component';
-import { CharactersFormComponent } from './characters/characters-form/characters-form.component';
 
 @NgModule({
   declarations: [
