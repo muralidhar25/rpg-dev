@@ -21,7 +21,7 @@ import { User } from '../../core/models/user.model';
 import { AuthService } from '../../core/auth/auth.service';
 import { CampaignService } from '../../core/services/campaign.service';
 import { Utilities } from '../../core/common/utilities';
-import { playerInviteListModel } from '../../core/models/campaign.model';
+import { playerInviteListModel, playerInviteSendModel } from '../../core/models/campaign.model';
 import { MessageSeverity, AlertService, DialogType } from '../../core/common/alert.service';
 import { ImageSearchService } from '../../core/services/shared/image-search.service';
 import { PaymentComponent } from '../../shared/payment/payment.component';
@@ -47,7 +47,8 @@ export class CampaignDetailsComponent implements OnInit {
   //showIcon: boolean = false;
   playersSlots: number = 0;
   marketplacelist: marketplaceListModel[] = [];
-  randomImageList : string[]= [];
+  randomImageList: string[] = [];
+  declinedUserList: playerInviteListModel[] = [];
   constructor(private formBuilder: FormBuilder, private router: Router, private localStorage: LocalStoreManager, private marketPlaceService: MarketPlaceService,
     private rulesetService: RulesetService, private sharedService: SharedService, private authService: AuthService,
     private modalService: BsModalService, public appService: AppService1, public campaignService: CampaignService,
@@ -98,11 +99,17 @@ export class CampaignDetailsComponent implements OnInit {
         this.rulesetRecordCount = this.ruleset.recordCount;
         //this.isLoading = false;
 
+        this.declinedUserList = [];
+        this.invitedUsers = [];
         this.campaignService.getPlayerInviteList<any>(this.ruleSetId)
           .subscribe(data => {
             this.isLoading = false
             
             this.invitedUsers = data;
+            this.declinedUserList = this.invitedUsers.filter(x => x.isDeclined);
+            this.invitedUsers = this.invitedUsers.filter(x => !x.isDeclined );
+            debugger;
+            let names = '';
             this.invitedUsers.map((x: playerInviteListModel,index) => {
               x.showIcon = false;
               if (x.sendOn) {
@@ -115,9 +122,36 @@ export class CampaignDetailsComponent implements OnInit {
               if (!x.isAccepted) {
                 this.bindInvitedPlayerImage(index);
               }
-              
-              
+
+              if (this.declinedUserList.length) {
+                
+                this.declinedUserList.map((x, xIndex) => {
+                  if (xIndex == this.declinedUserList.length - 1) {
+                    if (x.isSendToUserName) {
+                      names += x.playerUserName + " ";
+                    }
+                    else {
+                      names += x.playerUserEmail + " ";
+                    }
+                  }
+                  else {
+                    if (x.isSendToUserName) {
+                      names += x.playerUserName + ", ";
+                    }
+                    else {
+                      names += x.playerUserEmail + ", ";
+                    }
+                  }
+                  
+                });
+                
+              }
             })
+            if (this.declinedUserList) {
+              this.alertService.showDialog(names + " has declined your invitations.",
+                DialogType.confirm, () => this.ResendInvites(this.declinedUserList), () => { }, "Resend", "Ok");
+            }
+           
           }, error => {
             let Errors = Utilities.ErrorDetail("", error);
             if (Errors.sessionExpire) {
@@ -404,5 +438,59 @@ export class CampaignDetailsComponent implements OnInit {
         else
           this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
       }, () => { });
+  }
+  ResendInvites(DeclinesInvites: playerInviteListModel[]) {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null) {
+      this.authService.logout();
+    }
+    else {
+      DeclinesInvites.map((x) => {
+
+        let modal: playerInviteSendModel = new playerInviteSendModel();
+      
+        if (x.isSendToUserName) {
+          modal.userName = x.playerUserName;
+        }
+        else {
+          modal.userName= x.playerUserEmail;
+        }
+       
+        modal.sendByUserName = user.userName;
+        modal.sendByUserId = user.id;
+        modal.campaignId = this.rulesetModel.ruleSetId;
+        modal.sendByCampaignImage = this.rulesetModel.imageUrl ? this.rulesetModel.imageUrl : 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';
+        modal.sendByCampaignName = this.rulesetModel.ruleSetName;
+        this.campaignService.removePlayer<any>(x)
+          .subscribe(data => {
+            this.campaignService.sendInvite<any>(modal)
+              .subscribe(
+                data => {
+
+                },
+                error => {
+                  this.alertService.stopLoadingMessage();
+                  let Errors = Utilities.ErrorDetail("", error);
+                  if (Errors.sessionExpire) {
+                    this.authService.logout(true);
+                  }
+
+                },
+              );
+          }, error => {
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              this.authService.logout(true);
+            }
+            else {
+              //this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+            }
+          }, () => { });
+
+     
+      })
+      
+    }
+    
   }
 }
