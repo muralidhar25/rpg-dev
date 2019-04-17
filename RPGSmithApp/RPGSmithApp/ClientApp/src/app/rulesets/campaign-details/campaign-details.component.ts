@@ -22,7 +22,7 @@ import { AuthService } from '../../core/auth/auth.service';
 import { CampaignService } from '../../core/services/campaign.service';
 import { Utilities } from '../../core/common/utilities';
 import { playerInviteListModel } from '../../core/models/campaign.model';
-import { MessageSeverity, AlertService } from '../../core/common/alert.service';
+import { MessageSeverity, AlertService, DialogType } from '../../core/common/alert.service';
 import { ImageSearchService } from '../../core/services/shared/image-search.service';
 import { PaymentComponent } from '../../shared/payment/payment.component';
 import { marketplaceListModel } from '../../core/models/marketplace.model';
@@ -384,7 +384,25 @@ export class CampaignDetailsComponent implements OnInit {
     this.localStorage.deleteData(DBkeys.RULESET_ID);
     this.localStorage.saveSyncedSessionData(rulesetId, DBkeys.RULESET_ID);
   }
-  removePlayerAndDeleteCharacter(invite: playerInviteListModel) {
-    debugger
+  removePlayerAndDeleteCharacter(index, invite: playerInviteListModel) {
+
+    this.alertService.showDialog('This will remove "' + invite.playerCharacterName + '" from this campaign and delete their character including any items carried. Are you sure you would like to do this?',
+      DialogType.confirm, () => this.removePlayerAndDeleteCharacterFinal(index, invite), () => { }, "Yes", "No");
+
+  }
+  removePlayerAndDeleteCharacterFinal(index, invite: playerInviteListModel) {
+    this.campaignService.removePlayer<any>(invite)
+      .subscribe(data => {
+        this.invitedUsers.splice(index, 1);
+        this.alertService.showStickyMessage('', "Player has been removed successfully.", MessageSeverity.success);
+        setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+        else
+          this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+      }, () => { });
   }
 }

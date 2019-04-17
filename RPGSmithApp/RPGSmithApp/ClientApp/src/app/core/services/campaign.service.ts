@@ -4,7 +4,7 @@ import { EndpointFactory } from '../common/endpoint-factory.service';
 import { ConfigurationService } from '../common/configuration.service';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
-import { playerInviteSendModel } from '../models/campaign.model';
+import { playerInviteSendModel, playerInviteListModel } from '../models/campaign.model';
 
 
 @Injectable()
@@ -15,6 +15,7 @@ export class CampaignService extends EndpointFactory {
   private readonly _getCheckInvitesListUrl: string = '/api/campaign/getReceivedInvites';
   private readonly _declineInvitesListUrl: string = '/api/Campaign/DeclineInvite';
   private readonly _answerLaterInvitesListUrl: string = '/api/Campaign/AnswerLaterInvite';
+  private readonly _removePlayerUrl: string = '/api/Campaign/removePlayerFromCampaign';
 
 
   get sendInviteUrl() { return this.configurations.baseUrl + this._sendInviteUrlUrl; }
@@ -23,7 +24,8 @@ export class CampaignService extends EndpointFactory {
   get getCheckInvitesListUrl() { return this.configurations.baseUrl + this._getCheckInvitesListUrl; }
   get getDeclineInviteUrl() { return this.configurations.baseUrl + this._declineInvitesListUrl; }
   get getAnswerlaterInviteUrl() { return this.configurations.baseUrl + this._answerLaterInvitesListUrl; }
-
+  get removePlayerUrl() { return this.configurations.baseUrl + this._removePlayerUrl; }
+  
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
     super(http, configurations, injector);
   }
@@ -71,7 +73,7 @@ export class CampaignService extends EndpointFactory {
   declineInvite<T>(inviteId: number): Observable<T> {
 
     let endpointUrl = `${this.getDeclineInviteUrl}?inviteID=${inviteId}`;
-    console.log(endpointUrl);
+    //console.log(endpointUrl);
     return this.http.post(endpointUrl, JSON.stringify({}), { headers: this.getRequestHeadersNew() })
       .catch(error => {
         return this.handleError(error, () => this.declineInvite(inviteId));
@@ -82,10 +84,20 @@ export class CampaignService extends EndpointFactory {
   answerLaterInvite<T>(inviteId: number): Observable<T> {
    
     let endpointUrl = `${this.getAnswerlaterInviteUrl}?inviteID=${inviteId}`;
-    console.log(endpointUrl);
+    //console.log(endpointUrl);
     return this.http.post(endpointUrl, JSON.stringify({}), { headers: this.getRequestHeadersNew() })
       .catch(error => {
         return this.handleError(error, () => this.answerLaterInvite(inviteId));
+      });
+
+  }
+  removePlayer<T>(invite: playerInviteListModel): Observable<T> {
+
+    let endpointUrl = `${this.removePlayerUrl}`;
+    //console.log(endpointUrl);
+    return this.http.post(endpointUrl, JSON.stringify(invite), { headers: this.getRequestHeadersNew() })
+      .catch(error => {
+        return this.handleError(error, () => this.removePlayer(invite));
       });
 
   }

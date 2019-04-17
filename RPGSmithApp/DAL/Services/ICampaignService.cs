@@ -13,7 +13,7 @@ namespace DAL.Services
         List<PlayerInviteList> getInvitedPlayers(int rulesetId, ApplicationUser user);
         PlayerInviteList getInvitedPlayerById(int inviteId);
         bool cancelInvite(int inviteID);
-        bool removePlayerFromCampaign(int inviteID);
+        bool removePlayerFromCampaign(PlayerInviteList model);
         Task<List<PlayerInvite>> getReceivedInvites(string userid);
         bool isPlayerSlotAvailableToSendInvite(string userId,int campaignID);
         Task<PlayerInvite> DeclineInvite(int inviteID);

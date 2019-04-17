@@ -85,9 +85,9 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpPost("removePlayerFromCampaign")]
-        public async Task<IActionResult> removePlayerFromCampaign(int inviteID)
+        public async Task<IActionResult> removePlayerFromCampaign([FromBody] PlayerInviteList model)
         {
-            return Ok(_campaign.removePlayerFromCampaign(inviteID));
+            return Ok(_campaign.removePlayerFromCampaign(model));
         }
 
         [HttpPost("SendPlayerInvite")]

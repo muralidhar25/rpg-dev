@@ -13,10 +13,12 @@ namespace DAL.Services
     {
         protected readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
-        public CampaignService(ApplicationDbContext context, IConfiguration configuration)
+        private readonly ICharacterService _characterService;
+        public CampaignService(ApplicationDbContext context, IConfiguration configuration, ICharacterService characterService)
         {
             _context = context;
             this._configuration = configuration;
+            this._characterService = characterService;
         }
         public async Task<PlayerInvite> CreatePlayerInvite(PlayerInviteEmail model, string PlayerUserId, bool IsInviteSentUsingUserName)
         {
@@ -146,9 +148,11 @@ namespace DAL.Services
             
             return false;
         }
-        public bool removePlayerFromCampaign(int inviteID)
+        public bool removePlayerFromCampaign(PlayerInviteList model)
         {
-            return false;
+            cancelInvite(model.InviteId);
+            _characterService.DeleteCharacter(model.PlayerCharacterId);
+            return true;
         }
         public bool isPlayerSlotAvailableToSendInvite(string userId, int campaignID)
         {
