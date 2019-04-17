@@ -56,18 +56,22 @@
       </ul>
     </div>
     <div class="col-12 col-md-8">
-      <div class="campaign-title mb-3">
-        <div class="row m-0 justify-content-between align-items-center">
-          <div class="campaign-name">
-            <h2>{{ruleset?.ruleSetName}}</h2>
-            <!--<button (click)="Invitepopup()"> inivte</button>-->
+      <div class="campaign-title-outer  mb-3">
+        <div class="campaign-title">
+          <div class="row m-0 justify-content-between align-items-center">
+            <div class="campaign-name">
+              <h2>{{ruleset?.ruleSetName}}</h2>
+              <!--<button (click)="Invitepopup()"> inivte</button>-->
+            </div>
+            <div class="campaign-players-number">
+              <span>                
+                PLAYERS <span>{{invitedUsers?.length}}/{{playersSlots}}</span>
+              </span>
+            </div>
           </div>
-          <div class="campaign-players-number">
-            <span>
-              <button type="button" (click)="refreshCampaign()">Refresh</button>
-            PLAYERS <span>{{invitedUsers?.length}}/{{playersSlots}}</span>
-            </span>
-          </div>
+        </div>
+        <div class="refresh-btn">
+          <button type="button" (click)="refreshCampaign()" title="Refresh" class="btn btn-outline-primary icon icon-Gen-Refresh"></button>
         </div>
       </div>
 

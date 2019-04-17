@@ -190,8 +190,8 @@ export class AppComponent implements OnInit, AfterViewInit {
           }
         }
         
-        if (!this.haveCheckedNewInvitation) {
-          console.log('check invite');
+        //if (!this.haveCheckedNewInvitation) {
+          //console.log('check invite');
           this.campaignService.CheckInvites<any>(user.id)
             .subscribe(data => {
               this.haveCheckedNewInvitation = true;
@@ -209,7 +209,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                 this.authService.logout(true);
               }
             }, () => { });
-        }
+        //}
         
       }
       if (serviceData) {
@@ -236,8 +236,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             
             if (this.router.url.toUpperCase().indexOf('/CHARACTER/DASHBOARD/') > -1
               || this.router.url.toUpperCase().indexOf('/CHARACTERS/DASHBOARD/') > -1             
-              || this.router.url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DETAILS/') > -1
-              || this.router.url.toUpperCase().indexOf('/RULESETS/CAMPAIGN-DETAILS/') > -1) {
+              ) {
               this.showCharacterSearch = true;
               this.dashbaordUser = true;
             } else {
@@ -607,8 +606,8 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.logoPath = '/rulesets/campaigns';
             }
           }
-          if (!this.haveCheckedNewInvitation) {
-            console.log('check invite');
+          //if (!this.haveCheckedNewInvitation) {
+            //console.log('check invite');
             this.campaignService.CheckInvites<any>(user.id)
               .subscribe(data => {
                 this.haveCheckedNewInvitation = true;
@@ -625,7 +624,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                   this.authService.logout(true);
                 }
               }, () => { });
-          }
+          //}
         }
         this.logoNavigation((<NavigationStart>event).url);
         
@@ -735,8 +734,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         console.log('search fired.')
         if (url.toUpperCase().indexOf('/CHARACTER/DASHBOARD/') > -1
           || url.toUpperCase().indexOf('/CHARACTERS/DASHBOARD/') > -1
-          || url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DETAILS/') > -1
-          || url.toUpperCase().indexOf('/RULESETS/CAMPAIGN-DETAILS/') > -1) {
+          ) {
           this.showCharacterSearch = true;
           this.dashbaordUser = true;
         } else {

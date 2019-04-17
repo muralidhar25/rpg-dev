@@ -33,6 +33,7 @@ ul.list-unstyled li {
   border-radius: 4px;
   padding: 15px 10px;
   color: #fff;
+  width: calc(100% - 50px);
 }
 .campaign-title h2 {
   margin: 0px;
@@ -186,3 +187,25 @@ ul.list-unstyled li {
       margin-left: 1.5em;
     }
   }
+.campaign-title-outer {
+  display: flex;
+}
+.campaign-title-outer .refresh-btn {
+  margin-right: 0px;
+  margin-left: 10px;
+}
+.campaign-title-outer .refresh-btn .btn {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  border-color: #2d6996;
+  color: #fff;
+  padding: 5px 16px !important;
+  border-radius: 4px;
+  background: #2d6996;
+}
+.campaign-title-outer .refresh-btn .btn:hover {
+  color: #fff !important;
+  background: #123d66 !important;
+  border-color: #2d6996 !important;
+}

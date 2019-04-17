@@ -36,24 +36,42 @@ namespace DAL.Services
 
         public List<PlayerInviteList> getInvitedPlayers(int rulesetId, ApplicationUser user)
         {
-            var res= _context.PlayerInvites.Where(x => x.PlayerCampaignID == rulesetId).Include(x=>x.PlayerCharacter).Include(x => x.PlayerUser).Select(
-                x=>new PlayerInviteList() {
-                    InviteId=x.Id,
-                    isAccepted=x.IsAccepted,
-                    isAnswerLater=x.IsAnswerLater,
-                    isDeclined=x.IsDeclined,
-                    isSendToUserName=x.IsSendToUserName,
-                    playerCharacterImage=x.PlayerCharacter!=null? x.PlayerCharacter.ImageUrl :"",
-                    playerCharacterName= x.PlayerCharacter != null ? x.PlayerCharacter.CharacterName : "",
+            //var res= _context.PlayerInvites.Where(x => x.PlayerCampaignID == rulesetId).Include(x=>x.PlayerCharacter).Include(x => x.PlayerUser).Select(
+            //    x=>new PlayerInviteList() {
+            //        InviteId=x.Id,
+            //        isAccepted=x.IsAccepted,
+            //        isAnswerLater=x.IsAnswerLater,
+            //        isDeclined=x.IsDeclined,
+            //        isSendToUserName=x.IsSendToUserName,
+            //        playerCharacterImage=x.PlayerCharacter!=null? x.PlayerCharacter.ImageUrl :"",
+            //        playerCharacterName= x.PlayerCharacter != null ? x.PlayerCharacter.CharacterName : "",
+            //        PlayerCharacterId = x.PlayerCharacter != null ? x.PlayerCharacter.CharacterId : 0,
+            //        playerUserImage= x.PlayerUser != null ? x.PlayerUser.ProfileImage : "",
+            //        playerUserName= x.PlayerUser != null ? x.PlayerUser.UserName : "",
+            //        playerUserEmail=x.PlayerEmail,
+            //        sendOn =x.SendOn,
+            //    }
+            //    ).ToList();
+           // var re222s = _context.PlayerInvites.Where(x => x.PlayerCampaignID == rulesetId).Include(x => x.PlayerCharacter).Include(x => x.PlayerUser).ToList();
+
+          var  res = _context.PlayerInvites.Where(x => x.PlayerCampaignID == rulesetId).Include(x => x.PlayerCharacter).Include(x => x.PlayerUser).Select(
+                x => new PlayerInviteList()
+                {
+                    InviteId = x.Id,
+                    isAccepted = x.IsAccepted,
+                    isAnswerLater = x.IsAnswerLater,
+                    isDeclined = x.IsDeclined,
+                    isSendToUserName = x.IsSendToUserName,
+                    playerCharacterImage = x.PlayerCharacter != null ? x.PlayerCharacter.ImageUrl : "",
+                    playerCharacterName = x.PlayerCharacter != null ? x.PlayerCharacter.CharacterName : "",
                     PlayerCharacterId = x.PlayerCharacter != null ? x.PlayerCharacter.CharacterId : 0,
-                    playerUserImage= x.PlayerUser != null ? x.PlayerUser.ProfileImage : "",
-                    playerUserName= x.PlayerUser != null ? x.PlayerUser.UserName : "",
-                    playerUserEmail=x.PlayerEmail,
-                    sendOn =x.SendOn,
+                    playerUserImage = x.PlayerUser != null ? x.PlayerUser.ProfileImage : "",
+                    playerUserName = x.PlayerUser != null ? x.PlayerUser.UserName : "",
+                    playerUserEmail = x.PlayerEmail,
+                    sendOn = x.SendOn,
                 }
                 ).ToList();
-
-            List<Character> ownCharacters = _context.Characters.Where(x => x.RuleSetId == rulesetId && x.UserId==user.Id && x.IsDeleted != true).ToList();
+            List < Character> ownCharacters = _context.Characters.Where(x => x.RuleSetId == rulesetId && x.UserId==user.Id && x.IsDeleted != true).ToList();
             foreach (var item in ownCharacters)
             {
                 res.Add(new PlayerInviteList() {
