@@ -170,7 +170,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           //    this.logoPath = '/ruleset/campaign-details/' + this.headers.headerId;
           //  }
           //}
-          debugger
+          
           if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)
             && !(
             this.router.url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1
@@ -192,6 +192,8 @@ export class AppComponent implements OnInit, AfterViewInit {
         
         //if (!this.haveCheckedNewInvitation) {
           //console.log('check invite');
+        this.invitationList = [];
+        this.haveNewInvitation = false;
           this.campaignService.CheckInvites<any>(user.id)
             .subscribe(data => {
               this.haveCheckedNewInvitation = true;
@@ -386,7 +388,10 @@ export class AppComponent implements OnInit, AfterViewInit {
       
       this.searchCharRule = serviceData;
     });
+    this.app1Service.shouldupdateInvitationlist().subscribe((serviceData) => {
 
+      this.invitationList = serviceData;
+    });
     this.storageManager.initialiseStorageSyncListener();
 
     translationService.addLanguages(["en", "fr", "de", "pt", "ar", "ko"]);
@@ -593,7 +598,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             //    this.logoPath = '/ruleset/campaign-details/' + this.headers.headerId;
             //  }
             //}
-            debugger
+            
             if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)){
               this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
             }
@@ -608,6 +613,8 @@ export class AppComponent implements OnInit, AfterViewInit {
           }
           //if (!this.haveCheckedNewInvitation) {
             //console.log('check invite');
+          this.invitationList = [];
+          this.haveNewInvitation = false;
             this.campaignService.CheckInvites<any>(user.id)
               .subscribe(data => {
                 this.haveCheckedNewInvitation = true;

@@ -17,6 +17,12 @@ export class AppService1 {
   shouldUpdateAccountSetting1(): Observable<any> {
     return this.accountSetting.asObservable();
   }
+  updateInvitationlist(accountSetting: any) {
+    this.accountSetting.next(accountSetting);
+  }
+  shouldupdateInvitationlist(): Observable<any> {
+    return this.accountSetting.asObservable();
+  }
   updateSearchText(text: string) {
     this.text.next(text);
   }
