@@ -370,6 +370,16 @@ namespace RPGSmithApp.Controllers
                             IsDeleted = z.IsDeleted,
                             StatChoiceValue = z.StatChoiceValue
                         }).ToList(),
+                        CharacterStatConditions=item.CharacterStat.CharacterStatConditions.Select(z => new CharacterStatCondition() {
+                           CharacterStatConditionId =z.CharacterStatConditionId,
+                            CharacterStatId= z.CharacterStatId,
+                            ConditionOperatorID= z.ConditionOperatorID,
+                            IfClauseStatText= z.IfClauseStatText,
+                            IsNumeric= z.IsNumeric,
+                            CompareValue= z.CompareValue,
+                            Result= z.Result,
+                            SortOrder= z.SortOrder,
+                        }).ToList(),
                     }
 
                 };

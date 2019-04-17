@@ -415,7 +415,7 @@ namespace DAL.Services
         public async Task<List<CharactersCharacterStat>> GetConditionsValuesList(int characterId)
         {
             List<CharactersCharacterStat> CharactersCharacterStats =await _context.CharactersCharacterStats                
-                .Include(d => d.CharacterStat.CharacterStatChoices)
+                .Include(d => d.CharacterStat.CharacterStatChoices).Include(x=>x.CharacterStat.CharacterStatConditions)
                .Where(x => x.CharacterId == characterId && x.IsDeleted != true).OrderBy(x => x.CharacterStat.SortOrder)
                .ToListAsync();
             return CharactersCharacterStats;
