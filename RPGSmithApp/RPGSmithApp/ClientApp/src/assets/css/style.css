@@ -1066,6 +1066,15 @@
 .icon-Tile-Note:before {
   content: "\e92c";
 }
+
+.icon-Gen-Chat:before {
+  content: "\e95e";
+}
+
+.icon-Gen-Refresh:before {
+  content: "\e964";
+}
+
 .icon-Gen-Help:before {
   content: "\e967";
 }
@@ -8760,6 +8769,80 @@ li.popup-new-tile-trigger.cross-li .btn {
 }
 .disabled {
   cursor: not-allowed !important;
+}
+.f-3:before {
+  font-size: 30px !important;
+}
+
+.refresh-btn {
+  display: flex !important;
+  flex-grow: .3 !important;
+  margin-right: 5px;
+}
+
+  .refresh-btn .btn {
+    padding: 0px 10px !important;
+  }
+
+    .refresh-btn .btn:before {
+      font-size: 20px !important;
+    }
+
+@media (max-width:991px) {
+  .f-3:before {
+    font-size: 25px !important;
+  }
+
+  .refresh-btn {
+    display: flex !important;
+    flex-grow: .3 !important
+  }
+
+    .refresh-btn .btn {
+      padding: 0px !important;
+    }
+
+      .refresh-btn .btn:before {
+        font-size: 20px !important;
+      }
+}
+
+@media (max-width:767px) {
+  .site-header-navigation .dropdown {
+    margin-left: 10px !important;
+  }
+
+  .site-header-navigation .dropdown-toggle {
+    width: 4rem !important
+  }
+}
+
+
+@media (max-width:480px) {
+  .site-header-navigation .dropdown-toggle {
+    width: 2rem !important
+  }
+
+  .f-3:before {
+    font-size: 20px !important;
+  }
+
+  .redirect-url {
+    width: 30px !important;
+  }
+
+  .user-login-details {
+    width: 44px;
+  }
+
+    .user-login-details img {
+      margin-left: 0px;
+      max-width: 30px;
+    }
+
+  .refresh-btn .btn:before {
+    font-size: 14px !important;
+  }
 }
 
 .modal-dialog  .carousel-control-prev {

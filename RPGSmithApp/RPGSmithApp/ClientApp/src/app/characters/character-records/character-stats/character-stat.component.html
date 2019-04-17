@@ -55,20 +55,23 @@
                 <div class="page-toolbar-wrapper initial" [ngClass]="{'show': showActions}">
                     <!-- Toolbar links -->
                     &nbsp;
-                    <ul class="page-toolbar-actions">
+                  <ul class="page-toolbar-actions">
 
-                        <!--<li>
-                            <button type="button" id="newStatTrigger" data-toggle="modal" (click)="newCharacterStat()"
-                                    class="btn icon icon-with-text icon-plus btn-primary">
-                                <span class="text-hide-tab">New Stat</span>
-                            </button>
-                        </li>-->
-                        <li>
-                            <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">
-                                <span class="text-hide-tab">Dice</span>
-                            </button>
-                        </li>
-                    </ul>
+                    <!--<li>
+                      <button type="button" id="newStatTrigger" data-toggle="modal" (click)="newCharacterStat()"
+                              class="btn icon icon-with-text icon-plus btn-primary">
+                          <span class="text-hide-tab">New Stat</span>
+                      </button>
+                  </li>-->
+                    <!--<li class="refresh-btn">
+                      <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh"></button>
+                    </li>-->
+                    <li>
+                      <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">
+                        <span class="text-hide-tab">Dice</span>
+                      </button>
+                    </li>
+                  </ul>
                     <!-- End of toolbar links -->
                 </div>
                 <!--<ul class="page-toolbar-actions">
