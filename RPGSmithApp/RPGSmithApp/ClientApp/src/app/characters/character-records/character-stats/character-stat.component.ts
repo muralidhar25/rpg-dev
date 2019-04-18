@@ -269,14 +269,15 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                         if (item.characterStat.characterStatType.statTypeName == 'Calculation') {
 
                             if (item.characterStat.characterStatCalcs.length) {
-                             
+                              
                                 let finalCalcString = '';
                                 if (item.characterStat.characterStatCalcs[0].statCalculation != null && item.characterStat.characterStatCalcs[0].statCalculation != undefined) {  //&& item.characterStat.characterStatCalcs[0].statCalculation.length > 34) {
                                     item.displayCalculation = item.characterStat.characterStatCalcs[0].statCalculation; //.substr(0, 34) + "...";
                                     let IDs: any[] = [];
                                     let CalcString = item.characterStat.characterStatCalcs[0].statCalculationIds;
+                                  
+                                  if (item.characterStat.characterStatCalcs[0].statCalculationIds) {
                                     
-                                    if (item.characterStat.characterStatCalcs[0].statCalculationIds) {
                                         item.characterStat.characterStatCalcs[0].statCalculationIds.split(/\[(.*?)\]/g).map((rec) => {
                                           
                                             let id = ''; let flag = false; let type = 0; let statType = 0;
@@ -295,7 +296,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                                     statType = q.characterStat.characterStatTypeId
                                                 }
                                           })
-                                         // debugger
+                                        
                                             if (flag) {
                                                 IDs.push({ id: id, type: isNaN(type) ? 0 : type, originaltext: "[" + rec + "]", statType: statType })
                                             }
@@ -303,6 +304,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                                 IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
                                             }
                                       })
+                                      
                                      
                                     }
                                   IDs.map((rec) => {
@@ -364,7 +366,8 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                                     //    CalcString = CalcString.replace(rec.originaltext, 0);
                                                 }
                                             });
-                                        }
+                                    }
+                                   
                                         finalCalcString = CalcString;
                                     });
                                 }

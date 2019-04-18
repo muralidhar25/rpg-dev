@@ -176,7 +176,7 @@ export class CharacterTilesComponent implements OnInit {
     this.pageId = this.localStorage.getDataObject<number>('pageId');
     this.Initialize();
 
-    window.addEventListener("resize", () => {
+    window.addEventListener("resize", () => {      
       // Get screen size (inner/outerWidth, inner/outerHeight)
       let dragable: boolean = this.gridConfig.draggable ;
       let resizable: boolean = this.gridConfig.resizable ;
@@ -280,39 +280,40 @@ export class CharacterTilesComponent implements OnInit {
       this.isLoading = true;
       this.CCService.getConditionsValuesList<any[]>(this.characterId)
         .subscribe(data => {
+         
           this.ConditionsValuesList = data;
+          this.characterTileService.getTilesByPageIdCharacterId<string>(this.pageId, this.characterId)
+            .subscribe(data => {
 
+              let model: any = data;
+              this.CharacterStatsValues = model.characterStatsValues;
+              this.statLinkRecords = model.statLinkRecords;
+              data = model.data;
+              if (this.hasAdded) {
+                this.boxes = [];
+              }
+              this.tiles = data;
+
+              let _boxes = this.mapBoxes(data);
+              this.boxes = _boxes;
+              if (this.IsMobilePanel) {
+                this.openEditGrid();
+              }
+
+              try {
+                this.noRecordFound = !data.length;
+              } catch (err) { }
+              setTimeout(() => { this.isLoading = false; }, 50);
+            }, error => {
+              this.isLoading = false;
+            }, () => { });
         }, error => {
           let Errors = Utilities.ErrorDetail("", error);
           if (Errors.sessionExpire) {
             this.authService.logout(true);
           }
         }, () => { });
-      this.characterTileService.getTilesByPageIdCharacterId<string>(this.pageId, this.characterId)
-        .subscribe(data => {
-         
-          let model: any = data;
-          this.CharacterStatsValues = model.characterStatsValues;
-          this.statLinkRecords = model.statLinkRecords;
-          data = model.data;
-          if (this.hasAdded) {
-            this.boxes = [];
-          }
-          this.tiles = data;
-          
-          let _boxes = this.mapBoxes(data);
-          this.boxes = _boxes;
-          if (this.IsMobilePanel) {
-            this.openEditGrid();
-          }
-
-          try {
-            this.noRecordFound = !data.length;
-          } catch (err) { }
-          setTimeout(() => { this.isLoading = false; }, 50);
-        }, error => {
-          this.isLoading = false;
-        }, () => { });
+      
       //this.isLoading = true;
       this.charactersService.getCharactersById<any>(this.characterId)
         .subscribe(data => {
@@ -923,7 +924,7 @@ export class CharacterTilesComponent implements OnInit {
                             num = stat.defaultValue
                             break;
                           case STAT_TYPE.Condition: //Condition
-                            let characterStatConditionsfilter = this.ConditionsValuesList.filter((stat) => stat.characterStatId == rec.id);
+                            let characterStatConditionsfilter = this.ConditionsValuesList.filter((Cs) => Cs.characterStatId == rec.id);
                             let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.CharacterStatsValues.charactersCharacterStat);
                             num = +result;
                             break;
@@ -962,6 +963,15 @@ export class CharacterTilesComponent implements OnInit {
               }
               if (isNaN(item.characterStatTiles.charactersCharacterStat.calculationResult)) {
                 item.characterStatTiles.charactersCharacterStat.calculationResult = 0;
+              }
+              if (this.CharacterStatsValues.charactersCharacterStat) {
+                if (this.CharacterStatsValues.charactersCharacterStat.length) {
+                  this.CharacterStatsValues.charactersCharacterStat.map((UpdateStat) => {
+                    if (UpdateStat.characterStatId == item.characterStatTiles.charactersCharacterStat.characterStatId) {
+                      UpdateStat.calculationResult = item.characterStatTiles.charactersCharacterStat.calculationResult;
+                    }
+                  })
+                }
               }
               ////////////////////////////////////////////
               //console.log(finalCalStr)
@@ -1045,7 +1055,7 @@ export class CharacterTilesComponent implements OnInit {
                           num = stat.defaultValue
                           break;
                         case STAT_TYPE.Condition: //Condition
-                          let characterStatConditionsfilter = this.ConditionsValuesList.filter((stat) => stat.characterStatId == rec.id);
+                          let characterStatConditionsfilter = this.ConditionsValuesList.filter((Cs) => Cs.characterStatId == rec.id);
                           let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.CharacterStatsValues.charactersCharacterStat);
                           num = +result;
                           break;
@@ -1083,6 +1093,17 @@ export class CharacterTilesComponent implements OnInit {
               }
               if (isNaN(item.characterStatTiles.charactersCharacterStat.calculationResult)) {
                 item.characterStatTiles.charactersCharacterStat.calculationResult = 0;
+              }
+              if (this.CharacterStatsValues.charactersCharacterStat) {
+                if (this.CharacterStatsValues.charactersCharacterStat.length) {
+                  this.CharacterStatsValues.charactersCharacterStat.map((UpdateStat) => {
+                    if (UpdateStat.characterStatId == item.characterStatTiles.charactersCharacterStat.characterStatId) {
+                      UpdateStat.calculationResult = item.characterStatTiles.charactersCharacterStat.calculationResult;
+                    }
+                  })
+
+                }
+
               }
             }
           }

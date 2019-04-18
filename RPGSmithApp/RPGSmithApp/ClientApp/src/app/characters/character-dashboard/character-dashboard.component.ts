@@ -1721,6 +1721,7 @@ export class CharacterDashboardComponent implements OnInit {
                       IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
                     }
                   })
+                 
                 }
                 IDs.map((rec) => {
                   if (+rec.id == -1 && this.character.inventoryWeight) {
@@ -1765,13 +1766,15 @@ export class CharacterDashboardComponent implements OnInit {
                             num = stat.defaultValue
                             break;
                           case STAT_TYPE.Condition:
-                               let characterStatConditionsfilter = this.ConditionsValuesList.filter((stat) => stat.characterStatId == rec.id);
-                                let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.CharacterStatsValues.charactersCharacterStat);
-                                num = +result;
+                               let characterStatConditionsfilter = this.ConditionsValuesList.filter((Cs) => Cs.characterStatId == rec.id);
+                            let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.CharacterStatsValues.charactersCharacterStat);
+                            num = +result;
+                            console.log('result',num);
                                  break;
                           default:
                             break;
                         }
+                        
                         if (num)
                           CalcString = CalcString.replace(rec.originaltext, num);
                         else
@@ -1781,6 +1784,7 @@ export class CharacterDashboardComponent implements OnInit {
                     });
                   }
                   finalCalcString = CalcString;
+                 // console.log('finalCalcString',finalCalcString);
                 });
               }
               try {
@@ -1803,6 +1807,17 @@ export class CharacterDashboardComponent implements OnInit {
               }
               if (isNaN(item.characterStatTiles.charactersCharacterStat.calculationResult)) {
                 item.characterStatTiles.charactersCharacterStat.calculationResult = 0;
+              }
+               if (this.CharacterStatsValues.charactersCharacterStat) {
+                if (this.CharacterStatsValues.charactersCharacterStat.length) {
+                  this.CharacterStatsValues.charactersCharacterStat.map((UpdateStat) => {
+                    if (UpdateStat.characterStatId == item.characterStatTiles.charactersCharacterStat.characterStatId) {
+                      UpdateStat.calculationResult = item.characterStatTiles.charactersCharacterStat.calculationResult;
+                    }
+                  })
+
+                }
+
               }
               ////////////////////////////////////////////
               //console.log(finalCalStr)
@@ -1884,7 +1899,7 @@ export class CharacterDashboardComponent implements OnInit {
                           num = stat.defaultValue
                           break;
                         case STAT_TYPE.Condition:
-                            let characterStatConditionsfilter = this.ConditionsValuesList.filter((stat) => stat.characterStatId == rec.id);
+                          let characterStatConditionsfilter = this.ConditionsValuesList.filter((Cs) => Cs.characterStatId == rec.id);
                             let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.CharacterStatsValues.charactersCharacterStat);
                             num = +result;
                             break;
@@ -1924,6 +1939,18 @@ export class CharacterDashboardComponent implements OnInit {
               }
               if (isNaN(item.characterStatTiles.charactersCharacterStat.calculationResult)) {
                 item.characterStatTiles.charactersCharacterStat.calculationResult = 0;
+              }
+
+              if (this.CharacterStatsValues.charactersCharacterStat) {
+                if (this.CharacterStatsValues.charactersCharacterStat.length) {
+                  this.CharacterStatsValues.charactersCharacterStat.map((UpdateStat) => {
+                    if (UpdateStat.characterStatId == item.characterStatTiles.charactersCharacterStat.characterStatId) {
+                      UpdateStat.calculationResult = item.characterStatTiles.charactersCharacterStat.calculationResult;
+                    }
+                  })
+
+                }
+
               }
             }
           }
