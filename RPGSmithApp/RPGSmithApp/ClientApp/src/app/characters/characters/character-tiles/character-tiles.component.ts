@@ -268,7 +268,7 @@ export class CharacterTilesComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
-      if (window.outerWidth < 767) {
+      if (window.outerWidth < 1200) {
         this.gridConfig.draggable = false;
         this.gridConfig.resizable = false;
         this.IsMobilePanel = true;
@@ -1513,7 +1513,7 @@ export class CharacterTilesComponent implements OnInit {
   isMobile() {
     try { document.createEvent("TouchEvent"); return true; }
     catch (e) {
-      if (window.outerWidth < 769) { return true }
+      if (window.outerWidth < 1201) { return true }
       return false;
     }
   }

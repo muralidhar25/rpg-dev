@@ -450,7 +450,7 @@ export class RulesetDashboardComponent implements OnInit {
           }
           this.setRulesetId(this.ruleSetId);
             try {
-                if (window.outerWidth < 767) {
+                if (window.outerWidth < 1200) {
                     this.gridConfig.draggable = false;
                     this.gridConfig.resizable = false;
                     this.IsMobilePanel = true;
@@ -1847,7 +1847,7 @@ export class RulesetDashboardComponent implements OnInit {
     isMobile() {
         try { document.createEvent("TouchEvent"); return true; }
         catch (e) {
-            if (window.outerWidth < 769) { return true }
+            if (window.outerWidth < 1201) { return true }
             return false;
         }
     }
@@ -2032,12 +2032,12 @@ export class RulesetDashboardComponent implements OnInit {
             this.IsTabletDevice = false;
             this.IsComputerDevice = false;
         }
-        else if (window.outerWidth >= 768 && window.outerWidth <= 991) {//tablet
+        else if (window.outerWidth >= 768 && window.outerWidth <= 1200) {//tablet
             this.IsTabletDevice = true;
             this.IsMobileDevice = false;
             this.IsComputerDevice = false;
         }
-        else if (window.outerWidth >= 992) {//desktop
+        else if (window.outerWidth >= 1201) {//desktop
             this.IsComputerDevice = true;
             this.IsTabletDevice = false;
             this.IsMobileDevice = false;
