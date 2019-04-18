@@ -13,6 +13,7 @@ import { ImageSelectorComponent } from '../../../shared/image-interface/image-se
 import { DiceComponent } from '../../../shared/dice/dice/dice.component';
 import { DiceService } from '../../../core/services/dice.service';
 import { PlatformLocation } from '@angular/common';
+import { ServiceUtil } from '../../../core/services/service-util';
 
 @Component({
   selector: 'app-character-stats-form',
@@ -568,6 +569,12 @@ export class CharacterStatsFormComponent implements OnInit {
     })
     this.selectedOptionWithIdsList.map((item, index) => {
       //  __plus__ strings are added because names can also contains the special characters
+      
+      item.match = item.match.split('').map((x) => {
+        x = ServiceUtil.GetSpecialCharacterCodeForChar(x);
+        return x;
+      }).join('');
+
       item.match.split('+').map((x) => {
         item.match = item.match.replace('+', '__PLUS__')
       })
@@ -580,6 +587,11 @@ export class CharacterStatsFormComponent implements OnInit {
       item.match.split('-').map((x) => {
         item.match = item.match.replace('-', '__MULTIPLY__')
       })
+
+      CalculationIds = CalculationIds.split('').map((x) => {
+        x = ServiceUtil.GetSpecialCharacterCodeForChar(x);
+        return x;
+      }).join('');
 
       CalculationIds.split('+').map((x) => {
         CalculationIds = CalculationIds.replace('+', '__PLUS__')
@@ -600,6 +612,9 @@ export class CharacterStatsFormComponent implements OnInit {
 
 
     })
+
+    CalculationIds = ServiceUtil.GetCharacterFromSpecialCharacterCode(CalculationIds);
+    
     CalculationIds.split('__PLUS__').map((x) => {
       CalculationIds = CalculationIds.replace('__PLUS__', '+')
     })

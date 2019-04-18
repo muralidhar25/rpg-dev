@@ -492,4 +492,55 @@ export class ServiceUtil {
     return result;
     
   }
+  public static GetSpecialCharacterCodeForChar(char: string):string {
+    if (char) {
+      
+        if (
+          (char.charCodeAt(0) >= 33
+            && char.charCodeAt(0) <= 47)
+          ||
+          (char.charCodeAt(0) >= 58
+            && char.charCodeAt(0) <= 64)
+          ||
+          (char.charCodeAt(0) >= 91
+            && char.charCodeAt(0) <= 96)
+          ||
+          (char.charCodeAt(0) >= 123
+            && char.charCodeAt(0) <= 126)
+        ) {
+          return "CHARCODESTART" + char.charCodeAt(0) + "CHARCODEEND";
+        }
+      
+    }
+    return char;
+  }
+
+  public static GetCharacterFromSpecialCharacterCode(Code: string): string {
+    if (Code) {
+      
+      for (var i = 33; i <= 126; i++) {
+
+        if (
+          (i >= 33
+            && i <= 47)
+          ||
+          (i >= 58
+            && i <= 64)
+          ||
+          (i >= 91
+            && i <= 96)
+          ||
+          (i >= 123
+            && i <= 126)
+        )
+        {
+          let string = "CHARCODESTART" + i + "CHARCODEEND";
+          let expression = new RegExp(string.toUpperCase(), 'g');
+          Code = Code.replace(expression, String.fromCharCode(i))
+        }
+      }
+      
+    }
+    return Code;
+  }
 }

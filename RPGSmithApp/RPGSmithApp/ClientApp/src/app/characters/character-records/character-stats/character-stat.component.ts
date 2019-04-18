@@ -200,365 +200,365 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
             this.charactersCharacterStatService.getConditionsValuesList<any[]>(this.characterId)
                 .subscribe(data => {
                     this.ConditionsValuesList = data;
-
-                }, error => {
-                    let Errors = Utilities.ErrorDetail("", error);
-                    if (Errors.sessionExpire) {
-                        this.authService.logout(true);
-                    }
-                }, () => { });
-            this.charactersCharacterStatService.getCharactersCharacterStat<any[]>(this.characterId, this.page, this.pageSize)
-                .subscribe(data => {
-                    this.charactersCharacterStats = Utilities.responseData(data, this.pageSize);
-                    try {
+                  this.charactersCharacterStatService.getCharactersCharacterStat<any[]>(this.characterId, this.page, this.pageSize)
+                    .subscribe(data => {
+                      this.charactersCharacterStats = Utilities.responseData(data, this.pageSize);
+                      try {
                         this.noRecordFound = !data.length;
-                    } catch (err) { }
-                  this.isLoading = false;
+                      } catch (err) { }
+                      this.isLoading = false;
 
-                 //this.save(this.charactersCharacterStats, 99);
-                }, error => {                    
-                    this.isLoading = false;
-                    let Errors = Utilities.ErrorDetail("", error);
-                    if (Errors.sessionExpire) {
+                      //this.save(this.charactersCharacterStats, 99);
+                    }, error => {
+                      this.isLoading = false;
+                      let Errors = Utilities.ErrorDetail("", error);
+                      if (Errors.sessionExpire) {
                         this.authService.logout(true);
-                    }
-                }, () => {
+                      }
+                    }, () => {
 
-                    this.charactersCharacterStats.forEach(item => {
+                      this.charactersCharacterStats.forEach(item => {
 
                         item.icon = this.characterStatService.getIcon(item.characterStat.characterStatType.statTypeName);
 
                         if (item.current == 0) {
-                            item.current = "";
+                          item.current = "";
                         }
                         if (item.maximum == 0) {
-                            item.maximum = "";
+                          item.maximum = "";
                         }
                         if (item.value == 0) {
-                            item.value = "";
+                          item.value = "";
                         }
                         if (item.subValue == 0) {
-                            item.subValue = "";
+                          item.subValue = "";
                         }
 
-                      
+
                         if (item.characterStat.characterStatType.statTypeName == 'Command') {
-                            if (item.command != null && item.command != "")
-                                item.displaycommand = item.command; //this.manageCommandDisplay(item.command);
+                          if (item.command != null && item.command != "")
+                            item.displaycommand = item.command; //this.manageCommandDisplay(item.command);
                         }
 
                         //if (item.characterStat.statName.length > 8) {
                         //    item.displayStatName = item.characterStat.statName.substr(0, 8);
                         //}
                         //else {
-                            item.displayStatName = item.characterStat.statName;
+                        item.displayStatName = item.characterStat.statName;
                         //}
 
                         //if (item.characterStat.statName.length > 6) {
                         //    item.mobiledisplayStatName = item.characterStat.statName.substr(0, 6);
                         //}
                         //else {
-                            item.mobiledisplayStatName = item.characterStat.statName;
+                        item.mobiledisplayStatName = item.characterStat.statName;
                         //}
-                        
+
                         if (item.characterStat.characterStatType.statTypeName == 'Rich Text') {
-                            if (item.richText != null && item.richText != "")
-                                item.displayRichText = item.richText.replace(/(<([^>]+)>)/ig, "");
-                        }                        
+                          if (item.richText != null && item.richText != "")
+                            item.displayRichText = item.richText.replace(/(<([^>]+)>)/ig, "");
+                        }
 
                         if (item.characterStat.characterStatType.statTypeName == 'Calculation') {
 
-                            if (item.characterStat.characterStatCalcs.length) {
-                              
-                                let finalCalcString = '';
-                                if (item.characterStat.characterStatCalcs[0].statCalculation != null && item.characterStat.characterStatCalcs[0].statCalculation != undefined) {  //&& item.characterStat.characterStatCalcs[0].statCalculation.length > 34) {
-                                    item.displayCalculation = item.characterStat.characterStatCalcs[0].statCalculation; //.substr(0, 34) + "...";
-                                    let IDs: any[] = [];
-                                    let CalcString = item.characterStat.characterStatCalcs[0].statCalculationIds;
-                                  
-                                  if (item.characterStat.characterStatCalcs[0].statCalculationIds) {
-                                    
-                                        item.characterStat.characterStatCalcs[0].statCalculationIds.split(/\[(.*?)\]/g).map((rec) => {
-                                          
-                                            let id = ''; let flag = false; let type = 0; let statType = 0;
-                                            if (rec.split('_').length > 1) {
-                                                id = rec.split('_')[0].replace('[', '').replace(']', '');
-                                                type = parseInt(rec.split('_')[1])
-                                            }
-                                            else {
-                                                id = rec.replace('[', '').replace(']', '');
-                                                type = 0
-                                            }
-                                  
-                                            this.charactersCharacterStats.map((q) => {
-                                                if (!flag) {
-                                                    flag = (parseInt(id) == q.characterStatId);
-                                                    statType = q.characterStat.characterStatTypeId
-                                                }
-                                          })
-                                        
-                                            if (flag) {
-                                                IDs.push({ id: id, type: isNaN(type) ? 0 : type, originaltext: "[" + rec + "]", statType: statType })
-                                            }
-                                            else if (+id == -1) {
-                                                IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
-                                            }
-                                      })
-                                      
-                                     
+                          if (item.characterStat.characterStatCalcs.length) {
+
+                            let finalCalcString = '';
+                            if (item.characterStat.characterStatCalcs[0].statCalculation != null && item.characterStat.characterStatCalcs[0].statCalculation != undefined) {  //&& item.characterStat.characterStatCalcs[0].statCalculation.length > 34) {
+                              item.displayCalculation = item.characterStat.characterStatCalcs[0].statCalculation; //.substr(0, 34) + "...";
+                              let IDs: any[] = [];
+                              let CalcString = item.characterStat.characterStatCalcs[0].statCalculationIds;
+
+                              if (item.characterStat.characterStatCalcs[0].statCalculationIds) {
+
+                                item.characterStat.characterStatCalcs[0].statCalculationIds.split(/\[(.*?)\]/g).map((rec) => {
+
+                                  let id = ''; let flag = false; let type = 0; let statType = 0;
+                                  if (rec.split('_').length > 1) {
+                                    id = rec.split('_')[0].replace('[', '').replace(']', '');
+                                    type = parseInt(rec.split('_')[1])
+                                  }
+                                  else {
+                                    id = rec.replace('[', '').replace(']', '');
+                                    type = 0
+                                  }
+
+                                  this.charactersCharacterStats.map((q) => {
+                                    if (!flag) {
+                                      flag = (parseInt(id) == q.characterStatId);
+                                      statType = q.characterStat.characterStatTypeId
                                     }
-                                  IDs.map((rec) => {
-                                   
-                                        if (+rec.id == -1 && this.character.inventoryWeight) {
-                                            CalcString = CalcString.replace(rec.originaltext, this.character.inventoryWeight);
-                                        } else {
-                                            this.charactersCharacterStats.map((stat) => {
-                                                if (rec.id == stat.characterStatId) {
-                                                  let num = 0;
-                                                   switch (rec.statType) {
-                                                        case 3: //Number
-                                                            num = stat.number
-                                                            break;
-                                                        case 5: //Current Max
-                                                            if (rec.type == 1)//current
-                                                            {
-                                                                num = stat.current
-                                                            }
-                                                            else if (rec.type == 2)//Max
-                                                            {
-                                                                num = stat.maximum
-                                                            }
-                                                            break;
-                                                        case 7: //Val Sub-Val
-                                                            if (rec.type == 3)//value
-                                                            {
-                                                                num = +stat.value
-                                                            }
-                                                            else if (rec.type == 4)//sub-value
-                                                            {
-                                                                num = stat.subValue
-                                                            }
-                                                            break;
-                                                      case 12: //Calculation
-                                                       // debugger;
-                                                       
-                                                        num = stat.calculationResult
-                                                         break;
-                                                        case STAT_TYPE.Combo: //Combo
-                                                            num = stat.defaultValue
-                                                            break;
-                                                      case STAT_TYPE.Choice: //Choice
-                                                        num = stat.defaultValue
-                                                        break;
-                                                      case STAT_TYPE.Condition: //condition
-                                                        debugger;
-                                                        let characterStatConditionsfilter = this.charactersCharacterStats.filter((stat) => stat.characterStat.characterStatId == rec.id);
-                                                       let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
-                                                        let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.charactersCharacterStats);
-                                                        num = +result;
-                                                        break;
-                                                        default:
-                                                            break;
-                                                    }
-                                                    if (num)
-                                                        CalcString = CalcString.replace(rec.originaltext, num);
-                                                    //else
-                                                    //    CalcString = CalcString.replace(rec.originaltext, 0);
-                                                }
-                                            });
+                                  })
+
+                                  if (flag) {
+                                    IDs.push({ id: id, type: isNaN(type) ? 0 : type, originaltext: "[" + rec + "]", statType: statType })
+                                  }
+                                  else if (+id == -1) {
+                                    IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
+                                  }
+                                })
+
+
+                              }
+                              IDs.map((rec) => {
+
+                                if (+rec.id == -1 && this.character.inventoryWeight) {
+                                  CalcString = CalcString.replace(rec.originaltext, this.character.inventoryWeight);
+                                } else {
+                                  this.charactersCharacterStats.map((stat) => {
+                                    if (rec.id == stat.characterStatId) {
+                                      let num = 0;
+                                      switch (rec.statType) {
+                                        case 3: //Number
+                                          num = stat.number
+                                          break;
+                                        case 5: //Current Max
+                                          if (rec.type == 1)//current
+                                          {
+                                            num = stat.current
+                                          }
+                                          else if (rec.type == 2)//Max
+                                          {
+                                            num = stat.maximum
+                                          }
+                                          break;
+                                        case 7: //Val Sub-Val
+                                          if (rec.type == 3)//value
+                                          {
+                                            num = +stat.value
+                                          }
+                                          else if (rec.type == 4)//sub-value
+                                          {
+                                            num = stat.subValue
+                                          }
+                                          break;
+                                        case 12: //Calculation
+                                          // debugger;
+
+                                          num = stat.calculationResult
+                                          break;
+                                        case STAT_TYPE.Combo: //Combo
+                                          num = stat.defaultValue
+                                          break;
+                                        case STAT_TYPE.Choice: //Choice
+                                          num = stat.defaultValue
+                                          break;
+                                        case STAT_TYPE.Condition: //condition
+                                          debugger;
+                                          let characterStatConditionsfilter = this.ConditionsValuesList.filter((CCS) => CCS.characterStat.characterStatId == rec.id);
+                                          let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
+                                          let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.ConditionsValuesList);
+                                          num = +result;
+                                          break;
+                                        default:
+                                          break;
+                                      }
+                                      if (num)
+                                        CalcString = CalcString.replace(rec.originaltext, num);
+                                      //else
+                                      //    CalcString = CalcString.replace(rec.originaltext, 0);
                                     }
-                                   
-                                        finalCalcString = CalcString;
-                                    });
+                                  });
                                 }
-                                //else {
-                                //    item.displayCalculation = item.characterStat.characterStatCalcs[0].statCalculation;
-                                //}
-                                //if (item.characterStat.characterStatCalcs[0].statCalculation != null && item.characterStat.characterStatCalcs[0].statCalculation != undefined && item.characterStat.characterStatCalcs[0].statCalculation.length > 8) {
-                                    //item.displayMobileCalculation = item.characterStat.characterStatCalcs[0].statCalculation.substr(0, 8) + "...";
-                                //}
-                               // else {
-                                    item.displayMobileCalculation = item.characterStat.characterStatCalcs[0].statCalculation;
-                                //}
-                                try {
-                                    //finalCalcString = finalCalcString.replace("/()/g", "0");
-                                    finalCalcString = (finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '+ 0' ||
-                                        finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '- 0' ||
-                                        finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '* 0' ||
-                                        finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '/ 0')
-                                        ? finalCalcString.trim().slice(0, -1)
-                                        : finalCalcString.trim();
-                                    item.calculationResult = DiceService.commandInterpretation(finalCalcString, undefined, undefined)[0].calculationResult;
-                                }
-                                catch (ex) {
-                                    item.calculationResult = this.getCalculationResult(item.characterStat.characterStatCalcs[0].statCalculation);
-                                }
-                                if (isNaN(item.calculationResult)) {
-                                    item.calculationResult = 0;
-                                }
-                                //item.calculationResult = this.getCalculationResult(item.characterStat.characterStatCalcs[0].statCalculation);
+
+                                finalCalcString = CalcString;
+                              });
                             }
+                            //else {
+                            //    item.displayCalculation = item.characterStat.characterStatCalcs[0].statCalculation;
+                            //}
+                            //if (item.characterStat.characterStatCalcs[0].statCalculation != null && item.characterStat.characterStatCalcs[0].statCalculation != undefined && item.characterStat.characterStatCalcs[0].statCalculation.length > 8) {
+                            //item.displayMobileCalculation = item.characterStat.characterStatCalcs[0].statCalculation.substr(0, 8) + "...";
+                            //}
+                            // else {
+                            item.displayMobileCalculation = item.characterStat.characterStatCalcs[0].statCalculation;
+                            //}
+                            try {
+                              //finalCalcString = finalCalcString.replace("/()/g", "0");
+                              finalCalcString = (finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '+ 0' ||
+                                finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '- 0' ||
+                                finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '* 0' ||
+                                finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '/ 0')
+                                ? finalCalcString.trim().slice(0, -1)
+                                : finalCalcString.trim();
+                              item.calculationResult = DiceService.commandInterpretation(finalCalcString, undefined, undefined)[0].calculationResult;
+                            }
+                            catch (ex) {
+                              item.calculationResult = this.getCalculationResult(item.characterStat.characterStatCalcs[0].statCalculation);
+                            }
+                            if (isNaN(item.calculationResult)) {
+                              item.calculationResult = 0;
+                            }
+                            //item.calculationResult = this.getCalculationResult(item.characterStat.characterStatCalcs[0].statCalculation);
+                          }
                         }
-                        
+
                         if (item.characterStat.characterStatTypeId == STAT_TYPE.Condition) {
-                            
-                            let result = '';
-                            if (item.characterStat.characterStatConditions) {
-                                
-                                if (item.characterStat.characterStatConditions.length) {
-                                    let SkipNextEntries: boolean = false;
-                                    item.characterStat.characterStatConditions.map((Condition: CharacterStatConditionViewModel) => {
-                                        if (!SkipNextEntries) {
-                                            //let ConditionStatValue: string = this.GetValueFromStatsByStatID(Condition.ifClauseStatId, Condition.ifClauseStattype);
 
-                                            let ConditionStatValue: string = '';
-                                            if (Condition.ifClauseStatText) {
-                                              ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition,false);
-                                            }
-                                            let operator = "";
-                                          let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition,true);//Condition.compareValue;
-                                            
-                                            let ConditionTrueResult = Condition.result;
+                          let result = '';
+                          if (item.characterStat.characterStatConditions) {
 
-                                            
-                                            if (Condition.sortOrder != item.characterStat.characterStatConditions.length) {//if and Else If Part
-                                                if (Condition.conditionOperator) {
-                                                    //////////////////////////////////////////////////////////////////
+                            if (item.characterStat.characterStatConditions.length) {
+                              let SkipNextEntries: boolean = false;
+                              item.characterStat.characterStatConditions.map((Condition: CharacterStatConditionViewModel) => {
+                                if (!SkipNextEntries) {
+                                  //let ConditionStatValue: string = this.GetValueFromStatsByStatID(Condition.ifClauseStatId, Condition.ifClauseStattype);
 
-                                                    if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.EQUALS ||
-                                                        Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.NOT_EQUALS ||
-                                                        Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.GREATER_THAN ||
-                                                       Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.EQUAL_TO_OR_GREATER_THAN ||
-                                                        Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.LESS_THAN ||
-                                                        Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.EQUAL_TO_OR_LESS_THAN) {
+                                  let ConditionStatValue: string = '';
+                                  if (Condition.ifClauseStatText) {
+                                    ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.ConditionsValuesList, Condition, false);
+                                  }
+                                  let operator = "";
+                                  let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.ConditionsValuesList, Condition, true);//Condition.compareValue;
 
-                                                        operator = Condition.conditionOperator.symbol;
-                                                        let ConditionCheckString = '';
-                                                        if (Condition.isNumeric) {
-                                                            ConditionStatValue = ConditionStatValue ? ConditionStatValue : "0";
-                                                            ValueToCompare = ValueToCompare ? ValueToCompare : "0";
-                                                            ConditionCheckString = ConditionStatValue + ' ' + operator + ' ' + ValueToCompare;
-                                                        }
-                                                        else {
-                                                            ConditionCheckString = ' "' + ConditionStatValue + '" ' + operator + ' "' + ValueToCompare + '" ';
-                                                        }
-                                                        ConditionCheckString = ConditionCheckString.toUpperCase();
-                                                        let conditionCheck = eval(ConditionCheckString);
-                                                        if ((typeof (conditionCheck)) == "boolean") {
-                                                            if (conditionCheck) {
-                                                                result = ConditionTrueResult;
-                                                                SkipNextEntries = true;
-                                                            }
-                                                        }
-                                                    }
+                                  let ConditionTrueResult = Condition.result;
 
 
-                                                    else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.IS_BLANK) {
-                                                        if (!ConditionStatValue) {
-                                                            result = ConditionTrueResult;
-                                                            SkipNextEntries = true;
-                                                        }
-                                                    }
-                                                    else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.IS_NOT_BLANK) {
-                                                        if (ConditionStatValue) {
-                                                            result = ConditionTrueResult;
-                                                            SkipNextEntries = true;
-                                                        }
-                                                    }
-                                                    //else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.CONTAINS) {
-                                                    //    ValueToCompare = ValueToCompare ? ValueToCompare : '';
-                                                    //    ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
-                                                    //    if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
-                                                            
-                                                    //        let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
-                                                    //        choicesArr = choicesArr.map((z) => {
-                                                    //            return z.toUpperCase();
-                                                    //        })
-                                                    //        if (choicesArr.indexOf(ValueToCompare.toUpperCase()) > -1) {
-                                                    //            result = ConditionTrueResult;
-                                                    //            SkipNextEntries = true;
-                                                    //        }
-                                                    //    }
-                                                    //    else {
-                                                    //        if (ConditionStatValue.toUpperCase() == ValueToCompare.toUpperCase()) {
-                                                    //            result = ConditionTrueResult;
-                                                    //            SkipNextEntries = true;
-                                                    //        }
-                                                    //    }
-                                                    //}
-                                                    //else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.DOES_NOT_CONTAIN) {
-                                                    //    ValueToCompare = ValueToCompare ? ValueToCompare : '';
-                                                    //    ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
-                                                    //    if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
-                                                            
-                                                    //        let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
-                                                    //        choicesArr= choicesArr.map((z) => {
-                                                    //            return z.toUpperCase();
-                                                    //        })
-                                                    //        if (choicesArr.indexOf(ValueToCompare.toUpperCase()) == -1) {
-                                                    //            result = ConditionTrueResult;
-                                                    //            SkipNextEntries = true;
-                                                    //        }
-                                                    //    }
-                                                    //    else {
-                                                    //        if (ConditionStatValue.toUpperCase() != ValueToCompare.toUpperCase()) {
-                                                    //            result = ConditionTrueResult;
-                                                    //            SkipNextEntries = true;
-                                                    //        }
-                                                    //    }
-                                                    //}
-                                                    else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.CONTAINS) {
-                                                        ValueToCompare = ValueToCompare ? ValueToCompare : '';
-                                                        ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
-                                                        if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+                                  if (Condition.sortOrder != item.characterStat.characterStatConditions.length) {//if and Else If Part
+                                    if (Condition.conditionOperator) {
+                                      //////////////////////////////////////////////////////////////////
 
+                                      if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.EQUALS ||
+                                        Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.NOT_EQUALS ||
+                                        Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.GREATER_THAN ||
+                                        Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.EQUAL_TO_OR_GREATER_THAN ||
+                                        Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.LESS_THAN ||
+                                        Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.EQUAL_TO_OR_LESS_THAN) {
 
-                                                            if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
-                                                                result = ConditionTrueResult;
-                                                                SkipNextEntries = true;
-                                                            }
-                                                        }
-                                                        else {
-                                                            if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
-                                                                result = ConditionTrueResult;
-                                                                SkipNextEntries = true;
-                                                            }
-                                                        }
-                                                    }
-                                                    else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.DOES_NOT_CONTAIN) {
-                                                        ValueToCompare = ValueToCompare ? ValueToCompare : '';
-                                                        ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
-                                                        if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
-
-
-                                                            if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
-                                                                result = ConditionTrueResult;
-                                                                SkipNextEntries = true;
-                                                            }
-                                                        }
-                                                        else {
-                                                            if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
-                                                                result = ConditionTrueResult;
-                                                                SkipNextEntries = true;
-                                                            }
-                                                        }
-                                                    }
-                                                    //////////////////////////////////////////////////////////////////
-                                                }
-                                            }
-                                            else {
-                                                let ConditionFalseResult = Condition.result;
-                                                result = ConditionFalseResult;
-                                                SkipNextEntries = true;
-                                            }
+                                        operator = Condition.conditionOperator.symbol;
+                                        let ConditionCheckString = '';
+                                        if (Condition.isNumeric) {
+                                          ConditionStatValue = ConditionStatValue ? ConditionStatValue : "0";
+                                          ValueToCompare = ValueToCompare ? ValueToCompare : "0";
+                                          ConditionCheckString = ConditionStatValue + ' ' + operator + ' ' + ValueToCompare;
                                         }
-                                    })
+                                        else {
+                                          ConditionCheckString = ' "' + ConditionStatValue + '" ' + operator + ' "' + ValueToCompare + '" ';
+                                        }
+                                        ConditionCheckString = ConditionCheckString.toUpperCase();
+                                        let conditionCheck = eval(ConditionCheckString);
+                                        if ((typeof (conditionCheck)) == "boolean") {
+                                          if (conditionCheck) {
+                                            result = ConditionTrueResult;
+                                            SkipNextEntries = true;
+                                          }
+                                        }
+                                      }
+
+
+                                      else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.IS_BLANK) {
+                                        if (!ConditionStatValue) {
+                                          result = ConditionTrueResult;
+                                          SkipNextEntries = true;
+                                        }
+                                      }
+                                      else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.IS_NOT_BLANK) {
+                                        if (ConditionStatValue) {
+                                          result = ConditionTrueResult;
+                                          SkipNextEntries = true;
+                                        }
+                                      }
+                                      //else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.CONTAINS) {
+                                      //    ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                                      //    ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                                      //    if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+
+                                      //        let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
+                                      //        choicesArr = choicesArr.map((z) => {
+                                      //            return z.toUpperCase();
+                                      //        })
+                                      //        if (choicesArr.indexOf(ValueToCompare.toUpperCase()) > -1) {
+                                      //            result = ConditionTrueResult;
+                                      //            SkipNextEntries = true;
+                                      //        }
+                                      //    }
+                                      //    else {
+                                      //        if (ConditionStatValue.toUpperCase() == ValueToCompare.toUpperCase()) {
+                                      //            result = ConditionTrueResult;
+                                      //            SkipNextEntries = true;
+                                      //        }
+                                      //    }
+                                      //}
+                                      //else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.DOES_NOT_CONTAIN) {
+                                      //    ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                                      //    ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                                      //    if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+
+                                      //        let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
+                                      //        choicesArr= choicesArr.map((z) => {
+                                      //            return z.toUpperCase();
+                                      //        })
+                                      //        if (choicesArr.indexOf(ValueToCompare.toUpperCase()) == -1) {
+                                      //            result = ConditionTrueResult;
+                                      //            SkipNextEntries = true;
+                                      //        }
+                                      //    }
+                                      //    else {
+                                      //        if (ConditionStatValue.toUpperCase() != ValueToCompare.toUpperCase()) {
+                                      //            result = ConditionTrueResult;
+                                      //            SkipNextEntries = true;
+                                      //        }
+                                      //    }
+                                      //}
+                                      else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.CONTAINS) {
+                                        ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                                        ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                                        if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+
+
+                                          if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
+                                            result = ConditionTrueResult;
+                                            SkipNextEntries = true;
+                                          }
+                                        }
+                                        else {
+                                          if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
+                                            result = ConditionTrueResult;
+                                            SkipNextEntries = true;
+                                          }
+                                        }
+                                      }
+                                      else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.DOES_NOT_CONTAIN) {
+                                        ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                                        ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                                        if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+
+
+                                          if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
+                                            result = ConditionTrueResult;
+                                            SkipNextEntries = true;
+                                          }
+                                        }
+                                        else {
+                                          if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
+                                            result = ConditionTrueResult;
+                                            SkipNextEntries = true;
+                                          }
+                                        }
+                                      }
+                                      //////////////////////////////////////////////////////////////////
+                                    }
+                                  }
+                                  else {
+                                    let ConditionFalseResult = Condition.result;
+                                    result = ConditionFalseResult;
+                                    SkipNextEntries = true;
+                                  }
                                 }
+                              })
                             }
-                            item.text = result;
-                        }                       
+                          }
+                          item.text = result;
+                        }
+                      });
                     });
-                });
+                }, error => {
+                    let Errors = Utilities.ErrorDetail("", error);
+                    if (Errors.sessionExpire) {
+                        this.authService.logout(true);
+                    }
+                }, () => { });
+            
 
         }
         this.charactersService.getCharactersById<any>(this.characterId)
@@ -910,9 +910,9 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                             num = stat.defaultValue
                                             break;
                                           case STAT_TYPE.Condition: //condition
-                                            let characterStatConditionsfilter = this.charactersCharacterStats.filter((stat) => stat.characterStat.characterStatId == rec.id);
+                                            let characterStatConditionsfilter = this.ConditionsValuesList.filter((CCS) => CCS.characterStat.characterStatId == rec.id);
                                             let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
-                                            let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.charactersCharacterStats);
+                                            let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.ConditionsValuesList);
                                             num = +result;
                                             break;
                                             default:
@@ -960,11 +960,11 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                 //let ConditionStatValue: string = this.GetValueFromStatsByStatID(Condition.ifClauseStatId, Condition.ifClauseStattype);
 
                                 let ConditionStatValue: string = '';
-                                if (Condition.ifClauseStatText) {
-                                  ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition, false);
+                              if (Condition.ifClauseStatText) {
+                                ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.ConditionsValuesList, Condition, false);
                                 }
                                 let operator = "";
-                              let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition, true);//Condition.compareValue;
+                              let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.ConditionsValuesList, Condition, true);//Condition.compareValue;
 
                                 let ConditionTrueResult = Condition.result;
 
@@ -1433,9 +1433,9 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                                     num = stat.defaultValue
                                                     break;
                                                   case STAT_TYPE.Condition: //condition
-                                                    let characterStatConditionsfilter = this.charactersCharacterStats.filter((stat) => stat.characterStat.characterStatId == rec.id);
+                                                    let characterStatConditionsfilter = this.ConditionsValuesList.filter((CCS) => CCS.characterStat.characterStatId == rec.id);
                                                     let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
-                                                    let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.charactersCharacterStats);
+                                                    let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.ConditionsValuesList);
                                                     num = +result;
                                                     break;
                                                     default:
@@ -1496,11 +1496,11 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                         //let ConditionStatValue: string = this.GetValueFromStatsByStatID(Condition.ifClauseStatId, Condition.ifClauseStattype);
 
                                         let ConditionStatValue: string = '';
-                                        if (Condition.ifClauseStatText) {
-                                          ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition, false);
+                                      if (Condition.ifClauseStatText) {
+                                        ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.ConditionsValuesList, Condition, false);
                                         }
                                         let operator = "";
-                                      let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.charactersCharacterStats, Condition, true);//Condition.compareValue;
+                                      let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.ConditionsValuesList, Condition, true);//Condition.compareValue;
 
                                         let ConditionTrueResult = Condition.result;
 

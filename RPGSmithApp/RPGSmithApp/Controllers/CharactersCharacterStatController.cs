@@ -359,7 +359,7 @@ namespace RPGSmithApp.Controllers
                     ShowCheckbox = item.ShowCheckbox,
                     LinkType = item.LinkType,
                     CharacterStat = new CharacterStat()
-                    {                        
+                    {        CharacterStatId= item.CharacterStat.CharacterStatId,
                         CharacterStatTypeId = item.CharacterStat.CharacterStatTypeId,
                         StatName= item.CharacterStat.StatName,
                         isMultiSelect= item.CharacterStat.isMultiSelect,
