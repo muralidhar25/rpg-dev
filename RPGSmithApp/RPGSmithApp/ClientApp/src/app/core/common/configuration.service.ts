@@ -10,6 +10,7 @@ import { LocalStoreManager } from '../common/local-store-manager.service';
 import { DBkeys } from './db-keys';
 import { Utilities } from '../common/utilities';
 import { environment } from '../../../environments/environment';
+import { User } from '../models/user.model';
 
 
 
@@ -51,6 +52,7 @@ export class ConfigurationService {
   //***Specify default configurations here***
   public static readonly defaultLanguage: string = "en";
   public static readonly defaultHomeUrl: string = "/characters";
+  public static readonly defaultHomeGMUrl: string = "/rulesets/campaigns";
   public static readonly defaultTheme: string = "Default";
   public static readonly defaultShowDashboardStatistics: boolean = true;
   public static readonly defaultShowDashboardNotifications: boolean = true;
@@ -212,7 +214,13 @@ export class ConfigurationService {
   get homeUrl() {
     if (this._homeUrl != null)
       return this._homeUrl;
-
+    
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user != null) {
+      if (user.isGm) {
+        return ConfigurationService.defaultHomeGMUrl;
+      }
+    }
     return ConfigurationService.defaultHomeUrl;
   }
 

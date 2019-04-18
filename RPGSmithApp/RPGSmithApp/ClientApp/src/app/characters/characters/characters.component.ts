@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input } from "@angular/core";
-import { Router, NavigationExtras } from "@angular/router";
+import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { Ruleset } from "../../core/models/view-models/ruleset.model";
 import { AlertService, DialogType, MessageSeverity } from "../../core/common/alert.service";
@@ -46,11 +46,16 @@ export class CharactersComponent implements OnInit {
   marketplacelist: marketplaceListModel[] = [];
     constructor(
       private router: Router, private alertService: AlertService, private marketPlaceService: MarketPlaceService,
-        private authService: AuthService, private rulesetService: RulesetService,
+      private authService: AuthService, private rulesetService: RulesetService, private Aroute: ActivatedRoute,
         private charactersService: CharactersService, private configurations: ConfigurationService,
         private modalService: BsModalService, private localStorage: LocalStoreManager,
       private sharedService: SharedService, private commonService: CommonService, public appService: AppService1
     ) {
+      this.Aroute.params.subscribe(params => {
+        
+        //this.destroyModalOnInit();
+        this.initialize();
+      });
          if (!this.authService.isLoggedIn) {
              this.authService.logout();
          } else
@@ -63,12 +68,20 @@ export class CharactersComponent implements OnInit {
                 this.pageSize = 30;
                 this.initialize();
             }
-        });
+      });
+      this.appService.shouldUpdateCharacterList().subscribe(serviceJson => {
+        
+        if (serviceJson) {
+          this.page = 1;
+          this.pageSize = 30;
+          this.initialize();
+        }
+      });
     }
 
     ngOnInit() {
         this.destroyModalOnInit();
-        this.initialize();
+        //this.initialize(); Now its calling in constructor routes subscribe
     }
 
     private initialize() {

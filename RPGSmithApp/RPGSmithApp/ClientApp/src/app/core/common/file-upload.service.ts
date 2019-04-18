@@ -49,7 +49,7 @@ export class FileUploadService extends EndpointFactory {
   fileUploadFromBing<T>(file: string, ext: string): Observable<T> {
     let endpointUrl = `${this.uploadBingToBlobApi}?file=${file}&ext=${ext}`;
 
-    return this.http.post<T>(endpointUrl, this.getRequestFileHeaders())
+    return this.http.post<T>(endpointUrl, null, this.getRequestFileHeaders())
       //.map(() => { return true; })
       .catch(error => {
         return this.handleError(error, () => this.fileUploadFromBing(file, ext));
@@ -59,7 +59,7 @@ export class FileUploadService extends EndpointFactory {
   fileUploadFromURL<T>(userId: string, file: string, ext: string): Observable<T> {
     let endpointUrl = `${this.uploadBingToURLApi}?userId=${userId}&file=${file}&ext=${ext}`;
 
-    return this.http.post<T>(endpointUrl, this.getRequestFileHeaders())
+    return this.http.post<T>(endpointUrl, null,this.getRequestFileHeaders())
       //.map(() => { return true; })
       .catch(error => {
         return this.handleError(error, () => this.fileUploadFromURL(userId, file, ext));

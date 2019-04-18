@@ -49,6 +49,7 @@ export class CampaignDetailsComponent implements OnInit {
   marketplacelist: marketplaceListModel[] = [];
   randomImageList: string[] = [];
   declinedUserList: playerInviteListModel[] = [];
+  GmCharacterSlotsCount: number = 0;
   constructor(private formBuilder: FormBuilder, private router: Router, private localStorage: LocalStoreManager, private marketPlaceService: MarketPlaceService,
     private rulesetService: RulesetService, private sharedService: SharedService, private authService: AuthService,
     private modalService: BsModalService, public appService: AppService1, public campaignService: CampaignService,
@@ -106,6 +107,7 @@ export class CampaignDetailsComponent implements OnInit {
             this.isLoading = false
             
             this.invitedUsers = data;
+            this.GmCharacterSlotsCount = this.invitedUsers.filter(x => !x.inviteId).length;
             this.declinedUserList = this.invitedUsers.filter(x => x.isDeclined);
             this.invitedUsers = this.invitedUsers.filter(x => !x.isDeclined );
             debugger;
@@ -123,8 +125,11 @@ export class CampaignDetailsComponent implements OnInit {
                 this.bindInvitedPlayerImage(index);
               }
 
-              if (this.declinedUserList.length) {
-                
+              
+            })
+            if (this.declinedUserList.length) {
+              
+
                 this.declinedUserList.map((x, xIndex) => {
                   if (xIndex == this.declinedUserList.length - 1) {
                     if (x.isSendToUserName) {
@@ -142,14 +147,12 @@ export class CampaignDetailsComponent implements OnInit {
                       names += x.playerUserEmail + ", ";
                     }
                   }
-                  
+
                 });
-                
-              }
-            })
-            if (this.declinedUserList) {
+
+              
               this.alertService.showDialog(names + " has declined your invitations.",
-                DialogType.confirm, () => this.ResendInvites(this.declinedUserList), () => { }, "Resend", "Ok");
+                DialogType.confirm, () => this.RemoveResendInvites(this.declinedUserList,true), () => this.RemoveResendInvites(this.declinedUserList,false), "Resend", "Ok");
             }
            
           }, error => {
@@ -439,7 +442,7 @@ export class CampaignDetailsComponent implements OnInit {
           this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
       }, () => { });
   }
-  ResendInvites(DeclinesInvites: playerInviteListModel[]) {
+  RemoveResendInvites(DeclinesInvites: playerInviteListModel[],resendInvite:boolean=false) {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null) {
       this.authService.logout();
@@ -463,20 +466,23 @@ export class CampaignDetailsComponent implements OnInit {
         modal.sendByCampaignName = this.rulesetModel.ruleSetName;
         this.campaignService.removePlayer<any>(x)
           .subscribe(data => {
-            this.campaignService.sendInvite<any>(modal)
-              .subscribe(
-                data => {
+            if (resendInvite) {
+              this.campaignService.sendInvite<any>(modal)
+                .subscribe(
+                  data => {
 
-                },
-                error => {
-                  this.alertService.stopLoadingMessage();
-                  let Errors = Utilities.ErrorDetail("", error);
-                  if (Errors.sessionExpire) {
-                    this.authService.logout(true);
-                  }
+                  },
+                  error => {
+                    this.alertService.stopLoadingMessage();
+                    let Errors = Utilities.ErrorDetail("", error);
+                    if (Errors.sessionExpire) {
+                      this.authService.logout(true);
+                    }
 
-                },
-              );
+                  },
+                );
+            }
+            
           }, error => {
             let Errors = Utilities.ErrorDetail("", error);
             if (Errors.sessionExpire) {
@@ -493,4 +499,5 @@ export class CampaignDetailsComponent implements OnInit {
     }
     
   }
+  
 }

@@ -967,11 +967,17 @@ export class Utilities {
 
   public static getHelpLinkUrl(url) {
     
-    if (url == '/characters' || url == '/character') {
+    if (url.toUpperCase() == '/CHARACTERS' || url.toUpperCase() == '/CHARACTER') {
       return 'https://rpgsmith.com/help/#CharacterCreation';
     }
-    else if (url == '/rulesets') {
+    else if (url.toUpperCase() == '/RULESETS' || url.toUpperCase() == '/RULESET') {
       return 'https://rpgsmith.com/help/#RuleSets';
+    }
+    else if (url.toUpperCase() == '/RULESETS/CAMPAIGNS' || url.toUpperCase() == '/RULESET/CAMPAIGNS') {
+      return 'https://rpgsmith.com/help/#RuleSets';
+    }
+    else if (url.toUpperCase().indexOf('RULESET/CAMPAIGN-DETAILS') > -1) {
+      return 'https://rpgsmith.com/help/#CampaignInterface';
     }
     else if (url.toUpperCase().indexOf('/CHARACTER/DASHBOARD') > -1 ||
       url.toUpperCase().indexOf('/RULESET/DASHBOARD') > -1 || url.toUpperCase().indexOf('/CHARACTER/TILES/') > -1) {

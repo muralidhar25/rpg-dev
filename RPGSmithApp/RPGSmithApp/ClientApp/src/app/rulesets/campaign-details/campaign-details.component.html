@@ -65,7 +65,7 @@
             </div>
             <div class="campaign-players-number">
               <span>                
-                PLAYERS <span>{{invitedUsers?.length}}/{{playersSlots}}</span>
+                PLAYERS <span>{{(invitedUsers?.length-GmCharacterSlotsCount)}}/{{playersSlots}}</span>
               </span>
             </div>
           </div>
@@ -229,7 +229,7 @@
                   <div class="player-character-detail">
                     <span>
                       Invite sent at<br />
-                      {{invite.sendOn}}
+                      {{invite.sendOn}} GMT
                     </span>
                   </div>
                   <div class="characters-description">
@@ -289,7 +289,7 @@
               </div>
             </div>
           </div>
-          <div class="col-12 col-sm-6 col-lg-3 mb-3" (click)="invitePlayer()" *ngIf="playersSlots>invitedUsers?.length">
+          <div class="col-12 col-sm-6 col-lg-3 mb-3" (click)="invitePlayer()" *ngIf="playersSlots>(invitedUsers?.length-GmCharacterSlotsCount)">
             <div class="w-100 card-wrapper">
               <div class="card">
                 <div class="card-image thumbnail bg-white h-191">
@@ -303,7 +303,7 @@
               </div>
             </div>
           </div>
-          <div class="col-12 col-sm-6 col-lg-3 mb-3" [ngClass]="marketplacelist?.length? '' : disable-div" (click)="BuyPlayerSlot()"  *ngIf="playersSlots<=invitedUsers?.length">
+          <div class="col-12 col-sm-6 col-lg-3 mb-3" [ngClass]="marketplacelist?.length? '' : disable-div" (click)="BuyPlayerSlot()"  *ngIf="playersSlots<=(invitedUsers?.length-GmCharacterSlotsCount)">
             <div class="w-100 card-wrapper">
               <div class="card">
                 <div class="card-image thumbnail bg-white h-191">

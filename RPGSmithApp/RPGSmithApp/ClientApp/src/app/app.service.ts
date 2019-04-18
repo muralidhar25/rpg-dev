@@ -9,7 +9,8 @@ export class AppService1 {
 
   private accountSetting = new Subject<any>();
   private text = new Subject<any>();
-
+  private character = new Subject<any>();
+  //private charactersCount = new Subject<any>();
 
   updateAccountSetting1(accountSetting: any) {    
     this.accountSetting.next(accountSetting);
@@ -29,5 +30,19 @@ export class AppService1 {
   shouldUpdateSearchText(): Observable<any> {
     return this.text.asObservable();
   }
+  updateCharacterList(character: any) {
+    this.character.next(character);
+  }
+
+  shouldUpdateCharacterList(): Observable<any> {
+    return this.character.asObservable();
+  }
+  //updateCharactersCount(charactersCount: any) {
+  //  this.charactersCount.next(charactersCount);
+  //}
+
+  //shouldCharactersCount(): Observable<any> {
+  //  return this.charactersCount.asObservable();
+  //}
 }
 

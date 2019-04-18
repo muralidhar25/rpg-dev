@@ -738,7 +738,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.URLFlag = false;
       
         this.showCharacterSearch = ((url.toLowerCase() == '/character/dashboard'));
-        console.log('search fired.')
+        
         if (url.toUpperCase().indexOf('/CHARACTER/DASHBOARD/') > -1
           || url.toUpperCase().indexOf('/CHARACTERS/DASHBOARD/') > -1
           ) {
@@ -1240,7 +1240,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user) {
       if (user.isGm) {
-        debugger
+        
         if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)
         ) {
           this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);

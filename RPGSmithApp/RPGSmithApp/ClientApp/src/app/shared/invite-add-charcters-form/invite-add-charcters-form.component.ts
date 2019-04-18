@@ -126,6 +126,7 @@ export class InviteAddCharctersFormComponent implements OnInit {
     return false;
   }
   validateSubmit() {
+    
     if (this.charactersFormModal.ruleSetId == 0 || this.charactersFormModal.ruleSetId == undefined) {
       this.alertService.showMessage("Please select ruleset.", "Ruleset is required for adding a character.", MessageSeverity.error);
     }
@@ -266,11 +267,12 @@ export class InviteAddCharctersFormComponent implements OnInit {
           this.alertService.showMessage(message, "", MessageSeverity.success);
           this.commonService.UpdateCounts(); /*update charaters count*/
           console.log(modal.inviteId, this.inviteid);
-          this.invitationList = this.invitationList.filter((x : any) => x.id != this.inviteid);
-          console.log(this.invitationList);
+          this.invitationList = this.invitationList.filter((x : any) => x.id != this.inviteid);          
           this.appService.updateInvitationlist(this.invitationList);
           this.close();
           
+          this.appService.updateCharacterList(true);
+          //this.appService.updateCharactersCount(true);
         },
         error => {
 
