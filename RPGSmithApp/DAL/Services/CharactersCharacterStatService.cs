@@ -418,6 +418,15 @@ namespace DAL.Services
                 .Include(d => d.CharacterStat.CharacterStatChoices).Include(x=>x.CharacterStat.CharacterStatConditions)
                .Where(x => x.CharacterId == characterId && x.IsDeleted != true).OrderBy(x => x.CharacterStat.SortOrder)
                .ToListAsync();
+
+            foreach (var item in CharactersCharacterStats)
+            {
+                foreach (var cond in item.CharacterStat.CharacterStatConditions)
+                {
+                    cond.ConditionOperator = _context.ConditionOperators.Where(x => x.ConditionOperatorId == cond.ConditionOperatorID).FirstOrDefault();
+                }
+                
+            }
             return CharactersCharacterStats;
         }
         private object GetNull(object obj)

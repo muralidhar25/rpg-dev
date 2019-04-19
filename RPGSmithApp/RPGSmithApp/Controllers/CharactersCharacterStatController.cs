@@ -379,6 +379,7 @@ namespace RPGSmithApp.Controllers
                             CompareValue= z.CompareValue,
                             Result= z.Result,
                             SortOrder= z.SortOrder,
+                            ConditionOperator=z.ConditionOperator,
                         }).ToList(),
                     }
 
