@@ -20,6 +20,7 @@ import { Ability } from "../../../../../core/models/view-models/ability.model";
 import { DiceRollComponent } from "../../../../../shared/dice/dice-roll/dice-roll.component";
 import { CreateAbilitiesComponent } from "../../../../../shared/create-abilities/create-abilities.component";
 import { AppService1 } from "../../../../../app.service";
+import { CharactersService } from "../../../../../core/services/characters.service";
 
 @Component({
   selector: 'app-ruleset-view-list',
@@ -48,14 +49,15 @@ export class AbilityRulesetViewListComponent implements OnInit {
     characterAbilityModal: any = new CharacterAbilities();
     character: any = new Characters();
     IsAddingRecord: boolean = false;
-    charNav: any = {};
+  charNav: any = {};
+  pageRefresh: boolean;
 
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
         private sharedService: SharedService, private commonService: CommonService, private pageLastViewsService: PageLastViewsService,
       private abilityService: AbilityService, private rulesetService: RulesetService, private characterAbilityService: CharacterAbilityService
-      , public appService: AppService1
+      , public appService: AppService1, private charactersService: CharactersService
     ) {
         //this.route.params.subscribe(params => { this.abilityId = params['id']; });
         this.sharedService.shouldUpdateAbilityList().subscribe(sharedServiceJson => {
@@ -121,7 +123,22 @@ export class AbilityRulesetViewListComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
-            this.isLoading = true;
+          this.isLoading = true;
+          //api for player controls
+          this.charactersService.getPlayerControlsByCharacterId(this.character.characterId)
+            .subscribe(data => {
+              if (data) {
+                if (data.pauseGame) {
+                  this.router.navigate['/characters'];
+                }
+                this.pageRefresh = data.isPlayerCharacter;
+              }
+            }, error => {
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
+            });
             this.abilityService.getAbilityByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
                 .subscribe(data => {
 
@@ -464,5 +481,10 @@ export class AbilityRulesetViewListComponent implements OnInit {
                     else
                         this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
                 });
-    }
+  }
+
+
+  refresh() {
+    this.initialize();
+  }
 }

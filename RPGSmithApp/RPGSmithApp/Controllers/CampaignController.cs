@@ -55,7 +55,7 @@ namespace RPGSmithApp.Controllers
         [HttpGet("getPlayerControlsByCharacterId")]
         public async Task<IActionResult> getPlayerControlsByCharacterId(int characterID)
         {
-            return Ok(await _campaign.getPlayerControlsByCharacterId(characterID));
+            return Ok(await _campaign.getPlayerControlsByCharacterId(characterID, GetUserId()));
         }
         [HttpPost("updatePlayerControls")]
         public async Task<IActionResult> updatePlayerControls([FromBody] PlayerControl model)

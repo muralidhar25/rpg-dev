@@ -63,7 +63,9 @@ export class CharacterAbilitiesComponent implements OnInit {
   Alphabetical: boolean = false;
   Enabled: boolean = false;
   Level: boolean = false;
-
+  pauseAbilityAdd: boolean;
+  pauseAbilityCreate: boolean;
+  pageRefresh: boolean;
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -151,6 +153,26 @@ export class CharacterAbilitiesComponent implements OnInit {
       this.getFilters();
 
       this.isLoading = true;
+
+      //api for player controls
+      this.charactersService.getPlayerControlsByCharacterId(this.characterId)
+        .subscribe(data => {
+          if (data) {
+            
+            if (data.pauseGame) {
+              this.router.navigate['/characters'];
+            }
+            this.pageRefresh = data.isPlayerCharacter;
+            this.pauseAbilityAdd = data.pauseAbilityAdd;
+            this.pauseAbilityCreate = data.pauseAbilityCreate;
+          }
+        }, error => {
+          let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+                this.authService.logout(true);
+            }
+        });
+     
       this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.abilityFilter.type)
         .subscribe(data => {
           this.abilitiesList = Utilities.responseData(data.characterAbilityList, this.pageSize);
@@ -776,6 +798,9 @@ export class CharacterAbilitiesComponent implements OnInit {
         }, error => {
         }, () => { });
     }
+  }
+  refresh() {
+    this.initialize();
   }
 
 }

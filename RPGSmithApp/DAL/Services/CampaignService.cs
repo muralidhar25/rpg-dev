@@ -238,8 +238,22 @@ namespace DAL.Services
             }
             return res;
         }
-        public async Task<PlayerControl> getPlayerControlsByCharacterId(int characterID) {
-            return await _context.PlayerControls.Where(x => x.PlayerCharacterID == characterID).FirstOrDefaultAsync();
+        public async Task<PlayerControlModel> getPlayerControlsByCharacterId(int characterID, string userid) {
+            return await _context.PlayerControls.Where(x => x.PlayerCharacterID == characterID).Include(x=>x.PlayerCharacter)
+                .Select(model => new PlayerControlModel()
+                {
+                    CampaignID= model.CampaignID,
+                    Id= model.Id,
+                    PlayerCharacterID= model.PlayerCharacterID,
+                    PauseAbilityAdd = model.PauseAbilityAdd,
+                    PauseAbilityCreate = model.PauseAbilityCreate,
+                    PauseGame = model.PauseGame,
+                    PauseItemAdd = model.PauseItemAdd,
+                    PauseItemCreate = model.PauseItemCreate,
+                    PauseSpellAdd = model.PauseSpellAdd,
+                    PauseSpellCreate = model.PauseSpellCreate,
+                    IsPlayerCharacter=userid==model.PlayerCharacter.UserId?true:false,
+                }).FirstOrDefaultAsync();
         }
         public async Task<PlayerControl> updatePlayerControls(PlayerControl model) {
             List<PlayerControl> list =await _context.PlayerControls.Where(x => x.CampaignID == model.CampaignID).ToListAsync();

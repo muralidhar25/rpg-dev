@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
+import { CampaignService } from '../../core/services/campaign.service';
+import { playerControlModel } from '../../core/models/campaign.model';
+import { AlertService, MessageSeverity } from '../../core/common/alert.service';
+import { Utilities } from '../../core/common/utilities';
+import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-player-controls',
@@ -7,54 +12,106 @@ import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-b
   styleUrls: ['./player-controls.component.scss']
 })
 export class PlayerControlsComponent implements OnInit {
-  pausegame: boolean = true;
-  itemcreations: boolean = true;
-  spellcreations: boolean = true;
-  abilitycreations: boolean = true;
-  itemadditions: boolean = true;
-  spelladditions: boolean = true;
-  abilityadditions: boolean = true;
- 
-  constructor(private bsModalRef: BsModalRef) { }
+
+  rulesetId: number;
+  playerControls: any = new playerControlModel();
+  isLoading: boolean = false;
+  isloading: boolean = true;
+
+  constructor(private bsModalRef: BsModalRef,
+    private campaignService: CampaignService,
+    private alertService: AlertService,
+    private authService: AuthService
+  ) { }
 
   ngOnInit() {
     console.log('p controls works');
+    setTimeout(() => {
+      this.rulesetId = this.bsModalRef.content.rulesetId;
+      this.initialize(this.rulesetId);
+    }, 0);
+   
   }
+  initialize(campaignId) {
+    this.isLoading = true;
+    this.campaignService.getPlayersControls(campaignId)
+      .subscribe(data => {
+        this.playerControls = data;
+        this.isLoading = false;
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+        else if (error.statusText == "Bad Request") {
+          this.alertService.showStickyMessage('', error.error, MessageSeverity.error);
+          setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+        }
+      }, () => {
+
+      });
+  }
+
   close() {
     this.bsModalRef.hide();
     // this.destroyModalOnInit();
   }
 
   setpauseGame(checked:boolean) {
-    console.log(checked,'setpauseGame');
-    this.pausegame = checked;
+    this.playerControls.pauseGame = checked;
   }
  
   AllowItemCreation(checked : boolean ) {
-    console.log(checked, 'AllowItemCreation');
-    this.itemcreations = checked;
+    this.playerControls.pauseItemCreate = checked;
   }
 
   AllowSpellcreation(checked: boolean) {
-    console.log(checked, 'AllowSpellcreation');
-    this.spellcreations = checked;
+    this.playerControls.pauseSpellCreate = checked;
   }
 
   AllowAbilityCreation(checked: boolean) {
-    console.log(checked, 'AllowAbilityCreation');
-    this.abilitycreations = checked;
+    this.playerControls.pauseAbilityCreate = checked;
   }
   AllowItemAdditions(checked: boolean) {
-    console.log(checked, 'AllowItemAddations');
-    this.itemadditions = checked;
+    this.playerControls.pauseItemAdd = checked;
   }
   playerspellAdition(checked: boolean) {
-    console.log(checked, 'playerspellAdition');
-    this.spelladditions = checked;
+    this.playerControls.pauseSpellAdd = checked;
   }
  
   playerAbilityAdditions(checked: boolean) {
-    console.log(checked, 'playerAbilityAdditions');
-    this.abilityadditions = checked;
+    this.playerControls.pauseAbilityAdd = checked;
+  }
+
+  //save players Controls
+  save() {
+
+    this.isloading = false;
+    this.alertService.startLoadingMessage("", "Saving PlayerControls...");
+    this.campaignService.UpdatePlayerControls<any>(this.playerControls)
+      .subscribe(
+      data => {
+          this.alertService.stopLoadingMessage();       
+        this.alertService.showMessage("Player Controls save successfully.", "", MessageSeverity.success);
+          if (data) {
+              this.bsModalRef.hide();
+          }
+         this.isloading = true;
+        },
+        error => {
+          this.isloading = true;
+          this.alertService.stopLoadingMessage();
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+          else if (error.statusText == "Bad Request") {
+            this.alertService.showStickyMessage('', error.error, MessageSeverity.error);
+            setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+          }
+        },
+      );
+    
   }
 }

@@ -47,13 +47,15 @@ export class RulesetViewSpellDetailComponent implements OnInit {
     IsAddingRecord: boolean = false;
   itemMasterId: any;
   isDropdownOpen: boolean = false;
-    charNav: any = {};
+  charNav: any = {};
+  pageRefresh: boolean;
+
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
         private sharedService: SharedService, private commonService: CommonService,
         private spellsService: SpellsService, private rulesetService: RulesetService, private charactersService: CharactersService,
-        private characterSpellService: CharacterSpellService,
+      private characterSpellService: CharacterSpellService,
       private itemMasterService: ItemMasterService, public appService: AppService1
     ) {
         this.route.params.subscribe(params => { this.spellId = params['id']; });
@@ -112,7 +114,24 @@ export class RulesetViewSpellDetailComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
-            this.isLoading = true;
+          this.isLoading = true;
+          //api for player controls
+          this.charactersService.getPlayerControlsByCharacterId(this.character.characterId)
+            .subscribe(data => {
+              if (data) {
+             
+                if (data.pauseGame) {
+                  this.router.navigate['/characters'];
+                }
+                this.pageRefresh = data.isPlayerCharacter;
+
+              }
+            }, error => {
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
+            });
             this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
             this.rulesetService.getRulesetById<any>(this.ruleSetId)
                 .subscribe(data => {
@@ -395,4 +414,8 @@ export class RulesetViewSpellDetailComponent implements OnInit {
                         this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
                 });
     }
+  refresh() {
+    this.initialize();
+  }
+
 }

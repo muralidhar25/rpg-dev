@@ -30,7 +30,6 @@ import { HeaderValues } from "../../../core/models/headers.model";
     templateUrl: './items.component.html',
     styleUrls: ['./items.component.scss']
 })
-
 export class CharacterItemsComponent implements OnInit {
 
   isLoading = false;
@@ -53,6 +52,8 @@ export class CharacterItemsComponent implements OnInit {
   page: number = 1;
   pageSize: number = 28;
   ContainedItemsToDelete: any[];
+  pauseItemAdd: boolean;
+  pauseItemCreate: boolean;
   inventoryFilter: any = {
     type: 1,
     name: 'Uncontained',
@@ -68,6 +69,7 @@ export class CharacterItemsComponent implements OnInit {
   Equipped: boolean = false;
   Alphabetical: boolean = false;
   Visible: boolean = false;
+  pageRefresh: boolean;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private pageLastViewsService: PageLastViewsService,
@@ -153,6 +155,25 @@ export class CharacterItemsComponent implements OnInit {
       this.getFilters();
      
       this.isLoading = true;
+      //api for player controls
+      this.charactersService.getPlayerControlsByCharacterId(this.characterId)
+        .subscribe(data => {
+          if (data) {
+            
+            if (data.pauseGame) {
+              this.router.navigate['/characters'];
+            }
+            this.pageRefresh = data.isPlayerCharacter;
+            this.pauseItemAdd = data.pauseItemAdd;
+            this.pauseItemCreate = data.pauseItemCreate;
+          }
+        }, error => {
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+        });
+      
       this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, this.inventoryFilter.type)
         .subscribe(data => {
 
@@ -894,5 +915,8 @@ export class CharacterItemsComponent implements OnInit {
         }, error => {
         }, () => { });
     }
+  }
+  refresh() {
+    this.initialize();
   }
 }

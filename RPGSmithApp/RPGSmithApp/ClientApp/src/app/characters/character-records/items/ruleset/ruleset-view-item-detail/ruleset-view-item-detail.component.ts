@@ -20,6 +20,7 @@ import { Utilities } from "../../../../../core/common/utilities";
 import { ImageViewerComponent } from "../../../../../shared/image-interface/image-viewer/image-viewer.component";
 import { CreateItemMsterComponent } from "../../../../../records/item-master/create-item/create-item.component";
 import { AppService1 } from "../../../../../app.service";
+import { CharactersService } from "../../../../../core/services/characters.service";
 
 @Component({
   selector: 'app-ruleset-view-item-detail',
@@ -38,16 +39,17 @@ export class RulesetViewItemDetailComponent implements OnInit {
     ItemMasterDetail: any = new ItemMaster();
     ruleset: Ruleset = new Ruleset();
     charNav: any = {};
-
     characterItemModal: any = new Items();
     character: any = new Characters();
-    IsAddingRecord: boolean = false;
+  IsAddingRecord: boolean = false;
+  pageRefresh: boolean;
+
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
         private sharedService: SharedService, private commonService: CommonService,
       private itemMasterService: ItemMasterService, private rulesetService: RulesetService, private itemsService: ItemsService
-      , public appService: AppService1
+      , public appService: AppService1, private charactersService: CharactersService
     ) {
         this.route.params.subscribe(params => { this.itemMasterId = params['id']; });
         this.sharedService.shouldUpdateItemMasterList().subscribe(sharedServiceJson => {
@@ -107,7 +109,24 @@ export class RulesetViewItemDetailComponent implements OnInit {
             this.authService.logout();
         else {
             this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-            this.isLoading = true;
+          this.isLoading = true;
+          //api for player controls
+          this.charactersService.getPlayerControlsByCharacterId(this.character.characterId )
+            .subscribe(data => {
+              if (data) {
+                
+                if (data.pauseGame) {
+                  this.router.navigate['/characters'];
+                }
+                this.pageRefresh = data.isPlayerCharacter;
+
+              }
+            }, error => {
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
+            });
             this.rulesetService.getRulesetById<any>(this.ruleSetId)
                 .subscribe(data => {
                     this.ruleset = data;
@@ -354,5 +373,10 @@ export class RulesetViewItemDetailComponent implements OnInit {
                         this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
                 });
     }
+
+  refresh() {
+    this.initialize();
+  }
+
 }
 

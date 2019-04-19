@@ -46,6 +46,7 @@ export class RulesetViewAbilityDetailComponent implements OnInit {
 
     characterAbilityModal: any = new CharacterAbilities();
     IsAddingRecord: boolean = false;
+    pageRefresh: boolean;
 
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -113,7 +114,24 @@ export class RulesetViewAbilityDetailComponent implements OnInit {
             this.authService.logout();
         else {
             this.isLoading = true;
-            this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+          this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+          //api for player controls
+          this.charactersService.getPlayerControlsByCharacterId(this.character.characterId)
+            .subscribe(data => {
+              if (data) {
+              
+                if (data.pauseGame) {
+                  this.router.navigate['/characters'];
+                }
+                this.pageRefresh = data.isPlayerCharacter;
+
+              }
+            }, error => {
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
+            });
             this.rulesetService.getRulesetById<any>(this.ruleSetId)
                 .subscribe(data => {
                     this.ruleset = data;
@@ -393,5 +411,8 @@ export class RulesetViewAbilityDetailComponent implements OnInit {
           else
             this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
         });
+  }
+  refresh() {
+    this.initialize();
   }
 }

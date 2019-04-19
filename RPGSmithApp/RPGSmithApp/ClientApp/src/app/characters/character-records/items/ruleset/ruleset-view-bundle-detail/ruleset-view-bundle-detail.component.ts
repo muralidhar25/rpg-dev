@@ -22,6 +22,7 @@ import { CreateItemMsterComponent } from "../../../../../records/item-master/cre
 import { AppService1 } from "../../../../../app.service";
 import { Bundle } from "../../../../../core/models/view-models/bundle.model";
 import { CreateBundleComponent } from "../../../../../records/item-master/create-bundle/create-bundle.component";
+import { CharactersService } from "../../../../../core/services/characters.service";
 
 @Component({
   selector: 'app-ruleset-view-bundle-detail',
@@ -45,12 +46,14 @@ export class RulesetViewBundleDetailComponent implements OnInit {
   character: any = new Characters();
   IsAddingRecord: boolean = false;
   bundleItems: any[] = [];
+  pageRefresh: boolean;
+
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService, private commonService: CommonService,
     private itemMasterService: ItemMasterService, private rulesetService: RulesetService, private itemsService: ItemsService
-    , public appService: AppService1
+    , public appService: AppService1, private charactersService: CharactersService
   ) {
     this.route.params.subscribe(params => { this.bundleId = params['id']; });
     this.sharedService.shouldUpdateItemMasterList().subscribe(sharedServiceJson => {
@@ -111,6 +114,23 @@ export class RulesetViewBundleDetailComponent implements OnInit {
     else {
       this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
       this.isLoading = true;
+      //api for player controls
+      this.charactersService.getPlayerControlsByCharacterId(this.character.characterId)
+        .subscribe(data => {
+          if (data) {
+         
+            if (data.pauseGame) {
+              this.router.navigate['/characters'];
+            }
+            this.pageRefresh = data.isPlayerCharacter;
+
+          }
+        }, error => {
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+        });
       this.rulesetService.getRulesetById<any>(this.ruleSetId)
         .subscribe(data => {
           this.ruleset = data;
@@ -364,5 +384,8 @@ export class RulesetViewBundleDetailComponent implements OnInit {
           else
             this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
         });
+  }
+  refresh() {
+    this.initialize();
   }
 }

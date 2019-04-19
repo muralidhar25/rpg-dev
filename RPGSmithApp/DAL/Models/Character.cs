@@ -71,5 +71,6 @@ namespace DAL.Models
     }
     public class CharecterWithInvites : Character {
         public int InviteId { get; set; }
+        public bool IsCharacterGamePaused { get; set; }
     }
 }

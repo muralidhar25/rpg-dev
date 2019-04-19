@@ -21,6 +21,7 @@ import { Spell } from "../../../../../core/models/view-models/spell.model";
 import { DiceRollComponent } from "../../../../../shared/dice/dice-roll/dice-roll.component";
 import { CreateSpellsComponent } from "../../../../../shared/create-spells/create-spells.component";
 import { AppService1 } from "../../../../../app.service";
+import { CharactersService } from "../../../../../core/services/characters.service";
 
 @Component({
   selector: 'app-ruleset-view-list',
@@ -49,12 +50,14 @@ export class SpellRulesetViewListComponent implements OnInit {
     characterSpellModal: any = new CharacterSpells();
     character: any = new Characters();
     IsAddingRecord: boolean = false;
+  pageRefresh: boolean;
+
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
         private sharedService: SharedService, private commonService: CommonService, private spellsService: SpellsService,
-        private pageLastViewsService: PageLastViewsService, private rulesetService: RulesetService, private characterSpellService: CharacterSpellService,
-        public appService: AppService1
+      private pageLastViewsService: PageLastViewsService, private rulesetService: RulesetService, private characterSpellService: CharacterSpellService,
+      public appService: AppService1, private charactersService: CharactersService
     ) {
         this.sharedService.shouldUpdateSpellList().subscribe(sharedServiceJson => {
             if (sharedServiceJson) {
@@ -119,7 +122,23 @@ export class SpellRulesetViewListComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
-            this.isLoading = true;
+          this.isLoading = true;
+          //api for player controls
+            this.charactersService.getPlayerControlsByCharacterId(this.character.characterId)
+              .subscribe(data => {
+                if (data) {
+                 
+                  if (data.pauseGame) {
+                    this.router.navigate['/characters'];
+                  }
+                  this.pageRefresh = data.isPlayerCharacter;
+                }
+              }, error => {
+                let Errors = Utilities.ErrorDetail("", error);
+                if (Errors.sessionExpire) {
+                  this.authService.logout(true);
+                }
+              });
             this.spellsService.getspellsByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
                 .subscribe(data => {
 
@@ -470,4 +489,8 @@ export class SpellRulesetViewListComponent implements OnInit {
                         this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
                 });
     }
+
+  refresh() {
+    this.initialize();
+  }
 }

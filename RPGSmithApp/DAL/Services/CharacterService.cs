@@ -566,6 +566,7 @@ namespace DAL.Services
                     _character.LastCommandTotal = row["LastCommandTotal"] == DBNull.Value ? 0 : Convert.ToInt32(row["LastCommandTotal"]);
                     _character.InventoryWeight = row["InventoryWeight"] == DBNull.Value ? 0 : Convert.ToDecimal(row["InventoryWeight"]);
                     _character.InviteId= row["InviteID"] == DBNull.Value ? 0 : Convert.ToInt32(row["InviteID"]);
+                    _character.IsCharacterGamePaused= row["IsCharacterGamePaused"] == DBNull.Value ? false : Convert.ToBoolean(row["IsCharacterGamePaused"]);
 
                     _character.RuleSet = __ruleset;
                     _CharacterList.Add(_character);

@@ -60,10 +60,10 @@
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                   <ul class="dropdown-menu-list">
                     <li class="dropdown-menu-item">
-                      <button type="button" (click)="addItem()" class="btn btn-accent icon-Rec-Add"> Add Item</button>
+                      <button type="button" (click)="addItem()" class="btn btn-accent icon-Rec-Add" [disabled]="pauseItemAdd"> Add Item</button>
                     </li>
                     <li class="dropdown-menu-item">
-                      <button type="button" (click)="createItem()" class="btn btn-accent icon-Gen-Edit"> Create Item</button>
+                      <button type="button" (click)="createItem()" class="btn btn-accent icon-Gen-Edit"  [disabled]="pauseItemCreate"> Create Item</button>
                     </li>
                   </ul>
                 </div>
@@ -111,18 +111,18 @@
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                 <ul class="dropdown-menu-list">
                   <li class="dropdown-menu-item">
-                    <button type="button" (click)="addItem()" class="btn btn-accent icon-Rec-Add"> Add Item</button>
+                    <button type="button" (click)="addItem()" class="btn btn-accent icon-Rec-Add"  [disabled]="pauseItemAdd"> Add Item</button>
                   </li>
                   <li class="dropdown-menu-item">
-                    <button type="button" (click)="createItem()" class="btn btn-accent icon-Gen-Edit"> Create Item</button>
+                    <button type="button" (click)="createItem()" class="btn btn-accent icon-Gen-Edit"  [disabled]="pauseItemCreate"> Create Item</button>
                   </li>
                 </ul>
               </div>
             </div>
           </li>
-          <!--<li class="refresh-btn">
-            <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh"></button>
-          </li>-->
+          <li class="refresh-btn" *ngIf="pageRefresh">
+            <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh"  (click)="refresh()" ></button>
+          </li>
           <li>
             <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary"><span class="text-hide-tab">Dice</span></button>
           </li>

@@ -65,3 +65,39 @@ export class playerInviteListModel {
   public playerUserEmail: string;
   public showIcon: boolean;
 }
+
+export class playerControlModel {
+
+  constructor(
+    campaignID?: number,
+    id?: number,
+    pauseGame?: boolean,
+    pauseItemCreate?: boolean,
+    pauseItemAdd?: boolean,
+    pauseSpellAdd?: boolean,
+    pauseSpellCreate?: boolean,
+    pauseAbilityAdd?: boolean,
+    pauseAbilityCreate?: boolean
+  ) {
+    this.campaignID = campaignID;
+    this.id = id;
+    this.pauseGame = pauseGame;
+    this.pauseItemCreate = pauseItemCreate;
+    this.pauseItemAdd = pauseItemAdd;
+    this.pauseSpellCreate = pauseSpellCreate;
+    this.pauseSpellAdd = pauseSpellAdd;
+    this.pauseAbilityAdd = pauseAbilityAdd;
+    this.pauseAbilityCreate = pauseAbilityCreate;
+
+  }
+ 
+  public campaignID: number;
+  public id: number;
+  public pauseGame: boolean;
+  public pauseItemCreate: boolean;
+  public pauseItemAdd: boolean;
+  public pauseSpellCreate: boolean;
+  public pauseSpellAdd: boolean;
+  public pauseAbilityAdd: boolean;
+  public pauseAbilityCreate: boolean;
+}

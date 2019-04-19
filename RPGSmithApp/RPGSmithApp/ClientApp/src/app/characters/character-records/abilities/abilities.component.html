@@ -55,18 +55,18 @@
             </li>
             <li>
               <!--<div class="dropdown dropdown-buttons">
-                  <button type="button" (click)="addAbility()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Add Ability</button>
-              </div>-->
+        <button type="button" (click)="addAbility()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Add Ability</button>
+    </div>-->
 
               <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
                 <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle is-show"><span class="text-hide-tab  is-show">New Ability</span></button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                   <ul class="dropdown-menu-list">
                     <li class="dropdown-menu-item">
-                      <button type="button" (click)="addAbility()" class="btn btn-accent icon-Rec-Add"> Add Ability</button>
+                      <button type="button" (click)="addAbility()" class="btn btn-accent icon-Rec-Add" [disabled]="pauseAbilityAdd"> Add Ability</button>
                     </li>
                     <li class="dropdown-menu-item">
-                      <button type="button" (click)="createAbility()" class="btn btn-accent icon-Gen-Edit"> Create Ability</button>
+                      <button type="button" (click)="createAbility()" class="btn btn-accent icon-Gen-Edit" [disabled]="pauseAbilityCreate"> Create Ability</button>
                     </li>
                   </ul>
                 </div>
@@ -78,18 +78,18 @@
         <ul class="page-toolbar-actions">
           <li class="view-switch">
             <div class="btn-group" role="group">
-                            <!--<button type="button" id="filtersToggleBtn" class="btn filter-toggle-btn" [disabled]="isLoading"  (click)="applyFilters(abilityFilter.type,false,true)" popover="{{abilityFilter.name}}" triggers="hover click">
-                  &nbsp;{{abilityFilter.viewableCount}}
-                  <span *ngIf="abilityFilter.type == 1"><i>A</i></span>
-                  <span *ngIf="abilityFilter.type == 3"><i>L</i></span>
-                  <span [ngClass]="abilityFilter.icon"></span>
-                </button>-->
-                            <!--<button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="{'selected':!isListView}" (click)="showListView(false)"></button>
-                <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="{'selected':isListView}" (click)="showListView(true)"></button>-->
+              <!--<button type="button" id="filtersToggleBtn" class="btn filter-toggle-btn" [disabled]="isLoading"  (click)="applyFilters(abilityFilter.type,false,true)" popover="{{abilityFilter.name}}" triggers="hover click">
+        &nbsp;{{abilityFilter.viewableCount}}
+        <span *ngIf="abilityFilter.type == 1"><i>A</i></span>
+        <span *ngIf="abilityFilter.type == 3"><i>L</i></span>
+        <span [ngClass]="abilityFilter.icon"></span>
+      </button>-->
+              <!--<button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="{'selected':!isListView}" (click)="showListView(false)"></button>
+      <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="{'selected':isListView}" (click)="showListView(true)"></button>-->
               <div class="dropdown">
-                        <!--<button class="btn dropdown-toggle filter-toggle-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                30 <i>A</i>
-               </button>-->
+                <!--<button class="btn dropdown-toggle filter-toggle-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+         30 <i>A</i>
+        </button>-->
                 <button class="btn dropdown-toggle filter-toggle-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" popover="{{abilityFilter.name}}" triggers="hover click">
                   &nbsp;{{abilityFilter.viewableCount}}
                   <span *ngIf="abilityFilter.type == 1"><i>A</i></span>
@@ -98,8 +98,8 @@
                 </button>
                 <div class="dropdown-menu filter-toggle-btn-menu" aria-labelledby="dropdownMenuButton">
                   <button type="button" id="listViewTrigger" class="btn" [ngClass]="Alphabetical ? 'selected' :''" (click)="applyFilters(1,false,true)"><i>A</i>Alphabetical <span>{{AlphabeticalCount}}</span></button>
-                  <button type="button" id="listViewTrigger" class="btn icon icon-Rec-Enabled" [ngClass]="Enabled ? 'selected' :''"  (click)="applyFilters(2,false,true)">Enabled<span>{{EnableCount}} </span></button>
-                  <button type="button" id="equippedViewTrigger" class="btn" [ngClass]="Level ? 'selected' :''"  (click)="applyFilters(3,false,true)"><i>L</i>Level<span>{{LevelCount}}</span></button>
+                  <button type="button" id="listViewTrigger" class="btn icon icon-Rec-Enabled" [ngClass]="Enabled ? 'selected' :''" (click)="applyFilters(2,false,true)">Enabled<span>{{EnableCount}} </span></button>
+                  <button type="button" id="equippedViewTrigger" class="btn" [ngClass]="Level ? 'selected' :''" (click)="applyFilters(3,false,true)"><i>L</i>Level<span>{{LevelCount}}</span></button>
                   <!--<button type="button" id="gridViewTrigger" class="btn icon icon-Rec-Visible" (click)="applyFilters(abilityFilter.type)" popover="{{abilityFilter.name}}" triggers="hover click"> Visible <span>3</span></button>-->
                 </div>
               </div>
@@ -125,14 +125,17 @@
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                 <ul class="dropdown-menu-list">
                   <li class="dropdown-menu-item">
-                    <button type="button" (click)="addAbility()" class="btn btn-accent icon-Rec-Add"> Add Ability</button>
+                    <button type="button" (click)="addAbility()" class="btn btn-accent icon-Rec-Add" [disabled]="pauseAbilityAdd"> Add Ability</button>
                   </li>
                   <li class="dropdown-menu-item">
-                    <button type="button" (click)="createAbility()" class="btn btn-accent icon-Gen-Edit"> Create Ability</button>
+                    <button type="button" (click)="createAbility()" class="btn btn-accent icon-Gen-Edit" [disabled]="pauseAbilityCreate"> Create Ability</button>
                   </li>
                 </ul>
               </div>
             </div>
+          </li>
+          <li class="refresh-btn" *ngIf="pageRefresh">
+            <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
           </li>
           <li>
             <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">

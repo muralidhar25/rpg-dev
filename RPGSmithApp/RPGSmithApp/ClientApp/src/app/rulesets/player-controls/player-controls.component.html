@@ -4,7 +4,7 @@
     <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
   </div>
 </div>
-<div class="modal-body players-component">
+<div class="modal-body players-component" *ngIf="!isLoading">
   <div class="row mb-3 align-items-center">
     <div class="col-12 col-sm-7 pr-sm-0">
       <label>Pause Game - Prevents Player Changes to Character Stats and Records</label>
@@ -16,7 +16,7 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="pausegame1"
-                       [checked]="pausegame"
+                       [checked]="playerControls?.pauseGame"
                        (click)="setpauseGame(true)">
                 <span>ON</span>
               </label>
@@ -24,7 +24,7 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="pausegame2"
-                       [checked]="!pausegame"
+                       [checked]="!playerControls?.pauseGame"
                        (click)="setpauseGame(false)">
                 <span>OFF</span>
               </label>
@@ -45,7 +45,7 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="itemcreations1"
-                       [checked]="itemcreations"
+                       [checked]="playerControls.pauseItemCreate"
                        (click)="AllowItemCreation(true)">
                 <span>ON</span>
               </label>
@@ -53,7 +53,7 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="itemcreations2"
-                       [checked]="!itemcreations"
+                       [checked]="!playerControls.pauseItemCreate"
                        (click)="AllowItemCreation(false)">
                 <span>OFF</span>
               </label>
@@ -74,7 +74,7 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="spellcreations1"
-                       [checked]="spellcreations"
+                       [checked]="playerControls.pauseSpellCreate"
                        (click)="AllowSpellcreation(true)" >
                 <span>ON</span>
               </label>
@@ -82,7 +82,7 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="spellcreations2"
-                       [checked]="!spellcreations"
+                       [checked]="!playerControls.pauseSpellCreate"
                        (click)="AllowSpellcreation(false)" >
                 <span>OFF</span>
               </label>
@@ -103,7 +103,7 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="abilitycreations1"
-                       [checked]="abilitycreations"
+                       [checked]="playerControls.pauseAbilityCreate"
                        (click)="AllowAbilityCreation(true)">
                 <span>ON</span>
               </label>
@@ -111,7 +111,7 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="abilitycreations2"
-                       [checked]="!abilitycreations"
+                       [checked]="!playerControls.pauseAbilityCreate"
                        (click)="AllowAbilityCreation(false)">
                 <span>OFF</span>
               </label>
@@ -132,7 +132,7 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="itemadditions1"
-                       [checked]="itemadditions"
+                       [checked]="playerControls.pauseItemAdd"
                        (click)="AllowItemAdditions(true)">
                 <span>ON</span>
               </label>
@@ -140,7 +140,7 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="itemadditions2"
-                       [checked]="!itemadditions"
+                       [checked]="!playerControls.pauseItemAdd"
                        (click)="AllowItemAdditions(false)" >
                 <span>OFF</span>
               </label>
@@ -161,7 +161,7 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="playerspelladditions1"
-                       [checked]="spelladditions"
+                       [checked]="playerControls.pauseSpellAdd"
                        (click)="playerspellAdition(true)">
                 <span>ON</span>
               </label>
@@ -169,7 +169,7 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="playerspelladditions2"
-                       [checked]="!spelladditions"
+                       [checked]="!playerControls.pauseSpellAdd"
                      (click)="playerspellAdition(false)"  >
                 <span>OFF</span>
               </label>
@@ -190,7 +190,7 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="abilityadditions1"
-                       [checked]="abilityadditions"
+                       [checked]="playerControls.pauseAbilityAdd"
                     (click)="playerAbilityAdditions(true)">
                 <span>ON</span>
               </label>
@@ -198,7 +198,7 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="abilityadditions2"
-                       [checked]="!abilityadditions"
+                       [checked]="!playerControls.pauseAbilityAdd"
                      (click)="playerAbilityAdditions(false)">
                 <span>OFF</span>
               </label>
@@ -209,7 +209,8 @@
     </div>
   </div>
 </div>
-<div class="modal-footer">
+<div class="modal-footer"  *ngIf="!isLoading">
   <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
-  <button type="button" class="btn btn-accent">Save</button>
+  <button type="button" [disabled]="!isloading" class="btn btn-accent" (click)="save()">Save</button>
 </div>
+<app-loader [isLoading]="isLoading"></app-loader>

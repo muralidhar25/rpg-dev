@@ -20,6 +20,7 @@ import { DiceRollComponent } from "../../../../shared/dice/dice-roll/dice-roll.c
 import { ImageViewerComponent } from "../../../../shared/image-interface/image-viewer/image-viewer.component";
 import { CreateSpellsComponent } from "../../../../shared/create-spells/create-spells.component";
 import { HeaderValues } from "../../../../core/models/headers.model";
+import { CharactersService } from "../../../../core/services/characters.service";
 
 @Component({
     selector: 'app-spell-details',
@@ -41,12 +42,13 @@ export class CharacterSpellDetailsComponent implements OnInit {
     spellDetail: any = new Spell();
     charNav: any = {};
     headers: HeaderValues = new HeaderValues();
+  pageRefresh: boolean;
 
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-        private sharedService: SharedService, private commonService: CommonService, private characterSpellService: CharacterSpellService,
-        private spellsService: SpellsService, private rulesetService: RulesetService
+      private sharedService: SharedService, private commonService: CommonService, private characterSpellService: CharacterSpellService,
+      private spellsService: SpellsService, private rulesetService: RulesetService, private charactersService: CharactersService
     ) {
         this.route.params.subscribe(params => { this.spellId = params['id']; });
         this.sharedService.shouldUpdateSpellList().subscribe(sharedServiceJson => {
@@ -100,7 +102,24 @@ export class CharacterSpellDetailsComponent implements OnInit {
                   this.characterId = this.headers.headerId;
                 }
               }
-            this.isLoading = true;
+          this.isLoading = true;
+          //api for player controls
+          this.charactersService.getPlayerControlsByCharacterId(this.characterId)
+            .subscribe(data => {
+              if (data) {
+              
+                if (data.pauseGame) {
+                  this.router.navigate['/characters'];
+                }
+                this.pageRefresh = data.isPlayerCharacter;
+
+              }
+            }, error => {
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
+            });
             this.characterSpellService.getCharacterSpellById<any>(this.spellId)
               .subscribe(data => {
                   
@@ -324,5 +343,8 @@ export class CharacterSpellDetailsComponent implements OnInit {
             this.bsModalRef.content.ViewImageUrl = img.src;
             this.bsModalRef.content.ViewImageAlt = img.alt;
         }
-    }
+  }
+  refresh() {
+    this.initialize();
+  }
 }

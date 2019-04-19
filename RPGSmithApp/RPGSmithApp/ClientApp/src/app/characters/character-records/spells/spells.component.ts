@@ -63,6 +63,9 @@ export class CharacterSpellsComponent implements OnInit {
   Alphabetical: boolean = false;
   Readied: boolean = false;
   Level: boolean = false;
+  pauseSpellAdd : boolean ;
+  pauseSpellCreate: boolean;
+  pageRefresh: boolean;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -138,6 +141,24 @@ export class CharacterSpellsComponent implements OnInit {
       }
       this.isLoading = true;
       this.getFilters();
+
+      //api for player controls
+      this.charactersService.getPlayerControlsByCharacterId(this.characterId)
+        .subscribe(data => {
+          if (data) {
+            if (data.pauseGame) {
+              this.router.navigate['/characters'];
+            }
+            this.pageRefresh = data.isPlayerCharacter;
+            this.pauseSpellAdd = data.pauseSpellAdd;
+            this.pauseSpellCreate = data.pauseSpellCreate;
+          }
+        }, error => {
+          let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+                this.authService.logout(true);
+            }
+        });
       this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.spellFilter.type)
         .subscribe(data => {
           this.spellsList = Utilities.responseData(data.CharacterSpellList, this.pageSize);
@@ -737,5 +758,8 @@ export class CharacterSpellsComponent implements OnInit {
         }, () => { });
     }
 
+  }
+  refresh() {
+    this.initialize();
   }
 }

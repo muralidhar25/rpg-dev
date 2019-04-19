@@ -86,29 +86,32 @@
                 </div>
                 <!-- Toolbar actions -->
                 <ul class="page-toolbar-actions web-view">
-                    <!--<li> //This will be needed in future
-                        <button type="button" id="manageTilesTrigger" [disabled]="isLoading" (click)="gotoDashboard()" class="btn btn-outline-primary">Manage Tiles</button>
-                    </li>-->
-                    <li>
-                        <!-- Manage item -->
-                        <div class="dropdown dropdown-buttons">
-                            <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> Manage Item</button>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
-                                <ul class="dropdown-menu-list">
-                                    <li class="dropdown-menu-item">
-                                        <button type="button" (click)="editItem(ItemDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
-                                    </li>
-                                    <li class="dropdown-menu-item">
-                                        <button type="button" (click)="duplicateItem(ItemDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
-                                    </li>
-                                    <li class="dropdown-menu-item">
-                                        <button type="button" (click)="deleteItem(ItemDetail)" class="btn icon icon-with-text btn-accent icon-Rec-Drop"> Drop</button>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- Manage item -->
-                    </li>
+                  <!--<li> //This will be needed in future
+      <button type="button" id="manageTilesTrigger" [disabled]="isLoading" (click)="gotoDashboard()" class="btn btn-outline-primary">Manage Tiles</button>
+  </li>-->
+                  <li>
+                    <!-- Manage item -->
+                    <div class="dropdown dropdown-buttons">
+                      <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> Manage Item</button>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
+                        <ul class="dropdown-menu-list">
+                          <li class="dropdown-menu-item">
+                            <button type="button" (click)="editItem(ItemDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
+                          </li>
+                          <li class="dropdown-menu-item">
+                            <button type="button" (click)="duplicateItem(ItemDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
+                          </li>
+                          <li class="dropdown-menu-item">
+                            <button type="button" (click)="deleteItem(ItemDetail)" class="btn icon icon-with-text btn-accent icon-Rec-Drop"> Drop</button>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <!-- Manage item -->
+                  </li>
+                  <li class="refresh-btn" *ngIf="pageRefresh">
+                    <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
+                  </li>
                 </ul>
                 <!-- End of toolbar actions -->
             </div>

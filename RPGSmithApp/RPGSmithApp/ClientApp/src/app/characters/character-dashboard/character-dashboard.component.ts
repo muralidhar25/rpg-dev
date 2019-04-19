@@ -92,7 +92,7 @@ export class CharacterDashboardComponent implements OnInit {
   private BoxesCurrentColumn: number = this.startIndex;
   private columnsInGrid: number = 14;
   headers: HeaderValues = new HeaderValues();
- 
+  pageRefresh: boolean;
 
   IsMobileScreen: boolean = this.isMobile();
   //public gridConfig: NgGridConfig = {
@@ -166,6 +166,7 @@ export class CharacterDashboardComponent implements OnInit {
   choiceArraySplitter: string = 'S###@Split@###S';
   ConditionsValuesList: CharactersCharacterStat[] = [];
   charNav: any = {};
+  haspageRefresh: boolean;
 
   constructor(
     private router: Router, private alertService: AlertService, private authService: AuthService, private sharedService: SharedService,
@@ -468,6 +469,23 @@ export class CharacterDashboardComponent implements OnInit {
         }
       }
       try {
+        //api for player controls
+        this.charactersService.getPlayerControlsByCharacterId(this.characterId)
+          .subscribe(data => {
+            if (data) {
+            
+              if (data.pauseGame) {
+                this.router.navigate['/characters'];
+              }
+              this.pageRefresh = data.isPlayerCharacter;
+
+            }
+          }, error => {
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              this.authService.logout(true);
+            }
+          });
         this.CCService.getConditionsValuesList<any[]>(this.characterId)
           .subscribe(data => {
             this.ConditionsValuesList = data;
@@ -2509,5 +2527,8 @@ export class CharacterDashboardComponent implements OnInit {
       //return text;
     }
     return '';
+  }
+  refresh() {
+    this.initialize(true);
   }
 }

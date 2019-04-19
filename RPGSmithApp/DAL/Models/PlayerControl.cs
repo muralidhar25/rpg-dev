@@ -24,4 +24,7 @@ namespace DAL.Models
         public bool PauseAbilityCreate { get; set; }
         public bool PauseAbilityAdd { get; set; }
     }
+    public class PlayerControlModel : PlayerControl {
+        public bool IsPlayerCharacter { get; set; }
+    }
 }

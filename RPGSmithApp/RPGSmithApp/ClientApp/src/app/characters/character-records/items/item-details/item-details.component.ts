@@ -21,6 +21,7 @@ import { ImageViewerComponent } from "../../../../shared/image-interface/image-v
 import { AddContainerComponent } from "../add-container/add-container.component";
 import { AddContainerItemComponent } from "../add-container-item/add-container-item.component";
 import { HeaderValues } from "../../../../core/models/headers.model";
+import { CharactersService } from "../../../../core/services/characters.service";
 
 @Component({
     selector: 'app-item-details',
@@ -43,12 +44,14 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
   navigationSubscription;
   headers: HeaderValues = new HeaderValues();
     charNav: any = {};
+  pageRefresh: boolean;
 
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
         private sharedService: SharedService, private commonService: CommonService,
-        private itemsService: ItemsService, private itemMasterService: ItemMasterService
+      private itemsService: ItemsService, private itemMasterService: ItemMasterService,
+      private charactersService: CharactersService
     ) {
         this.route.params.subscribe(params => { this.itemId = params['id']; });
         this.sharedService.shouldUpdateItemsList().subscribe(sharedData => {
@@ -114,11 +117,26 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
                   this.characterId = this.headers.headerId;
                 }
               }
-            this.isLoading = true;
+          this.isLoading = true;
+          //api for player controls
+          this.charactersService.getPlayerControlsByCharacterId(this.characterId)
+            .subscribe(data => {
+              if (data) {
+             
+                if (data.pauseGame) {
+                  this.router.navigate['/characters'];
+                }
+                this.pageRefresh = data.isPlayerCharacter;
+                
+              }
+            }, error => {
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
+            });
             this.itemsService.getItemById<any>(this.itemId)
                 .subscribe(data => {
-                  
-                  
                     this.ItemDetail = this.itemsService.itemModelData(data, "UPDATE");
                     this.ruleSetId = this.ItemDetail.ruleSetId;
                     this.characterId = this.ItemDetail.characterId;
@@ -485,5 +503,8 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
         this.bsModalRef.content.isFromDetailPage = true;
         this.bsModalRef.content.itemToUpdate = item;
      
-    }
+  }
+  refresh() {
+    this.initialize();
+  }
 }

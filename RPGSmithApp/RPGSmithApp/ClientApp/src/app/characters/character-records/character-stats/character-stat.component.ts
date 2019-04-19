@@ -64,6 +64,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
     choiceArraySplitter: string = 'S###@Split@###S';
     ConditionsValuesList: CharactersCharacterStat[] = []
     charNav: any = {};
+  pageRefresh: boolean;
 
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -186,7 +187,24 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         if (user == null)
             this.authService.logout();
         else {
-            this.isLoading = true;
+          this.isLoading = true;
+          //api for player controls
+          this.charactersService.getPlayerControlsByCharacterId(this.characterId)
+            .subscribe(data => {
+              if (data) {
+
+                if (data.pauseGame) {
+                  this.router.navigate['/characters'];
+                }
+                this.pageRefresh = data.isPlayerCharacter;
+
+              }
+            }, error => {
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
+            });
             this.charactersCharacterStatService.getLinkRecordsDetails<any>(this.characterId)
                 .subscribe(data => {
                     this.statLinkRecords = data;
@@ -2190,6 +2208,10 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         }
         result = result ? result.substring(0, result.length - 1) : '';
         return result;
-    }
+     }
+
+  refresh() {
+    this.initialize();
+  }
     
 }

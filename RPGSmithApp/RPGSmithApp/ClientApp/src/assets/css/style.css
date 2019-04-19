@@ -8893,3 +8893,7 @@ li.popup-new-tile-trigger.cross-li .btn {
   z-index: 99;
   cursor:not-allowed;
 }
+.div-disabled {
+  pointer-events: none;
+  background: rgb(204, 204, 204);
+}

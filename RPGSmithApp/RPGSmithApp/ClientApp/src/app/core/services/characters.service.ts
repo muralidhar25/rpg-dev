@@ -37,6 +37,8 @@ export class CharactersService extends EndpointFactory {
   private readonly getByUserId_api: string = this.configurations.baseUrl + "/api/Character/getByUserId_sp";
   private readonly getCharactersByIdDiceApi: string = this.configurations.baseUrl + "/api/Character/GetCharactersByIdDice";
 
+  private readonly _getPlayerControlsByCharacterIdUrl: string = "/api/campaign/getPlayerControlsByCharacterId";
+
   get getUrl() { return this.configurations.baseUrl + this._getUrl; }
   get createUrl() { return this.configurations.baseUrl + this._createUrl; }
   get updateUrl() { return this.configurations.baseUrl + this._updateUrl; }
@@ -49,6 +51,8 @@ export class CharactersService extends EndpointFactory {
   get uploadImgUrl() { return this.configurations.baseUrl + this._uploadImgUrl; }
   get uploadImgBlobUrl() { return this.configurations.baseUrl + this._uploadImgBlobUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
+
+  get playerControlsUrl() { return this.configurations.baseUrl + this._getPlayerControlsByCharacterIdUrl; } 
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
     private fileUploadService: FileUploadService) {
@@ -204,5 +208,11 @@ export class CharactersService extends EndpointFactory {
     return charactersFormModal;
   }
 
-
+  getPlayerControlsByCharacterId(characterId: number) {
+    let endpointUrl = `${this.playerControlsUrl}?characterID=${characterId}`;
+    return this.http.get(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getPlayerControlsByCharacterId(characterId));
+      });
+  }
 }

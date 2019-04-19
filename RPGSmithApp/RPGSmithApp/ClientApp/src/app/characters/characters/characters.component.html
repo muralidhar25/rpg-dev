@@ -28,35 +28,59 @@
                     <p class="alert alert-important d-block w-100">At least 1 Rule Set is needed before a character can be created. Please Add, Create, or Import a Rule Set.</p>
                 </div>
                 <div class="col-sm-12 col-md-4 col-lg-3" *ngFor="let character of characters">
-                    <div class="card-wrapper">
-                        <div class="card">
-                            <div class="card-image thumbnail">
-                                <img class="card-img-top portrait" [src]="character.imageUrl" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg';" [alt]="character.characterName">
-                                <div class="characters-description" (click)="gotoDashboard(character)">
-                                    <div class="characters-description-inner"
-                                    [froalaView]="character.characterDescription==null?'':character.characterDescription">
-                                        </div>
-                                </div>
-                                <div class="card-actions show" *ngIf="character.showIcon">
-                                    <button type="button" (click)="editCharacter(character)" tooltip="Edit" class="btn icon icon-pencil btn-simple-primary"></button>
-                                    <button type="button" [disabled]="character.inviteId" (click)="duplicateCharacter(character)" tooltip="Duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
-                                    <button type="button" (click)="deleteCharacter(character)" tooltip="Delete" class="btn icon icon-trash btn-simple-primary"></button>
-                                    <button type="button" (click)="manageIcon(false)" tooltip="Close" class="btn icon icon-cross btn-simple-primary"></button>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <h4 class="card-title" (click)="editCharacter(character)" popover="{{character.characterName}}" triggers="hover">{{character.characterName}}</h4>
-                                <div class="card-actions-trigger">
-                                    <button type="button" (click)="manageIcon(character.characterId)" tooltip="Manage" class="btn icon icon-more btn-simple-primary"></button>
-                                </div>
-                            </div>
-                            <span class="post-owner">
-                                <img [src]="character.ruleSet.imageUrl" [alt]="character.ruleSet.imageUrl"
-                                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
-                                <em class="">{{character.ruleSet.ruleSetName}}</em>
-                            </span>
+                  <div class="card-wrapper" *ngIf="!character?.isCharacterGamePaused">
+                    <div class="card">
+
+                      <div class="card-image thumbnail">
+                        <img class="card-img-top portrait" [src]="character.imageUrl" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg';" [alt]="character.characterName">
+                        <div class="characters-description" (click)="gotoDashboard(character)">
+                          <div class="characters-description-inner"
+                               [froalaView]="character.characterDescription==null?'':character.characterDescription">
+                          </div>
                         </div>
+                        <div class="card-actions show" *ngIf="character.showIcon">
+                          <button type="button" (click)="editCharacter(character)" tooltip="Edit" class="btn icon icon-pencil btn-simple-primary"></button>
+                          <button type="button" [disabled]="character.inviteId" (click)="duplicateCharacter(character)" tooltip="Duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
+                          <button type="button" (click)="deleteCharacter(character)" tooltip="Delete" class="btn icon icon-trash btn-simple-primary"></button>
+                          <button type="button" (click)="manageIcon(false)" tooltip="Close" class="btn icon icon-cross btn-simple-primary"></button>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <h4 class="card-title" (click)="editCharacter(character)" popover="{{character.characterName}}" triggers="hover">{{character.characterName}}</h4>
+                        <div class="card-actions-trigger">
+                          <button type="button" (click)="manageIcon(character.characterId)" tooltip="Manage" class="btn icon icon-more btn-simple-primary"></button>
+                        </div>
+                      </div>
+                      <span class="post-owner">
+                        <img [src]="character.ruleSet.imageUrl" [alt]="character.ruleSet.imageUrl"
+                             onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+                        <em class="">{{character.ruleSet.ruleSetName}}</em>
+                      </span>
                     </div>
+                  </div>
+                  <div class="card-wrapper" *ngIf="character?.isCharacterGamePaused" >
+                    <div class="card" [ngClass]="{ 'div-disabled':character?.isCharacterGamePaused}">
+
+                      <div class="card-image thumbnail">
+                        <img class="card-img-top portrait" [src]="character.imageUrl" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg';" [alt]="character.characterName">
+                        <div class="characters-description d-block"  >
+                          <div class="characters-description-inner">
+                            Game Paused by GM
+                          </div>
+                        </div>
+
+                      </div>
+                      <div class="card-body">
+                        <h4 class="card-title" popover="{{character.characterName}}" triggers="hover">{{character.characterName}}</h4>
+                        
+                      </div>
+                      <span class="post-owner">
+                        <img [src]="character.ruleSet.imageUrl" [alt]="character.ruleSet.imageUrl"
+                             onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+                        <em class="">{{character.ruleSet.ruleSetName}}</em>
+                      </span>
+                    </div>
+                  </div>
                 </div>
                 <div class="col-sm-12 col-md-4 col-lg-3" *ngIf="characters?.length < characterSlot  || isAdminUser">
                     <div class="card-wrapper">

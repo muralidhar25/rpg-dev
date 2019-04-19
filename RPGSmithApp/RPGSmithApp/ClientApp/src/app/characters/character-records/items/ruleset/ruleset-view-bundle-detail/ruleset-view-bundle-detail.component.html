@@ -65,8 +65,8 @@
           <!-- Toolbar actions -->
           <ul class="page-toolbar-actions">
             <!--<li>
-                <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
-            </li>-->
+      <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
+  </li>-->
             <li>
               <!-- Manage item -->
               <div class="dropdown dropdown-buttons">
@@ -87,13 +87,16 @@
               </div>
               <!-- Manage item -->
             </li>
+            <li class="refresh-btn" *ngIf="pageRefresh">
+              <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
+            </li>
           </ul>
           <!-- End of toolbar actions -->
         </div>
         <ul class="page-toolbar-actions web-view">
           <!--<li>
-              <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
-          </li>-->
+      <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
+  </li>-->
           <li>
             <!-- Manage item -->
             <div class="dropdown dropdown-buttons">
@@ -113,6 +116,9 @@
               </div>
             </div>
             <!-- Manage item -->
+          </li>
+          <li class="refresh-btn" *ngIf="pageRefresh">
+            <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
           </li>
         </ul>
       </div>

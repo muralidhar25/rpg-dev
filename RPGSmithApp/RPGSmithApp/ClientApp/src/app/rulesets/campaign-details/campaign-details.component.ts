@@ -71,9 +71,9 @@ export class CampaignDetailsComponent implements OnInit {
     this.bsModalRef = this.modalService.show(PlayerControlsComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
-      keyboard: false
+      keyboard: false,
     });
-   
+    this.bsModalRef.content.rulesetId = this.ruleSetId;
   }
 
   initialize() {

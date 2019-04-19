@@ -79,9 +79,9 @@
                         <button type="button" (click)="createItem()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Create Item</button>
                     </div>
                 </li>-->
-                  <!--<li class="refresh-btn">
-                    <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh"></button>
-                  </li>-->
+                  <li class="refresh-btn" *ngIf="pageRefresh">
+                    <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
+                  </li>
                   <li>
                     <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary"><span class="text-hide-tab">Dice</span></button>
                   </li>
