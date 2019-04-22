@@ -104,13 +104,15 @@ export class CampaignDetailsComponent implements OnInit {
         this.invitedUsers = [];
         this.campaignService.getPlayerInviteList<any>(this.ruleSetId)
           .subscribe(data => {
+           
             this.isLoading = false
-            
+
             this.invitedUsers = data;
             this.GmCharacterSlotsCount = this.invitedUsers.filter(x => !x.inviteId).length;
             this.declinedUserList = this.invitedUsers.filter(x => x.isDeclined);
             this.invitedUsers = this.invitedUsers.filter(x => !x.isDeclined );
-            debugger;
+            //debugger;
+            console.log(this.invitedUsers);
             let names = '';
             this.invitedUsers.map((x: playerInviteListModel,index) => {
               x.showIcon = false;
@@ -255,6 +257,10 @@ export class CampaignDetailsComponent implements OnInit {
     this.bsModalRef.content.ruleset = ruleset;
   }
 
+  loot(ruleset: Ruleset) {
+    this.rulesetService.ruleset = ruleset;
+    this.router.navigate(['/ruleset/loot', ruleset.ruleSetId]);
+  }
   
   close(back?: boolean) {
     this.bsModalRef.hide();
@@ -322,18 +328,27 @@ export class CampaignDetailsComponent implements OnInit {
    // })
   }
 
-  cancleInvite(index, invite) {    
+  cancleInvite(index, invite) {
+    console.log('here is cancle invit clicked');
     this.campaignService.cancelInvite<any>(invite.inviteId)
       .subscribe(data => {
-        
-        this.isLoading = false
+        //debugger;
+       
+        this.isLoading = false;
         if (data == true) {
           this.invitedUsers.splice(index, 1);
         } else {
-          this.alertService.showStickyMessage('', "Unable to cancel invitation", MessageSeverity.error);
-          setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+          try {
+            this.invitedUsers.splice(index, 1);
+           
+          } catch (e) {
+
+          }
+          //this.alertService.showStickyMessage('', "Unable to cancel invitation", MessageSeverity.error);
+          //setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
         }     
       }, error => {
+        console.log('error', error);
         let Errors = Utilities.ErrorDetail("", error);
         if (Errors.sessionExpire) {
           this.authService.logout(true);
@@ -381,7 +396,7 @@ export class CampaignDetailsComponent implements OnInit {
     this.router.navigate(['/character/dashboard', characterID]);
   }
   BuyPlayerSlot() {   
-    debugger
+   // debugger
     let paymentInfo = this.marketplacelist.filter(x => x.marketPlaceId == MarketPlaceItemsType.PLAYER_SLOT)[0];
       this.bsModalRef = this.modalService.show(PaymentComponent, {
         class: 'modal-primary modal-custom',
@@ -405,7 +420,7 @@ export class CampaignDetailsComponent implements OnInit {
           default:
             break;
         }
-        debugger
+       // debugger
 
         if (this.localStorage.sessionExists(DBkeys.CURRENT_USER)) {
           this.localStorage.saveSyncedSessionData(user, DBkeys.CURRENT_USER);
@@ -499,5 +514,6 @@ export class CampaignDetailsComponent implements OnInit {
     }
     
   }
+  
   
 }

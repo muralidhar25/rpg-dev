@@ -60,6 +60,8 @@ export class CharacterSpellDetailsComponent implements OnInit {
   @HostListener('document:click', ['$event.target'])
   documentClick(target: any) {
     try {
+      if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE))
+        this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
       if (target.className.endsWith("is-show"))
         this.isDropdownOpen = !this.isDropdownOpen;
       else this.isDropdownOpen = false;
@@ -103,23 +105,7 @@ export class CharacterSpellDetailsComponent implements OnInit {
                 }
               }
           this.isLoading = true;
-          //api for player controls
-          this.charactersService.getPlayerControlsByCharacterId(this.characterId)
-            .subscribe(data => {
-              if (data) {
-              
-                if (data.pauseGame) {
-                  this.router.navigate['/characters'];
-                }
-                this.pageRefresh = data.isPlayerCharacter;
-
-              }
-            }, error => {
-              let Errors = Utilities.ErrorDetail("", error);
-              if (Errors.sessionExpire) {
-                this.authService.logout(true);
-              }
-            });
+          this.gameStatus(this.characterId);
             this.characterSpellService.getCharacterSpellById<any>(this.spellId)
               .subscribe(data => {
                   
@@ -346,5 +332,39 @@ export class CharacterSpellDetailsComponent implements OnInit {
   }
   refresh() {
     this.initialize();
+  }
+  gameStatus(characterId ?: any) {
+    //api for player controls
+    this.charactersService.getPlayerControlsByCharacterId(characterId)
+      .subscribe(data => {
+        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+        if (data) {
+          if (user.isGm) {
+            this.pageRefresh = user.isGm;
+          }
+          else if (data.isPlayerCharacter) {
+            this.pageRefresh = data.isPlayerCharacter;
+          }
+         else if (data.isDeletedInvite) {
+            this.router.navigate(['/characters']);
+            this.alertService.showStickyMessage('', "Player Deleted by GM", MessageSeverity.error);
+            setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+          }
+          else {
+            if (data.pauseGame) {
+              this.router.navigate(['/characters']);
+              this.alertService.showStickyMessage('', "Game Paused By GM", MessageSeverity.error);
+              setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+            }
+          }
+         // this.pageRefresh = data.isPlayerCharacter;
+        }
+
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      });
   }
 }

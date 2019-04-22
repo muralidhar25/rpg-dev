@@ -29,11 +29,12 @@ import {
 import { AppService1 } from './app.service';
 import { CampaignInviteComponent } from './rulesets/campaign-invite/campaign-invite.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,
     IncompatibleBrowserComponent,
-    CampaignInviteComponent,
+    CampaignInviteComponent
     
   ],
   imports: [

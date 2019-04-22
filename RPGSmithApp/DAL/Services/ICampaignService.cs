@@ -23,5 +23,6 @@ namespace DAL.Services
         Task<PlayerControl> getPlayerControlsByCampaignId(int campaignID);
         Task<PlayerControlModel> getPlayerControlsByCharacterId(int characterID, string userid);
         Task<PlayerControl> updatePlayerControls(PlayerControl model);
+        bool IsDeletedInvite(int _characterId, string _userId);
     }
 }

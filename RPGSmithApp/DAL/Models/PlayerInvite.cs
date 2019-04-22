@@ -25,6 +25,7 @@ namespace DAL.Models
         public bool IsSendToUserName { get; set; }
         public bool IsDeclined { get; set; }
         public bool IsAnswerLater { get; set; }
+        public bool IsDeleted { get; set; }
         public DateTime SendOn { get; set; }
 
     }

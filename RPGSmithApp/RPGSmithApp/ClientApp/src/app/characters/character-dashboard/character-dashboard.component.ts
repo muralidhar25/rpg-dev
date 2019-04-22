@@ -295,6 +295,9 @@ export class CharacterDashboardComponent implements OnInit {
 
   @HostListener('document:click', ['$event.target'])
   documentClick(target: any) {
+  
+    if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE))
+      this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
 
     if (!this.SortClick) {
       try {
@@ -469,23 +472,8 @@ export class CharacterDashboardComponent implements OnInit {
         }
       }
       try {
-        //api for player controls
-        this.charactersService.getPlayerControlsByCharacterId(this.characterId)
-          .subscribe(data => {
-            if (data) {
-            
-              if (data.pauseGame) {
-                this.router.navigate['/characters'];
-              }
-              this.pageRefresh = data.isPlayerCharacter;
 
-            }
-          }, error => {
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              this.authService.logout(true);
-            }
-          });
+        this.gameStatus(this.characterId);
         this.CCService.getConditionsValuesList<any[]>(this.characterId)
           .subscribe(data => {
             this.ConditionsValuesList = data;
@@ -695,6 +683,7 @@ export class CharacterDashboardComponent implements OnInit {
           }, () => {
           });
 
+        this.gameStatus(this.characterId);
       } catch (err) { }
     }
   }
@@ -807,7 +796,6 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   onLayoutSelect(layout: any): void {
-
     this.selectedlayout = layout;
     
     this.selectedPage = layout.characterDashboardPages[0];
@@ -928,7 +916,6 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   managePageIcon(id: number) {
-
     this.selectedlayout.characterDashboardPages.forEach(function (val) {
       if (id == val.characterDashboardPageId) {
         val.showIcon = true;
@@ -970,6 +957,7 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   private showPageAddModal() {
+
     this.bsModalRef = this.modalService.show(PageFormComponent, {
       class: 'modal-page',
       ignoreBackdropClick: true,
@@ -1623,7 +1611,6 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   updateDefaultLayout(layoutId) {
-
     this.layoutService.updateDefaultLayout(layoutId)
       .subscribe(data => { },
         error => { console.log("updateDefaultLayout error : ", error); }
@@ -1668,7 +1655,6 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   private mapBoxes(List) {
-
     let boxes: Box[] = [];
     let ngGridItemConfig: NgGridItemConfig;
     List.map((item, index) => {
@@ -2530,5 +2516,43 @@ export class CharacterDashboardComponent implements OnInit {
   }
   refresh() {
     this.initialize(true);
+  }
+  gameStatus(characterId?:any) {
+    //api for player controls
+    //alert(characterId)
+    this.charactersService.getPlayerControlsByCharacterId(characterId)
+      .subscribe(data => {
+        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+        if (data) {
+          if (user.isGm) {
+            console.log('user', user.isGm);
+            this.pageRefresh = user.isGm;
+          }
+         else if (data.isPlayerCharacter) {
+            this.pageRefresh = data.isPlayerCharacter;
+          }
+         else if (data.isDeletedInvite) {
+            this.router.navigate(['/characters']);
+            this.alertService.showStickyMessage('', "Player Deleted by GM", MessageSeverity.error);
+            setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+          }
+          else {
+            if (data.pauseGame) {
+              this.router.navigate(['/characters']);
+              this.alertService.showStickyMessage('', "Game Paused By GM", MessageSeverity.error);
+              setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+            }
+
+          }
+        } 
+        
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        console.log('gameStatus', Errors);
+
+        //if (Errors.sessionExpire) {
+        //  this.authService.logout(true);
+        //}
+      });
   }
 }
