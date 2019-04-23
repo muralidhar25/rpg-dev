@@ -68,7 +68,9 @@ export class AbilityDetailsComponent implements OnInit {
         else {
             this.isLoading = true;
             this.abilityService.getAbilityById<any>(this.abilityId)
-                .subscribe(data => {
+              .subscribe(data => {
+  
+                  if(data)
                   this.AbilityDetail = this.abilityService.abilityModelData(data, "UPDATE");
                   if (!this.AbilityDetail.ruleset) {
                     this.AbilityDetail.ruleset = data.ruleSet;

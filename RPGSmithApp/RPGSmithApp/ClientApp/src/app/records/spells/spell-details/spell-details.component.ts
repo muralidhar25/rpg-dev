@@ -68,6 +68,7 @@ export class SpellDetailsComponent implements OnInit {
             this.isLoading = true;
             this.spellsService.getspellsById<any>(this.spellId)
               .subscribe(data => {
+                if (data)
                 this.spellDetail = this.spellsService.spellModelData(data, "UPDATE");
                 if (!this.spellDetail.ruleset) {
                   this.spellDetail.ruleset = data.ruleSet;

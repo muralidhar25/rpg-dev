@@ -68,7 +68,7 @@ export class ItemDetailsComponent implements OnInit {
             this.isLoading = true;
             this.itemMasterService.getItemMasterById<any[]>(this.itemMasterId)
               .subscribe(data => {
-                  
+                  if(data)
                     this.ItemMasterDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");     
                     //this.ItemMasterDetail.forEach(function (val) { val.showIcon = false; });
                     this.rulesetService.GetCopiedRulesetID(this.ItemMasterDetail.ruleSetId, user.id).subscribe(data => {

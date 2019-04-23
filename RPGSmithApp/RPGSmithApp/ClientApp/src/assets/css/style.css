@@ -1074,6 +1074,12 @@
 .icon-Gen-Refresh:before {
   content: "\e964";
 }
+.icon-Gen-Give:before {
+  content: "\e965";
+}
+.icon-Gen-Hide:before {
+  content: "\e966";
+}
 
 .icon-Gen-Help:before {
   content: "\e967";

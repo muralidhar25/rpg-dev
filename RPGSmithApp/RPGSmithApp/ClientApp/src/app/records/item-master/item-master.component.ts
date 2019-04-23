@@ -86,9 +86,12 @@ export class ItemMasterComponent implements OnInit {
           }
             this.isLoading = true;
             this.itemMasterService.getItemMasterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
-                .subscribe(data => {                    
+              .subscribe(data => {
+                //check for data ruleset
+                if (data)
                     this.ItemMasterList = Utilities.responseData(data.ItemMaster, this.pageSize);
-                    this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
+                  this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
+                  
                   this.RuleSet = data.RuleSet;
                   this.setHeaderValues(this.RuleSet);
                     try {

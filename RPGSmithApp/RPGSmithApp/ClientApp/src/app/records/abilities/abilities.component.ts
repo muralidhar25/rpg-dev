@@ -89,9 +89,11 @@ export class AbilitiesComponent implements OnInit {
           }
             this.isLoading = true;
             this.abilityService.getAbilityByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
-                .subscribe(data => {
-                    
-                    this.abilitiesList = Utilities.responseData(data.Abilities, this.pageSize);
+              .subscribe(data => {
+               //check for ruleset
+                if (data.RuleSet)
+                this.abilitiesList = Utilities.responseData(data.Abilities, this.pageSize);
+               
                   this.rulesetModel = data.RuleSet;
                   this.setHeaderValues(this.rulesetModel);
                     this.abilitiesList.forEach(function (val) { val.showIcon = false; });

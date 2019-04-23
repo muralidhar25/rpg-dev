@@ -71,7 +71,7 @@ export class BundleDetailsComponent implements OnInit {
       this.isLoading = true;
       this.itemMasterService.getBundleById<any[]>(this.bundleId)
         .subscribe(data => {
-
+          if(data)
           this.bundleDetail = this.itemMasterService.bundleModelData(data, "UPDATE");
           let mod: any = data;
           this.bundleItems = mod.itemMasterBundleItems;
