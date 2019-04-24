@@ -486,7 +486,7 @@ export class CharacterStatsFormComponent implements OnInit {
       this.isLoading = true;
       let _msg = modal.characterStatId == 0 || modal.characterStatId === undefined ? "Creating Character Stat..." : "Updating Character Stat...";
       this.alertService.startLoadingMessage("", _msg);
-
+      modal.statName = modal.statName.replace(/  +/g, ' ').trim();
       this.charactersService.createCharacterStats(modal)
         .subscribe(
           data => {
@@ -528,7 +528,7 @@ export class CharacterStatsFormComponent implements OnInit {
 
     this.isLoading = true;
     this.alertService.startLoadingMessage("", "Duplicating Character Stat...");
-
+    modal.statName = modal.statName.replace(/  +/g, ' ').trim();
     this.charactersService.duplicateCharacterStats(modal)
       .subscribe(
         data => {
