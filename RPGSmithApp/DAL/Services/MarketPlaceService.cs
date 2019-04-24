@@ -25,7 +25,7 @@ namespace DAL.Services
             res.Add(new MarketPlaceItems {
                 Id=1,
                 MarketPlaceId = MarketPlaceType.GMPERMANENT,
-                Title = "GM Account ($50)",
+                Title = "Base GM Account",
                 Image = "https://rpgsmithsa.blob.core.windows.net/stock-marketplace/gm.jpg",
                 Description = "Purchase a Base GM Account that lasts forever. Any and all Rule Sets currently on your player account are automatically converted to Campaigns in the GM account. This purchase also Removes Ads.",
                 Price = 50,
@@ -38,9 +38,9 @@ namespace DAL.Services
             {
                 Id = 2,
                 MarketPlaceId = MarketPlaceType.GM_1_YEAR,
-                Title = "GM Account (Subscription 1-Year) ($20)",
+                Title = "Base GM Account (Free Trial / 1-Year Subscription)",
                 Image = "https://rpgsmithsa.blob.core.windows.net/stock-marketplace/gm.jpg",
-                Description = "Don’t want to shill out for a permanent account? 20 bucks will get you the same features for a whole year. Auto-renews at the same rate but you can turn that off if you like. Also Removes Ads as long as you have an active GM account.",
+                Description = "Sign up with this option and get a free month to try before you’re charged. You can cancel before 30 days from now to prevent any charges to your card from the Account Settings screen. Auto-renews annually at the current rate.",
                 Price = 20,
                 Tag = "1 Year",
                 Subscribed = false,
@@ -51,7 +51,7 @@ namespace DAL.Services
             {
                 Id = 3,
                 MarketPlaceId = MarketPlaceType.CAMPAIGN_SLOT,
-                Title = "+1 Campaign / Rule Set ($5)",
+                Title = "+1 Campaign / Rule Set",
                 Image = "https://rpgsmithsa.blob.core.windows.net/stock-marketplace/campaign.jpg",
                 Description = "Add a permanent Campaign / Rule Set for this account. For GMs you get an extra Campaign slot, for Player accounts you’ll get another Rule Set slot. Now you can play all kinds of different games. Permanent on this account.",
                 Price = 5,
@@ -63,7 +63,7 @@ namespace DAL.Services
             {
                 Id = 9,
                 MarketPlaceId = MarketPlaceType.RULESET_SLOT,
-                Title = "+1 Campaign / Rule Set ($5)",
+                Title = "+1 Campaign / Rule Set",
                 Image = "https://rpgsmithsa.blob.core.windows.net/stock-marketplace/campaign.jpg",
                 Description = "Add a permanent Campaign / Rule Set for this account. For GMs you get an extra Campaign slot, for Player accounts you’ll get another Rule Set slot. Now you can play all kinds of different games. Permanent on this account.",
                 Price = 5,
@@ -75,7 +75,7 @@ namespace DAL.Services
             {
                 Id = 4,
                 MarketPlaceId = MarketPlaceType.PLAYER_SLOT,
-                Title = "+1 Player Slot (GM Account Required) ($5)",
+                Title = "+1 Player Slot (GM Account Required)",
                 Image = "https://rpgsmithsa.blob.core.windows.net/stock-marketplace/player.jpg",
                 Description = "Want to invite even more player accounts to join in your campaign, purchase an extra player slot to get them in on the action. This will add another player slot for each campaign on your account. Permanent.",
                 Price = 5,
@@ -87,7 +87,7 @@ namespace DAL.Services
             {
                 Id = 5,
                 MarketPlaceId = MarketPlaceType.CHARACTER_SLOT,
-                Title = "+1 Character Slot ($3)",
+                Title = "+1 Character Slot",
                 Image = "https://rpgsmithsa.blob.core.windows.net/stock-marketplace/character.jpg",
                 Description = "This allows you to create another character for use with any of your Rule Sets (Player accounts) or Campaigns (GM Accounts). Don’t get this confused with “Player Slots”. This allows an additional character to be created. If you’re a GM and need to invite an additional person to your campaign you’ll need an available Player Slot to do so.",
                 Price = 3,
@@ -99,7 +99,7 @@ namespace DAL.Services
             {
                 Id = 6,
                 MarketPlaceId = MarketPlaceType.REMOVE_ADDS,
-                Title = "Remove Ads ($5)",
+                Title = "Remove Ads",
                 Image = "https://rpgsmithsa.blob.core.windows.net/stock-marketplace/adremove.jpg",
                 Description = "Don’t want to see ads? Yea it pains us to have to put those in the app in the first place. For 5 bucks you won’t have to see one ever again in RPGSmith.",
                 Price = 5,
@@ -111,7 +111,7 @@ namespace DAL.Services
             {
                 Id = 7,
                 MarketPlaceId = MarketPlaceType.ADDITIONAL_STORAGE,
-                Title = "+1 Gigabyte of Storage Space ($5)",
+                Title = "+1 Gigabyte of Storage Space",
                 Image = "https://rpgsmithsa.blob.core.windows.net/stock-marketplace/storage.jpg",
                 Description = "Need more room to store your handouts, images, and other content? Purchase an extra gig of space and now you won’t have to clean up your storage contents. You probably should anyways though, it’s just a good habit. Permanent.",
                 Price = 5,
@@ -123,7 +123,7 @@ namespace DAL.Services
             {
                 Id = 8,
                 MarketPlaceId = MarketPlaceType.BUY_US_A_COFFEE,
-                Title = "Buy us a Coffee ($?)",
+                Title = "Buy us a Coffee",
                 Image = "https://rpgsmithsa.blob.core.windows.net/stock-marketplace/coffee.jpg",
                 Description = "Please don’t be offended if we use any donations you kick our way on something other than coffee. Some of us would prefer a muffin instead.",
                 Price = 0,
