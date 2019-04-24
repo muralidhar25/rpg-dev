@@ -115,7 +115,14 @@ export class AccountSettingsComponent implements OnInit {
             let isExist: boolean = true;
             this.userExistMsg = "Please enter a username.";
             this.userExist = isExist;
-        } else {
+        }
+        else if (!/^\S*$/g.test(userModal.userName)) {
+          this.showExistMsg = true;
+          let isExist: boolean = true;
+          this.userExistMsg = "Please enter a valid username.";
+          this.userExist = isExist;      
+        }   
+        else {
             this.userService.checkAvailability<any>(userModal)
                 .subscribe(
                     data => {
@@ -225,8 +232,15 @@ export class AccountSettingsComponent implements OnInit {
     }
 
     private submit() {
-        this.isLoading = true;
-        let URL: string = window.location.origin;
+      this.isLoading = true;
+      let URL: string = window.location.origin;      
+      if (this.socialLogin != 'facebook') {
+        if (!/^\S*$/g.test(this.userFormModal.userName)) {
+          this.alertService.showMessage("Please enter a valid username", "", MessageSeverity.error);
+          this.isLoading = false;
+          return false;
+        }        
+      }      
         this.userService.updateAccountSetting<any>(this.userFormModal, URL)
             .subscribe(
                 data => {
@@ -308,7 +322,7 @@ export class AccountSettingsComponent implements OnInit {
             reader.readAsDataURL(event.target.files[0]);
             this.imageChangedEvent = event;
         }
-    }
+  }
 
     private destroyModalOnInit(): void {
         try {
