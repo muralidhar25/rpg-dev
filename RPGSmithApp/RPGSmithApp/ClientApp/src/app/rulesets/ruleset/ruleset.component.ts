@@ -313,8 +313,7 @@ export class RulesetComponent implements OnInit {
         });    
         this.bsModalRef.content.rulesetModel = { ruleSetId: 0 };
   }
-  BuyCharacterSlot() {
-    debugger
+  BuyRulesetSlot() {    
     let paymentInfo = this.marketplacelist.filter(x => x.marketPlaceId == MarketPlaceItemsType.RULESET_SLOT)[0];
     this.bsModalRef = this.modalService.show(PaymentComponent, {
       class: 'modal-primary modal-custom',
@@ -337,8 +336,7 @@ export class RulesetComponent implements OnInit {
           break;
         default:
           break;
-      }
-      debugger
+      }    
 
       if (this.localStorage.sessionExists(DBkeys.CURRENT_USER)) {
         this.localStorage.saveSyncedSessionData(user, DBkeys.CURRENT_USER);
