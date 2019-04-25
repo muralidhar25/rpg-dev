@@ -577,9 +577,9 @@ export class DiceRollComponent implements OnInit {
           IDs.map((rec) => {
             this.statdetails.charactersCharacterStat.map((stat) => {
               if (rec.id == stat.characterStat.statName.toUpperCase()) {
-                let num = 0; let isCMD = false;
+                let num:string = '0'; let isCMD = false;
                 let cmd = "";
-                let conditionResult = " ";
+                //let conditionResult = " ";
                 switch (rec.statType) {
                   case STAT_TYPE.Number: //Number
                     num = stat.number
@@ -597,7 +597,7 @@ export class DiceRollComponent implements OnInit {
                   case STAT_TYPE.ValueSubValue: //Val Sub-Val
                     if (rec.type == 3)//value
                     {
-                      num = +stat.value
+                      num = stat.value
                     }
                     else if (rec.type == 4)//sub-value
                     {
@@ -614,30 +614,31 @@ export class DiceRollComponent implements OnInit {
                     num = stat.defaultValue
                     break;
                   case STAT_TYPE.Condition:
-                  
+                    debugger;
                     let characterStatConditionsfilter = this.charactersCharacterStats.filter((stat) => stat.characterStat.statName.toUpperCase() == rec.id);
                     let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
                     let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.charactersCharacterStats);
                     //let result = this.conditionStat(characterStatConditions);
-                    conditionResult = result;
+                    console.log(result);
+                    //conditionResult = result;
                     //if (isNaN(+result)) {
                     //  num = 0;
                     //} else {
                     //  num = +result;
                     //}
-                  //  num = result;
+                    num = result;
 
                     break;
                   default:
                     break;
                 }
-                calculationString = calculationString.replace(rec.originaltext, conditionResult);
-                console.log('calcs',calculationString);
-                //if (num)
-                //  calculationString = calculationString.replace(rec.originaltext, num.toString());
-                //else
-                //  calculationString = calculationString.replace(rec.originaltext, '0');
-                ////CalcString = CalcString.replace(rec.originaltext, "(" + num + ")");
+                //calculationString = calculationString.replace(rec.originaltext, conditionResult);
+                //console.log('calcs',calculationString);
+                if (num)
+                  calculationString = calculationString.replace(rec.originaltext, num.toString());
+                else
+                  calculationString = calculationString.replace(rec.originaltext, '0');
+                //CalcString = CalcString.replace(rec.originaltext, "(" + num + ")");
               }
 
             });
@@ -1190,8 +1191,8 @@ export class DiceRollComponent implements OnInit {
               IDs.map((rec) => {
                 this.statdetails.charactersCharacterStat.map((stat) => {
                   if (rec.id == stat.characterStat.statName.toUpperCase()) {
-                    let num = 0;
-                    let conditionResult = "";
+                    let num:string = '0';
+                    //let conditionResult = "";
                     switch (rec.statType) {
                       case 3: //Number
                         num = stat.number
@@ -1209,7 +1210,7 @@ export class DiceRollComponent implements OnInit {
                       case 7: //Val Sub-Val
                         if (rec.type == 3)//value
                         {
-                          num = +stat.value
+                          num = stat.value
                         }
                         else if (rec.type == 4)//sub-value
                         {
@@ -1226,10 +1227,11 @@ export class DiceRollComponent implements OnInit {
                         num = stat.defaultValue
                         break;
                       case STAT_TYPE.Condition:
-                       // debugger;
+                       debugger;
                         let characterStatConditionsfilter = this.charactersCharacterStats.filter((stat) => stat.characterStat.statName.toUpperCase() == rec.id);
                         let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
                         let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.charactersCharacterStats);
+                        console.log(result);
                         //let result = this.conditionStat(characterStatConditions);
                         //console.log(result);
                         //if (isNaN(+result)) {
@@ -1237,23 +1239,23 @@ export class DiceRollComponent implements OnInit {
                         //} else {
                         //  num = +result;
                         //}
-                        conditionResult = result;
+                        num = result;
                         break;
                       default:
                         break;
                     }
-                    calculationString = calculationString.replace(rec.originaltext, conditionResult);
-                    console.log('calc',calculationString);
-                    //if (num) {
+                    //calculationString = calculationString.replace(rec.originaltext, conditionResult);
+                    //console.log('calc',calculationString);
+                    if (num) {
                      
-                    //  calculationString = calculationString.replace(rec.originaltext, num.toString());
-                    //}
+                      calculationString = calculationString.replace(rec.originaltext, num.toString());
+                    }
 
-                    //else {
-                    //  debugger;
-                    //  console.log('calculationString', calculationString);
-                    //  calculationString = calculationString.replace(rec.originaltext, '0');
-                    //}
+                    else {
+                      debugger;
+                      console.log('calculationString', calculationString);
+                      calculationString = calculationString.replace(rec.originaltext, '0');
+                    }
                      
                     //CalcString = CalcString.replace(rec.originaltext, "(" + num + ")");
                   }

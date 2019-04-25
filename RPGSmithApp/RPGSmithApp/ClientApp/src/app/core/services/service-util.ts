@@ -378,7 +378,10 @@ export class ServiceUtil {
       if (item.characterStat.characterStatConditions.length) {
 
         let SkipNextEntries: boolean = false;
+        item.characterStat.characterStatConditions.sort((a, b) => {
 
+          return a.sortOrder - b.sortOrder
+        })
         item.characterStat.characterStatConditions.map((Condition: CharacterStatConditionViewModel) => {
 
           if (!SkipNextEntries) {
