@@ -109,7 +109,7 @@
                                  onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-spells/Fire.jpg';"
                                  [routerLink]="['/character/ruleset/spell-details/', spell.spellId]">
 
-                            <div class="card-actions show" *ngIf="spell.showIcon && !isListView">
+                            <div class="card-actions show" *ngIf="spell.showIcon && !isListView && !pauseSpellCreate" >
                                 <button type="button" (click)="editSpell(spell)" tooltip="Edit" class="btn icon icon-pencil btn-simple-primary"></button>
                                 <button type="button" (click)="duplicateSpell(spell)" tooltip="Duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
                                 <button type="button" (click)="deleteSpell(spell)" tooltip="Delete" class="btn icon icon-trash btn-simple-primary"></button>
@@ -134,14 +134,14 @@
                         <div class="card-actions-trigger" [hidden]="spell.showIcon">
                             <button type="button" (click)="manageIcon(spell.spellId)" tooltip="Manage" class="btn icon icon-more btn-simple-primary"></button>
                         </div>
-                        <div class="card-actions show" *ngIf="spell.showIcon && isListView">
+                        <div class="card-actions show" *ngIf="spell.showIcon && isListView && !pauseSpellCreate">
                             <button type="button" (click)="editSpell(spell)" tooltip="Edit" class="btn icon icon-pencil btn-simple-primary"></button>
                             <button type="button" (click)="duplicateSpell(spell)" tooltip="Duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
                             <button type="button" (click)="deleteSpell(spell)" tooltip="Delete" class="btn icon icon-trash btn-simple-primary"></button>
                             <button type="button" (click)="manageIcon(false)" tooltip="Close" class="btn icon icon-cross btn-simple-primary"></button>
                         </div>
                         <div class="item-actions d-block">
-                            <button type="button" class="btn btn-accent icon-Rec-Add text-icon-center" (click)="AddSpell(spell)">Add Spell</button>
+                            <button type="button" *ngIf="!pauseSpellAdd" class="btn btn-accent icon-Rec-Add text-icon-center" (click)="AddSpell(spell)">Add Spell</button>
                         </div>
                     </div>
                 </div>

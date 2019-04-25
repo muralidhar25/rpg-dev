@@ -153,7 +153,7 @@ export class CampaignDetailsComponent implements OnInit {
                 });
 
               
-              this.alertService.showDialog(names + " has declined your invitations.",
+              this.alertService.showDialog(names + " has declined your invitation.",
                 DialogType.confirm, () => this.RemoveResendInvites(this.declinedUserList,true), () => this.RemoveResendInvites(this.declinedUserList,false), "Resend", "Ok");
             }
            
@@ -485,7 +485,20 @@ export class CampaignDetailsComponent implements OnInit {
               this.campaignService.sendInvite<any>(modal)
                 .subscribe(
                   data => {
+                    if (data) {
+                      this.alertService.showMessage("Invitation send successfully.", "", MessageSeverity.success);
+                      data.showIcon = false;
+                      if (data.sendOn) {
+                        let date = new Date(data.sendOn.replace('T', ' '));
+                        let string = this.formatAMPM(date);
+                        string += ' ' + date.toDateString().replace(' ', '##').split('##')[1];
+                        data.sendOn = string;
 
+                      }
+
+                      this.invitedUsers.push(data);
+                      this.bindInvitedPlayerImage(this.invitedUsers.length - 1);
+                    }
                   },
                   error => {
                     this.alertService.stopLoadingMessage();

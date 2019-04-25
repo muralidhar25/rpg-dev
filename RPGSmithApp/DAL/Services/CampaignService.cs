@@ -54,37 +54,37 @@ namespace DAL.Services
             //        sendOn =x.SendOn,
             //    }
             //    ).ToList();
-           // var re222s = _context.PlayerInvites.Where(x => x.PlayerCampaignID == rulesetId).Include(x => x.PlayerCharacter).Include(x => x.PlayerUser).ToList();
+            // var re222s = _context.PlayerInvites.Where(x => x.PlayerCampaignID == rulesetId).Include(x => x.PlayerCharacter).Include(x => x.PlayerUser).ToList();
 
-          var  res = _context.PlayerInvites.Where(x => x.PlayerCampaignID == rulesetId && (x.IsDeleted == false || x.IsDeleted == null))
-                .Include(x => x.PlayerCharacter)
-                .Include(x => x.PlayerUser).Select(
-                x => new PlayerInviteList()
-                {
-                    InviteId = x.Id,
-                    isAccepted = x.IsAccepted,
-                    isAnswerLater = x.IsAnswerLater,
-                    isDeclined = x.IsDeclined,
-                    isSendToUserName = x.IsSendToUserName,
-                    playerCharacterImage = x.PlayerCharacter != null ? x.PlayerCharacter.ImageUrl : "",
-                    playerCharacterName = x.PlayerCharacter != null ? x.PlayerCharacter.CharacterName : "",
-                    PlayerCharacterId = x.PlayerCharacter != null ? x.PlayerCharacter.CharacterId : 0,
-                    playerUserImage = x.PlayerUser != null ? x.PlayerUser.ProfileImage : "",
-                    playerUserName = x.PlayerUser != null ? x.PlayerUser.UserName : "",
-                    playerUserEmail = x.PlayerEmail,
-                    sendOn = x.SendOn,
-                }
-                ).ToList();
-            List < Character> ownCharacters = _context.Characters.Where(x => x.RuleSetId == rulesetId && x.UserId==user.Id && x.IsDeleted != true).ToList();
+            var res = _context.PlayerInvites.Where(x => x.PlayerCampaignID == rulesetId && (x.IsDeleted == false || x.IsDeleted == null))
+                  .Include(x => x.PlayerCharacter)
+                  .Include(x => x.PlayerUser).Select(
+                  x => new PlayerInviteList()
+                  {
+                      InviteId = x.Id,
+                      isAccepted = x.IsAccepted,
+                      isAnswerLater = x.IsAnswerLater,
+                      isDeclined = x.IsDeclined,
+                      isSendToUserName = x.IsSendToUserName,
+                      playerCharacterImage = x.PlayerCharacter != null ? x.PlayerCharacter.ImageUrl : "",
+                      playerCharacterName = x.PlayerCharacter != null ? x.PlayerCharacter.CharacterName : "",
+                      PlayerCharacterId = x.PlayerCharacter != null ? x.PlayerCharacter.CharacterId : 0,
+                      playerUserImage = x.PlayerUser != null ? x.PlayerUser.ProfileImage : "",
+                      playerUserName = x.PlayerUser != null ? x.PlayerUser.UserName : "",
+                      playerUserEmail = x.PlayerEmail,
+                      sendOn = x.SendOn,
+                  }
+                  ).ToList();
+            List<Character> ownCharacters = _context.Characters.Where(x => x.RuleSetId == rulesetId && x.UserId == user.Id && x.IsDeleted != true).ToList();
             foreach (var item in ownCharacters)
             {
                 res.Add(new PlayerInviteList() {
-                    isAccepted=true,
-                    PlayerCharacterId=item.CharacterId,
+                    isAccepted = true,
+                    PlayerCharacterId = item.CharacterId,
                     playerCharacterImage = item.ImageUrl,
-                    playerCharacterName= item.CharacterName,
-                    playerUserImage= user.ProfileImage,
-                    playerUserName=user.UserName,
+                    playerCharacterName = item.CharacterName,
+                    playerUserImage = user.ProfileImage,
+                    playerUserName = user.UserName,
                 });
             }
             return res;
@@ -157,15 +157,26 @@ namespace DAL.Services
                     return true;
                 }
             }
-            
+
             return false;
         }
 
         public bool IsDeletedInvite(int _characterId, string _userId)
         {
+            if (_characterId == 0)
+            {
+                return true;
+            }
             var invite = _context.PlayerInvites.Where(x => x.PlayerUserID == _userId && x.PlayerCharacterID == _characterId).FirstOrDefault();
 
-            if (invite == null) return false;
+            if (invite == null)
+            {
+                if (_context.DeletedCharacters.Where(x => x.CharacterID == _characterId).Any())
+                {
+                    return true;
+                }
+                return false;
+            }
             else if (invite.IsDeleted) return true;
 
             return false;
@@ -175,8 +186,9 @@ namespace DAL.Services
         {
             if (_context.PlayerInvites.Where(x => x.Id == inviteID).Any())
             {
-               var _invite = _context.PlayerInvites.Where(x => x.Id == inviteID).FirstOrDefault();
-                _invite.IsDeleted = true;
+                _context.PlayerInvites.Remove(_context.PlayerInvites.Where(x => x.Id == inviteID).FirstOrDefault());
+                //var _invite = _context.PlayerInvites.Where(x => x.Id == inviteID).FirstOrDefault();
+                // _invite.IsDeleted = true;
                 _context.SaveChanges();
                 return true;
             }
@@ -193,9 +205,9 @@ namespace DAL.Services
 
         public bool isPlayerSlotAvailableToSendInvite(string userId, int campaignID)
         {
-            int totalPlayerSlots = _context.UserSubscriptions.Where(x=>x.UserId== userId).SingleOrDefault().PlayerCount;
+            int totalPlayerSlots = _context.UserSubscriptions.Where(x => x.UserId == userId).SingleOrDefault().PlayerCount;
             int UsedPlayerSlots = _context.PlayerInvites.Where(x => x.PlayerCampaignID == campaignID && (x.IsDeleted == false || x.IsDeleted == null)).Count();
-            if (totalPlayerSlots> UsedPlayerSlots)
+            if (totalPlayerSlots > UsedPlayerSlots)
             {
                 return true;
             }
@@ -203,7 +215,7 @@ namespace DAL.Services
         }
         public async Task<PlayerInvite> DeclineInvite(int inviteID) {
             PlayerInvite invite = _context.PlayerInvites.Where(x => x.Id == inviteID && (x.IsDeleted == false || x.IsDeleted == null)).FirstOrDefault();
-            if (invite!=null)
+            if (invite != null)
             {
                 invite.IsDeclined = true;
                 await _context.SaveChangesAsync();
@@ -232,7 +244,7 @@ namespace DAL.Services
                     PauseSpellCreate = false,
                 };
 
-                if (_context.PlayerControls.Where(x=>x.CampaignID== invite.PlayerCampaignID).Any())
+                if (_context.PlayerControls.Where(x => x.CampaignID == invite.PlayerCampaignID).Any())
                 {
                     PlayerControl OldControl = _context.PlayerControls.Where(x => x.CampaignID == invite.PlayerCampaignID).FirstOrDefault();
                     control = new PlayerControl()
@@ -269,7 +281,7 @@ namespace DAL.Services
         }
         public async Task<PlayerControl> getPlayerControlsByCampaignId(int campaignID) {
             var res = await _context.PlayerControls.Where(x => x.CampaignID == campaignID).FirstOrDefaultAsync();
-            if (res!=null)
+            if (res != null)
             {
                 res.PlayerCharacterID = 0;
             }
@@ -294,7 +306,7 @@ namespace DAL.Services
                 }).FirstOrDefaultAsync();
         }
         public async Task<PlayerControl> updatePlayerControls(PlayerControl model) {
-            List<PlayerControl> list =await _context.PlayerControls.Where(x => x.CampaignID == model.CampaignID).ToListAsync();
+            List<PlayerControl> list = await _context.PlayerControls.Where(x => x.CampaignID == model.CampaignID).ToListAsync();
             foreach (var playerControl in list)
             {
                 playerControl.PauseAbilityAdd = model.PauseAbilityAdd;
@@ -307,6 +319,13 @@ namespace DAL.Services
             }
             await _context.SaveChangesAsync();
             return await _context.PlayerControls.Where(x => x.CampaignID == model.CampaignID).FirstOrDefaultAsync();
+        }
+        public string GetDeletedCharacterName(int characterID){
+            if (_context.DeletedCharacters.Where(x => x.CharacterID == characterID).Any())
+            {
+                return _context.DeletedCharacters.Where(x => x.CharacterID == characterID).FirstOrDefault().CharacterName;
+            }
+            return string.Empty;
         }
     }
 }

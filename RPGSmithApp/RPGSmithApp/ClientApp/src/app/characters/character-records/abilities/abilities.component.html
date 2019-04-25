@@ -160,7 +160,7 @@
                 <img class="card-img-top" [src]="ability.ability.imageUrl" [alt]="ability.ability.imageUrl"
                      onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-abilities/Attack.jpg';" [routerLink]="['/character/ability-details', ability.characterAbilityId]">
 
-                <div class="card-actions show" *ngIf="ability.showIcon && !isListView">
+                <div class="card-actions show" *ngIf="ability.showIcon && !isListView && !pauseAbilityCreate">
                   <button type="button" (click)="editAbility(ability)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
                   <button type="button" (click)="duplicateAbility(ability)" title="Duplicate" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
                   <button type="button" (click)="deleteAbility(ability)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
@@ -183,7 +183,7 @@
               <div class="card-actions-trigger" *ngIf="!ability.showIcon">
                 <button type="button" (click)="manageIcon(ability.characterAbilityId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary"></button>
               </div>
-              <div class="card-actions show" *ngIf="ability.showIcon && isListView">
+              <div class="card-actions show" *ngIf="ability.showIcon && isListView && !pauseAbilityCreate">
                 <button type="button" (click)="editAbility(ability)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
                 <button type="button" (click)="duplicateAbility(ability)" title="Duplicate" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
                 <button type="button" (click)="deleteAbility(ability)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>

@@ -45,16 +45,16 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="itemcreations1"
-                       [checked]="playerControls.pauseItemCreate"
-                       (click)="AllowItemCreation(true)">
+                       [checked]="!playerControls.pauseItemCreate"
+                       (click)="AllowItemCreation(false)">
                 <span>ON</span>
               </label>
             </li>
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="itemcreations2"
-                       [checked]="!playerControls.pauseItemCreate"
-                       (click)="AllowItemCreation(false)">
+                       [checked]="playerControls.pauseItemCreate"
+                       (click)="AllowItemCreation(true)">
                 <span>OFF</span>
               </label>
             </li>
@@ -74,16 +74,16 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="spellcreations1"
-                       [checked]="playerControls.pauseSpellCreate"
-                       (click)="AllowSpellcreation(true)" >
+                       [checked]="!playerControls.pauseSpellCreate"
+                       (click)="AllowSpellcreation(false)" >
                 <span>ON</span>
               </label>
             </li>
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="spellcreations2"
-                       [checked]="!playerControls.pauseSpellCreate"
-                       (click)="AllowSpellcreation(false)" >
+                       [checked]="playerControls.pauseSpellCreate"
+                       (click)="AllowSpellcreation(true)" >
                 <span>OFF</span>
               </label>
             </li>
@@ -103,16 +103,16 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="abilitycreations1"
-                       [checked]="playerControls.pauseAbilityCreate"
-                       (click)="AllowAbilityCreation(true)">
+                       [checked]="!playerControls.pauseAbilityCreate"
+                       (click)="AllowAbilityCreation(false)">
                 <span>ON</span>
               </label>
             </li>
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="abilitycreations2"
-                       [checked]="!playerControls.pauseAbilityCreate"
-                       (click)="AllowAbilityCreation(false)">
+                       [checked]="playerControls.pauseAbilityCreate"
+                       (click)="AllowAbilityCreation(true)">
                 <span>OFF</span>
               </label>
             </li>
@@ -132,16 +132,16 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="itemadditions1"
-                       [checked]="playerControls.pauseItemAdd"
-                       (click)="AllowItemAdditions(true)">
+                       [checked]="!playerControls.pauseItemAdd"
+                       (click)="AllowItemAdditions(false)">
                 <span>ON</span>
               </label>
             </li>
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="itemadditions2"
-                       [checked]="!playerControls.pauseItemAdd"
-                       (click)="AllowItemAdditions(false)" >
+                       [checked]="playerControls.pauseItemAdd"
+                       (click)="AllowItemAdditions(true)" >
                 <span>OFF</span>
               </label>
             </li>
@@ -161,16 +161,16 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="playerspelladditions1"
-                       [checked]="playerControls.pauseSpellAdd"
-                       (click)="playerspellAdition(true)">
+                       [checked]="!playerControls.pauseSpellAdd"
+                       (click)="playerspellAdition(false)">
                 <span>ON</span>
               </label>
             </li>
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="playerspelladditions2"
-                       [checked]="!playerControls.pauseSpellAdd"
-                     (click)="playerspellAdition(false)"  >
+                       [checked]="playerControls.pauseSpellAdd"
+                     (click)="playerspellAdition(true)"  >
                 <span>OFF</span>
               </label>
             </li>
@@ -190,16 +190,16 @@
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="abilityadditions1"
-                       [checked]="playerControls.pauseAbilityAdd"
-                    (click)="playerAbilityAdditions(true)">
+                       [checked]="!playerControls.pauseAbilityAdd"
+                    (click)="playerAbilityAdditions(false)">
                 <span>ON</span>
               </label>
             </li>
             <li class="form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="abilityadditions2"
-                       [checked]="!playerControls.pauseAbilityAdd"
-                     (click)="playerAbilityAdditions(false)">
+                       [checked]="playerControls.pauseAbilityAdd"
+                     (click)="playerAbilityAdditions(true)">
                 <span>OFF</span>
               </label>
             </li>

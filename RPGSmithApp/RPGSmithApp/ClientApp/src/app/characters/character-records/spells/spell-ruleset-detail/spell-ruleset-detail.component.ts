@@ -37,7 +37,9 @@ export class SpellRulesetDetailComponent implements OnInit {
     spellDetail: any = new Spell();
     character: Characters = new Characters();
     charNav: any = {};
-
+  pauseSpellAdd: boolean;
+  pauseSpellCreate: boolean;
+  pageRefresh: boolean;
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -76,13 +78,15 @@ export class SpellRulesetDetailComponent implements OnInit {
           }
     }
 
-    private initialize() {
+  private initialize() {
+
         this.character.characterId = this.localStorage.getDataObject<number>(DBkeys.CHARACTER_ID);
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)
             this.authService.logout();
         else {
-            this.isLoading = true;
+          this.isLoading = true;
+          this.gameStatus(this.character.characterId);
             this.charactersService.getCharactersById<any>(this.character.characterId)
                 .subscribe(data => {
                   this.character = data;
@@ -354,5 +358,43 @@ export class SpellRulesetDetailComponent implements OnInit {
 
   RedirectChar(path) {
         this.router.navigate([path]);
-    }
+  }
+  gameStatus(characterId?: any) {
+    //api for player controls
+    this.charactersService.getPlayerControlsByCharacterId(characterId)
+      .subscribe(data => {
+        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+        if (data) {
+
+          if (user.isGm) {
+            this.pageRefresh = user.isGm;
+          }
+          else if (data.isPlayerCharacter) {
+            this.pageRefresh = data.isPlayerCharacter;
+          }
+          if (data.isPlayerCharacter) {
+            this.pauseSpellAdd = data.pauseSpellAdd;
+            this.pauseSpellCreate = data.pauseSpellCreate;
+
+            if (data.pauseGame) {
+              this.router.navigate(['/characters']);
+              this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+              setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+            }
+            // this.pageRefresh = data.isPlayerCharacter;
+
+          }
+          if (data.isDeletedInvite) {
+            this.router.navigate(['/characters']);
+            this.alertService.showStickyMessage('', "Your " + data.name + " character has been deleted by the GM", MessageSeverity.error);
+            setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+          }
+        }
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      });
+  }
 }

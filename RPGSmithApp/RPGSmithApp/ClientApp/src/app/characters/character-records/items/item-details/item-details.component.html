@@ -63,7 +63,7 @@
                         </li>-->
                         <li>
                             <!-- Manage item -->
-                            <div class="dropdown dropdown-buttons">
+                            <div class="dropdown dropdown-buttons" *ngIf="!pauseItemCreate">
                                 <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> Manage Item</button>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
                                     <ul class="dropdown-menu-list">
@@ -91,7 +91,7 @@
   </li>-->
                   <li>
                     <!-- Manage item -->
-                    <div class="dropdown dropdown-buttons">
+                    <div class="dropdown dropdown-buttons" *ngIf="!pauseItemCreate">
                       <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> Manage Item</button>
                       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
                         <ul class="dropdown-menu-list">
@@ -181,7 +181,7 @@
                                     <button *ngIf="!ItemDetail?.isEquipped" type="button" (click)="equippedItem(ItemDetail)" class="btn btn-accent icon icon-with-text icon-Rec-Equipped"> Equip</button>
                                 </li>
                                 <li>
-                                    <button type="button" (click)="deleteItem(ItemDetail)" class="btn btn-accent d-none d-md-block icon icon-with-text icon-Rec-Drop"> Drop</button>
+                                    <button type="button" *ngIf="!pauseItemCreate" (click)="deleteItem(ItemDetail)" class="btn btn-accent d-none d-md-block icon icon-with-text icon-Rec-Drop"> Drop</button>
                                 </li>
                                 <li>
                                     <button *ngIf="ItemDetail?.showUse" type="button" (click)="useItem(ItemDetail)" class="btn btn-accent icon icon-with-text icon-Tile-Execute"> Use</button>

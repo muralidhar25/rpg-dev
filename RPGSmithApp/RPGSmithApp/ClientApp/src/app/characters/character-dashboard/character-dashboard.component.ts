@@ -2524,25 +2524,24 @@ export class CharacterDashboardComponent implements OnInit {
       .subscribe(data => {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (data) {
-          if (user.isGm) {
-            console.log('user', user.isGm);
+          if (user.isGm) {            
             this.pageRefresh = user.isGm;
           }
          else if (data.isPlayerCharacter) {
             this.pageRefresh = data.isPlayerCharacter;
           }
-         else if (data.isDeletedInvite) {
-            this.router.navigate(['/characters']);
-            this.alertService.showStickyMessage('', "Player Deleted by GM", MessageSeverity.error);
-            setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
-          }
-          else {
-            if (data.pauseGame) {
+          if (data.isPlayerCharacter) {
+             if (data.pauseGame) {
               this.router.navigate(['/characters']);
-              this.alertService.showStickyMessage('', "Game Paused By GM", MessageSeverity.error);
+              this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
               setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
             }
 
+          }
+          if (data.isDeletedInvite) {
+            this.router.navigate(['/characters']);
+            this.alertService.showStickyMessage('', "Your " + data.name + " character has been deleted by the GM", MessageSeverity.error);
+            setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
           }
         } 
         

@@ -47,7 +47,8 @@ export class RulesetViewAbilityDetailComponent implements OnInit {
     characterAbilityModal: any = new CharacterAbilities();
     IsAddingRecord: boolean = false;
     pageRefresh: boolean;
-
+  pauseAbilityAdd: boolean;
+  pauseAbilityCreate: boolean;
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -408,17 +409,20 @@ export class RulesetViewAbilityDetailComponent implements OnInit {
           else if (data.isPlayerCharacter) {
             this.pageRefresh = data.isPlayerCharacter;
           }
-          else if (data.isDeletedInvite) {
-            this.router.navigate(['/characters']);
-            this.alertService.showStickyMessage('', "Player Deleted by GM", MessageSeverity.error);
-            setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
-          }
-          else {
-            if (data.pauseGame) {
+          if (data.isPlayerCharacter) {
+            this.pauseAbilityAdd = data.pauseAbilityAdd;
+            this.pauseAbilityCreate = data.pauseAbilityCreate;
+             if (data.pauseGame) {
               this.router.navigate(['/characters']);
-              this.alertService.showStickyMessage('', "Game Paused By GM", MessageSeverity.error);
+              this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
               setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+
             }
+          }
+          if (data.isDeletedInvite) {
+            this.router.navigate(['/characters']);
+            this.alertService.showStickyMessage('', "Your " + data.name + " character has been deleted by the GM", MessageSeverity.error);
+            setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
           }
          // this.pageRefresh = data.isPlayerCharacter;
         }

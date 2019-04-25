@@ -112,7 +112,14 @@ namespace DAL
         public virtual DbSet<PlayerControl> PlayerControls { get; set; }
         public virtual DbSet<PlayerInvite> PlayerInvites { get; set; }
         public virtual DbSet<UserSubscription> UserSubscriptions { get; set; }
+
+        public virtual DbSet<ItemMasterLoot> ItemMasterLoots { get; set; }
+        public virtual DbSet<DeletedCharacter> DeletedCharacters { get; set; }
         
+        //public virtual DbSet<ItemMasterLootAbility> ItemMasterLootAbilities { get; set; }
+        //public virtual DbSet<ItemMasterLootCommand> ItemMasterLootCommands { get; set; }
+        //public virtual DbSet<ItemMasterLootSpell> ItemMasterLootSpells { get; set; }
+
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {

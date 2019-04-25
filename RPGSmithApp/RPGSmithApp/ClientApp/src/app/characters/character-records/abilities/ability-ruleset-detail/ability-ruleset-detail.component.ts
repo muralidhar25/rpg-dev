@@ -39,6 +39,9 @@ export class AbilityRulesetDetailComponent implements OnInit {
     AbilityDetail: any = new Ability();
     character: Characters = new Characters();
     charNav: any = {};
+  pauseAbilityAdd: boolean;
+  pauseAbilityCreate: boolean;
+  pageRefresh: boolean;
 
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -84,7 +87,8 @@ export class AbilityRulesetDetailComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
-            this.isLoading = true;
+          this.isLoading = true;
+          this.gameStatus(this.character.characterId);
             this.charactersService.getCharactersById<any>(this.character.characterId)
                 .subscribe(data => {
                     this.character = data;
@@ -130,7 +134,9 @@ export class AbilityRulesetDetailComponent implements OnInit {
 
     @HostListener('document:click', ['$event.target'])
     documentClick(target: any) {
-        try {
+      try {
+        if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE))
+          this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
             if (target.className.endsWith("is-show"))
                 this.isDropdownOpen = !this.isDropdownOpen;
             else this.isDropdownOpen = false;
@@ -359,5 +365,44 @@ export class AbilityRulesetDetailComponent implements OnInit {
 
     RedirectChar(path) {
         this.router.navigate([path]);
-    }
+  }
+  gameStatus(characterId?: any) {
+    //api for player controls
+    this.charactersService.getPlayerControlsByCharacterId(characterId)
+      .subscribe(data => {
+        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+        if (data) {
+
+          if (user.isGm) {
+            this.pageRefresh = user.isGm;
+          }
+          else if (data.isPlayerCharacter) {
+            this.pageRefresh = data.isPlayerCharacter;
+          }
+          if (data.isPlayerCharacter) {
+            this.pauseAbilityAdd = data.pauseAbilityAdd;
+            this.pauseAbilityCreate = data.pauseAbilityCreate;
+
+            if (data.pauseGame) {
+              this.router.navigate(['/characters']);
+              this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+              setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+
+            }
+            // this.pageRefresh = data.isPlayerCharacter;
+          }
+          if (data.isDeletedInvite) {
+            this.router.navigate(['/characters']);
+            this.alertService.showStickyMessage('', "Your " + data.name + " character has been deleted by the GM", MessageSeverity.error);
+            setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+          }
+
+        }
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      });
+  }
 }
