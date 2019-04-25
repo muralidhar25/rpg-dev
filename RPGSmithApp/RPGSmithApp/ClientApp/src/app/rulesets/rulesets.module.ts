@@ -25,6 +25,7 @@ import { CampaignsComponent } from "./campaigns/campaigns.component";
 import { CampaignDetailsComponent } from "./campaign-details/campaign-details.component";
 import { PlayerControlsComponent } from "./player-controls/player-controls.component";
 import { InvitePlayerComponent } from './invite-player/invite-player.component';
+import { RulesetDetailsComponent } from "./ruleset-details/ruleset-details.component";
 //import { CampaignInviteComponent } from './campaign-invite/campaign-invite.component';
 
 @NgModule({
@@ -45,6 +46,7 @@ import { InvitePlayerComponent } from './invite-player/invite-player.component';
     CampaignDetailsComponent,
     PlayerControlsComponent,
     InvitePlayerComponent,
+    RulesetDetailsComponent
     //CampaignInviteComponent
   ],
   imports: [
@@ -73,6 +75,7 @@ import { InvitePlayerComponent } from './invite-player/invite-player.component';
     CampaignDetailsComponent,
     PlayerControlsComponent,
     InvitePlayerComponent,
+    RulesetDetailsComponent
     //CampaignInviteComponent
   ],
   entryComponents: [

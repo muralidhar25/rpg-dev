@@ -15,23 +15,28 @@ import { AuthGuard } from "../core/auth/auth-guard.service";
 import { BundleDetailsComponent } from "../records/item-master/bundle-details/bundle-details.component";
 import { CampaignsComponent } from "./campaigns/campaigns.component";
 import { CampaignDetailsComponent } from './campaign-details/campaign-details.component';
+//import { LootComponent } from "../records/loot/loot.component";
+import { RulesetDetailsComponent } from "./ruleset-details/ruleset-details.component";
+
 
 const routes: Routes = [
   { path: "", component: RulesetComponent, data: { title: "Rulesets" } },
-  { path: "item-master/:id", component: ItemMasterComponent,  data: { title: "Item Template" } },
-  { path: "spell/:id", component: SpellsComponent,  data: { title: "Spells" } },
-  { path: "ability/:id", component: AbilitiesComponent,  data: { title: "Abilities" } },
+  { path: "item-master/:id", component: ItemMasterComponent, data: { title: "Item Template" } },
+  { path: "spell/:id", component: SpellsComponent, data: { title: "Spells" } },
+  { path: "ability/:id", component: AbilitiesComponent, data: { title: "Abilities" } },
 
-  { path: "item-details/:id", component: ItemDetailsComponent,  data: { title: "Item Details" } },
-  { path: "bundle-details/:id", component: BundleDetailsComponent,  data: { title: "Bundle Details" } },
-  { path: "spell-details/:id", component: SpellDetailsComponent,  data: { title: "Spell Details" } },
-  { path: "ability-details/:id", component: AbilityDetailsComponent,  data: { title: "Ability Details" } },
+  { path: "item-details/:id", component: ItemDetailsComponent, data: { title: "Item Details" } },
+  { path: "bundle-details/:id", component: BundleDetailsComponent, data: { title: "Bundle Details" } },
+  { path: "spell-details/:id", component: SpellDetailsComponent, data: { title: "Spell Details" } },
+  { path: "ability-details/:id", component: AbilityDetailsComponent, data: { title: "Ability Details" } },
 
   { path: "dashboard/:id", component: RulesetDashboardComponent, data: { title: "Ruleset Dashboard" } },
   { path: "character-stats/:id", component: CharacterStatsComponent, data: { title: "Character Stats" } },
   { path: "add", component: RulesetAddInterfaceComponent, canActivate: [AuthGuard], data: { title: "Add Ruleset" } },
   { path: "campaigns", component: CampaignsComponent, data: { title: "Campaigns" } },
   { path: "campaign-details/:id", component: CampaignDetailsComponent, data: { title: "CampaignDetails" } },
+  { path: "ruleset-details/:id", component: RulesetDetailsComponent , data: { title: "RulesetDetails" } },
+ // { path: "loot/:id", component: LootComponent, data: { title: "Loot" } },
 ];
 
 @NgModule({

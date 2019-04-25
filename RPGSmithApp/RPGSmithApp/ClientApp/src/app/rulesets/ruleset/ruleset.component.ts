@@ -30,7 +30,7 @@ import { PaymentComponent } from "../../shared/payment/payment.component";
     animations: [fadeInOut]
 })
 
-export class RulesetComponent implements OnInit {
+export class RulesetComponent implements OnInit, OnDestroy {
 
     openManage: boolean = false;;
     page?: number = 1;
@@ -45,6 +45,7 @@ export class RulesetComponent implements OnInit {
   defaultDicesForNewUsers: DefaultDice[] =[];
   rulesetSlots: number;
   marketplacelist: marketplaceListModel[] = [];
+
     constructor(
         private router: Router, private alertService: AlertService, private localStorage: LocalStoreManager,
       private authService: AuthService, private configurations: ConfigurationService, private marketPlaceService: MarketPlaceService,
@@ -54,12 +55,12 @@ export class RulesetComponent implements OnInit {
         if (!this.authService.isLoggedIn) {
             this.authService.logout();
         }
-        this.sharedService.shouldUpdateRulesetList().subscribe(ruleset => {
-            if (ruleset) {
+      this.sharedService.shouldUpdateRulesetList().subscribe(ruleset => {
+          if (ruleset) {
                 this.openManage = false;
               this.initialize(ruleset);
               this.sharedService.updateManageOpen(null);
-            }
+          }
         });
     }
 
@@ -78,11 +79,13 @@ export class RulesetComponent implements OnInit {
         } catch (err) { this.isDropdownOpen = false; this.showPlus = true;}
     }
    
-    ngOnInit() {
+  ngOnInit() {
       this.destroyModalOnInit();
       let ruleset = this.localStorage.getDataObject<any>(DBkeys.CURRENT_RULESET);
       this.initialize(ruleset);
-    }
+  }
+
+  ngOnDestroy() {}
 
     private resetHeaderValues(): any {
       try {
@@ -93,7 +96,7 @@ export class RulesetComponent implements OnInit {
         } catch (err) { }
     }
     
-    private initialize(ruleset?: any) {
+  private initialize(ruleset?: any) {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)
         {
@@ -197,24 +200,28 @@ export class RulesetComponent implements OnInit {
       });
     }
 
-    manageRuleset(ruleset: Ruleset) {
-        
+  manageRuleset(ruleset: Ruleset) {
+
+      let id = ruleset.ruleSetId;
+    this.router.navigate(['/ruleset/ruleset-details/' + id]);
+
+
         //console.log('mange ruleset popup');
-        if (!document.getElementsByClassName('mng-ruleset-popup').length) {
-            this.setRulesetId(ruleset.ruleSetId);
-            setTimeout(() => {
-                this.bsModalRef = this.modalService1.show(RulesetManageComponent, {
-                    class: 'modal-primary modal-md mng-ruleset-popup',
-                    ignoreBackdropClick: true,
-                    keyboard: false
-                });
-                this.bsModalRef.content.title = 'Rule Set Properties';
-                ruleset.view = VIEW.EDIT;
-                this.bsModalRef.content.ruleset = ruleset;
-                this.bsModalRef.content.recordCount = ruleset.recordCount;   
-            }, 100);
+        //if (!document.getElementsByClassName('mng-ruleset-popup').length) {
+        //    this.setRulesetId(ruleset.ruleSetId);
+        //    setTimeout(() => {
+        //        this.bsModalRef = this.modalService1.show(RulesetManageComponent, {
+        //            class: 'modal-primary modal-md mng-ruleset-popup',
+        //            ignoreBackdropClick: true,
+        //            keyboard: false
+        //        });
+        //        this.bsModalRef.content.title = 'Rule Set Properties';
+        //        ruleset.view = VIEW.EDIT;
+        //        this.bsModalRef.content.ruleset = ruleset;
+        //        this.bsModalRef.content.recordCount = ruleset.recordCount;   
+        //    }, 100);
                   
-        }       
+        //}       
     }
     private setRulesetId(rulesetId: number) {
         this.localStorage.deleteData(DBkeys.RULESET_ID);
@@ -348,4 +355,5 @@ export class RulesetComponent implements OnInit {
     });
 
   }
+  
 }

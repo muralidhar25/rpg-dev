@@ -286,7 +286,11 @@ export class RulesetFormComponent implements OnInit {
     }
   public event: EventEmitter<any> = new EventEmitter();
     private addEditRuleset(modal) {
-        
+      let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+      if (user == null) {
+        this.authService.logout(true);
+      }
+         
         this.isLoading = true;
         //if (modal.ruleSetId == 0) {
         modal.customDices = this.RcustomDices;
@@ -303,10 +307,16 @@ export class RulesetFormComponent implements OnInit {
                         ? "Rule Set has been added successfully."
                         : "Rule Set has been updated successfully.";
                     this.alertService.showMessage(message, "", MessageSeverity.success);
-                    this.commonService.UpdateCounts(); /*update charaters count*/
-                  
-                  this.sharedService.updateRulesetList(data);
-                  this.event.emit(data);
+                  this.commonService.UpdateCounts(); /*update charaters count*/
+
+                  if (user.isGm) {
+                    this.router.navigate(['/ruleset/campaign-details/' + data.ruleSetId]);
+                  } else {
+                    this.router.navigate(['/ruleset/ruleset-details/' + data.ruleSetId]);
+                  }
+                 
+                 // this.sharedService.updateRulesetList(data);
+                 // this.event.emit(data);
                     //setTimeout(() => {
                     //    if ((modal.ruleSetId == 0 || modal.ruleSetId === undefined) && data !== null)
                     //        this.manageRuleset(data);
@@ -330,7 +340,12 @@ export class RulesetFormComponent implements OnInit {
     }
 
     private duplicateRuleset(modal) {
+      let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+      if (user == null) {
+        this.authService.logout(true);
+      }
         
+
         this.isLoading = true;
         
         modal.customDices = this.RcustomDices;
@@ -347,8 +362,13 @@ export class RulesetFormComponent implements OnInit {
                     let msgSuccess = modal.view === VIEW.IMPORT ? "Rule Set has been imported successfully."
                         : "Rule Set has been duplicated successfully.";
                     this.alertService.showMessage(msgSuccess, "", MessageSeverity.success);
-                    
-                    this.sharedService.updateRulesetList(data);
+                  
+                  if (user.isGm) {
+                    this.router.navigate(['/ruleset/campaign-details/' + data.ruleSetId]);
+                  } else {
+                    this.router.navigate(['/ruleset/ruleset-details/' + data.ruleSetId]);
+                  }
+                   // this.sharedService.updateRulesetList(data);
                     // this.router.navigateByUrl('/rulesets', { skipLocationChange: true }).then(() => this.router.navigate(['/ruleset']));
                     // window.location.reload();
                     
