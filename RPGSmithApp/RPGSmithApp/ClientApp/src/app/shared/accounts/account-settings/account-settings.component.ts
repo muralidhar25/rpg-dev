@@ -116,10 +116,10 @@ export class AccountSettingsComponent implements OnInit {
             this.userExistMsg = "Please enter a username.";
             this.userExist = isExist;
         }
-        else if (!/^\S*$/g.test(userModal.userName)) {
+      if (!/^[a-zA-Z0-9._\\-]{2,}$/g.test(userModal.userName)) {
           this.showExistMsg = true;
           let isExist: boolean = true;
-          this.userExistMsg = "Please enter a valid username.";
+        this.userExistMsg = "Please provide a valid Username, no spaces or special characters allowed.";
           this.userExist = isExist;      
         }   
         else {
@@ -235,8 +235,8 @@ export class AccountSettingsComponent implements OnInit {
       this.isLoading = true;
       let URL: string = window.location.origin;      
       if (this.socialLogin != 'facebook') {
-        if (!/^\S*$/g.test(this.userFormModal.userName)) {
-          this.alertService.showMessage("Please enter a valid username", "", MessageSeverity.error);
+        if (!/^[a-zA-Z0-9._\\-]{2,}$/g.test(this.userFormModal.userName)) {
+          this.alertService.showMessage("Please provide a valid Username, no spaces or special characters allowed.", "", MessageSeverity.error);
           this.isLoading = false;
           return false;
         }        
@@ -244,7 +244,6 @@ export class AccountSettingsComponent implements OnInit {
         this.userService.updateAccountSetting<any>(this.userFormModal, URL)
             .subscribe(
                 data => {
-
                     this.isLoading = false;
                     this.alertService.stopLoadingMessage();
                     this.localStorage.saveSyncedSessionData(data.data, DBkeys.CURRENT_USER);
