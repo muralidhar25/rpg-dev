@@ -619,15 +619,14 @@ export class DiceRollComponent implements OnInit {
                     let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
                     let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.charactersCharacterStats);
                     //let result = this.conditionStat(characterStatConditions);
-                    console.log(result);
                     //conditionResult = result;
                     //if (isNaN(+result)) {
                     //  num = 0;
                     //} else {
                     //  num = +result;
                     //}
-                    num = result;
-
+                   // num = result;
+                    num = ServiceUtil.GetCalcuationsResults(result, this.statdetails, this.charactersCharacterStats, this.character);
                     break;
                   default:
                     break;
@@ -1231,7 +1230,7 @@ export class DiceRollComponent implements OnInit {
                         let characterStatConditionsfilter = this.charactersCharacterStats.filter((stat) => stat.characterStat.statName.toUpperCase() == rec.id);
                         let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
                         let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.charactersCharacterStats);
-                        console.log(result);
+                        //console.log(result);
                         //let result = this.conditionStat(characterStatConditions);
                         //console.log(result);
                         //if (isNaN(+result)) {
@@ -1239,7 +1238,9 @@ export class DiceRollComponent implements OnInit {
                         //} else {
                         //  num = +result;
                         //}
-                        num = result;
+                        // num = result;
+                        num = ServiceUtil.GetCalcuationsResults(result, this.statdetails, this.charactersCharacterStats, this.character);
+                        console.log('num',num);
                         break;
                       default:
                         break;
@@ -1252,8 +1253,8 @@ export class DiceRollComponent implements OnInit {
                     }
 
                     else {
-                      debugger;
-                      console.log('calculationString', calculationString);
+                      //debugger;
+                     
                       calculationString = calculationString.replace(rec.originaltext, '0');
                     }
                      
@@ -1263,6 +1264,7 @@ export class DiceRollComponent implements OnInit {
                 });
                 
                 finalCalcString = calculationString;
+                console.log('calculationString', finalCalcString);
               });
             }
             ////////////////////////////////                    
