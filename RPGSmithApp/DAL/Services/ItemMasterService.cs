@@ -1057,9 +1057,95 @@ namespace DAL.Services
                 }
             }
         }
-        public async Task<List<ItemMasterLoot>> GetItemMasterLoots(int rulesetID, int page = 1, int pageSize = 30) {
-            return await _context.ItemMasterLoots.Include(x => x.ItemMaster)
-                .Where(x => x.ItemMaster.RuleSetId == rulesetID && x.ItemMaster.IsDeleted!=true).AsNoTracking().ToListAsync();
+        public async Task<List<ItemMasterLoot_ViewModel>> GetItemMasterLoots(int rulesetID, int page = 1, int pageSize = 30)
+        {
+            List<ItemMasterLoot_ViewModel> itemlist = new List<ItemMasterLoot_ViewModel>();
+            RuleSet ruleset = new RuleSet();
+
+            short num = 0;
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            //string qry = "EXEC ItemMaster_GetByRulesetID @RulesetID='" + rulesetId + "',@page='" + page + "',@size='" + pageSize + "'";
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("ItemMasterLoot_GetByRulesetID", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@RulesetID", rulesetID);
+                command.Parameters.AddWithValue("@page", page);
+                command.Parameters.AddWithValue("@size", pageSize);
+
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+
+            if (ds.Tables[1].Rows.Count > 0)
+                ruleset = _repo.GetRuleset(ds.Tables[1], num);
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    ItemMasterLoot_ViewModel i = new ItemMasterLoot_ViewModel();
+                    i.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
+                    i.ContainerVolumeMax = row["ContainerVolumeMax"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ContainerVolumeMax"]);
+                    i.ContainerWeightMax = row["ContainerWeightMax"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ContainerWeightMax"]);
+                    i.ContainerWeightModifier = row["ContainerWeightModifier"] == DBNull.Value ? null : row["ContainerWeightModifier"].ToString();
+                    i.IsConsumable = row["IsConsumable"] == DBNull.Value ? false : Convert.ToBoolean(row["IsConsumable"]);
+                    i.IsContainer = row["IsContainer"] == DBNull.Value ? false : Convert.ToBoolean(row["IsContainer"]);
+                    i.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
+                    i.IsMagical = row["IsMagical"] == DBNull.Value ? false : Convert.ToBoolean(row["IsMagical"]);
+                    i.ItemCalculation = row["ItemCalculation"] == DBNull.Value ? null : row["ItemCalculation"].ToString();
+                    i.ItemImage = row["ItemImage"] == DBNull.Value ? null : row["ItemImage"].ToString();
+                    i.ItemMasterId = row["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemMasterId"].ToString());
+                    i.ItemName = row["ItemName"] == DBNull.Value ? null : row["ItemName"].ToString();
+                    i.ItemStats = row["ItemStats"] == DBNull.Value ? null : row["ItemStats"].ToString();
+                    i.ItemVisibleDesc = row["ItemVisibleDesc"] == DBNull.Value ? null : row["ItemVisibleDesc"].ToString();
+                    i.Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString();
+                    i.ParentItemMasterId = row["ParentItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentItemMasterId"].ToString());
+                    i.PercentReduced = row["PercentReduced"] == DBNull.Value ? 0 : Convert.ToDecimal(row["PercentReduced"]);
+                    i.Rarity = row["Rarity"] == DBNull.Value ? null : row["Rarity"].ToString();
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
+                    i.TotalWeightWithContents = row["TotalWeightWithContents"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalWeightWithContents"]);
+                    i.Value = row["Value"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Value"]);
+                    i.Volume = row["Volume"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Volume"]);
+                    i.Weight = row["Weight"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Weight"]);
+
+                    i.RuleSet = ruleset;
+                    i.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
+
+                    i.LootId = row["LootId"] == DBNull.Value ? 0 : Convert.ToInt32(row["LootId"].ToString());
+                    i.IsShow = row["IsShow"] == DBNull.Value ? false : Convert.ToBoolean(row["IsShow"]);
+                    i.ContainedIn = row["ContainedIn"] == DBNull.Value ? 0 : Convert.ToInt32(row["ContainedIn"].ToString());
+                    i.Quantity = row["Quantity"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Quantity"]);
+                    i.IsIdentified = row["IsIdentified"] == DBNull.Value ? false : Convert.ToBoolean(row["IsIdentified"]);
+                    i.IsVisible = row["IsVisible"] == DBNull.Value ? false : Convert.ToBoolean(row["IsVisible"]);
+                    i.TotalWeight = row["TotalWeight"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalWeight"]);
+                    itemlist.Add(i);
+                }
+            }
+            return itemlist;
+
+
+
+            //return await _context.ItemMasterLoots.Include(x => x.ItemMaster)
+            //    .Where(x => x.ItemMaster.RuleSetId == rulesetID && x.ItemMaster.IsDeleted!=true).AsNoTracking().ToListAsync();
         }
         public async Task<List<ItemMasterLoot>> GetLootItemsForPlayers(int rulesetID) {
             return await _context.ItemMasterLoots.Include(x => x.ItemMaster)
