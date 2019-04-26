@@ -27,11 +27,22 @@ ul.list-unstyled li {
   border-radius: 4px;
   overflow: hidden;
   border: 1px solid #ececec;
-  text-align: center
+  text-align: center;
+  background: #fff;
+  width: calc(100% - 30px) !important;
+}
+.size-compaire{
+  position:absolute;
+  height:100%;
 }
 
 .campaign-image img {
   max-width: 100%;
+  max-height: 100%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
 }
 
 .campaign-title {
@@ -201,7 +212,17 @@ ul.list-unstyled li {
   text-align: center;
   width: 100%
 }
-
+@media (max-width:767px){
+  .size-compaire {
+    position: unset;
+    height: auto;
+    width:100% !important
+  }
+  .campaign-image img{
+    position:unset;
+    transform:unset;
+  }
+}
 @media screen and (min-width: 768px) {
   .dropdown-menu-item-count {
     width: 40px;
@@ -237,4 +258,52 @@ ul.list-unstyled li {
   color: #fff !important;
   background: #123d66 !important;
   border-color: #2d6996 !important;
+}
+.comming-soon-text {
+  position: absolute;
+  bottom: 0px;
+  text-align: center;
+  width: 121px;
+  left: 50%;
+  transform: translate(-50%,-0);
+  color: #d15727;
+  font-size: 13px;
+  line-height:16px;
+}
+.thumbnail img.comming-soon-img {
+  max-width: 50%;
+  height: auto;
+  max-height: 100%;
+  top:40%;
+}
+.addnew-icon {
+  text-align: center;
+  max-width: 100%;
+  max-height: 100%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  display: inline-block;
+}
+.addnew-icon em{
+  white-space: nowrap;
+  margin-top: 15px;
+  display: block;
+  position: absolute;
+  font-style: normal;
+  font-size: 12px;
+  left: 0px;
+  width: 100%;
+  bottom: -30px;
+}
+.addnew-icon span {
+  display: block;
+  margin: 0 auto;
+  width: 140px;
+  text-align: center;
+  height: 84px;
+  line-height: 180px;
+  color: #7F7F7F;
 }

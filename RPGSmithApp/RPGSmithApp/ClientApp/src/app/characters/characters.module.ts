@@ -10,7 +10,7 @@ import  { TileModule } from '../tile/tile.module';
 import  { TileRulesetModule } from '../tile-ruleset/tile-ruleset.module';
 
 import { CharactersComponent } from './characters/characters.component';
-import { CharactersFormComponent } from './characters-form/characters-form.component';
+
 import { CharacterTilesComponent } from './characters/character-tiles/character-tiles.component';
 
 import { CharacterDashboardComponent } from './character-dashboard/character-dashboard.component';
@@ -49,7 +49,7 @@ import { RulesetViewBundleDetailComponent } from './character-records/items/rule
 @NgModule({
   declarations: [
     CharactersComponent,
-    CharactersFormComponent,
+   
     CharacterTilesComponent,
 
     CharacterDashboardComponent,
@@ -92,7 +92,7 @@ import { RulesetViewBundleDetailComponent } from './character-records/items/rule
   ],
   exports: [
     CharactersComponent,
-    CharactersFormComponent,
+   
     CharacterTilesComponent,
 
     CharacterDashboardComponent,
@@ -124,7 +124,7 @@ import { RulesetViewBundleDetailComponent } from './character-records/items/rule
     RulesetViewSpellDetailComponent
   ],
   entryComponents: [
-    CharactersFormComponent,
+  
     LayoutFormComponent,
     PageFormComponent,
     AddContainerComponent,
