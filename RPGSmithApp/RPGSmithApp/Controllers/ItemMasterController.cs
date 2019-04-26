@@ -78,7 +78,7 @@ namespace RPGSmithApp.Controllers
 
         [HttpGet("getByRuleSetId")]
         public async Task<IActionResult> getByRuleSetId(int rulesetId)
-        {
+        {            
             if (_coreRulesetService.IsCopiedFromCoreRuleset(rulesetId))
             {
                 dynamic Response = new ExpandoObject();
@@ -105,16 +105,16 @@ namespace RPGSmithApp.Controllers
             }
         }
         [HttpGet("getByRuleSetId_add")]
-        public async Task<IActionResult> getByRuleSetId_add(int rulesetId,bool includeBundles=false)
+        public async Task<IActionResult> getByRuleSetId_add(int rulesetId, bool includeBundles = false)
         {
-            
-                dynamic Response = new ExpandoObject();
-                var ItemList = _coreRulesetService.GetItemMastersByRuleSetId_add(rulesetId, includeBundles);
-              
-                Response.ItemMaster = Utilities.CleanModel<ItemMaster_Bundle>(ItemList);
-                Response.RuleSet = Utilities.CleanModel<RuleSet>(_ruleSetService.GetRuleSetById(rulesetId).Result);
-                return Ok(Response);
-          
+
+            dynamic Response = new ExpandoObject();
+            var ItemList = _coreRulesetService.GetItemMastersByRuleSetId_add(rulesetId, includeBundles);
+
+            Response.ItemMaster = Utilities.CleanModel<ItemMaster_Bundle>(ItemList);
+            Response.RuleSet = Utilities.CleanModel<RuleSet>(_ruleSetService.GetRuleSetById(rulesetId).Result);
+            return Ok(Response);
+
         }
 
         [HttpPost("create")]
@@ -383,8 +383,8 @@ namespace RPGSmithApp.Controllers
                 }
                 else
                 {
-                   return await CreateItemMasterForCopiedRuleset(model);
-                    
+                    return await CreateItemMasterForCopiedRuleset(model);
+
                 }
 
             }
@@ -394,7 +394,7 @@ namespace RPGSmithApp.Controllers
             }
         }
 
-        private async Task<IActionResult> CreateItemMasterForCopiedRuleset(EditItemMasterModel model, bool? IsDeleted=null)
+        private async Task<IActionResult> CreateItemMasterForCopiedRuleset(EditItemMasterModel model, bool? IsDeleted = null)
         {
             //CreateItemMasterModel itemModel = Mapper.Map<CreateItemMasterModel>(model);
             ItemMaster itemMaster = new ItemMaster();
@@ -559,11 +559,11 @@ namespace RPGSmithApp.Controllers
             //        // await UpdateItemMasterCommon(model);
             //    }
             //}           
-            await _itemMasterService.DeleteItemMaster(Id);            
+            await _itemMasterService.DeleteItemMaster(Id);
             return Ok();
         }
-        
-            [HttpPost("delete_up")]
+
+        [HttpPost("delete_up")]
         public async Task<IActionResult> DeleteItemMaster([FromBody] EditItemMasterModel model)
         {
             int rulesetID = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
@@ -792,6 +792,8 @@ namespace RPGSmithApp.Controllers
         [HttpGet("getByRuleSetId_sp")]
         public async Task<IActionResult> getByRuleSetId_sp(int rulesetId, int page = 1, int pageSize = 30)
         {
+            //await AddItemMastersToLoot(null);
+            //await GetItemMasterLoots(rulesetId);
             dynamic Response = new ExpandoObject();
             var ItemList = _itemMasterService.SP_GetItemMastersByRuleSetId(rulesetId, page, pageSize);
             Response.ItemMaster = ItemList; // Utilities.CleanModel<ItemMaster>(ItemList);
@@ -807,10 +809,392 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpGet("AbilitySpellForItemsByRuleset_sp")]
-        public async Task<IActionResult> AbilitySpellForItemsByRuleset_sp(int rulesetId,int itemMasterId)
+        public async Task<IActionResult> AbilitySpellForItemsByRuleset_sp(int rulesetId, int itemMasterId)
         {
             return Ok(_itemMasterService.AbilitySpellForItemsByRuleset_sp(rulesetId, itemMasterId));
-        }  
+        }
+        #endregion
+        #region Loot
+        [HttpPost("AddItemMastersToLoot")]
+        public async Task<IActionResult> AddItemMastersToLoot([FromBody] List<CommonID> ItemList)
+        {
+            //ItemList = new List<CommonID>();
+            //ItemList.Add(new CommonID() { ID = 8499 });
+            //ItemList.Add(new CommonID() { ID = 8500 });
+            try
+            {
+                await _itemMasterService._AddItemsToLoot(ItemList);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            return Ok();
+        }
+        [HttpGet("GetItemMasterLoots")]
+        public async Task<IActionResult> GetItemMasterLoots(int rulesetID)
+        {
+            //rulesetID = 222;
+            var res = await _itemMasterService.GetItemMasterLoots(rulesetID);
+            return Ok(res);
+        }
+        [HttpGet("GetLootItemsForPlayers")]
+        public async Task<IActionResult> GetLootItemsForPlayers(int rulesetID)
+        {
+            //rulesetID = 222;
+            var res = await _itemMasterService.GetLootItemsForPlayers(rulesetID);
+            return Ok(res);
+        }
+        [HttpPost("CreateItemMasterLoot")]
+        public async Task<IActionResult> CreateItemMasterLoot([FromBody] CreateItemMasterLootModel itemDomain)
+        {
+            if (ModelState.IsValid)
+            {
+                var ItemMasterModel = _itemMasterService.GetDuplicateItemMaster(itemDomain.ItemName, itemDomain.RuleSetId).Result;
+                var result = new ItemMaster();
+                var itemMaster = Mapper.Map<ItemMaster>(itemDomain);
+                if (ItemMasterModel != null)
+                {
+                    result = ItemMasterModel;
+                    //return BadRequest("The Item Master Name " + itemDomain.ItemName + " had already been used in this Rule Set. Please select another name.");
+                }
+                else
+                {
+                    result = await _itemMasterService.CreateItemMaster(itemMaster, itemDomain.itemMasterSpellVM, itemDomain.itemMasterAbilityVM);
+                }
+
+
+                if (itemDomain.itemMasterCommandVM != null && itemDomain.itemMasterCommandVM.Count > 0)
+                {
+                    foreach (var imcViewModels in itemDomain.itemMasterCommandVM)
+                    {
+                        await _iItemMasterCommandService.InsertItemMasterCommand(new ItemMasterCommand()
+                        {
+                            Command = imcViewModels.Command,
+                            Name = imcViewModels.Name,
+                            ItemMasterId = result.ItemMasterId
+                        });
+                    }
+                }
+                var ruleset = _ruleSetService.GetRuleSetById((int)(itemDomain.RuleSetId));
+                ItemMasterLoot loot = new ItemMasterLoot()
+                {
+                    ContainedIn = itemDomain.ContainedIn,
+                    IsIdentified = itemDomain.IsIdentified,
+                    IsShow = itemDomain.IsShow,
+                    IsVisible = itemDomain.IsVisible,
+                    Quantity = itemDomain.Quantity,
+                    ItemMasterId = itemDomain.ItemMasterId,
+                };
+
+                await _itemMasterService.CreateItemMasterLoot(result, loot);
+                try
+                {
+
+                    ///////if non-conatiner item remove/update its container
+                    if (itemDomain.ContainedIn > 0 && !itemDomain.IsContainer==null?false:true)
+                    {
+                        var containerItem = _itemMasterService.GetItemMasterById(itemDomain.ContainedIn);
+                        var _itemContainer = itemDomain;// containerItem;//Mapper.Map<ItemEditModel>(containerItem)
+
+                        List<ViewModels.CreateModels.containerItemIds> _containerItemIds = new List<ViewModels.CreateModels.containerItemIds>();
+                        var _item = itemDomain;
+                        foreach (var itm in await _itemMasterService.GetByContainerId(containerItem.ItemMasterId))
+                        {
+                            if (itm.ItemMasterId != _item.ItemMasterId)
+                            {
+                                ViewModels.CreateModels.containerItemIds __containerItemIds = new ViewModels.CreateModels.containerItemIds();
+                                __containerItemIds.ItemId = itm.ItemMasterId;
+                                _containerItemIds.Add(__containerItemIds);
+                            }
+                        }
+                        if (_item.ContainedIn > 0)
+                        {
+                            ViewModels.CreateModels.containerItemIds __containerItemIds = new ViewModels.CreateModels.containerItemIds();
+                            __containerItemIds.ItemId = _item.ItemMasterId;
+                            _containerItemIds.Add(__containerItemIds);
+                        }
+                        _itemContainer.ContainerItems = _containerItemIds;
+
+                        decimal TotalWeight = CalculateTotalWeightItem(new ItemEditModel() {
+                            Weight= _itemContainer.Weight==null?0 : (decimal)_itemContainer.Weight,
+                            Quantity= _itemContainer.Quantity,
+                            ContainerItems= _itemContainer.ContainerItems.Select(x=> new ViewModels.EditModels.containerItemIds() {
+                                ItemId=x.ItemId,
+                            }).ToList(),
+                            ContainerWeightModifier= _itemContainer.ContainerWeightModifier,
+                            PercentReduced= _itemContainer.PercentReduced,
+                            TotalWeightWithContents= _itemContainer.TotalWeightWithContents,
+                        } );
+                        await _itemMasterService.UpdateWeight(_itemContainer.ItemMasterId, TotalWeight);
+                    }
+                    ///////////
+
+                    if (itemDomain.ContainerItems != null)
+                    {
+                        //remove all contains item
+                        await _itemMasterService.DeleteContainer(itemDomain.ItemMasterId);
+                        foreach (var itm in itemDomain.ContainerItems)
+                        {
+                            await _itemMasterService.UpdateContainer(itm.ItemId, itemDomain.ItemMasterId);
+                        }
+                    }
+
+                    //await this._characterService.UpdateCharacterInventoryWeight(_itemInsert.CharacterId ?? 0);
+
+                        
+                        //return Ok("A new " + itemDomain.Item.Name + " Item Template has been created in the "
+                        //    + ruleset.Result.RuleSetName + " Rule Set for this Item. Any future updates to the Item will not affect the Item Template."
+                        //    + " If you wish to update the Item Template you may do so from the Rule Sets interface.");
+                        //return Ok("An Item Template has been created for this at the Rule Set.");
+                    
+                }
+                catch (Exception ex)
+                { return BadRequest(ex.Message); }
+
+
+                return Ok();
+            }
+            return BadRequest(Utilities.ModelStateError(ModelState));
+        }
+        [HttpPost("UpdateItemMasterLoot")]
+        public async Task<IActionResult> UpdateItemMasterLoot([FromBody] EditItemMasterLootModel model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                int rulesetID = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
+                if (_coreRulesetService.IsCopiedFromCoreRuleset(rulesetID))
+                {
+                    await Core_UpdateItemMaster(model);
+                }
+                else
+                {
+                    await UpdateItemMasterCommon(model);
+                }
+                ItemMasterLoot OldLoot =await _itemMasterService.getLootDetails(model.LootId);
+                ItemMasterLoot loot = new ItemMasterLoot()
+                {
+                    LootId=model.LootId,
+                    //ContainedIn = model.ContainedIn,
+                    IsIdentified = model.IsIdentified,
+                    IsShow = model.IsShow,
+                    IsVisible = model.IsVisible,
+                    Quantity = model.Quantity,
+                    ItemMasterId = model.ItemMasterId==null?0:(int)model.ItemMasterId,
+                };
+               var result= await _itemMasterService.UpdateItemMasterLoot(loot);
+
+
+                var item = OldLoot;
+                ///////if non-conatiner item remove/update its container
+                if (((item.ContainedIn > 0 && result.ContainedIn == 0)
+                    || (item.ContainedIn == 0 && result.ContainedIn > 0)
+                    || (item.ContainedIn == result.ContainedIn && result.ContainedIn > 0)) && model.IsContainer!=true)
+                {
+                    int __itemContainerId = (item.ContainedIn > 0 && result.ContainedIn == 0) ? item.ContainedIn ?? 0
+                         : ((item.ContainedIn == 0 && result.ContainedIn > 0) ? result.ContainedIn ?? 0
+                         : ((result.ContainedIn > 0) ? result.ContainedIn ?? 0 : 0));
+
+                    var containerItem = _itemMasterService.GetItemMasterById(__itemContainerId);
+                    var _itemContainer = model;//Mapper.Map<ItemEditModel>(containerItem);
+
+                    List<ViewModels.EditModels.containerItemIds> _containerItemIds = new List<ViewModels.EditModels.containerItemIds>();
+                    foreach (var itm in await _itemMasterService.GetByContainerId(containerItem.ItemMasterId))
+                    {
+                        if (itm.ItemMasterId != result.ItemMasterId)
+                        {
+                            ViewModels.EditModels.containerItemIds __containerItemIds = new ViewModels.EditModels.containerItemIds();
+                            __containerItemIds.ItemId = itm.ItemMasterId;
+                            _containerItemIds.Add(__containerItemIds);
+                        }
+                    }
+                    if ((item.ContainedIn == 0 && result.ContainedIn > 0) || (item.ContainedIn == result.ContainedIn))
+                    {
+                        ViewModels.EditModels.containerItemIds __containerItemIds = new ViewModels.EditModels.containerItemIds();
+                        __containerItemIds.ItemId = result.ItemMasterId;
+                        _containerItemIds.Add(__containerItemIds);
+                    }
+                    _itemContainer.ContainerItems = _containerItemIds;
+
+                    decimal TotalWeight = CalculateTotalWeightItem(new ItemEditModel()
+                    {
+                        Weight = _itemContainer.Weight == null ? 0 : (decimal)_itemContainer.Weight,
+                        Quantity = _itemContainer.Quantity,
+                        ContainerItems = _itemContainer.ContainerItems.Select(x => new ViewModels.EditModels.containerItemIds()
+                        {
+                            ItemId = x.ItemId,
+                        }).ToList(),
+                        ContainerWeightModifier = _itemContainer.ContainerWeightModifier,
+                        PercentReduced = _itemContainer.PercentReduced,
+                        TotalWeightWithContents = _itemContainer.TotalWeightWithContents,
+                    });
+                    await _itemService.UpdateWeight(_itemContainer.ItemMasterId==null?0:(int)_itemContainer.ItemMasterId, TotalWeight);
+                }
+                ///////////
+                                
+                if (model.ContainerItems != null)
+                {
+                    //remove all contains item
+                    await _itemMasterService.DeleteContainer(OldLoot.ItemMasterId);
+                    foreach (var itm in model.ContainerItems)
+                    {
+                        await _itemMasterService.UpdateContainer(itm.ItemId, OldLoot.ItemMasterId);
+                    }
+                    //_itemService.ManageContainer(model.ItemId, model.ContainerItems.Select(q => new CommonID { ID=q.ItemId }).ToList());
+                }
+                if (model.IsContainer == true)
+                {
+                    decimal TotalWeight = CalculateTotalWeightItem(new ItemEditModel()
+                    {
+                        Weight = model.Weight == null ? 0 : (decimal)model.Weight,
+                        Quantity = model.Quantity,
+                        ContainerItems = model.ContainerItems.Select(x => new ViewModels.EditModels.containerItemIds()
+                        {
+                            ItemId = x.ItemId,
+                        }).ToList(),
+                        ContainerWeightModifier = model.ContainerWeightModifier,
+                        PercentReduced = model.PercentReduced,
+                        TotalWeightWithContents = model.TotalWeightWithContents,
+                    });
+                    await _itemMasterService.UpdateWeight(OldLoot.ItemMasterId, TotalWeight);
+                }
+                return Ok();
+            }
+            return BadRequest(Utilities.ModelStateError(ModelState));
+
+        }
+        [HttpPost("giveItemsToCharacters")]
+        public async Task<IActionResult> giveItemsToCharacters([FromBody] List<CommonID> CharacterIds,int LootID)
+        {          
+            try
+            {
+                foreach (var charID in CharacterIds)
+                {
+                   // foreach (var item in model.MultiLootIds)
+                    //{
+                        ItemMasterLoot loot = await _itemMasterService.getLootDetails(LootID);
+                        if (loot != null)
+                        {
+                            await AddItemToCharacter(charID.ID, new ItemMasterIds() { ItemMasterId = loot.ItemMasterId }, loot);
+                        }
+
+                    //}
+                    await this._characterService.UpdateCharacterInventoryWeight(charID.ID);
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return Ok();
+        }
+        private async Task AddItemToCharacter(int charID, ItemMasterIds item, ItemMasterLoot Loot = null)
+        {
+            ItemViewModel model = new ItemViewModel();
+            model.CharacterId = charID;
+            //count += 1;
+            var ItemTemplate = _itemMasterService.GetItemMasterById(item.ItemMasterId);
+            if (Loot != null)
+            {
+                model.ItemMasterId = Loot.ItemMasterId;
+                model.Quantity = Loot.Quantity;
+                model.IsIdentified = Loot.IsIdentified;
+                model.IsVisible = Loot.IsVisible;
+                //model.cont = Loot.Quantity; ContainedIn is pending
+            }
+            var _ItemName = ItemTemplate.ItemName;
+            var existingNameItems = _itemService.getDuplicateItems(model.CharacterId, ItemTemplate.ItemMasterId);
+            //if (await _itemService.CheckDuplicateItem(ItemTemplate.ItemName, model.CharacterId))
+            //    _ItemName = ItemTemplate.ItemName + "_" + count;
+
+
+            if (existingNameItems != null)
+            {
+                int count = 0;
+                if (existingNameItems.Where(p => p.Name == ItemTemplate.ItemName).Any())
+                {
+
+                    foreach (var rec in existingNameItems)
+                    {
+                        count++;
+                        if (count > 0 && existingNameItems.Count != 0)
+                        {
+                            if (!existingNameItems.Where(p => p.Name == ItemTemplate.ItemName + "_" + count).Any())
+                                _ItemName = ItemTemplate.ItemName + "_" + count;
+                        }
+
+                    }
+                }
+                //int count = existingNameItems.Count;
+                //if (count > 0)
+                //    _ItemName = ItemTemplate.ItemName + "_" + count;
+            }
+
+            var ItemAbilities = new List<ItemAbility>();
+            foreach (var ability in ItemTemplate.ItemMasterAbilities)
+            {
+                ItemAbilities.Add(new ItemAbility
+                {
+                    AbilityId = ability.AbilityId
+                });
+            }
+            var ItemSpells = new List<ItemSpell>();
+            foreach (var spell in ItemTemplate.ItemMasterSpell)
+            {
+                ItemSpells.Add(new ItemSpell
+                {
+                    SpellId = spell.SpellId
+                });
+            }
+            var ItemCommands = new List<ItemCommand>();
+            foreach (var command in ItemTemplate.ItemMasterCommand)
+            {
+                ItemCommands.Add(new ItemCommand
+                {
+                    Command = command.Command,
+                    Name = command.Name,
+                });
+            }
+            //no container whiling adding item master
+            var result = await _itemService.InsertItem(new Item
+            {
+                Name = _ItemName,
+                Description = ItemTemplate.ItemVisibleDesc,
+                ItemImage = ItemTemplate.ItemImage,
+                CharacterId = model.CharacterId,
+                ItemMasterId = ItemTemplate.ItemMasterId,
+                //ContainerId = _container.ContainerId,
+                IsIdentified = model.IsIdentified,
+                IsVisible = model.IsVisible,
+                IsEquipped = model.IsEquipped,
+                ParentItemId = item.ItemMasterId,
+                Command = ItemTemplate.Command,
+                IsContainer = ItemTemplate.IsContainer,
+                IsConsumable = ItemTemplate.IsConsumable,
+                IsMagical = ItemTemplate.IsMagical,
+                ItemCalculation = ItemTemplate.ItemCalculation,
+                Metatags = ItemTemplate.Metatags,
+                Rarity = ItemTemplate.Rarity,
+                Value = ItemTemplate.Value,
+                Volume = ItemTemplate.Volume,
+                Weight = ItemTemplate.Weight,
+                Quantity = model.Quantity == 0 ? 1 : model.Quantity,
+                TotalWeight = ItemTemplate.Weight * (model.Quantity == 0 ? 1 : model.Quantity),
+
+                ItemStats = ItemTemplate.ItemStats,
+                ContainerWeightMax = ItemTemplate.ContainerWeightMax,
+                ContainerVolumeMax = ItemTemplate.ContainerVolumeMax,
+                PercentReduced = ItemTemplate.PercentReduced,
+                TotalWeightWithContents = ItemTemplate.TotalWeightWithContents,
+                ContainerWeightModifier = ItemTemplate.ContainerWeightModifier,
+                CommandName = ItemTemplate.CommandName
+            },
+            ItemSpells,
+            ItemAbilities, ItemCommands);
+        }
         #endregion
     }
 }

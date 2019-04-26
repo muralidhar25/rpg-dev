@@ -66,5 +66,21 @@ namespace RPGSmithApp.ViewModels.EditModels
         public List<ItemMasterPlayer> ItemMasterPlayerVM { get; set; }
 
         public List<ItemMasterCommand> ItemMasterCommandVM { get; set; }
+        public virtual List<containerItemIds> ContainerItems { get; set; }
+    }
+    public class EditItemMasterLootModel : EditItemMasterModel
+    {
+
+        public int LootId { get; set; }
+
+        public bool IsShow { get; set; }
+
+        public int? ContainedIn { get; set; }
+
+
+        public decimal Quantity { get; set; }
+
+        public bool? IsIdentified { get; set; }
+        public bool? IsVisible { get; set; }
     }
 }

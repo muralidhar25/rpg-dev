@@ -7,7 +7,7 @@ using System.Text;
 namespace DAL.Models
 {
    public class UserSubscription
-    {
+    {   //INSERT INTO [UserSubscriptions] SELECT id,3,0,3,0,1000 from AspNetUsers
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }

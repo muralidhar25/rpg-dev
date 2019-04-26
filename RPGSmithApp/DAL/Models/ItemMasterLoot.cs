@@ -25,6 +25,8 @@ namespace DAL.Models
         public bool? IsIdentified { get; set; }
         public bool? IsVisible { get; set; }
         //public bool? IsEquipped { get; set; }
+        [Column(TypeName = "decimal(18, 3)")]
+        public decimal TotalWeight { get; set; }
 
         public virtual ItemMaster ItemMaster { get; set; }
     }
