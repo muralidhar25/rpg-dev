@@ -1,6 +1,6 @@
 <div class="campaign-details-page" *ngIf="!isLoading">
   <div class="row">
-    <div class="col-12 col-md-8">
+    <div class="col-12">
       <div class="campaign-title-outer  mb-3">
         <div class="campaign-title w-100">
           <div class="row m-0 justify-content-between align-items-center">
@@ -54,11 +54,11 @@
         </div>
       </div>
     </div>
-    <div class="col-12 col-md-4">
+    <div class="col-12 mt-3">
       <h5 class="text-uppercase"> Characters</h5>
       <div class="cards character-players">
         <div class="row">
-          <div class="col-12 col-sm-6 mb-3" *ngFor="let character of characters; index as i">
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2 mb-3" *ngFor="let character of characters; index as i">
             <div class="card-wrapper w-100">
               <div class="card">
                 <div class="card-image thumbnail">
@@ -74,7 +74,7 @@
               </div>
             </div>
           </div>
-          <div class="col-12 col-sm-6 mb-3 d-none" [ngClass]="marketplacelist?.length? '' : disable-div" (click)="BuyCharacterSlot()" *ngIf="characters?.length>= characterSlot">
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2 mb-3 d-none" [ngClass]="marketplacelist?.length? '' : disable-div" (click)="BuyCharacterSlot()" *ngIf="characters?.length>= characterSlot">
             <div class="w-100 card-wrapper">
               <div class="card">
                 <div class="card-image thumbnail bg-white h-191">
@@ -90,7 +90,7 @@
               </div>
             </div>
           </div>
-          <div class="col-12 col-sm-6 mb-3" *ngIf="characters?.length < characterSlot" >
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2 mb-3" *ngIf="characters?.length < characterSlot" >
             <div class="card-wrapper w-100">
               <div class="card" (click)="newCharacter()">
                 <div class="card-image thumbnail bg-white h-280">
@@ -105,7 +105,7 @@
               </div>
             </div>
           </div>
-          <div class="col-12 col-sm-6 mb-3" [ngClass]="marketplacelist?.length? '' : disable-div" (click)="BuyCharacterSlot()" *ngIf="characters?.length>= characterSlot">
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2 mb-3" [ngClass]="marketplacelist?.length? '' : disable-div" (click)="BuyCharacterSlot()" *ngIf="characters?.length>= characterSlot">
             <div class="card-wrapper w-100">
               <div class="card">
                 <div class="card-image thumbnail bg-white h-280">
