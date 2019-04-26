@@ -202,7 +202,7 @@ import { CharactersFormComponent } from "./characters-form/characters-form.compo
     CreateSpellsComponent,
     InviteAddCharctersFormComponent,
     PaymentComponent,
-    PlayerLootComponent,
+    //PlayerLootComponent,
     CharactersFormComponent
   ]
 })
