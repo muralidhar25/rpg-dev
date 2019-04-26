@@ -1057,7 +1057,7 @@ namespace DAL.Services
                 }
             }
         }
-        public async Task<List<ItemMasterLoot>> GetItemMasterLoots(int rulesetID) {
+        public async Task<List<ItemMasterLoot>> GetItemMasterLoots(int rulesetID, int page = 1, int pageSize = 30) {
             return await _context.ItemMasterLoots.Include(x => x.ItemMaster)
                 .Where(x => x.ItemMaster.RuleSetId == rulesetID && x.ItemMaster.IsDeleted!=true).AsNoTracking().ToListAsync();
         }

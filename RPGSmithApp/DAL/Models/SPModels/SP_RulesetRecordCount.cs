@@ -197,4 +197,26 @@ namespace DAL.Models.SPModels
     {
         public int ItemMasterBundleId { get; set; }
     }
+    public class ItemMasterLoot_ViewModel:ItemMaster
+    {
+        
+        public int LootId { get; set; }
+
+      
+        //public int ItemMasterId { get; set; }
+
+        public bool IsShow { get; set; }
+
+        public int? ContainedIn { get; set; }
+
+        
+        public decimal Quantity { get; set; }
+
+        public bool? IsIdentified { get; set; }
+        public bool? IsVisible { get; set; }        
+       
+        public decimal TotalWeight { get; set; }
+
+        
+    }
 }

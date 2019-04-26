@@ -833,11 +833,61 @@ namespace RPGSmithApp.Controllers
             return Ok();
         }
         [HttpGet("GetItemMasterLoots")]
-        public async Task<IActionResult> GetItemMasterLoots(int rulesetID)
+        public async Task<IActionResult> GetItemMasterLoots(int rulesetID, int page = 1, int pageSize = 30)
         {
             //rulesetID = 222;
-            var res = await _itemMasterService.GetItemMasterLoots(rulesetID);
-            return Ok(res);
+           // var res 
+            dynamic Response = new ExpandoObject();
+            var res = await _itemMasterService.GetItemMasterLoots(rulesetID, page, pageSize);
+            List<ItemMasterLoot_ViewModel> ItemList = res.Select(x => new ItemMasterLoot_ViewModel() {
+                Command=x.ItemMaster.Command,
+                CommandName= x.ItemMaster.CommandName,
+                ContainedIn= x.ContainedIn,
+                ContainerVolumeMax= x.ItemMaster.ContainerVolumeMax,
+                ContainerWeightMax= x.ItemMaster.ContainerWeightMax,
+                ContainerWeightModifier= x.ItemMaster.ContainerWeightModifier,
+                IsConsumable= x.ItemMaster.IsConsumable,
+                IsContainer= x.ItemMaster.IsContainer,
+                IsDeleted= x.ItemMaster.IsDeleted,
+                IsIdentified= x.IsIdentified,
+                IsMagical= x.ItemMaster.IsMagical,
+                IsShow=x.IsShow,
+                IsVisible= x.IsVisible,
+                ItemCalculation= x.ItemMaster.ItemCalculation,
+                ItemImage= x.ItemMaster.ItemImage,
+                ItemMasterAbilities= x.ItemMaster.ItemMasterAbilities,
+                ItemMasterCommand= x.ItemMaster.ItemMasterCommand,
+                ItemMasterId= x.ItemMaster.ItemMasterId,
+                ItemMasterPlayers= x.ItemMaster.ItemMasterPlayers,
+               ItemMasterSpell = x.ItemMaster.ItemMasterSpell,
+                ItemName= x.ItemMaster.ItemName,
+                Items= x.ItemMaster.Items,
+                ItemStats= x.ItemMaster.ItemStats,
+                LootId= x.LootId,
+                ItemVisibleDesc= x.ItemMaster.ItemVisibleDesc,
+                ParentItemMasterId= x.ItemMaster.ParentItemMasterId,
+                Metatags= x.ItemMaster.Metatags,
+                PercentReduced= x.ItemMaster.PercentReduced,
+                Quantity= x.Quantity,
+                Rarity= x.ItemMaster.Rarity,
+                RuleSetId= x.ItemMaster.RuleSetId,
+                TotalWeight= x.TotalWeight,
+                TotalWeightWithContents= x.ItemMaster.TotalWeightWithContents,
+                Value= x.ItemMaster.Value,
+                Volume= x.ItemMaster.Volume,
+                Weight= x.ItemMaster.Weight,
+            }).ToList();
+            Response.ItemMaster = ItemList; // Utilities.CleanModel<ItemMaster>(ItemList);
+            if (ItemList.Any())
+            {
+                Response.RuleSet = _ruleSetService.GetRuleSetById(rulesetID).Result;//ItemList.FirstOrDefault().RuleSet;
+            }
+            else
+            {
+                Response.RuleSet = _ruleSetService.GetRuleSetById(rulesetID).Result;
+            }
+            return Ok(Response);
+           // return Ok(res);
         }
         [HttpGet("GetLootItemsForPlayers")]
         public async Task<IActionResult> GetLootItemsForPlayers(int rulesetID)
