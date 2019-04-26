@@ -1030,5 +1030,119 @@ namespace DAL.Services
             }
             return res;
         }
+
+        #region Loot
+        public async Task _AddItemsToLoot(List<CommonID> itemList) {
+            string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            DataTable Datatable_Ids = utility.ToDataTable<CommonID>(itemList);
+            using (SqlConnection con = new SqlConnection(consString))
+            {
+
+                using (SqlCommand cmd = new SqlCommand("AddItemMasterToLoot"))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = con;
+                    cmd.Parameters.AddWithValue("@IdsToInsert", Datatable_Ids);
+                    con.Open();
+                    try
+                    {
+                        var a =await cmd.ExecuteNonQueryAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        con.Close();
+                        throw ex;
+                    }
+                    con.Close();                    
+                }
+            }
+        }
+        public async Task<List<ItemMasterLoot>> GetItemMasterLoots(int rulesetID) {
+            return await _context.ItemMasterLoots.Include(x => x.ItemMaster)
+                .Where(x => x.ItemMaster.RuleSetId == rulesetID && x.ItemMaster.IsDeleted!=true).AsNoTracking().ToListAsync();
+        }
+        public async Task<List<ItemMasterLoot>> GetLootItemsForPlayers(int rulesetID) {
+            return await _context.ItemMasterLoots.Include(x => x.ItemMaster)
+                            .Where(x =>x.IsShow==true && x.ItemMaster.RuleSetId == rulesetID && x.ItemMaster.IsDeleted != true).AsNoTracking().ToListAsync();
+        }
+        public async Task CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot) {
+           await _context.ItemMasterLoots.AddAsync(new ItemMasterLoot()
+            {
+                ContainedIn = loot.ContainedIn,
+                IsIdentified = loot.IsIdentified,
+                IsVisible = loot.IsVisible,
+                IsShow = loot.IsShow,
+                ItemMasterId = result.ItemMasterId,
+                Quantity = loot.Quantity,
+            });
+        }
+        public async  Task<ItemMasterLoot> UpdateItemMasterLoot(ItemMasterLoot loot)
+        {
+            ItemMasterLoot obj = _context.ItemMasterLoots.Where(x => x.LootId == loot.LootId).FirstOrDefault();
+            if (obj!=null)
+            {
+                    obj.ContainedIn = loot.ContainedIn;
+                    obj.IsIdentified = loot.IsIdentified;
+                    obj.IsVisible = loot.IsVisible;
+                    obj.IsShow = loot.IsShow;
+                    obj.ItemMasterId = loot.ItemMasterId;
+                    obj.Quantity = loot.Quantity;
+                await _context.SaveChangesAsync();
+            }
+            return obj;
+        }
+        public async Task<ItemMasterLoot> getLootDetails(int LootId) {
+            return await _context.ItemMasterLoots.Where(x => x.LootId == LootId).FirstOrDefaultAsync();
+        }
+        public async Task<bool> DeleteContainer(int itemMasterId)
+        {
+            var item = _context.ItemMasterLoots.Where(x => x.ContainedIn == itemMasterId).ToList();
+
+            foreach (var itm in item)
+            {
+                itm.ContainedIn = null;
+               await _context.SaveChangesAsync();
+            }
+
+            return true;
+        }
+        public async Task<List<ItemMasterLoot>> GetByContainerId(int? containerId)
+        {
+            //get all item for which given item act as container
+            return await _context.ItemMasterLoots.Include(x=>x.ItemMaster)
+               .Where(x => x.ContainedIn == containerId && x.ItemMaster.IsDeleted != true)
+               .OrderBy(o => o.ItemMaster.ItemName).ToListAsync();
+        }
+        public async Task<ItemMasterLoot> UpdateWeight(int itemMasterId, decimal TotalWeight)
+        {
+            var item = _context.ItemMasterLoots.Where(x => x.ItemMasterId == itemMasterId).FirstOrDefault();
+
+            if (item == null) return item;
+            item.TotalWeight = TotalWeight;
+           await _context.SaveChangesAsync();
+
+            //if (containerItemId > 0 && (item.ContainedIn == null || item.ContainedIn == 0))
+            //{
+            //    item.ContainedIn = containerItemId;
+            //    _context.SaveChanges();
+            //}
+
+            return item;
+        }
+        public async Task<ItemMasterLoot> UpdateContainer(int itemId, int containerItemId)
+        {
+            var item = _context.ItemMasterLoots.Where(x => x.ItemMasterId == itemId).FirstOrDefault();
+
+            if (item == null) return item;
+
+            if (containerItemId > 0 && (item.ContainedIn == null || item.ContainedIn == 0))
+            {
+                item.ContainedIn = containerItemId;
+               await _context.SaveChangesAsync();
+            }
+
+            return item;
+        }
+        #endregion
     }
 }

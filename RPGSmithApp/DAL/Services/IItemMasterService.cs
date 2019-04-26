@@ -27,5 +27,15 @@ namespace DAL.Services
         SP_AbilitySpellForItemMaster AbilitySpellForItemsByRuleset_sp(int rulesetId, int itemMasterId);
         List<ItemMaster_Bundle> GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false);
         bool Core_BundleWithParentIDExists(int bundleId, int rulesetID);
+        Task _AddItemsToLoot(List<CommonID> itemList);
+        Task<List<ItemMasterLoot>> GetItemMasterLoots(int rulesetID);
+        Task CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot);
+        Task<ItemMasterLoot> UpdateItemMasterLoot(ItemMasterLoot loot);
+        Task<List<ItemMasterLoot>> GetLootItemsForPlayers(int rulesetID);
+        Task<ItemMasterLoot> getLootDetails(int LootId);
+        Task<bool> DeleteContainer(int itemMasterId);
+        Task<List<ItemMasterLoot>> GetByContainerId(int? containerId);
+        Task<ItemMasterLoot> UpdateWeight(int itemMasterId, decimal TotalWeight);
+        Task<ItemMasterLoot> UpdateContainer(int itemId, int containerItemId);
     }
 }

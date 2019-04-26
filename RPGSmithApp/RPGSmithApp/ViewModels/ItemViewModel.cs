@@ -56,6 +56,7 @@ namespace RPGSmithApp.ViewModels
         public decimal TotalWeightWithContents { get; set; }
 
         public List<ItemMasterIds> MultiItemMasters { get; set; }
+        public List<LootIds> MultiLootIds { get; set; }
         public List<ItemMasterBundleIds> MultiItemMasterBundles { get; set; }
 
         public virtual Character Character { get; set; }
@@ -70,5 +71,9 @@ namespace RPGSmithApp.ViewModels
     {
         public int ItemMasterId { get; set; }
     }
-    
+    public class LootIds
+    {
+        public int LootId { get; set; }
+    }
+
 }

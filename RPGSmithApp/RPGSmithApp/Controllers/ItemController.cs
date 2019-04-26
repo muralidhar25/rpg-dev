@@ -240,10 +240,40 @@ namespace RPGSmithApp.Controllers
 
         }
 
-        private async Task AddItemToCharacter(ItemViewModel model, ItemMasterIds item)
+        [HttpPost("addLootItems")]
+        public async Task<IActionResult> AddLootItems([FromBody] ItemViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                foreach (var item in model.MultiLootIds)
+                {
+                    ItemMasterLoot loot =await _itemMasterService.getLootDetails(item.LootId);
+                    if (loot != null)
+                    {
+                        await AddItemToCharacter(model, new ItemMasterIds() { ItemMasterId = loot.ItemMasterId }, loot);
+                    }
+                    
+                }                
+                await this._characterService.UpdateCharacterInventoryWeight(model.CharacterId ?? 0);
+                return Ok();
+            }
+
+            return BadRequest(Utilities.ModelStateError(ModelState));
+
+        }
+
+        private async Task AddItemToCharacter(ItemViewModel model, ItemMasterIds item, ItemMasterLoot Loot=null)
         {
             //count += 1;
             var ItemTemplate = _itemMasterService.GetItemMasterById(item.ItemMasterId);
+            if (Loot!=null)
+            {
+                model.ItemMasterId = Loot.ItemMasterId;
+                model.Quantity = Loot.Quantity;
+                model.IsIdentified = Loot.IsIdentified;
+                model.IsVisible = Loot.IsVisible;
+                //model.cont = Loot.Quantity; ContainedIn is pending
+            }
             var _ItemName = ItemTemplate.ItemName;
             var existingNameItems = _itemService.getDuplicateItems(model.CharacterId, ItemTemplate.ItemMasterId);
             //if (await _itemService.CheckDuplicateItem(ItemTemplate.ItemName, model.CharacterId))
@@ -322,7 +352,7 @@ namespace RPGSmithApp.Controllers
                 Weight = ItemTemplate.Weight,
                 Quantity = model.Quantity == 0 ? 1 : model.Quantity,
                 TotalWeight = ItemTemplate.Weight * (model.Quantity == 0 ? 1 : model.Quantity),
-
+                
                 ItemStats = ItemTemplate.ItemStats,
                 ContainerWeightMax = ItemTemplate.ContainerWeightMax,
                 ContainerVolumeMax = ItemTemplate.ContainerVolumeMax,
