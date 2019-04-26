@@ -58,6 +58,9 @@ import { CreateAbilitiesComponent } from "./create-abilities/create-abilities.co
 import { CreateSpellsComponent } from "./create-spells/create-spells.component";
 import { InviteAddCharctersFormComponent } from "./invite-add-charcters-form/invite-add-charcters-form.component";
 import { PaymentComponent } from "./payment/payment.component";
+//import { PlayerLootComponent } from "./player-loot/player-loot.component";
+import { CharactersFormComponent } from "./characters-form/characters-form.component";
+
 
 @NgModule({
   declarations: [
@@ -85,7 +88,9 @@ import { PaymentComponent } from "./payment/payment.component";
     CreateAbilitiesComponent,
     CreateSpellsComponent,
     InviteAddCharctersFormComponent,
-    PaymentComponent
+    PaymentComponent,
+   // PlayerLootComponent,
+    CharactersFormComponent
   ],
   imports: [
     CommonModule,
@@ -169,7 +174,9 @@ import { PaymentComponent } from "./payment/payment.component";
     CreateAbilitiesComponent,
     CreateSpellsComponent,
     InviteAddCharctersFormComponent,
-    PaymentComponent
+    PaymentComponent,
+  //  PlayerLootComponent,
+    CharactersFormComponent
   ],
   entryComponents: [
     AccountSettingsComponent,
@@ -194,8 +201,9 @@ import { PaymentComponent } from "./payment/payment.component";
     CreateAbilitiesComponent,
     CreateSpellsComponent,
     InviteAddCharctersFormComponent,
-    PaymentComponent
-
+    PaymentComponent,
+    PlayerLootComponent,
+    CharactersFormComponent
   ]
 })
 export class SharedModule {}

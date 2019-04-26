@@ -31,35 +31,36 @@
         <div class="form-row">
             <div class="col-12 col-md-6">
                 <!-- Character ruleset -->
-                <fieldset class="form-group input-list">
-                    <legend>Rule Set</legend>
-                    <div class="form-check" *ngIf="!charactersFormModal?.hasRuleset">
-                        <span>NOTE: <small>At least 1 Rule Set must exist before a Character can be created.</small></span>
-                    </div>
-                    <div class="form-group form-group-unlabelled search-rule-set" *ngIf="button == 'CREATE'">
-                        <span class="input-group-btn">
-                            <button class="btn icon icon-search btn-simple-primary" type="button"></button>
-                        </span>
-                        <input class="form-control ng-untouched ng-pristine ng-valid"  placeholder="Search ruleset" type="text" name="searchTextBox" [(ngModel)]="searchText"/>
-                    </div>
-                    <ul class="input-list-items" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
-                        [infiniteScrollThrottle]="300" [scrollWindow]="false" *ngIf="charactersFormModal.hasRuleset">
-                        <li class="form-check" *ngFor="let ruleset of charactersFormModal?.ruleSets | filter : searchText : 'ruleSetName';let i = index;">
-                            <label class="form-check-label" (click)="setCharacterRuleset(ruleset)">
-                                <input class="form-check-input" type="radio" name="newCharacterRuleset" [checked]="charactersFormModal.ruleSetId">
-                                <input type="hidden" id="ruleSetId" name="ruleSetId" [(ngModel)]="charactersFormModal.ruleSetId" #ruleSetId="ngModel">
-                                <span class="text-cut" [ngClass]="ruleset.isCoreRuleset?'':'bg-white'">
-                                    <img [alt]="ruleset.ruleSetName" [src]="ruleset.imageUrl"
-                                         onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
-                                    <em>{{ruleset.ruleSetName}}</em> <i class="icon"></i>
-                                </span>
-                            </label>
-                        </li>
-                    </ul>
-                    <div class="input-extend">
-                        <a (click)="manageRuleSets()" class="btn icon icon-with-text icon-external btn-link-primary"><span style="color:#be8917;">RuleSets</span></a>
-                    </div>
-                </fieldset>
+              <fieldset class="form-group input-list">
+                <legend>Rule Set</legend>
+                <div class="form-check" *ngIf="!charactersFormModal?.hasRuleset">
+                  <span>NOTE: <small>At least 1 Rule Set must exist before a Character can be created.</small></span>
+                </div>
+                <div class="form-group form-group-unlabelled search-rule-set" *ngIf="button == 'CREATE'">
+                  <span class="input-group-btn">
+                    <button class="btn icon icon-search btn-simple-primary" type="button"></button>
+                  </span>
+                  <input class="form-control ng-untouched ng-pristine ng-valid" placeholder="Search ruleset" type="text" name="searchTextBox" [(ngModel)]="searchText" />
+                </div>
+                <ul class="input-list-items" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
+                    [infiniteScrollThrottle]="300" [scrollWindow]="false" *ngIf="charactersFormModal.hasRuleset">
+                  <li class="form-check" *ngFor="let ruleset of charactersFormModal?.ruleSets | filter : searchText : 'ruleSetName';let i = index;">
+                    <label class="form-check-label" (click)="setCharacterRuleset(ruleset)">
+                      <input class="form-check-input" type="radio" name="newCharacterRuleset" [checked]="charactersFormModal.ruleSetId">
+                      <input type="hidden" id="ruleSetId" name="ruleSetId" [(ngModel)]="charactersFormModal.ruleSetId" #ruleSetId="ngModel">
+                      <span class="text-cut" [ngClass]="ruleset.isCoreRuleset?'':'bg-white'">
+                        <img [alt]="ruleset.ruleSetName" [src]="ruleset.imageUrl"
+                             onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+                        <em>{{ruleset.ruleSetName}}</em> <i class="icon"></i>
+                      </span>
+                    </label>
+                  </li>
+                </ul>
+               
+                <div class="input-extend">
+                  <a (click)="manageRuleSets()" class="btn icon icon-with-text icon-external btn-link-primary"><span style="color:#be8917;">RuleSets</span></a>
+                </div>
+              </fieldset>
                 <!-- End of character ruleset -->
             </div>
             <div class="col-12 col-md-6">

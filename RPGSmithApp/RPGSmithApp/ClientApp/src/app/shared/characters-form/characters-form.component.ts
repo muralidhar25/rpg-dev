@@ -20,7 +20,7 @@ import { VIEW } from '../../core/models/enums';
 import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
 import { Characters } from '../../core/models/view-models/characters.model';
 import { PlatformLocation } from '@angular/common';
-
+import { AppService1 } from "../../app.service";
 @Component({
     selector: 'app-characters-form',
     templateUrl: './characters-form.component.html',
@@ -43,7 +43,9 @@ export class CharactersFormComponent implements OnInit {
     imageErrorMessage: string = 'High resolution images will affect loading times and diminish performance. Do you still want to upload ?';
     title: string
     button: string
-    rulesets:any
+    rulesets: any;
+
+  isFromRuleSetDetails: boolean;
     options(placeholder?: string, initOnClick?: boolean): Object {
         return Utilities.optionsFloala(160, placeholder, initOnClick);
     }
@@ -66,21 +68,30 @@ export class CharactersFormComponent implements OnInit {
         private bsModalRef: BsModalRef, private modalService: BsModalService, private localStorage: LocalStoreManager,
         private fileUploadService: FileUploadService, private rulesetService: RulesetService,
       private sharedService: SharedService, private commonService: CommonService, private imageSearchService: ImageSearchService,
-      private location: PlatformLocation) {
+      private location: PlatformLocation,
+      public appService: AppService1) {
       location.onPopState(() => this.modalService.hide(1));
         this.onResize();
     }
 
     ngOnInit() {
 
-        setTimeout(() => {
+      setTimeout(() => {
+        
             this.title = this.bsModalRef.content.title;
             let modalContentButton = this.button = this.bsModalRef.content.button;
             let _charactersModel = this.bsModalRef.content.charactersModel;
-            _charactersModel.ruleSets = this.bsModalRef.content.ruleSet;
-            this.charactersFormModal.ruleSets = [];
-            this.charactersFormModal = this.charactersService.characterModelData(_charactersModel, modalContentButton);
-            this.UserRulesetsList = Object.assign([], this.charactersFormModal.ruleSets);
+        _charactersModel.ruleSets = this.bsModalRef.content.ruleSet;
+        
+          this.charactersFormModal.ruleSets = [];
+          this.charactersFormModal = this.charactersService.characterModelData(_charactersModel, modalContentButton);
+        this.UserRulesetsList = Object.assign([], this.charactersFormModal.ruleSets);
+       
+        if (this.bsModalRef.content.isFromRuleSetDetails) {
+          this.isFromRuleSetDetails = this.bsModalRef.content.isFromRuleSetDetails;
+            console.log(this.bsModalRef.content.ruleset);
+            this.charactersFormModal.ruleSetId = this.bsModalRef.content.ruleset.ruleSetId;
+          }
             this.bingImageUrl = this.charactersFormModal.imageUrl;
             if (this.charactersFormModal.view == VIEW.ADD) {
                 this.initialize();
@@ -95,28 +106,29 @@ export class CharactersFormComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
-            this.isLoading = true;
+           
             // this.rulesetService.getRulesetsByUserId(user.id)
             //     .subscribe(data => {
             //         this.charactersFormModal.ruleSets = data;
             //         this.charactersFormModal.hasRuleset = data == undefined ? false : data.length == 0 ? false : true;
             //         this.isLoading = false;
             //     }, error => { }, () => { });
-
-
+          if (!this.isFromRuleSetDetails) {
+            this.isLoading = true;
+            this.rulesetService.getRuleSetToCreateCharacterByUserId(user.id, this.page, this.pageSize)
+              .subscribe(data => {
+                this.charactersFormModal.ruleSets = data;
+                this.charactersFormModal.hasRuleset = data == undefined ? false : data.length == 0 ? false : true;
+                this.isLoading = false;
+              }, error => {
+                this.isLoading = false;
+                this.alertService.stopLoadingMessage();
+                let Errors = Utilities.ErrorDetail("Error", error);
+                if (Errors.sessionExpire) this.authService.logout(true);
+              }, () => { });
+          } 
             //this.rulesetService.getAllRuleSetByUserId(user.id, this.page, this.pageSize)
-            this.rulesetService.getRuleSetToCreateCharacterByUserId(user.id, this.page, this.pageSize) 
-                .subscribe(data => {
-                    this.charactersFormModal.ruleSets = data;
-                    this.charactersFormModal.hasRuleset = data == undefined ? false : data.length == 0 ? false : true;
-                    this.isLoading = false;
-                }, error => {
-                    this.isLoading = false;
-                    this.alertService.stopLoadingMessage();
-                    let Errors = Utilities.ErrorDetail("Error", error);
-                    if (Errors.sessionExpire) this.authService.logout(true);
-                }, () => { });
-
+            
         }
     }
     fileInput(_files: FileList) {
@@ -265,7 +277,8 @@ export class CharactersFormComponent implements OnInit {
         this.isLoading = true;
         this.charactersService.createCharacter(modal)
             .subscribe(
-                data => {
+          data => {
+                  console.log('Indata',data);
                     this.isLoading = false;
                     this.alertService.stopLoadingMessage();
 
@@ -273,8 +286,10 @@ export class CharactersFormComponent implements OnInit {
                     this.alertService.showMessage(message, "", MessageSeverity.success);
                     this.commonService.UpdateCounts(); /*update charaters count*/
                     this.close();
-                    this.sharedService.updateCharacterList(true);
-                    this.sharedService.updateCharactersCount(true);
+            this.sharedService.updateCharacterList(true);
+            debugger;
+                     this.sharedService.updateCharactersCount(true);
+                      this.appService.updateCharacterList(true);
                     //this.router.navigateByUrl('/rulesets', { skipLocationChange: true }).then(() => this.router.navigate(['/ruleset']));
                     // window.location.reload();
                 },

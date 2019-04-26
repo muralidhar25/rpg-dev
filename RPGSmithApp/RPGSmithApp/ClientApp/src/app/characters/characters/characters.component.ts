@@ -13,7 +13,6 @@ import { LocalStoreManager } from "../../core/common/local-store-manager.service
 import { User } from "../../core/models/user.model";
 import { DBkeys } from "../../core/common/db-keys";
 import { Utilities } from "../../core/common/utilities";
-import { CharactersFormComponent } from "../characters-form/characters-form.component";
 import { Characters } from "../../core/models/view-models/characters.model";
 import { AccountSettingsComponent } from "../../shared/accounts/account-settings/account-settings.component";
 import { AppService1 } from "../../app.service";
@@ -21,6 +20,7 @@ import { MarketPlaceService } from "../../core/services/maketplace.service";
 import { marketplaceListModel } from "../../core/models/marketplace.model";
 import { MarketPlaceItemsType } from "../../core/models/enums";
 import { PaymentComponent } from "../../shared/payment/payment.component";
+import { CharactersFormComponent } from "../../shared/characters-form/characters-form.component";
 
 @Component({
   selector: 'app-characters',
