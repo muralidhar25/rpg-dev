@@ -1229,6 +1229,10 @@ namespace DAL.Services
 
             return item;
         }
+        public async Task DeleteItemMasterLoot(int lootId) {
+            _context.ItemMasterLoots.Remove(_context.ItemMasterLoots.Where(x => x.LootId == lootId).FirstOrDefault());
+            await _context.SaveChangesAsync();
+        }
         #endregion
     }
 }
