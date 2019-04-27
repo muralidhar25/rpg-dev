@@ -1151,8 +1151,8 @@ namespace DAL.Services
             return await _context.ItemMasterLoots.Include(x => x.ItemMaster)
                             .Where(x =>x.IsShow==true && x.ItemMaster.RuleSetId == rulesetID && x.ItemMaster.IsDeleted != true).AsNoTracking().ToListAsync();
         }
-        public async Task CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot) {
-           await _context.ItemMasterLoots.AddAsync(new ItemMasterLoot()
+        public void CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot) {
+            _context.ItemMasterLoots.Add(new ItemMasterLoot()
             {
                 ContainedIn = loot.ContainedIn,
                 IsIdentified = loot.IsIdentified,
@@ -1161,6 +1161,7 @@ namespace DAL.Services
                 ItemMasterId = result.ItemMasterId,
                 Quantity = loot.Quantity,
             });
+            _context.SaveChanges();
         }
         public async  Task<ItemMasterLoot> UpdateItemMasterLoot(ItemMasterLoot loot)
         {
