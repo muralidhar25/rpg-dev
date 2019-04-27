@@ -1246,6 +1246,23 @@ namespace RPGSmithApp.Controllers
             ItemSpells,
             ItemAbilities, ItemCommands);
         }
+        [HttpPost("delete_up")]
+        public async Task<IActionResult> DeleteItemMaster([FromBody] EditItemMasterLootModel model)
+        {
+            int rulesetID = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
+            if (_coreRulesetService.IsCopiedFromCoreRuleset(rulesetID))
+            {
+                int ItemMasterID = model.ItemMasterId == null ? 0 : (int)model.ItemMasterId;
+                if (!_coreRulesetService.IsItemCopiedFromCoreRuleset(ItemMasterID, rulesetID))
+                {
+                    await CreateItemMasterForCopiedRuleset(model, true);
+                    //return Ok();
+                    // await UpdateItemMasterCommon(model);
+                }
+            }
+            await _itemMasterService.DeleteItemMasterLoot(model.LootId);
+            return Ok();
+        }
         #endregion
     }
 }
