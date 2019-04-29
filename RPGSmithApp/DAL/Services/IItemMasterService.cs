@@ -31,7 +31,7 @@ namespace DAL.Services
         Task<List<ItemMasterLoot_ViewModel>> GetItemMasterLoots(int rulesetID, int page = 1, int pageSize = 30);
         Task CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot);
         Task<ItemMasterLoot> UpdateItemMasterLoot(ItemMasterLoot loot);
-        Task<List<ItemMasterLoot>> GetLootItemsForPlayers(int rulesetID);
+        Task<List<ItemMasterLoot_ViewModel>> GetLootItemsForPlayers(int rulesetID);
         Task<ItemMasterLoot> getLootDetails(int LootId);
         Task<bool> DeleteContainer(int itemMasterId);
         Task<List<ItemMasterLoot>> GetByContainerId(int? containerId);

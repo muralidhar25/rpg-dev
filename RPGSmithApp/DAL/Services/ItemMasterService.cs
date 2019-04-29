@@ -1147,9 +1147,49 @@ namespace DAL.Services
             //return await _context.ItemMasterLoots.Include(x => x.ItemMaster)
             //    .Where(x => x.ItemMaster.RuleSetId == rulesetID && x.ItemMaster.IsDeleted!=true).AsNoTracking().ToListAsync();
         }
-        public async Task<List<ItemMasterLoot>> GetLootItemsForPlayers(int rulesetID) {
+        public async Task<List<ItemMasterLoot_ViewModel>> GetLootItemsForPlayers(int rulesetID) {
             return await _context.ItemMasterLoots.Include(x => x.ItemMaster)
-                            .Where(x =>x.IsShow==true && x.ItemMaster.RuleSetId == rulesetID && x.ItemMaster.IsDeleted != true).AsNoTracking().ToListAsync();
+                            .Where(x =>x.IsShow==true && x.ItemMaster.RuleSetId == rulesetID && x.ItemMaster.IsDeleted != true)
+                            //.AsNoTracking()
+                            .Select(x => new ItemMasterLoot_ViewModel() {
+                                Command = x.ItemMaster.Command,
+                                CommandName = x.ItemMaster.CommandName,
+                                ContainedIn = x.ContainedIn,
+                                ContainerVolumeMax = x.ItemMaster.ContainerVolumeMax,
+                                ContainerWeightMax = x.ItemMaster.ContainerWeightMax,
+                                ContainerWeightModifier = x.ItemMaster.ContainerWeightModifier,
+                                IsConsumable = x.ItemMaster.IsConsumable,
+                                IsContainer = x.ItemMaster.IsContainer,
+                                IsDeleted = x.ItemMaster.IsDeleted,
+                                IsIdentified = x.IsIdentified,
+                                IsMagical = x.ItemMaster.IsMagical,
+                                IsShow = x.IsShow,
+                                IsVisible = x.IsVisible,
+                                ItemCalculation = x.ItemMaster.ItemCalculation,
+                                ItemImage = x.ItemMaster.ItemImage,
+                                ItemMasterAbilities = x.ItemMaster.ItemMasterAbilities,
+                                ItemMasterCommand = x.ItemMaster.ItemMasterCommand,
+                                ItemMasterId = x.ItemMaster.ItemMasterId,
+                                ItemMasterPlayers = x.ItemMaster.ItemMasterPlayers,
+                                ItemMasterSpell = x.ItemMaster.ItemMasterSpell,
+                                ItemName = x.ItemMaster.ItemName,
+                                Items = x.ItemMaster.Items,
+                                ItemStats = x.ItemMaster.ItemStats,
+                                LootId = x.LootId,
+                                ItemVisibleDesc = x.ItemMaster.ItemVisibleDesc,
+                                ParentItemMasterId = x.ItemMaster.ParentItemMasterId,
+                                Metatags = x.ItemMaster.Metatags,
+                                PercentReduced = x.ItemMaster.PercentReduced,
+                                Quantity = x.Quantity,
+                                Rarity = x.ItemMaster.Rarity,
+                                RuleSetId = x.ItemMaster.RuleSetId,
+                                TotalWeight = x.TotalWeight,
+                                TotalWeightWithContents = x.ItemMaster.TotalWeightWithContents,
+                                Value = x.ItemMaster.Value,
+                                Volume = x.ItemMaster.Volume,
+                                Weight = x.ItemMaster.Weight,
+                            })
+                            .ToListAsync();
         }
         public async Task CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot) {
            await _context.ItemMasterLoots.AddAsync(new ItemMasterLoot()
