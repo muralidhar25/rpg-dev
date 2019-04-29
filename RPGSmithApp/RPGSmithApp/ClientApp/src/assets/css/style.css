@@ -2725,10 +2725,12 @@ a {
     border-color: transparent !important;
   }
 
-.btn-primary {
-  border-bottom-color: #913c1b;
-  background-color: #d15727;
-}
+  .btn-primary,
+  .btn-primary:disabled {
+    border-color: transparent;
+    border-bottom-color: #913c1b;
+    background-color: #d15727;
+  }
 
   .btn-primary:hover {
     border-bottom-color: #7a260f;
