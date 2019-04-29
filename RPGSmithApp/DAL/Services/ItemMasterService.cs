@@ -1191,8 +1191,8 @@ namespace DAL.Services
                             })
                             .ToListAsync();
         }
-        public async Task CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot) {
-           await _context.ItemMasterLoots.AddAsync(new ItemMasterLoot()
+        public void CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot) {
+            _context.ItemMasterLoots.Add(new ItemMasterLoot()
             {
                 ContainedIn = loot.ContainedIn,
                 IsIdentified = loot.IsIdentified,
@@ -1201,6 +1201,7 @@ namespace DAL.Services
                 ItemMasterId = result.ItemMasterId,
                 Quantity = loot.Quantity,
             });
+            _context.SaveChanges();
         }
         public async  Task<ItemMasterLoot> UpdateItemMasterLoot(ItemMasterLoot loot)
         {

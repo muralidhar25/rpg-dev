@@ -901,6 +901,7 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                itemDomain.IsShow = true;
                 var ItemMasterModel = _itemMasterService.GetDuplicateItemMaster(itemDomain.ItemName, itemDomain.RuleSetId).Result;
                 var result = new ItemMaster();
                 var itemMaster = Mapper.Map<ItemMaster>(itemDomain);
@@ -914,7 +915,17 @@ namespace RPGSmithApp.Controllers
                     result = await _itemMasterService.CreateItemMaster(itemMaster, itemDomain.itemMasterSpellVM, itemDomain.itemMasterAbilityVM);
                 }
 
+                ItemMasterLoot loot = new ItemMasterLoot()
+                {
+                    ContainedIn = itemDomain.ContainedIn,
+                    IsIdentified = itemDomain.IsIdentified,
+                    IsShow = itemDomain.IsShow,
+                    IsVisible = itemDomain.IsVisible,
+                    Quantity = itemDomain.Quantity,
+                    ItemMasterId = itemDomain.ItemMasterId,
+                };
 
+                _itemMasterService.CreateItemMasterLoot(result, loot);
                 if (itemDomain.itemMasterCommandVM != null && itemDomain.itemMasterCommandVM.Count > 0)
                 {
                     foreach (var imcViewModels in itemDomain.itemMasterCommandVM)
@@ -928,22 +939,12 @@ namespace RPGSmithApp.Controllers
                     }
                 }
                 var ruleset = _ruleSetService.GetRuleSetById((int)(itemDomain.RuleSetId));
-                ItemMasterLoot loot = new ItemMasterLoot()
-                {
-                    ContainedIn = itemDomain.ContainedIn,
-                    IsIdentified = itemDomain.IsIdentified,
-                    IsShow = itemDomain.IsShow,
-                    IsVisible = itemDomain.IsVisible,
-                    Quantity = itemDomain.Quantity,
-                    ItemMasterId = itemDomain.ItemMasterId,
-                };
-
-                await _itemMasterService.CreateItemMasterLoot(result, loot);
+                
                 try
                 {
 
                     ///////if non-conatiner item remove/update its container
-                    if (itemDomain.ContainedIn > 0 && !itemDomain.IsContainer==null?false:true)
+                    if (itemDomain.ContainedIn != null && itemDomain.ContainedIn > 0 && !(itemDomain.IsContainer==null?false:true))
                     {
                         var containerItem = _itemMasterService.GetItemMasterById(itemDomain.ContainedIn);
                         var _itemContainer = itemDomain;// containerItem;//Mapper.Map<ItemEditModel>(containerItem)
