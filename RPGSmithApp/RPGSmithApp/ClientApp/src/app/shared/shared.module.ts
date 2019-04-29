@@ -58,7 +58,7 @@ import { CreateAbilitiesComponent } from "./create-abilities/create-abilities.co
 import { CreateSpellsComponent } from "./create-spells/create-spells.component";
 import { InviteAddCharctersFormComponent } from "./invite-add-charcters-form/invite-add-charcters-form.component";
 import { PaymentComponent } from "./payment/payment.component";
-//import { PlayerLootComponent } from "./player-loot/player-loot.component";
+import { PlayerLootComponent } from "./player-loot/player-loot.component";
 import { CharactersFormComponent } from "./characters-form/characters-form.component";
 
 
@@ -89,7 +89,7 @@ import { CharactersFormComponent } from "./characters-form/characters-form.compo
     CreateSpellsComponent,
     InviteAddCharctersFormComponent,
     PaymentComponent,
-   // PlayerLootComponent,
+   PlayerLootComponent,
     CharactersFormComponent
   ],
   imports: [
@@ -175,7 +175,7 @@ import { CharactersFormComponent } from "./characters-form/characters-form.compo
     CreateSpellsComponent,
     InviteAddCharctersFormComponent,
     PaymentComponent,
-  //  PlayerLootComponent,
+    PlayerLootComponent,
     CharactersFormComponent
   ],
   entryComponents: [
@@ -202,7 +202,7 @@ import { CharactersFormComponent } from "./characters-form/characters-form.compo
     CreateSpellsComponent,
     InviteAddCharctersFormComponent,
     PaymentComponent,
-    //PlayerLootComponent,
+    PlayerLootComponent,
     CharactersFormComponent
   ]
 })

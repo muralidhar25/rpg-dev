@@ -37,8 +37,9 @@
           <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.itemMasterCount !== undefined">{{rulesetRecordCount.itemMasterCount}} </span>
         </li>
         <li class="ng-star-inserted">
-          <a class="btn icon icon-Gen-Pouch btn-accent">LOOT</a>
-          <span class="dropdown-menu-item-count pull-right ng-star-inserted">0</span>
+          <a class="btn icon icon-Gen-Pouch btn-accent" (click)="loot(rulesetModel)">LOOT</a>
+          <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.lootCount !== undefined">{{rulesetRecordCount.lootCount}}</span>
+          
         </li>
         <!--<li class="ng-star-inserted">
           <a class="btn icon icon-Gen-NPC btn-accent">GM CHARACTERS</a>

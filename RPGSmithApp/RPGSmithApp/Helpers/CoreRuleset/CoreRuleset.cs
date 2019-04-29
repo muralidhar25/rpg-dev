@@ -123,7 +123,8 @@ namespace RPGSmithApp.Helpers.CoreRuleset
                     AbilityCount = res.AbilityCount,
                     ItemMasterCount = res.ItemMasterCount,
                     CharacterStatCount = res.CharacterStatCount,
-                    LayoutCount = res.LayoutCount
+                    LayoutCount = res.LayoutCount,
+                    LootCount = res.LootCount
                 };
             }
             catch (Exception ex)

@@ -258,8 +258,11 @@ export class CampaignDetailsComponent implements OnInit {
   }
 
   loot(ruleset: Ruleset) {
-    this.rulesetService.ruleset = ruleset;
-    this.router.navigate(['/ruleset/loot', ruleset.ruleSetId]);
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user.isGm) {
+      this.rulesetService.ruleset = ruleset;
+      this.router.navigate(['/ruleset/loot', ruleset.ruleSetId]);
+    }
   }
   
   close(back?: boolean) {

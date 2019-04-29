@@ -1,0 +1,83 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="colorSelectionPopupTitle">
+      <span>
+        Give To
+      </span>
+      <span class="manage-ruleset-header">
+        <span>
+          <img [src]="giveAwayItem?.itemImage" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
+        </span>
+        <span>{{giveAwayItem?.itemName}}</span>
+      </span>
+    </h5>
+    <!--<a href="https://rpgsmith.com/help/#CampaignInvite" class="help-icon icon icon-Gen-Help" target="_blank"></a>-->
+    <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
+  </div>
+</div>
+<div class="modal-body players-component" *ngIf="!isLoading">
+  <div class="modal-body" >
+    <div class="form-row">
+
+      <div class="col-12 col-md-12 col-sm-12">
+        <div class="form-group form-group-unlabelled">
+          <span class="input-group-btn">
+            <button type="button" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
+          </span>
+          <input type="text" id="addItemSearchQuery" name="addItemSearchQuery" class="form-control" placeholder="Search item"
+                 [(ngModel)]="searchText" />
+
+        </div>
+      </div>
+
+      <div class="col-12 col-md-12 col-sm-12">
+        <div class="form-row">
+          <div class="col-12 col-md-12">
+            <!-- Character ruleset -->
+            <fieldset class="form-group input-list">
+              <legend>Select Character</legend>
+              <div class="form-check" *ngIf="!characters">
+                <span>NOTE: <small>At least 1 Rule Set must exist before a Character can be created.</small></span>
+              </div>
+              <!--<div class="form-group form-group-unlabelled search-rule-set" *ngIf="button == 'CREATE'">
+                <span class="input-group-btn">
+                  <button class="btn icon icon-search btn-simple-primary" type="button"></button>
+                </span>
+                <input class="form-control ng-untouched ng-pristine ng-valid" placeholder="Search ruleset" type="text" name="searchTextBox" [(ngModel)]="searchText" />
+              </div>-->
+              <ul class="input-list-items" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
+                  [infiniteScrollThrottle]="300" [scrollWindow]="false" *ngIf="characters">
+                <li class="form-check" *ngFor="let character of characters | filter : searchText : 'characterName';let i = index;">
+                  <label class="form-check-label" (click)="setCharacter(character)">
+                    <input class="form-check-input" type="radio" name="Character" >
+                    <input type="hidden" id="characterId" name="characterId" [(ngModel)]="character.characterId" #characterId="ngModel">
+                    <span class="text-cut">
+                      <img [alt]="characters.characterName" [src]="character.imageUrl"
+                           onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+                      <em>{{character.characterName}}</em> <i class="icon"></i>
+                    </span>
+                  </label>
+                </li>
+              </ul>
+
+              <!--<div class="input-extend">
+                <a (click)="manageRuleSets()" class="btn icon icon-with-text icon-external btn-link-primary"><span style="color:#be8917;">RuleSets</span></a>
+              </div>-->
+            </fieldset>
+            <!-- End of character ruleset -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<app-loader [isLoading]="isLoading"></app-loader>
+
+<div class="modal-footer" *ngIf="!isloading">
+  <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+
+  <button type="button" class="btn btn-accent" [disabled]="isLoading" (click)="Give()">Give</button>
+</div>
+
+

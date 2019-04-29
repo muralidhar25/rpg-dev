@@ -1132,6 +1132,7 @@ namespace RPGSmithApp.Controllers
                         }
 
                     //}
+                    await _itemMasterService.DeleteItemMasterLoot(LootID);
                     await this._characterService.UpdateCharacterInventoryWeight(charID.ID);
                     return Ok();
                 }
@@ -1246,8 +1247,8 @@ namespace RPGSmithApp.Controllers
             ItemSpells,
             ItemAbilities, ItemCommands);
         }
-        [HttpPost("delete_up")]
-        public async Task<IActionResult> DeleteItemMaster([FromBody] EditItemMasterLootModel model)
+        [HttpPost("deleteLoot_up")]
+        public async Task<IActionResult> DeleteItemMasterLoot([FromBody] EditItemMasterLootModel model)
         {
             int rulesetID = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
             if (_coreRulesetService.IsCopiedFromCoreRuleset(rulesetID))
@@ -1262,6 +1263,21 @@ namespace RPGSmithApp.Controllers
             }
             await _itemMasterService.DeleteItemMasterLoot(model.LootId);
             return Ok();
+        }
+        [HttpPost("ShowLoot")]
+        public async Task<IActionResult> ShowLoot(int LootID, bool IsShow)
+        {
+            try
+            {
+
+                await _itemMasterService.ShowLoot(LootID, IsShow);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }            
         }
         #endregion
     }

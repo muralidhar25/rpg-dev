@@ -13,6 +13,7 @@ namespace DAL.Models.SPModels
         public int ItemMasterCount { get; set; }
         public int CharacterStatCount { get; set; }
         public int LayoutCount { get; set; }
+        public int LootCount { get; set; }
     }
     public class SP_AbilitySpellForItemMaster
     {

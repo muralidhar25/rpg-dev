@@ -268,7 +268,15 @@ export class ItemMasterService extends EndpointFactory {
         itemMasterAbilityId: _itemTemplateVM.itemMasterAbilities == undefined ? 0 : _itemTemplateVM.itemMasterAbilities.length > 0 ? _itemTemplateVM.itemMasterAbilities[0].abilityId : 0,
 
         spellDetail: _itemTemplateVM.itemMasterSpell == undefined ? undefined : _itemTemplateVM.itemMasterSpell.length > 0 ? _itemTemplateVM.itemMasterSpell[0].spell : undefined,
-        abilityDetail: _itemTemplateVM.itemMasterAbilities == undefined ? undefined : _itemTemplateVM.itemMasterAbilities.length > 0 ? _itemTemplateVM.itemMasterAbilities[0].abilitiy : undefined
+        abilityDetail: _itemTemplateVM.itemMasterAbilities == undefined ? undefined : _itemTemplateVM.itemMasterAbilities.length > 0 ? _itemTemplateVM.itemMasterAbilities[0].abilitiy : undefined,
+
+        lootId: _itemTemplateVM.lootId,
+        isShow: _itemTemplateVM.isShow,
+        containedIn: _itemTemplateVM.containedIn,
+        quantity: _itemTemplateVM.quantity,
+        isIdentified: _itemTemplateVM.isIdentified,
+        isVisible: _itemTemplateVM.isVisible,
+        totalWeight: _itemTemplateVM.totalWeight
       }
     }
     else {
@@ -303,6 +311,15 @@ export class ItemMasterService extends EndpointFactory {
         metatags: '',
 
         commandName: 'Default',
+
+        lootId: 0,
+        isShow: false,
+        containedIn: null,
+        quantity: 0,
+        isIdentified: false,
+        isVisible: false,
+        totalWeight: 0
+
       }
     }
     return itemMasterFormModal;

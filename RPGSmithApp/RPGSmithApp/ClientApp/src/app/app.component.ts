@@ -38,6 +38,8 @@ import { SearchType } from "./core/models/enums";
 import { CampaignService } from "./core/services/campaign.service";
 import { playerInviteListModel } from "./core/models/campaign.model";
 import { CampaignInviteComponent } from "./rulesets/campaign-invite/campaign-invite.component";
+import { PlayerLootComponent } from "./shared/player-loot/player-loot.component";
+import { LootService } from "./core/services/loot.service";
 //declare let ga: Function;
 
 var alertify: any = require('./assets/scripts/alertify.js');
@@ -113,6 +115,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   haveCheckedNewInvitation: boolean = false;
   invitationList: playerInviteListModel[] = [];
   isAdmin: boolean = false;
+  haveLootItems: boolean = false;
 
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
@@ -141,7 +144,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     private appTitleService: AppTitleService, private authService: AuthService, private translationService: AppTranslationService, private sharedService: SharedService,
     public configurations: ConfigurationService, public router: Router, private modalService: BsModalService, private commonService: CommonService,
     private rulesetService: RulesetService, private userService: UserService, private charactersService: CharactersService, private localStorage: LocalStoreManager,
-    private app1Service: AppService1, private activatedroute: ActivatedRoute, public campaignService: CampaignService,
+    private app1Service: AppService1, private activatedroute: ActivatedRoute, public campaignService: CampaignService, private lootService: LootService ,
     //public googleAnalyticsEventsService: GoogleAnalyticsEventsService,
     @Inject(DOCUMENT) private document: Document
   ) {
@@ -210,7 +213,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               if (Errors.sessionExpire) {
                 this.authService.logout(true);
               }
-            }, () => { });
+          }, () => { });
         //}
         
       }
@@ -221,6 +224,38 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.headers = undefined;;
       } else {
         this.headers = this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE);
+      }
+      this.haveLootItems = false;
+      if (this.headers) {
+        if (this.headers.headerLink == "character") {
+          this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
+            .subscribe(data => {
+              if (data) {
+                if (data.isPlayerCharacter) {
+                  let _rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+                  this.lootService.getLootItemsForPlayers<any>(_rulesetId)
+                    .subscribe(data => {
+                      if (data) {
+                        if (data.length) {
+                          this.haveLootItems = true;
+                        }
+                      }
+                    }, error => {
+                      let Errors = Utilities.ErrorDetail("", error);
+                      if (Errors.sessionExpire) {
+                        this.authService.logout(true);
+                      }
+                    }, () => { });
+                }
+              }
+            }, error => {
+              let Errors = Utilities.ErrorDetail("", error);
+            });
+        } else {
+          this.haveLootItems = false;
+        }
+      } else {
+        this.haveLootItems = false;
       }
       let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
       if (rid) {
@@ -488,6 +523,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         this._profileImage = _user.profileImage;
       }  
     }
+
   }
 
   ngOnInit() {
@@ -632,6 +668,38 @@ export class AppComponent implements OnInit, AfterViewInit {
                 }
               }, () => { });
           //}
+          this.haveLootItems = false;
+          if (this.headers) {
+            if (this.headers.headerLink == "character") {
+              this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
+                .subscribe(data => {
+                  if (data) {
+                    if (data.isPlayerCharacter) {
+                      let _rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+                      this.lootService.getLootItemsForPlayers<any>(_rulesetId)
+                        .subscribe(data => {
+                          if (data) {
+                            if (data.length) {
+                              this.haveLootItems = true;
+                            }
+                          }
+                        }, error => {
+                          let Errors = Utilities.ErrorDetail("", error);
+                          if (Errors.sessionExpire) {
+                            this.authService.logout(true);
+                          }
+                        }, () => { });
+                    }
+                  }
+                }, error => {
+                  let Errors = Utilities.ErrorDetail("", error);
+                });
+            } else {
+              this.haveLootItems = false;
+            }
+          } else {
+            this.haveLootItems = false;
+          }
         }
         this.logoNavigation((<NavigationStart>event).url);
         
@@ -795,8 +863,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.IsCharacterRecordScreenActive = false;
           this.IsRulesetRecordScreenActive = true;
 
-          
-
+         
           //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
         }
         else {
@@ -962,7 +1029,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   gotoDashboard() {
     
     if (this.headers) {
-    
+     
       if (this.IsCharacterRecordScreen && this.IsRulesetRecordScreenActive) {
         
         if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEM') > -1) {
@@ -1309,5 +1376,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
     this.bsModalRef.content.invitationList = this.invitationList;
 
+  }
+  playerLoot() {
+    this.bsModalRef = this.modalService.show(PlayerLootComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.headers = this.headers;
   }
 }

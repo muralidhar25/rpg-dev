@@ -15,7 +15,7 @@ import { AuthGuard } from "../core/auth/auth-guard.service";
 import { BundleDetailsComponent } from "../records/item-master/bundle-details/bundle-details.component";
 import { CampaignsComponent } from "./campaigns/campaigns.component";
 import { CampaignDetailsComponent } from './campaign-details/campaign-details.component';
-//import { LootComponent } from "../records/loot/loot.component";
+import { LootComponent } from "../records/loot/loot.component";
 import { RulesetDetailsComponent } from "./ruleset-details/ruleset-details.component";
 
 
@@ -36,7 +36,7 @@ const routes: Routes = [
   { path: "campaigns", component: CampaignsComponent, data: { title: "Campaigns" } },
   { path: "campaign-details/:id", component: CampaignDetailsComponent, data: { title: "CampaignDetails" } },
   { path: "ruleset-details/:id", component: RulesetDetailsComponent , data: { title: "RulesetDetails" } },
- // { path: "loot/:id", component: LootComponent, data: { title: "Loot" } },
+  { path: "loot/:id", component: LootComponent, data: { title: "Loot" } },
 ];
 
 @NgModule({

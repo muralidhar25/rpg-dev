@@ -678,6 +678,7 @@ namespace DAL.Services
                 res.ItemMasterCount = Convert.ToInt32(dt.Rows[0]["ItemMasterCount"]);
                 res.CharacterStatCount = Convert.ToInt32(dt.Rows[0]["CharacterStatCount"]);
                 res.LayoutCount = Convert.ToInt32(dt.Rows[0]["LayoutCount"]);
+                res.LootCount = Convert.ToInt32(dt.Rows[0]["LootCount"]);
             }
             return res;
         }

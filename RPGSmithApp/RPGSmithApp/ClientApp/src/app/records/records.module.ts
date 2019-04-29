@@ -17,6 +17,13 @@ import { AbilitiesComponent } from './abilities/abilities.component';
 import { AddAbilitiesComponent } from './abilities/add-abilities/add-abilities.component';
 import { CreateBundleComponent } from './item-master/create-bundle/create-bundle.component';
 import { BundleDetailsComponent } from './item-master/bundle-details/bundle-details.component';
+import { LootComponent } from "./loot/loot.component";
+import { GiveawayComponent } from "./loot/giveaway/giveaway.component";
+import { AddlootComponent } from "./loot/addloot/addloot.component";
+import { CreatelootComponent } from "./loot/createloot/createloot.component";
+import { LootAddContainerItemComponent } from "./loot/loot-add-container-item/loot-add-container-item.component";
+import { LootAddContainerComponent } from "./loot/loot-add-container/loot-add-container.component";
+
 
 @NgModule({
   declarations: [
@@ -31,7 +38,13 @@ import { BundleDetailsComponent } from './item-master/bundle-details/bundle-deta
     AbilitiesComponent,
     AddAbilitiesComponent,
     CreateBundleComponent,
-    BundleDetailsComponent
+    BundleDetailsComponent,
+    LootComponent,
+    GiveawayComponent,
+    AddlootComponent,
+    CreatelootComponent,
+    LootAddContainerItemComponent,
+    LootAddContainerComponent
   ],
   imports: [
     SharedModule
@@ -50,14 +63,25 @@ import { BundleDetailsComponent } from './item-master/bundle-details/bundle-deta
     AbilitiesComponent,
     AddAbilitiesComponent,
     CreateBundleComponent,
-    BundleDetailsComponent
+    BundleDetailsComponent,
+    LootComponent,
+    GiveawayComponent,
+    AddlootComponent,
+    CreatelootComponent,
+    LootAddContainerItemComponent,
+    LootAddContainerComponent
   ],
   entryComponents: [
     AddItemMasterComponent,
     CreateItemMsterComponent,
     AddSpellsComponent,
     AddAbilitiesComponent,
-    CreateBundleComponent
+    CreateBundleComponent,
+    GiveawayComponent,
+    AddlootComponent,
+    CreatelootComponent,
+    LootAddContainerItemComponent,
+    LootAddContainerComponent
   ]
 })
 export class RecordsModule {}

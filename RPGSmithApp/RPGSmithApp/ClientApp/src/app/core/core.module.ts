@@ -71,6 +71,8 @@ import { CachingInterceptor } from './services/shared/caching-interceptor.servic
 import { TextTileService } from "./services/tiles/text-tile.service";
 import { MarketPlaceService } from "./services/maketplace.service";
 import { CampaignService } from "./services/campaign.service";
+import { LootService } from "./services/loot.service";
+
 
 @NgModule({
   declarations: [
@@ -136,7 +138,8 @@ import { CampaignService } from "./services/campaign.service";
     RulesetTileService,
     TextTileService,
     MarketPlaceService,
-    CampaignService
+    CampaignService,
+    LootService
     ],
   exports: [
     EqualValidator,

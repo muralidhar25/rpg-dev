@@ -12,5 +12,6 @@ namespace RPGSmithApp.ViewModels
         public int AbilityCount { get; set; }
         public int CharacterStatCount { get; set; }
         public int LayoutCount { get; set; }
+        public int LootCount { get; set; }
     }
 }
