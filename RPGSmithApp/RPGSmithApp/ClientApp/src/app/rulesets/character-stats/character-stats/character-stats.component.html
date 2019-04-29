@@ -73,7 +73,7 @@
                 <ul class="page-toolbar-actions">
                     <li>
                         <button type="button" id="newStatTrigger" data-toggle="modal" (click)="newCharacterStat()"
-                            class="btn icon icon-with-text icon-plus btn-primary"> <span>New Stat</span></button>
+                            class="btn icon icon-with-text icon-plus btn-primary" [disabled]="isLoading" > <span>New Stat</span></button>
                     </li>
                 </ul>
             </div>

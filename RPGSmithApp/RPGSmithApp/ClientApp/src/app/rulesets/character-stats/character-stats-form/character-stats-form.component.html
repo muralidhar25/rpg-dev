@@ -628,8 +628,9 @@
                           </div>
                           <div class="col-6 col-sm-4 mb-2">
                             <!--<input *ngIf="condition.isNumeric" class="form-control" type="number" placeholder="value" [(ngModel)]="condition.compareValue" [name]="'compareValue'+i" pattern="^-?[0-9]\d*(\\d+)?$" (input)="checkNum($event)" />
-                  <input *ngIf="!condition.isNumeric" class="form-control" type="text" placeholder="value" [(ngModel)]="condition.compareValue" [name]="'compareValue1'+i" />-->
-                            <input class="form-control" type="text" placeholder="value" [(ngModel)]="condition.compareValue" [name]="'compareValue1'+i" (change)="CompareValueTextChanged(condition)" [ngClass]="(condition.compareValue_isNumeric == condition.ifClauseStatText_isNumeric && condition.compareValue_isValid)?'':'textbox-error'" />
+                               <input *ngIf="!condition.isNumeric" class="form-control" type="text" placeholder="value" [(ngModel)]="condition.compareValue" [name]="'compareValue1'+i" />-->
+                            <input class="form-control" type="text" placeholder="value" [(ngModel)]="condition.compareValue" [name]="'compareValue_'+i" (change)="CompareValueTextChanged(condition)" [ngClass]="(condition.compareValue_isNumeric == condition.ifClauseStatText_isNumeric && condition.compareValue_isValid)?'':'textbox-error'" />
+                           
                           </div>
                         </div>
                         <div class="form-row">
@@ -678,8 +679,9 @@
                           </div>
                           <div class="col-6 col-sm-3 mb-2">
                             <!--<input *ngIf="condition.isNumeric" class="form-control" type="number" placeholder="value" [(ngModel)]="condition.compareValue" [name]="'compareValue'+i" pattern="^-?[0-9]\d*(\\d+)?$" (input)="checkNum($event)" />
-                  <input *ngIf="!condition.isNumeric" class="form-control" type="text" placeholder="value" [(ngModel)]="condition.compareValue" [name]="'compareValue'+i" />-->
+  <input *ngIf="!condition.isNumeric" class="form-control" type="text" placeholder="value" [(ngModel)]="condition.compareValue" [name]="'compareValue'+i" />-->
                             <input class="form-control" type="text" placeholder="value" [(ngModel)]="condition.compareValue" [name]="'compareValue'+i" (change)="CompareValueTextChanged(condition)" [ngClass]="(condition.compareValue_isNumeric == condition.ifClauseStatText_isNumeric && condition.compareValue_isValid)?'':'textbox-error'" />
+                            {{condition.compareValue+ '--'+ 'compareValue'+i}}
                           </div>
                         </div>
                         <div class="form-row">
