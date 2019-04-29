@@ -49,7 +49,7 @@ export class NoteTileComponent implements OnInit {
   tile: number;
   selectedStatType: number = 0;
   selectedIndex: number;
-
+  public event: EventEmitter<any> = new EventEmitter();
   //options: Object = Utilities.optionsNoteTile;
   uploadingFile: boolean = false;
   autoFocusEditor: boolean = false;
@@ -518,6 +518,7 @@ export class NoteTileComponent implements OnInit {
 
   close() {
     this.bsModalRef.hide();
+    this.event.emit(true);
     this.destroyModalOnInit();
   }
 

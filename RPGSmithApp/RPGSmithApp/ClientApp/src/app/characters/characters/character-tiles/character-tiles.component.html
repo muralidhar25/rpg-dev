@@ -516,7 +516,7 @@
                     </li>-->
                 </ul>
             </div>
-            <div class="add-del-btn d-xl-none">
+            <div class="add-del-btn d-xl-none" *ngIf="showManageIcons">
                 <ul class="page-toolbar-actions"  [ngClass]="(!isLoading && (IsTrashPage || IsResizePage || IsRelocatePage || IsEditPage))?'':'slide-menu'">
                     <!--<li class="popup-new-tile-trigger plus-li" [ngClass]="preventClick?'slide-down':''">
                 <button *ngIf="!isLoading && !IsTrashPage" type="button" (click)="openTile()" class="btn icon btn-primary icon-plus"></button>

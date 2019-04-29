@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { ActivatedRoute } from '@angular/router';
 import { VIEW, STAT_TYPE, SHAPE, SHAPE_CLASS, STAT_LINK_TYPE, BLOB_TYPE } from '../../core/models/enums';
@@ -30,6 +30,7 @@ import { PlatformLocation } from '@angular/common';
 })
 export class CharacterStatTileComponent implements OnInit {
 
+  public event: EventEmitter<any> = new EventEmitter();
     showWebButtons: boolean;
     imageUrl: string;
     fileToUpload: File = null;
@@ -871,7 +872,8 @@ export class CharacterStatTileComponent implements OnInit {
     }
 
     close() {
-        this.bsModalRef.hide();
+      this.bsModalRef.hide();
+      this.event.emit(true);
         this.destroyModalOnInit()
     }
 

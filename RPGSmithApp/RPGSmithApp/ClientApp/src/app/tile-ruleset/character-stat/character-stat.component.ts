@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { ActivatedRoute } from '@angular/router';
 import { RulesetTile } from '../../core/models/tiles/ruleset-tile.model';
@@ -30,7 +30,8 @@ import { FileUploadService } from '../../core/common/file-upload.service';
     styleUrls: ['./character-stat.component.scss']
 })
 export class RulesetCharacterStatTileComponent implements OnInit {
-    
+
+  public event: EventEmitter <any> = new EventEmitter();
     content: any;
     color: any;
     limitText: string = "Show more";
@@ -511,7 +512,8 @@ export class RulesetCharacterStatTileComponent implements OnInit {
     
     
     close() {
-        this.bsModalRef.hide();
+      this.bsModalRef.hide();
+      this.event.emit(true);
         this.destroyModalOnInit()
     }
 

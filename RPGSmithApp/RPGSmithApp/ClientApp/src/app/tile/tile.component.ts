@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { Ruleset } from '../core/models/view-models/ruleset.model';
 import { CharacterDashboardPage } from '../core/models/view-models/character-dashboard-page.model';
@@ -21,6 +21,8 @@ import { PlatformLocation } from '@angular/common';
   styleUrls: ['./tile.component.scss']
 })
 export class TileComponent implements OnInit {
+
+  public event: EventEmitter<any> = new EventEmitter();
 
   ruleSet: any = new Ruleset();
   tiles: any;
@@ -72,7 +74,7 @@ export class TileComponent implements OnInit {
   }
 
   addTiles(tile: any, tileTypeId: number) {
-    this.close();
+    this.close(true);
     switch (tileTypeId) {
       case TILES.NOTE: {
         this.bsModalRef = this.modalService.show(NoteTileComponent, {
@@ -86,6 +88,11 @@ export class TileComponent implements OnInit {
         this.bsModalRef.content.tile = tile;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.ADD;
+        this.bsModalRef.content.event.subscribe(data => {
+           if (data) {
+            this.event.emit(data);
+          }
+        })
         break;
       }
       case TILES.IMAGE: {
@@ -100,6 +107,11 @@ export class TileComponent implements OnInit {
         this.bsModalRef.content.tile = tile;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.ADD;
+        this.bsModalRef.content.event.subscribe(data => {
+           if (data) {
+            this.event.emit(data);
+          }
+        })
         break;
       }
       case TILES.COUNTER: {
@@ -114,6 +126,11 @@ export class TileComponent implements OnInit {
         this.bsModalRef.content.tile = tile;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.ADD;
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            this.event.emit(data);
+          }
+        })
         break;
       }
       case TILES.CHARACTERSTAT: {
@@ -132,6 +149,11 @@ export class TileComponent implements OnInit {
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.ADD;
         this.bsModalRef.content.character = char;
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            this.event.emit(data);
+          }
+        })
         break;
       }
       case TILES.LINK: {
@@ -147,6 +169,11 @@ export class TileComponent implements OnInit {
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.ADD;
         this.bsModalRef.content.ruleSet = this.ruleSet;
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            this.event.emit(data);
+          }
+        })
         break;
       }
       case TILES.EXECUTE: {
@@ -162,6 +189,11 @@ export class TileComponent implements OnInit {
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.ADD;
         this.bsModalRef.content.ruleSet = this.ruleSet;
+        this.bsModalRef.content.event.subscribe(data => {
+           if (data) {
+            this.event.emit(data);
+          }
+        })
         break;
       }
       case TILES.COMMAND: {
@@ -176,6 +208,11 @@ export class TileComponent implements OnInit {
         this.bsModalRef.content.tile = tile;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.ADD;
+        this.bsModalRef.content.event.subscribe(data => {
+           if (data) {
+            this.event.emit(data);
+          }
+        })
         break;
       }
       case TILES.TEXT: {
@@ -190,14 +227,25 @@ export class TileComponent implements OnInit {
         this.bsModalRef.content.tile = tile;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.ADD;
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            this.event.emit(data);
+          }
+        })
         break;
       }
       default: break;
     }
   }
 
-  close() {
-    this.bsModalRef.hide();
+  close(check: boolean) {
+    if (check) {
+      this.bsModalRef.hide();
+    } else {
+      this.bsModalRef.hide();
+      this.event.emit(true);
+    }
+    //this.bsModalRef.hide();
     // this.destroyModalOnInit();
   }
 

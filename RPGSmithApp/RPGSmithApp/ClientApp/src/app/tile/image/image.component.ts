@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { CharacterTile } from '../../core/models/tiles/character-tile.model';
 import { CharacterDashboardPage } from '../../core/models/view-models/character-dashboard-page.model';
@@ -25,6 +25,8 @@ import { PlatformLocation } from '@angular/common';
     styleUrls: ['./image.component.scss']
 })
 export class ImageTileComponent implements OnInit {
+
+  public event: EventEmitter<any> = new EventEmitter();
     imageTitle: any;
     description: any;
     showWebButtons: boolean;
@@ -440,7 +442,8 @@ export class ImageTileComponent implements OnInit {
         );
     }
     close() {
-        this.bsModalRef.hide();
+      this.bsModalRef.hide();
+      this.event.emit(true);
         this.destroyModalOnInit()
     }
 
