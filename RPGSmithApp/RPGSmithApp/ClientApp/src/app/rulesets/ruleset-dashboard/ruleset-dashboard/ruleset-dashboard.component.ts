@@ -1,5 +1,4 @@
-
-import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
+import { Component, OnInit, OnDestroy, Input, HostListener, EventEmitter } from "@angular/core";
 import { Router, ActivatedRoute, NavigationExtras } from "@angular/router";
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { NgGrid, NgGridItem, NgGridConfig, NgGridItemConfig, NgGridItemEvent } from 'angular2-grid';
@@ -47,9 +46,9 @@ import { HeaderValues } from "../../../core/models/headers.model";
     templateUrl: './ruleset-dashboard.component.html',
     styleUrls: ['./ruleset-dashboard.component.scss']
 })
-
 export class RulesetDashboardComponent implements OnInit {
 
+  public event: EventEmitter<any> = new EventEmitter(); 
     STAT_TYPE = STAT_TYPE;
     TILES = TILES;
     isLoading = false;
@@ -107,6 +106,7 @@ export class RulesetDashboardComponent implements OnInit {
     IsComputerDevice: boolean = false;
     IsTabletDevice: boolean = false;
     IsMobileDevice: boolean = false;
+    showManageIcons: boolean =  true;
 
     public gridConfig: NgGridConfig = {
         'margins': this.getTileSize().margins,
@@ -436,8 +436,8 @@ export class RulesetDashboardComponent implements OnInit {
         //}
     }
 
-    private initialize(IsInitialLoad) {
-
+  private initialize(IsInitialLoad) {
+    this.showManageIcons = true;
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)
             this.authService.logout();
@@ -1061,7 +1061,8 @@ export class RulesetDashboardComponent implements OnInit {
     }
 
     openTile() {
-        this.UpdateTileConfigList(this.finalTileList); 
+      this.UpdateTileConfigList(this.finalTileList);
+      this.showManageIcons = false;
         this.bsModalRef = this.modalService.show(RulesetTileComponent, {
             class: 'modal-primary modal-md',
             ignoreBackdropClick: true,
@@ -1069,9 +1070,15 @@ export class RulesetDashboardComponent implements OnInit {
         });
         this.bsModalRef.content.title = "Tile";
         this.bsModalRef.content.pageId = this.selectedPage.rulesetDashboardPageId ?
-            this.selectedPage.rulesetDashboardPageId : this.pageId;
+        this.selectedPage.rulesetDashboardPageId : this.pageId;
         this.bsModalRef.content.rulesetId = this.ruleSetId;
-        this.bsModalRef.content.ruleset = this.ruleset;
+      this.bsModalRef.content.ruleset = this.ruleset;
+
+      this.bsModalRef.content.event.subscribe(data => {
+        if (data) {
+          this.showManageIcons = data;
+        }
+      })
     }
     openTrashGrid() {
         this.IsTrashPage = true;
@@ -1519,6 +1526,7 @@ export class RulesetDashboardComponent implements OnInit {
     editTile(_editTile: any, tileType: number, boxIndex: number = 0) {
         // alert(this.preventClick);
         //if (!this.preventClick) {
+        this.showManageIcons = false;
         let tile: RulesetTile = _editTile;
         this.UpdateTileConfigList(this.finalTileList); 
         this.BoxesEditedIndex = boxIndex;
@@ -1535,6 +1543,13 @@ export class RulesetDashboardComponent implements OnInit {
                 this.bsModalRef.content.pageId = this.pageId;
                 this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
                 this.bsModalRef.content.view = VIEW.EDIT;
+
+            this.bsModalRef.content.event.subscribe(data => {
+               if (data) {
+                    this.showManageIcons = data;
+                  }
+                })
+
                 break;
             }
             case TILES.IMAGE: {
@@ -1549,6 +1564,12 @@ export class RulesetDashboardComponent implements OnInit {
                 this.bsModalRef.content.pageId = this.pageId;
                 this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
                 this.bsModalRef.content.view = VIEW.EDIT;
+
+                this.bsModalRef.content.event.subscribe(data => {
+                  if (data) {
+                    this.showManageIcons = data;
+                  }
+                })
                 break;
             }
             case TILES.COUNTER: {
@@ -1563,6 +1584,12 @@ export class RulesetDashboardComponent implements OnInit {
                 this.bsModalRef.content.pageId = this.pageId;
                 this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
                 this.bsModalRef.content.view = VIEW.EDIT;
+
+                this.bsModalRef.content.event.subscribe(data => {
+                  if (data) {
+                    this.showManageIcons = data;
+                  }
+                })
                 break;
             }
             case TILES.CHARACTERSTAT: {
@@ -1577,6 +1604,12 @@ export class RulesetDashboardComponent implements OnInit {
                 this.bsModalRef.content.pageId = this.pageId;
                 this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
                 this.bsModalRef.content.view = VIEW.EDIT;
+
+                this.bsModalRef.content.event.subscribe(data => {
+                  if (data) {
+                    this.showManageIcons = data;
+                  }
+                })
                 break;
             }
             case TILES.LINK: {
@@ -1597,6 +1630,12 @@ export class RulesetDashboardComponent implements OnInit {
                 this.bsModalRef.content.pageId = this.pageId;
                 this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
                 this.bsModalRef.content.view = VIEW.EDIT;
+
+                this.bsModalRef.content.event.subscribe(data => {
+                  if (data) {
+                    this.showManageIcons = data;
+                  }
+                })
                 break;
             }
             case TILES.TEXT: {
@@ -1611,6 +1650,12 @@ export class RulesetDashboardComponent implements OnInit {
                 this.bsModalRef.content.pageId = this.pageId;
                 this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
                 this.bsModalRef.content.view = VIEW.EDIT;
+
+                this.bsModalRef.content.event.subscribe(data => {
+                  if (data) {
+                    this.showManageIcons = data;
+                  }
+                })
                 break;
             }
             default: break;

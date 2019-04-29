@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { RulesetTile } from '../../core/models/tiles/ruleset-tile.model';
 import { TextTile } from '../../core/models/tiles/text-tile.model';
@@ -26,6 +26,7 @@ import { PlatformLocation } from '@angular/common';
 })
 export class RulesetTextTileComponent implements OnInit {
 
+  public event: EventEmitter<any> = new EventEmitter();
     textTitle: any;
     description: any;
     showWebButtons: boolean;
@@ -320,7 +321,7 @@ export class RulesetTextTileComponent implements OnInit {
             this.addEdittextTile(this.rulesetTileModel);
         }
     }
-    submitForm() {
+  submitForm() {
         this.validateSubmit();
     }
 
@@ -353,8 +354,9 @@ export class RulesetTextTileComponent implements OnInit {
                 },
             );
     }
-    close() {
-        this.bsModalRef.hide();
+  close() {
+     this.bsModalRef.hide();
+      this.event.emit(true);
         this.destroyModalOnInit()
     }
 

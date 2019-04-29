@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,EventEmitter } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { RulesetTile } from '../../core/models/tiles/ruleset-tile.model';
 import { ImageTile } from '../../core/models/tiles/image-tile.model';
@@ -26,6 +26,7 @@ import { PlatformLocation } from '@angular/common';
     styleUrls: ['./image.component.scss']
 })
 export class RulesetImageTileComponent implements OnInit {
+  public event: EventEmitter<any> = new EventEmitter();
     imageTitle: any;
     description: any;
     showWebButtons: boolean;
@@ -442,7 +443,8 @@ export class RulesetImageTileComponent implements OnInit {
         );
     }
     close() {
-        this.bsModalRef.hide();
+      this.bsModalRef.hide();
+      this.event.emit(true);
         this.destroyModalOnInit()
     }
 

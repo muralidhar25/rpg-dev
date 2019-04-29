@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,EventEmitter } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Color } from '../../core/models/tiles/color.model';
@@ -27,6 +27,9 @@ import { PlatformLocation } from '@angular/common';
     styleUrls: ['./command.component.scss']
 })
 export class CommandTileComponent implements OnInit {
+
+  public event: EventEmitter<any> = new EventEmitter();
+
     commandTitle: any;
     commandContent: any;
     color: any;
@@ -460,7 +463,8 @@ export class CommandTileComponent implements OnInit {
     }
 
     close() {
-        this.bsModalRef.hide();
+      this.bsModalRef.hide();
+      this.event.emit(true);
         this.destroyModalOnInit()
     }
 

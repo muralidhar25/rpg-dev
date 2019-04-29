@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ElementRef, HostListener, EventEmitter } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { NgGrid, NgGridItem, NgGridConfig, NgGridItemConfig, NgGridItemEvent } from 'angular2-grid';
 import { STAT_TYPE, TILES, VIEW, CONDITION_OPERATOR_ENUM } from '../../../core/models/enums';
@@ -40,7 +40,6 @@ import { debug } from 'util';
 
 
 
-
 @Component({
   selector: 'app-character-tiles',
   templateUrl: './character-tiles.component.html',
@@ -48,6 +47,7 @@ import { debug } from 'util';
 })
 export class CharacterTilesComponent implements OnInit {
 
+  public event: EventEmitter<any> = new EventEmitter();
   STAT_TYPE = STAT_TYPE;
   TILES = TILES;
   bsModalRef: BsModalRef;
@@ -74,7 +74,7 @@ export class CharacterTilesComponent implements OnInit {
   hasAdded: boolean = false;
   IsMobileScreen: boolean = this.isMobile();
   IsMobilePanel: boolean = false;
-
+  
   private rgb: string = '#efefef';
   private curNum;
   private columnsInGrid: number = 14;
@@ -142,7 +142,9 @@ export class CharacterTilesComponent implements OnInit {
   CharacterStatsValues: any;
   statLinkRecords: any;
   choiceArraySplitter: string = 'S###@Split@###S';
-  ConditionsValuesList: CharactersCharacterStat[] = []
+  ConditionsValuesList: CharactersCharacterStat[] = [];
+  showManageIcons: boolean = true;
+
   constructor(private modalService: BsModalService, private charactersService: CharactersService, private characterTileService: CharacterTileService,
     private router: Router, private route: ActivatedRoute, private authService: AuthService, private pageService: CharacterDashboardPageService,
     private localStorage: LocalStoreManager, private sharedService: SharedService, private alertService: AlertService,
@@ -264,6 +266,7 @@ export class CharacterTilesComponent implements OnInit {
     //}
   }
   private Initialize() {
+    this.showManageIcons = true;
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
       this.authService.logout();
@@ -337,6 +340,7 @@ export class CharacterTilesComponent implements OnInit {
   openTile() {
     if (this.character.ruleSet) {
       this.UpdateTileConfigList(this.finalTileList);
+      this.showManageIcons = false;
       this.BoxesEditedIndex = 0;
       this.bsModalRef = this.modalService.show(TileComponent, {
         class: 'modal-primary modal-md',
@@ -347,6 +351,12 @@ export class CharacterTilesComponent implements OnInit {
       this.bsModalRef.content.ruleSet = this.character.ruleSet;
       this.bsModalRef.content.pageId = this.pageId;
       this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+
+      this.bsModalRef.content.event.subscribe(data => {
+        if (data) {
+          this.showManageIcons = data;
+        }
+      })
     }
   }
   openTrashGrid() {
@@ -495,6 +505,7 @@ export class CharacterTilesComponent implements OnInit {
   editTile(_editTile: any, tileType: number, boxIndex: number = 0) {
     // alert(this.preventClick);
     //if (!this.preventClick) {
+    this.showManageIcons = false;
     let tile: CharacterTile = _editTile;
     this.BoxesEditedIndex = boxIndex;
     this.UpdateTileConfigList(this.finalTileList);
@@ -511,6 +522,12 @@ export class CharacterTilesComponent implements OnInit {
         this.bsModalRef.content.pageId = this.pageId;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.EDIT;
+
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            this.showManageIcons = data;
+          }
+        })
         break;
       }
       case TILES.IMAGE: {
@@ -525,6 +542,12 @@ export class CharacterTilesComponent implements OnInit {
         this.bsModalRef.content.pageId = this.pageId;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.EDIT;
+
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            this.showManageIcons = data;
+          }
+        })
         break;
       }
       case TILES.COUNTER: {
@@ -539,6 +562,12 @@ export class CharacterTilesComponent implements OnInit {
         this.bsModalRef.content.pageId = this.pageId;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.EDIT;
+
+        this.bsModalRef.content.event.subscribe(data => {
+         if (data) {
+            this.showManageIcons = data;
+          }
+        })
         break;
       }
       case TILES.CHARACTERSTAT: {
@@ -553,7 +582,13 @@ export class CharacterTilesComponent implements OnInit {
         this.bsModalRef.content.pageId = this.pageId;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.EDIT;
-        this.bsModalRef.content.character = this.character
+        this.bsModalRef.content.character = this.character;
+
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            this.showManageIcons = data;
+          }
+        })
         break;
       }
       case TILES.LINK: {
@@ -569,7 +604,14 @@ export class CharacterTilesComponent implements OnInit {
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.EDIT;
         this.bsModalRef.content.ruleSet = this.character.ruleSet;
+
+        this.bsModalRef.content.event.subscribe(data => {
+           if (data) {
+            this.showManageIcons = data;
+          }
+        })
         break;
+
       }
       case TILES.EXECUTE: {
         this.bsModalRef = this.modalService.show(ExecuteTileComponent, {
@@ -584,7 +626,14 @@ export class CharacterTilesComponent implements OnInit {
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.EDIT;
         this.bsModalRef.content.ruleSet = this.character.ruleSet;
+
+        this.bsModalRef.content.event.subscribe(data => {
+           if (data) {
+            this.showManageIcons = data;
+          }
+        })
         break;
+     
       }
       case TILES.COMMAND: {
         this.bsModalRef = this.modalService.show(CommandTileComponent, {
@@ -598,6 +647,13 @@ export class CharacterTilesComponent implements OnInit {
         this.bsModalRef.content.pageId = this.pageId;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.EDIT;
+
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            this.showManageIcons = data;
+          }
+        })
+
         break;
       }
       case TILES.TEXT: {
@@ -612,6 +668,13 @@ export class CharacterTilesComponent implements OnInit {
         this.bsModalRef.content.pageId = this.pageId;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.EDIT;
+
+        this.bsModalRef.content.event.subscribe(data => {
+           if (data) {
+            this.showManageIcons = data;
+          }
+        })
+
         break;
       }
       default: break;

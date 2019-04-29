@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { Color } from '../../core/models/tiles/color.model';
 import { CharacterTile } from '../../core/models/tiles/character-tile.model';
@@ -23,6 +23,8 @@ import { PlatformLocation } from '@angular/common';
   styleUrls: ['./counter.component.scss']
 })
 export class CounterTileComponent implements OnInit {
+
+  public event: EventEmitter<any> = new EventEmitter();
     color: any;
     selectedColor: string;
     shapeClass: string;
@@ -395,7 +397,8 @@ export class CounterTileComponent implements OnInit {
     }
 
     close() {
-        this.bsModalRef.hide();
+      this.bsModalRef.hide();
+      this.event.emit(true);
         this.destroyModalOnInit();
     }
 

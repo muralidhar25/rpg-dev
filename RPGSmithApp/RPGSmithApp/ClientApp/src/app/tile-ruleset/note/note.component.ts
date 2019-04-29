@@ -26,6 +26,8 @@ import { PlatformLocation } from '@angular/common';
   styleUrls: ['./note.component.scss']
 })
 export class RulesetNoteTileComponent implements OnInit {
+
+  public event: EventEmitter<any> = new EventEmitter();  
     shapeClass: string;
     isLoading: boolean;
     rulesetTileModel = new RulesetTile();
@@ -347,6 +349,7 @@ export class RulesetNoteTileComponent implements OnInit {
 
     close() {
       this.bsModalRef.hide();
+      this.event.emit(true);
         this.destroyModalOnInit();
     }
     

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,EventEmitter } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { FilterTilePipe } from "../../core/pipes/filter-tile.pipe";
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
@@ -29,6 +29,7 @@ import { PlatformLocation } from '@angular/common';
 })
 export class LinkTileComponent implements OnInit {
 
+  public event: EventEmitter<any> = new EventEmitter();
     ruleSet: any = new Ruleset();
     limitTextSpell: string = "Show more";
     limitTextItem: string = "Show more";
@@ -702,8 +703,9 @@ export class LinkTileComponent implements OnInit {
 
 
     close() {
-        this.bsModalRef.hide();
-        this.destroyModalOnInit()
+      this.bsModalRef.hide();
+      this.event.emit(true);
+      this.destroyModalOnInit();
     }
 
     private destroyModalOnInit(): void {

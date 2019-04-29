@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,EventEmitter } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { CharacterTile } from '../../core/models/tiles/character-tile.model';
 import { TextTile } from '../../core/models/tiles/text-tile.model';
@@ -23,6 +23,7 @@ import { ColorsComponent } from '../colors/colors.component';
 })
 export class TextTileComponent implements OnInit {
 
+  public event: EventEmitter<any> = new EventEmitter();
   textTitle: any;
   description: any;
   showWebButtons: boolean;
@@ -362,6 +363,7 @@ export class TextTileComponent implements OnInit {
 
   close() {
     this.bsModalRef.hide();
+    this.event.emit(true);
     this.destroyModalOnInit()
   }
 

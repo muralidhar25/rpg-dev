@@ -500,7 +500,7 @@
             </li>-->
         </ul>
     </div>
-    <div class="add-del-btn d-xl-none">
+    <div class="add-del-btn d-xl-none" *ngIf="showManageIcons">
         <ul class="page-toolbar-actions" [ngClass]="(!isLoading && (IsTrashPage || IsResizePage || IsRelocatePage || IsEditPage))?'':'slide-menu'">
             <li class="" *ngIf="!isLoading && (IsTrashPage || IsResizePage || IsRelocatePage || IsEditPage)">
                 <button type="button" (click)="backToNormal(false)" class="btn bg-white icon icon-righ btn-text-big icon- btn-outline-primary"> ></button>
