@@ -38,5 +38,6 @@ namespace DAL.Services
         Task<ItemMasterLoot> UpdateWeight(int itemMasterId, decimal TotalWeight);
         Task<ItemMasterLoot> UpdateContainer(int itemId, int containerItemId);
         Task DeleteItemMasterLoot(int lootId);
+        Task ShowLoot(int lootID, bool isShow);
     }
 }

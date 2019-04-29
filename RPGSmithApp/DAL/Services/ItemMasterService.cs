@@ -1234,6 +1234,14 @@ namespace DAL.Services
             _context.ItemMasterLoots.Remove(_context.ItemMasterLoots.Where(x => x.LootId == lootId).FirstOrDefault());
             await _context.SaveChangesAsync();
         }
+        public async Task ShowLoot(int lootID, bool isShow) {
+            var loot = _context.ItemMasterLoots.Where(x => x.LootId == lootID).FirstOrDefault();
+            if (loot!=null)
+            {
+                loot.IsShow = isShow;
+                await _context.SaveChangesAsync();
+            }
+        }
         #endregion
     }
 }
