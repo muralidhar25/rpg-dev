@@ -115,6 +115,7 @@ namespace DAL
 
         public virtual DbSet<ItemMasterLoot> ItemMasterLoots { get; set; }
         public virtual DbSet<DeletedCharacter> DeletedCharacters { get; set; }
+        public virtual DbSet<PurchasedRuleSet> PurchasedRuleSets { get; set; }
         
         //public virtual DbSet<ItemMasterLootAbility> ItemMasterLootAbilities { get; set; }
         //public virtual DbSet<ItemMasterLootCommand> ItemMasterLootCommands { get; set; }

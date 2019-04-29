@@ -312,7 +312,7 @@ export class CharactersComponent implements OnInit {
         } catch (err) { }
   }
   BuyCharacterSlot() {
-    debugger
+    
     let paymentInfo = this.marketplacelist.filter(x => x.marketPlaceId == MarketPlaceItemsType.CHARACTER_SLOT)[0];
     this.bsModalRef = this.modalService.show(PaymentComponent, {
       class: 'modal-primary modal-custom',
@@ -336,7 +336,6 @@ export class CharactersComponent implements OnInit {
         default:
           break;
       }
-      debugger
 
       if (this.localStorage.sessionExists(DBkeys.CURRENT_USER)) {
         this.localStorage.saveSyncedSessionData(user, DBkeys.CURRENT_USER);

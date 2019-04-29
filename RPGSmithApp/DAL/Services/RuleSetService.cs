@@ -685,6 +685,22 @@ namespace DAL.Services
         {
             return _context.RuleSets.Where(q => q.ShareCode == rulesetSharecode).FirstOrDefaultAsync();
         }
+        public bool IsRulesetAlreadyPurchased(int ruleSetId, string userID) {
+            if (userID!=null)
+            {
+                return _context.PurchasedRuleSets.Where(x => x.RuleSetId == ruleSetId && x.UserId == userID).Any();
+            }
+            return false;
+            
+        }
+        public async Task updateUserPurchasedRuleset(int ruleSetId, string userID) {
+            _context.PurchasedRuleSets.Add(new PurchasedRuleSet()
+            {
+                RuleSetId = ruleSetId,
+                UserId = userID
+            });
+            await _context.SaveChangesAsync();
+        }
         #region CustomDice
         public List<CustomDice> AddCustomDice(List<CustomDice> diceList, int rulesetID)
         {
