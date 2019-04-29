@@ -10,6 +10,8 @@ import { CommonService } from '../../../core/services/shared/common.service';
 import { User } from '../../../core/models/user.model';
 import { DBkeys } from '../../../core/common/db-keys';
 import { Utilities } from '../../../core/common/utilities';
+import { PaymentComponent } from '../../../shared/payment/payment.component';
+import { marketplaceListModel } from '../../../core/models/marketplace.model';
 
 @Component({
   selector: 'app-ruleset-add-interface',
@@ -17,7 +19,7 @@ import { Utilities } from '../../../core/common/utilities';
   styleUrls: ['./ruleset-add-interface.component.scss']
 })
 export class RulesetAddInterfaceComponent implements OnInit {
-
+  bsModalRef: BsModalRef;
     isLoading = false;
     _view: string;
     rulesetsList: any;
@@ -31,7 +33,7 @@ export class RulesetAddInterfaceComponent implements OnInit {
         private localStorage: LocalStoreManager,
         private route: ActivatedRoute,
         private sharedService: SharedService,
-        private commonService: CommonService,
+      private modalService: BsModalService, private commonService: CommonService,
         private rulesetService: RulesetService) { }
 
     ngOnInit() {
@@ -57,52 +59,23 @@ export class RulesetAddInterfaceComponent implements OnInit {
                 }, () => { });
         }
     }
-    addRuleSet(ruleSetId) {
+  addRuleSet(ruleSet) {
+    if (ruleSet.ruleSetId) {
+      let ruleSetId = ruleSet.ruleSetId;
 
-        //if (this.multiRulesets.length > 0) {
-        //this.isLoading = true;
-        this.alertService.startLoadingMessage("", "Adding Ruleset");
-        let ruleSets = [];
-        ruleSets.push(ruleSetId);
-        this.rulesetService.addRuleSets<any>(ruleSets)
-            .subscribe(
-          data => {
-            let IsGM: boolean = false;
-            let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-            if (user == null)
-              this.authService.logout();
-            else {
-              if (user.isGm) {
-                IsGM = true;
-              }              
-            }
-               // this.isLoading = false;
-                this.alertService.stopLoadingMessage();
-                let message = "Rule Set(s) have been added successfully.";
-              this.alertService.showMessage(message, "", MessageSeverity.success);
-
-            if (IsGM) {
-              this.router.navigate(['/rulesets/campaigns']);
-              }
-              else {
-                this.router.navigate(['/rulesets']);
-              }
-                    //this.eventEmitter.emit(true);
-                },
-            error => {
-                   // this.isLoading = false;
-                    this.alertService.stopLoadingMessage();
-                    let _message = "Unable to Add ";
-                    let Errors = Utilities.ErrorDetail(_message, error);
-                    if (Errors.sessionExpire) {
-                        //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-                        this.authService.logout(true);
-                    }
-                    else
-                        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-                });
-        //}
+      if (ruleSet.isAlreadyPurchased) {
+        this.addRuleSetFinal(ruleSetId);
+      }
+      else {
+        if (ruleSet.price) {
+          this.buyRuleset(ruleSet);
+        }
+        else {
+          this.addRuleSetFinal(ruleSetId);
+        }
+      }
     }
+  }
     RedirectBack() {
       this.router.navigate(['/rulesets']);
         //window.history.back();
@@ -111,5 +84,83 @@ export class RulesetAddInterfaceComponent implements OnInit {
     htmltoPlainText(text) {
         return text ? new DOMParser().parseFromString(String(text).replace(/<[^>]+>/gm, ''), "text/html").documentElement.textContent : '';
     }
+  addRuleSetFinal(ruleSetId) {
+    //if (this.multiRulesets.length > 0) {
+    //this.isLoading = true;
+    this.alertService.startLoadingMessage("", "Adding Ruleset");
+    let ruleSets = [];
+    ruleSets.push(ruleSetId);
+    this.rulesetService.addRuleSets<any>(ruleSets)
+      .subscribe(
+        data => {
+          let IsGM: boolean = false;
+          let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+          if (user == null)
+            this.authService.logout();
+          else {
+            if (user.isGm) {
+              IsGM = true;
+            }
+          }
+          // this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let message = "Rule Set(s) have been added successfully.";
+          this.alertService.showMessage(message, "", MessageSeverity.success);
 
+          if (IsGM) {
+            this.router.navigate(['/rulesets/campaigns']);
+          }
+          else {
+            this.router.navigate(['/rulesets']);
+          }
+          //this.eventEmitter.emit(true);
+        },
+        error => {
+          // this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let _message = "Unable to Add ";
+          let Errors = Utilities.ErrorDetail(_message, error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        });
+      //}
+  }
+  buyRuleset(ruleSet) {
+    let paymentInfo: marketplaceListModel = new marketplaceListModel(-1, -1, ruleSet.ruleSetName, ruleSet.ruleSetName, '', ruleSet.price, 1, '', false);// = this.marketplacelist.filter(x => x.marketPlaceId == MarketPlaceItemsType.PLAYER_SLOT)[0];
+    this.bsModalRef = this.modalService.show(PaymentComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'payment';
+    this.bsModalRef.content.paymentInfo = paymentInfo;
+    //this.bsModalRef.content.RulesetToPurchase = ruleSet;
+    this.bsModalRef.content.event.subscribe(data => {
+      debugger
+      let paymentDoneForItem: marketplaceListModel = data.item;
+      
+      this.rulesetService.updateUserPurchasedRuleset<any>(ruleSet)
+        .subscribe(
+          data => {
+            this.addRuleSetFinal(ruleSet.ruleSetId);
+          },
+          error => {
+            // this.isLoading = false;
+            this.alertService.stopLoadingMessage();
+            let _message = "Unable to Add ";
+            let Errors = Utilities.ErrorDetail(_message, error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
+            }
+            else
+              this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+          });
+     
+    });
+  }
 }

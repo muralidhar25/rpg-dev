@@ -7,6 +7,7 @@ import 'rxjs/add/operator/map';
 import { EndpointFactory } from '../common/endpoint-factory.service';
 import { ConfigurationService } from '../common/configuration.service';
 import { CustomDice } from '../models/view-models/custome-dice.model';
+import { Ruleset } from '../models/view-models/ruleset.model';
 
 @Injectable()
 export class RulesetEndpoint extends EndpointFactory {
@@ -34,6 +35,8 @@ export class RulesetEndpoint extends EndpointFactory {
   private readonly shareRuleSetCodeApi: string = this.configurations.baseUrl + "/api/RuleSet/ShareRuleSetCode";
   private readonly getCoreRulesetsApi: string = this.configurations.baseUrl + "/api/RuleSet/GetCoreRuleSets";
   private readonly addRulesetsApi: string = this.configurations.baseUrl + "/api/RuleSet/addRuleSets";
+  private readonly updateUserPurchasedRulesetApi: string = this.configurations.baseUrl + "/api/RuleSet/updateUserPurchasedRuleset";
+  
   private readonly GetCopiedRulesetIDApi: string = this.configurations.baseUrl + "/api/RuleSet/GetCopiedRulesetID";
 
   get getUrl() { return this.configurations.baseUrl + this._getUrl; }
@@ -222,6 +225,13 @@ export class RulesetEndpoint extends EndpointFactory {
     return this.http.post<T>(this.addRulesetsApi, rulesetIds, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.addRuleSets(rulesetIds));
+      });
+  }
+  updateUserPurchasedRuleset<T>(ruleset: Ruleset): Observable<T> {
+
+    return this.http.post<T>(this.updateUserPurchasedRulesetApi, JSON.stringify(ruleset), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.updateUserPurchasedRuleset(ruleset));
       });
   }
 

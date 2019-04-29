@@ -63,7 +63,14 @@
                                         </span>
                                     </div>
                                     <div class="col-12 justify-content-end">
-                                        <button type="button" (click)="addRuleSet(ruleset?.ruleSetId);" class="btn btn-accent">Select</button>
+                                      <span class="ruleset-count text-success item-amount" *ngIf="ruleset?.isAlreadyPurchased">                                        
+                                        <b>Purchased</b>
+                                      </span>
+                                      <span class="ruleset-count text-success item-amount" *ngIf="!ruleset?.isAlreadyPurchased">
+                                        <b *ngIf="ruleset?.price">${{ruleset?.price}}</b>
+                                        <b *ngIf="!ruleset?.price">FREE</b>
+                                      </span>
+                                      <button type="button" (click)="addRuleSet(ruleset);" class="btn btn-accent">Select</button>
                                     </div>
                                 </div>
                             </div>

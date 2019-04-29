@@ -51,5 +51,7 @@ namespace DAL.Services
         void SaveLastSearchFilters(SearchModel searchModel);
         List<SearchEverything> bindEveryThingModel(List<CharacterAbility> characterAbilities, List<Ability> abilities, List<CharacterSpell> characterSpells, List<Spell> spells, List<Item> items, List<ItemMaster_Bundle> itemMasters);
         List<SearchEverything> SearchEveryThing(SearchModel searchModel);
+        bool IsRulesetAlreadyPurchased(int ruleSetId, string userID);
+        Task updateUserPurchasedRuleset(int ruleSetId, string userID);
     }
 }

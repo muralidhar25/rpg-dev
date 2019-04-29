@@ -12,7 +12,7 @@ namespace RPGSmithApp.Helpers
 {
     public interface ICommonFuncsCoreRuleSet {
         CharacterStatViewModel GetCharacterStatViewModel(CharacterStat CharacterStat);
-        RuleSetViewModel GetRuleSetViewModel(RuleSet ruleSet);
+        RuleSetViewModel GetRuleSetViewModel(RuleSet ruleSet,string UserID=null);
         //RulesetRecordCount GetRulesetRecordCounts(int Id);
     }
     public class CommonFuncsCoreRuleSet: ICommonFuncsCoreRuleSet
@@ -172,7 +172,7 @@ namespace RPGSmithApp.Helpers
             return characterStatsVM;
         }
 
-        public RuleSetViewModel GetRuleSetViewModel(RuleSet ruleSet)
+        public RuleSetViewModel GetRuleSetViewModel(RuleSet ruleSet, string UserID = null)
         {
             var ruleSetViewModel = new RuleSetViewModel
             {
@@ -206,7 +206,9 @@ namespace RPGSmithApp.Helpers
                 customDices=Utilities.MapCustomDice(_ruleSetService.GetCustomDice(ruleSet.RuleSetId)),
                 diceTray=_ruleSetService.GetDiceTray(ruleSet.RuleSetId),
                 defaultDices = _ruleSetService.GetDefaultDices(),
-                CoreRulesetAdminImageUrl= _ruleSetService.GetUserImageFromRulesetID(ruleSet.RuleSetId)
+                CoreRulesetAdminImageUrl= _ruleSetService.GetUserImageFromRulesetID(ruleSet.RuleSetId),
+                Price=ruleSet.Price,
+                IsAlreadyPurchased=_ruleSetService.IsRulesetAlreadyPurchased(ruleSet.RuleSetId, UserID)
             };
 
             return ruleSetViewModel;

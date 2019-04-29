@@ -124,5 +124,8 @@ export class RulesetService {
   getDefaultDices(): any {
     return this.rulesetEndpoint.getDefaultDices();
   }
+  updateUserPurchasedRuleset<T>(ruleset: Ruleset): Observable<any> {
+    return this.rulesetEndpoint.updateUserPurchasedRuleset(ruleset);
+  }
   //
 }

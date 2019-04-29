@@ -35,6 +35,8 @@ namespace RPGSmithApp.ViewModels
         public string CoreRulesetAdminImageUrl { get; set; }
         public string CreatedOn { get; set; }
         public RulesetRecordCount RecordCount { get; set; }
+        public decimal Price { get; set; }
+        public bool IsAlreadyPurchased { get; set; }
 
         public virtual ICollection<ItemMaster> ItemMasters { get; set; }
         public virtual ICollection<Spell> Spells { get; set; }

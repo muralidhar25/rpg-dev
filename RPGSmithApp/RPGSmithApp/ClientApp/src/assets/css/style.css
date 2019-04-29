@@ -2209,6 +2209,17 @@ a {
   font-size: 0.75rem;
   content: "";
 }
+.input-list-items .form-check-label span i.buy-currency:before {
+  display:inline-block;
+  font-size: 14px !important;
+  content: '$';
+  position: absolute;
+  top: 50%;
+  transform: translate(0,-50%);
+  color: green;
+  font-weight: bold;
+  font-family: Exo, Verdana, Geneva, Tahoma, sans-serif;
+}
 
 @media screen and (min-width: 767.5px) {
   .input-list-items .form-check-label span i:before {

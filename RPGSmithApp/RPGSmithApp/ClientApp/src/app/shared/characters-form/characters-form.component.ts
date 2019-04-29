@@ -21,6 +21,8 @@ import { ImageSelectorComponent } from '../../shared/image-interface/image-selec
 import { Characters } from '../../core/models/view-models/characters.model';
 import { PlatformLocation } from '@angular/common';
 import { AppService1 } from "../../app.service";
+import { marketplaceListModel } from '../../core/models/marketplace.model';
+import { PaymentComponent } from '../payment/payment.component';
 @Component({
     selector: 'app-characters-form',
     templateUrl: './characters-form.component.html',
@@ -55,6 +57,8 @@ export class CharactersFormComponent implements OnInit {
 
     UserRulesetsList: Ruleset[]= [];
     searchText:string=''
+
+  IsSecondClick: boolean = false;
 
     @HostListener('window:resize', ['$event'])
     onResize(event?) {
@@ -136,9 +140,27 @@ export class CharactersFormComponent implements OnInit {
         this.showWebButtons = false;
     }
 
-    setCharacterRuleset(_ruleset: any) {
-        this.charactersFormModal.ruleSetId = _ruleset.ruleSetId;
+  setCharacterRuleset(_ruleset: any) {
+    console.log('clicked.')
+   debugger
+    if (_ruleset.isAlreadyPurchased) {
+      this.charactersFormModal.ruleSetId = _ruleset.ruleSetId;
     }
+    else {
+      if (_ruleset.price) {
+        if (!this.IsSecondClick) {
+          this.buyRuleset(_ruleset); ///buy
+          this.IsSecondClick = true;
+          setTimeout(() => {
+            this.IsSecondClick = false;
+          }, 1000);   
+        }        
+      }
+      //else {
+        this.charactersFormModal.ruleSetId = _ruleset.ruleSetId;
+      //}
+    }
+  }
     validateImageSize() {
         if ((this.fileToUpload.size / 1024) <= 250) {
             return true;
@@ -274,40 +296,70 @@ export class CharactersFormComponent implements OnInit {
         modal.layoutHeight = this.layoutHeight;
         modal.layoutWidth = this.layoutWidth;
 
-        this.isLoading = true;
-        this.charactersService.createCharacter(modal)
-            .subscribe(
-          data => {
-                  console.log('Indata',data);
-                    this.isLoading = false;
-                    this.alertService.stopLoadingMessage();
+      let rulesetSelected = this.charactersFormModal.ruleSets.filter(x => x.ruleSetId == modal.ruleSetId);
+      //let flag = true;
+      debugger
+      if (modal.view == VIEW.ADD) {
+        if (rulesetSelected) {
+          if (rulesetSelected.length) {
+            if (!rulesetSelected[0].isAlreadyPurchased && rulesetSelected[0].price) {
+              this.alertService.stopLoadingMessage();
+              this.isLoading = false;
+              this.buyRuleset(rulesetSelected[0], true, modal);
+            }
+            //else if (rulesetSelected[0].isAlreadyPurchased) {
+            //  this.SubmitAddEditCharacters(modal);
+            //}
+            else {
+              this.SubmitAddEditCharacters(modal);
+            }
+          }
+        }
+      }
+      else {
+        this.SubmitAddEditCharacters(modal);
+      }
+      
+      //if (flag) {
+      //  this.SubmitAddEditCharacters(modal);
+      //}
+     
+  }
+  private SubmitAddEditCharacters(modal) { 
+    this.isLoading = true;
+    this.charactersService.createCharacter(modal)
+      .subscribe(
+        data => {
+          console.log('Indata', data);
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
 
-                    let message = modal.characterId == 0 || modal.characterId === undefined ? "Character has been added successfully." : "Character has been updated successfully.";
-                    this.alertService.showMessage(message, "", MessageSeverity.success);
-                    this.commonService.UpdateCounts(); /*update charaters count*/
-                    this.close();
-            this.sharedService.updateCharacterList(true);
-            debugger;
-                     this.sharedService.updateCharactersCount(true);
-                      this.appService.updateCharacterList(true);
-                    //this.router.navigateByUrl('/rulesets', { skipLocationChange: true }).then(() => this.router.navigate(['/ruleset']));
-                    // window.location.reload();
-                },
-                error => {
+          let message = modal.characterId == 0 || modal.characterId === undefined ? "Character has been added successfully." : "Character has been updated successfully.";
+          this.alertService.showMessage(message, "", MessageSeverity.success);
+          this.commonService.UpdateCounts(); /*update charaters count*/
+          this.close();
+          this.sharedService.updateCharacterList(true);
+          debugger;
+          this.sharedService.updateCharactersCount(true);
+          this.appService.updateCharacterList(true);
+          //this.router.navigateByUrl('/rulesets', { skipLocationChange: true }).then(() => this.router.navigate(['/ruleset']));
+          // window.location.reload();
+        },
+        error => {
 
-                    this.isLoading = false;
-                    this.alertService.stopLoadingMessage();
-                    let _message = modal.characterId == 0 || modal.characterId === undefined ? "Unable to Add " : "Unable to Update ";
-                    let Errors = Utilities.ErrorDetail(_message, error);
-                    if (Errors.sessionExpire) {
-                        //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-                        this.authService.logout(true);
-                    }
-                    else
-                        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-                },
-            );
-    }
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let _message = modal.characterId == 0 || modal.characterId === undefined ? "Unable to Add " : "Unable to Update ";
+          let Errors = Utilities.ErrorDetail(_message, error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        },
+      );
+  }
 
     private duplicateCharacters(modal) {
         this.isLoading = true;
@@ -434,5 +486,45 @@ export class CharactersFormComponent implements OnInit {
     }
     loadImageFailed() {
         // show message
-    }
+  }
+  buyRuleset(ruleSet, IsCreating = false, modal=null) {
+    debugger
+    let paymentInfo: marketplaceListModel = new marketplaceListModel(-1, -1, ruleSet.ruleSetName, ruleSet.ruleSetName, '', ruleSet.price, 1, '', false);// = this.marketplacelist.filter(x => x.marketPlaceId == MarketPlaceItemsType.PLAYER_SLOT)[0];
+    this.bsModalRef = this.modalService.show(PaymentComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'payment';
+    this.bsModalRef.content.paymentInfo = paymentInfo;
+    //this.bsModalRef.content.RulesetToPurchase = ruleSet;
+    this.bsModalRef.content.event.subscribe(data => {
+      debugger
+      let paymentDoneForItem: marketplaceListModel = data.item;
+      ruleSet.isAlreadyPurchased = true;
+      if (IsCreating && modal) {
+        this.alertService.startLoadingMessage("", "Creating Character...");
+        this.SubmitAddEditCharacters(modal);
+      }
+      this.rulesetService.updateUserPurchasedRuleset<any>(ruleSet)
+        .subscribe(
+        data => {
+          this.charactersFormModal.ruleSetId = ruleSet.ruleSetId;
+            //this.addRuleSetFinal(ruleSet.ruleSetId);
+          },
+          error => {
+            // this.isLoading = false;
+            this.alertService.stopLoadingMessage();
+            let _message = "Unable to Add ";
+            let Errors = Utilities.ErrorDetail(_message, error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
+            }
+            else
+              this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+          });
+
+    });
+  }
 }

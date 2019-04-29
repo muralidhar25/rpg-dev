@@ -281,7 +281,7 @@ namespace RPGSmithApp.Controllers
 
                 var ruleSetsVM = new List<RuleSetViewModel>();
                 foreach (var ruleSet in ruleSets)
-                    ruleSetsVM.Add(_commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet));
+                    ruleSetsVM.Add(_commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet,GetUserId()));
 
                 return Ok(ruleSetsVM);
             }
@@ -299,7 +299,7 @@ namespace RPGSmithApp.Controllers
 
             var ruleSetsVM = new List<RuleSetViewModel>();
             foreach (var ruleSet in ruleSets)
-                ruleSetsVM.Add(_commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet));
+                ruleSetsVM.Add(_commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet, id));
 
             return ruleSetsVM.OrderBy(x => x.SortOrder).ThenBy(x => x.RuleSetName).ToList();
         }
@@ -359,7 +359,20 @@ namespace RPGSmithApp.Controllers
                 return BadRequest();
             }
         }
-
+        
+            [HttpPost("updateUserPurchasedRuleset")]
+        public async Task<IActionResult> updateUserPurchasedRuleset([FromBody] RuleSet model)
+        {
+            try
+            {
+                await _ruleSetService.updateUserPurchasedRuleset(model.RuleSetId,GetUserId());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+        }
         ////This Method is also written on Charater Controller
         private async Task<IActionResult> AddCoreRuleSetsCommon(int[] rulesetIds)
         {
