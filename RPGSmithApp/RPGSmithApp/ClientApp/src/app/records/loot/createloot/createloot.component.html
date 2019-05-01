@@ -156,14 +156,14 @@
             </div>
           </div>
         </div>
-        <div class="form-group">
+        <!--<div class="form-group">
           <label for="newItemWeight">Weight {{itemMasterFormModal.weightLabel}}</label>
           <input type="number" id="newItemWeight" name="newItemWeight" class="form-control" placeholder="Weight"
                  [(ngModel)]="itemMasterFormModal.weight" #newItemWeight="ngModel" [pattern]="numberRegex" />
           <small style="color:#a94442;" [hidden]="newItemWeight.valid || (newItemWeight.pristine && !f.submitted)">
             Only valid numbers are allowed.
           </small>
-        </div>
+        </div>-->
       </div>
       <div class="col-12 col-md-6">
         <fieldset class="form-group input-switch input-switch-vertical">
@@ -222,7 +222,7 @@
               <button type="button" title="Remove Container" data-toggle="tooltip" class="btn icon icon-cross btn-simple-primary"
                       *ngIf="itemMasterFormModal.containerItemId!==0&&itemMasterFormModal.containerItemId!==null" (click)="removeContainer()"></button>
               <button type="button" title="Select Container" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"
-                      (click)="addContainer(itemMasterFormModal.itemId)" [disabled]="true"></button>
+                      (click)="addContainer(itemMasterFormModal.lootId)"></button>
             </span>
             <input type="text" id="ContainerItem" name="ContainerItem" class="form-control" placeholder="Select Container Item" style="font-weight:bold"
                    [(ngModel)]="itemMasterFormModal.containerName" #ContainerItem="ngModel" readonly />
@@ -382,11 +382,11 @@
           <div class="form-group form-group-unlabelled">
             <span class="input-group-btn">
               <button type="button" title="Select Item" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"
-                      (click)="addContainerItem(itemMasterFormModal)" [disabled]="true"></button>
+                      (click)="addContainerItem(itemMasterFormModal)" ></button>
             </span>
             <!---THIS TAG INPUT IS USED FOR CONTAINS ITEMS SELECTED FROM POPUP-->
             <tag-input name="contains" [(ngModel)]='itemMasterFormModal.contains' theme='dark' inputId="contains" inputClass="form-control metatags-field" class="form-control"
-                       disable="true" [identifyBy]="'value'" [displayBy]="'text'" placeholder="" secondaryPlaceholder="Select Item"></tag-input>
+                        [identifyBy]="'value'" [displayBy]="'text'" placeholder="" secondaryPlaceholder="Select Item"></tag-input>
           </div>
 
         </div>

@@ -4,6 +4,7 @@ import { CharactersService } from '../../../core/services/characters.service';
 import { Utilities } from '../../../core/common/utilities';
 import { AuthService } from '../../../core/auth/auth.service';
 import { LootService } from '../../../core/services/loot.service';
+import { SharedService } from '../../../core/services/shared.service';
 
 
 @Component({
@@ -24,6 +25,7 @@ export class GiveawayComponent implements OnInit {
     private charactersService: CharactersService,
     private authService: AuthService,
     private lootService: LootService,
+    private sharedService: SharedService,
 
   ) { }
 
@@ -68,6 +70,7 @@ export class GiveawayComponent implements OnInit {
       .subscribe(data => {
         console.log(data);
         this.close();
+        this.sharedService.updateItemsList(true);
         this.isLoading = false;
       }, error => {
         let Errors = Utilities.ErrorDetail("", error);

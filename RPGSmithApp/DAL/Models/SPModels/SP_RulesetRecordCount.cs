@@ -218,6 +218,7 @@ namespace DAL.Models.SPModels
        
         public decimal TotalWeight { get; set; }
 
-        
+        public ItemMaster Container { get; set; }
+        public List<ItemMasterLoot_ViewModel> ContainerItems { get; set; }
     }
 }

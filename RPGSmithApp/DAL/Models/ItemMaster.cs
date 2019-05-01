@@ -84,6 +84,7 @@ namespace DAL.Models
         public virtual ICollection<ItemMasterPlayer> ItemMasterPlayers { get; set; }
         public virtual ICollection<ItemMasterSpell> ItemMasterSpell { get; set; }
         public virtual ICollection<ItemMasterCommand> ItemMasterCommand { get; set; }
+        public virtual ItemMasterLoot ItemMasterLoot { get; set; }
         public virtual ICollection<Item> Items { get; set; }
         
     }

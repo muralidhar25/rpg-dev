@@ -21,7 +21,9 @@ namespace DAL.Services
 
         public async Task<ItemMasterCommand> InsertItemMasterCommand(ItemMasterCommand itemMasterCommand)
         {
-            return await _repo.Add(itemMasterCommand);
+            await _context.ItemMasterCommands.AddAsync(itemMasterCommand);// _repo.Add(itemMasterCommand);
+            await _context.SaveChangesAsync();
+            return itemMasterCommand;
         }
 
         public async Task<ItemMasterCommand> UdateItemMasterCommand(ItemMasterCommand itemMasterCommand)

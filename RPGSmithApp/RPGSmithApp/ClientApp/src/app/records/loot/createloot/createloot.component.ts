@@ -91,6 +91,20 @@ export class CreatelootComponent implements OnInit {
         }
       }
     });
+    this.sharedService.shouldUpdateContainerItem().subscribe(sharedData => {
+      this.itemMasterFormModal.containerItemId = sharedData.containerItemId;
+      this.itemMasterFormModal.containedIn = sharedData.containerItemId;
+      this.itemMasterFormModal.containerName = sharedData.itemName;
+      try {
+        this.itemMasterFormModal.selected = sharedData.selected;
+        if (this.itemMasterFormModal.selected) this.itemMasterFormModal.contains = sharedData.Contains;
+        this.itemMasterFormModal.contains = this.itemMasterFormModal.contains.filter(item => item.itemId !== sharedData.containerItemId);
+      } catch (err) { }
+    });
+    this.sharedService.shouldUpdateContainsItem().subscribe(sharedData => {
+      this.itemMasterFormModal.selected = sharedData.selected;
+      this.itemMasterFormModal.contains = sharedData.Contains;
+    });
   }
 
   ngOnInit() {
@@ -104,6 +118,12 @@ export class CreatelootComponent implements OnInit {
 
         if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
           this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.itemMasterFormModal.ruleSetId;
+
+
+          let _contains = this.itemMasterFormModal.containerItems.map(item => {
+            return { text: item.itemName, value: item.lootId, itemId: item.lootId };
+          });
+          this.itemMasterFormModal.contains = _contains; 
         }
         else {
           this._ruleSetId = this.itemMasterFormModal.ruleSetId;
@@ -116,7 +136,9 @@ export class CreatelootComponent implements OnInit {
         if (this.itemMasterFormModal.metatags !== '' && this.itemMasterFormModal.metatags !== undefined)
           this.metatags = this.itemMasterFormModal.metatags.split(",");
         this.bingImageUrl = this.itemMasterFormModal.itemImage;
-
+        
+       
+        
         this.initialize();
       }, 0);
   }
@@ -255,6 +277,10 @@ export class CreatelootComponent implements OnInit {
       itemMaster.containerWeightMax = 0;
       itemMaster.containerVolumeMax = 0;
       itemMaster.containerWeightModifier = 'None';
+      itemMaster.containerItems = [];
+    }
+    else {
+      itemMaster.containerItems = itemMaster.contains;
     }
     //if (itemMaster.itemMasterAbilities.length == 0 && itemMaster.itemMasterAbilityVM.length > 0)
     itemMaster.itemMasterAbilities = itemMaster.itemMasterAbilityVM;
@@ -364,7 +390,6 @@ export class CreatelootComponent implements OnInit {
     modal.RuleSetId = this._ruleSetId;
     // modal.userID = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER).id
     this.isLoading = true;
-    
     this.lootService.createLootItem<any>(modal)
       .subscribe(
       data => {
@@ -569,8 +594,7 @@ export class CreatelootComponent implements OnInit {
     this.itemMasterFormModal.containerName = '';
     this.itemMasterFormModal.containerItemId = 0;
   }
-  addContainer(itemId: number) {
-    console.log('addContainer');
+  addContainer(itemMasterId: number) {
     this.bsModalRef = this.modalService.show(LootAddContainerComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -579,13 +603,12 @@ export class CreatelootComponent implements OnInit {
 
     this.bsModalRef.content.title = 'Select Container';
     this.bsModalRef.content.button = 'SELECT';
-   // this.bsModalRef.content.characterId = this.isFromCharacterId;
-    this.bsModalRef.content.characterId = 453;
-    this.bsModalRef.content.itemId = itemId;
+    // this.bsModalRef.content.characterId = this.isFromCharacterId;
+    this.bsModalRef.content.rulesetId = this._ruleSetId;
+    this.bsModalRef.content.itemId = itemMasterId;
     this.bsModalRef.content.containerItemId = this.itemMasterFormModal.containerItemId;
   }
   addContainerItem(itemMaster: any) {
-    console.log('addContainerItem');
     this.bsModalRef = this.modalService.show(LootAddContainerItemComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -595,7 +618,7 @@ export class CreatelootComponent implements OnInit {
     this.bsModalRef.content.title = 'Select Item';
     this.bsModalRef.content.button = 'SELECT';
     //this.bsModalRef.content.characterId = this.isFromCharacterId;
-    this.bsModalRef.content.characterId = 453;
+    this.bsModalRef.content.rulesetId = this._ruleSetId;
     this.bsModalRef.content.itemId = 0;
     this.bsModalRef.content.itemName = itemMaster.containerName;
     this.bsModalRef.content.contains = itemMaster.contains;

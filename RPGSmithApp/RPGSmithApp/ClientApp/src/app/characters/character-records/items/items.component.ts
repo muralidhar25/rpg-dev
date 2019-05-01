@@ -76,7 +76,14 @@ export class CharacterItemsComponent implements OnInit {
     private sharedService: SharedService, private itemMasterService: ItemMasterService, private rulesetService: RulesetService,
     private itemsService: ItemsService, private charactersService: CharactersService, public appService: AppService1
   ) {
-      this.sharedService.shouldUpdateItemsList().subscribe(sharedServiceJson => {
+    this.sharedService.shouldUpdateItemsList().subscribe(sharedServiceJson => {
+      if (sharedServiceJson) {
+        this.page = 1;
+        this.pageSize = 28;
+        this.initialize();
+      }
+    });
+    this.appService.shouldUpdateItemsList().subscribe(sharedServiceJson => {
       if (sharedServiceJson) {
         this.page = 1;
         this.pageSize = 28;

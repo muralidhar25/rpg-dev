@@ -129,7 +129,7 @@ export class CreateItemComponent implements OnInit {
                 this.metatags = this.itemMasterFormModal.metatags.split(",");
             this.itemMasterFormModal.contains = [];
             this.bingImageUrl = this.itemMasterFormModal.itemImage;
-            this.initialize();
+          this.initialize();
         }, 0);
     }
 

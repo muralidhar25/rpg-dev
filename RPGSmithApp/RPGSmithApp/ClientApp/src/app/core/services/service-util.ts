@@ -373,8 +373,6 @@ export class ServiceUtil {
    
     let result = '';
     if (item.characterStat.characterStatConditions) {
-
-      //debugger;
       if (item.characterStat.characterStatConditions.length) {
 
         let SkipNextEntries: boolean = false;
@@ -401,7 +399,6 @@ export class ServiceUtil {
             if (Condition.sortOrder != item.characterStat.characterStatConditions.length) {//if and Else If Part
               if (Condition.conditionOperator) {
                 //////////////////////////////////////////////////////////////////
-                debugger
                 if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.EQUALS ||
                   Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.NOT_EQUALS ||
                   Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.GREATER_THAN ||
@@ -548,7 +545,6 @@ export class ServiceUtil {
   }
 
   public static GetCalcuationsResults(calculationString: string, statdetails, charactersCharacterStats, character) {
-    debugger;
     let IDs: any[] = [];
     calculationString = calculationString.toUpperCase();
     let finalCalcString = calculationString;
@@ -643,7 +639,6 @@ export class ServiceUtil {
                 num = stat.defaultValue
                 break;
               case STAT_TYPE.Condition:
-                debugger;
                 let characterStatConditionsfilter = charactersCharacterStats.filter((stat) => stat.characterStat.statName.toUpperCase() == rec.id);
                 let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
                 let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], character, charactersCharacterStats);
@@ -668,8 +663,6 @@ export class ServiceUtil {
             }
 
             else {
-              //debugger;
-
               calculationString = calculationString.replace(rec.originaltext, '0');
             }
 

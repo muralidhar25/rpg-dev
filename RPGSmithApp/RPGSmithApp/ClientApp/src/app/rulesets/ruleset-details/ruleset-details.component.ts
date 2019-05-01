@@ -272,7 +272,6 @@ export class RulesetDetailsComponent implements OnInit {
         default:
           break;
       }
-      debugger
 
       if (this.localStorage.sessionExists(DBkeys.CURRENT_USER)) {
         this.localStorage.saveSyncedSessionData(user, DBkeys.CURRENT_USER);

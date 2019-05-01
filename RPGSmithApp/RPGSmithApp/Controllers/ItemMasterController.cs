@@ -742,7 +742,7 @@ namespace RPGSmithApp.Controllers
             decimal ContainedItemWeight = 0;
             foreach (var itm in itemDomain.ContainerItems)
             {
-                ContainedItemWeight += _itemService.GetContainedItemWeight(itm.ItemId);
+                ContainedItemWeight += _itemMasterService.GetContainedItemWeight(itm.ItemId);
             }
 
             if (itemDomain.ContainerWeightModifier == "Percent of Contents")
@@ -768,7 +768,7 @@ namespace RPGSmithApp.Controllers
             decimal ContainedItemWeight = 0;
             foreach (var itm in itemDomain.ContainerItems)
             {
-                ContainedItemWeight += _itemService.GetContainedItemWeight(itm.ItemId);
+                ContainedItemWeight += _itemMasterService.GetContainedItemWeight(itm.ItemId);
             }
 
             if (itemDomain.ContainerWeightModifier == "Percent of Contents")
@@ -839,44 +839,28 @@ namespace RPGSmithApp.Controllers
            // var res 
             dynamic Response = new ExpandoObject();
             var ItemList = await _itemMasterService.GetItemMasterLoots(rulesetID, page, pageSize);
-            //List<ItemMasterLoot_ViewModel> ItemList = res.Select(x => new ItemMasterLoot_ViewModel() {
-            //    Command=x.ItemMaster.Command,
-            //    CommandName= x.ItemMaster.CommandName,
-            //    ContainedIn= x.ContainedIn,
-            //    ContainerVolumeMax= x.ItemMaster.ContainerVolumeMax,
-            //    ContainerWeightMax= x.ItemMaster.ContainerWeightMax,
-            //    ContainerWeightModifier= x.ItemMaster.ContainerWeightModifier,
-            //    IsConsumable= x.ItemMaster.IsConsumable,
-            //    IsContainer= x.ItemMaster.IsContainer,
-            //    IsDeleted= x.ItemMaster.IsDeleted,
-            //    IsIdentified= x.IsIdentified,
-            //    IsMagical= x.ItemMaster.IsMagical,
-            //    IsShow=x.IsShow,
-            //    IsVisible= x.IsVisible,
-            //    ItemCalculation= x.ItemMaster.ItemCalculation,
-            //    ItemImage= x.ItemMaster.ItemImage,
-            //    ItemMasterAbilities= x.ItemMaster.ItemMasterAbilities,
-            //    ItemMasterCommand= x.ItemMaster.ItemMasterCommand,
-            //    ItemMasterId= x.ItemMaster.ItemMasterId,
-            //    ItemMasterPlayers= x.ItemMaster.ItemMasterPlayers,
-            //   ItemMasterSpell = x.ItemMaster.ItemMasterSpell,
-            //    ItemName= x.ItemMaster.ItemName,
-            //    Items= x.ItemMaster.Items,
-            //    ItemStats= x.ItemMaster.ItemStats,
-            //    LootId= x.LootId,
-            //    ItemVisibleDesc= x.ItemMaster.ItemVisibleDesc,
-            //    ParentItemMasterId= x.ItemMaster.ParentItemMasterId,
-            //    Metatags= x.ItemMaster.Metatags,
-            //    PercentReduced= x.ItemMaster.PercentReduced,
-            //    Quantity= x.Quantity,
-            //    Rarity= x.ItemMaster.Rarity,
-            //    RuleSetId= x.ItemMaster.RuleSetId,
-            //    TotalWeight= x.TotalWeight,
-            //    TotalWeightWithContents= x.ItemMaster.TotalWeightWithContents,
-            //    Value= x.ItemMaster.Value,
-            //    Volume= x.ItemMaster.Volume,
-            //    Weight= x.ItemMaster.Weight,
-            //}).ToList();
+
+            List<ItemMasterLoot_ViewModel> ___itemlist = new List<ItemMasterLoot_ViewModel>();
+
+            foreach (ItemMasterLoot_ViewModel item in ItemList)
+            {
+               
+                if (item.ContainedIn != null)
+                {
+                    if (item.ContainedIn>0)
+                    {
+                        item.Container = _itemMasterService.GetContainer(item.ContainedIn);
+                    }
+                    
+                }
+
+                item.ContainerItems = await _itemMasterService.GetByContainerId(item.LootId);
+                
+
+               
+            }
+
+
             Response.ItemMaster = ItemList; // Utilities.CleanModel<ItemMaster>(ItemList);
             if (ItemList.Any())
             {
@@ -925,20 +909,9 @@ namespace RPGSmithApp.Controllers
                     ItemMasterId = itemDomain.ItemMasterId,
                 };
 
-                _itemMasterService.CreateItemMasterLoot(result, loot);
-                if (itemDomain.itemMasterCommandVM != null && itemDomain.itemMasterCommandVM.Count > 0)
-                {
-                    foreach (var imcViewModels in itemDomain.itemMasterCommandVM)
-                    {
-                        await _iItemMasterCommandService.InsertItemMasterCommand(new ItemMasterCommand()
-                        {
-                            Command = imcViewModels.Command,
-                            Name = imcViewModels.Name,
-                            ItemMasterId = result.ItemMasterId
-                        });
-                    }
-                }
-                var ruleset = _ruleSetService.GetRuleSetById((int)(itemDomain.RuleSetId));
+              var newLoot=  _itemMasterService.CreateItemMasterLoot(result, loot);
+                
+                //var ruleset = _ruleSetService.GetRuleSetById((int)(itemDomain.RuleSetId));
                 
                 try
                 {
@@ -946,24 +919,24 @@ namespace RPGSmithApp.Controllers
                     ///////if non-conatiner item remove/update its container
                     if (itemDomain.ContainedIn != null && itemDomain.ContainedIn > 0 && !(itemDomain.IsContainer==null?false:true))
                     {
-                        var containerItem = _itemMasterService.GetItemMasterById(itemDomain.ContainedIn);
+                        var containerItem = _itemMasterService.getLootDetails((int)itemDomain.ContainedIn).Result;
                         var _itemContainer = itemDomain;// containerItem;//Mapper.Map<ItemEditModel>(containerItem)
 
                         List<ViewModels.CreateModels.containerItemIds> _containerItemIds = new List<ViewModels.CreateModels.containerItemIds>();
                         var _item = itemDomain;
-                        foreach (var itm in await _itemMasterService.GetByContainerId(containerItem.ItemMasterId))
+                        foreach (var itm in await _itemMasterService.GetByContainerId(containerItem.LootId))
                         {
-                            if (itm.ItemMasterId != _item.ItemMasterId)
+                            if (itm.LootId != _item.LootId)
                             {
                                 ViewModels.CreateModels.containerItemIds __containerItemIds = new ViewModels.CreateModels.containerItemIds();
-                                __containerItemIds.ItemId = itm.ItemMasterId;
+                                __containerItemIds.ItemId = itm.LootId;
                                 _containerItemIds.Add(__containerItemIds);
                             }
                         }
                         if (_item.ContainedIn > 0)
                         {
                             ViewModels.CreateModels.containerItemIds __containerItemIds = new ViewModels.CreateModels.containerItemIds();
-                            __containerItemIds.ItemId = _item.ItemMasterId;
+                            __containerItemIds.ItemId = _item.LootId;
                             _containerItemIds.Add(__containerItemIds);
                         }
                         _itemContainer.ContainerItems = _containerItemIds;
@@ -971,10 +944,12 @@ namespace RPGSmithApp.Controllers
                         decimal TotalWeight = CalculateTotalWeightItem(new ItemEditModel() {
                             Weight= _itemContainer.Weight==null?0 : (decimal)_itemContainer.Weight,
                             Quantity= _itemContainer.Quantity,
-                            ContainerItems= _itemContainer.ContainerItems.Select(x=> new ViewModels.EditModels.containerItemIds() {
-                                ItemId=x.ItemId,
+                            
+                            ContainerItems = _itemContainer.ContainerItems == null ? new List<ViewModels.EditModels.containerItemIds>() : _itemContainer.ContainerItems.Select(x => new ViewModels.EditModels.containerItemIds()
+                            {
+                                ItemId = x.ItemId,
                             }).ToList(),
-                            ContainerWeightModifier= _itemContainer.ContainerWeightModifier,
+                            ContainerWeightModifier = _itemContainer.ContainerWeightModifier,
                             PercentReduced= _itemContainer.PercentReduced,
                             TotalWeightWithContents= _itemContainer.TotalWeightWithContents,
                         } );
@@ -985,21 +960,32 @@ namespace RPGSmithApp.Controllers
                     if (itemDomain.ContainerItems != null)
                     {
                         //remove all contains item
-                        await _itemMasterService.DeleteContainer(itemDomain.ItemMasterId);
+                        await _itemMasterService.DeleteContainer(newLoot.LootId);
                         foreach (var itm in itemDomain.ContainerItems)
                         {
-                            await _itemMasterService.UpdateContainer(itm.ItemId, itemDomain.ItemMasterId);
+                            await _itemMasterService.UpdateContainer(itm.ItemId,newLoot.LootId );
                         }
                     }
 
                     //await this._characterService.UpdateCharacterInventoryWeight(_itemInsert.CharacterId ?? 0);
 
-                        
-                        //return Ok("A new " + itemDomain.Item.Name + " Item Template has been created in the "
-                        //    + ruleset.Result.RuleSetName + " Rule Set for this Item. Any future updates to the Item will not affect the Item Template."
-                        //    + " If you wish to update the Item Template you may do so from the Rule Sets interface.");
-                        //return Ok("An Item Template has been created for this at the Rule Set.");
-                    
+
+                    //return Ok("A new " + itemDomain.Item.Name + " Item Template has been created in the "
+                    //    + ruleset.Result.RuleSetName + " Rule Set for this Item. Any future updates to the Item will not affect the Item Template."
+                    //    + " If you wish to update the Item Template you may do so from the Rule Sets interface.");
+                    //return Ok("An Item Template has been created for this at the Rule Set.");
+                    if (itemDomain.itemMasterCommandVM != null && itemDomain.itemMasterCommandVM.Count > 0)
+                    {
+                        foreach (var imcViewModels in itemDomain.itemMasterCommandVM)
+                        {
+                            await _iItemMasterCommandService.InsertItemMasterCommand(new ItemMasterCommand()
+                            {
+                                Command = imcViewModels.Command,
+                                Name = imcViewModels.Name,
+                                ItemMasterId = result.ItemMasterId
+                            });
+                        }
+                    }
                 }
                 catch (Exception ex)
                 { return BadRequest(ex.Message); }
@@ -1027,13 +1013,13 @@ namespace RPGSmithApp.Controllers
                 ItemMasterLoot OldLoot =await _itemMasterService.getLootDetails(model.LootId);
                 ItemMasterLoot loot = new ItemMasterLoot()
                 {
-                    LootId=model.LootId,
-                    //ContainedIn = model.ContainedIn,
+                    LootId= OldLoot.LootId,
+                    ContainedIn = model.ContainedIn,
                     IsIdentified = model.IsIdentified,
                     IsShow = model.IsShow,
                     IsVisible = model.IsVisible,
                     Quantity = model.Quantity,
-                    ItemMasterId = model.ItemMasterId==null?0:(int)model.ItemMasterId,
+                    ItemMasterId = OldLoot.ItemMasterId,
                 };
                var result= await _itemMasterService.UpdateItemMasterLoot(loot);
 
@@ -1048,23 +1034,23 @@ namespace RPGSmithApp.Controllers
                          : ((item.ContainedIn == 0 && result.ContainedIn > 0) ? result.ContainedIn ?? 0
                          : ((result.ContainedIn > 0) ? result.ContainedIn ?? 0 : 0));
 
-                    var containerItem = _itemMasterService.GetItemMasterById(__itemContainerId);
+                    var containerItem = _itemMasterService.getLootDetails(__itemContainerId).Result;
                     var _itemContainer = model;//Mapper.Map<ItemEditModel>(containerItem);
 
                     List<ViewModels.EditModels.containerItemIds> _containerItemIds = new List<ViewModels.EditModels.containerItemIds>();
-                    foreach (var itm in await _itemMasterService.GetByContainerId(containerItem.ItemMasterId))
+                    foreach (var itm in await _itemMasterService.GetByContainerId(containerItem.LootId))
                     {
-                        if (itm.ItemMasterId != result.ItemMasterId)
+                        if (itm.LootId != result.LootId)
                         {
                             ViewModels.EditModels.containerItemIds __containerItemIds = new ViewModels.EditModels.containerItemIds();
-                            __containerItemIds.ItemId = itm.ItemMasterId;
+                            __containerItemIds.ItemId = itm.LootId;
                             _containerItemIds.Add(__containerItemIds);
                         }
                     }
                     if ((item.ContainedIn == 0 && result.ContainedIn > 0) || (item.ContainedIn == result.ContainedIn))
                     {
                         ViewModels.EditModels.containerItemIds __containerItemIds = new ViewModels.EditModels.containerItemIds();
-                        __containerItemIds.ItemId = result.ItemMasterId;
+                        __containerItemIds.ItemId = result.LootId;
                         _containerItemIds.Add(__containerItemIds);
                     }
                     _itemContainer.ContainerItems = _containerItemIds;
@@ -1073,7 +1059,7 @@ namespace RPGSmithApp.Controllers
                     {
                         Weight = _itemContainer.Weight == null ? 0 : (decimal)_itemContainer.Weight,
                         Quantity = _itemContainer.Quantity,
-                        ContainerItems = _itemContainer.ContainerItems.Select(x => new ViewModels.EditModels.containerItemIds()
+                        ContainerItems = model.ContainerItems == null ? new List<ViewModels.EditModels.containerItemIds>() : model.ContainerItems.Select(x => new ViewModels.EditModels.containerItemIds()
                         {
                             ItemId = x.ItemId,
                         }).ToList(),
@@ -1081,17 +1067,17 @@ namespace RPGSmithApp.Controllers
                         PercentReduced = _itemContainer.PercentReduced,
                         TotalWeightWithContents = _itemContainer.TotalWeightWithContents,
                     });
-                    await _itemService.UpdateWeight(_itemContainer.ItemMasterId==null?0:(int)_itemContainer.ItemMasterId, TotalWeight);
+                    await _itemMasterService.UpdateWeight(_itemContainer.ItemMasterId==null?0:(int)_itemContainer.ItemMasterId, TotalWeight);
                 }
                 ///////////
                                 
-                if (model.ContainerItems != null)
+                if (model.ContainerItems != null && model.ContainerItems.Count>0)
                 {
                     //remove all contains item
-                    await _itemMasterService.DeleteContainer(OldLoot.ItemMasterId);
+                    await _itemMasterService.DeleteContainer(OldLoot.LootId);
                     foreach (var itm in model.ContainerItems)
                     {
-                        await _itemMasterService.UpdateContainer(itm.ItemId, OldLoot.ItemMasterId);
+                        await _itemMasterService.UpdateContainer(itm.ItemId,OldLoot.LootId );
                     }
                     //_itemService.ManageContainer(model.ItemId, model.ContainerItems.Select(q => new CommonID { ID=q.ItemId }).ToList());
                 }
@@ -1101,7 +1087,7 @@ namespace RPGSmithApp.Controllers
                     {
                         Weight = model.Weight == null ? 0 : (decimal)model.Weight,
                         Quantity = model.Quantity,
-                        ContainerItems = model.ContainerItems.Select(x => new ViewModels.EditModels.containerItemIds()
+                        ContainerItems = model.ContainerItems==null?new List<ViewModels.EditModels.containerItemIds>(): model.ContainerItems.Select(x => new ViewModels.EditModels.containerItemIds()
                         {
                             ItemId = x.ItemId,
                         }).ToList(),
@@ -1279,6 +1265,84 @@ namespace RPGSmithApp.Controllers
                 return BadRequest(ex.Message);
             }            
         }
+        [HttpGet("GetAvailableContainerItemLoots")]
+        public async Task<IEnumerable<ItemMaster>> GetAvailableContainerItemLoots(int rulesetId, int itemMasterId)
+        {
+            List<ItemMasterLoot_ViewModel> items = await _itemMasterService.GetAvailableContainerItems(rulesetId, itemMasterId);
+
+            if (items == null || items.Count == 0)
+                return new List<ItemMasterLoot_ViewModel>();
+
+            return items;
+        }
+        [HttpGet("getAvailableItemLoots")]
+        public IEnumerable<ItemMasterLoot_ViewModel> getAvailableItemLoots(int rulesetId, int lootId, int containerItemId)
+        {
+            //var items = _itemService.GetAll();
+            List<ItemMasterLoot_ViewModel> items = _itemMasterService.GetAvailableItems(rulesetId);
+
+            if (items == null || items.Count == 0)
+                return new List<ItemMasterLoot_ViewModel>();
+
+            List<ItemMasterLoot_ViewModel> itemlist = new List<ItemMasterLoot_ViewModel>();
+
+            /*To get those character items which are not contained yet.*/
+            foreach (ItemMasterLoot_ViewModel item in items.ToList())
+            {
+                //if (item.ItemMasterLoot == null)
+                //{
+                //    item.ItemMasterLoot = new ItemMasterLoot();
+                //}
+                if (item.LootId == lootId) continue;
+                else if (item.LootId == containerItemId) continue; //cannot contain item which is selected above(ui) as container
+                else if (item.ContainedIn == null || item.ContainedIn == 0 || item.ContainedIn == lootId)
+                {
+                    var listobj = new ItemMasterLoot_ViewModel() {
+                        Command = item.Command,
+                        CommandName = item.CommandName,
+                        ContainedIn = item.ContainedIn,
+                        ContainerVolumeMax = item.ContainerVolumeMax,
+                        ContainerWeightMax = item.ContainerWeightMax,
+                        ContainerWeightModifier = item.ContainerWeightModifier,
+                        IsConsumable = item.IsConsumable,
+                        IsContainer = item.IsContainer,
+                        IsDeleted = item.IsDeleted,
+                        IsIdentified = item.IsIdentified,
+                        IsMagical = item.IsMagical,
+                        IsShow = item.IsShow,
+                        IsVisible = item.IsVisible,
+                        ItemCalculation = item.ItemCalculation,
+                        ItemImage = item.ItemImage,
+                        ItemMasterAbilities = item.ItemMasterAbilities,
+                        ItemMasterCommand = item.ItemMasterCommand,
+                        ItemMasterId = item.ItemMasterId,
+                        ItemMasterPlayers = item.ItemMasterPlayers,
+                        ItemMasterSpell = item.ItemMasterSpell,
+                        ItemName = item.ItemName,
+                        Items = item.Items,
+                        ItemStats = item.ItemStats,
+                        LootId = item.LootId,
+                        ItemVisibleDesc = item.ItemVisibleDesc,
+                        ParentItemMasterId = item.ParentItemMasterId,
+                        Metatags = item.Metatags,
+                        PercentReduced = item.PercentReduced,
+                        Quantity = item.Quantity,
+                        Rarity = item.Rarity,
+                        RuleSetId = item.RuleSetId,
+                        TotalWeight = item.TotalWeight,
+                        TotalWeightWithContents = item.TotalWeightWithContents,
+                        Value = item.Value,
+                        Volume = item.Volume,
+                        Weight = item.Weight,
+                        
+                    };
+                    itemlist.Add(listobj);
+                }
+            }
+
+            return itemlist;// Utilities.CleanModel<ItemListViewModel>(itemlist);
+        }
+
         #endregion
     }
 }

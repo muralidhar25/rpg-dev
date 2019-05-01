@@ -34,7 +34,8 @@ namespace DAL.Services
         {
             item.ItemMasterAbilities = new List<ItemMasterAbility>();
             item.ItemMasterSpell = new List<ItemMasterSpell>();
-            await _repo.Add(item);
+            _context.ItemMasters.Add(item);
+            _context.SaveChanges();//_repo.Add(item);
             int ItemMasterId = item.ItemMasterId;
             try
             {
@@ -43,12 +44,14 @@ namespace DAL.Services
                     if (AssociatedAbilities != null && AssociatedAbilities.Count > 0)
                     {
                         AssociatedAbilities.ForEach(a => a.ItemMasterId = ItemMasterId);
-                        await _repoMasterAbility.AddRange(AssociatedAbilities);
+                        _context.ItemMasterAbilities.AddRange(AssociatedAbilities);
+                        _context.SaveChanges();
                     }
                     if (AssociatedSpells != null && AssociatedSpells.Count > 0)
                     {
                         AssociatedSpells.ForEach(a => a.ItemMasterId = ItemMasterId);
-                        await _repoMasterSpell.AddRange(AssociatedSpells);
+                        _context.ItemMasterSpells.AddRange(AssociatedSpells);// _repoMasterSpell.AddRange(AssociatedSpells);
+                        _context.SaveChanges();
                     }
                 }
             }
@@ -82,6 +85,12 @@ namespace DAL.Services
                         await _repoMasterSpell.AddRange(AssociatedSpells);
                     }
                 }
+                var loots = _context.ItemMasterLoots.Where(x => x.ItemMasterId == item.ParentItemMasterId).ToList();
+                foreach (var loot in loots)
+                {
+                    loot.ItemMasterId = item.ItemMasterId;
+                }
+                _context.SaveChanges();
             }
             catch (Exception ex) { }
             return item;
@@ -1148,51 +1157,11 @@ namespace DAL.Services
             //    .Where(x => x.ItemMaster.RuleSetId == rulesetID && x.ItemMaster.IsDeleted!=true).AsNoTracking().ToListAsync();
         }
         public async Task<List<ItemMasterLoot_ViewModel>> GetLootItemsForPlayers(int rulesetID) {
-            return await _context.ItemMasterLoots.Include(x => x.ItemMaster)
-                            .Where(x =>x.IsShow==true && x.ItemMaster.RuleSetId == rulesetID && x.ItemMaster.IsDeleted != true)
-                            //.AsNoTracking()
-                            .Select(x => new ItemMasterLoot_ViewModel() {
-                                Command = x.ItemMaster.Command,
-                                CommandName = x.ItemMaster.CommandName,
-                                ContainedIn = x.ContainedIn,
-                                ContainerVolumeMax = x.ItemMaster.ContainerVolumeMax,
-                                ContainerWeightMax = x.ItemMaster.ContainerWeightMax,
-                                ContainerWeightModifier = x.ItemMaster.ContainerWeightModifier,
-                                IsConsumable = x.ItemMaster.IsConsumable,
-                                IsContainer = x.ItemMaster.IsContainer,
-                                IsDeleted = x.ItemMaster.IsDeleted,
-                                IsIdentified = x.IsIdentified,
-                                IsMagical = x.ItemMaster.IsMagical,
-                                IsShow = x.IsShow,
-                                IsVisible = x.IsVisible,
-                                ItemCalculation = x.ItemMaster.ItemCalculation,
-                                ItemImage = x.ItemMaster.ItemImage,
-                                ItemMasterAbilities = x.ItemMaster.ItemMasterAbilities,
-                                ItemMasterCommand = x.ItemMaster.ItemMasterCommand,
-                                ItemMasterId = x.ItemMaster.ItemMasterId,
-                                ItemMasterPlayers = x.ItemMaster.ItemMasterPlayers,
-                                ItemMasterSpell = x.ItemMaster.ItemMasterSpell,
-                                ItemName = x.ItemMaster.ItemName,
-                                Items = x.ItemMaster.Items,
-                                ItemStats = x.ItemMaster.ItemStats,
-                                LootId = x.LootId,
-                                ItemVisibleDesc = x.ItemMaster.ItemVisibleDesc,
-                                ParentItemMasterId = x.ItemMaster.ParentItemMasterId,
-                                Metatags = x.ItemMaster.Metatags,
-                                PercentReduced = x.ItemMaster.PercentReduced,
-                                Quantity = x.Quantity,
-                                Rarity = x.ItemMaster.Rarity,
-                                RuleSetId = x.ItemMaster.RuleSetId,
-                                TotalWeight = x.TotalWeight,
-                                TotalWeightWithContents = x.ItemMaster.TotalWeightWithContents,
-                                Value = x.ItemMaster.Value,
-                                Volume = x.ItemMaster.Volume,
-                                Weight = x.ItemMaster.Weight,
-                            })
-                            .ToListAsync();
+            var res =await GetItemMasterLoots(rulesetID, 1, 999999);
+            return res.Where(x => x.IsShow == true && x.IsDeleted != true).OrderBy(x=>x.ItemName).ToList();
         }
-        public void CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot) {
-            _context.ItemMasterLoots.Add(new ItemMasterLoot()
+        public ItemMasterLoot CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot) {
+            var Newloot = new ItemMasterLoot()
             {
                 ContainedIn = loot.ContainedIn,
                 IsIdentified = loot.IsIdentified,
@@ -1200,8 +1169,11 @@ namespace DAL.Services
                 IsShow = loot.IsShow,
                 ItemMasterId = result.ItemMasterId,
                 Quantity = loot.Quantity,
-            });
+            };
+                _context.ItemMasterLoots.Add(Newloot);
             _context.SaveChanges();
+            return Newloot;
+
         }
         public async  Task<ItemMasterLoot> UpdateItemMasterLoot(ItemMasterLoot loot)
         {
@@ -1233,12 +1205,52 @@ namespace DAL.Services
 
             return true;
         }
-        public async Task<List<ItemMasterLoot>> GetByContainerId(int? containerId)
+        public async Task<List<ItemMasterLoot_ViewModel>> GetByContainerId(int? containerId)
         {
             //get all item for which given item act as container
             return await _context.ItemMasterLoots.Include(x=>x.ItemMaster)
                .Where(x => x.ContainedIn == containerId && x.ItemMaster.IsDeleted != true)
-               .OrderBy(o => o.ItemMaster.ItemName).ToListAsync();
+               .OrderBy(o => o.ItemMaster.ItemName)
+               .Select(x => new ItemMasterLoot_ViewModel()
+               {
+                   Command = x.ItemMaster.Command,
+                   CommandName = x.ItemMaster.CommandName,
+                   ContainedIn = x.ContainedIn,
+                   ContainerVolumeMax = x.ItemMaster.ContainerVolumeMax,
+                   ContainerWeightMax = x.ItemMaster.ContainerWeightMax,
+                   ContainerWeightModifier = x.ItemMaster.ContainerWeightModifier,
+                   IsConsumable = x.ItemMaster.IsConsumable,
+                   IsContainer = x.ItemMaster.IsContainer,
+                   IsDeleted = x.ItemMaster.IsDeleted,
+                   IsIdentified = x.IsIdentified,
+                   IsMagical = x.ItemMaster.IsMagical,
+                   IsShow = x.IsShow,
+                   IsVisible = x.IsVisible,
+                   ItemCalculation = x.ItemMaster.ItemCalculation,
+                   ItemImage = x.ItemMaster.ItemImage,
+                   ItemMasterAbilities = x.ItemMaster.ItemMasterAbilities,
+                   ItemMasterCommand = x.ItemMaster.ItemMasterCommand,
+                   ItemMasterId = x.ItemMaster.ItemMasterId,
+                   ItemMasterPlayers = x.ItemMaster.ItemMasterPlayers,
+                   ItemMasterSpell = x.ItemMaster.ItemMasterSpell,
+                   ItemName = x.ItemMaster.ItemName,
+                   Items = x.ItemMaster.Items,
+                   ItemStats = x.ItemMaster.ItemStats,
+                   LootId = x.LootId,
+                   ItemVisibleDesc = x.ItemMaster.ItemVisibleDesc,
+                   ParentItemMasterId = x.ItemMaster.ParentItemMasterId,
+                   Metatags = x.ItemMaster.Metatags,
+                   PercentReduced = x.ItemMaster.PercentReduced,
+                   Quantity = x.Quantity,
+                   Rarity = x.ItemMaster.Rarity,
+                   RuleSetId = x.ItemMaster.RuleSetId,
+                   TotalWeight = x.TotalWeight,
+                   TotalWeightWithContents = x.ItemMaster.TotalWeightWithContents,
+                   Value = x.ItemMaster.Value,
+                   Volume = x.ItemMaster.Volume,
+                   Weight = x.ItemMaster.Weight,
+               })
+               .ToListAsync();
         }
         public async Task<ItemMasterLoot> UpdateWeight(int itemMasterId, decimal TotalWeight)
         {
@@ -1258,7 +1270,7 @@ namespace DAL.Services
         }
         public async Task<ItemMasterLoot> UpdateContainer(int itemId, int containerItemId)
         {
-            var item = _context.ItemMasterLoots.Where(x => x.ItemMasterId == itemId).FirstOrDefault();
+            var item = _context.ItemMasterLoots.Where(x => x.LootId == itemId).FirstOrDefault();
 
             if (item == null) return item;
 
@@ -1281,6 +1293,94 @@ namespace DAL.Services
                 loot.IsShow = isShow;
                 await _context.SaveChangesAsync();
             }
+        }
+        public async Task<List<ItemMasterLoot_ViewModel>> GetAvailableContainerItems(int rulesetId, int ItemMasterId)
+        {
+            // get all character items exept item itself
+            var res = await GetItemMasterLoots(rulesetId, 1, 999999);
+            return res.Where(x => x.LootId != ItemMasterId
+                &&  x.IsContainer == true && x.IsDeleted != true)               
+                .ToList();
+            //&& x.ContainedIn == null //if isContainer is true then item is a container & an item can act as container for many item
+        }
+        public decimal GetContainedItemWeight(int containerItemId)
+        {
+            decimal res = 0;
+            if (_context.ItemMasterLoots.Where(x => x.ItemMasterId == containerItemId).Any())
+            {
+                var obj = _context.ItemMasterLoots.Where(x => x.ItemMasterId == containerItemId).FirstOrDefault();
+                if (obj != null)
+                {
+                    res = obj.TotalWeight;
+                }
+            }
+            return res;
+
+        }
+        //public List<ItemMasterLoot> GetByContainerId(int? containerId)
+        //{
+        //    //get all item for which given item act as container
+        //    return _context.ItemMasterLoots.Include(x=>x.ItemMaster)
+        //       .Where(x => x.ContainedIn == containerId)
+        //       .OrderBy(o => o.ItemMaster.ItemName).ToList();
+        //}
+
+        public ItemMasterLoot_ViewModel GetContainer(int? lootId)
+        {
+            //to get container
+            return _context.ItemMasterLoots.Include(x=>x.ItemMaster).Where(x => x.LootId == lootId)
+                .Select(x => new ItemMasterLoot_ViewModel()
+                {
+                    Command = x.ItemMaster.Command,
+                    CommandName = x.ItemMaster.CommandName,
+                    ContainedIn = x.ContainedIn,
+                    ContainerVolumeMax = x.ItemMaster.ContainerVolumeMax,
+                    ContainerWeightMax = x.ItemMaster.ContainerWeightMax,
+                    ContainerWeightModifier = x.ItemMaster.ContainerWeightModifier,
+                    IsConsumable = x.ItemMaster.IsConsumable,
+                    IsContainer = x.ItemMaster.IsContainer,
+                    IsDeleted = x.ItemMaster.IsDeleted,
+                    IsIdentified = x.IsIdentified,
+                    IsMagical = x.ItemMaster.IsMagical,
+                    IsShow = x.IsShow,
+                    IsVisible = x.IsVisible,
+                    ItemCalculation = x.ItemMaster.ItemCalculation,
+                    ItemImage = x.ItemMaster.ItemImage,
+                    ItemMasterAbilities = x.ItemMaster.ItemMasterAbilities,
+                    ItemMasterCommand = x.ItemMaster.ItemMasterCommand,
+                    ItemMasterId = x.ItemMaster.ItemMasterId,
+                    ItemMasterPlayers = x.ItemMaster.ItemMasterPlayers,
+                    ItemMasterSpell = x.ItemMaster.ItemMasterSpell,
+                    ItemName = x.ItemMaster.ItemName,
+                    Items = x.ItemMaster.Items,
+                    ItemStats = x.ItemMaster.ItemStats,
+                    LootId = x.LootId,
+                    ItemVisibleDesc = x.ItemMaster.ItemVisibleDesc,
+                    ParentItemMasterId = x.ItemMaster.ParentItemMasterId,
+                    Metatags = x.ItemMaster.Metatags,
+                    PercentReduced = x.ItemMaster.PercentReduced,
+                    Quantity = x.Quantity,
+                    Rarity = x.ItemMaster.Rarity,
+                    RuleSetId = x.ItemMaster.RuleSetId,
+                    TotalWeight = x.TotalWeight,
+                    TotalWeightWithContents = x.ItemMaster.TotalWeightWithContents,
+                    Value = x.ItemMaster.Value,
+                    Volume = x.ItemMaster.Volume,
+                    Weight = x.ItemMaster.Weight,
+                })
+                .FirstOrDefault();
+        }
+        public List<ItemMasterLoot_ViewModel> GetAvailableItems(int rulesetId)
+        {
+            var res = GetItemMasterLoots(rulesetId, 1, 999999).Result;
+             res= res.Where(p =>  p.IsDeleted != true)
+               .OrderBy(o => o.ItemName)               
+               .ToList();
+            //foreach (var item in res)
+            //{
+            //    item.ItemMasterLoot = _context.ItemMasterLoots.Where(x => x.ItemMasterId == item.ItemMasterId).FirstOrDefault();
+            //}
+            return res;
         }
         #endregion
     }

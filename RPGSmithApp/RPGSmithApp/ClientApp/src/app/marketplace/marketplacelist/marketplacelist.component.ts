@@ -140,8 +140,7 @@ export class MarketplacelistComponent implements OnInit {
     window.history.back();
   }
 
-  select(paymentInfo) {   
-    debugger
+  select(paymentInfo) { 
     this.bsModalRef = this.modalService.show(PaymentComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -193,7 +192,6 @@ export class MarketplacelistComponent implements OnInit {
         default:
           break;
       }
-      debugger
       
       if (this.localStorage.sessionExists(DBkeys.CURRENT_USER)) {
         this.localStorage.saveSyncedSessionData(user, DBkeys.CURRENT_USER);
@@ -205,7 +203,6 @@ export class MarketplacelistComponent implements OnInit {
     });
   }
   public inputValidator(event: any) {
-    debugger
     let eventInstance= event;
       eventInstance = eventInstance || window.event;
      let key = eventInstance.keyCode || eventInstance.which;

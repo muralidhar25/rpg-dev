@@ -337,8 +337,6 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                           }
                                           break;
                                         case 12: //Calculation
-                                          // debugger;
-
                                           num = stat.calculationResult
                                           break;
                                         case STAT_TYPE.Combo: //Combo
@@ -348,7 +346,6 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                                           num = stat.defaultValue
                                           break;
                                         case STAT_TYPE.Condition: //condition
-                                          debugger;
                                           let characterStatConditionsfilter = this.ConditionsValuesList.filter((CCS) => CCS.characterStat.characterStatId == rec.id);
                                           let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
                                           let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.ConditionsValuesList);

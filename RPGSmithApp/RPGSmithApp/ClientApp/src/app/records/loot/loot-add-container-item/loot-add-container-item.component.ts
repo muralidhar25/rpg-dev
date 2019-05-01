@@ -10,6 +10,7 @@ import { ItemsService } from '../../../core/services/items.service';
 import { User } from '../../../core/models/user.model';
 import { DBkeys } from '../../../core/common/db-keys';
 import { Utilities } from '../../../core/common/utilities';
+import { ItemMasterService } from '../../../core/services/item-master.service';
 
 @Component({
   selector: 'app-loot-add-container-item',
@@ -22,7 +23,7 @@ export class LootAddContainerItemComponent implements OnInit {
   selected: boolean = false;
   title: string;
   _view: string;
-  characterId: number;
+  rulesetId: number;
   itemId: number;
   itemName: string;
   itemsList: any;
@@ -37,7 +38,7 @@ export class LootAddContainerItemComponent implements OnInit {
     private router: Router,
     private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
-    private sharedService: SharedService, private commonService: CommonService, private itemsService: ItemsService
+    private sharedService: SharedService, private commonService: CommonService, private itemMasterService: ItemMasterService
   ) {
 
   }
@@ -45,13 +46,13 @@ export class LootAddContainerItemComponent implements OnInit {
   ngOnInit() {
     setTimeout(() => {
       this.button = this.bsModalRef.content.button;
-      this.characterId = this.bsModalRef.content.characterId;
+      this.rulesetId = this.bsModalRef.content.rulesetId;
       this.itemId = this.bsModalRef.content.itemId;
       this.containerItemId = this.bsModalRef.content.containerItemId;
       this.itemName = this.bsModalRef.content.itemName;
       this.containsItems = this.bsModalRef.content.contains == null || this.bsModalRef.content.contains == undefined ? [] : this.bsModalRef.content.contains;
       this.containsModal = {
-        characterId: this.characterId,
+        rulesetId: this.rulesetId,
         itemId: this.itemId,
         containerItemId: this.containerItemId,
         itemName: this.itemName,
@@ -73,7 +74,7 @@ export class LootAddContainerItemComponent implements OnInit {
       this.authService.logout();
     else {
       this.isLoading = true;
-      this.itemsService.getAvailableItems<any>(this.characterId, this.itemId, this.containerItemId)
+      this.itemMasterService.getAvailableItems<any>(this.rulesetId, this.itemId, this.containerItemId)
         .subscribe(data => {
           this.itemsList = data;
           this.isLoading = false;
@@ -90,18 +91,18 @@ export class LootAddContainerItemComponent implements OnInit {
   submitForm(containsModal: any) {
 
     if (this.isFromDetailPage) {
-      this.isLoading = true;
-      if (this.itemToUpdate != undefined) {
-        try {
-          let items = this.containsItems;
-          containsModal.Contains = items;
-          containsModal.selected = true;
-          this.itemToUpdate.contains = containsModal.Contains;
-          this.itemToUpdate.selected = containsModal.selected;
-          this.itemToUpdate.containerItems = containsModal.Contains;
-        } catch (err) { }
-        this.updateItem(this.itemToUpdate);
-      }
+      //this.isLoading = true;
+      //if (this.itemToUpdate != undefined) {
+      //  try {
+      //    let items = this.containsItems;
+      //    containsModal.Contains = items;
+      //    containsModal.selected = true;
+      //    this.itemToUpdate.contains = containsModal.Contains;
+      //    this.itemToUpdate.selected = containsModal.selected;
+      //    this.itemToUpdate.containerItems = containsModal.Contains;
+      //  } catch (err) { }
+      //  this.updateItem(this.itemToUpdate);
+      //}
     }
     else {
       let items = this.containsItems;
@@ -118,12 +119,12 @@ export class LootAddContainerItemComponent implements OnInit {
 
       const _containsItems = Object.assign([], this.containsItems);
 
-      _containsItems.push({ text: item.name, value: item.itemId, itemId: item.itemId, image: item.itemImage });
+      _containsItems.push({ text: item.itemName, value: item.lootId, itemId: item.lootId, image: item.itemImage });
       this.containsItems = _containsItems;
     }
     else {
 
-      let _item = { text: item.name, value: item.itemId, itemId: item.itemId, image: item.itemImage };
+      let _item = { text: item.itemName, value: item.lootId, itemId: item.lootId, image: item.itemImage };
       const index: number = this.containsItems.indexOf(_item);
       if (index !== -1) {
         this.containsItems.splice(index, 1);
@@ -131,7 +132,7 @@ export class LootAddContainerItemComponent implements OnInit {
       else {
         const _arrayItems = Object.assign([], this.containsItems);
         this.containsItems = _arrayItems.filter(function (itm) {
-          if (itm.itemId !== item.itemId) return item;
+          if (itm.itemId !== item.lootId) return item;
         });
       }
     }
@@ -140,31 +141,31 @@ export class LootAddContainerItemComponent implements OnInit {
   close() {
     this.bsModalRef.hide();
   }
-  updateItem(modal: any) {
-    this.isLoading = true;
-    this.itemsService.updateItem<any>(modal)
-      .subscribe(
-        data => {
-          this.close();
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          let message = "Item has been updated successfully";
-          this.alertService.showMessage(message, "", MessageSeverity.success);
-          this.bsModalRef.hide();
-          this.sharedService.updateItemsList(true);
-        },
-        error => {
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          let _message = "Unable to Update ";
-          let Errors = Utilities.ErrorDetail(_message, error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-          else
-            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-        },
-      );
-  }
+  //updateItem(modal: any) {
+  //  this.isLoading = true;
+  //  this.itemsService.updateItem<any>(modal)
+  //    .subscribe(
+  //      data => {
+  //        this.close();
+  //        this.isLoading = false;
+  //        this.alertService.stopLoadingMessage();
+  //        let message = "Item has been updated successfully";
+  //        this.alertService.showMessage(message, "", MessageSeverity.success);
+  //        this.bsModalRef.hide();
+  //        this.sharedService.updateItemsList(true);
+  //      },
+  //      error => {
+  //        this.isLoading = false;
+  //        this.alertService.stopLoadingMessage();
+  //        let _message = "Unable to Update ";
+  //        let Errors = Utilities.ErrorDetail(_message, error);
+  //        if (Errors.sessionExpire) {
+  //          this.authService.logout(true);
+  //        }
+  //        else
+  //          this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+  //      },
+  //    );
+  //}
 
 }

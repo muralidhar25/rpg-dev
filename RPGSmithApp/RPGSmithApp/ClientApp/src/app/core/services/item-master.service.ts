@@ -35,6 +35,9 @@ export class ItemMasterService extends EndpointFactory {
   private readonly getByRulesetUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getByRuleSetId";
   private readonly getByRulesetUrl_add: string = this.configurations.baseUrl + "/api/ItemMaster/getByRuleSetId_add";
   private readonly getByRulesetUrl_sp: string = this.configurations.baseUrl + "/api/ItemMaster/getByRuleSetId_sp";
+  private readonly getAvailableContainerItemLootsUrl: string = this.configurations.baseUrl + "/api/ItemMaster/GetAvailableContainerItemLoots";
+  private readonly getAvailableItemsUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getAvailableItemLoots";
+  
   private readonly uploadUrl: string = this.configurations.baseUrl + "/api/ItemMaster/uploadItemTemplateImage";
   private readonly duplicateUrl: string = this.configurations.baseUrl + "/api/ItemMaster/DuplicateItemMaster";
   private readonly duplicateBundleUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/DuplicateBundle";  
@@ -119,6 +122,22 @@ export class ItemMasterService extends EndpointFactory {
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getItemMasterByRuleset_spWithPagination(Id, page, pageSize));
+      });
+  }
+  getAvailableContainerItemLoots<T>(rulesetId: number, itemMasterId: number): Observable<T> {
+    let endpointUrl = `${this.getAvailableContainerItemLootsUrl}?rulesetId=${rulesetId}&itemMasterId=${itemMasterId}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getAvailableContainerItemLoots(rulesetId, itemMasterId));
+      });
+  }
+  getAvailableItems<T>(rulesetId: number, itemMasterId: number, containerItemId: number): Observable<T> {
+    let endpointUrl = `${this.getAvailableItemsUrl}?rulesetId=${rulesetId}&itemMasterId=${itemMasterId}&containerItemId=${containerItemId}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getAvailableItems(rulesetId, itemMasterId, containerItemId));
       });
   }
 
@@ -217,7 +236,6 @@ export class ItemMasterService extends EndpointFactory {
     if (_itemTemplateVM == null) return { itemMasterId: 0, ruleSetId: 0 };
 
     let itemMasterFormModal: any;
-
     if (_view === 'DUPLICATE' || _view === 'UPDATE') {
       itemMasterFormModal = {
         itemMasterId: _itemTemplateVM.itemMasterId,
@@ -272,11 +290,22 @@ export class ItemMasterService extends EndpointFactory {
 
         lootId: _itemTemplateVM.lootId,
         isShow: _itemTemplateVM.isShow,
-        containedIn: _itemTemplateVM.containedIn,
-        quantity: _itemTemplateVM.quantity,
+        //containedIn: _itemTemplateVM.containedIn,
+        //quantity: _itemTemplateVM.quantity,
+        //isIdentified: _itemTemplateVM.isIdentified,
+        //isVisible: _itemTemplateVM.isVisible,
+        totalWeight: _itemTemplateVM.totalWeight,
+
+        containerItemId: _itemTemplateVM.containedIn,
+        containerId: _itemTemplateVM.containedIn,
+        
+        containerName: _itemTemplateVM.container == null || _itemTemplateVM.container == undefined ? '' : _itemTemplateVM.container.itemName,
+        containerItems: _itemTemplateVM.containerItems == null || _itemTemplateVM.containerItems == undefined ? [] : _itemTemplateVM.containerItems,
+
+        quantity: _itemTemplateVM.quantity == null || _itemTemplateVM.quantity == 0 ? 1 : _itemTemplateVM.quantity,
+       
         isIdentified: _itemTemplateVM.isIdentified,
         isVisible: _itemTemplateVM.isVisible,
-        totalWeight: _itemTemplateVM.totalWeight
       }
     }
     else {
@@ -318,8 +347,8 @@ export class ItemMasterService extends EndpointFactory {
         quantity: 0,
         isIdentified: false,
         isVisible: false,
-        totalWeight: 0
-
+        totalWeight: 0,
+        contains: []
       }
     }
     return itemMasterFormModal;

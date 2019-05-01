@@ -251,6 +251,7 @@ namespace RPGSmithApp.Controllers
                     if (loot != null)
                     {
                         await AddItemToCharacter(model, new ItemMasterIds() { ItemMasterId = loot.ItemMasterId }, loot);
+                        await _itemMasterService.DeleteItemMasterLoot(loot.LootId);
                     }
                     
                 }                

@@ -94,7 +94,7 @@ export class LootService extends EndpointFactory {
 
   showLoot<T>(LootID, IsShow): Observable<T> {
    
-    let endpointUrl = `${this.getShowLootUrl}?LootID=${LootID}?IsShow=${IsShow}`;
+    let endpointUrl = `${this.getShowLootUrl}?LootID=${LootID}&IsShow=${IsShow}`;
     return this.http.post<T>(endpointUrl,this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.showLoot(LootID,IsShow));

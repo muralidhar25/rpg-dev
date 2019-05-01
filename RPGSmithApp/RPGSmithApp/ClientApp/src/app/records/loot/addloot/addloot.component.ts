@@ -79,7 +79,6 @@ export class AddlootComponent implements OnInit {
     }
   }
   setItemMaster(event: any, itemMaster: any) {
-    debugger;
     //if (event.target.checked) {
     //    this.characterItemModal.multiItemMasters.push({ itemMasterId: itemMaster.itemMasterId });
     //}
@@ -137,7 +136,7 @@ export class AddlootComponent implements OnInit {
         console.log(data);
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          let message = "Item(s) added successfully.";
+          let message = "Loot(s) added successfully.";
           this.alertService.showMessage(message, "", MessageSeverity.success);
           this.bsModalRef.hide();
           this.sharedService.updateItemsList(true);
@@ -162,7 +161,7 @@ export class AddlootComponent implements OnInit {
         data => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          this.alertService.showMessage("Item has been duplicated successfully.", "", MessageSeverity.success);
+          this.alertService.showMessage("Loot has been duplicated successfully.", "", MessageSeverity.success);
           this.bsModalRef.hide();
           this.sharedService.updateItemsList(true);
         },

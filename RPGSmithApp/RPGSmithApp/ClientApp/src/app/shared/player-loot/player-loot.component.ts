@@ -8,6 +8,8 @@ import { AuthService } from '../../core/auth/auth.service';
 import { Items } from '../../core/models/view-models/items.model';
 import { Utilities } from '../../core/common/utilities';
 import { LootService } from '../../core/services/loot.service';
+import { SharedService } from '../../core/services/shared.service';
+import { AppService1 } from '../../app.service';
 
 @Component({
   selector: 'app-player-loot',
@@ -22,7 +24,7 @@ export class PlayerLootComponent implements OnInit {
   itemsList: any;
   characterItemModal: any = new Items();
   searchText: string;
-  isloading: boolean = true;
+  //isloading: boolean = false;
 
   constructor(
 
@@ -31,7 +33,9 @@ export class PlayerLootComponent implements OnInit {
     private authService: AuthService,
     public modalService: BsModalService,
     private localStorage: LocalStoreManager,
-    private lootService: LootService
+    private lootService: LootService,
+    private sharedService: SharedService,
+    private appService: AppService1,
     
   ) {
    
@@ -79,7 +83,7 @@ export class PlayerLootComponent implements OnInit {
 
   setItemMaster(event: any, itemMaster: any) {
     this.itemsList.map((item) => {
-      if (item.itemMasterId == itemMaster.itemMasterId) {
+      if (item.lootId == itemMaster.lootId) {
         item.selected = event.target.checked;
       }
       return item;
@@ -105,14 +109,15 @@ export class PlayerLootComponent implements OnInit {
    
   }
   addEditItem(model) {
-    this.isloading = false;
+    this.isLoading = true;
     this.lootService.lootItemsTakeByplayer<any>(model)
       .subscribe(data => {
         this.alertService.showMessage("Adding Loot Item", "", MessageSeverity.success);
         this.close();
-        this.isloading = true;
+        this.appService.updateItemsList(true);
+        this.isLoading = false;
       }, error => {
-        this.isloading = true;
+        this.isLoading = false;
         let Errors = Utilities.ErrorDetail("", error);
         if (Errors.sessionExpire) {
           //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);

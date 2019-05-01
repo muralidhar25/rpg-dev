@@ -56,7 +56,6 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
       else {
         this.userId = user.id;
       }
-      debugger
       this.paymentInfo = this.bsModalRef.content.paymentInfo;
       this.marketplaceDetails.marketPlaceId = this.paymentInfo.marketPlaceId;
       this.marketplaceDetails.price = this.paymentInfo.price;
@@ -142,7 +141,6 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
     
   }
   public inputValidator(event: any) {
-    debugger
     let eventInstance = event;
     eventInstance = eventInstance || window.event;
     let key = eventInstance.keyCode || eventInstance.which;

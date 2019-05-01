@@ -44,7 +44,7 @@ namespace DAL.Services
 
         public async Task<RuleSet> GetRuleSetById(int Id)
         {
-            return await _repo.Get(Id);
+            return await _context.RuleSets.Where(x => x.RuleSetId == Id).FirstOrDefaultAsync(); //_repo.Get(Id);
         }
 
         public async Task<List<RuleSet>> GetRuleSetByUserId(string UserId)

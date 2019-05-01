@@ -1334,7 +1334,6 @@ export class DiceService {
           //    }
           //  })
           //}
-          debugger
           if (Fe_Instance.indexOf('>=') > -1 || Fe_Instance.indexOf('<=') > -1) {
             Fe_Instance = Fe_Instance.replace('+', ' + ').replace('-', ' - ').replace('>=', ' >= ').replace('<=', ' <= ');
           } else {

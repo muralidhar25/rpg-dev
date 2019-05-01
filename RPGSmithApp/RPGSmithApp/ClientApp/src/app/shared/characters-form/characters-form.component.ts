@@ -141,8 +141,6 @@ export class CharactersFormComponent implements OnInit {
     }
 
   setCharacterRuleset(_ruleset: any) {
-    console.log('clicked.')
-   debugger
     if (_ruleset.isAlreadyPurchased) {
       this.charactersFormModal.ruleSetId = _ruleset.ruleSetId;
     }
@@ -298,7 +296,6 @@ export class CharactersFormComponent implements OnInit {
 
       let rulesetSelected = this.charactersFormModal.ruleSets.filter(x => x.ruleSetId == modal.ruleSetId);
       //let flag = true;
-      debugger
       if (modal.view == VIEW.ADD) {
         if (rulesetSelected) {
           if (rulesetSelected.length) {
@@ -339,7 +336,6 @@ export class CharactersFormComponent implements OnInit {
           this.commonService.UpdateCounts(); /*update charaters count*/
           this.close();
           this.sharedService.updateCharacterList(true);
-          debugger;
           this.sharedService.updateCharactersCount(true);
           this.appService.updateCharacterList(true);
           //this.router.navigateByUrl('/rulesets', { skipLocationChange: true }).then(() => this.router.navigate(['/ruleset']));
@@ -488,7 +484,6 @@ export class CharactersFormComponent implements OnInit {
         // show message
   }
   buyRuleset(ruleSet, IsCreating = false, modal=null) {
-    debugger
     let paymentInfo: marketplaceListModel = new marketplaceListModel(-1, -1, ruleSet.ruleSetName, ruleSet.ruleSetName, '', ruleSet.price, 1, '', false);// = this.marketplacelist.filter(x => x.marketPlaceId == MarketPlaceItemsType.PLAYER_SLOT)[0];
     this.bsModalRef = this.modalService.show(PaymentComponent, {
       class: 'modal-primary modal-custom',
@@ -499,7 +494,6 @@ export class CharactersFormComponent implements OnInit {
     this.bsModalRef.content.paymentInfo = paymentInfo;
     //this.bsModalRef.content.RulesetToPurchase = ruleSet;
     this.bsModalRef.content.event.subscribe(data => {
-      debugger
       let paymentDoneForItem: marketplaceListModel = data.item;
       ruleSet.isAlreadyPurchased = true;
       if (IsCreating && modal) {

@@ -61,7 +61,7 @@ export class LootComponent implements OnInit {
   ) {
    
     this.sharedService.shouldUpdateItemsList().subscribe(sharedServiceJson => {
-      console.log('hello in service');
+      
       if (sharedServiceJson) {
 
         this.page = 1;
@@ -250,13 +250,13 @@ export class LootComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Add Items';
+    this.bsModalRef.content.title = 'Add Loots';
     this.bsModalRef.content.button = 'ADD';
   }
 
   manageIcon(id: number) {
     this.ItemMasterList.forEach(function (val) {
-      if (id === val.itemMasterId) {
+      if (id === val.lootId) {
         val.showIcon = true;
       } else {
         val.showIcon = false;
@@ -275,7 +275,7 @@ export class LootComponent implements OnInit {
             ignoreBackdropClick: true,
             keyboard: false
           });
-          this.bsModalRef.content.title = 'Create Item Template';
+          this.bsModalRef.content.title = 'Create Loot';
           this.bsModalRef.content.button = 'CREATE';
           this.bsModalRef.content.ruleSetId = this.ruleSetId;
           this.bsModalRef.content.itemMasterVM = {
@@ -293,47 +293,15 @@ export class LootComponent implements OnInit {
   }
 
   editItemTemplate(itemMaster: ItemMaster) {
-
-    if (itemMaster.isBundle) {
       this.bsModalRef = this.modalService.show(CreatelootComponent, {
         class: 'modal-primary modal-custom',
         ignoreBackdropClick: true,
         keyboard: false
       });
-      this.bsModalRef.content.title = 'Edit Bundle';
-      this.bsModalRef.content.button = 'UPDATE';
-      this.bsModalRef.content.rulesetID = this.ruleSetId;
-      this.bsModalRef.content.bundleVM = {
-        bundleId: itemMaster.itemMasterId,
-        ruleSetId: this.ruleSetId,
-        bundleName: itemMaster.itemName,
-        bundleImage: itemMaster.itemImage,
-        bundleVisibleDesc: itemMaster.itemVisibleDesc,
-        value: itemMaster.value,
-        volume: itemMaster.volume,
-        totalWeight: itemMaster.weight,
-        metatags: itemMaster.metatags,
-        rarity: itemMaster.rarity,
-        ruleSet: this.RuleSet,
-        weightLabel: itemMaster.weightLabel,
-        currencyLabel: itemMaster.currencyLabel,
-        volumeLabel: itemMaster.volumeLabel
-      };
-    }
-    else {
-      this.bsModalRef = this.modalService.show(CreatelootComponent, {
-        class: 'modal-primary modal-custom',
-        ignoreBackdropClick: true,
-        keyboard: false
-      });
-      this.bsModalRef.content.title = 'Edit Item Template';
+      this.bsModalRef.content.title = 'Edit Loot';
       this.bsModalRef.content.button = 'UPDATE';
       this.bsModalRef.content.itemMasterVM = itemMaster;
-
       this.bsModalRef.content.rulesetID = this.ruleSetId;
-    }
-
-
   }
 
   duplicateItemTemplate(itemMaster: ItemMaster) {
@@ -343,43 +311,16 @@ export class LootComponent implements OnInit {
       .subscribe(data => {
         //this.alertService.stopLoadingMessage();
         if (data < 2000) {
-          if (itemMaster.isBundle) {
             this.bsModalRef = this.modalService.show(CreatelootComponent, {
               class: 'modal-primary modal-custom',
               ignoreBackdropClick: true,
               keyboard: false
             });
-            this.bsModalRef.content.title = 'Edit Bundle';
-            this.bsModalRef.content.button = 'DUPLICATE';
-            this.bsModalRef.content.rulesetID = this.ruleSetId;
-            this.bsModalRef.content.bundleVM = {
-              bundleId: itemMaster.itemMasterId,
-              ruleSetId: this.ruleSetId,
-              bundleName: itemMaster.itemName,
-              bundleImage: itemMaster.itemImage,
-              bundleVisibleDesc: itemMaster.itemVisibleDesc,
-              value: itemMaster.value,
-              volume: itemMaster.volume,
-              totalWeight: itemMaster.weight,
-              metatags: itemMaster.metatags,
-              rarity: itemMaster.rarity,
-              ruleSet: this.RuleSet,
-              weightLabel: itemMaster.weightLabel,
-              currencyLabel: itemMaster.currencyLabel,
-              volumeLabel: itemMaster.volumeLabel
-            };
-          }
-          else {
-            this.bsModalRef = this.modalService.show(CreatelootComponent, {
-              class: 'modal-primary modal-custom',
-              ignoreBackdropClick: true,
-              keyboard: false
-            });
-            this.bsModalRef.content.title = 'Duplicate Item Template';
+            this.bsModalRef.content.title = 'Duplicate Loot';
             this.bsModalRef.content.button = 'DUPLICATE';
             this.bsModalRef.content.itemMasterVM = itemMaster;
             this.bsModalRef.content.rulesetID = this.ruleSetId;
-          }
+          
         }
         else {
           //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
@@ -464,14 +405,11 @@ export class LootComponent implements OnInit {
 
   //}
 
-   //GoToDetails(item: ItemMaster) {
-  //  if (item.isBundle) {
-  //    this.router.navigate(['/ruleset/bundle-details', item.itemMasterId]);
-  //  }
-  //  else {
-  //    this.router.navigate(['/ruleset/item-details', item.itemMasterId]);
-  //  }
-  //}
+   GoToDetails(item: ItemMaster) {
+    
+      this.router.navigate(['/ruleset/item-details', item.itemMasterId]);
+    
+  }
 
   //useItemTemplate(itemMaster: any) {
 
@@ -581,11 +519,11 @@ export class LootComponent implements OnInit {
     
     let show = item.isShow ?  'Hide' : 'Show';
   
-    this.lootService.showLoot <any>(item.lootId,item.isShow)
+    this.lootService.showLoot<any>(item.lootId,!item.isShow)
       .subscribe(data => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          item.isShow = item.isShow ? false : true;
+        item.isShow = !item.isShow;
         },
         error => {
           this.isLoading = false;

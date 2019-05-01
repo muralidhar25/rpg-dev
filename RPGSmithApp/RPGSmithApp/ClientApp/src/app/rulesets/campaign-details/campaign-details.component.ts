@@ -111,7 +111,6 @@ export class CampaignDetailsComponent implements OnInit {
             this.GmCharacterSlotsCount = this.invitedUsers.filter(x => !x.inviteId).length;
             this.declinedUserList = this.invitedUsers.filter(x => x.isDeclined);
             this.invitedUsers = this.invitedUsers.filter(x => !x.isDeclined );
-            //debugger;
             console.log(this.invitedUsers);
             let names = '';
             this.invitedUsers.map((x: playerInviteListModel,index) => {
@@ -334,9 +333,7 @@ export class CampaignDetailsComponent implements OnInit {
   cancleInvite(index, invite) {
     console.log('here is cancle invit clicked');
     this.campaignService.cancelInvite<any>(invite.inviteId)
-      .subscribe(data => {
-        //debugger;
-       
+      .subscribe(data => {       
         this.isLoading = false;
         if (data == true) {
           this.invitedUsers.splice(index, 1);
@@ -399,7 +396,6 @@ export class CampaignDetailsComponent implements OnInit {
     this.router.navigate(['/character/dashboard', characterID]);
   }
   BuyPlayerSlot() {   
-   // debugger
     let paymentInfo = this.marketplacelist.filter(x => x.marketPlaceId == MarketPlaceItemsType.PLAYER_SLOT)[0];
       this.bsModalRef = this.modalService.show(PaymentComponent, {
         class: 'modal-primary modal-custom',
@@ -423,7 +419,6 @@ export class CampaignDetailsComponent implements OnInit {
           default:
             break;
         }
-       // debugger
 
         if (this.localStorage.sessionExists(DBkeys.CURRENT_USER)) {
           this.localStorage.saveSyncedSessionData(user, DBkeys.CURRENT_USER);

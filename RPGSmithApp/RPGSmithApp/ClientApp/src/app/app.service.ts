@@ -10,7 +10,7 @@ export class AppService1 {
   private accountSetting = new Subject<any>();
   private text = new Subject<any>();
   private character = new Subject<any>();
-  //private charactersCount = new Subject<any>();
+  private item = new Subject<any>();
 
   updateAccountSetting1(accountSetting: any) {    
     this.accountSetting.next(accountSetting);
@@ -36,6 +36,13 @@ export class AppService1 {
 
   shouldUpdateCharacterList(): Observable<any> {
     return this.character.asObservable();
+  }
+  updateItemsList(character: any) {
+    this.item.next(character);
+  }
+
+  shouldUpdateItemsList(): Observable<any> {
+    return this.item.asObservable();
   }
   //updateCharactersCount(charactersCount: any) {
   //  this.charactersCount.next(charactersCount);

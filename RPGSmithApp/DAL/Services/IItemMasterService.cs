@@ -29,15 +29,19 @@ namespace DAL.Services
         bool Core_BundleWithParentIDExists(int bundleId, int rulesetID);
         Task _AddItemsToLoot(List<CommonID> itemList);
         Task<List<ItemMasterLoot_ViewModel>> GetItemMasterLoots(int rulesetID, int page = 1, int pageSize = 30);
-        void CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot);
+        ItemMasterLoot CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot);
         Task<ItemMasterLoot> UpdateItemMasterLoot(ItemMasterLoot loot);
         Task<List<ItemMasterLoot_ViewModel>> GetLootItemsForPlayers(int rulesetID);
         Task<ItemMasterLoot> getLootDetails(int LootId);
         Task<bool> DeleteContainer(int itemMasterId);
-        Task<List<ItemMasterLoot>> GetByContainerId(int? containerId);
+        Task<List<ItemMasterLoot_ViewModel>> GetByContainerId(int? containerId);
         Task<ItemMasterLoot> UpdateWeight(int itemMasterId, decimal TotalWeight);
         Task<ItemMasterLoot> UpdateContainer(int itemId, int containerItemId);
         Task DeleteItemMasterLoot(int lootId);
         Task ShowLoot(int lootID, bool isShow);
+        Task<List<ItemMasterLoot_ViewModel>> GetAvailableContainerItems(int rulesetId, int ItemMasterId);
+        decimal GetContainedItemWeight(int containerItemId);
+        ItemMasterLoot_ViewModel GetContainer(int? lootId);
+        List<ItemMasterLoot_ViewModel> GetAvailableItems(int rulesetId);
     }
 }

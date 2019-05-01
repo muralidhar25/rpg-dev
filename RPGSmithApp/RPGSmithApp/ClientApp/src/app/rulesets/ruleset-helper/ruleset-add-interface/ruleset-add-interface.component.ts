@@ -140,7 +140,6 @@ export class RulesetAddInterfaceComponent implements OnInit {
     this.bsModalRef.content.paymentInfo = paymentInfo;
     //this.bsModalRef.content.RulesetToPurchase = ruleSet;
     this.bsModalRef.content.event.subscribe(data => {
-      debugger
       let paymentDoneForItem: marketplaceListModel = data.item;
       
       this.rulesetService.updateUserPurchasedRuleset<any>(ruleSet)
