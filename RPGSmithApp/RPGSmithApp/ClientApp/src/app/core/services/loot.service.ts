@@ -17,7 +17,9 @@ export class LootService extends EndpointFactory {
 
   private readonly _getUpdateLootItemUrl: string = this.configurations.baseUrl + "/api/ItemMaster/UpdateItemMasterLoot";
 
-  //private readonly _getDeleteLootItemUrl: string = this.configurations.baseUrl + "/api/ItemMaster/deleteLoot_up";
+  private readonly _getDeleteLootItemUrl: string = this.configurations.baseUrl + "/api/ItemMaster/deleteLoot_up";
+
+  private readonly _getDeleteAllLootUrl: string = this.configurations.baseUrl + "/api/ItemMaster/deleteAllLoot_up";
 
   private readonly _getGiveLootItemUrl: string = "/api/ItemMaster/giveItemsToCharacters";
 
@@ -26,6 +28,10 @@ export class LootService extends EndpointFactory {
   private readonly _getLootItemsForPlayersUrl: string = "/api/ItemMaster/GetLootItemsForPlayers";
 
   private readonly _lootItemsTakeByplayerUrl: string = "/api/item/addLootItems";
+
+  
+  private readonly _getItemMasterLootsForDeleteUrl: string = this.configurations.baseUrl + "/api/ItemMaster/GetItemMasterLootsForDelete";
+
 
 
   get getLootUrl() { return this.configurations.baseUrl + this._getLootUrl; }
@@ -75,14 +81,14 @@ export class LootService extends EndpointFactory {
       })
   }
 
-  //deleteLootItem<T>(item): Observable<T> {
-  //  let endpointUrl = this._getDeleteLootItemUrl;
-  //  console.log(item);
-  //  return this.http.post<T>(endpointUrl,JSON.stringify(item),this.getRequestHeaders())
-  //    .catch(error => {
-  //      return this.handleError(error, () => this.deleteLootItem(item));
-  //    });
-  //}
+  deleteLootItem<T>(item): Observable<T> {
+    let endpointUrl = this._getDeleteLootItemUrl;
+    console.log(item);
+    return this.http.post<T>(endpointUrl,JSON.stringify(item),this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deleteLootItem(item));
+      });
+  }
 
   giveItemTocharacter<T>(item, lootId): Observable<T> {
     let endpointUrl = `${this.getGivelootItemUrl}?lootId=${lootId}`;
@@ -103,7 +109,6 @@ export class LootService extends EndpointFactory {
 
   getLootItemsForPlayers<T>(Id): Observable<T> {
     let endpointUrl = `${this.getListItemsForPlayersUrl}?rulesetId=${Id}`;
-
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getLootItemsForPlayers(Id));
@@ -121,6 +126,26 @@ export class LootService extends EndpointFactory {
       });
   }
 
+
+
+  deleteAllLootItems<T>(model): Observable<T> {
+    
+    let endpointUrl = `${this._getDeleteAllLootUrl}`;
+
+    return this.http.post<T>(endpointUrl, JSON.stringify(model), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deleteAllLootItems(model));
+      });
+  }
+
+  getItemMasterLootsForDelete<T>(Id): Observable<T> {
+    let endpointUrl = `${this._getItemMasterLootsForDeleteUrl}?rulesetId=${Id}`;
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getItemMasterLootsForDelete(Id));
+      });
+
+  }
 }
 
 

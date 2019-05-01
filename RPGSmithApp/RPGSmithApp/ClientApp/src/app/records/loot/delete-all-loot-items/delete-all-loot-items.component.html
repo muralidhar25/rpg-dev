@@ -21,7 +21,6 @@
 
           </div>
         </div>
-
         <div class="col-12 col-md-12 col-sm-12">
           <fieldset class="form-group input-list input-list-wrap items">
             <legend *ngIf="itemsList?.length == 0">No Item Template Available</legend>
@@ -36,19 +35,19 @@
                 </legend>
               </div>
             </div>
-           
+
             <ul class="input-list-items">
               <li class="form-check col-md-6 col-sm-12" *ngFor="let item of itemsList | filter : searchText : 'itemName';let i = index;" popover="{{item.itemName}}" triggers="hover">
                 <label class="form-check-label">
                   <input class="form-check-input" type="checkbox" name="newItem" [checked]="item.selected" (change)="setItemMaster($event,item)" />
                   <!--[checked]="characterItems | contains : item.itemMasterId : 'itemMasterId'" />
-        [disabled]="characterItems | contains : item.itemMasterId : 'itemMasterId'" />-->
+                  [disabled]="characterItems | contains : item.itemMasterId : 'itemMasterId'" />-->
                   <span>
                     <img [alt]="item.itemName" [src]="item.itemImage"
                          onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
                     <em>{{item.itemName}}</em>
                     <!--<i *ngIf="characterItems | contains : item.itemMasterId : 'itemMasterId'" class="icon" title="Already Added"
-             style="background-color:#aaa39e!important;cursor:not-allowed;"></i>-->
+                    style="background-color:#aaa39e!important;cursor:not-allowed;"></i>-->
                     <i class="icon"></i>
                   </span>
                 </label>
@@ -64,10 +63,7 @@
   <app-loader [isLoading]="isLoading"></app-loader>
 
   <div class="modal-footer justify-content-between">
-      <button  type="button"  class="btn btn-accent" (click)="refresh()">Refresh</button>
-      <span class="d-inline-flex">
-        <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
-        <button class="btn btn-accent" [disabled]="isLoading" type="submit">take</button>
-      </span>
+      <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+      <button class="btn btn-accent" [disabled]="isLoading" type="submit">Delete</button>
   </div>
 </form>

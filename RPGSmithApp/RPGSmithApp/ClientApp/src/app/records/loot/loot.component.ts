@@ -20,6 +20,7 @@ import { LootService } from "../../core/services/loot.service";
 import { AddlootComponent } from "./addloot/addloot.component";
 import { CreatelootComponent } from "./createloot/createloot.component";
 import { error } from "util";
+import { DeleteAllLootItemsComponent } from "./delete-all-loot-items/delete-all-loot-items.component";
 
 @Component({
   selector: 'app-loot',
@@ -63,13 +64,19 @@ export class LootComponent implements OnInit {
     this.sharedService.shouldUpdateItemsList().subscribe(sharedServiceJson => {
       
       if (sharedServiceJson) {
-
         this.page = 1;
         this.pageSize = 28;
         this.initialize();
       }
     });
-   
+
+    this.appService.shouldUpdateItemsList().subscribe(sharedServiceJson => {
+      if (sharedServiceJson) {
+        this.page = 1;
+        this.pageSize = 28;
+        this.initialize();
+      }
+    });
   }
 
   @HostListener('document:click', ['$event.target'])
@@ -541,4 +548,58 @@ export class LootComponent implements OnInit {
     this.pageSize = 28;
     this.initialize();
   }
+
+  deleteItemTemplate(itemMaster: ItemMaster) {
+
+    let message = "Are you sure you want to delete this " + itemMaster.itemName
+      + " item template? Note: Any item(s) previously deployed from this template will not be affected.";
+
+    this.alertService.showDialog(message,
+      DialogType.confirm, () => this.deleteLootItem(itemMaster), null, 'Yes', 'No');
+  }
+
+  deleteLootItem(itemMaster: ItemMaster) {
+    this.alertService.startLoadingMessage("", "Deleting Item");
+ 
+    //this.isLoading = true;
+    this.lootService.deleteLootItem<any>(itemMaster)
+      .subscribe(data => {
+        setTimeout(() => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+        }, 200);
+        this.alertService.showMessage("Item Template has been deleted successfully.", "", MessageSeverity.success);
+        this.ItemMasterList = this.ItemMasterList.filter((val) => val.itemMasterId != itemMaster.itemMasterId);
+        try {
+          this.noRecordFound = !this.ItemMasterList.length;
+        } catch (err) { }
+      }, error => {
+        setTimeout(() => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+        }, 200);
+        let _message = "Unable to Delete";
+        let Errors = Utilities.ErrorDetail(_message, error);
+        if (Errors.sessionExpire) {
+          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          this.authService.logout(true);
+        }
+        else {
+          this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        }
+
+      })
+  }
+
+  deleteAll() {
+    console.log('delete All');
+    this.bsModalRef = this.modalService.show(DeleteAllLootItemsComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.ruleSetId = this.ruleSetId;
+    
+  }
+
 }

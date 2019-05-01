@@ -119,7 +119,7 @@ export class CachingInterceptor implements HttpInterceptor {
           });
         } catch (err) { }
       }
-      else if (req.url.indexOf("GetLootItemsForPlayers") > -1) { 
+      if (req.url.indexOf("GetLootItemsForPlayers") > -1) { 
         try {
           this.cache.cache.forEach(data => {
             var cachedApi = data.url.split("api/")[1].split("/")[0].toLowerCase();
@@ -129,8 +129,11 @@ export class CachingInterceptor implements HttpInterceptor {
           });
         } catch (err) { }
       }
+
+      
     } catch (err) { }
 
+    
     return cachedResponse ? Observable.of(cachedResponse) : this.sendRequest(req, next, this.cache);
   }
 
@@ -141,7 +144,16 @@ export class CachingInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       tap(event => {
         if (event instanceof HttpResponse) {
-          cache.put(req, event);
+          try {
+            if (req.url.toUpperCase().indexOf("GETLOOTITEMSFORPLAYERS") > -1 || req.url.toUpperCase().indexOf("GETITEMMASTERLOOTS") > -1) {
+
+            }
+            else {
+              cache.put(req, event);
+            }
+          } catch (e) {
+            cache.put(req, event);
+          }
         }
       })
     );

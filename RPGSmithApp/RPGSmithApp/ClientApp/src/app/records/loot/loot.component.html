@@ -21,10 +21,10 @@
           <ul class="page-toolbar-links">
 
             <li *ngIf="RuleSet" class="hidden-tab">
-              <a [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+              <a [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Tiles">Layouts</a>
             </li>
             <li *ngIf="RuleSet?.isItemEnabled" class="hidden-tab">
-              <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Items"> <span>Loot</span></a>
+              <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Pouch"> <span>Loot</span></a>
             </li>
             <li *ngIf="RuleSet?.isSpellEnabled" class="hidden-tab">
               <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
@@ -98,27 +98,30 @@
             </div>
           </li>
           <!--<li>
-            <div class="dropdown dropdown-buttons">
-                <button type="button" (click)="createItem()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Create Item</button>
-            </div>
-            <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
-              <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle is-show">
-                <span class="text-hide-tab  is-show">Create</span>
-              </button>
-              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
-                <ul class="dropdown-menu-list">
-                  <li class="dropdown-menu-item">
-                    <button type="button" (click)="createItem()" class="btn btn-accent icon-Gen-Edit"> Item</button>
-                  </li>
-                  <li class="dropdown-menu-item">
-                    <button type="button" (click)="createBundle()" class="btn btn-accent icon-Gen-Edit"> Bundle</button>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </li>-->
+    <div class="dropdown dropdown-buttons">
+        <button type="button" (click)="createItem()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Create Item</button>
+    </div>
+    <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+      <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle is-show">
+        <span class="text-hide-tab  is-show">Create</span>
+      </button>
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+        <ul class="dropdown-menu-list">
+          <li class="dropdown-menu-item">
+            <button type="button" (click)="createItem()" class="btn btn-accent icon-Gen-Edit"> Item</button>
+          </li>
+          <li class="dropdown-menu-item">
+            <button type="button" (click)="createBundle()" class="btn btn-accent icon-Gen-Edit"> Bundle</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </li>-->
           <li class="refresh-btn">
             <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
+          </li>
+          <li class="refresh-btn">
+            <button type="button" class="btn btn-outline-primary icon icon-Gen-Trash" (click)="deleteAll()"></button>
           </li>
           <li>
             <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
@@ -154,8 +157,9 @@
                      onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';" (click)="GoToDetails(ItemMaster)">
                 <div class="card-actions show" *ngIf="ItemMaster.showIcon && !isListView">
                   <button type="button" (click)="editItemTemplate(ItemMaster)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
-                  <!--<button type="button" (click)="duplicateItemTemplate(ItemMaster)" title="Duplicate" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
                   <button type="button" (click)="deleteItemTemplate(ItemMaster)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
+                  <button  class="btn icon icon-cross btn-simple-primary" tooltip="Close" type="button" (click)="manageIcon(false)"></button>
+                  <!--<button type="button" (click)="duplicateItemTemplate(ItemMaster)" title="Duplicate" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
                   <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>-->
                 </div>
               </div>

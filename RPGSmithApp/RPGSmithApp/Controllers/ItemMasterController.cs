@@ -873,6 +873,21 @@ namespace RPGSmithApp.Controllers
             return Ok(Response);
            // return Ok(res);
         }
+
+        [HttpGet("GetItemMasterLootsForDelete")]
+        public async Task<IActionResult> GetItemMasterLootsForDelete(int rulesetID)
+        {
+            //rulesetID = 222;
+            // var res 
+            
+            var ItemList = await _itemMasterService.GetItemMasterLoots(rulesetID, 1, 99999);
+
+            
+            return Ok(ItemList);
+            // return Ok(res);
+        }
+
+
         [HttpGet("GetLootItemsForPlayers")]
         public async Task<IActionResult> GetLootItemsForPlayers(int rulesetID)
         {
@@ -1236,18 +1251,39 @@ namespace RPGSmithApp.Controllers
         [HttpPost("deleteLoot_up")]
         public async Task<IActionResult> DeleteItemMasterLoot([FromBody] EditItemMasterLootModel model)
         {
-            int rulesetID = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
-            if (_coreRulesetService.IsCopiedFromCoreRuleset(rulesetID))
-            {
-                int ItemMasterID = model.ItemMasterId == null ? 0 : (int)model.ItemMasterId;
-                if (!_coreRulesetService.IsItemCopiedFromCoreRuleset(ItemMasterID, rulesetID))
-                {
-                    await CreateItemMasterForCopiedRuleset(model, true);
-                    //return Ok();
-                    // await UpdateItemMasterCommon(model);
-                }
-            }
+            //int rulesetID = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
+            //if (_coreRulesetService.IsCopiedFromCoreRuleset(rulesetID))
+            //{
+            //    int ItemMasterID = model.ItemMasterId == null ? 0 : (int)model.ItemMasterId;
+            //    if (!_coreRulesetService.IsItemCopiedFromCoreRuleset(ItemMasterID, rulesetID))
+            //    {
+            //        await CreateItemMasterForCopiedRuleset(model, true);
+            //        //return Ok();
+            //        // await UpdateItemMasterCommon(model);
+            //    }
+            //}
             await _itemMasterService.DeleteItemMasterLoot(model.LootId);
+            return Ok();
+        }
+        [HttpPost("deleteAllLoot_up")]
+        public async Task<IActionResult> deleteAllLoot_up([FromBody] List<LootIds> model)
+        {
+            //int rulesetID = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
+            //if (_coreRulesetService.IsCopiedFromCoreRuleset(rulesetID))
+            //{
+            //    int ItemMasterID = model.ItemMasterId == null ? 0 : (int)model.ItemMasterId;
+            //    if (!_coreRulesetService.IsItemCopiedFromCoreRuleset(ItemMasterID, rulesetID))
+            //    {
+            //        await CreateItemMasterForCopiedRuleset(model, true);
+            //        //return Ok();
+            //        // await UpdateItemMasterCommon(model);
+            //    }
+            //}
+            foreach (var item in model)
+            {
+                await _itemMasterService.DeleteItemMasterLoot(item.LootId);
+            }
+            
             return Ok();
         }
         [HttpPost("ShowLoot")]
