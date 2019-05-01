@@ -245,18 +245,41 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                string itemNames = string.Empty;
                 foreach (var item in model.MultiLootIds)
                 {
                     ItemMasterLoot loot =await _itemMasterService.getLootDetails(item.LootId);
                     if (loot != null)
                     {
-                        await AddItemToCharacter(model, new ItemMasterIds() { ItemMasterId = loot.ItemMasterId }, loot);
-                        await _itemMasterService.DeleteItemMasterLoot(loot.LootId);
+                        if (loot.IsShow)
+                        {
+                            await AddItemToCharacter(model, new ItemMasterIds() { ItemMasterId = loot.ItemMasterId }, loot);
+                            await _itemMasterService.DeleteItemMasterLoot(loot.LootId);
+                        }
+                        else
+                        {
+                            itemNames += loot.ItemMaster.ItemName + ", ";
+                        }
+                    }
+                    else {
+                        itemNames += item.Name + ", ";
                     }
                     
                 }                
                 await this._characterService.UpdateCharacterInventoryWeight(model.CharacterId ?? 0);
-                return Ok();
+                if (!string.IsNullOrEmpty(itemNames))
+                {
+                    itemNames = itemNames.Substring(0, itemNames.Length - 2);
+                    if (itemNames.Contains(","))
+                    {
+                        return Ok(new {success=true,message= "The " + itemNames + " items are no longer available" });
+                    }
+                    else {
+                        return Ok(new { success = true, message = "The " + itemNames + " item is no longer available" });
+                    }
+                }
+                
+                return Ok(new { success = true, message = string.Empty});
             }
 
             return BadRequest(Utilities.ModelStateError(ModelState));

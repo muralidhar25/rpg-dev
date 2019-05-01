@@ -116,6 +116,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   invitationList: playerInviteListModel[] = [];
   isAdmin: boolean = false;
   haveLootItems: boolean = false;
+  haveHandOutItems: boolean = false;
 
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
@@ -221,23 +222,26 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.headers = serviceData;
       }
       else if (serviceData == -1) {
-        this.headers = undefined;;
+        this.headers = undefined;
       } else {
         this.headers = this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE);
       }
       this.haveLootItems = false;
+      this.haveHandOutItems = false;
       if (this.headers) {
         if (this.headers.headerLink == "character") {
           this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
             .subscribe(data => {
               if (data) {
                 if (data.isPlayerCharacter) {
+                  this.haveHandOutItems = true;
                   let _rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
                   this.lootService.getLootItemsForPlayers<any>(_rulesetId)
                     .subscribe(data => {
                       if (data) {
                         if (data.length) {
                           this.haveLootItems = true;
+                          
                         }
                       }
                     }, error => {
@@ -669,18 +673,22 @@ export class AppComponent implements OnInit, AfterViewInit {
               }, () => { });
           //}
           this.haveLootItems = false;
+          this.haveHandOutItems = false;
           if (this.headers) {
             if (this.headers.headerLink == "character") {
               this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
                 .subscribe(data => {
                   if (data) {
                     if (data.isPlayerCharacter) {
+                      this.haveHandOutItems = true;
                       let _rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
                       this.lootService.getLootItemsForPlayers<any>(_rulesetId)
                         .subscribe(data => {
                           if (data) {
                             if (data.length) {
                               this.haveLootItems = true;
+                              
+                              console.log(_rulesetId);
                             }
                           }
                         }, error => {
@@ -1384,5 +1392,10 @@ export class AppComponent implements OnInit, AfterViewInit {
       keyboard: false
     });
     this.bsModalRef.content.headers = this.headers;
+  }
+  handOuts() {
+    let _rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+   
+    this.router.navigate(['/character/handouts/', _rulesetId]);
   }
 }

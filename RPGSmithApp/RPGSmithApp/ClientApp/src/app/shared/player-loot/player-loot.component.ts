@@ -25,7 +25,7 @@ export class PlayerLootComponent implements OnInit {
   characterItemModal: any = new Items();
   searchText: string;
   //isloading: boolean = false;
-
+  allSelected: boolean = false;
   constructor(
 
     private bsModalRef: BsModalRef,
@@ -36,9 +36,9 @@ export class PlayerLootComponent implements OnInit {
     private lootService: LootService,
     private sharedService: SharedService,
     private appService: AppService1,
-    
+
   ) {
-   
+
   }
 
   ngOnInit() {
@@ -59,10 +59,9 @@ export class PlayerLootComponent implements OnInit {
       this.lootService.getLootItemsForPlayers<any>(this.rulesetId)
         .subscribe(data => {
           if (data) {
-            console.log(data);
-          this.characterItemModal.itemMasterId = -1 ;
+            
+            this.characterItemModal.itemMasterId = -1;
             this.itemsList = data;
-           
           }
           this.isLoading = false;
         }, error => {
@@ -79,7 +78,7 @@ export class PlayerLootComponent implements OnInit {
   close() {
     this.bsModalRef.hide();
   }
-  
+
 
   setItemMaster(event: any, itemMaster: any) {
     this.itemsList.map((item) => {
@@ -93,9 +92,10 @@ export class PlayerLootComponent implements OnInit {
     this.characterItemModal.multiLootIds = [];
     this.itemsList.map((item) => {
       if (item.selected) {
-        this.characterItemModal.multiLootIds.push({ lootId: item.lootId });
+        this.characterItemModal.multiLootIds.push({ lootId: item.lootId, name: item.itemName});
       }
       return item;
+     
     })
     if (this.characterItemModal.multiLootIds == undefined) {
       this.alertService.showMessage("Please select new Item Template to Add.", "", MessageSeverity.error);
@@ -104,17 +104,23 @@ export class PlayerLootComponent implements OnInit {
       this.alertService.showMessage("Please select new Item Template to Add.", "", MessageSeverity.error);
     }
     else {
-        this.addEditItem(itemMaster);
+      this.addEditItem(itemMaster);
     }
-   
+
   }
   addEditItem(model) {
     this.isLoading = true;
     this.lootService.lootItemsTakeByplayer<any>(model)
       .subscribe(data => {
-        this.alertService.showMessage("Adding Loot Item", "", MessageSeverity.success);
-        this.close();
-        this.appService.updateItemsList(true);
+        if (data) {
+          if (data.message) {
+            this.alertService.showMessage(data.message, "", MessageSeverity.error);
+            } else {
+              this.alertService.showMessage("Adding Loot Item", "", MessageSeverity.success);
+          }
+          this.close();
+          this.appService.updateItemsList(true);
+        }
         this.isLoading = false;
       }, error => {
         this.isLoading = false;
@@ -125,4 +131,24 @@ export class PlayerLootComponent implements OnInit {
         }
       }, () => { });
   }
+
+  selectDeselectFilters(selected) {
+   
+    this.allSelected = selected;
+   
+    if (this.allSelected) {
+
+      this.itemsList.map((item) => {
+        item.selected = true;
+      })
+      
+    }
+    else {
+      this.itemsList.map((item) => {
+        item.selected = false;
+      })
+     
+    }
+  }
+
 }

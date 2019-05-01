@@ -2194,6 +2194,8 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
      }
 
   refresh() {
+    this.page = 1;
+    this.pageSize = 30;
     this.initialize();
   }
   gameStatus(characterId?: any) {

@@ -481,6 +481,8 @@ export class SpellRulesetViewListComponent implements OnInit {
     }
 
   refresh() {
+    this.page = 1;
+    this.pageSize = 28;
     this.initialize();
   }
   gameStatus(characterId?: any) {

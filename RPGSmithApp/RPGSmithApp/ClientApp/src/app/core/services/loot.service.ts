@@ -112,9 +112,9 @@ export class LootService extends EndpointFactory {
 
   
   lootItemsTakeByplayer<T>(model): Observable<T> {
-    console.log(model);
+   
     let endpointUrl = `${this.getLootItemsTakeByPlayerUrl}`;
-    console.log(endpointUrl);
+
     return this.http.post<T>(endpointUrl,JSON.stringify(model),this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.lootItemsTakeByplayer(model));

@@ -109,11 +109,21 @@ export class CachingInterceptor implements HttpInterceptor {
           });
         } catch (err) { }
       }
-      else if (req.url.indexOf("getPlayerControlsByCharacterId") > -1) { //Character/GetCharactersById
+      else if (req.url.indexOf("getPlayerControlsByCharacterId") > -1) { 
         try {
           this.cache.cache.forEach(data => {
             var cachedApi = data.url.split("api/")[1].split("/")[0].toLowerCase();
             if (cachedApi == "getPlayerControlsByCharacterId") {
+              this.cache.cache.delete(data.url);
+            }
+          });
+        } catch (err) { }
+      }
+      else if (req.url.indexOf("GetLootItemsForPlayers") > -1) { 
+        try {
+          this.cache.cache.forEach(data => {
+            var cachedApi = data.url.split("api/")[1].split("/")[0].toLowerCase();
+            if (cachedApi == "GetLootItemsForPlayers") {
               this.cache.cache.delete(data.url);
             }
           });

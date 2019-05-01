@@ -74,6 +74,8 @@ namespace RPGSmithApp.ViewModels
     public class LootIds
     {
         public int LootId { get; set; }
+        public string Name { get; set; }
+
     }
 
 }

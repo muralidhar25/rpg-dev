@@ -536,4 +536,9 @@ export class LootComponent implements OnInit {
             this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
         });
   }
+  refresh() {
+    this.page = 1;
+    this.pageSize = 28;
+    this.initialize();
+  }
 }
