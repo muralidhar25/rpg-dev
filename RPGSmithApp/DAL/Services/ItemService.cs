@@ -839,5 +839,19 @@ namespace DAL.Services
         }
 
         #endregion
+        public void AddItemToLoot(int? itemMasterId) {
+            if (itemMasterId!=null)
+            {
+                ItemMaster obj = _context.ItemMasters.Where(x => x.ItemMasterId == (int)itemMasterId).FirstOrDefault();
+                if (obj != null)
+                {
+                    _itemMasterService.CreateItemMasterLoot(obj, new ItemMasterLoot()
+                    {
+                        IsShow = true
+                    });
+                }
+            }
+            
+        }
     }
 }

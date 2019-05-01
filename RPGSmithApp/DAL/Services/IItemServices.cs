@@ -42,5 +42,6 @@ namespace DAL.Services
         List<Item> GetNestedContainerItems(int itemid);
         List<Item> GetItemsByCharacterId(int characterId);
         List<Item> GetAvailableItems(int characterId);
+        void AddItemToLoot(int? itemMasterId);
     }
 }

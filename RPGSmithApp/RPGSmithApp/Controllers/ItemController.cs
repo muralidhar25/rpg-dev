@@ -29,11 +29,12 @@ namespace RPGSmithApp.Controllers
         private readonly ICharacterService _characterService;
         private readonly ICoreRuleset _coreRulesetService;
         private readonly IItemMasterBundleService _itemMasterBundleService;
+        private readonly ICampaignService _campaignService;
 
         public ItemController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager,
             IItemService itemService, IItemCommandService itemCommandService,
             IItemMasterService itemMasterService, ICharacterService characterService, ICoreRuleset coreRulesetService,
-            IItemMasterBundleService itemMasterBundleService)
+            IItemMasterBundleService itemMasterBundleService, ICampaignService campaignService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._accountManager = accountManager;
@@ -43,6 +44,7 @@ namespace RPGSmithApp.Controllers
             this._itemCommandService = itemCommandService;
             this._coreRulesetService = coreRulesetService;
             this._itemMasterBundleService = itemMasterBundleService;
+            this._campaignService = campaignService;
         }
 
         [HttpGet("getall")]
@@ -606,6 +608,10 @@ namespace RPGSmithApp.Controllers
                         await DeleteItemCommon(modelF.ItemId, (int)modelF.CharacterId);
                     }                   
                 }
+                if (await _campaignService.isInvitedPlayerCharacter((int)model.CharacterId))
+                {
+                    _itemService.AddItemToLoot(model.ItemMasterId);
+                }                
                 return Ok();
             }
             catch (Exception ex)
