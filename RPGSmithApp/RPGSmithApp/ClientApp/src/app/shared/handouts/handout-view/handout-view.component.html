@@ -17,29 +17,21 @@
     <!-- Blob My Images Search -->
     <ul class="input-image-search-result">
       <li class="input-image-search-result-item" *ngFor="let myImages of blobMyImages">
-        <div class="input-image-search-result-item-wrapper" (dblclick)="ViewImage(myImages)">
+        <div class="input-image-search-result-item-wrapper hangout-images-section" (dblclick)="ViewImage(myImages)">
           <div *ngIf="myImages.contentType.indexOf(imagemap) > -1" class="search-image-box-section" [ngStyle]="{'background-image': 'url('+myImages.absoluteUri+')'}"></div>
-          <div *ngIf="myImages.contentType.indexOf(textmap) > -1">
-            <img src="../../../../assets/images/handouticons/txt-icon.png" />
-          </div>
-          <div *ngIf="myImages.contentType.indexOf(videomap) > -1">
-            <img src="../../../../assets/images/handouticons/video-icon.png" />
-          </div>
-          <div *ngIf="myImages.contentType.indexOf(pdfmap) > -1">
-            <img src="../../../../assets/images/handouticons/pdf-icon.png" />
-          </div>
-          <div *ngIf="myImages.contentType.indexOf(docmap) > -1">
-            <img src="../../../../assets/images/handouticons/doc-icon.png" />
-          </div>
-          <div *ngIf="(myImages.contentType.indexOf(imagemap) == -1
-                       && myImages.contentType.indexOf(pdfmap) == -1
-                       && myImages.contentType.indexOf(videomap) == -1
-                       &&  myImages.contentType.indexOf(textmap) == -1
-                        && myImages.contentType.indexOf(docmap) == -1)">
-            <img src="../../../../assets/images/handouticons/file-icon.png" />
-          </div>
+          
           <div *ngIf="myImages.contentType.indexOf(imagemap) == -1" class="search-image-box-section">
-            {{myImages?.name}}
+            <img src="../../../../assets/images/handouticons/txt-icon.png" *ngIf="myImages.contentType.indexOf(textmap) > -1" />
+            <img src="../../../../assets/images/handouticons/video-icon.png" *ngIf="myImages.contentType.indexOf(videomap) > -1" />
+            <img src="../../../../assets/images/handouticons/pdf-icon.png" *ngIf="myImages.contentType.indexOf(pdfmap) > -1" />
+            <img src="../../../../assets/images/handouticons/doc-icon.png" *ngIf="myImages.contentType.indexOf(docmap) > -1" />
+            <img src="../../../../assets/images/handouticons/file-icon.png"
+                 *ngIf="(myImages.contentType.indexOf(imagemap) == -1
+                                 && myImages.contentType.indexOf(pdfmap) == -1
+                                 && myImages.contentType.indexOf(videomap) == -1
+                                 &&  myImages.contentType.indexOf(textmap) == -1
+                                  && myImages.contentType.indexOf(docmap) == -1)" />
+            <p>{{myImages?.name}}</p>
           </div>
         </div>
       </li>

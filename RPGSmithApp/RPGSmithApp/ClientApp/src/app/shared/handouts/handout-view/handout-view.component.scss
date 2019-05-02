@@ -190,3 +190,22 @@ span.inner-bar-progrss {
   word-break: break-word;
   padding: 10px;
 }
+
+.hangout-images-section img {
+  max-width: 50px;
+  min-height: 0px;
+  margin: 20px 0;
+}
+
+.hangout-images-section .search-image-box-section {
+  flex-flow: column;
+}
+
+.hangout-images-section .search-image-box-section p {
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
