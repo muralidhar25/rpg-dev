@@ -60,8 +60,11 @@ import { InviteAddCharctersFormComponent } from "./invite-add-charcters-form/inv
 import { PaymentComponent } from "./payment/payment.component";
 import { PlayerLootComponent } from "./player-loot/player-loot.component";
 import { CharactersFormComponent } from "./characters-form/characters-form.component";
-
-
+import { HandoutViewComponent } from "./handouts/handout-view/handout-view.component";
+import { FileSelectDirective } from "ng2-file-upload";
+import { HandoutFileViewComponent } from "./handouts/handout-file-view/handout-file-view.component";
+import { HandoutuploadComponent } from "./handouts/handout-upload/handoutupload.component";
+  
 @NgModule({
   declarations: [
     NotFoundComponent,
@@ -90,7 +93,11 @@ import { CharactersFormComponent } from "./characters-form/characters-form.compo
     InviteAddCharctersFormComponent,
     PaymentComponent,
    PlayerLootComponent,
-    CharactersFormComponent
+    CharactersFormComponent,
+    HandoutViewComponent,
+    FileSelectDirective,
+    HandoutFileViewComponent,
+    HandoutuploadComponent
   ],
   imports: [
     CommonModule,
@@ -176,7 +183,10 @@ import { CharactersFormComponent } from "./characters-form/characters-form.compo
     InviteAddCharctersFormComponent,
     PaymentComponent,
     PlayerLootComponent,
-    CharactersFormComponent
+    CharactersFormComponent,
+    HandoutViewComponent,
+    HandoutFileViewComponent,
+    HandoutuploadComponent
   ],
   entryComponents: [
     AccountSettingsComponent,
@@ -203,7 +213,10 @@ import { CharactersFormComponent } from "./characters-form/characters-form.compo
     InviteAddCharctersFormComponent,
     PaymentComponent,
     PlayerLootComponent,
-    CharactersFormComponent
+    CharactersFormComponent,
+    HandoutFileViewComponent,
+    HandoutuploadComponent,
+    HandoutViewComponent
   ]
 })
 export class SharedModule {}

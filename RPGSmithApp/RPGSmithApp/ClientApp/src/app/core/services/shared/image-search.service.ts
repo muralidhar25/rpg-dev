@@ -28,6 +28,9 @@ export class ImageSearchService extends EndpointFactory {
   private readonly deleteImagesUrl: string = this.configurations.baseUrl + "/api/Image/DeleteBlob";
   private readonly uploadImagesUrl: string = this.configurations.baseUrl + "/api/Image/UploadImages";
 
+  private readonly myHandoutsUrl: string = this.configurations.baseUrl + "/api/Image/MyHandouts";
+
+  private readonly uploadhandoutsUrl: string = this.configurations.baseUrl + "/api/Image/uploadhandoutByUserId";
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
     private fileUploadService: FileUploadService) {
@@ -134,6 +137,33 @@ export class ImageSearchService extends EndpointFactory {
       //.map(() => { return true; })
       .catch(error => {
         return this.handleError(error, () => this.uploadImages(imgList, userid));
+      });
+  }
+
+  getListOfUploads<T>(userId,count,previousContainerImageNumber): Observable<T> {
+    let endpointUrl = `${this.myHandoutsUrl}?userId=${userId}& count=${count}& previousContainerImageNumber=${previousContainerImageNumber }`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getListOfUploads(userId,count,previousContainerImageNumber));
+      });
+  }
+
+  uploadHandouts<T>(imgList: File[], userid: string): Observable<T> {
+
+    let endpointUrl = `${this.uploadhandoutsUrl}?userId=${userid}`;
+
+    const formData: FormData = new FormData();
+
+    for (var i = 0; i < imgList.length; i++) {
+      formData.append('img' + i, imgList[i], imgList[i].name);
+    }
+    console.log(endpointUrl);
+    console.log(formData);
+    return this.http.post<T>(endpointUrl, formData, this.getRequestFileHeaders())
+      //.map(() => { return true; })
+      .catch(error => {
+        return this.handleError(error, () => this.uploadHandouts(imgList, userid));
       });
   }
 }

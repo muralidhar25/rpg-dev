@@ -40,6 +40,7 @@ import { playerInviteListModel } from "./core/models/campaign.model";
 import { CampaignInviteComponent } from "./rulesets/campaign-invite/campaign-invite.component";
 import { PlayerLootComponent } from "./shared/player-loot/player-loot.component";
 import { LootService } from "./core/services/loot.service";
+import { HandoutViewComponent } from "./shared/handouts/handout-view/handout-view.component";
 //declare let ga: Function;
 
 var alertify: any = require('./assets/scripts/alertify.js');
@@ -1394,8 +1395,15 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.bsModalRef.content.headers = this.headers;
   }
   handOuts() {
-    let _rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+
+    this.bsModalRef = this.modalService.show(HandoutViewComponent, {
+      class: 'modal-primary modal-lg',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+    //let _rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
    
-    this.router.navigate(['/character/handouts/', _rulesetId]);
+    //this.router.navigate(['/character/handouts/', _rulesetId]);
   }
 }

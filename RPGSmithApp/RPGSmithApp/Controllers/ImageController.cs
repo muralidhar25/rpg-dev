@@ -72,7 +72,9 @@ namespace RPGSmithApp.Controllers
         [HttpGet("GetBlobSpaceUsed")]
         public async Task<IActionResult> GetBlobSpaceUsed(string userId)
         {
-            return Ok(bs.GetSpaceUsed("user-" + userId));
+            double normalContainer = bs.GetSpaceUsed("user-" + userId);
+            double handoutContainer = bs.GetSpaceUsed("user-" + userId + "-handout");
+            return Ok(normalContainer + handoutContainer);
         }
 
         [HttpPost("uploadBlobImage")]
@@ -413,6 +415,40 @@ namespace RPGSmithApp.Controllers
             }
             return BadRequest("No Image Selected");
         }
-        
+        [HttpPost("uploadhandoutByUserId")]
+        public async Task<IActionResult> uploadhandoutByUserId(string userId)
+        {
+
+            if (_httpContextAccessor.HttpContext.Request.Form.Files.Any())
+            {
+                // Get the uploaded image from the Files collection
+                var httpPostedFile = _httpContextAccessor.HttpContext.Request.Form.Files[0];
+
+                if (httpPostedFile != null)
+                {
+                    try
+                    {
+                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
+                        var container = bs.GetCloudBlobContainer("user-" + userId+"-handout").Result;
+                        string imageName = Path.GetFileNameWithoutExtension( httpPostedFile.FileName.ToString())+ "_"+DateTime.Now.ToString("dd/MM/yyyy_HH:mm:ss");
+                        return Ok(new {result= bs.Uploadhandout(httpPostedFile, imageName, container, userId).Result });
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest(ex.Message);
+                    }
+                }
+
+                return BadRequest();
+            }
+            return BadRequest("No file Selected");
+
+        }
+        [HttpGet("MyHandouts")]
+        public async Task<IActionResult> MyHandouts(string userId, int Count = 39, int previousContainerImageNumber = 0)
+        {
+            return Ok(bs.BlobMyHandoutsAsync("user-" + userId+ "-handout", Count, previousContainerImageNumber));
+        }
+
     }
 }

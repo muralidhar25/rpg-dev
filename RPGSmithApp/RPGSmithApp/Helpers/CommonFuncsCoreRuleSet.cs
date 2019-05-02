@@ -200,6 +200,7 @@ namespace RPGSmithApp.Helpers
                 Spells = ruleSet.Spells,
                 Abilities = ruleSet.Abilities,
                 CreatedOn=ruleSet.CreatedDate.ToString("MM-dd-yy"),
+                CreatedBy= ruleSet.CreatedBy,
                 // ImageFileName = FileStreamResult(new MemoryStream(ruleSet.RuleSetImage), "image/jpeg")
                 //RuleSetImage = ruleSet.RuleSetImage
                 RecordCount = _coreRulesetService.GetRulesetRecordCounts(ruleSet.RuleSetId),

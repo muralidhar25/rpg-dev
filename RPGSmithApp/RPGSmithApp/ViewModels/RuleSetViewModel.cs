@@ -34,6 +34,7 @@ namespace RPGSmithApp.ViewModels
         public Guid? ShareCode { get; set; }
         public string CoreRulesetAdminImageUrl { get; set; }
         public string CreatedOn { get; set; }
+        public string CreatedBy { get; set; }
         public RulesetRecordCount RecordCount { get; set; }
         public decimal Price { get; set; }
         public bool IsAlreadyPurchased { get; set; }

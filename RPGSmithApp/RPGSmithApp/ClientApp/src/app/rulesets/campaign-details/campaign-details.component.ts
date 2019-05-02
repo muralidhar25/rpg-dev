@@ -27,6 +27,7 @@ import { ImageSearchService } from '../../core/services/shared/image-search.serv
 import { PaymentComponent } from '../../shared/payment/payment.component';
 import { marketplaceListModel } from '../../core/models/marketplace.model';
 import { MarketPlaceService } from '../../core/services/maketplace.service';
+import { HandoutuploadComponent } from '../../shared/handouts/handout-upload/handoutupload.component';
  
 @Component({
   selector: 'app-campaign-details',
@@ -263,7 +264,21 @@ export class CampaignDetailsComponent implements OnInit {
       this.router.navigate(['/ruleset/loot', ruleset.ruleSetId]);
     }
   }
-  
+
+  handOuts(ruleset: Ruleset) {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user.isGm) {
+      this.rulesetService.ruleset = ruleset;
+      this.bsModalRef = this.modalService.show(HandoutuploadComponent, {
+        class: 'modal-primary modal-lg',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'HandOuts';
+      this.bsModalRef.content.ruleset = ruleset;
+    }
+  }
+
   close(back?: boolean) {
     this.bsModalRef.hide();
     //this.modalService.hide(1);

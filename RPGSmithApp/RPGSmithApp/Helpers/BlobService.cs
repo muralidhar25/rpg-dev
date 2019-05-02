@@ -764,12 +764,21 @@ namespace RPGSmithApp.Helpers
 
         public double ConvertBytesToMegabytes(long bytes) => (bytes / 1024f) / 1024f;
         public double ConvertKilobytesToMegabytes(long kilobytes) => kilobytes / 1024f;
-        private bool doesUserHaveEnoughSpace(string container)
+        private bool doesUserHaveEnoughSpace(string container, string userId=null)
         {
             bool res = true;
-            string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
-            ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
-            UserSubscription subs = _accountManager.userSubscriptions(appUser.Id).Result;
+            UserSubscription subs = null;
+            if (string.IsNullOrEmpty(userId))
+            {
+                string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
+                ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
+                subs = _accountManager.userSubscriptions(appUser.Id).Result;
+            }
+            else {
+                subs = _accountManager.userSubscriptions(userId).Result;
+            }
+            
+            
             if (subs!=null)
             {
                 if (GetSpaceUsed(container)>=subs.StorageSpaceInMB)
@@ -779,5 +788,180 @@ namespace RPGSmithApp.Helpers
             }
             return res;
         }
+        public async Task<string> Uploadhandout(IFormFile httpPostedFile, string fileName, CloudBlobContainer cloudBlobContainer, string userId)
+        {
+            if (!doesUserHaveEnoughSpace(cloudBlobContainer.Name,userId))
+            {
+                throw new System.InvalidOperationException(StorageFullMessage);
+            }
+            CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(fileName + "" + Path.GetExtension(httpPostedFile.FileName));
+
+            
+            using (var ms1 = new MemoryStream())
+            {
+                httpPostedFile.CopyTo(ms1);
+                var fileBytes = ms1.ToArray();
+                Stream ms = new MemoryStream(fileBytes);
+                FileStreamResult res = new FileStreamResult(ms, httpPostedFile.ContentType);
+                cloudBlockBlob.Properties.ContentType = res.ContentType;
+                await cloudBlockBlob.UploadFromStreamAsync(ms);
+                return cloudBlockBlob.Uri.ToString();
+            }
+             
+        }
+        //public async Task<BlobResponse> BlobMyHandoutsAsync(string container)
+        //{
+        //    BlobResponse objBlobResponse = new BlobResponse();
+        //    List<Items> _items = new List<Items>();
+        //    try
+        //    {
+        //        BlobContinuationToken blobContinuationToken = null;
+        //        var cloudBlobContainer = GetCloudBlobContainer(container).Result;
+        //        do
+        //        {
+        //            var results = cloudBlobContainer.ListBlobsSegmentedAsync(null, blobContinuationToken);
+        //            blobContinuationToken = results.Result.ContinuationToken;
+
+        //            foreach (IListBlobItem _blobItem in results.Result.Results)
+        //            {
+        //                CloudBlockBlob item = _blobItem as CloudBlockBlob;
+        //                if (item != null)
+        //                {
+        //                    Items _item = new Items();
+        //                    _item.AbsolutePath = item.Uri.AbsolutePath;
+        //                    _item.AbsoluteUri = item.Uri.AbsoluteUri;
+        //                    _item.IsAbsoluteUri = item.Uri.IsAbsoluteUri;
+        //                    _item.OriginalString = item.Uri.OriginalString;
+        //                    _item.Container = item.Container.Name;
+        //                    _item.Size = item.Properties.Length / 1024;
+        //                    _item.LastModifiedDate = item.Properties.LastModified;
+        //                    _item.ContentType = item.Properties.ContentType;
+        //                    _item.name = item.Name;
+        //                    _items.Add(_item);
+        //                }
+        //            }
+        //        } while (blobContinuationToken != null);
+        //        _items = _items.OrderByDescending(q => q.LastModifiedDate).ToList();
+        //        objBlobResponse.items = _items;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //    }
+        //    return objBlobResponse;
+        //}
+        public async Task<object> BlobMyHandoutsAsync(string container, int Count = 39, int previousContainerImageNumber = 0)
+        {
+            int start = previousContainerImageNumber;
+            BlobResponse objBlobResponse = new BlobResponse();
+            List<Items> _items = new List<Items>();
+            List<Items> _Tempitems = new List<Items>();
+            try
+            {
+                //BlobContinuationToken blobContinuationToken = null;
+                //var cloudBlobContainer = GetCloudBlobContainer(container).Result;
+                ////do
+                ////{
+                //var results = cloudBlobContainer.ListBlobsSegmentedAsync(null, true, BlobListingDetails.All, (start + Count + 1), blobContinuationToken, null, null);
+
+                ////var results = cloudBlobContainer.ListBlobsSegmentedAsync(null, blobContinuationToken);
+                //blobContinuationToken = results.Result.ContinuationToken;
+
+                //var StockImagesResult = results.Result.Results.ToList();
+
+                //foreach (IListBlobItem _TempblobItem in StockImagesResult)
+                //{
+                //    CloudBlockBlob item = _TempblobItem as CloudBlockBlob;
+                //    if (item != null)
+                //    {
+                //        Items _item = new Items();
+                //        _item.AbsolutePath = item.Uri.AbsolutePath;
+                //        _item.AbsoluteUri = item.Uri.AbsoluteUri;
+                //        _item.IsAbsoluteUri = item.Uri.IsAbsoluteUri;
+                //        _item.OriginalString = item.Uri.OriginalString;
+                //        _item.Container = item.Container.Name;
+                //        _item.Size = item.Properties.Length / 1024;
+                //        _item.LastModifiedDate = item.Properties.LastModified;
+                //        _item.ContentType = item.Properties.ContentType;
+                //        _Tempitems.Add(_item);                      
+                //    }
+                //}
+
+                //_Tempitems = _Tempitems.OrderByDescending(q => q.LastModifiedDate).Skip(start).Take(Count).ToList();
+
+                //foreach (Items item in _Tempitems)
+                //{
+                //    //CloudBlockBlob item = _blobItem as CloudBlockBlob;
+                //    if (item != null)
+                //    {
+                //        Items _item = new Items();
+                //        _item.AbsolutePath = item.AbsolutePath;
+                //        _item.AbsoluteUri = item.AbsoluteUri;
+                //        _item.IsAbsoluteUri = item.IsAbsoluteUri;
+                //        _item.OriginalString = item.OriginalString;
+                //        _item.Container = item.Container;
+                //        _item.Size = item.Size;
+                //        _item.LastModifiedDate = item.LastModifiedDate;
+                //        _item.ContentType = item.ContentType;
+                //        _items.Add(_item);
+
+                //        if (_items.Count >= Count)
+                //        {
+                //            previousContainerImageNumber = results.Result.Results.Count() - 1;
+                //            break;
+                //        }
+                //    }
+                //}
+                ////} while (blobContinuationToken != null);
+                //_items = _items.OrderByDescending(q => q.LastModifiedDate).ToList();
+                //objBlobResponse.items = _items;
+
+                BlobContinuationToken blobContinuationToken = null;
+                var cloudBlobContainer = GetCloudBlobContainer(container).Result;
+                do
+                {
+                    var results = cloudBlobContainer.ListBlobsSegmentedAsync(null, blobContinuationToken);
+                    blobContinuationToken = results.Result.ContinuationToken;
+
+                    foreach (IListBlobItem _blobItem in results.Result.Results)
+                    {
+                        CloudBlockBlob item = _blobItem as CloudBlockBlob;
+                        if (item != null)
+                        {
+                            Items _item = new Items();
+                            _item.AbsolutePath = item.Uri.AbsolutePath;
+                            _item.AbsoluteUri = item.Uri.AbsoluteUri;
+                            _item.IsAbsoluteUri = item.Uri.IsAbsoluteUri;
+                            _item.OriginalString = item.Uri.OriginalString;
+                            _item.Container = item.Container.Name;
+                            _item.Size = item.Properties.Length / 1024;
+                            _item.LastModifiedDate = item.Properties.LastModified;
+                            _item.ContentType = item.Properties.ContentType;
+                            _item.name = item.Name;
+                            _items.Add(_item);
+                        }
+                    }
+                } while (blobContinuationToken != null);
+                _items = _items.OrderByDescending(q => q.LastModifiedDate).ToList();
+                bool flag = false;
+                if (start + Count <= _items.Count())
+                {
+                    flag = true;
+                }
+
+                _items = _items.Skip(start).Take(Count).ToList();
+
+                previousContainerImageNumber = flag ? (_items.Count() + 1) : _items.Count();
+
+
+                objBlobResponse.items = _items;
+            }
+            catch (Exception ex)
+            {
+            }
+            //  return objBlobResponse;
+            return new { count = Count, blobResponse = objBlobResponse, previousContainerImageNumber = previousContainerImageNumber };
+
+        }
+
     }
 }
