@@ -184,7 +184,8 @@ export class DiceTrayComponent implements OnInit {
                     d.isValidCommandName = true;
                 }
             }
-            else if (d.name.toUpperCase().startsWith('DF')) {  //Dice eg. DFxyz, Fate dice                
+            //else if (d.name.toUpperCase().startsWith('DF')) {  //Dice eg. DFxyz, Fate dice
+          else if (d.name.toUpperCase() == 'DF') {  //Dice eg. DFxyz, Fate dice  
                 diceTrayItem = {
                     diceTrayId: 0,
                     customDiceId: null,

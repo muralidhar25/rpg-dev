@@ -37,7 +37,7 @@ import { CharactersCharacterStat } from "../../../core/models/view-models/charac
 })
 
 export class DiceRollComponent implements OnInit {
-
+ 
   FATE = FATE_DICE;
   isLoading = false;
   title: string;
@@ -1312,7 +1312,7 @@ export class DiceRollComponent implements OnInit {
                 //let arr = d.dice.split('D');
                 let arr = d.dice.replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_');
                  //skip letter D from Dice Name------End--------
-                 
+
                 let CountOfDice = 1;
                 if (arr.length > 1) {
                   if (/^-?[0-9]\d*(\\d+)?$/g.test(arr[0])) {
@@ -1322,7 +1322,7 @@ export class DiceRollComponent implements OnInit {
                 if (d.dice.toUpperCase().charAt(arr[0].length) == 'D' && /^[a-zA-Z]/.test(d.dice.toUpperCase().charAt(arr[0].length + 1))) {
                   this.customDices.map((cd) => {
                     if (d.dice == cd.name) {
-                      valid = true
+                        valid = true
                     }
                   })
 
@@ -2088,7 +2088,7 @@ export class DiceRollComponent implements OnInit {
 
   }
 
-  singleDiceReRoll(dice: any, numberList: any, diceIndex: number, numberIndex: number) {    
+  singleDiceReRoll(dice: any, numberList: any, diceIndex: number, numberIndex: number) {
     this.loadingResult = false;
     if (dice.randomNumbersList[numberIndex].resultIndex) {
       dice.randomNumbersList[numberIndex].resultIndex = 0;
@@ -2133,7 +2133,7 @@ export class DiceRollComponent implements OnInit {
 
             //skip letter D from Dice Name------End--------
         if (diceExist) {
-          if (diceExist.startsWith('F')) {
+          if (diceExist == 'F') {
             let randomIndex = (Math.floor((Math.random() * (3)) + 1)) - 1;
             numberList.number = [-1, 0, 1][randomIndex];
           }

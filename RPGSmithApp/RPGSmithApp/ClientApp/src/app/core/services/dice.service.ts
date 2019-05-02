@@ -672,7 +672,8 @@ export class DiceService {
               d.isCustomNumeric = cDice[0].isNumeric;
             }
             //fate dice changes
-            else if (arr[1].toUpperCase().startsWith('F')) {
+            else if (arr[1].toUpperCase() =='F') {
+           // else if (arr[1].toUpperCase().startsWith('F')) {
               for (var i = 0; i < CountOfDice; i++) {
                 let randomIndex = (Math.floor((Math.random() * (3)) + 1)) - 1;
                 let resultName = [-1, 0, 1][randomIndex];
@@ -780,7 +781,8 @@ export class DiceService {
           if (d.dice.toUpperCase().charAt(arr[0].length) == 'D' && /^[a-zA-Z]/.test(d.dice.toUpperCase().charAt(arr[0].length + 1))) {
             let _randomNumbersList = [];
             let _randomNumbersListAfter = [];
-            if (arr[1].toUpperCase().startsWith('F')) {
+            if (arr[1].toUpperCase() == 'F') {
+            //if (arr[1].toUpperCase().startsWith('F')) {
               for (var i = 0; i < CountOfDice; i++) {
                 let randomIndex = (Math.floor((Math.random() * (3)) + 1)) - 1;
                 let resultName = [-1, 0, 1][randomIndex];
