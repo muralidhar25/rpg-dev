@@ -136,7 +136,6 @@ export class AddCustomDiceComponent implements OnInit {
         //})
     }
     submitForm() {
-
         let name = 'D' + this.customDice.name;
         let index = this.customDices.findIndex(x => x.name.toLowerCase() == name.toLowerCase());
         if (
@@ -149,7 +148,7 @@ export class AddCustomDiceComponent implements OnInit {
         else if (this.customDice.results.length < 2) {
             this.alertService.showMessage("Dice must have two result", "", MessageSeverity.error);
         }
-        else if (name.toUpperCase().startsWith('DF')) {
+        else if (name.toUpperCase() == 'DF') {
             this.customDice.name = '';
             this.alertService.showMessage("", "The Dice name 'DF' is already reserved for Fate/Fudge Dice, please select a different name to continue.", MessageSeverity.error);
             return false;
@@ -236,8 +235,9 @@ export class AddCustomDiceComponent implements OnInit {
     }
 
     checkName(e: any) {
-        let regexp = /^[a-zA-Z]/;
-        if (e.target.value) {
+      let regexp = /^[a-zA-Z]/;
+      if (e.target.value) {
+      
             if (!regexp.test(e.target.value.charAt(0))) {
                 this.IsFirstLetterNumeric = true;
             }
@@ -275,7 +275,7 @@ export class AddCustomDiceComponent implements OnInit {
                 this.alertService.showMessage("", "No Special Characters allowed in the Name, Only letters and numbers.", MessageSeverity.error);
             }            
         }
-        if (e.target.value.toUpperCase().startsWith('F')) {
+        if (e.target.value.toUpperCase() == 'F') {
             this.customDice.name = '';
             this.alertService.showMessage("", "The Dice name 'DF' is already reserved for Fate/Fudge Dice, please select a different name to continue.", MessageSeverity.error);
             return false;
