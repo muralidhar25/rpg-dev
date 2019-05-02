@@ -22,6 +22,7 @@ import { RulesetViewSpellDetailComponent } from "./character-records/spells/rule
 import { RulesetViewAbilityDetailComponent } from "./character-records/abilities/ruleset/ruleset-view-ability-detail/ruleset-view-ability-detail.component";
 import { RulesetViewBundleDetailComponent } from "./character-records/items/ruleset/ruleset-view-bundle-detail/ruleset-view-bundle-detail.component";
 
+
 const routes: Routes = [
   { path: "", component: CharactersComponent , data: { title: "Home" }},
   { path: "inventory/:id", component: CharacterItemsComponent, data: { title: "Item"} },
@@ -46,7 +47,6 @@ const routes: Routes = [
   { path: "ruleset/spell-details/:id", component: RulesetViewSpellDetailComponent, canActivate: [AuthGuard], data: { title: "Spells" } },
   { path: "ruleset/ability-details/:id", component: RulesetViewAbilityDetailComponent, canActivate: [AuthGuard], data: { title: "Abilities" } },
 
-  
 ];
 
 @NgModule({

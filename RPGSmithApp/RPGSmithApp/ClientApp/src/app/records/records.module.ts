@@ -23,6 +23,7 @@ import { AddlootComponent } from "./loot/addloot/addloot.component";
 import { CreatelootComponent } from "./loot/createloot/createloot.component";
 import { LootAddContainerItemComponent } from "./loot/loot-add-container-item/loot-add-container-item.component";
 import { LootAddContainerComponent } from "./loot/loot-add-container/loot-add-container.component";
+import { DeleteAllLootItemsComponent } from "./loot/delete-all-loot-items/delete-all-loot-items.component";
 
 
 @NgModule({
@@ -44,7 +45,8 @@ import { LootAddContainerComponent } from "./loot/loot-add-container/loot-add-co
     AddlootComponent,
     CreatelootComponent,
     LootAddContainerItemComponent,
-    LootAddContainerComponent
+    LootAddContainerComponent,
+    DeleteAllLootItemsComponent
   ],
   imports: [
     SharedModule
@@ -69,7 +71,8 @@ import { LootAddContainerComponent } from "./loot/loot-add-container/loot-add-co
     AddlootComponent,
     CreatelootComponent,
     LootAddContainerItemComponent,
-    LootAddContainerComponent
+    LootAddContainerComponent,
+    DeleteAllLootItemsComponent
   ],
   entryComponents: [
     AddItemMasterComponent,
@@ -81,7 +84,8 @@ import { LootAddContainerComponent } from "./loot/loot-add-container/loot-add-co
     AddlootComponent,
     CreatelootComponent,
     LootAddContainerItemComponent,
-    LootAddContainerComponent
+    LootAddContainerComponent,
+    DeleteAllLootItemsComponent
   ]
 })
 export class RecordsModule {}
