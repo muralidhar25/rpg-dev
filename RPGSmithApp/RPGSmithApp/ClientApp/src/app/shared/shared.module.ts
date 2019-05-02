@@ -61,7 +61,6 @@ import { PaymentComponent } from "./payment/payment.component";
 import { PlayerLootComponent } from "./player-loot/player-loot.component";
 import { CharactersFormComponent } from "./characters-form/characters-form.component";
 import { HandoutViewComponent } from "./handouts/handout-view/handout-view.component";
-import { FileSelectDirective } from "ng2-file-upload";
 import { HandoutFileViewComponent } from "./handouts/handout-file-view/handout-file-view.component";
 import { HandoutuploadComponent } from "./handouts/handout-upload/handoutupload.component";
   
@@ -95,7 +94,6 @@ import { HandoutuploadComponent } from "./handouts/handout-upload/handoutupload.
    PlayerLootComponent,
     CharactersFormComponent,
     HandoutViewComponent,
-    FileSelectDirective,
     HandoutFileViewComponent,
     HandoutuploadComponent
   ],

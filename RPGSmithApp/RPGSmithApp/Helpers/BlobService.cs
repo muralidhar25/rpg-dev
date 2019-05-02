@@ -965,3 +965,22 @@ namespace RPGSmithApp.Helpers
 
     }
 }
+
+
+//copy blob from one container to other
+// CloudBlobContainer sourceContainer = GetCloudBlobContainer("user-248c6bae-fab3-4e1f-b91b-f674de70a65d-handout").Result;
+// CloudBlobContainer targetContainer = GetCloudBlobContainer("user-248c6bae-fab3-4e1f-b91b-f674de70a65d").Result;
+// string blobName = "1_01-05-2019_16:30:28.png";
+// CloudBlockBlob sourceBlob = sourceContainer.GetBlockBlobReference(blobName);
+// CloudBlockBlob targetBlob = targetContainer.GetBlockBlobReference(blobName+"_copy");
+//await targetBlob.StartCopyAsync(sourceBlob);
+
+
+//Create folder in container
+// CloudBlobContainer sourceContainer = GetCloudBlobContainer("user-248c6bae-fab3-4e1f-b91b-f674de70a65d-handout").Result;
+// CloudBlobDirectory directory = sourceContainer.GetDirectoryReference("00_Folder");
+// CloudBlockBlob blockblob = directory.GetBlockBlobReference("favicon1.ico");
+//await blockblob.UploadFromFileAsync(@"F:\Vikas\Projects\Work for GM Account\RPGSmithApp\RPGSmithApp\ClientApp\src\favicon.ico");
+
+
+
