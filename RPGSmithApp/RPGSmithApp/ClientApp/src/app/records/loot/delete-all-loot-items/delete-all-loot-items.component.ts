@@ -88,10 +88,10 @@ export class DeleteAllLootItemsComponent implements OnInit {
 
     })
     if (this.multiLootIds == undefined) {
-      this.alertService.showMessage("Please select new Item Template to Add.", "", MessageSeverity.error);
+      this.alertService.showMessage("Please select new Loot to Delete.", "", MessageSeverity.error);
     }
     else if (this.multiLootIds.length == 0) {
-      this.alertService.showMessage("Please select new Item Template to Add.", "", MessageSeverity.error);
+      this.alertService.showMessage("Please select new Loot to Delete.", "", MessageSeverity.error);
     }
     else {
       this.deleteAllLootItems(itemMaster);

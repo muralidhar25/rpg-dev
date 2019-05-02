@@ -176,26 +176,6 @@ export class LootComponent implements OnInit {
           }
         }, () => { })
 
-    //this.itemMasterService.getItemMasterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
-    //  .subscribe(data => {
-
-    //    var _ItemMaster = data.ItemMaster;
-    //    for (var i = 0; i < _ItemMaster.length; i++) {
-    //      _ItemMaster[i].showIcon = false;
-    //      this.ItemMasterList.push(_ItemMaster[i]);
-    //    }
-    //    this.scrollLoading = false;
-
-    //  }, error => {
-    //    this.isLoading = false;
-    //    this.scrollLoading = false;
-    //    let Errors = Utilities.ErrorDetail("", error);
-    //    if (Errors.sessionExpire) {
-    //      //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-    //      this.authService.logout(true);
-    //    }
-    //  }, () => { });
-
   }
   showActionButtons(showActions) {
     this.showActions = !showActions;
@@ -338,79 +318,7 @@ export class LootComponent implements OnInit {
   }
 
 
-  //deleteItemTemplate(itemMaster: ItemMaster) {
-
-  //  let message = "Are you sure you want to delete this " + itemMaster.itemName
-  //    + " item template? Note: Any item(s) previously deployed from this template will not be affected.";
-
-  //  this.alertService.showDialog(message,
-  //    DialogType.confirm, () => this.deleteItemTemplateHelper(itemMaster), null, 'Yes', 'No');
-  //}
-
-  //private deleteItemTemplateHelper(itemMaster: ItemMaster) {
-  //  itemMaster.ruleSetId = this.ruleSetId;
-  //  this.isLoading = true;
-    
-  //    this.alertService.startLoadingMessage("", "Deleting Item");
-
-  //    //this.itemMasterService.deleteItemMaster(itemMaster.itemMasterId)
-  //    //    .subscribe(
-  //    //        data => {
-  //    //            setTimeout(() => {
-  //    //                this.isLoading = false;
-  //    //                this.alertService.stopLoadingMessage();}, 200);
-  //    //            this.alertService.showMessage("Item Template has been deleted successfully.", "", MessageSeverity.success);
-  //    //            this.ItemMasterList = this.ItemMasterList.filter((val) => val.itemMasterId != itemMaster.itemMasterId);
-  //    //            try {
-  //    //                this.noRecordFound = !this.ItemMasterList.length;
-  //    //            } catch (err) { }
-  //    //            //this.initialize();
-  //    //        },
-  //    //        error => {
-  //    //            setTimeout(() => {
-  //    //                this.isLoading = false;
-  //    //                this.alertService.stopLoadingMessage(); }, 200);
-  //    //            let _message = "Unable to Delete";
-  //    //            let Errors = Utilities.ErrorDetail(_message, error);
-  //    //            if (Errors.sessionExpire) {
-  //    //                //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-  //    //                this.authService.logout(true);
-  //    //            }
-  //    //            else
-  //    //                this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-  //    //        });
-
-  //  this.lootService.deleteLootItem(itemMaster)
-  //      .subscribe(
-  //        data => {
-  //          setTimeout(() => {
-  //            this.isLoading = false;
-  //            this.alertService.stopLoadingMessage();
-  //          }, 200);
-  //          this.alertService.showMessage("Item Template has been deleted successfully.", "", MessageSeverity.success);
-  //          this.ItemMasterList = this.ItemMasterList.filter((val) => val.itemMasterId != itemMaster.itemMasterId);
-  //          try {
-  //            this.noRecordFound = !this.ItemMasterList.length;
-  //          } catch (err) { }
-  //          //this.initialize();
-  //        },
-  //        error => {
-  //          setTimeout(() => {
-  //            this.isLoading = false;
-  //            this.alertService.stopLoadingMessage();
-  //          }, 200);
-  //          let _message = "Unable to Delete";
-  //          let Errors = Utilities.ErrorDetail(_message, error);
-  //          if (Errors.sessionExpire) {
-  //            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-  //            this.authService.logout(true);
-  //          }
-  //          else
-  //            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-  //        });
-  //  }
-
-  //}
+  
 
    GoToDetails(item: ItemMaster) {
     
@@ -485,34 +393,7 @@ export class LootComponent implements OnInit {
       this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
     } catch (err) { }
   }
-  //createBundle() {
-  //  // this.alertService.startLoadingMessage("", "Checking records");      
-  //  this.itemMasterService.getItemMasterCount(this.ruleSetId)
-  //    .subscribe(data => {
-  //      //this.alertService.stopLoadingMessage();
-  //      if (data < 2000) {
-  //        this.bsModalRef = this.modalService.show(CreatelootComponent, {
-  //          class: 'modal-primary modal-custom',
-  //          ignoreBackdropClick: true,
-  //          keyboard: false
-  //        });
-  //        this.bsModalRef.content.title = 'Create Bundle';
-  //        this.bsModalRef.content.button = 'CREATE';
-  //        this.bsModalRef.content.ruleSetId = this.ruleSetId;
-  //        this.bsModalRef.content.bundleVM = {
-  //          ruleSetId: this.ruleSetId,
-  //          ruleSet: this.RuleSet
-  //        };
-  //      }
-  //      else {
-  //        //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
-  //        this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
-  //      }
-  //    }, error => { }, () => { });
-
-
-  //}
- 
+  
 
   Give(item) {
     this.bsModalRef = this.modalService.show(GiveawayComponent, {
@@ -568,7 +449,7 @@ export class LootComponent implements OnInit {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
         }, 200);
-        this.alertService.showMessage("Item Template has been deleted successfully.", "", MessageSeverity.success);
+        this.alertService.showMessage("loot Item Template has been deleted successfully.", "", MessageSeverity.success);
         this.ItemMasterList = this.ItemMasterList.filter((val) => val.itemMasterId != itemMaster.itemMasterId);
         try {
           this.noRecordFound = !this.ItemMasterList.length;

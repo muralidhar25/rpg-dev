@@ -256,6 +256,10 @@ export class CreatelootComponent implements OnInit {
     }
     return false;
   }
+  
+  submitForm(itemMaster: any) {
+    this.validateSubmit(itemMaster);
+  }
   validateSubmit(itemMaster: any) {
     itemMaster.itemMasterAbilityVM = this.selectedAbilities.map(x => {
       return { abilityId: x.abilityId, itemMasterId: itemMaster.itemMasterId };
@@ -290,10 +294,9 @@ export class CreatelootComponent implements OnInit {
     itemMaster.itemMasterSpell = itemMaster.itemMasterSpellVM;
     //else if (itemMaster.itemMasterSpell.length > 0 && itemMaster.itemMasterSpellVM.length == 0)
     //   itemMaster.itemMasterSpellVM = itemMaster.itemMasterSpell;
-
     this.isLoading = true;
-    let _msg = itemMaster.itemMasterId == 0 || itemMaster.itemMasterId === undefined ? "Creating Item Template.." : "Updating Item Template..";
-    if (this.itemMasterFormModal.view === VIEW.DUPLICATE) _msg = "Duplicating Item Template..";
+    let _msg = itemMaster.itemMasterId == 0 || itemMaster.itemMasterId === undefined ? "Creating Loot Item Template.." : "Updating Loot Item Template..";
+    if (this.itemMasterFormModal.view === VIEW.DUPLICATE) _msg = "Duplicating loot Item Template..";
     this.alertService.startLoadingMessage("", _msg);
 
     if (this.fileToUpload != null) {
@@ -311,10 +314,6 @@ export class CreatelootComponent implements OnInit {
       this.submit(itemMaster);
     }
   }
-  submitForm(itemMaster: any) {
-    this.validateSubmit(itemMaster);
-  }
-
   private fileUploadFromBing(file: string, ext: string, itemMaster: any) {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
@@ -370,7 +369,6 @@ export class CreatelootComponent implements OnInit {
   }
 
   private submit(itemMaster: any) {
-    console.log('347',itemMaster);
     if (this.itemMasterFormModal.view === VIEW.DUPLICATE) {
       this.duplicateItemMaster(itemMaster);
     }
@@ -395,7 +393,7 @@ export class CreatelootComponent implements OnInit {
       data => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          let message = modal.itemMasterId == 0 || modal.itemMasterId === undefined ? "Item Template has been created successfully." : "Item Template has been updated successfully.";
+          let message = modal.itemMasterId == 0 || modal.itemMasterId === undefined ? "Loot Item Template has been created successfully." : " Loot Item Template has been updated successfully.";
           if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
           this.close();
@@ -434,19 +432,20 @@ export class CreatelootComponent implements OnInit {
   duplicateItemMaster(modal: any) {
     modal.RuleSetId = this._ruleSetId;
     this.isLoading = true;
-    this.itemMasterService.duplicateItemMaster<any>(modal)
+    this.lootService.duplicateLootItem<any>(modal)
       .subscribe(
         data => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          let message = "Item Template has been duplicated successfully.";
+          let message = " Loot Item Template has been duplicated successfully.";
           if (data !== "" && data !== null && data !== undefined)
             message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
           this.close();
-          if (this.fromDetail)
-            this.router.navigate(['/ruleset/item-master', this._ruleSetId]);
-          else this.sharedService.updateItemMasterList(true);
+          //if (this.fromDetail)
+          //  this.router.navigate(['/ruleset/item-master', this._ruleSetId]);
+          //else
+          this.sharedService.updateItemsList(true);
         },
         error => {
           this.isLoading = false;

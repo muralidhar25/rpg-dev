@@ -1385,7 +1385,7 @@ namespace RPGSmithApp.Controllers
             if (ModelState.IsValid)
             {
                 if (_itemMasterService.CheckDuplicateItemMaster(model.ItemName.Trim(), model.RuleSetId).Result)
-                    return BadRequest("The Item Master Name " + model.ItemName + " had already been used. Please select another name.");
+                    return BadRequest("The Loot Name " + model.ItemName + " had already been used. Please select another name.");
 
                 var itemmaster = _itemMasterService.GetItemMasterById(model.ItemMasterId);
 

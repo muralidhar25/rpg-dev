@@ -29,9 +29,9 @@ export class LootService extends EndpointFactory {
 
   private readonly _lootItemsTakeByplayerUrl: string = "/api/item/addLootItems";
 
-  
   private readonly _getItemMasterLootsForDeleteUrl: string = this.configurations.baseUrl + "/api/ItemMaster/GetItemMasterLootsForDelete";
 
+  private readonly _getDuplicateLootItemUrl: string = this.configurations.baseUrl + "/api/ItemMaster/DuplicateLoot";
 
 
   get getLootUrl() { return this.configurations.baseUrl + this._getLootUrl; }
@@ -81,15 +81,15 @@ export class LootService extends EndpointFactory {
       })
   }
 
-  deleteLootItem<T>(item): Observable<T> {
-    let endpointUrl = this._getDeleteLootItemUrl;
-    console.log(item);
-    return this.http.post<T>(endpointUrl,JSON.stringify(item),this.getRequestHeaders())
-      .catch(error => {
-        return this.handleError(error, () => this.deleteLootItem(item));
-      });
-  }
+  duplicateLootItem<T>(item): Observable<T> {
+    let endpointUrl = this._getDuplicateLootItemUrl;
 
+    return this.http.post<T>(endpointUrl, JSON.stringify(item), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.duplicateLootItem(item));
+      })
+  }
+ 
   giveItemTocharacter<T>(item, lootId): Observable<T> {
     let endpointUrl = `${this.getGivelootItemUrl}?lootId=${lootId}`;
     return this.http.post<T>(endpointUrl,JSON.stringify(item),this.getRequestHeaders())
@@ -146,6 +146,16 @@ export class LootService extends EndpointFactory {
       });
 
   }
+
+  deleteLootItem<T>(item): Observable<T> {
+    let endpointUrl = this._getDeleteLootItemUrl;
+    console.log(item);
+    return this.http.post<T>(endpointUrl, JSON.stringify(item), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deleteLootItem(item));
+      });
+  }
+
 }
 
 

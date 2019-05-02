@@ -2,13 +2,13 @@
 
   <div class="modal-content">
     <div class="modal-header">
-      <h5 class="modal-title" id="colorSelectionPopupTitle">Loot</h5>
+      <h5 class="modal-title" id="colorSelectionPopupTitle">Delete Loot</h5>
       <!--<a href="https://rpgsmith.com/help/#CampaignInvite" class="help-icon icon icon-Gen-Help" target="_blank"></a>-->
       <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
     </div>
   </div>
-  <div class="modal-body players-component">
-    <div class="modal-body" *ngIf="!isLoading">
+  <div class="modal-body players-component"  *ngIf="!isLoading">
+    
       <div class="form-row">
 
         <div class="col-12 col-md-12 col-sm-12">
@@ -57,12 +57,12 @@
         </div>
 
       </div>
-    </div>
+  
   </div>
 
   <app-loader [isLoading]="isLoading"></app-loader>
 
-  <div class="modal-footer justify-content-between">
+  <div class="modal-footer">
       <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
       <button class="btn btn-accent" [disabled]="isLoading" type="submit">Delete</button>
   </div>
