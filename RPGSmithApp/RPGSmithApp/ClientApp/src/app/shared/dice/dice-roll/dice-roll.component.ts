@@ -1329,7 +1329,9 @@ export class DiceRollComponent implements OnInit {
                   try {
                      //skip letter D from Dice Name------Start--------
                    // if (!valid && !d.dice.toUpperCase().split('D')[1].startsWith('F')) {
-                    if (!valid && !d.dice.toUpperCase().replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_')[1].startsWith('F')) {
+                    //if (!valid && !d.dice.toUpperCase().replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_')[1].startsWith('F')) {
+
+                    if (!valid && d.dice.toUpperCase().replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_')[1] != 'F') {
                       //skip letter D from Dice Name------End--------
                       IsCmdValid = false;
                     }
