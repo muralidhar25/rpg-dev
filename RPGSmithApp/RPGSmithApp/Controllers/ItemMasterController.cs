@@ -1342,6 +1342,106 @@ namespace RPGSmithApp.Controllers
 
             return itemlist;// Utilities.CleanModel<ItemListViewModel>(itemlist);
         }
+        
+        [HttpPost("DuplicateLoot")]
+        public async Task<IActionResult> DuplicateLoot([FromBody] CreateItemMasterLootModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (_itemMasterService.CheckDuplicateItemMaster(model.ItemName.Trim(), model.RuleSetId).Result)
+                    return BadRequest("The Item Master Name " + model.ItemName + " had already been used. Please select another name.");
+
+                var itemmaster = _itemMasterService.GetItemMasterById(model.ItemMasterId);
+
+                model.ItemMasterId = 0;
+                var itemMasterModel = Mapper.Map<ItemMaster>(model);
+                var result = await _itemMasterService.CreateItemMaster(itemMasterModel, itemmaster.ItemMasterSpell.ToList(), itemmaster.ItemMasterAbilities.ToList());
+
+                foreach (var imcViewModels in itemmaster.ItemMasterCommand)
+                {
+                    await _iItemMasterCommandService.InsertItemMasterCommand(new ItemMasterCommand()
+                    {
+                        Command = imcViewModels.Command,
+                        Name = imcViewModels.Name,
+                        ItemMasterId = result.ItemMasterId
+                    });
+                }
+
+                try
+                {
+                    ItemMasterLoot loot = new ItemMasterLoot()
+                    {
+                        ContainedIn = model.ContainedIn,
+                        IsIdentified = model.IsIdentified,
+                        IsShow = model.IsShow,
+                        IsVisible = model.IsVisible,
+                        Quantity = model.Quantity,
+                        ItemMasterId = result.ItemMasterId,
+                    };
+
+                    var newLoot = _itemMasterService.CreateItemMasterLoot(result, loot);
+                    var itemDomain = model;
+                    if (itemDomain.ContainedIn != null && itemDomain.ContainedIn > 0 && !(itemDomain.IsContainer == null ? false : true))
+                    {
+                        var containerItem = _itemMasterService.getLootDetails((int)itemDomain.ContainedIn).Result;
+                        var _itemContainer = itemDomain;// containerItem;//Mapper.Map<ItemEditModel>(containerItem)
+
+                        List<ViewModels.CreateModels.containerItemIds> _containerItemIds = new List<ViewModels.CreateModels.containerItemIds>();
+                        var _item = itemDomain;
+                        foreach (var itm in await _itemMasterService.GetByContainerId(containerItem.LootId))
+                        {
+                            if (itm.LootId != _item.LootId)
+                            {
+                                ViewModels.CreateModels.containerItemIds __containerItemIds = new ViewModels.CreateModels.containerItemIds();
+                                __containerItemIds.ItemId = itm.LootId;
+                                _containerItemIds.Add(__containerItemIds);
+                            }
+                        }
+                        if (_item.ContainedIn > 0)
+                        {
+                            ViewModels.CreateModels.containerItemIds __containerItemIds = new ViewModels.CreateModels.containerItemIds();
+                            __containerItemIds.ItemId = _item.LootId;
+                            _containerItemIds.Add(__containerItemIds);
+                        }
+                        _itemContainer.ContainerItems = _containerItemIds;
+
+                        decimal TotalWeight = CalculateTotalWeightItem(new ItemEditModel()
+                        {
+                            Weight = _itemContainer.Weight == null ? 0 : (decimal)_itemContainer.Weight,
+                            Quantity = _itemContainer.Quantity,
+
+                            ContainerItems = _itemContainer.ContainerItems == null ? new List<ViewModels.EditModels.containerItemIds>() : _itemContainer.ContainerItems.Select(x => new ViewModels.EditModels.containerItemIds()
+                            {
+                                ItemId = x.ItemId,
+                            }).ToList(),
+                            ContainerWeightModifier = _itemContainer.ContainerWeightModifier,
+                            PercentReduced = _itemContainer.PercentReduced,
+                            TotalWeightWithContents = _itemContainer.TotalWeightWithContents,
+                        });
+                        await _itemMasterService.UpdateWeight(_itemContainer.ItemMasterId, TotalWeight);
+                    }
+                    ///////////
+
+                    if (itemDomain.ContainerItems != null)
+                    {
+                        //remove all contains item
+                        await _itemMasterService.DeleteContainer(newLoot.LootId);
+                        foreach (var itm in itemDomain.ContainerItems)
+                        {
+                            await _itemMasterService.UpdateContainer(itm.ItemId, newLoot.LootId);
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                { return BadRequest(ex.Message); }
+
+
+                return Ok();
+            }
+
+            return BadRequest(Utilities.ModelStateError(ModelState));
+        }
 
         #endregion
     }
