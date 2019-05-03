@@ -219,13 +219,13 @@
               <div class="card-actions show" *ngIf="Item?.showIcon && isListView && !pauseItemCreate">
                 <button type="button" (click)="editItem(Item)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
                 <button type="button" (click)="duplicateItem(Item)" title="Duplicate" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
-                <button type="button" (click)="deleteItem(Item)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
+                <button type="button" (click)="deleteItem(Item,true)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
                 <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
               </div>
               <div class="item-actions mobile-buttons" *ngIf="isListView">
                 <button *ngIf="Item?.isEquipped" type="button" (click)="equippedItem(Item)" class="btn btn-accent icon-Rec-UnEquip"> Unequip</button>
                 <button *ngIf="!Item?.isEquipped" type="button" (click)="equippedItem(Item)" class="btn btn-accent icon-Rec-Equipped"> Equip</button>
-                <button type="button" (click)="deleteItem(Item)" class="btn btn-accent icon-Rec-Drop"> Drop</button>
+                <button type="button" (click)="deleteItem(Item,false)" class="btn btn-accent icon-Rec-Drop"> Drop</button>
                 <button *ngIf="Item?.showUse" type="button" (click)="useItem(Item)" class="btn btn-accent icon-Tile-Execute"> Use</button>
               </div>
               <div class="item-actions" *ngIf="!isListView">
