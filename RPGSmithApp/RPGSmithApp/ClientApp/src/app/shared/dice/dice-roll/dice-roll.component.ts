@@ -37,7 +37,7 @@ import { CharactersCharacterStat } from "../../../core/models/view-models/charac
 })
 
 export class DiceRollComponent implements OnInit {
- 
+
   FATE = FATE_DICE;
   isLoading = false;
   title: string;
@@ -67,7 +67,7 @@ export class DiceRollComponent implements OnInit {
   showDetailsByDefault: boolean = false;
   numberToAdd: number;
   showShowDiceBtn: boolean = false;
-  isFromTile: boolean = false;  
+  isFromTile: boolean = false;
   oldCommandSaved: string = undefined;
   private readonly AND_Error_Message: string = "Only 5 ‘AND’s allowed in one command string. Please update your command and try again.";
   private readonly COMMAND_Error = "Invalid Command. Please check the command string and try again.";
@@ -103,7 +103,7 @@ export class DiceRollComponent implements OnInit {
     private characterCommandService: CharacterCommandService, private _diceService: DiceService,
     private rulesetService: RulesetService
 
-    , private location: PlatformLocation) {   
+    , private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
     this.diceSection = true;
     this.rollSection = false;
@@ -147,7 +147,7 @@ export class DiceRollComponent implements OnInit {
       //this.character = undefined;
       this.charactersService.getCharactersById<any>(this.characterId)
         .subscribe(data => {
-          this.character = data;          
+          this.character = data;
           this.showTotal = true;
           try {
             if (this.character.lastCommandResult)
@@ -162,7 +162,7 @@ export class DiceRollComponent implements OnInit {
       this.diceRolledData = this.characterCommandService.DiceRollData(this.characterId);
 
       this.isFromTile = this.bsModalRef.content.tile ? true : false;
-     
+
       if (this.isFromTile) {
         this.rollSection = true;
         this.isLoading = true;
@@ -172,10 +172,10 @@ export class DiceRollComponent implements OnInit {
         .subscribe(data => {
           let model: any = data;
           this.statdetails = model.characterCharacterstats;
-       
+
           this.customDices = model.customDices;
-          
-          this.customDices= DiceService.BindDeckCustomDices(this.customDices);
+
+          this.customDices = DiceService.BindDeckCustomDices(this.customDices);
           this.diceTray = model.diceTray;
           this.defaultDices = model.defaultDices;
           let ruleset = model.ruleSet;
@@ -195,28 +195,28 @@ export class DiceRollComponent implements OnInit {
               this.characterCommandModel.command = executeTile.command;
               this.onClickRoll(this.characterCommandModel, executeTile.command);
             }
-            else if (+this.bsModalRef.content.tile == TILES.COMMAND) {            
+            else if (+this.bsModalRef.content.tile == TILES.COMMAND) {
               let commandTile = this.bsModalRef.content.commandTile;
 
               this.characterCommandModel.command = commandTile.command;
               this.onClickRoll(this.characterCommandModel, commandTile.command);
             }
-            else if (+this.bsModalRef.content.tile == TILES.CHARACTERSTAT) {             
+            else if (+this.bsModalRef.content.tile == TILES.CHARACTERSTAT) {
               let characterStatTile = this.bsModalRef.content.characterStatTile;
 
               this.characterCommandModel.command = characterStatTile.charactersCharacterStat.command;
               this.onClickRoll(this.characterCommandModel, this.characterCommandModel.command);
             }
-            else if (+this.bsModalRef.content.tile == -1) {              
+            else if (+this.bsModalRef.content.tile == -1) {
               this.numberToAdd = undefined;// this.bsModalRef.content.numberToAdd
               this.showShowDiceBtn = this.showDetailsByDefault = true;
             }
-            else if (+this.bsModalRef.content.tile == -2) {              
+            else if (+this.bsModalRef.content.tile == -2) {
               let command = this.bsModalRef.content.command;
               this.characterCommandModel.command = command;
               this.onClickRoll(this.characterCommandModel, command);
             }
-            else if (+this.bsModalRef.content.tile == -3) {              
+            else if (+this.bsModalRef.content.tile == -3) {
               //this.numberToAdd = this.bsModalRef.content.numberToAdd
               this.showShowDiceBtn = true;
               this.showDetailsByDefault = false;
@@ -346,7 +346,7 @@ export class DiceRollComponent implements OnInit {
 
   //DICE BUTTON CLICK
   commandOnDiceClick(dice: DiceRoll) {
-    
+
     // characterCommandModel: CharacterCommand
     let _command = '';
 
@@ -375,9 +375,9 @@ export class DiceRollComponent implements OnInit {
         let selectedStat: string = mod.selectedStat;
         commandToValidate = commandToValidate.replace(selectedStat.toUpperCase(), "D");
       });
-      
-        commandToValidate = commandToValidate.replace(/\[([^\]]+)\]/g, '1');
-      
+
+      commandToValidate = commandToValidate.replace(/\[([^\]]+)\]/g, '1');
+
       let isValidCommand = DiceService.validateCommandTextNew(commandToValidate);
       if (!isValidCommand) {
         this.alertService.resetStickyMessage();
@@ -484,7 +484,7 @@ export class DiceRollComponent implements OnInit {
   }
 
   generateCommandOnChange(command: string, diceRollModel: DiceRoll[]) {
-    
+
     if (!command) {
       this.recycleDice();
       return false;
@@ -577,7 +577,7 @@ export class DiceRollComponent implements OnInit {
           IDs.map((rec) => {
             this.statdetails.charactersCharacterStat.map((stat) => {
               if (rec.id == stat.characterStat.statName.toUpperCase()) {
-                let num:string = '0'; let isCMD = false;
+                let num: string = '0'; let isCMD = false;
                 let cmd = "";
                 //let conditionResult = " ";
                 switch (rec.statType) {
@@ -624,7 +624,7 @@ export class DiceRollComponent implements OnInit {
                     //} else {
                     //  num = +result;
                     //}
-                   // num = result;
+                    // num = result;
                     num = ServiceUtil.GetCalcuationsResults(result, this.statdetails, this.charactersCharacterStats, this.character);
                     break;
                   default:
@@ -717,7 +717,7 @@ export class DiceRollComponent implements OnInit {
   }
 
   showLastResult(character: Characters) {
-    
+
     this.spinner = true;
     this.charactersService.getCharactersByIdDice<any>(this.characterId)
       .subscribe(data => {
@@ -937,7 +937,7 @@ export class DiceRollComponent implements OnInit {
 
         calculationString = DiceService.showTextCommandSquareBraces(calculationString);
 
-        
+
         IDs.map((rec) => {
           this.statdetails.charactersCharacterStat.map((stat) => {
             if (rec.id == stat.characterStat.statName.toUpperCase()) {
@@ -947,7 +947,7 @@ export class DiceRollComponent implements OnInit {
                 case STAT_TYPE.Command:
                   num = -1;
                   whileCMD = stat.command;
-                  
+
                   do {
                     isCMD = false;
                     this.commandStatTypeInCommand(whileCMD).subscribe((x) => {
@@ -1056,56 +1056,56 @@ export class DiceRollComponent implements OnInit {
     } catch (err) { }
   }
   onClickRoll(characterCommand: CharacterCommand, _mainCommandText: string, lastResultArray?: any) {
-   
+
     let anyCommandIsCustomWithNonNumeric = false;
     this.loadingResult = false;
     let command = characterCommand.command;
     let commandIfERROR = characterCommand.command;
-   
+
     if (!command && this.isFromTile) {
       this.alertService.showMessage("The command associated with this record has been removed. Please update the record to resolve.", "", MessageSeverity.error);
-       if (this.diceSection = true) {
-            this.rollSection = false;
-          }
-          else if (this.rollSection = true) {
-            this.diceSection = false;
-            }
+      if (this.diceSection = true) {
+        this.rollSection = false;
+      }
+      else if (this.rollSection = true) {
+        this.diceSection = false;
+      }
     }
     else if (!command) {
       this.alertService.showMessage("Please enter a command.", "", MessageSeverity.error);
-       if (this.diceSection = true) {
-            this.rollSection = false;
-          }
-          else if (this.rollSection = true) {
-            this.diceSection = false;
-            }
+      if (this.diceSection = true) {
+        this.rollSection = false;
+      }
+      else if (this.rollSection = true) {
+        this.diceSection = false;
+      }
     }
     else if (command.trim() == '') {
       this.alertService.showMessage("Please enter a command.", "", MessageSeverity.error);
-       if (this.diceSection = true) {
-            this.rollSection = false;
-          }
-          else if (this.rollSection = true) {
-            this.diceSection = false;
-            }
+      if (this.diceSection = true) {
+        this.rollSection = false;
+      }
+      else if (this.rollSection = true) {
+        this.diceSection = false;
+      }
     }
     else {
-     
+
       this.mainCommandText = !_mainCommandText || _mainCommandText == "" ? command : _mainCommandText;
       command = this.mainCommandText.toUpperCase();
       if (command.length >= 500) {
         this.alertService.showMessage("A maximum of 500 characters is allowed for a command. Please adjust your command string and try again.", "", MessageSeverity.error);
-         if (this.diceSection = true) {
-            this.rollSection = false;
-          }
-          else if (this.rollSection = true) {
-            this.diceSection = false;
-            }
+        if (this.diceSection = true) {
+          this.rollSection = false;
+        }
+        else if (this.rollSection = true) {
+          this.diceSection = false;
+        }
       }
       else {
 
         let AND_LIMIT = DiceService.splitWithoutEmpty(command.trim().toUpperCase(), 'AND');
-        if (AND_LIMIT.length > this.totalAndLimit) {          
+        if (AND_LIMIT.length > this.totalAndLimit) {
           this.alertService.resetStickyMessage();
           this.alertService.showStickyMessage('', this.AND_Error_Message, MessageSeverity.error);
           setTimeout(() => { this.alertService.resetStickyMessage(); }, 1000);
@@ -1134,9 +1134,9 @@ export class DiceRollComponent implements OnInit {
             let IDs: any[] = [];
             finalCalcString = calculationString;
             if (calculationString) {
-              calculationString= DiceService.hideTextCommandSquareBraces(calculationString);
+              calculationString = DiceService.hideTextCommandSquareBraces(calculationString);
               calculationString.split(/\[(.*?)\]/g).map((rec) => {
-              
+
                 let id = ''; let flag = false; let type = 0; let statType = 0;
                 let isValue = false; let isSubValue = false; let isCurrent = false; let isMax = false;
 
@@ -1182,9 +1182,9 @@ export class DiceRollComponent implements OnInit {
                 }
               })
 
-             
+
               calculationString = DiceService.showTextCommandSquareBraces(calculationString);
-              
+
               IDs.map((rec) => {
                 this.statdetails.charactersCharacterStat.map((stat) => {
                   if (rec.id == stat.characterStat.statName.toUpperCase()) {
@@ -1257,7 +1257,9 @@ export class DiceRollComponent implements OnInit {
                   }
 
                 });
+
                 finalCalcString = calculationString;
+                console.log('calculationString', finalCalcString);
               });
             }
             ////////////////////////////////                    
@@ -1271,7 +1273,7 @@ export class DiceRollComponent implements OnInit {
         //////////////////////////////////////////////
         //add mod & validate command            
         let commandToValidate = command.trim();
- 
+
         this.addModArray.map(mod => {
           //let charactersCharacterStatId = mod.charactersCharacterStatId;
           //let selectedStatValue = mod.selectedStatValue;
@@ -1293,8 +1295,8 @@ export class DiceRollComponent implements OnInit {
           }
           else if (this.rollSection = true) {
             this.diceSection = false;
-            }
-            return false;
+          }
+          return false;
         }
 
         if (this.customDices.length > 0) {
@@ -1306,10 +1308,10 @@ export class DiceRollComponent implements OnInit {
               let valid = true;
               if (d.dice.length >= 2) {
                 valid = false
-                 //skip letter D from Dice Name------Start--------
+                //skip letter D from Dice Name------Start--------
                 //let arr = d.dice.split('D');
                 let arr = d.dice.replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_');
-                 //skip letter D from Dice Name------End--------
+                //skip letter D from Dice Name------End--------
 
                 let CountOfDice = 1;
                 if (arr.length > 1) {
@@ -1320,13 +1322,13 @@ export class DiceRollComponent implements OnInit {
                 if (d.dice.toUpperCase().charAt(arr[0].length) == 'D' && /^[a-zA-Z]/.test(d.dice.toUpperCase().charAt(arr[0].length + 1))) {
                   this.customDices.map((cd) => {
                     if (d.dice == cd.name) {
-                        valid = true
+                      valid = true
                     }
                   })
 
                   try {
-                     //skip letter D from Dice Name------Start--------
-                   // if (!valid && !d.dice.toUpperCase().split('D')[1].startsWith('F')) {
+                    //skip letter D from Dice Name------Start--------
+                    // if (!valid && !d.dice.toUpperCase().split('D')[1].startsWith('F')) {
                     //if (!valid && !d.dice.toUpperCase().replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_')[1].startsWith('F')) {
 
                     if (!valid && d.dice.toUpperCase().replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_')[1] != 'F') {
@@ -1371,7 +1373,7 @@ export class DiceRollComponent implements OnInit {
         //}
         let isInvalidFECommand = false;
         if (this.characterMultipleCommands) {
-          if (this.characterMultipleCommands.length) {            
+          if (this.characterMultipleCommands.length) {
             this.characterMultipleCommands.map((x) => {
               if (x.isInvalidFECommand) {
                 this.alertService.showMessage("Please enter a valid command.", "", MessageSeverity.error);
@@ -1382,7 +1384,7 @@ export class DiceRollComponent implements OnInit {
           }
         }
         if (isInvalidFECommand) {
-          this.alertService.showMessage("Please enter a valid command.", "", MessageSeverity.error);          
+          this.alertService.showMessage("Please enter a valid command.", "", MessageSeverity.error);
           return false;
         }
         let __calculationCommand = __characterMultipleCommands.calculationCommand.toString();
@@ -1459,23 +1461,13 @@ export class DiceRollComponent implements OnInit {
           //--END variable to hide Exploded dice--//
         });
 
-
-        //changes -- For #696 --//
-        console.log(this.characterCommandModel.command);
-        if (!this.characterCommandModel.command ) {
-          this.characterCommandModel.command = __calculationCommand;
-        }
-       // this.characterCommandModel.command = __calculationCommand;
+        this.characterCommandModel.command = __calculationCommand;
         this.characterCommandModel.lastResult = __calculationResult;
         this.characterCommandModel.lastResultNumbers = __calculationString;
         this.characterCommandModel.isCustomNumericCommand = __isCustomNumericCommand;
-        this.characterCommandModel.isCustomDice = __characterMultipleCommands.isResultWithCustomDice   
+        this.characterCommandModel.isCustomDice = __characterMultipleCommands.isResultWithCustomDice
 
-        //changes -- For #696 --//
-
-        this.character.lastCommand = this.characterCommandModel.command;
-       // this.character.lastCommand = commandTxt;
-
+        this.character.lastCommand = commandTxt;
         this.character.lastCommandResult = __calculationString;
         //let textResult = this.fillBeforeAndAfterText(characterCommand.command, true);
         //this.beforeResultText = textResult.start;
@@ -1489,7 +1481,7 @@ export class DiceRollComponent implements OnInit {
             this.rollAgainBtnText = 'Roll Again';
           }
         }
-        
+
         setTimeout(() => {
           //this.characterCommandModel.lastResult = __calculationResult;
           //this.characterCommandModel.lastResultNumbers = __calculationString;
@@ -1499,10 +1491,7 @@ export class DiceRollComponent implements OnInit {
 
             const characterLastCommand = new CharacterLastCommand();
             characterLastCommand.characterId = characterCommand.characterId;
-
-           
-             characterLastCommand.lastCommand =  commandTxt;
-
+            characterLastCommand.lastCommand = commandTxt;
             characterLastCommand.lastCommandResult = __calculationString;
             characterLastCommand.lastCommandTotal = __calculationResult;
 
@@ -1519,13 +1508,14 @@ export class DiceRollComponent implements OnInit {
               }
 
             });
-            
+
             characterLastCommand.lastCommandValues = lastCommandValues; //
+
             this.character.lastCommand = this.characterCommandModel.command;
             this.character.lastCommandResult = this.characterCommandModel.lastResultNumbers;
             this.character.lastCommandValues = lastCommandValues;
             this.character.lastCommandTotal = characterLastCommand.lastCommandTotal;
-            
+
             /**/
             if (this.oldCommandSaved) {
               //characterLastCommand.lastCommand = this.oldCommandSaved;
@@ -1534,7 +1524,7 @@ export class DiceRollComponent implements OnInit {
             //alert(this.isFromTile);
             //if (!this.isFromTile)
             //////Save multiple command using AND keyword/////////
-            
+
             if (this.characterMultipleCommands) {
               if (this.characterMultipleCommands.length > 1) {
                 this.characterMultipleCommands.map((cmd, index) => {
@@ -1583,7 +1573,7 @@ export class DiceRollComponent implements OnInit {
 
             this.diceRolledData.forEach(diceRoll => {
               if (!diceRoll.static)
-               diceRoll.randomNumbersList.forEach(num => {
+                diceRoll.randomNumbersList.forEach(num => {
                   num.isAnimated = num.hideExplode ? true : false;
                   num.isMax = diceRoll.diceNumber === num.number ? true : false;
                   num.isMin = num.number === 1 ? true : false;
@@ -1620,7 +1610,7 @@ export class DiceRollComponent implements OnInit {
           //    _maxNum = +_maxN > _maxNum ? +_maxN : _maxNum;
           //    _minNum = +_minN > _minNum ? (_minNum == 0 ? +_minN : _minNum) : +_minN;
           //});
-          
+
           this.loadingResult = true;
         }, 1200);
 
@@ -2136,14 +2126,14 @@ export class DiceRollComponent implements OnInit {
         })
         //If FATE dice
 
-            //skip letter D from Dice Name------Start--------
+        //skip letter D from Dice Name------Start--------
 
         //let diceExist = dice.dice.toUpperCase().split('D')[1];
 
         let diceExist = dice.dice.toUpperCase().replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_')[1];
 
 
-            //skip letter D from Dice Name------End--------
+        //skip letter D from Dice Name------End--------
         if (diceExist) {
           if (diceExist == 'F') {
             let randomIndex = (Math.floor((Math.random() * (3)) + 1)) - 1;
@@ -2153,27 +2143,27 @@ export class DiceRollComponent implements OnInit {
       }
       else {
         let diceNum = dice.diceNumber;
-        
+
         if (dice.operator == "FE") {
           let DiceNumberArray = [];
-          
+
           dice.allDicesPresentInFE.map((d) => {
             d.randomNumbersListAfter.map((num) => {
-              DiceNumberArray.push(d.diceNumber);              
+              DiceNumberArray.push(d.diceNumber);
             })
-            
+
           })
           if (DiceNumberArray.length > numberIndex) {
-            diceNum= DiceNumberArray[numberIndex];
+            diceNum = DiceNumberArray[numberIndex];
           }
-          
+
         }
         numberList.number = DiceService.getRandomNumber(1, diceNum);
 
         if (dice.operator == "FE") {
           let NumIndex = 0;
           dice.allDicesPresentInFE.map((d) => {
-            d.randomNumbersListAfter.map((num,index) => {
+            d.randomNumbersListAfter.map((num, index) => {
               if (NumIndex == numberIndex) {
                 d.randomNumbersListAfter[index] = numberList.number;
                 d.randomNumbersList[index].number = numberList.number;
@@ -2182,7 +2172,7 @@ export class DiceRollComponent implements OnInit {
             })
 
           })
-         
+
         }
       }
 
@@ -2236,53 +2226,53 @@ export class DiceRollComponent implements OnInit {
       var ___sortedNumbersToShowSort = Object.assign([], dice.randomNumbersList);
       var _sortedNumbersSort = ___sortedNumbersToShowSort.sort(function (a, b) { return (a.number > b.number) ? 1 : ((b.number > a.number) ? -1 : 0); });
       //.sort((n1, n2) => n1 - n2);
-      
-      
+
+
       var sortedRandomNumbersToShowSort: any = [];
       _sortedNumbersSort.forEach((val) => { sortedRandomNumbersToShowSort.push(val); });
 
 
 
-      
-      
+
+
 
 
       let CalculativeString = '';
       let AllDicesPresentInFE: any[] = [];
       let isInvalidFECommand = false;
       if (dice.operator == "FE") {
-        let diceArray: any;                
-          let FEArray = this.splitWithoutEmpty(dice.feCommand, 'FE');
-          diceArray = FEArray;
-          let FE_New_Array: any[] = [];
-          FEArray.map((fe) => {
-            let flag = true;
-            if (fe) {
-              if (fe.toUpperCase().indexOf('D') > -1) {
-                let fe_variables_arr = this.splitWithoutEmpty(fe, ' ');
-                if (fe_variables_arr.length > 1) {
-                  fe_variables_arr.map((fe_var) => {
-                    if (fe_var) {
-                      if (fe_var.toUpperCase().indexOf('D') > -1) {
-                        flag = false;
+        let diceArray: any;
+        let FEArray = this.splitWithoutEmpty(dice.feCommand, 'FE');
+        diceArray = FEArray;
+        let FE_New_Array: any[] = [];
+        FEArray.map((fe) => {
+          let flag = true;
+          if (fe) {
+            if (fe.toUpperCase().indexOf('D') > -1) {
+              let fe_variables_arr = this.splitWithoutEmpty(fe, ' ');
+              if (fe_variables_arr.length > 1) {
+                fe_variables_arr.map((fe_var) => {
+                  if (fe_var) {
+                    if (fe_var.toUpperCase().indexOf('D') > -1) {
+                      flag = false;
 
-                        let tmpVal = fe.replace(fe_var, '');
-                        FE_New_Array.push(tmpVal);
-                        FE_New_Array.push(fe_var);
-                      }
+                      let tmpVal = fe.replace(fe_var, '');
+                      FE_New_Array.push(tmpVal);
+                      FE_New_Array.push(fe_var);
                     }
-                  })
-                }
+                  }
+                })
               }
             }
-            if (flag && fe) {
-              FE_New_Array.push(fe);
-            }
-          })
-          if (FE_New_Array.length) {
-            diceArray = FE_New_Array;
           }
-        
+          if (flag && fe) {
+            FE_New_Array.push(fe);
+          }
+        })
+        if (FE_New_Array.length) {
+          diceArray = FE_New_Array;
+        }
+
 
         let CurrentDiceNewResults: any;
         let New_sortedRandomNumbersToShowSort = [];
@@ -2290,15 +2280,15 @@ export class DiceRollComponent implements OnInit {
         let Flag_ToInsertNumbrersInNewRandomNumList = false;
         let FeCount = 0;
         diceArray.map((Fe_Instance, index) => {
-          
+
           if (Fe_Instance.toUpperCase().indexOf('D') > -1) {
             //CurrentDiceNewResults = DiceService.diceInterpretationArray(Fe_Instance, false)
-            
-            CurrentDiceNewResults={ 
+
+            CurrentDiceNewResults = {
               randomNumbersList: dice.allDicesPresentInFE[FeCount].randomNumbersList,
-              randomNumbersListAfter: this.GetNumberList(dice.allDicesPresentInFE[FeCount].randomNumbersList),              
+              randomNumbersListAfter: this.GetNumberList(dice.allDicesPresentInFE[FeCount].randomNumbersList),
             }
-            FeCount = FeCount + 1;            
+            FeCount = FeCount + 1;
             Flag_ToInsertNumbrersInNewRandomNumList = true;
           }
           else if (Fe_Instance.toUpperCase().indexOf('D') == -1) {
@@ -2325,7 +2315,7 @@ export class DiceRollComponent implements OnInit {
             } else {
               Fe_Instance = Fe_Instance.replace('+', ' + ').replace('-', ' - ').replace('>', ' > ').replace('<', ' < ').replace('=', ' = ');
             }
-            
+
             let arr = this.splitWithoutEmpty(Fe_Instance, ' ');
 
 
@@ -2408,11 +2398,11 @@ export class DiceRollComponent implements OnInit {
             }
           }
         })
-          /////////////////////// console.log('CalculativeString', CalculativeString)
-          /////////////////////// console.log('CalculativeStringResult', +eval(CalculativeString))
-        
+        /////////////////////// console.log('CalculativeString', CalculativeString)
+        /////////////////////// console.log('CalculativeStringResult', +eval(CalculativeString))
 
-       
+
+
       }
 
 
@@ -2521,7 +2511,7 @@ export class DiceRollComponent implements OnInit {
             __calculationString += __calculationString == "" ? rNumAfter
               : _characterMultipleCommands[cmdArr].sign + rNumAfter;
           }
-         
+
 
           _calculationStringForResult = __calculationString;
           if (checkLastCommandStringReplaceTo !== "") {
@@ -2532,11 +2522,11 @@ export class DiceRollComponent implements OnInit {
         }
         else {
           let checkLastCommandStringReplaceTo = "";
-          
-          let rNumAfter ="";
+
+          let rNumAfter = "";
           if (_characterMultipleCommands[cmdArr].operator == "FE") {
             try {
-              rNumAfter ='( ' +(+eval(CalculativeString)).toString()+' )';
+              rNumAfter = '( ' + (+eval(CalculativeString)).toString() + ' )';
             }
             catch (ex) {
               rNumAfter = _characterMultipleCommands[cmdArr].randomNumbersAfter ? _characterMultipleCommands[cmdArr].randomNumbersAfter : 0;
@@ -2545,7 +2535,7 @@ export class DiceRollComponent implements OnInit {
           else {
             rNumAfter = _characterMultipleCommands[cmdArr].randomNumbersAfter ? _characterMultipleCommands[cmdArr].randomNumbersAfter : 0;
           }
-          
+
           checkLastCommandString += _characterMultipleCommands[cmdArr].sign + rNumAfter;
 
           if (checkLastCommandString.length > 1) {
@@ -2582,7 +2572,7 @@ export class DiceRollComponent implements OnInit {
             __calculationString += __calculationString == "" ? rNumAfter
               : _characterMultipleCommands[cmdArr].sign + rNumAfter;
           }
-         
+
 
           _calculationStringForResult = __calculationString;
           if (checkLastCommandStringReplaceTo !== "") {
@@ -2767,6 +2757,8 @@ export class DiceRollComponent implements OnInit {
       //if (!anyCommandIsCustomWithNonNumeric) {
       this.updateLastCommand(characterLastCommand);
       //}
+
+
       this.character.lastCommand = this.characterCommandModel.lastSavedCommand;
       this.character.lastCommandResult = this.characterCommandModel.lastResultNumbers;
       this.character.lastCommandTotal = this.characterCommandModel.lastResult;
@@ -2988,7 +2980,7 @@ export class DiceRollComponent implements OnInit {
   saveDiceCommand(characterCommandModel: any) {
 
     let command = characterCommandModel.command;
-    if (!command) {      
+    if (!command) {
       this.alertService.showStickyMessage('', 'Please enter a command.', MessageSeverity.error);
       setTimeout(() => { this.alertService.resetStickyMessage(); }, 1800);
       return false;
@@ -3362,7 +3354,7 @@ export class DiceRollComponent implements OnInit {
 
           //skip letter D from Dice Name------Start--------
 
-         // let diceValArray = _dice.split('D');
+          // let diceValArray = _dice.split('D');
 
           let diceValArray = _dice.replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_')
 
@@ -3633,22 +3625,21 @@ export class DiceRollComponent implements OnInit {
     this.router.navigate([diceNav]);
   }
   getQuotesCommandText(oldText: string, NewDiceCountNumber: number, Dice: string): string {
-    if (NewDiceCountNumber>2) {
+    if (NewDiceCountNumber > 2) {
       let OldUpdatedDiceValue = (NewDiceCountNumber - 1).toString() + Dice;
       let newUpdatedDiceValue = NewDiceCountNumber.toString() + Dice;
       return oldText.replace(OldUpdatedDiceValue, newUpdatedDiceValue);
-    }    
+    }
     return NewDiceCountNumber.toString() + Dice;
   }
 
   onClickRollAll(characterCommandModel, mainCommandText) {
-
     this.onClickRoll(characterCommandModel, mainCommandText);
   }
   GetDiceDisplayContent(dice, result) {
     //let resultIndex = result.index;
 
-    let diceName = dice.dice;   
+    let diceName = dice.dice;
     let DiceCalculativeContent = result.number;
     if (this.customDices) {
       if (this.customDices.length) {
@@ -3675,7 +3666,7 @@ export class DiceRollComponent implements OnInit {
               return DiceCalculativeContent;
             }
           }
-          
+
         }
       }
     }
@@ -3683,16 +3674,16 @@ export class DiceRollComponent implements OnInit {
   }
   GetDisplayContentFromResultName(ResultName, Results: Results[], IsNumericImage = false, result) {
     let resultIndex = 0;
-    
+
     if (Results) {
-      if (Results.length) {        
+      if (Results.length) {
         let Result_s: Results[] = Results.filter(x => x.name == ResultName);
         if (!result.resultIndex) {
           //console.log("1", result.resultIndex)
-          result.resultIndex = Math.ceil((Math.random() * (Result_s.length-1)) + 0)
+          result.resultIndex = Math.ceil((Math.random() * (Result_s.length - 1)) + 0)
         }
         if (Result_s.length) {
-          
+
           let Result: Results = Result_s[result.resultIndex];
           return Result.displayContent;
         }
@@ -3703,9 +3694,9 @@ export class DiceRollComponent implements OnInit {
             //console.log("2", result.resultIndex)
             result.resultIndex = Math.ceil((Math.random() * (Result_s.length - 1)) + 0)
           }
-          
+
           if (Result_s.length) {
-            
+
             let Result: Results = Result_s[result.resultIndex];
             return Result.displayContent;
           }
@@ -3714,15 +3705,15 @@ export class DiceRollComponent implements OnInit {
     }
     return ResultName;
   }
-  IsImageDice(diceName):boolean {
-    
+  IsImageDice(diceName): boolean {
+
     if (diceName) {
       let Cdice_s: CustomDice[] = this.customDices.filter(x => x.name == diceName);
       if (Cdice_s.length) {
         let Cdice: CustomDice = Cdice_s[0];
         if (Cdice.customDicetype == CustomDiceResultType.IMAGE) {
           return true;
-        }        
+        }
       }
     }
     return false;
