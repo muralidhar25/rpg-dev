@@ -717,7 +717,6 @@ export class DiceRollComponent implements OnInit {
   }
 
   showLastResult(character: Characters) {
-
     this.spinner = true;
     this.charactersService.getCharactersByIdDice<any>(this.characterId)
       .subscribe(data => {
@@ -1188,7 +1187,7 @@ export class DiceRollComponent implements OnInit {
               IDs.map((rec) => {
                 this.statdetails.charactersCharacterStat.map((stat) => {
                   if (rec.id == stat.characterStat.statName.toUpperCase()) {
-                    let num:string = '0';
+                    let num: string = '0';
                     //let conditionResult = "";
                     switch (rec.statType) {
                       case 3: //Number
@@ -1237,7 +1236,7 @@ export class DiceRollComponent implements OnInit {
                         //}
                         // num = result;
                         num = ServiceUtil.GetCalcuationsResults(result, this.statdetails, this.charactersCharacterStats, this.character);
-                        console.log('num',num);
+                        console.log('num', num);
                         break;
                       default:
                         break;
@@ -1245,21 +1244,19 @@ export class DiceRollComponent implements OnInit {
                     //calculationString = calculationString.replace(rec.originaltext, conditionResult);
                     //console.log('calc',calculationString);
                     if (num) {
-                     
+
                       calculationString = calculationString.replace(rec.originaltext, num.toString());
                     }
 
                     else {
                       calculationString = calculationString.replace(rec.originaltext, '0');
                     }
-                     
+
                     //CalcString = CalcString.replace(rec.originaltext, "(" + num + ")");
                   }
 
                 });
-                
                 finalCalcString = calculationString;
-                console.log('calculationString', finalCalcString);
               });
             }
             ////////////////////////////////                    
@@ -1461,13 +1458,23 @@ export class DiceRollComponent implements OnInit {
           //--END variable to hide Exploded dice--//
         });
 
-        this.characterCommandModel.command = __calculationCommand;
+
+        //changes -- For #696 --//
+
+        if (!this.characterCommandModel.command ) {
+          this.characterCommandModel.command = __calculationCommand;
+        }
+       // this.characterCommandModel.command = __calculationCommand;
         this.characterCommandModel.lastResult = __calculationResult;
         this.characterCommandModel.lastResultNumbers = __calculationString;
         this.characterCommandModel.isCustomNumericCommand = __isCustomNumericCommand;
-        this.characterCommandModel.isCustomDice = __characterMultipleCommands.isResultWithCustomDice
+        this.characterCommandModel.isCustomDice = __characterMultipleCommands.isResultWithCustomDice   
 
-        this.character.lastCommand = commandTxt;
+        //changes -- For #696 --//
+
+        this.character.lastCommand = this.characterCommandModel.command;
+       // this.character.lastCommand = commandTxt;
+
         this.character.lastCommandResult = __calculationString;
         //let textResult = this.fillBeforeAndAfterText(characterCommand.command, true);
         //this.beforeResultText = textResult.start;
@@ -1491,7 +1498,10 @@ export class DiceRollComponent implements OnInit {
 
             const characterLastCommand = new CharacterLastCommand();
             characterLastCommand.characterId = characterCommand.characterId;
-            characterLastCommand.lastCommand = commandTxt;
+            //changes
+            characterLastCommand.lastCommand = this.characterCommandModel.command;
+            // characterLastCommand.lastCommand = this.character;
+
             characterLastCommand.lastCommandResult = __calculationString;
             characterLastCommand.lastCommandTotal = __calculationResult;
 
@@ -1508,14 +1518,13 @@ export class DiceRollComponent implements OnInit {
               }
 
             });
-
+            
             characterLastCommand.lastCommandValues = lastCommandValues; //
-
             this.character.lastCommand = this.characterCommandModel.command;
             this.character.lastCommandResult = this.characterCommandModel.lastResultNumbers;
             this.character.lastCommandValues = lastCommandValues;
             this.character.lastCommandTotal = characterLastCommand.lastCommandTotal;
-
+            
             /**/
             if (this.oldCommandSaved) {
               //characterLastCommand.lastCommand = this.oldCommandSaved;
@@ -2757,8 +2766,6 @@ export class DiceRollComponent implements OnInit {
       //if (!anyCommandIsCustomWithNonNumeric) {
       this.updateLastCommand(characterLastCommand);
       //}
-
-
       this.character.lastCommand = this.characterCommandModel.lastSavedCommand;
       this.character.lastCommandResult = this.characterCommandModel.lastResultNumbers;
       this.character.lastCommandTotal = this.characterCommandModel.lastResult;
