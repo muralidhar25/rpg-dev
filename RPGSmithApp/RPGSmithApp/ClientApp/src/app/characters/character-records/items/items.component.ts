@@ -70,6 +70,7 @@ export class CharacterItemsComponent implements OnInit {
   Alphabetical: boolean = false;
   Visible: boolean = false;
   pageRefresh: boolean;
+  isPlayerCharacter: boolean = false;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private pageLastViewsService: PageLastViewsService,
@@ -472,15 +473,18 @@ export class CharacterItemsComponent implements OnInit {
 
   }
 
-  deleteItem(item: Items) {
+  deleteItem(item: Items, deleted) {
     //this.isLoading = true;
     this.itemsService.GetNestedContainerItems(item.itemId)
       .subscribe(
-        data => {
+      data => {
+        let message: string = '';
           let itemsList: any = data;
           this.isLoading = false;
-          let message: string = 'Are you sure you want to remove "' + item.name + '" from this Character ?';
-          if (item.containerItems) {
+          
+           message = 'Are you sure you want to remove "' + item.name + '" from this Character ?';
+          
+           if (item.containerItems) {
             if (itemsList.length) {
               message += '</br></br>This will also remove the following contained items:</br>';
               //item.containerItems.map((itm: any, index) => {
@@ -503,9 +507,16 @@ export class CharacterItemsComponent implements OnInit {
               })
             }
           }
-          this.ContainedItemsToDelete = itemsList;
+        this.ContainedItemsToDelete = itemsList;
+
+        if (deleted || !this.isPlayerCharacter) {
           this.alertService.showDialog(message,
             DialogType.confirm, () => this.deleteItemHelper(item, itemsList), null, 'Yes', 'No');
+        }
+        else{
+          this.deleteItemHelper(item, itemsList);
+        }
+          
         },
         error => {
           this.isLoading = false;
@@ -927,8 +938,10 @@ export class CharacterItemsComponent implements OnInit {
           }
           else if (data.isPlayerCharacter) {
             this.pageRefresh = data.isPlayerCharacter;
+            this.isPlayerCharacter = data.isPlayerCharacter;
           }
           if (data.isPlayerCharacter) {
+            this.isPlayerCharacter = data.isPlayerCharacter
             this.pauseItemAdd = data.pauseItemAdd;
             this.pauseItemCreate = data.pauseItemCreate;
             
