@@ -717,6 +717,7 @@ export class DiceRollComponent implements OnInit {
   }
 
   showLastResult(character: Characters) {
+    
     this.spinner = true;
     this.charactersService.getCharactersByIdDice<any>(this.characterId)
       .subscribe(data => {
@@ -1460,7 +1461,7 @@ export class DiceRollComponent implements OnInit {
 
 
         //changes -- For #696 --//
-
+        console.log(this.characterCommandModel.command);
         if (!this.characterCommandModel.command ) {
           this.characterCommandModel.command = __calculationCommand;
         }
@@ -1498,9 +1499,9 @@ export class DiceRollComponent implements OnInit {
 
             const characterLastCommand = new CharacterLastCommand();
             characterLastCommand.characterId = characterCommand.characterId;
-            //changes
-            characterLastCommand.lastCommand = this.characterCommandModel.command;
-            // characterLastCommand.lastCommand = this.character;
+
+           
+             characterLastCommand.lastCommand =  commandTxt;
 
             characterLastCommand.lastCommandResult = __calculationString;
             characterLastCommand.lastCommandTotal = __calculationResult;
@@ -3641,6 +3642,7 @@ export class DiceRollComponent implements OnInit {
   }
 
   onClickRollAll(characterCommandModel, mainCommandText) {
+
     this.onClickRoll(characterCommandModel, mainCommandText);
   }
   GetDiceDisplayContent(dice, result) {
