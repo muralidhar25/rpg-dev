@@ -54,6 +54,7 @@ export class HandoutViewComponent implements OnInit {
   videomap: string = 'video';
   pdfmap: string = 'application/pdf';
   docmap: string = 'application/msword';
+  prefixToGetFolderContent: string = '';
 
   constructor(
     private router: Router, private alertService: AlertService, private bsModalRef: BsModalRef,
@@ -117,7 +118,7 @@ export class HandoutViewComponent implements OnInit {
     //this.blobStockImages = [];
     this.blobMyImages = [];
 
-    this.imageSearchService.getListOfUploads<any>(userId, this.MyImageCount, this.previousContainerMyImageNumber)
+    this.imageSearchService.getListOfUploads<any>(userId, this.MyImageCount, this.previousContainerMyImageNumber, this.prefixToGetFolderContent)
       .subscribe(data => {
         console.log(data.result);
         this.blobMyImagesBLOB = this.blobMyImages = data.result.blobResponse.items;
@@ -146,7 +147,7 @@ export class HandoutViewComponent implements OnInit {
     let _query = "";
     this.isMyImagesLoading = true;
 
-    this.imageSearchService.getListOfUploads<any>(this.userid, this.MyImageCount, this.previousContainerMyImageNumber)
+    this.imageSearchService.getListOfUploads<any>(this.userid, this.MyImageCount, this.previousContainerMyImageNumber, this.prefixToGetFolderContent)
       .subscribe(data => {
 
         this.blobMyImagesBLOB = this.blobMyImagesBLOB.concat(data.result.blobResponse.items);
@@ -204,23 +205,40 @@ export class HandoutViewComponent implements OnInit {
     //}
   }
   ViewImage(item) {
-
-    if (item.contentType.indexOf("image") > -1) {
-      this.bsModalRef = this.modalService.show(ImageViewerComponent, {
-        class: 'modal-primary modal-md',
-        ignoreBackdropClick: true,
-        keyboard: false
-      });
-      this.bsModalRef.content.ViewImageUrl = item.absoluteUri;
-      this.bsModalRef.content.ViewImageAlt = 'Image';
-      this.bsModalRef.content.DestroyOtherModals = false;
-    } else {
-      this.bsModalRef = this.modalService.show(HandoutFileViewComponent, {
-        class: 'modal-primary modal-lg',
-        ignoreBackdropClick: true,
-        keyboard: false
-      });
-      this.bsModalRef.content.ViewDetails = item;
+    if (item.isFolder) {
+      this.OpenFolder(item.name);
     }
+    else {
+      if (item.contentType.indexOf("image") > -1) {
+        this.bsModalRef = this.modalService.show(ImageViewerComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.ViewImageUrl = item.absoluteUri;
+        this.bsModalRef.content.ViewImageAlt = 'Image';
+        this.bsModalRef.content.DestroyOtherModals = false;
+      } else {
+        this.bsModalRef = this.modalService.show(HandoutFileViewComponent, {
+          class: 'modal-primary modal-lg',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.ViewDetails = item;
+      }
+    }
+    
+  }
+  OpenFolder(name) {
+    this.blobMyImages.map((val) => { val.isSelected = false })
+    this.showDeleteBtn = false;
+    this.prefixToGetFolderContent = name;
+    this.Initialize();
+  }
+  backToRoot() {
+    this.blobMyImages.map((val) => { val.isSelected = false })
+    this.showDeleteBtn = false;
+    this.prefixToGetFolderContent = "";
+    this.Initialize();
   }
 }

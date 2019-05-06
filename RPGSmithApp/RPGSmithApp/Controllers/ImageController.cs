@@ -368,11 +368,11 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpPost("DeleteBlob")]
-        public  IActionResult DeleteBlob([FromBody] List<DeleteBlob> model)
+        public  IActionResult DeleteBlob([FromBody] List<DeleteBlob> model,string prefixToGetFolderContent="")
         {
             try
             {
-                bs.DeleteBlobs(model);
+                bs.DeleteBlobs(model, prefixToGetFolderContent);
                 return Ok();
             }
             catch (Exception ex) {
@@ -444,10 +444,46 @@ namespace RPGSmithApp.Controllers
             return BadRequest("No file Selected");
 
         }
-        [HttpGet("MyHandouts")]
-        public async Task<IActionResult> MyHandouts(string userId, int Count = 39, int previousContainerImageNumber = 0)
+        
+        [HttpPost("uploadhandoutFolderByUserId")]
+        public async Task<IActionResult> uploadhandoutFolderByUserId(string userId,string folderName)
         {
-            return Ok(bs.BlobMyHandoutsAsync("user-" + userId+ "-handout", Count, previousContainerImageNumber));
+
+            if (_httpContextAccessor.HttpContext.Request.Form.Files.Any())
+            {
+                // Get the uploaded image from the Files collection
+                var httpPostedFile = _httpContextAccessor.HttpContext.Request.Form.Files[0];
+
+                if (httpPostedFile != null)
+                {
+                    try
+                    {
+                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
+                        var container = bs.GetCloudBlobContainer("user-" + userId + "-handout").Result;
+                        string imageName = Path.GetFileNameWithoutExtension(httpPostedFile.FileName.ToString()) + "_" + DateTime.Now.ToString("dd_MM_yyyy_HH:mm:ss");
+                        return Ok(new { result = bs.UploadhandoutFolder(httpPostedFile, imageName, container, userId, folderName).Result });
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest(ex.Message);
+                    }
+                }
+
+                return BadRequest();
+            }
+            else if (!string.IsNullOrEmpty(folderName))
+            {
+                var container = bs.GetCloudBlobContainer("user-" + userId + "-handout").Result;
+                string imageName = "default_folder_file";
+                return Ok(new { result = bs.UploadhandoutFolder(null, imageName, container, userId, folderName).Result });
+            }
+            return BadRequest("No file Selected");
+
+        }
+        [HttpGet("MyHandouts")]
+        public async Task<IActionResult> MyHandouts(string userId, int Count = 39, int previousContainerImageNumber = 0,string prefixToGetFolderContent="")
+        {
+            return Ok(bs.BlobMyHandoutsAsync("user-" + userId+ "-handout", Count, previousContainerImageNumber, prefixToGetFolderContent));
         }
 
     }

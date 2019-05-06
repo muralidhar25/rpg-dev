@@ -63,6 +63,7 @@ import { CharactersFormComponent } from "./characters-form/characters-form.compo
 import { HandoutViewComponent } from "./handouts/handout-view/handout-view.component";
 import { HandoutFileViewComponent } from "./handouts/handout-file-view/handout-file-view.component";
 import { HandoutuploadComponent } from "./handouts/handout-upload/handoutupload.component";
+import { HandoutNewFolderComponent } from "./handouts/handout-new-folder/handout-new-folder.component";
   
 @NgModule({
   declarations: [
@@ -95,7 +96,8 @@ import { HandoutuploadComponent } from "./handouts/handout-upload/handoutupload.
     CharactersFormComponent,
     HandoutViewComponent,
     HandoutFileViewComponent,
-    HandoutuploadComponent
+    HandoutuploadComponent,
+    HandoutNewFolderComponent
   ],
   imports: [
     CommonModule,
@@ -184,7 +186,8 @@ import { HandoutuploadComponent } from "./handouts/handout-upload/handoutupload.
     CharactersFormComponent,
     HandoutViewComponent,
     HandoutFileViewComponent,
-    HandoutuploadComponent
+    HandoutuploadComponent,
+    HandoutNewFolderComponent
   ],
   entryComponents: [
     AccountSettingsComponent,
@@ -214,7 +217,8 @@ import { HandoutuploadComponent } from "./handouts/handout-upload/handoutupload.
     CharactersFormComponent,
     HandoutFileViewComponent,
     HandoutuploadComponent,
-    HandoutViewComponent
+    HandoutViewComponent,
+    HandoutNewFolderComponent
   ]
 })
 export class SharedModule {}

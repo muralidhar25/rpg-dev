@@ -3,11 +3,11 @@
     <h5 class="modal-title" id="searchImagePopupTitle">{{title}}</h5>
 
     <div class="page-toolbar-dropdown">
-
+      <button class="btn btn-outline-accent" (click)="backToRoot()" *ngIf="prefixToGetFolderContent">Back to root</button>
       <button class="btn btn-accent" type="button">Upload Files<input type="file" (change)="UploadImages($event)" /></button>
       <button class="btn btn-accent" type="button" *ngIf="showDeleteBtn && isimageSelected() " (click)="deleteImagePrompt()">Delete Selected</button>
       <!-- End of filter dropdown -->
-      <!--<button type="button" data-dismiss="modal" class="btn btn-accent text-right " (click)="createFolder()"> Create Folder</button>-->
+      <button type="button" data-dismiss="modal" class="btn btn-accent text-right " *ngIf="!prefixToGetFolderContent" (click)="createFolder()"> Create Folder</button>
     </div>
     <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
   </div>
@@ -16,6 +16,7 @@
 
     <!-- Search query -->
     <div class="form-group form-group-unlabelled">
+      
       <span class="input-group-btn">
         <button type="submit" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
       </span>
@@ -34,19 +35,24 @@
             <img src="../../../../assets/images/handouticons/video-icon.png" *ngIf="myImages.contentType.indexOf(videomap) > -1" />
             <img src="../../../../assets/images/handouticons/pdf-icon.png" *ngIf="myImages.contentType.indexOf(pdfmap) > -1" />
             <img src="../../../../assets/images/handouticons/doc-icon.png" *ngIf="myImages.contentType.indexOf(docmap) > -1" />
+            <img src="../../../../assets/images/handouticons/folder-icon.png" *ngIf="myImages.isFolder" class="crsr-pointer"  (click)="OpenFolder(myImages?.name)" />
             <img src="../../../../assets/images/handouticons/file-icon.png"
-                           *ngIf="(myImages.contentType.indexOf(imagemap) == -1
+                 *ngIf="(myImages.contentType.indexOf(imagemap) == -1
                                  && myImages.contentType.indexOf(pdfmap) == -1
                                  && myImages.contentType.indexOf(videomap) == -1
                                  &&  myImages.contentType.indexOf(textmap) == -1
-                                  && myImages.contentType.indexOf(docmap) == -1)" />
-            <p>{{myImages?.name}}</p>
+                                  && myImages.contentType.indexOf(docmap) == -1)
+                                && !myImages.isFolder" />
+            <p *ngIf="!myImages.isFolder">{{myImages?.name}}</p>
+            <p *ngIf="myImages.isFolder" class="crsr-pointer" (click)="OpenFolder(myImages?.name)">{{myImages?.name}}</p>
           </div>
-          <input type="checkbox" [checked]="myImages.isSelected" (click)="imageCheckClick(myImages,$event)" />
-          <div class="view-button" (click)="ViewImage(myImages)">open</div>
-          <div class="input-image-search-result-item-use">
-            <button type="button" class="btn btn-accent btn-block icon icon-tick"></button>
-          </div>
+          <ng-container *ngIf="!myImages.isFolder">
+            <input type="checkbox" [checked]="myImages.isSelected" (click)="imageCheckClick(myImages,$event)" />
+            <div class="view-button" (click)="ViewImage(myImages)">open</div>
+            <div class="input-image-search-result-item-use">
+              <button type="button" class="btn btn-accent btn-block icon icon-tick"></button>
+            </div>
+          </ng-container>
         </div>
       </li>
       <li *ngIf="blobMyImages?.length == 0 && !isLoading" class="input-image-search-result-item mx-auto" style="list-style-type: none;margin:10px;">No Record Found</li>

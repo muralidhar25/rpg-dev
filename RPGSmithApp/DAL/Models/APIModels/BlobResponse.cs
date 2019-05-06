@@ -14,6 +14,7 @@ namespace DAL.Models.APIModels
         public string AbsoluteUri { get; set; }
         public Boolean IsAbsoluteUri { get; set; }
         public Boolean IsSelected { get; set; }
+        public Boolean IsFolder { get; set; }
         public string OriginalString { get; set; }
         public string Container { get; set; }
         public long Size { get; set; }

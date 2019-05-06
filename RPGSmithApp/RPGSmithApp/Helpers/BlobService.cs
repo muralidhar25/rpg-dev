@@ -472,16 +472,29 @@ namespace RPGSmithApp.Helpers
             //return new { count = Count, previousContainerNumber = previousContainerNumber, blobResponse = objBlobResponse, previousContainerImageNumber = previousContainerImageNumber };
         }
 
-        public void DeleteBlobs(List<DeleteBlob> model)
+        public void DeleteBlobs(List<DeleteBlob> model, string prefixToGetFolderContent = "")
         {
             
             foreach (var item in model)
             {
                 var _containerName = item.userContainerName;
                 CloudBlobContainer container = GetCloudBlobContainer(_containerName).Result;
-                CloudBlockBlob _blockBlob = container.GetBlockBlobReference(item.blobName);
-                //delete blob from container    
-                _blockBlob.DeleteAsync();
+                if (string.IsNullOrEmpty(prefixToGetFolderContent))
+                {
+                   
+                    CloudBlockBlob _blockBlob = container.GetBlockBlobReference(item.blobName);
+                    //delete blob from container    
+                    _blockBlob.DeleteAsync();
+                }
+                else
+                {
+
+                    CloudBlobContainer sourceContainer = container;
+                    CloudBlobDirectory directory = sourceContainer.GetDirectoryReference(prefixToGetFolderContent);
+                    CloudBlockBlob blockblob = directory.GetBlockBlobReference(item.blobName);
+                    blockblob.DeleteAsync();
+                }
+                
             }
             
         }
@@ -809,6 +822,46 @@ namespace RPGSmithApp.Helpers
             }
              
         }
+        public async Task<string> UploadhandoutFolder(IFormFile httpPostedFile, string fileName, CloudBlobContainer cloudBlobContainer, string userId, string folderName)
+        {
+            if (!doesUserHaveEnoughSpace(cloudBlobContainer.Name, userId))
+            {
+                throw new System.InvalidOperationException(StorageFullMessage);
+            }
+            if (httpPostedFile==null && !string.IsNullOrEmpty(folderName)) 
+            {
+                CloudBlobContainer sourceContainer = cloudBlobContainer;// GetCloudBlobContainer("user-248c6bae-fab3-4e1f-b91b-f674de70a65d-handout").Result;
+                CloudBlobDirectory directory = sourceContainer.GetDirectoryReference(folderName);
+                CloudBlockBlob blockblob = directory.GetBlockBlobReference(fileName + ".txt");
+                //CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(fileName + ".txt");
+                // var blob = cloudBlobContainer.GetBlobReference(fileName);
+                await blockblob.UploadTextAsync("");
+                return blockblob.Uri.ToString();
+            }
+            else
+            {
+                CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(fileName + "" + Path.GetExtension(httpPostedFile.FileName));
+
+
+                using (var ms1 = new MemoryStream())
+                {
+                    //Create folder in container
+                    CloudBlobContainer sourceContainer = cloudBlobContainer;// GetCloudBlobContainer("user-248c6bae-fab3-4e1f-b91b-f674de70a65d-handout").Result;
+                    CloudBlobDirectory directory = sourceContainer.GetDirectoryReference(folderName);
+                    CloudBlockBlob blockblob = directory.GetBlockBlobReference(fileName);
+                    //await blockblob.UploadFromFileAsync(@"F:\Vikas\Projects\Work for GM Account\RPGSmithApp\RPGSmithApp\ClientApp\src\favicon.ico");
+
+                    httpPostedFile.CopyTo(ms1);
+                    var fileBytes = ms1.ToArray();
+                    Stream ms = new MemoryStream(fileBytes);
+                    FileStreamResult res = new FileStreamResult(ms, httpPostedFile.ContentType);
+                    blockblob.Properties.ContentType = res.ContentType;
+                    await blockblob.UploadFromStreamAsync(ms);
+                    return blockblob.Uri.ToString();
+                }
+            }
+
+        }
         //public async Task<BlobResponse> BlobMyHandoutsAsync(string container)
         //{
         //    BlobResponse objBlobResponse = new BlobResponse();
@@ -849,7 +902,7 @@ namespace RPGSmithApp.Helpers
         //    }
         //    return objBlobResponse;
         //}
-        public async Task<object> BlobMyHandoutsAsync(string container, int Count = 39, int previousContainerImageNumber = 0)
+        public async Task<object> BlobMyHandoutsAsync(string container, int Count = 39, int previousContainerImageNumber = 0, string prefixToGetFolderContent = "")
         {
             int start = previousContainerImageNumber;
             BlobResponse objBlobResponse = new BlobResponse();
@@ -919,7 +972,11 @@ namespace RPGSmithApp.Helpers
                 var cloudBlobContainer = GetCloudBlobContainer(container).Result;
                 do
                 {
-                    var results = cloudBlobContainer.ListBlobsSegmentedAsync(null, blobContinuationToken);
+                    if (string.IsNullOrEmpty(prefixToGetFolderContent))
+                    {
+                        prefixToGetFolderContent = null;
+                    }
+                    var results = cloudBlobContainer.ListBlobsSegmentedAsync(prefixToGetFolderContent, blobContinuationToken);
                     blobContinuationToken = results.Result.ContinuationToken;
 
                     foreach (IListBlobItem _blobItem in results.Result.Results)
@@ -937,11 +994,35 @@ namespace RPGSmithApp.Helpers
                             _item.LastModifiedDate = item.Properties.LastModified;
                             _item.ContentType = item.Properties.ContentType;
                             _item.name = item.Name;
-                            _items.Add(_item);
+                            if (!_item.name.Contains("default_folder_file.txt"))
+                            {
+                                _items.Add(_item);
+                            }
+                            
+                        }
+                        else 
+                        {
+                            CloudBlobDirectory dir = _blobItem as CloudBlobDirectory;
+                            if (dir!=null)
+                            {
+                                Items _item = new Items();
+                                _item.AbsolutePath = string.Empty;
+                                _item.AbsoluteUri = string.Empty;
+                                _item.IsAbsoluteUri = false;
+                                _item.OriginalString = string.Empty;
+                                _item.Container = dir.Container.Name;
+                                _item.Size = 0;
+                                _item.LastModifiedDate = new DateTimeOffset();
+                                _item.ContentType = string.Empty;
+                                _item.IsFolder = true;
+                                _item.name = dir.Prefix;
+                                _items.Add(_item);
+                            }
                         }
                     }
                 } while (blobContinuationToken != null);
                 _items = _items.OrderByDescending(q => q.LastModifiedDate).ToList();
+                _items = _items.OrderByDescending(q => q.IsFolder).ToList();
                 bool flag = false;
                 if (start + Count <= _items.Count())
                 {

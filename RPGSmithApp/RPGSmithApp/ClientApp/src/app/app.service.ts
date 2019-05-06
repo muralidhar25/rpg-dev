@@ -11,6 +11,7 @@ export class AppService1 {
   private text = new Subject<any>();
   private character = new Subject<any>();
   private item = new Subject<any>();
+  private images = new Subject<any>();
 
   updateAccountSetting1(accountSetting: any) {    
     this.accountSetting.next(accountSetting);
@@ -43,6 +44,14 @@ export class AppService1 {
 
   shouldUpdateItemsList(): Observable<any> {
     return this.item.asObservable();
+  }
+
+  updateImagesList(obj: any) {
+    this.images.next(obj);
+  }
+
+  shouldUpdateImagesList(): Observable<any> {
+    return this.images.asObservable();
   }
   //updateCharactersCount(charactersCount: any) {
   //  this.charactersCount.next(charactersCount);

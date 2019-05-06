@@ -31,6 +31,7 @@ export class ImageSearchService extends EndpointFactory {
   private readonly myHandoutsUrl: string = this.configurations.baseUrl + "/api/Image/MyHandouts";
 
   private readonly uploadhandoutsUrl: string = this.configurations.baseUrl + "/api/Image/uploadhandoutByUserId";
+  private readonly uploadhandoutFoldersUrl: string = this.configurations.baseUrl + "/api/Image/uploadhandoutFolderByUserId";
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
     private fileUploadService: FileUploadService) {
@@ -115,9 +116,9 @@ export class ImageSearchService extends EndpointFactory {
         return this.handleError(error, () => this.getDefaultImage(query));
       });
   }
-  deleteImages<T>(blobs: any): Observable<T> {
+  deleteImages<T>(blobs: any, prefixToGetFolderContent:string=''): Observable<T> {
 
-    let endpointUrl = this.deleteImagesUrl;
+    let endpointUrl = `${this.deleteImagesUrl}?prefixToGetFolderContent=${prefixToGetFolderContent}`;
 
     return this.http.post(endpointUrl, JSON.stringify(blobs), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {
@@ -140,12 +141,12 @@ export class ImageSearchService extends EndpointFactory {
       });
   }
 
-  getListOfUploads<T>(userId,count,previousContainerImageNumber): Observable<T> {
-    let endpointUrl = `${this.myHandoutsUrl}?userId=${userId}& count=${count}& previousContainerImageNumber=${previousContainerImageNumber }`;
+  getListOfUploads<T>(userId, count, previousContainerImageNumber, prefixToGetFolderContent): Observable<T> {
+    let endpointUrl = `${this.myHandoutsUrl}?userId=${userId}& count=${count}& previousContainerImageNumber=${previousContainerImageNumber}&prefixToGetFolderContent=${prefixToGetFolderContent}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.getListOfUploads(userId,count,previousContainerImageNumber));
+        return this.handleError(error, () => this.getListOfUploads(userId, count, previousContainerImageNumber, prefixToGetFolderContent));
       });
   }
 
@@ -157,9 +158,22 @@ export class ImageSearchService extends EndpointFactory {
 
     for (var i = 0; i < imgList.length; i++) {
       formData.append('img' + i, imgList[i], imgList[i].name);
+    }   
+    return this.http.post<T>(endpointUrl, formData, this.getRequestFileHeaders())
+      //.map(() => { return true; })
+      .catch(error => {
+        return this.handleError(error, () => this.uploadHandouts(imgList, userid));
+      });
+  }
+  uploadHandoutFolder<T>(imgList: File[], userid: string, folderName:string): Observable<T> {
+
+    let endpointUrl = `${this.uploadhandoutFoldersUrl}?userId=${userid}&folderName=${folderName}`;
+
+    const formData: FormData = new FormData();
+
+    for (var i = 0; i < imgList.length; i++) {
+      formData.append('img' + i, imgList[i], imgList[i].name);
     }
-    console.log(endpointUrl);
-    console.log(formData);
     return this.http.post<T>(endpointUrl, formData, this.getRequestFileHeaders())
       //.map(() => { return true; })
       .catch(error => {

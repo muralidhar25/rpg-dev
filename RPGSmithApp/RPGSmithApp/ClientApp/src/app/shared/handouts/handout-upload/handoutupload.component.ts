@@ -15,6 +15,8 @@ import { DBkeys } from '../../../core/common/db-keys';
 import { Utilities } from '../../../core/common/utilities';
 import { ImageViewerComponent } from '../../image-interface/image-viewer/image-viewer.component';
 import { HandoutFileViewComponent } from '../handout-file-view/handout-file-view.component';
+import { HandoutNewFolderComponent } from '../handout-new-folder/handout-new-folder.component';
+import { AppService1 } from '../../../app.service';
 
 @Component({
   selector: 'app-handoutupload',
@@ -46,17 +48,24 @@ export class HandoutuploadComponent implements OnInit {
     textmap: string = 'text'; 
     videomap: string = 'video';
     pdfmap: string = 'application/pdf';
-    docmap: string = 'application/msword';
+  docmap: string = 'application/msword';
+
+  prefixToGetFolderContent: string = '';
 
   constructor(
     private router: Router, private alertService: AlertService, private bsModalRef: BsModalRef,
     private authService: AuthService, private configurations: ConfigurationService,
     private modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService, private imageSearchService: ImageSearchService,
-    private userService: UserService,
+    private userService: UserService, private appService: AppService1,
    private location: PlatformLocation
   ) {
     location.onPopState(() => this.modalService.hide(1));
+    this.appService.shouldUpdateImagesList().subscribe(serviceJson => {
+      if (serviceJson) {        
+        this.Initialize();
+      }
+    });
   }
 
   ngOnInit() {
@@ -104,30 +113,59 @@ export class HandoutuploadComponent implements OnInit {
     if (event.target.files && event.target.files[0]) {
       imgList = event.target.files;
       this.isLoading = true;
-      this.imageSearchService.uploadHandouts<any>(imgList, this.userid)
-        .subscribe(data => {
-          console.log('incase of upload', data);
-          if (data) {
-            if (data.result) {
-              this.isLoading = false;
-              this.Initialize();
+      if (this.prefixToGetFolderContent) {
+        this.imageSearchService.uploadHandoutFolder<any>(imgList, this.userid, this.prefixToGetFolderContent)
+          .subscribe(data => {
+            if (data) {
+              if (data.result) {
+                this.isLoading = false;
+                this.Initialize();
+              }
             }
-          }
-          
-        }, error => {
-          console.log("searchMyImages Error: ", error);
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          let Errors = Utilities.ErrorDetail("Upload Images Api", error);
-          if (Errors.sessionExpire) this.authService.logout(true);
-          else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-        },
-          () => { });
+
+          }, error => {
+            console.log("searchMyImages Error: ", error);
+            this.isLoading = false;
+            this.alertService.stopLoadingMessage();
+            let Errors = Utilities.ErrorDetail("Upload Images Api", error);
+            if (Errors.sessionExpire) this.authService.logout(true);
+            else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+          },
+            () => { });
+      }
+      else {
+        this.imageSearchService.uploadHandouts<any>(imgList, this.userid)
+          .subscribe(data => {
+            if (data) {
+              if (data.result) {
+                this.isLoading = false;
+                this.Initialize();
+              }
+            }
+
+          }, error => {
+            console.log("searchMyImages Error: ", error);
+            this.isLoading = false;
+            this.alertService.stopLoadingMessage();
+            let Errors = Utilities.ErrorDetail("Upload Images Api", error);
+            if (Errors.sessionExpire) this.authService.logout(true);
+            else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+          },
+            () => { });
+      }
+      
     }
   }
 
-  createFolder() {
-    console.log('createFolder clicked');
+  createFolder() {   
+    this.bsModalRef = this.modalService.show(HandoutNewFolderComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.userid = this.userid;
+    //this.bsModalRef.content.ViewImageAlt = 'Image';
+    this.bsModalRef.content.DestroyOtherModals = false;
   }
   ViewImage(item) {
 
@@ -156,8 +194,7 @@ export class HandoutuploadComponent implements OnInit {
     //searchMyImages
     let q = this.query;
     let _myImages = this.blobMyImagesBLOB;
-    this.blobMyImages = _myImages.filter(function (item) {
-      console.log(item);
+    this.blobMyImages = _myImages.filter(function (item) {     
       return (item.absoluteUri.indexOf(q) > -1) || (item.absolutePath.indexOf(q) > -1);
     });
     //}
@@ -173,7 +210,7 @@ export class HandoutuploadComponent implements OnInit {
     //        this.blobMyImagesBLOB = this.blobMyImages = data.result.items;
     //        this.isLoading = false;
     //    }, error => {
-    //        console.log("searchMyImages Error: ", error);
+    //       
     //        this.isLoading = false;
     //        this.alertService.stopLoadingMessage();
     //        let Errors = Utilities.ErrorDetail("My Images Api", error);
@@ -182,9 +219,8 @@ export class HandoutuploadComponent implements OnInit {
     //    },
     //        () => { });
 
-    this.imageSearchService.getListOfUploads<any>( userId, this.MyImageCount, this.previousContainerMyImageNumber)
+    this.imageSearchService.getListOfUploads<any>(userId, this.MyImageCount, this.previousContainerMyImageNumber, this.prefixToGetFolderContent)
       .subscribe(data => {
-        console.log(data.result);
         this.blobMyImagesBLOB = this.blobMyImages = data.result.blobResponse.items;
         this.isLoading = false;
         this.previousContainerMyImageNumber = data.result.previousContainerImageNumber;
@@ -208,11 +244,11 @@ export class HandoutuploadComponent implements OnInit {
   }
 
   moreMyImages() {
-    //console.log('scrolled')
+    
     let _query = "";
     this.isMyImagesLoading = true;
 
-    this.imageSearchService.getListOfUploads<any>(this.userid, this.MyImageCount, this.previousContainerMyImageNumber)
+    this.imageSearchService.getListOfUploads<any>(this.userid, this.MyImageCount, this.previousContainerMyImageNumber, this.prefixToGetFolderContent)
       .subscribe(data => {
 
         this.blobMyImagesBLOB = this.blobMyImagesBLOB.concat(data.result.blobResponse.items);
@@ -267,12 +303,12 @@ export class HandoutuploadComponent implements OnInit {
       let name = blob.absolutePath.substring(blob.absolutePath.lastIndexOf('/') + 1);
       return { blobName: name, userContainerName: blob.container }
     })
-   // console.log('deee', this.blobMyImages);
+   
     this.blobMyImagesBLOB = this.blobMyImages;
-    this.imageSearchService.deleteImages<any>(model)
-      .subscribe(data => {
-        console.log(data);
+    this.imageSearchService.deleteImages<any>(model, this.prefixToGetFolderContent)
+      .subscribe(data => {      
         this.isLoading = false;
+        this.blobMyImages.map((val) => { val.isSelected = false })
       }, error => {
         console.log("searchMyImages Error: ", error);
         this.isLoading = false;
@@ -302,7 +338,7 @@ export class HandoutuploadComponent implements OnInit {
   //            if (this.isMouseDown) {
   //                //alert(2)
   //                this.imageCheckClick(image, event);
-  //                console.log('down');
+  //                
   //            }
   //        }
   //    }, 100);
@@ -318,5 +354,17 @@ export class HandoutuploadComponent implements OnInit {
   isimageSelected() {
     var length = this.blobMyImages.filter((val) => { return val.isSelected === true })
     return length;
+  }
+  OpenFolder(name) {
+    this.blobMyImages.map((val) => { val.isSelected = false })
+    this.showDeleteBtn = false;
+    this.prefixToGetFolderContent = name;
+    this.Initialize();
+  }
+  backToRoot() {
+    this.blobMyImages.map((val) => { val.isSelected = false })
+    this.showDeleteBtn = false;
+    this.prefixToGetFolderContent = "";
+    this.Initialize();
   }
 }
