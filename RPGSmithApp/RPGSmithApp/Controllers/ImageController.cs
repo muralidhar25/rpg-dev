@@ -430,7 +430,7 @@ namespace RPGSmithApp.Controllers
                     {
                         BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
                         var container = bs.GetCloudBlobContainer("user-" + userId+"-handout").Result;
-                        string imageName = Path.GetFileNameWithoutExtension( httpPostedFile.FileName.ToString())+ "_"+DateTime.Now.ToString("dd/MM/yyyy_HH:mm:ss");
+                        string imageName = Path.GetFileNameWithoutExtension( httpPostedFile.FileName.ToString())+ "_"+DateTime.Now.ToString("dd_MM_yyyy_HH:mm:ss");
                         return Ok(new {result= bs.Uploadhandout(httpPostedFile, imageName, container, userId).Result });
                     }
                     catch (Exception ex)
