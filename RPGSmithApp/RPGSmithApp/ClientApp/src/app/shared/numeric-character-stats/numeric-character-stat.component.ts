@@ -63,7 +63,8 @@ export class NumericCharacterStatComponent implements OnInit {
 
   
   private initialize() {
-    let num=0;
+   // let num=0;
+    let num: string = '0';
     setTimeout(() => {
       let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
       if (user == null)
@@ -76,7 +77,6 @@ export class NumericCharacterStatComponent implements OnInit {
             .subscribe(data => {
               this.numericCharacterStats = [];
               data.forEach((val) => {
-                console.log(data);
                 val.inventoryWeight = 0;
                 val.icon = this.characterStatService.getIcon(val.characterStat.characterStatType.statTypeName);
                 
@@ -85,17 +85,17 @@ export class NumericCharacterStatComponent implements OnInit {
                   val.characterStat.characterStatConditions.sort((a, b) => {
 
                     return a.sortOrder - b.sortOrder})
-                  console.log(characterStatConditions);
+                
                   if (this.characterCharStats) {
                     
                     let result = ServiceUtil.conditionStat(val, this.character, this.characterCharStats);
-
+                    
+                    //changes
                     if (isNaN(+result)) {
-                      num = 0;
+                      num =  result ;
                     } else {
-                      num = +result;
+                      num = result;
                     }
-                    console.log(num);
                     val.defaultValue = num;
                   }
                   
@@ -206,7 +206,8 @@ export class NumericCharacterStatComponent implements OnInit {
     if (this.characterId) {
       this.charactersCharacterStatService.getNumericCharactersCharacterStat<any[]>(this.characterId, this.page, this.pageSize)
         .subscribe(data => {
-          let num=0;
+          //let num=0;
+          let num: string = '0';
           data.forEach((val) => {
             val.icon = this.characterStatService.getIcon(val.characterStat.characterStatType.statTypeName);
             if (val.characterStat.characterStatType.statTypeName == 'Condition') {
@@ -215,17 +216,17 @@ export class NumericCharacterStatComponent implements OnInit {
 
                 return a.sortOrder - b.sortOrder
               })
-              console.log(characterStatConditions);
               if (this.characterCharStats) {
 
                 let result = ServiceUtil.conditionStat(val, this.character, this.characterCharStats);
 
                 if (isNaN(+result)) {
-                  num = 0;
+                 // num = 0 ;
+                  num = result;
                 } else {
-                  num = +result;
+                  num = result;
                 }
-                console.log(num);
+               
                 val.defaultValue = num;
               }
 
