@@ -67,6 +67,13 @@ export class RulesetDetailsComponent implements OnInit {
       this.ruleSetId = params['id'];
 
     });
+
+    this.appService.shouldUpdateRulesetDetails().subscribe(serviceJson => {
+     
+      if (serviceJson) {
+        this.initialize();
+      }
+    })
     this.appService.shouldUpdateCharacterList().subscribe(serviceJson => {
       
       if (serviceJson) {

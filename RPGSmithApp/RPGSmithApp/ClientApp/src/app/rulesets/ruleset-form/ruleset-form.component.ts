@@ -308,6 +308,7 @@ export class RulesetFormComponent implements OnInit {
                         : "Rule Set has been updated successfully.";
                     this.alertService.showMessage(message, "", MessageSeverity.success);
                   this.commonService.UpdateCounts(); /*update charaters count*/
+                  this.appService.updateRulesetDetails(true);
 
                   if (user.isGm) {
                     this.router.navigate(['/ruleset/campaign-details/' + data.ruleSetId]);

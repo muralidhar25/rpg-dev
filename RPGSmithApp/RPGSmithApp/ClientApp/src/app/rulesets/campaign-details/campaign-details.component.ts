@@ -60,7 +60,13 @@ export class CampaignDetailsComponent implements OnInit {
       this.ruleSetId = params['id'];
       
     });
-    
+
+    this.appService.shouldUpdateRulesetDetails().subscribe(serviceJson => {
+
+      if (serviceJson) {
+        this.initialize();
+      }
+    })
    
   }
 

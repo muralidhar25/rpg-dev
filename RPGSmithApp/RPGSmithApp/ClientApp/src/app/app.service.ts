@@ -11,6 +11,7 @@ export class AppService1 {
   private text = new Subject<any>();
   private character = new Subject<any>();
   private item = new Subject<any>();
+  private rulesetDetails = new Subject<any>();
 
   updateAccountSetting1(accountSetting: any) {    
     this.accountSetting.next(accountSetting);
@@ -51,5 +52,13 @@ export class AppService1 {
   //shouldCharactersCount(): Observable<any> {
   //  return this.charactersCount.asObservable();
   //}
+  updateRulesetDetails(rulesetDetails: any) {
+    this.rulesetDetails.next(rulesetDetails);
+  }
+
+
+  shouldUpdateRulesetDetails(): Observable<any> {
+    return this.rulesetDetails.asObservable();
+  }
 }
 
