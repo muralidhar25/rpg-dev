@@ -234,119 +234,122 @@ export class ServiceUtil {
     }
     return CalcStringForValue_Result.toString();
   }
+ 
   public static CalculateResultOfCalculation(characterCharacterStat: CharactersCharacterStat, characterCharacterStatList: any, inventoreyWeight: number): number {
-    //For Old Records
-    //////////////////////////////////////////////
-    let calculationString: string = characterCharacterStat.characterStat.characterStatCalcs[0].statCalculation.toUpperCase();
-    //let inventoreyWeight = inventoryWeight;
-    let finalCalcString: string = '';
+    if (characterCharacterStat.characterStat.characterStatCalcs) {
+      //For Old Records
+      //////////////////////////////////////////////
+      let calculationString: string = characterCharacterStat.characterStat.characterStatCalcs[0].statCalculation.toUpperCase();
+      //let inventoreyWeight = inventoryWeight;
+      let finalCalcString: string = '';
 
-    calculationString.split("[INVENTORYWEIGHT]").map((item) => {
-      calculationString = calculationString.replace("[INVENTORYWEIGHT]", " " + inventoreyWeight + " ");
-    })
-    let IDs: any[] = [];
-    finalCalcString = calculationString;
-    if (calculationString) {
-      calculationString.split(/\[(.*?)\]/g).map((rec) => {
+      calculationString.split("[INVENTORYWEIGHT]").map((item) => {
+        calculationString = calculationString.replace("[INVENTORYWEIGHT]", " " + inventoreyWeight + " ");
+      })
+      let IDs: any[] = [];
+      finalCalcString = calculationString;
+      if (calculationString) {
+        calculationString.split(/\[(.*?)\]/g).map((rec) => {
 
-        let id = ''; let flag = false; let type = 0; let statType = 0;
-        if (rec.split('_').length > 1) {
-          id = rec.split('_')[0].replace('[', '').replace(']', '');
-          type = parseInt(rec.split('_')[1])
-        }
-        else {
-          id = rec.replace('[', '').replace(']', '');
-          type = 0
-        }
-        characterCharacterStatList.map((q) => {
-          if (!flag) {
-            flag = (id == q.characterStat.statName.toUpperCase());
-            statType = q.characterStat.characterStatTypeId
+          let id = ''; let flag = false; let type = 0; let statType = 0;
+          if (rec.split('_').length > 1) {
+            id = rec.split('_')[0].replace('[', '').replace(']', '');
+            type = parseInt(rec.split('_')[1])
+          }
+          else {
+            id = rec.replace('[', '').replace(']', '');
+            type = 0
+          }
+          characterCharacterStatList.map((q) => {
+            if (!flag) {
+              flag = (id == q.characterStat.statName.toUpperCase());
+              statType = q.characterStat.characterStatTypeId
+            }
+          })
+          if (flag) {
+            IDs.push({ id: id, type: isNaN(type) ? 0 : type, originaltext: "[" + rec + "]", statType: statType })
+          }
+          else if (+id == -1) {
+            IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
           }
         })
-        if (flag) {
-          IDs.push({ id: id, type: isNaN(type) ? 0 : type, originaltext: "[" + rec + "]", statType: statType })
-        }
-        else if (+id == -1) {
-          IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
-        }
-      })
-      IDs.map((rec) => {
-        characterCharacterStatList.map((stat) => {
-          if (rec.id == stat.characterStat.statName.toUpperCase()) {
-            let num = 0;
-            switch (rec.statType) {
-              case 3: //Number
-                num = stat.number
-                break;
-              case 5: //Current Max
-                if (rec.type == 1)//current
-                {
-                  num = stat.current
-                }
-                else if (rec.type == 2)//Max
-                {
-                  num = stat.maximum
-                }
-                break;
-              case 7: //Val Sub-Val
-                if (rec.type == 3)//value
-                {
-                  num = +stat.value
-                }
-                else if (rec.type == 4)//sub-value
-                {
-                  num = stat.subValue
-                }
-                break;
-              case 12: //Calculation
-                num = stat.calculationResult
-                break;
-              case STAT_TYPE.Combo: //Combo
+        IDs.map((rec) => {
+          characterCharacterStatList.map((stat) => {
+            if (rec.id == stat.characterStat.statName.toUpperCase()) {
+              let num = 0;
+              switch (rec.statType) {
+                case 3: //Number
+                  num = stat.number
+                  break;
+                case 5: //Current Max
+                  if (rec.type == 1)//current
+                  {
+                    num = stat.current
+                  }
+                  else if (rec.type == 2)//Max
+                  {
+                    num = stat.maximum
+                  }
+                  break;
+                case 7: //Val Sub-Val
+                  if (rec.type == 3)//value
+                  {
+                    num = +stat.value
+                  }
+                  else if (rec.type == 4)//sub-value
+                  {
+                    num = stat.subValue
+                  }
+                  break;
+                case 12: //Calculation
+                  num = stat.calculationResult
+                  break;
+                case STAT_TYPE.Combo: //Combo
 
-                num = stat.defaultValue
-                break;
-              case STAT_TYPE.Choice:
+                  num = stat.defaultValue
+                  break;
+                case STAT_TYPE.Choice:
 
-                num = stat.defaultValue
-                break;
-              default:
-                break;
+                  num = stat.defaultValue
+                  break;
+                default:
+                  break;
+              }
+              if (num)
+                calculationString = calculationString.replace(rec.originaltext, num.toString());
+              else
+                calculationString = calculationString.replace(rec.originaltext, '0');
+              //CalcString = CalcString.replace(rec.originaltext, "(" + num + ")");
             }
-            if (num)
-              calculationString = calculationString.replace(rec.originaltext, num.toString());
-            else
-              calculationString = calculationString.replace(rec.originaltext, '0');
-            //CalcString = CalcString.replace(rec.originaltext, "(" + num + ")");
-          }
 
+          });
+
+          finalCalcString = calculationString;
         });
-
-        finalCalcString = calculationString;
-      });
+      }
+      ////////////////////////////////                    
+      finalCalcString = finalCalcString.replace(/  +/g, ' ');
+      finalCalcString = finalCalcString.replace(/RU/g, ' RU').replace(/RD/g, ' RD').replace(/KL/g, ' KL').replace(/KH/g, ' KH').replace(/DL/g, ' DL').replace(/DH/g, ' DH');
+      finalCalcString = finalCalcString.replace(/\+0/g, '').replace(/\-0/g, '').replace(/\*0/g, '').replace(/\/0/g, '');
+      finalCalcString = finalCalcString.replace(/\+ 0/g, '').replace(/\- 0/g, '').replace(/\* 0/g, '').replace(/\/ 0/g, '');
+      try {
+        finalCalcString = (finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '+ 0' ||
+          finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '- 0' ||
+          finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '* 0' ||
+          finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '/ 0')
+          ? finalCalcString.trim().slice(0, -1)
+          : finalCalcString.trim();
+        characterCharacterStat.calculationResult = +finalCalcString == 0 ? 0 : DiceService.commandInterpretation(finalCalcString, undefined, undefined)[0].calculationResult;
+      }
+      catch (ex) {
+        characterCharacterStat.calculationResult = 0;
+        //Curnt_Stat.calculationResult = this.getCalculationResult(Curnt_Stat.characterStat.characterStatCalcs[0].statCalculation);
+      }
+      if (isNaN(characterCharacterStat.calculationResult)) {
+        characterCharacterStat.calculationResult = 0;
+      }
+      return characterCharacterStat.calculationResult;
     }
-    ////////////////////////////////                    
-    finalCalcString = finalCalcString.replace(/  +/g, ' ');
-    finalCalcString = finalCalcString.replace(/RU/g, ' RU').replace(/RD/g, ' RD').replace(/KL/g, ' KL').replace(/KH/g, ' KH').replace(/DL/g, ' DL').replace(/DH/g, ' DH');
-    finalCalcString = finalCalcString.replace(/\+0/g, '').replace(/\-0/g, '').replace(/\*0/g, '').replace(/\/0/g, '');
-    finalCalcString = finalCalcString.replace(/\+ 0/g, '').replace(/\- 0/g, '').replace(/\* 0/g, '').replace(/\/ 0/g, '');
-    try {
-      finalCalcString = (finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '+ 0' ||
-        finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '- 0' ||
-        finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '* 0' ||
-        finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '/ 0')
-        ? finalCalcString.trim().slice(0, -1)
-        : finalCalcString.trim();
-      characterCharacterStat.calculationResult = +finalCalcString == 0 ? 0 : DiceService.commandInterpretation(finalCalcString, undefined, undefined)[0].calculationResult;
-    }
-    catch (ex) {
-      characterCharacterStat.calculationResult = 0;
-      //Curnt_Stat.calculationResult = this.getCalculationResult(Curnt_Stat.characterStat.characterStatCalcs[0].statCalculation);
-    }
-    if (isNaN(characterCharacterStat.calculationResult)) {
-      characterCharacterStat.calculationResult = 0;
-    }
-    return characterCharacterStat.calculationResult;
   }
   public static GetChoiceValue(ids, choicesList) {
 
@@ -417,7 +420,13 @@ export class ServiceUtil {
                     ConditionCheckString = ' "' + ConditionStatValue + '" ' + operator + ' "' + ValueToCompare + '" ';
                   }
                   ConditionCheckString = ConditionCheckString.toUpperCase();
-                  let conditionCheck = eval(ConditionCheckString);
+                    let conditionCheck;
+                    try {
+                      conditionCheck = eval(ConditionCheckString);
+                    } catch (ex) {
+                      conditionCheck = false;
+                    }
+                  //let conditionCheck = eval(ConditionCheckString);
                   if ((typeof (conditionCheck)) == "boolean") {
                     if (conditionCheck) {
                       result = ConditionTrueResult;
