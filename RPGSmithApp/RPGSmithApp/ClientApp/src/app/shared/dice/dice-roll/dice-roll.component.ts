@@ -3674,30 +3674,27 @@ export class DiceRollComponent implements OnInit {
   }
   GetDisplayContentFromResultName(ResultName, Results: Results[], IsNumericImage = false, result) {
     let resultIndex = 0;
-
+    
     if (Results) {
       if (Results.length) {
         let Result_s: Results[] = Results.filter(x => x.name == ResultName);
         if (!result.resultIndex) {
-          //console.log("1", result.resultIndex)
-          result.resultIndex = Math.ceil((Math.random() * (Result_s.length - 1)) + 0)
+          result.resultIndex = Math.ceil((Math.random() * (Result_s.length)) + 0)
         }
         if (Result_s.length) {
 
-          let Result: Results = Result_s[result.resultIndex];
+          let Result: Results = Result_s[result.resultIndex-1];
           return Result.displayContent;
         }
         else if (IsNumericImage) {
           ResultName = ResultName == "0" ? "" : ResultName;
           let Result_s: Results[] = Results.filter(x => x.name == ResultName);
           if (!result.resultIndex) {
-            //console.log("2", result.resultIndex)
-            result.resultIndex = Math.ceil((Math.random() * (Result_s.length - 1)) + 0)
+            result.resultIndex = Math.ceil((Math.random() * (Result_s.length)) + 0)
           }
 
-          if (Result_s.length) {
-
-            let Result: Results = Result_s[result.resultIndex];
+          if (Result_s.length) {            
+            let Result: Results = Result_s[result.resultIndex-1];
             return Result.displayContent;
           }
         }
