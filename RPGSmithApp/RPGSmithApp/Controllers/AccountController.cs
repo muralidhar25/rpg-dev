@@ -938,7 +938,7 @@ namespace RPGSmithApp.Controllers
                         //return Ok(httpPostedFile.FileName + " uploaded successfully.");
 
 
-                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
+                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager,_ruleSetService);
                         var container = bs.GetCloudBlobContainer().Result;
                         string imageName = Guid.NewGuid().ToString();
 

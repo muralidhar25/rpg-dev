@@ -39,7 +39,7 @@ namespace RPGSmithApp.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IAccountManager _accountManager;
-        private readonly BlobService _blobService = new BlobService(null,null);
+        private readonly BlobService _blobService = new BlobService(null,null,null);
         private readonly IRuleSetService _ruleSetService;
 
         public AuthorizationController(

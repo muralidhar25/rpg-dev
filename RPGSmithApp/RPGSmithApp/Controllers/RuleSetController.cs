@@ -811,7 +811,7 @@ namespace RPGSmithApp.Controllers
 
                 if (httpPostedFile != null)
                 {
-                    BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
+                    BlobService bs = new BlobService(_httpContextAccessor, _accountManager,_ruleSetService);
                     var container = bs.GetCloudBlobContainer().Result;
                     string imageName = Guid.NewGuid().ToString();
                     dynamic Response = new ExpandoObject();
@@ -849,8 +849,10 @@ namespace RPGSmithApp.Controllers
                 //    }
                 _ruleSetService.removeAllDice(Id);
                 _ruleSetService.removeDiceTray(Id);
-                    await _ruleSetService.DeleteRuleSet(Id);
-                    return Ok();
+                await _ruleSetService.DeleteRuleSet(Id);
+                BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _ruleSetService);
+               await bs.DeleteBlobContainer("user-" + GetUserId() + "-handout" + "-" + Id);
+                return Ok();
               //  }
             }
             catch (Exception ex)

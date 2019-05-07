@@ -29,15 +29,17 @@ namespace RPGSmithApp.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAccountManager _accountManager;
         private readonly IImageService _imageService;
-        private readonly BlobService bs = new BlobService(null,null);
+        private readonly IRuleSetService _rulesetService;
+        private readonly BlobService bs = new BlobService(null,null,null);
 
         public ImageController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager,
-            IImageService imageService)
+            IImageService imageService, IRuleSetService rulesetService)
         {
             _httpContextAccessor = httpContextAccessor;
             _accountManager = accountManager;
             _imageService = imageService;
-            bs = new BlobService(_httpContextAccessor, _accountManager);
+            _rulesetService = rulesetService;
+            bs = new BlobService(_httpContextAccessor, _accountManager, _rulesetService);
         }
 
         [HttpGet("BingSearch")]
@@ -72,9 +74,16 @@ namespace RPGSmithApp.Controllers
         [HttpGet("GetBlobSpaceUsed")]
         public async Task<IActionResult> GetBlobSpaceUsed(string userId)
         {
-            double normalContainer = bs.GetSpaceUsed("user-" + userId);
-            double handoutContainer = bs.GetSpaceUsed("user-" + userId + "-handout");
-            return Ok(normalContainer + handoutContainer);
+            double TotalSpaceUsed = 0;
+            var UserCampaigns =await _rulesetService.GetRuleSetByUserId(userId);
+            TotalSpaceUsed = bs.GetSpaceUsed("user-" + userId);
+            foreach (var camp in UserCampaigns)
+            {
+                double handoutContainer = bs.GetSpaceUsed("user-" + userId + "-handout" + "-" + camp.RuleSetId);
+                TotalSpaceUsed = TotalSpaceUsed + handoutContainer;
+            }
+            
+            return Ok(TotalSpaceUsed);
         }
 
         [HttpPost("uploadBlobImage")]
@@ -90,7 +99,7 @@ namespace RPGSmithApp.Controllers
                 {
                     try
                     {
-                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
+                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _rulesetService);
                         var container = bs.GetCloudBlobContainer().Result;
                         string imageName = Guid.NewGuid().ToString();
                         dynamic Response = new ExpandoObject();
@@ -124,7 +133,7 @@ namespace RPGSmithApp.Controllers
                 {
                     try
                     {
-                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
+                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _rulesetService);
                         var container = bs.GetCloudBlobContainer("user-" + userId).Result;
                         string imageName = Guid.NewGuid().ToString();
                         dynamic Response = new ExpandoObject();
@@ -157,7 +166,7 @@ namespace RPGSmithApp.Controllers
                 {
                     try
                     {
-                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
+                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _rulesetService);
                         var container = bs.GetCloudBlobContainer("user-" + userId).Result;
                         string imageName = Guid.NewGuid().ToString();
                         return Ok(bs.Uploadvideos(httpPostedFile, imageName, container).Result);
@@ -342,7 +351,7 @@ namespace RPGSmithApp.Controllers
 
                     try
                     {
-                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
+                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _rulesetService);
                         var container = bs.GetCloudBlobContainer("user-" + userId).Result;
                         string imageName = Guid.NewGuid().ToString();
                         return Ok(bs.UploadImages(_httpPostedFile, imageName, container).Result);
@@ -392,7 +401,7 @@ namespace RPGSmithApp.Controllers
                     {
                         try
                         {
-                            BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
+                            BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _rulesetService);
                             var container = bs.GetCloudBlobContainer("user-" + userId).Result;
                             string imageName = Guid.NewGuid().ToString();
                             dynamic Response = new ExpandoObject();
@@ -416,7 +425,7 @@ namespace RPGSmithApp.Controllers
             return BadRequest("No Image Selected");
         }
         [HttpPost("uploadhandoutByUserId")]
-        public async Task<IActionResult> uploadhandoutByUserId(string userId)
+        public async Task<IActionResult> uploadhandoutByUserId(string userId, int campaignID = 0)
         {
 
             if (_httpContextAccessor.HttpContext.Request.Form.Files.Any())
@@ -428,8 +437,8 @@ namespace RPGSmithApp.Controllers
                 {
                     try
                     {
-                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
-                        var container = bs.GetCloudBlobContainer("user-" + userId+"-handout").Result;
+                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _rulesetService);
+                        var container = bs.GetCloudBlobContainer("user-" + userId+"-handout" + "-" + campaignID).Result;
                         string imageName = Path.GetFileNameWithoutExtension( httpPostedFile.FileName.ToString())+ "_"+DateTime.Now.ToString("dd_MM_yyyy_HH:mm:ss");
                         return Ok(new {result= bs.Uploadhandout(httpPostedFile, imageName, container, userId).Result });
                     }
@@ -446,7 +455,7 @@ namespace RPGSmithApp.Controllers
         }
         
         [HttpPost("uploadhandoutFolderByUserId")]
-        public async Task<IActionResult> uploadhandoutFolderByUserId(string userId,string folderName)
+        public async Task<IActionResult> uploadhandoutFolderByUserId(string userId,string folderName, int campaignID = 0)
         {
 
             if (_httpContextAccessor.HttpContext.Request.Form.Files.Any())
@@ -458,8 +467,8 @@ namespace RPGSmithApp.Controllers
                 {
                     try
                     {
-                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
-                        var container = bs.GetCloudBlobContainer("user-" + userId + "-handout").Result;
+                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _rulesetService);
+                        var container = bs.GetCloudBlobContainer("user-" + userId + "-handout" + "-" + campaignID).Result;
                         string imageName = Path.GetFileNameWithoutExtension(httpPostedFile.FileName.ToString()) + "_" + DateTime.Now.ToString("dd_MM_yyyy_HH:mm:ss");
                         return Ok(new { result = bs.UploadhandoutFolder(httpPostedFile, imageName, container, userId, folderName).Result });
                     }
@@ -473,7 +482,7 @@ namespace RPGSmithApp.Controllers
             }
             else if (!string.IsNullOrEmpty(folderName))
             {
-                var container = bs.GetCloudBlobContainer("user-" + userId + "-handout").Result;
+                var container = bs.GetCloudBlobContainer("user-" + userId + "-handout" + "-" + campaignID).Result;
                 string imageName = "default_folder_file";
                 return Ok(new { result = bs.UploadhandoutFolder(null, imageName, container, userId, folderName).Result });
             }
@@ -481,9 +490,9 @@ namespace RPGSmithApp.Controllers
 
         }
         [HttpGet("MyHandouts")]
-        public async Task<IActionResult> MyHandouts(string userId, int Count = 39, int previousContainerImageNumber = 0,string prefixToGetFolderContent="")
+        public async Task<IActionResult> MyHandouts(string userId, int Count = 39, int previousContainerImageNumber = 0,string prefixToGetFolderContent="",int campaignID=0)
         {
-            return Ok(bs.BlobMyHandoutsAsync("user-" + userId+ "-handout", Count, previousContainerImageNumber, prefixToGetFolderContent));
+            return Ok(bs.BlobMyHandoutsAsync("user-" + userId + "-handout" + "-" + campaignID, Count, previousContainerImageNumber, prefixToGetFolderContent));
         }
 
     }

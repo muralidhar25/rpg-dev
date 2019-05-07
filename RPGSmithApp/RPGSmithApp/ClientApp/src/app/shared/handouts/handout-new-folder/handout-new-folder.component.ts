@@ -21,13 +21,15 @@ export class HandoutNewFolderComponent implements OnInit {
   folderName: string = '';
   files: any[]=[];
   userid: string = '';
+  rulesetId: number = 0;
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private authService: AuthService, private appService: AppService1
     , private location: PlatformLocation, private imageSearchService: ImageSearchService, private alertService: AlertService,) {
     location.onPopState(() => this.modalService.hide(1));
     }
 
     ngOnInit() {
-        setTimeout(() => {            
+      setTimeout(() => {
+        this.rulesetId = this.bsModalRef.content.rulesetId;
             this.Initialize();
         }, 0);        
     }
@@ -56,7 +58,7 @@ export class HandoutNewFolderComponent implements OnInit {
     //if (this.files && this.files[0]) {
       let imgList = this.files;
       this.isLoading = true;
-      this.imageSearchService.uploadHandoutFolder<any>(imgList, this.userid, this.folderName)
+      this.imageSearchService.uploadHandoutFolder<any>(imgList, this.userid, this.folderName,this.rulesetId)
         .subscribe(data => {
          
           if (data) {

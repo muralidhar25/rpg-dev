@@ -118,7 +118,7 @@ export class HandoutViewComponent implements OnInit {
     //this.blobStockImages = [];
     this.blobMyImages = [];
 
-    this.imageSearchService.getListOfUploads<any>(userId, this.MyImageCount, this.previousContainerMyImageNumber, this.prefixToGetFolderContent)
+    this.imageSearchService.getListOfUploads<any>(userId, this.MyImageCount, this.previousContainerMyImageNumber, this.prefixToGetFolderContent, this.ruleSetId)
       .subscribe(data => {
         console.log(data.result);
         this.blobMyImagesBLOB = this.blobMyImages = data.result.blobResponse.items;
@@ -147,7 +147,7 @@ export class HandoutViewComponent implements OnInit {
     let _query = "";
     this.isMyImagesLoading = true;
 
-    this.imageSearchService.getListOfUploads<any>(this.userid, this.MyImageCount, this.previousContainerMyImageNumber, this.prefixToGetFolderContent)
+    this.imageSearchService.getListOfUploads<any>(this.userid, this.MyImageCount, this.previousContainerMyImageNumber, this.prefixToGetFolderContent, this.ruleSetId)
       .subscribe(data => {
 
         this.blobMyImagesBLOB = this.blobMyImagesBLOB.concat(data.result.blobResponse.items);
@@ -209,23 +209,24 @@ export class HandoutViewComponent implements OnInit {
       this.OpenFolder(item.name);
     }
     else {
-      if (item.contentType.indexOf("image") > -1) {
-        this.bsModalRef = this.modalService.show(ImageViewerComponent, {
-          class: 'modal-primary modal-md',
-          ignoreBackdropClick: true,
-          keyboard: false
-        });
-        this.bsModalRef.content.ViewImageUrl = item.absoluteUri;
-        this.bsModalRef.content.ViewImageAlt = 'Image';
-        this.bsModalRef.content.DestroyOtherModals = false;
-      } else {
-        this.bsModalRef = this.modalService.show(HandoutFileViewComponent, {
-          class: 'modal-primary modal-lg',
-          ignoreBackdropClick: true,
-          keyboard: false
-        });
-        this.bsModalRef.content.ViewDetails = item;
-      }
+      //if (item.contentType.indexOf("image") > -1) {
+      //  this.bsModalRef = this.modalService.show(ImageViewerComponent, {
+      //    class: 'modal-primary modal-md',
+      //    ignoreBackdropClick: true,
+      //    keyboard: false
+      //  });
+      //  this.bsModalRef.content.ViewImageUrl = item.absoluteUri;
+      //  this.bsModalRef.content.ViewImageAlt = 'Image';
+      //  this.bsModalRef.content.DestroyOtherModals = false;
+      //} else {
+      //  this.bsModalRef = this.modalService.show(HandoutFileViewComponent, {
+      //    class: 'modal-primary modal-lg',
+      //    ignoreBackdropClick: true,
+      //    keyboard: false
+      //  });
+      //  this.bsModalRef.content.ViewDetails = item;
+      //}
+      this.download(item.absoluteUri, item.name);
     }
     
   }
@@ -240,5 +241,24 @@ export class HandoutViewComponent implements OnInit {
     this.showDeleteBtn = false;
     this.prefixToGetFolderContent = "";
     this.Initialize();
+  }
+  download(url, downloadName) {
+    this.alertService.startLoadingMessage("", "Downloading file...");
+    fetch(new Request("/api/Image/ConvertImageURLToBase64?url=" + url)).then((response) => {
+      response.text().then((base64) => {
+        let a = document.createElement("a");
+        document.body.appendChild(a);
+        let hrefurl: any = base64;
+        a.href = hrefurl;
+        a.download = downloadName;
+        a.target = "_blank"
+        a.click();
+        document.body.removeChild(a);
+        this.alertService.stopLoadingMessage();
+      }).catch(() => {
+        this.alertService.stopLoadingMessage();
+        this.alertService.showMessage("Some error occured.", "", MessageSeverity.error);
+      });
+    });
   }
 }

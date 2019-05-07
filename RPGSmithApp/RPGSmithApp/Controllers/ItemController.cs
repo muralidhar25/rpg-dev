@@ -30,11 +30,12 @@ namespace RPGSmithApp.Controllers
         private readonly ICoreRuleset _coreRulesetService;
         private readonly IItemMasterBundleService _itemMasterBundleService;
         private readonly ICampaignService _campaignService;
+        private readonly IRuleSetService _rulesetService;
 
         public ItemController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager,
             IItemService itemService, IItemCommandService itemCommandService,
             IItemMasterService itemMasterService, ICharacterService characterService, ICoreRuleset coreRulesetService,
-            IItemMasterBundleService itemMasterBundleService, ICampaignService campaignService)
+            IItemMasterBundleService itemMasterBundleService, ICampaignService campaignService, IRuleSetService rulesetService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._accountManager = accountManager;
@@ -45,6 +46,7 @@ namespace RPGSmithApp.Controllers
             this._coreRulesetService = coreRulesetService;
             this._itemMasterBundleService = itemMasterBundleService;
             this._campaignService = campaignService;
+            this._rulesetService = rulesetService;
         }
 
         [HttpGet("getall")]
@@ -699,7 +701,7 @@ namespace RPGSmithApp.Controllers
                 {
                     try
                     {
-                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
+                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager,_rulesetService);
                         var container = bs.GetCloudBlobContainer().Result;
                         string imageName = Guid.NewGuid().ToString();
                         dynamic Response = new ExpandoObject();

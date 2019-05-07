@@ -194,7 +194,7 @@ namespace RPGSmithApp.Controllers
                                     {
                                         if (!ctoggle.Image.Contains("rpgsmithsa.blob.core.windows.net"))
                                         {
-                                            BlobService bs = new BlobService(_httpContextAccessor,_accountManager);
+                                            BlobService bs = new BlobService(_httpContextAccessor,_accountManager,_ruleSetService);
                                             string imageName = Guid.NewGuid().ToString() + ".jpg";
                                             if (ctoggle.Image.StartsWith("data:image"))
                                             {
@@ -580,7 +580,7 @@ namespace RPGSmithApp.Controllers
                             {
                                 if (!ctoggle.Image.Contains("rpgsmithsa.blob.core.windows.net"))
                                 {
-                                    BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
+                                    BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _ruleSetService);
                                     string imageName = Guid.NewGuid().ToString() + ".jpg";
                                     if (ctoggle.Image.StartsWith("data:image"))
                                     {
@@ -839,7 +839,7 @@ namespace RPGSmithApp.Controllers
                             if (ctoggle.Image != "" && ctoggle.Image != null ) {
                                 if (!ctoggle.Image.Contains("rpgsmithsa.blob.core.windows.net"))
                                 {
-                                    BlobService bs = new BlobService(_httpContextAccessor, _accountManager);
+                                    BlobService bs = new BlobService(_httpContextAccessor, _accountManager,_ruleSetService);
                                     string imageName = Guid.NewGuid().ToString() + ".jpg";
                                     if (ctoggle.Image.StartsWith("data:image"))
                                     {

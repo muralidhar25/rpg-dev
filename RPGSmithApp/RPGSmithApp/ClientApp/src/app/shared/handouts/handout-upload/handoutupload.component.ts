@@ -17,6 +17,9 @@ import { ImageViewerComponent } from '../../image-interface/image-viewer/image-v
 import { HandoutFileViewComponent } from '../handout-file-view/handout-file-view.component';
 import { HandoutNewFolderComponent } from '../handout-new-folder/handout-new-folder.component';
 import { AppService1 } from '../../../app.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { Ruleset } from '../../../core/models/view-models/ruleset.model';
 
 @Component({
   selector: 'app-handoutupload',
@@ -51,13 +54,13 @@ export class HandoutuploadComponent implements OnInit {
   docmap: string = 'application/msword';
 
   prefixToGetFolderContent: string = '';
-
+  ruleset: Ruleset = new Ruleset();
   constructor(
     private router: Router, private alertService: AlertService, private bsModalRef: BsModalRef,
     private authService: AuthService, private configurations: ConfigurationService,
     private modalService: BsModalService, private localStorage: LocalStoreManager,
-    private sharedService: SharedService, private imageSearchService: ImageSearchService,
-    private userService: UserService, private appService: AppService1,
+    private sharedService: SharedService, private imageSearchService: ImageSearchService, protected http: HttpClient,
+    private userService: UserService, private appService: AppService1, private sanitizer: DomSanitizer,
    private location: PlatformLocation
   ) {
     location.onPopState(() => this.modalService.hide(1));
@@ -71,7 +74,7 @@ export class HandoutuploadComponent implements OnInit {
   ngOnInit() {
     setTimeout(() => {
       this.title = this.bsModalRef.content.title ? this.bsModalRef.content.title : 'HandOuts';
-      
+      this.ruleset=this.bsModalRef.content.ruleset;
       //this.query = this.bsModalRef.content.query ? this.bsModalRef.content.query : '';
       // this.defaultText = this.bsModalRef.content.defaultText ? this.bsModalRef.content.defaultText : 'Web';
       this.Initialize();
@@ -114,7 +117,7 @@ export class HandoutuploadComponent implements OnInit {
       imgList = event.target.files;
       this.isLoading = true;
       if (this.prefixToGetFolderContent) {
-        this.imageSearchService.uploadHandoutFolder<any>(imgList, this.userid, this.prefixToGetFolderContent)
+        this.imageSearchService.uploadHandoutFolder<any>(imgList, this.userid, this.prefixToGetFolderContent, this.ruleset.ruleSetId)
           .subscribe(data => {
             if (data) {
               if (data.result) {
@@ -134,7 +137,7 @@ export class HandoutuploadComponent implements OnInit {
             () => { });
       }
       else {
-        this.imageSearchService.uploadHandouts<any>(imgList, this.userid)
+        this.imageSearchService.uploadHandouts<any>(imgList, this.userid, this.ruleset.ruleSetId)
           .subscribe(data => {
             if (data) {
               if (data.result) {
@@ -164,28 +167,30 @@ export class HandoutuploadComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.userid = this.userid;
+    this.bsModalRef.content.rulesetId = this.ruleset.ruleSetId;
     //this.bsModalRef.content.ViewImageAlt = 'Image';
     this.bsModalRef.content.DestroyOtherModals = false;
   }
   ViewImage(item) {
-
-    if (item.contentType.indexOf("image") > -1) {
-        this.bsModalRef = this.modalService.show(ImageViewerComponent, {
-          class: 'modal-primary modal-md',
-          ignoreBackdropClick: true,
-          keyboard: false
-        });
-      this.bsModalRef.content.ViewImageUrl = item.absoluteUri;
-      this.bsModalRef.content.ViewImageAlt = 'Image';
-      this.bsModalRef.content.DestroyOtherModals = false;
-    } else {
-        this.bsModalRef = this.modalService.show(HandoutFileViewComponent, {
-          class: 'modal-primary modal-lg',
-          ignoreBackdropClick: true,
-          keyboard: false
-        });
-        this.bsModalRef.content.ViewDetails = item;
-    }
+    
+    //if (item.contentType.indexOf("image") > -1) {
+    //    this.bsModalRef = this.modalService.show(ImageViewerComponent, {
+    //      class: 'modal-primary modal-md',
+    //      ignoreBackdropClick: true,
+    //      keyboard: false
+    //    });
+    //  this.bsModalRef.content.ViewImageUrl = item.absoluteUri;
+    //  this.bsModalRef.content.ViewImageAlt = 'Image';
+    //  this.bsModalRef.content.DestroyOtherModals = false;
+    //} else {
+    //    this.bsModalRef = this.modalService.show(HandoutFileViewComponent, {
+    //      class: 'modal-primary modal-lg',
+    //      ignoreBackdropClick: true,
+    //      keyboard: false
+    //    });
+    //    this.bsModalRef.content.ViewDetails = item;
+    //}
+    this.download(item.absoluteUri, item.name);
   }
 
     
@@ -219,7 +224,7 @@ export class HandoutuploadComponent implements OnInit {
     //    },
     //        () => { });
 
-    this.imageSearchService.getListOfUploads<any>(userId, this.MyImageCount, this.previousContainerMyImageNumber, this.prefixToGetFolderContent)
+    this.imageSearchService.getListOfUploads<any>(userId, this.MyImageCount, this.previousContainerMyImageNumber, this.prefixToGetFolderContent, this.ruleset.ruleSetId)
       .subscribe(data => {
         this.blobMyImagesBLOB = this.blobMyImages = data.result.blobResponse.items;
         this.isLoading = false;
@@ -248,7 +253,7 @@ export class HandoutuploadComponent implements OnInit {
     let _query = "";
     this.isMyImagesLoading = true;
 
-    this.imageSearchService.getListOfUploads<any>(this.userid, this.MyImageCount, this.previousContainerMyImageNumber, this.prefixToGetFolderContent)
+    this.imageSearchService.getListOfUploads<any>(this.userid, this.MyImageCount, this.previousContainerMyImageNumber, this.prefixToGetFolderContent, this.ruleset.ruleSetId)
       .subscribe(data => {
 
         this.blobMyImagesBLOB = this.blobMyImagesBLOB.concat(data.result.blobResponse.items);
@@ -366,5 +371,24 @@ export class HandoutuploadComponent implements OnInit {
     this.showDeleteBtn = false;
     this.prefixToGetFolderContent = "";
     this.Initialize();
+  }
+  download(url, downloadName) {
+    this.alertService.startLoadingMessage("", "Downloading file...");
+    fetch(new Request("/api/Image/ConvertImageURLToBase64?url=" + url)).then((response) => {
+      response.text().then((base64) => {
+        let a = document.createElement("a");
+        document.body.appendChild(a);
+        let hrefurl: any = base64;
+        a.href = hrefurl;
+        a.download = downloadName.replace('/','_');
+        a.target = "_blank"
+        a.click();
+        document.body.removeChild(a);
+        this.alertService.stopLoadingMessage();
+      }).catch(() => {
+        this.alertService.stopLoadingMessage();
+        this.alertService.showMessage("Some error occured.", "", MessageSeverity.error);
+        });
+    });
   }
 }

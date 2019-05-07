@@ -21,12 +21,12 @@
     <!-- Blob My Images Search -->
     <ul class="input-image-search-result">
       <li class="input-image-search-result-item" *ngFor="let myImages of blobMyImages">
-        <div class="input-image-search-result-item-wrapper hangout-images-section" (click)="ViewImage(myImages)">
+        <div class="input-image-search-result-item-wrapper hangout-images-section" >
           <div *ngIf="myImages.contentType.indexOf(imagemap) > -1" class="search-image-box-section" [ngStyle]="{'background-image': 'url('+myImages.absoluteUri+')'}"></div>
-          
+
           <div *ngIf="myImages.contentType.indexOf(imagemap) == -1" class="search-image-box-section">
-            <img src="../../../../assets/images/handouticons/txt-icon.png" *ngIf="myImages.contentType.indexOf(textmap) > -1" class="crsr-pointer"/>
-            <img src="../../../../assets/images/handouticons/video-icon.png" *ngIf="myImages.contentType.indexOf(videomap) > -1"  class="crsr-pointer"/>
+            <img src="../../../../assets/images/handouticons/txt-icon.png" *ngIf="myImages.contentType.indexOf(textmap) > -1" class="crsr-pointer" />
+            <img src="../../../../assets/images/handouticons/video-icon.png" *ngIf="myImages.contentType.indexOf(videomap) > -1" class="crsr-pointer" />
             <img src="../../../../assets/images/handouticons/pdf-icon.png" *ngIf="myImages.contentType.indexOf(pdfmap) > -1" class="crsr-pointer" />
             <img src="../../../../assets/images/handouticons/doc-icon.png" *ngIf="myImages.contentType.indexOf(docmap) > -1" class="crsr-pointer" />
             <img src="../../../../assets/images/handouticons/folder-icon.png" *ngIf="myImages.isFolder" class="crsr-pointer" (click)="OpenFolder(myImages?.name)" />
@@ -36,10 +36,17 @@
                                  && myImages.contentType.indexOf(videomap) == -1
                                  &&  myImages.contentType.indexOf(textmap) == -1
                                   && myImages.contentType.indexOf(docmap) == -1)
-                                && !myImages.isFolder" class="crsr-pointer"/>
+                                && !myImages.isFolder" class="crsr-pointer" />
             <p *ngIf="!myImages.isFolder" class="crsr-pointer">{{myImages?.name}}</p>
-            <p *ngIf="myImages.isFolder" class="crsr-pointer">{{myImages?.name}}</p>
+            <p *ngIf="myImages.isFolder" class="crsr-pointer" (click)="OpenFolder(myImages?.name)">{{myImages?.name}}</p>
           </div>
+          <ng-container *ngIf="!myImages.isFolder">
+            <input type="hidden" />
+            <div class="view-button" (click)="ViewImage(myImages)">Download</div>
+            <div class="input-image-search-result-item-use">
+              
+            </div>
+          </ng-container>
         </div>
       </li>
       <li *ngIf="blobMyImages?.length == 0 && !isLoading" class="input-image-search-result-item  mx-auto" style="list-style-type: none;margin:10px;">No Record Found</li>

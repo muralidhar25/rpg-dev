@@ -141,18 +141,18 @@ export class ImageSearchService extends EndpointFactory {
       });
   }
 
-  getListOfUploads<T>(userId, count, previousContainerImageNumber, prefixToGetFolderContent): Observable<T> {
-    let endpointUrl = `${this.myHandoutsUrl}?userId=${userId}& count=${count}& previousContainerImageNumber=${previousContainerImageNumber}&prefixToGetFolderContent=${prefixToGetFolderContent}`;
+  getListOfUploads<T>(userId, count, previousContainerImageNumber, prefixToGetFolderContent, campaignID): Observable<T> {
+    let endpointUrl = `${this.myHandoutsUrl}?userId=${userId}& count=${count}& previousContainerImageNumber=${previousContainerImageNumber}&prefixToGetFolderContent=${prefixToGetFolderContent}&campaignID=${campaignID}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.getListOfUploads(userId, count, previousContainerImageNumber, prefixToGetFolderContent));
+        return this.handleError(error, () => this.getListOfUploads(userId, count, previousContainerImageNumber, prefixToGetFolderContent, campaignID));
       });
   }
 
-  uploadHandouts<T>(imgList: File[], userid: string): Observable<T> {
+  uploadHandouts<T>(imgList: File[], userid: string, campaignID): Observable<T> {
 
-    let endpointUrl = `${this.uploadhandoutsUrl}?userId=${userid}`;
+    let endpointUrl = `${this.uploadhandoutsUrl}?userId=${userid}&campaignID=${campaignID}`;
 
     const formData: FormData = new FormData();
 
@@ -162,12 +162,12 @@ export class ImageSearchService extends EndpointFactory {
     return this.http.post<T>(endpointUrl, formData, this.getRequestFileHeaders())
       //.map(() => { return true; })
       .catch(error => {
-        return this.handleError(error, () => this.uploadHandouts(imgList, userid));
+        return this.handleError(error, () => this.uploadHandouts(imgList, userid, campaignID));
       });
   }
-  uploadHandoutFolder<T>(imgList: File[], userid: string, folderName:string): Observable<T> {
+  uploadHandoutFolder<T>(imgList: File[], userid: string, folderName: string, campaignID): Observable<T> {
 
-    let endpointUrl = `${this.uploadhandoutFoldersUrl}?userId=${userid}&folderName=${folderName}`;
+    let endpointUrl = `${this.uploadhandoutFoldersUrl}?userId=${userid}&folderName=${folderName}&campaignID=${campaignID}`;
 
     const formData: FormData = new FormData();
 
@@ -177,7 +177,7 @@ export class ImageSearchService extends EndpointFactory {
     return this.http.post<T>(endpointUrl, formData, this.getRequestFileHeaders())
       //.map(() => { return true; })
       .catch(error => {
-        return this.handleError(error, () => this.uploadHandouts(imgList, userid));
+        return this.handleError(error, () => this.uploadHandouts(imgList, userid, campaignID));
       });
   }
 }

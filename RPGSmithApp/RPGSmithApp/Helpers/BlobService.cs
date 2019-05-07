@@ -15,6 +15,7 @@ using System.Linq;
 using System.Reflection;
 using DAL.Models;
 using DAL.Core.Interfaces;
+using DAL.Services;
 
 namespace RPGSmithApp.Helpers
 {
@@ -22,11 +23,13 @@ namespace RPGSmithApp.Helpers
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAccountManager _accountManager;
+        private readonly IRuleSetService _rulesetService;
         const string StorageFullMessage = "Your account storage space is full. Please buy more space to upload more files.";
       
-        public BlobService(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager) {
+        public BlobService(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager, IRuleSetService rulesetService) {
             _httpContextAccessor = httpContextAccessor;
             _accountManager = accountManager;
+            _rulesetService = rulesetService;
         }
         public async Task<CloudBlobContainer> GetCloudBlobContainer(string containerName = "media")
         {
@@ -786,6 +789,7 @@ namespace RPGSmithApp.Helpers
                 string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
                 ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
                 subs = _accountManager.userSubscriptions(appUser.Id).Result;
+                userId = appUser.Id;
             }
             else {
                 subs = _accountManager.userSubscriptions(userId).Result;
@@ -794,7 +798,14 @@ namespace RPGSmithApp.Helpers
             
             if (subs!=null)
             {
-                if (GetSpaceUsed(container)>=subs.StorageSpaceInMB)
+                var UserCampaigns = _rulesetService.GetRuleSetByUserId(userId).Result;
+                double TotalSpaceUsed = GetSpaceUsed("user-" + userId);
+                foreach (var camp in UserCampaigns)
+                {
+                    double handoutContainer = GetSpaceUsed("user-" + userId + "-handout" + "-" + camp.RuleSetId);
+                    TotalSpaceUsed = TotalSpaceUsed + handoutContainer;
+                }
+                if (TotalSpaceUsed >= subs.StorageSpaceInMB)
                 {
                     res = false;
                 }
@@ -848,7 +859,7 @@ namespace RPGSmithApp.Helpers
                     //Create folder in container
                     CloudBlobContainer sourceContainer = cloudBlobContainer;// GetCloudBlobContainer("user-248c6bae-fab3-4e1f-b91b-f674de70a65d-handout").Result;
                     CloudBlobDirectory directory = sourceContainer.GetDirectoryReference(folderName);
-                    CloudBlockBlob blockblob = directory.GetBlockBlobReference(fileName);
+                    CloudBlockBlob blockblob = directory.GetBlockBlobReference(fileName + "" + Path.GetExtension(httpPostedFile.FileName));
                     //await blockblob.UploadFromFileAsync(@"F:\Vikas\Projects\Work for GM Account\RPGSmithApp\RPGSmithApp\ClientApp\src\favicon.ico");
 
                     httpPostedFile.CopyTo(ms1);
