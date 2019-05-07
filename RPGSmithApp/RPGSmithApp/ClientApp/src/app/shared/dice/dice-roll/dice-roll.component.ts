@@ -631,7 +631,6 @@ export class DiceRollComponent implements OnInit {
                     break;
                 }
                 //calculationString = calculationString.replace(rec.originaltext, conditionResult);
-                //console.log('calcs',calculationString);
                 if (num)
                   calculationString = calculationString.replace(rec.originaltext, num.toString());
                 else
@@ -1237,7 +1236,7 @@ export class DiceRollComponent implements OnInit {
                         //}
                         // num = result;
                         num = ServiceUtil.GetCalcuationsResults(result, this.statdetails, this.charactersCharacterStats, this.character);
-                        console.log('num', num);
+                       
                         break;
                       default:
                         break;
@@ -1259,7 +1258,7 @@ export class DiceRollComponent implements OnInit {
                 });
 
                 finalCalcString = calculationString;
-                console.log('calculationString', finalCalcString);
+               
               });
             }
             ////////////////////////////////                    
@@ -1363,7 +1362,7 @@ export class DiceRollComponent implements OnInit {
           this.loadingResult = true;
         }
         else {
-          this.characterMultipleCommands = DiceService.commandInterpretation(command, undefined, this.addModArray, this.customDices);
+          this.characterMultipleCommands = DiceService.commandInterpretation(command, undefined, this.addModArray, this.customDices, this.mainCommandText.toUpperCase());
 
           __characterMultipleCommands = this.characterMultipleCommands[0];
         }
@@ -1460,8 +1459,9 @@ export class DiceRollComponent implements OnInit {
 
           //--END variable to hide Exploded dice--//
         });
-
-        this.characterCommandModel.command = __calculationCommand;
+        
+        //this.characterCommandModel.command = __calculationCommand;
+        this.characterCommandModel.command = this.mainCommandText;
         this.characterCommandModel.lastResult = __calculationResult;
         this.characterCommandModel.lastResultNumbers = __calculationString;
         this.characterCommandModel.isCustomNumericCommand = __isCustomNumericCommand;
@@ -1906,14 +1906,14 @@ export class DiceRollComponent implements OnInit {
 
   //COMMAND SEPARATED BY AND - CLICK
   onAndCommandClick(commandData: any, characterCommand: CharacterCommand, index: number) {
-
+    
     this.loadingResult = true;
     this.activeAndCommand = index;
 
     let __characterMultipleCommands = commandData; //this.characterMultipleCommands[index];
     let __calculationArray = __characterMultipleCommands.calculationArray;
 
-    let __calculationCommand = __characterMultipleCommands.calculationCommand.toString();
+    let __calculationCommand = __characterMultipleCommands.calculationMainCommand //__characterMultipleCommands.calculationCommand.toString();
     let __calculationResult = __characterMultipleCommands.calculationResult;
     let __calculationString = __characterMultipleCommands.calculationString;
 
@@ -2015,7 +2015,7 @@ export class DiceRollComponent implements OnInit {
 
       }, 100);
     }
-
+    
     this.characterCommandModel.lastResult = __calculationResult;
     this.characterCommandModel.lastResultNumbers = __calculationString;
     this.characterCommandModel.command = __calculationCommand;
@@ -2998,143 +2998,143 @@ export class DiceRollComponent implements OnInit {
       setTimeout(() => { this.alertService.resetStickyMessage(); }, 1200);
       return false;
     }
-    //////////////////////////////////////////////
-    try {
-      if (this.characterId > 0) {
-        ////////////////////////////////
-        let calculationString: string = command;
-        let inventoreyWeight = this.statdetails.character.inventoryWeight;
-        let finalCalcString: string = '';
-        calculationString.split("[INVENTORYWEIGHT]").map((item) => {
-          calculationString = calculationString.replace("[INVENTORYWEIGHT]", " " + inventoreyWeight + " ");
-        })
-        let IDs: any[] = [];
-        finalCalcString = calculationString;
-        if (calculationString) {
+    ////////////////////////////////////////////////
+    //try {
+    //  if (this.characterId > 0) {
+    //    ////////////////////////////////
+    //    let calculationString: string = command;
+    //    let inventoreyWeight = this.statdetails.character.inventoryWeight;
+    //    let finalCalcString: string = '';
+    //    calculationString.split("[INVENTORYWEIGHT]").map((item) => {
+    //      calculationString = calculationString.replace("[INVENTORYWEIGHT]", " " + inventoreyWeight + " ");
+    //    })
+    //    let IDs: any[] = [];
+    //    finalCalcString = calculationString;
+    //    if (calculationString) {
 
-          calculationString = DiceService.hideTextCommandSquareBraces(calculationString);
+    //      calculationString = DiceService.hideTextCommandSquareBraces(calculationString);
 
-          calculationString.split(/\[(.*?)\]/g).map((rec) => {
+    //      calculationString.split(/\[(.*?)\]/g).map((rec) => {
 
-            let id = ''; let flag = false; let type = 0; let statType = 0;
-            let isValue = false; let isSubValue = false; let isCurrent = false; let isMax = false;
+    //        let id = ''; let flag = false; let type = 0; let statType = 0;
+    //        let isValue = false; let isSubValue = false; let isCurrent = false; let isMax = false;
 
-            if (rec.toUpperCase().split('(V)').length > 1) { isValue = true; }
-            if (rec.toUpperCase().split('(S)').length > 1) { isSubValue = true; }
-            if (rec.toUpperCase().split('(C)').length > 1) { isCurrent = true; }
-            if (rec.toUpperCase().split('(M)').length > 1) { isMax = true; }
+    //        if (rec.toUpperCase().split('(V)').length > 1) { isValue = true; }
+    //        if (rec.toUpperCase().split('(S)').length > 1) { isSubValue = true; }
+    //        if (rec.toUpperCase().split('(C)').length > 1) { isCurrent = true; }
+    //        if (rec.toUpperCase().split('(M)').length > 1) { isMax = true; }
 
-            if (isValue || isSubValue || isCurrent || isMax) {
-              if (isValue) {
-                id = rec.toUpperCase().split('(V)')[0].replace('[', '').replace(']', '');
-                type = 3
-              }
-              else if (isSubValue) {
-                id = rec.toUpperCase().split('(S)')[0].replace('[', '').replace(']', '');
-                type = 4
-              }
-              else if (isCurrent) {
-                id = rec.toUpperCase().split('(C)')[0].replace('[', '').replace(']', '');
-                type = 1
-              }
-              else if (isMax) {
-                id = rec.toUpperCase().split('(M)')[0].replace('[', '').replace(']', '');
-                type = 2
-              }
+    //        if (isValue || isSubValue || isCurrent || isMax) {
+    //          if (isValue) {
+    //            id = rec.toUpperCase().split('(V)')[0].replace('[', '').replace(']', '');
+    //            type = 3
+    //          }
+    //          else if (isSubValue) {
+    //            id = rec.toUpperCase().split('(S)')[0].replace('[', '').replace(']', '');
+    //            type = 4
+    //          }
+    //          else if (isCurrent) {
+    //            id = rec.toUpperCase().split('(C)')[0].replace('[', '').replace(']', '');
+    //            type = 1
+    //          }
+    //          else if (isMax) {
+    //            id = rec.toUpperCase().split('(M)')[0].replace('[', '').replace(']', '');
+    //            type = 2
+    //          }
 
-            }
-            else {
-              id = rec.replace('[', '').replace(']', '');
-              type = 0
-            }
-            this.statdetails.charactersCharacterStat.map((q) => {
-              if (!flag) {
-                flag = (id == q.characterStat.statName.toUpperCase());
-                statType = q.characterStat.characterStatTypeId
-              }
-            })
-            if (flag) {
-              IDs.push({ id: id, type: isNaN(type) ? 0 : type, originaltext: "[" + rec + "]", statType: statType })
-            }
-            else if (+id == -1) {
-              IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
-            }
-          })
-          calculationString = DiceService.showTextCommandSquareBraces(calculationString);
+    //        }
+    //        else {
+    //          id = rec.replace('[', '').replace(']', '');
+    //          type = 0
+    //        }
+    //        this.statdetails.charactersCharacterStat.map((q) => {
+    //          if (!flag) {
+    //            flag = (id == q.characterStat.statName.toUpperCase());
+    //            statType = q.characterStat.characterStatTypeId
+    //          }
+    //        })
+    //        if (flag) {
+    //          IDs.push({ id: id, type: isNaN(type) ? 0 : type, originaltext: "[" + rec + "]", statType: statType })
+    //        }
+    //        else if (+id == -1) {
+    //          IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
+    //        }
+    //      })
+    //      calculationString = DiceService.showTextCommandSquareBraces(calculationString);
 
-          IDs.map((rec) => {
-            this.statdetails.charactersCharacterStat.map((stat) => {
-              if (rec.id == stat.characterStat.statName.toUpperCase()) {
-                let num = 0;
-                switch (rec.statType) {
-                  case 3: //Number
-                    num = stat.number
-                    break;
-                  case 5: //Current Max
-                    if (rec.type == 1)//current
-                    {
-                      num = stat.current
-                    }
-                    else if (rec.type == 2)//Max
-                    {
-                      num = stat.maximum
-                    }
-                    break;
-                  case 7: //Val Sub-Val
-                    if (rec.type == 3)//value
-                    {
-                      num = +stat.value
-                    }
-                    else if (rec.type == 4)//sub-value
-                    {
-                      num = stat.subValue
-                    }
-                    break;
-                  case 12: //Calculation
-                    num = stat.calculationResult
-                    break;
-                  case STAT_TYPE.Combo: //Combo
-                    num = stat.defaultValue
-                    break;
-                  case STAT_TYPE.Choice: //Combo
-                    num = stat.defaultValue
-                    break;
-                  case STAT_TYPE.Condition:
-                    let characterStatConditionsfilter = this.charactersCharacterStats.filter((stat) => stat.characterStat.statName.toUpperCase() == rec.id);
-                    let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
-                    let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.charactersCharacterStats);
-                    //let result = this.conditionStat(characterStatConditions);
-                    //console.log(result);
-                    if (isNaN(+result)) {
-                      num = 0;
-                    } else {
-                      num = +result;
-                    }
+    //      IDs.map((rec) => {
+    //        this.statdetails.charactersCharacterStat.map((stat) => {
+    //          if (rec.id == stat.characterStat.statName.toUpperCase()) {
+    //            let num = 0;
+    //            switch (rec.statType) {
+    //              case 3: //Number
+    //                num = stat.number
+    //                break;
+    //              case 5: //Current Max
+    //                if (rec.type == 1)//current
+    //                {
+    //                  num = stat.current
+    //                }
+    //                else if (rec.type == 2)//Max
+    //                {
+    //                  num = stat.maximum
+    //                }
+    //                break;
+    //              case 7: //Val Sub-Val
+    //                if (rec.type == 3)//value
+    //                {
+    //                  num = +stat.value
+    //                }
+    //                else if (rec.type == 4)//sub-value
+    //                {
+    //                  num = stat.subValue
+    //                }
+    //                break;
+    //              case 12: //Calculation
+    //                num = stat.calculationResult
+    //                break;
+    //              case STAT_TYPE.Combo: //Combo
+    //                num = stat.defaultValue
+    //                break;
+    //              case STAT_TYPE.Choice: //Combo
+    //                num = stat.defaultValue
+    //                break;
+    //              case STAT_TYPE.Condition:
+    //                let characterStatConditionsfilter = this.charactersCharacterStats.filter((stat) => stat.characterStat.statName.toUpperCase() == rec.id);
+    //                let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
+    //                let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.charactersCharacterStats);
+    //                //let result = this.conditionStat(characterStatConditions);
+    //                //console.log(result);
+    //                if (isNaN(+result)) {
+    //                  num = 0;
+    //                } else {
+    //                  num = +result;
+    //                }
 
-                    break;
-                  default:
-                    break;
-                }
-                if (num)
-                  calculationString = calculationString.replace(rec.originaltext, num.toString());
-                else
-                  calculationString = calculationString.replace(rec.originaltext, '0');
-                //CalcString = CalcString.replace(rec.originaltext, "(" + num + ")");
-              }
+    //                break;
+    //              default:
+    //                break;
+    //            }
+    //            if (num)
+    //              calculationString = calculationString.replace(rec.originaltext, num.toString());
+    //            else
+    //              calculationString = calculationString.replace(rec.originaltext, '0');
+    //            //CalcString = CalcString.replace(rec.originaltext, "(" + num + ")");
+    //          }
 
-            });
+    //        });
 
-            finalCalcString = calculationString;
-          });
-        }
-        ////////////////////////////////                    
-        finalCalcString = finalCalcString.replace(/  +/g, ' ');
-        finalCalcString = finalCalcString.replace(/\+0/g, '').replace(/\-0/g, '').replace(/\*0/g, '').replace(/\/0/g, '');
-        finalCalcString = finalCalcString.replace(/\+ 0/g, '').replace(/\- 0/g, '').replace(/\* 0/g, '').replace(/\/ 0/g, '');
-        command = finalCalcString;
-      }
-    } catch (err) { }
-    //////////////////////////////////////////////
+    //        finalCalcString = calculationString;
+    //      });
+    //    }
+    //    ////////////////////////////////                    
+    //    finalCalcString = finalCalcString.replace(/  +/g, ' ');
+    //    finalCalcString = finalCalcString.replace(/\+0/g, '').replace(/\-0/g, '').replace(/\*0/g, '').replace(/\/0/g, '');
+    //    finalCalcString = finalCalcString.replace(/\+ 0/g, '').replace(/\- 0/g, '').replace(/\* 0/g, '').replace(/\/ 0/g, '');
+    //    command = finalCalcString;
+    //  }
+    //} catch (err) { }
+    ////////////////////////////////////////////////
     //add mod & validate command            
     let commandToValidate = command.trim();
     this.addModArray.map(mod => {
@@ -3185,7 +3185,6 @@ export class DiceRollComponent implements OnInit {
 
 
   addMod() {
-    console.log('here');
     this.bsModalRef = this.modalService.show(NumericCharacterStatComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,

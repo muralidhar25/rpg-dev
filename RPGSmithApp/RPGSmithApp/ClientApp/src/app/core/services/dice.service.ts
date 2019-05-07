@@ -38,14 +38,14 @@ export class DiceService {
    * @param command
   */
 
-  public static commandInterpretation(command: string, numberToAdd?: number, modArray?: any, customDices: CustomDice[] = []): any {
+  public static commandInterpretation(command: string, numberToAdd?: number, modArray?: any, customDices: CustomDice[] = [],mainCommandText:string=''): any {
   
     let _commandInterpretationArrayList = [];
     let _calculationCommand = "";
 
     if (!command) return [];
     //example command:  d4 + 2d6 * d8 - 2d10 kh1 / d12 + (d20 + d100 / 5) AND (4d6 kh3 / 5 ru) + (4d6 kh2 / 5 rd)
-    let _commandInterpretationArray = this.commandInterpretationArray(command, customDices);
+    let _commandInterpretationArray = this.commandInterpretationArray(command, customDices, mainCommandText);
     let diceARRAY = [];
     let isInvalidFECommand = false;
     //iteration for AND
@@ -303,6 +303,7 @@ export class DiceService {
         calculationStringArray: _calculationStringArray,
         calculationResult: __result, //Math.round(eval(_calculationStringForResult)), //Math.floor(eval(_calculationString))
         calculationCommand: _commandInterpretationArray[cmd].command,
+        calculationMainCommand: _commandInterpretationArray[cmd].mainCommand,
         calculationArray: _finalInterpretationArray,
         calculationIndex: +cmd,
         isResultWithCustomDice: __IsResultWithCustomDice,
@@ -365,13 +366,13 @@ export class DiceService {
     };
   }
 
-  public static commandInterpretationArray(command: string, customDices: CustomDice[] = []): any[] {
-
+  public static commandInterpretationArray(command: string, customDices: CustomDice[] = [], mainCommandText: string = ''): any[] {    
     let _commandInterpretationArray = [];
     let commandText = command.trim().toUpperCase();
 
     //Split multiple commands -AND
     let multiCommandArray = this.splitWithoutEmpty(commandText, 'AND');
+    let multiMainCommandArray = this.splitWithoutEmpty(mainCommandText, 'AND');
    
     let diceARRAY = [];
     for (var cmd in multiCommandArray) {
@@ -418,13 +419,15 @@ export class DiceService {
           
         }
       })
+      
       _commandInterpretationArray.push({
         command: _commandText,
         commandArray: diceARRAY,
         calculationString: "",
         calculationResult: 0,
         isCustomNumericCommand: IsCustomNumericCommand,
-        isInvalidFECommand: isInvalidFECommand
+        isInvalidFECommand: isInvalidFECommand,
+        mainCommand: multiMainCommandArray[cmd]
       });
     }
 
