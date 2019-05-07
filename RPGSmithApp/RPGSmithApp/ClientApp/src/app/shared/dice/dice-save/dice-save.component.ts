@@ -10,6 +10,8 @@ import { DiceService } from "../../../core/services/dice.service";
 import { Utilities } from "../../../core/common/utilities";
 import { DiceComponent } from "../dice/dice.component";
 import { PlatformLocation } from "@angular/common";
+import { STAT_TYPE } from "../../../core/models/enums";
+import { ServiceUtil } from "../../../core/services/service-util";
 
 @Component({
     selector: "app-dice-save",
@@ -48,7 +50,7 @@ export class DiceSaveComponent implements OnInit {
             this.characterId = this.bsModalRef.content.characterId;
             this.addModArray = this.bsModalRef.content.addModArray;
             let _command = this.bsModalRef.content.characterCommand;
-            _command.command = this.bsModalRef.content.command;
+          _command.command = this.bsModalRef.content.mainCommand;
             _command.character = this.bsModalRef.content.character;
             _command.characterId = this.bsModalRef.content.characterId;
             this.view = this.bsModalRef.content.view;
@@ -126,7 +128,13 @@ export class DiceSaveComponent implements OnInit {
                     setTimeout(() => { this.alertService.resetStickyMessage(); }, 1000);
                     return false;
                 }
-
+              //////////////////////////////////////////////
+              let mainCommand = command;
+              if (this.bsModalRef.content.character) {
+                commandToValidate = ServiceUtil.GetCalcuationsResults(commandToValidate, this.bsModalRef.content.statDetails, this.bsModalRef.content.charactersCharacterStats, this.bsModalRef.content.character)
+              }
+              
+    //////////////////////////////////////////////
                 //add mod & validate command            
                 //let commandToValidate = command.trim();
                 this.addModArray.map(mod => {
