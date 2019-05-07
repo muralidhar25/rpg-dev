@@ -43,9 +43,13 @@
 }
 
 .modifier-text .count {
-  font-size: 28px;
+  font-size: 21px;
   color: #d15727;
-  line-height: 40px;
+  line-height: 39px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
 
 .border-none {
