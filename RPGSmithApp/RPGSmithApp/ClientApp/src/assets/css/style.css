@@ -8919,3 +8919,17 @@ li.popup-new-tile-trigger.cross-li .btn {
 .cdk-overlay-container{
   z-index:9991 !important
 }
+.dropdown.open.show.ngx-contextmenu ul {
+  padding: 0px;
+  margin: 0px;
+}
+  .dropdown.open.show.ngx-contextmenu ul li {
+    padding: 6px 10px;
+    border-bottom: 1px solid #ececec;
+  }
+  .dropdown.open.show.ngx-contextmenu ul li:hover {
+    background:#ececec;
+  }
+  .dropdown.open.show.ngx-contextmenu ul li a{
+    text-decoration:none;
+  }
