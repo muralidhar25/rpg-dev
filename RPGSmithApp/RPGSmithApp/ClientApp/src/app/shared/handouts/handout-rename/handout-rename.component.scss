@@ -1,0 +1,32 @@
+image-cropper {
+    background-color: #bfb9b9 !important;
+}
+
+.input-image-buttons {
+    padding: 0px 1rem 1rem !important
+}
+
+@media screen and (min-width: 768px) {
+    .modal-header {
+        height: 3rem;
+    }
+}
+.image-hover{
+    display:block;
+    margin:0px auto;
+    overflow:hidden;
+}
+.image-hover img {
+    transition: linear .3s;
+    -webkit-transition: linear .3s;
+    -moz-transition: linear .3s;
+    -o-transition: linear .3s;
+}
+.image-hover:hover img {
+    transform: scale(1.1);
+    transition: linear .3s;
+    -webkit-transition: linear .3s;
+    -moz-transition: linear .3s;
+    -o-transition: linear .3s;
+    -o-transition: linear .3s;
+}

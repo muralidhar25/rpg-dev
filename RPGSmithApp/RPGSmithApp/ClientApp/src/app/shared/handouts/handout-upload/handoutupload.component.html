@@ -4,6 +4,7 @@
 
     <div class="page-toolbar-dropdown">
       <button class="btn btn-outline-accent" [disabled]="isLoading" (click)="backToRoot()" *ngIf="prefixToGetFolderContent">Back to root</button>
+      <button class="btn btn-accent" [disabled]="isLoading" type="button"  (click)="pasteFile()" *ngIf="currentCopiedFile && !(currentCopiedFile?.CopiedFromFolder==prefixToGetFolderContent)">Paste file</button>
       <button class="btn btn-accent" [disabled]="isLoading" type="button">Upload Files<input multiple type="file" (change)="ConfirmationToUploadFiles($event)" /></button>
       <button class="btn btn-accent" [disabled]="isLoading" type="button" *ngIf="showDeleteBtn && isimageSelected() " (click)="deleteImagePrompt()">Delete Selected</button>
       <!-- End of filter dropdown -->
@@ -30,7 +31,7 @@
         <div class="input-image-search-result-item-wrapper hangout-images-section">
           <div  *ngIf="myImages.contentType.indexOf(imagemap) > -1" class="search-image-box-section" [ngStyle]="{'background-image': 'url('+myImages.absoluteUri+')'}"></div>
           
-          <div *ngIf="myImages.contentType.indexOf(imagemap) == -1" class="search-image-box-section">
+          <div *ngIf="myImages.contentType.indexOf(imagemap) == -1" class="search-image-box-section" [contextMenu]="basicMenu" [contextMenuSubject]="myImages">
             <img src="../../../../assets/images/handouticons/txt-icon.png" *ngIf="myImages.contentType.indexOf(textmap) > -1" />
             <img src="../../../../assets/images/handouticons/video-icon.png" *ngIf="myImages.contentType.indexOf(videomap) > -1" />
             <img src="../../../../assets/images/handouticons/pdf-icon.png" *ngIf="myImages.contentType.indexOf(pdfmap) > -1" />
@@ -46,9 +47,9 @@
             <p *ngIf="!myImages.isFolder">{{getFileName(myImages?.name)}}</p>
             <p *ngIf="myImages.isFolder" class="crsr-pointer" (click)="OpenFolder(myImages?.name)">{{getFolderName(myImages?.name)}}</p>
           </div>
-          <ng-container *ngIf="!myImages.isFolder">
-            <input type="checkbox" [checked]="myImages.isSelected" (click)="imageCheckClick(myImages,$event)" />
-            <div class="view-button" (click)="ViewImage(myImages)" [contextMenu]="basicMenu" [contextMenuSubject]=" myImages">Download</div>
+          <ng-container *ngIf="!myImages.isFolder" >
+            <input type="checkbox" [checked]="myImages.isSelected" (click)="imageCheckClick(myImages,$event)" [contextMenu]="basicMenu" [contextMenuSubject]="myImages" />
+            <div class="view-button" (click)="ViewImage(myImages)" >Download</div>
             <div class="input-image-search-result-item-use">
               <button type="button" class="btn btn-accent btn-block icon icon-tick"></button>
             </div>
@@ -58,16 +59,26 @@
       <li *ngIf="blobMyImages?.length == 0 && !isLoading" class="input-image-search-result-item mx-auto" style="list-style-type: none;margin:10px;">No Record Found</li>
     </ul>
     <context-menu>
-      <ng-template contextMenuItem (execute)="showMessage('Hi, ' + $event.myImages.name)">
-        Say hi!
+      <ng-template contextMenuItem let-item (execute)="CopyFile($event.item) " [visible]="isFileSelected">
+        Copy
       </ng-template>
-      <ng-template contextMenuItem divider="true"></ng-template>
-      <ng-template contextMenuItem let-item (execute)="showMessage($event.myImages.name)">
-        Bye, {{myImages?.name}}
+      <ng-template contextMenuItem let-item (execute)="MoveFile($event.item) " [visible]="isFileSelected">
+        Move
+      </ng-template>
+      <ng-template contextMenuItem let-item (execute)="RenameFile($event.item) " [visible]="isFileSelected">
+        Rename
+      </ng-template>
+      <ng-template contextMenuItem let-item (execute)="DeleteSingleFileConfirmation($event.item) " [visible]="isFileSelected">
+        Delete
+      </ng-template>
+
+
+      <ng-template contextMenuItem let-item (execute)="DeleteFolderConfirmation($event.item)" [visible]="isFolderSelected">
+        Delete
       </ng-template>
       <!--<ng-template contextMenuItem passive="true">
-        Input something: <input type="text">
-      </ng-template>-->
+    Input something: <input type="text">
+  </ng-template>-->
     </context-menu>
   </div>
   <div class="modal-footer" *ngIf="!isLoading">

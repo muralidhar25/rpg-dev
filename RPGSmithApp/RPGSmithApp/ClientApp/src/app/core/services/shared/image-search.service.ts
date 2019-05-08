@@ -185,26 +185,16 @@ export class ImageSearchService extends EndpointFactory {
   }
   renameFile<T>(userId: string, campaignID: number, oldFileName: string, newFileName:string, prefixToGetFolderContent: string = ''): Observable<T> {
 
-    let endpointUrl = `${this.renameFileUrl}?
-                        userId=${userId}
-                        &campaignID=${campaignID}
-                        &oldFileName=${oldFileName}
-                        &newFileName=${newFileName}
-                        &prefixToGetFolderContent=${prefixToGetFolderContent}`;
+    let endpointUrl = `${this.renameFileUrl}?userId=${userId}&campaignID=${campaignID}&oldFileName=${oldFileName}&newFileName=${newFileName}&prefixToGetFolderContent=${prefixToGetFolderContent}`;
 
     return this.http.post(endpointUrl, JSON.stringify({}), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {
         return this.handleError(error, () => this.renameFile(userId, campaignID, oldFileName, newFileName, prefixToGetFolderContent));
       });
   }
-  moveCopyFile<T>(userId: string, campaignID: number, FileNameToMove: string, FolderNameToPasteFile: string, prefixToGetFolderContent: string = ''): Observable<T> {
+  moveCopyFile<T>(userId: string, campaignID: number, FileNameToMove: string, FolderNameToPasteFile: string, prefixToGetFolderContent: string = '', isCopy: boolean=false): Observable<T> {
 
-    let endpointUrl = `${this.moveCopyFileUrl}?
-                        userId=${userId}
-                        &campaignID=${campaignID}
-                        &FileNameToMove=${FileNameToMove}
-                        &FolderNameToPasteFile=${FolderNameToPasteFile}
-                        &prefixToGetFolderContent=${prefixToGetFolderContent}`;
+    let endpointUrl = `${this.moveCopyFileUrl}?userId=${userId}&campaignID=${campaignID}&FileNameToMove=${FileNameToMove}&FolderNameToPasteFile=${FolderNameToPasteFile}&prefixToGetFolderContent=${prefixToGetFolderContent}&isCopy=${isCopy}`;
 
     return this.http.post(endpointUrl, JSON.stringify({}), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {
@@ -213,10 +203,7 @@ export class ImageSearchService extends EndpointFactory {
   }
   deleteFolder<T>(userId: string, campaignID: number,prefixToGetFolderContent: string = ''): Observable<T> {
 
-    let endpointUrl = `${this.DeleteFolderUrl}?
-                        userId=${userId}
-                        &campaignID=${campaignID}                       
-                        &prefixToGetFolderContent=${prefixToGetFolderContent}`;
+    let endpointUrl = `${this.DeleteFolderUrl}?userId=${userId}&campaignID=${campaignID}&prefixToGetFolderContent=${prefixToGetFolderContent}`;
 
     return this.http.post(endpointUrl, JSON.stringify({}), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {

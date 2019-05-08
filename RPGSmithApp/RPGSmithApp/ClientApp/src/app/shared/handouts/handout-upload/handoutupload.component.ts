@@ -21,6 +21,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Ruleset } from '../../../core/models/view-models/ruleset.model';
 import { ContextMenuComponent } from 'ngx-contextmenu';
+import { HandoutRenameComponent } from '../handout-rename/handout-rename.component';
 
 @Component({
   selector: 'app-handoutupload',
@@ -56,16 +57,14 @@ export class HandoutuploadComponent implements OnInit {
 
   prefixToGetFolderContent: string = '';
   ruleset: Ruleset = new Ruleset();
-
-  public items = [
-    { name: 'John', otherProperty: 'Foo' },
-    { name: 'Joe', otherProperty: 'Bar' }
-  ];
+  currentCopiedFile: any = undefined;
+  //public items = [
+  //  { name: 'John', otherProperty: 'Foo' },
+  //  { name: 'Joe', otherProperty: 'Bar' }
+  //];
   @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
 
-  showMessage(message: any) {
-    console.log(message);
-  }
+  
   constructor(
     private router: Router, private alertService: AlertService, private bsModalRef: BsModalRef,
     private authService: AuthService, private configurations: ConfigurationService,
@@ -421,5 +420,127 @@ getFileName(name:string) {
       }       
     }
     return name;
+  }
+  
+  public isFileSelected(item: any): boolean {
+    return item.isFolder === false;
+  }
+  public isFolderSelected(item: any): boolean {
+    return item.isFolder === true;
+  }
+  public RenameFile(file: any) {
+    this.bsModalRef = this.modalService.show(HandoutRenameComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.userid = this.userid;
+    this.bsModalRef.content.rulesetId = this.ruleset.ruleSetId;
+    this.bsModalRef.content.prefixToGetFolderContent = this.prefixToGetFolderContent;
+    this.bsModalRef.content.DestroyOtherModals = false;
+    this.bsModalRef.content.file = file;
+    //this.isLoading = true
+    //this.imageSearchService.renameFile<any>(this.userid, this.MyImageCount, this.previousContainerMyImageNumber, this.prefixToGetFolderContent, this.ruleset.ruleSetId)
+    //  .subscribe(data => {
+
+    //    this.blobMyImagesBLOB = this.blobMyImagesBLOB.concat(data.result.blobResponse.items);
+    //    this.blobMyImages = this.blobMyImages.concat(data.result.blobResponse.items);
+    //    this.isLoading = false;
+    //    this.previousContainerMyImageNumber = data.result.previousContainerImageNumber;
+    //    this.isLoading = false;
+    //    this.isMyImagesLoading = false;
+    //    if (data.result.blobResponse.items.length < 39) {
+    //      this.hideShowMoreMyImage = true;
+    //    }
+    //  }, error => {
+    //    this.isMyImagesLoading = false;
+    //    console.log("searchMyImages Error: ", error);
+    //    this.isLoading = false;
+    //    this.alertService.stopLoadingMessage();
+    //    let Errors = Utilities.ErrorDetail("My Images Api", error);
+    //    if (Errors.sessionExpire) this.authService.logout(true);
+    //    else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+
+    //  },
+    //    () => { });
+  }
+  public DeleteSingleFileConfirmation(file: any) {
+    this.alertService.showDialog('Are you sure you want to permanently delete file "' + this.getFileName(file.name) + '".',
+      DialogType.confirm, () => this.DeleteSingleFile(file), () => { }, "Yes", "No");
+  }
+  public DeleteSingleFile(file: any) {    
+    this.isLoading = true;
+    let model = [];
+    let name = file.absolutePath.substring(file.absolutePath.lastIndexOf('/') + 1);
+    model.push({ blobName: name, userContainerName: file.container });
+    this.imageSearchService.deleteImages<any>(model, this.prefixToGetFolderContent)
+      .subscribe(data => {
+        this.Initialize();
+      }, error => {
+        console.log("searchMyImages Error: ", error);
+        this.isLoading = false;
+        this.alertService.stopLoadingMessage();
+        let Errors = Utilities.ErrorDetail("Delete Images Api", error);
+        if (Errors.sessionExpire) this.authService.logout(true);
+        else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+      },
+        () => { });
+  }
+
+  public DeleteFolderConfirmation(file: any) {
+    this.alertService.showDialog('Are you sure you want to permanently delete folder "' + this.getFolderName(file.name)+'".',
+      DialogType.confirm, () => this.DeleteFolder(file), () => { }, "Yes", "No");
+  }
+  public DeleteFolder(file: any) {    
+    this.isLoading = true;
+    this.imageSearchService.deleteFolder<any>(this.userid, this.ruleset.ruleSetId, file.name)
+      .subscribe(data => {
+        this.Initialize();
+      }, error => {
+       
+        console.log("searchMyImages Error: ", error);
+        this.isLoading = false;
+        this.alertService.stopLoadingMessage();
+        let Errors = Utilities.ErrorDetail("My Images Api", error);
+        if (Errors.sessionExpire) this.authService.logout(true);
+        else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+
+      },
+        () => { });
+  }
+  public CopyFile(file: any) {
+    this.currentCopiedFile = undefined;
+    file.isCopied = true;
+    file.CopiedFromFolder = this.prefixToGetFolderContent;
+    this.currentCopiedFile = file;
+  }
+  public MoveFile(file: any) {
+    this.currentCopiedFile = undefined;
+    file.isCopied = false;
+    file.CopiedFromFolder = this.prefixToGetFolderContent;
+    this.currentCopiedFile = file;
+  }
+  public pasteFile() {
+    if (this.currentCopiedFile) {
+      let isCopied = this.currentCopiedFile.isCopied;
+      let fileName = this.currentCopiedFile.absolutePath.substring(this.currentCopiedFile.absolutePath.lastIndexOf('/') + 1);
+      let CopiedFromFolder = this.currentCopiedFile.CopiedFromFolder
+      this.isLoading = true;
+      this.imageSearchService.moveCopyFile<any>(this.userid, this.ruleset.ruleSetId, fileName, this.prefixToGetFolderContent, CopiedFromFolder, isCopied)
+        .subscribe(data => {
+          this.currentCopiedFile = undefined;
+          this.Initialize();
+        }, error => {
+         // this.currentCopiedFile = undefined;
+          console.log("searchMyImages Error: ", error);
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let Errors = Utilities.ErrorDetail("My Images Api", error);
+          if (Errors.sessionExpire) this.authService.logout(true);
+          else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+
+        },
+          () => { });
+    }    
   }
 }

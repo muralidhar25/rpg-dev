@@ -519,12 +519,12 @@ namespace RPGSmithApp.Controllers
             }
         }
         [HttpPost("CopyMoveFile")]
-        public async Task<IActionResult> CopyMoveFile(string userId, string FileNameToMove, int campaignID = 0,  string prefixToGetFolderContent = "", string FolderNameToPasteFile = "")
+        public async Task<IActionResult> CopyMoveFile(string userId, string FileNameToMove, int campaignID = 0,  string prefixToGetFolderContent = "", string FolderNameToPasteFile = "", bool isCopy = false)
         {
             try
             {
                 var container = await bs.GetCloudBlobContainer("user-" + userId + "-handout" + "-" + campaignID);
-                await bs.CopyMoveFile(container, FileNameToMove, FolderNameToPasteFile, prefixToGetFolderContent);
+                await bs.CopyMoveFile(container, FileNameToMove, FolderNameToPasteFile, prefixToGetFolderContent, isCopy);
                 return Ok();
             }
             catch (Exception ex)
