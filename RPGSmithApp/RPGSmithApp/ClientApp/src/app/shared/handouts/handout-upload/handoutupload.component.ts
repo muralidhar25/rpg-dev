@@ -120,9 +120,31 @@ export class HandoutuploadComponent implements OnInit {
 
     }
   }
-  ConfirmationToUploadFiles(event: any){
-this.alertService.showDialog("Overwrite File In Destination.",
-                DialogType.confirm, () => this.UploadImages(event), () => {}, "Yes", "No");
+  ConfirmationToUploadFiles(event: any) {
+    let showPopup = false;
+    if (event.target.files) {
+      if (event.target.files.length) {
+        
+        for (var i = 0; i < event.target.files.length; i++) {
+          let res = this.blobMyImages.filter(item => this.getFileName(item.name) == event.target.files[i].name);
+          if (res.length) {
+            showPopup = true;
+          }
+        }
+        //event.target.files.map((x) => {
+        //  let res = this.blobMyImages.filter(item => item.name == x.name);
+        //  if (res.length) {
+        //    showPopup = true;
+        //  }
+        //})
+      }
+    }
+    if (showPopup) {
+      this.alertService.showDialog("Overwrite File In Destination.",
+        DialogType.confirm, () => this.UploadImages(event), () => { }, "Yes", "No");
+    } else {
+      this.UploadImages(event)
+    }
   }
 
   UploadImages(event: any) {
