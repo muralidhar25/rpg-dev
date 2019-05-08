@@ -506,12 +506,12 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpPost("RenameFile")]
-        public async Task<IActionResult> RenameFile(string userId,int campaignID = 0, string prefixToGetFolderContent = "")
+        public async Task<IActionResult> RenameFile(string userId, string oldFileName, string newFileName, int campaignID = 0, string prefixToGetFolderContent = "")
         {
             try
             {
                 var container = await bs.GetCloudBlobContainer("user-" + userId + "-handout" + "-" + campaignID);
-                await bs.RenameFile(container, "", "", prefixToGetFolderContent);
+                await bs.RenameFile(container, oldFileName, newFileName, prefixToGetFolderContent);
                 return Ok();
             }
             catch (Exception ex) {

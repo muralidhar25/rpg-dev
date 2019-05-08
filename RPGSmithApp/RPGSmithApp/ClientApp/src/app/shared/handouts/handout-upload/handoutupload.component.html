@@ -3,11 +3,11 @@
     <h5 class="modal-title" id="searchImagePopupTitle">{{title}}</h5>
 
     <div class="page-toolbar-dropdown">
-      <button class="btn btn-outline-accent" (click)="backToRoot()" *ngIf="prefixToGetFolderContent">Back to root</button>
-      <button class="btn btn-accent" type="button">Upload Files<input multiple type="file" (change)="ConfirmationToUploadFiles($event)" /></button>
-      <button class="btn btn-accent" type="button" *ngIf="showDeleteBtn && isimageSelected() " (click)="deleteImagePrompt()">Delete Selected</button>
+      <button class="btn btn-outline-accent" [disabled]="isLoading" (click)="backToRoot()" *ngIf="prefixToGetFolderContent">Back to root</button>
+      <button class="btn btn-accent" [disabled]="isLoading" type="button">Upload Files<input multiple type="file" (change)="ConfirmationToUploadFiles($event)" /></button>
+      <button class="btn btn-accent" [disabled]="isLoading" type="button" *ngIf="showDeleteBtn && isimageSelected() " (click)="deleteImagePrompt()">Delete Selected</button>
       <!-- End of filter dropdown -->
-      <button type="button" data-dismiss="modal" class="btn btn-accent text-right " *ngIf="!prefixToGetFolderContent" (click)="createFolder()"> Create Folder</button>
+      <button type="button" [disabled]="isLoading" data-dismiss="modal" class="btn btn-accent text-right " *ngIf="!prefixToGetFolderContent" (click)="createFolder()"> Create Folder</button>
     </div>
     <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
   </div>
@@ -43,7 +43,7 @@
                                  &&  myImages.contentType.indexOf(textmap) == -1
                                   && myImages.contentType.indexOf(docmap) == -1)
                                 && !myImages.isFolder" />
-            <p *ngIf="!myImages.isFolder">{{myImages?.name}}</p>
+            <p *ngIf="!myImages.isFolder">{{getFileName(myImages?.name)}}</p>
             <p *ngIf="myImages.isFolder" class="crsr-pointer" (click)="OpenFolder(myImages?.name)">{{getFolderName(myImages?.name)}}</p>
           </div>
           <ng-container *ngIf="!myImages.isFolder">

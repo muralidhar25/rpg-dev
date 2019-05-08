@@ -32,7 +32,10 @@ export class ImageSearchService extends EndpointFactory {
 
   private readonly uploadhandoutsUrl: string = this.configurations.baseUrl + "/api/Image/uploadhandoutByUserId";
   private readonly uploadhandoutFoldersUrl: string = this.configurations.baseUrl + "/api/Image/uploadhandoutFolderByUserId";
-
+  private readonly renameFileUrl: string = this.configurations.baseUrl + "/api/Image/RenameFile";
+  private readonly moveCopyFileUrl: string = this.configurations.baseUrl + "/api/Image/CopyMoveFile";
+  private readonly DeleteFolderUrl: string = this.configurations.baseUrl + "/api/Image/DeleteFolder";
+  
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
     private fileUploadService: FileUploadService) {
     super(http, configurations, injector);
@@ -178,6 +181,46 @@ export class ImageSearchService extends EndpointFactory {
       //.map(() => { return true; })
       .catch(error => {
         return this.handleError(error, () => this.uploadHandouts(imgList, userid, campaignID));
+      });
+  }
+  renameFile<T>(userId: string, campaignID: number, oldFileName: string, newFileName:string, prefixToGetFolderContent: string = ''): Observable<T> {
+
+    let endpointUrl = `${this.renameFileUrl}?
+                        userId=${userId}
+                        &campaignID=${campaignID}
+                        &oldFileName=${oldFileName}
+                        &newFileName=${newFileName}
+                        &prefixToGetFolderContent=${prefixToGetFolderContent}`;
+
+    return this.http.post(endpointUrl, JSON.stringify({}), { headers: this.getRequestHeadersNew(), responseType: "text" })
+      .catch(error => {
+        return this.handleError(error, () => this.renameFile(userId, campaignID, oldFileName, newFileName, prefixToGetFolderContent));
+      });
+  }
+  moveCopyFile<T>(userId: string, campaignID: number, FileNameToMove: string, FolderNameToPasteFile: string, prefixToGetFolderContent: string = ''): Observable<T> {
+
+    let endpointUrl = `${this.moveCopyFileUrl}?
+                        userId=${userId}
+                        &campaignID=${campaignID}
+                        &FileNameToMove=${FileNameToMove}
+                        &FolderNameToPasteFile=${FolderNameToPasteFile}
+                        &prefixToGetFolderContent=${prefixToGetFolderContent}`;
+
+    return this.http.post(endpointUrl, JSON.stringify({}), { headers: this.getRequestHeadersNew(), responseType: "text" })
+      .catch(error => {
+        return this.handleError(error, () => this.moveCopyFile(userId, campaignID, FileNameToMove, FolderNameToPasteFile, prefixToGetFolderContent));
+      });
+  }
+  deleteFolder<T>(userId: string, campaignID: number,prefixToGetFolderContent: string = ''): Observable<T> {
+
+    let endpointUrl = `${this.DeleteFolderUrl}?
+                        userId=${userId}
+                        &campaignID=${campaignID}                       
+                        &prefixToGetFolderContent=${prefixToGetFolderContent}`;
+
+    return this.http.post(endpointUrl, JSON.stringify({}), { headers: this.getRequestHeadersNew(), responseType: "text" })
+      .catch(error => {
+        return this.handleError(error, () => this.deleteFolder(userId, campaignID, prefixToGetFolderContent));
       });
   }
 }

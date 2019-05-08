@@ -405,4 +405,13 @@ this.alertService.showDialog("Overwrite File In Destination.",
     }
     return name;
   }
+getFileName(name:string) {
+    if (name) {
+
+      if (name.split('/').length) {
+        return name.split('/')[name.split('/').length-1];
+      }       
+    }
+    return name;
+  }
 }
