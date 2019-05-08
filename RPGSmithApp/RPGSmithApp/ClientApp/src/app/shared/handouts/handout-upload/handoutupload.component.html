@@ -4,7 +4,7 @@
 
     <div class="page-toolbar-dropdown">
       <button class="btn btn-outline-accent" (click)="backToRoot()" *ngIf="prefixToGetFolderContent">Back to root</button>
-      <button class="btn btn-accent" type="button">Upload Files<input multiple type="file" (change)="UploadImages($event)" /></button>
+      <button class="btn btn-accent" type="button">Upload Files<input multiple type="file" (change)="ConfirmationToUploadFiles($event)" /></button>
       <button class="btn btn-accent" type="button" *ngIf="showDeleteBtn && isimageSelected() " (click)="deleteImagePrompt()">Delete Selected</button>
       <!-- End of filter dropdown -->
       <button type="button" data-dismiss="modal" class="btn btn-accent text-right " *ngIf="!prefixToGetFolderContent" (click)="createFolder()"> Create Folder</button>
@@ -24,12 +24,12 @@
     </div>
 
     <!-- Blob My Images Search -->
-
+   
     <ul class="input-image-search-result">
       <li class="input-image-search-result-item" *ngFor="let myImages of blobMyImages">        
         <div class="input-image-search-result-item-wrapper hangout-images-section">
           <div  *ngIf="myImages.contentType.indexOf(imagemap) > -1" class="search-image-box-section" [ngStyle]="{'background-image': 'url('+myImages.absoluteUri+')'}"></div>
-
+          
           <div *ngIf="myImages.contentType.indexOf(imagemap) == -1" class="search-image-box-section">
             <img src="../../../../assets/images/handouticons/txt-icon.png" *ngIf="myImages.contentType.indexOf(textmap) > -1" />
             <img src="../../../../assets/images/handouticons/video-icon.png" *ngIf="myImages.contentType.indexOf(videomap) > -1" />

@@ -1050,7 +1050,15 @@ namespace RPGSmithApp.Helpers
             catch (Exception ex)
             {
             }
-            
+            /////////////////////////////////////////////////////////////
+            //bool flag1111 = false;
+            //if (flag1111)
+            //{
+            //    //await CopyMoveFile(GetCloudBlobContainer(container).Result, "sample123.pdf","new2/", "new/");
+            //    //await DeleteFolder(GetCloudBlobContainer(container).Result, "test/");
+            //}
+          
+            /////////////////////////////////////////////////////////////
             //  return objBlobResponse;
             return new { count = Count, blobResponse = objBlobResponse, previousContainerImageNumber = previousContainerImageNumber };
 
@@ -1098,29 +1106,92 @@ namespace RPGSmithApp.Helpers
             }
            
         }
-        //public async Task<bool> RenameFolder(CloudBlobContainer container, string oldFolderName, string newFolderName)
-        //{
-        //    try
-        //    {                
-        //        //var source = await container.GetBlobReferenceFromServerAsync(oldFolderName);
-        //        //var target = container.GetBlockBlobReference(newFolderName);
+        public async Task<bool> CopyMoveFile(CloudBlobContainer cloudBlobContainer, string FileNameToMove, string FolderNameToPasteFile="",string prefixToGetFolderContent="",bool isCopy=false)
+        {
+            try
+            {
+                //copy blob from one container to other
+                CloudBlobContainer sourceContainer = cloudBlobContainer;
+                CloudBlobContainer targetContainer = cloudBlobContainer;
 
-        //        //await target.StartCopyAsync(source.Uri);// StartCopyFromBlobAsync(source.Uri);
 
-        //        //while (target.CopyState.Status == CopyStatus.Pending)
-        //        //    await Task.Delay(100);
+                CloudBlockBlob sourceBlob = null;
+                if (string.IsNullOrEmpty(prefixToGetFolderContent))
+                {
+                    sourceBlob = cloudBlobContainer.GetBlockBlobReference(FileNameToMove);
+                }
+                else
+                {
+                    //CloudBlobContainer sourceContainer = cloudBlobContainer;
+                    CloudBlobDirectory directory = sourceContainer.GetDirectoryReference(prefixToGetFolderContent);
+                    sourceBlob = directory.GetBlockBlobReference(FileNameToMove);
+                }
+                //CloudBlockBlob sourceBlob = sourceContainer.GetBlockBlobReference(blobName);
 
-        //        //if (target.CopyState.Status != CopyStatus.Success)
-        //        //    throw new Exception("Rename failed: " + target.CopyState.Status);
+                CloudBlockBlob targetBlob = null;
+                if (string.IsNullOrEmpty(FolderNameToPasteFile))
+                {
+                    targetBlob = cloudBlobContainer.GetBlockBlobReference(FileNameToMove);
+                }
+                else
+                {
+                    //CloudBlobContainer sourceContainer = cloudBlobContainer;
+                    CloudBlobDirectory directory = sourceContainer.GetDirectoryReference(FolderNameToPasteFile);
+                    targetBlob = directory.GetBlockBlobReference(FileNameToMove);
+                }
+                //CloudBlockBlob targetBlob = targetContainer.GetBlockBlobReference(blobName + "_copy");
+                await targetBlob.StartCopyAsync(sourceBlob);
+                if (!isCopy)
+                {
+                    await sourceBlob.DeleteIfExistsAsync();
+                }                
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
-        //        //await source.DeleteAsync();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //    return true;
-        //}
+        }
+        public async Task<bool> DeleteFolder(CloudBlobContainer container, string prefixToGetFolderContent = "")
+        {
+            try
+            {
+                BlobContinuationToken blobContinuationToken = null;
+                var cloudBlobContainer = container;
+                do
+                {
+                    if (string.IsNullOrEmpty(prefixToGetFolderContent))
+                    {
+                        prefixToGetFolderContent = null;
+                        return false;
+                    }
+                    var results = cloudBlobContainer.ListBlobsSegmentedAsync(prefixToGetFolderContent, blobContinuationToken);
+                    blobContinuationToken = results.Result.ContinuationToken;
+
+                    foreach (IListBlobItem _blobItem in results.Result.Results)
+                    {
+                        CloudBlockBlob item = _blobItem as CloudBlockBlob;
+                        if (item!=null)
+                        {
+                            await item.DeleteIfExistsAsync();
+                            //CloudBlockBlob _blockBlob = cloudBlobContainer.GetBlockBlobReference(item.Name);
+                            ////delete blob from container    
+                            //await _blockBlob.DeleteAsync();
+                        }
+                        // CloudBlockBlob _blockBlob = cloudBlobContainer.GetBlockBlobReference(item.Name);
+                        // //delete blob from container    
+                        //await _blockBlob.DeleteAsync();
+                        //// await item.DeleteIfExistsAsync();
+                    }
+                } while (blobContinuationToken != null);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
 

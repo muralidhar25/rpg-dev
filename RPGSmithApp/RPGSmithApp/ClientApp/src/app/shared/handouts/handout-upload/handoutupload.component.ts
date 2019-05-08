@@ -121,6 +121,10 @@ export class HandoutuploadComponent implements OnInit {
 
     }
   }
+  ConfirmationToUploadFiles(event: any){
+this.alertService.showDialog("Overwrite File In Destination.",
+                DialogType.confirm, () => this.UploadImages(event), () => {}, "Yes", "No");
+  }
 
   UploadImages(event: any) {
     let imgList: any[] = [];
