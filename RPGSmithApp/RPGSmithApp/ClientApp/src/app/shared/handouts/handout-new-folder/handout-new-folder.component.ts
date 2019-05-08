@@ -57,10 +57,11 @@ export class HandoutNewFolderComponent implements OnInit {
     debugger
     //if (this.files && this.files[0]) {
       let imgList = this.files;
-      this.isLoading = true;
+    this.isLoading = true;
+    this.alertService.startLoadingMessage("", "Creating Folder...");
       this.imageSearchService.uploadHandoutFolder<any>(imgList, this.userid, this.folderName,this.rulesetId)
         .subscribe(data => {
-         
+          this.alertService.stopLoadingMessage();
           if (data) {
             if (data.result) {
               this.isLoading = false;

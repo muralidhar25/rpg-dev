@@ -431,24 +431,29 @@ namespace RPGSmithApp.Controllers
             if (_httpContextAccessor.HttpContext.Request.Form.Files.Any())
             {
                 // Get the uploaded image from the Files collection
-                var httpPostedFile = _httpContextAccessor.HttpContext.Request.Form.Files[0];
-
-                if (httpPostedFile != null)
+                foreach (var item in _httpContextAccessor.HttpContext.Request.Form.Files)
                 {
-                    try
+                    var httpPostedFile = item;
+
+                    if (httpPostedFile != null)
                     {
-                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _rulesetService);
-                        var container = bs.GetCloudBlobContainer("user-" + userId+"-handout" + "-" + campaignID).Result;
-                        string imageName = Path.GetFileNameWithoutExtension( httpPostedFile.FileName.ToString())+ "_"+DateTime.Now.ToString("dd_MM_yyyy_HH:mm:ss");
-                        return Ok(new {result= bs.Uploadhandout(httpPostedFile, imageName, container, userId).Result });
-                    }
-                    catch (Exception ex)
-                    {
-                        return BadRequest(ex.Message);
+                        try
+                        {
+                            BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _rulesetService);
+                            var container = bs.GetCloudBlobContainer("user-" + userId + "-handout" + "-" + campaignID).Result;
+                            string imageName = Path.GetFileNameWithoutExtension(httpPostedFile.FileName.ToString());
+                           await bs.Uploadhandout(httpPostedFile, imageName, container, userId);
+                            //return Ok(new { result = bs.Uploadhandout(httpPostedFile, imageName, container, userId).Result });
+                        }
+                        catch (Exception ex)
+                        {
+                            return BadRequest(ex.Message);
+                        }
                     }
                 }
+                return Ok(new { result = true });
 
-                return BadRequest();
+                //return BadRequest();
             }
             return BadRequest("No file Selected");
 
@@ -460,25 +465,30 @@ namespace RPGSmithApp.Controllers
 
             if (_httpContextAccessor.HttpContext.Request.Form.Files.Any())
             {
-                // Get the uploaded image from the Files collection
-                var httpPostedFile = _httpContextAccessor.HttpContext.Request.Form.Files[0];
-
-                if (httpPostedFile != null)
+                foreach (var item in _httpContextAccessor.HttpContext.Request.Form.Files)
                 {
-                    try
+                    // Get the uploaded image from the Files collection
+                    var httpPostedFile = item;
+
+                    if (httpPostedFile != null)
                     {
-                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _rulesetService);
-                        var container = bs.GetCloudBlobContainer("user-" + userId + "-handout" + "-" + campaignID).Result;
-                        string imageName = Path.GetFileNameWithoutExtension(httpPostedFile.FileName.ToString()) + "_" + DateTime.Now.ToString("dd_MM_yyyy_HH:mm:ss");
-                        return Ok(new { result = bs.UploadhandoutFolder(httpPostedFile, imageName, container, userId, folderName).Result });
-                    }
-                    catch (Exception ex)
-                    {
-                        return BadRequest(ex.Message);
+                        try
+                        {
+                            BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _rulesetService);
+                            var container = bs.GetCloudBlobContainer("user-" + userId + "-handout" + "-" + campaignID).Result;
+                            string imageName = Path.GetFileNameWithoutExtension(httpPostedFile.FileName.ToString());
+                            //return Ok(new { result = bs.UploadhandoutFolder(httpPostedFile, imageName, container, userId, folderName).Result });
+                            await bs.UploadhandoutFolder(httpPostedFile, imageName, container, userId, folderName);
+                        }
+                        catch (Exception ex)
+                        {
+                            return BadRequest(ex.Message);
+                        }
                     }
                 }
+                return Ok(new { result = true });
 
-                return BadRequest();
+                // return BadRequest();
             }
             else if (!string.IsNullOrEmpty(folderName))
             {
@@ -495,5 +505,11 @@ namespace RPGSmithApp.Controllers
             return Ok(bs.BlobMyHandoutsAsync("user-" + userId + "-handout" + "-" + campaignID, Count, previousContainerImageNumber, prefixToGetFolderContent));
         }
 
+        [HttpPost("RenameFile")]
+        public async Task<IActionResult> RenameFile(string userId, string folderName, int campaignID = 0, string prefixToGetFolderContent = "") {
+            var container =await bs.GetCloudBlobContainer("user-" + userId + "-handout" + "-" + campaignID);
+            await bs.RenameFile(container, "", "", prefixToGetFolderContent);
+            return Ok();
+        }
     }
 }

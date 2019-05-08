@@ -1050,11 +1050,77 @@ namespace RPGSmithApp.Helpers
             catch (Exception ex)
             {
             }
+            
             //  return objBlobResponse;
             return new { count = Count, blobResponse = objBlobResponse, previousContainerImageNumber = previousContainerImageNumber };
 
         }
+        public async Task<bool> RenameFile(CloudBlobContainer cloudBlobContainer,string oldFileName, string newFileName, string prefixToGetFolderContent = "")
+        {
+            try
+            {
+                CloudBlockBlob blobCopy = null;
+                if (string.IsNullOrEmpty(prefixToGetFolderContent))
+                {
+                    blobCopy = cloudBlobContainer.GetBlockBlobReference(newFileName);                   
+                }
+                else
+                {
+                    CloudBlobContainer sourceContainer = cloudBlobContainer;
+                    CloudBlobDirectory directory = sourceContainer.GetDirectoryReference(prefixToGetFolderContent);
+                    blobCopy = directory.GetBlockBlobReference(newFileName);                   
+                }
+                //CloudBlockBlob blobCopy = cloudBlobContainer.GetBlockBlobReference(newFileName);
+                if (! await blobCopy.ExistsAsync())
+                {
+                    CloudBlockBlob blob = null;
+                    if (string.IsNullOrEmpty(prefixToGetFolderContent))
+                    {
+                        blob = cloudBlobContainer.GetBlockBlobReference(oldFileName);
+                    }
+                    else
+                    {
+                        CloudBlobContainer sourceContainer = cloudBlobContainer;
+                        CloudBlobDirectory directory = sourceContainer.GetDirectoryReference(prefixToGetFolderContent);
+                        blob = directory.GetBlockBlobReference(oldFileName);
+                    }
+                    
+                    if (await blob.ExistsAsync())
+                    {
+                        await blobCopy.StartCopyAsync(blob);
+                        await blob.DeleteIfExistsAsync();
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex) {
+                throw ex;
+            }
+           
+        }
+        //public async Task<bool> RenameFolder(CloudBlobContainer container, string oldFolderName, string newFolderName)
+        //{
+        //    try
+        //    {                
+        //        //var source = await container.GetBlobReferenceFromServerAsync(oldFolderName);
+        //        //var target = container.GetBlockBlobReference(newFolderName);
 
+        //        //await target.StartCopyAsync(source.Uri);// StartCopyFromBlobAsync(source.Uri);
+
+        //        //while (target.CopyState.Status == CopyStatus.Pending)
+        //        //    await Task.Delay(100);
+
+        //        //if (target.CopyState.Status != CopyStatus.Success)
+        //        //    throw new Exception("Rename failed: " + target.CopyState.Status);
+
+        //        //await source.DeleteAsync();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //    return true;
+        //}
     }
 }
 

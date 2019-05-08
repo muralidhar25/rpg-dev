@@ -391,4 +391,11 @@ export class HandoutuploadComponent implements OnInit {
         });
     });
   }
+  getFolderName(name:string) {
+    if (name) {
+      return name.replace('/', '');
+
+    }
+    return name;
+  }
 }
