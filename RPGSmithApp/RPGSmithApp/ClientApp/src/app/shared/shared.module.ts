@@ -64,6 +64,7 @@ import { HandoutViewComponent } from "./handouts/handout-view/handout-view.compo
 import { HandoutFileViewComponent } from "./handouts/handout-file-view/handout-file-view.component";
 import { HandoutuploadComponent } from "./handouts/handout-upload/handoutupload.component";
 import { HandoutNewFolderComponent } from "./handouts/handout-new-folder/handout-new-folder.component";
+import { ContextMenuModule } from 'ngx-contextmenu';
   
 @NgModule({
   declarations: [
@@ -126,7 +127,8 @@ import { HandoutNewFolderComponent } from "./handouts/handout-new-folder/handout
     }),
     TagInputModule,
     CoreModule,
-    AuthModule
+    AuthModule,
+ContextMenuModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: CachingInterceptor, multi: true },

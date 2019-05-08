@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, EventEmitter, ViewChild } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { PlatformLocation } from '@angular/common';
@@ -20,6 +20,7 @@ import { AppService1 } from '../../../app.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Ruleset } from '../../../core/models/view-models/ruleset.model';
+import { ContextMenuComponent } from 'ngx-contextmenu';
 
 @Component({
   selector: 'app-handoutupload',
@@ -55,6 +56,16 @@ export class HandoutuploadComponent implements OnInit {
 
   prefixToGetFolderContent: string = '';
   ruleset: Ruleset = new Ruleset();
+
+  public items = [
+    { name: 'John', otherProperty: 'Foo' },
+    { name: 'Joe', otherProperty: 'Bar' }
+  ];
+  @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
+
+  showMessage(message: any) {
+    console.log(message);
+  }
   constructor(
     private router: Router, private alertService: AlertService, private bsModalRef: BsModalRef,
     private authService: AuthService, private configurations: ConfigurationService,

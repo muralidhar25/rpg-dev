@@ -28,6 +28,7 @@ import {
 } from './core/common/app-translation.service';
 import { AppService1 } from './app.service';
 import { CampaignInviteComponent } from './rulesets/campaign-invite/campaign-invite.component';
+import { ContextMenuModule } from 'ngx-contextmenu';
 
 
 @NgModule({
@@ -51,6 +52,7 @@ import { CampaignInviteComponent } from './rulesets/campaign-invite/campaign-inv
     }),
     ModalModule.forRoot(),
     CarouselModule.forRoot(),
+    ContextMenuModule.forRoot(),
     NgxSocialLoginModule.init(
         {
             //'648640285849-3labmk96l8d4q372jc82ljrfcg73f9fs.apps.googleusercontent.com'

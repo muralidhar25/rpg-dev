@@ -16,7 +16,7 @@
 
     <!-- Search query -->
     <div class="form-group form-group-unlabelled">
-      
+
       <span class="input-group-btn">
         <button type="submit" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
       </span>
@@ -24,12 +24,12 @@
     </div>
 
     <!-- Blob My Images Search -->
-   
+
     <ul class="input-image-search-result">
-      <li class="input-image-search-result-item" *ngFor="let myImages of blobMyImages">
+      <li class="input-image-search-result-item" *ngFor="let myImages of blobMyImages">        
         <div class="input-image-search-result-item-wrapper hangout-images-section">
           <div  *ngIf="myImages.contentType.indexOf(imagemap) > -1" class="search-image-box-section" [ngStyle]="{'background-image': 'url('+myImages.absoluteUri+')'}"></div>
-          
+
           <div *ngIf="myImages.contentType.indexOf(imagemap) == -1" class="search-image-box-section">
             <img src="../../../../assets/images/handouticons/txt-icon.png" *ngIf="myImages.contentType.indexOf(textmap) > -1" />
             <img src="../../../../assets/images/handouticons/video-icon.png" *ngIf="myImages.contentType.indexOf(videomap) > -1" />
@@ -48,7 +48,7 @@
           </div>
           <ng-container *ngIf="!myImages.isFolder">
             <input type="checkbox" [checked]="myImages.isSelected" (click)="imageCheckClick(myImages,$event)" />
-            <div class="view-button" (click)="ViewImage(myImages)">Download</div>
+            <div class="view-button" (click)="ViewImage(myImages)" [contextMenu]="basicMenu" [contextMenuSubject]=" myImages">Download</div>
             <div class="input-image-search-result-item-use">
               <button type="button" class="btn btn-accent btn-block icon icon-tick"></button>
             </div>
@@ -57,6 +57,18 @@
       </li>
       <li *ngIf="blobMyImages?.length == 0 && !isLoading" class="input-image-search-result-item mx-auto" style="list-style-type: none;margin:10px;">No Record Found</li>
     </ul>
+    <context-menu>
+      <ng-template contextMenuItem (execute)="showMessage('Hi, ' + $event.myImages.name)">
+        Say hi!
+      </ng-template>
+      <ng-template contextMenuItem divider="true"></ng-template>
+      <ng-template contextMenuItem let-item (execute)="showMessage($event.myImages.name)">
+        Bye, {{myImages?.name}}
+      </ng-template>
+      <!--<ng-template contextMenuItem passive="true">
+        Input something: <input type="text">
+      </ng-template>-->
+    </context-menu>
   </div>
   <div class="modal-footer" *ngIf="!isLoading">
     <div class="form-group space-details">
