@@ -506,10 +506,45 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpPost("RenameFile")]
-        public async Task<IActionResult> RenameFile(string userId, string folderName, int campaignID = 0, string prefixToGetFolderContent = "") {
-            var container =await bs.GetCloudBlobContainer("user-" + userId + "-handout" + "-" + campaignID);
-            await bs.RenameFile(container, "", "", prefixToGetFolderContent);
-            return Ok();
+        public async Task<IActionResult> RenameFile(string userId,int campaignID = 0, string prefixToGetFolderContent = "")
+        {
+            try
+            {
+                var container = await bs.GetCloudBlobContainer("user-" + userId + "-handout" + "-" + campaignID);
+                await bs.RenameFile(container, "", "", prefixToGetFolderContent);
+                return Ok();
+            }
+            catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("CopyMoveFile")]
+        public async Task<IActionResult> CopyMoveFile(string userId, string FileNameToMove, int campaignID = 0,  string prefixToGetFolderContent = "", string FolderNameToPasteFile = "")
+        {
+            try
+            {
+                var container = await bs.GetCloudBlobContainer("user-" + userId + "-handout" + "-" + campaignID);
+                await bs.CopyMoveFile(container, FileNameToMove, FolderNameToPasteFile, prefixToGetFolderContent);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("DeleteFolder")]
+        public async Task<IActionResult> DeleteFolder(string userId, int campaignID = 0, string prefixToGetFolderContent = "")
+        {
+            try
+            {
+                var container = await bs.GetCloudBlobContainer("user-" + userId + "-handout" + "-" + campaignID);
+                await bs.DeleteFolder(container, prefixToGetFolderContent);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
