@@ -416,6 +416,7 @@ namespace DAL.Services
         {
             List<CharactersCharacterStat> CharactersCharacterStats =await _context.CharactersCharacterStats                
                 .Include(d => d.CharacterStat.CharacterStatChoices).Include(x=>x.CharacterStat.CharacterStatConditions)
+                .Include(x => x.CharacterStat.CharacterStatCalcs)
                .Where(x => x.CharacterId == characterId && x.IsDeleted != true).OrderBy(x => x.CharacterStat.SortOrder)
                .ToListAsync();
 

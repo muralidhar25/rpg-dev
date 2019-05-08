@@ -381,6 +381,14 @@ namespace RPGSmithApp.Controllers
                             SortOrder= z.SortOrder,
                             ConditionOperator=z.ConditionOperator,
                         }).ToList(),
+                        CharacterStatCalcs= item.CharacterStat.CharacterStatCalcs.Select(z => new CharacterStatCalc()
+                        {
+                           CharacterStatCalcId=z.CharacterStatCalcId,
+                           CharacterStatId=z.CharacterStatId,
+                           IsDeleted=z.IsDeleted,
+                           StatCalculation=z.StatCalculation,
+                           StatCalculationIds=z.StatCalculationIds,
+                        }).ToList(),
                     }
 
                 };
