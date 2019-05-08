@@ -7,10 +7,14 @@
   <div class="modal-body text-center">
     <div class="form-group">
       <div class="row">
-        <div class="col-4 text-left">Name</div>
-        <div class="col-8">
+        <!--<div class="col-4 text-left">Name</div>-->
+        <div class="col-10">
           <input required type="text" class="form-control" name="fileName" placeholder="File name"
                  [(ngModel)]="fileName" />
+          
+        </div>
+        <div class="col-2">          
+          <span>{{fileExtension}}</span>
         </div>
       </div>
     </div>

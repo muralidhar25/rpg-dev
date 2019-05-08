@@ -19,8 +19,10 @@ export class HandoutRenameComponent implements OnInit {
   userid: string = '';
   rulesetId: number = 0;
   fileName: string;
+  fileExtension: string;
   prefixToGetFolderContent: string = '';
   file: any;
+  isLoading: boolean = false;
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private authService: AuthService, private appService: AppService1
     , private location: PlatformLocation, private imageSearchService: ImageSearchService, private alertService: AlertService,) {
     location.onPopState(() => this.modalService.hide(1));
@@ -37,7 +39,18 @@ export class HandoutRenameComponent implements OnInit {
         }, 0);        
     }
     Initialize() {
-      this.fileName = this.file.name
+      let fileName = this.file.absolutePath.substring(this.file.absolutePath.lastIndexOf('/') + 1);
+      let fileExtension = fileName.substr(fileName.lastIndexOf('.') + 1)
+
+    
+      if (fileName === fileExtension) {
+        this.fileName = fileName
+        this.fileExtension = "";
+      } else {
+        this.fileName = fileName.substr(0,fileName.lastIndexOf('.'))
+        this.fileExtension = "." + fileExtension;
+      }
+      
     }
     close() {
         this.bsModalRef.hide();
@@ -47,7 +60,26 @@ export class HandoutRenameComponent implements OnInit {
   }
   
   RenameFile() {
+    this.isLoading = true;
+    let fileName = this.file.absolutePath.substring(this.file.absolutePath.lastIndexOf('/') + 1);
+    this.alertService.startLoadingMessage("", "Renaming file...");
+    this.imageSearchService.renameFile<any>(this.userid, this.rulesetId, fileName, (this.fileName + this.fileExtension), this.prefixToGetFolderContent)
+      .subscribe(data => {
+        this.alertService.stopLoadingMessage();
+        this.isLoading = false;
+        this.close();
+        this.appService.updateImagesList(true);
+      }, error => {
+        // this.currentCopiedFile = undefined;
+        console.log("searchMyImages Error: ", error);
+        this.isLoading = false;
+        this.alertService.stopLoadingMessage();
+        let Errors = Utilities.ErrorDetail("My Images Api", error);
+        if (Errors.sessionExpire) this.authService.logout(true);
+        else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
 
+      },
+        () => { });
   }
     private destroyModal(): void {
         try {

@@ -473,8 +473,10 @@ getFileName(name:string) {
     let model = [];
     let name = file.absolutePath.substring(file.absolutePath.lastIndexOf('/') + 1);
     model.push({ blobName: name, userContainerName: file.container });
+    this.alertService.startLoadingMessage("", "Deleting file...");
     this.imageSearchService.deleteImages<any>(model, this.prefixToGetFolderContent)
       .subscribe(data => {
+        this.alertService.stopLoadingMessage();
         this.Initialize();
       }, error => {
         console.log("searchMyImages Error: ", error);
@@ -493,8 +495,10 @@ getFileName(name:string) {
   }
   public DeleteFolder(file: any) {    
     this.isLoading = true;
+    this.alertService.startLoadingMessage("", "Deleting folder...");
     this.imageSearchService.deleteFolder<any>(this.userid, this.ruleset.ruleSetId, file.name)
       .subscribe(data => {
+        this.alertService.stopLoadingMessage();
         this.Initialize();
       }, error => {
        
@@ -526,8 +530,10 @@ getFileName(name:string) {
       let fileName = this.currentCopiedFile.absolutePath.substring(this.currentCopiedFile.absolutePath.lastIndexOf('/') + 1);
       let CopiedFromFolder = this.currentCopiedFile.CopiedFromFolder
       this.isLoading = true;
+      this.alertService.startLoadingMessage("", "Pasting file...");
       this.imageSearchService.moveCopyFile<any>(this.userid, this.ruleset.ruleSetId, fileName, this.prefixToGetFolderContent, CopiedFromFolder, isCopied)
         .subscribe(data => {
+          this.alertService.stopLoadingMessage();
           this.currentCopiedFile = undefined;
           this.Initialize();
         }, error => {
