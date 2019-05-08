@@ -13,6 +13,7 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^5.2.5",
+    "@angular/cdk": "^5.2.5",
     "@angular/common": "^5.2.5",
     "@angular/compiler": "^5.2.5",
     "@angular/core": "^5.2.5",
@@ -45,6 +46,7 @@
     "ng2-toasty": "^4.0.3",
     "ngx-bootstrap": "^2.0.4",
     "ngx-chips": "^1.9.2",
+    "ngx-contextmenu": "^4.2.0",
     "ngx-image-cropper": "^1.0.2",
     "ngx-infinite-scroll": "^0.8.2",
     "ngx-social-login": "^1.0.4",
