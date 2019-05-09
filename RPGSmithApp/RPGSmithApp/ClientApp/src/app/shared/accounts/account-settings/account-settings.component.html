@@ -65,7 +65,21 @@
         </div>
         <div class="form-group">
           <label for="AccountType">Account Type</label>
-          <p>Free</p>
+          <p *ngIf="!user?.isGm">
+            Player
+          </p>
+          <ng-container *ngIf="user?.isGm">
+            <p>
+              Base GM (Permanent)
+            </p>
+            <p>
+              Base GM (Subscription)
+            </p>
+          </ng-container>
+          
+          <span class="custom-checkbox" *ngIf="user?.isGm">
+            <input type="checkbox" name="subscription" id="subscription" [(ngModel)]="Subscription" (change)="subscription($event)" /> <span>Auto Renew</span>
+          </span>
         </div>
       </div>
       <div class="col-md-6 col-sm-12">

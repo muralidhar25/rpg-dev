@@ -663,6 +663,20 @@ namespace RPGSmithApp.Controllers
 
             var userVM = Mapper.Map<UserViewModel>(userAndRoles.Item1);
             userVM.Roles = userAndRoles.Item2;
+            if (string.Join("", userVM.Roles).Contains("administrator"))
+            {
+                userVM.IsAdmin = true;
+            }
+
+            UserSubscription userSubscription = await _accountManager.userSubscriptions(userId);
+
+            userVM.CampaignSlot = userSubscription.CampaignCount;
+            userVM.CharacterSlot = userSubscription.CharacterCount;
+            userVM.PlayerSlot = userSubscription.PlayerCount;
+            userVM.RulesetSlot = userSubscription.RulesetCount;
+            userVM.StorageSpace = userSubscription.StorageSpaceInMB;
+
+
 
             return userVM;
         }

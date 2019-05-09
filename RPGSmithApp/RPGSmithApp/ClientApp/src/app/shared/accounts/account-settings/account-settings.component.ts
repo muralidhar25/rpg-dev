@@ -47,7 +47,8 @@ export class AccountSettingsComponent implements OnInit {
     imageErrorMessage: string = 'high resolution images will affect loading times and diminish performance';
     usedSpace: string = '0';
   availableSpace: number = 0;
-
+  Subscription: boolean = true;
+  user: any;
     constructor(
         private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
@@ -67,6 +68,7 @@ export class AccountSettingsComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
+          this.user = user;
           this.availableSpace = user.storageSpace;
             this.isLoading = true;
             this.userService.getBlobSpaceUsed<number>(user.id)
@@ -83,7 +85,8 @@ export class AccountSettingsComponent implements OnInit {
 
             this.userService.getUserById(user.id)
                 .subscribe(
-                    data => {
+              data => {
+                      debugger
                         //console.log(data);
                         this.userFormModal = data;
                         this.localStorage.saveSyncedSessionData(data, DBkeys.CURRENT_USER);
@@ -358,5 +361,8 @@ export class AccountSettingsComponent implements OnInit {
     }
     loadImageFailed() {
         // show message
-    }
+  }
+  subscription(event: any) {
+    this.Subscription = event.target.checked;
+  }
 }
