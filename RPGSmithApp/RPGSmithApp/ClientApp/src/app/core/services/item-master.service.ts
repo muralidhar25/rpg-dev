@@ -348,7 +348,8 @@ export class ItemMasterService extends EndpointFactory {
         isIdentified: false,
         isVisible: false,
         totalWeight: 0,
-        contains: []
+        contains: [],
+        containerItems: [],
       }
     }
     return itemMasterFormModal;
