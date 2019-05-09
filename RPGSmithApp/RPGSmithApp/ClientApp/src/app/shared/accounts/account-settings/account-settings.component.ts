@@ -46,9 +46,7 @@ export class AccountSettingsComponent implements OnInit {
     croppedImage: any = '';
     imageErrorMessage: string = 'high resolution images will affect loading times and diminish performance';
     usedSpace: string = '0';
-  availableSpace: number = 0;
-  Subscription: boolean = true;
-  user: any;
+  availableSpace: number = 0;  
     constructor(
         private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
@@ -68,7 +66,6 @@ export class AccountSettingsComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
-          this.user = user;
           this.availableSpace = user.storageSpace;
             this.isLoading = true;
             this.userService.getBlobSpaceUsed<number>(user.id)
@@ -85,15 +82,21 @@ export class AccountSettingsComponent implements OnInit {
 
             this.userService.getUserById(user.id)
                 .subscribe(
-              data => {
-                      debugger
+              data => {                      
                         //console.log(data);
                         this.userFormModal = data;
                         this.localStorage.saveSyncedSessionData(data, DBkeys.CURRENT_USER);
                         this.hasEmail = this.authService.hasEmailFb;
                         this.socialLogin = this.authService.socialLogin;
                         this.bingImageUrl = this.userFormModal.profileImage;
-                        this.isLoading = false;
+                this.isLoading = false;
+                if (this.userFormModal.autoRenewDate) {
+                  let date = new Date(this.userFormModal.autoRenewDate.replace('T', ' '));
+                  //let string = this.formatAMPM(date);
+                  let string = ' ' + date.toDateString().replace(' ', '##').split('##')[1];
+                  this.userFormModal.autoRenewDate = string;
+
+                }
                     },
                     error => {
                         this.isLoading = false;
@@ -110,7 +113,7 @@ export class AccountSettingsComponent implements OnInit {
 
             this.socialLogin = this.authService.socialLogin;
         }
-    }
+  }
 
     checkAvailability(userModal: any) {
         if (userModal.userName.trim() == '' || userModal.userName == undefined || userModal.userName == null) {
@@ -362,7 +365,12 @@ export class AccountSettingsComponent implements OnInit {
     loadImageFailed() {
         // show message
   }
-  subscription(event: any) {
-    this.Subscription = event.target.checked;
+  changeAutoRenew(e) {
+    if (!e.target.checked) {
+      e.target.checked = true;
+      this.userFormModal.isSubscriptionAutoRenew = true;
+      this.alertService.showDialog("Unchecking this box will cancel your GM subscription on " + this.userFormModal.autoRenewDate  +", and you will not incur further charges for this account time. You will continue to have GM account privileges until this date at which time your account will convert to a 'Player' account. Would you like to proceed and cancel your subscription?",
+        DialogType.confirm, () => { this.userFormModal.isSubscriptionAutoRenew = e.target.checked = false; }, () => { this.userFormModal.isSubscriptionAutoRenew = e.target.checked == true;}, "Yes", "No");
+    }
   }
 }

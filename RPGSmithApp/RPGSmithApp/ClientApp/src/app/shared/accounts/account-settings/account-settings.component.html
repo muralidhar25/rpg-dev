@@ -65,20 +65,22 @@
         </div>
         <div class="form-group">
           <label for="AccountType">Account Type</label>
-          <p *ngIf="!user?.isGm">
+          <p *ngIf="!userFormModal?.isGm">
             Player
           </p>
-          <ng-container *ngIf="user?.isGm">
-            <p>
+         
+            <p *ngIf="userFormModal?.isGm && userFormModal?.isGmPermanent">
               Base GM (Permanent)
             </p>
-            <p>
-              Base GM (Subscription)
+            <p *ngIf="userFormModal?.isGm && !userFormModal?.isGmPermanent">
+              Base GM (Subscription)<br /><br />
+                                    <span *ngIf="!userFormModal?.isSubscriptionAutoRenew">Expires: {{userFormModal?.autoRenewDate}}</span>
+                                    <span *ngIf="userFormModal?.isSubscriptionAutoRenew">Auto-Renew Date: {{userFormModal?.autoRenewDate}}</span>
             </p>
-          </ng-container>
+         
           
-          <span class="custom-checkbox" *ngIf="user?.isGm">
-            <input type="checkbox" name="subscription" id="subscription" [(ngModel)]="Subscription" (change)="subscription($event)" /> <span>Auto Renew</span>
+          <span class="custom-checkbox" *ngIf="userFormModal?.isGm && !userFormModal?.isGmPermanent">
+            <input type="checkbox" name="subscription" id="subscription" [(ngModel)]="userFormModal.isSubscriptionAutoRenew" (change)="changeAutoRenew($event)" /> <span>Auto Renew</span>
           </span>
         </div>
       </div>

@@ -48,12 +48,15 @@ namespace RPGSmithApp.ViewModels
         public string Url { get; set; }
         public bool IsAdmin { get; set; }
         public bool IsGm { get; set; }
+        public bool IsGmPermanent { get; set; }
+        public bool IsSubscriptionAutoRenew { get; set; }
         public bool RemoveAds { get; set; }
         public int RulesetSlot { get; set; }
         public int PlayerSlot { get; set; }
         public int CharacterSlot { get; set; }
         public int CampaignSlot { get; set; }
         public int StorageSpace { get; set; }
+        public DateTime? AutoRenewDate { get; set; }
     }
 
 

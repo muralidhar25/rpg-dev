@@ -26,6 +26,7 @@ using DAL.Core.Interfaces;
 using RPGSmithApp.Helpers;
 using Microsoft.WindowsAzure.Storage.Blob;
 using DAL.Services;
+using Stripe;
 
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -41,18 +42,21 @@ namespace RPGSmithApp.Controllers
         private readonly IAccountManager _accountManager;
         private readonly BlobService _blobService = new BlobService(null,null,null);
         private readonly IRuleSetService _ruleSetService;
+        private readonly StripeConfig _stripeConfig;
 
         public AuthorizationController(
             IOptions<IdentityOptions> identityOptions,
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager, IAccountManager accountManager,
-            IRuleSetService ruleSetService)
+            IRuleSetService ruleSetService,
+            IOptions<StripeConfig> stripeConfig)
         {
             _identityOptions = identityOptions;
             _signInManager = signInManager;
             _userManager = userManager;
             _accountManager = accountManager;
             _ruleSetService = ruleSetService;
+            _stripeConfig = stripeConfig.Value;
         }
 
 
@@ -395,6 +399,42 @@ namespace RPGSmithApp.Controllers
             {
                 if (!string.IsNullOrWhiteSpace(user.PhoneNumber))
                     identity.AddClaim(CustomClaimTypes.Phone, user.PhoneNumber, OpenIdConnectConstants.Destinations.IdentityToken);
+            }
+            if (user.IsGm && !user.IsGmPermanent)
+            {
+                try
+                {
+                    //stop Subscription
+                    // Set your secret key: remember to change this to your live secret key in production
+                    // See your keys here: https://dashboard.stripe.com/account/apikeys
+                    //StripeConfiguration.SetApiKey(_stripeConfig.SecretKey);
+
+                    //var service = new SubscriptionService();
+                    //var options = new SubscriptionUpdateOptions
+                    //{
+                    //    CancelAtPeriodEnd = true,
+                    //};
+                    //Subscription subscription = service.Update(user.StripeSubscriptionID, options);
+
+
+                    //Get subscription details
+                    StripeConfiguration.SetApiKey(_stripeConfig.SecretKey);
+                    var service = new SubscriptionService();
+                    Subscription subscription = service.Get(user.StripeSubscriptionID);
+                    if (subscription.Status!=SubscriptionStatuses.Active)
+                    {
+                        var currentuser = await _accountManager.GetUserByIdAsync(user.Id);
+                        currentuser.IsGm = false;
+                        currentuser.IsGmPermanent = false;
+                        currentuser.StripeSubscriptionID = SubscriptionStatuses.Canceled;
+                        await _accountManager.UpdateUserAsync(currentuser);
+                        user= await _accountManager.GetUserByIdAsync(user.Id);
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
             }
             identity.AddClaim(CustomClaimTypes.IsGm, user.IsGm.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);
             identity.AddClaim(CustomClaimTypes.RemoveAds, user.RemoveAds.ToString(), OpenIdConnectConstants.Destinations.IdentityToken);

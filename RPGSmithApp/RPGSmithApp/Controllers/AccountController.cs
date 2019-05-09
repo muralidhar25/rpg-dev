@@ -30,6 +30,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using DAL.Repositories.Interfaces;
 using System.Linq;
 using DAL.Services;
+using Stripe;
+using Microsoft.Extensions.Options;
 
 namespace RPGSmithApp.Controllers
 {
@@ -47,12 +49,13 @@ namespace RPGSmithApp.Controllers
         private readonly ILogger _logger;
         private readonly IRuleSetService _ruleSetService;
         private readonly ICharacterService _characterService;
-
+        private readonly StripeConfig _stripeConfig;
 
         public AccountController(IAccountManager accountManager, IAuthorizationService authorizationService,
             ILogger<AccountController> logger, IEmailer emailer, IHttpContextAccessor httpContextAccessor,
             UserManager<ApplicationUser> userManager,
-            IRuleSetService ruleSetService, ICharacterService characterService)
+            IRuleSetService ruleSetService, ICharacterService characterService,
+            IOptions<StripeConfig> stripeConfig)
         {
             _accountManager = accountManager;
             _authorizationService = authorizationService;
@@ -62,6 +65,7 @@ namespace RPGSmithApp.Controllers
             _logger = logger;
             _ruleSetService = ruleSetService;
             _characterService = characterService;
+            _stripeConfig = stripeConfig.Value;
 
         }
 
@@ -676,7 +680,16 @@ namespace RPGSmithApp.Controllers
             userVM.RulesetSlot = userSubscription.RulesetCount;
             userVM.StorageSpace = userSubscription.StorageSpaceInMB;
 
-
+            var user = userAndRoles.Item1;
+            if (user.IsGm && !user.IsGmPermanent)
+            {
+                //Get subscription details
+                StripeConfiguration.SetApiKey(_stripeConfig.SecretKey);
+                var service = new SubscriptionService();
+                Subscription subscription = service.Get(user.StripeSubscriptionID);
+                userVM.IsSubscriptionAutoRenew = !subscription.CancelAtPeriodEnd;
+                userVM.AutoRenewDate = subscription.CurrentPeriodEnd;
+            }
 
             return userVM;
         }
@@ -891,6 +904,46 @@ namespace RPGSmithApp.Controllers
                 dynamic Response = new ExpandoObject();
 
                 (bool success, string[] errorMsg) = await _accountManager.UpdateUserAsync(appUser);
+                if (model.IsGm && !model.IsGmPermanent)
+                {
+                    //Get subscription details
+                    StripeConfiguration.SetApiKey(_stripeConfig.SecretKey);
+                    var service = new SubscriptionService();
+                    var currentuser = await _accountManager.GetUserByIdAsync(model.Id);
+                    Subscription subscription = service.Get(currentuser.StripeSubscriptionID);
+                   
+
+                    if (!model.IsSubscriptionAutoRenew != subscription.CancelAtPeriodEnd)
+                    {
+                        if (model.IsSubscriptionAutoRenew)
+                        {
+                            //// Set your secret key: remember to change this to your live secret key in production
+                            //// See your keys here: https://dashboard.stripe.com/account/apikeys
+                            StripeConfiguration.SetApiKey(_stripeConfig.SecretKey);
+
+
+                            var items = new List<SubscriptionItemUpdateOption> {
+                                new SubscriptionItemUpdateOption {
+                                    Id = subscription.Items.Data[0].Id,
+                                    PlanId = _stripeConfig.PlanID,
+                                },
+                            };
+                            var options = new SubscriptionUpdateOptions
+                            {
+                                CancelAtPeriodEnd = false,
+                                Items = items,
+                            };
+                            subscription = service.Update(currentuser.StripeSubscriptionID, options);
+                        }
+                        else {
+                            var options = new SubscriptionUpdateOptions
+                            {
+                                CancelAtPeriodEnd = true,
+                            };
+                            subscription = service.Update(currentuser.StripeSubscriptionID, options);
+                        }                        
+                    }                                     
+                }
                 if (success && _isEmailChanged)
                 {
 
