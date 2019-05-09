@@ -42,7 +42,7 @@ export class DiceRollComponent implements OnInit {
   isLoading = false;
   title: string;
   page: number = 1;
-  pageSize: number = 20;
+  pageSize: number = 9999;
   activeCommand: number;
   activeAndCommand: number;
   limit: number = 3;
