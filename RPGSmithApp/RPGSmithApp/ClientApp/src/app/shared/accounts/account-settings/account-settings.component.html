@@ -72,8 +72,8 @@
             <p *ngIf="userFormModal?.isGm && userFormModal?.isGmPermanent">
               Base GM (Permanent)
             </p>
-            <p *ngIf="userFormModal?.isGm && !userFormModal?.isGmPermanent">
-              Base GM (Subscription)<br /><br />
+            <p *ngIf="userFormModal?.isGm && !userFormModal?.isGmPermanent" class="m-0">
+              Base GM (Subscription)<br />
                                     <span *ngIf="!userFormModal?.isSubscriptionAutoRenew">Expires: {{userFormModal?.autoRenewDate}}</span>
                                     <span *ngIf="userFormModal?.isSubscriptionAutoRenew">Auto-Renew Date: {{userFormModal?.autoRenewDate}}</span>
             </p>

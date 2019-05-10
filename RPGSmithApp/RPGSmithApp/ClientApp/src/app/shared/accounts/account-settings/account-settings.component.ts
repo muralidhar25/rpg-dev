@@ -368,8 +368,8 @@ export class AccountSettingsComponent implements OnInit {
   changeAutoRenew(e) {
     if (!e.target.checked) {
       e.target.checked = true;
-      this.userFormModal.isSubscriptionAutoRenew = true;
-      this.alertService.showDialog("Unchecking this box will cancel your GM subscription on " + this.userFormModal.autoRenewDate  +", and you will not incur further charges for this account time. You will continue to have GM account privileges until this date at which time your account will convert to a 'Player' account. Would you like to proceed and cancel your subscription?",
+      this.userFormModal.isSubscriptionAutoRenew = true;                                   
+      this.alertService.showDialog("Unchecking this box will cancel your GM subscription on " + this.userFormModal.autoRenewDate + ", and you will not incur further charges for this account type. You will continue to have GM account privileges until this date at which time your account will convert to a 'Player' account. Would you like to proceed and cancel your subscription?",
         DialogType.confirm, () => { this.userFormModal.isSubscriptionAutoRenew = e.target.checked = false; }, () => { this.userFormModal.isSubscriptionAutoRenew = e.target.checked == true;}, "Yes", "No");
     }
   }
