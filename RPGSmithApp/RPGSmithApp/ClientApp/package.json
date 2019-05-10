@@ -5,6 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "fix-memory-limit": "cross-env LIMIT=2048 increase-memory-limit",
     "build": "ng build --target=production --sourcemaps=false --statsJson=true --vendor-chunk=true --aot=true --build-optimizer=true --named-chunks=true",
     "test": "ng test",
     "lint": "ng lint",
@@ -53,7 +54,9 @@
     "nouislider": "^11.1.0",
     "rxjs": "^5.5.6",
     "web-animations-js": "^2.3.1",
-    "zone.js": "^0.8.20"
+    "zone.js": "^0.8.20",
+    "increase-memory-limit": "^1.0.3",
+    "cross-env": "^5.0.5"
   },
   "devDependencies": {
     "@angular/cli": "~1.7.0",
