@@ -620,16 +620,20 @@ namespace RPGSmithApp.Helpers
                         CloudBlockBlob item = _blobItem as CloudBlockBlob;
                         if (item != null)
                         {
-                            Items _item = new Items();
-                            _item.AbsolutePath = item.Uri.AbsolutePath;
-                            _item.AbsoluteUri = item.Uri.AbsoluteUri;
-                            _item.IsAbsoluteUri = item.Uri.IsAbsoluteUri;
-                            _item.OriginalString = item.Uri.OriginalString;
-                            _item.Container = item.Container.Name;
-                            _item.Size = item.Properties.Length / 1024;
-                            _item.LastModifiedDate = item.Properties.LastModified;
-                            _item.ContentType = item.Properties.ContentType;
-                            _items.Add(_item);
+                            if (item.Properties.ContentType.Contains("image"))
+                            {
+                                Items _item = new Items();
+                                _item.AbsolutePath = item.Uri.AbsolutePath;
+                                _item.AbsoluteUri = item.Uri.AbsoluteUri;
+                                _item.IsAbsoluteUri = item.Uri.IsAbsoluteUri;
+                                _item.OriginalString = item.Uri.OriginalString;
+                                _item.Container = item.Container.Name;
+                                _item.Size = item.Properties.Length / 1024;
+                                _item.LastModifiedDate = item.Properties.LastModified;
+                                _item.ContentType = item.Properties.ContentType;
+                                _items.Add(_item);
+                            }
+                            
                         }
                     }
                 } while (blobContinuationToken != null);
@@ -642,7 +646,7 @@ namespace RPGSmithApp.Helpers
 
                 _items = _items.Skip(start).Take(Count).ToList();
 
-                previousContainerImageNumber = flag ? (_items.Count() + 1) : _items.Count();
+                previousContainerImageNumber = flag ? (start+ Count) : _items.Count();
                 
 
                 objBlobResponse.items = _items;
@@ -1042,7 +1046,7 @@ namespace RPGSmithApp.Helpers
 
                 _items = _items.Skip(start).Take(Count).ToList();
 
-                previousContainerImageNumber = flag ? (_items.Count() + 1) : _items.Count();
+                previousContainerImageNumber = flag ? (start + Count) : _items.Count();
 
 
                 objBlobResponse.items = _items;

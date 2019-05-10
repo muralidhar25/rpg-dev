@@ -145,7 +145,7 @@ export class ImageSearchService extends EndpointFactory {
   }
 
   getListOfUploads<T>(userId, count, previousContainerImageNumber, prefixToGetFolderContent, campaignID): Observable<T> {
-    let endpointUrl = `${this.myHandoutsUrl}?userId=${userId}& count=${count}& previousContainerImageNumber=${previousContainerImageNumber}&prefixToGetFolderContent=${prefixToGetFolderContent}&campaignID=${campaignID}`;
+    let endpointUrl = `${this.myHandoutsUrl}?userId=${userId}&count=${count}&previousContainerImageNumber=${previousContainerImageNumber}&prefixToGetFolderContent=${prefixToGetFolderContent}&campaignID=${campaignID}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {

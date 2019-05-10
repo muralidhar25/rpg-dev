@@ -102,6 +102,10 @@ export class HandoutuploadComponent implements OnInit {
       //    this.Options.map((ele) => {
       //        ele.selected = ele.value == IMAGE.MYIMAGES ? true : false;
       //    })
+      this.MyImageCount = 39;
+      this.previousContainerMyImageNumber = 0;
+      this.isMyImagesLoading = false;
+      this.hideShowMoreMyImage = false;
      this.searchMyImages(this.query, user.id);
 
      

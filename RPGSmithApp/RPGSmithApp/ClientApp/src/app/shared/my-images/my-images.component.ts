@@ -70,6 +70,10 @@ export class MyImagesComponent implements OnInit {
             //    this.Options.map((ele) => {
             //        ele.selected = ele.value == IMAGE.MYIMAGES ? true : false;
             //    })
+          this.MyImageCount = 39;
+          this.previousContainerMyImageNumber = 0;
+          this.isMyImagesLoading = false;
+          this.hideShowMoreMyImage = false;
             this.searchMyImages(this.query, user.id);
             this.userService.getBlobSpaceUsed<number>(user.id)
                 .subscribe(
@@ -134,7 +138,7 @@ export class MyImagesComponent implements OnInit {
                 () => { });
     }
     onScroll() {
-        if (!this.hideShowMoreMyImage) {
+      if (!this.hideShowMoreMyImage) {
             this.moreMyImages();
         }
     }
@@ -143,7 +147,6 @@ export class MyImagesComponent implements OnInit {
         //console.log('scrolled')
         let _query = "";
         this.isMyImagesLoading = true;
-        
         this.imageSearchService.getBlobMyImagesSearchPaging<any>(_query, this.userid, this.MyImageCount, this.previousContainerMyImageNumber)
             .subscribe(data => {
                 
