@@ -28,6 +28,7 @@ import { PaymentComponent } from '../../shared/payment/payment.component';
 import { marketplaceListModel } from '../../core/models/marketplace.model';
 import { MarketPlaceService } from '../../core/services/maketplace.service';
 import { HandoutuploadComponent } from '../../shared/handouts/handout-upload/handoutupload.component';
+import { DiceRollComponent } from '../../shared/dice/dice-roll/dice-roll.component';
  
 @Component({
   selector: 'app-campaign-details',
@@ -545,6 +546,19 @@ export class CampaignDetailsComponent implements OnInit {
       
     }
     
+  }
+  openDiceRollModal() {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+   
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = null;
+    this.bsModalRef.content.recordName = null;
+    this.bsModalRef.content.recordImage = null;
   }
   
   

@@ -396,6 +396,13 @@
                         </div>
                       </div>
                     </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName =='Condition'" class="col-lg-3 col-md-3 col-sm-3 col-10 padding-small">
+                      <div class="modifier-text">
+                        <div class="mod-value">
+                          Condition
+                        </div>
+                      </div>
+                    </div>
 
                     <div *ngIf="characterStat.characterStatType.statTypeName =='Number'" class="col-lg-3 col-md-3 col-sm-3 col-10">
                       <div class="modifier-text text-center">
@@ -432,6 +439,12 @@
                         <span class="count">  0</span>
                       </div>
                     </div>
+                    <div *ngIf="characterStat.characterStatType.statTypeName =='Condition'" class="col-lg-3 col-md-3 col-sm-3 col-10">
+                      <div class="modifier-text text-center">
+                        <span class="count">  0</span>
+                      </div>
+                    </div>
+
                   </div>
 
                 </div>
@@ -507,6 +520,9 @@
                       </div>
                       <div *ngIf="characterStat.characterStatType.statTypeName =='InventoryWeight'" class="modifier-text">
                         <span class="count"> 0</span>
+                      </div>
+                      <div *ngIf="characterStat.characterStatType.statTypeName =='Condition'" class="modifier-text">
+                          <span class="count">0</span>
                       </div>
                     </div>
                   </div>

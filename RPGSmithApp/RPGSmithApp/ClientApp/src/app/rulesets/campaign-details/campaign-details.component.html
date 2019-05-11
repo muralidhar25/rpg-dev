@@ -65,7 +65,7 @@
               <!--<button (click)="Invitepopup()"> inivte</button>-->
             </div>
             <div class="campaign-players-number">
-              <span>                
+              <span>
                 PLAYERS <span>{{(invitedUsers?.length-GmCharacterSlotsCount)}}/{{playersSlots}}</span>
               </span>
             </div>
@@ -74,154 +74,16 @@
         <div class="refresh-btn">
           <button type="button" (click)="refreshCampaign()" title="Refresh" class="btn btn-outline-primary icon icon-Gen-Refresh"></button>
         </div>
+        <div class="refresh-btn">
+          <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">
+          <span class="text-hide-tab">Dice</span>
+          </button>
+        </div>
       </div>
 
       <div class="cards character-players">
         <div class="row">
-          <!--<div class="col-12 col-sm-6 col-lg-3 mb-3">
-    <div class="card-wrapper">
-      <div class="card">
-        <div class="card-image thumbnail">
-          <img class="card-img-top portrait" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg';" src="https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/Dwarf.jpg" alt="dd">
-          <div class="characters-description">
-            <div class="characters-description-inner fr-view"></div>
-          </div>
-        </div>
-        <div class="card-body">
-          <h4 class="card-title" triggers="hover">dd</h4>
-        </div>
-        <span class="post-owner">
-          <div class="site-header-user-avatar">
-            <svg viewBox="0 0 102 102" xmlns="http://www.w3.org/2000/svg">
-              <path d="M0,0V102H102V0ZM95,76,51,101,7,76V26L51,1,95,26Z"></path>
-            </svg>
-            <img onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" src="https://rpgsmithsa.blob.core.windows.net/user-a363c14c-ef58-4ffa-aea9-209f637aa5a6/488e8696-27b7-4f36-b5ea-14c35f9bc639.jpg" alt="https://rpgsmithsa.blob.core.windows.net/user-a363c14c-ef58-4ffa-aea9-209f637aa5a6/488e8696-27b7-4f36-b5ea-14c35f9bc639.jpg">
-          </div>
-          <em class="">Core</em>
-        </span>
-      </div>
-    </div>
-  </div>
-  <div class="col-12 col-sm-6 col-lg-3 mb-3">
-    <div class="card-wrapper">
-      <div class="card">
-        <div class="card-image thumbnail">
-          <img class="card-img-top portrait" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg';" src="https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/Dwarf.jpg" alt="dd">
-          <div class="characters-description">
-            <div class="characters-description-inner fr-view"></div>
-          </div>
-        </div>
-        <div class="card-body">
-          <h4 class="card-title" triggers="hover">dd</h4>
-        </div>
-        <span class="post-owner">
-          <div class="site-header-user-avatar">
-            <svg viewBox="0 0 102 102" xmlns="http://www.w3.org/2000/svg">
-              <path d="M0,0V102H102V0ZM95,76,51,101,7,76V26L51,1,95,26Z"></path>
-            </svg>
-            <img onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" src="https://rpgsmithsa.blob.core.windows.net/user-a363c14c-ef58-4ffa-aea9-209f637aa5a6/488e8696-27b7-4f36-b5ea-14c35f9bc639.jpg" alt="https://rpgsmithsa.blob.core.windows.net/user-a363c14c-ef58-4ffa-aea9-209f637aa5a6/488e8696-27b7-4f36-b5ea-14c35f9bc639.jpg">
-          </div>
-          <em class="">Core</em>
-        </span>
-      </div>
-    </div>
-  </div>
-  <div class="col-12 col-sm-6 col-lg-3 mb-3">
-    <div class="card-wrapper">
-      <div class="card">
-        <div class="card-image thumbnail">
-          <img class="card-img-top portrait" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg';" src="https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/Dwarf.jpg" alt="dd">
-          <div class="characters-description">
-            <div class="characters-description-inner fr-view"></div>
-          </div>
-        </div>
-        <div class="card-body">
-          <h4 class="card-title" triggers="hover">dd</h4>
-        </div>
-        <span class="post-owner">
-          <div class="site-header-user-avatar">
-            <svg viewBox="0 0 102 102" xmlns="http://www.w3.org/2000/svg">
-              <path d="M0,0V102H102V0ZM95,76,51,101,7,76V26L51,1,95,26Z"></path>
-            </svg>
-            <img onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" src="https://rpgsmithsa.blob.core.windows.net/user-a363c14c-ef58-4ffa-aea9-209f637aa5a6/488e8696-27b7-4f36-b5ea-14c35f9bc639.jpg" alt="https://rpgsmithsa.blob.core.windows.net/user-a363c14c-ef58-4ffa-aea9-209f637aa5a6/488e8696-27b7-4f36-b5ea-14c35f9bc639.jpg">
-          </div>
-          <em class="">Core</em>
-        </span>
-      </div>
-    </div>
-  </div>
-  <div class="col-12 col-sm-6 col-lg-3 mb-3">
-    <div class="card-wrapper">
-      <div class="card">
-        <div class="card-image thumbnail">
-          <img class="card-img-top portrait" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg';" src="https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/Dwarf.jpg" alt="dd">
-          <div class="characters-description">
-            <div class="characters-description-inner fr-view"></div>
-          </div>
-        </div>
-        <div class="card-body">
-          <h4 class="card-title" triggers="hover">dd</h4>
-        </div>
-        <span class="post-owner">
-          <div class="site-header-user-avatar">
-            <svg viewBox="0 0 102 102" xmlns="http://www.w3.org/2000/svg">
-              <path d="M0,0V102H102V0ZM95,76,51,101,7,76V26L51,1,95,26Z"></path>
-            </svg>
-            <img onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" src="https://rpgsmithsa.blob.core.windows.net/user-a363c14c-ef58-4ffa-aea9-209f637aa5a6/488e8696-27b7-4f36-b5ea-14c35f9bc639.jpg" alt="https://rpgsmithsa.blob.core.windows.net/user-a363c14c-ef58-4ffa-aea9-209f637aa5a6/488e8696-27b7-4f36-b5ea-14c35f9bc639.jpg">
-          </div>
-          <em class="">Core</em>
-        </span>
-      </div>
-    </div>
-  </div>
-  <div class="col-12 col-sm-6 col-lg-3 mb-3">
-    <div class="card-wrapper">
-      <div class="card">
-        <div class="card-image thumbnail">
-          <img class="card-img-top portrait" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg';" src="https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/Dwarf.jpg" alt="dd">
-          <div class="characters-description">
-            <div class="characters-description-inner fr-view"></div>
-          </div>
-        </div>
-        <div class="card-body">
-          <h4 class="card-title" triggers="hover">dd</h4>
-        </div>
-        <span class="post-owner">
-          <div class="site-header-user-avatar">
-            <svg viewBox="0 0 102 102" xmlns="http://www.w3.org/2000/svg">
-              <path d="M0,0V102H102V0ZM95,76,51,101,7,76V26L51,1,95,26Z"></path>
-            </svg>
-            <img onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" src="https://rpgsmithsa.blob.core.windows.net/user-a363c14c-ef58-4ffa-aea9-209f637aa5a6/488e8696-27b7-4f36-b5ea-14c35f9bc639.jpg" alt="https://rpgsmithsa.blob.core.windows.net/user-a363c14c-ef58-4ffa-aea9-209f637aa5a6/488e8696-27b7-4f36-b5ea-14c35f9bc639.jpg">
-          </div>
-          <em class="">Core</em>
-        </span>
-      </div>
-    </div>
-  </div>
-  <div class="col-12 col-sm-6 col-lg-3 mb-3">
-    <div class="card-wrapper">
-      <div class="card">
-        <div class="card-image thumbnail">
-          <img class="card-img-top portrait" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg';" src="https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/Dwarf.jpg" alt="dd">
-          <div class="characters-description">
-            <div class="characters-description-inner fr-view"></div>
-          </div>
-        </div>
-        <div class="card-body">
-          <h4 class="card-title" triggers="hover">dd</h4>
-        </div>
-        <span class="post-owner">
-          <div class="site-header-user-avatar">
-            <svg viewBox="0 0 102 102" xmlns="http://www.w3.org/2000/svg">
-              <path d="M0,0V102H102V0ZM95,76,51,101,7,76V26L51,1,95,26Z"></path>
-            </svg>
-            <img onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" src="https://rpgsmithsa.blob.core.windows.net/user-a363c14c-ef58-4ffa-aea9-209f637aa5a6/488e8696-27b7-4f36-b5ea-14c35f9bc639.jpg" alt="https://rpgsmithsa.blob.core.windows.net/user-a363c14c-ef58-4ffa-aea9-209f637aa5a6/488e8696-27b7-4f36-b5ea-14c35f9bc639.jpg">
-          </div>
-          <em class="">Core</em>
-        </span>
-      </div>
-    </div>
-  </div> -->
+         
           <div class="col-12 col-sm-6 col-lg-3 mb-3" *ngFor="let invite of  invitedUsers; index as i">
             <div class="w-100 card-wrapper">
               <div class="card" *ngIf="!invite?.isAccepted">
