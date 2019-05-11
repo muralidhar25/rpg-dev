@@ -112,7 +112,7 @@
                [(ngModel)]="characterCommandModel.command" name="command" #command="ngModel" required />
 
         <!--<input type="text" id="cmdNew" class="form-control"
-               [(ngModel)]="characterCommandModel.command" name="cmdNew" />-->
+           [(ngModel)]="characterCommandModel.command" name="cmdNew" />-->
 
         <div class="command-canvas">
           <ul class="web-view">
@@ -172,9 +172,9 @@
               <!--<ng-container *ngFor="let NumbersList of dice.randomNumbersList;let j = index;"></ng-container>-->
               <ng-container *ngFor="let NumbersList of dice.randomNumbersList;let j = index;">
                 <li *ngIf="!NumbersList.hideExplode">
- 
+
                   <button class="btn outline" type="button" [ngClass]="dice.diceIcon=='icon-Dice-deck'?'dice-small-font':''" (click)="showReroll(dice,NumbersList,j)">
-                    <em *ngIf="dice.dice.toUpperCase().split('D')[1] ==  'F' "  [style.color]="'white'"
+                    <em *ngIf="dice.dice.toUpperCase().split('D')[1] ==  'F' " [style.color]="'white'"
                         [style.font-weight]="NumbersList.isMax ? 'bold' : (NumbersList.isMin ? 'bold' : 'normal')">{{ NumbersList?.number==1?FATE.plus:NumbersList?.number==-1?FATE.minus:FATE.zero}}</em>
                     <em *ngIf="dice.dice.toUpperCase().split('D')[1] != 'F' " [style.color]="NumbersList.isMax ? 'green' : (NumbersList.isMin ? 'red' : 'white')"
                         [style.font-weight]="NumbersList.isMax ? 'bold' : (NumbersList.isMin ? 'bold' : 'normal')"
@@ -232,11 +232,11 @@
                    [ngStyle]="{'border': activeAndCommand===i ? '1px solid #b74b24' : '1px solid grey'}">
 
                 <!--<ng-container *ngFor="let cmd of command.calculationStringArray;let i = index;">
-              <span [style.color]="cmd.isMax ? 'green' : (cmd.isMin ? 'red' : 'white')"
-                    [style.font-weight]="cmd.isMax ? 'bold' : (cmd.isMin ? 'bold' : 'normal')">
-                  {{cmd.text}}
-              </span>
-          </ng-container>-->
+                <span [style.color]="cmd.isMax ? 'green' : (cmd.isMin ? 'red' : 'white')"
+                      [style.font-weight]="cmd.isMax ? 'bold' : (cmd.isMin ? 'bold' : 'normal')">
+                    {{cmd.text}}
+                </span>
+            </ng-container>-->
                 <span *ngIf="command.isResultWithCustomDice">{{command.calculationString}}</span>
                 <span *ngIf="!command.isResultWithCustomDice">{{command.calculationString}} = <b>{{command?.beforeResult}} {{command.calculationResult}} {{command?.afterResult}}</b></span>
 
@@ -247,10 +247,10 @@
         </div>
 
         <div class="command-actions form-row" style="margin-top: 2%;">
-          <div class="d-flex col-12"  [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'" >
+          <div class="d-flex col-12" [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'">
             <button type="button" id="diceShowDiceTrigger" class="btn btn-accent btn-block" (click)="onClickDice(mainCommandText)">Show Dice</button>
           </div>
-          <div class="d-flex col-12 " [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'" >
+          <div class="d-flex col-12 " [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'">
             <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block" (click)="onClickRoll(characterCommandModel,'')"> {{rollAgainBtnText}} </button>
           </div>
           <div class="d-flex col-12 " *ngIf="displayCurrentRollBtn" [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'">
@@ -258,25 +258,24 @@
           </div>
 
         </div>
-      </div> 
+      </div>
       <!---- END DICE RESULT INTERFACE ---->
-
-      <div class="command-last-result form-group" [ngClass]="{'d-none' : rollSection}">
+      <div class="command-last-result form-group" [ngClass]="{'d-none' : rollSection}" *ngIf="!isFromCampaignDetail">
         <label>Last Result</label> &nbsp;<i *ngIf="!showTotal" class="fa fa-spinner fa-spin"></i>
         <p *ngIf="showTotal">
           <span *ngIf="character?.lastCommandTotal">
-            <strong *ngIf="character?.lastCommandResult.indexOf(' AND ')==-1">{{character.lastCommandTotal}}</strong>
+            <strong *ngIf="character?.lastCommandResult.indexOf(' AND ')==-1">{{character?.lastCommandTotal}}</strong>
           </span>
           <!--<span *ngIf="calculationStringArray.length>0">
-              (<ng-container *ngFor="let cmd of calculationStringArray;let i = index;">
-                  <span [style.color]="cmd.isMax ? 'green' : (cmd.isMin ? 'red' : 'black')"
-                        [style.font-weight]="cmd.isMax ? 'bold' : (cmd.isMin ? 'bold' : 'normal')"
-                        [style.letter-spacing]="(cmd.text==')' || cmd.text=='(') && i>0 ? '-1px' : '0px'">
-                      {{cmd.text}}
-                  </span>
-              </ng-container>)
-          </span>-->
-          <span *ngIf="character?.lastCommandResult">({{character.lastCommandResult}})</span>
+          (<ng-container *ngFor="let cmd of calculationStringArray;let i = index;">
+              <span [style.color]="cmd.isMax ? 'green' : (cmd.isMin ? 'red' : 'black')"
+                    [style.font-weight]="cmd.isMax ? 'bold' : (cmd.isMin ? 'bold' : 'normal')"
+                    [style.letter-spacing]="(cmd.text==')' || cmd.text=='(') && i>0 ? '-1px' : '0px'">
+                  {{cmd.text}}
+              </span>
+          </ng-container>)
+      </span>-->
+          <span *ngIf="character?.lastCommandResult">({{character?.lastCommandResult}})</span>
           <strong *ngIf="!character?.lastCommandResult">No result found.</strong>
         </p>
         <div class="input-extend" *ngIf="character?.lastCommandResult">

@@ -29,6 +29,7 @@ import { marketplaceListModel } from '../../core/models/marketplace.model';
 import { MarketPlaceService } from '../../core/services/maketplace.service';
 import { HandoutuploadComponent } from '../../shared/handouts/handout-upload/handoutupload.component';
 import { DiceRollComponent } from '../../shared/dice/dice-roll/dice-roll.component';
+import { Characters } from '../../core/models/view-models/characters.model';
  
 @Component({
   selector: 'app-campaign-details',
@@ -52,6 +53,8 @@ export class CampaignDetailsComponent implements OnInit {
   randomImageList: string[] = [];
   declinedUserList: playerInviteListModel[] = [];
   GmCharacterSlotsCount: number = 0;
+  character: Characters = new Characters();
+
   constructor(private formBuilder: FormBuilder, private router: Router, private localStorage: LocalStoreManager, private marketPlaceService: MarketPlaceService,
     private rulesetService: RulesetService, private sharedService: SharedService, private authService: AuthService,
     private modalService: BsModalService, public appService: AppService1, public campaignService: CampaignService,
@@ -553,13 +556,14 @@ export class CampaignDetailsComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-   
+    this.character.lastCommand = null;
     this.bsModalRef.content.title = "Dice";
     this.bsModalRef.content.characterId = 0;
-    this.bsModalRef.content.character = null;
+    this.bsModalRef.content.character = this.character;
     this.bsModalRef.content.recordName = null;
     this.bsModalRef.content.recordImage = null;
+    this.bsModalRef.content.isFromCampaignDetail = true;
   }
-  
+ 
   
 }
