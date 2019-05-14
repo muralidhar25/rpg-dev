@@ -160,7 +160,6 @@ export class DiceRollComponent implements OnInit {
           }
           this.showTotal = true;
           try {
-            debugger;
             if (this.character.lastCommandResult)
               this.calculationStringArray = DiceService.getCalculationStringArray(this.character.lastCommandResult);
           } catch (err) { }
@@ -1291,7 +1290,11 @@ export class DiceRollComponent implements OnInit {
           let selectedStat: string = mod.selectedStat;
           commandToValidate = commandToValidate.replace(selectedStat.toUpperCase(), "D");
         });
-
+        if (this.isFromCampaignDetail) {
+          if (commandToValidate) {
+            commandToValidate = commandToValidate.replace(/\[(.*?)\]/g, "0");
+          }
+        }
         let isValidCommand = DiceService.validateCommandTextNew(commandToValidate);
         let isValidCommand99 = DiceService.validateCommand99Limit(commandToValidate);
         if (!isValidCommand || !isValidCommand99) {
