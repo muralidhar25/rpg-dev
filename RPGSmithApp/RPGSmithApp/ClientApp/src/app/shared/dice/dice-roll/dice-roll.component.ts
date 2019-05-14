@@ -388,7 +388,11 @@ export class DiceRollComponent implements OnInit {
       });
 
       commandToValidate = commandToValidate.replace(/\[([^\]]+)\]/g, '1');
-
+      if (this.isFromCampaignDetail) {
+        if (commandToValidate) {
+          commandToValidate = commandToValidate.replace(/\[(.*?)\]/g, "0");
+        }
+      }
       let isValidCommand = DiceService.validateCommandTextNew(commandToValidate);
       if (!isValidCommand) {
         this.alertService.resetStickyMessage();
@@ -671,7 +675,11 @@ export class DiceRollComponent implements OnInit {
       let selectedStat: string = mod.selectedStat;
       commandToValidate = commandToValidate.replace(selectedStat.toUpperCase(), "D");
     });
-
+    if (this.isFromCampaignDetail) {
+      if (commandToValidate) {
+        commandToValidate = commandToValidate.replace(/\[(.*?)\]/g, "0");
+      }
+    }
     let isValidCommand = DiceService.validateCommandTextNew(commandToValidate);
     if (!isValidCommand) {
       command = commandIfERROR;
@@ -3162,7 +3170,11 @@ export class DiceRollComponent implements OnInit {
       let selectedStat: string = mod.selectedStat;
       commandToValidate = commandToValidate.replace(selectedStat.toUpperCase(), "D");
     });
-
+    if (this.isFromCampaignDetail) {
+      if (commandToValidate) {
+        commandToValidate = commandToValidate.replace(/\[(.*?)\]/g, "0");
+      }
+    }
     let isValidCommand = DiceService.validateCommandTextNew(commandToValidate);
     if (!isValidCommand) {
       this.alertService.resetStickyMessage();
