@@ -86,11 +86,19 @@
           </ul>
         </div>
 
-        <div class="command-actions form-row">
+        <div class="command-actions form-row" *ngIf="!isFromCampaignDetail">
           <div class="d-flex col-12 col-md-6">
             <button type="button" (click)="saveDiceCommand(characterCommandModel)" class="btn btn-accent btn-block">Save</button>
           </div>
           <div class="d-flex col-12 col-md-6">
+            <button type="submit" id="diceRollTrigger" class="btn btn-accent btn-block">Roll</button>
+          </div>
+        </div>
+        <div class="command-actions form-row" *ngIf="isFromCampaignDetail">
+          <!--<div class="d-flex col-12 col-md-6">
+            <button type="button" (click)="saveDiceCommand(characterCommandModel)" class="btn btn-accent btn-block">Save</button>
+          </div>-->
+          <div class="d-flex col-12 col-md-12">
             <button type="submit" id="diceRollTrigger" class="btn btn-accent btn-block">Roll</button>
           </div>
         </div>
