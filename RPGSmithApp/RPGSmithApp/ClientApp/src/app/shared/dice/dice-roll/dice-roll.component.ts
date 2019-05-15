@@ -1523,14 +1523,24 @@ export class DiceRollComponent implements OnInit {
 
             let lastCommandValues: string = "";
             this.diceRolledData.forEach((diceRoll, index) => {
-
+              let numberString = '';
+              diceRoll.randomNumbersList.map((x, xIndex) => {
+                if (xIndex == diceRoll.randomNumbersList.length - 1) {
+                  numberString += x.number;
+                }
+                else {
+                  numberString += x.number + ",";
+                }
+              })
               if (diceRoll.dice && diceRoll.diceIcon) {
                 lastCommandValues += (index === 0 ? '' : diceRoll.sign) +
                   diceRoll.randomCount + diceRoll.dice
-                  + "=" + diceRoll.randomNumbersListAfter.toString();
+                  + "=" + numberString.toString();
+                //+ "=" + diceRoll.randomNumbersListAfter.toString();
               } else {
                 lastCommandValues += (index === 0 ? '' : diceRoll.sign) + diceRoll.randomCount
-                  + "=" + diceRoll.randomNumbersListAfter.toString();
+                  + "=" + numberString.toString();
+                //+ "=" + diceRoll.randomNumbersListAfter.toString();
               }
 
             });
@@ -1572,14 +1582,25 @@ export class DiceRollComponent implements OnInit {
                     let lastCommandValues: string = "";
                     let _diceRolledData = cmd.calculationArray;
                     _diceRolledData.forEach((diceRoll, index) => {
+                      let numberString = '';
+                      diceRoll.randomNumbersList.map((x, xIndex) => {
+                        if (xIndex == diceRoll.randomNumbersList.length - 1) {
+                          numberString += x.number;
+                        }
+                        else {
+                          numberString += x.number + ",";
+                        }                        
+                      })
 
-                      if (diceRoll.dice && diceRoll.diceIcon) {
+                      if (diceRoll.dice && diceRoll.diceIcon) {                        
                         lastCommandValues += (index === 0 ? '' : diceRoll.sign) +
                           diceRoll.randomCount + diceRoll.dice
-                          + "=" + diceRoll.randomNumbersListAfter.toString();
-                      } else {
+                          + "=" + numberString.toString();
+                          //+ "=" + diceRoll.randomNumbersListAfter.toString();
+                      } else {                        
                         lastCommandValues += (index === 0 ? '' : diceRoll.sign) + diceRoll.randomCount
-                          + "=" + diceRoll.randomNumbersListAfter.toString();
+                          + "=" + numberString.toString();
+                          //+ "=" + diceRoll.randomNumbersListAfter.toString();
                       }
 
                     });
@@ -2739,14 +2760,24 @@ export class DiceRollComponent implements OnInit {
               let lastCommandValues: string = "";
               let _diceRolledData = cmd.calculationArray;
               _diceRolledData.forEach((diceRoll, index) => {
-
+                let numberString = '';
+                diceRoll.randomNumbersList.map((x, xIndex) => {
+                  if (xIndex == diceRoll.randomNumbersList.length - 1) {
+                    numberString += x.number;
+                  }
+                  else {
+                    numberString += x.number + ",";
+                  }
+                })
                 if (diceRoll.dice && diceRoll.diceIcon) {
                   lastCommandValues += (index === 0 ? '' : diceRoll.sign) +
                     diceRoll.randomCount + diceRoll.dice
-                    + "=" + diceRoll.randomNumbersListAfter.toString();
+                    + "=" + numberString.toString();
+                    //+ "=" + diceRoll.randomNumbersListAfter.toString();
                 } else {
                   lastCommandValues += (index === 0 ? '' : diceRoll.sign) + diceRoll.randomCount
-                    + "=" + diceRoll.randomNumbersListAfter.toString();
+                    + "=" + numberString.toString();
+                    //+ "=" + diceRoll.randomNumbersListAfter.toString();
                 }
 
               });
@@ -2762,14 +2793,24 @@ export class DiceRollComponent implements OnInit {
               let lastCommandValues: string = "";
               let _diceRolledData = cmd.calculationArray;
               _diceRolledData.forEach((diceRoll, index) => {
-
+                let numberString = '';
+                diceRoll.randomNumbersList.map((x, xIndex) => {
+                  if (xIndex == diceRoll.randomNumbersList.length - 1) {
+                    numberString += x.number;
+                  }
+                  else {
+                    numberString += x.number + ",";
+                  }
+                })
                 if (diceRoll.dice && diceRoll.diceIcon) {
                   lastCommandValues += (index === 0 ? '' : diceRoll.sign) +
                     diceRoll.randomCount + diceRoll.dice
-                    + "=" + diceRoll.randomNumbersListAfter.toString();
+                    + "=" + numberString.toString();
+                    //+ "=" + diceRoll.randomNumbersListAfter.toString();
                 } else {
                   lastCommandValues += (index === 0 ? '' : diceRoll.sign) + diceRoll.randomCount
-                    + "=" + diceRoll.randomNumbersListAfter.toString();
+                    + "=" + numberString.toString();
+                    //+ "=" + diceRoll.randomNumbersListAfter.toString();
                 }
 
               });
