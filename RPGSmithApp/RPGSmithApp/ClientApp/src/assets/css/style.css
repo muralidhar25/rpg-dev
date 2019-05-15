@@ -4205,8 +4205,8 @@ span.search-content span {
 
   .tiles.manage .tile-actions .btn[data-action="edit"] {
     top: 0;
-    right: 50% !important;
-    transform: translate(50%,0) !important;
+    /*right: 50% !important;*/
+    /*transform: translate(50%,0) !important;*/
     margin:.25rem 0 !important
   }
   /*.tiles.manage .tile-actions .btn[data-action="edit"] {

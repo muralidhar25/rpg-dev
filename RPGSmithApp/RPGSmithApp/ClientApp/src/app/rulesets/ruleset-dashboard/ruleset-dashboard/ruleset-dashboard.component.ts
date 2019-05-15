@@ -2018,7 +2018,8 @@ export class RulesetDashboardComponent implements OnInit {
         }
         else if (Width >= 331 && Width <= 350) {
             minSize = 18 / 2;
-            maxSize = 28 / 2;
+          maxSize = 28 / 2;
+          margin = [2];
         }
         else if (Width >= 351 && Width <= 400) {
             minSize = 20 / 2;
@@ -2060,10 +2061,30 @@ export class RulesetDashboardComponent implements OnInit {
             maxSize = 57 / 2;
             margin = [4];
         }
-        else if (Width >= 751 && Width <= 768) {
+        else if (Width >= 751 && Width <= 800) {
             minSize = 47 / 2;
             maxSize = 57 / 2;
             margin = [4];
+        }
+        else if (Width >= 801 && Width <= 850) {
+          minSize = 52 / 2;
+          maxSize = 62 / 2;
+          margin = [4];
+        }
+        else if (Width >= 851 && Width <= 900) {
+          minSize = 52 / 2;
+          maxSize = 62 / 2;
+          margin = [4];
+        }
+        else if (Width >= 901 && Width <= 950) {
+          minSize = 57 / 2;
+          maxSize = 67 / 2;
+          margin = [5];
+        }
+        else if (Width >= 951 && Width <= 992) {
+          minSize = 57 / 2;
+          maxSize = 67 / 2;
+          margin = [5];
         }
         else {
             minSize = 50;

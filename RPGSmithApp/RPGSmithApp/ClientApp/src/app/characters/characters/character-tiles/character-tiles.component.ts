@@ -1658,6 +1658,7 @@ export class CharacterTilesComponent implements OnInit {
     else if (Width >= 331 && Width <= 350) {
       minSize = 18 / 2;
       maxSize = 28 / 2;
+      margin = [2];
     }
     else if (Width >= 351 && Width <= 400) {
       minSize = 20 / 2;
@@ -1699,10 +1700,30 @@ export class CharacterTilesComponent implements OnInit {
       maxSize = 57 / 2;
       margin = [4];
     }
-    else if (Width >= 751 && Width <= 768) {
+    else if (Width >= 751 && Width <= 800) {
       minSize = 47 / 2;
       maxSize = 57 / 2;
       margin = [4];
+    }
+    else if (Width >= 801 && Width <= 850) {
+      minSize = 52 / 2;
+      maxSize = 62 / 2;
+      margin = [4];
+    }
+    else if (Width >= 851 && Width <= 900) {
+      minSize = 52 / 2;
+      maxSize = 62 / 2;
+      margin = [4];
+    }
+    else if (Width >= 901 && Width <= 950) {
+      minSize = 57 / 2;
+      maxSize = 67 / 2;
+      margin = [5];
+    }
+    else if (Width >= 951 && Width <= 992) {
+      minSize = 57 / 2;
+      maxSize = 67 / 2;
+      margin = [5];
     }
     else {
       minSize = 50;
@@ -1742,60 +1763,60 @@ export class CharacterTilesComponent implements OnInit {
     return name;
 
   }
-  GetValueFromStatsByStatID(ifClauseStatId: number, ifClauseStattype: number): string {
-    let result = '';
-    this.ConditionsValuesList.map((ccs: CharactersCharacterStat) => {
-      if (ccs.characterStatId == ifClauseStatId) {
-        switch (ccs.characterStat.characterStatTypeId) {
-          case STAT_TYPE.Text:
-            result = ccs.text;
-            break;
-          case STAT_TYPE.Number:
-            result = ccs.number.toString();
-            break;
-          case STAT_TYPE.CurrentMax:
-            if (ifClauseStattype == 2) {
-              result = ccs.maximum.toString();
-            }
-            else {
-              result = ccs.current.toString();
-            }
-            break;
-          case STAT_TYPE.Choice:
+  //GetValueFromStatsByStatID(ifClauseStatId: number, ifClauseStattype: number): string {
+  //  let result = '';
+  //  this.ConditionsValuesList.map((ccs: CharactersCharacterStat) => {
+  //    if (ccs.characterStatId == ifClauseStatId) {
+  //      switch (ccs.characterStat.characterStatTypeId) {
+  //        case STAT_TYPE.Text:
+  //          result = ccs.text;
+  //          break;
+  //        case STAT_TYPE.Number:
+  //          result = ccs.number.toString();
+  //          break;
+  //        case STAT_TYPE.CurrentMax:
+  //          if (ifClauseStattype == 2) {
+  //            result = ccs.maximum.toString();
+  //          }
+  //          else {
+  //            result = ccs.current.toString();
+  //          }
+  //          break;
+  //        case STAT_TYPE.Choice:
 
-            if (ccs.characterStat.isMultiSelect) {
-              result = this.GetChoiceValue(ccs.multiChoice, ccs.characterStat.characterStatChoices)//ccs.multiChoice.replace(/;/g, this.choiceArraySplitter);
-            }
-            else {
-              result = this.GetChoiceValue(ccs.choice, ccs.characterStat.characterStatChoices);
-            }
-            break;
-          case STAT_TYPE.ValueSubValue:
-            if (ifClauseStattype == 2) {
-              result = ccs.subValue.toString();
-            }
-            else {
-              result = ccs.value.toString();
-            }
-            break;
-          case STAT_TYPE.Combo:
-            if (ifClauseStattype == 2) {
-              result = ccs.comboText;
-            }
-            else {
-              result = ccs.defaultValue.toString();
-            }
-            break;
-          case STAT_TYPE.Calculation:
-            result = ccs.calculationResult.toString();
-            break;
+  //          if (ccs.characterStat.isMultiSelect) {
+  //            result = this.GetChoiceValue(ccs.multiChoice, ccs.characterStat.characterStatChoices)//ccs.multiChoice.replace(/;/g, this.choiceArraySplitter);
+  //          }
+  //          else {
+  //            result = this.GetChoiceValue(ccs.choice, ccs.characterStat.characterStatChoices);
+  //          }
+  //          break;
+  //        case STAT_TYPE.ValueSubValue:
+  //          if (ifClauseStattype == 2) {
+  //            result = ccs.subValue.toString();
+  //          }
+  //          else {
+  //            result = ccs.value.toString();
+  //          }
+  //          break;
+  //        case STAT_TYPE.Combo:
+  //          if (ifClauseStattype == 2) {
+  //            result = ccs.comboText;
+  //          }
+  //          else {
+  //            result = ccs.defaultValue.toString();
+  //          }
+  //          break;
+  //        case STAT_TYPE.Calculation:
+  //          result = ccs.calculationResult.toString();
+  //          break;
 
-          default:
-        }
-      }
-    })
-    return result ? result : '';
-  }
+  //        default:
+  //      }
+  //    }
+  //  })
+  //  return result ? result : '';
+  //}
   GetChoiceValue(ids, choicesList) {
 
     let result = '';
