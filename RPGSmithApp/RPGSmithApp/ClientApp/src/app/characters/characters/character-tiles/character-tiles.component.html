@@ -5,7 +5,7 @@
         <div class="container">
             <div class="page-toolbar-wrapper-toggle-trigger">
                 <button *ngIf="!IsTrashPage && !IsResizePage && !IsRelocatePage && !IsEditPage" type="button" class="btn icon icon-with-text btn-accent" (click)="saveAndGotoDashboard()">Done</button>
-                <button *ngIf="!isLoading && (IsTrashPage || IsResizePage || IsRelocatePage || IsEditPage )" type="button" (click)="backToNormal()" class="btn icon icon-with-text btn-accent mr-1">Cancel</button>
+                <button *ngIf="!isLoading && (IsTrashPage || IsResizePage || IsRelocatePage )" type="button" (click)="backToNormal()" class="btn icon icon-with-text btn-accent mr-1">Cancel</button>
                 <button *ngIf="!isLoading && (IsTrashPage || IsResizePage || IsRelocatePage || IsEditPage)" type="button" (click)="deleteMultipleTiles()" class="btn icon icon-with-text btn-accent">Save</button>
             </div>
 
@@ -18,7 +18,7 @@
                     <li *ngIf="!IsTrashPage && !IsResizePage && !IsRelocatePage && !IsEditPage">
                         <button type="button" id="manageTilesDoneTrigger" class="btn btn-accent" (click)="gotoDashboard()">Done</button>
                     </li>
-                    <li *ngIf="!isLoading && (IsTrashPage || IsResizePage || IsRelocatePage || IsEditPage)">
+                    <li *ngIf="!isLoading && (IsTrashPage || IsResizePage || IsRelocatePage)">
                         <button type="button" (click)="backToNormal()" class="btn btn-accent">Cancel</button>
                     </li>
                     <li *ngIf="!isLoading && (IsTrashPage || IsResizePage || IsRelocatePage || IsEditPage )">

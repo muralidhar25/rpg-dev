@@ -156,7 +156,7 @@
                 </div>
             </div>
             <div class="page-toolbar-wrapper-toggle-trigger" *ngIf="!isLoading &&  (IsTrashPage || IsResizePage || IsRelocatePage || IsEditPage)">
-                <button class="btn icon icon-with-text btn-accent mr-1" (click)="backToNormal()" type="button">Cancel</button>
+                <button class="btn icon icon-with-text btn-accent mr-1" (click)="backToNormal()" *ngIf="!IsEditPage" type="button">Cancel</button>
                 <button class="btn icon icon-with-text btn-accent" (click)="deleteMultipleTiles()" type="button">Save</button>
             </div>
 
