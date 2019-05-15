@@ -161,11 +161,13 @@ export class MarketplacelistComponent implements OnInit {
           user.isGm = true;
           user.removeAds = true;
           user.campaignSlot = user.rulesetSlot;
+          user.playerSlot = 5;
           break;
         case MarketPlaceItemsType.GM_1_YEAR:
           user.isGm = true;
           user.removeAds = true;
           user.campaignSlot = user.rulesetSlot;
+          user.playerSlot = 5;
           break;
         case MarketPlaceItemsType.CAMPAIGN_SLOT:
           user.campaignSlot = user.campaignSlot + paymentDoneForItem.qty;
