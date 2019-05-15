@@ -474,16 +474,16 @@ export class CharacterDashboardComponent implements OnInit {
       try {
 
         this.gameStatus(this.characterId);
-        this.CCService.getConditionsValuesList<any[]>(this.characterId)
-          .subscribe(data => {
-            this.ConditionsValuesList = data;
+        //this.CCService.getConditionsValuesList<any[]>(this.characterId)
+        //  .subscribe(data => {
+        //    this.ConditionsValuesList = data;
 
-          }, error => {
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              this.authService.logout(true);
-            }
-          }, () => { });
+        //  }, error => {
+        //    let Errors = Utilities.ErrorDetail("", error);
+        //    if (Errors.sessionExpire) {
+        //      this.authService.logout(true);
+        //    }
+        //  }, () => { });
         if (preventLoading) {
           this.isLoading = false;
         } else {
@@ -659,11 +659,21 @@ export class CharacterDashboardComponent implements OnInit {
                     this.statLinkRecords = model.statLinkRecords;
                     data = model.data;
                     this.tiles = data;
-                    this.boxes = this.mapBoxes(data);
+                    this.CCService.getConditionsValuesList<any[]>(this.characterId)
+                      .subscribe(data => {
+                        this.ConditionsValuesList = data;
+
+                      }, error => {
+                        this.ConditionsValuesList = [];
+                      }, () => {
+                      this.boxes = this.mapBoxes(data);
+                        this.isLoading = false;
+                      });
+                    
                     try {
                       this.noRecordFound = !data.length;
                     } catch (err) { }
-                    this.isLoading = false;
+                    
                   }, error => {
                     this.isLoading = false;
                   }, () => { });
@@ -811,13 +821,23 @@ export class CharacterDashboardComponent implements OnInit {
         this.isLoading = true;
         this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId)
           .subscribe(data => {
-            this.isLoading = false;
+            //this.isLoading = false;
             let model: any = data;
             this.CharacterStatsValues = model.characterStatsValues;
             this.statLinkRecords = model.statLinkRecords;
             data = model.data;
             this.tiles = data;
-            this.boxes = this.mapBoxes(data);
+            this.CCService.getConditionsValuesList<any[]>(this.characterId)
+              .subscribe(data => {
+                this.ConditionsValuesList = data;
+
+              }, error => {
+                this.ConditionsValuesList = [];
+              }, () => {
+                this.boxes = this.mapBoxes(data);
+                this.isLoading = false;
+              });
+            //this.boxes = this.mapBoxes(data);
             try {
               this.noRecordFound = !data.length;
             } catch (err) { }
@@ -939,11 +959,21 @@ export class CharacterDashboardComponent implements OnInit {
           this.statLinkRecords = model.statLinkRecords;
           data = model.data;
           this.tiles = data;
-          this.boxes = this.mapBoxes(data);
+          this.CCService.getConditionsValuesList<any[]>(this.characterId)
+            .subscribe(data => {
+              this.ConditionsValuesList = data;
+
+            }, error => {
+              this.ConditionsValuesList = [];
+            }, () => {
+              this.boxes = this.mapBoxes(data);
+              this.isLoading = false;
+            });
+          //this.boxes = this.mapBoxes(data);
           try {
             this.noRecordFound = !data.length;
           } catch (err) { }
-          this.isLoading = false;
+          //this.isLoading = false;
         }, error => {
           this.isLoading = false;
         }, () => { });
@@ -2400,60 +2430,60 @@ export class CharacterDashboardComponent implements OnInit {
     return name;
 
   }
-  GetValueFromStatsByStatID(ifClauseStatId: number, ifClauseStattype: number): string {
-    let result = '';
-    this.ConditionsValuesList.map((ccs: CharactersCharacterStat) => {
-      if (ccs.characterStatId == ifClauseStatId) {
-        switch (ccs.characterStat.characterStatTypeId) {
-          case STAT_TYPE.Text:
-            result = ccs.text;
-            break;
-          case STAT_TYPE.Number:
-            result = ccs.number.toString();
-            break;
-          case STAT_TYPE.CurrentMax:
-            if (ifClauseStattype == 2) {
-              result = ccs.maximum.toString();
-            }
-            else {
-              result = ccs.current.toString();
-            }
-            break;
-          case STAT_TYPE.Choice:
+  //GetValueFromStatsByStatID(ifClauseStatId: number, ifClauseStattype: number): string {
+  //  let result = '';
+  //  this.ConditionsValuesList.map((ccs: CharactersCharacterStat) => {
+  //    if (ccs.characterStatId == ifClauseStatId) {
+  //      switch (ccs.characterStat.characterStatTypeId) {
+  //        case STAT_TYPE.Text:
+  //          result = ccs.text;
+  //          break;
+  //        case STAT_TYPE.Number:
+  //          result = ccs.number.toString();
+  //          break;
+  //        case STAT_TYPE.CurrentMax:
+  //          if (ifClauseStattype == 2) {
+  //            result = ccs.maximum.toString();
+  //          }
+  //          else {
+  //            result = ccs.current.toString();
+  //          }
+  //          break;
+  //        case STAT_TYPE.Choice:
 
-            if (ccs.characterStat.isMultiSelect) {
-              result = this.GetChoiceValue(ccs.multiChoice, ccs.characterStat.characterStatChoices)//ccs.multiChoice.replace(/;/g, this.choiceArraySplitter);
-            }
-            else {
-              result = this.GetChoiceValue(ccs.choice, ccs.characterStat.characterStatChoices);
-            }
-            break;
-          case STAT_TYPE.ValueSubValue:
-            if (ifClauseStattype == 2) {
-              result = ccs.subValue.toString();
-            }
-            else {
-              result = ccs.value.toString();
-            }
-            break;
-          case STAT_TYPE.Combo:
-            if (ifClauseStattype == 2) {
-              result = ccs.comboText;
-            }
-            else {
-              result = ccs.defaultValue.toString();
-            }
-            break;
-          case STAT_TYPE.Calculation:
-            result = ccs.calculationResult.toString();
-            break;
+  //          if (ccs.characterStat.isMultiSelect) {
+  //            result = this.GetChoiceValue(ccs.multiChoice, ccs.characterStat.characterStatChoices)//ccs.multiChoice.replace(/;/g, this.choiceArraySplitter);
+  //          }
+  //          else {
+  //            result = this.GetChoiceValue(ccs.choice, ccs.characterStat.characterStatChoices);
+  //          }
+  //          break;
+  //        case STAT_TYPE.ValueSubValue:
+  //          if (ifClauseStattype == 2) {
+  //            result = ccs.subValue.toString();
+  //          }
+  //          else {
+  //            result = ccs.value.toString();
+  //          }
+  //          break;
+  //        case STAT_TYPE.Combo:
+  //          if (ifClauseStattype == 2) {
+  //            result = ccs.comboText;
+  //          }
+  //          else {
+  //            result = ccs.defaultValue.toString();
+  //          }
+  //          break;
+  //        case STAT_TYPE.Calculation:
+  //          result = ccs.calculationResult.toString();
+  //          break;
 
-          default:
-        }
-      }
-    })
-    return result ? result : '';
-  }
+  //        default:
+  //      }
+  //    }
+  //  })
+  //  return result ? result : '';
+  //}
   GetChoiceValue(ids, choicesList) {
 
     let result = '';

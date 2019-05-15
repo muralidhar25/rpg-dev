@@ -8933,3 +8933,6 @@ li.popup-new-tile-trigger.cross-li .btn {
   .dropdown.open.show.ngx-contextmenu ul li a{
     text-decoration:none;
   }
+angular2-multiselect .c-btn.form-control {
+  height: auto;
+}
