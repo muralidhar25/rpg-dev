@@ -5,6 +5,29 @@
 <div class="campaign-details-page" *ngIf="!isLoading">
   <div class="row">
     <div class="col-12 col-md-4">
+      <div class="campaign-title-outer d-md-none mb-3">
+        <div class="campaign-title">
+          <div class="row m-0 justify-content-between align-items-center">
+            <div class="campaign-name">
+              <h2>{{ruleset?.ruleSetName}}</h2>
+              <!--<button (click)="Invitepopup()"> inivte</button>-->
+            </div>
+            <div class="campaign-players-number">
+              <span>
+                PLAYERS <span>{{(invitedUsers?.length-GmCharacterSlotsCount)}}/{{playersSlots}}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="refresh-btn">
+          <button type="button" (click)="refreshCampaign()" title="Refresh" class="btn btn-outline-primary icon icon-Gen-Refresh"></button>
+        </div>
+        <div class="refresh-btn">
+          <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">
+            <span class="text-hide-tab">Dice</span>
+          </button>
+        </div>
+      </div>
       <div class="campaign-image mb-3">
         <img [src]="rulesetModel.imageUrl"
              onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" [alt]="rulesetModel?.ruleSetName" #imgref (click)="ViewImage(imgref)">
@@ -39,14 +62,14 @@
         <li class="ng-star-inserted">
           <a class="btn icon icon-Gen-Pouch btn-accent" (click)="loot(rulesetModel)">LOOT</a>
           <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.lootCount !== undefined">{{rulesetRecordCount.lootCount}}</span>
-          
+
         </li>
         <!--<li class="ng-star-inserted">
-          <a class="btn icon icon-Gen-NPC btn-accent">GM CHARACTERS</a>
-          <span class="dropdown-menu-item-count pull-right ng-star-inserted">0</span>
-        </li>-->
+      <a class="btn icon icon-Gen-NPC btn-accent">GM CHARACTERS</a>
+      <span class="dropdown-menu-item-count pull-right ng-star-inserted">0</span>
+    </li>-->
         <li class="ng-star-inserted">
-          <a class="btn icon icon-Gen-Handouts btn-accent"  (click)="handOuts(rulesetModel)">HANDOUTS</a>
+          <a class="btn icon icon-Gen-Handouts btn-accent" (click)="handOuts(rulesetModel)">HANDOUTS</a>
           <!--<span class="dropdown-menu-item-count pull-right ng-star-inserted">0</span>-->
         </li>
         <li class="ng-star-inserted">
@@ -57,7 +80,7 @@
       </ul>
     </div>
     <div class="col-12 col-md-8">
-      <div class="campaign-title-outer  mb-3">
+      <div class="campaign-title-outer d-none d-md-flex mb-3">
         <div class="campaign-title">
           <div class="row m-0 justify-content-between align-items-center">
             <div class="campaign-name">
