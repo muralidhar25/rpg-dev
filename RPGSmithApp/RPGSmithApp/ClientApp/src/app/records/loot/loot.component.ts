@@ -432,9 +432,7 @@ export class LootComponent implements OnInit {
 
   deleteItemTemplate(itemMaster: ItemMaster) {
 
-    let message = "Are you sure you want to delete this " + itemMaster.itemName
-      + " item template? Note: Any item(s) previously deployed from this template will not be affected.";
-
+    let message = "Are you sure you want to delete this " + itemMaster.itemName + " Loot Item?";
     this.alertService.showDialog(message,
       DialogType.confirm, () => this.deleteLootItem(itemMaster), null, 'Yes', 'No');
   }

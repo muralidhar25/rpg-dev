@@ -89,11 +89,11 @@ export class CharactersService extends EndpointFactory {
       });
   }
 
-  getCharactersByRuleSetId<T>(Id: number): Observable<T> {
-    let endpointUrl = `${this.getByRulesetUrl}?id=${Id}`;
+  getCharactersByRuleSetId<T>(Id: number, isFromLootGiveScreen: boolean = false): Observable<T> {
+    let endpointUrl = `${this.getByRulesetUrl}?id=${Id}&isFromLootGiveScreen=${isFromLootGiveScreen}`;
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.getCharactersByRuleSetId(Id));
+        return this.handleError(error, () => this.getCharactersByRuleSetId(Id, isFromLootGiveScreen));
       });
   }
 

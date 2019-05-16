@@ -58,9 +58,9 @@ import { HeaderValues } from "../../core/models/headers.model";
 
 
 @Component({
-    selector: 'app-character-dashboard',
-    templateUrl: './character-dashboard.component.html',
-    styleUrls: ['./character-dashboard.component.scss']
+  selector: 'app-character-dashboard',
+  templateUrl: './character-dashboard.component.html',
+  styleUrls: ['./character-dashboard.component.scss']
 })
 
 export class CharacterDashboardComponent implements OnInit {
@@ -191,10 +191,9 @@ export class CharacterDashboardComponent implements OnInit {
 
     dragulaService.over.subscribe((value) => { this.onOver(value.slice(1)); });
     dragulaService.out.subscribe((value) => { this.onOut(value.slice(1)); });
-    
-    this.route.params.subscribe(params =>
-    {      
-        this.characterId = params['id'];
+
+    this.route.params.subscribe(params => {
+      this.characterId = params['id'];
     });
     this.sharedService.shouldUpdateCharacterDashboardLayout().subscribe(serviceJson => {
       if (serviceJson) {
@@ -204,7 +203,7 @@ export class CharacterDashboardComponent implements OnInit {
 
         this.layoutService.getLayoutsByCharacterId(this.characterId, -1, -1)
           .subscribe(data => {
-            
+
             this.characterlayouts = data;
             //if (this.characterlayouts.length == 1) {
             //    this.selectedlayout = this.characterlayouts[0];
@@ -248,13 +247,13 @@ export class CharacterDashboardComponent implements OnInit {
     });
 
     this.sharedService.shouldUpdateCharacterDashboardPage().subscribe(serviceJson => {
-    
+
       if (serviceJson) {
         this.pageService.getPagesByLayoutId(this.selectedlayout.characterDashboardLayoutId)
           .subscribe(data => {
             this.selectedlayout.characterDashboardPages = data;
             var selectedLayoutId = this.selectedlayout.characterDashboardLayoutId;
-            if (this.selectedlayout.characterDashboardPages.length == 1) {              
+            if (this.selectedlayout.characterDashboardPages.length == 1) {
               this.selectedPage = this.selectedlayout.characterDashboardPages[0];
             }
 
@@ -274,28 +273,28 @@ export class CharacterDashboardComponent implements OnInit {
     });
 
     this.sharedService.shouldUpdateCharacterList().subscribe(serviceJson => {
-     
+
       if (serviceJson) {
-       // console.log(serviceJson);
+        // console.log(serviceJson);
         if (typeof serviceJson === 'object' && serviceJson.hasOwnProperty('perventLoading')) {
-            this.initialize(false, serviceJson.perventLoading);
-          } else if (typeof serviceJson === 'object' && serviceJson.hasOwnProperty('counterTiles')) {
+          this.initialize(false, serviceJson.perventLoading);
+        } else if (typeof serviceJson === 'object' && serviceJson.hasOwnProperty('counterTiles')) {
           if (serviceJson.counterTiles) {
             this.initialize(false, true);
           } else {
             this.initialize(false, false);
           }
         } else {
-         
-            this.initialize(false,false);
-          }
+
+          this.initialize(false, false);
+        }
       }
     });
   }
 
   @HostListener('document:click', ['$event.target'])
   documentClick(target: any) {
-  
+
     if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE))
       this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
 
@@ -367,7 +366,7 @@ export class CharacterDashboardComponent implements OnInit {
     this.localStorage.localStorageSetItem('cPageID', null);
     this.LayoutId = this.localStorage.localStorageGetItem('cLayoutID')
     this.localStorage.localStorageSetItem('cLayoutID', null);
-    window.addEventListener("resize", () =>{
+    window.addEventListener("resize", () => {
       // Get screen size (inner/outerWidth, inner/outerHeight)
       this.gridConfig = {
         'margins': this.getTileSize().margins,
@@ -398,7 +397,7 @@ export class CharacterDashboardComponent implements OnInit {
           "topleft"
         ],
       };
-        this.boxes = this.mapBoxes(this.tiles);
+      this.boxes = this.mapBoxes(this.tiles);
     }, false);
     //window.onorientationchange = () => {
     //  setTimeout(() => {
@@ -460,7 +459,7 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   private initialize(IsInitialLoad, preventLoading = false) {
-   
+
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
       this.authService.logout();
@@ -489,7 +488,7 @@ export class CharacterDashboardComponent implements OnInit {
         } else {
           this.isLoading = true;
         }
-          this.charactersService.getCharactersById<any>(this.characterId)
+        this.charactersService.getCharactersById<any>(this.characterId)
           .subscribe(data => {
             this.character = data;
             this.rulesetModel = data.ruleSet;
@@ -504,7 +503,7 @@ export class CharacterDashboardComponent implements OnInit {
         } else {
           this.isLoading = true;
         }
-        
+
         this.layoutService.getLayoutsByCharacterId(this.characterId, -1, -1)
           .subscribe(data => {
 
@@ -666,14 +665,14 @@ export class CharacterDashboardComponent implements OnInit {
                       }, error => {
                         this.ConditionsValuesList = [];
                       }, () => {
-                      this.boxes = this.mapBoxes(data);
+                        this.boxes = this.mapBoxes(data);
                         this.isLoading = false;
                       });
-                    
+
                     try {
                       this.noRecordFound = !data.length;
                     } catch (err) { }
-                    
+
                   }, error => {
                     this.isLoading = false;
                   }, () => { });
@@ -716,7 +715,7 @@ export class CharacterDashboardComponent implements OnInit {
       headerLink: 'character',
       hasHeader: true
     };
-    
+
     this.appService.updateAccountSetting1(headerValues);
     this.sharedService.updateAccountSetting(headerValues);
     this.localStorage.deleteData(DBkeys.HEADER_VALUE);
@@ -767,7 +766,7 @@ export class CharacterDashboardComponent implements OnInit {
     else {
       this.router.navigate([url, charID]);
     }
-    
+
     //this.router.navigate([url, this.characterId], { skipLocationChange: true });
     //window.history.pushState('', '', url + "/" + this.characterId)
   }
@@ -807,12 +806,12 @@ export class CharacterDashboardComponent implements OnInit {
 
   onLayoutSelect(layout: any): void {
     this.selectedlayout = layout;
-    
+
     this.selectedPage = layout.characterDashboardPages[0];
     this.selectedlayout.characterDashboardPages.map((pageItem) => {
       if (pageItem.characterDashboardPageId == this.selectedlayout.defaultPageId) {
         this.selectedPage = pageItem;
-        
+
       }
     })
     this.tiles = null;
@@ -1755,7 +1754,7 @@ export class CharacterDashboardComponent implements OnInit {
                       IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
                     }
                   })
-                 
+
                 }
                 IDs.map((rec) => {
                   if (+rec.id == -1 && this.character.inventoryWeight) {
@@ -1800,15 +1799,15 @@ export class CharacterDashboardComponent implements OnInit {
                             num = stat.defaultValue
                             break;
                           case STAT_TYPE.Condition:
-                               let characterStatConditionsfilter = this.ConditionsValuesList.filter((Cs) => Cs.characterStatId == rec.id);
+                            let characterStatConditionsfilter = this.ConditionsValuesList.filter((Cs) => Cs.characterStatId == rec.id);
                             let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.CharacterStatsValues.charactersCharacterStat);
                             num = +result;
-                            console.log('result',num);
-                                 break;
+                            console.log('result', num);
+                            break;
                           default:
                             break;
                         }
-                        
+
                         if (num)
                           CalcString = CalcString.replace(rec.originaltext, num);
                         else
@@ -1818,7 +1817,7 @@ export class CharacterDashboardComponent implements OnInit {
                     });
                   }
                   finalCalcString = CalcString;
-                 // console.log('finalCalcString',finalCalcString);
+                  // console.log('finalCalcString',finalCalcString);
                 });
               }
               try {
@@ -1842,7 +1841,7 @@ export class CharacterDashboardComponent implements OnInit {
               if (isNaN(item.characterStatTiles.charactersCharacterStat.calculationResult)) {
                 item.characterStatTiles.charactersCharacterStat.calculationResult = 0;
               }
-               if (this.CharacterStatsValues.charactersCharacterStat) {
+              if (this.CharacterStatsValues.charactersCharacterStat) {
                 if (this.CharacterStatsValues.charactersCharacterStat.length) {
                   this.CharacterStatsValues.charactersCharacterStat.map((UpdateStat) => {
                     if (UpdateStat.characterStatId == item.characterStatTiles.charactersCharacterStat.characterStatId) {
@@ -1934,9 +1933,9 @@ export class CharacterDashboardComponent implements OnInit {
                           break;
                         case STAT_TYPE.Condition:
                           let characterStatConditionsfilter = this.ConditionsValuesList.filter((Cs) => Cs.characterStatId == rec.id);
-                            let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.CharacterStatsValues.charactersCharacterStat);
-                            num = +result;
-                            break;
+                          let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.CharacterStatsValues.charactersCharacterStat);
+                          num = +result;
+                          break;
                         default:
                           break;
                       }
@@ -2233,7 +2232,7 @@ export class CharacterDashboardComponent implements OnInit {
                         default:
                       }
                       break;
-                    case STAT_TYPE.Condition: 
+                    case STAT_TYPE.Condition:
                       let characterStatConditionsfilter = this.ConditionsValuesList.filter((Cs) => Cs.characterStatId == stat.characterStat.characterStatId);
                       let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.CharacterStatsValues.charactersCharacterStat);
                       value = result;
@@ -2435,7 +2434,7 @@ export class CharacterDashboardComponent implements OnInit {
     return imagePath;
 
   }
- GetLinkRecordText(id, linkType) {
+  GetLinkRecordText(id, linkType) {
     let name = "";
     if (this.statLinkRecords) {
       if (this.statLinkRecords.length) {
@@ -2544,7 +2543,7 @@ export class CharacterDashboardComponent implements OnInit {
   description(text) {
 
     if (text) {
-      
+
       var encodedStr = text;
 
       var parser = new DOMParser;
@@ -2552,7 +2551,7 @@ export class CharacterDashboardComponent implements OnInit {
         '<!doctype html><body>' + encodedStr,
         'text/html');
       var decodedString = dom.body.textContent;
-      
+
       //console.log(decodedString);
       return decodedString;
       //text = text.replace(/<{1}[^<>]{1,}>{1}/g, " ");
@@ -2568,34 +2567,39 @@ export class CharacterDashboardComponent implements OnInit {
   refresh() {
     this.initialize(true);
   }
-  gameStatus(characterId?:any) {
+  gameStatus(characterId?: any) {
     //api for player controls
     //alert(characterId)
     this.charactersService.getPlayerControlsByCharacterId(characterId)
       .subscribe(data => {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (data) {
-          if (user.isGm) {            
-            this.pageRefresh = user.isGm;
+          if (user == null) {
+            this.authService.logout();
           }
-         else if (data.isPlayerCharacter) {
-            this.pageRefresh = data.isPlayerCharacter;
-          }
-          if (data.isPlayerCharacter) {
-             if (data.pauseGame) {
+          else {
+            if (user.isGm) {
+              this.pageRefresh = user.isGm;
+            }
+            else if (data.isPlayerCharacter) {
+              this.pageRefresh = data.isPlayerCharacter;
+            }
+            if (data.isPlayerCharacter) {
+              if (data.pauseGame) {
+                this.router.navigate(['/characters']);
+                this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+                setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+              }
+
+            }
+            if (data.isDeletedInvite) {
               this.router.navigate(['/characters']);
-              this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+              this.alertService.showStickyMessage('', "Your " + data.name + " character has been deleted by the GM", MessageSeverity.error);
               setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
             }
+          }
+        }
 
-          }
-          if (data.isDeletedInvite) {
-            this.router.navigate(['/characters']);
-            this.alertService.showStickyMessage('', "Your " + data.name + " character has been deleted by the GM", MessageSeverity.error);
-            setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
-          }
-        } 
-        
       }, error => {
         let Errors = Utilities.ErrorDetail("", error);
         console.log('gameStatus', Errors);

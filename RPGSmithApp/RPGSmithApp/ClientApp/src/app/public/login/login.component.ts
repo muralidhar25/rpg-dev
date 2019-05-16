@@ -281,12 +281,16 @@ export class LoginComponent implements OnInit, OnDestroy {
     //            this.router.navigate(['/rulesets']);
     //        });
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-    if (user && user.isGm) {
-      this.router.navigate(['/rulesets/campaigns']);
-    } else {
-      this.router.navigate(['/characters']);
+    if (user == null) {
+      this.authService.logout();
     }
-   
+    else {
+      if (user.isGm) {
+        this.router.navigate(['/rulesets/campaigns']);
+      } else {
+        this.router.navigate(['/characters']);
+      }
+    }
 
   }
 

@@ -167,33 +167,33 @@ export class AppComponent implements OnInit, AfterViewInit {
           if (this.authService.idToken) {
             this.authService.updateSocialLoginUserValuesFromToken(this.authService.idToken, user)
           }
-        }
-        if (user.isGm) {
-          //this.logoPath = '/rulesets/campaigns';
-          //if (this.headers) {
-          //  if (this.headers.headerLink == 'ruleset') {
-          //    this.logoPath = '/ruleset/campaign-details/' + this.headers.headerId;
-          //  }
-          //}
-          
-          if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)
-            && !(
-            this.router.url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1
-            && this.router.url.toUpperCase().indexOf('/CHARACTERS') > -1
-            )
+        }        
+         if (user.isGm) {
+            //this.logoPath = '/rulesets/campaigns';
+            //if (this.headers) {
+            //  if (this.headers.headerLink == 'ruleset') {
+            //    this.logoPath = '/ruleset/campaign-details/' + this.headers.headerId;
+            //  }
+            //}
 
-          ) {
-            this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
-          }
-          else {
-            this.logoPath = '/rulesets/campaigns';
-          }
-          if (this.router.url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1) {
-            this.logoPath = '/rulesets/campaigns';
-          } else if (this.router.url.toUpperCase().indexOf('/CHARACTERS') > -1) {
-            this.logoPath = '/rulesets/campaigns';
-          }
-        }
+            if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)
+              && !(
+                this.router.url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1
+                && this.router.url.toUpperCase().indexOf('/CHARACTERS') > -1
+              )
+
+            ) {
+              this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+            }
+            else {
+              this.logoPath = '/rulesets/campaigns';
+            }
+            if (this.router.url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1) {
+              this.logoPath = '/rulesets/campaigns';
+            } else if (this.router.url.toUpperCase().indexOf('/CHARACTERS') > -1) {
+              this.logoPath = '/rulesets/campaigns';
+            }
+          }        
         
         //if (!this.haveCheckedNewInvitation) {
           //console.log('check invite');
@@ -234,7 +234,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
             .subscribe(data => {
               if (data) {
-                if (data.isPlayerCharacter) {
+                if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
                   this.haveHandOutItems = true;
                   let _rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
                   this.lootService.getLootItemsForPlayers<any>(_rulesetId)
@@ -499,7 +499,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.rulesetsCount = undefined;
     this.charactersCount = undefined;
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-   
+
     if (user) {
       this.isGmUser = user.isGm;
     }
@@ -680,7 +680,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
                 .subscribe(data => {
                   if (data) {
-                    if (data.isPlayerCharacter) {
+                    if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
                       this.haveHandOutItems = true;
                       let _rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
                       this.lootService.getLootItemsForPlayers<any>(_rulesetId)
@@ -1100,9 +1100,13 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   // changing search placeholder name dynamically
   setPlaceholderText(value: any) {
-    this.placeHolderText = value;
+    this.placeHolderText = value;    
   }
-
+  setHeaderToNull() {
+    this.headers = null;
+    
+    this.router.navigate(['/characters']);
+  }
   showDialog(dialog: AlertDialog) {
 
     alertify.set({

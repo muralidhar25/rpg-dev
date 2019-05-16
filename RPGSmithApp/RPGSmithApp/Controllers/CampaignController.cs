@@ -58,7 +58,7 @@ namespace RPGSmithApp.Controllers
             if (_campaign.IsDeletedInvite(characterID, GetUserId()))
                 return (Ok(new { IsDeletedInvite = true, name= _campaign.GetDeletedCharacterName(characterID) }));
 
-            return Ok(await _campaign.getPlayerControlsByCharacterId(characterID, GetUserId()));
+            return Ok(await _campaign.getPlayerControlsByCharacterId(characterID, GetUser()));
         }
         [HttpPost("updatePlayerControls")]
         public async Task<IActionResult> updatePlayerControls([FromBody] PlayerControl model)

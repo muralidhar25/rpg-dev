@@ -92,7 +92,7 @@
                       <span class="dropdown-menu-item-count" *ngIf="rulesetsCount !== undefined">{{rulesetsCount}}</span>
                     </a>
                   </li>
-                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" [routerLink]="['/characters']" [routerLinkActive]="['active']" (click)="setPlaceholderText('Characters')">
+                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" [routerLinkActive]="['active']" (click)="setHeaderToNull();setPlaceholderText('Characters')">
                     <a class="dropdown-menu-item-link">
                       <span class="dropdown-menu-item-title">Characters</span>
                       <span class="dropdown-menu-item-count" *ngIf="charactersCount !== undefined">{{charactersCount}}</span>

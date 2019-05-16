@@ -287,8 +287,16 @@ namespace DAL.Services
             }
             return res;
         }
-        public async Task<PlayerControlModel> getPlayerControlsByCharacterId(int characterID, string userid) {
-            return await _context.PlayerControls.Where(x => x.PlayerCharacterID == characterID)
+        public async Task<PlayerControlModel> getPlayerControlsByCharacterId(int characterID, ApplicationUser currentUser) {
+            var userId = _context.Characters.Where(x => x.CharacterId == characterID).Select(x => x.UserId).FirstOrDefault();
+            if (currentUser.Id == userId && currentUser.IsGm)
+            {
+                return new PlayerControlModel()
+                {
+                    IsCurrentCampaignPlayerCharacter = true,
+                };
+            }
+        return await _context.PlayerControls.Where(x => x.PlayerCharacterID == characterID)
                 .Include(x => x.PlayerCharacter)
                 .Select(model => new PlayerControlModel()
                 {
@@ -302,7 +310,7 @@ namespace DAL.Services
                     PauseItemCreate = model.PauseItemCreate,
                     PauseSpellAdd = model.PauseSpellAdd,
                     PauseSpellCreate = model.PauseSpellCreate,
-                    IsPlayerCharacter = userid == model.PlayerCharacter.UserId ? true : false,
+                    IsPlayerCharacter = userId == model.PlayerCharacter.UserId ? true : false,
                 }).FirstOrDefaultAsync();
         }
         public async Task<PlayerControl> updatePlayerControls(PlayerControl model) {

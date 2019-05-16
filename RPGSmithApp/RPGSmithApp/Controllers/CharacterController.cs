@@ -518,12 +518,12 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpGet("GetCharactersByRuleSetId")]
-        public async Task<IActionResult> GetCharacterByRuleSetId(int id)
+        public async Task<IActionResult> GetCharacterByRuleSetId(int id,bool isFromLootGiveScreen=false)
         {
             var characters = _CharacterService.GetCharacterRuleSetId(id);
 
             //If Limited edition
-            if (characters != null && !IsAdminUser()) {
+            if (characters != null && !IsAdminUser() && !isFromLootGiveScreen) {
                 await TotalCharacterSlotsAvailableForCurrentUser();
                 characters = characters.Take(characters.Count >= TotalCharacterSlotsAvailable ? TotalCharacterSlotsAvailable : characters.Count).ToList();
             }
