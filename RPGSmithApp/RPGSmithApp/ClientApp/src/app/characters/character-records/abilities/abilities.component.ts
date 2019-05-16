@@ -24,9 +24,9 @@ import { HeaderValues } from "../../../core/models/headers.model";
 import { fadeInOut } from "../../../core/services/animations";
 
 @Component({
-    selector: 'app-abilities',
-    templateUrl: './abilities.component.html',
-    styleUrls: ['./abilities.component.scss']
+  selector: 'app-abilities',
+  templateUrl: './abilities.component.html',
+  styleUrls: ['./abilities.component.scss']
 })
 
 export class CharacterAbilitiesComponent implements OnInit {
@@ -74,7 +74,7 @@ export class CharacterAbilitiesComponent implements OnInit {
     private abilityService: AbilityService, private characterAbilityService: CharacterAbilityService, public appService: AppService1
   ) {
     this.sharedService.shouldUpdateCharacterAbilityList().subscribe(sharedServiceJson => {
-      
+
       this.route.params.subscribe(params => { this.characterId = params['id']; });
       if (sharedServiceJson) {
         this.page = 1;
@@ -146,22 +146,22 @@ export class CharacterAbilitiesComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
-        this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
-        if (this.headers) {
-          if (this.headers.headerId && this.headers.headerLink == 'character') {
-            this.characterId = this.headers.headerId;
-          }
+      this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+      if (this.headers) {
+        if (this.headers.headerId && this.headers.headerLink == 'character') {
+          this.characterId = this.headers.headerId;
+        }
       }
       this.getFilters();
 
       this.isLoading = true;
       this.gameStatus(this.characterId);
-      
-     
+
+
       this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.abilityFilter.type)
         .subscribe(data => {
           this.abilitiesList = Utilities.responseData(data.characterAbilityList, this.pageSize);
-        
+
           if (this.abilityFilter.type == 1) {
             this.AlphabeticalCount = this.abilitiesList.length;
           }
@@ -316,7 +316,7 @@ export class CharacterAbilitiesComponent implements OnInit {
     }
     this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
       .subscribe(data => {
-      
+
         if (data !== null) this.isDenseView = data.viewType == 'Dense' ? true : false;
       }, error => {
         let Errors = Utilities.ErrorDetail("", error);
@@ -458,7 +458,8 @@ export class CharacterAbilitiesComponent implements OnInit {
         });
   }
 
-  enableAbility(ability: any) {
+  enableAbility(ability: any) {    
+    this.EnableCount = ability.isEnabled ? this.EnableCount - 1 : this.EnableCount + 1;
     //this.isLoading = true;
     let enableTxt = ability.isEnabled ? 'Disable' : 'Enable';
     this.characterAbilityService.toggleEnableCharacterAbility(ability.characterAbilityId)
@@ -522,7 +523,7 @@ export class CharacterAbilitiesComponent implements OnInit {
     //    this.useCommand(ability.ability)
     //}
   }
-  useCommand(Command: any, abilityId: string='') {
+  useCommand(Command: any, abilityId: string = '') {
     let msg = "The command value for " + Command.name
       + " has not been provided. Edit this record to input one.";
     if (Command.command == undefined || Command.command == null || Command.command == '') {
@@ -626,14 +627,14 @@ export class CharacterAbilitiesComponent implements OnInit {
       this.Alphabetical = true;
       this.Enabled = false;
       this.Level = false;
-    
+
     }
     else if (present_filter == 2) {
       this.Alphabetical = false;
       this.Enabled = true;
       this.Level = false;
     }
-    else{
+    else {
       this.Alphabetical = false;
       this.Enabled = false;
       this.Level = true;
@@ -651,7 +652,7 @@ export class CharacterAbilitiesComponent implements OnInit {
       this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, this.abilityFilter.type)
         .subscribe(data => {
           this.abilitiesList = Utilities.responseData(data.characterAbilityList, this.pageSize);
-        
+
           try {
             this.abilitiesList.forEach(function (val) {
               val.showIcon = false;
@@ -672,14 +673,14 @@ export class CharacterAbilitiesComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => { });
-     
+
     }
     else {
       this.ImplementFilter();
     }
 
 
-    
+
   }
 
   private scrollToTop() {
@@ -759,10 +760,10 @@ export class CharacterAbilitiesComponent implements OnInit {
 
     this.localStorage.saveSyncedSessionData(this.abilityFilter, 'abilityFilter');
   }
-    
+
   getFilters() {
     if (this.abilityFilter.type == 2 || this.abilityFilter.type == 3) {
-      this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize,1)
+      this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 1)
         .subscribe(data => {
           this.AlphabeticalCount = data.characterAbilityList.length;
         }, error => {
@@ -777,7 +778,7 @@ export class CharacterAbilitiesComponent implements OnInit {
         }, () => { });
     }
     if (this.abilityFilter.type == 1 || this.abilityFilter.type == 2) {
-      this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize,3)
+      this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 3)
         .subscribe(data => {
           this.LevelCount = data.characterAbilityList.length;
         }, error => {
@@ -789,13 +790,13 @@ export class CharacterAbilitiesComponent implements OnInit {
     this.pageSize = 28;
     this.initialize();
   }
-  gameStatus(characterId ?: any ) {
+  gameStatus(characterId?: any) {
     //api for player controls
     this.charactersService.getPlayerControlsByCharacterId(characterId)
       .subscribe(data => {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (data) {
-          
+
           if (user.isGm) {
             this.pageRefresh = user.isGm;
           }
@@ -805,8 +806,8 @@ export class CharacterAbilitiesComponent implements OnInit {
           if (data.isPlayerCharacter) {
             this.pauseAbilityAdd = data.pauseAbilityAdd;
             this.pauseAbilityCreate = data.pauseAbilityCreate;
-            
-             if (data.pauseGame) {
+
+            if (data.pauseGame) {
               this.router.navigate(['/characters']);
               this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
               setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
@@ -819,8 +820,8 @@ export class CharacterAbilitiesComponent implements OnInit {
             this.alertService.showStickyMessage('', "Your " + data.name + " character has been deleted by the GM", MessageSeverity.error);
             setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
           }
-            
-          }
+
+        }
       }, error => {
         let Errors = Utilities.ErrorDetail("", error);
         if (Errors.sessionExpire) {

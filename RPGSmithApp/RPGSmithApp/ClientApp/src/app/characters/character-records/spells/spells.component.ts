@@ -431,7 +431,8 @@ export class CharacterSpellsComponent implements OnInit {
   }
 
   memorizeSpell(spell: any) {
-    //this.isLoading = true;
+    //this.isLoading = true;    
+    this.ReadiedCount = spell.isMemorized ? this.ReadiedCount - 1 : this.ReadiedCount + 1;  
     let memorizeTxt = spell.isMemorized ? 'Unmemorize' : 'Memorize';
     this.characterSpellService.toggleMemorizedCharacterSpell(spell.characterSpellId)
       .subscribe(

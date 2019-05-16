@@ -601,6 +601,7 @@ export class CharacterItemsComponent implements OnInit {
 
   equippedItem(item: Items) {
     //this.isLoading = true;
+    this.equippedCount = item.isEquipped ? this.equippedCount - 1 : this.equippedCount + 1;    
     let equipTxt = item.isEquipped ? 'Unequipped' : 'Equipped';
     this.itemsService.toggleEquippedItem(item.itemId)
       .subscribe(
