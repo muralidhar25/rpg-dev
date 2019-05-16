@@ -19,7 +19,7 @@
                 </div>-->
                 <div class="page-toolbar-wrapper initial show">
                     <!-- Toolbar links -->
-                  <ul class="page-toolbar-links">
+                  <ul class="page-toolbar-links" *ngIf="!isLoading">
                     <li (click)="RedirectChar(charNav?.items)" class="hidden-tab">
                       <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection selected icon-Gen-Items"> <span>Inventory</span></a>
                     </li>
@@ -36,7 +36,7 @@
                       <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
                         <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
-                          <ul class="dropdown-menu-list">
+                          <ul class="dropdown-menu-list" *ngIf="!isLoading">
                             <li  class="dropdown-menu-item" *ngIf="character?.ruleSet?.isItemEnabled">
                               <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection selected icon-Gen-Items"> Inventory</a>
                             </li>

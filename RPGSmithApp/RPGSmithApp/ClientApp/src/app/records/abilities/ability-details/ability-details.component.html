@@ -19,7 +19,7 @@
                 </div>-->
                 <div class="page-toolbar-wrapper initial show recordes-menu">
                     <!-- Toolbar links -->
-                  <ul class="page-toolbar-links">
+                  <ul class="page-toolbar-links" *ngIf="!isLoading">
                     <li  *ngIf="AbilityDetail?.ruleset" class="hidden-tab">
                       <a [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
                     </li>
@@ -39,7 +39,7 @@
                       <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
                         <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
-                          <ul class="dropdown-menu-list">
+                          <ul class="dropdown-menu-list" *ngIf="!isLoading">
                             <li *ngIf="AbilityDetail?.ruleset" class="dropdown-menu-item">
                               <a [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
                             </li>

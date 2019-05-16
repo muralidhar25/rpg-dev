@@ -19,7 +19,7 @@
                 </div>-->
                 <div class="page-toolbar-wrapper initial show">
                     <!-- Toolbar links -->
-                    <ul class="page-toolbar-links">
+                    <ul class="page-toolbar-links" *ngIf="!isLoading">
                         <li (click)="RedirectChar(charNav?.items)" *ngIf="character?.ruleSet?.isItemEnabled" >
                             <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Inventory</span></a>
                         </li>

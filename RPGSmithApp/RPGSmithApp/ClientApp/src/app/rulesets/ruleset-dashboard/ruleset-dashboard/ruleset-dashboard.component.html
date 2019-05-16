@@ -126,7 +126,7 @@
                 </div>-->
                 <div class="page-toolbar-wrapper initial show  recordes-menu">
                     <!-- Toolbar links -->
-                    <ul class="page-toolbar-links">
+                    <ul class="page-toolbar-links" *ngIf="!isLoading">
                         <li *ngIf="rulesetModel" class="hidden-tab">
                             <a (click)="navigateTo(1)" class="btn btn-link-primary nav-redirection selected">Layouts</a>
                         </li>
