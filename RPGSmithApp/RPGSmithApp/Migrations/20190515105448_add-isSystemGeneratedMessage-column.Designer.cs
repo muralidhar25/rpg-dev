@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace RPGSmithApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190515105448_add-isSystemGeneratedMessage-column")]
+    partial class addisSystemGeneratedMessagecolumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,8 +245,6 @@ namespace RPGSmithApp.Migrations
                     b.Property<decimal>("InventoryWeight");
 
                     b.Property<bool?>("IsDeleted");
-
-                    b.Property<bool>("IsDicePublicRoll");
 
                     b.Property<string>("LastCommand");
 
@@ -1990,8 +1990,6 @@ namespace RPGSmithApp.Migrations
                     b.Property<bool>("IsCoreRuleset");
 
                     b.Property<bool?>("IsDeleted");
-
-                    b.Property<bool>("IsDicePublicRoll");
 
                     b.Property<bool>("IsItemEnabled");
 
