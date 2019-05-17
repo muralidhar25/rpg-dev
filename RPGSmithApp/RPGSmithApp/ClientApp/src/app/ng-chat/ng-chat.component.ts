@@ -1177,7 +1177,7 @@ export class NgChat implements OnInit, IChatController {
   sendDiceRolledToChatGroup(diceR: any) {
     let message = new Message();
     message.fromId = this.userId;
-    message.toId = this.participants[0].id;
+    message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length-1].id;
     //message.isSystemGenerated = true;
     debugger
     let diceResult = Object.assign({}, diceR)
@@ -1214,7 +1214,7 @@ export class NgChat implements OnInit, IChatController {
   sendLootMessageToChatGroup() {
     let message = new Message();
     message.fromId = this.userId;
-    message.toId = this.participants[0].id;
+    message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;
     message.message = "<span class='ng-chat-orange-text'>New Loot is Available</span>";   
     message.dateSent = new Date();
     message.isSystemGenerated = true;
