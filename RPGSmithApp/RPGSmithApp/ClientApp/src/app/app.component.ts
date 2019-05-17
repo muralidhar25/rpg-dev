@@ -41,6 +41,11 @@ import { CampaignInviteComponent } from "./rulesets/campaign-invite/campaign-inv
 import { PlayerLootComponent } from "./shared/player-loot/player-loot.component";
 import { LootService } from "./core/services/loot.service";
 import { HandoutViewComponent } from "./shared/handouts/handout-view/handout-view.component";
+import { SignalRGroupAdapter } from "./core/common/signalr-group-adapter";
+import { SignalRAdapter } from "./core/common/signalr-adapter";
+import { HttpClient } from '@angular/common/http';
+import { ChatConnection } from "./core/models/chat.model";
+
 //declare let ga: Function;
 
 var alertify: any = require('./assets/scripts/alertify.js');
@@ -119,6 +124,16 @@ export class AppComponent implements OnInit, AfterViewInit {
   haveLootItems: boolean = false;
   haveHandOutItems: boolean = false;
 
+  //changes related to chat
+  title = 'app';
+  currentTheme = 'dark-theme';
+  triggeredEvents = [];
+  fileUploadUrl: string = `${SignalRAdapter.serverBaseUrl}api/chat/UploadFile`;
+  userId: string = "offline-demo";
+  username: string;
+  signalRAdapter: SignalRGroupAdapter;
+  ChatHalfScreen: boolean = false;
+
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
     if (window.pageYOffset > 0) {
@@ -147,6 +162,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     public configurations: ConfigurationService, public router: Router, private modalService: BsModalService, private commonService: CommonService,
     private rulesetService: RulesetService, private userService: UserService, private charactersService: CharactersService, private localStorage: LocalStoreManager,
     private app1Service: AppService1, private activatedroute: ActivatedRoute, public campaignService: CampaignService, private lootService: LootService ,
+    private http: HttpClient,
     //public googleAnalyticsEventsService: GoogleAnalyticsEventsService,
     @Inject(DOCUMENT) private document: Document
   ) {
@@ -175,11 +191,11 @@ export class AppComponent implements OnInit, AfterViewInit {
           //    this.logoPath = '/ruleset/campaign-details/' + this.headers.headerId;
           //  }
           //}
-          
+
           if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)
             && !(
-            this.router.url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1
-            && this.router.url.toUpperCase().indexOf('/CHARACTERS') > -1
+              this.router.url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1
+              && this.router.url.toUpperCase().indexOf('/CHARACTERS') > -1
             )
 
           ) {
@@ -190,8 +206,33 @@ export class AppComponent implements OnInit, AfterViewInit {
           }
           if (this.router.url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1) {
             this.logoPath = '/rulesets/campaigns';
+            console.log("1.this.signalRAdapter = undefined")
+            this.signalRAdapter = undefined;
           } else if (this.router.url.toUpperCase().indexOf('/CHARACTERS') > -1) {
             this.logoPath = '/rulesets/campaigns';
+            console.log("2.this.signalRAdapter = undefined")
+            this.signalRAdapter = undefined;
+          }
+
+          if (this.router.url.toUpperCase().indexOf('/RULESET/') > -1 && this.router.url.toUpperCase().indexOf('CHARACTER/RULESET') == -1) {
+            if (!this.signalRAdapter) {
+              let model: any = user;
+              model.campaignID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+              //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
+              console.log("3.initializeSignalRAdapter")
+              this.initializeSignalRAdapter(user, this.http, this.storageManager, true);
+            }
+          }
+          //else {
+          //  console.log("14.this.signalRAdapter = undefined")
+          //  this.signalRAdapter = undefined;
+          //}
+        }
+        else {
+          debugger
+          if (this.router.url.toUpperCase() == ('/CHARACTER') || this.router.url.toUpperCase() == ('/CHARACTERS')) {
+            console.log("15.this.signalRAdapter = undefined")
+            this.signalRAdapter = undefined;
           }
         }
         
@@ -219,6 +260,11 @@ export class AppComponent implements OnInit, AfterViewInit {
         //}
         
       }
+      else { //is user!
+        console.log("4.this.signalRAdapter = undefined")
+        this.signalRAdapter = undefined;
+      }
+
       if (serviceData) {
         this.headers = serviceData;
       }
@@ -235,6 +281,22 @@ export class AppComponent implements OnInit, AfterViewInit {
             .subscribe(data => {
               if (data) {
                 if (data.isPlayerCharacter) {
+                  if (!this.signalRAdapter) { //get player control 265
+                    let model: any = user;
+                    if (this.headers) {
+                      if (this.headers.headerId && !user.isGm) {
+                        model.characterID = this.headers.headerId;
+                        //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
+                        console.log("5.initializeSignalRAdapter")
+                        this.initializeSignalRAdapter(user, this.http, this.storageManager, false);
+                      }
+                    }
+                  
+                  }
+                  else if (!data.isPlayerCharacter && !user.isGm) {
+                    console.log("6.this.signalRAdapter = undefined")
+                    this.signalRAdapter = undefined;
+                  }
                   this.haveHandOutItems = true;
                   let _rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
                   this.lootService.getLootItemsForPlayers<any>(_rulesetId)
@@ -431,6 +493,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.app1Service.shouldupdateInvitationlist().subscribe((serviceData) => {
 
       this.invitationList = serviceData;
+    });
+    this.app1Service.shouldUpdateChatHalfScreen().subscribe((serviceData) => {
+      
+      this.ChatHalfScreen = serviceData?true:false;
     });
     this.storageManager.initialiseStorageSyncListener();
 
@@ -648,8 +714,33 @@ export class AppComponent implements OnInit, AfterViewInit {
             }
             if ((<NavigationStart>event).url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1) {
               this.logoPath = '/rulesets/campaigns';
+              console.log("7.this.signalRAdapter = undefined")
+              this.signalRAdapter = undefined;
             } else if ((<NavigationStart>event).url.toUpperCase().indexOf('/CHARACTERS') > -1) {
               this.logoPath = '/rulesets/campaigns';
+              console.log("8.this.signalRAdapter = undefined")
+              this.signalRAdapter = undefined;
+            }
+            
+            if ((<NavigationStart>event).url.toUpperCase().indexOf('/RULESET/') > -1 && this.router.url.toUpperCase().indexOf('CHARACTER/RULESET') == -1) {
+              if (!this.signalRAdapter) {
+                let model: any = user;
+                model.campaignID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+                //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
+                console.log("9.initializeSignalRAdapter")
+                this.initializeSignalRAdapter(user, this.http, this.storageManager, true);
+              }
+            }
+            //else {
+            //  console.log("13.this.signalRAdapter = undefined")
+            //  this.signalRAdapter = undefined;
+            //}
+          }
+          else {
+            debugger
+            if ((<NavigationStart>event).url.toUpperCase() == ('/CHARACTER') || (<NavigationStart>event).url.toUpperCase() == ('/CHARACTERS')) {
+              console.log("16.this.signalRAdapter = undefined")
+              this.signalRAdapter = undefined;
             }
           }
           //if (!this.haveCheckedNewInvitation) {
@@ -681,6 +772,23 @@ export class AppComponent implements OnInit, AfterViewInit {
                 .subscribe(data => {
                   if (data) {
                     if (data.isPlayerCharacter) {
+                      if (!this.signalRAdapter && !user.isGm) {
+                        let model: any = user;
+                        if (this.headers) {
+                          if (this.headers.headerId) {
+                            model.characterID = this.headers.headerId;
+                            //model.Id = this.headers.headerId;
+                            //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
+                            console.log("10.initializeSignalRAdapter")
+                            this.initializeSignalRAdapter(user, this.http, this.storageManager, false);
+                          }
+                        }
+                        
+                      }
+                      else if (!data.isPlayerCharacter && !user.isGm) {
+                       console.log("11.this.signalRAdapter = undefined")
+                        this.signalRAdapter = undefined;
+                      }
                       this.haveHandOutItems = true;
                       let _rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
                       this.lootService.getLootItemsForPlayers<any>(_rulesetId)
@@ -689,7 +797,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                             if (data.length) {
                               this.haveLootItems = true;
                               
-                              console.log(_rulesetId);
+                           //   console.log(_rulesetId);
                             }
                           }
                         }, error => {
@@ -709,6 +817,10 @@ export class AppComponent implements OnInit, AfterViewInit {
           } else {
             this.haveLootItems = false;
           }
+        }
+        else {
+         console.log("12.this.signalRAdapter = undefined")
+          this.signalRAdapter = undefined;
         }
         this.logoNavigation((<NavigationStart>event).url);
         
@@ -1405,5 +1517,24 @@ export class AppComponent implements OnInit, AfterViewInit {
     //let _rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
    
     //this.router.navigate(['/character/handouts/', _rulesetId]);
+  }
+  onEventTriggered(event: string): void {
+    this.triggeredEvents.push(event);
+  }
+  initializeSignalRAdapter(user: User, http, storageManager, IsRuleset: boolean) {
+    //this.storageManager.getDataObject<ChatConnection[]>(DBkeys.chatConnections);
+    debugger
+    let rulesetID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+    this.rulesetService.getRulesetById<Ruleset>(+rulesetID).subscribe((data: Ruleset) => {
+      this.localStorage.localStorageSetItem(DBkeys.rulesetforChat, data);
+      if (!this.signalRAdapter) {
+        this.signalRAdapter = new SignalRGroupAdapter(user, http, storageManager, IsRuleset);
+      }      
+    });
+    //this.localStorage.localStorageSetItem(DBkeys.rulesetNameforChat, this.ruleset.ruleSetName);
+    //if (ServiceUtil.IsCurrentlyRulesetOpen) {
+    //  this.localStorage.localStorageSetItem(DBkeys.rulesetNameforChat, this.headers.headerName);
+    //}
+    
   }
 }
