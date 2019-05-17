@@ -280,11 +280,11 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
             .subscribe(data => {
               if (data) {
-                if (data.isPlayerCharacter) {
-                  if (!this.signalRAdapter) { //get player control 265
+                if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
+                  if (!this.signalRAdapter && !user.isGm) { //get player control 265
                     let model: any = user;
                     if (this.headers) {
-                      if (this.headers.headerId && !user.isGm) {
+                      if (this.headers.headerId  && data.isPlayerCharacter) {
                         model.characterID = this.headers.headerId;
                         //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
                         console.log("5.initializeSignalRAdapter")
@@ -771,11 +771,11 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
                 .subscribe(data => {
                   if (data) {
-                    if (data.isPlayerCharacter) {
+                    if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
                       if (!this.signalRAdapter && !user.isGm) {
                         let model: any = user;
                         if (this.headers) {
-                          if (this.headers.headerId) {
+                          if (this.headers.headerId && data.isPlayerCharacter) {
                             model.characterID = this.headers.headerId;
                             //model.Id = this.headers.headerId;
                             //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
