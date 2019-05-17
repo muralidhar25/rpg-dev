@@ -9088,3 +9088,9 @@ span.user-image-name {
 .ng-chat-title{
   padding-right:20px;
 }
+.ng-chat-volume-mute {
+  font-size: 7px !important;
+  position: relative;
+  top: -2px;
+  margin-left: -3px;
+}
