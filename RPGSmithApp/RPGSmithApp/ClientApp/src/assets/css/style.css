@@ -8936,3 +8936,155 @@ li.popup-new-tile-trigger.cross-li .btn {
 angular2-multiselect .c-btn.form-control {
   height: auto;
 }
+.ng-chat-window-full-screen {
+  width: 100% !important;
+  height: 100% !important;
+  right: 0px !important;
+  left: 0px !important;
+  z-index: 999999 !important;
+}
+
+.ng-chat-window-half-screen {
+  width: 100% !important;
+  /*height: 100% !important;*/
+  right: 0px !important;
+  left: 0px !important;
+  z-index: 999999 !important;
+}
+
+.ng-chat-half-screen-button {
+  height: 28px;
+  float: right;
+  margin-right: 9px;
+  margin-top: 1px;
+  line-height: 15px;
+}
+
+.ng-chat-title .ng-chat-title-visibility-toggle-area {
+  display: inline-block !important;
+  width: calc(100% - 80px) !important;
+}
+
+.ng-chat-title .ng-chat-close + .primary-text {
+  height: 28px;
+  float: right;
+  margin-right: 9px;
+  margin-top: 1px;
+}
+
+.ng-chat-window .ng-chat-messages .ng-chat-message > img.avatar, .ng-chat-window .ng-chat-messages .ng-chat-message > .icon-wrapper {
+  margin-top: 20px;
+}
+
+.ng-chat-window .ng-chat-messages .ng-chat-message .ng-chat-participant-name {
+  width: 80px !important;
+  overflow: hidden !important;
+  margin-left: 0px !important;
+  white-space: nowrap;
+  display: inline-block !important;
+  padding-bottom: 0px !important
+}
+
+span.user-image-name {
+  width: 90px;
+  text-align: center;
+  display: inline-block;
+}
+
+  span.user-image-name .icon-wrapper {
+    width: 30px;
+    height: 30px;
+    border-radius: 25px;
+    overflow: hidden;
+    background: #bababa;
+    font-size: .9em;
+    display: inline-block;
+  }
+
+  span.user-image-name img {
+    border-radius: 25px;
+    overflow: hidden;
+    display: inline-block
+  }
+
+  span.user-image-name .icon-wrapper .user-icon {
+    transform: scale(.7);
+    color: #fff;
+  }
+
+.ng-chat-window .ng-chat-messages .ng-chat-message > div {
+  width: calc(100% - 90px) !important;
+  position: relative;
+}
+
+.ng-chat-window .ng-chat-messages .ng-chat-message > div {
+  float: left !important;
+  padding-top: 16px !important;
+  padding-bottom: 15px !important
+}
+
+.ng-chat-window .ng-chat-messages .ng-chat-message.ng-chat-message-received > div.received-chat-message-container {
+  margin-left: 0px !important;
+  float: right !important;
+  padding-top: 16px !important;
+  padding-bottom: 15px !important
+}
+
+.ng-chat-window .ng-chat-messages .ng-chat-message .message-sent-date {
+  margin-top: 0 !important;
+  position: absolute;
+  transform: rotate(90deg);
+  right: 12px;
+  bottom: 1px;
+  color: #a7a7a7 !important;
+}
+
+  .ng-chat-window .ng-chat-messages .ng-chat-message .message-sent-date:before {
+    font-size: 11px;
+  }
+
+.ng-chat-participant-status.online {
+  background-color: #ccff00 !important;
+}
+
+.ng-chat-orange-text {
+  color: orange;
+}
+
+.ng-chat-grey-text {
+  color: #a7a2a2;
+}
+
+.ng-chat-message .popover-arrow {
+  display: none !important;
+}
+
+.ng-chat-message .popover {
+  margin: 0px !important
+}
+
+.ng-chat-message .popover-body {
+  padding: 2px 6px !important;
+  color: #212529;
+  font-size: 10px !important;
+  border-radius: 0px !important;
+}
+
+.ng-chat-window .ng-chat-messages .ng-chat-message > div.system-chat-message {
+  width: 100% !important;
+}
+.ng-chat-half-screen-div {
+  height: 360px;
+  width: 100%;
+  display:block;
+}
+.ng-chat-volume {
+  float: right;
+  position: absolute;
+  top: 5px;
+  z-index: 111;
+  right: 10px;
+}
+.ng-chat-title{
+  padding-right:20px;
+}

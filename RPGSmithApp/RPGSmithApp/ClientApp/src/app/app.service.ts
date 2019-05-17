@@ -13,6 +13,9 @@ export class AppService1 {
   private item = new Subject<any>();
   private rulesetDetails = new Subject<any>();
   private images = new Subject<any>();
+  private diceRollMessage = new Subject<any>();
+  private lootMessage = new Subject<any>();
+  private halfScreen = new Subject<any>();
 
   updateAccountSetting1(accountSetting: any) {    
     this.accountSetting.next(accountSetting);
@@ -64,10 +67,27 @@ export class AppService1 {
   updateRulesetDetails(rulesetDetails: any) {
     this.rulesetDetails.next(rulesetDetails);
   }
-
-
   shouldUpdateRulesetDetails(): Observable<any> {
     return this.rulesetDetails.asObservable();
+  }
+
+  updateChatWithDiceRoll(diceRoll: any) {
+    this.diceRollMessage.next(diceRoll);
+  }
+  shouldUpdateChatWithDiceRoll(): Observable<any> {
+    return this.diceRollMessage.asObservable();
+  }
+  updateChatWithLootMessage(data: any) {
+    this.lootMessage.next(data);
+  }
+  shouldUpdateChatWithLootMessage(): Observable<any> {
+    return this.lootMessage.asObservable();
+  }
+  updateChatHalfScreen(data: any) {
+    this.halfScreen.next(data);
+  }
+  shouldUpdateChatHalfScreen(): Observable<any> {
+    return this.halfScreen.asObservable();
   }
 }
 

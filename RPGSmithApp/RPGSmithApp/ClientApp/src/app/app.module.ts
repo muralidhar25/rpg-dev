@@ -29,6 +29,7 @@ import {
 import { AppService1 } from './app.service';
 import { CampaignInviteComponent } from './rulesets/campaign-invite/campaign-invite.component';
 import { ContextMenuModule } from 'ngx-contextmenu';
+import { NgChatModule } from './ng-chat/ng-chat.module';
 
 
 @NgModule({
@@ -77,7 +78,8 @@ import { ContextMenuModule } from 'ngx-contextmenu';
     CommonModule,
     PublicModule,
     AppRoutingModule,
-    MainModule
+    MainModule,
+    NgChatModule
   ],
   providers: [
 AppService1

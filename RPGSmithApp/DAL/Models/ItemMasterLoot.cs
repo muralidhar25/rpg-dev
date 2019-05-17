@@ -28,7 +28,7 @@ namespace DAL.Models
         [Column(TypeName = "decimal(18, 3)")]
         public decimal TotalWeight { get; set; }
 
-        public virtual ItemMaster ItemMaster { get; set; }
+        public virtual ItemMaster ItemMaster { get; set; } 
     }
     //public class ItemMasterLootSpell
     //{

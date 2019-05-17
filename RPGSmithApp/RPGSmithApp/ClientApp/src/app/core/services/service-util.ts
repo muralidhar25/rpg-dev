@@ -9,6 +9,9 @@ import { CharacterStatConditionViewModel } from '../models/view-models/character
 import { STAT_TYPE, CONDITION_OPERATOR_ENUM } from '../models/enums';
 import { DiceService } from './dice.service';
 import { CharactersCharacterStat } from '../models/view-models/characters-character-stats.model';
+import { HeaderValues } from '../models/headers.model';
+import { DBkeys } from '../common/db-keys';
+import { LocalStoreManager } from '../common/local-store-manager.service';
 
 @Injectable()
 export class ServiceUtil {
@@ -689,5 +692,46 @@ export class ServiceUtil {
     finalCalcString = finalCalcString.replace(/\+0/g, '').replace(/\-0/g, '').replace(/\*0/g, '').replace(/\/0/g, '');
     finalCalcString = finalCalcString.replace(/\+ 0/g, '').replace(/\- 0/g, '').replace(/\* 0/g, '').replace(/\/ 0/g, '');
     return finalCalcString;
+  }
+  public static IsCurrentlyRulesetOpen(localStorage: LocalStoreManager): boolean {
+    let IsCharacter: boolean = false;
+    let IsRuleset: boolean = false;
+    let headers = localStorage.getDataObject<HeaderValues>(DBkeys.HEADER_VALUE);
+    if (headers) {
+      if (headers.headerLink == 'ruleset') {
+        IsRuleset = true;
+        return true;
+      }
+      else if (headers.headerLink == 'character') {
+        IsCharacter = true;
+        return false;
+      }
+    }
+    return undefined;
+  }
+  public static GetCurrentRulesetID(localStorage: LocalStoreManager): number {
+    let IsCharacter: boolean = false;
+    let IsRuleset: boolean = false;
+    let headers = localStorage.getDataObject<HeaderValues>(DBkeys.HEADER_VALUE);
+    if (headers) {
+      if (headers.headerLink == 'ruleset') {
+        return headers.headerId;
+      }     
+    }
+    return 0;
+  }
+  public static GetCurrentCharacterID(localStorage: LocalStoreManager): number {
+    let IsCharacter: boolean = false;
+    let IsRuleset: boolean = false;
+    let headers = localStorage.getDataObject<HeaderValues>(DBkeys.HEADER_VALUE);
+    if (headers) {
+       if (headers.headerLink == 'character') {
+        return headers.headerId;
+      }
+    }
+    return 0;
+  }
+  public static CurrentCharacters_RulesetID(localStorage: LocalStoreManager): number {
+    return localStorage.getDataObject<any>(DBkeys.RULESET_ID);
   }
 }
