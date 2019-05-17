@@ -199,17 +199,18 @@ namespace RPGSmithApp.Helpers
                 ItemMasters = ruleSet.ItemMasters,
                 Spells = ruleSet.Spells,
                 Abilities = ruleSet.Abilities,
-                CreatedOn=ruleSet.CreatedDate.ToString("MM-dd-yy"),
-                CreatedBy= ruleSet.CreatedBy,
+                CreatedOn = ruleSet.CreatedDate.ToString("MM-dd-yy"),
+                CreatedBy = ruleSet.CreatedBy,
                 // ImageFileName = FileStreamResult(new MemoryStream(ruleSet.RuleSetImage), "image/jpeg")
                 //RuleSetImage = ruleSet.RuleSetImage
                 RecordCount = _coreRulesetService.GetRulesetRecordCounts(ruleSet.RuleSetId),
-                customDices=Utilities.MapCustomDice(_ruleSetService.GetCustomDice(ruleSet.RuleSetId)),
-                diceTray=_ruleSetService.GetDiceTray(ruleSet.RuleSetId),
+                customDices = Utilities.MapCustomDice(_ruleSetService.GetCustomDice(ruleSet.RuleSetId)),
+                diceTray = _ruleSetService.GetDiceTray(ruleSet.RuleSetId),
                 defaultDices = _ruleSetService.GetDefaultDices(),
-                CoreRulesetAdminImageUrl= _ruleSetService.GetUserImageFromRulesetID(ruleSet.RuleSetId),
-                Price=ruleSet.Price,
-                IsAlreadyPurchased=_ruleSetService.IsRulesetAlreadyPurchased(ruleSet.RuleSetId, UserID)
+                CoreRulesetAdminImageUrl = _ruleSetService.GetUserImageFromRulesetID(ruleSet.RuleSetId),
+                Price = ruleSet.Price,
+                IsAlreadyPurchased = _ruleSetService.IsRulesetAlreadyPurchased(ruleSet.RuleSetId, UserID),
+                IsDicePublicRoll = ruleSet.IsDicePublicRoll,
             };
 
             return ruleSetViewModel;

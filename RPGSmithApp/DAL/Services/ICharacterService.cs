@@ -26,5 +26,6 @@ namespace DAL.Services
         Character GetCharacterByIdDice(int Id);
         Character Create_SP(Character characterDomain, int layoutHeight, int layoutWidth,int CharIdToDuplicate=0);
         bool IsNewRulesetToAdd(int ruleSetId, string userId);
+        bool UpdatePublicPrivateRoll(bool isPublic, bool isCharacter, int recordId);
     }
 }

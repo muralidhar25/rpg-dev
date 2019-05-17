@@ -17,26 +17,54 @@
     </div>
 
     <div class="modal-body" style="padding-top: 0.5rem" *ngIf="!isLoading">
-      <div class="form-group saved-commands" [ngClass]="{'d-none' : rollSection}" style="margin-bottom:0.25rem">
-        <label>Saved Commands</label>
-        <div class="command-list">
-          <small *ngIf="characterCommandData?.length == 0">No Available Command</small>
-          <ul>
-            <li *ngFor="let cmd of characterCommandData; let i=index">
-              <button *ngIf="i<limit" type="button" class="btn" (mousedown)="editSavedCommand(cmd)" (mouseup)="clickAndHold(cmd)"
-                      (mouseleave)="clickAndHold(cmd)" (dblclick)="onClickRoll(cmd,'')" (click)="bindDiceCommand(cmd,diceRollModel)"
-                      [ngClass]="[activeCommand===cmd.characterCommandId ? 'active-command' : 'no-active-command']">
-                {{cmd.name}}
+      <div class="row">
+        <div class="col-12 col-sm-6">
+          <div class="form-group saved-commands" [ngClass]="{'d-none' : rollSection}" style="margin-bottom:0.25rem">
+            <label>Saved Commands</label>
+            <div class="command-list">
+              <small *ngIf="characterCommandData?.length == 0">No Available Command</small>
+              <ul>
+                <li *ngFor="let cmd of characterCommandData; let i=index">
+                  <button *ngIf="i<limit" type="button" class="btn" (mousedown)="editSavedCommand(cmd)" (mouseup)="clickAndHold(cmd)"
+                          (mouseleave)="clickAndHold(cmd)" (dblclick)="onClickRoll(cmd,'')" (click)="bindDiceCommand(cmd,diceRollModel)"
+                          [ngClass]="[activeCommand===cmd.characterCommandId ? 'active-command' : 'no-active-command']">
+                    {{cmd.name}}
+                  </button>
+                </li>
+              </ul>
+            </div>
+            <div class="input-extend">
+              <button type="button" *ngIf="characterCommandData?.length > 3" (click)="showMoreCommands(characterCommandData?.length,limitText)" class="btn icon icon-with-text btn-link-primary" [ngClass]="(limit==3)?'icon-arrow-down':'icon-arrow-up'">
+                <span>{{limitText}}</span>
               </button>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
-        <div class="input-extend">
-          <button type="button" *ngIf="characterCommandData?.length > 3" (click)="showMoreCommands(characterCommandData?.length,limitText)" class="btn icon icon-with-text btn-link-primary" [ngClass]="(limit==3)?'icon-arrow-down':'icon-arrow-up'">
-            <span>{{limitText}}</span>
-          </button>
+        <div class="col-12 col-sm-6">
+          <fieldset class="form-group input-switch input-switch-dual">
+            <label>&nbsp;</label>
+            <ul class="input-switch-items">
+              <li class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="pausegame1"
+                         [checked]="isDicePublicRoll"
+                         (click)="setDiceRoll(true)">
+                  <span>PUBLIC</span>
+                </label>
+              </li>
+              <li class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="pausegame2"
+                         [checked]="!isDicePublicRoll"
+                         (click)="setDiceRoll(false)">
+                  <span>PRIVATE</span>
+                </label>
+              </li>
+            </ul>
+          </fieldset>
         </div>
       </div>
+      
 
       <div class="form-group new-command initial" [ngClass]="{'d-none' : rollSection}">
         <label>Command*</label>

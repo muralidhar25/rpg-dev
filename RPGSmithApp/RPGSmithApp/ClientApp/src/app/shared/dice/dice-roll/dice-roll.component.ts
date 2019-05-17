@@ -27,6 +27,7 @@ import { Observable } from "rxjs";
 import { CharacterStatConditionViewModel, CharacterStats, CharacterStatDefaultValue } from "../../../core/models/view-models/character-stats.model";
 import { ServiceUtil } from "../../../core/services/service-util";
 import { CharactersCharacterStat } from "../../../core/models/view-models/characters-character-stats.model";
+import { AppService1 } from "../../../app.service";
 
 
 @Component({
@@ -96,11 +97,12 @@ export class DiceRollComponent implements OnInit {
   rollAgainBtnText: string = 'Roll Again';
   ConditionsValuesList: CharactersCharacterStat[] = [];
   isFromCampaignDetail: boolean;
+  isDicePublicRoll: boolean;
   constructor(
     private router: Router, public modalService: BsModalService, private bsModalRef: BsModalRef, private alertService: AlertService,
     private charactersCharacterStatService: CharactersCharacterStatService, private charactersService: CharactersService,
     private localStorage: LocalStoreManager, private authService: AuthService, private sharedService: SharedService,
-    private characterCommandService: CharacterCommandService, private _diceService: DiceService,
+    private characterCommandService: CharacterCommandService, private _diceService: DiceService, private appService: AppService1,
     private rulesetService: RulesetService
 
     , private location: PlatformLocation) {
@@ -115,10 +117,11 @@ export class DiceRollComponent implements OnInit {
     });
   }
   getCharacter() {
-   
+
     this.charactersService.getCharactersById<any>(this.characterId)
       .subscribe(data => {
         this.character = data;
+        this.isDicePublicRoll = this.character.isDicePublicRoll;
         this.isLoading = false;
       }, error => {
         this.character = new Characters();
@@ -128,7 +131,7 @@ export class DiceRollComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-     
+
       if (this.rulesetId == undefined)
         this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 
@@ -149,11 +152,10 @@ export class DiceRollComponent implements OnInit {
       //this.character = this.bsModalRef.content.character;
       //if (this.character.lastCommandResult)
       //    this.calculationStringArray = DiceService.getCalculationStringArray(this.character.lastCommandResult);
-     // debugger;
+      // debugger;
       //this.character = undefined;
       this.charactersService.getCharactersById<any>(this.characterId)
         .subscribe(data => {
-         
           this.character = data;
           if (!this.characterId) {
             this.character = new Characters();
@@ -211,6 +213,8 @@ export class DiceRollComponent implements OnInit {
           });
           this.charactersService.getRuleset_charStats_ById<any>(this.rulesetId, this.characterId)
             .subscribe(data => {
+              debugger
+              this.isDicePublicRoll = data.ruleSet.isDicePublicRoll;
               let model: any = data;
               this.statdetails = model.characterCharacterstats;
 
@@ -329,7 +333,7 @@ export class DiceRollComponent implements OnInit {
               this.isLoading = false;
             }, () => { });
         });
-     
+
 
       this.Initialize();
     }, 0);
@@ -340,7 +344,7 @@ export class DiceRollComponent implements OnInit {
       this.authService.logout();
     else {
       //this.isLoading = true;
-     
+
       if (this.showDetailsByDefault) {
         this.showDetailsByDefault = false;
         //    this.showLastResult(this.character);
@@ -1121,7 +1125,7 @@ export class DiceRollComponent implements OnInit {
         }
       }
       else {
-       
+
         let AND_LIMIT = DiceService.splitWithoutEmpty(command.trim().toUpperCase(), 'AND');
         if (AND_LIMIT.length > this.totalAndLimit) {
           this.alertService.resetStickyMessage();
@@ -1255,7 +1259,7 @@ export class DiceRollComponent implements OnInit {
                         //}
                         // num = result;
                         num = ServiceUtil.GetCalcuationsResults(result, this.statdetails, this.charactersCharacterStats, this.character);
-                       
+
                         break;
                       default:
                         break;
@@ -1277,7 +1281,7 @@ export class DiceRollComponent implements OnInit {
                 });
 
                 finalCalcString = calculationString;
-               
+
               });
             }
             ////////////////////////////////                    
@@ -1482,14 +1486,14 @@ export class DiceRollComponent implements OnInit {
 
           //--END variable to hide Exploded dice--//
         });
-        
+
         //this.characterCommandModel.command = __calculationCommand;
         this.characterCommandModel.command = this.mainCommandText;
         this.characterCommandModel.lastResult = __calculationResult;
         this.characterCommandModel.lastResultNumbers = __calculationString;
         this.characterCommandModel.isCustomNumericCommand = __isCustomNumericCommand;
         this.characterCommandModel.isCustomDice = __characterMultipleCommands.isResultWithCustomDice
-        
+
         if (!this.character) {
           this.character = new Characters();
         }
@@ -1589,18 +1593,18 @@ export class DiceRollComponent implements OnInit {
                         }
                         else {
                           numberString += x.number + ",";
-                        }                        
+                        }
                       })
 
-                      if (diceRoll.dice && diceRoll.diceIcon) {                        
+                      if (diceRoll.dice && diceRoll.diceIcon) {
                         lastCommandValues += (index === 0 ? '' : diceRoll.sign) +
                           diceRoll.randomCount + diceRoll.dice
                           + "=" + numberString.toString();
-                          //+ "=" + diceRoll.randomNumbersListAfter.toString();
-                      } else {                        
+                        //+ "=" + diceRoll.randomNumbersListAfter.toString();
+                      } else {
                         lastCommandValues += (index === 0 ? '' : diceRoll.sign) + diceRoll.randomCount
                           + "=" + numberString.toString();
-                          //+ "=" + diceRoll.randomNumbersListAfter.toString();
+                        //+ "=" + diceRoll.randomNumbersListAfter.toString();
                       }
 
                     });
@@ -1657,7 +1661,9 @@ export class DiceRollComponent implements OnInit {
           //    _maxNum = +_maxN > _maxNum ? +_maxN : _maxNum;
           //    _minNum = +_minN > _minNum ? (_minNum == 0 ? +_minN : _minNum) : +_minN;
           //});
-
+          if (!lastResultArray) {
+            this.appService.updateChatWithDiceRoll({ characterCommandModel: this.characterCommandModel, characterMultipleCommands: this.characterMultipleCommands });
+          }
           this.loadingResult = true;
         }, 1200);
 
@@ -1953,7 +1959,7 @@ export class DiceRollComponent implements OnInit {
 
   //COMMAND SEPARATED BY AND - CLICK
   onAndCommandClick(commandData: any, characterCommand: CharacterCommand, index: number) {
-    
+
     this.loadingResult = true;
     this.activeAndCommand = index;
 
@@ -2062,7 +2068,7 @@ export class DiceRollComponent implements OnInit {
 
       }, 100);
     }
-    
+
     this.characterCommandModel.lastResult = __calculationResult;
     this.characterCommandModel.lastResultNumbers = __calculationString;
     this.characterCommandModel.command = __calculationCommand;
@@ -2773,11 +2779,11 @@ export class DiceRollComponent implements OnInit {
                   lastCommandValues += (index === 0 ? '' : diceRoll.sign) +
                     diceRoll.randomCount + diceRoll.dice
                     + "=" + numberString.toString();
-                    //+ "=" + diceRoll.randomNumbersListAfter.toString();
+                  //+ "=" + diceRoll.randomNumbersListAfter.toString();
                 } else {
                   lastCommandValues += (index === 0 ? '' : diceRoll.sign) + diceRoll.randomCount
                     + "=" + numberString.toString();
-                    //+ "=" + diceRoll.randomNumbersListAfter.toString();
+                  //+ "=" + diceRoll.randomNumbersListAfter.toString();
                 }
 
               });
@@ -2806,11 +2812,11 @@ export class DiceRollComponent implements OnInit {
                   lastCommandValues += (index === 0 ? '' : diceRoll.sign) +
                     diceRoll.randomCount + diceRoll.dice
                     + "=" + numberString.toString();
-                    //+ "=" + diceRoll.randomNumbersListAfter.toString();
+                  //+ "=" + diceRoll.randomNumbersListAfter.toString();
                 } else {
                   lastCommandValues += (index === 0 ? '' : diceRoll.sign) + diceRoll.randomCount
                     + "=" + numberString.toString();
-                    //+ "=" + diceRoll.randomNumbersListAfter.toString();
+                  //+ "=" + diceRoll.randomNumbersListAfter.toString();
                 }
 
               });
@@ -3133,7 +3139,7 @@ export class DiceRollComponent implements OnInit {
           IDs.map((rec) => {
             this.statdetails.charactersCharacterStat.map((stat) => {
               if (rec.id == stat.characterStat.statName.toUpperCase()) {
-                let num:string = "0";
+                let num: string = "0";
                 switch (rec.statType) {
                   case 3: //Number
                     num = stat.number
@@ -3238,8 +3244,8 @@ export class DiceRollComponent implements OnInit {
       this.bsModalRef.content.characterCommand = characterCommandModel;
       this.bsModalRef.content.addModArray = this.addModArray;
       this.bsModalRef.content.statDetails = this.statdetails;
-      this.bsModalRef.content.charactersCharacterStats= this.charactersCharacterStats;
-      this.bsModalRef.content.character= this.character;
+      this.bsModalRef.content.charactersCharacterStats = this.charactersCharacterStats;
+      this.bsModalRef.content.character = this.character;
     }
 
   }
@@ -3749,7 +3755,7 @@ export class DiceRollComponent implements OnInit {
   }
   GetDisplayContentFromResultName(ResultName, Results: Results[], IsNumericImage = false, result) {
     let resultIndex = 0;
-    
+
     if (Results) {
       if (Results.length) {
         let Result_s: Results[] = Results.filter(x => x.name == ResultName);
@@ -3758,7 +3764,7 @@ export class DiceRollComponent implements OnInit {
         }
         if (Result_s.length) {
 
-          let Result: Results = Result_s[result.resultIndex-1];
+          let Result: Results = Result_s[result.resultIndex - 1];
           return Result.displayContent;
         }
         else if (IsNumericImage) {
@@ -3768,8 +3774,8 @@ export class DiceRollComponent implements OnInit {
             result.resultIndex = Math.ceil((Math.random() * (Result_s.length)) + 0)
           }
 
-          if (Result_s.length) {            
-            let Result: Results = Result_s[result.resultIndex-1];
+          if (Result_s.length) {
+            let Result: Results = Result_s[result.resultIndex - 1];
             return Result.displayContent;
           }
         }
@@ -3803,5 +3809,25 @@ export class DiceRollComponent implements OnInit {
       }
     }
     return arr;
+  }
+
+  setDiceRoll(val) {
+    let id;
+    if (this.isFromCampaignDetail) {
+      id = this.rulesetId;
+    }
+    else {
+      id = this.characterId;
+    }
+    this.isDicePublicRoll = val;
+    this.charactersService.updatePublicPrivateRoll(val, !this.isFromCampaignDetail, id)
+      .subscribe(data => {
+        try {
+          if (this.character.lastCommandResult)
+            this.calculationStringArray = DiceService.getCalculationStringArray(this.character.lastCommandResult);
+        } catch (err) { }
+      }, error => {
+        this.character = new Characters();
+      }, () => { });
   }
 }
