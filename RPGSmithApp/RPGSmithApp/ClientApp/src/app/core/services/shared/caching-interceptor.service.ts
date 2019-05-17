@@ -109,7 +109,7 @@ export class CachingInterceptor implements HttpInterceptor {
           });
         } catch (err) { }
       }
-      else if (req.url.indexOf("getPlayerControlsByCharacterId") > -1) { 
+      if (req.url.indexOf("getPlayerControlsByCharacterId") > -1) { 
         try {
           this.cache.cache.forEach(data => {
             var cachedApi = data.url.split("api/")[1].split("/")[0].toLowerCase();

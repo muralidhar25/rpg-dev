@@ -46,7 +46,7 @@ namespace DAL.Models
         public string LastCommandValues { get; set; }
 
         public decimal InventoryWeight { get; set; }
-
+        public bool IsDicePublicRoll { get; set; }
         public virtual ICollection<Character> Characters1 { get; set; }
 
         public virtual Character Character1 { get; set; }

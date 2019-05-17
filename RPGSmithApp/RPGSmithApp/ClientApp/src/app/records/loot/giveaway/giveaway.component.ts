@@ -19,6 +19,7 @@ export class GiveawayComponent implements OnInit {
   characters: any = [];
   isLoading = false;
   selectercharacter: any;
+  isFromLootGiveScreen: boolean = true;
 
   constructor(
     private bsModalRef: BsModalRef,
@@ -39,9 +40,9 @@ export class GiveawayComponent implements OnInit {
   }
 
   initialize() {
-    this.isLoading = true;
-        this.charactersService.getCharactersByRuleSetId<any>(this.ruleSetId)
-          .subscribe(data => {
+    this.isLoading = true;    
+    this.charactersService.getCharactersByRuleSetId<any>(this.ruleSetId, this.isFromLootGiveScreen)
+          .subscribe(data => {            
             this.characters = data;
             this.isLoading = false;
           }, error => {
@@ -67,7 +68,7 @@ export class GiveawayComponent implements OnInit {
     let lootId = this.giveAwayItem.lootId;
     this.isLoading = true;
     this.lootService.giveItemTocharacter<any>(_character,lootId)
-      .subscribe(data => {
+      .subscribe(data => {        
         console.log(data);
         this.close();
         this.sharedService.updateItemsList(true);

@@ -23,7 +23,7 @@ namespace DAL.Services
         Task<PlayerInvite> AnswerLaterInvite(int inviteID);
         Task<bool> isInvitedPlayerCharacter(int characterId);
         Task<PlayerControl> getPlayerControlsByCampaignId(int campaignID);
-        Task<PlayerControlModel> getPlayerControlsByCharacterId(int characterID, string userid);
+        Task<PlayerControlModel> getPlayerControlsByCharacterId(int characterID,ApplicationUser currentUser);
         Task<PlayerControl> updatePlayerControls(PlayerControl model);
         bool IsDeletedInvite(int _characterId, string _userId);
         string GetDeletedCharacterName(int characterID);

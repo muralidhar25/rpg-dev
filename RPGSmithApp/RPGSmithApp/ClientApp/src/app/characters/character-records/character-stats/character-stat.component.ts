@@ -2204,25 +2204,30 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
       .subscribe(data => {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (data) {
-          if (user.isGm) {
-            this.pageRefresh = user.isGm;
+          if (user == null) {
+            this.authService.logout();
           }
-          else if (data.isPlayerCharacter) {
-            this.pageRefresh = data.isPlayerCharacter;
-          }
-          if (data.isPlayerCharacter) {
-            
-             if (data.pauseGame) {
+          else {
+            if (user.isGm) {
+              this.pageRefresh = user.isGm;
+            }
+            else if (data.isPlayerCharacter) {
+              this.pageRefresh = data.isPlayerCharacter;
+            }
+            if (data.isPlayerCharacter) {
+
+              if (data.pauseGame) {
                 this.router.navigate(['/characters']);
                 this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
                 setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
               }
-            
-          }
-          if (data.isDeletedInvite) {
-            this.router.navigate(['/characters']);
-            this.alertService.showStickyMessage('', "Your " + data.name + " character has been deleted by the GM", MessageSeverity.error);
-            setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+
+            }
+            if (data.isDeletedInvite) {
+              this.router.navigate(['/characters']);
+              this.alertService.showStickyMessage('', "Your " + data.name + " character has been deleted by the GM", MessageSeverity.error);
+              setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+            }
           }
         }
       }, error => {

@@ -344,7 +344,7 @@ export class ItemMasterService extends EndpointFactory {
         lootId: 0,
         isShow: false,
         containedIn: null,
-        quantity: 0,
+        quantity: 1,
         isIdentified: false,
         isVisible: false,
         totalWeight: 0,

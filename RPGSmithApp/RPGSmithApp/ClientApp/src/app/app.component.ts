@@ -565,7 +565,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.rulesetsCount = undefined;
     this.charactersCount = undefined;
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-   
+
     if (user) {
       this.isGmUser = user.isGm;
     }
@@ -1212,9 +1212,13 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   // changing search placeholder name dynamically
   setPlaceholderText(value: any) {
-    this.placeHolderText = value;
+    this.placeHolderText = value;    
   }
-
+  setHeaderToNull() {
+    this.headers = null;
+    
+    this.router.navigate(['/characters']);
+  }
   showDialog(dialog: AlertDialog) {
 
     alertify.set({

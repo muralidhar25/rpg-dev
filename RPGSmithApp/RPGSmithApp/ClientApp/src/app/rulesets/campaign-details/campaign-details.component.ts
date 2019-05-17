@@ -269,23 +269,33 @@ export class CampaignDetailsComponent implements OnInit {
 
   loot(ruleset: Ruleset) {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-    if (user.isGm) {
-      this.rulesetService.ruleset = ruleset;
-      this.router.navigate(['/ruleset/loot', ruleset.ruleSetId]);
+    if (user == null) {
+      this.authService.logout();
+    }
+    else {
+      if (user.isGm) {
+        this.rulesetService.ruleset = ruleset;
+        this.router.navigate(['/ruleset/loot', ruleset.ruleSetId]);
+      }
     }
   }
 
   handOuts(ruleset: Ruleset) {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-    if (user.isGm) {
-      this.rulesetService.ruleset = ruleset;
-      this.bsModalRef = this.modalService.show(HandoutuploadComponent, {
-        class: 'modal-primary modal-lg',
-        ignoreBackdropClick: true,
-        keyboard: false
-      });
-      this.bsModalRef.content.title = 'HandOuts';
-      this.bsModalRef.content.ruleset = ruleset;
+    if (user == null) {
+      this.authService.logout();
+    }
+    else {
+      if (user.isGm) {
+        this.rulesetService.ruleset = ruleset;
+        this.bsModalRef = this.modalService.show(HandoutuploadComponent, {
+          class: 'modal-primary modal-lg',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = 'HandOuts';
+        this.bsModalRef.content.ruleset = ruleset;
+      }
     }
   }
 

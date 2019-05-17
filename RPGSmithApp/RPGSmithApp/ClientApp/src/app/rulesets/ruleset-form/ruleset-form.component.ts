@@ -309,11 +309,15 @@ export class RulesetFormComponent implements OnInit {
                     this.alertService.showMessage(message, "", MessageSeverity.success);
                   this.commonService.UpdateCounts(); /*update charaters count*/
                   this.appService.updateRulesetDetails(true);
-
-                  if (user.isGm) {
-                    this.router.navigate(['/ruleset/campaign-details/' + data.ruleSetId]);
-                  } else {
-                    this.router.navigate(['/ruleset/ruleset-details/' + data.ruleSetId]);
+                  if (user == null) {
+                    this.authService.logout();
+                  }
+                  else {
+                    if (user.isGm) {
+                      this.router.navigate(['/ruleset/campaign-details/' + data.ruleSetId]);
+                    } else {
+                      this.router.navigate(['/ruleset/ruleset-details/' + data.ruleSetId]);
+                    }
                   }
                  
                  // this.sharedService.updateRulesetList(data);
@@ -363,11 +367,15 @@ export class RulesetFormComponent implements OnInit {
                     let msgSuccess = modal.view === VIEW.IMPORT ? "Rule Set has been imported successfully."
                         : "Rule Set has been duplicated successfully.";
                     this.alertService.showMessage(msgSuccess, "", MessageSeverity.success);
-                  
-                  if (user.isGm) {
-                    this.router.navigate(['/ruleset/campaign-details/' + data.ruleSetId]);
-                  } else {
-                    this.router.navigate(['/ruleset/ruleset-details/' + data.ruleSetId]);
+                  if (user == null) {
+                    this.authService.logout();
+                  }
+                  else {
+                    if (user.isGm) {
+                      this.router.navigate(['/ruleset/campaign-details/' + data.ruleSetId]);
+                    } else {
+                      this.router.navigate(['/ruleset/ruleset-details/' + data.ruleSetId]);
+                    }
                   }
                    // this.sharedService.updateRulesetList(data);
                     // this.router.navigateByUrl('/rulesets', { skipLocationChange: true }).then(() => this.router.navigate(['/ruleset']));

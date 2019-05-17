@@ -365,29 +365,33 @@ export class SpellRulesetDetailComponent implements OnInit {
       .subscribe(data => {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (data) {
-
-          if (user.isGm) {
-            this.pageRefresh = user.isGm;
+          if (user == null) {
+            this.authService.logout();
           }
-          else if (data.isPlayerCharacter) {
-            this.pageRefresh = data.isPlayerCharacter;
-          }
-          if (data.isPlayerCharacter) {
-            this.pauseSpellAdd = data.pauseSpellAdd;
-            this.pauseSpellCreate = data.pauseSpellCreate;
+          else {
+            if (user.isGm) {
+              this.pageRefresh = user.isGm;
+            }
+            else if (data.isPlayerCharacter) {
+              this.pageRefresh = data.isPlayerCharacter;
+            }
+            if (data.isPlayerCharacter) {
+              this.pauseSpellAdd = data.pauseSpellAdd;
+              this.pauseSpellCreate = data.pauseSpellCreate;
 
-            if (data.pauseGame) {
+              if (data.pauseGame) {
+                this.router.navigate(['/characters']);
+                this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+                setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+              }
+              // this.pageRefresh = data.isPlayerCharacter;
+
+            }
+            if (data.isDeletedInvite) {
               this.router.navigate(['/characters']);
-              this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+              this.alertService.showStickyMessage('', "Your " + data.name + " character has been deleted by the GM", MessageSeverity.error);
               setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
             }
-            // this.pageRefresh = data.isPlayerCharacter;
-
-          }
-          if (data.isDeletedInvite) {
-            this.router.navigate(['/characters']);
-            this.alertService.showStickyMessage('', "Your " + data.name + " character has been deleted by the GM", MessageSeverity.error);
-            setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
           }
         }
       }, error => {

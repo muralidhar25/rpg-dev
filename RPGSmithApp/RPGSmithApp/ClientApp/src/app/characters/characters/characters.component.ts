@@ -89,7 +89,7 @@ export class CharactersComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
-          if (user && user.isGm) {
+          if (user.isGm) {
             this.isGmUser = true;
           }
           this.characterSlot = user.characterSlot;
