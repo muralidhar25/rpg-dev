@@ -9,7 +9,7 @@
     </a>
     <a class="ng-chat-volume" (click)="toggleNotificationSound()">
       <i class="fa" [ngClass]="{'fa-volume-off':!audioEnabled, 'fa-volume-up':audioEnabled}" aria-hidden="true"></i>
-      <i class="fa fa-times" *ngIf="!audioEnabled" aria-hidden="true"></i>
+      <i class="fa fa-times ng-chat-volume-mute" *ngIf="!audioEnabled" aria-hidden="true"></i>
     </a>
     <div *ngIf="currentActiveOption" class="ng-chat-people-actions" (click)="onFriendsListActionCancelClicked()">
       <a href="javascript:void(0);" class="ng-chat-people-action">

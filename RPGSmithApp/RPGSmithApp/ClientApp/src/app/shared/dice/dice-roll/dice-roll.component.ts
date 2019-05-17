@@ -2848,7 +2848,9 @@ export class DiceRollComponent implements OnInit {
       //if (!anyCommandIsCustomWithNonNumeric) {
       this.updateLastCommand(characterLastCommand);
       //}
-
+      if (!this.character) {
+        this.character = new Characters();
+      }
 
       this.character.lastCommand = this.characterCommandModel.lastSavedCommand;
       this.character.lastCommandResult = this.characterCommandModel.lastResultNumbers;
@@ -3841,11 +3843,11 @@ export class DiceRollComponent implements OnInit {
     this.charactersService.updatePublicPrivateRoll(val, !this.isFromCampaignDetail, id)
       .subscribe(data => {
         try {
-          if (this.character.lastCommandResult)
-            this.calculationStringArray = DiceService.getCalculationStringArray(this.character.lastCommandResult);
+          //if (this.character.lastCommandResult)
+          //  this.calculationStringArray = DiceService.getCalculationStringArray(this.character.lastCommandResult);
         } catch (err) { }
       }, error => {
-        this.character = new Characters();
+        //this.character = new Characters();
       }, () => { });
   }
 
