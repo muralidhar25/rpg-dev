@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using NgChatSignalR.Models;
 
 namespace DAL.Services
 {
@@ -327,5 +328,101 @@ namespace DAL.Services
             }
             return string.Empty;
         }
+        #region Chat
+        public List<ParticipantResponseViewModel> getChatParticipantList()
+        {
+            List<ParticipantResponseViewModel> result = new List<ParticipantResponseViewModel>();
+            var rulesets = _context.RuleSets.Include(x=>x.AspNetUser).Where(x => x.AspNetUser.IsGm == true && x.IsDeleted!=true).ToList();
+
+            //////////Need to be commented..
+            //users = users.Where(x => x.Id == "248c6bae-fab3-4e1f-b91b-f674de70a65d").ToList();
+            //////////
+            foreach (var ruleset in rulesets)
+            {
+                ParticipantResponseViewModel obj = new ParticipantResponseViewModel()
+                {
+                    Metadata = new ParticipantMetadataViewModel()
+                    {
+                        TotalUnreadMessages = 0
+                    },
+                    Participant = new ChatParticipantViewModel()
+                    {
+                        //DisplayName = ruleset.AspNetUser.UserName,
+                        //Id = ruleset.AspNetUser.Id,
+                        //Avatar = ruleset.AspNetUser.ProfileImage,
+                        //CampaignID = ruleset.RuleSetId, 
+                        //UserId= ruleset.AspNetUser.Id
+
+
+                        //DisplayName = ruleset.RuleSetName,                        
+                        //Avatar = ruleset.ImageUrl,
+                        DisplayName = ruleset.AspNetUser.UserName + " (GM)",
+                        Avatar = ruleset.AspNetUser.ProfileImage,
+                        Id = ruleset.RuleSetId.ToString(),
+                        CampaignID = ruleset.RuleSetId,
+                        UserId = ruleset.AspNetUser.Id,
+                        Status =3,
+                        //UserAvatar= ruleset.AspNetUser.ProfileImage,
+                        //UserDisplayName= ruleset.AspNetUser.UserName,
+                    }
+                };
+                result.Add(obj);                
+            }
+            var chars = _context.PlayerInvites.Where(x => x.PlayerCharacterID != null && x.IsDeleted != true).Include(x => x.PlayerCharacter).OrderBy(x=> x.PlayerCharacter.CharacterName).ToList();
+
+            //////////Need to be commented..
+            //chars = chars.Where(x => x.PlayerCharacterID == 569 || x.PlayerCharacterID == 570).ToList();
+            //////////
+            ///
+            foreach (var character in chars)
+            {
+                ParticipantResponseViewModel charObj = new ParticipantResponseViewModel()
+                {
+                    Metadata = new ParticipantMetadataViewModel()
+                    {
+                        TotalUnreadMessages = 0
+                    },
+                    Participant = new ChatParticipantViewModel()
+                    {
+                        DisplayName = character.PlayerCharacter.CharacterName,
+                        Id = character.PlayerCharacterID.ToString(),
+                        Avatar = character.PlayerCharacter.ImageUrl,
+                       
+                        CampaignID = 0,
+                        CharacterCampaignID = (int)character.PlayerCampaignID,
+                        CharacterID = (int)character.PlayerCharacterID,
+                        UserId = character.PlayerCharacter.UserId,
+                        Status = 3
+                    }
+                };
+                //if (!result.Where(x => x.Participant.UserId == charObj.Participant.UserId).Any())
+                //{
+                    result.Add(charObj);
+                //}
+                ////////else {
+                ////////    var obj = result.Where(x => x.Participant.UserId == charObj.Participant.UserId).FirstOrDefault();
+                ////////    if (obj!=null)
+                ////////    {
+                ////////        result.Remove(obj);
+                ////////        obj.Participant.CampaignID = 0;
+                ////////        obj.Participant.CharacterCampaignID = (int)character.PlayerCampaignID;
+                ////////        obj.Participant.CharacterID = (int)character.PlayerCharacterID;
+                ////////        result.Add(obj);
+                ////////    }
+                ////////}
+            }
+            
+            return result;
+        }
+        public void SaveChatMessage(ChatMessage chatMessageModel)
+        {
+            _context.ChatMessages.Add(chatMessageModel);
+            _context.SaveChanges();
+        }
+        public List<ChatMessage> GetChatMessage(int campaignID)
+        {
+           return _context.ChatMessages.Where(x=>x.CampaignID== campaignID).ToList();            
+        }
+        #endregion
     }
 }
