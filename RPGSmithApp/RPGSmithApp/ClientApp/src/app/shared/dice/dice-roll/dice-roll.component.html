@@ -17,9 +17,9 @@
     </div>
 
     <div class="modal-body" style="padding-top: 0.5rem" *ngIf="!isLoading">
-      <div class="row">
+      <div class="row" [ngClass]="{'d-none' : rollSection}">
         <div class="col-12 col-sm-6">
-          <div class="form-group saved-commands" [ngClass]="{'d-none' : rollSection}" style="margin-bottom:0.25rem">
+          <div class="form-group saved-commands" style="margin-bottom:0.25rem">
             <label>Saved Commands</label>
             <div class="command-list">
               <small *ngIf="characterCommandData?.length == 0">No Available Command</small>
@@ -291,6 +291,9 @@
           </div>
           <div class="d-flex col-12 " *ngIf="displayCurrentRollBtn" [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'">
             <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block" (click)="onClickRollAll(characterCommandModel,mainCommandText)"> Roll  All  Again </button>
+          </div>
+          <div class="d-flex col-12 " >
+            <button type="button" id="diceRollAgainTrigger" *ngIf="isShowSendtoChat || isFromCampaignDetail " class="btn btn-accent btn-block" (click)="sendToChat()"> Send To Chat </button>
           </div>
 
         </div>
