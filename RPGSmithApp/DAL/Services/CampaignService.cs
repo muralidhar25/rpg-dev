@@ -288,9 +288,22 @@ namespace DAL.Services
             }
             return res;
         }
+        public async Task<bool> isGmAccessingPlayerCharacterUrl(int characterID, ApplicationUser currentUser) {
+            var currentCharacter = _context.Characters.Where(x => x.CharacterId == characterID);
+            var userId = currentCharacter.Select(x => x.UserId).FirstOrDefault();
+            var rulesetOfCurrentCharacter = _context.RuleSets.Where(x => x.RuleSetId == currentCharacter.Select(q => q.RuleSetId).FirstOrDefault()).FirstOrDefault();
+            if (currentUser.IsGm && currentUser.Id == rulesetOfCurrentCharacter.OwnerId)
+            {
+                return true;
+            }
+
+            return false;
+        }
         public async Task<PlayerControlModel> getPlayerControlsByCharacterId(int characterID, ApplicationUser currentUser) {
-            var userId = _context.Characters.Where(x => x.CharacterId == characterID).Select(x => x.UserId).FirstOrDefault();
-            if (currentUser.Id == userId && currentUser.IsGm)
+            var currentCharacter = _context.Characters.Where(x => x.CharacterId == characterID);
+            var userId = currentCharacter.Select(x => x.UserId).FirstOrDefault();
+            var rulesetOfCurrentCharacter = _context.RuleSets.Where(x => x.RuleSetId == currentCharacter.Select(q => q.RuleSetId).FirstOrDefault()).FirstOrDefault();
+            if (currentUser.Id == userId && currentUser.IsGm && currentUser.Id== rulesetOfCurrentCharacter.OwnerId)
             {
                 return new PlayerControlModel()
                 {

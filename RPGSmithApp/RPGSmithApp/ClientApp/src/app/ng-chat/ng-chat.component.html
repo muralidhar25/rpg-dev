@@ -7,7 +7,7 @@
         {{localization.title}}
       </span>
     </a>
-    <a class="ng-chat-volume" (click)="toggleNotificationSound()">
+    <a class="ng-chat-volume"  (click)="toggleNotificationSound()" popover="{{audioEnabled?'UNMUTE':'MUTE'}}" triggers="hover click" placement="left">
       <i class="fa" [ngClass]="{'fa-volume-off':!audioEnabled, 'fa-volume-up':audioEnabled}" aria-hidden="true"></i>
       <i class="fa fa-times ng-chat-volume-mute" *ngIf="!audioEnabled" aria-hidden="true"></i>
     </a>
@@ -106,15 +106,16 @@
                       </span>
                     </ng-container>
                     <ng-container [ngSwitch]="message.type">
-                      <div *ngSwitchCase="MessageType.Text" [ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId, 'system-chat-message':message.isSystemGenerated}">
-                        <span [froalaView]="message.message | emojify:emojisEnabled | linkfy:linkfyEnabled">
+                      <div #messageDiv *ngSwitchCase="MessageType.Text" [ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId, 'system-chat-message':message.isSystemGenerated}">
+                        <span class="ng-chat-message-span" [froalaView]="message.message | emojify:emojisEnabled | linkfy:linkfyEnabled">
                           
                         </span>
                         <!--<span>
                           {{message.message | emojify:emojisEnabled | linkfy:linkfyEnabled}}
                         </span>-->
                         <span *ngIf="showMessageDate && message.dateSent" class="message-sent-date icon icon-Gen-Ellipsis"
-                              popover="{{message.dateSent | date:messageDatePipeFormat}}" triggers="hover" placement="left"></span>
+                              popover="{{message.dateSent | date:messageDatePipeFormat}}" triggers="hover" placement="left"
+                              (click)="toggleDiceResult($event)"></span>
                         <!--<span *ngIf="showMessageDate && message.dateSent" class="message-sent-date icon icon-Gen-Ellipsis"                              
                               popover="{{message.dateSent | date:messageDatePipeFormat}}" triggers="hover" ></span>-->
 

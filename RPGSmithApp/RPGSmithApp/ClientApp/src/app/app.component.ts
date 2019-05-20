@@ -207,11 +207,13 @@ export class AppComponent implements OnInit, AfterViewInit {
           if (this.router.url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1) {
             this.logoPath = '/rulesets/campaigns';
             console.log("1.this.signalRAdapter = undefined")
-            this.signalRAdapter = undefined;
+            this.leaveChat();
+          //this.signalRAdapter = undefined;
           } else if (this.router.url.toUpperCase().indexOf('/CHARACTERS') > -1) {
             this.logoPath = '/rulesets/campaigns';
             console.log("2.this.signalRAdapter = undefined")
-            this.signalRAdapter = undefined;
+            this.leaveChat();
+          //this.signalRAdapter = undefined;
           }
 
           if (this.router.url.toUpperCase().indexOf('/RULESET/') > -1 && this.router.url.toUpperCase().indexOf('CHARACTER/RULESET') == -1) {
@@ -232,7 +234,8 @@ export class AppComponent implements OnInit, AfterViewInit {
           debugger
           if (this.router.url.toUpperCase() == ('/CHARACTER') || this.router.url.toUpperCase() == ('/CHARACTERS')) {
             console.log("15.this.signalRAdapter = undefined")
-            this.signalRAdapter = undefined;
+            this.leaveChat();
+          //this.signalRAdapter = undefined;
           }
         }
         
@@ -262,7 +265,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
       else { //is user!
         console.log("4.this.signalRAdapter = undefined")
-        this.signalRAdapter = undefined;
+        this.leaveChat();
+          //this.signalRAdapter = undefined;
       }
 
       if (serviceData) {
@@ -279,9 +283,10 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (this.headers.headerLink == "character") {
           this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
             .subscribe(data => {
+              debugger
               if (data) {
                 if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
-                  if (!this.signalRAdapter && !user.isGm) { //get player control 265
+                  if (!this.signalRAdapter ) { //get player control 265
                     let model: any = user;
                     if (this.headers) {
                       if (this.headers.headerId  && data.isPlayerCharacter) {
@@ -295,24 +300,28 @@ export class AppComponent implements OnInit, AfterViewInit {
                   }
                   else if (!data.isPlayerCharacter && !user.isGm) {
                     console.log("6.this.signalRAdapter = undefined")
-                    this.signalRAdapter = undefined;
+                    this.leaveChat();
+          //this.signalRAdapter = undefined;
                   }
-                  this.haveHandOutItems = true;
-                  let _rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
-                  this.lootService.getLootItemsForPlayers<any>(_rulesetId)
-                    .subscribe(data => {
-                      if (data) {
-                        if (data.length) {
-                          this.haveLootItems = true;
-                          
+                  if (this.router.url.toUpperCase().indexOf('/CHARACTER') > -1) {
+                    this.haveHandOutItems = true;
+                    let _rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+                    this.lootService.getLootItemsForPlayers<any>(_rulesetId)
+                      .subscribe(data1 => {
+                        if (data1) {
+                          if (data1.length) {
+                            this.haveLootItems = true;
+
+                          }
                         }
-                      }
-                    }, error => {
-                      let Errors = Utilities.ErrorDetail("", error);
-                      if (Errors.sessionExpire) {
-                        this.authService.logout(true);
-                      }
-                    }, () => { });
+                      }, error => {
+                        let Errors = Utilities.ErrorDetail("", error);
+                        if (Errors.sessionExpire) {
+                          this.authService.logout(true);
+                        }
+                      }, () => { });
+                  }
+                 
                 }
               }
             }, error => {
@@ -715,11 +724,13 @@ export class AppComponent implements OnInit, AfterViewInit {
             if ((<NavigationStart>event).url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1) {
               this.logoPath = '/rulesets/campaigns';
               console.log("7.this.signalRAdapter = undefined")
-              this.signalRAdapter = undefined;
+              this.leaveChat();
+          //this.signalRAdapter = undefined;
             } else if ((<NavigationStart>event).url.toUpperCase().indexOf('/CHARACTERS') > -1) {
               this.logoPath = '/rulesets/campaigns';
               console.log("8.this.signalRAdapter = undefined")
-              this.signalRAdapter = undefined;
+              this.leaveChat();
+          //this.signalRAdapter = undefined;
             }
             
             if ((<NavigationStart>event).url.toUpperCase().indexOf('/RULESET/') > -1 && this.router.url.toUpperCase().indexOf('CHARACTER/RULESET') == -1) {
@@ -740,7 +751,8 @@ export class AppComponent implements OnInit, AfterViewInit {
             debugger
             if ((<NavigationStart>event).url.toUpperCase() == ('/CHARACTER') || (<NavigationStart>event).url.toUpperCase() == ('/CHARACTERS')) {
               console.log("16.this.signalRAdapter = undefined")
-              this.signalRAdapter = undefined;
+              this.leaveChat();
+          //this.signalRAdapter = undefined;
             }
           }
           //if (!this.haveCheckedNewInvitation) {
@@ -770,9 +782,10 @@ export class AppComponent implements OnInit, AfterViewInit {
             if (this.headers.headerLink == "character") {
               this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
                 .subscribe(data => {
-                  if (data) {
+                  debugger
+                  if (data) {                    
                     if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
-                      if (!this.signalRAdapter && !user.isGm) {
+                      if (!this.signalRAdapter) {
                         let model: any = user;
                         if (this.headers) {
                           if (this.headers.headerId && data.isPlayerCharacter) {
@@ -787,25 +800,29 @@ export class AppComponent implements OnInit, AfterViewInit {
                       }
                       else if (!data.isPlayerCharacter && !user.isGm) {
                        console.log("11.this.signalRAdapter = undefined")
-                        this.signalRAdapter = undefined;
+                        this.leaveChat();
+          //this.signalRAdapter = undefined;
                       }
-                      this.haveHandOutItems = true;
-                      let _rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
-                      this.lootService.getLootItemsForPlayers<any>(_rulesetId)
-                        .subscribe(data => {
-                          if (data) {
-                            if (data.length) {
-                              this.haveLootItems = true;
-                              
-                           //   console.log(_rulesetId);
+                      if ((<NavigationStart>event).url.toUpperCase().indexOf('/CHARACTER') > -1) {
+                        this.haveHandOutItems = true;
+                        let _rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
+                        this.lootService.getLootItemsForPlayers<any>(_rulesetId)
+                          .subscribe(data1 => {
+                            if (data1) {
+                              if (data1.length) {
+                                this.haveLootItems = true;
+
+                                //   console.log(_rulesetId);
+                              }
                             }
-                          }
-                        }, error => {
-                          let Errors = Utilities.ErrorDetail("", error);
-                          if (Errors.sessionExpire) {
-                            this.authService.logout(true);
-                          }
-                        }, () => { });
+                          }, error => {
+                            let Errors = Utilities.ErrorDetail("", error);
+                            if (Errors.sessionExpire) {
+                              this.authService.logout(true);
+                            }
+                          }, () => { });
+                      }
+                      
                     }
                   }
                 }, error => {
@@ -819,8 +836,9 @@ export class AppComponent implements OnInit, AfterViewInit {
           }
         }
         else {
-         console.log("12.this.signalRAdapter = undefined")
-          this.signalRAdapter = undefined;
+          console.log("12.this.signalRAdapter = undefined")
+          this.leaveChat();
+          //this.signalRAdapter = undefined;
         }
         this.logoNavigation((<NavigationStart>event).url);
         
@@ -1214,10 +1232,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   setPlaceholderText(value: any) {
     this.placeHolderText = value;    
   }
-  setHeaderToNull() {
+  setHeaderToNull(url) {
     this.headers = null;
-    
-    this.router.navigate(['/characters']);
+    debugger
+    this.router.navigate(url);
   }
   showDialog(dialog: AlertDialog) {
 
@@ -1540,5 +1558,19 @@ export class AppComponent implements OnInit, AfterViewInit {
     //  this.localStorage.localStorageSetItem(DBkeys.rulesetNameforChat, this.headers.headerName);
     //}
     
+  }
+  leaveChat() {
+    if (this.signalRAdapter) {
+      debugger
+      this.charactersService.leaveChat(this.signalRAdapter.userId)
+        .subscribe(data => {
+       
+         
+        }, error => {
+          
+        });
+      //this.signalRAdapter.LeaveChat();
+    }
+    this.signalRAdapter = undefined;
   }
 }

@@ -31,7 +31,22 @@ namespace RPGSmithApp.Controllers
         [HttpPost("ListFriends")]
         public IActionResult ListFriends([FromBody] dynamic payload)
         {
-            return Json(GroupChatHub.ConnectedParticipants((string)payload.currentUserId));
+            GroupChatHub hub = new GroupChatHub(_campaignService);
+               var res = hub.ConnectedParticipants((string)payload.currentUserId);
+            return Json(res);
+
+            // Use the following for group chats
+            // Make sure you have [pollFriendsList] set to true for this simple group chat example to work as
+            // broadcasting with group was not implemented here
+            // return Json(GroupChatHub.ConnectedParticipants((string)payload.currentUserId));
+        }
+        
+             [HttpGet("leaveChat")]
+        public IActionResult leaveChat([FromBody] dynamic payload,string chatConnectonID)
+        {
+            GroupChatHub hub = new GroupChatHub(_campaignService);
+             hub.offlineParticipant(chatConnectonID);
+            return Ok();
 
             // Use the following for group chats
             // Make sure you have [pollFriendsList] set to true for this simple group chat example to work as
@@ -96,7 +111,7 @@ namespace RPGSmithApp.Controllers
                             Message = message.Message,
                             DateSent = message.DateSent,
                             Type = 1,
-                            FromId = res.Id,
+                            FromId = fromid,
                             ToId = payload.Id,
                             IsSystemGenerated=message.IsSystemGenerated
                         };

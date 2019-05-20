@@ -226,7 +226,8 @@ export class NgChat implements OnInit, IChatController {
     }
 
   filterCampaignParticipants(participants) {
-//debugger
+    //debugger
+    //console.log("participants-1", participants)
     //  let user = this.localStorage.getDataObject<any>(DBkeys.CURRENT_USER);
     let rulesetID = ServiceUtil.CurrentCharacters_RulesetID(this.localStorage);
     if (participants) {
@@ -319,7 +320,7 @@ export class NgChat implements OnInit, IChatController {
           this.IsDefaultGroupCreated = true;
 
         }
-       // console.log("participants", participants)
+        //console.log("participants", participants)
       }
     }
     
@@ -751,16 +752,16 @@ export class NgChat implements OnInit, IChatController {
     // Emits a browser notification
     private emitBrowserNotification(window: Window, message: Message): void
     {       
-        if (this.browserNotificationsBootstrapped && !window.hasFocus && message) {
-            let notification = new Notification(`${this.localization.browserNotificationTitle} ${window.participant.displayName}`, {
-                'body': message.message,
-                'icon': this.browserNotificationIconSource
-            });
+        //if (this.browserNotificationsBootstrapped && !window.hasFocus && message) {
+        //    let notification = new Notification(`${this.localization.browserNotificationTitle} ${window.participant.displayName}`, {
+        //        'body': message.message,
+        //        'icon': this.browserNotificationIconSource
+        //    });
 
-            setTimeout(() => {
-                notification.close();
-            }, message.message.length <= 50 ? 5000 : 7000); // More time to read longer messages
-        }
+        //    setTimeout(() => {
+        //        notification.close();
+        //    }, message.message.length <= 50 ? 5000 : 7000); // More time to read longer messages
+        //}
     }
 
     // Saves current windows state into local storage if persistence is enabled
@@ -1177,15 +1178,19 @@ export class NgChat implements OnInit, IChatController {
   sendDiceRolledToChatGroup(diceR: any) {
     let message = new Message();
     message.fromId = this.userId;
-    message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length-1].id;
+    message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;
     //message.isSystemGenerated = true;
     debugger
     let diceResult = Object.assign({}, diceR)
     let commandModel: CharacterCommand = diceResult.characterCommandModel;
     let characterMultipleCommands: any[] = diceResult.characterMultipleCommands;
-    let result: string = commandModel.lastResult ? commandModel.lastResult.toString() : '0';
+    let ExpandResult: string = commandModel.lastResult ? commandModel.lastResult.toString() : '0';
+    let CollaspedResult: string = commandModel.lastResult ? commandModel.lastResult.toString() : '0';
+    let CollaspedMessage = '';
+    let ExpandedMessage = '';
     if (characterMultipleCommands.length) {
-      result = '';
+      ExpandResult = '';
+      CollaspedResult = '';
       characterMultipleCommands.map((x) => {
         let _beforeResult = "";
         let _afterResult = "";
@@ -1195,15 +1200,17 @@ export class NgChat implements OnInit, IChatController {
         if (x.afterResult) {
           _afterResult = x.afterResult.replace(/"/g, '');
         }
-        result += "<span class='ng-chat-grey-text'>" + x.calculationString + "</span> = <b>" + _beforeResult + " <u>" + x.calculationResult + "</u> " + _afterResult +"</b><br/>";
+        ExpandResult += "<span class='ng-chat-grey-text'>" + x.calculationString + "</span> = <b>" + _beforeResult + " <u>" + x.calculationResult + "</u> " + _afterResult + "</b><br/>";
+        CollaspedResult += "<b>" + _beforeResult + " <u>" + x.calculationResult + "</u> " + _afterResult + "</b><br/>";
       })
     }
-    message.message = "<span class='ng-chat-orange-text'>Rolled: </span><span class='ng-chat-grey-text'>" + commandModel.command + "</span><br/><span class='ng-chat-orange-text'>Result: </span>" + result ;  
-    
+    ExpandedMessage = "<span class='ng-chat-message-expand d-none'><span class='ng-chat-orange-text'>Rolled: </span><span class='ng-chat-grey-text'>" + commandModel.command + "</span><br/><span class='ng-chat-orange-text'>Result: </span>" + ExpandResult + "</span>";
+    CollaspedMessage = "<span class='ng-chat-message-collaspe'><span class='ng-chat-orange-text'>Result: </span>" + CollaspedResult + "</span>";
+    message.message = CollaspedMessage + ExpandedMessage;
     message.dateSent = new Date();
     //console.log("SendMessageVariable", message)
     this.windows.map((x) => {
-      if (!x.isCollapsed && x.participant.displayName=="Everyone") {
+      if (!x.isCollapsed && x.participant.displayName == "Everyone") {
         x.messages.push(message);
         this.scrollChatWindow(x, ScrollDirection.Bottom);
       }
@@ -1229,5 +1236,24 @@ export class NgChat implements OnInit, IChatController {
   }
   toggleNotificationSound() {
     this.audioEnabled = !this.audioEnabled;
+  }
+  toggleDiceResult(e) {
+    debugger
+    if (e.currentTarget.previousElementSibling.children) {
+      if (e.currentTarget.previousElementSibling.children[0]) {
+        if (e.currentTarget.previousElementSibling.children[0].classList.contains('ng-chat-message-collaspe')) {
+          if (e.currentTarget.previousElementSibling.children[0].classList.contains('d-none')) {
+            e.currentTarget.previousElementSibling.children[0].classList.remove('d-none');
+            e.currentTarget.previousElementSibling.children[1].classList.remove('d-none');
+            e.currentTarget.previousElementSibling.children[1].classList.add('d-none');
+          }
+          else if (e.currentTarget.previousElementSibling.children[1].classList.contains('d-none')) {
+            e.currentTarget.previousElementSibling.children[0].classList.remove('d-none');
+            e.currentTarget.previousElementSibling.children[1].classList.remove('d-none');
+            e.currentTarget.previousElementSibling.children[0].classList.add('d-none');
+          }
+        }
+      }
+    }
   }
 }

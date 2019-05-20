@@ -14,19 +14,74 @@ public class GroupChatHub : Hub
     public GroupChatHub(ICampaignService campaignService)
     {
         this._campaignService = campaignService;
-        if (AllConnectedParticipants.Count==0)
+        if (AllConnectedParticipants.Count == 0)
         {
             AllConnectedParticipants = _campaignService.getChatParticipantList();// new List<ParticipantResponseViewModel>();
         }
-       
+        else
+        {
+            RefreshParticipants();
+        }
+
     }
+
+    private void RefreshParticipants()
+    {
+        var newList = _campaignService.getChatParticipantList();
+        foreach (var item in AllConnectedParticipants)
+        {
+            var rec = newList
+                .Where(x =>
+                x.Participant.CampaignID == item.Participant.CampaignID
+                && x.Participant.CharacterCampaignID == item.Participant.CharacterCampaignID
+                && x.Participant.CharacterID == item.Participant.CharacterID
+                && x.Participant.UserId == item.Participant.UserId
+                
+                ).FirstOrDefault();
+            if (rec != null)
+            {
+                rec.Participant.Id = item.Participant.Id;
+                rec.Participant.Status = item.Participant.Status;
+            }
+            else {
+                if (item.Participant.GetType().Name== "GroupChatParticipantViewModel")
+                {
+                    if (((GroupChatParticipantViewModel)item.Participant).ChattingTo !=null)
+                    {
+                        newList.Add(item);
+                    }                    
+                }                
+            }
+        }
+        AllConnectedParticipants = newList;
+    }
+
+    internal void offlineParticipant(string currentUserId)
+    {
+        //var user = AllConnectedParticipants.Where(x => x.Participant.Id == currentUserId).FirstOrDefault();
+        //if (user!=null)
+        //{
+        //    user.Participant.Status = 3;
+        //}
+        foreach (var item in AllConnectedParticipants)
+        {
+            if (item.Participant.Id == currentUserId)
+            {
+                item.Participant.Status = 3;
+            }
+
+        }
+    }
+
     private static List<ParticipantResponseViewModel> AllConnectedParticipants { get; set; } = new List<ParticipantResponseViewModel>();
     private static List<ParticipantResponseViewModel> DisconnectedParticipants { get; set; } = new List<ParticipantResponseViewModel>();
     private static List<GroupChatParticipantViewModel> AllGroupParticipants { get; set; } = new List<GroupChatParticipantViewModel>();
     private object ParticipantsConnectionLock = new object();
 
-    private static IEnumerable<ParticipantResponseViewModel> FilteredGroupParticipants(string currentUserId)
+    private  IEnumerable<ParticipantResponseViewModel> FilteredGroupParticipants(string currentUserId)
     {
+        RefreshParticipants();
+
         var res= AllConnectedParticipants
             .Where(p => p.Participant.ParticipantType == ChatParticipantTypeEnum.User 
                    || AllGroupParticipants.Any(g => g.Id == p.Participant.Id && g.ChattingTo.Any(u => u.Id == currentUserId))
@@ -34,7 +89,7 @@ public class GroupChatHub : Hub
         return res;
     }
 
-    public static IEnumerable<ParticipantResponseViewModel> ConnectedParticipants(string currentUserId)
+    public  IEnumerable<ParticipantResponseViewModel> ConnectedParticipants(string currentUserId)
     {
         return FilteredGroupParticipants(currentUserId).Where(x => x.Participant.Id != currentUserId);
     }
