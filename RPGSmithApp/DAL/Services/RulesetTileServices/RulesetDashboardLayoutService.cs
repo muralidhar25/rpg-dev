@@ -158,11 +158,11 @@ namespace DAL.Services.RulesetTileServices
             if (page > 0 && pageSize > 0)
                 RulesetDashboardLayouts = _context.RulesetDashboardLayouts
                 .Include(d => d.RulesetDashboardPages)
-               .Where(x => x.RulesetId == RulesetId && x.IsDeleted != true).OrderBy(x => x.SortOrder).Skip(pageSize * (page - 1)).Take(pageSize).ToList();
+               .Where(x => x.RulesetId == RulesetId && !x.IsSharedLayout && x.IsDeleted != true).OrderBy(x => x.SortOrder).Skip(pageSize * (page - 1)).Take(pageSize).ToList();
             else
                 RulesetDashboardLayouts = _context.RulesetDashboardLayouts
                     .Include(d => d.RulesetDashboardPages)
-                   .Where(x => x.RulesetId == RulesetId && x.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();
+                   .Where(x => x.RulesetId == RulesetId && !x.IsSharedLayout && x.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();
 
             if (RulesetDashboardLayouts == null) return RulesetDashboardLayouts;
 
@@ -345,5 +345,30 @@ namespace DAL.Services.RulesetTileServices
         {
             return _context.RulesetDashboardLayouts.Where(x => x.RulesetId == ruleSetId && x.IsDeleted != true).Count();
         }
+
+        #region Shared layout
+        public async Task<List<RulesetDashboardLayout>> GetSharedLayoutByRulesetId(int RulesetId, int page = -1, int pageSize = -1)
+        {
+            List<RulesetDashboardLayout> RulesetDashboardLayouts = null;
+
+            if (page > 0 && pageSize > 0)
+                RulesetDashboardLayouts = _context.RulesetDashboardLayouts
+                .Include(d => d.RulesetDashboardPages)
+               .Where(x => x.RulesetId == RulesetId && x.IsSharedLayout && x.IsDeleted != true).OrderBy(x => x.SortOrder).Skip(pageSize * (page - 1)).Take(pageSize).ToList();
+            else
+                RulesetDashboardLayouts = _context.RulesetDashboardLayouts
+                    .Include(d => d.RulesetDashboardPages)
+                   .Where(x => x.RulesetId == RulesetId && x.IsSharedLayout && x.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();
+
+            if (RulesetDashboardLayouts == null) return RulesetDashboardLayouts;
+
+            foreach (RulesetDashboardLayout cdl in RulesetDashboardLayouts)
+            {
+                cdl.RulesetDashboardPages = cdl.RulesetDashboardPages.Where(p => p.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();
+            }
+
+            return RulesetDashboardLayouts;
+        }
+        #endregion
     }
 }

@@ -203,7 +203,7 @@ export class CharacterDashboardComponent implements OnInit {
 
         this.layoutService.getLayoutsByCharacterId(this.characterId, -1, -1)
           .subscribe(data => {
-
+            debugger
             this.characterlayouts = data;
             //if (this.characterlayouts.length == 1) {
             //    this.selectedlayout = this.characterlayouts[0];
@@ -256,7 +256,7 @@ export class CharacterDashboardComponent implements OnInit {
             if (this.selectedlayout.characterDashboardPages.length == 1) {
               this.selectedPage = this.selectedlayout.characterDashboardPages[0];
             }
-
+            debugger
             this.characterlayouts.forEach(function (val) {
 
               if (selectedLayoutId == val.characterDashboardLayoutId) {
@@ -506,7 +506,7 @@ export class CharacterDashboardComponent implements OnInit {
 
         this.layoutService.getLayoutsByCharacterId(this.characterId, -1, -1)
           .subscribe(data => {
-
+            debugger
             this.characterlayouts = data;
             if (this.LayoutId) {
               this.characterlayouts.map((item) => {
@@ -805,6 +805,7 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   onLayoutSelect(layout: any): void {
+    debugger
     this.selectedlayout = layout;
 
     this.selectedPage = layout.characterDashboardPages[0];

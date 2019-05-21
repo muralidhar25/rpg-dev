@@ -27,6 +27,7 @@ export class RulesetDashboardLayoutService extends EndpointFactory {
   private readonly getByIdUrl: string = this.configurations.baseUrl + "/api/RulesetDashboardLayout/GetById";
   private readonly updateDefaultLayoutApi: string = this.configurations.baseUrl + "/api/RulesetDashboardLayout/UpdateDefaultLayout";
   private readonly updateDefaultLayoutPageApi: string = this.configurations.baseUrl + "/api/RulesetDashboardLayout/UpdateDefaultLayoutPage";
+  private readonly getSharedByRulesetIdUrl: string = this.configurations.baseUrl + "/api/RulesetDashboardLayout/getSharedLayoutByRulesetId";
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
     private fileUploadService: FileUploadService) {
@@ -59,7 +60,7 @@ export class RulesetDashboardLayoutService extends EndpointFactory {
         return this.handleError(error, () => this.getLayoutsByRulesetId(Id, page, pageSize));
       });
   }
-
+  
   createRulesetDashboardLayout<T>(RulesetDashboardLayout: RulesetDashboardLayout): Observable<T> {
 
     let endpointUrl = this.createUrl;
@@ -123,6 +124,15 @@ export class RulesetDashboardLayoutService extends EndpointFactory {
       });
   }
 
+  getSharedLayoutByRulesetId<T>(Id: number, page: number, pageSize: number): Observable<T> {
+    let endpointUrl = `${this.getSharedByRulesetIdUrl}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}`;
 
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getSharedLayoutByRulesetId(Id, page, pageSize));
+      });
+  }
+
+  
 
 }

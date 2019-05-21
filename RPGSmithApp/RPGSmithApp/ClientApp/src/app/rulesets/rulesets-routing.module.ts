@@ -17,6 +17,7 @@ import { CampaignsComponent } from "./campaigns/campaigns.component";
 import { CampaignDetailsComponent } from './campaign-details/campaign-details.component';
 import { LootComponent } from "../records/loot/loot.component";
 import { RulesetDetailsComponent } from "./ruleset-details/ruleset-details.component";
+import { CampaignDashboardComponent } from "./campaign-dashboard/campaign-dashboard.component";
 
 
 const routes: Routes = [
@@ -35,6 +36,7 @@ const routes: Routes = [
   { path: "add", component: RulesetAddInterfaceComponent, canActivate: [AuthGuard], data: { title: "Add Ruleset" } },
   { path: "campaigns", component: CampaignsComponent, data: { title: "Campaigns" } },
   { path: "campaign-details/:id", component: CampaignDetailsComponent, data: { title: "CampaignDetails" } },
+  { path: "campaign-dashboard/:id", component: CampaignDashboardComponent, data: { title: "Campaign Dashboard" } },
   { path: "ruleset-details/:id", component: RulesetDetailsComponent , data: { title: "RulesetDetails" } },
   { path: "loot/:id", component: LootComponent, data: { title: "Loot" } },
 ];

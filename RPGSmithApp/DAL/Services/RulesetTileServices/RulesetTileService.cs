@@ -408,6 +408,30 @@ namespace DAL.Services.RulesetTileServices
                                                         }
                                                     }
                                                     CharStat.CharacterStatCalcs = calcs;
+
+                                                    ////
+                                                    List<CharacterStatDefaultValue> dfv = new List<CharacterStatDefaultValue>();
+                                                    if (ds.Tables[14].Rows.Count > 0)
+                                                    {
+                                                        foreach (DataRow r in ds.Tables[14].Rows)
+                                                        {
+                                                            int dfvCharacterStat = r["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatId"]);
+                                                            if (characterstatID == dfvCharacterStat)
+                                                            {
+                                                                CharacterStatDefaultValue cal = new CharacterStatDefaultValue();
+                                                                cal.CharacterStatId = r["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatId"]);
+                                                                cal.CharacterStatDefaultValueId = r["CharacterStatDefaultValueId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatDefaultValueId"]);
+                                                                cal.DefaultValue = r["DefaultValue"] == DBNull.Value ? null : r["DefaultValue"].ToString();
+                                                                cal.Maximum = r["Maximum"] == DBNull.Value ? 0 : Convert.ToInt32(r["Maximum"]);
+                                                                cal.Minimum = r["Minimum"] == DBNull.Value ? 0 : Convert.ToInt32(r["Minimum"]);
+                                                                cal.Type = r["Type"] == DBNull.Value ? 0 : Convert.ToInt32(r["Type"]);
+                                                                dfv.Add(cal);
+                                                            }
+                                                        }
+                                                    }
+                                                    CharStat.CharacterStatDefaultValues = dfv.OrderBy(x=>x.Type).ToList();
+                                                    //////
+
                                                     CharacterStatType statType = null;
                                                     if (ds.Tables[11].Rows.Count > 0)
                                                     {

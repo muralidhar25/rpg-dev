@@ -574,6 +574,9 @@ export class CampaignDetailsComponent implements OnInit {
     this.bsModalRef.content.recordImage = null;
     this.bsModalRef.content.isFromCampaignDetail = true;
   }
- 
+  dashboard(ruleset: Ruleset) {
+    this.rulesetService.ruleset = ruleset;
+    this.router.navigate(['/ruleset/campaign-dashboard', ruleset.ruleSetId]);
+  }
   
 }
