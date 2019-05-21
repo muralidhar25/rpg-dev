@@ -50,7 +50,7 @@ export class SignalRGroupAdapter extends ChatAdapter implements IChatGroupAdapte
 
     
     this.hubConnection.on("generatedUserId", (userId) => {
-      debugger
+      
       // With the userId set the chat will be rendered
       this.userId = userId;
       //let currentUserChatConnections: ChatConnection[] = this.localStorage.getDataObject<ChatConnection[]>(DBkeys.chatConnections);

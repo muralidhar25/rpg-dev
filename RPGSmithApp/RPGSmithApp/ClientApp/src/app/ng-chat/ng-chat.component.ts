@@ -325,6 +325,7 @@ export class NgChat implements OnInit, IChatController {
     }
     
     //console.log(participants)
+    this.appService.updateChatCurrentParticipants(participants);
     return participants;
   }
     // Defines the size of each opened window to calculate how many windows can be opened on the viewport at the same time.

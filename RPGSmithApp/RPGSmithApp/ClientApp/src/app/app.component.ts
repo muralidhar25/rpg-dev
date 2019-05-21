@@ -232,7 +232,9 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
         else {
           debugger
-          if (this.router.url.toUpperCase() == ('/CHARACTER') || this.router.url.toUpperCase() == ('/CHARACTERS')) {
+          if (this.router.url.toUpperCase() == ('/CHARACTER') || this.router.url.toUpperCase() == ('/CHARACTERS')
+            || this.router.url.toUpperCase() == ('/RULESET') || this.router.url.toUpperCase() == ('/RULESETS')
+          ) {
             console.log("15.this.signalRAdapter = undefined")
             this.leaveChat();
           //this.signalRAdapter = undefined;
@@ -749,7 +751,10 @@ export class AppComponent implements OnInit, AfterViewInit {
           }
           else {
             debugger
-            if ((<NavigationStart>event).url.toUpperCase() == ('/CHARACTER') || (<NavigationStart>event).url.toUpperCase() == ('/CHARACTERS')) {
+            if (
+              (<NavigationStart>event).url.toUpperCase() == ('/CHARACTER') || (<NavigationStart>event).url.toUpperCase() == ('/CHARACTERS')
+              || (<NavigationStart>event).url.toUpperCase() == ('/RULESET') || (<NavigationStart>event).url.toUpperCase() == ('/RULESETS')
+            ) {
               console.log("16.this.signalRAdapter = undefined")
               this.leaveChat();
           //this.signalRAdapter = undefined;

@@ -7,7 +7,7 @@
         {{localization.title}}
       </span>
     </a>
-    <a class="ng-chat-volume"  (click)="toggleNotificationSound()" popover="{{audioEnabled?'UNMUTE':'MUTE'}}" triggers="hover click" placement="left">
+    <a class="ng-chat-volume"  (click)="toggleNotificationSound()" popover="{{ (!audioEnabled)?'UNMUTE':'MUTE' }}" triggers="hover click" placement="left">
       <i class="fa" [ngClass]="{'fa-volume-off':!audioEnabled, 'fa-volume-up':audioEnabled}" aria-hidden="true"></i>
       <i class="fa fa-times ng-chat-volume-mute" *ngIf="!audioEnabled" aria-hidden="true"></i>
     </a>
