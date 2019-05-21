@@ -60,6 +60,16 @@ namespace RPGSmithApp.Controllers
 
             return Ok(await _campaign.getPlayerControlsByCharacterId(characterID, GetUser()));
         }
+
+        [HttpGet("isGmAccessingPlayerCharacterUrl")]
+        public async Task<IActionResult> isGmAccessingPlayerCharacterUrl(int characterID)
+        {
+            if (_campaign.IsDeletedInvite(characterID, GetUserId()))
+            {
+                return Ok(false);
+            }
+            return Ok(await _campaign.isGmAccessingPlayerCharacterUrl(characterID, GetUser()));
+        }
         [HttpPost("updatePlayerControls")]
         public async Task<IActionResult> updatePlayerControls([FromBody] PlayerControl model)
         {

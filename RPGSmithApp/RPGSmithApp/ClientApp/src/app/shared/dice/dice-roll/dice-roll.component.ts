@@ -98,6 +98,7 @@ export class DiceRollComponent implements OnInit {
   ConditionsValuesList: CharactersCharacterStat[] = [];
   isFromCampaignDetail: boolean;
   isDicePublicRoll: boolean;
+  //isSkipDicePublicRollcheck: boolean=false;
   isShowSendtoChat: boolean;
   constructor(
     private router: Router, public modalService: BsModalService, private bsModalRef: BsModalRef, private alertService: AlertService,
@@ -158,9 +159,11 @@ export class DiceRollComponent implements OnInit {
       this.charactersService.getCharactersById<any>(this.characterId)
         .subscribe(data => {
           this.character = data;
+         
           if (!this.characterId) {
             this.character = new Characters();
           }
+          this.isDicePublicRoll = this.character.isDicePublicRoll;
           this.showTotal = true;
           try {
             if (this.character.lastCommandResult)
@@ -192,12 +195,18 @@ export class DiceRollComponent implements OnInit {
           //    this.authService.logout(true);
           //}
         }, () => { });
-      this.charactersService.getPlayerControlsByCharacterId(this.characterId)
+      this.charactersService.getIsGmAccessingPlayerCharacter(this.characterId)
         .subscribe(data => {
           if (data) {
-            if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
-              this.isShowSendtoChat = true;
-            }
+            this.isShowSendtoChat = true;
+            //debugger
+            //let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+            //if (user != null) {
+            //  if (user.isGm && (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter)) {
+            //    this.isShowSendtoChat = true;   //if this line is commented then no need to hit this API remove this API next time
+            //  }
+            //}
+           
           }
 
         }, error => {
@@ -226,7 +235,10 @@ export class DiceRollComponent implements OnInit {
               this.charactersService.getRuleset_charStats_ById<any>(this.rulesetId, this.characterId)
                 .subscribe(data => {
                   debugger
-                  this.isDicePublicRoll = data.ruleSet.isDicePublicRoll;
+                  if (this.isFromCampaignDetail) {
+                    this.isDicePublicRoll = data.ruleSet.isDicePublicRoll;
+                  }
+                  
                   let model: any = data;
                   this.statdetails = model.characterCharacterstats;
 
@@ -244,7 +256,7 @@ export class DiceRollComponent implements OnInit {
 
                   //for character tile & records
                   if (this.isFromTile) {
-
+                    //this.isSkipDicePublicRollcheck = true;
                     if (+this.bsModalRef.content.tile == TILES.EXECUTE) {
                       let executeFormModel = this.bsModalRef.content.executeTile;
                       let executeTile = executeFormModel.linkType == 'Spell' ? executeFormModel.spell.spell : executeFormModel.linkType == 'Ability' ? executeFormModel.ability.ability : executeFormModel.linkType == 'Item' ? executeFormModel.item : {};
@@ -1678,7 +1690,9 @@ export class DiceRollComponent implements OnInit {
           //    _minNum = +_minN > _minNum ? (_minNum == 0 ? +_minN : _minNum) : +_minN;
           //});
           if (!lastResultArray) {            
-            if (this.isDicePublicRoll) {
+            //if (this.isDicePublicRoll || this.isSkipDicePublicRollcheck) {
+              if (this.isDicePublicRoll) {
+              //this.isSkipDicePublicRollcheck = false;
               this.appService.updateChatWithDiceRoll({ characterCommandModel: this.characterCommandModel, characterMultipleCommands: this.characterMultipleCommands });
             }
           }

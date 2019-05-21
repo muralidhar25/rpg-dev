@@ -30,6 +30,7 @@ import { MarketPlaceService } from '../../core/services/maketplace.service';
 import { HandoutuploadComponent } from '../../shared/handouts/handout-upload/handoutupload.component';
 import { DiceRollComponent } from '../../shared/dice/dice-roll/dice-roll.component';
 import { Characters } from '../../core/models/view-models/characters.model';
+import { ChatParticipantStatus } from '../../ng-chat/core/chat-participant-status.enum';
  
 @Component({
   selector: 'app-campaign-details',
@@ -54,7 +55,7 @@ export class CampaignDetailsComponent implements OnInit {
   declinedUserList: playerInviteListModel[] = [];
   GmCharacterSlotsCount: number = 0;
   character: Characters = new Characters();
-
+  CurrentlyOnlinePlayersCount: number=0;
   constructor(private formBuilder: FormBuilder, private router: Router, private localStorage: LocalStoreManager, private marketPlaceService: MarketPlaceService,
     private rulesetService: RulesetService, private sharedService: SharedService, private authService: AuthService,
     private modalService: BsModalService, public appService: AppService1, public campaignService: CampaignService,
@@ -69,6 +70,27 @@ export class CampaignDetailsComponent implements OnInit {
 
       if (serviceJson) {
         this.initialize();
+      }
+    })
+    this.appService.shouldUpdateChatCurrentParticipants().subscribe(serviceJson => {
+      this.CurrentlyOnlinePlayersCount = 0;
+      if (serviceJson) {        
+        if (serviceJson.length) {
+          debugger
+          let participants = serviceJson.filter(x => !x.chattingTo);
+          participants.map((x) => {
+            this.invitedUsers.filter(z => z.playerCharacterId == x.characterID).map((s: any) => {
+              if (x.status == ChatParticipantStatus.Online) {
+                s.isConnected = true;
+              }
+              else {
+                s.isConnected = false;
+              }
+            })
+          })
+          this.CurrentlyOnlinePlayersCount = participants.filter(x => x.status == ChatParticipantStatus.Online).length;
+        }
+        
       }
     })
    
@@ -573,6 +595,11 @@ export class CampaignDetailsComponent implements OnInit {
     this.bsModalRef.content.recordName = null;
     this.bsModalRef.content.recordImage = null;
     this.bsModalRef.content.isFromCampaignDetail = true;
+  }
+ 
+  GetAcceptedPlayersCount(): number {
+    
+    return this.invitedUsers.filter(x => x.isAccepted).length;
   }
   dashboard(ruleset: Ruleset) {
     this.rulesetService.ruleset = ruleset;

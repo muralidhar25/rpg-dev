@@ -29,5 +29,6 @@ namespace DAL.Services
         string GetDeletedCharacterName(int characterID);
         void SaveChatMessage(ChatMessage chatMessageModel);
         List<ChatMessage> GetChatMessage(int campaignID);
+        Task<bool> isGmAccessingPlayerCharacterUrl(int characterID, ApplicationUser currentUser);
     }
 }

@@ -50,7 +50,7 @@ export class SignalRGroupAdapter extends ChatAdapter implements IChatGroupAdapte
 
     
     this.hubConnection.on("generatedUserId", (userId) => {
-      debugger
+      
       // With the userId set the chat will be rendered
       this.userId = userId;
       //let currentUserChatConnections: ChatConnection[] = this.localStorage.getDataObject<ChatConnection[]>(DBkeys.chatConnections);
@@ -134,7 +134,15 @@ export class SignalRGroupAdapter extends ChatAdapter implements IChatGroupAdapte
         catchError((error: any) => Observable.throw(error.error || 'Server error'))
       );
   }
-
+  LeaveChat(): Observable<ParticipantResponse[]> {
+    // this.userId
+    return this.http
+      .post(`${SignalRGroupAdapter.serverBaseUrl}api/chat/leaveChat`, { currentUserId: this.userId }, this.getRequestHeaders())
+      .pipe(
+        map((res: any) => res),
+        catchError((error: any) => Observable.throw(error.error || 'Server error'))
+      );
+  }
   getMessageHistory(participant: any): Observable<Message[]> {
     // This could be an API call to your web application that would go to the database
     // and retrieve a N amount of history messages between the users.

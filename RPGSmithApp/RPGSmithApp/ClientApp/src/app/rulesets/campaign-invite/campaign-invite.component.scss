@@ -128,3 +128,12 @@
   padding-top: 3px;
   height: 10.8rem;
 }
+@media (max-width: 767.5px) {
+  .modal-footer > :not(:last-child) {
+    margin-right:0px;
+  }
+  .small-btns{
+    width:50% !important;
+    margin:0px 0px 10px 0;
+  }
+}

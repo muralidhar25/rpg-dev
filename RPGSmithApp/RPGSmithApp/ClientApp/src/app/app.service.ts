@@ -16,6 +16,8 @@ export class AppService1 {
   private diceRollMessage = new Subject<any>();
   private lootMessage = new Subject<any>();
   private halfScreen = new Subject<any>();
+  private CurrentParticipants = new Subject<any>();
+  
 
   updateAccountSetting1(accountSetting: any) {    
     this.accountSetting.next(accountSetting);
@@ -88,6 +90,12 @@ export class AppService1 {
   }
   shouldUpdateChatHalfScreen(): Observable<any> {
     return this.halfScreen.asObservable();
+  }
+  updateChatCurrentParticipants(data: any) {
+    this.CurrentParticipants.next(data);
+  }
+  shouldUpdateChatCurrentParticipants(): Observable<any> {
+    return this.CurrentParticipants.asObservable();
   }
 }
 
