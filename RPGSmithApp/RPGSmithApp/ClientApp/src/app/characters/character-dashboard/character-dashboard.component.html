@@ -26,7 +26,7 @@
                       <button type="button" (click)="manageIcon('0')" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary show-layout-drp"></button>
                     </div>
                     <div class="dropdown-menu-item-actions-trigger showdrp">
-                      <button type="button" *ngIf="!layout?.showIcon" (click)="manageIcon(layout.characterDashboardLayoutId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary show-layout-drp"></button>
+                      <button type="button" *ngIf="!layout?.showIcon && layout.characterDashboardLayoutId != -1" (click)="manageIcon(layout.characterDashboardLayoutId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary show-layout-drp"></button>
                     </div>
                   </li>
 
@@ -49,7 +49,7 @@
                       <div class="card-actions action-buttons-left sorting-down-arrow" (click)="scrollDown(layout,false,this)">
                         <i class="fa fa-arrow-down"></i>
                       </div>
-                      <button type="button" *ngIf="!layout?.showIcon" (click)="manageIcon(layout.characterDashboardLayoutId)" title="Manage" data-toggle="tooltip" class="action-buttons-left btn icon icon-more btn-simple-primary show-layout-drp"></button>
+                      <button type="button" *ngIf="!layout?.showIcon && layout.characterDashboardLayoutId != -1" (click)="manageIcon(layout.characterDashboardLayoutId)" title="Manage" data-toggle="tooltip" class="action-buttons-left btn icon icon-more btn-simple-primary show-layout-drp"></button>
                     </div>
 
                   </li>
@@ -73,7 +73,7 @@
               <span class="is-page-show"><span class="d-none d-md-inline-block">Page</span> <span class="d-md-none">P</span> <em *ngIf="selectedPage && !isLoading">{{selectedPage.name}}</em></span>
             </div>
             <div [class]="pagedrpClass" aria-labelledby="pageLayoutNavigationToggle" *ngIf="isPageDropdownOpen && selectedlayout && !isLoading">
-              <div class="dropdown-menu-add-item-trigger">
+              <div class="dropdown-menu-add-item-trigger" *ngIf="!isSharedLayout">
                 <button type="button" (click)="newPage()" class="btn btn-accent btn-block">New Page</button>
               </div>
               <div class="web-view" [dragula]='"bag-characterDashboardPages"' [dragulaModel]="selectedlayout.characterDashboardPages">
@@ -87,7 +87,7 @@
                       <button (click)="managePageIcon(0)" type="button" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary show-page-drp"></button>
                     </div>
                     <div class="dropdown-menu-item-actions-trigger">
-                      <button type="button" *ngIf="!page?.showIcon" (click)="managePageIcon(page?.characterDashboardPageId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary show-page-drp"></button>
+                      <button type="button" *ngIf="!page?.showIcon && !isSharedLayout" (click)="managePageIcon(page?.characterDashboardPageId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary show-page-drp"></button>
                     </div>
                   </li>
 
@@ -110,7 +110,7 @@
                       <div class="card-actions action-buttons-left sorting-down-arrow" (click)="scrollDown(page,true,this)">
                         <i class="fa fa-arrow-down"></i>
                       </div>
-                      <button type="button" *ngIf="!page?.showIcon" (click)="managePageIcon(page?.characterDashboardPageId)" title="Manage" data-toggle="tooltip" class=" action-buttons-left btn icon icon-more btn-simple-primary show-page-drp"></button>
+                      <button type="button" *ngIf="!page?.showIcon && !isSharedLayout" (click)="managePageIcon(page?.characterDashboardPageId)" title="Manage" data-toggle="tooltip" class=" action-buttons-left btn icon icon-more btn-simple-primary show-page-drp"></button>
                     </div>
                   </li>
 
@@ -140,7 +140,7 @@
         <!-- Toolbar actions -->
         <ul class="page-toolbar-actions" [ngClass]="{'d-none d-md-flex' : !showActions}">
           <li>
-            <button [disabled]="isLoading" type="button" id="manageTilesTrigger" class="btn btn-outline-primary icon-Gen-Edit" (click)="checkTile('character/tiles',selectedPage?.characterDashboardPageId,selectedlayout.characterDashboardLayoutId)"> Manage Tiles</button>
+            <button *ngIf="!isSharedLayout" [disabled]="isLoading" type="button" id="manageTilesTrigger" class="btn btn-outline-primary icon-Gen-Edit" (click)="checkTile('character/tiles',selectedPage?.characterDashboardPageId,selectedlayout.characterDashboardLayoutId)"> Manage Tiles</button>
           </li>
           <li class="refresh-btn" *ngIf="pageRefresh" > 
             <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>

@@ -465,7 +465,7 @@ namespace RPGSmithApp.Controllers
             {
                 if (noDefaultLayout)
                 {
-                    //in case dashboard has no layout & page created
+                    //in case dashboard has no layout & page create shared layout
                     var _layout = await _rulesetDashboardLayoutService.Create(
                         new RulesetDashboardLayout()
                         {

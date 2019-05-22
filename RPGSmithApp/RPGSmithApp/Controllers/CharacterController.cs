@@ -602,7 +602,8 @@ namespace RPGSmithApp.Controllers
                 LastCommandValues = Character.LastCommandValues,
                 LastCommandTotal = Character.LastCommandTotal,
                 InventoryWeight = Character.InventoryWeight,
-                IsDicePublicRoll= Character.IsDicePublicRoll,
+                IsDicePublicRoll = Character.IsDicePublicRoll,
+                RuleSetId = Character.RuleSetId,
                 RuleSet = Character.RuleSet == null ? new RuleSetViewModel() : new RuleSetViewModel
                 {
                     RuleSetId = Character.RuleSet.RuleSetId,

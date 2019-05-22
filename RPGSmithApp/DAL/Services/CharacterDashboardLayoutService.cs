@@ -9,6 +9,7 @@ using DAL.Models;
 using DAL.Models.CharacterTileModels;
 using DAL.Models.RulesetTileModels;
 using DAL.Repositories.Interfaces;
+using DAL.Services.RulesetTileServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using RPGSmithApp.ViewModels.EditModels;
@@ -20,11 +21,15 @@ namespace DAL.Services
         private readonly IRepository<CharacterDashboardLayout> _repo;
         protected readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
-        public CharacterDashboardLayoutService(ApplicationDbContext context, IRepository<CharacterDashboardLayout> repo, IConfiguration configuration)
+        private readonly IRulesetDashboardLayoutService _rulesetDashboardLayoutService;
+        private readonly IRulesetDashboardPageService _rulesetDashboardPageService;
+        public CharacterDashboardLayoutService(ApplicationDbContext context, IRepository<CharacterDashboardLayout> repo, IConfiguration configuration, IRulesetDashboardLayoutService rulesetDashboardLayoutService, IRulesetDashboardPageService rulesetDashboardPageService)
         {
             _repo = repo;
             _context = context;
             _configuration = configuration;
+            _rulesetDashboardLayoutService = rulesetDashboardLayoutService;
+            _rulesetDashboardPageService = rulesetDashboardPageService;
         }
 
         public async Task<bool> CheckDuplicate(string value, int? characterId, int? Id = 0)
@@ -309,22 +314,37 @@ namespace DAL.Services
             }
         }
 
-        public void UpdateDefaultLayout(int layoutId)
+        public void UpdateDefaultLayout(int layoutId, int characterID=0)
         {
             try
             {
-                var layout = _context.CharacterDashboardLayouts.Where(x => x.CharacterDashboardLayoutId == layoutId).FirstOrDefault();
+                CharacterDashboardLayout layout = null;
+                var allLayouts = new List<CharacterDashboardLayout> ();
+                if (layoutId == -1)
+                {
+                    layout = new CharacterDashboardLayout();
+                    allLayouts = _context.CharacterDashboardLayouts
+                   .Where(x => x.CharacterId == characterID && x.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();
+                }
+                else
+                {
+                    layout = _context.CharacterDashboardLayouts.Where(x => x.CharacterDashboardLayoutId == layoutId).FirstOrDefault();
+                    if (layout != null)
+                    {
+                        allLayouts = _context.CharacterDashboardLayouts
+                       .Where(x => x.CharacterId == layout.CharacterId && x.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();
+                        layout.IsDefaultLayout = true;
+                    }
+                }
                 if (layout != null)
                 {
-                    var allLayouts = _context.CharacterDashboardLayouts
-                   .Where(x => x.CharacterId == layout.CharacterId && x.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();
                     foreach (var _layout in allLayouts)
                     {
                         _layout.IsDefaultLayout = false;
                     }
-                    layout.IsDefaultLayout = true;
                     _context.SaveChanges();
                 }
+
             }
             catch (Exception ex)
             {
@@ -359,18 +379,48 @@ namespace DAL.Services
             ruleSetDashboardLayout = _context.RulesetDashboardLayouts
                     .Include(d => d.RulesetDashboardPages)
                    .Where(x => x.RulesetId == rulesetId && x.IsSharedLayout == true && x.IsDeleted != true).ToList();
+            if (ruleSetDashboardLayout.Count==0 && _context.PlayerInvites.Where(x=>x.PlayerCharacterID== characterId).Any())
+            {
+                //in case dashboard has no layout & page create shared layout
+                var _layout = _rulesetDashboardLayoutService.Create(
+                    new RulesetDashboardLayout()
+                    {
+                        Name = "Shared Layout",
+                        SortOrder = 1,
+                        LayoutHeight = 1280,
+                        LayoutWidth = 768,
+                        RulesetId = rulesetId,
+                        IsSharedLayout = true
+                    }).Result;
 
+
+                var _RulesetDashboardPage = _rulesetDashboardPageService.Create(new RulesetDashboardPage()
+                {
+                    RulesetDashboardLayoutId = _layout.RulesetDashboardLayoutId,
+                    Name = "Page1",
+                    ContainerWidth = 1280,
+                    ContainerHeight = 768,
+                    SortOrder = 1,
+                    RulesetId = rulesetId
+                }).Result;
+                _layout.DefaultPageId = _RulesetDashboardPage.RulesetDashboardPageId;
+               var result= _rulesetDashboardLayoutService.Update(_layout).Result;
+
+                // listLayout = await _rulesetDashboardLayoutService.GetByRulesetId(rulesetId, page, pageSize);
+
+                ruleSetDashboardLayout.Add(result);
+            }
             sharedCharacterDashboardLayouts = ruleSetDashboardLayout
                    .Select(x => new CharacterDashboardLayout()
                    {
-                       //  CharacterDashboardLayoutId
+                       CharacterDashboardLayoutId = -1,
                        CharacterDashboardPages = ruleSetDashboardLayout.FirstOrDefault().RulesetDashboardPages.Select(y => new CharacterDashboardPage()
                        {
                            BodyBgColor = y.BodyBgColor,
                            BodyTextColor = y.BodyTextColor,
-                           //Character
-                           //CharacterDashboardLayoutId
-                           //CharacterDashboardPageId
+                           //Character,
+                           CharacterDashboardLayoutId = -1,
+                           CharacterDashboardPageId = y.RulesetDashboardPageId,
                            CharacterId = characterId,
                            ContainerHeight = y.ContainerHeight,
                            ContainerWidth = y.ContainerWidth,

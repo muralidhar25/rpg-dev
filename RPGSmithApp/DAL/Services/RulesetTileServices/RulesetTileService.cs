@@ -430,6 +430,27 @@ namespace DAL.Services.RulesetTileServices
                                                         }
                                                     }
                                                     CharStat.CharacterStatDefaultValues = dfv.OrderBy(x=>x.Type).ToList();
+
+                                                    CharacterStatCombo combo = new CharacterStatCombo();
+                                                    if (ds.Tables[15].Rows.Count > 0)
+                                                    {
+                                                        foreach (DataRow r in ds.Tables[15].Rows)
+                                                        {
+                                                            int comboCharacterStat = r["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatId"]);
+                                                            if (characterstatID == comboCharacterStat)
+                                                            {
+
+                                                                combo.CharacterStatComboId = r["CharacterStatComboId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatComboId"]);
+                                                                combo.CharacterStatId = r["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatId"]);
+                                                                combo.DefaultText = r["DefaultText"] == DBNull.Value ? null : r["DefaultText"].ToString();
+                                                                combo.DefaultValue = r["DefaultValue"] == DBNull.Value ? 0 : Convert.ToInt32(r["DefaultValue"]);
+                                                                
+                                                                break;
+                                                            }
+
+                                                        }
+                                                    }
+                                                    CharStat.CharacterStatCombos = combo;
                                                     //////
 
                                                     CharacterStatType statType = null;
@@ -450,6 +471,27 @@ namespace DAL.Services.RulesetTileServices
                                                         }
                                                     }
                                                     CharStat.CharacterStatType = statType;
+
+
+                                                    CharacterStatToggle CharacterStatToggle = GetCharacterStatToggleList((int)CharStat.CharacterStatId);
+                                                    //if (CharacterStatToggle != null)
+                                                    //{
+                                                    //    //CharacterStatToggle CharacterStatToggle = GetCharacterStatToggleList((int)CharCharStat.CharacterStatId);
+                                                    //    if (CharacterStatToggle.IsCustom)
+                                                    //    {
+                                                    //        foreach (var toggle in CharacterStatToggle.CustomToggles)
+                                                    //        {
+                                                    //            characterCustomToggle.Add(new CharacterCustomToggle()
+                                                    //            {
+                                                    //                CustomToggleId = toggle.CustomToggleId,
+                                                    //                Image = toggle.Image,
+                                                    //                IsDeleted = toggle.IsDeleted,
+                                                    //                ToggleText = toggle.ToggleText,
+                                                    //            });
+                                                    //        }
+                                                    //    }
+                                                    //}
+                                                    CharStat.CharacterStatToggles = CharacterStatToggle;
                                                 }
 
                                             }
@@ -803,6 +845,22 @@ namespace DAL.Services.RulesetTileServices
                 }
             }
 
+        }
+        public CharacterStatToggle GetCharacterStatToggleList(int characterStatId)
+        {
+            var res = _context.CharacterStatToggle.Where(x => x.CharacterStatId == characterStatId && x.IsDeleted == false).Select(x => new CharacterStatToggle()
+            {
+                CharacterStatId = x.CharacterStatId,
+                CharacterStatToggleId = x.CharacterStatToggleId,
+                Display = x.Display,
+                IsCustom = x.IsCustom,
+                IsDeleted = x.IsDeleted,
+                OnOff = x.OnOff,
+                ShowCheckbox = x.ShowCheckbox,
+                YesNo = x.YesNo,
+                CustomToggles = _context.CustomToggle.Where(z => z.CharacterStatToggleId == x.CharacterStatToggleId).ToList()
+            }).FirstOrDefault();
+            return res;
         }
     }
 }

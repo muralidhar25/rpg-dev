@@ -16,6 +16,7 @@ export class CharacterTileService extends EndpointFactory {
   private readonly _getByIdUrl: string = "/api/CharatcerTile/GetById";
   private readonly _getByPageIdCharacterId: string = "/api/CharatcerTile/getByPageIdCharacterId";
   private readonly _getByPageIdCharacterId_sp: string = "/api/CharatcerTile/getByPageIdCharacterId_sp";
+  private readonly _getSharedLayoutByPageIdRulesetId_sp: string = "/api/CharatcerTile/getSharedLayoutByPageIdRulesetId_sp";
   private readonly _getCountByPageIdCharacterId: string = "/api/CharatcerTile/getCountByPageIdCharacterId";
   private readonly _getRecentColorsApi: string = "/api/CharatcerTile/getRecentColors";
   private readonly _deleteTileListApi: string = "/api/CharatcerTile/deleteTileList";
@@ -26,6 +27,7 @@ export class CharacterTileService extends EndpointFactory {
   get getByIdUrl() { return this.configurations.baseUrl + this._getByIdUrl; }
   get getByPageIdCharacterId() { return this.configurations.baseUrl + this._getByPageIdCharacterId; }
   get getByPageIdCharacterId_sp() { return this.configurations.baseUrl + this._getByPageIdCharacterId_sp; }
+  get getSharedLayoutByPageIdRulesetId_sp() { return this.configurations.baseUrl + this._getSharedLayoutByPageIdRulesetId_sp; }
   get getCountByPageIdCharacterId() { return this.configurations.baseUrl + this._getCountByPageIdCharacterId; }
   get getRecentColorsApi() { return this.configurations.baseUrl + this._getRecentColorsApi; }
   get deleteTileListUrl() { return this.configurations.baseUrl + this._deleteTileListApi; }
@@ -53,13 +55,17 @@ export class CharacterTileService extends EndpointFactory {
       });
   }
 
-  getTilesByPageIdCharacterId<T>(Id: number, characterId: number): Observable<T> {
-    //let endpointUrl = `${this.getByPageIdCharacterId}?pageId=${Id}&characterId=${characterId}`;
-    let endpointUrl = `${this.getByPageIdCharacterId_sp}?pageId=${Id}&characterId=${characterId}`;
-
+  getTilesByPageIdCharacterId<T>(Id: number, characterId: number, rulesetId: number=0, isSharedLayout: boolean= false): Observable<T> {
+    let endpointUrl
+    if (!isSharedLayout) {
+      endpointUrl = `${this.getByPageIdCharacterId_sp}?pageId=${Id}&characterId=${characterId}`;
+    }
+    else {
+      endpointUrl = `${this.getSharedLayoutByPageIdRulesetId_sp}?pageId=${Id}&characterId=${characterId}&rulesetId=${rulesetId}`;
+    }
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.getTilesByPageIdCharacterId(Id, characterId));
+        return this.handleError(error, () => this.getTilesByPageIdCharacterId(Id, characterId,rulesetId,isSharedLayout));
       });
   }
   //getTilesByPageIdCharacterId_sp<T>(Id: number, characterId: number): Observable<T> {

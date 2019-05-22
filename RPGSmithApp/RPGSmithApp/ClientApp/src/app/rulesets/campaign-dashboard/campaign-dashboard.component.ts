@@ -42,6 +42,8 @@ import { RulesetPageComponent } from '../ruleset-dashboard/ruleset-page/ruleset-
 import { User } from '../../core/models/user.model';
 import { ServiceUtil } from '../../core/services/service-util';
 import { CharacterStatConditionViewModel } from '../../core/models/view-models/character-stats.model';
+import { RulesetEditTextComponent } from '../../tile-ruleset/text/edit-text/edit-text.component';
+import { EditCharacterStatComponent } from '../../tile/character-stat/edit-character-stat/edit-character-stat.component';
 
 @Component({
   selector: 'app-campaign-dashboard',
@@ -111,8 +113,8 @@ export class CampaignDashboardComponent implements OnInit {
 
   public gridConfig: NgGridConfig = {
     'margins': this.getTileSize().margins,
-    'draggable': true,
-    'resizable': true,
+    'draggable': false,
+    'resizable': false,
     'max_cols': this.columnsInGrid,
     'max_rows': 0,
     'visible_cols': 0,
@@ -168,6 +170,7 @@ export class CampaignDashboardComponent implements OnInit {
   preventClick: boolean = false;
   private currentGridItems: NgGridItemEvent[] = [];
   headers: HeaderValues = new HeaderValues();
+  isManageTile: boolean = false;
 
   CharacterStatsValues: any;
 
@@ -275,6 +278,13 @@ export class CampaignDashboardComponent implements OnInit {
           this.addBox(serviceJson);
         }
         this.initialize(false);
+      }
+    });
+
+    this.sharedService.shouldUpdateShareLayout().subscribe(data => {
+      debugger
+      if (data) {       
+          this.initialize(false);       
       }
     });
 
@@ -395,51 +405,51 @@ export class CampaignDashboardComponent implements OnInit {
       };
       this.boxes = this.mapBoxes(this.tiles);
     }, false);
-        //window.onorientationchange = () => {
-        //    setTimeout(() => {
-        //        this.gridConfig = {
-        //            'margins': this.getTileSize().margins,
-        //            'draggable': true,
-        //            'resizable': true,
-        //            'max_cols': this.columnsInGrid,
-        //            'max_rows': 0,
-        //            'visible_cols': 0,
-        //            'visible_rows': 0,
-        //            'min_cols': 0,
-        //            'min_rows': 0,
-        //            'col_width': this.getTileSize().max,
-        //            'row_height': this.getTileSize().max,
-        //            'cascade': 'up',
-        //            'min_width': this.getTileSize().min,
-        //            'min_height': this.getTileSize().min,
-        //            'fix_to_grid': false,
-        //            'auto_style': true,
-        //            //'auto_resize': false,
-        //            'auto_resize': this.IsMobileScreen,
-        //            'maintain_ratio': true,
-        //            'prefer_new': true,
-        //            'limit_to_screen': true,
-        //            'center_to_screen': true,
-        //            'resize_directions': this.IsMobileScreen ? [
-        //                "bottomleft",
-        //                "bottomright",
-        //                "topright",
-        //                "topleft",
-        //                "right",
-        //                "left",
-        //                "bottom",
-        //                "top"
-        //            ] : [
-        //                    "bottomleft",
-        //                    "bottomright"
-        //                ],
-        //        };
-        //        this.boxes = this.mapBoxes(this.tiles);
-        //    }, 10);
-        //}
+    //window.onorientationchange = () => {
+    //    setTimeout(() => {
+    //        this.gridConfig = {
+    //            'margins': this.getTileSize().margins,
+    //            'draggable': true,
+    //            'resizable': true,
+    //            'max_cols': this.columnsInGrid,
+    //            'max_rows': 0,
+    //            'visible_cols': 0,
+    //            'visible_rows': 0,
+    //            'min_cols': 0,
+    //            'min_rows': 0,
+    //            'col_width': this.getTileSize().max,
+    //            'row_height': this.getTileSize().max,
+    //            'cascade': 'up',
+    //            'min_width': this.getTileSize().min,
+    //            'min_height': this.getTileSize().min,
+    //            'fix_to_grid': false,
+    //            'auto_style': true,
+    //            //'auto_resize': false,
+    //            'auto_resize': this.IsMobileScreen,
+    //            'maintain_ratio': true,
+    //            'prefer_new': true,
+    //            'limit_to_screen': true,
+    //            'center_to_screen': true,
+    //            'resize_directions': this.IsMobileScreen ? [
+    //                "bottomleft",
+    //                "bottomright",
+    //                "topright",
+    //                "topleft",
+    //                "right",
+    //                "left",
+    //                "bottom",
+    //                "top"
+    //            ] : [
+    //                    "bottomleft",
+    //                    "bottomright"
+    //                ],
+    //        };
+    //        this.boxes = this.mapBoxes(this.tiles);
+    //    }, 10);
+    //}
   }
 
-  private initialize(IsInitialLoad) {    
+  private initialize(IsInitialLoad) {
     this.showManageIcons = true;
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
@@ -453,14 +463,16 @@ export class CampaignDashboardComponent implements OnInit {
       }
       this.setRulesetId(this.ruleSetId);
       try {
-        if (window.outerWidth < 1200) {
-          this.gridConfig.draggable = false;
-          this.gridConfig.resizable = false;
-          this.IsMobilePanel = true;
-        } else {
-          this.gridConfig.draggable = true;
-          this.gridConfig.resizable = true;
-          this.IsMobilePanel = false;
+        if (this.isManageTile) {
+          if (window.outerWidth < 1200) {
+            this.gridConfig.draggable = false;
+            this.gridConfig.resizable = false;
+            this.IsMobilePanel = true;
+          } else {
+            this.gridConfig.draggable = true;
+            this.gridConfig.resizable = true;
+            this.IsMobilePanel = false;
+          }
         }
         this.isLoading = true;
         this.rulesetService.getRulesetById<any>(this.ruleSetId)
@@ -473,9 +485,9 @@ export class CampaignDashboardComponent implements OnInit {
             this.ruleset = new Ruleset();
             this.isLoading = false;
           }, () => { });
-        this.isLoading = true;        
+        this.isLoading = true;
         this.layoutService.getSharedLayoutByRulesetId(this.ruleSetId, -1, -1)
-          .subscribe(data => {            
+          .subscribe(data => {
             this.rulesetlayouts = data;
             if (this.LayoutId) {
               this.rulesetlayouts.map((item) => {
@@ -705,16 +717,16 @@ export class CampaignDashboardComponent implements OnInit {
     } catch (err) { }
   }
 
-    openDiceRollModal() {
-      this.bsModalRef = this.modalService.show(DiceRollComponent, {
-        class: 'modal-primary modal-md',
-        ignoreBackdropClick: true,
-        keyboard: false
-      });
-      this.bsModalRef.content.title = "Dice";
-      this.bsModalRef.content.rulesetId = this.ruleSetId;
-      this.bsModalRef.content.ruleset = this.ruleset;
-    }
+  openDiceRollModal() {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.rulesetId = this.ruleSetId;
+    this.bsModalRef.content.ruleset = this.ruleset;
+  }
   manageIcon(id: number) {
     this.rulesetlayouts.forEach(function (val) {
       if (id === val.rulesetDashboardLayoutId) {
@@ -742,7 +754,7 @@ export class CampaignDashboardComponent implements OnInit {
         this.isLoading = true;
         this.rulesetTileService.getTilesByPageIdRulesetId_sp<string>(this.selectedPage.rulesetDashboardPageId, this.ruleSetId)
           .subscribe(data => {
-           
+
             this.isLoading = false;
             this.tiles = data;
             this.boxes = this.mapBoxes(data);
@@ -862,7 +874,7 @@ export class CampaignDashboardComponent implements OnInit {
     this.selectedPage = page;
     if (page.rulesetDashboardPageId) {
       this.rulesetTileService.getTilesByPageIdRulesetId_sp<any>(page.rulesetDashboardPageId, this.ruleSetId)
-        .subscribe(data => {          
+        .subscribe(data => {
           //getRulesetDashboardPageById
           this.tiles = data;
           this.boxes = this.mapBoxes(data);
@@ -1159,7 +1171,7 @@ export class CampaignDashboardComponent implements OnInit {
     this.noRecordFound = !this.Originalboxes.length;
   }
   deleteMultipleTiles() {
-    let TileIdList = [];
+    let TileIdList = [];    
     this.Deletedboxes.map((box) => {
       TileIdList.push(box.tile.rulesetTileId);
     })
@@ -1173,8 +1185,10 @@ export class CampaignDashboardComponent implements OnInit {
           this.IsResizePage = false;
           this.IsRelocatePage = false;
           this.IsEditPage = false;
-          this.gridConfig.draggable = !this.IsMobilePanel;
-          this.gridConfig.resizable = !this.IsMobilePanel;
+          if (this.isManageTile) {
+            this.gridConfig.draggable = !this.IsMobilePanel;
+            this.gridConfig.resizable = !this.IsMobilePanel;
+          }
           this.Deletedboxes = [];
           this.save();
         }, error => {
@@ -1187,174 +1201,187 @@ export class CampaignDashboardComponent implements OnInit {
       this.IsResizePage = false;
       this.IsRelocatePage = false;
       this.IsEditPage = false;
-      this.gridConfig.draggable = !this.IsMobilePanel;
-      this.gridConfig.resizable = !this.IsMobilePanel;
+      if (this.isManageTile) {
+        this.gridConfig.draggable = !this.IsMobilePanel;
+        this.gridConfig.resizable = !this.IsMobilePanel;
+      }
       this.Deletedboxes = [];
       this.save();
     }
 
   }
   viewTile(tile: any, tileType: number) {
-    //let _tile: any;
-    let _tile = Object.assign({}, tile);
-    switch (tileType) {
-      case TILES.NOTE: {
-        this.bsModalRef = this.modalService.show(RulesetEditNoteComponent, {
-          class: 'modal-primary modal-lg',
-          ignoreBackdropClick: true,
-          keyboard: false
-        });
-        this.bsModalRef.content.tile = _tile;
-        this.bsModalRef.content.noteTile = _tile.noteTiles;
-        this.bsModalRef.content.rulesetId = this.ruleSetId;
-        this.bsModalRef.content.view = VIEW.MANAGE;
-        this.bsModalRef.content.tileName = 'note';
+    if (!this.isManageTile) {
+      debugger
+      //let _tile: any;
+      let _tile = Object.assign({}, tile);
+      switch (tileType) {
+        case TILES.NOTE: {
+          this.bsModalRef = this.modalService.show(RulesetEditNoteComponent, {
+            class: 'modal-primary modal-lg',
+            ignoreBackdropClick: true,
+            keyboard: false
+          });
+          this.bsModalRef.content.tile = _tile;
+          this.bsModalRef.content.noteTile = _tile.noteTiles;
+          this.bsModalRef.content.rulesetId = this.ruleSetId;
+          this.bsModalRef.content.view = VIEW.MANAGE;
+          this.bsModalRef.content.tileName = 'note';
 
-        this.bsModalRef.content.pageId = this.selectedPage.rulesetDashboardPageId ?
-          this.selectedPage.rulesetDashboardPageId : this.pageId;
-        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
-        break;
-      }
-      case TILES.IMAGE: {
-        this.bsModalRef = this.modalService.show(RulesetEditImageComponent, {
-          class: 'modal-primary modal-md',
-          ignoreBackdropClick: true,
-          keyboard: false
-        });
-        this.bsModalRef.content.tile = _tile;
-        this.bsModalRef.content.imageTile = _tile.imageTiles;
-        this.bsModalRef.content.tileName = 'image';
-        this.bsModalRef.content.rulesetId = this.ruleSetId;
-        this.bsModalRef.content.view = VIEW.MANAGE;
+          this.bsModalRef.content.pageId = this.selectedPage.rulesetDashboardPageId ?
+            this.selectedPage.rulesetDashboardPageId : this.pageId;
+          this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+          break;
+        }
+        case TILES.IMAGE: {
+          this.bsModalRef = this.modalService.show(RulesetEditImageComponent, {
+            class: 'modal-primary modal-md',
+            ignoreBackdropClick: true,
+            keyboard: false
+          });
+          this.bsModalRef.content.tile = _tile;
+          this.bsModalRef.content.imageTile = _tile.imageTiles;
+          this.bsModalRef.content.tileName = 'image';
+          this.bsModalRef.content.rulesetId = this.ruleSetId;
+          this.bsModalRef.content.view = VIEW.MANAGE;
 
-        this.bsModalRef.content.pageId = this.selectedPage.rulesetDashboardPageId ?
-          this.selectedPage.rulesetDashboardPageId : this.pageId;
-        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
-        break;
-      }
-      case TILES.COUNTER: {
-        this.bsModalRef = this.modalService.show(RulesetEditCounterComponent, {
-          class: 'modal-primary modal-md',
-          ignoreBackdropClick: true,
-          keyboard: false
-        });
-        this.bsModalRef.content.tile = _tile;
-        this.bsModalRef.content.counterTile = _tile.counterTiles;
-        this.bsModalRef.content.rulesetId = this.ruleSetId;
-        this.bsModalRef.content.view = VIEW.MANAGE;
-        this.bsModalRef.content.pageId = this.selectedPage.rulesetDashboardPageId ?
-          this.selectedPage.rulesetDashboardPageId : this.pageId;
-        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
-        break;
-      }
-      case TILES.CHARACTERSTAT: {
-        let characterStatTypeID = _tile.characterStatTiles.charactersCharacterStat.characterStat.characterStatTypeId;
-        switch (characterStatTypeID) {
-          case STAT_TYPE.Command:
-            this.bsModalRef = this.modalService.show(DiceRollComponent, {
-              class: 'modal-primary modal-md',
-              ignoreBackdropClick: true,
-              keyboard: false
-            });
-            this.bsModalRef.content.title = "Dice";
-            this.bsModalRef.content.rulesetId = this.ruleSetId;
-            this.bsModalRef.content.ruleset = this.ruleset;
-            this.bsModalRef.content.tile = TILES.CHARACTERSTAT;
-            this.bsModalRef.content.characterStatTile = _tile.characterStatTiles;
-            break;
-          /*
-          case STAT_TYPE.RichText:
-             // 
-             // let characterStat = _tile.characterStatTiles.charactersCharacterStat.characterStat;
-              this.bsModalRef = this.modalService.show(EditCharacterStatComponent, {
-                  class: 'modal-primary modal-lg',
-                  ignoreBackdropClick: true,
-                  keyboard: false
+          this.bsModalRef.content.pageId = this.selectedPage.rulesetDashboardPageId ?
+            this.selectedPage.rulesetDashboardPageId : this.pageId;
+          this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+          break;
+        }
+        case TILES.COUNTER: {
+          this.bsModalRef = this.modalService.show(RulesetEditCounterComponent, {
+            class: 'modal-primary modal-md',
+            ignoreBackdropClick: true,
+            keyboard: false
+          });
+          this.bsModalRef.content.tile = _tile;
+          this.bsModalRef.content.counterTile = _tile.counterTiles;
+          this.bsModalRef.content.rulesetId = this.ruleSetId;
+          this.bsModalRef.content.view = VIEW.MANAGE;
+          this.bsModalRef.content.pageId = this.selectedPage.rulesetDashboardPageId ?
+            this.selectedPage.rulesetDashboardPageId : this.pageId;
+          this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+          break;
+        }
+        case TILES.CHARACTERSTAT: {
+          debugger
+          let characterStatTypeID = _tile.characterStatTiles.characterStat.characterStatType.characterStatTypeId;
+          switch (characterStatTypeID) {
+            case STAT_TYPE.Command:
+              this.bsModalRef = this.modalService.show(DiceRollComponent, {
+                class: 'modal-primary modal-md',
+                ignoreBackdropClick: true,
+                keyboard: false
               });
-              this.bsModalRef.content.tile = _tile;
-              this.bsModalRef.content.characterStatTile = _tile.characterStatTiles;
-              this.bsModalRef.content.tileName = 'Rich';
+              this.bsModalRef.content.title = "Dice";
               this.bsModalRef.content.rulesetId = this.ruleSetId;
               this.bsModalRef.content.ruleset = this.ruleset;
-              this.bsModalRef.content.pageId = this.pageId;
+              this.bsModalRef.content.tile = TILES.CHARACTERSTAT;
+              this.bsModalRef.content.characterStatTile = _tile.characterStatTiles;
+              this.bsModalRef.content.isFromRulesetSharedLayout = true;
+              break;
+            case STAT_TYPE.Condition:
+              break;
+            case STAT_TYPE.Toggle:
+              break;
+            case STAT_TYPE.LinkRecord:
+              break;
+            //default:
+            //  let characterStat = _tile.characterStatTiles.characterStat;
+
+            //  this.bsModalRef = this.modalService.show(RulesetEditCharacterStatComponent, {
+            //    class: 'modal-primary modal-md',
+            //    ignoreBackdropClick: true,
+            //    keyboard: false
+            //  });
+            //  this.bsModalRef.content.tile = _tile;
+            //  this.bsModalRef.content.characterStatTile = _tile.characterStatTiles;
+            //  this.bsModalRef.content.tileName = 'link';
+            //  this.bsModalRef.content.rulesetId = this.ruleSetId;
+            //  this.bsModalRef.content.ruleset = this.ruleset;
+            //  this.bsModalRef.content.pageId = this.pageId;
+            //  this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+            //  this.bsModalRef.content.view = VIEW.MANAGE;
+            //  break;
+            default:
+              let characterStat = _tile.characterStatTiles.characterStat;
+
+              this.bsModalRef = this.modalService.show(RulesetEditCharacterStatComponent, {
+                class: 'modal-primary modal-md',
+                ignoreBackdropClick: true,
+                keyboard: false
+              });
+
+              this.bsModalRef.content.tile = _tile;
+              this.bsModalRef.content.characterStatTile = _tile.characterStatTiles;
+              this.bsModalRef.content.tileName = 'link';
+              this.bsModalRef.content.rulesetId = this.ruleSetId;
+              this.bsModalRef.content.ruleset = this.ruleset;
+              this.bsModalRef.content.pageId = this.selectedPage.rulesetDashboardPageId ?
+                this.selectedPage.rulesetDashboardPageId : this.pageId;
               this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
               this.bsModalRef.content.view = VIEW.MANAGE;
               break;
-          */
-          default:
-            let characterStat = _tile.characterStatTiles.charactersCharacterStat.characterStat;
-
-            this.bsModalRef = this.modalService.show(RulesetEditCharacterStatComponent, {
-              class: 'modal-primary modal-md',
-              ignoreBackdropClick: true,
-              keyboard: false
-            });
-            this.bsModalRef.content.tile = _tile;
-            this.bsModalRef.content.characterStatTile = _tile.characterStatTiles;
-            this.bsModalRef.content.tileName = 'link';
-            this.bsModalRef.content.rulesetId = this.ruleSetId;
-            this.bsModalRef.content.ruleset = this.ruleset;
-            this.bsModalRef.content.pageId = this.pageId;
-            this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
-            this.bsModalRef.content.view = VIEW.MANAGE;
-            break;
-
+          }
+          break;
         }
-        break;
-      }
-      case TILES.LINK: {
-        break;
-      }
-      case TILES.EXECUTE: {
-        break;
-      }
-      case TILES.COMMAND: {
+        case TILES.LINK: {
+          break;
+        }
+        case TILES.EXECUTE: {
+          break;
+        }
+        case TILES.COMMAND: {
 
-        this.bsModalRef = this.modalService.show(DiceRollComponent, {
-          class: 'modal-primary modal-md',
-          ignoreBackdropClick: true,
-          keyboard: false
-        });
-        this.bsModalRef.content.title = "Dice";
-        this.bsModalRef.content.rulesetId = this.ruleSetId;
-        this.bsModalRef.content.ruleset = this.ruleset;
-        this.bsModalRef.content.tile = TILES.COMMAND;
-        this.bsModalRef.content.commandTile = _tile.commandTiles;
+          this.bsModalRef = this.modalService.show(DiceRollComponent, {
+            class: 'modal-primary modal-md',
+            ignoreBackdropClick: true,
+            keyboard: false
+          });
+          this.bsModalRef.content.title = "Dice";
+          this.bsModalRef.content.rulesetId = this.ruleSetId;
+          this.bsModalRef.content.ruleset = this.ruleset;
+          this.bsModalRef.content.tile = TILES.COMMAND;
+          this.bsModalRef.content.commandTile = _tile.commandTiles;
 
-        //this.bsModalRef = this.modalService.show(EditImageComponent, {
-        //    class: 'modal-primary modal-md',
-        //    ignoreBackdropClick: true,
-        //    keyboard: false
-        //});
-        //this.bsModalRef.content.tile = _tile;
-        //this.bsModalRef.content.commandTile = _tile.commandTiles;
-        //this.bsModalRef.content.tileName = 'command';
-        //this.bsModalRef.content.rulesetId = this.ruleSetId;
-        //this.bsModalRef.content.view = VIEW.MANAGE;
-        //this.bsModalRef.content.pageId = this.selectedPage.rulesetDashboardPageId ?
-        //    this.selectedPage.rulesetDashboardPageId : this.pageId;
-        //this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
-        break;
+          //this.bsModalRef = this.modalService.show(EditImageComponent, {
+          //    class: 'modal-primary modal-md',
+          //    ignoreBackdropClick: true,
+          //    keyboard: false
+          //});
+          //this.bsModalRef.content.tile = _tile;
+          //this.bsModalRef.content.commandTile = _tile.commandTiles;
+          //this.bsModalRef.content.tileName = 'command';
+          //this.bsModalRef.content.rulesetId = this.ruleSetId;
+          //this.bsModalRef.content.view = VIEW.MANAGE;
+          //this.bsModalRef.content.pageId = this.selectedPage.rulesetDashboardPageId ?
+          //    this.selectedPage.rulesetDashboardPageId : this.pageId;
+          //this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+          break;
+        }
+        case TILES.TEXT: {
+          this.bsModalRef = this.modalService.show(RulesetEditTextComponent, {
+            class: 'modal-primary modal-md',
+            ignoreBackdropClick: true,
+            keyboard: false
+          });
+          this.bsModalRef.content.tile = _tile;
+          this.bsModalRef.content.textTile = _tile.textTiles;
+          this.bsModalRef.content.tileName = 'image';
+          this.bsModalRef.content.rulesetId = this.ruleSetId;
+          this.bsModalRef.content.view = VIEW.MANAGE;
+
+          this.bsModalRef.content.pageId = this.selectedPage.rulesetDashboardPageId ?
+            this.selectedPage.rulesetDashboardPageId : this.pageId;
+          this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+          break;
+        }
+        default: break;
       }
-      //case TILES.TEXT: {
-      //    this.bsModalRef = this.modalService.show(RulesetEditTextComponent, {
-      //        class: 'modal-primary modal-md',
-      //        ignoreBackdropClick: true,
-      //        keyboard: false
-      //    });
-      //    this.bsModalRef.content.tile = _tile;
-      //    this.bsModalRef.content.textTile = _tile.textTiles;
-      //    this.bsModalRef.content.tileName = 'image';
-      //    this.bsModalRef.content.rulesetId = this.ruleSetId;
-      //    this.bsModalRef.content.view = VIEW.MANAGE;
-
-      //    this.bsModalRef.content.pageId = this.selectedPage.rulesetDashboardPageId ?
-      //        this.selectedPage.rulesetDashboardPageId : this.pageId;
-      //    this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
-      //    break;
-      //}
-      default: break;
     }
+    
   }
 
   NextPrevPage(selectedlayout: any, next: any) {
@@ -1502,97 +1529,97 @@ export class CampaignDashboardComponent implements OnInit {
         ngGridItemConfig = this._generateDefaultItemConfig(item.rulesetTileId);
       }
       if (item.tileTypeId == TILES.CHARACTERSTAT) {
-          if (item.characterStatTiles.characterStat.characterStatDefaultValues) {
+        if (item.characterStatTiles.characterStat.characterStatDefaultValues) {
           //  console.log('defultvales', item.characterStatTiles.characterStat.characterStatDefaultValues);
-              if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.RichText) {
-                console.log('rich', item.characterStatTiles.characterStat.characterStatDefaultValues);
-                item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-                  console.log('richloop', stat.defaultValue);
-                  // item.characterStatTiles.characterStat.defaultValue =
-                })
-                
-              }
-              if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.Command) {
-                console.log('cmd', item.characterStatTiles.characterStat.characterStatDefaultValues);
-                item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-                  console.log('cmd', stat.defaultValue);
-                  item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
-                })
-              }
-              if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.Condition) {
-                console.log('Condition', item.characterStatTiles.characterStat.characterStatDefaultValues);
-                item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-                  console.log('Condition', stat.defaultValue);
-                  item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
-                })
-              }
-              if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.Calculation) {
-                console.log('Calculation', item.characterStatTiles.characterStat.characterStatDefaultValues);
-                item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-                  console.log('Calculation', stat.defaultValue);
-                  item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
-                })
-              }
-              if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
-                console.log('Choice', item.characterStatTiles.characterStat.characterStatDefaultValues);
-                item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-                  console.log('Choice', stat.defaultValue);
-                  item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
-                })
-              }
-              if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.Number) {
-                console.log('Number', item.characterStatTiles.characterStat.characterStatDefaultValues);
-                item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-                  console.log('Number', stat.defaultValue);
-                  item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
-                })
-            }
-              if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.CurrentMax) {
-                console.log('CurrentMax', item.characterStatTiles.characterStat.characterStatDefaultValues);
-                item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-                  console.log('CurrentMax', stat);
-                  item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
-                })
-              }
-              if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.OnOff) {
-                console.log('OnOff', item.characterStatTiles.characterStat.characterStatDefaultValues);
-                item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-                  console.log('OnOff', stat);
-                  item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
-                })
-              }
-              if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.YesNo) {
-                console.log('YesNo', item.characterStatTiles.characterStat.characterStatDefaultValues);
-                item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-                  console.log('YesNo', stat.defaultValue);
-                  item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
-                })
-              }
-              if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.Toggle) {
-                console.log('Toggle', item.characterStatTiles.characterStat.characterStatDefaultValues);
-                item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-                  console.log('Toggle', stat.defaultValue);
-                  item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
-                })
-              }
-              if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.LinkRecord) {
-                console.log('LinkRecord', item.characterStatTiles.characterStat.characterStatDefaultValues);
-                item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-                  console.log('LinkRecord', stat.defaultValue);
-                  item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
-                })
-              }
+          if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.RichText) {
+            console.log('rich', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
+              console.log('richloop', stat.defaultValue);
+              // item.characterStatTiles.characterStat.defaultValue =
+            })
 
-            //switch (item.characterStatTiles.characterStat.characterStatTypeId) {
-            //  case STAT_TYPE.Command:
-
-            //  default:
-            //}
           }
+          if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.Command) {
+            console.log('cmd', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
+              console.log('cmd', stat.defaultValue);
+              item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
+            })
+          }
+          if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.Condition) {
+            console.log('Condition', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
+              console.log('Condition', stat.defaultValue);
+              item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
+            })
+          }
+          if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.Calculation) {
+            console.log('Calculation', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
+              console.log('Calculation', stat.defaultValue);
+              item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
+            })
+          }
+          if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+            console.log('Choice', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
+              console.log('Choice', stat.defaultValue);
+              item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
+            })
+          }
+          if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.Number) {
+            console.log('Number', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
+              console.log('Number', stat.defaultValue);
+              item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
+            })
+          }
+          if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.CurrentMax) {
+            console.log('CurrentMax', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
+              console.log('CurrentMax', stat);
+              item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
+            })
+          }
+          if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.OnOff) {
+            console.log('OnOff', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
+              console.log('OnOff', stat);
+              item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
+            })
+          }
+          if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.YesNo) {
+            console.log('YesNo', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
+              console.log('YesNo', stat.defaultValue);
+              item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
+            })
+          }
+          if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.Toggle) {
+            console.log('Toggle', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
+              console.log('Toggle', stat.defaultValue);
+              item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
+            })
+          }
+          if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.LinkRecord) {
+            console.log('LinkRecord', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
+              console.log('LinkRecord', stat.defaultValue);
+              item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
+            })
+          }
+
+          //switch (item.characterStatTiles.characterStat.characterStatTypeId) {
+          //  case STAT_TYPE.Command:
+
+          //  default:
+          //}
+        }
       }
       else if (item.tileTypeId == TILES.TEXT) {
         let AllChoices: any[] = [];
-       // console.log('1531', item);
+        // console.log('1531', item);
       }
       let box: Box = { config: ngGridItemConfig, tile: item, IsCharacter: false };
       boxes.push(box);
@@ -2026,6 +2053,9 @@ export class CampaignDashboardComponent implements OnInit {
       }, () => { });
   }
   saveAndGotoDashboard() {
+    this.isManageTile = false;
+    this.gridConfig.draggable = false;
+    this.gridConfig.resizable = false;
     this.deleteMultipleTiles();
   }
   save(redirectto: any = undefined, params: any = undefined) {
@@ -2184,6 +2214,13 @@ export class CampaignDashboardComponent implements OnInit {
     this.localStorage.deleteData(DBkeys.RULESET_ID);
     this.localStorage.saveSyncedSessionData(rulesetId, DBkeys.RULESET_ID);
   }
+
+  private manageTile() {
+    this.isManageTile = true;
+    this.gridConfig.draggable = true;
+    this.gridConfig.resizable = true;
+  }
+ 
 }
 
 

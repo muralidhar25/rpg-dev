@@ -35,7 +35,8 @@ export class RulesetEditCounterComponent implements OnInit {
       location.onPopState(() => this.modalService.hide(1));
     }
 
-    ngOnInit() {
+  ngOnInit() {
+    debugger
         setTimeout(() => {
 
             this.counterFormModel = Object.assign({}, this.bsModalRef.content.counterTile);
@@ -139,7 +140,8 @@ export class RulesetEditCounterComponent implements OnInit {
             let _msg = "Updating Counter Tile...";
 
             this.alertService.startLoadingMessage("", _msg);
-            this.addEditCounterTile(this.tileModel);
+          this.addEditCounterTile(this.tileModel);
+          this.sharedService.updateShareLayout(true);
         }
     }
 
