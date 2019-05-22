@@ -521,18 +521,18 @@ export class CampaignDashboardComponent implements OnInit {
                 })
               }
 
-              if (!isLayoutSelected) {
-                this.rulesetlayouts.map((item) => {
-                  if (item.isSharedLayout) {
-                    this.selectedlayout = item;
-                  }
-                })
-              }
-              //this.rulesetlayouts.map((item) => {
-              //    if (item.isDefaultLayout) {
-              //        this.selectedlayout = item;
+              //if (!isLayoutSelected) {
+              //  this.rulesetlayouts.map((item) => {
+              //    if (item.isSharedLayout) {
+              //      this.selectedlayout = item;
               //    }
-              //})
+              //  })
+              //}
+              this.rulesetlayouts.map((item) => {
+                  if (item.isDefaultLayout) {
+                      this.selectedlayout = item;
+                  }
+              })
 
             }
             if (this.pageId) {
