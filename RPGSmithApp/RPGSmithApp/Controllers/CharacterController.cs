@@ -179,7 +179,11 @@ namespace RPGSmithApp.Controllers
                     Character NewCharacter = _CharacterService.Create_SP(characterDomain, model.LayoutHeight, model.LayoutWidth, CharIdToDuplicate);
                     if (NewCharacter != null)
                     {
-                        await _campaignService.AcceptInvite(model.InviteId, NewCharacter.CharacterId);
+                        var result =await _campaignService.AcceptInvite(model.InviteId, NewCharacter.CharacterId);
+                        if (result.PlayerCharacterID>0)
+                        {
+                            GroupChatHub.AddParticipant(NewCharacter);
+                        }
                     }
                     //////////////InviteId
                 }
@@ -496,8 +500,12 @@ namespace RPGSmithApp.Controllers
         [HttpDelete("DeleteCharacter")]
         public async Task<IActionResult> DeleteCharacter(int Id)
         {
-            await _CharacterService.DeleteCharacter(Id);
-
+           var result= await _CharacterService.DeleteCharacter(Id);
+            if (result==true)
+            {
+                GroupChatHub.DeleteParticipant(Id);
+            }
+            
             return Ok();
         }
 
