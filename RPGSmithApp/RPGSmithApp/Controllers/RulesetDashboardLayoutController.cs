@@ -489,7 +489,7 @@ namespace RPGSmithApp.Controllers
                     _layout.DefaultPageId = _RulesetDashboardPage.RulesetDashboardPageId;
                     await _rulesetDashboardLayoutService.Update(_layout);
 
-                    listLayout = await _rulesetDashboardLayoutService.GetByRulesetId(rulesetId, page, pageSize);
+                    listLayout = await _rulesetDashboardLayoutService.GetSharedLayoutByRulesetId(rulesetId, page, pageSize);
                 }
             }
             catch { }
