@@ -183,7 +183,11 @@ namespace DAL.Services
                 cdl.CharacterDashboardPages = cdl.CharacterDashboardPages.Where(p => p.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();
             }
             CharacterDashboardLayout _characterDashboardLayout = GetSharedLayoutByCharacterId(characterId);
-            CharacterDashboardLayouts.Add(_characterDashboardLayout);
+            if (_characterDashboardLayout!=null)
+            {
+                CharacterDashboardLayouts.Add(_characterDashboardLayout);
+            }
+           
             return CharacterDashboardLayouts;
         }
 
@@ -410,42 +414,47 @@ namespace DAL.Services
 
                 ruleSetDashboardLayout.Add(result);
             }
-            sharedCharacterDashboardLayouts = ruleSetDashboardLayout
-                   .Select(x => new CharacterDashboardLayout()
-                   {
-                       CharacterDashboardLayoutId = -1,
-                       CharacterDashboardPages = ruleSetDashboardLayout.FirstOrDefault().RulesetDashboardPages.Select(y => new CharacterDashboardPage()
-                       {
-                           BodyBgColor = y.BodyBgColor,
-                           BodyTextColor = y.BodyTextColor,
+            if (ruleSetDashboardLayout.Any())
+            {
+                sharedCharacterDashboardLayouts = ruleSetDashboardLayout
+                                   .Select(x => new CharacterDashboardLayout()
+                                   {
+                                       CharacterDashboardLayoutId = -1,
+                                       CharacterDashboardPages = ruleSetDashboardLayout.FirstOrDefault().RulesetDashboardPages.Select(y => new CharacterDashboardPage()
+                                       {
+                                           BodyBgColor = y.BodyBgColor,
+                                           BodyTextColor = y.BodyTextColor,
                            //Character,
                            CharacterDashboardLayoutId = -1,
-                           CharacterDashboardPageId = y.RulesetDashboardPageId,
-                           CharacterId = characterId,
-                           ContainerHeight = y.ContainerHeight,
-                           ContainerWidth = y.ContainerWidth,
-                           IsDeleted = y.IsDeleted,
+                                           CharacterDashboardPageId = y.RulesetDashboardPageId,
+                                           CharacterId = characterId,
+                                           ContainerHeight = y.ContainerHeight,
+                                           ContainerWidth = y.ContainerWidth,
+                                           IsDeleted = y.IsDeleted,
                            // Layout,
                            Name = y.Name,
-                           SortOrder = y.SortOrder,
+                                           SortOrder = y.SortOrder,
                            // Tiles,
                            TitleBgColor = y.TitleBgColor,
-                           TitleTextColor = y.TitleTextColor
-                       }).ToList(),
-                       CharacterId = characterId,
-                       DefaultPageId = x.DefaultPageId,
-                       IsDefaultComputer = x.IsDefaultComputer,
-                       IsDefaultMobile = x.IsDefaultMobile,
-                       IsDefaultLayout = x.IsDefaultLayout,
-                       IsDefaultTablet = x.IsDefaultTablet,
-                       IsDeleted = x.IsDeleted,
-                       LayoutHeight = x.LayoutHeight,
-                       LayoutWidth = x.LayoutWidth,
-                       Name = x.Name,
-                       SortOrder = x.SortOrder
-                   })
-                   .FirstOrDefault();
-            return sharedCharacterDashboardLayouts;
+                                           TitleTextColor = y.TitleTextColor
+                                       }).ToList(),
+                                       CharacterId = characterId,
+                                       DefaultPageId = x.DefaultPageId,
+                                       IsDefaultComputer = x.IsDefaultComputer,
+                                       IsDefaultMobile = x.IsDefaultMobile,
+                                       IsDefaultLayout = x.IsDefaultLayout,
+                                       IsDefaultTablet = x.IsDefaultTablet,
+                                       IsDeleted = x.IsDeleted,
+                                       LayoutHeight = x.LayoutHeight,
+                                       LayoutWidth = x.LayoutWidth,
+                                       Name = x.Name,
+                                       SortOrder = x.SortOrder
+                                   })
+                                   .FirstOrDefault();
+                return sharedCharacterDashboardLayouts;
+            }
+            return null;
+           
         }
     }
 }
