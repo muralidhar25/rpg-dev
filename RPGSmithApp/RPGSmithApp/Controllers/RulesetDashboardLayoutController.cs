@@ -474,7 +474,7 @@ namespace RPGSmithApp.Controllers
                             LayoutHeight = 1280,
                             LayoutWidth = 768,
                             RulesetId = rulesetId,
-                            IsSharedLayout = true
+                            IsSharedLayout = true,IsDefaultLayout=true
                         });
 
                     var _RulesetDashboardPage = await _rulesetDashboardPageService.Create(new RulesetDashboardPage()

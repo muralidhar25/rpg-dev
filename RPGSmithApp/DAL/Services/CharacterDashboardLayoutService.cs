@@ -394,7 +394,8 @@ namespace DAL.Services
                         LayoutHeight = 1280,
                         LayoutWidth = 768,
                         RulesetId = rulesetId,
-                        IsSharedLayout = true
+                        IsSharedLayout = true,
+                        IsDefaultLayout = true
                     }).Result;
 
 
