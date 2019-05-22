@@ -200,7 +200,10 @@ export class DiceRollComponent implements OnInit {
       this.charactersService.getIsGmAccessingPlayerCharacter(this.characterId)
         .subscribe(data => {
           if (data) {
-            this.isShowSendtoChat = true;
+            if (this.localStorage.localStorageGetItem(DBkeys.IsCharacterOpenedFromCampaign)) {
+              this.isShowSendtoChat = true;
+            }
+            
             //debugger
             //let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
             //if (user != null) {
@@ -1118,8 +1121,12 @@ export class DiceRollComponent implements OnInit {
 
     } catch (err) { }
   }
-  onClickRoll(characterCommand: CharacterCommand, _mainCommandText: string, lastResultArray?: any) {
-
+  onClickRoll(characterCommand: CharacterCommand, _mainCommandText: string, lastResultArray?: any, IsRollCurrentAgain:boolean=false) {
+    
+    let OldCommandForRollCurrentAgain: any= undefined;
+    if (IsRollCurrentAgain) {
+      OldCommandForRollCurrentAgain = this.characterMultipleCommands;
+    }
     let anyCommandIsCustomWithNonNumeric = false;
     this.loadingResult = false;
     let command = characterCommand.command;
@@ -1429,6 +1436,28 @@ export class DiceRollComponent implements OnInit {
           __characterMultipleCommands = lastResultArray;
           this.loadingResult = true;
         }
+        else if (IsRollCurrentAgain) {
+          try {            
+            let newCharacterMultipleCommands = DiceService.commandInterpretation(command, undefined, this.addModArray, this.customDices, this.mainCommandText.toUpperCase());
+            let newResultOfCurrentCommandSelected = newCharacterMultipleCommands[this.activeAndCommand];
+
+            OldCommandForRollCurrentAgain= OldCommandForRollCurrentAgain.map((oldCmd, oldCmdIndex) => {
+              if (oldCmdIndex == this.activeAndCommand) {
+                oldCmd = newResultOfCurrentCommandSelected;
+              }
+              return oldCmd;
+            })
+
+            this.characterMultipleCommands = OldCommandForRollCurrentAgain;
+            __characterMultipleCommands = newResultOfCurrentCommandSelected;
+
+
+          }
+          catch (e) {
+            this.characterMultipleCommands = DiceService.commandInterpretation(command, undefined, this.addModArray, this.customDices, this.mainCommandText.toUpperCase());
+            __characterMultipleCommands = this.characterMultipleCommands[0];
+          }
+        }
         else {
           this.characterMultipleCommands = DiceService.commandInterpretation(command, undefined, this.addModArray, this.customDices, this.mainCommandText.toUpperCase());
 
@@ -1490,7 +1519,10 @@ export class DiceRollComponent implements OnInit {
         this.diceRolledData = __characterMultipleCommands.calculationArray;
         /*********************************************************************************/
         let commandTxt = __calculationCommand;
-        this.activeAndCommand = 0;
+        if (!IsRollCurrentAgain) {
+          this.activeAndCommand = 0;
+        }
+        
         //let processCommandWithResult = this.processCommandWithResult(commandTxt, characterCommand);
 
 
@@ -3763,6 +3795,9 @@ export class DiceRollComponent implements OnInit {
 
   onClickRollAll(characterCommandModel, mainCommandText) {
     this.onClickRoll(characterCommandModel, mainCommandText);
+  }
+  onClickRollCurrentAgain(characterCommandModel, mainCommandText) {
+    this.onClickRoll(characterCommandModel, mainCommandText, undefined, true);
   }
   GetDiceDisplayContent(dice, result) {
     //let resultIndex = result.index;

@@ -207,7 +207,8 @@ export class CharactersComponent implements OnInit {
 
     gotoDashboard(character: Characters) {        
         this.rulesetId = character.ruleSet == undefined ? 0 : character.ruleSet.ruleSetId;
-        this.setRulesetId(this.rulesetId);
+      this.setRulesetId(this.rulesetId);
+      this.localStorage.localStorageSetItem(DBkeys.IsCharacterOpenedFromCampaign, false);
       this.router.navigate(['/character/dashboard', character.characterId])
       //this.router.navigate(['/character/dashboard', character.characterId], { skipLocationChange: true });
       //window.history.pushState('', '', '/character/dashboard')

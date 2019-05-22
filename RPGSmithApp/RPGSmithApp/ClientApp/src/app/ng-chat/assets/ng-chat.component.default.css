@@ -76,15 +76,15 @@
 {
     position: absolute;
     top: 4px;
-    right: 5px;
+    right: 22px;
     margin: 0;
     padding: 0;
     z-index: 2;
 }
 .ng-chat-people-actions > a.ng-chat-people-action {
     display: inline-block;
-    width: 21px;
-    height: 21px;
+    width: 22px;
+    height: 22px;
     margin-right: 8px;
     text-decoration: none;
     border: none;
@@ -416,4 +416,9 @@
 {
     float: right;
     margin-right: 5px;
+}
+@media (max-width:600px){
+  .ng-chat-window{
+    right:0px !important
+  }
 }

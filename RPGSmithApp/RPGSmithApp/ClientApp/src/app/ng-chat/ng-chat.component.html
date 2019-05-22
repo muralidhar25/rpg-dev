@@ -81,7 +81,7 @@
             <a href="javascript:void(0);" class="ng-chat-close primary-text" (click)="onCloseChatWindow(window)">X</a>
             <a href="javascript:void(0);" [ngClass]="window.isFullScreen?'icon-Gen-Duplicate':'icon-Gen-Uncheck'" class="primary-text" (click)="switchToFullScreen(window)"></a>
             <a href="javascript:void(0);" class="primary-text ng-chat-half-screen-button" (click)="switchToHalfScreen(window)">_</a>
-            <ng-chat-options [ngClass]="'ng-chat-options-container'" [options]="defaultWindowOptions(window)" [chattingTo]="window" [(activeOptionTracker)]="currentActiveOption"></ng-chat-options>
+            <ng-chat-options *ngIf="!isSmallScreen()" [ngClass]="'ng-chat-options-container'" [options]="defaultWindowOptions(window)" [chattingTo]="window" [(activeOptionTracker)]="currentActiveOption"></ng-chat-options>
           </div>
             <div #chatMessages class="ng-chat-messages primary-background">
                 <div *ngIf="window.isLoadingHistory" class="ng-chat-loading-wrapper">

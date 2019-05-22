@@ -324,7 +324,7 @@ export class NgChat implements OnInit, IChatController {
       }
     }
     
-    //console.log(participants)
+    //console.log("participants-final",participants)
     this.appService.updateChatCurrentParticipants(participants);
     return participants;
   }
@@ -369,7 +369,7 @@ export class NgChat implements OnInit, IChatController {
     // Checks if there are more opened windows than the view port can display
     private NormalizeWindows(): void
     {
-        let maxSupportedOpenedWindows = Math.floor((this.viewPortTotalArea - (!this.hideFriendsList ? this.friendsListWidth : 0)) / this.windowSizeFactor);
+      let maxSupportedOpenedWindows = Math.ceil((this.viewPortTotalArea - (!this.hideFriendsList ? this.friendsListWidth : 0)) / this.windowSizeFactor);
         let difference = this.windows.length - maxSupportedOpenedWindows;
 
         if (difference >= 0){
@@ -660,8 +660,10 @@ export class NgChat implements OnInit, IChatController {
 
             // Is there enough space left in the view port ?
             if (this.windows.length * this.windowSizeFactor >= this.viewPortTotalArea - (!this.hideFriendsList ? this.friendsListWidth : 0))
-            {                
-               // this.windows.pop();
+            {
+              if (!this.isSmallScreen()) {
+                this.windows.pop();
+              }                
             }
 
             this.updateWindowsState(this.windows);
@@ -964,18 +966,15 @@ export class NgChat implements OnInit, IChatController {
     }
 
     // Toggles a chat window visibility between maximized/minimized
-    onChatWindowClicked(window: Window): void
-    {
-     
-      //if (!window.isFullScreen) {
-        //console.log('herer --- collappsed');
-        window.isCollapsed = !window.isCollapsed;
+  onChatWindowClicked(window: Window): void {
+    if (!this.isSmallScreen()) {
+      window.isCollapsed = !window.isCollapsed;
       this.scrollChatWindow(window, ScrollDirection.Bottom);
       if (window.isCollapsed) {
         this.appService.updateChatHalfScreen(false);
       }
-      //}      
     }
+  }
 
     // Asserts if a user avatar is visible in a chat cluster
     isAvatarVisible(window: Window, message: Message, index: number): boolean
@@ -1256,5 +1255,8 @@ export class NgChat implements OnInit, IChatController {
         }
       }
     }
+  }
+  isSmallScreen() {
+    return (window.outerWidth < 610);
   }
 }

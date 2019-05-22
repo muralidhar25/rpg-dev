@@ -76,7 +76,7 @@ export class CampaignDetailsComponent implements OnInit {
       this.CurrentlyOnlinePlayersCount = 0;
       if (serviceJson) {        
         if (serviceJson.length) {
-          debugger
+          
           let participants = serviceJson.filter(x => !x.chattingTo);
           participants.map((x) => {
             this.invitedUsers.filter(z => z.playerCharacterId == x.characterID).map((s: any) => {
@@ -449,7 +449,8 @@ export class CampaignDetailsComponent implements OnInit {
   refreshCampaign() {
     this.initialize();
   }
-  goToCharacter(characterID:number) {
+  goToCharacter(characterID: number) {
+    this.localStorage.localStorageSetItem(DBkeys.IsCharacterOpenedFromCampaign, true);
     this.router.navigate(['/character/dashboard', characterID]);
   }
   BuyPlayerSlot() {   

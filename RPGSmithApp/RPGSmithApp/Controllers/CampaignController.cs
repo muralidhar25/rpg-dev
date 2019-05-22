@@ -78,7 +78,21 @@ namespace RPGSmithApp.Controllers
 
         [HttpPost("cancelInvite")]
         public async Task<IActionResult> cancelInvite(int inviteID) {
-            return Ok(_campaign.cancelInvite(inviteID));
+            bool result = _campaign.cancelInvite(inviteID);
+
+            if (result)
+            {
+                var invite = _campaign.getInvitedPlayerById(inviteID);
+                if (invite!=null)
+                {
+                    if (invite.PlayerCharacterId > 0)
+                    {
+                        GroupChatHub.DeleteParticipant(invite.PlayerCharacterId);
+                        return Ok(result);
+                    }
+                }
+            }
+            return Ok(result);
         }
 
         [HttpPost("DeclineInvite")]
@@ -100,7 +114,17 @@ namespace RPGSmithApp.Controllers
         [HttpPost("removePlayerFromCampaign")]
         public async Task<IActionResult> removePlayerFromCampaign([FromBody] PlayerInviteList model)
         {
-            return Ok(_campaign.removePlayerFromCampaign(model));
+            bool result = _campaign.removePlayerFromCampaign(model);
+            if (result)
+            {
+                if (model.PlayerCharacterId>0)
+                {
+                    GroupChatHub.DeleteParticipant(model.PlayerCharacterId);
+                    return Ok(result);
+                }
+               
+            }
+            return Ok(result);
         }
 
         [HttpPost("SendPlayerInvite")]

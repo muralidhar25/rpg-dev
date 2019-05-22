@@ -472,16 +472,16 @@ export class CharacterDashboardComponent implements OnInit {
       try {
 
         this.gameStatus(this.characterId);
-        //this.CCService.getConditionsValuesList<any[]>(this.characterId)
-        //  .subscribe(data => {
-        //    this.ConditionsValuesList = data;
+        this.CCService.getConditionsValuesList<any[]>(this.characterId)
+          .subscribe(data => {
+            this.ConditionsValuesList = data;
 
-        //  }, error => {
-        //    let Errors = Utilities.ErrorDetail("", error);
-        //    if (Errors.sessionExpire) {
-        //      this.authService.logout(true);
-        //    }
-        //  }, () => { });
+          }, error => {
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              this.authService.logout(true);
+            }
+          }, () => { });
         if (preventLoading) {
           this.isLoading = false;
         } else {
@@ -671,7 +671,7 @@ export class CharacterDashboardComponent implements OnInit {
 
                       }, error => {
                         this.ConditionsValuesList = [];
-                      }, () => {
+                      }, () => {                        
                         this.boxes = this.mapBoxes(data);
                         this.isLoading = false;
                       });
