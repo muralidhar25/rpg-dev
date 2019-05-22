@@ -27,7 +27,8 @@ export class EditTextComponent implements OnInit {
     commandFormModel = new CommandTile();
     titleBgColor: any;
     titleTextColor: any;
-    bodyBgColor: any;
+  bodyBgColor: any;
+  isSharedLayout: boolean = false;
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService) { }
 
@@ -42,9 +43,8 @@ export class EditTextComponent implements OnInit {
                 this.tileModel = this.bsModalRef.content.tile;
                 this.titleBgColor = this.textFormModel.titleBgColor;
                 this.titleTextColor = this.textFormModel.titleTextColor;
-                this.bodyBgColor = this.textFormModel.bodyBgColor;           
-            
-
+                this.bodyBgColor = this.textFormModel.bodyBgColor;  
+                this.isSharedLayout = this.bsModalRef.content.isSharedLayout;
         }, 0);
     }
 

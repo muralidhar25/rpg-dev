@@ -100,6 +100,7 @@ export class DiceRollComponent implements OnInit {
   isDicePublicRoll: boolean;
   //isSkipDicePublicRollcheck: boolean=false;
   isShowSendtoChat: boolean;
+  isFromRulesetSharedLayout: boolean = false;
   constructor(
     private router: Router, public modalService: BsModalService, private bsModalRef: BsModalRef, private alertService: AlertService,
     private charactersCharacterStatService: CharactersCharacterStatService, private charactersService: CharactersService,
@@ -132,6 +133,7 @@ export class DiceRollComponent implements OnInit {
   }
 
   ngOnInit() {
+    debugger
     setTimeout(() => {
 
       if (this.rulesetId == undefined)
@@ -274,9 +276,20 @@ export class DiceRollComponent implements OnInit {
                       this.onClickRoll(this.characterCommandModel, commandTile.command);
                     }
                     else if (+this.bsModalRef.content.tile == TILES.CHARACTERSTAT) {
-                      let characterStatTile = this.bsModalRef.content.characterStatTile;
-
-                      this.characterCommandModel.command = characterStatTile.charactersCharacterStat.command;
+                      let characterStatTile = this.bsModalRef.content.characterStatTile;                      
+                      //for ruleset shared layout
+                      if (this.bsModalRef.content.isFromRulesetSharedLayout) {
+                        if (characterStatTile.characterStat.characterStatDefaultValues) {
+                          if (characterStatTile.characterStat.characterStatDefaultValues.length) {
+                            this.characterCommandModel.command = characterStatTile.characterStat.characterStatDefaultValues[0].defaultValue;
+                          }
+                        }
+                      }
+                      else {
+                        this.characterCommandModel.command = characterStatTile.charactersCharacterStat.command;
+                      }
+                      //for ruleset shared layout end
+                      //this.characterCommandModel.command = characterStatTile.charactersCharacterStat.command; //Commented for ruleset shared
                       this.onClickRoll(this.characterCommandModel, this.characterCommandModel.command);
                     }
                     else if (+this.bsModalRef.content.tile == -1) {

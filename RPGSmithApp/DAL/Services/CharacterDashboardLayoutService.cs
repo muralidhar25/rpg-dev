@@ -7,7 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL.Models;
 using DAL.Models.CharacterTileModels;
+using DAL.Models.RulesetTileModels;
 using DAL.Repositories.Interfaces;
+using DAL.Services.RulesetTileServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using RPGSmithApp.ViewModels.EditModels;
@@ -19,20 +21,24 @@ namespace DAL.Services
         private readonly IRepository<CharacterDashboardLayout> _repo;
         protected readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
-        public CharacterDashboardLayoutService(ApplicationDbContext context, IRepository<CharacterDashboardLayout> repo, IConfiguration configuration)
+        private readonly IRulesetDashboardLayoutService _rulesetDashboardLayoutService;
+        private readonly IRulesetDashboardPageService _rulesetDashboardPageService;
+        public CharacterDashboardLayoutService(ApplicationDbContext context, IRepository<CharacterDashboardLayout> repo, IConfiguration configuration, IRulesetDashboardLayoutService rulesetDashboardLayoutService, IRulesetDashboardPageService rulesetDashboardPageService)
         {
             _repo = repo;
             _context = context;
             _configuration = configuration;
+            _rulesetDashboardLayoutService = rulesetDashboardLayoutService;
+            _rulesetDashboardPageService = rulesetDashboardPageService;
         }
-        
-        public async  Task<bool> CheckDuplicate(string value, int? characterId, int? Id = 0)
+
+        public async Task<bool> CheckDuplicate(string value, int? characterId, int? Id = 0)
         {
             var items = _repo.GetAll();
             if (items.Result == null || items.Result.Count == 0) return false;
-          
-                return items.Result.Where(x => x.Name.ToLower() == value.ToLower() && x.CharacterId == characterId && x.CharacterDashboardLayoutId != Id && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
-        
+
+            return items.Result.Where(x => x.Name.ToLower() == value.ToLower() && x.CharacterId == characterId && x.CharacterDashboardLayoutId != Id && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
+
         }
 
         public async Task<CharacterDashboardLayout> Create(CharacterDashboardLayout item)
@@ -176,7 +182,8 @@ namespace DAL.Services
             {
                 cdl.CharacterDashboardPages = cdl.CharacterDashboardPages.Where(p => p.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();
             }
-
+            CharacterDashboardLayout _characterDashboardLayout = GetSharedLayoutByCharacterId(characterId);
+            CharacterDashboardLayouts.Add(_characterDashboardLayout);
             return CharacterDashboardLayouts;
         }
 
@@ -186,16 +193,16 @@ namespace DAL.Services
                 .Include(d => d.CharacterDashboardPages)
                .Where(x => x.CharacterDashboardLayoutId == id && x.IsDeleted != true).SingleOrDefault();
 
-            if (CharacterDashboardLayout == null) return CharacterDashboardLayout;            
-                CharacterDashboardLayout.CharacterDashboardPages = CharacterDashboardLayout.CharacterDashboardPages.Where(p => p.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();
+            if (CharacterDashboardLayout == null) return CharacterDashboardLayout;
+            CharacterDashboardLayout.CharacterDashboardPages = CharacterDashboardLayout.CharacterDashboardPages.Where(p => p.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();
 
             return CharacterDashboardLayout;
         }
 
         public int GetCountByCharacterId(int characterId)
         {
-           return _context.CharacterDashboardLayouts
-               .Where(x => x.CharacterId == characterId && x.IsDeleted != true).Count();
+            return _context.CharacterDashboardLayouts
+                .Where(x => x.CharacterId == characterId && x.IsDeleted != true).Count();
         }
 
         public void SetDefaultPage(int Id, int PageId)
@@ -203,7 +210,7 @@ namespace DAL.Services
             throw new NotImplementedException();
         }
 
-        public  async Task<CharacterDashboardLayout> Update(CharacterDashboardLayout item)
+        public async Task<CharacterDashboardLayout> Update(CharacterDashboardLayout item)
         {
             var CharacterDashboardLayout = await _repo.Get(item.CharacterDashboardLayoutId);
 
@@ -246,7 +253,7 @@ namespace DAL.Services
 
         private void RemoveDefaultMobileDeviceFromOtherLayouts(CharacterDashboardLayout CDL)
         {
-            var layouts = _context.CharacterDashboardLayouts.Where(x => x.CharacterDashboardLayoutId != CDL.CharacterDashboardLayoutId && x.CharacterId==CDL.CharacterId && x.IsDeleted!=true).ToList();
+            var layouts = _context.CharacterDashboardLayouts.Where(x => x.CharacterDashboardLayoutId != CDL.CharacterDashboardLayoutId && x.CharacterId == CDL.CharacterId && x.IsDeleted != true).ToList();
             foreach (var item in layouts)
             {
                 item.IsDefaultMobile = false;
@@ -307,22 +314,37 @@ namespace DAL.Services
             }
         }
 
-        public void UpdateDefaultLayout(int layoutId)
+        public void UpdateDefaultLayout(int layoutId, int characterID=0)
         {
             try
             {
-                var layout = _context.CharacterDashboardLayouts.Where(x => x.CharacterDashboardLayoutId == layoutId).FirstOrDefault();
+                CharacterDashboardLayout layout = null;
+                var allLayouts = new List<CharacterDashboardLayout> ();
+                if (layoutId == -1)
+                {
+                    layout = new CharacterDashboardLayout();
+                    allLayouts = _context.CharacterDashboardLayouts
+                   .Where(x => x.CharacterId == characterID && x.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();
+                }
+                else
+                {
+                    layout = _context.CharacterDashboardLayouts.Where(x => x.CharacterDashboardLayoutId == layoutId).FirstOrDefault();
+                    if (layout != null)
+                    {
+                        allLayouts = _context.CharacterDashboardLayouts
+                       .Where(x => x.CharacterId == layout.CharacterId && x.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();
+                        layout.IsDefaultLayout = true;
+                    }
+                }
                 if (layout != null)
                 {
-                    var allLayouts = _context.CharacterDashboardLayouts
-                   .Where(x => x.CharacterId == layout.CharacterId && x.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();
                     foreach (var _layout in allLayouts)
                     {
                         _layout.IsDefaultLayout = false;
                     }
-                    layout.IsDefaultLayout = true;
                     _context.SaveChanges();
                 }
+
             }
             catch (Exception ex)
             {
@@ -345,6 +367,85 @@ namespace DAL.Services
             {
                 throw ex;
             }
+        }
+
+        public CharacterDashboardLayout GetSharedLayoutByCharacterId(int characterId)
+        {
+            CharacterDashboardLayout sharedCharacterDashboardLayouts = new CharacterDashboardLayout();
+            int? rulesetId = _context.Characters.Where(x => x.CharacterId == characterId).Select(x => x.RuleSetId).FirstOrDefault();
+
+            List<RulesetDashboardLayout> ruleSetDashboardLayout = new List<RulesetDashboardLayout>();
+
+            ruleSetDashboardLayout = _context.RulesetDashboardLayouts
+                    .Include(d => d.RulesetDashboardPages)
+                   .Where(x => x.RulesetId == rulesetId && x.IsSharedLayout == true && x.IsDeleted != true).ToList();
+            if (ruleSetDashboardLayout.Count==0 && _context.PlayerInvites.Where(x=>x.PlayerCharacterID== characterId).Any())
+            {
+                //in case dashboard has no layout & page create shared layout
+                var _layout = _rulesetDashboardLayoutService.Create(
+                    new RulesetDashboardLayout()
+                    {
+                        Name = "Shared Layout",
+                        SortOrder = 1,
+                        LayoutHeight = 1280,
+                        LayoutWidth = 768,
+                        RulesetId = rulesetId,
+                        IsSharedLayout = true
+                    }).Result;
+
+
+                var _RulesetDashboardPage = _rulesetDashboardPageService.Create(new RulesetDashboardPage()
+                {
+                    RulesetDashboardLayoutId = _layout.RulesetDashboardLayoutId,
+                    Name = "Page1",
+                    ContainerWidth = 1280,
+                    ContainerHeight = 768,
+                    SortOrder = 1,
+                    RulesetId = rulesetId
+                }).Result;
+                _layout.DefaultPageId = _RulesetDashboardPage.RulesetDashboardPageId;
+               var result= _rulesetDashboardLayoutService.Update(_layout).Result;
+
+                // listLayout = await _rulesetDashboardLayoutService.GetByRulesetId(rulesetId, page, pageSize);
+
+                ruleSetDashboardLayout.Add(result);
+            }
+            sharedCharacterDashboardLayouts = ruleSetDashboardLayout
+                   .Select(x => new CharacterDashboardLayout()
+                   {
+                       CharacterDashboardLayoutId = -1,
+                       CharacterDashboardPages = ruleSetDashboardLayout.FirstOrDefault().RulesetDashboardPages.Select(y => new CharacterDashboardPage()
+                       {
+                           BodyBgColor = y.BodyBgColor,
+                           BodyTextColor = y.BodyTextColor,
+                           //Character,
+                           CharacterDashboardLayoutId = -1,
+                           CharacterDashboardPageId = y.RulesetDashboardPageId,
+                           CharacterId = characterId,
+                           ContainerHeight = y.ContainerHeight,
+                           ContainerWidth = y.ContainerWidth,
+                           IsDeleted = y.IsDeleted,
+                           // Layout,
+                           Name = y.Name,
+                           SortOrder = y.SortOrder,
+                           // Tiles,
+                           TitleBgColor = y.TitleBgColor,
+                           TitleTextColor = y.TitleTextColor
+                       }).ToList(),
+                       CharacterId = characterId,
+                       DefaultPageId = x.DefaultPageId,
+                       IsDefaultComputer = x.IsDefaultComputer,
+                       IsDefaultMobile = x.IsDefaultMobile,
+                       IsDefaultLayout = x.IsDefaultLayout,
+                       IsDefaultTablet = x.IsDefaultTablet,
+                       IsDeleted = x.IsDeleted,
+                       LayoutHeight = x.LayoutHeight,
+                       LayoutWidth = x.LayoutWidth,
+                       Name = x.Name,
+                       SortOrder = x.SortOrder
+                   })
+                   .FirstOrDefault();
+            return sharedCharacterDashboardLayouts;
         }
     }
 }

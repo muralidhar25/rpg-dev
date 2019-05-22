@@ -24,7 +24,8 @@ export class SharedService {
   private layouts = new Subject<any>();
   private pages = new Subject<any>();
   private customeDice = new Subject<any>();
-
+  private ShareLayout = new Subject<any>();
+  
   updateManageOpen(accountSetting: any) {
     this.accountSetting.next(accountSetting);
   }
@@ -234,6 +235,14 @@ export class SharedService {
 
   shouldUpdateAddItemMastersList(): Observable<any> {
     return this.itemsList.asObservable();
+  }
+
+  updateShareLayout(data: any) {
+    this.ShareLayout.next(data);
+  }
+
+  shouldUpdateShareLayout(): Observable<any> {
+    return this.ShareLayout.asObservable();
   }
 }
 

@@ -96,6 +96,13 @@ namespace RPGSmithApp.Controllers
             List<CharacterTile> result = _tileService.GetByPageIdCharacterId_sp(pageId, characterId);            
             return new { data = result, characterStatsValues = _tileService.GetCharactersCharacterStats_sp(characterId), statLinkRecords= _charactersCharacterStatService.getLinkTypeRecords(characterId) };
         }
+
+        [HttpGet("getSharedLayoutByPageIdRulesetId_sp")]
+        public object getSharedLayoutByPageIdRulesetId_sp(int characterId, int pageId, int rulesetId)
+        {
+            List<CharacterTile> result = _tileService.GetSharedLayoutByPageIdRulesetId_sp(characterId, pageId, rulesetId);
+            return new { data = result, characterStatsValues = _tileService.GetCharactersCharacterStats_sp(characterId), statLinkRecords = _charactersCharacterStatService.getLinkTypeRecords(characterId) };
+        }
         [HttpGet("getCountByPageIdCharacterId")]
         public async Task<IActionResult> GetCountByPageIdCharacterId(int pageId, int characterId)
         {

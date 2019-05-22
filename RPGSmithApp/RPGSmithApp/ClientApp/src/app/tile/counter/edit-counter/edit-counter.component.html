@@ -28,7 +28,7 @@
         </div>
         <div class="modal-footer">
             <div class="w-100 m-0">
-                <button type="button" class="btn float-left btn btn-edit" (click)="edit()">Edit</button>
+                <button type="button" class="btn float-left btn btn-edit" *ngIf="!isSharedLayout" (click)="edit()">Edit</button>
                 <button type="button" class="btn float-right btn-accent" (click)="saveCounter()">SAVE</button>
                 <button type="button" class="btn float-right btn-simple-accent" (click)="close()">Cancel</button>
 

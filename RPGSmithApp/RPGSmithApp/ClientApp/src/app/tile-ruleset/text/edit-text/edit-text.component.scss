@@ -1,0 +1,39 @@
+.flexcol {
+  flex-direction: column !important;
+}
+
+.btn-edit {
+  border-color: #fd7e14;
+  background-color: transparent;
+  color: #fd7e14;
+}
+
+.btn-edit:hover {
+  border-color: #fd7e14;
+  background-color: #ffffff;
+  color: #fd7e14;
+}
+
+.wraptext {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  font-size: 15px;
+  padding: 5px 10px;
+  line-height: 30px;
+  height: auto;
+  text-align: center;
+}
+
+.edit-model-popup .modal-header {
+  border: 0px;
+}
+
+.edit-model-popup .modal-footer {
+  padding-top: 15px;
+}
+
+.modal-footer .btn {
+  margin-top: 0px !important;
+}

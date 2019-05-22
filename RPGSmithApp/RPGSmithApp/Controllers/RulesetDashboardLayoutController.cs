@@ -449,5 +449,53 @@ namespace RPGSmithApp.Controllers
             _rulesetDashboardLayoutService.UpdateDefaultLayoutPage(layoutId, pageId);
             return Ok();
         }
+
+        #region Shared Layout
+        [HttpGet("getSharedLayoutByRulesetId")]
+        public async Task<IEnumerable<RulesetDashboardLayout>> GetSharedLayoutByRulesetId(int rulesetId, int page = -1, int pageSize = -1)
+        {
+            var listLayout = await _rulesetDashboardLayoutService.GetSharedLayoutByRulesetId(rulesetId, page, pageSize);
+
+            bool noDefaultLayout = false;
+
+            if (listLayout == null) noDefaultLayout = true;
+            else if (listLayout.Count == 0) noDefaultLayout = true;
+
+            try
+            {
+                if (noDefaultLayout)
+                {
+                    //in case dashboard has no layout & page create shared layout
+                    var _layout = await _rulesetDashboardLayoutService.Create(
+                        new RulesetDashboardLayout()
+                        {
+                            Name = "Shared Layout",
+                            SortOrder = 1,
+                            LayoutHeight = 1280,
+                            LayoutWidth = 768,
+                            RulesetId = rulesetId,
+                            IsSharedLayout = true
+                        });
+
+                    var _RulesetDashboardPage = await _rulesetDashboardPageService.Create(new RulesetDashboardPage()
+                    {
+                        RulesetDashboardLayoutId = _layout.RulesetDashboardLayoutId,
+                        Name = "Page1",
+                        ContainerWidth = 1280,
+                        ContainerHeight = 768,
+                        SortOrder = 1,
+                        RulesetId = rulesetId
+                    });
+                    _layout.DefaultPageId = _RulesetDashboardPage.RulesetDashboardPageId;
+                    await _rulesetDashboardLayoutService.Update(_layout);
+
+                    listLayout = await _rulesetDashboardLayoutService.GetByRulesetId(rulesetId, page, pageSize);
+                }
+            }
+            catch { }
+
+            return listLayout;
+        }
+        #endregion
     }
 }

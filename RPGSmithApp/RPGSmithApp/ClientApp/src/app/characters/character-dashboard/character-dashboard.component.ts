@@ -126,6 +126,7 @@ export class CharacterDashboardComponent implements OnInit {
   IsComputerDevice: boolean = false;
   IsTabletDevice: boolean = false;
   IsMobileDevice: boolean = false;
+  isSharedLayout: boolean = false;
   public gridConfig: NgGridConfig = {
     'margins': this.getTileSize().margins,
     'draggable': false,
@@ -203,7 +204,6 @@ export class CharacterDashboardComponent implements OnInit {
 
         this.layoutService.getLayoutsByCharacterId(this.characterId, -1, -1)
           .subscribe(data => {
-
             this.characterlayouts = data;
             //if (this.characterlayouts.length == 1) {
             //    this.selectedlayout = this.characterlayouts[0];
@@ -255,8 +255,7 @@ export class CharacterDashboardComponent implements OnInit {
             var selectedLayoutId = this.selectedlayout.characterDashboardLayoutId;
             if (this.selectedlayout.characterDashboardPages.length == 1) {
               this.selectedPage = this.selectedlayout.characterDashboardPages[0];
-            }
-
+            }            
             this.characterlayouts.forEach(function (val) {
 
               if (selectedLayoutId == val.characterDashboardLayoutId) {
@@ -505,8 +504,7 @@ export class CharacterDashboardComponent implements OnInit {
         }
 
         this.layoutService.getLayoutsByCharacterId(this.characterId, -1, -1)
-          .subscribe(data => {
-
+          .subscribe(data => {            
             this.characterlayouts = data;
             if (this.LayoutId) {
               this.characterlayouts.map((item) => {
@@ -650,8 +648,17 @@ export class CharacterDashboardComponent implements OnInit {
                   this.updateDefaultLayoutPage(this.selectedPage.characterDashboardLayoutId, this.selectedPage.characterDashboardPageId);
                 //#641 end
 
-
-                this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId)
+                let rulesetId = 0;
+                if (this.selectedPage.characterDashboardLayoutId == -1) {
+                  this.isSharedLayout = true;
+                  rulesetId = this.character.ruleSetId;
+                }
+                else {
+                  this.isSharedLayout = false;
+                }
+                  
+                this.isLoading = true;
+                this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId, rulesetId, this.isSharedLayout)
                   .subscribe(data => {
                     let model: any = data;
                     this.CharacterStatsValues = model.characterStatsValues;
@@ -804,7 +811,7 @@ export class CharacterDashboardComponent implements OnInit {
 
   }
 
-  onLayoutSelect(layout: any): void {
+  onLayoutSelect(layout: any): void {    
     this.selectedlayout = layout;
 
     this.selectedPage = layout.characterDashboardPages[0];
@@ -817,9 +824,18 @@ export class CharacterDashboardComponent implements OnInit {
     this.tiles = null;
     if (this.selectedPage) {
       if (this.selectedPage.characterDashboardPageId) {
+        let rulesetId = 0;
+          if (this.selectedPage.characterDashboardLayoutId == -1) {
+            this.isSharedLayout = true;
+            rulesetId = this.character.ruleSetId;
+        }
+          else {
+            this.isSharedLayout = false;
+          }
         this.isLoading = true;
-        this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId)
+        this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId, rulesetId, this.isSharedLayout)
           .subscribe(data => {
+            debugger
             //this.isLoading = false;
             let model: any = data;
             this.CharacterStatsValues = model.characterStatsValues;
@@ -843,7 +859,7 @@ export class CharacterDashboardComponent implements OnInit {
           }, error => {
             this.isLoading = false;
           }, () => { });
-      }
+      }      
       this.updateDefaultLayout(this.selectedPage.characterDashboardLayoutId);
     }
   }
@@ -949,8 +965,17 @@ export class CharacterDashboardComponent implements OnInit {
   onPageSelect(page: any): void {
     this.isLoading = true;
     this.selectedPage = page;
-    if (page.characterDashboardPageId) {
-      this.characterTileService.getTilesByPageIdCharacterId<any>(page.characterDashboardPageId, this.characterId)
+    if (page.characterDashboardPageId) {    
+        let rulesetId = 0;
+        if (this.selectedPage.characterDashboardLayoutId == -1) {
+          this.isSharedLayout = true;
+          rulesetId = this.character.ruleSetId;
+      }
+        else {
+          this.isSharedLayout = false;
+        }
+        this.isLoading = true;
+        this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId, rulesetId, this.isSharedLayout)
         .subscribe(data => {
           //getCharacterDashboardPageById
           let model: any = data;
@@ -1177,6 +1202,7 @@ export class CharacterDashboardComponent implements OnInit {
   viewTile(tile: any, tileType: number) {
     //let _tile: any;
     let _tile = Object.assign({}, tile);
+    debugger
     switch (tileType) {
       case TILES.NOTE: {
         //this.bsModalRef = this.modalService.show(EditNoteComponent, {
@@ -1193,19 +1219,20 @@ export class CharacterDashboardComponent implements OnInit {
         //this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ?
         //  this.selectedPage.characterDashboardPageId : this.pageId;
         //this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
-
-        this.bsModalRef = this.modalService.show(NoteTileComponent, {
-          class: 'modal-primary modal-lg modal-custom',
-          ignoreBackdropClick: true,
-          keyboard: false
-        });
-        this.bsModalRef.content.title = "Edit Note Tile";
-        this.bsModalRef.content.tile = _tile;
-        this.bsModalRef.content.characterId = this.characterId;
-        this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ? this.selectedPage.characterDashboardPageId : this.pageId;
-        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
-        this.bsModalRef.content.view = VIEW.EDIT;
-        this.bsModalRef.content.autoFocusEditor = true;
+        if (!this.isSharedLayout) {
+          this.bsModalRef = this.modalService.show(NoteTileComponent, {
+            class: 'modal-primary modal-lg modal-custom',
+            ignoreBackdropClick: true,
+            keyboard: false
+          });
+          this.bsModalRef.content.title = "Edit Note Tile";
+          this.bsModalRef.content.tile = _tile;
+          this.bsModalRef.content.characterId = this.characterId;
+          this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ? this.selectedPage.characterDashboardPageId : this.pageId;
+          this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+          this.bsModalRef.content.view = VIEW.EDIT;
+          this.bsModalRef.content.autoFocusEditor = true;
+        }
         break;
       }
       case TILES.IMAGE: {
@@ -1223,6 +1250,7 @@ export class CharacterDashboardComponent implements OnInit {
         this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ?
           this.selectedPage.characterDashboardPageId : this.pageId;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.isSharedLayout = this.isSharedLayout;
         break;
       }
       case TILES.COUNTER: {
@@ -1238,6 +1266,7 @@ export class CharacterDashboardComponent implements OnInit {
         this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ?
           this.selectedPage.characterDashboardPageId : this.pageId;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.isSharedLayout = this.isSharedLayout;
         break;
       }
       case TILES.CHARACTERSTAT: {
@@ -1255,7 +1284,7 @@ export class CharacterDashboardComponent implements OnInit {
             this.bsModalRef.content.tile = TILES.CHARACTERSTAT;
             this.bsModalRef.content.characterStatTile = _tile.characterStatTiles;
             this.bsModalRef.content.recordName = this.character.characterName;
-            this.bsModalRef.content.recordImage = this.character.imageUrl;
+            this.bsModalRef.content.recordImage = this.character.imageUrl;           
             break;
 
           case STAT_TYPE.RichText:
@@ -1273,6 +1302,7 @@ export class CharacterDashboardComponent implements OnInit {
             this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
             this.bsModalRef.content.view = VIEW.MANAGE;
             this.bsModalRef.content.showEditor = true;
+            this.bsModalRef.content.isSharedLayout = this.isSharedLayout;
             break;
           case STAT_TYPE.Toggle:
 
@@ -1358,6 +1388,7 @@ export class CharacterDashboardComponent implements OnInit {
             this.bsModalRef.content.pageId = this.pageId;
             this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
             this.bsModalRef.content.view = VIEW.MANAGE;
+            this.bsModalRef.content.isSharedLayout = this.isSharedLayout;
             break;
 
         }
@@ -1517,6 +1548,7 @@ export class CharacterDashboardComponent implements OnInit {
         this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ?
           this.selectedPage.characterDashboardPageId : this.pageId;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.isSharedLayout = this.isSharedLayout;
         break;
       }
       default: break;
@@ -1640,7 +1672,7 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   updateDefaultLayout(layoutId) {
-    this.layoutService.updateDefaultLayout(layoutId)
+    this.layoutService.updateDefaultLayout(layoutId, this.characterId)
       .subscribe(data => { },
         error => { console.log("updateDefaultLayout error : ", error); }
       );

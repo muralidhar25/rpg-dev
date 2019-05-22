@@ -23,5 +23,6 @@ namespace DAL.Services.RulesetTileServices
         void UpdateDefaultLayout(int layoutId);
         void UpdateDefaultLayoutPage(int layoutId, int pageId);
         int GetCountByRuleSetId(int ruleSetId);
+        Task<List<RulesetDashboardLayout>> GetSharedLayoutByRulesetId(int RulesetId, int page = -1, int pageSize = -1);
     }
 }

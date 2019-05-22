@@ -67,6 +67,7 @@ export class EditCharacterStatComponent implements OnInit {
     isMouseDown: boolean = false;
     interval: any;
   isNotValidNumber: boolean = false;
+  isSharedLayout: boolean = false;
     
   options(placeholder?: string, initOnClick?: boolean): Object {
     //console.log(Utilities.optionsFloala(200, placeholder, initOnClick, true))
@@ -96,7 +97,7 @@ export class EditCharacterStatComponent implements OnInit {
             this.pageId = this.bsModalRef.content.pageId;
           this.pageDefaultData = this.bsModalRef.content.pageDefaultData;
           this.showRichEditor = this.bsModalRef.content.showEditor ? this.bsModalRef.content.showEditor : false;
-
+          this.isSharedLayout = this.bsModalRef.content.isSharedLayout;
             this.Initialize();
         }, 0);
     }

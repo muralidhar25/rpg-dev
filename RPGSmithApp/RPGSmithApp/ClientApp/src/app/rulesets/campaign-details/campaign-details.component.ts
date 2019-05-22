@@ -602,4 +602,9 @@ export class CampaignDetailsComponent implements OnInit {
     
     return this.invitedUsers.filter(x => x.isAccepted).length;
   }
+  dashboard(ruleset: Ruleset) {
+    this.rulesetService.ruleset = ruleset;
+    this.router.navigate(['/ruleset/campaign-dashboard', ruleset.ruleSetId]);
+  }
+  
 }

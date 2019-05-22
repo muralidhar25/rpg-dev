@@ -18,5 +18,6 @@ namespace DAL.Services.CharacterTileServices
         Task<CharacterTile> UpdateSortOrder(int id, int sortOrder);
         List<CharacterTile> GetByPageIdCharacterId_sp(int pageId, int characterId);
         SP_CharactersCharacterStat GetCharactersCharacterStats_sp(int characterId);
+        List<CharacterTile> GetSharedLayoutByPageIdRulesetId_sp(int characterId, int pageId, int rulesetId);
     }
 }

@@ -21,7 +21,7 @@
             </div>
 
             <div class="form-group" *ngIf="CharacterStatTypeID==STAT_TYPE.Text">
-                <input type="text" style="width:100%" class="form-control" placeholder="Enter value" [value]="valText" (change)="onChange(CharacterStatTypeID, $event.target.value)">
+                <input type="text" readonly style="width:100%" class="form-control" placeholder="Enter value" [value]="valText" (change)="onChange(CharacterStatTypeID, $event.target.value)">
                 <!--<div class="text-content" [froalaView]="valText"></div>-->
             </div>
 
@@ -38,13 +38,13 @@
             <div class="form-row" *ngIf="CharacterStatTypeID==STAT_TYPE.Number">
                 <div class="form-group w-100 input-counter">
                     <div class="input-group">
-                        <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (click)="decrement(CharacterStatTypeID)"></button>
-                        <input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" [(ngModel)]="valNumber" name="valNumber" (change)="onChange()">
-                        <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (click)="increment(CharacterStatTypeID)"></button>
+                        <!--<button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (click)="decrement(CharacterStatTypeID)"></button>-->
+                        <input type="number" readonly id="viewCounterValue" class="form-control" placeholder="Enter value" [(ngModel)]="valNumber" name="valNumber" (change)="onChange()">
+                        <!--<button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (click)="increment(CharacterStatTypeID)"></button>-->
                     </div>
                     <div class="row">
                         <div class="col text-right">
-                            <button type="button" class="btn icon icon-with-text icon-reset btn-link-primary" (click)="reset(CharacterStatTypeID)"><small><span>Reset to {{defValNumber}}</span></small></button>
+                            <!--<button type="button" class="btn icon icon-with-text icon-reset btn-link-primary" (click)="reset(CharacterStatTypeID)"><small><span>Reset to {{defValNumber}}</span></small></button>-->
                         </div>
                         <div class="col">
                             <button type="button" class="float-right  btn icon icon-with-text icon-dice icon-rsi btn-link-primary" (click)="dice(valNumber,CharacterStatTypeID)"><small><span>Dice</span></small></button>
@@ -60,16 +60,16 @@
                     <div class="form-group input-counter">
                         <label for="viewAttributeCurrentValue">Current</label>
                         <div class="input-group">
-                            <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (click)="decrement(CharacterStatTypeID,1)"></button>
-                            <input type="number" id="viewAttributeCurrentValue" class="form-control" placeholder="Enter current value" (change)="onChange()" [(ngModel)]="valCurrentMax.current" name="current">
-                            <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (click)="increment(CharacterStatTypeID,1)"></button>
+                            <!--<button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (click)="decrement(CharacterStatTypeID,1)"></button>-->
+                            <input type="number" readonly id="viewAttributeCurrentValue" class="form-control" placeholder="Enter current value" (change)="onChange()" [(ngModel)]="valCurrentMax.current" name="current">
+                            <!--<button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (click)="increment(CharacterStatTypeID,1)"></button>-->
                         </div>
                         <div class="row">
                             <!--<div class="col">
                         <button type="button" class="btn icon icon-with-text icon-dice icon-rsi btn-link-primary" (click)="dice(valCurrentMax.current,CharacterStatTypeID)"><small><span>Dice</span></small></button>
                     </div>-->
                             <div class="col text-right">
-                                <button type="button" class="btn icon icon-with-text icon-reset btn-link-primary" (click)="reset(CharacterStatTypeID,1)"><small><span>Reset to {{valCurrentMax.max}}</span></small></button>
+                                <!--<button type="button" class="btn icon icon-with-text icon-reset btn-link-primary" (click)="reset(CharacterStatTypeID,1)"><small><span>Reset to {{valCurrentMax.max}}</span></small></button>-->
                             </div>
                         </div>
                     </div>
@@ -80,9 +80,9 @@
                     <div class="form-group input-counter">
                         <label for="viewAttributeMaximumValue">Maximum</label>
                         <div class="input-group">
-                            <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (click)="decrement(CharacterStatTypeID,2)"></button>
-                            <input type="number" id="viewAttributeMaximumValue" class="form-control" placeholder="Enter maximum value" (change)="onChange()" [(ngModel)]="valCurrentMax.max" name="max">
-                            <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (click)="increment(CharacterStatTypeID,2)"></button>
+                            <!--<button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (click)="decrement(CharacterStatTypeID,2)"></button>-->
+                            <input type="number" readonly id="viewAttributeMaximumValue" class="form-control" placeholder="Enter maximum value" (change)="onChange()" [(ngModel)]="valCurrentMax.max" name="max">
+                            <!--<button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (click)="increment(CharacterStatTypeID,2)"></button>-->
                         </div>
                         <div class="row">
                             <!--<div class="col">
@@ -121,9 +121,9 @@
                     <div class="form-group input-counter">
                         <label for="viewAttributeCurrentValue">Value</label>
                         <div class="input-group">
-                            <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (click)="decrement(CharacterStatTypeID,1)"></button>
-                            <input type="number" id="viewAttributeCurrentValue" class="form-control" placeholder="Enter current value" name="value" [(ngModel)]="valValueSubValue.value" (change)="onChange()">
-                            <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (click)="increment(CharacterStatTypeID,1)"></button>
+                            <!--<button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (click)="decrement(CharacterStatTypeID,1)"></button>-->
+                            <input type="number" readonly id="viewAttributeCurrentValue" class="form-control" placeholder="Enter current value" name="value" [(ngModel)]="valValueSubValue.value" (change)="onChange()">
+                            <!--<button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (click)="increment(CharacterStatTypeID,1)"></button>-->
                         </div>
                         <div class="row">
                             <div class="col">
@@ -144,9 +144,9 @@
                     <div class="form-group input-counter">
                         <label for="viewAttributeMaximumValue">Subvalue</label>
                         <div class="input-group">
-                            <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (click)="decrement(CharacterStatTypeID,2)"></button>
-                            <input type="number" id="viewAttributeMaximumValue" class="form-control" placeholder="Enter maximum value" (change)="onChange()" name="subValue" [(ngModel)]="valValueSubValue.subValue">
-                            <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (click)="increment(CharacterStatTypeID,2)"></button>
+                            <!--<button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (click)="decrement(CharacterStatTypeID,2)"></button>-->
+                            <input type="number" readonly id="viewAttributeMaximumValue" class="form-control" placeholder="Enter maximum value" (change)="onChange()" name="subValue" [(ngModel)]="valValueSubValue.subValue">
+                            <!--<button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (click)="increment(CharacterStatTypeID,2)"></button>-->
                         </div>
                         <div class="row">
                             <div class="col">
@@ -203,7 +203,7 @@
             <div class="form-group" *ngIf="CharacterStatTypeID==STAT_TYPE.Calculation">
                 <label for="newItemTags" class="textCenter">{{valCalculationFormula}}</label>
                 <!--<input type="text" id="newItemTags" class="form-control textBox" [value]="valCalculationResult">-->
-                <div class="form-control textinput text-content" [froalaView]="valCalculationResult"></div>
+                <!--<div class="form-control textinput text-content" [froalaView]="valCalculationResult"></div>-->
             </div>
 
             <div class="form-group" *ngIf="CharacterStatTypeID==STAT_TYPE.Command">
@@ -214,13 +214,13 @@
             <div class="form-group" *ngIf="CharacterStatTypeID==STAT_TYPE.Combo">
                 <div class="form-group w-100 input-counter">
                     <div class="input-group">
-                        <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDown(-1,CharacterStatTypeID)" (mouseup)="mouseUp()" (click)="decrement(CharacterStatTypeID)"></button>
-                        <input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" [(ngModel)]="valNumber" name="valNumber" (change)="onChange()">
-                        <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (mousedown)="mouseDown(1,CharacterStatTypeID)" (mouseup)="mouseUp()" (click)="increment(CharacterStatTypeID)"></button>
+                        <!--<button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDown(-1,CharacterStatTypeID)" (mouseup)="mouseUp()" (click)="decrement(CharacterStatTypeID)"></button>-->
+                        <input type="number" readonly id="viewCounterValue" class="form-control" placeholder="Enter value" [(ngModel)]="valNumber" name="valNumber" (change)="onChange()">
+                        <!--<button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (mousedown)="mouseDown(1,CharacterStatTypeID)" (mouseup)="mouseUp()" (click)="increment(CharacterStatTypeID)"></button>-->
                     </div>
                     <div class="row">
                         <div class="col text-right">
-                            <button type="button" class="btn icon icon-with-text icon-reset btn-link-primary" (click)="reset(CharacterStatTypeID)"><small><span>Reset to {{defValNumber}}</span></small></button>
+                            <!--<button type="button" class="btn icon icon-with-text icon-reset btn-link-primary" (click)="reset(CharacterStatTypeID)"><small><span>Reset to {{defValNumber}}</span></small></button>-->
                         </div>
                         <div class="col">
                             <button type="button" class="float-right  btn icon icon-with-text icon-dice icon-rsi btn-link-primary" (click)="dice(valNumber,CharacterStatTypeID)"><small><span>Dice</span></small></button>
@@ -238,7 +238,7 @@
 
     <div *ngIf="CharacterStatTypeID!==STAT_TYPE.Command" class="w-100 m-0">
         <button type="button" class="btn float-left btn btn-edit" (click)="editStat(CharacterStatTypeID)">Edit</button>
-        <button type="button" *ngIf="(CharacterStatTypeID===STAT_TYPE.RichText && showRichEditor) || (CharacterStatTypeID!==STAT_TYPE.Calculation && CharacterStatTypeID!==STAT_TYPE.RichText)" class="btn float-right btn-accent" (click)="saveStat(CharacterStatTypeID)">SAVE</button>
+        <!--<button type="button" *ngIf="(CharacterStatTypeID===STAT_TYPE.RichText && showRichEditor) || (CharacterStatTypeID!==STAT_TYPE.Calculation && CharacterStatTypeID!==STAT_TYPE.RichText)" class="btn float-right btn-accent" (click)="saveStat(CharacterStatTypeID)">SAVE</button>-->
         <button type="button" *ngIf="(CharacterStatTypeID===STAT_TYPE.RichText && showRichEditor) || (CharacterStatTypeID!==STAT_TYPE.Calculation && CharacterStatTypeID!==STAT_TYPE.RichText)" class="btn float-right btn-simple-accent" (click)="close(true)">Cancel</button>
         <button type="button" *ngIf="(CharacterStatTypeID===STAT_TYPE.RichText && !showRichEditor) || CharacterStatTypeID===STAT_TYPE.Calculation" class="btn float-right btn-outline-accent" (click)="close(true)">Close</button>
     </div>

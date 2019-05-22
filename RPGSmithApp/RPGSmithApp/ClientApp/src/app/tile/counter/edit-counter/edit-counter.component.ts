@@ -30,7 +30,8 @@ export class EditCounterComponent implements OnInit {
     pageDefaultData = new CharacterDashboardPage();
     isLoading: boolean = false;
     isMouseDown: boolean = false;
-    interval: any;
+  interval: any;
+  isSharedLayout: boolean = false;
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
         private colorService: ColorService, private localStorage: LocalStoreManager, private counterTileService: CounterTileService,
@@ -47,7 +48,8 @@ export class EditCounterComponent implements OnInit {
             this.tileModel = Object.assign({}, this.bsModalRef.content.tile);
             this.characterId = this.bsModalRef.content.characterId;
             this.pageId = this.bsModalRef.content.pageId;
-            this.pageDefaultData = this.bsModalRef.content.pageDefaultData;
+          this.pageDefaultData = this.bsModalRef.content.pageDefaultData;
+          this.isSharedLayout = this.bsModalRef.content.isSharedLayout;
         }, 0);
     }
 
