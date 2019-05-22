@@ -287,7 +287,7 @@
             <button type="button" id="diceShowDiceTrigger" class="btn btn-accent btn-block" (click)="onClickDice(mainCommandText)">Show Dice</button>
           </div>
           <div class="d-flex col-12 " [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'">
-            <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block" (click)="onClickRoll(characterCommandModel,'')"> {{rollAgainBtnText}} </button>
+            <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block" (click)="onClickRollCurrentAgain(characterCommandModel,mainCommandText)"> {{rollAgainBtnText}} </button>
           </div>
           <div class="d-flex col-12 " *ngIf="displayCurrentRollBtn" [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'">
             <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block" (click)="onClickRollAll(characterCommandModel,mainCommandText)"> Roll  All  Again </button>
