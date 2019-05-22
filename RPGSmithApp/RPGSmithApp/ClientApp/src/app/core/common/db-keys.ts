@@ -33,5 +33,6 @@ export class DBkeys {
   public static readonly IsLogonKickedOut = "is_logon_kicked_out";
   public static readonly chatConnections = "chatConnections";
   public static readonly rulesetforChat = "rulesetforChat";
+  public static readonly IsCharacterOpenedFromCampaign = "IsCharacterOpenedFromCampaign";
   
 }

@@ -24,36 +24,100 @@ public class GroupChatHub : Hub
         }
 
     }
-
-    private void RefreshParticipants()
+    public static void DeleteParticipant(int CharacterID)
     {
-        var newList = _campaignService.getChatParticipantList();
-        foreach (var item in AllConnectedParticipants)
+        if (CharacterID > 0)
         {
-            var rec = newList
-                .Where(x =>
-                x.Participant.CampaignID == item.Participant.CampaignID
-                && x.Participant.CharacterCampaignID == item.Participant.CharacterCampaignID
-                && x.Participant.CharacterID == item.Participant.CharacterID
-                && x.Participant.UserId == item.Participant.UserId
-                
-                ).FirstOrDefault();
-            if (rec != null)
+            var participantList = AllConnectedParticipants.Where(x => x.Participant.CharacterID == CharacterID).ToList();
+            foreach (var participant in participantList)
             {
-                rec.Participant.Id = item.Participant.Id;
-                rec.Participant.Status = item.Participant.Status;
-            }
-            else {
-                if (item.Participant.GetType().Name== "GroupChatParticipantViewModel")
-                {
-                    if (((GroupChatParticipantViewModel)item.Participant).ChattingTo !=null)
-                    {
-                        newList.Add(item);
-                    }                    
-                }                
+                AllConnectedParticipants.Remove(participant);
             }
         }
-        AllConnectedParticipants = newList;
+    }
+    public static void AddParticipant(Character character)
+    {
+        ParticipantResponseViewModel charObj = new ParticipantResponseViewModel()
+        {
+            Metadata = new ParticipantMetadataViewModel()
+            {
+                TotalUnreadMessages = 0
+            },
+            Participant = new ChatParticipantViewModel()
+            {
+                DisplayName = character.CharacterName,
+                Id = character.CharacterId.ToString(),
+                Avatar = character.ImageUrl,
+
+                CampaignID = 0,
+                CharacterCampaignID = (int)character.RuleSetId,
+                CharacterID = (int)character.CharacterId,
+                UserId = character.UserId,
+                Status = 3
+            }
+        };
+        AllConnectedParticipants.Add(charObj);
+    }
+    private void RefreshParticipants()
+    {
+        //var oldChattingParticipantsList = AllConnectedParticipants.Where(x=> x.Participant.GetType().Name == "GroupChatParticipantViewModel");
+        //var oldList = AllConnectedParticipants.Where(x => x.Participant.GetType().Name != "GroupChatParticipantViewModel");
+        //var newList = _campaignService.getChatParticipantList();
+        //var itemsToAddInNewList =new List<ParticipantResponseViewModel>();
+        //foreach (var item in newList)
+        //{
+        //    var rec=oldList.Where(x =>
+        //        x.Participant.CampaignID == item.Participant.CampaignID
+        //        && x.Participant.CharacterCampaignID == item.Participant.CharacterCampaignID
+        //        && x.Participant.CharacterID == item.Participant.CharacterID
+        //        && x.Participant.UserId == item.Participant.UserId
+        //            ).FirstOrDefault();
+        //    if (rec != null)
+        //    {
+        //        item.IsConnectionIDProvided = rec.IsConnectionIDProvided;                
+        //        item.Metadata = rec.Metadata;                
+        //        item.Participant = rec.Participant;                
+        //    }
+        //    else {
+        //        itemsToAddInNewList.Add(item);
+        //    }
+        //}
+        //foreach (var item in itemsToAddInNewList)
+        //{
+        //    newList.Add(item);
+        //}
+        //foreach (var item in oldChattingParticipantsList)
+        //{
+        //    newList.Add(item);
+        //}
+        //AllConnectedParticipants = newList;
+        //foreach (var item in AllConnectedParticipants)
+        //{
+        //    var rec = newList
+        //        .Where(x =>
+        //        x.Participant.CampaignID == item.Participant.CampaignID
+        //        && x.Participant.CharacterCampaignID == item.Participant.CharacterCampaignID
+        //        && x.Participant.CharacterID == item.Participant.CharacterID
+        //        && x.Participant.UserId == item.Participant.UserId
+
+        //        ).LastOrDefault();
+        //    if (rec != null)
+        //    {
+        //        rec.Participant.Id = item.Participant.Id;
+        //        rec.Participant.Status = item.Participant.Status;
+        //    }
+        //    else
+        //    {
+        //        if (item.Participant.GetType().Name == "GroupChatParticipantViewModel")
+        //        {
+        //            if (((GroupChatParticipantViewModel)item.Participant).ChattingTo != null)
+        //            {
+        //                newList.Add(item);
+        //            }
+        //        }
+        //    }
+        //}
+        //AllConnectedParticipants = newList;
     }
 
     internal void offlineParticipant(string currentUserId)
@@ -278,6 +342,14 @@ public class GroupChatHub : Hub
                 //AllConnectedParticipants.Remove(participant);
                 DisconnectedParticipants.Add(participant);
 
+                foreach (var item in AllConnectedParticipants)
+                {
+                    if (item.Participant.Id == Context.ConnectionId)
+                    {
+                        item.Participant.Status = 3;
+                    }
+
+                }
                 Clients.All.SendAsync("friendsListChanged", AllConnectedParticipants);
             }
 
