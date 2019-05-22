@@ -215,7 +215,7 @@ export class CampaignDashboardComponent implements OnInit {
             //    this.selectedlayout = this.rulesetlayouts[0];
             //}
             this.rulesetlayouts.map((item) => {
-              if (item.isSharedLayout) {
+              if (item.isDefaultLayout) {
                 this.selectedlayout = item;
                 this.onLayoutSelect(this.selectedlayout);
               }
@@ -579,7 +579,7 @@ export class CampaignDashboardComponent implements OnInit {
                 }
                 if (!isLayoutSelected) {
                   this.rulesetlayouts.map((item) => {
-                    if (item.isSharedLayout) {
+                    if (item.isDefaultLayout) {
                       item.rulesetDashboardPages.map((pageItem) => {
                         if (pageItem.rulesetDashboardPageId == item.defaultPageId) {
                           this.selectedPage = pageItem;
@@ -613,7 +613,7 @@ export class CampaignDashboardComponent implements OnInit {
 
               if (!isLayoutSelected) {
                 this.rulesetlayouts.map((item) => {
-                  if (item.isSharedLayout) {
+                  if (item.isDefaultLayout) {
                     this.selectedPage = item.rulesetDashboardPages[0];
                   }
                 })
