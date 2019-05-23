@@ -37,6 +37,7 @@ export class RulesetLayoutComponent implements OnInit {
     View = VIEW
   title: string = ''
   button: string = ''
+  isCampaignDashboardScreen: boolean= false;
     @HostListener('window:resize', ['$event'])
     onResize(event?) {
         this.screenHeight = window.innerHeight;
@@ -63,7 +64,7 @@ export class RulesetLayoutComponent implements OnInit {
             this.authService.logout();
         else {
             setTimeout(() => {
-
+              this.isCampaignDashboardScreen = this.bsModalRef.content.isCampaignDashboardScreen ? this.bsModalRef.content.isCampaignDashboardScreen : false;
                 let modalContentButton = this.bsModalRef.content.button;
                 this.layoutPages = this.bsModalRef.content.layoutPages;
                 this.layoutFormModal = Object.assign({}, this.bsModalRef.content.layoutFormModal ? this.bsModalRef.content.layoutFormModal : this.layoutFormModal);
@@ -74,7 +75,10 @@ export class RulesetLayoutComponent implements OnInit {
                 }
                 this.rulesetId = this.layoutFormModal.rulesetId = this.bsModalRef.content.rulesetId;
                 this.screenWidth = this.layoutFormModal.layoutWidth ? this.layoutFormModal.layoutWidth : this.screenWidth;
-                this.screenHeight = this.layoutFormModal.layoutHeight ? this.layoutFormModal.layoutHeight : this.screenHeight;
+              this.screenHeight = this.layoutFormModal.layoutHeight ? this.layoutFormModal.layoutHeight : this.screenHeight;
+              if (this.isCampaignDashboardScreen) {
+                this.layoutFormModal.isSharedLayout = true;
+              }
             }, 0);
         }
     }

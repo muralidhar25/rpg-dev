@@ -110,7 +110,7 @@ namespace RPGSmithApp.Controllers
                 {
                     return BadRequest("Only 12 slots of Layouts are allowed.");
                 }
-                if (_rulesetDashboardLayoutService.CheckDuplicate(model.Name.Trim(), model.RulesetId).Result)
+                if (_rulesetDashboardLayoutService.CheckDuplicate(model.Name.Trim(), model.RulesetId, model.IsSharedLayout ).Result)
                     return BadRequest("Duplicate Layout Name");
 
                 try
@@ -151,7 +151,7 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_rulesetDashboardLayoutService.CheckDuplicate(model.Name.Trim(), model.RulesetId,model.RulesetDashboardLayoutId).Result)
+                if (_rulesetDashboardLayoutService.CheckDuplicate(model.Name.Trim(), model.RulesetId,model.IsSharedLayout,model.RulesetDashboardLayoutId).Result)
                     return BadRequest("Duplicate Layout Name");
 
                 try
@@ -181,7 +181,7 @@ namespace RPGSmithApp.Controllers
                 {
                     return BadRequest("Only 12 slots of Layouts are allowed.");
                 }
-                if (_rulesetDashboardLayoutService.CheckDuplicate(model.Name.Trim(), model.RulesetId).Result)
+                if (_rulesetDashboardLayoutService.CheckDuplicate(model.Name.Trim(), model.RulesetId,model.IsSharedLayout).Result)
                     return BadRequest("Duplicate Layout Name");
 
                 

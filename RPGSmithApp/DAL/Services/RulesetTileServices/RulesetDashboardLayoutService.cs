@@ -26,12 +26,14 @@ namespace DAL.Services.RulesetTileServices
             _configuration = configuration;
         }
         
-        public async  Task<bool> CheckDuplicate(string value, int? RulesetId, int? Id = 0)
+        public async  Task<bool> CheckDuplicate(string value, int? RulesetId, bool IsCampaignDashboard, int? Id = 0)
         {
             var items = _repo.GetAll();
             if (items.Result == null || items.Result.Count == 0) return false;
           
-                return items.Result.Where(x => x.Name.ToLower() == value.ToLower() && x.RulesetId == RulesetId && x.RulesetDashboardLayoutId != Id && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
+                return items.Result
+                .Where(x => x.Name.ToLower() == value.ToLower() && x.RulesetId == RulesetId && x.RulesetDashboardLayoutId != Id && x.IsDeleted != true && x.IsSharedLayout== IsCampaignDashboard)
+                .FirstOrDefault() == null ? false : true;
         
         }
 
