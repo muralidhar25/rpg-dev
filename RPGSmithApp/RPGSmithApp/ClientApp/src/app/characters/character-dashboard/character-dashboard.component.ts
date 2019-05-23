@@ -503,236 +503,238 @@ export class CharacterDashboardComponent implements OnInit {
           }, error => {
             this.character = new Characters();
             this.isLoading = false;
-          }, () => { });
-        if (preventLoading) {
-          this.isLoading = false;
-        } else {
-          this.isLoading = true;
-        }
-
-        this.layoutService.getLayoutsByCharacterId(this.characterId, -1, -1)
-          .subscribe(data => {
-            debugger
-            this.characterlayouts = data;
-            if (this.LayoutId) {
-              this.characterlayouts.map((item) => {
-                if (item.characterDashboardLayoutId == this.LayoutId) {
-                  //if (item.isDefaultLayout) {
-                  this.selectedlayout = item;
-                }
-              })
-              //this.selectedlayout
+          }, () => {
+            if (preventLoading) {
+              this.isLoading = false;
+            } else {
+              this.isLoading = true;
             }
-            else {
 
-              let isLayoutSelected = false;
-
-              if (IsInitialLoad) {
-                this.characterlayouts.map((item) => {
-                  if (item.isDefaultComputer && this.IsComputerDevice) {
-                    isLayoutSelected = true;
-                    this.selectedlayout = item;
-                    // this.onLayoutSelect(this.selectedlayout);
-                  }
-                  else if (item.isDefaultTablet && this.IsTabletDevice) {
-                    isLayoutSelected = true;
-                    this.selectedlayout = item;
-                    // this.onLayoutSelect(this.selectedlayout);
-                  }
-                  else if (item.isDefaultMobile && this.IsMobileDevice) {
-                    isLayoutSelected = true;
-                    this.selectedlayout = item;
-                    //this.onLayoutSelect(this.selectedlayout);
-                  }
-                })
-              }
-
-              if (!isLayoutSelected) {
-                for (var lay = 0; lay < this.characterlayouts.length; lay++) {
-                  if (this.characterlayouts[lay].isDefaultLayout) {
-                    this.selectedlayout = this.characterlayouts[lay];
-                    break;
-                  }
-                }
-                //this.characterlayouts.map((item) => {
-                //  if (item.isDefaultLayout) {
-                //    this.selectedlayout = item;
-                //  }
-                //})
-              }
-
-            }
-            if (this.pageId) {
-              this.characterlayouts.map((item) => {
-                if (item.characterDashboardLayoutId == this.LayoutId) {
-                  item.characterDashboardPages.map((pageItem) => {
-                    if (pageItem.characterDashboardPageId == this.pageId) {
-                      this.selectedPage = pageItem;
-                    }
-                  })
-                }
-              })
-            }
-            else {
-              if (this.selectedlayout != null || this.selectedlayout != undefined) {
-                let isLayoutSelected = false;
-                if (IsInitialLoad) {
+            this.layoutService.getLayoutsByCharacterId(this.characterId, -1, -1)
+              .subscribe(data => {
+                debugger
+                this.characterlayouts = data;
+                if (this.LayoutId) {
                   this.characterlayouts.map((item) => {
-                    if (item.isDefaultComputer && this.IsComputerDevice) {
-                      isLayoutSelected = true;
-                      item.characterDashboardPages.map((pageItem) => {
-                        if (pageItem.characterDashboardPageId == item.defaultPageId) {
-                          this.selectedPage = pageItem;
-                        }
-                      })
-                    }
-                    else if (item.isDefaultTablet && this.IsTabletDevice) {
-                      isLayoutSelected = true;
-                      item.characterDashboardPages.map((pageItem) => {
-                        if (pageItem.characterDashboardPageId == item.defaultPageId) {
-                          this.selectedPage = pageItem;
-                        }
-                      })
-                    }
-                    else if (item.isDefaultMobile && this.IsMobileDevice) {
-                      isLayoutSelected = true;
-                      item.characterDashboardPages.map((pageItem) => {
-                        if (pageItem.characterDashboardPageId == item.defaultPageId) {
-                          this.selectedPage = pageItem;
-                        }
-                      })
+                    if (item.characterDashboardLayoutId == this.LayoutId) {
+                      //if (item.isDefaultLayout) {
+                      this.selectedlayout = item;
                     }
                   })
-                }
-
-                if (!isLayoutSelected) {
-                  for (var lay1 = 0; lay1 < this.characterlayouts.length; lay1++) {
-                    let item = this.characterlayouts[lay1];
-                    if (item.isDefaultLayout) {
-                      item.characterDashboardPages.map((pageItem) => {
-                        if (pageItem.characterDashboardPageId == item.defaultPageId) {
-                          this.selectedPage = pageItem;                          
-                        }
-                      })
-                      break;
-                    }
-                  }
-                  //this.characterlayouts.map((item) => {
-                  //  if (item.isDefaultLayout) {
-                  //    item.characterDashboardPages.map((pageItem) => {
-                  //      if (pageItem.characterDashboardPageId == item.defaultPageId) {
-                  //        this.selectedPage = pageItem;
-                  //      }
-                  //    })
-                  //  }
-                  //})
-                }
-
-              }
-            }
-            if (!this.selectedPage && this.page1) {
-              let isLayoutSelected = false;
-              if (IsInitialLoad) {
-                this.characterlayouts.map((item) => {
-                  if (item.isDefaultComputer && this.IsComputerDevice) {
-                    isLayoutSelected = true;
-                    this.selectedPage = item.characterDashboardPages[0];
-                  }
-                  else if (item.isDefaultTablet && this.IsTabletDevice) {
-                    isLayoutSelected = true;
-                    this.selectedPage = item.characterDashboardPages[0];
-                  }
-                  else if (item.isDefaultMobile && this.IsMobileDevice) {
-                    isLayoutSelected = true;
-                    this.selectedPage = item.characterDashboardPages[0];
-                  }
-                })
-              }
-
-              if (!isLayoutSelected) {
-                for (var lay1 = 0; lay1 < this.characterlayouts.length; lay1++) {
-                  let item = this.characterlayouts[lay1];
-                  if (item.isDefaultLayout) {
-                    this.selectedPage = item.characterDashboardPages[0];
-                    break;
-                  }
-                }
-                //this.characterlayouts.map((item) => {
-                //  if (item.isDefaultLayout) {
-                //    this.selectedPage = item.characterDashboardPages[0];
-                //  }
-                //})
-              }
-
-              //this.initialize();
-              //this.page1 = 0;
-            }
-            if (this.selectedPage) {
-              if (this.selectedPage.characterDashboardPageId) {
-                if (preventLoading) {
-                  this.isLoading = false;
-                } else {
-                  this.isLoading = true;
-                }
-
-                //#641 start
-                this.updateDefaultLayout(this.selectedPage.characterDashboardLayoutId)
-                if (this.selectedPage.characterDashboardLayoutId && this.selectedPage.characterDashboardPageId)
-                  this.updateDefaultLayoutPage(this.selectedPage.characterDashboardLayoutId, this.selectedPage.characterDashboardPageId);
-                //#641 end
-
-                let rulesetId = 0;
-                if (this.selectedPage.characterDashboardLayoutId == -1) {
-                  this.isSharedLayout = true;
-                  rulesetId = this.character.ruleSetId;
+                  //this.selectedlayout
                 }
                 else {
-                  this.isSharedLayout = false;
+
+                  let isLayoutSelected = false;
+
+                  if (IsInitialLoad) {
+                    this.characterlayouts.map((item) => {
+                      if (item.isDefaultComputer && this.IsComputerDevice) {
+                        isLayoutSelected = true;
+                        this.selectedlayout = item;
+                        // this.onLayoutSelect(this.selectedlayout);
+                      }
+                      else if (item.isDefaultTablet && this.IsTabletDevice) {
+                        isLayoutSelected = true;
+                        this.selectedlayout = item;
+                        // this.onLayoutSelect(this.selectedlayout);
+                      }
+                      else if (item.isDefaultMobile && this.IsMobileDevice) {
+                        isLayoutSelected = true;
+                        this.selectedlayout = item;
+                        //this.onLayoutSelect(this.selectedlayout);
+                      }
+                    })
+                  }
+
+                  if (!isLayoutSelected) {
+                    for (var lay = 0; lay < this.characterlayouts.length; lay++) {
+                      if (this.characterlayouts[lay].isDefaultLayout) {
+                        this.selectedlayout = this.characterlayouts[lay];
+                        break;
+                      }
+                    }
+                    //this.characterlayouts.map((item) => {
+                    //  if (item.isDefaultLayout) {
+                    //    this.selectedlayout = item;
+                    //  }
+                    //})
+                  }
+
                 }
-                  
-                this.isLoading = true;
-                this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId, rulesetId, this.isSharedLayout)
-                  .subscribe(data => {
-                    let model: any = data;
-                    this.CharacterStatsValues = model.characterStatsValues;
-                    this.statLinkRecords = model.statLinkRecords;
-                    data = model.data;
-                    this.tiles = data;
-                    this.CCService.getConditionsValuesList<any[]>(this.characterId)
+                if (this.pageId) {
+                  this.characterlayouts.map((item) => {
+                    if (item.characterDashboardLayoutId == this.LayoutId) {
+                      item.characterDashboardPages.map((pageItem) => {
+                        if (pageItem.characterDashboardPageId == this.pageId) {
+                          this.selectedPage = pageItem;
+                        }
+                      })
+                    }
+                  })
+                }
+                else {
+                  if (this.selectedlayout != null || this.selectedlayout != undefined) {
+                    let isLayoutSelected = false;
+                    if (IsInitialLoad) {
+                      this.characterlayouts.map((item) => {
+                        if (item.isDefaultComputer && this.IsComputerDevice) {
+                          isLayoutSelected = true;
+                          item.characterDashboardPages.map((pageItem) => {
+                            if (pageItem.characterDashboardPageId == item.defaultPageId) {
+                              this.selectedPage = pageItem;
+                            }
+                          })
+                        }
+                        else if (item.isDefaultTablet && this.IsTabletDevice) {
+                          isLayoutSelected = true;
+                          item.characterDashboardPages.map((pageItem) => {
+                            if (pageItem.characterDashboardPageId == item.defaultPageId) {
+                              this.selectedPage = pageItem;
+                            }
+                          })
+                        }
+                        else if (item.isDefaultMobile && this.IsMobileDevice) {
+                          isLayoutSelected = true;
+                          item.characterDashboardPages.map((pageItem) => {
+                            if (pageItem.characterDashboardPageId == item.defaultPageId) {
+                              this.selectedPage = pageItem;
+                            }
+                          })
+                        }
+                      })
+                    }
+
+                    if (!isLayoutSelected) {
+                      for (var lay1 = 0; lay1 < this.characterlayouts.length; lay1++) {
+                        let item = this.characterlayouts[lay1];
+                        if (item.isDefaultLayout) {
+                          item.characterDashboardPages.map((pageItem) => {
+                            if (pageItem.characterDashboardPageId == item.defaultPageId) {
+                              this.selectedPage = pageItem;
+                            }
+                          })
+                          break;
+                        }
+                      }
+                      //this.characterlayouts.map((item) => {
+                      //  if (item.isDefaultLayout) {
+                      //    item.characterDashboardPages.map((pageItem) => {
+                      //      if (pageItem.characterDashboardPageId == item.defaultPageId) {
+                      //        this.selectedPage = pageItem;
+                      //      }
+                      //    })
+                      //  }
+                      //})
+                    }
+
+                  }
+                }
+                if (!this.selectedPage && this.page1) {
+                  let isLayoutSelected = false;
+                  if (IsInitialLoad) {
+                    this.characterlayouts.map((item) => {
+                      if (item.isDefaultComputer && this.IsComputerDevice) {
+                        isLayoutSelected = true;
+                        this.selectedPage = item.characterDashboardPages[0];
+                      }
+                      else if (item.isDefaultTablet && this.IsTabletDevice) {
+                        isLayoutSelected = true;
+                        this.selectedPage = item.characterDashboardPages[0];
+                      }
+                      else if (item.isDefaultMobile && this.IsMobileDevice) {
+                        isLayoutSelected = true;
+                        this.selectedPage = item.characterDashboardPages[0];
+                      }
+                    })
+                  }
+
+                  if (!isLayoutSelected) {
+                    for (var lay1 = 0; lay1 < this.characterlayouts.length; lay1++) {
+                      let item = this.characterlayouts[lay1];
+                      if (item.isDefaultLayout) {
+                        this.selectedPage = item.characterDashboardPages[0];
+                        break;
+                      }
+                    }
+                    //this.characterlayouts.map((item) => {
+                    //  if (item.isDefaultLayout) {
+                    //    this.selectedPage = item.characterDashboardPages[0];
+                    //  }
+                    //})
+                  }
+
+                  //this.initialize();
+                  //this.page1 = 0;
+                }
+                if (this.selectedPage) {
+                  if (this.selectedPage.characterDashboardPageId) {
+                    if (preventLoading) {
+                      this.isLoading = false;
+                    } else {
+                      this.isLoading = true;
+                    }
+
+                    //#641 start
+                    this.updateDefaultLayout(this.selectedPage.characterDashboardLayoutId)
+                    if (this.selectedPage.characterDashboardLayoutId && this.selectedPage.characterDashboardPageId)
+                      this.updateDefaultLayoutPage(this.selectedPage.characterDashboardLayoutId, this.selectedPage.characterDashboardPageId);
+                    //#641 end
+
+                    let rulesetId = 0;
+                    if (this.selectedPage.characterDashboardLayoutId == -1) {
+                      this.isSharedLayout = true;
+                      rulesetId = this.character.ruleSetId;
+                    }
+                    else {
+                      this.isSharedLayout = false;
+                    }
+
+                    this.isLoading = true;
+                    this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId, rulesetId, this.isSharedLayout)
                       .subscribe(data => {
-                        this.ConditionsValuesList = data;
+                        let model: any = data;
+                        this.CharacterStatsValues = model.characterStatsValues;
+                        this.statLinkRecords = model.statLinkRecords;
+                        data = model.data;
+                        this.tiles = data;
+                        this.CCService.getConditionsValuesList<any[]>(this.characterId)
+                          .subscribe(data => {
+                            this.ConditionsValuesList = data;
+
+                          }, error => {
+                            this.ConditionsValuesList = [];
+                          }, () => {
+                            this.boxes = this.mapBoxes(data);
+                            this.isLoading = false;
+                          });
+
+                        try {
+                          this.noRecordFound = !data.length;
+                        } catch (err) { }
 
                       }, error => {
-                        this.ConditionsValuesList = [];
-                      }, () => {                        
-                        this.boxes = this.mapBoxes(data);
                         this.isLoading = false;
-                      });
+                      }, () => { });
+                  } else this.isLoading = false;
 
-                    try {
-                      this.noRecordFound = !data.length;
-                    } catch (err) { }
+                  if (this.selectedPage.characterDashboardPageId) {
+                    this.pageService.getCharacterDashboardPageById<any>(this.selectedPage.characterDashboardPageId)
+                      .subscribe(data => {
+                        this.pageDefaultData = data;
+                      }, error => {
+                      }, () => { });
+                  }
 
-                  }, error => {
-                    this.isLoading = false;
-                  }, () => { });
-              } else this.isLoading = false;
+                } else this.isLoading = false;
+              }, error => {
+                this.isLoading = false;
+              }, () => {
+              });
 
-              if (this.selectedPage.characterDashboardPageId) {
-                this.pageService.getCharacterDashboardPageById<any>(this.selectedPage.characterDashboardPageId)
-                  .subscribe(data => {
-                    this.pageDefaultData = data;
-                  }, error => {
-                  }, () => { });
-              }
-
-            } else this.isLoading = false;
-          }, error => {
-            this.isLoading = false;
-          }, () => {
+            this.gameStatus(this.characterId);
           });
-
-        this.gameStatus(this.characterId);
+        
       } catch (err) { }
     }
   }
