@@ -71,7 +71,13 @@ export class LocalStoreManager {
       for (let key in data) {
 
         if (this.syncKeysContains(key))
-          this.sessionStorageSetItem(key, JSON.parse(data[key]));
+          if (data[key]) {
+            if (data[key] == "undefined") {
+              data[key] ="null"
+            }
+            this.sessionStorageSetItem(key, JSON.parse(data[key]));
+          }
+         
       }
 
       this.onInit();
