@@ -131,7 +131,7 @@ export class SignalRGroupAdapter extends ChatAdapter implements IChatGroupAdapte
       .post(`${SignalRGroupAdapter.serverBaseUrl}api/chat/listFriends`, { currentUserId: this.userId }, this.getRequestHeaders())
       .pipe(
         map((res: any) => res),
-        catchError((error: any) => Observable.throw(error.error || 'Server error'))
+        catchError((error: any) => Observable.throw(error || 'Server error'))      
       );
   }
   LeaveChat(): Observable<ParticipantResponse[]> {
@@ -140,7 +140,7 @@ export class SignalRGroupAdapter extends ChatAdapter implements IChatGroupAdapte
       .post(`${SignalRGroupAdapter.serverBaseUrl}api/chat/leaveChat`, { currentUserId: this.userId }, this.getRequestHeaders())
       .pipe(
         map((res: any) => res),
-        catchError((error: any) => Observable.throw(error.error || 'Server error'))
+        catchError((error: any) => Observable.throw(error || 'Server error'))
       );
   }
   getMessageHistory(participant: any): Observable<Message[]> {
@@ -151,7 +151,7 @@ export class SignalRGroupAdapter extends ChatAdapter implements IChatGroupAdapte
       .post(`${SignalRGroupAdapter.serverBaseUrl}api/chat/getChatHistory?currentUserID=${this.userId}`, JSON.stringify(participant), this.getRequestHeaders())
       .pipe(
         map((res: any) => res),
-        catchError((error: any) => Observable.throw(error.error || 'Server error'))
+        catchError((error: any) => Observable.throw(error || 'Server error'))
       );
   }
 
