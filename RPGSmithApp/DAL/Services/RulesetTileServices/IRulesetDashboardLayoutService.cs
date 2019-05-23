@@ -17,7 +17,7 @@ namespace DAL.Services.RulesetTileServices
         Task<List<RulesetDashboardLayout>> GetByRulesetId(int RulesetId, int page = -1, int pageSize = -1);
         int GetCountByRulesetId(int RulesetId);
         int GetMaximumSortOrdertByRulesetId(int? RulesetId);
-        Task<bool> CheckDuplicate(string value, int? RulesetId, int? Id = 0);
+        Task<bool> CheckDuplicate(string value, int? RulesetId, bool IsCampaignDashboard, int? Id = 0);
         void SetDefaultPage(int Id,int PageId);
         void UpdateSortOrder(List<SortOrderEditModel> sortOrderList);
         void UpdateDefaultLayout(int layoutId);

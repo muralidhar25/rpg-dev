@@ -788,6 +788,7 @@ export class CampaignDashboardComponent implements OnInit {
     this.bsModalRef.content.title = 'New Layout';
     this.bsModalRef.content.button = 'SAVE';
     this.bsModalRef.content.rulesetId = this.ruleSetId;
+    this.bsModalRef.content.isCampaignDashboardScreen = true;
   }
 
   editLayout(rulesetDashboardLayout: any) {
@@ -801,6 +802,7 @@ export class CampaignDashboardComponent implements OnInit {
     this.bsModalRef.content.rulesetId = this.ruleSetId;
     this.bsModalRef.content.layoutFormModal = rulesetDashboardLayout;
     this.bsModalRef.content.layoutPages = rulesetDashboardLayout.rulesetDashboardPages;
+    this.bsModalRef.content.isCampaignDashboardScreen = true;
   }
 
   duplicateLayout(rulesetDashboardLayout: any) {
@@ -814,6 +816,7 @@ export class CampaignDashboardComponent implements OnInit {
     this.bsModalRef.content.rulesetId = this.ruleSetId;
     this.bsModalRef.content.layoutFormModal = rulesetDashboardLayout;
     this.bsModalRef.content.layoutPages = rulesetDashboardLayout.rulesetDashboardPages;
+    this.bsModalRef.content.isCampaignDashboardScreen = true;
   }
 
   deleteLayout(layout: RulesetDashboardLayout) {
