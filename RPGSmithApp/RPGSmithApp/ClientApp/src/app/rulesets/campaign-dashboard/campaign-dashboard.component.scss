@@ -700,3 +700,7 @@ body {
 .crsr-pointer {
   cursor: pointer !important;
 }
+
+.btn-simple-primary:disabled {
+  cursor: default !important;
+}

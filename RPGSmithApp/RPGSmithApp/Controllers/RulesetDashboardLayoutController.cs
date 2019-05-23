@@ -469,7 +469,7 @@ namespace RPGSmithApp.Controllers
                     var _layout = await _rulesetDashboardLayoutService.Create(
                         new RulesetDashboardLayout()
                         {
-                            Name = "Shared Layout",
+                            Name = Const.SharedLayoutName,
                             SortOrder = 1,
                             LayoutHeight = 1280,
                             LayoutWidth = 768,

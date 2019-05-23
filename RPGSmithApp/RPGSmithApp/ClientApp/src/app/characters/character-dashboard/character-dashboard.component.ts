@@ -457,7 +457,7 @@ export class CharacterDashboardComponent implements OnInit {
     }
   }
 
-  private initialize(IsInitialLoad, preventLoading = false) {
+  private initialize(IsInitialLoad, preventLoading = false, layoutId = 0) {
 
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
@@ -504,7 +504,8 @@ export class CharacterDashboardComponent implements OnInit {
         }
 
         this.layoutService.getLayoutsByCharacterId(this.characterId, -1, -1)
-          .subscribe(data => {            
+          .subscribe(data => {
+            debugger
             this.characterlayouts = data;
             if (this.LayoutId) {
               this.characterlayouts.map((item) => {
@@ -518,6 +519,7 @@ export class CharacterDashboardComponent implements OnInit {
             else {
 
               let isLayoutSelected = false;
+
               if (IsInitialLoad) {
                 this.characterlayouts.map((item) => {
                   if (item.isDefaultComputer && this.IsComputerDevice) {
@@ -1205,20 +1207,6 @@ export class CharacterDashboardComponent implements OnInit {
     debugger
     switch (tileType) {
       case TILES.NOTE: {
-        //this.bsModalRef = this.modalService.show(EditNoteComponent, {
-        //  class: 'modal-primary modal-lg',
-        //  ignoreBackdropClick: true,
-        //  keyboard: false
-        //});
-        //this.bsModalRef.content.tile = _tile;
-        //this.bsModalRef.content.noteTile = _tile.noteTiles;
-        //this.bsModalRef.content.characterId = this.characterId;
-        //this.bsModalRef.content.view = VIEW.MANAGE;
-        //this.bsModalRef.content.tileName = 'note';
-
-        //this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ?
-        //  this.selectedPage.characterDashboardPageId : this.pageId;
-        //this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         if (!this.isSharedLayout) {
           this.bsModalRef = this.modalService.show(NoteTileComponent, {
             class: 'modal-primary modal-lg modal-custom',
@@ -1232,6 +1220,23 @@ export class CharacterDashboardComponent implements OnInit {
           this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
           this.bsModalRef.content.view = VIEW.EDIT;
           this.bsModalRef.content.autoFocusEditor = true;
+        }
+        else {
+          this.bsModalRef = this.modalService.show(EditNoteComponent, {
+            class: 'modal-primary modal-lg',
+            ignoreBackdropClick: true,
+            keyboard: false
+          });
+          this.bsModalRef.content.tile = _tile;
+          this.bsModalRef.content.noteTile = _tile.noteTiles;
+          this.bsModalRef.content.characterId = this.characterId;
+          this.bsModalRef.content.view = VIEW.MANAGE;
+          this.bsModalRef.content.tileName = 'note';
+
+          this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ?
+            this.selectedPage.characterDashboardPageId : this.pageId;
+          this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+          this.bsModalRef.content.isSharedLayout = this.isSharedLayout;
         }
         break;
       }
@@ -2597,7 +2602,9 @@ export class CharacterDashboardComponent implements OnInit {
     return '';
   }
   refresh() {
-    this.initialize(true);
+    debugger
+    this.LayoutId = this.selectedlayout.characterDashboardLayoutId;
+    this.initialize(true,false, this.LayoutId);
   }
   gameStatus(characterId?: any) {
     //api for player controls

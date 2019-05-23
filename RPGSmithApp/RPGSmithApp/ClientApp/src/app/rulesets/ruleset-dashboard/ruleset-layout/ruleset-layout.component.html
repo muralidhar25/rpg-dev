@@ -13,7 +13,7 @@
                     <div class="form-group" [ngClass]="{ 'has-success': f.submitted && layoutName.valid, 'has-error': f.submitted && !layoutName.valid }">
                         <label>Name (required)</label>
                         <input id="layout-name" name="layoutName" type="text" class="form-control" [ngStyle]="{'border-color': f.submitted && !layoutName.valid ? 'red' : '#d3cfce'}"
-                               [autofocus] [(ngModel)]="layoutFormModal.name" #layoutName="ngModel" required placeholder="Layout Name">
+                               [autofocus] [(ngModel)]="layoutFormModal.name" #layoutName="ngModel" required placeholder="Layout Name" [readonly]="isShared" >
                         <input id="rulesetDashboardLayoutId" name="rulesetDashboardLayoutId" type="hidden" [(ngModel)]="layoutFormModal.rulesetDashboardLayoutId" #rulesetDashboardLayoutId="ngModel">
                     </div>
                     <!-- End of Layout name -->

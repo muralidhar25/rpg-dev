@@ -15,7 +15,7 @@
             <div class="dropdown-toggle is-layout-show" id="layoutNavigationToggle">
               <span class="is-layout-show"><span class="d-none d-md-inline-block">Layout</span> <span class="d-md-none">L</span> <em *ngIf="selectedlayout">{{selectedlayout.name}}</em> </span>
             </div>
-            <!--<div infiniteScroll (scrolled)="onLayoutScroll()" [infiniteScrollDistance]="1"
+            <div infiniteScroll (scrolled)="onLayoutScroll()" [infiniteScrollDistance]="1"
                  [infiniteScrollThrottle]="100" [scrollWindow]="false" [class]="foldClass" aria-labelledby="pageLayoutNavigationToggle" *ngIf="isLayoutDropdownOpen && !isLoading">
               <div class="dropdown-menu-add-item-trigger">
                 <button (click)="newLayout()" type="button" class="btn btn-accent btn-block">New Layout</button>
@@ -27,7 +27,7 @@
                     <div class="dropdown-menu-item-actions show" *ngIf="layout?.showIcon">
                       <button type="button" (click)="navigateTo(8,layout)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
                       <button type="button" (click)="navigateTo(9,layout)" tooltip="Duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
-                      <button type="button" (click)="navigateTo(10,layout)" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
+                      <button type="button" (click)="navigateTo(10,layout)" [disabled]="IsShared" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
                       <button type="button" (click)="manageIcon('0')" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary show-layout-drp"></button>
                     </div>
                     <div class="dropdown-menu-item-actions-trigger showdrp">
@@ -61,7 +61,7 @@
 
                 </ul>
               </div>
-            </div>-->
+            </div>
           </div>
           <!-- End of layout dropdown -->
           <!-- Page dropdown -->

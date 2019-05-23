@@ -227,3 +227,7 @@ export enum MarketPlaceItemsType {
   BUY_US_A_COFFEE = 8,
   RULESET_SLOT = 9
 }
+
+export enum Layout {
+  SharedLayoutName = "Shared", 
+}

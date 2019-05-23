@@ -17,7 +17,7 @@ import { RulesetTileConfig } from '../../core/models/tiles/ruleset-tile-config.m
 import { NgGridItemEvent, NgGridConfig, NgGridItemConfig } from 'angular2-grid';
 import { HeaderValues } from '../../core/models/headers.model';
 import { RulesetDashboardPage } from '../../core/models/view-models/ruleset-dashboard-page.model';
-import { STAT_TYPE, TILES, VIEW } from '../../core/models/enums';
+import { STAT_TYPE, TILES, VIEW, Layout } from '../../core/models/enums';
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
 import { AppService1 } from "../../app.service";
 import { DBkeys } from '../../core/common/db-keys';
@@ -110,6 +110,7 @@ export class CampaignDashboardComponent implements OnInit {
   IsTabletDevice: boolean = false;
   IsMobileDevice: boolean = false;
   showManageIcons: boolean = true;
+  IsShared: boolean = false;
 
   public gridConfig: NgGridConfig = {
     'margins': this.getTileSize().margins,
@@ -487,7 +488,7 @@ export class CampaignDashboardComponent implements OnInit {
           }, () => { });
         this.isLoading = true;
         this.layoutService.getSharedLayoutByRulesetId(this.ruleSetId, -1, -1)
-          .subscribe(data => {
+          .subscribe(data => {            
             this.rulesetlayouts = data;
             if (this.LayoutId) {
               this.rulesetlayouts.map((item) => {
@@ -656,10 +657,15 @@ export class CampaignDashboardComponent implements OnInit {
               }
 
             } else this.isLoading = false;
+            if (this.selectedlayout.name == Layout.SharedLayoutName) {
+              this.IsShared = true;
+            }
           }, error => {
             this.isLoading = false;
           }, () => {
           });
+
+        
 
       } catch (err) { }
     }

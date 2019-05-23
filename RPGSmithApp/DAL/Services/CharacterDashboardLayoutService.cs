@@ -337,7 +337,7 @@ namespace DAL.Services
                     {
                         allLayouts = _context.CharacterDashboardLayouts
                        .Where(x => x.CharacterId == layout.CharacterId && x.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();
-                        layout.IsDefaultLayout = true;
+                        
                     }
                 }
                 if (layout != null)
@@ -346,6 +346,7 @@ namespace DAL.Services
                     {
                         _layout.IsDefaultLayout = false;
                     }
+                    layout.IsDefaultLayout = true;
                     _context.SaveChanges();
                 }
 
@@ -389,7 +390,7 @@ namespace DAL.Services
                 var _layout = _rulesetDashboardLayoutService.Create(
                     new RulesetDashboardLayout()
                     {
-                        Name = "Shared Layout",
+                        Name = Const.SharedLayoutName,
                         SortOrder = 1,
                         LayoutHeight = 1280,
                         LayoutWidth = 768,
