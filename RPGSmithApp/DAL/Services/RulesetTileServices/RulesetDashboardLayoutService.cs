@@ -310,7 +310,7 @@ namespace DAL.Services.RulesetTileServices
                 if (layout != null)
                 {
                     var allLayouts = _context.RulesetDashboardLayouts
-                   .Where(x => x.RulesetId == layout.RulesetId && x.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();//GetByRulesetId(layout.RulesetId ?? 0);
+                   .Where(x => x.RulesetId == layout.RulesetId && x.IsDeleted != true && x.IsSharedLayout==layout.IsSharedLayout).OrderBy(x => x.SortOrder).ToList();//GetByRulesetId(layout.RulesetId ?? 0);
 
                     foreach (var _layout in allLayouts)
                     {

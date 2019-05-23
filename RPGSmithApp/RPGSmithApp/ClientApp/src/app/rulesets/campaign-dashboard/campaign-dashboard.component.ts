@@ -110,7 +110,6 @@ export class CampaignDashboardComponent implements OnInit {
   IsTabletDevice: boolean = false;
   IsMobileDevice: boolean = false;
   showManageIcons: boolean = true;
-  IsShared: boolean = false;
 
   public gridConfig: NgGridConfig = {
     'margins': this.getTileSize().margins,
@@ -174,7 +173,7 @@ export class CampaignDashboardComponent implements OnInit {
   isManageTile: boolean = false;
 
   CharacterStatsValues: any;
-
+  Layout = Layout;
 
   constructor(private router: Router, private alertService: AlertService, private authService: AuthService, private sharedService: SharedService,
     private configurations: ConfigurationService, private route: ActivatedRoute, private modalService: BsModalService,
@@ -209,7 +208,7 @@ export class CampaignDashboardComponent implements OnInit {
         this.page = 1;
         this.pageSize = 6;
         this.isLoading = true;
-        this.layoutService.getLayoutsByRulesetId(this.ruleSetId, -1, -1)
+        this.layoutService.getSharedLayoutByRulesetId(this.ruleSetId, -1, -1)
           .subscribe(data => {
             this.rulesetlayouts = data;
             //if (this.rulesetlayouts.length == 1) {
@@ -529,6 +528,7 @@ export class CampaignDashboardComponent implements OnInit {
               //    }
               //  })
               //}
+
               this.rulesetlayouts.map((item) => {
                   if (item.isDefaultLayout) {
                       this.selectedlayout = item;
@@ -656,10 +656,7 @@ export class CampaignDashboardComponent implements OnInit {
                 //    }, () => { });
               }
 
-            } else this.isLoading = false;
-            if (this.selectedlayout.name == Layout.SharedLayoutName) {
-              this.IsShared = true;
-            }
+            } else this.isLoading = false;            
           }, error => {
             this.isLoading = false;
           }, () => {

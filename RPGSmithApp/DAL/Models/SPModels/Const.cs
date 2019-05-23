@@ -8,5 +8,6 @@ namespace DAL.Models
     public  class Const
     {
         public static readonly string SharedLayoutName= "Shared";
+        public static readonly string DefaultLayoutName = "Default";
     }
 }

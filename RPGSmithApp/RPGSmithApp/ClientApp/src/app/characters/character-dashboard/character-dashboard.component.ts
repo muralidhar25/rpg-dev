@@ -228,13 +228,20 @@ export class CharacterDashboardComponent implements OnInit {
             //    }     
             //})
             //if (!isLayoutSelected) {
-            this.characterlayouts.map((item) => {
-              if (item.isDefaultLayout) {
-
-                this.selectedlayout = item;
+            for (var lay = 0; lay < this.characterlayouts.length; lay++) {
+              if (this.characterlayouts[lay].isDefaultLayout) {
+                this.selectedlayout = this.characterlayouts[lay];
                 this.onLayoutSelect(this.selectedlayout);
+                break;
               }
-            })
+            }
+            ////////////this.characterlayouts.map((item) => {
+            ////////////  if (item.isDefaultLayout) {
+
+            ////////////    this.selectedlayout = item;
+            ////////////    this.onLayoutSelect(this.selectedlayout);
+            ////////////  }
+            ////////////})
             //}
 
             //this.isLoading = false;
@@ -541,11 +548,17 @@ export class CharacterDashboardComponent implements OnInit {
               }
 
               if (!isLayoutSelected) {
-                this.characterlayouts.map((item) => {
-                  if (item.isDefaultLayout) {
-                    this.selectedlayout = item;
+                for (var lay = 0; lay < this.characterlayouts.length; lay++) {
+                  if (this.characterlayouts[lay].isDefaultLayout) {
+                    this.selectedlayout = this.characterlayouts[lay];
+                    break;
                   }
-                })
+                }
+                //this.characterlayouts.map((item) => {
+                //  if (item.isDefaultLayout) {
+                //    this.selectedlayout = item;
+                //  }
+                //})
               }
 
             }
@@ -593,15 +606,26 @@ export class CharacterDashboardComponent implements OnInit {
                 }
 
                 if (!isLayoutSelected) {
-                  this.characterlayouts.map((item) => {
+                  for (var lay1 = 0; lay1 < this.characterlayouts.length; lay1++) {
+                    let item = this.characterlayouts[lay1];
                     if (item.isDefaultLayout) {
                       item.characterDashboardPages.map((pageItem) => {
                         if (pageItem.characterDashboardPageId == item.defaultPageId) {
-                          this.selectedPage = pageItem;
+                          this.selectedPage = pageItem;                          
                         }
                       })
+                      break;
                     }
-                  })
+                  }
+                  //this.characterlayouts.map((item) => {
+                  //  if (item.isDefaultLayout) {
+                  //    item.characterDashboardPages.map((pageItem) => {
+                  //      if (pageItem.characterDashboardPageId == item.defaultPageId) {
+                  //        this.selectedPage = pageItem;
+                  //      }
+                  //    })
+                  //  }
+                  //})
                 }
 
               }
@@ -626,11 +650,18 @@ export class CharacterDashboardComponent implements OnInit {
               }
 
               if (!isLayoutSelected) {
-                this.characterlayouts.map((item) => {
+                for (var lay1 = 0; lay1 < this.characterlayouts.length; lay1++) {
+                  let item = this.characterlayouts[lay1];
                   if (item.isDefaultLayout) {
                     this.selectedPage = item.characterDashboardPages[0];
+                    break;
                   }
-                })
+                }
+                //this.characterlayouts.map((item) => {
+                //  if (item.isDefaultLayout) {
+                //    this.selectedPage = item.characterDashboardPages[0];
+                //  }
+                //})
               }
 
               //this.initialize();

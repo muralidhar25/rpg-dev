@@ -396,7 +396,7 @@ namespace DAL.Services
                         LayoutWidth = 768,
                         RulesetId = rulesetId,
                         IsSharedLayout = true,
-                        IsDefaultLayout = true
+                        IsDefaultLayout = false
                     }).Result;
 
 
@@ -444,7 +444,7 @@ namespace DAL.Services
                                        DefaultPageId = x.DefaultPageId,
                                        IsDefaultComputer = x.IsDefaultComputer,
                                        IsDefaultMobile = x.IsDefaultMobile,
-                                       IsDefaultLayout = x.IsDefaultLayout,
+                                       IsDefaultLayout = true,
                                        IsDefaultTablet = x.IsDefaultTablet,
                                        IsDeleted = x.IsDeleted,
                                        LayoutHeight = x.LayoutHeight,

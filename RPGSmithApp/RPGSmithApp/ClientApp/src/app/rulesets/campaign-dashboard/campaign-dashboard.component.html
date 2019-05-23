@@ -27,7 +27,7 @@
                     <div class="dropdown-menu-item-actions show" *ngIf="layout?.showIcon">
                       <button type="button" (click)="navigateTo(8,layout)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
                       <button type="button" (click)="navigateTo(9,layout)" tooltip="Duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>
-                      <button type="button" (click)="navigateTo(10,layout)" [disabled]="IsShared" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
+                      <button type="button" (click)="navigateTo(10,layout)" [disabled]="layout.name==Layout.SharedLayoutName" title="Delete" data-toggle="tooltip" data-action="delete" class="btn icon icon-trash btn-simple-primary"></button>
                       <button type="button" (click)="manageIcon('0')" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary show-layout-drp"></button>
                     </div>
                     <div class="dropdown-menu-item-actions-trigger showdrp">
