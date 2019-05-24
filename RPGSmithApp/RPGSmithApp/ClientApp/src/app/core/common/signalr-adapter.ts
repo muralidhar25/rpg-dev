@@ -51,7 +51,7 @@ export class SignalRAdapter extends ChatAdapter {
 
     this.hubConnection.on("messageReceived", (participant, message) => {
       // Handle the received message to ng-chat
-      console.log(message);
+      //console.log(message);
       this.onMessageReceived(participant, message);
     });
 

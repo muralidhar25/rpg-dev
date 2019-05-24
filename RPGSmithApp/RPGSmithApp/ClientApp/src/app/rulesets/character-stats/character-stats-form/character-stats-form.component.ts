@@ -1001,7 +1001,7 @@ export class CharacterStatsFormComponent implements OnInit {
       errMsg = NotValidStatNames + ' is not valid stat name.'
     }
     this.erMessage = errMsg;
-    console.log(this.erMessage);
+    //console.log(this.erMessage);
   }
   public IsStatStringContainsOnlyNumericResult(text: string): boolean {
     let calculationString: string = text;

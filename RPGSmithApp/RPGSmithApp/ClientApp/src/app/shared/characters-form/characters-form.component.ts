@@ -93,7 +93,7 @@ export class CharactersFormComponent implements OnInit {
        
         if (this.bsModalRef.content.isFromRuleSetDetails) {
           this.isFromRuleSetDetails = this.bsModalRef.content.isFromRuleSetDetails;
-            console.log(this.bsModalRef.content.ruleset);
+            //console.log(this.bsModalRef.content.ruleset);
             this.charactersFormModal.ruleSetId = this.bsModalRef.content.ruleset.ruleSetId;
           }
             this.bingImageUrl = this.charactersFormModal.imageUrl;
@@ -327,7 +327,7 @@ export class CharactersFormComponent implements OnInit {
     this.charactersService.createCharacter(modal)
       .subscribe(
         data => {
-          console.log('Indata', data);
+          //console.log('Indata', data);
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
 

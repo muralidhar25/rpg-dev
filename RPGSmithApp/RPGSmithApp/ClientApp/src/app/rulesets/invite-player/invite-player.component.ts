@@ -51,7 +51,7 @@ export class InvitePlayerComponent implements OnInit {
       }
       
 
-      console.log(this.bsModalRef.content.rulesetModel);
+      //console.log(this.bsModalRef.content.rulesetModel);
       this.rulesetModel = this.bsModalRef.content.rulesetModel == undefined
         ? new Ruleset() : this.bsModalRef.content.rulesetModel;
         
@@ -86,7 +86,7 @@ export class InvitePlayerComponent implements OnInit {
           //} else {
           //  this.errorMsg = true;
           //}
-        console.log(data);
+       // console.log(data);
         this.event.emit(data);
         this.isloading = false;
         },

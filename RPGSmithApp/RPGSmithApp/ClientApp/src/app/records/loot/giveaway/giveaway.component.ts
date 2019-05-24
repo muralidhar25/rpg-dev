@@ -69,7 +69,7 @@ export class GiveawayComponent implements OnInit {
     this.isLoading = true;
     this.lootService.giveItemTocharacter<any>(_character,lootId)
       .subscribe(data => {        
-        console.log(data);
+       // console.log(data);
         this.close();
         this.sharedService.updateItemsList(true);
         this.isLoading = false;

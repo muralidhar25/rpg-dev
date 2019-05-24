@@ -1538,80 +1538,80 @@ export class CampaignDashboardComponent implements OnInit {
         if (item.characterStatTiles.characterStat.characterStatDefaultValues) {
           //  console.log('defultvales', item.characterStatTiles.characterStat.characterStatDefaultValues);
           if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.RichText) {
-            console.log('rich', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            //console.log('rich', item.characterStatTiles.characterStat.characterStatDefaultValues);
             item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-              console.log('richloop', stat.defaultValue);
+              //console.log('richloop', stat.defaultValue);
               // item.characterStatTiles.characterStat.defaultValue =
             })
 
           }
           if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.Command) {
-            console.log('cmd', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            //console.log('cmd', item.characterStatTiles.characterStat.characterStatDefaultValues);
             item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-              console.log('cmd', stat.defaultValue);
+              //console.log('cmd', stat.defaultValue);
               item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
             })
           }
           if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.Condition) {
-            console.log('Condition', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            //console.log('Condition', item.characterStatTiles.characterStat.characterStatDefaultValues);
             item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-              console.log('Condition', stat.defaultValue);
+              //console.log('Condition', stat.defaultValue);
               item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
             })
           }
           if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.Calculation) {
-            console.log('Calculation', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            //console.log('Calculation', item.characterStatTiles.characterStat.characterStatDefaultValues);
             item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-              console.log('Calculation', stat.defaultValue);
+              //console.log('Calculation', stat.defaultValue);
               item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
             })
           }
           if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
-            console.log('Choice', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            //console.log('Choice', item.characterStatTiles.characterStat.characterStatDefaultValues);
             item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-              console.log('Choice', stat.defaultValue);
+              //console.log('Choice', stat.defaultValue);
               item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
             })
           }
           if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.Number) {
-            console.log('Number', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            //console.log('Number', item.characterStatTiles.characterStat.characterStatDefaultValues);
             item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-              console.log('Number', stat.defaultValue);
+              //console.log('Number', stat.defaultValue);
               item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
             })
           }
           if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.CurrentMax) {
-            console.log('CurrentMax', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            //console.log('CurrentMax', item.characterStatTiles.characterStat.characterStatDefaultValues);
             item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-              console.log('CurrentMax', stat);
+              //console.log('CurrentMax', stat);
               item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
             })
           }
           if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.OnOff) {
-            console.log('OnOff', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            //console.log('OnOff', item.characterStatTiles.characterStat.characterStatDefaultValues);
             item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-              console.log('OnOff', stat);
+              //console.log('OnOff', stat);
               item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
             })
           }
           if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.YesNo) {
-            console.log('YesNo', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            //console.log('YesNo', item.characterStatTiles.characterStat.characterStatDefaultValues);
             item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-              console.log('YesNo', stat.defaultValue);
+              //console.log('YesNo', stat.defaultValue);
               item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
             })
           }
           if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.Toggle) {
-            console.log('Toggle', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            //console.log('Toggle', item.characterStatTiles.characterStat.characterStatDefaultValues);
             item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-              console.log('Toggle', stat.defaultValue);
+              //console.log('Toggle', stat.defaultValue);
               item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
             })
           }
           if (item.characterStatTiles.characterStat.characterStatTypeId == STAT_TYPE.LinkRecord) {
-            console.log('LinkRecord', item.characterStatTiles.characterStat.characterStatDefaultValues);
+            //console.log('LinkRecord', item.characterStatTiles.characterStat.characterStatDefaultValues);
             item.characterStatTiles.characterStat.characterStatDefaultValues.map((stat) => {
-              console.log('LinkRecord', stat.defaultValue);
+              //console.log('LinkRecord', stat.defaultValue);
               item.characterStatTiles.characterStat.defaultValue = stat.defaultValue;
             })
           }

@@ -605,7 +605,7 @@ export class NgChat implements OnInit, IChatController {
   // Returns => [Window: Window object reference, boolean: Indicates if this window is a new chat window]
   public openChatWindow(participant: IChatParticipant, focusOnNewWindow: boolean = false, invokedByUserClick: boolean = false): [Window, boolean] {
     //debugger
-    console.log('openChatWindow');
+    //console.log('openChatWindow');
     debugger
     // Is this window opened?
     let openedWindow = this.windows.find(x => x.participant.id == participant.id);

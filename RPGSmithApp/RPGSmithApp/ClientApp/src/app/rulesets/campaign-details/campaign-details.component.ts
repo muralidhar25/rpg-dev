@@ -144,7 +144,7 @@ export class CampaignDetailsComponent implements OnInit {
             this.GmCharacterSlotsCount = this.invitedUsers.filter(x => !x.inviteId).length;
             this.declinedUserList = this.invitedUsers.filter(x => x.isDeclined);
             this.invitedUsers = this.invitedUsers.filter(x => !x.isDeclined );
-            console.log(this.invitedUsers);
+            //console.log(this.invitedUsers);
             let names = '';
             this.invitedUsers.map((x: playerInviteListModel,index) => {
               x.showIcon = false;
@@ -331,7 +331,7 @@ export class CampaignDetailsComponent implements OnInit {
     }
   }
   invitePlayer() {
-    console.log('Player invite process');
+    //console.log('Player invite process');
     this.bsModalRef = this.modalService.show(InvitePlayerComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -388,7 +388,7 @@ export class CampaignDetailsComponent implements OnInit {
   }
 
   cancleInvite(index, invite) {
-    console.log('here is cancle invit clicked');
+    //console.log('here is cancle invit clicked');
     this.campaignService.cancelInvite<any>(invite.inviteId)
       .subscribe(data => {       
         this.isLoading = false;

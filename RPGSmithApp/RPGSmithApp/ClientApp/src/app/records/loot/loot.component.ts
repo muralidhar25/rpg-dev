@@ -106,7 +106,7 @@ export class LootComponent implements OnInit {
     
       this.lootService.getLootItemsById<any>(this.ruleSetId,this.page, this.pageSize)
         .subscribe(data => {
-          console.log(data);
+          //console.log(data);
          this.ItemMasterList = Utilities.responseData(data.ItemMaster, this.pageSize);
           this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
           this.RuleSet = data.RuleSet;
@@ -159,7 +159,7 @@ export class LootComponent implements OnInit {
     this.scrollLoading = true;
      this.lootService.getLootItemsById<any>(this.ruleSetId,this.page, this.pageSize)
         .subscribe(data => {
-          console.log(data);
+         // console.log(data);
           var _ItemMaster = data.ItemMaster;
           for (var i = 0; i < _ItemMaster.length; i++) {
             _ItemMaster[i].showIcon = false;
@@ -471,7 +471,7 @@ export class LootComponent implements OnInit {
   }
 
   deleteAll() {
-    console.log('delete All');
+    //console.log('delete All');
     this.bsModalRef = this.modalService.show(DeleteAllLootItemsComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,

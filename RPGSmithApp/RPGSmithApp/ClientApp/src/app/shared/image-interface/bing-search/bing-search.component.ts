@@ -193,7 +193,7 @@ export class BingSearchComponent implements OnInit {
                 this.isStockImagesLoaging = false;
             }, error => {
                 this.isStockImagesLoaging = false;
-                console.log("searchBlobStock Error: ", error);
+                //console.log("searchBlobStock Error: ", error);
                 this.isLoading = false;
                 this.alertService.stopLoadingMessage();
                 let Errors = Utilities.ErrorDetail("Stock Images Api", error);

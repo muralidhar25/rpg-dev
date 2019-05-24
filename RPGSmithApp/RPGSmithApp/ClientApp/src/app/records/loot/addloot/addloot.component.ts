@@ -129,12 +129,12 @@ export class AddlootComponent implements OnInit {
   }
 
   addEditItem(modal: any) {
-    console.log('modal data', modal.multiItemMasters);
+    //console.log('modal data', modal.multiItemMasters);
     this.isLoading = true;
     this.lootService.addLootItem(modal.multiItemMasters)
       .subscribe(
       data => {
-        console.log(data);
+        //console.log(data);
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           let message = "Loot(s) added successfully.";
