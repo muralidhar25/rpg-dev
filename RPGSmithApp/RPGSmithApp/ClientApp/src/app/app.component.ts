@@ -231,7 +231,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           //}
         }
         else {
-          debugger
+          
           if (this.router.url.toUpperCase() == ('/CHARACTER') || this.router.url.toUpperCase() == ('/CHARACTERS')
             || this.router.url.toUpperCase() == ('/RULESET') || this.router.url.toUpperCase() == ('/RULESETS')
           ) {
@@ -285,7 +285,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (this.headers.headerLink == "character") {
           this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
             .subscribe(data => {
-              debugger
+              
               if (data) {
                 if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
                   if (!this.signalRAdapter ) { //get player control 265
@@ -750,7 +750,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             //}
           }
           else {
-            debugger
+            
             if (
               (<NavigationStart>event).url.toUpperCase() == ('/CHARACTER') || (<NavigationStart>event).url.toUpperCase() == ('/CHARACTERS')
               || (<NavigationStart>event).url.toUpperCase() == ('/RULESET') || (<NavigationStart>event).url.toUpperCase() == ('/RULESETS')
@@ -787,7 +787,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             if (this.headers.headerLink == "character") {
               this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
                 .subscribe(data => {
-                  debugger
+                  
                   if (data) {                    
                     if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
                       if (!this.signalRAdapter) {
@@ -1239,7 +1239,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
   setHeaderToNull(url) {
     this.headers = null;
-    debugger
+    
     this.router.navigate(url);
   }
   showDialog(dialog: AlertDialog) {
@@ -1550,7 +1550,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
   initializeSignalRAdapter(user: User, http, storageManager, IsRuleset: boolean) {
     //this.storageManager.getDataObject<ChatConnection[]>(DBkeys.chatConnections);
-    debugger
+    
     let rulesetID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
     this.rulesetService.getRulesetById<Ruleset>(+rulesetID).subscribe((data: Ruleset) => {
       this.localStorage.localStorageSetItem(DBkeys.rulesetforChat, data);
@@ -1566,7 +1566,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
   leaveChat() {
     if (this.signalRAdapter) {
-      debugger
+      
       this.charactersService.leaveChat(this.signalRAdapter.userId)
         .subscribe(data => {
        

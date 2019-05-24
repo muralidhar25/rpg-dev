@@ -89,6 +89,7 @@ export class PaymentComponent implements AfterViewInit, OnDestroy, OnInit {
     const { token, error } = await stripe.createToken(this.card);
 
     if (error) {
+      this.alertService.showMessage(error.message, "", MessageSeverity.error)
       console.log('Something is wrong:', error);
       this.isLoading = false;
     } else {

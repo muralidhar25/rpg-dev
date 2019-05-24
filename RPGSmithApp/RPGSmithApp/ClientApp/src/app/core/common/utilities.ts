@@ -907,8 +907,7 @@ export class Utilities {
   }
 
   public static InvalidValueForConditionStats: number = -25163711;
-  //public static LogoImage: string = 'logo-full.png'; //for prod //beta //--Not used now
-  public static LogoImage: string = 'logo-full.svg'; // for prod //non-beta
+  
 
   public static setCharacterRedirection(routerUrl, characterID, rulesetID, characterNavigation) {
     
@@ -1032,4 +1031,7 @@ export class Utilities {
       return 'https://rpgsmith.com/help/#abilities';
     }
   }
+
+  //public static LogoImage: string = 'logo-full.png'; //for prod //beta //--Not used now
+  public static LogoImage: string = 'logo-full.svg'; // for prod //non-beta
 }
