@@ -2225,6 +2225,7 @@ export class CampaignDashboardComponent implements OnInit {
     this.isManageTile = true;
     this.gridConfig.draggable = true;
     this.gridConfig.resizable = true;
+    this.appService.updateToggleChatParticipantList(true);
   }
  
 }

@@ -17,6 +17,7 @@ export class AppService1 {
   private lootMessage = new Subject<any>();
   private halfScreen = new Subject<any>();
   private CurrentParticipants = new Subject<any>();
+  private ToggleChatList = new Subject<any>();
   
 
   updateAccountSetting1(accountSetting: any) {    
@@ -96,6 +97,13 @@ export class AppService1 {
   }
   shouldUpdateChatCurrentParticipants(): Observable<any> {
     return this.CurrentParticipants.asObservable();
+  }
+
+  updateToggleChatParticipantList(data: any) {
+    this.ToggleChatList.next(data);
+  }
+  shouldUpdateToggleChatParticipantList(): Observable<any> {
+    return this.ToggleChatList.asObservable();
   }
 }
 

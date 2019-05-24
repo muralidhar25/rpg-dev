@@ -264,6 +264,7 @@ export class CharacterTilesComponent implements OnInit {
     //    this.boxes = this.mapBoxes(this.tiles);
     //  }, 10);
     //}
+    this.appService.updateToggleChatParticipantList(true);
   }
   private Initialize() {
     this.showManageIcons = true;
