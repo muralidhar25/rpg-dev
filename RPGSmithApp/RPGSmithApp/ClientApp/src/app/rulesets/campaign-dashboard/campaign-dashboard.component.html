@@ -312,13 +312,13 @@
                          [style.font-size.px]="box.config.sizex*box.config.sizey+12"
                          [style.line-height.px]="box.config.sizex*box.config.sizey+14"
                          *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Text">
-                        {{box.tile.characterStatTiles.characterStat.characterStatDefaultValues[0].defaultValue}}
+                        {{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue}}
                       </p>
 
                       <span style="color:#000" *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.RichText" [froalaView]="box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue">
                       </span>
                       <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Number" [style.font-size.px]="box.config.sizex*box.config.sizey*5+30" class="text-center-v">
-                        {{box.tile.characterStatTiles.characterStat.characterStatDefaultValues[0].defaultValue}}
+                        {{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue}}
                       </span>
                       <span *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.CurrentMax" [style.font-size.px]="box.config.sizex*box.config.sizey*2+10" class="text-center-v">
                         {{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue ? box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue : 0}} / {{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[1]?.defaultValue ? box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[1]?.defaultValue : 0}}
@@ -329,7 +329,7 @@
                           <ng-container *ngFor="let choice of box.tile.characterStatTiles?.characterStat?.characterStatChoices; let i = index">
                             <span [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 12 ? 14 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 12 ? 14 : box.config.sizex*4 ) "
                                   [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 16 ? 18 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 16 ? 18 : box.config.sizex*5 ) ">
-                              {{choice.statChoiceValue}}
+                              {{choice?.statChoiceValue}}
                             </span>
                           </ng-container>
                         </ng-container>
@@ -391,7 +391,7 @@
 
                                   <p class="noselect" [style.color]="box.tile.characterStatTiles.bodyTextColor"
                                      [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
-                                    {{toggleVal.toggleText}}
+                                    {{toggleVal?.toggleText}}
                                   </p>
                                 </ng-container>
                                 <ng-container *ngIf="toggleVal.image">3

@@ -65,6 +65,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
     ConditionsValuesList: CharactersCharacterStat[] = []
     charNav: any = {};
   pageRefresh: boolean;
+  isPlayerCharacter: boolean=false;
 
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -2204,6 +2205,9 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
       .subscribe(data => {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (data) {
+          if (data.isPlayerCharacter) {            
+            this.isPlayerCharacter = data.isPlayerCharacter;
+          }
           if (user == null) {
             this.authService.logout();
           }
@@ -2213,6 +2217,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
             }
             else if (data.isPlayerCharacter) {
               this.pageRefresh = data.isPlayerCharacter;
+              //this.isPlayerCharacter = data.isPlayerCharacter;
             }
             if (data.isPlayerCharacter) {
 

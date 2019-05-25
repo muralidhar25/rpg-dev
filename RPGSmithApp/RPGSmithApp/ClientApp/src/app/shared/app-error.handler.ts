@@ -26,15 +26,26 @@ export class AppErrorHandler extends ErrorHandler {
         //this.alertService.showStickyMessage("Unhandled Error", error.message || error, MessageSeverity.error, error);
       //debugger
       console.error("Fatal Error-", error);
-      if (error.error.message != undefined) {
+      
+      if (error.error) {
+        if (error.error.message) {
+          window.location.reload(true);
+        }
+        else {
+          if (confirm("Fatal Error!\nAn unresolved error has occured. Do you want to reload the page to correct this?\n\nError: " + error.message))
+            window.location.reload(true);
+        }
+      } else {
+     
+      //if (error.error.message != undefined) {
         if (confirm("Fatal Error!\nAn unresolved error has occured. Do you want to reload the page to correct this?\n\nError: " + error.message))
           window.location.reload(true);
-      }
-      else {
-        window.location.reload(true);
-      }
+      //}
+      //else {
+       // window.location.reload(true);
+      //}
         
-
+      }
         super.handleError(error);
     }
 }

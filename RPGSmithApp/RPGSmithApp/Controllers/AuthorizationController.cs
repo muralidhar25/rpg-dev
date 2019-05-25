@@ -421,7 +421,7 @@ namespace RPGSmithApp.Controllers
                     StripeConfiguration.SetApiKey(_stripeConfig.SecretKey);
                     var service = new SubscriptionService();
                     Subscription subscription = service.Get(user.StripeSubscriptionID);
-                    if (subscription.Status!=SubscriptionStatuses.Active)
+                    if (subscription.Status!=SubscriptionStatuses.Active && subscription.Status != SubscriptionStatuses.Trialing)
                     {
                         var currentuser = await _accountManager.GetUserByIdAsync(user.Id);
                         currentuser.IsGm = false;

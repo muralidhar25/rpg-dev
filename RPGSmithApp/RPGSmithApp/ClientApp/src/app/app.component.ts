@@ -216,7 +216,8 @@ export class AppComponent implements OnInit, AfterViewInit {
           //this.signalRAdapter = undefined;
           }
 
-          if (this.router.url.toUpperCase().indexOf('/RULESET/') > -1 && this.router.url.toUpperCase().indexOf('CHARACTER/RULESET') == -1) {
+          if (this.router.url.toUpperCase().indexOf('/RULESET/') > -1 && this.router.url.toUpperCase().indexOf('CHARACTER/RULESET') == -1
+            && this.router.url.toUpperCase().indexOf('/RULESET/ADD') == -1) {
             if (!this.signalRAdapter) {
               let model: any = user;
               model.campaignID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
@@ -735,7 +736,8 @@ export class AppComponent implements OnInit, AfterViewInit {
           //this.signalRAdapter = undefined;
             }
             
-            if ((<NavigationStart>event).url.toUpperCase().indexOf('/RULESET/') > -1 && this.router.url.toUpperCase().indexOf('CHARACTER/RULESET') == -1) {
+            if ((<NavigationStart>event).url.toUpperCase().indexOf('/RULESET/') > -1 && this.router.url.toUpperCase().indexOf('CHARACTER/RULESET') == -1
+              && (<NavigationStart>event).url.toUpperCase().indexOf('/RULESET/ADD') == -1) {
               if (!this.signalRAdapter) {
                 let model: any = user;
                 model.campaignID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
@@ -1550,14 +1552,17 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
   initializeSignalRAdapter(user: User, http, storageManager, IsRuleset: boolean) {
     //this.storageManager.getDataObject<ChatConnection[]>(DBkeys.chatConnections);
-    
+    debugger
     let rulesetID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
-    this.rulesetService.getRulesetById<Ruleset>(+rulesetID).subscribe((data: Ruleset) => {
-      this.localStorage.localStorageSetItem(DBkeys.rulesetforChat, data);
-      if (!this.signalRAdapter) {
-        this.signalRAdapter = new SignalRGroupAdapter(user, http, storageManager, IsRuleset);
-      }      
-    });
+    if (rulesetID) {
+      this.rulesetService.getRulesetById<Ruleset>(+rulesetID).subscribe((data: Ruleset) => {
+        this.localStorage.localStorageSetItem(DBkeys.rulesetforChat, data);
+        if (!this.signalRAdapter) {
+          this.signalRAdapter = new SignalRGroupAdapter(user, http, storageManager, IsRuleset);
+        }
+      });
+    }
+    
     //this.localStorage.localStorageSetItem(DBkeys.rulesetNameforChat, this.ruleset.ruleSetName);
     //if (ServiceUtil.IsCurrentlyRulesetOpen) {
     //  this.localStorage.localStorageSetItem(DBkeys.rulesetNameforChat, this.headers.headerName);

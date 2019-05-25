@@ -10,5 +10,6 @@ namespace RPGSmithApp.Helpers
         public string PublishableKey { get; set; }
         public string SecretKey { get; set; }
         public string PlanID { get; set; }
+        public int TrialPeriodDays { get; set; }
     }
 }
