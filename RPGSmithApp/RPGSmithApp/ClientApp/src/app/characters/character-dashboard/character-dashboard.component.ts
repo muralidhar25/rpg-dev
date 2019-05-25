@@ -1872,7 +1872,7 @@ export class CharacterDashboardComponent implements OnInit {
                             let characterStatConditionsfilter = this.ConditionsValuesList.filter((Cs) => Cs.characterStatId == rec.id);
                             let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.CharacterStatsValues.charactersCharacterStat);
                             num = +result;
-                            console.log('result', num);
+                            
                             break;
                           default:
                             break;
@@ -1887,7 +1887,7 @@ export class CharacterDashboardComponent implements OnInit {
                     });
                   }
                   finalCalcString = CalcString;
-                  // console.log('finalCalcString',finalCalcString);
+                  
                 });
               }
               try {
@@ -1923,7 +1923,7 @@ export class CharacterDashboardComponent implements OnInit {
 
               }
               ////////////////////////////////////////////
-              //console.log(finalCalStr)
+              
             }
             else {
               //For Old Records
@@ -2622,7 +2622,7 @@ export class CharacterDashboardComponent implements OnInit {
         'text/html');
       var decodedString = dom.body.textContent;
 
-      //console.log(decodedString);
+      
       return decodedString;
       //text = text.replace(/<{1}[^<>]{1,}>{1}/g, " ");
       ////if (text.length >= 100) {
@@ -2674,7 +2674,7 @@ export class CharacterDashboardComponent implements OnInit {
 
       }, error => {
         let Errors = Utilities.ErrorDetail("", error);
-        console.log('gameStatus', Errors);
+        
 
         //if (Errors.sessionExpire) {
         //  this.authService.logout(true);

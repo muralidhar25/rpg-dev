@@ -31,7 +31,7 @@ export class HandoutFileViewComponent implements OnInit {
   }
 
   initialize() {
-    console.log(this.viewDetails);
+    //console.log(this.viewDetails);
     if (this.viewDetails.contentType == "application/pdf"
       || this.viewDetails.contentType.indexOf("text") > -1
       || this.viewDetails.contentType.indexOf("video") >  -1 

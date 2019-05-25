@@ -348,7 +348,8 @@ export class RulesetDashboardComponent implements OnInit {
             this.pageId = this.localStorage.localStorageGetItem('rPageID')
             this.localStorage.localStorageSetItem('rPageID', null);
             this.LayoutId = this.localStorage.localStorageGetItem('rLayoutID')
-            this.localStorage.localStorageSetItem('rLayoutID', null);
+          this.localStorage.localStorageSetItem('rLayoutID', null);
+          this.appService.updateToggleChatParticipantList(true);
       });
       window.addEventListener("resize", () => {
         // Get screen size (inner/outerWidth, inner/outerHeight)

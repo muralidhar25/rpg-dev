@@ -53,12 +53,12 @@ export class NumericCharacterStatComponent implements OnInit {
     setTimeout(() => {
       this.character = this.bsModalRef.content.character ? this.bsModalRef.content.character : new Characters();
       this.characterCharStats = this.bsModalRef.content.characterCharStats ? this.bsModalRef.content.characterCharStats : null;
-      console.log(this.character);
+      //console.log(this.character);
     
     }, 0);
     if (this.rulesetId == undefined)
       this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-    console.log(this.rulesetId);
+    //console.log(this.rulesetId);
   }
 
   

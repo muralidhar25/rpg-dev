@@ -90,7 +90,7 @@ export class InviteAddCharctersFormComponent implements OnInit {
       this.charactersFormModal = this.charactersService.characterModelData(_charactersModel, modalContentButton);
 
       this.charactersFormModal.ruleSets = this.bsModalRef.content.ruleSet;
-      console.log(this.charactersFormModal);
+      //console.log(this.charactersFormModal);
       this.charactersFormModal.ruleSetId = this.bsModalRef.content.rulesetid;
       this.UserRulesetsList = Object.assign([], this.charactersFormModal.ruleSets);
       this.bingImageUrl = this.charactersFormModal.imageUrl;
@@ -266,7 +266,7 @@ export class InviteAddCharctersFormComponent implements OnInit {
           let message = modal.characterId == 0 || modal.characterId === undefined ? "Character has been added successfully." : "Character has been updated successfully.";
           this.alertService.showMessage(message, "", MessageSeverity.success);
           this.commonService.UpdateCounts(); /*update charaters count*/
-          console.log(modal.inviteId, this.inviteid);
+          //console.log(modal.inviteId, this.inviteid);
           this.invitationList = this.invitationList.filter((x : any) => x.id != this.inviteid);          
           this.appService.updateInvitationlist(this.invitationList);
           this.close();

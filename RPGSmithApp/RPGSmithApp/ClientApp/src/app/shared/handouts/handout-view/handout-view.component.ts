@@ -70,7 +70,7 @@ export class HandoutViewComponent implements OnInit {
   ngOnInit() {
     setTimeout(() => {
       this.title = this.bsModalRef.content.title ? this.bsModalRef.content.title : 'HandOuts';
-      console.log(this.bsModalRef.content.rulesetId);
+      //console.log(this.bsModalRef.content.rulesetId);
       this.ruleSetId = this.bsModalRef.content.rulesetId;
       this.Initialize();
     }, 0);
@@ -120,7 +120,7 @@ export class HandoutViewComponent implements OnInit {
 
     this.imageSearchService.getListOfUploads<any>(userId, this.MyImageCount, this.previousContainerMyImageNumber, this.prefixToGetFolderContent, this.ruleSetId)
       .subscribe(data => {
-        console.log(data.result);
+        //console.log(data.result);
         this.blobMyImagesBLOB = this.blobMyImages = data.result.blobResponse.items;
         this.isLoading = false;
         this.previousContainerMyImageNumber = data.result.previousContainerImageNumber;
@@ -194,12 +194,12 @@ export class HandoutViewComponent implements OnInit {
     //if (this.defaultText === IMAGE.MYIMAGES) {
     //searchMyImages
     let q = this.query;
-    console.log(q);
+    //console.log(q);
     
     let _myImages = this.blobMyImagesBLOB;
     
     this.blobMyImages = _myImages.filter((item) => {
-      console.log(item);
+      //console.log(item);
        return item.absoluteUri.indexOf(q) > -1 || item.absolutePath.indexOf(q) > -1
     });
     //}

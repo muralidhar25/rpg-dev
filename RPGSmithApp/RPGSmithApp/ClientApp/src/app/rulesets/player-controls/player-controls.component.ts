@@ -25,7 +25,7 @@ export class PlayerControlsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log('p controls works');
+    //console.log('p controls works');
     setTimeout(() => {
       this.rulesetId = this.bsModalRef.content.rulesetId;
       this.initialize(this.rulesetId);

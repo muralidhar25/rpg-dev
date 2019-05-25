@@ -654,7 +654,7 @@ export class ServiceUtil {
                 let characterStatConditionsfilter = charactersCharacterStats.filter((stat) => stat.characterStat.statName.toUpperCase() == rec.id);
                 let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
                 let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], character, charactersCharacterStats);
-                console.log(result);
+               // console.log(result);
                 //let result = this.conditionStat(characterStatConditions);
                 //console.log(result);
                 //if (isNaN(+result)) {
@@ -684,7 +684,7 @@ export class ServiceUtil {
         });
 
         finalCalcString = calculationString;
-        console.log('calculationString', finalCalcString);
+        //console.log('calculationString', finalCalcString);
       });
     }
     ////////////////////////////////                    

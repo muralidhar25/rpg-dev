@@ -123,7 +123,7 @@ export class RulesetDetailsComponent implements OnInit {
         () => { });
     this.rulesetService.getRulesetById<any>(this.ruleSetId)
       .subscribe(data => {
-        console.log(data);
+        //console.log(data);
         this.ruleset = data;
         this.rulesetModel = data;
         this.setHeaderValues(this.ruleset);
@@ -131,7 +131,7 @@ export class RulesetDetailsComponent implements OnInit {
         
         this.charactersService.getCharactersByRuleSetId<any>(this.ruleSetId)
           .subscribe(data => {
-            console.log('datta atsa', data);
+            //console.log('datta atsa', data);
             this.characters = data;
            
             this.isLoading = false;
@@ -254,8 +254,8 @@ export class RulesetDetailsComponent implements OnInit {
   }
   
   BuyCharacterSlot() {
-    console.log(this.marketplacelist);
-    console.log(MarketPlaceItemsType);
+    //console.log(this.marketplacelist);
+    //console.log(MarketPlaceItemsType);
     let paymentInfo = this.marketplacelist.filter(x => x.marketPlaceId == MarketPlaceItemsType.CHARACTER_SLOT)[0];
     this.bsModalRef = this.modalService.show(PaymentComponent, {
       class: 'modal-primary modal-custom',
