@@ -21,6 +21,8 @@ import { AddlootComponent } from "./addloot/addloot.component";
 import { CreatelootComponent } from "./createloot/createloot.component";
 import { error } from "util";
 import { DeleteAllLootItemsComponent } from "./delete-all-loot-items/delete-all-loot-items.component";
+import { DiceRollComponent } from "../../shared/dice/dice-roll/dice-roll.component";
+import { Characters } from "../../core/models/view-models/characters.model";
 
 @Component({
   selector: 'app-loot',
@@ -47,6 +49,8 @@ export class LootComponent implements OnInit {
   timeoutHandler: any;
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
+  IsGm: boolean = false;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -100,6 +104,7 @@ export class LootComponent implements OnInit {
       this.authService.logout();
     else {
       if (user.isGm) {
+        this.IsGm = user.isGm;
         this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       }
       this.isLoading = true;
@@ -481,4 +486,17 @@ export class LootComponent implements OnInit {
     
   }
 
+  openDiceRollModal() {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.recordName = null;
+    this.bsModalRef.content.recordImage = null;
+    this.bsModalRef.content.isFromCampaignDetail = true;
+  }
 }

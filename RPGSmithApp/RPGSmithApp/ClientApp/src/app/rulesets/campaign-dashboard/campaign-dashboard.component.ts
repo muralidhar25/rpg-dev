@@ -44,6 +44,7 @@ import { ServiceUtil } from '../../core/services/service-util';
 import { CharacterStatConditionViewModel } from '../../core/models/view-models/character-stats.model';
 import { RulesetEditTextComponent } from '../../tile-ruleset/text/edit-text/edit-text.component';
 import { EditCharacterStatComponent } from '../../tile/character-stat/edit-character-stat/edit-character-stat.component';
+import { Characters } from '../../core/models/view-models/characters.model';
 
 @Component({
   selector: 'app-campaign-dashboard',
@@ -174,6 +175,7 @@ export class CampaignDashboardComponent implements OnInit {
 
   CharacterStatsValues: any;
   Layout = Layout;
+  IsGm: boolean = false;
 
   constructor(private router: Router, private alertService: AlertService, private authService: AuthService, private sharedService: SharedService,
     private configurations: ConfigurationService, private route: ActivatedRoute, private modalService: BsModalService,
@@ -281,8 +283,7 @@ export class CampaignDashboardComponent implements OnInit {
       }
     });
 
-    this.sharedService.shouldUpdateShareLayout().subscribe(data => {
-      debugger
+    this.sharedService.shouldUpdateShareLayout().subscribe(data => {      
       if (data) {       
           this.initialize(false);       
       }
@@ -447,6 +448,15 @@ export class CampaignDashboardComponent implements OnInit {
     //        this.boxes = this.mapBoxes(this.tiles);
     //    }, 10);
     //}
+
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      if (user.isGm) {
+        this.IsGm = user.isGm;
+      }
+    }
   }
 
   private initialize(IsInitialLoad) {
@@ -727,8 +737,11 @@ export class CampaignDashboardComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.title = "Dice";
-    this.bsModalRef.content.rulesetId = this.ruleSetId;
-    this.bsModalRef.content.ruleset = this.ruleset;
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.recordName = null;
+    this.bsModalRef.content.recordImage = null;
+    this.bsModalRef.content.isFromCampaignDetail = true;
   }
   manageIcon(id: number) {
     this.rulesetlayouts.forEach(function (val) {

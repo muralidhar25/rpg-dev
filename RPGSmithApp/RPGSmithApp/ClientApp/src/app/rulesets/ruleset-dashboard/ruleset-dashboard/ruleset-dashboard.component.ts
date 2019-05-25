@@ -40,6 +40,7 @@ import { RulesetTile } from "../../../core/models/tiles/ruleset-tile.model";
 import { AppService1 } from "../../../app.service";
 import { PlatformLocation } from "@angular/common";
 import { HeaderValues } from "../../../core/models/headers.model";
+import { Characters } from "../../../core/models/view-models/characters.model";
 
 @Component({
     selector: 'app-ruleset-dashboard',
@@ -167,7 +168,7 @@ export class RulesetDashboardComponent implements OnInit {
     preventClick: boolean = false;
     private currentGridItems: NgGridItemEvent[] = [];
   headers: HeaderValues = new HeaderValues();
-
+  IsGm: boolean = false;
 
     constructor(
         private router: Router, private alertService: AlertService, private authService: AuthService, private sharedService: SharedService,
@@ -434,6 +435,15 @@ export class RulesetDashboardComponent implements OnInit {
         //        this.boxes = this.mapBoxes(this.tiles);
         //    }, 10);
         //}
+
+      let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+      if (user == null)
+        this.authService.logout();
+      else {
+        if (user.isGm) {
+          this.IsGm = user.isGm;
+        }
+      }
     }
 
   private initialize(IsInitialLoad) {
@@ -705,14 +715,17 @@ export class RulesetDashboardComponent implements OnInit {
     }
 
     openDiceRollModal() {
-        this.bsModalRef = this.modalService.show(DiceRollComponent, {
-            class: 'modal-primary modal-md',
-            ignoreBackdropClick: true,
-            keyboard: false
-        });
-        this.bsModalRef.content.title = "Dice";
-        this.bsModalRef.content.rulesetId = this.ruleSetId;
-        this.bsModalRef.content.ruleset = this.ruleset;
+      this.bsModalRef = this.modalService.show(DiceRollComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = "Dice";
+      this.bsModalRef.content.characterId = 0;
+      this.bsModalRef.content.character = new Characters();
+      this.bsModalRef.content.recordName = null;
+      this.bsModalRef.content.recordImage = null;
+      this.bsModalRef.content.isFromCampaignDetail = true;
     }
 
     manageIcon(id: number) {

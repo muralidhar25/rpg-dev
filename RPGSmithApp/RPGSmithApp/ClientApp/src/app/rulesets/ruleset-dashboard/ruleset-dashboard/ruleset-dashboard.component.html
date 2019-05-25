@@ -126,32 +126,35 @@
                 </div>-->
                 <div class="page-toolbar-wrapper initial show  recordes-menu">
                     <!-- Toolbar links -->
-                    <ul class="page-toolbar-links" *ngIf="!isLoading">
-                        <li *ngIf="rulesetModel" class="hidden-tab">
-                            <a (click)="navigateTo(1)" class="btn btn-link-primary nav-redirection selected">Layouts</a>
-                        </li>
-                        <li *ngIf="rulesetModel?.isItemEnabled" class="hidden-tab">
-                            <a (click)="navigateTo(2)" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Item Templates</span></a>
-                        </li>
-                        <li *ngIf="rulesetModel?.isSpellEnabled" class="hidden-tab">
-                            <a (click)="navigateTo(3)" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
-                        </li>
-                        <li *ngIf="rulesetModel?.isAbilityEnabled" class="hidden-tab">
-                            <a (click)="navigateTo(4)" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
-                        </li>
-                        <li *ngIf="rulesetModel" class="hidden-tab">
-                            <a (click)="navigateTo(5)" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
-                        </li>
-                        <li *ngIf="StateChanged && !IsTrashPage">
-                            <button (click)="saveAndGotoDashboard()" class="btn btn-accent">Save</button>
-                        </li>
-                        <li *ngIf="IsTrashPage" class="d-none d-md-flex d-xl-inline-block">
-                            <button *ngIf="!isLoading && IsTrashPage" type="button" (click)="backToNormal()" class="btn btn-accent">Cancel</button>
-                        </li>
-                        <li *ngIf="IsTrashPage" class="d-none d-md-flex  d-xl-inline-block">
-                            <button *ngIf="!isLoading && IsTrashPage" type="button" (click)="deleteMultipleTiles()" class="btn btn-accent">Save</button>
-                        </li>
-                    </ul>
+                  <ul class="page-toolbar-links" *ngIf="!isLoading">
+                    <li *ngIf="rulesetModel" class="hidden-tab">
+                      <a (click)="navigateTo(1)" class="btn btn-link-primary nav-redirection selected">Layouts</a>
+                    </li>
+                    <li *ngIf="rulesetModel?.isItemEnabled" class="hidden-tab">
+                      <a (click)="navigateTo(2)" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Item Templates</span></a>
+                    </li>
+                    <li *ngIf="rulesetModel?.isSpellEnabled" class="hidden-tab">
+                      <a (click)="navigateTo(3)" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+                    </li>
+                    <li *ngIf="rulesetModel?.isAbilityEnabled" class="hidden-tab">
+                      <a (click)="navigateTo(4)" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+                    </li>
+                    <li *ngIf="rulesetModel" class="hidden-tab">
+                      <a (click)="navigateTo(5)" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
+                    </li>
+                    <li *ngIf="StateChanged && !IsTrashPage">
+                      <button (click)="saveAndGotoDashboard()" class="btn btn-accent">Save</button>
+                    </li>
+                    <li *ngIf="IsTrashPage" class="d-none d-md-flex d-xl-inline-block">
+                      <button *ngIf="!isLoading && IsTrashPage" type="button" (click)="backToNormal()" class="btn btn-accent">Cancel</button>
+                    </li>
+                    <li *ngIf="IsTrashPage" class="d-none d-md-flex  d-xl-inline-block">
+                      <button *ngIf="!isLoading && IsTrashPage" type="button" (click)="deleteMultipleTiles()" class="btn btn-accent">Save</button>
+                    </li>
+                    <li>
+                      <button type="button" *ngIf="IsGm" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>
+                    </li>
+                  </ul>
                     <!-- End of toolbar links -->
                 </div>
             </div>

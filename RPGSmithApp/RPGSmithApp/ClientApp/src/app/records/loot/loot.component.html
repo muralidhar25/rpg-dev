@@ -74,7 +74,7 @@
                   </ul>
                 </div>
               </div>
-            </li>
+            </li>           
           </ul>
           <!-- End of toolbar links -->
         </div>
@@ -137,6 +137,9 @@
                 </ul>
               </div>
             </div>
+          </li>
+          <li>
+            <button type="button" *ngIf="IsGm" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>
           </li>
         </ul>
       </div>
