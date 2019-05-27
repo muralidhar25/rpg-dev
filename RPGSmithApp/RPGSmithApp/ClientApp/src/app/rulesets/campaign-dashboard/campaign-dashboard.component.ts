@@ -1232,9 +1232,8 @@ export class CampaignDashboardComponent implements OnInit {
     }
 
   }
-  viewTile(tile: any, tileType: number) {
-    if (!this.isManageTile) {
-      debugger
+  viewTile(tile: any, tileType: number) {    
+    if (!this.isManageTile) {      
       //let _tile: any;
       let _tile = Object.assign({}, tile);
       switch (tileType) {
@@ -1284,11 +1283,10 @@ export class CampaignDashboardComponent implements OnInit {
           this.bsModalRef.content.view = VIEW.MANAGE;
           this.bsModalRef.content.pageId = this.selectedPage.rulesetDashboardPageId ?
             this.selectedPage.rulesetDashboardPageId : this.pageId;
-          this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+          this.bsModalRef.content.pageDefaultData = this.pageDefaultData;         
           break;
         }
-        case TILES.CHARACTERSTAT: {
-          debugger
+        case TILES.CHARACTERSTAT: {          
           let characterStatTypeID = _tile.characterStatTiles.characterStat.characterStatType.characterStatTypeId;
           switch (characterStatTypeID) {
             case STAT_TYPE.Command:
@@ -1302,7 +1300,12 @@ export class CampaignDashboardComponent implements OnInit {
               this.bsModalRef.content.ruleset = this.ruleset;
               this.bsModalRef.content.tile = TILES.CHARACTERSTAT;
               this.bsModalRef.content.characterStatTile = _tile.characterStatTiles;
-              this.bsModalRef.content.isFromRulesetSharedLayout = true;
+            //  this.bsModalRef.content.isFromRulesetSharedLayout = true;             
+              this.bsModalRef.content.characterId = 0;
+              this.bsModalRef.content.character = new Characters();
+              this.bsModalRef.content.recordName = this.ruleset.ruleSetName;
+              this.bsModalRef.content.recordImage = this.ruleset.imageUrl;
+              this.bsModalRef.content.isFromCampaignDetail = true;
               break;
             case STAT_TYPE.Condition:
               break;
@@ -1345,6 +1348,7 @@ export class CampaignDashboardComponent implements OnInit {
                 this.selectedPage.rulesetDashboardPageId : this.pageId;
               this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
               this.bsModalRef.content.view = VIEW.MANAGE;
+              this.bsModalRef.content.isFromCampaignDetail = true;
               break;
           }
           break;
@@ -1367,6 +1371,12 @@ export class CampaignDashboardComponent implements OnInit {
           this.bsModalRef.content.ruleset = this.ruleset;
           this.bsModalRef.content.tile = TILES.COMMAND;
           this.bsModalRef.content.commandTile = _tile.commandTiles;
+
+          this.bsModalRef.content.characterId = 0;
+          this.bsModalRef.content.character = new Characters();
+          this.bsModalRef.content.recordName = this.ruleset.ruleSetName;
+          this.bsModalRef.content.recordImage = this.ruleset.imageUrl;
+          this.bsModalRef.content.isFromCampaignDetail = true;
 
           //this.bsModalRef = this.modalService.show(EditImageComponent, {
           //    class: 'modal-primary modal-md',

@@ -68,7 +68,8 @@ export class RulesetEditCharacterStatComponent implements OnInit {
   CharacterStat: any;
     pageId: number;
     pageDefaultData = new RulesetDashboardPage();
-    showRichEditor: boolean = false;
+  showRichEditor: boolean = false;
+  isFromCampaignDetail: boolean = true;
 
     options(placeholder?: string, initOnClick?: boolean): Object {
         return Utilities.optionsFloala(200, placeholder, initOnClick);
@@ -88,7 +89,8 @@ export class RulesetEditCharacterStatComponent implements OnInit {
                 this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 
             this.tile = this.bsModalRef.content.tile;
-            this.CharacterStatTile = this.bsModalRef.content.characterStatTile;
+          this.CharacterStatTile = this.bsModalRef.content.characterStatTile;
+          this.isFromCampaignDetail = this.bsModalRef.content.isFromCampaignDetail;
             //this.Character = this.CharacterStatTile.charactersCharacterStat.character
             //this.CharacterID = this.CharacterStatTile.charactersCharacterStat.character.characterId
             //this.defaultCharacterStats = this.CharacterStatTile.charactersCharacterStat.character.charactersCharacterStats;
@@ -429,7 +431,8 @@ export class RulesetEditCharacterStatComponent implements OnInit {
             this.bsModalRef.content.rulesetId = this.rulesetId;
             this.bsModalRef.content.ruleset = this.Character;
             this.bsModalRef.content.showDetailsByDefault = true;
-            this.bsModalRef.content.numberToAdd = numberToAdd;
+          this.bsModalRef.content.numberToAdd = numberToAdd;
+          this.bsModalRef.content.isFromCampaignDetail = this.isFromCampaignDetail;
 
             this.bsModalRef.content.event.subscribe(result => {
                 if (typeId === STAT_TYPE.Number) {
