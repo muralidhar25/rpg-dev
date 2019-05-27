@@ -143,7 +143,7 @@
               <button *ngIf="!isManageTile" [disabled]="isLoading" type="button" id="manageTilesTrigger" class="btn btn-outline-primary icon-Gen-Edit" (click)="manageTile()"> Manage Tiles</button>
             </li>
             <li>
-              <button type="button" *ngIf="IsGm" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>
+              <button type="button" *ngIf="IsGm && !isLoading" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>
             </li>
             <!--<li *ngIf="rulesetModel" class="hidden-tab">
     <a (click)="navigateTo(5)" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>

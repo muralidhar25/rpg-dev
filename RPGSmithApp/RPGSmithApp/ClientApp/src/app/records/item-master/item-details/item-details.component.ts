@@ -33,7 +33,7 @@ export class ItemDetailsComponent implements OnInit {
     ruleSetId: number;
     bsModalRef: BsModalRef;
     ItemMasterDetail: any = new ItemMaster();
-    
+  IsGm: boolean = false;
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -65,6 +65,9 @@ export class ItemDetailsComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
+          if (user.isGm) {
+            this.IsGm = user.isGm;
+          }
             this.isLoading = true;
             this.itemMasterService.getItemMasterById<any[]>(this.itemMasterId)
               .subscribe(data => {

@@ -449,14 +449,14 @@ export class CampaignDashboardComponent implements OnInit {
     //    }, 10);
     //}
 
-    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-    if (user == null)
-      this.authService.logout();
-    else {
-      if (user.isGm) {
-        this.IsGm = user.isGm;
-      }
-    }
+    //let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    //if (user == null)
+    //  this.authService.logout();
+    //else {
+    //  if (user.isGm) {
+    //    this.IsGm = user.isGm;
+    //  }
+    //}
   }
 
   private initialize(IsInitialLoad) {
@@ -465,6 +465,9 @@ export class CampaignDashboardComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
+      if (user.isGm) {
+        this.IsGm = user.isGm;
+      }
       this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
       if (this.headers) {
         if (this.headers.headerId && this.headers.headerLink == 'ruleset') {
@@ -739,8 +742,8 @@ export class CampaignDashboardComponent implements OnInit {
     this.bsModalRef.content.title = "Dice";
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.character = new Characters();
-    this.bsModalRef.content.recordName = null;
-    this.bsModalRef.content.recordImage = null;
+    this.bsModalRef.content.recordName = this.ruleset.ruleSetName;
+    this.bsModalRef.content.recordImage = this.ruleset.imageUrl;
     this.bsModalRef.content.isFromCampaignDetail = true;
   }
   manageIcon(id: number) {
@@ -2096,7 +2099,7 @@ export class CampaignDashboardComponent implements OnInit {
   public cancelCallback(redirectto: any, params: any = undefined) {
     this.StateChanged = false;
     if (redirectto == 1) {
-      this.router.navigate(['/ruleset/dashboard/', this.ruleSetId]);
+      this.router.navigate(['/ruleset/campaign-dashboard/', this.ruleSetId]);
     }
     else if (redirectto == 2) {
       this.router.navigate(['/ruleset/item-master/', this.ruleSetId]);

@@ -582,8 +582,8 @@ export class ItemMasterComponent implements OnInit {
     this.bsModalRef.content.title = "Dice";
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.character = new Characters();
-    this.bsModalRef.content.recordName = null;
-    this.bsModalRef.content.recordImage = null;
+    this.bsModalRef.content.recordName = this.RuleSet.ruleSetName;
+    this.bsModalRef.content.recordImage = this.RuleSet.imageUrl;
     this.bsModalRef.content.isFromCampaignDetail = true;
   }
 }

@@ -437,14 +437,7 @@ export class RulesetDashboardComponent implements OnInit {
         //    }, 10);
         //}
 
-      let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-      if (user == null)
-        this.authService.logout();
-      else {
-        if (user.isGm) {
-          this.IsGm = user.isGm;
-        }
-      }
+    
     }
 
   private initialize(IsInitialLoad) {
@@ -453,6 +446,9 @@ export class RulesetDashboardComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
+          if (user.isGm) {
+            this.IsGm = user.isGm;
+          }
           this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
           if (this.headers) {
             if (this.headers.headerId && this.headers.headerLink == 'ruleset') {
@@ -724,8 +720,8 @@ export class RulesetDashboardComponent implements OnInit {
       this.bsModalRef.content.title = "Dice";
       this.bsModalRef.content.characterId = 0;
       this.bsModalRef.content.character = new Characters();
-      this.bsModalRef.content.recordName = null;
-      this.bsModalRef.content.recordImage = null;
+      this.bsModalRef.content.recordName = this.rulesetModel.ruleSetName;
+      this.bsModalRef.content.recordImage = this.rulesetModel.imageUrl;
       this.bsModalRef.content.isFromCampaignDetail = true;
     }
 

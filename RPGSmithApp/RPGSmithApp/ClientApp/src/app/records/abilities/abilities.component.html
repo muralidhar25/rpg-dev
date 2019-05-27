@@ -19,7 +19,8 @@
                     <!-- Toolbar links -->
                   <ul class="page-toolbar-links" *ngIf="!isLoading">
                     <li *ngIf="rulesetModel" class="hidden-tab">
-                      <a [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                      <a *ngIf="!IsGm"  [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                      <a *ngIf="IsGm"  [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
                     </li>
                     <li *ngIf="rulesetModel?.isItemEnabled" class="hidden-tab">
                       <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Item Templates</span></a>
@@ -39,7 +40,8 @@
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                           <ul class="dropdown-menu-list" *ngIf="!isLoading">
                             <li *ngIf="rulesetModel?.isItemEnabled" class="dropdown-menu-item">
-                              <a [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                              <a *ngIf="!IsGm" [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                              <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
                             </li>
                             <li *ngIf="rulesetModel?.isItemEnabled" class="dropdown-menu-item">
                               <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> Item Templates</a>
@@ -90,7 +92,7 @@
                     </div>
                   </li>
                   <li>
-                    <button type="button" *ngIf="IsGm" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>
+                    <button type="button" *ngIf="IsGm && !isLoading" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>
                   </li>
                 </ul>
             </div>

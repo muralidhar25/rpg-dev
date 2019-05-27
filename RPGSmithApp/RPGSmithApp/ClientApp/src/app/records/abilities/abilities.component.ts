@@ -454,7 +454,7 @@ export class AbilitiesComponent implements OnInit {
   }
 
   openDiceRollModal() {
-    debugger
+    
     this.bsModalRef = this.modalService.show(DiceRollComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -463,8 +463,8 @@ export class AbilitiesComponent implements OnInit {
     this.bsModalRef.content.title = "Dice";
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.character = new Characters();
-    this.bsModalRef.content.recordName = null;
-    this.bsModalRef.content.recordImage = null;
+    this.bsModalRef.content.recordName = this.rulesetModel.ruleSetName;
+    this.bsModalRef.content.recordImage = this.rulesetModel.imageUrl;
     this.bsModalRef.content.isFromCampaignDetail = true;
   }
 }
