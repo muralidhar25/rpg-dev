@@ -303,7 +303,7 @@
                                                 </div>
                                                 <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Condition">
                                                     <p [style.color]="box.tile.characterStatTiles.bodyTextColor"
-                                                       [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 14 ? 16 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 14 ? 16 : box.config.sizex*4 ) "
+                                                       [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 13 ? 14 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 13 ? 14 : box.config.sizex*4 ) "
                                                        [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 18 ? 20 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 18 ? 20 : box.config.sizex*5 ) ">
                                                         {{box.tile.characterStatTiles?.charactersCharacterStat?.text}}
                                                     </p>

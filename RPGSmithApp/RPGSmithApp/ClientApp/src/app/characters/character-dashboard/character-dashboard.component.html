@@ -288,7 +288,7 @@
                       </span>
 
                       <div class="text-center-v bold-whitebg-textblack" *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Choice">
-                        <p style="padding:0">
+                        <p style="padding:0" *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isMultiSelect || (box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isMultiSelect && box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isChoiceNumeric)">
                           <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isMultiSelect && box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isChoiceNumeric">
 
                             <span class="no-comma"
@@ -298,11 +298,12 @@
 
                             </span>
 
-
                           </ng-container>
+
                           <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isMultiSelect">
                             <ng-container *ngFor="let choice of box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatChoices; let i = index">
                               <ng-container *ngFor="let mChoice of box.tile.characterStatTiles?.charactersCharacterStat?.multiChoice?.split(';');let j = index">
+
                                 <span *ngIf="choice?.characterStatChoiceId===+mChoice && box.tile.characterStatTiles?.charactersCharacterStat?.multiChoice?.split(';')?.length>1"
                                       [style.font-size.px]="((box.config.sizey+box.config.sizex)*2) < 16 ? 18 : ((box.config.sizey+box.config.sizex)*2)"
                                       [style.line-height.px]="((box.config.sizey+box.config.sizex)*2+5)  < 18 ? 20 : ((box.config.sizey+box.config.sizex)*2+5)">
@@ -315,6 +316,7 @@
                                   {{choice.statChoiceValue}}
 
                                 </span>
+
                               </ng-container>
                             </ng-container>
                           </ng-container>
@@ -337,8 +339,8 @@
                           </p>
                         </ng-container>
                         <!--<span *ngIf="choice?.characterStatChoiceId===+box.tile.characterStatTiles?.charactersCharacterStat?.choice" [style.font-size.px]="box.config.sizex*box.config.sizey*5+16" class="text-center-v">
-                            {{choice.statChoiceValue}}
-                        </span>-->
+      {{choice.statChoiceValue}}
+  </span>-->
 
                       </div>
 
@@ -425,7 +427,7 @@
                       </div>
                       <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Condition">
                         <p [style.color]="box.tile.characterStatTiles.bodyTextColor"
-                           [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 14 ? 16 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 14 ? 16 : box.config.sizex*4 ) "
+                           [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 13 ? 14 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 13 ? 14 : box.config.sizex*4 ) "
                            [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 18 ? 20 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 18 ? 20 : box.config.sizex*5 ) ">
                           {{box.tile.characterStatTiles?.charactersCharacterStat?.text}}
                         </p>
