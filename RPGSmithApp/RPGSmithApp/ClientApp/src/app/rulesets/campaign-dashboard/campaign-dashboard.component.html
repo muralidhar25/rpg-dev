@@ -148,7 +148,7 @@
             <!--<li *ngIf="rulesetModel" class="hidden-tab">
     <a (click)="navigateTo(5)" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
   </li>-->
-            <li *ngIf="(StateChanged && !IsTrashPage) || isManageTile">
+            <li *ngIf="(StateChanged && !IsTrashPage) || (isManageTile && !IsTrashPage)">
               <button (click)="saveAndGotoDashboard()" class="btn btn-accent">Save</button>
             </li>
             <li *ngIf="IsTrashPage" class="d-none d-md-flex d-xl-inline-block">
@@ -397,7 +397,7 @@
                                     {{toggleVal?.toggleText}}
                                   </p>
                                 </ng-container>
-                                <ng-container *ngIf="toggleVal.image">3
+                                <ng-container *ngIf="toggleVal.image">
                                   <img class="imgwidth" [src]="toggleVal.image" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
                                 </ng-container>
                               </ng-container>
