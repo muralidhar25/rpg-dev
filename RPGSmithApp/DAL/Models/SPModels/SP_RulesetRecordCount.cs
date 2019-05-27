@@ -106,6 +106,104 @@ namespace DAL.Models.SPModels
             //put a breakpoint here and check datatable
             return dataTable;
         }
+        public static void FillConditionStats(DataSet ds, CharactersCharacterStat CharCharStat, CharacterStat CharStat, int TableNo)
+        {
+            CharStat.CharacterStatConditions = new List<CharacterStatCondition>();
+            if (ds.Tables[TableNo].Rows.Count > 0)
+            {
+                foreach (DataRow ConditionStat_Row in ds.Tables[TableNo].Rows)
+                {
+                    int ConditionCharacterstatID = ConditionStat_Row["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(ConditionStat_Row["CharacterStatId"]);
+                    if (ConditionCharacterstatID == CharCharStat.CharacterStatId)
+                    {
+                        int ConditionOperatorID = ConditionStat_Row["ConditionOperatorID"] == DBNull.Value ? 0 : Convert.ToInt32(ConditionStat_Row["ConditionOperatorID"]);
+                        var conditionStat = new CharacterStatCondition()
+                        {
+                            CharacterStatConditionId = ConditionStat_Row["CharacterStatConditionId"] == DBNull.Value ? 0 : Convert.ToInt32(ConditionStat_Row["CharacterStatConditionId"]),
+                            CharacterStatId = ConditionStat_Row["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(ConditionStat_Row["CharacterStatId"]),
+                            CompareValue = ConditionStat_Row["CompareValue"] == DBNull.Value ? string.Empty : ConditionStat_Row["CompareValue"].ToString(),
+                            ConditionOperatorID = ConditionOperatorID,
+                            IfClauseStatText = ConditionStat_Row["IfClauseStatText"] == DBNull.Value ? string.Empty : ConditionStat_Row["IfClauseStatText"].ToString(),
+                            IsNumeric = ConditionStat_Row["IsNumeric"] == DBNull.Value ? false : Convert.ToBoolean(ConditionStat_Row["IsNumeric"]),
+                            Result = ConditionStat_Row["Result"] == DBNull.Value ? string.Empty : ConditionStat_Row["Result"].ToString(),
+                            SortOrder = ConditionStat_Row["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(ConditionStat_Row["SortOrder"]),
+                            ConditionOperator = null
+                        };
+                        if (ConditionOperatorID > 0)
+                        {
+                            conditionStat.ConditionOperator = new ConditionOperator()
+                            {
+                                ConditionOperatorId = ConditionStat_Row["ConditionOperatorId"] == DBNull.Value ? 0 : Convert.ToInt32(ConditionStat_Row["ConditionOperatorId"]),
+                                IsNumeric = ConditionStat_Row["OperatorIsNumeric"] == DBNull.Value ? false : Convert.ToBoolean(ConditionStat_Row["OperatorIsNumeric"]),
+                                Name = ConditionStat_Row["OperatorName"] == DBNull.Value ? string.Empty : ConditionStat_Row["OperatorName"].ToString(),
+                                Symbol = ConditionStat_Row["OperatorSymbol"] == DBNull.Value ? string.Empty : ConditionStat_Row["OperatorSymbol"].ToString(),
+                            };
+                        }
+                        CharStat.CharacterStatConditions.Add(conditionStat);
+
+                    }
+                }
+            }
+        }
+
+        public static void FillStatCalcs(DataSet ds, CharacterStat CharStat, int characterstatID, int TableNo)
+        {
+            List<CharacterStatCalc> calcs = new List<CharacterStatCalc>();
+            if (ds.Tables[TableNo].Rows.Count > 0)
+            {
+                foreach (DataRow r in ds.Tables[TableNo].Rows)
+                {
+                    int calcCharacterStat = r["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatId"]);
+                    if (characterstatID == calcCharacterStat)
+                    {
+                        CharacterStatCalc cal = new CharacterStatCalc();
+                        cal.CharacterStatCalcId = r["CharacterStatCalcId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatCalcId"]);
+                        cal.StatCalculation = r["StatCalculation"] == DBNull.Value ? null : r["StatCalculation"].ToString();
+                        cal.CharacterStatId = r["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatId"]);
+                        cal.IsDeleted = r["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(r["IsDeleted"]);
+                        cal.StatCalculationIds = r["StatCalculationIds"] == DBNull.Value ? null : r["StatCalculationIds"].ToString();
+                        calcs.Add(cal);
+                    }
+                }
+            }
+            CharStat.CharacterStatCalcs = calcs;
+        }
+
+        public static void FillStatChoices(DataSet ds, CharacterStat CharStat, int characterstatID, int TableNo)
+        {
+            List<CharacterStatChoice> Choices = new List<CharacterStatChoice>();
+            if (ds.Tables[TableNo].Rows.Count > 0)
+            {
+                foreach (DataRow r in ds.Tables[TableNo].Rows)
+                {
+                    int choiceCharacterStat = r["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatId"]);
+                    if (characterstatID == choiceCharacterStat)
+                    {
+                        CharacterStatChoice ch = new CharacterStatChoice();
+                        ch.CharacterStatChoiceId = r["CharacterStatChoiceId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatChoiceId"]);
+                        ch.StatChoiceValue = r["StatChoiceValue"] == DBNull.Value ? null : r["StatChoiceValue"].ToString();
+                        ch.CharacterStatId = choiceCharacterStat;
+                        ch.IsDeleted = r["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(r["IsDeleted"]);
+
+                        Choices.Add(ch);
+                    }
+                    else
+                    {
+                        if (CharStat.SelectedChoiceCharacterStatId == choiceCharacterStat && CharStat.IsChoicesFromAnotherStat == true)
+                        {
+                            CharacterStatChoice ch = new CharacterStatChoice();
+                            ch.CharacterStatChoiceId = r["CharacterStatChoiceId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatChoiceId"]);
+                            ch.StatChoiceValue = r["StatChoiceValue"] == DBNull.Value ? null : r["StatChoiceValue"].ToString();
+                            ch.CharacterStatId = choiceCharacterStat;
+                            ch.IsDeleted = r["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(r["IsDeleted"]);
+
+                            Choices.Add(ch);
+                        }
+                    }
+                }
+            }
+            CharStat.CharacterStatChoices = Choices;
+        }
     }
     public class LinkTypeRecord {
         public int id { get; set; }
