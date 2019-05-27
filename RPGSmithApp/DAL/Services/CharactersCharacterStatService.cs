@@ -414,21 +414,102 @@ namespace DAL.Services
         }
         public async Task<List<CharactersCharacterStat>> GetConditionsValuesList(int characterId)
         {
-            List<CharactersCharacterStat> CharactersCharacterStats =await _context.CharactersCharacterStats                
-                .Include(d => d.CharacterStat.CharacterStatChoices).Include(x=>x.CharacterStat.CharacterStatConditions)
-                .Include(x => x.CharacterStat.CharacterStatCalcs)
-               .Where(x => x.CharacterId == characterId && x.IsDeleted != true).OrderBy(x => x.CharacterStat.SortOrder)
-               .ToListAsync();
+            //List<CharactersCharacterStat> CharactersCharacterStats =await _context.CharactersCharacterStats                
+            //    .Include(d => d.CharacterStat.CharacterStatChoices).Include(x=>x.CharacterStat.CharacterStatConditions)
+            //    .Include(x => x.CharacterStat.CharacterStatCalcs)
+            //   .Where(x => x.CharacterId == characterId && x.IsDeleted != true).OrderBy(x => x.CharacterStat.SortOrder)
+            //   .ToListAsync();
 
-            foreach (var item in CharactersCharacterStats)
+            //foreach (var item in CharactersCharacterStats)
+            //{
+            //    foreach (var cond in item.CharacterStat.CharacterStatConditions)
+            //    {
+            //        cond.ConditionOperator = _context.ConditionOperators.Where(x => x.ConditionOperatorId == cond.ConditionOperatorID).FirstOrDefault();
+            //    }
+
+            //}
+            //return CharactersCharacterStats;
+            List<CharactersCharacterStat> CCSList = new List<CharactersCharacterStat>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
             {
-                foreach (var cond in item.CharacterStat.CharacterStatConditions)
-                {
-                    cond.ConditionOperator = _context.ConditionOperators.Where(x => x.ConditionOperatorId == cond.ConditionOperatorID).FirstOrDefault();
-                }
-                
+                connection.Open();
+                command = new SqlCommand("[CharactersCharacterStats_GetByCharacterID]", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@CharacterID", characterId);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
             }
-            return CharactersCharacterStats;
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                short num = 0;
+                List<CharactersCharacterStat> list = new List<CharactersCharacterStat>();
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    CharactersCharacterStat ccs = new CharactersCharacterStat()
+                    {
+                        CalculationResult = row["CalculationResult"] == DBNull.Value ? 0 : Convert.ToInt32(row["CalculationResult"]),
+                        CharacterId = row["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["CharacterId"]),
+                        CharactersCharacterStatId = row["CharactersCharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(row["CharactersCharacterStatId"]),
+                        CharacterStatId = row["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(row["CharacterStatId"]),
+                        Choice = row["Choice"] == DBNull.Value ? null : row["Choice"].ToString(),
+                        Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString(),
+                        Current = row["Current"] == DBNull.Value ? 0 : Convert.ToInt32(row["Current"]),
+                        IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]),
+                        Maximum = row["Maximum"] == DBNull.Value ? 0 : Convert.ToInt32(row["Maximum"]),
+                        MultiChoice = row["MultiChoice"] == DBNull.Value ? null : row["MultiChoice"].ToString(),
+                        Number = row["Number"] == DBNull.Value ? (int?)null : Convert.ToInt32(row["Number"]),
+                        OnOff = row["OnOff"] == DBNull.Value ? false : Convert.ToBoolean(row["OnOff"]),
+                        RichText = row["RichText"] == DBNull.Value ? null : row["RichText"].ToString(),
+                        SubValue = row["SubValue"] == DBNull.Value ? 0 : Convert.ToInt32(row["SubValue"]),
+                        Text = row["Text"] == DBNull.Value ? null : row["Text"].ToString(),
+                        Value = row["Value"] == DBNull.Value ? 0 : Convert.ToInt32(row["Value"]),
+                        YesNo = row["YesNo"] == DBNull.Value ? false : Convert.ToBoolean(row["YesNo"]),
+                        Minimum = row["Minimum"] == DBNull.Value ? 0 : Convert.ToInt32(row["Minimum"]),
+                        DefaultValue = row["DefaultValue"] == DBNull.Value ? 0 : Convert.ToInt32(row["DefaultValue"]),
+                        ComboText = row["ComboText"] == DBNull.Value ? "" : row["ComboText"].ToString(),
+                        Display = row["Display"] == DBNull.Value ? false : Convert.ToBoolean(row["Display"]),
+                        IsCustom = row["IsCustom"] == DBNull.Value ? false : Convert.ToBoolean(row["IsCustom"]),
+                        IsOn = row["IsOn"] == DBNull.Value ? false : Convert.ToBoolean(row["IsOn"]),
+                        IsYes = row["IsYes"] == DBNull.Value ? false : Convert.ToBoolean(row["IsYes"]),
+                        ShowCheckbox = row["ShowCheckbox"] == DBNull.Value ? false : Convert.ToBoolean(row["ShowCheckbox"]),
+                        LinkType = row["LinkType"] == DBNull.Value ? null : row["LinkType"].ToString(),
+                        CharacterStat = new CharacterStat()
+                        {
+                            CharacterStatTypeId = row["CharacterStatTypeId"] == DBNull.Value ? num : (short)(row["CharacterStatTypeId"]),
+                            CharacterStatId = row["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(row["CharacterStatId"]),
+                            StatName = row["StatName"] == DBNull.Value ? null : row["StatName"].ToString(),
+                            isMultiSelect = row["isMultiSelect"] == DBNull.Value ? false : Convert.ToBoolean(row["isMultiSelect"]),
+
+                            //CharacterStatChoices = _characterStatChoiceService.GetByIds(((row["Choice"] == DBNull.Value ? "" : row["Choice"].ToString()) + (row["MultiChoice"] == DBNull.Value ? "" : row["MultiChoice"].ToString())).ToString()),
+                            //CharacterStatCalcs = _characterStatCalcService.GetByStatId(row["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(row["CharacterStatId"]))
+                        }
+
+                    };
+                    utility.FillStatChoices(ds, ccs.CharacterStat, (int)ccs.CharacterStatId, 3);
+                    utility.FillStatCalcs(ds, ccs.CharacterStat, (int)ccs.CharacterStatId, 2);
+                    utility.FillConditionStats(ds, ccs, ccs.CharacterStat, 4);
+                    list.Add(ccs);
+                }
+                CCSList = list;
+            }
+            return CCSList;
         }
         private object GetNull(object obj)
         {
@@ -827,5 +908,6 @@ namespace DAL.Services
             //////////////////////////////////////////////////////////////////////////////////////////////////////
             return CharacterStatsList;
         }
+       
     }
 }
