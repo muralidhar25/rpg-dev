@@ -57,7 +57,7 @@ namespace DAL.Services
             //    ).ToList();
             // var re222s = _context.PlayerInvites.Where(x => x.PlayerCampaignID == rulesetId).Include(x => x.PlayerCharacter).Include(x => x.PlayerUser).ToList();
 
-            var res = _context.PlayerInvites.Where(x => x.PlayerCampaignID == rulesetId && (x.IsDeleted == false || x.IsDeleted == null))
+            var res = _context.PlayerInvites.Where(x => x.PlayerCampaignID == rulesetId && (x.IsDeleted !=true))
                   .Include(x => x.PlayerCharacter)
                   .Include(x => x.PlayerUser).Select(
                   x => new PlayerInviteList()
@@ -135,12 +135,30 @@ namespace DAL.Services
             return res;
         }
 
-        public async Task<bool> SameInviteAlreadyExists(PlayerInviteEmail model, string playerUserId) {
+        public async Task<bool> SameInviteAlreadyExists(PlayerInviteEmail model, string playerUserId)
+        {
+            var inv = _context.PlayerInvites.Where(x =>  //checks if any record exists with is deleted = true then delete that record.
+               x.PlayerCampaignID == model.CampaignId
+               && x.SendByUserID == model.SendByUserId
+               && x.PlayerUserID == playerUserId
+               && x.PlayerEmail == model.UserName
+               && (x.IsDeleted == true)
+             ).ToList();
+
+            if (inv.Any())
+            {
+                foreach (var item in inv)
+                {
+                    DeleteInvite(item.Id);
+                }
+                
+            }
             return _context.PlayerInvites.Where(x =>
              x.PlayerCampaignID == model.CampaignId
              && x.SendByUserID == model.SendByUserId
              && x.PlayerUserID == playerUserId
              && x.PlayerEmail == model.UserName
+             && (x.IsDeleted != true)
              ).Any();
         }
         public bool cancelInvite(int inviteID)
