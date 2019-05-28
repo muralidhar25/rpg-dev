@@ -490,9 +490,9 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpPost("UpdateDefaultLayout")]
-        public async Task<IActionResult> UpdateDefaultLayout(int layoutId)
+        public async Task<IActionResult> UpdateDefaultLayout(int layoutId, int characterID)
         {
-            _characterDashboardLayoutService.UpdateDefaultLayout(layoutId);
+            _characterDashboardLayoutService.UpdateDefaultLayout(layoutId,characterID);
             return Ok();
         }
 

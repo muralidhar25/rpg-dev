@@ -99,23 +99,23 @@ namespace RPGSmithApp.Controllers
         public async Task<IActionResult> GetCharactersCount(string Id)
         {
             // var _characters = _CharacterService.GetCharacterUserId(Id);
-             int _charactersCount = _CharacterService.GetCharacterCountUserId(Id);
+            int _charactersCount = _CharacterService.GetCharacterCountUserId(Id);
 
             //if (_characters == null)
             //    return Ok(0);
 
             return Ok(_charactersCount);
         }
-        
+
         [HttpGet("GetCharacters_charStatsById")]
-        public async Task<IActionResult> GetCharacters_charStatsById(int RulesetId,int characterId)
+        public async Task<IActionResult> GetCharacters_charStatsById(int RulesetId, int characterId)
         {
             SP_CharactersCharacterStat ccs = new SP_CharactersCharacterStat();
             RuleSetViewModel res = new RuleSetViewModel();
             List<CustomDiceViewModel> customdices = new List<CustomDiceViewModel>();
             List<DefaultDice> defaultdices = new List<DefaultDice>();
             List<DiceTray> dicetray = new List<DiceTray>();
-            if (characterId>0)
+            if (characterId > 0)
             {
                 ccs = _characterTileService.GetCharactersCharacterStats_sp(characterId);
             }
@@ -127,28 +127,32 @@ namespace RPGSmithApp.Controllers
                 dicetray = _ruleSetService.GetDiceTray(RulesetId);
                 defaultdices = _ruleSetService.GetDefaultDices();
             }
-            return Ok(new {
-                ruleSet = res, characterCharacterstats = ccs, customDices= customdices,
-                diceTray= dicetray,
-                defaultDices= defaultdices
+            return Ok(new
+            {
+                ruleSet = res,
+                characterCharacterstats = ccs,
+                customDices = customdices,
+                diceTray = dicetray,
+                defaultDices = defaultdices
             });
         }
         [HttpPost("CreateCharacter")]
         public async Task<IActionResult> CreateCharacter([FromBody] CharacterEditModel model)
         {
             if (ModelState.IsValid)
-            { int CharIdToDuplicate = 0;
+            {
+                int CharIdToDuplicate = 0;
                 var userId = GetUserId();
                 if (model.View.ToUpper() == "DUPLICATE")
                 {
-                    CharIdToDuplicate=model.CharacterId;
+                    CharIdToDuplicate = model.CharacterId;
                     model.CharacterId = 0;
                 }
 
                 await TotalCharacterSlotsAvailableForCurrentUser();
                 //Limit user to have max 3 characters & //purchase for more set
                 if (await _CharacterService.GetCharactersCountByUserId(userId) >= TotalCharacterSlotsAvailable && !IsAdminUser())
-                    return BadRequest("Only "+ TotalCharacterSlotsAvailable + " slots of Characters are allowed");
+                    return BadRequest("Only " + TotalCharacterSlotsAvailable + " slots of Characters are allowed");
 
                 var characterDomain = Mapper.Map<Character>(model);
                 characterDomain.UserId = userId;
@@ -156,26 +160,30 @@ namespace RPGSmithApp.Controllers
                 if (_CharacterService.IsCharacterExist(model.CharacterName, userId).Result)
                     return BadRequest("The Character Name '" + model.CharacterName + "' had already been used in this Rule Set. Please select another name.");
 
-                if (IsNewRulesetToAdd(model.RuleSetId, userId) && model.InviteId==0)
+                if (IsNewRulesetToAdd(model.RuleSetId, userId) && model.InviteId == 0)
                 {
-                    var NewRuleset =await AddCoreRuleSetsCommon(new int[] { model.RuleSetId });
-                    if (NewRuleset==null)
+                    var NewRuleset = await AddCoreRuleSetsCommon(new int[] { model.RuleSetId });
+                    if (NewRuleset == null)
                     {
-                        return BadRequest("The maximum number of Rule Sets ("+ TotalCharacterSlotsAvailable + ") already exist on this account. Please delete one of the existing Rule Sets to allow for the addition of another. Rule Sets can be deleted from the Rule Sets screen");
+                        return BadRequest("The maximum number of Rule Sets (" + TotalCharacterSlotsAvailable + ") already exist on this account. Please delete one of the existing Rule Sets to allow for the addition of another. Rule Sets can be deleted from the Rule Sets screen");
                     }
-                    else 
+                    else
                     {
-                        model.RuleSetId= NewRuleset.RuleSetId;
+                        model.RuleSetId = NewRuleset.RuleSetId;
                         characterDomain.RuleSetId = NewRuleset.RuleSetId;
                     }
                 }
 
                 try
                 {
-                    Character NewCharacter= _CharacterService.Create_SP(characterDomain, model.LayoutHeight, model.LayoutWidth, CharIdToDuplicate);
+                    Character NewCharacter = _CharacterService.Create_SP(characterDomain, model.LayoutHeight, model.LayoutWidth, CharIdToDuplicate);
                     if (NewCharacter != null)
                     {
-                        await _campaignService.AcceptInvite(model.InviteId, NewCharacter.CharacterId);
+                        var result =await _campaignService.AcceptInvite(model.InviteId, NewCharacter.CharacterId);
+                        if (result.PlayerCharacterID>0)
+                        {
+                            GroupChatHub.AddParticipant(NewCharacter);
+                        }
                     }
                     //////////////InviteId
                 }
@@ -183,7 +191,7 @@ namespace RPGSmithApp.Controllers
                 {
                     return BadRequest(ex.Message);
                 }
-               
+
                 //var result = await _CharacterService.InsertCharacter(characterDomain);
 
                 //// Add Character Stat from Rule set Character stats
@@ -432,7 +440,7 @@ namespace RPGSmithApp.Controllers
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
 
-        private bool IsNewRulesetToAdd(int ruleSetId,string userId)
+        private bool IsNewRulesetToAdd(int ruleSetId, string userId)
         {
             return _CharacterService.IsNewRulesetToAdd(ruleSetId, userId);
         }
@@ -492,8 +500,12 @@ namespace RPGSmithApp.Controllers
         [HttpDelete("DeleteCharacter")]
         public async Task<IActionResult> DeleteCharacter(int Id)
         {
-            await _CharacterService.DeleteCharacter(Id);
-
+           var result= await _CharacterService.DeleteCharacter(Id);
+            if (result==true)
+            {
+                GroupChatHub.DeleteParticipant(Id);
+            }
+            
             return Ok();
         }
 
@@ -518,12 +530,13 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpGet("GetCharactersByRuleSetId")]
-        public async Task<IActionResult> GetCharacterByRuleSetId(int id,bool isFromLootGiveScreen=false)
+        public async Task<IActionResult> GetCharacterByRuleSetId(int id, bool isFromLootGiveScreen = false)
         {
             var characters = _CharacterService.GetCharacterRuleSetId(id);
 
             //If Limited edition
-            if (characters != null && !IsAdminUser() && !isFromLootGiveScreen) {
+            if (characters != null && !IsAdminUser() && !isFromLootGiveScreen)
+            {
                 await TotalCharacterSlotsAvailableForCurrentUser();
                 characters = characters.Take(characters.Count >= TotalCharacterSlotsAvailable ? TotalCharacterSlotsAvailable : characters.Count).ToList();
             }
@@ -541,7 +554,8 @@ namespace RPGSmithApp.Controllers
             var characters = _CharacterService.GetCharacterUserId(id);
 
             //If Limited edition
-            if (characters != null && !IsAdminUser()) {
+            if (characters != null && !IsAdminUser())
+            {
                 await TotalCharacterSlotsAvailableForCurrentUser();
                 characters = characters.Take(characters.Count >= TotalCharacterSlotsAvailable ? TotalCharacterSlotsAvailable : characters.Count).ToList();
             }
@@ -553,7 +567,7 @@ namespace RPGSmithApp.Controllers
             return Ok(CharacterVM);
         }
 
-                
+
         [HttpPost("UpLoadCharaterImageBlob")]
         public async Task<IActionResult> UpLoadRuleSetImageBlob()
         {
@@ -565,7 +579,7 @@ namespace RPGSmithApp.Controllers
 
                 if (httpPostedFile != null)
                 {
-                    BlobService bs = new BlobService(_httpContextAccessor,_accountManager,_ruleSetService);
+                    BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _ruleSetService);
                     var container = bs.GetCloudBlobContainer().Result;
                     string imageName = Guid.NewGuid().ToString();
                     dynamic Response = new ExpandoObject();
@@ -596,6 +610,8 @@ namespace RPGSmithApp.Controllers
                 LastCommandValues = Character.LastCommandValues,
                 LastCommandTotal = Character.LastCommandTotal,
                 InventoryWeight = Character.InventoryWeight,
+                IsDicePublicRoll = Character.IsDicePublicRoll,
+                RuleSetId = Character.RuleSetId,
                 RuleSet = Character.RuleSet == null ? new RuleSetViewModel() : new RuleSetViewModel
                 {
                     RuleSetId = Character.RuleSet.RuleSetId,
@@ -651,9 +667,9 @@ namespace RPGSmithApp.Controllers
                 await TotalCharacterSlotsAvailableForCurrentUser();
                 //Limit user to have max 3 characters & //purchase for more set
                 if (await _CharacterService.GetCharactersCountByUserId(userId) >= TotalCharacterSlotsAvailable && !IsAdminUser())
-                    return BadRequest("Only "+ TotalCharacterSlotsAvailable + " slots of Characters are allowed.");
+                    return BadRequest("Only " + TotalCharacterSlotsAvailable + " slots of Characters are allowed.");
 
-                if (await _campaignService.isInvitedPlayerCharacter(model.CharacterId))                    
+                if (await _campaignService.isInvitedPlayerCharacter(model.CharacterId))
                 {
                     return BadRequest(CharacterCannotDuplicated);
                 }
@@ -862,7 +878,7 @@ namespace RPGSmithApp.Controllers
 
             foreach (var _id in rulesetIds)
             {
-                var _addRuleset =Utilities.GetRuleset(_id, _ruleSetService);
+                var _addRuleset = Utilities.GetRuleset(_id, _ruleSetService);
                 int Count = 1;
                 string newRulesetName = _addRuleset.RuleSetName;
                 bool rulesetExists = false;
@@ -877,7 +893,7 @@ namespace RPGSmithApp.Controllers
 
 
                 } while (rulesetExists);
-               
+
                 var _rulesetData = Mapper.Map<RuleSet>(_addRuleset);
                 _rulesetData.isActive = true;
                 _rulesetData.ShareCode = null;//Guid.NewGuid(); //not used in sp
@@ -902,11 +918,12 @@ namespace RPGSmithApp.Controllers
             {
                 TotalCharacterSlotsAvailable = userSubscription.CharacterCount;
             }
-            else {
+            else
+            {
                 TotalCharacterSlotsAvailable = 3;
             }
-            
-           
+
+
         }
         #region API Using SP
         [HttpGet("getByUserId_sp")]
@@ -924,7 +941,7 @@ namespace RPGSmithApp.Controllers
         #endregion
 
         #region Custom Dice DiceTray
-        
+
         [HttpGet("GetDiceTray")]
         public async Task<IActionResult> GetDiceTray(int rulesetId, int characterId)
         {
@@ -933,11 +950,21 @@ namespace RPGSmithApp.Controllers
             {
                 rulesetId = (int)_CharacterService.GetCharacterById(characterId).RuleSetId;
             }
-            return Ok(new {
-               diceTray= _ruleSetService.GetDiceTray(rulesetId).ToList(),
-               customDices= _ruleSetService.GetCustomDice(rulesetId).ToList(),
-               defaultDices= _ruleSetService.GetDefaultDices().ToList(),
+            return Ok(new
+            {
+                diceTray = _ruleSetService.GetDiceTray(rulesetId).ToList(),
+                customDices = _ruleSetService.GetCustomDice(rulesetId).ToList(),
+                defaultDices = _ruleSetService.GetDefaultDices().ToList(),
             });
+        }
+        #endregion
+
+        #region Dice Private Publice rolls
+        [HttpGet("UpdatePublicPrivateRoll")]
+        public bool UpdatePublicPrivateRoll(bool isPublic, bool isCharacter, int recordId)
+        {
+            bool result = _CharacterService.UpdatePublicPrivateRoll(isPublic, isCharacter, recordId);
+            return result;
         }
         #endregion
     }

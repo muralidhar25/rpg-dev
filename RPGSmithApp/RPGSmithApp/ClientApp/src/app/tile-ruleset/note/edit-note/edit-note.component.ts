@@ -24,7 +24,8 @@ export class RulesetEditNoteComponent implements OnInit {
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1)); }
 
-    ngOnInit() {
+  ngOnInit() {
+      debugger
         setTimeout(() => {
             this.tileModel = this.bsModalRef.content.tile;
             this.noteFormModel = this.bsModalRef.content.noteTile;

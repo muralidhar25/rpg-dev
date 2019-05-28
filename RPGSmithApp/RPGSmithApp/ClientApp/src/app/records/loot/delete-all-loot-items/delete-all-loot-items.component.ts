@@ -40,7 +40,7 @@ export class DeleteAllLootItemsComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      console.log(this.bsModalRef.content.ruleSetId);
+      //console.log(this.bsModalRef.content.ruleSetId);
       this.rulesetId = this.bsModalRef.content.ruleSetId;
       this.initialize();
     }, 0);
@@ -55,7 +55,7 @@ export class DeleteAllLootItemsComponent implements OnInit {
 
       this.lootService.getItemMasterLootsForDelete<any>(this.rulesetId)
         .subscribe(data => {
-          console.log(data);
+          //console.log(data);
           this.itemsList = data;
           this.isLoading = false;
         }, error => {
@@ -99,9 +99,9 @@ export class DeleteAllLootItemsComponent implements OnInit {
 
   }
   deleteAllLootItems(itemMaster) {
-    console.log(itemMaster);
+    //console.log(itemMaster);
     this.isLoading = true;
-    console.log(this.multiLootIds);
+    //console.log(this.multiLootIds);
     this.lootService.deleteAllLootItems<any>(this.multiLootIds)
       .subscribe(data => {
              // console.log('data',data);

@@ -17,26 +17,54 @@
     </div>
 
     <div class="modal-body" style="padding-top: 0.5rem" *ngIf="!isLoading">
-      <div class="form-group saved-commands" [ngClass]="{'d-none' : rollSection}" style="margin-bottom:0.25rem">
-        <label>Saved Commands</label>
-        <div class="command-list">
-          <small *ngIf="characterCommandData?.length == 0">No Available Command</small>
-          <ul>
-            <li *ngFor="let cmd of characterCommandData; let i=index">
-              <button *ngIf="i<limit" type="button" class="btn" (mousedown)="editSavedCommand(cmd)" (mouseup)="clickAndHold(cmd)"
-                      (mouseleave)="clickAndHold(cmd)" (dblclick)="onClickRoll(cmd,'')" (click)="bindDiceCommand(cmd,diceRollModel)"
-                      [ngClass]="[activeCommand===cmd.characterCommandId ? 'active-command' : 'no-active-command']">
-                {{cmd.name}}
+      <div class="row" [ngClass]="{'d-none' : rollSection}">
+        <div class="col-12 col-sm-6">
+          <div class="form-group saved-commands" style="margin-bottom:0.25rem">
+            <label>Saved Commands</label>
+            <div class="command-list">
+              <small *ngIf="characterCommandData?.length == 0">No Available Command</small>
+              <ul>
+                <li *ngFor="let cmd of characterCommandData; let i=index">
+                  <button *ngIf="i<limit" type="button" class="btn" (mousedown)="editSavedCommand(cmd)" (mouseup)="clickAndHold(cmd)"
+                          (mouseleave)="clickAndHold(cmd)" (dblclick)="onClickRoll(cmd,'')" (click)="bindDiceCommand(cmd,diceRollModel)"
+                          [ngClass]="[activeCommand===cmd.characterCommandId ? 'active-command' : 'no-active-command']">
+                    {{cmd.name}}
+                  </button>
+                </li>
+              </ul>
+            </div>
+            <div class="input-extend">
+              <button type="button" *ngIf="characterCommandData?.length > 3" (click)="showMoreCommands(characterCommandData?.length,limitText)" class="btn icon icon-with-text btn-link-primary" [ngClass]="(limit==3)?'icon-arrow-down':'icon-arrow-up'">
+                <span>{{limitText}}</span>
               </button>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
-        <div class="input-extend">
-          <button type="button" *ngIf="characterCommandData?.length > 3" (click)="showMoreCommands(characterCommandData?.length,limitText)" class="btn icon icon-with-text btn-link-primary" [ngClass]="(limit==3)?'icon-arrow-down':'icon-arrow-up'">
-            <span>{{limitText}}</span>
-          </button>
+        <div class="col-12 col-sm-6">
+          <fieldset class="form-group input-switch input-switch-dual">
+            <label>&nbsp;</label>
+            <ul class="input-switch-items">
+              <li class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="pausegame1"
+                         [checked]="isDicePublicRoll"
+                         (click)="setDiceRoll(true)">
+                  <span>PUBLIC</span>
+                </label>
+              </li>
+              <li class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" name="pausegame2"
+                         [checked]="!isDicePublicRoll"
+                         (click)="setDiceRoll(false)">
+                  <span>PRIVATE</span>
+                </label>
+              </li>
+            </ul>
+          </fieldset>
         </div>
       </div>
+      
 
       <div class="form-group new-command initial" [ngClass]="{'d-none' : rollSection}">
         <label>Command*</label>
@@ -259,10 +287,13 @@
             <button type="button" id="diceShowDiceTrigger" class="btn btn-accent btn-block" (click)="onClickDice(mainCommandText)">Show Dice</button>
           </div>
           <div class="d-flex col-12 " [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'">
-            <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block" (click)="onClickRoll(characterCommandModel,'')"> {{rollAgainBtnText}} </button>
+            <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block" (click)="onClickRollCurrentAgain(characterCommandModel,mainCommandText)"> {{rollAgainBtnText}} </button>
           </div>
           <div class="d-flex col-12 " *ngIf="displayCurrentRollBtn" [ngClass]="displayCurrentRollBtn ? 'col-md-4' : 'col-md-6'">
             <button type="button" id="diceRollAgainTrigger" class="btn btn-accent btn-block" (click)="onClickRollAll(characterCommandModel,mainCommandText)"> Roll  All  Again </button>
+          </div>
+          <div class="d-flex col-12 " >
+            <button type="button" id="diceRollAgainTrigger" *ngIf="isShowSendtoChat || isFromCampaignDetail " class="btn btn-accent btn-block" (click)="sendToChat()"> Send To Chat </button>
           </div>
 
         </div>

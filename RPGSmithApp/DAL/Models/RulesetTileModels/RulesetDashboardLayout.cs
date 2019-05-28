@@ -32,6 +32,7 @@ namespace DAL.Models.RulesetTileModels
         public bool IsDefaultComputer { get; set; }
         public bool IsDefaultTablet { get; set; }
         public bool IsDefaultMobile { get; set; }
+        public bool IsSharedLayout { get; set; }
 
         public virtual ICollection<RulesetDashboardPage> RulesetDashboardPages { get; set; }   
 

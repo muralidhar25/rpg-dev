@@ -107,11 +107,11 @@ export class CharacterDashboardLayoutService extends EndpointFactory {
       });
   }
 
-  updateDefaultLayout<T>(layoutId: number): Observable<T> {
-    let endpoint = `${this.updateDefaultLayoutApi}?layoutId=${layoutId}`;
+  updateDefaultLayout<T>(layoutId: number, characterId: number): Observable<T> {
+    let endpoint = `${this.updateDefaultLayoutApi}?layoutId=${layoutId}&characterId=${characterId}`;
     return this.http.post<T>(endpoint, this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.updateDefaultLayout(layoutId));
+        return this.handleError(error, () => this.updateDefaultLayout(layoutId, characterId));
       });
   }
 

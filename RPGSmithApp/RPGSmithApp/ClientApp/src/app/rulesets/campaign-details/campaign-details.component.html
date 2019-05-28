@@ -14,7 +14,8 @@
             </div>
             <div class="campaign-players-number">
               <span>
-                PLAYERS <span>{{(invitedUsers?.length-GmCharacterSlotsCount)}}/{{playersSlots}}</span>
+                <!--PLAYERS <span>{{(invitedUsers?.length-GmCharacterSlotsCount)}}/{{playersSlots}}</span>-->
+                PLAYERS <span>{{CurrentlyOnlinePlayersCount}}/{{GetAcceptedPlayersCount()-GmCharacterSlotsCount}}</span>
               </span>
             </div>
           </div>
@@ -73,7 +74,7 @@
           <!--<span class="dropdown-menu-item-count pull-right ng-star-inserted">0</span>-->
         </li>
         <li class="ng-star-inserted">
-          <a class="btn icon icon-Gen-Tiles btn-accent">DASHBOARD</a>
+          <a class="btn icon icon-Gen-Tiles btn-accent" (click)="dashboard(rulesetModel)">DASHBOARD</a>
           <!--<span class="dropdown-menu-item-count pull-right ng-star-inserted">0</span>-->
         </li>
 
@@ -81,7 +82,7 @@
     </div>
     <div class="col-12 col-md-8">
       <div class="campaign-title-outer d-none d-md-flex mb-3">
-        <div class="campaign-title">
+        <div class="campaign-title" (click)="dashboard(rulesetModel)">
           <div class="row m-0 justify-content-between align-items-center">
             <div class="campaign-name">
               <h2>{{ruleset?.ruleSetName}}</h2>
@@ -89,7 +90,8 @@
             </div>
             <div class="campaign-players-number">
               <span>
-                PLAYERS <span>{{(invitedUsers?.length-GmCharacterSlotsCount)}}/{{playersSlots}}</span>
+                <!--PLAYERS <span>{{(invitedUsers?.length-GmCharacterSlotsCount)}}/{{playersSlots}}</span>-->
+                PLAYERS <span>{{CurrentlyOnlinePlayersCount}}/{{GetAcceptedPlayersCount()-GmCharacterSlotsCount}}</span>
               </span>
             </div>
           </div>
@@ -144,10 +146,11 @@
 
               </div>
               <div class="card" *ngIf="invite?.isAccepted">
-                <div class="card-image thumbnail" >
+                <div class="card-image thumbnail">
                   <img class="card-img-top portrait" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg';"
                        [src]="invite.playerCharacterImage" alt="" (click)="goToCharacter(invite.playerCharacterId)">
-                 
+                  <div class="player-character-detail" (click)="goToCharacter(invite.playerCharacterId)" *ngIf="!invite.isConnected && invite.inviteId ">
+                  </div>
                   <div class="characters-description">
                     <div class="characters-description-inner fr-view"></div>
                   </div>
@@ -155,7 +158,7 @@
                     <button type="button" (click)="removePlayerAndDeleteCharacter(i,invite)" tooltip="Remove Player from Campaign / Delete Character" class="btn icon  icon-Rec-Disable btn-simple-primary"></button>
                   </div>
                 </div>
-                <div class="card-body justify-content-between" >
+                <div class="card-body justify-content-between">
                   <h4 class="card-title" popover="{{invite.playerCharacterName}}" triggers="hover" (click)="goToCharacter(invite.playerCharacterId)">{{invite.playerCharacterName}}</h4>
 
                   <div class="card-actions-trigger">
@@ -171,7 +174,7 @@
                   </div>
                   <em popover="{{invite.playerUserName}}" triggers="hover" class="">{{invite.playerUserName}}</em>
                 </span>
-
+                
               </div>
             </div>
           </div>

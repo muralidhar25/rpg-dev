@@ -7,13 +7,13 @@
 export const environment = {
   production: true,
   useMockdata: false,
-  //baseUrl: 'http://localhost:57253', //Change this to the address of your backend API if different from frontend address
+  baseUrl: 'http://localhost:57253', //Change this to the address of your backend API if different from frontend address
   //baseUrl: 'https://app.rpgsmith.com',
-  baseUrl: 'https://rpgsmithapp-dev.azurewebsites.net',
-  //baseUrl: 'http://rpgsmithapp-stage.azurewebsites.net',
-  appVersion: '1.0.0',
-  appBuildNo: '00023',
-  PublishedDate: '25 April, 2019',
+  //baseUrl: 'https://rpgsmithapp-dev.azurewebsites.net',
+  //baseUrl: 'https://rpgsmithapp-stage.azurewebsites.net',
+  appVersion: '1.1',
+  appBuildNo: '0044',
+  PublishedDate: '24 May, 2019',
   loginUrl: '/login',
   registerUrl: '/register',
   loginApi: '/connect/token',

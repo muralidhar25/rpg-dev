@@ -20,8 +20,9 @@
                 <div class="page-toolbar-wrapper initial show recordes-menu">
                     <!-- Toolbar links -->
                   <ul class="page-toolbar-links" *ngIf="!isLoading">
-                    <li  *ngIf="AbilityDetail?.ruleset" class="hidden-tab">
-                      <a [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                    <li *ngIf="AbilityDetail?.ruleset" class="hidden-tab">
+                      <a *ngIf="!IsGm" [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                      <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
                     </li>
                     <li (click)="Redirect('/ruleset/item-master/')" class="hidden-tab" *ngIf="AbilityDetail?.ruleset?.isItemEnabled">
                       <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Item Templates</span></a>
@@ -41,7 +42,8 @@
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                           <ul class="dropdown-menu-list" *ngIf="!isLoading">
                             <li *ngIf="AbilityDetail?.ruleset" class="dropdown-menu-item">
-                              <a [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                              <a *ngIf="!IsGm" [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                              <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
                             </li>
                             <li class="dropdown-menu-item" *ngIf="AbilityDetail?.ruleset">
                               <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection  icon-Gen-Items"> Inventory</a>

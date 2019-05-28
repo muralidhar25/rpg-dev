@@ -20,8 +20,9 @@
                 <div class="page-toolbar-wrapper initial show recordes-menu">
                     <!-- Toolbar links -->
                   <ul class="page-toolbar-links" *ngIf="!isLoading">
-                    <li  *ngIf="ItemMasterDetail?.ruleSet"  class="hidden-tab">
-                      <a [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                    <li *ngIf="ItemMasterDetail?.ruleSet" class="hidden-tab">
+                      <a *ngIf="!IsGm" [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                      <a *ngIf="IsGm"  [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
                     </li>
                     <li *ngIf="ItemMasterDetail?.ruleSet?.isItemEnabled" (click)="Redirect('/ruleset/item-master/')" class="hidden-tab">
                       <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Items"> <span>Item Templates</span></a>
@@ -40,6 +41,10 @@
                         <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                           <ul class="dropdown-menu-list" *ngIf="!isLoading">
+                            <li class="dropdown-menu-item" *ngIf="ItemMasterDetail?.ruleSet">
+                              <a *ngIf="!IsGm" [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                              <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                            </li>
                             <li class="dropdown-menu-item" *ngIf="ItemMasterDetail?.ruleSet?.isItemEnabled">
                               <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection selected icon-Gen-Items"> Inventory</a>
                             </li>

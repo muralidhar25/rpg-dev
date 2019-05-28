@@ -15,6 +15,9 @@ import { CharacterStatsFormComponent } from '../character-stats-form/character-s
 import { STAT_TYPE } from '../../../core/models/enums';
 import { Utilities } from '../../../core/common/utilities';
 import { AppService1 } from '../../../app.service';
+import { DiceRollComponent } from '../../../shared/dice/dice-roll/dice-roll.component';
+import { Characters } from '../../../core/models/view-models/characters.model';
+import { User } from '../../../core/models/user.model';
 
 
 @Component({
@@ -40,7 +43,8 @@ export class CharacterStatsComponent implements OnInit {
     characterStats: any; //CharacterStats[];
     _typeOptions: any[] = [];
     noRecordFound: boolean = false;
-    ConditionOperators: ConditionOperator[]=[];
+  ConditionOperators: ConditionOperator[] = [];
+  IsGm: boolean = false;
 
     constructor(
         private router: Router, private route: ActivatedRoute, private authService: AuthService, private localStorage: LocalStoreManager,
@@ -82,10 +86,19 @@ export class CharacterStatsComponent implements OnInit {
         this.setRulesetId(this.ruleSetId);
         this.destroyModalOnInit();
         this.initialize();
-        this.showActionButtons(this.showActions);
+      this.showActionButtons(this.showActions);
+      
     }
 
-    private initialize() {
+  private initialize() {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      if (user.isGm) {
+        this.IsGm = user.isGm;
+      }
+    }
         /*To get Character-stat Type List*/
         this.isLoading = true;
         this.charactersService.getCharacterStatTypeList<any[]>()
@@ -383,5 +396,19 @@ export class CharacterStatsComponent implements OnInit {
     }
     RedirectBack() {
         window.history.back();
-    }
+  }
+
+  openDiceRollModal() {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.recordName = this.rulesetModel.ruleSetName;
+    this.bsModalRef.content.recordImage = this.rulesetModel.imageUrl;
+    this.bsModalRef.content.isFromCampaignDetail = true;
+  }
 }

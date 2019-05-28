@@ -1,0 +1,140 @@
+.user-icon
+{
+    box-sizing: border-box;
+    background-color: #FFF;
+    border: 2px solid;
+    width: 32px;
+    height: 20px;
+    border-radius: 64px 64px 0 0/64px;
+    margin-top: 14px;
+    margin-left: -1px;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    font-style: normal;
+    color: #ddd;
+    text-align: left;
+    text-indent: -9999px;
+}
+    .user-icon:before{
+        border: 2px solid;
+        background-color: #FFF;
+        width: 12px;
+        height: 12px;
+        top: -19px;
+        border-radius: 50%;
+        position: absolute;
+        left: 50%;
+        -webkit-transform: translateX(-50%);
+        -ms-transform: translateX(-50%);
+        transform: translateX(-50%);
+    }
+    .user-icon:before, .user-icon:after
+    {
+        content: '';
+        pointer-events: none;
+    }
+.upload-icon {
+    position: absolute;
+    margin-left: 3px;
+    margin-top: 12px;
+    width: 13px;
+    height: 4px;
+    border: solid 1px currentColor;
+    border-top: none;
+    border-radius: 1px;
+}
+    .upload-icon:before {
+        content: '';
+        position: absolute;
+        top: -8px;
+        left: 6px;
+        width: 1px;
+        height: 9px;
+        background-color: currentColor;
+    }
+    .upload-icon:after {
+        content: '';
+        position: absolute;
+        top: -8px;
+        left: 4px;
+        width: 4px;
+        height: 4px;
+        border-top: solid 1px currentColor;
+        border-right: solid 1px currentColor;
+        -webkit-transform: rotate(-45deg);
+                transform: rotate(-45deg);
+    }
+.paperclip-icon {
+    position: absolute;
+    margin-left: 9px;
+    margin-top: 2px;
+    width: 6px;
+    height: 12px;
+    border-radius: 4px 4px 0 0;
+    border-left: solid 1px currentColor;
+    border-right: solid 1px currentColor;
+    border-top: solid 1px currentColor;
+    -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+}
+    .paperclip-icon:before {
+        content: '';
+        position: absolute;
+        top: 11px;
+        left: -1px;
+        width: 4px;
+        height: 6px;
+        border-radius: 0 0 3px 3px;
+        border-left: solid 1px currentColor;
+        border-right: solid 1px currentColor;
+        border-bottom: solid 1px currentColor;
+    }
+    .paperclip-icon:after {
+        content: '';
+        position: absolute;
+        left: 1px;
+        top: 1px;
+        width: 2px;
+        height: 10px;
+        border-radius: 4px 4px 0 0;
+        border-left: solid 1px currentColor;
+        border-right: solid 1px currentColor;
+        border-top: solid 1px currentColor;
+    }
+.check-icon {
+    color: #000;
+    position: absolute;
+    margin-left: 3px;
+    margin-top: 4px;
+    width: 14px;
+    height: 8px;
+    border-bottom: solid 1px currentColor;
+    border-left: solid 1px currentColor;
+    -webkit-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+    }
+.remove-icon {
+    color: #000;
+    position: absolute;
+    margin-left: 3px;
+    margin-top: 10px;
+    }
+    .remove-icon:before {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 1px;
+    background-color: currentColor;
+    -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+    }
+    .remove-icon:after {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 1px;
+    background-color: currentColor;
+    -webkit-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+    }

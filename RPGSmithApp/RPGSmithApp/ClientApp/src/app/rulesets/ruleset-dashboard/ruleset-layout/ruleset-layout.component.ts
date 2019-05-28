@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { Router } from "@angular/router";
 import { BsModalService, BsModalRef, ModalDirective } from 'ngx-bootstrap';
 import { RulesetDashboardLayout } from '../../../core/models/view-models/ruleset-dashboard-layout.model';
-import { DEVICE, VIEW } from '../../../core/models/enums';
+import { DEVICE, VIEW, Layout } from '../../../core/models/enums';
 import { SharedService } from '../../../core/services/shared.service';
 import { CommonService } from '../../../core/services/shared/common.service';
 import { ConfigurationService } from '../../../core/common/configuration.service';
@@ -37,11 +37,13 @@ export class RulesetLayoutComponent implements OnInit {
     View = VIEW
   title: string = ''
   button: string = ''
+  isCampaignDashboardScreen: boolean= false;
     @HostListener('window:resize', ['$event'])
     onResize(event?) {
         this.screenHeight = window.innerHeight;
         this.screenWidth = window.innerWidth;
     }
+  isShared: boolean = false;
 
     constructor(
         private router: Router, private alertService: AlertService, private authService: AuthService,
@@ -63,7 +65,7 @@ export class RulesetLayoutComponent implements OnInit {
             this.authService.logout();
         else {
             setTimeout(() => {
-
+              this.isCampaignDashboardScreen = this.bsModalRef.content.isCampaignDashboardScreen ? this.bsModalRef.content.isCampaignDashboardScreen : false;
                 let modalContentButton = this.bsModalRef.content.button;
                 this.layoutPages = this.bsModalRef.content.layoutPages;
                 this.layoutFormModal = Object.assign({}, this.bsModalRef.content.layoutFormModal ? this.bsModalRef.content.layoutFormModal : this.layoutFormModal);
@@ -74,7 +76,15 @@ export class RulesetLayoutComponent implements OnInit {
                 }
                 this.rulesetId = this.layoutFormModal.rulesetId = this.bsModalRef.content.rulesetId;
                 this.screenWidth = this.layoutFormModal.layoutWidth ? this.layoutFormModal.layoutWidth : this.screenWidth;
-                this.screenHeight = this.layoutFormModal.layoutHeight ? this.layoutFormModal.layoutHeight : this.screenHeight;
+              this.screenHeight = this.layoutFormModal.layoutHeight ? this.layoutFormModal.layoutHeight : this.screenHeight;
+              if (this.isCampaignDashboardScreen) {
+                this.layoutFormModal.isSharedLayout = true;
+              }
+              
+
+              if (this.layoutFormModal.name == Layout.SharedLayoutName) {
+                this.isShared = true;
+              }
             }, 0);
         }
     }

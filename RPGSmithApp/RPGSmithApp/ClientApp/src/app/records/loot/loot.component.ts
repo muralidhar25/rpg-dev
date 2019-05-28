@@ -21,6 +21,8 @@ import { AddlootComponent } from "./addloot/addloot.component";
 import { CreatelootComponent } from "./createloot/createloot.component";
 import { error } from "util";
 import { DeleteAllLootItemsComponent } from "./delete-all-loot-items/delete-all-loot-items.component";
+import { DiceRollComponent } from "../../shared/dice/dice-roll/dice-roll.component";
+import { Characters } from "../../core/models/view-models/characters.model";
 
 @Component({
   selector: 'app-loot',
@@ -47,6 +49,8 @@ export class LootComponent implements OnInit {
   timeoutHandler: any;
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
+  IsGm: boolean = false;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -100,13 +104,14 @@ export class LootComponent implements OnInit {
       this.authService.logout();
     else {
       if (user.isGm) {
+        this.IsGm = user.isGm;
         this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       }
       this.isLoading = true;
     
       this.lootService.getLootItemsById<any>(this.ruleSetId,this.page, this.pageSize)
         .subscribe(data => {
-          console.log(data);
+          //console.log(data);
          this.ItemMasterList = Utilities.responseData(data.ItemMaster, this.pageSize);
           this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
           this.RuleSet = data.RuleSet;
@@ -159,7 +164,7 @@ export class LootComponent implements OnInit {
     this.scrollLoading = true;
      this.lootService.getLootItemsById<any>(this.ruleSetId,this.page, this.pageSize)
         .subscribe(data => {
-          console.log(data);
+         // console.log(data);
           var _ItemMaster = data.ItemMaster;
           for (var i = 0; i < _ItemMaster.length; i++) {
             _ItemMaster[i].showIcon = false;
@@ -471,7 +476,7 @@ export class LootComponent implements OnInit {
   }
 
   deleteAll() {
-    console.log('delete All');
+    //console.log('delete All');
     this.bsModalRef = this.modalService.show(DeleteAllLootItemsComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -481,4 +486,17 @@ export class LootComponent implements OnInit {
     
   }
 
+  openDiceRollModal() {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.recordName = this.RuleSet.ruleSetName;
+    this.bsModalRef.content.recordImage = this.RuleSet.imageUrl;
+    this.bsModalRef.content.isFromCampaignDetail = true;
+  }
 }

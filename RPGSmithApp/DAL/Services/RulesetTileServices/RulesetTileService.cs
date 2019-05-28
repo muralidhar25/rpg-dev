@@ -408,6 +408,51 @@ namespace DAL.Services.RulesetTileServices
                                                         }
                                                     }
                                                     CharStat.CharacterStatCalcs = calcs;
+
+                                                    ////
+                                                    List<CharacterStatDefaultValue> dfv = new List<CharacterStatDefaultValue>();
+                                                    if (ds.Tables[14].Rows.Count > 0)
+                                                    {
+                                                        foreach (DataRow r in ds.Tables[14].Rows)
+                                                        {
+                                                            int dfvCharacterStat = r["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatId"]);
+                                                            if (characterstatID == dfvCharacterStat)
+                                                            {
+                                                                CharacterStatDefaultValue cal = new CharacterStatDefaultValue();
+                                                                cal.CharacterStatId = r["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatId"]);
+                                                                cal.CharacterStatDefaultValueId = r["CharacterStatDefaultValueId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatDefaultValueId"]);
+                                                                cal.DefaultValue = r["DefaultValue"] == DBNull.Value ? null : r["DefaultValue"].ToString();
+                                                                cal.Maximum = r["Maximum"] == DBNull.Value ? 0 : Convert.ToInt32(r["Maximum"]);
+                                                                cal.Minimum = r["Minimum"] == DBNull.Value ? 0 : Convert.ToInt32(r["Minimum"]);
+                                                                cal.Type = r["Type"] == DBNull.Value ? 0 : Convert.ToInt32(r["Type"]);
+                                                                dfv.Add(cal);
+                                                            }
+                                                        }
+                                                    }
+                                                    CharStat.CharacterStatDefaultValues = dfv.OrderBy(x=>x.Type).ToList();
+
+                                                    CharacterStatCombo combo = new CharacterStatCombo();
+                                                    if (ds.Tables[15].Rows.Count > 0)
+                                                    {
+                                                        foreach (DataRow r in ds.Tables[15].Rows)
+                                                        {
+                                                            int comboCharacterStat = r["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatId"]);
+                                                            if (characterstatID == comboCharacterStat)
+                                                            {
+
+                                                                combo.CharacterStatComboId = r["CharacterStatComboId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatComboId"]);
+                                                                combo.CharacterStatId = r["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(r["CharacterStatId"]);
+                                                                combo.DefaultText = r["DefaultText"] == DBNull.Value ? null : r["DefaultText"].ToString();
+                                                                combo.DefaultValue = r["DefaultValue"] == DBNull.Value ? 0 : Convert.ToInt32(r["DefaultValue"]);
+                                                                
+                                                                break;
+                                                            }
+
+                                                        }
+                                                    }
+                                                    CharStat.CharacterStatCombos = combo;
+                                                    //////
+
                                                     CharacterStatType statType = null;
                                                     if (ds.Tables[11].Rows.Count > 0)
                                                     {
@@ -426,6 +471,27 @@ namespace DAL.Services.RulesetTileServices
                                                         }
                                                     }
                                                     CharStat.CharacterStatType = statType;
+
+
+                                                    CharacterStatToggle CharacterStatToggle = GetCharacterStatToggleList((int)CharStat.CharacterStatId);
+                                                    //if (CharacterStatToggle != null)
+                                                    //{
+                                                    //    //CharacterStatToggle CharacterStatToggle = GetCharacterStatToggleList((int)CharCharStat.CharacterStatId);
+                                                    //    if (CharacterStatToggle.IsCustom)
+                                                    //    {
+                                                    //        foreach (var toggle in CharacterStatToggle.CustomToggles)
+                                                    //        {
+                                                    //            characterCustomToggle.Add(new CharacterCustomToggle()
+                                                    //            {
+                                                    //                CustomToggleId = toggle.CustomToggleId,
+                                                    //                Image = toggle.Image,
+                                                    //                IsDeleted = toggle.IsDeleted,
+                                                    //                ToggleText = toggle.ToggleText,
+                                                    //            });
+                                                    //        }
+                                                    //    }
+                                                    //}
+                                                    CharStat.CharacterStatToggles = CharacterStatToggle;
                                                 }
 
                                             }
@@ -779,6 +845,22 @@ namespace DAL.Services.RulesetTileServices
                 }
             }
 
+        }
+        public CharacterStatToggle GetCharacterStatToggleList(int characterStatId)
+        {
+            var res = _context.CharacterStatToggle.Where(x => x.CharacterStatId == characterStatId && x.IsDeleted == false).Select(x => new CharacterStatToggle()
+            {
+                CharacterStatId = x.CharacterStatId,
+                CharacterStatToggleId = x.CharacterStatToggleId,
+                Display = x.Display,
+                IsCustom = x.IsCustom,
+                IsDeleted = x.IsDeleted,
+                OnOff = x.OnOff,
+                ShowCheckbox = x.ShowCheckbox,
+                YesNo = x.YesNo,
+                CustomToggles = _context.CustomToggle.Where(z => z.CharacterStatToggleId == x.CharacterStatToggleId).ToList()
+            }).FirstOrDefault();
+            return res;
         }
     }
 }

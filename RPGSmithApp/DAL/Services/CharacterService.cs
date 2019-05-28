@@ -577,5 +577,24 @@ namespace DAL.Services
 
 
         #endregion
+
+        #region Dice Private Publice rolls
+        public bool UpdatePublicPrivateRoll(bool isPublic, bool isCharacter, int recordId)
+        {
+            if (isCharacter)
+            {
+              Character _character= _context.Characters.Where(x => x.CharacterId == recordId).FirstOrDefault();
+                _character.IsDicePublicRoll = isPublic;
+                _context.SaveChanges();
+            }
+            else
+            {
+                RuleSet _ruleSet = _context.RuleSets.Where(x => x.RuleSetId == recordId).FirstOrDefault();
+                _ruleSet.IsDicePublicRoll = isPublic;
+                _context.SaveChanges();
+            }
+            return isPublic;
+        }
+        #endregion
     }
 }

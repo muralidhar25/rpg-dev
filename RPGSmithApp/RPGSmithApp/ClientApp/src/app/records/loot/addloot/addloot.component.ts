@@ -14,6 +14,7 @@ import { DBkeys } from '../../../core/common/db-keys';
 import { Utilities } from '../../../core/common/utilities';
 import { VIEW } from '../../../core/models/enums';
 import { LootService } from '../../../core/services/loot.service';
+import { AppService1 } from '../../../app.service';
 
 @Component({
   selector: 'app-addloot',
@@ -35,7 +36,7 @@ export class AddlootComponent implements OnInit {
     public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
     private sharedService: SharedService, private commonService: CommonService,
     private itemsService: ItemsService, private itemMasterService: ItemMasterService,
-    private lootService: LootService) {
+    private appService: AppService1,private lootService: LootService) {
 
   }
 
@@ -128,18 +129,19 @@ export class AddlootComponent implements OnInit {
   }
 
   addEditItem(modal: any) {
-    console.log('modal data', modal.multiItemMasters);
+    //console.log('modal data', modal.multiItemMasters);
     this.isLoading = true;
     this.lootService.addLootItem(modal.multiItemMasters)
       .subscribe(
       data => {
-        console.log(data);
+        //console.log(data);
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           let message = "Loot(s) added successfully.";
           this.alertService.showMessage(message, "", MessageSeverity.success);
           this.bsModalRef.hide();
           this.sharedService.updateItemsList(true);
+        this.appService.updateChatWithLootMessage(true);
         },
         error => {
           this.isLoading = false;

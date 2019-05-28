@@ -36,6 +36,7 @@ using Microsoft.AspNetCore.Http.Features;
 using DAL.Services.CharacterTileServices;
 using DAL.Services.RulesetTileServices;
 using RPGSmithApp.Helpers.CoreRuleset;
+using Newtonsoft.Json.Serialization;
 
 namespace RPGSmithApp
 {
@@ -119,7 +120,12 @@ namespace RPGSmithApp
 
             // Add cors
             services.AddCors();
-
+            services
+                .AddSignalR()
+                .AddAzureSignalR(Configuration.GetSection("SignalRConnectionString").Value)
+                .AddJsonProtocol(options => {
+                    options.PayloadSerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                });
             // Add framework services.
             services.AddMvc().AddJsonOptions(options =>
             {
@@ -282,6 +288,8 @@ namespace RPGSmithApp
                 x.MultipartHeadersLengthLimit = int.MaxValue;
                 x.ValueCountLimit = int.MaxValue;
             });
+
+            
         }
 
 
@@ -337,6 +345,12 @@ namespace RPGSmithApp
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "RPGSmithApp API V1");
+            });
+
+            app.UseAzureSignalR(routes =>
+            {
+                routes.MapHub<ChatHub>("/chat");
+                routes.MapHub<GroupChatHub>("/groupchat");
             });
 
             app.UseMvc(routes =>

@@ -49,7 +49,7 @@ export class CampaignInviteComponent implements OnInit {
     setTimeout(() => {
      
       this.invitationList = this.bsModalRef.content.invitationList;
-      console.log(this.invitationList);
+      //console.log(this.invitationList);
       this.rulesetModel = this.bsModalRef.content.rulesetModel == undefined
         ? new Ruleset() : this.bsModalRef.content.rulesetModel;
      
@@ -105,10 +105,10 @@ export class CampaignInviteComponent implements OnInit {
   }
   AnswerLater(inviteId) {
     this.isloading = true;
-    console.log('Answer later', inviteId);
+    //console.log('Answer later', inviteId);
     this.campaignService.answerLaterInvite<any>(inviteId)
       .subscribe(data => {
-        console.log(data);
+        //console.log(data);
       })
     this.close();
     this.isloading = false;
@@ -145,10 +145,10 @@ export class CampaignInviteComponent implements OnInit {
 
 
   backward() {
-    console.log('backward');
+    //console.log('backward');
   }
   forward() {
-    console.log('forward');
+    //console.log('forward');
   }
  
 }

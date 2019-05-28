@@ -26,7 +26,7 @@
                       <button type="button" (click)="manageIcon('0')" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary show-layout-drp"></button>
                     </div>
                     <div class="dropdown-menu-item-actions-trigger showdrp">
-                      <button type="button" *ngIf="!layout?.showIcon" (click)="manageIcon(layout.characterDashboardLayoutId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary show-layout-drp"></button>
+                      <button type="button" *ngIf="!layout?.showIcon && layout.characterDashboardLayoutId != -1" (click)="manageIcon(layout.characterDashboardLayoutId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary show-layout-drp"></button>
                     </div>
                   </li>
 
@@ -49,7 +49,7 @@
                       <div class="card-actions action-buttons-left sorting-down-arrow" (click)="scrollDown(layout,false,this)">
                         <i class="fa fa-arrow-down"></i>
                       </div>
-                      <button type="button" *ngIf="!layout?.showIcon" (click)="manageIcon(layout.characterDashboardLayoutId)" title="Manage" data-toggle="tooltip" class="action-buttons-left btn icon icon-more btn-simple-primary show-layout-drp"></button>
+                      <button type="button" *ngIf="!layout?.showIcon && layout.characterDashboardLayoutId != -1" (click)="manageIcon(layout.characterDashboardLayoutId)" title="Manage" data-toggle="tooltip" class="action-buttons-left btn icon icon-more btn-simple-primary show-layout-drp"></button>
                     </div>
 
                   </li>
@@ -73,7 +73,7 @@
               <span class="is-page-show"><span class="d-none d-md-inline-block">Page</span> <span class="d-md-none">P</span> <em *ngIf="selectedPage && !isLoading">{{selectedPage.name}}</em></span>
             </div>
             <div [class]="pagedrpClass" aria-labelledby="pageLayoutNavigationToggle" *ngIf="isPageDropdownOpen && selectedlayout && !isLoading">
-              <div class="dropdown-menu-add-item-trigger">
+              <div class="dropdown-menu-add-item-trigger" *ngIf="!isSharedLayout">
                 <button type="button" (click)="newPage()" class="btn btn-accent btn-block">New Page</button>
               </div>
               <div class="web-view" [dragula]='"bag-characterDashboardPages"' [dragulaModel]="selectedlayout.characterDashboardPages">
@@ -87,7 +87,7 @@
                       <button (click)="managePageIcon(0)" type="button" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary show-page-drp"></button>
                     </div>
                     <div class="dropdown-menu-item-actions-trigger">
-                      <button type="button" *ngIf="!page?.showIcon" (click)="managePageIcon(page?.characterDashboardPageId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary show-page-drp"></button>
+                      <button type="button" *ngIf="!page?.showIcon && !isSharedLayout" (click)="managePageIcon(page?.characterDashboardPageId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary show-page-drp"></button>
                     </div>
                   </li>
 
@@ -110,7 +110,7 @@
                       <div class="card-actions action-buttons-left sorting-down-arrow" (click)="scrollDown(page,true,this)">
                         <i class="fa fa-arrow-down"></i>
                       </div>
-                      <button type="button" *ngIf="!page?.showIcon" (click)="managePageIcon(page?.characterDashboardPageId)" title="Manage" data-toggle="tooltip" class=" action-buttons-left btn icon icon-more btn-simple-primary show-page-drp"></button>
+                      <button type="button" *ngIf="!page?.showIcon && !isSharedLayout" (click)="managePageIcon(page?.characterDashboardPageId)" title="Manage" data-toggle="tooltip" class=" action-buttons-left btn icon icon-more btn-simple-primary show-page-drp"></button>
                     </div>
                   </li>
 
@@ -140,7 +140,7 @@
         <!-- Toolbar actions -->
         <ul class="page-toolbar-actions" [ngClass]="{'d-none d-md-flex' : !showActions}">
           <li>
-            <button [disabled]="isLoading" type="button" id="manageTilesTrigger" class="btn btn-outline-primary icon-Gen-Edit" (click)="checkTile('character/tiles',selectedPage?.characterDashboardPageId,selectedlayout.characterDashboardLayoutId)"> Manage Tiles</button>
+            <button *ngIf="!isSharedLayout" [disabled]="isLoading" type="button" id="manageTilesTrigger" class="btn btn-outline-primary icon-Gen-Edit" (click)="checkTile('character/tiles',selectedPage?.characterDashboardPageId,selectedlayout.characterDashboardLayoutId)"> Manage Tiles</button>
           </li>
           <li class="refresh-btn" *ngIf="pageRefresh" > 
             <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
@@ -269,167 +269,169 @@
                     <div [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':''" [style.color]="box.tile.characterStatTiles.bodyTextColor"
                          [style.background-color]="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.RichText ? '' : (box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Command && box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl)?box.tile.characterStatTiles.titleBgColor:box.tile.characterStatTiles.bodyBgColor">
 
-                      <p [style.color]="box.tile.characterStatTiles.bodyTextColor"
-                         [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 14 ? 16 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 14 ? 16 : box.config.sizex*4 ) "
-                         [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 18 ? 20 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 18 ? 20 : box.config.sizex*5 ) "
-                         *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Text">
+                      <span class="text-center-v" [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                              [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
+                          [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)"
+                            *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Text">
                         {{box.tile.characterStatTiles?.charactersCharacterStat?.text}}
-                      </p>
+                        </span>
 
-                      <span style="color:#000" *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.RichText"
-                            [froalaView]="box.tile.characterStatTiles?.charactersCharacterStat?.richText">
-                      </span>
+                        <span style="color:#000" *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.RichText"
+                              [froalaView]="box.tile.characterStatTiles?.charactersCharacterStat?.richText">
+                        </span>
 
-                      <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Number" [style.font-size.px]="box.config.sizex*box.config.sizey*5+30" class="text-center-v">
-                        {{box.tile.characterStatTiles?.charactersCharacterStat?.number}}
-                      </span>
-                      <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.CurrentMax" [style.font-size.px]="box.config.sizex*box.config.sizey*2+11" class="text-center-v">
-                        {{box.tile.characterStatTiles?.charactersCharacterStat.current}} / {{box.tile.characterStatTiles?.charactersCharacterStat.maximum}}
-                      </span>
+                        <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Number" [style.font-size.px]="box.config.sizex*box.config.sizey*5+30" class="text-center-v">
+                          {{box.tile.characterStatTiles?.charactersCharacterStat?.number}}
+                        </span>
+                        <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.CurrentMax" [style.font-size.px]="box.config.sizex*box.config.sizey*2+11" class="text-center-v">
+                          {{box.tile.characterStatTiles?.charactersCharacterStat.current}} / {{box.tile.characterStatTiles?.charactersCharacterStat.maximum}}
+                        </span>
 
-                      <div class="text-center-v bold-whitebg-textblack" *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Choice">
-                        <p style="padding:0">
-                          <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isMultiSelect && box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isChoiceNumeric">
+                        <div class="text-center-v bold-whitebg-textblack" *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Choice">
+                          <p style="padding:0" *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isMultiSelect || (box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isMultiSelect && box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isChoiceNumeric)">
+                            <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isMultiSelect && box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isChoiceNumeric">
 
-                            <span class="no-comma"
-                                  [style.font-size.px]="((box.config.sizey+box.config.sizex)*2) < 16 ? 18 : ((box.config.sizey+box.config.sizex)*2)"
-                                  [style.line-height.px]="((box.config.sizey+box.config.sizex)*2+5)  < 18 ? 20 : ((box.config.sizey+box.config.sizex)*2+5)">
-                              {{box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue}} {{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isMultiSelect ? box.tile.characterStatTiles?.charactersCharacterStat?.multiChoice?.length ? '/':'' :box.tile.characterStatTiles?.charactersCharacterStat?.choice?.length ? '/':''}}
-
-                            </span>
-
-
-                          </ng-container>
-                          <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isMultiSelect">
-                            <ng-container *ngFor="let choice of box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatChoices; let i = index">
-                              <ng-container *ngFor="let mChoice of box.tile.characterStatTiles?.charactersCharacterStat?.multiChoice?.split(';');let j = index">
-                                <span *ngIf="choice?.characterStatChoiceId===+mChoice && box.tile.characterStatTiles?.charactersCharacterStat?.multiChoice?.split(';')?.length>1"
-                                      [style.font-size.px]="((box.config.sizey+box.config.sizex)*2) < 16 ? 18 : ((box.config.sizey+box.config.sizex)*2)"
-                                      [style.line-height.px]="((box.config.sizey+box.config.sizex)*2+5)  < 18 ? 20 : ((box.config.sizey+box.config.sizex)*2+5)">
-                                  {{choice.statChoiceValue}}
-
-                                </span>
-                                <span *ngIf="choice?.characterStatChoiceId===+mChoice && box.tile.characterStatTiles?.charactersCharacterStat?.multiChoice?.split(';')?.length<=1"
-                                      [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
-                                      [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
-                                  {{choice.statChoiceValue}}
-
-                                </span>
-                              </ng-container>
-                            </ng-container>
-                          </ng-container>
-                        </p>
-                        <ng-container *ngIf="!box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isMultiSelect">
-                          <p>
-                            <ng-container *ngFor="let choice of box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatChoices; let i = index">
-                              <span class="no-comma" *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isChoiceNumeric && i==0" [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
-                                    [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                              <span class="no-comma"
+                                    [style.font-size.px]="((box.config.sizey+box.config.sizex)*2) < 16 ? 18 : ((box.config.sizey+box.config.sizex)*2)"
+                                    [style.line-height.px]="((box.config.sizey+box.config.sizex)*2+5)  < 18 ? 20 : ((box.config.sizey+box.config.sizex)*2+5)">
                                 {{box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue}} {{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isMultiSelect ? box.tile.characterStatTiles?.charactersCharacterStat?.multiChoice?.length ? '/':'' :box.tile.characterStatTiles?.charactersCharacterStat?.choice?.length ? '/':''}}
 
                               </span>
+
                             </ng-container>
-                            <ng-container *ngFor="let choice of box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatChoices; let i = index">
-                              <span *ngIf="choice?.characterStatChoiceId===+box.tile.characterStatTiles?.charactersCharacterStat?.choice" [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
-                                    [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
-                                {{choice.statChoiceValue}}
-                              </span>
-                            </ng-container>
-                          </p>
-                        </ng-container>
-                        <!--<span *ngIf="choice?.characterStatChoiceId===+box.tile.characterStatTiles?.charactersCharacterStat?.choice" [style.font-size.px]="box.config.sizex*box.config.sizey*5+16" class="text-center-v">
-                            {{choice.statChoiceValue}}
-                        </span>-->
 
-                      </div>
+                            <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isMultiSelect">
+                              <ng-container *ngFor="let choice of box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatChoices; let i = index">
+                                <ng-container *ngFor="let mChoice of box.tile.characterStatTiles?.charactersCharacterStat?.multiChoice?.split(';');let j = index">
 
-                      <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.ValueSubValue" [style.font-size.px]="box.config.sizex*box.config.sizey*2+11" class="text-center-v">
+                                  <span *ngIf="choice?.characterStatChoiceId===+mChoice && box.tile.characterStatTiles?.charactersCharacterStat?.multiChoice?.split(';')?.length>1"
+                                        [style.font-size.px]="((box.config.sizey+box.config.sizex)*2) < 16 ? 18 : ((box.config.sizey+box.config.sizex)*2)"
+                                        [style.line-height.px]="((box.config.sizey+box.config.sizex)*2+5)  < 18 ? 20 : ((box.config.sizey+box.config.sizex)*2+5)">
+                                    {{choice.statChoiceValue}}
 
-                        {{box.tile.characterStatTiles?.charactersCharacterStat.value}} ({{box.tile.characterStatTiles?.charactersCharacterStat.subValue}})
-                      </span>
-                      <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.OnOff" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
-                        {{box.tile.characterStatTiles?.charactersCharacterStat?.onOff ? 'ON' : 'OFF'}}
-                      </span>
-                      <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.YesNo" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
-                        {{box.tile.characterStatTiles?.charactersCharacterStat?.yesNo ? 'YES' : 'NO'}}
-                      </span>
-                      <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Calculation" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
-                        {{box.tile.characterStatTiles?.charactersCharacterStat?.calculationResult}}
-                      </span>
-                      <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Command">
+                                  </span>
+                                  <span *ngIf="choice?.characterStatChoiceId===+mChoice && box.tile.characterStatTiles?.charactersCharacterStat?.multiChoice?.split(';')?.length<=1"
+                                        [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
+                                        [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                    {{choice.statChoiceValue}}
 
-                        <img *ngIf="(box.tile.characterStatTiles?.showTitle && box.tile?.characterStatTiles?.imageUrl) || !box.tile.characterStatTiles?.showTitle"
-                             [src]="box.tile?.characterStatTiles?.imageUrl" [alt]="box.tile?.characterStatTiles?.imageUrl"
-                             class="imgwidth" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">
+                                  </span>
 
-                        <span *ngIf="box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl" class="text-center-v"
-                              [ngStyle]="{'color': box.tile.characterStatTiles?.titleTextColor, 'background-color': box.tile.characterStatTiles?.titleBgColor}"
-                              popover="{{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.statName}}" triggers="hover"  container= "body"
-                              [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey"
-                              [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey"
-                              [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
-                          {{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.statName}}
-                        </span>
-
-                      </span>
-                      <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Combo" class="text-center-v" [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
-                        {{box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue}}
-                        <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.comboText"> / {{box.tile.characterStatTiles?.charactersCharacterStat?.comboText}}</span>
-                      </span>
-
-                      <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Toggle">
-                        <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.yesNo">
-                          <span [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v noselect">{{box.tile.characterStatTiles?.charactersCharacterStat?.isYes ? 'YES' : 'NO'}}</span>
-                        </ng-container>
-                        <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.onOff">
-                          <span [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v noselect">{{box.tile.characterStatTiles?.charactersCharacterStat?.isOn ? 'ON' : 'OFF'}}</span>
-                        </ng-container>
-                        <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.display">
-                          <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.showCheckbox" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v icon-Gen-Check noselect"></span>
-                          <span *ngIf="!box.tile.characterStatTiles?.charactersCharacterStat?.showCheckbox" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v icon-Gen-Uncheck noselect"></span>
-                        </ng-container>
-
-
-                        <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.isCustom">
-                          <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterCustomToggles?.length">
-                            <ng-container *ngFor="let toggleVal of box.tile.characterStatTiles?.charactersCharacterStat?.characterCustomToggles; let i = index">
-                              <ng-container *ngIf="toggleVal.initial">
-                                <ng-container *ngIf="toggleVal.toggleText">
-
-                                  <p class="noselect" [style.color]="box.tile.characterStatTiles.bodyTextColor"
-                                     [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
-                                    {{toggleVal.toggleText}}
-                                  </p>
-                                </ng-container>
-                                <ng-container *ngIf="toggleVal.image">
-                                  <img class="imgwidth" [src]="toggleVal.image" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
                                 </ng-container>
                               </ng-container>
+                            </ng-container>
+                          </p>
+                          <ng-container *ngIf="!box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isMultiSelect">
+                            <p>
+                              <ng-container *ngFor="let choice of box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatChoices; let i = index">
+                                <span class="no-comma" *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isChoiceNumeric && i==0" [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
+                                      [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                  {{box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue}} {{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.isMultiSelect ? box.tile.characterStatTiles?.charactersCharacterStat?.multiChoice?.length ? '/':'' :box.tile.characterStatTiles?.charactersCharacterStat?.choice?.length ? '/':''}}
 
+                                </span>
+                              </ng-container>
+                              <ng-container *ngFor="let choice of box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatChoices; let i = index">
+                                <span *ngIf="choice?.characterStatChoiceId===+box.tile.characterStatTiles?.charactersCharacterStat?.choice" [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
+                                      [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                  {{choice.statChoiceValue}}
+                                </span>
+                              </ng-container>
+                            </p>
+                          </ng-container>
+                          <!--<span *ngIf="choice?.characterStatChoiceId===+box.tile.characterStatTiles?.charactersCharacterStat?.choice" [style.font-size.px]="box.config.sizex*box.config.sizey*5+16" class="text-center-v">
+          {{choice.statChoiceValue}}
+      </span>-->
+
+                        </div>
+
+                        <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.ValueSubValue" [style.font-size.px]="box.config.sizex*box.config.sizey*2+11" class="text-center-v">
+
+                          {{box.tile.characterStatTiles?.charactersCharacterStat.value}} ({{box.tile.characterStatTiles?.charactersCharacterStat.subValue}})
+                        </span>
+                        <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.OnOff" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
+                          {{box.tile.characterStatTiles?.charactersCharacterStat?.onOff ? 'ON' : 'OFF'}}
+                        </span>
+                        <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.YesNo" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
+                          {{box.tile.characterStatTiles?.charactersCharacterStat?.yesNo ? 'YES' : 'NO'}}
+                        </span>
+                        <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Calculation" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v">
+                          {{box.tile.characterStatTiles?.charactersCharacterStat?.calculationResult}}
+                        </span>
+                        <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Command">
+
+                          <img *ngIf="(box.tile.characterStatTiles?.showTitle && box.tile?.characterStatTiles?.imageUrl) || !box.tile.characterStatTiles?.showTitle"
+                               [src]="box.tile?.characterStatTiles?.imageUrl" [alt]="box.tile?.characterStatTiles?.imageUrl"
+                               class="imgwidth" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-icons/d20.png';">
+
+                          <span *ngIf="box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl" class="text-center-v"
+                                [ngStyle]="{'color': box.tile.characterStatTiles?.titleTextColor, 'background-color': box.tile.characterStatTiles?.titleBgColor}"
+                                popover="{{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.statName}}" triggers="hover" container="body"
+                                [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey"
+                                [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey"
+                                [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
+                            {{box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.statName}}
+                          </span>
+
+                        </span>
+                        <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Combo" class="text-center-v" [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                          {{box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue}}
+                          <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.comboText"> / {{box.tile.characterStatTiles?.charactersCharacterStat?.comboText}}</span>
+                        </span>
+
+                        <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Toggle">
+                          <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.yesNo">
+                            <span [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v noselect">{{box.tile.characterStatTiles?.charactersCharacterStat?.isYes ? 'YES' : 'NO'}}</span>
+                          </ng-container>
+                          <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.onOff">
+                            <span [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v noselect">{{box.tile.characterStatTiles?.charactersCharacterStat?.isOn ? 'ON' : 'OFF'}}</span>
+                          </ng-container>
+                          <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.display">
+                            <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.showCheckbox" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v icon-Gen-Check noselect"></span>
+                            <span *ngIf="!box.tile.characterStatTiles?.charactersCharacterStat?.showCheckbox" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v icon-Gen-Uncheck noselect"></span>
+                          </ng-container>
+
+
+                          <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.isCustom">
+                            <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterCustomToggles?.length">
+                              <ng-container *ngFor="let toggleVal of box.tile.characterStatTiles?.charactersCharacterStat?.characterCustomToggles; let i = index">
+                                <ng-container *ngIf="toggleVal.initial">
+                                  <ng-container *ngIf="toggleVal.toggleText">
+
+                                    <p class="noselect" [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                                       [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                      {{toggleVal.toggleText}}
+                                    </p>
+                                  </ng-container>
+                                  <ng-container *ngIf="toggleVal.image">
+                                    <img class="imgwidth" [src]="toggleVal.image" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
+                                  </ng-container>
+                                </ng-container>
+
+                              </ng-container>
                             </ng-container>
                           </ng-container>
+
                         </ng-container>
 
-                      </ng-container>
+                        <div *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.LinkRecord">
 
-                      <div *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.LinkRecord">
+                          <img *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue && box.tile.characterStatTiles?.displayLinkImage" class="imgwidth" [src]="GetLinkRecordImage(box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue,box.tile.characterStatTiles?.charactersCharacterStat?.linkType)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
 
-                        <img *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue && box.tile.characterStatTiles?.displayLinkImage" class="imgwidth" [src]="GetLinkRecordImage(box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue,box.tile.characterStatTiles?.charactersCharacterStat?.linkType)" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
+                          <p [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                             [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 14 ? 16 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 14 ? 16 : box.config.sizex*4 ) "
+                             [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 18 ? 20 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 18 ? 20 : box.config.sizex*5 ) "
+                             *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue && !box.tile.characterStatTiles?.displayLinkImage">
+                            {{GetLinkRecordText(box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue,box.tile.characterStatTiles?.charactersCharacterStat?.linkType)}}
+                          </p>
 
-                        <p [style.color]="box.tile.characterStatTiles.bodyTextColor"
-                           [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 14 ? 16 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 14 ? 16 : box.config.sizex*4 ) "
-                           [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 18 ? 20 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 18 ? 20 : box.config.sizex*5 ) "
-                           *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue && !box.tile.characterStatTiles?.displayLinkImage">
-                          {{GetLinkRecordText(box.tile.characterStatTiles?.charactersCharacterStat?.defaultValue,box.tile.characterStatTiles?.charactersCharacterStat?.linkType)}}
-                        </p>
-
-                      </div>
-                      <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Condition">
-                        <p [style.color]="box.tile.characterStatTiles.bodyTextColor"
-                           [style.font-size.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*4 <= 14 ? 16 : box.config.sizey*4 ) :  (box.config.sizex*4 <= 14 ? 16 : box.config.sizex*4 ) "
-                           [style.line-height.px]="box.config.sizex > box.config.sizey ? (box.config.sizey*5 <= 18 ? 20 : box.config.sizey*5 ) :  (box.config.sizex*5 <= 18 ? 20 : box.config.sizex*5 ) ">
-                          {{box.tile.characterStatTiles?.charactersCharacterStat?.text}}
-                        </p>
-                      </ng-container>
+                        </div>
+                        <ng-container *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Condition">
+                          <span class="text-center-v" [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                               [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
+                               [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                            {{box.tile.characterStatTiles?.charactersCharacterStat?.text}}
+                          </span>
+                        </ng-container>
                     </div>
                   </div>
 
@@ -531,7 +533,11 @@
                   </h5>
 
                   <div class="tile-body">
-                    <span class="text-center-v" [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)" [style.color]="box.tile.textTiles.bodyTextColor" [style.background-color]="box.tile.textTiles.bodyBgColor">
+                    <span class="text-center-v"
+                          [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
+                          [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)"
+                          [style.color]="box.tile.textTiles.bodyTextColor"
+                          [style.background-color]="box.tile.textTiles.bodyBgColor">
                       {{box.tile.textTiles?.displaytext ? box.tile.textTiles?.displaytext : box.tile.textTiles?.text}}
                     </span>
                   </div>

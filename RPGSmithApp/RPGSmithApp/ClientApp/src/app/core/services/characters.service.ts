@@ -38,6 +38,9 @@ export class CharactersService extends EndpointFactory {
   private readonly getCharactersByIdDiceApi: string = this.configurations.baseUrl + "/api/Character/GetCharactersByIdDice";
 
   private readonly _getPlayerControlsByCharacterIdUrl: string = "/api/campaign/getPlayerControlsByCharacterId";
+  private readonly _IsGmAccessingPlayerCharacterUrl: string = "/api/campaign/isGmAccessingPlayerCharacterUrl";
+  private readonly _updatePublicPrivateRollUrl: string = "/api/Character/UpdatePublicPrivateRoll";
+  private readonly _leaveChatUrl: string = "/api/chat/leaveChat";
 
   get getUrl() { return this.configurations.baseUrl + this._getUrl; }
   get createUrl() { return this.configurations.baseUrl + this._createUrl; }
@@ -52,7 +55,10 @@ export class CharactersService extends EndpointFactory {
   get uploadImgBlobUrl() { return this.configurations.baseUrl + this._uploadImgBlobUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
 
-  get playerControlsUrl() { return this.configurations.baseUrl + this._getPlayerControlsByCharacterIdUrl; } 
+  get playerControlsUrl() { return this.configurations.baseUrl + this._getPlayerControlsByCharacterIdUrl; }
+  get IsGmAccessingPlayerCharacterUrl() { return this.configurations.baseUrl + this._IsGmAccessingPlayerCharacterUrl; }
+  get updatePublicPrivateRollUrl() { return this.configurations.baseUrl + this._updatePublicPrivateRollUrl; }
+  get leaveChatUrl() { return this.configurations.baseUrl + this._leaveChatUrl; }
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
     private fileUploadService: FileUploadService) {
@@ -213,6 +219,28 @@ export class CharactersService extends EndpointFactory {
     return this.http.get(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getPlayerControlsByCharacterId(characterId));
+      });
+  }
+  getIsGmAccessingPlayerCharacter(characterId: number) {
+    let endpointUrl = `${this.IsGmAccessingPlayerCharacterUrl}?characterID=${characterId}`;
+    return this.http.get(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getIsGmAccessingPlayerCharacter(characterId));
+      });
+  }
+
+  updatePublicPrivateRoll(isPublic: boolean, isCharacter: boolean, recordId: number) {
+    let endpointUrl = `${this.updatePublicPrivateRollUrl}?isPublic=${isPublic}&isCharacter=${isCharacter}&recordId=${recordId}`;
+    return this.http.get(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.updatePublicPrivateRoll(isPublic, isCharacter, recordId));
+      });
+  }
+  leaveChat(chatConnectonID:string) {
+    let endpointUrl = `${this.leaveChatUrl}?chatConnectonID=${chatConnectonID}`;
+    return this.http.get(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.leaveChat(chatConnectonID));
       });
   }
 }

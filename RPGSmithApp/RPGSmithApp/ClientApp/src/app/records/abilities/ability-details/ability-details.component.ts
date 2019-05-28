@@ -33,7 +33,7 @@ export class AbilityDetailsComponent implements OnInit {
     ruleSetId: number;
     bsModalRef: BsModalRef;
     AbilityDetail: any = new Ability();
-
+  IsGm: boolean = false;
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -66,6 +66,9 @@ export class AbilityDetailsComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
+          if (user.isGm) {
+            this.IsGm = user.isGm;            
+          }
             this.isLoading = true;
             this.abilityService.getAbilityById<any>(this.abilityId)
               .subscribe(data => {

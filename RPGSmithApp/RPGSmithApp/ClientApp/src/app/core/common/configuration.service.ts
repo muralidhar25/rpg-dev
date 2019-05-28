@@ -28,10 +28,12 @@ type UserConfiguration = {
 export class ConfigurationService {
 
   public static readonly appVersion: string = "2.5.3";
+  
 
   public useMockdata = environment.useMockdata;
 
   public baseUrl = environment.baseUrl || Utilities.baseUrl();
+  public static readonly appbaseUrl: string = environment.baseUrl || Utilities.baseUrl();
   public loginUrl = environment.loginUrl;
   public appVersion = environment.appVersion;
   public appBuildNo = environment.appBuildNo;

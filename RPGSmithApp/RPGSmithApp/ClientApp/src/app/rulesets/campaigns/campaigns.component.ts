@@ -193,8 +193,10 @@ export class CampaignsComponent implements OnInit {
   }
 
   manageRuleset(ruleset: Ruleset) {
+    
     let id = ruleset.ruleSetId;
-    this.router.navigate(['/ruleset/campaign-details/'+ id]);
+    this.setRulesetId(id);
+    this.router.navigate(['/ruleset/campaign-details/' + id]);
   }
   private setRulesetId(rulesetId: number) {
     this.localStorage.deleteData(DBkeys.RULESET_ID);

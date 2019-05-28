@@ -20,7 +20,7 @@ namespace DAL.Services
         Task<bool> CheckDuplicate(string value, int? characterId, int? Id = 0);
         void SetDefaultPage(int Id,int PageId);
         void UpdateSortOrder(List<SortOrderEditModel> sortOrderList);
-        void UpdateDefaultLayout(int layoutId);
+        void UpdateDefaultLayout(int layoutId,int characterID=0);
         void UpdateDefaultLayoutPage(int layoutId, int pageId);
     }
 }

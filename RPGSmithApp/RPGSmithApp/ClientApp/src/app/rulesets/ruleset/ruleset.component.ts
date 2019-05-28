@@ -202,7 +202,8 @@ export class RulesetComponent implements OnInit, OnDestroy {
 
   manageRuleset(ruleset: Ruleset) {
 
-      let id = ruleset.ruleSetId;
+    let id = ruleset.ruleSetId;
+    this.setRulesetId(id);
     this.router.navigate(['/ruleset/ruleset-details/' + id]);
 
 

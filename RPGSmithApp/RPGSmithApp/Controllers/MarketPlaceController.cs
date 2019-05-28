@@ -95,11 +95,12 @@ namespace RPGSmithApp.Controllers
                     {
                         CustomerId = customer.Id,
                         Items = items,
+                        TrialPeriodDays= _stripeConfig.TrialPeriodDays,
                     };
                     var SubsService = new SubscriptionService();
                     Subscription subscription = SubsService.Create(Subsoptions);
                     paymentSuccess = true;
-                    if (subscription.Status == "active")
+                    if (subscription.Status == SubscriptionStatuses.Trialing || subscription.Status == SubscriptionStatuses.Active)
                     {
                         UpdateUser_GmFor1Year(customer.Id, subscription.Id,subscription.CurrentPeriodEnd);
                         updateUserDetailSuccess = true;

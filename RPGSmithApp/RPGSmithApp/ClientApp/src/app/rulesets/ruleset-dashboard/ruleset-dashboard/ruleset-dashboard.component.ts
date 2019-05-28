@@ -40,6 +40,7 @@ import { RulesetTile } from "../../../core/models/tiles/ruleset-tile.model";
 import { AppService1 } from "../../../app.service";
 import { PlatformLocation } from "@angular/common";
 import { HeaderValues } from "../../../core/models/headers.model";
+import { Characters } from "../../../core/models/view-models/characters.model";
 
 @Component({
     selector: 'app-ruleset-dashboard',
@@ -167,7 +168,7 @@ export class RulesetDashboardComponent implements OnInit {
     preventClick: boolean = false;
     private currentGridItems: NgGridItemEvent[] = [];
   headers: HeaderValues = new HeaderValues();
-
+  IsGm: boolean = false;
 
     constructor(
         private router: Router, private alertService: AlertService, private authService: AuthService, private sharedService: SharedService,
@@ -347,7 +348,8 @@ export class RulesetDashboardComponent implements OnInit {
             this.pageId = this.localStorage.localStorageGetItem('rPageID')
             this.localStorage.localStorageSetItem('rPageID', null);
             this.LayoutId = this.localStorage.localStorageGetItem('rLayoutID')
-            this.localStorage.localStorageSetItem('rLayoutID', null);
+          this.localStorage.localStorageSetItem('rLayoutID', null);
+          this.appService.updateToggleChatParticipantList(true);
       });
       window.addEventListener("resize", () => {
         // Get screen size (inner/outerWidth, inner/outerHeight)
@@ -434,6 +436,8 @@ export class RulesetDashboardComponent implements OnInit {
         //        this.boxes = this.mapBoxes(this.tiles);
         //    }, 10);
         //}
+
+    
     }
 
   private initialize(IsInitialLoad) {
@@ -442,6 +446,9 @@ export class RulesetDashboardComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
+          if (user.isGm) {
+            this.IsGm = user.isGm;
+          }
           this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
           if (this.headers) {
             if (this.headers.headerId && this.headers.headerLink == 'ruleset') {
@@ -705,14 +712,17 @@ export class RulesetDashboardComponent implements OnInit {
     }
 
     openDiceRollModal() {
-        this.bsModalRef = this.modalService.show(DiceRollComponent, {
-            class: 'modal-primary modal-md',
-            ignoreBackdropClick: true,
-            keyboard: false
-        });
-        this.bsModalRef.content.title = "Dice";
-        this.bsModalRef.content.rulesetId = this.ruleSetId;
-        this.bsModalRef.content.ruleset = this.ruleset;
+      this.bsModalRef = this.modalService.show(DiceRollComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = "Dice";
+      this.bsModalRef.content.characterId = 0;
+      this.bsModalRef.content.character = new Characters();
+      this.bsModalRef.content.recordName = this.rulesetModel.ruleSetName;
+      this.bsModalRef.content.recordImage = this.rulesetModel.imageUrl;
+      this.bsModalRef.content.isFromCampaignDetail = true;
     }
 
     manageIcon(id: number) {

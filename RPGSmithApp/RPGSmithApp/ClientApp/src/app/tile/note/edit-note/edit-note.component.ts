@@ -19,7 +19,8 @@ export class EditNoteComponent implements OnInit {
     characterId: number;
     pageId: number;
     pageDefaultData = new CharacterDashboardPage();
-    options: Object = Utilities.options;
+  options: Object = Utilities.options;
+  isSharedLayout: boolean = false;
 
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private location: PlatformLocation) {
     // closes modal when back button is clicked
@@ -32,7 +33,8 @@ export class EditNoteComponent implements OnInit {
             this.noteFormModel = this.bsModalRef.content.noteTile;
             this.characterId = this.bsModalRef.content.characterId;
             this.pageId = this.bsModalRef.content.pageId;
-            this.pageDefaultData = this.bsModalRef.content.pageDefaultData;
+          this.pageDefaultData = this.bsModalRef.content.pageDefaultData;
+          this.isSharedLayout = this.bsModalRef.content.isSharedLayout;
         }, 0);
     }
 

@@ -30,6 +30,7 @@ import { MarketPlaceService } from '../../core/services/maketplace.service';
 import { HandoutuploadComponent } from '../../shared/handouts/handout-upload/handoutupload.component';
 import { DiceRollComponent } from '../../shared/dice/dice-roll/dice-roll.component';
 import { Characters } from '../../core/models/view-models/characters.model';
+import { ChatParticipantStatus } from '../../ng-chat/core/chat-participant-status.enum';
  
 @Component({
   selector: 'app-campaign-details',
@@ -54,7 +55,7 @@ export class CampaignDetailsComponent implements OnInit {
   declinedUserList: playerInviteListModel[] = [];
   GmCharacterSlotsCount: number = 0;
   character: Characters = new Characters();
-
+  CurrentlyOnlinePlayersCount: number=0;
   constructor(private formBuilder: FormBuilder, private router: Router, private localStorage: LocalStoreManager, private marketPlaceService: MarketPlaceService,
     private rulesetService: RulesetService, private sharedService: SharedService, private authService: AuthService,
     private modalService: BsModalService, public appService: AppService1, public campaignService: CampaignService,
@@ -69,6 +70,27 @@ export class CampaignDetailsComponent implements OnInit {
 
       if (serviceJson) {
         this.initialize();
+      }
+    })
+    this.appService.shouldUpdateChatCurrentParticipants().subscribe(serviceJson => {
+      this.CurrentlyOnlinePlayersCount = 0;
+      if (serviceJson) {        
+        if (serviceJson.length) {
+          
+          let participants = serviceJson.filter(x => !x.chattingTo);
+          participants.map((x) => {
+            this.invitedUsers.filter(z => z.playerCharacterId == x.characterID).map((s: any) => {
+              if (x.status == ChatParticipantStatus.Online) {
+                s.isConnected = true;
+              }
+              else {
+                s.isConnected = false;
+              }
+            })
+          })
+          this.CurrentlyOnlinePlayersCount = participants.filter(x => x.status == ChatParticipantStatus.Online).length;
+        }
+        
       }
     })
    
@@ -122,7 +144,7 @@ export class CampaignDetailsComponent implements OnInit {
             this.GmCharacterSlotsCount = this.invitedUsers.filter(x => !x.inviteId).length;
             this.declinedUserList = this.invitedUsers.filter(x => x.isDeclined);
             this.invitedUsers = this.invitedUsers.filter(x => !x.isDeclined );
-            console.log(this.invitedUsers);
+            //console.log(this.invitedUsers);
             let names = '';
             this.invitedUsers.map((x: playerInviteListModel,index) => {
               x.showIcon = false;
@@ -309,7 +331,7 @@ export class CampaignDetailsComponent implements OnInit {
     }
   }
   invitePlayer() {
-    console.log('Player invite process');
+    //console.log('Player invite process');
     this.bsModalRef = this.modalService.show(InvitePlayerComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -366,7 +388,7 @@ export class CampaignDetailsComponent implements OnInit {
   }
 
   cancleInvite(index, invite) {
-    console.log('here is cancle invit clicked');
+    //console.log('here is cancle invit clicked');
     this.campaignService.cancelInvite<any>(invite.inviteId)
       .subscribe(data => {       
         this.isLoading = false;
@@ -427,7 +449,8 @@ export class CampaignDetailsComponent implements OnInit {
   refreshCampaign() {
     this.initialize();
   }
-  goToCharacter(characterID:number) {
+  goToCharacter(characterID: number) {
+    this.localStorage.localStorageSetItem(DBkeys.IsCharacterOpenedFromCampaign, true);
     this.router.navigate(['/character/dashboard', characterID]);
   }
   BuyPlayerSlot() {   
@@ -570,10 +593,18 @@ export class CampaignDetailsComponent implements OnInit {
     this.bsModalRef.content.title = "Dice";
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.character = this.character;
-    this.bsModalRef.content.recordName = null;
-    this.bsModalRef.content.recordImage = null;
+    this.bsModalRef.content.recordName = this.rulesetModel.ruleSetName;
+    this.bsModalRef.content.recordImage = this.rulesetModel.imageUrl;
     this.bsModalRef.content.isFromCampaignDetail = true;
   }
  
+  GetAcceptedPlayersCount(): number {
+    
+    return this.invitedUsers.filter(x => x.isAccepted).length;
+  }
+  dashboard(ruleset: Ruleset) {
+    this.rulesetService.ruleset = ruleset;
+    this.router.navigate(['/ruleset/campaign-dashboard', ruleset.ruleSetId]);
+  }
   
 }

@@ -18,6 +18,8 @@ import { AddAbilitiesComponent } from "./add-abilities/add-abilities.component";
 import { Ability } from "../../core/models/view-models/ability.model";
 import { Ruleset } from "../../core/models/view-models/ruleset.model";
 import { AppService1 } from "../../app.service";
+import { DiceRollComponent } from "../../shared/dice/dice-roll/dice-roll.component";
+import { Characters } from "../../core/models/view-models/characters.model";
 
 @Component({
     selector: 'app-abilities',
@@ -46,6 +48,7 @@ export class AbilitiesComponent implements OnInit {
     pageSize: number = 28;
     offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
+  IsGm: boolean = false;
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -85,6 +88,7 @@ export class AbilitiesComponent implements OnInit {
             this.authService.logout();
         else {
           if (user.isGm) {
+            this.IsGm = user.isGm;
             this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
           }
             this.isLoading = true;
@@ -447,5 +451,20 @@ export class AbilitiesComponent implements OnInit {
       this.localStorage.deleteData(DBkeys.HEADER_VALUE);
       this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
     } catch (err) { }
+  }
+
+  openDiceRollModal() {
+    
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });    
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.recordName = this.rulesetModel.ruleSetName;
+    this.bsModalRef.content.recordImage = this.rulesetModel.imageUrl;
+    this.bsModalRef.content.isFromCampaignDetail = true;
   }
 }

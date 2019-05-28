@@ -39,7 +39,7 @@ export class RulesetEditCharacterStatComponent implements OnInit {
     Ruleset: Ruleset;
     Character: Characters;
     CharacterID: number;
-    CharacterStatTile: CharacterStatTile;
+    CharacterStatTile: any;
     CharacterStatTypeID: number;
     CharacterStatTypeDesc: string;
     title: string;
@@ -64,10 +64,12 @@ export class RulesetEditCharacterStatComponent implements OnInit {
     defValValueSubValue: valSubVal;
     defaultCharacterStats: any;
     tile: any;
-    charactersCharacterStat: CharactersCharacterStat;
+  charactersCharacterStat: CharactersCharacterStat;
+  CharacterStat: any;
     pageId: number;
     pageDefaultData = new RulesetDashboardPage();
-    showRichEditor: boolean = false;
+  showRichEditor: boolean = false;
+  isFromCampaignDetail: boolean = true;
 
     options(placeholder?: string, initOnClick?: boolean): Object {
         return Utilities.optionsFloala(200, placeholder, initOnClick);
@@ -81,89 +83,113 @@ export class RulesetEditCharacterStatComponent implements OnInit {
     }
 
     ngOnInit() {
-
+      debugger
         setTimeout(() => {
             if (this.rulesetId == undefined)
                 this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 
             this.tile = this.bsModalRef.content.tile;
-            this.CharacterStatTile = this.bsModalRef.content.characterStatTile;
-            this.Character = this.CharacterStatTile.charactersCharacterStat.character
-            this.CharacterID = this.CharacterStatTile.charactersCharacterStat.character.characterId
-            this.defaultCharacterStats = this.CharacterStatTile.charactersCharacterStat.character.charactersCharacterStats;
+          this.CharacterStatTile = this.bsModalRef.content.characterStatTile;
+          this.isFromCampaignDetail = this.bsModalRef.content.isFromCampaignDetail;
+            //this.Character = this.CharacterStatTile.charactersCharacterStat.character
+            //this.CharacterID = this.CharacterStatTile.charactersCharacterStat.character.characterId
+            //this.defaultCharacterStats = this.CharacterStatTile.charactersCharacterStat.character.charactersCharacterStats;
 
-            this.pageId = this.bsModalRef.content.pageId;
-            this.pageDefaultData = this.bsModalRef.content.pageDefaultData;
+            //this.pageId = this.bsModalRef.content.pageId;
+            //this.pageDefaultData = this.bsModalRef.content.pageDefaultData;
 
             this.Initialize();
         }, 0);
     }
-    private Initialize(CharacterStatTypeID?: number) {
-        this.charactersCharacterStat = this.CharacterStatTile.charactersCharacterStat;
-        this.selectedChoiceId = +this.charactersCharacterStat.choice;
-        let characterStat: CharacterStats = this.charactersCharacterStat.characterStat;
+  private Initialize(CharacterStatTypeID?: number) {
+      debugger
+        //this.charactersCharacterStat = this.CharacterStatTile.charactersCharacterStat;
+        //this.selectedChoiceId = +this.charactersCharacterStat.choice;
+    let characterStat: CharacterStats = this.CharacterStatTile.characterStat;
+    this.CharacterStat = characterStat;
         this.title = characterStat.statName ? characterStat.statName : '';
         this.CharacterStatTypeID = characterStat.characterStatTypeId;
         this.CharacterStatTypeDesc = characterStat.statDesc;
-        
+
+    let defaultValue1 = '';
+    let defaultValue2 = '';
+    if (this.CharacterStat.characterStatDefaultValues) {
+      if (this.CharacterStat.characterStatDefaultValues.length) {
+        defaultValue1 = this.CharacterStat.characterStatDefaultValues[0].defaultValue ? this.CharacterStat.characterStatDefaultValues[0].defaultValue:'';
+      }
+      if (this.CharacterStat.characterStatDefaultValues.length>1) {
+        defaultValue2 = this.CharacterStat.characterStatDefaultValues[1].defaultValue ? this.CharacterStat.characterStatDefaultValues[1].defaultValue : '';
+      }
+    }
+
         switch (this.CharacterStatTypeID) {
             case STAT_TYPE.Text:
-                this.valText = this.charactersCharacterStat.text;
+            this.valText = defaultValue1//this.charactersCharacterStat.text;
                 break;
             case STAT_TYPE.RichText:
-                this.valRichText = this.charactersCharacterStat.richText;
+            this.valRichText = defaultValue1// this.charactersCharacterStat.richText;
                 break;
             case STAT_TYPE.Number:
-                this.valNumber = this.charactersCharacterStat.number.toString();
-                this.defValNumber = this.charactersCharacterStat.number.toString();
+            this.valNumber = defaultValue1//this.charactersCharacterStat.number.toString();
+            this.defValNumber = defaultValue2//this.charactersCharacterStat.number.toString();
                 break;
             case STAT_TYPE.CurrentMax:
-                let rescurrentMax: currentMax = { current: this.charactersCharacterStat.current.toString(), max: this.charactersCharacterStat.maximum.toString() };
+            let rescurrentMax: currentMax = { current: defaultValue1.toString(), max: defaultValue2.toString() };
                 this.valCurrentMax = Object.assign({}, rescurrentMax);
                 this.defValCurrentMax = Object.assign({}, rescurrentMax);
                 break;
             case STAT_TYPE.Choice:
-                if (characterStat.isMultiSelect) {
-                    let tempIds: number[] = [];
-                    this.charactersCharacterStat.multiChoice.split(';').map((item) => {
-                        tempIds.push(parseInt(item));
-                    })
-                    characterStat.characterStatChoices.map((item) => {
-                        this.valChoices.push({ key: item.characterStatChoiceId, value: item.statChoiceValue, selected: tempIds.indexOf(item.characterStatChoiceId) > -1, isMultiSelect: true })
-                    })
-                }
-                else {
-                    let tempId: number = +this.charactersCharacterStat.choice;
-                    characterStat.characterStatChoices.map((item) => {
-                        this.valChoices.push({ key: item.characterStatChoiceId, value: item.statChoiceValue, selected: tempId == item.characterStatChoiceId, isMultiSelect: false })
-                    })
-                }
+                //if (characterStat.isMultiSelect) {
+                //    let tempIds: number[] = [];
+                //    this.charactersCharacterStat.multiChoice.split(';').map((item) => {
+                //        tempIds.push(parseInt(item));
+                //    })
+                //    characterStat.characterStatChoices.map((item) => {
+                //        this.valChoices.push({ key: item.characterStatChoiceId, value: item.statChoiceValue, selected: tempIds.indexOf(item.characterStatChoiceId) > -1, isMultiSelect: true })
+                //    })
+                //}
+                //else {
+                //    let tempId: number = +this.charactersCharacterStat.choice;
+                //    characterStat.characterStatChoices.map((item) => {
+                //        this.valChoices.push({ key: item.characterStatChoiceId, value: item.statChoiceValue, selected: tempId == item.characterStatChoiceId, isMultiSelect: false })
+                //    })
+                //}
                 break;
             case STAT_TYPE.ValueSubValue:
-                let resvalSubVal: valSubVal = { value: this.charactersCharacterStat.value.toString(), subValue: this.charactersCharacterStat.subValue.toString() };
+            let resvalSubVal: valSubVal = { value: defaultValue1.toString(), subValue: defaultValue2.toString() };
                 this.valValueSubValue = Object.assign({}, resvalSubVal);
                 this.defValValueSubValue = Object.assign({}, resvalSubVal);
                 break;
-            case STAT_TYPE.OnOff:
-                this.valOnOff = this.charactersCharacterStat.onOff;
-                break;
-            case STAT_TYPE.YesNo:
-                this.valYesNo = this.charactersCharacterStat.yesNo;
-                break;
+            //case STAT_TYPE.OnOff:
+            //this.valOnOff = defaultValue1;
+            //    break;
+            //case STAT_TYPE.YesNo:
+            //this.valYesNo = defaultValue1;
+            //    break;
             case STAT_TYPE.Calculation:
-                this.valCalculationResult = this.charactersCharacterStat.calculationResult.toString();
-                this.valCalculationFormula = characterStat.characterStatCalcs[0].statCalculation;
+            this.valCalculationResult = "";//this.charactersCharacterStat.calculationResult.toString();
+            this.valCalculationFormula = this.CharacterStat.characterStatCalcs[0].statCalculation;
                 break;
             case STAT_TYPE.Command:
-                this.valCommand = this.charactersCharacterStat.command;
+            this.valCommand = defaultValue1;
                 break;
             case STAT_TYPE.Toggle:
-                this.valToggle = this.charactersCharacterStat.toggle;
+            this.valToggle = defaultValue1;
                 break;
-            case STAT_TYPE.Combo:
-                this.valNumber = this.charactersCharacterStat.defaultValue.toString();
-                this.defValNumber = this.charactersCharacterStat.defaultValue.toString();
-                this.valText = this.charactersCharacterStat.comboText.toString();
+          case STAT_TYPE.Combo:
+            let defaultValueNum = '';
+            let defaultValueText = '';
+            if (this.CharacterStat.characterStatCombos) {
+              
+              defaultValueNum = this.CharacterStat.characterStatCombos.defaultValue;
+              
+              
+              defaultValueText = this.CharacterStat.characterStatCombos.defaultText ? this.CharacterStat.characterStatCombos.defaultText : '';
+              
+            }
+            this.valNumber = defaultValueNum;
+            this.defValNumber = defaultValueNum;
+            this.valText = defaultValueText;
                 break;
         }
         //this.textItems = [
@@ -175,124 +201,124 @@ export class RulesetEditCharacterStatComponent implements OnInit {
         //];
     }
 
-    saveStat(characterStatTypeId: number) {
-        let charactersCharacterStat: CharactersCharacterStat = this.CharacterStatTile.charactersCharacterStat;
-        switch (characterStatTypeId) {
-            case STAT_TYPE.Text:
-                charactersCharacterStat.text = this.valText;
-                this.updateStatService(charactersCharacterStat);
-                break;
-            case STAT_TYPE.RichText:
-                charactersCharacterStat.richText = this.valRichText;
-                this.updateStatService(charactersCharacterStat);
-                break;
-            case STAT_TYPE.Number:
-                charactersCharacterStat.number = +this.valNumber;
-                this.updateStatService(charactersCharacterStat);
-                break;
-            case STAT_TYPE.CurrentMax:
-                charactersCharacterStat.current = +this.valCurrentMax.current;
-                charactersCharacterStat.maximum = +this.valCurrentMax.max;
-                this.updateStatService(charactersCharacterStat);
-                break;
-            case STAT_TYPE.Choice:
-                if (this.charactersCharacterStat.characterStat.isMultiSelect) {
-                    let _multiChoice = '';
-                    this.valChoices.map((val, index) => {
-                        if (val.selected && val.isMultiSelect) {
-                            let _seperator = (_multiChoice === '') ? '' : ';';
-                            _multiChoice += _seperator + val.key;
-                        }
-                    });
-                    charactersCharacterStat.multiChoice = _multiChoice;
-                } else {
-                    charactersCharacterStat.choice = this.selectedChoiceId.toString();
-                }
-                this.updateStatService(charactersCharacterStat);
-                break;
-            case STAT_TYPE.ValueSubValue:
-                charactersCharacterStat.value = +this.valValueSubValue.value;
-                charactersCharacterStat.subValue = +this.valValueSubValue.subValue;
-                this.updateStatService(charactersCharacterStat);
-                break;
-            case STAT_TYPE.OnOff:
-                charactersCharacterStat.onOff = this.valOnOff;
-                this.updateStatService(charactersCharacterStat);
-                break;
-            case STAT_TYPE.YesNo:
-                charactersCharacterStat.yesNo = this.valYesNo;
-                this.updateStatService(charactersCharacterStat);
-                break;
-            case STAT_TYPE.Calculation:
-                break;
-            case STAT_TYPE.Command:
-                break;
-            case STAT_TYPE.Toggle:
-                break;
-            case STAT_TYPE.Combo:
-                charactersCharacterStat.defaultValue = +this.valNumber;
-                charactersCharacterStat.comboText = this.valText;
-                this.updateStatService(charactersCharacterStat);
-                break;
-        }
-    }
+    //saveStat(characterStatTypeId: number) {
+    //    let charactersCharacterStat: CharactersCharacterStat = this.CharacterStatTile.charactersCharacterStat;
+    //    switch (characterStatTypeId) {
+    //        case STAT_TYPE.Text:
+    //            charactersCharacterStat.text = this.valText;
+    //            this.updateStatService(charactersCharacterStat);
+    //            break;
+    //        case STAT_TYPE.RichText:
+    //            charactersCharacterStat.richText = this.valRichText;
+    //            this.updateStatService(charactersCharacterStat);
+    //            break;
+    //        case STAT_TYPE.Number:
+    //            charactersCharacterStat.number = +this.valNumber;
+    //            this.updateStatService(charactersCharacterStat);
+    //            break;
+    //        case STAT_TYPE.CurrentMax:
+    //            charactersCharacterStat.current = +this.valCurrentMax.current;
+    //            charactersCharacterStat.maximum = +this.valCurrentMax.max;
+    //            this.updateStatService(charactersCharacterStat);
+    //            break;
+    //        case STAT_TYPE.Choice:
+    //            if (this.charactersCharacterStat.characterStat.isMultiSelect) {
+    //                let _multiChoice = '';
+    //                this.valChoices.map((val, index) => {
+    //                    if (val.selected && val.isMultiSelect) {
+    //                        let _seperator = (_multiChoice === '') ? '' : ';';
+    //                        _multiChoice += _seperator + val.key;
+    //                    }
+    //                });
+    //                charactersCharacterStat.multiChoice = _multiChoice;
+    //            } else {
+    //                charactersCharacterStat.choice = this.selectedChoiceId.toString();
+    //            }
+    //            this.updateStatService(charactersCharacterStat);
+    //            break;
+    //        case STAT_TYPE.ValueSubValue:
+    //            charactersCharacterStat.value = +this.valValueSubValue.value;
+    //            charactersCharacterStat.subValue = +this.valValueSubValue.subValue;
+    //            this.updateStatService(charactersCharacterStat);
+    //            break;
+    //        case STAT_TYPE.OnOff:
+    //            charactersCharacterStat.onOff = this.valOnOff;
+    //            this.updateStatService(charactersCharacterStat);
+    //            break;
+    //        case STAT_TYPE.YesNo:
+    //            charactersCharacterStat.yesNo = this.valYesNo;
+    //            this.updateStatService(charactersCharacterStat);
+    //            break;
+    //        case STAT_TYPE.Calculation:
+    //            break;
+    //        case STAT_TYPE.Command:
+    //            break;
+    //        case STAT_TYPE.Toggle:
+    //            break;
+    //        case STAT_TYPE.Combo:
+    //            charactersCharacterStat.defaultValue = +this.valNumber;
+    //            charactersCharacterStat.comboText = this.valText;
+    //            this.updateStatService(charactersCharacterStat);
+    //            break;
+    //  }      
+    //}
 
-    private updateStatService(charactersCharacterStat: CharactersCharacterStat) {
-        this.CCService.updateCharactersCharacterStat(charactersCharacterStat).subscribe(
-            data => {
-                //this.CharacterStatTile.charactersCharacterStat
-                //    = Object.assign(this.CharacterStatTile.charactersCharacterStat, charactersCharacterStat);
-                this.alertService.stopLoadingMessage();
-                this.alertService.showMessage("Character stat has been saved successfully.", "", MessageSeverity.success);
-                this.sharedService.updateCharacterList(true);
-                this.close(true);
-            },
-            error => {
-                this.alertService.stopLoadingMessage();
-                let _message = "Unable to Save";
-                let Errors = Utilities.ErrorDetail(_message, error);
-                if (Errors.sessionExpire) {
-                    //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-                    this.authService.logout(true);
-                }
-                else
-                    this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-            },
-        )
-    }
+    //private updateStatService(charactersCharacterStat: CharactersCharacterStat) {
+    //    this.CCService.updateCharactersCharacterStat(charactersCharacterStat).subscribe(
+    //        data => {
+    //            //this.CharacterStatTile.charactersCharacterStat
+    //            //    = Object.assign(this.CharacterStatTile.charactersCharacterStat, charactersCharacterStat);
+    //            this.alertService.stopLoadingMessage();
+    //            this.alertService.showMessage("Character stat has been saved successfully.", "", MessageSeverity.success);
+    //          this.sharedService.updateShareLayout(true);
+    //            this.close(true);
+    //        },
+    //        error => {
+    //            this.alertService.stopLoadingMessage();
+    //            let _message = "Unable to Save";
+    //            let Errors = Utilities.ErrorDetail(_message, error);
+    //            if (Errors.sessionExpire) {
+    //                //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+    //                this.authService.logout(true);
+    //            }
+    //            else
+    //                this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+    //        },
+    //    )
+    //}
 
-    onChange(statTypeId:number, value: any, event?: any) {
-        switch (statTypeId) {
-            case STAT_TYPE.Text: this.valText = value; break;
-            case STAT_TYPE.RichText:
-                break;
-            case STAT_TYPE.Number:
-                break;
-            case STAT_TYPE.CurrentMax:
-                break;
-            case STAT_TYPE.Choice:
-                let choice = value;
-                if (!choice.isMultiSelect) {
-                    this.valChoices.map((val) => {
-                        val.selected = false;
-                    });
-                } 
-                choice.selected = event.target.checked;
-                this.selectedChoiceId = event.target.checked ? choice.key : undefined;
-                break;
-            case STAT_TYPE.ValueSubValue:
-                break;
-            case STAT_TYPE.OnOff: this.valOnOff = value; break;
-            case STAT_TYPE.YesNo: this.valYesNo = value; break;
-            case STAT_TYPE.Calculation:
-                break;
-            case STAT_TYPE.Command:
-                break;
-            case STAT_TYPE.Toggle:
-                break;
-            case STAT_TYPE.Combo: this.valText = value; break;
-        }
-    }
+    //onChange(statTypeId:number, value: any, event?: any) {
+    //    switch (statTypeId) {
+    //        case STAT_TYPE.Text: this.valText = value; break;
+    //        case STAT_TYPE.RichText:
+    //            break;
+    //        case STAT_TYPE.Number:
+    //            break;
+    //        case STAT_TYPE.CurrentMax:
+    //            break;
+    //        case STAT_TYPE.Choice:
+    //            let choice = value;
+    //            if (!choice.isMultiSelect) {
+    //                this.valChoices.map((val) => {
+    //                    val.selected = false;
+    //                });
+    //            } 
+    //            choice.selected = event.target.checked;
+    //            this.selectedChoiceId = event.target.checked ? choice.key : undefined;
+    //            break;
+    //        case STAT_TYPE.ValueSubValue:
+    //            break;
+    //        case STAT_TYPE.OnOff: this.valOnOff = value; break;
+    //        case STAT_TYPE.YesNo: this.valYesNo = value; break;
+    //        case STAT_TYPE.Calculation:
+    //            break;
+    //        case STAT_TYPE.Command:
+    //            break;
+    //        case STAT_TYPE.Toggle:
+    //            break;
+    //        case STAT_TYPE.Combo: this.valText = value; break;
+    //    }
+    //}
 
     editStat(characterStatTypeId: number) {
         this.close();
@@ -310,73 +336,73 @@ export class RulesetEditCharacterStatComponent implements OnInit {
         
     }
 
-    reset(CharacterStatTypeID: number, type?: number) {
+    //reset(CharacterStatTypeID: number, type?: number) {
         
-        switch (this.CharacterStatTypeID) {
-            case STAT_TYPE.Number:
-                this.valNumber = this.defValNumber;
-                //this.updateCharacterStat(type);
-                break;
-            case STAT_TYPE.CurrentMax:
-                if (type == 1) {
-                    this.valCurrentMax = Object.assign(this.valCurrentMax, { current: this.valCurrentMax.max });
-                }
-                else if (type == 2) {
-                    this.valCurrentMax = Object.assign(this.valCurrentMax, { max: this.defValCurrentMax.max });
-                }
-                //this.updateCharacterStat(type);
-                break;
-            case STAT_TYPE.ValueSubValue:
-                if (type == 1) {
-                    this.valValueSubValue = Object.assign(this.valValueSubValue, { value: this.defValValueSubValue.value });
-                }
-                else if (type == 2) {
-                    this.valValueSubValue = Object.assign(this.valValueSubValue, { subValue: this.defValValueSubValue.subValue });
-                }
-                //this.updateCharacterStat(type);
-                break;
-            case STAT_TYPE.Combo:
-                this.valNumber = this.defValNumber;
-                break;
-        }
-    }
+    //    switch (this.CharacterStatTypeID) {
+    //        case STAT_TYPE.Number:
+    //            this.valNumber = this.defValNumber;
+    //            //this.updateCharacterStat(type);
+    //            break;
+    //        case STAT_TYPE.CurrentMax:
+    //            if (type == 1) {
+    //                this.valCurrentMax = Object.assign(this.valCurrentMax, { current: this.valCurrentMax.max });
+    //            }
+    //            else if (type == 2) {
+    //                this.valCurrentMax = Object.assign(this.valCurrentMax, { max: this.defValCurrentMax.max });
+    //            }
+    //            //this.updateCharacterStat(type);
+    //            break;
+    //        case STAT_TYPE.ValueSubValue:
+    //            if (type == 1) {
+    //                this.valValueSubValue = Object.assign(this.valValueSubValue, { value: this.defValValueSubValue.value });
+    //            }
+    //            else if (type == 2) {
+    //                this.valValueSubValue = Object.assign(this.valValueSubValue, { subValue: this.defValValueSubValue.subValue });
+    //            }
+    //            //this.updateCharacterStat(type);
+    //            break;
+    //        case STAT_TYPE.Combo:
+    //            this.valNumber = this.defValNumber;
+    //            break;
+    //    }
+    //}
 
-    updateCharacterStat(type?: number) {
-        let CStat: CharactersCharacterStat = this.CharacterStatTile.charactersCharacterStat;
+    //updateCharacterStat(type?: number) {
+    //    let CStat: CharactersCharacterStat = this.CharacterStatTile.charactersCharacterStat;
         
-        switch (this.CharacterStatTypeID) {
-            case STAT_TYPE.Number:
-                CStat.number = +this.valNumber;
-                break;
-            case STAT_TYPE.CurrentMax:
-                if (type == 1) {
-                    CStat = Object.assign(CStat, { current: this.valCurrentMax.current});
-                }
-                else if (type == 2) {
-                    CStat = Object.assign(CStat, { maximum: this.valCurrentMax.max });
-                }
-                break;
-            case STAT_TYPE.ValueSubValue:
-                if (type == 1) {
-                    CStat = Object.assign(CStat, { value: this.valValueSubValue.value});
-                }
-                else if (type == 2) {
-                    CStat = Object.assign(CStat, { subValue: this.valValueSubValue.subValue });
-                }
-                break;
-            case STAT_TYPE.Combo:
-                CStat.defaultValue = +this.valNumber;
-                CStat.comboText = this.valText;
-                break;
-        }
-        this.CCService.updateCharactersCharacterStat(CStat).subscribe(
-            data => {
-                this.CharacterStatTile.charactersCharacterStat = Object.assign(this.CharacterStatTile.charactersCharacterStat, CStat)
-            },
-            error => {
-            },
-        )
-    }
+    //    switch (this.CharacterStatTypeID) {
+    //        case STAT_TYPE.Number:
+    //            CStat.number = +this.valNumber;
+    //            break;
+    //        case STAT_TYPE.CurrentMax:
+    //            if (type == 1) {
+    //                CStat = Object.assign(CStat, { current: this.valCurrentMax.current});
+    //            }
+    //            else if (type == 2) {
+    //                CStat = Object.assign(CStat, { maximum: this.valCurrentMax.max });
+    //            }
+    //            break;
+    //        case STAT_TYPE.ValueSubValue:
+    //            if (type == 1) {
+    //                CStat = Object.assign(CStat, { value: this.valValueSubValue.value});
+    //            }
+    //            else if (type == 2) {
+    //                CStat = Object.assign(CStat, { subValue: this.valValueSubValue.subValue });
+    //            }
+    //            break;
+    //        case STAT_TYPE.Combo:
+    //            CStat.defaultValue = +this.valNumber;
+    //            CStat.comboText = this.valText;
+    //            break;
+    //    }
+    //    this.CCService.updateCharactersCharacterStat(CStat).subscribe(
+    //        data => {
+    //            this.CharacterStatTile.charactersCharacterStat = Object.assign(this.CharacterStatTile.charactersCharacterStat, CStat)
+    //        },
+    //        error => {
+    //        },
+    //    )
+    //}
 
     close(all?: boolean) {
         this.bsModalRef.hide();
@@ -405,7 +431,8 @@ export class RulesetEditCharacterStatComponent implements OnInit {
             this.bsModalRef.content.rulesetId = this.rulesetId;
             this.bsModalRef.content.ruleset = this.Character;
             this.bsModalRef.content.showDetailsByDefault = true;
-            this.bsModalRef.content.numberToAdd = numberToAdd;
+          this.bsModalRef.content.numberToAdd = numberToAdd;
+          this.bsModalRef.content.isFromCampaignDetail = this.isFromCampaignDetail;
 
             this.bsModalRef.content.event.subscribe(result => {
                 if (typeId === STAT_TYPE.Number) {
@@ -421,65 +448,65 @@ export class RulesetEditCharacterStatComponent implements OnInit {
         }
     }
 
-    increment(CharacterStatTypeID: number, type?: number) {
-        switch (this.CharacterStatTypeID) {
-            case STAT_TYPE.Number:
-                this.valNumber = (parseInt(this.valNumber) + 1).toString();
-                //this.updateCharacterStat(type);
-                break;
-            case STAT_TYPE.CurrentMax:
-                if (type == 1) {
-                    this.valCurrentMax = Object.assign(this.valCurrentMax, { current: (parseInt(this.valCurrentMax.current) + 1).toString() });
-                }
-                else if (type == 2) {
-                    this.valCurrentMax = Object.assign(this.valCurrentMax, { max: (parseInt(this.valCurrentMax.max) + 1).toString() });
-                }
-                //this.updateCharacterStat(type);
-                break;
-            case STAT_TYPE.ValueSubValue:
-                if (type == 1) {
-                    this.valValueSubValue = Object.assign(this.valValueSubValue, { value: (parseInt(this.valValueSubValue.value) + 1).toString() });
-                }
-                else if (type == 2) {
-                    this.valValueSubValue = Object.assign(this.valValueSubValue, { subValue: (parseInt(this.valValueSubValue.subValue) + 1).toString() });
-                }
-                //this.updateCharacterStat(type);
-                break;
-            case STAT_TYPE.Combo:
-                this.valNumber = (parseInt(this.valNumber) + 1).toString();
-                break;
-        }
-    }
+    //increment(CharacterStatTypeID: number, type?: number) {
+    //    switch (this.CharacterStatTypeID) {
+    //        case STAT_TYPE.Number:
+    //            this.valNumber = (parseInt(this.valNumber) + 1).toString();
+    //            //this.updateCharacterStat(type);
+    //            break;
+    //        case STAT_TYPE.CurrentMax:
+    //            if (type == 1) {
+    //                this.valCurrentMax = Object.assign(this.valCurrentMax, { current: (parseInt(this.valCurrentMax.current) + 1).toString() });
+    //            }
+    //            else if (type == 2) {
+    //                this.valCurrentMax = Object.assign(this.valCurrentMax, { max: (parseInt(this.valCurrentMax.max) + 1).toString() });
+    //            }
+    //            //this.updateCharacterStat(type);
+    //            break;
+    //        case STAT_TYPE.ValueSubValue:
+    //            if (type == 1) {
+    //                this.valValueSubValue = Object.assign(this.valValueSubValue, { value: (parseInt(this.valValueSubValue.value) + 1).toString() });
+    //            }
+    //            else if (type == 2) {
+    //                this.valValueSubValue = Object.assign(this.valValueSubValue, { subValue: (parseInt(this.valValueSubValue.subValue) + 1).toString() });
+    //            }
+    //            //this.updateCharacterStat(type);
+    //            break;
+    //        case STAT_TYPE.Combo:
+    //            this.valNumber = (parseInt(this.valNumber) + 1).toString();
+    //            break;
+    //    }
+    //}
 
-    decrement(CharacterStatTypeID: number, type?: number) {
-        switch (this.CharacterStatTypeID) {
-            case STAT_TYPE.Number:
-                this.valNumber = (parseInt(this.valNumber) - 1).toString();
-                //this.updateCharacterStat(type);
-                break;
-            case STAT_TYPE.CurrentMax:
-                if (type == 1) {
-                    this.valCurrentMax = Object.assign(this.valCurrentMax, { current: (parseInt(this.valCurrentMax.current) - 1).toString() });
-                }
-                else if (type == 2) {
-                    this.valCurrentMax = Object.assign(this.valCurrentMax, { max: (parseInt(this.valCurrentMax.max) - 1).toString() });
-                }
-                //this.updateCharacterStat(type);
-                break;
-            case STAT_TYPE.ValueSubValue:
-                if (type == 1) {
-                    this.valValueSubValue = Object.assign(this.valValueSubValue, { value: (parseInt(this.valValueSubValue.value) - 1).toString() });
-                }
-                else if (type == 2) {
-                    this.valValueSubValue = Object.assign(this.valValueSubValue, { subValue: (parseInt(this.valValueSubValue.subValue) - 1).toString() });
-                }
-                //this.updateCharacterStat(type);
-                break;
-            case STAT_TYPE.Combo:
-                this.valNumber = (parseInt(this.valNumber) - 1).toString();
-                break;
-        }
-    }
+    //decrement(CharacterStatTypeID: number, type?: number) {
+    //    switch (this.CharacterStatTypeID) {
+    //        case STAT_TYPE.Number:
+    //            this.valNumber = (parseInt(this.valNumber) - 1).toString();
+    //            //this.updateCharacterStat(type);
+    //            break;
+    //        case STAT_TYPE.CurrentMax:
+    //            if (type == 1) {
+    //                this.valCurrentMax = Object.assign(this.valCurrentMax, { current: (parseInt(this.valCurrentMax.current) - 1).toString() });
+    //            }
+    //            else if (type == 2) {
+    //                this.valCurrentMax = Object.assign(this.valCurrentMax, { max: (parseInt(this.valCurrentMax.max) - 1).toString() });
+    //            }
+    //            //this.updateCharacterStat(type);
+    //            break;
+    //        case STAT_TYPE.ValueSubValue:
+    //            if (type == 1) {
+    //                this.valValueSubValue = Object.assign(this.valValueSubValue, { value: (parseInt(this.valValueSubValue.value) - 1).toString() });
+    //            }
+    //            else if (type == 2) {
+    //                this.valValueSubValue = Object.assign(this.valValueSubValue, { subValue: (parseInt(this.valValueSubValue.subValue) - 1).toString() });
+    //            }
+    //            //this.updateCharacterStat(type);
+    //            break;
+    //        case STAT_TYPE.Combo:
+    //            this.valNumber = (parseInt(this.valNumber) - 1).toString();
+    //            break;
+    //    }
+    //}
 
     setClass(text: any) {
         text.selected = true;

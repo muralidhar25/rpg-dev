@@ -57,7 +57,7 @@ namespace RPGSmithApp.Controllers
         [HttpGet("getByRulesetId")]
         public async Task<IEnumerable<RulesetDashboardLayout>> GetByRulesetId(int rulesetId, int page = -1, int pageSize = -1)
         {
-            var listLayout = await _rulesetDashboardLayoutService.GetByRulesetId(rulesetId, page,pageSize);
+            var listLayout = await _rulesetDashboardLayoutService.GetByRulesetId(rulesetId, page, pageSize);
 
             bool noDefaultLayout = false;
 
@@ -110,14 +110,14 @@ namespace RPGSmithApp.Controllers
                 {
                     return BadRequest("Only 12 slots of Layouts are allowed.");
                 }
-                if (_rulesetDashboardLayoutService.CheckDuplicate(model.Name.Trim(), model.RulesetId).Result)
+                if (_rulesetDashboardLayoutService.CheckDuplicate(model.Name.Trim(), model.RulesetId, model.IsSharedLayout).Result)
                     return BadRequest("Duplicate Layout Name");
 
                 try
                 {
                     int maxsortorder = _rulesetDashboardLayoutService.GetMaximumSortOrdertByRulesetId(model.RulesetId);
                     model.SortOrder = maxsortorder + 1;
-                    var layout = await _rulesetDashboardLayoutService.Create(model);                    
+                    var layout = await _rulesetDashboardLayoutService.Create(model);
                     var _RulesetDashboardPage = await _rulesetDashboardPageService.Create(new RulesetDashboardPage()
                     {
                         RulesetDashboardLayoutId = layout.RulesetDashboardLayoutId,
@@ -151,7 +151,7 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_rulesetDashboardLayoutService.CheckDuplicate(model.Name.Trim(), model.RulesetId,model.RulesetDashboardLayoutId).Result)
+                if (_rulesetDashboardLayoutService.CheckDuplicate(model.Name.Trim(), model.RulesetId, model.IsSharedLayout, model.RulesetDashboardLayoutId).Result)
                     return BadRequest("Duplicate Layout Name");
 
                 try
@@ -181,10 +181,10 @@ namespace RPGSmithApp.Controllers
                 {
                     return BadRequest("Only 12 slots of Layouts are allowed.");
                 }
-                if (_rulesetDashboardLayoutService.CheckDuplicate(model.Name.Trim(), model.RulesetId).Result)
+                if (_rulesetDashboardLayoutService.CheckDuplicate(model.Name.Trim(), model.RulesetId, model.IsSharedLayout).Result)
                     return BadRequest("Duplicate Layout Name");
 
-                
+
                 try
                 {
                     int defaultPageId = 0;
@@ -197,7 +197,7 @@ namespace RPGSmithApp.Controllers
                     model.RulesetDashboardPages = null;
 
                     var layout = await _rulesetDashboardLayoutService.Create(model);
-                    
+
                     foreach (var page in _RulesetDashboardPages)
                     {
                         page.Tiles = null;
@@ -229,7 +229,7 @@ namespace RPGSmithApp.Controllers
                             switch (Tile.TileTypeId)
                             {
                                 case (int)Enum.TILES.NOTE:
-                                    var noteTile = _tile.NoteTiles; 
+                                    var noteTile = _tile.NoteTiles;
                                     Tile.NoteTiles = await _noteTileService.Create(new RulesetNoteTile
                                     {
                                         RulesetTileId = Tile.RulesetTileId,
@@ -247,7 +247,8 @@ namespace RPGSmithApp.Controllers
                                     break;
                                 case (int)Enum.TILES.IMAGE:
                                     var imageTile = _tile.ImageTiles;
-                                    Tile.ImageTiles = await _imageTileService.Create(new RulesetImageTile {
+                                    Tile.ImageTiles = await _imageTileService.Create(new RulesetImageTile
+                                    {
                                         RulesetTileId = Tile.RulesetTileId,
                                         Title = imageTile.Title,
                                         Shape = imageTile.Shape,
@@ -257,13 +258,14 @@ namespace RPGSmithApp.Controllers
                                         TitleBgColor = imageTile.TitleBgColor,
                                         TitleTextColor = imageTile.TitleTextColor,
                                         IsDeleted = false,
-                                        ImageUrl= imageTile.ImageUrl                                        
+                                        ImageUrl = imageTile.ImageUrl
                                     });
                                     //SaveColorsAsync(Tile);
                                     break;
                                 case (int)Enum.TILES.COUNTER:
                                     var counterTile = _tile.CounterTiles;
-                                    Tile.CounterTiles = await _counterTileService.Create(new RulesetCounterTile {
+                                    Tile.CounterTiles = await _counterTileService.Create(new RulesetCounterTile
+                                    {
                                         RulesetTileId = Tile.RulesetTileId,
                                         Title = counterTile.Title,
                                         Shape = counterTile.Shape,
@@ -273,7 +275,7 @@ namespace RPGSmithApp.Controllers
                                         TitleBgColor = counterTile.TitleBgColor,
                                         TitleTextColor = counterTile.TitleTextColor,
                                         CurrentValue = counterTile.CurrentValue,
-                                        DefaultValue =counterTile.DefaultValue,
+                                        DefaultValue = counterTile.DefaultValue,
                                         Maximum = counterTile.Maximum,
                                         Minimum = counterTile.Minimum,
                                         Step = counterTile.Step,
@@ -286,8 +288,8 @@ namespace RPGSmithApp.Controllers
                                     Tile.CharacterStatTiles = await _characterStatTileService.Create(new RulesetCharacterStatTile
                                     {
                                         RulesetTileId = Tile.RulesetTileId,
-                                        CharacterStatId= characterStatTile.CharacterStatId,
-                                        ShowTitle= characterStatTile.ShowTitle,
+                                        CharacterStatId = characterStatTile.CharacterStatId,
+                                        ShowTitle = characterStatTile.ShowTitle,
                                         Shape = characterStatTile.Shape,
                                         SortOrder = characterStatTile.SortOrder,
                                         bodyBgColor = characterStatTile.bodyBgColor,
@@ -305,7 +307,8 @@ namespace RPGSmithApp.Controllers
                                     break;
                                 case (int)Enum.TILES.COMMAND:
                                     var commandTile = _tile.CommandTiles;
-                                    Tile.CommandTiles = await _commandTileService.Create(new RulesetCommandTile {
+                                    Tile.CommandTiles = await _commandTileService.Create(new RulesetCommandTile
+                                    {
                                         RulesetTileId = Tile.RulesetTileId,
                                         Title = commandTile.Title,
                                         Shape = commandTile.Shape,
@@ -372,17 +375,17 @@ namespace RPGSmithApp.Controllers
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
-        
+
         [HttpPost("updateSortOrder")]
         [ProducesResponseType(200, Type = typeof(string))]
         public async Task<IActionResult> UpdateSortOrder([FromBody] List<SortOrderEditModel> model)
         {
             if (ModelState.IsValid)
             {
-              
+
                 try
                 {
-                     _rulesetDashboardLayoutService.UpdateSortOrder(model);
+                    _rulesetDashboardLayoutService.UpdateSortOrder(model);
                 }
                 catch (Exception ex)
                 {
@@ -393,7 +396,7 @@ namespace RPGSmithApp.Controllers
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
-        
+
         [HttpGet("GetById")]
         public RulesetDashboardLayout GetById(int Id)
         {
@@ -414,14 +417,14 @@ namespace RPGSmithApp.Controllers
         [HttpDelete("delete")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (id==0)
+            if (id == 0)
                 return BadRequest("Please provide valid id");
 
             try
             {
                 var layout = _rulesetDashboardLayoutService.GetById(id);
                 var _layouts = _rulesetDashboardLayoutService.GetCountByRulesetId(layout.RulesetId ?? 0);
-                
+
                 if (_layouts > 1)
                 {
                     await _rulesetDashboardLayoutService.Delete(id);
@@ -449,5 +452,103 @@ namespace RPGSmithApp.Controllers
             _rulesetDashboardLayoutService.UpdateDefaultLayoutPage(layoutId, pageId);
             return Ok();
         }
+
+        #region Shared Layout
+        [HttpGet("getSharedLayoutByRulesetId")]
+        public async Task<IEnumerable<RulesetDashboardLayout>> GetSharedLayoutByRulesetId(int rulesetId, int page = -1, int pageSize = -1)
+        {
+            var listLayout = await _rulesetDashboardLayoutService.GetSharedLayoutByRulesetId(rulesetId, page, pageSize);
+
+            bool noDefaultLayout = false;
+
+            if (listLayout == null) noDefaultLayout = true;
+            else if (listLayout.Count == 0) noDefaultLayout = true;
+
+            try
+            {
+                if (noDefaultLayout)
+                {
+                    //in case dashboard has no layout & page create shared layout
+                    var _layout = await _rulesetDashboardLayoutService.Create(
+                        new RulesetDashboardLayout()
+                        {
+                            Name = Const.SharedLayoutName,
+                            SortOrder = 1,
+                            LayoutHeight = 1280,
+                            LayoutWidth = 768,
+                            RulesetId = rulesetId,
+                            IsSharedLayout = true,
+                            IsDefaultLayout = false
+                        });
+
+                    var _RulesetDashboardPage = await _rulesetDashboardPageService.Create(new RulesetDashboardPage()
+                    {
+                        RulesetDashboardLayoutId = _layout.RulesetDashboardLayoutId,
+                        Name = "Page1",
+                        ContainerWidth = 1280,
+                        ContainerHeight = 768,
+                        SortOrder = 1,
+                        RulesetId = rulesetId
+                    });
+                    _layout.DefaultPageId = _RulesetDashboardPage.RulesetDashboardPageId;
+                    await _rulesetDashboardLayoutService.Update(_layout);
+                    await CreateDefaultLayout(rulesetId);                  
+                }
+
+                else if(listLayout.Count == 1)
+                {
+                    var isDefault = true;
+                    foreach(var layout in listLayout)
+                    {
+                        if (layout.Name == Const.SharedLayoutName)
+                        {
+                            isDefault = false;
+                        }
+                    }
+
+                    if (!isDefault)
+                    {
+                        await CreateDefaultLayout(rulesetId);
+                    }
+                }
+
+                listLayout = await _rulesetDashboardLayoutService.GetSharedLayoutByRulesetId(rulesetId, page, pageSize);
+            }
+            catch { }
+
+            return listLayout;
+        }
+
+
+        public async Task<RulesetDashboardLayout> CreateDefaultLayout(int rulesetId)
+        {
+            //in case dashboard has no layout & page create default layout
+            var _layout = await _rulesetDashboardLayoutService.Create(
+               new RulesetDashboardLayout()
+               {
+                   Name = Const.DefaultLayoutName,
+                   SortOrder = 1,
+                   LayoutHeight = 1280,
+                   LayoutWidth = 768,
+                   RulesetId = rulesetId,
+                   IsSharedLayout = true,
+                   IsDefaultLayout = true
+               });
+
+            var _RulesetDashboardPage = await _rulesetDashboardPageService.Create(new RulesetDashboardPage()
+            {
+                RulesetDashboardLayoutId = _layout.RulesetDashboardLayoutId,
+                Name = "Page1",
+                ContainerWidth = 1280,
+                ContainerHeight = 768,
+                SortOrder = 1,
+                RulesetId = rulesetId
+            });
+            _layout.DefaultPageId = _RulesetDashboardPage.RulesetDashboardPageId;
+            await _rulesetDashboardLayoutService.Update(_layout);
+
+            return _layout;
+        }
+        #endregion
     }
 }

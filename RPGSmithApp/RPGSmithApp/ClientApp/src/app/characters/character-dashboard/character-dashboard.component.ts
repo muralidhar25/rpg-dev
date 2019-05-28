@@ -126,6 +126,7 @@ export class CharacterDashboardComponent implements OnInit {
   IsComputerDevice: boolean = false;
   IsTabletDevice: boolean = false;
   IsMobileDevice: boolean = false;
+  isSharedLayout: boolean = false;
   public gridConfig: NgGridConfig = {
     'margins': this.getTileSize().margins,
     'draggable': false,
@@ -203,7 +204,6 @@ export class CharacterDashboardComponent implements OnInit {
 
         this.layoutService.getLayoutsByCharacterId(this.characterId, -1, -1)
           .subscribe(data => {
-
             this.characterlayouts = data;
             //if (this.characterlayouts.length == 1) {
             //    this.selectedlayout = this.characterlayouts[0];
@@ -228,13 +228,20 @@ export class CharacterDashboardComponent implements OnInit {
             //    }     
             //})
             //if (!isLayoutSelected) {
-            this.characterlayouts.map((item) => {
-              if (item.isDefaultLayout) {
-
-                this.selectedlayout = item;
+            for (var lay = 0; lay < this.characterlayouts.length; lay++) {
+              if (this.characterlayouts[lay].isDefaultLayout) {
+                this.selectedlayout = this.characterlayouts[lay];
                 this.onLayoutSelect(this.selectedlayout);
+                break;
               }
-            })
+            }
+            ////////////this.characterlayouts.map((item) => {
+            ////////////  if (item.isDefaultLayout) {
+
+            ////////////    this.selectedlayout = item;
+            ////////////    this.onLayoutSelect(this.selectedlayout);
+            ////////////  }
+            ////////////})
             //}
 
             //this.isLoading = false;
@@ -255,8 +262,7 @@ export class CharacterDashboardComponent implements OnInit {
             var selectedLayoutId = this.selectedlayout.characterDashboardLayoutId;
             if (this.selectedlayout.characterDashboardPages.length == 1) {
               this.selectedPage = this.selectedlayout.characterDashboardPages[0];
-            }
-
+            }            
             this.characterlayouts.forEach(function (val) {
 
               if (selectedLayoutId == val.characterDashboardLayoutId) {
@@ -458,7 +464,7 @@ export class CharacterDashboardComponent implements OnInit {
     }
   }
 
-  private initialize(IsInitialLoad, preventLoading = false) {
+  private initialize(IsInitialLoad, preventLoading = false, layoutId = 0) {
 
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
@@ -473,16 +479,16 @@ export class CharacterDashboardComponent implements OnInit {
       try {
 
         this.gameStatus(this.characterId);
-        //this.CCService.getConditionsValuesList<any[]>(this.characterId)
-        //  .subscribe(data => {
-        //    this.ConditionsValuesList = data;
+        this.CCService.getConditionsValuesList<any[]>(this.characterId)
+          .subscribe(data => {
+            this.ConditionsValuesList = data;
 
-        //  }, error => {
-        //    let Errors = Utilities.ErrorDetail("", error);
-        //    if (Errors.sessionExpire) {
-        //      this.authService.logout(true);
-        //    }
-        //  }, () => { });
+          }, error => {
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              this.authService.logout(true);
+            }
+          }, () => { });
         if (preventLoading) {
           this.isLoading = false;
         } else {
@@ -497,202 +503,238 @@ export class CharacterDashboardComponent implements OnInit {
           }, error => {
             this.character = new Characters();
             this.isLoading = false;
-          }, () => { });
-        if (preventLoading) {
-          this.isLoading = false;
-        } else {
-          this.isLoading = true;
-        }
-
-        this.layoutService.getLayoutsByCharacterId(this.characterId, -1, -1)
-          .subscribe(data => {
-
-            this.characterlayouts = data;
-            if (this.LayoutId) {
-              this.characterlayouts.map((item) => {
-                if (item.characterDashboardLayoutId == this.LayoutId) {
-                  //if (item.isDefaultLayout) {
-                  this.selectedlayout = item;
-                }
-              })
-              //this.selectedlayout
+          }, () => {
+            if (preventLoading) {
+              this.isLoading = false;
+            } else {
+              this.isLoading = true;
             }
-            else {
 
-              let isLayoutSelected = false;
-              if (IsInitialLoad) {
-                this.characterlayouts.map((item) => {
-                  if (item.isDefaultComputer && this.IsComputerDevice) {
-                    isLayoutSelected = true;
-                    this.selectedlayout = item;
-                    // this.onLayoutSelect(this.selectedlayout);
-                  }
-                  else if (item.isDefaultTablet && this.IsTabletDevice) {
-                    isLayoutSelected = true;
-                    this.selectedlayout = item;
-                    // this.onLayoutSelect(this.selectedlayout);
-                  }
-                  else if (item.isDefaultMobile && this.IsMobileDevice) {
-                    isLayoutSelected = true;
-                    this.selectedlayout = item;
-                    //this.onLayoutSelect(this.selectedlayout);
-                  }
-                })
-              }
-
-              if (!isLayoutSelected) {
-                this.characterlayouts.map((item) => {
-                  if (item.isDefaultLayout) {
-                    this.selectedlayout = item;
-                  }
-                })
-              }
-
-            }
-            if (this.pageId) {
-              this.characterlayouts.map((item) => {
-                if (item.characterDashboardLayoutId == this.LayoutId) {
-                  item.characterDashboardPages.map((pageItem) => {
-                    if (pageItem.characterDashboardPageId == this.pageId) {
-                      this.selectedPage = pageItem;
-                    }
-                  })
-                }
-              })
-            }
-            else {
-              if (this.selectedlayout != null || this.selectedlayout != undefined) {
-                let isLayoutSelected = false;
-                if (IsInitialLoad) {
+            this.layoutService.getLayoutsByCharacterId(this.characterId, -1, -1)
+              .subscribe(data => {
+                debugger
+                this.characterlayouts = data;
+                if (this.LayoutId) {
                   this.characterlayouts.map((item) => {
-                    if (item.isDefaultComputer && this.IsComputerDevice) {
-                      isLayoutSelected = true;
-                      item.characterDashboardPages.map((pageItem) => {
-                        if (pageItem.characterDashboardPageId == item.defaultPageId) {
-                          this.selectedPage = pageItem;
-                        }
-                      })
-                    }
-                    else if (item.isDefaultTablet && this.IsTabletDevice) {
-                      isLayoutSelected = true;
-                      item.characterDashboardPages.map((pageItem) => {
-                        if (pageItem.characterDashboardPageId == item.defaultPageId) {
-                          this.selectedPage = pageItem;
-                        }
-                      })
-                    }
-                    else if (item.isDefaultMobile && this.IsMobileDevice) {
-                      isLayoutSelected = true;
-                      item.characterDashboardPages.map((pageItem) => {
-                        if (pageItem.characterDashboardPageId == item.defaultPageId) {
-                          this.selectedPage = pageItem;
-                        }
-                      })
+                    if (item.characterDashboardLayoutId == this.LayoutId) {
+                      //if (item.isDefaultLayout) {
+                      this.selectedlayout = item;
                     }
                   })
+                  //this.selectedlayout
                 }
+                else {
 
-                if (!isLayoutSelected) {
+                  let isLayoutSelected = false;
+
+                  if (IsInitialLoad) {
+                    this.characterlayouts.map((item) => {
+                      if (item.isDefaultComputer && this.IsComputerDevice) {
+                        isLayoutSelected = true;
+                        this.selectedlayout = item;
+                        // this.onLayoutSelect(this.selectedlayout);
+                      }
+                      else if (item.isDefaultTablet && this.IsTabletDevice) {
+                        isLayoutSelected = true;
+                        this.selectedlayout = item;
+                        // this.onLayoutSelect(this.selectedlayout);
+                      }
+                      else if (item.isDefaultMobile && this.IsMobileDevice) {
+                        isLayoutSelected = true;
+                        this.selectedlayout = item;
+                        //this.onLayoutSelect(this.selectedlayout);
+                      }
+                    })
+                  }
+
+                  if (!isLayoutSelected) {
+                    for (var lay = 0; lay < this.characterlayouts.length; lay++) {
+                      if (this.characterlayouts[lay].isDefaultLayout) {
+                        this.selectedlayout = this.characterlayouts[lay];
+                        break;
+                      }
+                    }
+                    //this.characterlayouts.map((item) => {
+                    //  if (item.isDefaultLayout) {
+                    //    this.selectedlayout = item;
+                    //  }
+                    //})
+                  }
+
+                }
+                if (this.pageId) {
                   this.characterlayouts.map((item) => {
-                    if (item.isDefaultLayout) {
+                    if (item.characterDashboardLayoutId == this.LayoutId) {
                       item.characterDashboardPages.map((pageItem) => {
-                        if (pageItem.characterDashboardPageId == item.defaultPageId) {
+                        if (pageItem.characterDashboardPageId == this.pageId) {
                           this.selectedPage = pageItem;
                         }
                       })
                     }
                   })
                 }
+                else {
+                  if (this.selectedlayout != null || this.selectedlayout != undefined) {
+                    let isLayoutSelected = false;
+                    if (IsInitialLoad) {
+                      this.characterlayouts.map((item) => {
+                        if (item.isDefaultComputer && this.IsComputerDevice) {
+                          isLayoutSelected = true;
+                          item.characterDashboardPages.map((pageItem) => {
+                            if (pageItem.characterDashboardPageId == item.defaultPageId) {
+                              this.selectedPage = pageItem;
+                            }
+                          })
+                        }
+                        else if (item.isDefaultTablet && this.IsTabletDevice) {
+                          isLayoutSelected = true;
+                          item.characterDashboardPages.map((pageItem) => {
+                            if (pageItem.characterDashboardPageId == item.defaultPageId) {
+                              this.selectedPage = pageItem;
+                            }
+                          })
+                        }
+                        else if (item.isDefaultMobile && this.IsMobileDevice) {
+                          isLayoutSelected = true;
+                          item.characterDashboardPages.map((pageItem) => {
+                            if (pageItem.characterDashboardPageId == item.defaultPageId) {
+                              this.selectedPage = pageItem;
+                            }
+                          })
+                        }
+                      })
+                    }
 
-              }
-            }
-            if (!this.selectedPage && this.page1) {
-              let isLayoutSelected = false;
-              if (IsInitialLoad) {
-                this.characterlayouts.map((item) => {
-                  if (item.isDefaultComputer && this.IsComputerDevice) {
-                    isLayoutSelected = true;
-                    this.selectedPage = item.characterDashboardPages[0];
-                  }
-                  else if (item.isDefaultTablet && this.IsTabletDevice) {
-                    isLayoutSelected = true;
-                    this.selectedPage = item.characterDashboardPages[0];
-                  }
-                  else if (item.isDefaultMobile && this.IsMobileDevice) {
-                    isLayoutSelected = true;
-                    this.selectedPage = item.characterDashboardPages[0];
-                  }
-                })
-              }
+                    if (!isLayoutSelected) {
+                      for (var lay1 = 0; lay1 < this.characterlayouts.length; lay1++) {
+                        let item = this.characterlayouts[lay1];
+                        if (item.isDefaultLayout) {
+                          item.characterDashboardPages.map((pageItem) => {
+                            if (pageItem.characterDashboardPageId == item.defaultPageId) {
+                              this.selectedPage = pageItem;
+                            }
+                          })
+                          break;
+                        }
+                      }
+                      //this.characterlayouts.map((item) => {
+                      //  if (item.isDefaultLayout) {
+                      //    item.characterDashboardPages.map((pageItem) => {
+                      //      if (pageItem.characterDashboardPageId == item.defaultPageId) {
+                      //        this.selectedPage = pageItem;
+                      //      }
+                      //    })
+                      //  }
+                      //})
+                    }
 
-              if (!isLayoutSelected) {
-                this.characterlayouts.map((item) => {
-                  if (item.isDefaultLayout) {
-                    this.selectedPage = item.characterDashboardPages[0];
                   }
-                })
-              }
-
-              //this.initialize();
-              //this.page1 = 0;
-            }
-            if (this.selectedPage) {
-              if (this.selectedPage.characterDashboardPageId) {
-                if (preventLoading) {
-                  this.isLoading = false;
-                } else {
-                  this.isLoading = true;
                 }
+                if (!this.selectedPage && this.page1) {
+                  let isLayoutSelected = false;
+                  if (IsInitialLoad) {
+                    this.characterlayouts.map((item) => {
+                      if (item.isDefaultComputer && this.IsComputerDevice) {
+                        isLayoutSelected = true;
+                        this.selectedPage = item.characterDashboardPages[0];
+                      }
+                      else if (item.isDefaultTablet && this.IsTabletDevice) {
+                        isLayoutSelected = true;
+                        this.selectedPage = item.characterDashboardPages[0];
+                      }
+                      else if (item.isDefaultMobile && this.IsMobileDevice) {
+                        isLayoutSelected = true;
+                        this.selectedPage = item.characterDashboardPages[0];
+                      }
+                    })
+                  }
 
-                //#641 start
-                this.updateDefaultLayout(this.selectedPage.characterDashboardLayoutId)
-                if (this.selectedPage.characterDashboardLayoutId && this.selectedPage.characterDashboardPageId)
-                  this.updateDefaultLayoutPage(this.selectedPage.characterDashboardLayoutId, this.selectedPage.characterDashboardPageId);
-                //#641 end
+                  if (!isLayoutSelected) {
+                    for (var lay1 = 0; lay1 < this.characterlayouts.length; lay1++) {
+                      let item = this.characterlayouts[lay1];
+                      if (item.isDefaultLayout) {
+                        this.selectedPage = item.characterDashboardPages[0];
+                        break;
+                      }
+                    }
+                    //this.characterlayouts.map((item) => {
+                    //  if (item.isDefaultLayout) {
+                    //    this.selectedPage = item.characterDashboardPages[0];
+                    //  }
+                    //})
+                  }
 
+                  //this.initialize();
+                  //this.page1 = 0;
+                }
+                if (this.selectedPage) {
+                  if (this.selectedPage.characterDashboardPageId) {
+                    if (preventLoading) {
+                      this.isLoading = false;
+                    } else {
+                      this.isLoading = true;
+                    }
 
-                this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId)
-                  .subscribe(data => {
-                    let model: any = data;
-                    this.CharacterStatsValues = model.characterStatsValues;
-                    this.statLinkRecords = model.statLinkRecords;
-                    data = model.data;
-                    this.tiles = data;
-                    this.CCService.getConditionsValuesList<any[]>(this.characterId)
+                    //#641 start
+                    this.updateDefaultLayout(this.selectedPage.characterDashboardLayoutId)
+                    if (this.selectedPage.characterDashboardLayoutId && this.selectedPage.characterDashboardPageId)
+                      this.updateDefaultLayoutPage(this.selectedPage.characterDashboardLayoutId, this.selectedPage.characterDashboardPageId);
+                    //#641 end
+
+                    let rulesetId = 0;
+                    if (this.selectedPage.characterDashboardLayoutId == -1) {
+                      this.isSharedLayout = true;
+                      rulesetId = this.character.ruleSetId;
+                    }
+                    else {
+                      this.isSharedLayout = false;
+                    }
+
+                    this.isLoading = true;
+                    this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId, rulesetId, this.isSharedLayout)
                       .subscribe(data => {
-                        this.ConditionsValuesList = data;
+                        let model: any = data;
+                        this.CharacterStatsValues = model.characterStatsValues;
+                        this.statLinkRecords = model.statLinkRecords;
+                        data = model.data;
+                        this.tiles = data;
+                        this.CCService.getConditionsValuesList<any[]>(this.characterId)
+                          .subscribe(data => {
+                            this.ConditionsValuesList = data;
+
+                          }, error => {
+                            this.ConditionsValuesList = [];
+                          }, () => {
+                            this.boxes = this.mapBoxes(data);
+                            this.isLoading = false;
+                          });
+
+                        try {
+                          this.noRecordFound = !data.length;
+                        } catch (err) { }
 
                       }, error => {
-                        this.ConditionsValuesList = [];
-                      }, () => {
-                        this.boxes = this.mapBoxes(data);
                         this.isLoading = false;
-                      });
+                      }, () => { });
+                  } else this.isLoading = false;
 
-                    try {
-                      this.noRecordFound = !data.length;
-                    } catch (err) { }
+                  if (this.selectedPage.characterDashboardPageId) {
+                    this.pageService.getCharacterDashboardPageById<any>(this.selectedPage.characterDashboardPageId)
+                      .subscribe(data => {
+                        this.pageDefaultData = data;
+                      }, error => {
+                      }, () => { });
+                  }
 
-                  }, error => {
-                    this.isLoading = false;
-                  }, () => { });
-              } else this.isLoading = false;
+                } else this.isLoading = false;
+              }, error => {
+                this.isLoading = false;
+              }, () => {
+              });
 
-              if (this.selectedPage.characterDashboardPageId) {
-                this.pageService.getCharacterDashboardPageById<any>(this.selectedPage.characterDashboardPageId)
-                  .subscribe(data => {
-                    this.pageDefaultData = data;
-                  }, error => {
-                  }, () => { });
-              }
-
-            } else this.isLoading = false;
-          }, error => {
-            this.isLoading = false;
-          }, () => {
+            this.gameStatus(this.characterId);
           });
-
-        this.gameStatus(this.characterId);
+        
       } catch (err) { }
     }
   }
@@ -804,7 +846,7 @@ export class CharacterDashboardComponent implements OnInit {
 
   }
 
-  onLayoutSelect(layout: any): void {
+  onLayoutSelect(layout: any): void {    
     this.selectedlayout = layout;
 
     this.selectedPage = layout.characterDashboardPages[0];
@@ -817,9 +859,18 @@ export class CharacterDashboardComponent implements OnInit {
     this.tiles = null;
     if (this.selectedPage) {
       if (this.selectedPage.characterDashboardPageId) {
+        let rulesetId = 0;
+          if (this.selectedPage.characterDashboardLayoutId == -1) {
+            this.isSharedLayout = true;
+            rulesetId = this.character.ruleSetId;
+        }
+          else {
+            this.isSharedLayout = false;
+          }
         this.isLoading = true;
-        this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId)
+        this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId, rulesetId, this.isSharedLayout)
           .subscribe(data => {
+            debugger
             //this.isLoading = false;
             let model: any = data;
             this.CharacterStatsValues = model.characterStatsValues;
@@ -843,7 +894,7 @@ export class CharacterDashboardComponent implements OnInit {
           }, error => {
             this.isLoading = false;
           }, () => { });
-      }
+      }      
       this.updateDefaultLayout(this.selectedPage.characterDashboardLayoutId);
     }
   }
@@ -949,8 +1000,17 @@ export class CharacterDashboardComponent implements OnInit {
   onPageSelect(page: any): void {
     this.isLoading = true;
     this.selectedPage = page;
-    if (page.characterDashboardPageId) {
-      this.characterTileService.getTilesByPageIdCharacterId<any>(page.characterDashboardPageId, this.characterId)
+    if (page.characterDashboardPageId) {    
+        let rulesetId = 0;
+        if (this.selectedPage.characterDashboardLayoutId == -1) {
+          this.isSharedLayout = true;
+          rulesetId = this.character.ruleSetId;
+      }
+        else {
+          this.isSharedLayout = false;
+        }
+        this.isLoading = true;
+        this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId, rulesetId, this.isSharedLayout)
         .subscribe(data => {
           //getCharacterDashboardPageById
           let model: any = data;
@@ -1177,35 +1237,40 @@ export class CharacterDashboardComponent implements OnInit {
   viewTile(tile: any, tileType: number) {
     //let _tile: any;
     let _tile = Object.assign({}, tile);
+    debugger
     switch (tileType) {
       case TILES.NOTE: {
-        //this.bsModalRef = this.modalService.show(EditNoteComponent, {
-        //  class: 'modal-primary modal-lg',
-        //  ignoreBackdropClick: true,
-        //  keyboard: false
-        //});
-        //this.bsModalRef.content.tile = _tile;
-        //this.bsModalRef.content.noteTile = _tile.noteTiles;
-        //this.bsModalRef.content.characterId = this.characterId;
-        //this.bsModalRef.content.view = VIEW.MANAGE;
-        //this.bsModalRef.content.tileName = 'note';
+        if (!this.isSharedLayout) {
+          this.bsModalRef = this.modalService.show(NoteTileComponent, {
+            class: 'modal-primary modal-lg modal-custom',
+            ignoreBackdropClick: true,
+            keyboard: false
+          });
+          this.bsModalRef.content.title = "Edit Note Tile";
+          this.bsModalRef.content.tile = _tile;
+          this.bsModalRef.content.characterId = this.characterId;
+          this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ? this.selectedPage.characterDashboardPageId : this.pageId;
+          this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+          this.bsModalRef.content.view = VIEW.EDIT;
+          this.bsModalRef.content.autoFocusEditor = true;
+        }
+        else {
+          this.bsModalRef = this.modalService.show(EditNoteComponent, {
+            class: 'modal-primary modal-lg',
+            ignoreBackdropClick: true,
+            keyboard: false
+          });
+          this.bsModalRef.content.tile = _tile;
+          this.bsModalRef.content.noteTile = _tile.noteTiles;
+          this.bsModalRef.content.characterId = this.characterId;
+          this.bsModalRef.content.view = VIEW.MANAGE;
+          this.bsModalRef.content.tileName = 'note';
 
-        //this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ?
-        //  this.selectedPage.characterDashboardPageId : this.pageId;
-        //this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
-
-        this.bsModalRef = this.modalService.show(NoteTileComponent, {
-          class: 'modal-primary modal-lg modal-custom',
-          ignoreBackdropClick: true,
-          keyboard: false
-        });
-        this.bsModalRef.content.title = "Edit Note Tile";
-        this.bsModalRef.content.tile = _tile;
-        this.bsModalRef.content.characterId = this.characterId;
-        this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ? this.selectedPage.characterDashboardPageId : this.pageId;
-        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
-        this.bsModalRef.content.view = VIEW.EDIT;
-        this.bsModalRef.content.autoFocusEditor = true;
+          this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ?
+            this.selectedPage.characterDashboardPageId : this.pageId;
+          this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+          this.bsModalRef.content.isSharedLayout = this.isSharedLayout;
+        }
         break;
       }
       case TILES.IMAGE: {
@@ -1223,6 +1288,7 @@ export class CharacterDashboardComponent implements OnInit {
         this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ?
           this.selectedPage.characterDashboardPageId : this.pageId;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.isSharedLayout = this.isSharedLayout;
         break;
       }
       case TILES.COUNTER: {
@@ -1238,6 +1304,7 @@ export class CharacterDashboardComponent implements OnInit {
         this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ?
           this.selectedPage.characterDashboardPageId : this.pageId;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.isSharedLayout = this.isSharedLayout;
         break;
       }
       case TILES.CHARACTERSTAT: {
@@ -1255,7 +1322,7 @@ export class CharacterDashboardComponent implements OnInit {
             this.bsModalRef.content.tile = TILES.CHARACTERSTAT;
             this.bsModalRef.content.characterStatTile = _tile.characterStatTiles;
             this.bsModalRef.content.recordName = this.character.characterName;
-            this.bsModalRef.content.recordImage = this.character.imageUrl;
+            this.bsModalRef.content.recordImage = this.character.imageUrl;           
             break;
 
           case STAT_TYPE.RichText:
@@ -1273,6 +1340,7 @@ export class CharacterDashboardComponent implements OnInit {
             this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
             this.bsModalRef.content.view = VIEW.MANAGE;
             this.bsModalRef.content.showEditor = true;
+            this.bsModalRef.content.isSharedLayout = this.isSharedLayout;
             break;
           case STAT_TYPE.Toggle:
 
@@ -1358,6 +1426,7 @@ export class CharacterDashboardComponent implements OnInit {
             this.bsModalRef.content.pageId = this.pageId;
             this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
             this.bsModalRef.content.view = VIEW.MANAGE;
+            this.bsModalRef.content.isSharedLayout = this.isSharedLayout;
             break;
 
         }
@@ -1517,6 +1586,7 @@ export class CharacterDashboardComponent implements OnInit {
         this.bsModalRef.content.pageId = this.selectedPage.characterDashboardPageId ?
           this.selectedPage.characterDashboardPageId : this.pageId;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.isSharedLayout = this.isSharedLayout;
         break;
       }
       default: break;
@@ -1640,7 +1710,7 @@ export class CharacterDashboardComponent implements OnInit {
   }
 
   updateDefaultLayout(layoutId) {
-    this.layoutService.updateDefaultLayout(layoutId)
+    this.layoutService.updateDefaultLayout(layoutId, this.characterId)
       .subscribe(data => { },
         error => { console.log("updateDefaultLayout error : ", error); }
       );
@@ -1802,7 +1872,7 @@ export class CharacterDashboardComponent implements OnInit {
                             let characterStatConditionsfilter = this.ConditionsValuesList.filter((Cs) => Cs.characterStatId == rec.id);
                             let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.CharacterStatsValues.charactersCharacterStat);
                             num = +result;
-                            console.log('result', num);
+                            
                             break;
                           default:
                             break;
@@ -1817,7 +1887,7 @@ export class CharacterDashboardComponent implements OnInit {
                     });
                   }
                   finalCalcString = CalcString;
-                  // console.log('finalCalcString',finalCalcString);
+                  
                 });
               }
               try {
@@ -1853,7 +1923,7 @@ export class CharacterDashboardComponent implements OnInit {
 
               }
               ////////////////////////////////////////////
-              //console.log(finalCalStr)
+              
             }
             else {
               //For Old Records
@@ -2552,7 +2622,7 @@ export class CharacterDashboardComponent implements OnInit {
         'text/html');
       var decodedString = dom.body.textContent;
 
-      //console.log(decodedString);
+      
       return decodedString;
       //text = text.replace(/<{1}[^<>]{1,}>{1}/g, " ");
       ////if (text.length >= 100) {
@@ -2565,7 +2635,9 @@ export class CharacterDashboardComponent implements OnInit {
     return '';
   }
   refresh() {
-    this.initialize(true);
+    debugger
+    this.LayoutId = this.selectedlayout.characterDashboardLayoutId;
+    this.initialize(true,false, this.LayoutId);
   }
   gameStatus(characterId?: any) {
     //api for player controls
@@ -2602,7 +2674,7 @@ export class CharacterDashboardComponent implements OnInit {
 
       }, error => {
         let Errors = Utilities.ErrorDetail("", error);
-        console.log('gameStatus', Errors);
+        
 
         //if (Errors.sessionExpire) {
         //  this.authService.logout(true);

@@ -4,8 +4,8 @@ import { RulesetDashboardPage } from './ruleset-dashboard-page.model';
 export class RulesetDashboardLayout {
 
     constructor(rulesetDashboardLayoutId?: number, rulesetId?: number, name?: string, sortOrder?: number, 
-        defaultPageId?: number, view?: VIEW, showIcon?: boolean,layoutPages?: RulesetDashboardPage[],
-        imageUrl?: string, thumbnailUrl?: string, layoutWidth?: number, layoutHeight?: number
+      defaultPageId?: number, view?: VIEW, showIcon?: boolean, layoutPages?: RulesetDashboardPage[],
+      imageUrl?: string, thumbnailUrl?: string, layoutWidth?: number, layoutHeight?: number, isSharedLayout?: boolean
     ) {
 
         this.rulesetDashboardLayoutId = rulesetDashboardLayoutId;
@@ -17,7 +17,9 @@ export class RulesetDashboardLayout {
         this.layoutWidth = layoutWidth;
         this.layoutHeight = layoutHeight;
         this.view = view;
-        this.layoutPages = layoutPages
+      this.layoutPages = layoutPages
+      this.isSharedLayout = isSharedLayout
+      
     }
 
     public rulesetDashboardLayoutId: number;
@@ -31,6 +33,7 @@ export class RulesetDashboardLayout {
     public layoutHeight: number; 
     public layoutWidth: number; 
     public layoutPages: RulesetDashboardPage[];
+  public isSharedLayout: boolean;
     
 }
 

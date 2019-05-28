@@ -31,10 +31,14 @@
 }
 
 .form-control {
-    width: 6.25rem;
-    height: 3.75rem;
-    font-size: 2rem;
-    font-weight: 500;
+  width: 6.25rem;
+  height: 3.75rem;
+  font-size: 2rem;
+  font-weight: 500;  
+}
+.input-group .form-control {
+  border-left: 0.5px solid #afa9a5 !important;
+  border-right: 0.5px solid #afa9a5 !important;
 }
 .btn-plus-minus {
     width: 6.25rem !important;

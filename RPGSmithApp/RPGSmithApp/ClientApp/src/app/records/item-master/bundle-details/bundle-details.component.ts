@@ -35,7 +35,7 @@ export class BundleDetailsComponent implements OnInit {
   bsModalRef: BsModalRef;
   bundleDetail: any = new Bundle();
   bundleItems: any[]= [];
-
+  IsGm: boolean = false;
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -68,6 +68,9 @@ export class BundleDetailsComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
+      if (user.isGm) {
+        this.IsGm = user.isGm;
+      }
       this.isLoading = true;
       this.itemMasterService.getBundleById<any[]>(this.bundleId)
         .subscribe(data => {

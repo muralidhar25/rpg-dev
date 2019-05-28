@@ -2240,6 +2240,8 @@ namespace RPGSmithApp.Migrations
 
                     b.Property<bool>("IsDeleted");
 
+                    b.Property<bool>("IsSharedLayout");
+
                     b.Property<int>("LayoutHeight");
 
                     b.Property<int>("LayoutWidth");

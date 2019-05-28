@@ -26,12 +26,14 @@ namespace DAL.Services.RulesetTileServices
             _configuration = configuration;
         }
         
-        public async  Task<bool> CheckDuplicate(string value, int? RulesetId, int? Id = 0)
+        public async  Task<bool> CheckDuplicate(string value, int? RulesetId, bool IsCampaignDashboard, int? Id = 0)
         {
             var items = _repo.GetAll();
             if (items.Result == null || items.Result.Count == 0) return false;
           
-                return items.Result.Where(x => x.Name.ToLower() == value.ToLower() && x.RulesetId == RulesetId && x.RulesetDashboardLayoutId != Id && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
+                return items.Result
+                .Where(x => x.Name.ToLower() == value.ToLower() && x.RulesetId == RulesetId && x.RulesetDashboardLayoutId != Id && x.IsDeleted != true && x.IsSharedLayout== IsCampaignDashboard)
+                .FirstOrDefault() == null ? false : true;
         
         }
 
@@ -158,11 +160,11 @@ namespace DAL.Services.RulesetTileServices
             if (page > 0 && pageSize > 0)
                 RulesetDashboardLayouts = _context.RulesetDashboardLayouts
                 .Include(d => d.RulesetDashboardPages)
-               .Where(x => x.RulesetId == RulesetId && x.IsDeleted != true).OrderBy(x => x.SortOrder).Skip(pageSize * (page - 1)).Take(pageSize).ToList();
+               .Where(x => x.RulesetId == RulesetId && !x.IsSharedLayout && x.IsDeleted != true).OrderBy(x => x.SortOrder).Skip(pageSize * (page - 1)).Take(pageSize).ToList();
             else
                 RulesetDashboardLayouts = _context.RulesetDashboardLayouts
                     .Include(d => d.RulesetDashboardPages)
-                   .Where(x => x.RulesetId == RulesetId && x.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();
+                   .Where(x => x.RulesetId == RulesetId && !x.IsSharedLayout && x.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();
 
             if (RulesetDashboardLayouts == null) return RulesetDashboardLayouts;
 
@@ -308,7 +310,7 @@ namespace DAL.Services.RulesetTileServices
                 if (layout != null)
                 {
                     var allLayouts = _context.RulesetDashboardLayouts
-                   .Where(x => x.RulesetId == layout.RulesetId && x.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();//GetByRulesetId(layout.RulesetId ?? 0);
+                   .Where(x => x.RulesetId == layout.RulesetId && x.IsDeleted != true && x.IsSharedLayout==layout.IsSharedLayout).OrderBy(x => x.SortOrder).ToList();//GetByRulesetId(layout.RulesetId ?? 0);
 
                     foreach (var _layout in allLayouts)
                     {
@@ -345,5 +347,30 @@ namespace DAL.Services.RulesetTileServices
         {
             return _context.RulesetDashboardLayouts.Where(x => x.RulesetId == ruleSetId && x.IsDeleted != true).Count();
         }
+
+        #region Shared layout
+        public async Task<List<RulesetDashboardLayout>> GetSharedLayoutByRulesetId(int RulesetId, int page = -1, int pageSize = -1)
+        {
+            List<RulesetDashboardLayout> RulesetDashboardLayouts = null;
+
+            if (page > 0 && pageSize > 0)
+                RulesetDashboardLayouts = _context.RulesetDashboardLayouts
+                .Include(d => d.RulesetDashboardPages)
+               .Where(x => x.RulesetId == RulesetId && x.IsSharedLayout && x.IsDeleted != true).OrderBy(x => x.SortOrder).Skip(pageSize * (page - 1)).Take(pageSize).ToList();
+            else
+                RulesetDashboardLayouts = _context.RulesetDashboardLayouts
+                    .Include(d => d.RulesetDashboardPages)
+                   .Where(x => x.RulesetId == RulesetId && x.IsSharedLayout && x.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();
+
+            if (RulesetDashboardLayouts == null) return RulesetDashboardLayouts;
+
+            foreach (RulesetDashboardLayout cdl in RulesetDashboardLayouts)
+            {
+                cdl.RulesetDashboardPages = cdl.RulesetDashboardPages.Where(p => p.IsDeleted != true).OrderBy(x => x.SortOrder).ToList();
+            }
+
+            return RulesetDashboardLayouts;
+        }
+        #endregion
     }
 }

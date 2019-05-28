@@ -91,7 +91,7 @@ export class LinkRecordComponent implements OnInit {
             if (this.ruleSet.isItemEnabled) {
                 this.itemsService.getItemByCharacterId<any[]>(this.characterId)
                     .subscribe(data => {
-                        //console.log(data);
+                        
                         this.items = data;
                         
                         if (this.items.length) {
@@ -122,7 +122,7 @@ export class LinkRecordComponent implements OnInit {
             if (this.ruleSet.isSpellEnabled) {
                 this.characterSpellService.getCharacterSpellByCharacterId<any[]>(this.characterId)
                     .subscribe(data => {
-                        //console.log(data);
+                        
                         this.spells = data;
                         
                         if (this.spells.length) {
@@ -151,7 +151,7 @@ export class LinkRecordComponent implements OnInit {
             if (this.ruleSet.isAbilityEnabled) {
               this.characterAbilityService.getCharacterAbilityByCharacterId<any[]>(this.characterId)
                     .subscribe(data => {
-                        //console.log(data);
+                        
                         this.abilities = data;
                         if (this.abilities.length) {
                             this.abilities = Object.assign([], this.abilities.map((x) => {

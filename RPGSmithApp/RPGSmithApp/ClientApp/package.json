@@ -22,6 +22,7 @@
     "@angular/http": "^5.2.5",
     "@angular/platform-browser": "^5.2.5",
     "@angular/platform-browser-dynamic": "^5.2.5",
+    "@aspnet/signalr": "^1.1.4",
     "@angular/router": "^5.2.5",
     "@ngx-translate/core": "^9.1.1",
     "@swimlane/ngx-datatable": "^11.2.0",

@@ -1,6 +1,6 @@
 <div id="app_container" class="{{configurations.theme | lowercase}}-theme" [ngClass]="IsRulesetRecordScreenActive?'body-manila ':''">
   <!-- Site header -->
-  
+
   <header class="site-header" *ngIf="isUserLoggedIn">
     <div class="container-fluid">
       <div class="site-header-wrapper">
@@ -43,14 +43,14 @@
             <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Handouts" (click)="handOuts()"></a>
           </div>
           <!--<div class="site-header-user mr-1 mr-sm-3 crsr-pointer">
-    <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Chat"></a>
-  </div>
-  <div class="site-header-user mr-1 mr-sm-3 crsr-pointer">
-    <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Email"></a>
-  </div>-->
+            <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Chat"></a>
+          </div>
+          <div class="site-header-user mr-1 mr-sm-3 crsr-pointer">
+            <a href="javascript:void(0);" class="icon text-success f-3 icon-Gen-Email"></a>
+          </div>-->
           <!--<div class="site-header-user mr-1 mr-sm-3 crsr-pointer">
-    <img border="0" src='../assets/images/k_opt.jpg' class="mr-2 redirect-url" width="50" (click)="RedirecttoUrl()">
-  </div>-->
+            <img border="0" src='../assets/images/k_opt.jpg' class="mr-2 redirect-url" width="50" (click)="RedirecttoUrl()">
+          </div>-->
           <div class="site-header-user mr-1 mr-sm-3 crsr-pointer" *ngIf="haveNewInvitation">
             <a class="d-flex ml-2 align-items-center help-icon icon icon-Gen-Email crsr-pointer icon-green icon-notifications" (click)="checkInvites()" href="javascript:void(0)"></a>
           </div>
@@ -86,19 +86,19 @@
               </div>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="siteNavigationToggle" *ngIf="isDropdownOpen">
                 <ul class="dropdown-menu-list dropdown-menu-item-contain-links">
-                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" *ngIf="isGmUser" [routerLink]="['rulesets/campaigns']" [routerLinkActive]="['active']" (click)="setPlaceholderText('Characters')">
+                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" *ngIf="isGmUser"  [routerLinkActive]="['active']" (click)="setHeaderToNull(['rulesets/campaigns']);setPlaceholderText('Characters')">
                     <a class="dropdown-menu-item-link">
                       <span class="dropdown-menu-item-title">Campaigns</span>
                       <span class="dropdown-menu-item-count" *ngIf="rulesetsCount !== undefined">{{rulesetsCount}}</span>
                     </a>
                   </li>
-                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" [routerLinkActive]="['active']" (click)="setHeaderToNull();setPlaceholderText('Characters')">
+                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" [routerLinkActive]="['active']" (click)="setHeaderToNull(['/characters']);setPlaceholderText('Characters')">
                     <a class="dropdown-menu-item-link">
                       <span class="dropdown-menu-item-title">Characters</span>
                       <span class="dropdown-menu-item-count" *ngIf="charactersCount !== undefined">{{charactersCount}}</span>
                     </a>
                   </li>
-                  <li class="dropdown-menu-item site-header-navigation-item-inventory prevent-click-custom" *ngIf="!isGmUser" [routerLink]="['/rulesets']" [routerLinkActive]="['active']" (click)="setPlaceholderText('Rule Sets')">
+                  <li class="dropdown-menu-item site-header-navigation-item-inventory prevent-click-custom" *ngIf="!isGmUser"  [routerLinkActive]="['active']" (click)="setHeaderToNull(['/rulesets']);setPlaceholderText('Rule Sets')">
                     <a class="dropdown-menu-item-link">
                       <span class="dropdown-menu-item-title">Rule Sets</span>
                       <span class="dropdown-menu-item-count" *ngIf="rulesetsCount !== undefined">{{rulesetsCount}}</span>
@@ -161,3 +161,22 @@
     <a href="javascript:void(0);" *ngIf="showScrollButton" class="icon icon-arrow-up fade-in back-to-top" (click)="scrollToTop()"></a>
   </div>
 </div>
+<!--{{signalRAdapter +' -- '+ signalRAdapter?.userId}}-->
+<ng-container *ngIf="signalRAdapter">
+  <div *ngIf="ChatHalfScreen" class="ng-chat-half-screen-div"></div>
+  <ng-chat *ngIf="signalRAdapter && signalRAdapter.userId"
+           [adapter]="signalRAdapter"
+           [groupAdapter]="signalRAdapter"
+           [userId]="signalRAdapter.userId"
+           [historyEnabled]="true"
+           [pollFriendsList]="true"
+           [theme]="currentTheme"
+           [fileUploadUrl]="fileUploadUrl"
+           (onParticipantClicked)="onEventTriggered('ParticipantClicked triggered')"
+           (onParticipantChatOpened)="onEventTriggered('ParticipantChatOpened triggered')"
+           (onParticipantChatClosed)="onEventTriggered('ParticipantChatClosed triggered')"
+           (onMessagesSeen)="onEventTriggered('MessageSeen triggered')">
+
+  </ng-chat>
+</ng-container>
+

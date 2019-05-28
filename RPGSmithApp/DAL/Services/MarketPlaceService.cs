@@ -33,7 +33,7 @@ namespace DAL.Services
                 Subscribed = false,
                 Qty=1
 
-            });            
+            });
             res.Add(new MarketPlaceItems
             {
                 Id = 2,

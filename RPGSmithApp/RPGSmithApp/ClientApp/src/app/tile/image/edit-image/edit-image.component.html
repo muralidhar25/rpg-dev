@@ -31,7 +31,7 @@
 
         <div class="row">
             <div class="col-12">
-                <button type="button" *ngIf="viewTile=='image'" class="btn btn-edit float-left" (click)="edit()">Edit</button>
+                <button type="button" *ngIf="viewTile=='image' && !isSharedLayout" class="btn btn-edit float-left" (click)="edit()">Edit</button>
                 <button type="button" class="btn btn-outline-accent float-right" (click)="close()">Close</button>
             </div>
         </div>

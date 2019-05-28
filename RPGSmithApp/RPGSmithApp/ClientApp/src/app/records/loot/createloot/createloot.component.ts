@@ -22,6 +22,7 @@ import { ImageSelectorComponent } from '../../../shared/image-interface/image-se
 import { LootAddContainerComponent } from '../loot-add-container/loot-add-container.component';
 import { LootAddContainerItemComponent } from '../loot-add-container-item/loot-add-container-item.component';
 import { LootService } from '../../../core/services/loot.service';
+import { AppService1 } from '../../../app.service';
 
 @Component({
   selector: 'app-createloot',
@@ -71,7 +72,7 @@ export class CreatelootComponent implements OnInit {
     private spellsService: SpellsService,
     private fileUploadService: FileUploadService,
     private imageSearchService: ImageSearchService,
-    private lootService: LootService,
+    private lootService: LootService, private appService: AppService1,
     private location: PlatformLocation) {
 
     location.onPopState(() => this.modalService.hide(1));
@@ -396,7 +397,8 @@ export class CreatelootComponent implements OnInit {
           let message = modal.itemMasterId == 0 || modal.itemMasterId === undefined ? "Loot Item Template has been created successfully." : " Loot Item Template has been updated successfully.";
           if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
-          this.close();
+        this.close();
+        this.appService.updateChatWithLootMessage(true);
           if (this.fromDetail) {
             if (data) {
               let id = data;
@@ -446,6 +448,7 @@ export class CreatelootComponent implements OnInit {
           //  this.router.navigate(['/ruleset/item-master', this._ruleSetId]);
           //else
           this.sharedService.updateItemsList(true);
+          this.appService.updateChatWithLootMessage(true);
         },
         error => {
           this.isLoading = false;

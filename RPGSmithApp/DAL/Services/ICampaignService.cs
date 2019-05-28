@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Models;
+using NgChatSignalR.Models;
 
 namespace DAL.Services
 {
@@ -11,6 +12,7 @@ namespace DAL.Services
         Task<PlayerInvite> CreatePlayerInvite(PlayerInviteEmail model,string PlayerUserId,bool IsInviteSentUsingUserName);
         Task<bool> SameInviteAlreadyExists(PlayerInviteEmail model, string playerUserId);
         List<PlayerInviteList> getInvitedPlayers(int rulesetId, ApplicationUser user);
+        List<ParticipantResponseViewModel> getChatParticipantList();
         PlayerInviteList getInvitedPlayerById(int inviteId);
         bool cancelInvite(int inviteID);
         bool removePlayerFromCampaign(PlayerInviteList model);
@@ -25,5 +27,8 @@ namespace DAL.Services
         Task<PlayerControl> updatePlayerControls(PlayerControl model);
         bool IsDeletedInvite(int _characterId, string _userId);
         string GetDeletedCharacterName(int characterID);
+        void SaveChatMessage(ChatMessage chatMessageModel);
+        List<ChatMessage> GetChatMessage(int campaignID);
+        Task<bool> isGmAccessingPlayerCharacterUrl(int characterID, ApplicationUser currentUser);
     }
 }

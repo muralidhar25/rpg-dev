@@ -215,7 +215,7 @@ namespace RPGSmithApp.Controllers
         public async Task<IActionResult> GetRuleSetById(int id)
         {
             var ruleSet = await _ruleSetService.GetRuleSetById(id);
-            //if (ruleSet == null) return Ok("RuleSet Not Found using Id" + id);
+            if (ruleSet == null) return BadRequest("RuleSet Not Found using Id" + id);
             return Ok(_commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet));
         }
 
