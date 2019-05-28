@@ -57,7 +57,7 @@ namespace RPGSmithApp.Controllers
         public IActionResult getChatHistory([FromBody] GroupChatParticipantViewModel payload,string currentUserID)
         {
             List<MessageViewModel> messages = new List<MessageViewModel>();
-            if (payload.ParticipantType==ChatParticipantTypeEnum.Group)
+            if (payload.ParticipantType == ChatParticipantTypeEnum.Group)
             {
                 ParticipantResponseViewModel user = GroupChatHub.GetParticipantDetails(currentUserID);
                 if (user != null)
@@ -88,8 +88,8 @@ namespace RPGSmithApp.Controllers
                         //{
                         //    res1 = res1.Where(x => x.CharacterID == message.SenderCharacterID).ToList();
                         //}
-                            
-                           var res=res1.FirstOrDefault();
+
+                        var res = res1.FirstOrDefault();
                         string fromid = "";
                         if (res == null)
                         {
@@ -102,7 +102,8 @@ namespace RPGSmithApp.Controllers
                                 fromid = user.Participant.CampaignID.ToString();
                             }
                         }
-                        else {
+                        else
+                        {
                             fromid = res.Id;
                         }
 
@@ -113,12 +114,16 @@ namespace RPGSmithApp.Controllers
                             Type = 1,
                             FromId = fromid,
                             ToId = payload.Id,
-                            IsSystemGenerated=message.IsSystemGenerated
+                            IsSystemGenerated = message.IsSystemGenerated
                         };
                         messages.Add(messageView);
 
                     }
                 }
+            }
+            else if(payload.ParticipantType == ChatParticipantTypeEnum.User)
+            {
+
             }
             
             return Json(messages);

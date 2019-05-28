@@ -33,14 +33,14 @@
            [placeholder]="localization.searchPlaceholder"
            [(ngModel)]="searchInput" />
     <ul id="ng-chat-users" *ngIf="!isCollapsed" [ngClass]="{'offset-search': searchEnabled}">
-      <li *ngFor="let user of filteredParticipants">
+      <li *ngFor="let user of filteredParticipants" [title]="user.status == ChatParticipantStatus.Online ?'':'User is offline.'">
         <input *ngIf="currentActiveOption && currentActiveOption.validateContext(user)"
                type="checkbox"
                class="ng-chat-users-checkbox"
                (change)="onFriendsListCheckboxChange(user, $event.target.checked)"
                [checked]="isUserSelectedFromFriendsList(user)" />
         <div [ngClass]="{'ng-chat-friends-list-selectable-offset': currentActiveOption, 'ng-chat-friends-list-container': true}"
-             (click)="openChatWindow(user, true, true)">
+             (click)="user.status == ChatParticipantStatus.Online && openChatWindow(user, true, true)">
           <div *ngIf="!user.avatar" class="icon-wrapper">
             <i class="user-icon"></i>
           </div>
@@ -66,7 +66,7 @@
             </div>
             <a href="javascript:void(0);" class="ng-chat-close primary-text" (click)="onCloseChatWindow(window)">X</a>
             <a href="javascript:void(0);" [ngClass]="window.isFullScreen?'icon-Gen-Duplicate':'icon-Gen-Uncheck'" class="primary-text" (click)="switchToFullScreen(window)"></a>
-            <a href="javascript:void(0);" class="primary-text ng-chat-half-screen-button" (click)="switchToHalfScreen(window)">_</a>
+            <a href="javascript:void(0);" class="primary-text ng-chat-half-screen-button" (click)="switchToHalfScreen(window)"></a>
           </div>
         </ng-container>
         <ng-container *ngIf="!window.isCollapsed">
@@ -80,8 +80,8 @@
             </div>
             <a href="javascript:void(0);" class="ng-chat-close primary-text" (click)="onCloseChatWindow(window)">X</a>
             <a href="javascript:void(0);" [ngClass]="window.isFullScreen?'icon-Gen-Duplicate':'icon-Gen-Uncheck'" class="primary-text" (click)="switchToFullScreen(window)"></a>
-            <a href="javascript:void(0);" class="primary-text ng-chat-half-screen-button" (click)="switchToHalfScreen(window)">_</a>
-            <ng-chat-options *ngIf="!isSmallScreen()" [ngClass]="'ng-chat-options-container'" [options]="defaultWindowOptions(window)" [chattingTo]="window" [(activeOptionTracker)]="currentActiveOption"></ng-chat-options>
+            <a href="javascript:void(0);" class="primary-text ng-chat-half-screen-button" (click)="switchToHalfScreen(window)"></a>
+            <!--<ng-chat-options *ngIf="!isSmallScreen()" [ngClass]="'ng-chat-options-container'" [options]="defaultWindowOptions(window)" [chattingTo]="window" [(activeOptionTracker)]="currentActiveOption"></ng-chat-options>-->
           </div>
             <div #chatMessages class="ng-chat-messages primary-background">
                 <div *ngIf="window.isLoadingHistory" class="ng-chat-loading-wrapper">
@@ -101,8 +101,19 @@
                         <img *ngIf="getChatWindowAvatar(window.participant, message)" alt="" class="avatar" height="30" width="30" [src]="sanitizer.bypassSecurityTrustResourceUrl(getChatWindowAvatar(window.participant, message))" />
                         <span *ngIf="window.participant.participantType == ChatParticipantType.Group && message.fromId != userId" class="ng-chat-participant-name" title="{{window.participant | groupMessageDisplayName:message}}">{{window.participant | groupMessageDisplayName:message}}</span>
                         <span *ngIf="window.participant.participantType == ChatParticipantType.Group && message.fromId == userId" class="ng-chat-participant-name" title="{{window.participant | groupMessageDisplayName:message}}">You</span>
-                        <span *ngIf="window.participant.participantType == ChatParticipantType.User && message.fromId != userId" class="ng-chat-participant-name" title="{{window.participant | groupMessageDisplayName:message}}">{{window.participant.displayName}}</span>
-                        <span *ngIf="window.participant.participantType == ChatParticipantType.User && message.fromId == userId" class="ng-chat-participant-name" title="{{window.participant | groupMessageDisplayName:message}}">You</span>
+                        <!--<span *ngIf="window.participant.participantType == ChatParticipantType.User && message.fromId != userId" class="ng-chat-participant-name" title="{{window.participant.displayName}}">{{window.participant.displayName}}</span>
+                        <span *ngIf="window.participant.participantType == ChatParticipantType.User && message.fromId == userId" class="ng-chat-participant-name" title="{{window.participant.displayName}}">You</span>-->
+                        <ng-container *ngIf="message.fromId != userId">
+                          <!--Is message received by single user-->
+                          <span *ngIf="window.participant.participantType == ChatParticipantType.User && message.fromId != userId" class="ng-chat-participant-name" title="{{window.participant.displayName}}">{{window.participant.displayName}}</span>
+                          <span *ngIf="window.participant.participantType == ChatParticipantType.User && message.fromId == userId" class="ng-chat-participant-name" title="{{window.participant.displayName}}">You</span>
+                        </ng-container>
+                        <ng-container *ngIf="message.fromId == userId">
+                          <!--Is message send by single user-->
+                          <span *ngIf="window.participant.participantType == ChatParticipantType.User && message.fromId != userId" class="ng-chat-participant-name" title="{{window.participant.displayName}}">{{window.participant.displayName}}</span>
+                          <span *ngIf="window.participant.participantType == ChatParticipantType.User && message.fromId == userId" class="ng-chat-participant-name" title="{{window.participant.displayName}}">You</span>
+                        </ng-container>
+
                       </span>
                     </ng-container>
                     <ng-container [ngSwitch]="message.type">

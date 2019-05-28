@@ -1228,7 +1228,7 @@ export class RulesetDashboardComponent implements OnInit {
             }
             case TILES.IMAGE: {
                 this.bsModalRef = this.modalService.show(RulesetEditImageComponent, {
-                    class: 'modal-primary modal-md',
+                  class: 'modal-primary modal-custom-image',
                     ignoreBackdropClick: true,
                     keyboard: false
                 });

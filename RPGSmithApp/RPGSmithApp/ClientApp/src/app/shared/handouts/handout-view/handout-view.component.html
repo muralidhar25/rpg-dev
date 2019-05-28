@@ -38,7 +38,7 @@
                                   && myImages.contentType.indexOf(docmap) == -1)
                                 && !myImages.isFolder" class="crsr-pointer" />
             <p *ngIf="!myImages.isFolder" class="crsr-pointer">{{myImages?.name}}</p>
-            <p *ngIf="myImages.isFolder" class="crsr-pointer" (click)="OpenFolder(myImages?.name)">{{myImages?.name}}</p>
+            <p *ngIf="myImages.isFolder" class="crsr-pointer" (click)="OpenFolder(myImages?.name)">{{getFolderName(myImages?.name)}}</p>
           </div>
           <ng-container *ngIf="!myImages.isFolder">
             <input type="hidden" />

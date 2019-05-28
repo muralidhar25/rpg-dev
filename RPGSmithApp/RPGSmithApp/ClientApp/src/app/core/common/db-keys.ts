@@ -34,5 +34,7 @@ export class DBkeys {
   public static readonly chatConnections = "chatConnections";
   public static readonly rulesetforChat = "rulesetforChat";
   public static readonly IsCharacterOpenedFromCampaign = "IsCharacterOpenedFromCampaign";
+  public static readonly ChatHttpFailure = "ChatHttpFailure";
+  
   
 }

@@ -126,11 +126,13 @@ export class SignalRGroupAdapter extends ChatAdapter implements IChatGroupAdapte
   listFriends(): Observable<ParticipantResponse[]> {
     // List connected users to show in the friends list
     // Sending the userId from the request body as this is just a demo
-    
+    //if (this.localStorage.localStorageGetItem(DBkeys.ChatHttpFailure)) {
+    //  this.localStorage.localStorageSetItem(DBkeys.ChatHttpFailure, false);
+    //}    
     return this.http
       .post(`${SignalRGroupAdapter.serverBaseUrl}api/chat/listFriends`, { currentUserId: this.userId }, this.getRequestHeaders())
       .pipe(
-        map((res: any) => res),
+      map((res: any) => { this.localStorage.localStorageSetItem(DBkeys.ChatHttpFailure, false);return res }),
         catchError((error: any) => Observable.throw(error || 'Server error'))      
       );
   }

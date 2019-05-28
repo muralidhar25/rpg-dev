@@ -87,7 +87,10 @@ export class HandoutViewComponent implements OnInit {
         .subscribe(data => {
           if (data) {
             this.createdById = data.createdBy;
-
+            this.MyImageCount = 39;
+            this.previousContainerMyImageNumber = 0;
+            this.isMyImagesLoading = false;
+            this.hideShowMoreMyImage = false;
             this.searchMyImages(this.query, this.createdById);
 
             this.userService.getBlobSpaceUsed<number>(this.createdById)
@@ -260,5 +263,12 @@ export class HandoutViewComponent implements OnInit {
         this.alertService.showMessage("Some error occured.", "", MessageSeverity.error);
       });
     });
+  }
+  getFolderName(name: string) {
+    if (name) {
+      return name.replace('/', '');
+
+    }
+    return name;
   }
 }

@@ -86,7 +86,7 @@
               </div>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="siteNavigationToggle" *ngIf="isDropdownOpen">
                 <ul class="dropdown-menu-list dropdown-menu-item-contain-links">
-                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" *ngIf="isGmUser"  [routerLinkActive]="['active']" (click)="setHeaderToNull(['rulesets/campaigns']);setPlaceholderText('Characters')">
+                  <li class="dropdown-menu-item site-header-navigation-item-characters prevent-click-custom" *ngIf="isGmUser" [routerLinkActive]="['active']" (click)="setHeaderToNull(['rulesets/campaigns']);setPlaceholderText('Characters')">
                     <a class="dropdown-menu-item-link">
                       <span class="dropdown-menu-item-title">Campaigns</span>
                       <span class="dropdown-menu-item-count" *ngIf="rulesetsCount !== undefined">{{rulesetsCount}}</span>
@@ -98,7 +98,7 @@
                       <span class="dropdown-menu-item-count" *ngIf="charactersCount !== undefined">{{charactersCount}}</span>
                     </a>
                   </li>
-                  <li class="dropdown-menu-item site-header-navigation-item-inventory prevent-click-custom" *ngIf="!isGmUser"  [routerLinkActive]="['active']" (click)="setHeaderToNull(['/rulesets']);setPlaceholderText('Rule Sets')">
+                  <li class="dropdown-menu-item site-header-navigation-item-inventory prevent-click-custom" *ngIf="!isGmUser" [routerLinkActive]="['active']" (click)="setHeaderToNull(['/rulesets']);setPlaceholderText('Rule Sets')">
                     <a class="dropdown-menu-item-link">
                       <span class="dropdown-menu-item-title">Rule Sets</span>
                       <span class="dropdown-menu-item-count" *ngIf="rulesetsCount !== undefined">{{rulesetsCount}}</span>
@@ -144,10 +144,10 @@
     <!--<ng-adsense></ng-adsense>-->
 
     <router-outlet></router-outlet>
-    <div class="adds-left">
+    <!--<div class="adds-left">
       <img src="../assets/images/ads/160x600_ad-banner.jpg" />
     </div>
-    
+
     <div class="adds-right">
       <img src="../assets/images/ads/banner-ad-160x600.jpeg" />
     </div>
@@ -157,7 +157,7 @@
           <img src="../assets/images/ads/adds-banner-726x90.jpg" />
         </div>
       </div>
-    </div>
+    </div>-->
     <a href="javascript:void(0);" *ngIf="showScrollButton" class="icon icon-arrow-up fade-in back-to-top" (click)="scrollToTop()"></a>
   </div>
 </div>

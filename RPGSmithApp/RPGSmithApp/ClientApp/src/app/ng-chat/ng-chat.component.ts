@@ -497,7 +497,7 @@ export class NgChat implements OnInit, IChatController {
   }
 
   fetchMessageHistory(window: Window) {
-    debugger
+    
     //// Not ideal but will keep this until we decide if we are shipping pagination with the default adapter
     //if (this.adapter instanceof PagedHistoryChatAdapter)
     //{
@@ -532,21 +532,26 @@ export class NgChat implements OnInit, IChatController {
     //        })
     //    ).subscribe();
     //}
-    this.groupAdapter.getMessageHistory(window.participant)
-      .pipe(
-        map((result: Message[]) => {
-          result.forEach((message) => this.assertMessageType(message));
+    
+    //window.isLoadingHistory = false;
+    if (true) {
+      this.groupAdapter.getMessageHistory(window.participant)
+        .pipe(
+          map((result: Message[]) => {
+            result.forEach((message) => this.assertMessageType(message));
 
-          window.messages = result.concat(window.messages);
-          window.isLoadingHistory = false;
+            window.messages = result.concat(window.messages);
+            window.isLoadingHistory = false;
 
-          setTimeout(() => this.onFetchMessageHistoryLoaded(result, window, ScrollDirection.Bottom));
-        })
-      ).subscribe();
+            setTimeout(() => this.onFetchMessageHistoryLoaded(result, window, ScrollDirection.Bottom));
+          })
+        ).subscribe();
+    }
+    
   }
 
   private onFetchMessageHistoryLoaded(messages: Message[], window: Window, direction: ScrollDirection, forceMarkMessagesAsSeen: boolean = false): void {
-    debugger
+    
     this.scrollChatWindow(window, direction)
 
     if (window.hasFocus || forceMarkMessagesAsSeen) {
@@ -588,6 +593,16 @@ export class NgChat implements OnInit, IChatController {
           this.onMessagesSeen.emit([message]);
         }
       }
+      else if (participant.participantType == ChatParticipantType.User && (chatWindow[1])) {
+        chatWindow[0].messages.push(message);
+
+        this.scrollChatWindow(chatWindow[0], ScrollDirection.Bottom);
+
+        if (chatWindow[0].hasFocus) {
+          this.markMessagesAsRead([message]);
+          this.onMessagesSeen.emit([message]);
+        }
+      } 
 
       this.emitMessageSound(chatWindow[0]);
 
@@ -606,7 +621,7 @@ export class NgChat implements OnInit, IChatController {
   public openChatWindow(participant: IChatParticipant, focusOnNewWindow: boolean = false, invokedByUserClick: boolean = false): [Window, boolean] {
     //debugger
     //console.log('openChatWindow');
-    debugger
+    
     // Is this window opened?
     let openedWindow = this.windows.find(x => x.participant.id == participant.id);
 
@@ -626,7 +641,7 @@ export class NgChat implements OnInit, IChatController {
       let collapseWindow = invokedByUserClick ? false : !this.maximizeWindowOnNewMessage;
 
       let newChatWindow: Window = new Window(participant, this.historyEnabled, collapseWindow);
-      debugger
+      
       // Loads the chat history via an RxJs Observable
       if (this.historyEnabled) {
         this.fetchMessageHistory(newChatWindow);
@@ -948,10 +963,29 @@ export class NgChat implements OnInit, IChatController {
 
   getChatWindowAvatar(participant: IChatParticipant, message: Message): string | null {
     if (participant.participantType == ChatParticipantType.User) {
+      
       // return participant.avatar;
       if (message.fromId != this.userId) {
         return participant.avatar;
-      } else { return ''; }
+      } else {
+        //let CurrentLoggedinUser = this.localStorage.getDataObject<any>(DBkeys.CURRENT_USER)
+        //if (CurrentLoggedinUser) {
+        //  if (CurrentLoggedinUser.profileImage) {
+        //    return CurrentLoggedinUser.profileImage;
+        //  }
+        //}
+        let chatList = this.participants.filter(x => x.displayName == "Everyone")
+        if (chatList) {
+          try {
+            let currentChatGroup: any = chatList[0];
+            return currentChatGroup.chattingTo.filter(x => x.id == this.userId)[0].avatar
+          }
+          catch (e) {
+            return '';
+          }
+        }
+        return '';
+      }
       //if (message.fromId != this.userId) {
       //  return participant.avatar;
       //} else {

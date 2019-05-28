@@ -213,8 +213,8 @@
 
                   <div class="tile-body">
                     <div class="" [ngClass]="(box.tile.noteTiles?.shape=='50')?'grid-rounded':''">
-                      <p [style.background-color]="white"
-                         [froalaView]="box.tile.noteTiles?.content" class="">
+                      <p class="text-left" [style.background-color]="white"
+                         [froalaView]="box.tile.noteTiles?.content">
                       </p>
                     </div>
                   </div>
@@ -311,12 +311,18 @@
                     <div [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':''" [style.color]="box.tile.characterStatTiles.bodyTextColor"
                          [style.background-color]="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.RichText ? '' : (box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Command && box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl)?box.tile.characterStatTiles.titleBgColor:box.tile.characterStatTiles.bodyBgColor">
 
-                      <p [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                      <!--<p [style.color]="box.tile.characterStatTiles.bodyTextColor"
                          [style.font-size.px]="box.config.sizex*box.config.sizey+12"
                          [style.line-height.px]="box.config.sizex*box.config.sizey+14"
                          *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Text">
                         {{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue}}
-                      </p>
+                      </p>-->
+                      <span class="text-center-v" [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                               [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
+                               [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)"
+                            *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.Text">
+                             {{box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue}}
+                          </span>
 
                       <span style="color:#000" *ngIf="box.tile.characterStatTiles?.characterStat?.characterStatTypeId==STAT_TYPE.RichText" [froalaView]="box.tile.characterStatTiles?.characterStat?.characterStatDefaultValues[0]?.defaultValue">
                       </span>
