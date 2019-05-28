@@ -1084,7 +1084,39 @@
 .icon-Gen-Help:before {
   content: "\e967";
 }
-
+.icon-Settings:before {
+  content: "\e971";
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
+.icon-Health:before {
+  content: "\e96c";
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
+.icon-MarkTarget:before {
+  content: "\e96d";
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
 /**
  * Icons -----------------------------------------------------------------------
  */
@@ -8936,3 +8968,129 @@ li.popup-new-tile-trigger.cross-li .btn {
 angular2-multiselect .c-btn.form-control {
   height: auto;
 }
+
+/* ==== Combat Accordian Css Start ===*/
+/*.combat-accordian .panel .card {
+  border: 0px;
+  background:none;
+}
+.combat-accordian .panel .card ul.list-taglines {
+  padding: 0px;
+  list-style: none;
+  margin:0 -16px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.combat-accordian .panel .card .card-block {
+  padding: 10px 15px;
+}
+.combat-accordian .panel .card ul.list-taglines li {
+  flex: 0px 0px 50%;
+  width: 50%;
+  padding: 2px 2px;
+}
+.list-taglines-image {
+  width: 100%;
+  border: 1px solid #d4d4d4;
+  display: flex;
+  align-items: center;
+  background: #fff
+}
+
+  .list-taglines-image img {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    margin: 2px 4px 2px 2px;
+  }
+  .list-taglines-image p {
+    margin: 0px;
+    width: calc(100% - 43px);
+    padding: 10px;
+    display: inline-flex;
+    height: 34px;
+    align-items: center;
+  }
+  .list-taglines-image p span {
+    margin: 0px;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+    padding-right: 10px;
+    display: block;
+  }
+  .combat-accordian .panel .card .card-header {
+    background-color: rgb(32, 90, 134);
+    border-bottom: 1px solid rgb(32, 90, 134);
+    position: relative;
+    color: #fff;
+  }
+.combat-accordian .panel .card .card-header:before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border: 2px solid transparent;
+  border-color: transparent #fff #fff transparent;
+  position: absolute;
+  right: 10px;
+  top: 47%;
+  transform: translate(0,-50%) rotate(45deg);
+  transition:all .3s ease-in-out
+}
+.combat-accordian .panel.panel-open .card .card-header:before {
+  transform: translate(0,-50%) rotate(225deg);
+  top:50%;
+
+}*/
+/* ==== Combat Accordian Css End ===*/
+
+/* ===== ADS Banner Css Start =====*/
+.container{
+  position:relative;
+}
+.adds-left {
+  position: absolute;
+  top: 30px;
+  right: 100%;
+  width: 160px;
+}
+.adds-right {
+  position: absolute;
+  top: 30px;
+  left: 100%;
+  width: 160px;
+}
+.adds-left img, .adds-right img {
+  max-width:100%;
+}
+.bottom-adds{
+  display:inline-block;
+  margin-top:30px;
+}
+.bottom-adds img{
+  max-width:100%;
+}
+@media (max-width:1520px) {
+  .adds-left {
+    width: 100px;
+  }
+  .adds-right {
+    width: 100px;
+  }
+}
+
+@media (max-width:1350px) {
+  .adds-left {
+    width: 80px;
+  }
+  .adds-right {
+    width: 80px;
+  }
+}
+@media (max-width:1300px) {
+  .adds-left,.adds-right {
+   display:none
+  }
+}
+/* ===== ADS Banner Css End =====*/

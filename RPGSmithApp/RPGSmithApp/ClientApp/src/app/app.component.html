@@ -142,9 +142,22 @@
   <ng2-toasty [position]="'top-center'"></ng2-toasty>
   <div class="container">
     <!--<ng-adsense></ng-adsense>-->
-   
-    <router-outlet></router-outlet>
 
+    <router-outlet></router-outlet>
+    <div class="adds-left">
+      <img src="../assets/images/ads/160x600_ad-banner.jpg" />
+    </div>
+    
+    <div class="adds-right">
+      <img src="../assets/images/ads/banner-ad-160x600.jpeg" />
+    </div>
+    <div class="row">
+      <div class="col-12 text-center">
+        <div class="bottom-adds">
+          <img src="../assets/images/ads/adds-banner-726x90.jpg" />
+        </div>
+      </div>
+    </div>
     <a href="javascript:void(0);" *ngIf="showScrollButton" class="icon icon-arrow-up fade-in back-to-top" (click)="scrollToTop()"></a>
   </div>
 </div>
