@@ -77,6 +77,12 @@ export class CharactersComponent implements OnInit {
           this.initialize();
         }
       });
+      this.appService.shouldUpdateCharacterSlotsCount().subscribe(serviceJson => {
+        
+        if (serviceJson) {
+          this.characterSlot = +serviceJson;
+        }
+      });
     }
 
     ngOnInit() {

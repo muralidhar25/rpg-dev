@@ -900,7 +900,11 @@ namespace RPGSmithApp.Controllers
                     if (_ruleSetService.IsRuleSetExist(model.RuleSetName, userId, model.RuleSetId).Result)
                         return BadRequest("Duplicate RuleSet Name");
 
-                    await _ruleSetService.UdateRuleSet(ruleSetDomain);
+                  var UpdatedRuleset=  await _ruleSetService.UdateRuleSet(ruleSetDomain);
+                    //if (UpdatedRuleset != null)
+                    //{
+                    //    GroupChatHub.EditParticipant(UpdatedRuleset);
+                    //}
                     List<CustomDice> result = _addEditCustomDice(model.customDices.ToList(), ruleSetDomain.RuleSetId);
                     List<DiceTray> diceTrayResult = _addEditDiceTray(result, model.diceTray.ToList(), ruleSetDomain.RuleSetId);
                     return Ok(ruleSetDomain);

@@ -462,7 +462,10 @@ namespace RPGSmithApp.Controllers
                 characterDomain.ThumbnailUrl = model.ThumbnailUrl;
 
                 var result = await _CharacterService.UpdateCharacter(characterDomain);
-
+                if (result!=null)
+                {                    
+                        GroupChatHub.EditParticipant(result);                    
+                }
                 //Update character default layout/page if not already
                 var CharacterDashboardLayout = new CharacterDashboardLayout();
                 if (_characterDashboardLayoutService.GetCountByCharacterId(model.CharacterId) == 0)

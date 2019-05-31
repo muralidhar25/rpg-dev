@@ -159,3 +159,17 @@ button[disabled].dup-ruleset {
   border-color: #1a315d !important;
   color: white
 }
+.center-block {
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .center-block .page-toolbar-actions .btn-ruleset {
+    width: 350px !important;
+  }
+}
+
+.btn-ruleset {
+  font-size: 1.25rem;
+  text-transform: none;
+}

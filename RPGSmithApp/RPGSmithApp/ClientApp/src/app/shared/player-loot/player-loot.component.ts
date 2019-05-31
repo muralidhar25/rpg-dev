@@ -20,6 +20,7 @@ export class PlayerLootComponent implements OnInit {
 
   isLoading = false;
   characterId: number;
+  characterName: string='';
   rulesetId: number;
   itemsList: any;
   characterItemModal: any = new Items();
@@ -45,7 +46,9 @@ export class PlayerLootComponent implements OnInit {
     if (this.rulesetId == undefined)
       this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
     setTimeout(() => {
+      this.characterId = this.bsModalRef.content.headers.headerId
       this.characterItemModal.characterId = this.bsModalRef.content.headers.headerId;
+      this.characterName = this.bsModalRef.content.headers.headerName
     }, 0);
     this.initialize();
   }
@@ -120,6 +123,7 @@ export class PlayerLootComponent implements OnInit {
           }
           this.close();
           this.appService.updateItemsList(true);
+          this.appService.updateChatWithTakenByLootMessage(this.characterName);
         }
         this.isLoading = false;
       }, error => {

@@ -21,7 +21,7 @@ export class Utilities {
   public static readonly noNetworkMessageDetail = "The server cannot be reached";
   public static readonly accessDeniedMessageCaption = "Access Denied!";
   public static readonly accessDeniedMessageDetail = "";
-
+  public static readonly notifyForPendingInvitesMessage: string = "You have at least 1 invite to join a campaign. Select the envelope icon at the top of this screen to see the details and accept or reject this offer.";
   public static getHttpResponseMessage(data: HttpResponseBase | any): string[] {
 
     let responses: string[] = [];

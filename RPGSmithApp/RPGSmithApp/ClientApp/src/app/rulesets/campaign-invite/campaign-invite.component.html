@@ -5,7 +5,7 @@
     <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
   </div>
 </div>
-
+<ng-container *ngIf="!isloading">
   <ng-container *ngIf="invitationList.length">
     <carousel [showIndicators]="showIndicator" [interval]="false">
       <slide *ngFor="let invites of invitationList; let index=index">
@@ -45,10 +45,11 @@
             <span (click)="backward()"></span>
             <span (click)="forward()"></span>
           </div>
-          <button type="button"   [disabled]= "isloading" class="btn btn-outline-accent small-btns" (click)="AnswerLater(invites.id)">Answer Later</button>
+          <button type="button" [disabled]="isloading" class="btn btn-outline-accent small-btns" (click)="AnswerLater(invites.id)">Answer Later</button>
           <div class="d-flex">
-            <button type="button"  [disabled]= "isloading"  data-dismiss="modal" class="btn btn-simple-accent" (click)="Decline(index,invites.id)">Decline</button>
-            <button type="button"  [disabled]= "isloading" class="btn btn-accent" (click)="AcceptInvite(invites.id,invites)">Accept</button>
+            <button type="button" [disabled]="isloading" data-dismiss="modal" class="btn btn-simple-accent" (click)="Decline(index,invites.id)">Decline</button>
+            <button type="button" *ngIf="!NoCharacterSlotsAvailable" [disabled]="isloading" class="btn btn-accent" (click)="AcceptInvite(invites.id,invites)">Accept</button>
+            <button type="button" *ngIf="NoCharacterSlotsAvailable" [disabled]="isloading" class="btn btn-accent btn-buy-character " (click)="BuyCharacterSlot()">{{buyCharacterBtnText}}</button>
           </div>
         </div>
       </slide>
@@ -59,3 +60,6 @@
   <ng-container *ngIf="!invitationList.length">
     <p> No Invites Available </p>
   </ng-container>
+</ng-container>
+  
+  <app-loader [isLoading]="isloading"></app-loader>

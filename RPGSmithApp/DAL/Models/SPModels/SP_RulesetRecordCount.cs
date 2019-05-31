@@ -78,6 +78,11 @@ namespace DAL.Models.SPModels
     public class CommonID {
         public int ID { get; set; }
     }
+    public class LootsToAdd
+    {
+        public int ID { get; set; }
+        public bool IsBundle { get; set; }
+    }
     public static class utility
     {
         public static DataTable ToDataTable<T>(List<T> items)

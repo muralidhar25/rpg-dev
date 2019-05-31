@@ -200,7 +200,7 @@ namespace DAL.Services
                 {
                     user.IsGm = true;
                     user.IsGmPermanent = true;
-                    user.RemoveAds = true;                    
+                    //user.RemoveAds = true;                    
                     _context.SaveChanges();
                     AddSlotsToUsers(UserID, SlotType.PLAYER_SLOT, defaultPlayerCount);
                     UserSubscription subs = _context.UserSubscriptions.Where(x => x.UserId == UserID).FirstOrDefault();
@@ -226,7 +226,7 @@ namespace DAL.Services
                 {
                     user.IsGm = true;
                     user.IsGmPermanent = false;
-                    user.RemoveAds = true;
+                    //user.RemoveAds = true;
                     user.GmEndDate = GMEndDate;
                     user.StripeCustomerId = StripeCustomerId;
                     user.StripeSubscriptionID = StripeSubscriptionId;
@@ -254,6 +254,7 @@ namespace DAL.Services
                 ApplicationUser user = _context.Users.Where(x => x.Id == applicationUser.Id).FirstOrDefault();
                 if (user != null)
                 {
+                   // user.RemoveAdPurchased = IsRemoveAdPurchased;
                     user.RemoveAds = true;
                     _context.SaveChanges();
                 }

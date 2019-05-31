@@ -48,6 +48,7 @@ export class EditCharacterStatComponent implements OnInit {
     selectedChoiceId: number;
     valChoice: choice;
     valChoices: choice[] = [];
+  selectedValChoices: choice[] = [];
     valValueSubValue: valSubVal;
     valOnOff: boolean;
     valYesNo: boolean;
@@ -100,7 +101,40 @@ export class EditCharacterStatComponent implements OnInit {
           this.isSharedLayout = this.bsModalRef.content.isSharedLayout;
             this.Initialize();
         }, 0);
-    }
+  }
+  get multichoiceSettings() {
+    return {
+      primaryKey: "key",
+      labelKey: "value",
+      text: "select choice(s)",
+      enableCheckAll: true,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: false,
+      limitSelection: false,
+      enableSearchFilter: true,
+      classes: "myclass custom-class ",
+      showCheckbox: true,
+      position: "bottom"
+    };
+  }
+
+  get singlechoiceSettings() {
+    return {
+      primaryKey: "key",
+      labelKey: "value",
+      text: "select choice",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: true,
+      classes: "myclass custom-class ",
+      showCheckbox: false,
+      position: "bottom"
+    };
+  }
     private Initialize(CharacterStatTypeID?: number) {
         this.charactersCharacterStat = this.CharacterStatTile.charactersCharacterStat;
         this.selectedChoiceId = +this.charactersCharacterStat.choice;
@@ -151,7 +185,13 @@ export class EditCharacterStatComponent implements OnInit {
                             this.valChoices.push({ key: item.characterStatChoiceId, value: item.statChoiceValue, selected: tempId == item.characterStatChoiceId, isMultiSelect: false })
                         })
                     }                   
-                }
+            }
+            this.selectedValChoices = [];
+            this.valChoices.map((_choice) => {
+              if (_choice.selected) {
+                this.selectedValChoices.push(_choice);
+              }
+            })
                 break;
             case STAT_TYPE.ValueSubValue:
                 let resvalSubVal: valSubVal = { value: this.charactersCharacterStat.value.toString(), subValue: this.charactersCharacterStat.subValue.toString() };
@@ -298,6 +338,7 @@ export class EditCharacterStatComponent implements OnInit {
                 
                 break;
           case STAT_TYPE.Choice:
+            
             let save_flag = false;
             let choicemax = 0;
             let choicemin = 0;
@@ -325,7 +366,16 @@ export class EditCharacterStatComponent implements OnInit {
               save_flag = true;//this.updateStatService(charactersCharacterStat);
             }
                 if (this.charactersCharacterStat.characterStat.isMultiSelect) {
-                    let _multiChoice = '';
+                  let _multiChoice = '';
+                  this.valChoices.map((_choice) => {
+                    _choice.selected = false;
+                    this.selectedValChoices.map((_SChoice) => {
+                      if (_SChoice.key == _choice.key) {
+                        _choice.selected = true;
+                      }
+                    })
+
+                  })
                     this.valChoices.map((val, index) => {
                         if (val.selected && val.isMultiSelect) {
                             let _seperator = (_multiChoice === '') ? '' : ';';
@@ -334,7 +384,12 @@ export class EditCharacterStatComponent implements OnInit {
                     });
                     charactersCharacterStat.multiChoice = _multiChoice;
                 } else {
-                  charactersCharacterStat.choice = this.selectedChoiceId ? this.selectedChoiceId.toString():'';
+                  let SingleSelectedValue: any = '';
+                  if (this.selectedValChoices.length) {
+                    SingleSelectedValue = this.selectedValChoices[0].key;
+                  }
+                  charactersCharacterStat.choice = SingleSelectedValue.toString();
+                 // charactersCharacterStat.choice = this.selectedChoiceId ? this.selectedChoiceId.toString():'';
             }
             if (save_flag) {
               this.updateStatService(charactersCharacterStat);
@@ -966,5 +1021,6 @@ export class EditCharacterStatComponent implements OnInit {
         this.isMouseDown = false;
         clearInterval(this.interval);
         this.interval = undefined;
-    }
+  }
+
 }

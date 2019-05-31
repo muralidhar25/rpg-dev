@@ -109,7 +109,8 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         this.showActionButtons(this.showActions);
 
         let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
-        let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+      let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+      if (char) {
         if (!icharNav) {
           this.charNav = {
             'items': '/character/inventory/' + char.headerId,
@@ -128,6 +129,8 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
             this.charNav = icharNav[char.headerId];
           }
         }
+      }
+        
     }
 
     ngOnChanges(changes: SimpleChanges) {

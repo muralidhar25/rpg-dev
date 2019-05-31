@@ -144,24 +144,29 @@
     <!--<ng-adsense></ng-adsense>-->
 
     <router-outlet></router-outlet>
-    <!--<div class="adds-left">
-      <img src="../assets/images/ads/160x600_ad-banner.jpg" />
-    </div>
+    
+    <ng-container *ngIf="ShowAds">
+      <div class="adds-left">
+        
+        <ng-adsense></ng-adsense>
+      </div>
 
-    <div class="adds-right">
-      <img src="../assets/images/ads/banner-ad-160x600.jpeg" />
-    </div>
-    <div class="row">
-      <div class="col-12 text-center">
-        <div class="bottom-adds">
-          <img src="../assets/images/ads/adds-banner-726x90.jpg" />
+      <div class="adds-right">
+        
+        <ng-adsense></ng-adsense>
+      </div>
+      <div class="row">
+        <div class="col-12 text-center">
+          <div class="bottom-adds">
+           
+            <ng-adsense></ng-adsense>
+          </div>
         </div>
       </div>
-    </div>-->
+    </ng-container>
     <a href="javascript:void(0);" *ngIf="showScrollButton" class="icon icon-arrow-up fade-in back-to-top" (click)="scrollToTop()"></a>
   </div>
 </div>
-<!--{{signalRAdapter +' -- '+ signalRAdapter?.userId}}-->
 <ng-container *ngIf="signalRAdapter">
   <div *ngIf="ChatHalfScreen" class="ng-chat-half-screen-div"></div>
   <ng-chat *ngIf="signalRAdapter && signalRAdapter.userId"

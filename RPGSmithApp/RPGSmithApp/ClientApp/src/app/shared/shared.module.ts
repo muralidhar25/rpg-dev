@@ -66,6 +66,7 @@ import { HandoutuploadComponent } from "./handouts/handout-upload/handoutupload.
 import { HandoutNewFolderComponent } from "./handouts/handout-new-folder/handout-new-folder.component";
 import { ContextMenuModule } from 'ngx-contextmenu';
 import { HandoutRenameComponent } from "./handouts/handout-rename/handout-rename.component";
+import { CampaignInviteComponent } from "../rulesets/campaign-invite/campaign-invite.component";
   
 @NgModule({
   declarations: [
@@ -100,7 +101,7 @@ import { HandoutRenameComponent } from "./handouts/handout-rename/handout-rename
     HandoutFileViewComponent,
     HandoutuploadComponent,
     HandoutNewFolderComponent,
-    HandoutRenameComponent
+    HandoutRenameComponent, CampaignInviteComponent
   ],
   imports: [
     CommonModule,
@@ -192,7 +193,7 @@ ContextMenuModule
     HandoutFileViewComponent,
     HandoutuploadComponent,
     HandoutNewFolderComponent,
-    HandoutRenameComponent
+    HandoutRenameComponent, CampaignInviteComponent
   ],
   entryComponents: [
     AccountSettingsComponent,
@@ -224,7 +225,7 @@ ContextMenuModule
     HandoutuploadComponent,
     HandoutViewComponent,
     HandoutNewFolderComponent,
-    HandoutRenameComponent
+    HandoutRenameComponent, CampaignInviteComponent
   ]
 })
 export class SharedModule {}

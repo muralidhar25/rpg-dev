@@ -816,7 +816,7 @@ namespace RPGSmithApp.Controllers
         #endregion
         #region Loot
         [HttpPost("AddItemMastersToLoot")]
-        public async Task<IActionResult> AddItemMastersToLoot([FromBody] List<CommonID> ItemList)
+        public async Task<IActionResult> AddItemMastersToLoot([FromBody] List<LootsToAdd> ItemList)
         {
             //ItemList = new List<CommonID>();
             //ItemList.Add(new CommonID() { ID = 8499 });

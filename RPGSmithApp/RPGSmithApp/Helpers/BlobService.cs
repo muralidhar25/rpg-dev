@@ -487,7 +487,7 @@ namespace RPGSmithApp.Helpers
                    
                     CloudBlockBlob _blockBlob = container.GetBlockBlobReference(item.blobName);
                     //delete blob from container    
-                    _blockBlob.DeleteAsync();
+                   _blockBlob.DeleteAsync().Wait();
                 }
                 else
                 {
@@ -495,7 +495,7 @@ namespace RPGSmithApp.Helpers
                     CloudBlobContainer sourceContainer = container;
                     CloudBlobDirectory directory = sourceContainer.GetDirectoryReference(prefixToGetFolderContent);
                     CloudBlockBlob blockblob = directory.GetBlockBlobReference(item.blobName);
-                    blockblob.DeleteAsync();
+                    blockblob.DeleteAsync().Wait();
                 }
                 
             }

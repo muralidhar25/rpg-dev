@@ -141,8 +141,8 @@
                                     <ul class="item-info-props">
                                         <!--<li *ngIf="spellDetail.class"> {{spellDetail.class}}</li>
                                         <li *ngIf="spellDetail.school"> {{spellDetail.school}}</li>-->
-                                        <li *ngIf="spellDetail?.levels" popover="{{spellDetail?.levels}} Level" triggers="hover"> {{spellDetail?.levels}} Level</li>
-                                        <li *ngIf="spellDetail?.castingTime" popover="{{spellDetail?.castingTime}}" triggers="hover"> {{spellDetail?.castingTime}}</li>
+                                        <li *ngIf="spellDetail?.levels" popover="{{spellDetail?.levels}} Level" triggers="hover" popoverTitle="LEVEL"> {{spellDetail?.levels}} Level</li>
+                                        <li *ngIf="spellDetail?.castingTime" popover="{{spellDetail?.castingTime}}" triggers="hover" popoverTitle="CASTING TIME"> {{spellDetail?.castingTime}}</li>
                                     </ul>
                                     <ul class="item-info-indics">
                                         <li *ngIf="spellDetail.isSomaticComponent" class="icon" title="Somatic Component" data-toggle="tooltip"><i class="item-property item-property-icon icon-ico icon-Rec-Somantic"></i></li>

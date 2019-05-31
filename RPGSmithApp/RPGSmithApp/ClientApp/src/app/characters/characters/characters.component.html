@@ -111,11 +111,12 @@
                     </div>
                 </div>
             </div>
-            <div class="page-toolbar-wrapper center-block" *ngIf="!isGmUser">
+            <div class="page-toolbar-wrapper center-block" >
                 <ul class="page-toolbar-actions">
-                    <li>
-                        <button type="button" class="btn btn-accent btn-ruleset" [routerLink]="['/rulesets']">Rule Sets</button>
-                    </li>
+                  <li>
+                    <button *ngIf="!isGmUser" type="button" class="btn btn-accent btn-ruleset" [routerLink]="['/rulesets']">Rule Sets</button>
+                    <button *ngIf="isGmUser" type="button" class="btn btn-accent btn-ruleset" [routerLink]="['/rulesets/campaigns']">Campaigns</button>
+                  </li>
                 </ul>
             </div>
         </div>

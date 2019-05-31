@@ -13,6 +13,7 @@ import { MarketPlaceService } from '../../core/services/maketplace.service';
 import { marketplaceListModel, marketplaceModel } from '../../core/models/marketplace.model';
 import { Utilities } from '../../core/common/utilities';
 import { PaymentComponent } from '../../shared/payment/payment.component';
+import { AppService1 } from '../../app.service';
 
 
 @Component({
@@ -36,7 +37,7 @@ export class MarketplacelistComponent implements OnInit {
     private commonService: CommonService,
     private router: Router,
     private modalService: BsModalService,
-    private  marketPlaceService : MarketPlaceService
+    private marketPlaceService: MarketPlaceService, private appService: AppService1
   ) {
    
    
@@ -183,6 +184,8 @@ export class MarketplacelistComponent implements OnInit {
           break;
         case MarketPlaceItemsType.REMOVE_ADDS:
           user.removeAds = true;
+          
+          this.appService.UpdateAddRemove(user.removeAds);
           break;
         case MarketPlaceItemsType.ADDITIONAL_STORAGE:
           user.storageSpace = user.storageSpace + (paymentDoneForItem.qty*1000);

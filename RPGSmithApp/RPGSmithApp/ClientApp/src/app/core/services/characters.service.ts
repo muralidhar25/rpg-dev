@@ -187,6 +187,13 @@ export class CharactersService extends EndpointFactory {
       var __ruleSets = _modelVM.ruleSets;
       if (_modelVM.ruleSets)
         __ruleSets = _modelVM.ruleSets.filter((x) => x.ruleSetId === _modelVM.ruleSet.ruleSetId);
+      
+      if (__ruleSets) {
+        if (!__ruleSets.length) {
+          __ruleSets = [];
+          __ruleSets.push(_modelVM.ruleSet);
+        }
+      }
 
       charactersFormModal = {
         characterId: _modelVM.characterId,

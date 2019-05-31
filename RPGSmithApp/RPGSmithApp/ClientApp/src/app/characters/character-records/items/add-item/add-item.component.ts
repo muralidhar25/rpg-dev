@@ -91,7 +91,7 @@ export class AddItemComponent implements OnInit {
         //}
         
         this.itemsList.map((item) => {
-            if (item.itemMasterId == itemMaster.itemMasterId) {
+          if (item.itemMasterId == itemMaster.itemMasterId && item.isBundle == itemMaster.isBundle) {
                 item.selected = event.target.checked;
             }
             return item;

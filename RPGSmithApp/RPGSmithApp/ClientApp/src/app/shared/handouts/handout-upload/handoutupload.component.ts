@@ -154,7 +154,7 @@ export class HandoutuploadComponent implements OnInit {
   UploadImages(event: any) {
     let imgList: any[] = [];
     if (event.target.files && event.target.files[0]) {
-      imgList = event.target.files;
+      imgList = event.target.files;      
       this.isLoading = true;
       if (this.prefixToGetFolderContent) {
         this.imageSearchService.uploadHandoutFolder<any>(imgList, this.userid, this.prefixToGetFolderContent, this.ruleset.ruleSetId)

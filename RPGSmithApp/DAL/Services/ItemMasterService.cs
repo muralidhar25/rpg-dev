@@ -1041,9 +1041,9 @@ namespace DAL.Services
         }
 
         #region Loot
-        public async Task _AddItemsToLoot(List<CommonID> itemList) {
+        public async Task _AddItemsToLoot(List<LootsToAdd> itemList) {
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
-            DataTable Datatable_Ids = utility.ToDataTable<CommonID>(itemList);
+            DataTable Datatable_Ids = utility.ToDataTable<LootsToAdd>(itemList);
             using (SqlConnection con = new SqlConnection(consString))
             {
 

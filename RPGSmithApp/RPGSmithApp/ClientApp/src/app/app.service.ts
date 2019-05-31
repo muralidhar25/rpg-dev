@@ -18,6 +18,9 @@ export class AppService1 {
   private halfScreen = new Subject<any>();
   private CurrentParticipants = new Subject<any>();
   private ToggleChatList = new Subject<any>();
+  private AddRemove = new Subject<any>();
+  private CharacterSlotsCount = new Subject<any>();
+  private TakenByLootMessage = new Subject<any>();
   
 
   updateAccountSetting1(accountSetting: any) {    
@@ -104,6 +107,26 @@ export class AppService1 {
   }
   shouldUpdateToggleChatParticipantList(): Observable<any> {
     return this.ToggleChatList.asObservable();
+  }
+  UpdateAddRemove(data: any) {
+    this.AddRemove.next(data);
+  }
+  shouldUpdateAddRemove(): Observable<any> {
+    return this.AddRemove.asObservable();
+  }
+  updateCharacterSlotsCount(data: any) {
+    this.CharacterSlotsCount.next(data);
+  }
+
+  shouldUpdateCharacterSlotsCount(): Observable<any> {
+    return this.CharacterSlotsCount.asObservable();
+  }
+  updateChatWithTakenByLootMessage(data: any) {
+    this.TakenByLootMessage.next(data);
+  }
+
+  shouldUpdateChatWithTakenByLootMessage(): Observable<any> {
+    return this.TakenByLootMessage.asObservable();
   }
 }
 

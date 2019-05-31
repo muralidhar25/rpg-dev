@@ -376,4 +376,23 @@ public class GroupChatHub : Hub
             return base.OnConnectedAsync();
         }
     }
+    public static void EditParticipant(Character character)
+    {
+        if (AllConnectedParticipants.Where(x=>x.Participant.CharacterID== character.CharacterId).Any())
+        {
+            var participantToUpdate = AllConnectedParticipants.Where(x => x.Participant.CharacterID == character.CharacterId).FirstOrDefault();
+            participantToUpdate.Participant.DisplayName = character.CharacterName;
+            participantToUpdate.Participant.Avatar = character.ImageUrl;
+        }
+        
+    }
+    //public static void EditParticipant(RuleSet ruleset)
+    //{
+    //    if (AllConnectedParticipants.Where(x => x.Participant.CampaignID == ruleset.RuleSetId).Any())
+    //    {
+    //        var participantToUpdate = AllConnectedParticipants.Where(x => x.Participant.CampaignID == ruleset.RuleSetId).FirstOrDefault();
+    //        participantToUpdate.Participant.DisplayName = ruleset.RuleSetName;
+    //        participantToUpdate.Participant.Avatar = ruleset.ImageUrl;
+    //    }
+    //}
 }

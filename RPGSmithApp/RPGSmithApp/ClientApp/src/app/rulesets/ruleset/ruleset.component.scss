@@ -148,3 +148,17 @@ button[disabled].dup-ruleset{
 .characters-description:hover {
     opacity:1
 }
+.center-block {
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .center-block .page-toolbar-actions .btn-ruleset {
+    width: 350px !important;
+  }
+}
+
+.btn-ruleset {
+  font-size: 1.25rem;
+  text-transform: none;
+}

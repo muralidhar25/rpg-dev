@@ -78,24 +78,27 @@ export class CharacterAbilityDetailsComponent implements OnInit {
 
     let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
     let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
-    if (!icharNav) {
-      this.charNav = {
-        'items': '/character/inventory/' + char.headerId,
-        'spells': '/character/spell/' + char.headerId,
-        'abilities': '/character/ability/' + char.headerId
-      };
-    }
-    else {
-      if (!icharNav[char.headerId]) {
+    if (char) {
+      if (!icharNav) {
         this.charNav = {
           'items': '/character/inventory/' + char.headerId,
           'spells': '/character/spell/' + char.headerId,
           'abilities': '/character/ability/' + char.headerId
         };
-      } else {
-        this.charNav = icharNav[char.headerId];
+      }
+      else {
+        if (!icharNav[char.headerId]) {
+          this.charNav = {
+            'items': '/character/inventory/' + char.headerId,
+            'spells': '/character/spell/' + char.headerId,
+            'abilities': '/character/ability/' + char.headerId
+          };
+        } else {
+          this.charNav = icharNav[char.headerId];
+        }
       }
     }
+    
   }
 
   private initialize() {

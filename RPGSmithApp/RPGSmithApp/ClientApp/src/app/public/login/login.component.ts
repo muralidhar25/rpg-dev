@@ -100,7 +100,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     this.authService.login(this.userLogin.email, this.userLogin.password, this.userLogin.rememberMe)
       .subscribe(
-        user => {
+      user => {
+        this.localStorage.saveSessionData(true, DBkeys.NotifyForPendingInvites)
           try { this.localStorage.saveSyncedSessionData(null, DBkeys.SOCIAL_LOGIN); } catch (err) { }
           //this.authService.redirectLoginUser();
           this.reset();
@@ -193,7 +194,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     this.authService.loginSocialPlatform(token, grantType)
       .subscribe(
-        data => {
+      data => {
+        this.localStorage.saveSessionData(true,DBkeys.NotifyForPendingInvites)
           try { this.localStorage.saveSyncedSessionData(provider, DBkeys.SOCIAL_LOGIN); } catch (err) { }
           if (provider == Provider.GOOGLE) window.location.reload();
           //this.authService.redirectLoginUser();

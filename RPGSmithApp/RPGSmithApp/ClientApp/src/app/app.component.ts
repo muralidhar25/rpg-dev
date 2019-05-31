@@ -133,6 +133,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   username: string;
   signalRAdapter: SignalRGroupAdapter;
   ChatHalfScreen: boolean = false;
+  ShowAds: boolean = true;
 
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
@@ -178,7 +179,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
       if (user) {
         this.isAdmin = user.roles.some(function (value) { return (value === "administrator") });
-        
+        this.ShowAds = !user.removeAds;
         if (!user.hasOwnProperty("isGm")) {
           if (this.authService.idToken) {
             this.authService.updateSocialLoginUserValuesFromToken(this.authService.idToken, user)
@@ -191,7 +192,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           //    this.logoPath = '/ruleset/campaign-details/' + this.headers.headerId;
           //  }
           //}
-
+          this.ShowAds = false;
           if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)
             && !(
               this.router.url.toUpperCase().indexOf('/RULESETS/CAMPAIGNS') > -1
@@ -255,6 +256,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                   
                   this.invitationList = data;
                   this.haveNewInvitation = true;
+                  this.NotifyUserForPendingInvites();
                 }
               }            
             }, error => {
@@ -269,6 +271,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       else { //is user!
         //console.log("4.this.signalRAdapter = undefined")
         this.leaveChat();
+        this.ShowAds = false;
           //this.signalRAdapter = undefined;
       }
 
@@ -510,6 +513,16 @@ export class AppComponent implements OnInit, AfterViewInit {
       
       this.ChatHalfScreen = serviceData?true:false;
     });
+    this.app1Service.shouldUpdateAddRemove().subscribe((serviceData) => {
+      
+      if (serviceData) {
+        this.ShowAds = false;
+      }
+      else {
+        this.ShowAds = true;
+      }
+      
+    });
     this.storageManager.initialiseStorageSyncListener();
 
     translationService.addLanguages(["en", "fr", "de", "pt", "ar", "ko"]);
@@ -703,7 +716,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user) {
           this.isAdmin = user.roles.some(function (value) { return (value === "administrator") });
-          
+          this.ShowAds = !user.removeAds;
           if (!user.hasOwnProperty("isGm")) {
             if (this.authService.idToken) {
               this.authService.updateSocialLoginUserValuesFromToken(this.authService.idToken, user)
@@ -717,7 +730,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             //    this.logoPath = '/ruleset/campaign-details/' + this.headers.headerId;
             //  }
             //}
-            
+            this.ShowAds = false;
             if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)){
               this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
             }
@@ -774,6 +787,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                   if (data.length) {
                     this.invitationList = data;
                     this.haveNewInvitation = true;
+                    this.NotifyUserForPendingInvites();
                   }
                 }
               }, error => {
@@ -846,6 +860,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           //console.log("12.this.signalRAdapter = undefined")
           this.leaveChat();
           //this.signalRAdapter = undefined;
+          this.ShowAds = false;
         }
         this.logoNavigation((<NavigationStart>event).url);
         
@@ -856,7 +871,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
         if (!Utilities.isGoingToAppNonLoginRoutes(url)) {
           if (!this.router.navigated) {
-           
+
             if (!this.RefreshURLFlag && url != '/') {
               this.RefreshURLFlag = true;
               Utilities.RefreshPage(url, this.router, this.storageManager.getDataObject<any>(DBkeys.HEADER_VALUE), this.localStorage.getDataObject<number>(DBkeys.RULESET_ID), this.localStorage);
@@ -865,7 +880,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           }
 
           else if (this.router.navigated && url.toUpperCase().indexOf('/SEARCH/BASIC') == -1 && url != '/') {
-            
+
             this.localStorage.localStorageSetItem("LastAccessedPage", url);
             if (+url.split('/')[url.split('/').length - 1] && !this.URLFlag) {
               let NewUrl = url.replace('/' + url.split('/')[url.split('/').length - 1], '')
@@ -947,7 +962,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             }
           }
         }
-       
+        
         
         this.URLFlag = false;
       
@@ -1551,8 +1566,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.triggeredEvents.push(event);
   }
   initializeSignalRAdapter(user: User, http, storageManager, IsRuleset: boolean) {
-    //this.storageManager.getDataObject<ChatConnection[]>(DBkeys.chatConnections);
-    debugger
+    //this.storageManager.getDataObject<ChatConnection[]>(DBkeys.chatConnections);    
     let rulesetID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
     if (rulesetID) {
       this.rulesetService.getRulesetById<Ruleset>(+rulesetID).subscribe((data: Ruleset) => {
@@ -1582,5 +1596,17 @@ export class AppComponent implements OnInit, AfterViewInit {
       //this.signalRAdapter.LeaveChat();
     }
     this.signalRAdapter = undefined;
+  }
+  NotifyUserForPendingInvites() {
+    
+      if (this.localStorage.getData(DBkeys.NotifyForPendingInvites)) {
+        if (this.localStorage.getData(DBkeys.NotifyForPendingInvites) == true) {
+          this.localStorage.saveSessionData(false, DBkeys.NotifyForPendingInvites)
+          this.alertService.showDialog(Utilities.notifyForPendingInvitesMessage,
+            DialogType.alert, () => {  });
+         
+        }
+      }
+    
   }
 }

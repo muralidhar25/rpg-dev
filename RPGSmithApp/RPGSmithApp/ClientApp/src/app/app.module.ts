@@ -27,16 +27,16 @@ import {
   TranslateLanguageLoader
 } from './core/common/app-translation.service';
 import { AppService1 } from './app.service';
-import { CampaignInviteComponent } from './rulesets/campaign-invite/campaign-invite.component';
+//import { CampaignInviteComponent } from './rulesets/campaign-invite/campaign-invite.component';
 import { ContextMenuModule } from 'ngx-contextmenu';
 import { NgChatModule } from './ng-chat/ng-chat.module';
-
+import { AdsenseModule } from 'ng2-adsense';
 
 @NgModule({
   declarations: [
     AppComponent,
     IncompatibleBrowserComponent,
-    CampaignInviteComponent
+   // CampaignInviteComponent
     
   ],
   imports: [
@@ -79,17 +79,20 @@ import { NgChatModule } from './ng-chat/ng-chat.module';
     PublicModule,
     AppRoutingModule,
     MainModule,
-    NgChatModule
+    NgChatModule,
+    AdsenseModule.forRoot({
+      adClient: 'ca-pub-8705225834552505'
+    }),
   ],
   providers: [
 AppService1
   ],
   exports: [
-    CampaignInviteComponent,
+   // CampaignInviteComponent,
 
   ],
   entryComponents: [
-    CampaignInviteComponent,
+  //  CampaignInviteComponent,
 
   ],
   bootstrap: [AppComponent]

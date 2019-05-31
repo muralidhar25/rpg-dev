@@ -73,7 +73,8 @@ export class RulesetViewItemDetailComponent implements OnInit {
       this.showActionButtons(this.showActions);
 
       let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
-        let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+      let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+      if (char) {
         if (!icharNav) {
           this.charNav = {
             'items': '/character/inventory/' + char.headerId,
@@ -92,6 +93,7 @@ export class RulesetViewItemDetailComponent implements OnInit {
             this.charNav = icharNav[char.headerId];
           }
         }
+      } 
     }
 
     private initialize() {

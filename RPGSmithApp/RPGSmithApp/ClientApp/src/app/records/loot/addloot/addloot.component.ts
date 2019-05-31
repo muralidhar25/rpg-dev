@@ -63,7 +63,7 @@ export class AddlootComponent implements OnInit {
       this.authService.logout();
     else {
       this.isLoading = true;
-      this.itemMasterService.getItemMasterByRuleset_add<any>(this.rulesetId, false)//true
+      this.itemMasterService.getItemMasterByRuleset_add<any>(this.rulesetId, true)//true
         .subscribe(data => {
           this.itemsList = data.ItemMaster;
 
@@ -89,7 +89,7 @@ export class AddlootComponent implements OnInit {
     //}
 
     this.itemsList.map((item) => {
-      if (item.itemMasterId == itemMaster.itemMasterId) {
+      if (item.itemMasterId == itemMaster.itemMasterId && item.isBundle == itemMaster.isBundle) {
         item.selected = event.target.checked;
       }
       return item;
@@ -99,7 +99,7 @@ export class AddlootComponent implements OnInit {
 
   submitForm(itemMaster: any) {
  
-   // this.characterItemModal.multiItemMasterBundles = [];
+    this.characterItemModal.multiItemMasterBundles = [];
     this.characterItemModal.multiItemMasters = [];
     this.itemsList.map((item) => {
       if (item.selected) {
@@ -107,7 +107,7 @@ export class AddlootComponent implements OnInit {
         //  this.characterItemModal.multiItemMasterBundles.push({ itemMasterBundleId: item.itemMasterId });
         //}
         //else {
-          this.characterItemModal.multiItemMasters.push({ iD: item.itemMasterId });
+        this.characterItemModal.multiItemMasters.push({ iD: item.itemMasterId, isBundle: item.isBundle });
         //}
       }
       return item;

@@ -35,7 +35,8 @@ namespace RPGSmithApp.Controllers
         {
             try
             {
-                ApplicationUser user = GetUser();
+               // _cancelSubscriptionIfAlreadyExists();
+                   ApplicationUser user = GetUser();
                 List<MarketPlaceItems> results = await _marketPlace.GetList();
                 if (user.IsGm)
                 {
@@ -58,7 +59,7 @@ namespace RPGSmithApp.Controllers
                     results = results.Where(x => x.MarketPlaceId != MarketPlaceType.PLAYER_SLOT && x.MarketPlaceId != MarketPlaceType.CAMPAIGN_SLOT).ToList();
                 }
 
-                if (user.RemoveAds)
+                if (user.RemoveAds || user.IsGm || user.IsGmPermanent)
                 {
                     results = results.Where(x => x.MarketPlaceId != MarketPlaceType.REMOVE_ADDS).ToList();
                 }
@@ -124,6 +125,7 @@ namespace RPGSmithApp.Controllers
                         switch (model.MarketPlaceId)
                         {
                             case MarketPlaceType.GMPERMANENT:
+                                _cancelSubscriptionIfAlreadyExists();
                                 UpdateUser_GmPermanently();
                                 break;
                             case MarketPlaceType.CAMPAIGN_SLOT:
@@ -168,6 +170,42 @@ namespace RPGSmithApp.Controllers
                 return Ok(new { paymentSuccessed = paymentSuccess, userUpdated = updateUserDetailSuccess, message = message });                
             }
             return Ok(new { paymentSuccessed = true, userUpdated = true ,message="Payment Successful."});
+        }
+
+        private bool _cancelSubscriptionIfAlreadyExists()
+        {
+            StripeConfiguration.SetApiKey(_stripeConfig.SecretKey);
+            var service = new SubscriptionService();
+            var currentuser =GetUser();
+            if (!string.IsNullOrEmpty(currentuser.StripeSubscriptionID))
+            {
+                Subscription subscription = null;
+                try
+                {
+                    subscription = service.Get(currentuser.StripeSubscriptionID);
+                }
+                catch (Exception ex) {
+                    subscription = null;
+                    return false; 
+                }
+                if (subscription != null)
+                {
+                    var cancelOptions = new SubscriptionCancelOptions
+                    {
+                        InvoiceNow = false,
+                        Prorate = false,
+                    };
+                    subscription = service.Cancel(currentuser.StripeSubscriptionID, cancelOptions);
+                    return true;
+                    //var options = new SubscriptionUpdateOptions
+                    //{
+                    //    CancelAtPeriodEnd = true
+                    //};
+                    //subscription = service.Update(currentuser.StripeSubscriptionID, options);
+                }
+                
+            }
+            return false;
         }
 
         private void UpdateUser_GmFor1Year(string StripeCustomerId,string StripeSubscriptionId,DateTime? GMEndDate)

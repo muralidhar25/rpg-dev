@@ -62,6 +62,11 @@ export class NgChat implements OnInit, IChatController {
         this.isCollapsed = serviceData;
       }
     });
+    this.appService.shouldUpdateChatWithTakenByLootMessage().subscribe((serviceData) => {
+      if (serviceData) {
+        this.sendLootMessageToChatGroup(true,serviceData);
+      }
+    });
   }
 
   // Exposes enums for the ng-template
@@ -931,7 +936,22 @@ export class NgChat implements OnInit, IChatController {
       }
     }
   }
+  ShowThisMessage(window: Window, message: Message, index: number): boolean {
 
+    if (message.isSystemGenerated) {
+      if (index == 0) {
+        return true; // First message, good to show the thumbnail
+      }
+      else {
+        // Check if the previous message belongs to the same user, if it belongs there is no need to show the avatar again to form the message cluster
+        if (window.messages[index - 1].message != message.message) {
+          return true;
+        }
+      }
+      return false;
+    }
+    return true;
+  }
   // Asserts if a user avatar is visible in a chat cluster
   isAvatarVisible(window: Window, message: Message, index: number): boolean {
     // console.log("window.messages", window.messages);
@@ -939,6 +959,12 @@ export class NgChat implements OnInit, IChatController {
       if (window.messages[index - 1].fromId === window.messages[index].fromId
         && window.messages[index - 1].message == "<span class='ng-chat-orange-text'>New Loot is Available</span>"
         && window.messages[index].message != "<span class='ng-chat-orange-text'>New Loot is Available</span>"
+      ) {
+        return true;
+      }
+      else if (window.messages[index - 1].fromId === window.messages[index].fromId
+        && window.messages[index - 1].message.indexOf("Loot</span>") >-1
+        && window.messages[index].message.indexOf("Loot</span>") == -1
       ) {
         return true;
       }
@@ -1177,11 +1203,16 @@ export class NgChat implements OnInit, IChatController {
     //window.messages.push(message);
     this.adapter.sendMessage(message);
   }
-  sendLootMessageToChatGroup() {
+  sendLootMessageToChatGroup(isLootTakenByCharacter = false,CharacterName='') {
     let message = new Message();
     message.fromId = this.userId;
     message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;
-    message.message = "<span class='ng-chat-orange-text'>New Loot is Available</span>";
+    if (isLootTakenByCharacter) {
+      message.message = "<span class='ng-chat-orange-text'>" + CharacterName +" Has Taken Loot</span>";
+    }
+    else {
+      message.message = "<span class='ng-chat-orange-text'>New Loot is Available</span>";
+    }   
     message.dateSent = new Date();
     message.isSystemGenerated = true;
     //window.messages.push(message);
@@ -1192,7 +1223,7 @@ export class NgChat implements OnInit, IChatController {
       }
     })
     this.adapter.sendMessage(message);
-  }
+  } 
   toggleNotificationSound() {
     this.audioEnabled = !this.audioEnabled;
   }

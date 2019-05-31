@@ -149,7 +149,7 @@ namespace DAL.Services
         }
         public ItemMasterBundle getBundleByBundleID(int id)
         {
-            ItemMasterBundle obj= _context.ItemMasterBundles.Include(x => x.ItemMasterBundleItems).Where(x => x.BundleId == id && x.IsDeleted != true).FirstOrDefault();
+            ItemMasterBundle obj= _context.ItemMasterBundles.Include(x => x.ItemMasterBundleItems).Include(x=>x.RuleSet).Where(x => x.BundleId == id && x.IsDeleted != true).FirstOrDefault();
             if (obj.ItemMasterBundleItems.Count>0)
             {
                 foreach (var item in obj.ItemMasterBundleItems)

@@ -142,8 +142,8 @@
                 <div class="item-info-props-indics">
                   <ul class="item-info-props">
                     <li *ngIf="bundleDetail.rarity">{{bundleDetail.rarity}}</li>
-                    <li *ngIf="bundleDetail.value" popover="{{bundleDetail.value}} {{bundleDetail.currencyLabel}}" triggers="hover">{{bundleDetail.value}} {{bundleDetail.currencyLabel}}</li>
-                    <li *ngIf="bundleDetail.totalWeight" popover="{{bundleDetail.totalWeight}} {{bundleDetail.weightLabel}}" triggers="hover">{{bundleDetail.totalWeight}} {{bundleDetail.weightLabel}}</li>
+                    <li *ngIf="bundleDetail.value" popover="{{bundleDetail.value}} {{bundleDetail.currencyLabel}}" triggers="hover" popoverTitle="VALUE">{{bundleDetail.value}} {{bundleDetail.currencyLabel}}</li>
+                    <li *ngIf="bundleDetail.totalWeight" popover="{{bundleDetail.totalWeight}} {{bundleDetail.weightLabel}}" triggers="hover" popoverTitle="TOTAL WEIGHT">{{bundleDetail.totalWeight}} {{bundleDetail.weightLabel}}</li>
                     <li *ngIf="bundleDetail.volume">{{bundleDetail.volume}} {{bundleDetail.volumeLabel}}</li>
                   </ul>
                   

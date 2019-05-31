@@ -17,3 +17,13 @@
 .modal-footer .btn {
   margin-top: 0px !important;
 }
+@media (max-width:767.5px){
+  .modal-footer span{
+    margin-left:0px;
+    flex-wrap:wrap
+  }
+  .modal-footer span button{
+    margin:4px 0px 0px !important;
+    width:100%;
+  }
+}
