@@ -147,22 +147,23 @@
     
     <ng-container *ngIf="ShowAds">
       <div class="adds-left">
-        
+
         <ng-adsense></ng-adsense>
       </div>
 
       <div class="adds-right">
-        
+
         <ng-adsense></ng-adsense>
       </div>
-      <div class="row">
+      <ng-adsense></ng-adsense>
+      
+      <!--<div class="row">
         <div class="col-12 text-center">
           <div class="bottom-adds">
-           
             <ng-adsense></ng-adsense>
           </div>
         </div>
-      </div>
+      </div>-->
     </ng-container>
     <a href="javascript:void(0);" *ngIf="showScrollButton" class="icon icon-arrow-up fade-in back-to-top" (click)="scrollToTop()"></a>
   </div>

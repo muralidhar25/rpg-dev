@@ -67,6 +67,7 @@ import { HandoutNewFolderComponent } from "./handouts/handout-new-folder/handout
 import { ContextMenuModule } from 'ngx-contextmenu';
 import { HandoutRenameComponent } from "./handouts/handout-rename/handout-rename.component";
 import { CampaignInviteComponent } from "../rulesets/campaign-invite/campaign-invite.component";
+import { ProgressbarModule } from "ngx-bootstrap";
   
 @NgModule({
   declarations: [
@@ -131,7 +132,7 @@ import { CampaignInviteComponent } from "../rulesets/campaign-invite/campaign-in
     TagInputModule,
     CoreModule,
     AuthModule,
-ContextMenuModule
+    ContextMenuModule, ProgressbarModule.forRoot()
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: CachingInterceptor, multi: true },

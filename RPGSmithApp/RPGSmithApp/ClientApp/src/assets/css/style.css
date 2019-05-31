@@ -9285,3 +9285,6 @@ span.user-image-name {
   }
 }
 /* ===== ADS Banner Css End =====*/
+.progress-bar {
+  background-color: #d66b40 !important;
+}

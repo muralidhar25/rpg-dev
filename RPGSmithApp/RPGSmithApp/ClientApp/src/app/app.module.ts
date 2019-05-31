@@ -82,7 +82,7 @@ import { AdsenseModule } from 'ng2-adsense';
     NgChatModule,
     AdsenseModule.forRoot({
       adClient: 'ca-pub-8705225834552505'
-    }),
+    }),    
   ],
   providers: [
 AppService1

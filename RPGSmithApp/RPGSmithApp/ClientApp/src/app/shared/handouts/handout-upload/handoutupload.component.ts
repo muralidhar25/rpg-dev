@@ -43,7 +43,7 @@ export class HandoutuploadComponent implements OnInit {
   isMouseDown: boolean = false;
   interval: any;
   usedSpace: string = '0';
-
+  availableSpace: number = 0; 
   MyImageCount: number = 39;
   previousContainerMyImageNumber: number = 0;
   isMyImagesLoading: boolean = false;
@@ -58,6 +58,8 @@ export class HandoutuploadComponent implements OnInit {
   prefixToGetFolderContent: string = '';
   ruleset: Ruleset = new Ruleset();
   currentCopiedFile: any = undefined;
+  isUploadingFiles = false;
+  progressCompletedYet: number = 0;
   //public items = [
   //  { name: 'John', otherProperty: 'Foo' },
   //  { name: 'Joe', otherProperty: 'Bar' }
@@ -97,6 +99,7 @@ export class HandoutuploadComponent implements OnInit {
       this.authService.logout();
     else {
       this.userid = user.id;
+      this.availableSpace = user.storageSpace;
       //this.searchBing(this.query);
       //this.Options = [{ value: IMAGE.MYIMAGES, selected: false }];
       //    this.Options.map((ele) => {
@@ -106,6 +109,8 @@ export class HandoutuploadComponent implements OnInit {
       this.previousContainerMyImageNumber = 0;
       this.isMyImagesLoading = false;
       this.hideShowMoreMyImage = false;
+      this.isUploadingFiles = false;
+      this.progressCompletedYet = 0;
      this.searchMyImages(this.query, user.id);
 
      
@@ -150,18 +155,40 @@ export class HandoutuploadComponent implements OnInit {
       this.UploadImages(event)
     }
   }
-
+  CalculateProgress(totalSpaceOfFiles:number) {    
+    if (this.progressCompletedYet > 98) {
+      this.progressCompletedYet=99
+    }
+    else {
+      this.progressCompletedYet = parseInt((this.progressCompletedYet + (7000000) / totalSpaceOfFiles).toString());
+    }
+  }
   UploadImages(event: any) {
     let imgList: any[] = [];
     if (event.target.files && event.target.files[0]) {
       imgList = event.target.files;      
       this.isLoading = true;
+      this.isUploadingFiles = true;
+      
+      let totalSpaceOfFiles = 0;
+      for (var _fileIndex = 0; _fileIndex < event.target.files.length; _fileIndex++) {
+        totalSpaceOfFiles = totalSpaceOfFiles + event.target.files[_fileIndex].size; //size in bytes
+      }
+      console.log("interval started");
+      var ProgressTimer = setInterval(() => {
+        
+        this.CalculateProgress(totalSpaceOfFiles)
+      }, 100);
       if (this.prefixToGetFolderContent) {
         this.imageSearchService.uploadHandoutFolder<any>(imgList, this.userid, this.prefixToGetFolderContent, this.ruleset.ruleSetId)
           .subscribe(data => {
             if (data) {
               if (data.result) {
                 this.isLoading = false;
+                this.isUploadingFiles = false;
+                console.log("interval end1");
+                this.progressCompletedYet = 100;
+                clearInterval(ProgressTimer);
                 this.Initialize();
               }
             }
@@ -182,6 +209,10 @@ export class HandoutuploadComponent implements OnInit {
             if (data) {
               if (data.result) {
                 this.isLoading = false;
+                this.isUploadingFiles = false;
+                console.log("interval end2");
+                this.progressCompletedYet = 100;
+                clearInterval(ProgressTimer);
                 this.Initialize();
               }
             }
@@ -345,10 +376,9 @@ export class HandoutuploadComponent implements OnInit {
     let deletedImages = this.blobMyImages.filter((val) => { return val.isSelected === true });
     this.blobMyImages = this.blobMyImages.filter((val) => { return val.isSelected === false });
     let model = deletedImages.map((blob) => {
-      let name = blob.absolutePath.substring(blob.absolutePath.lastIndexOf('/') + 1);
+      let name = decodeURIComponent(blob.absolutePath.substring(blob.absolutePath.lastIndexOf('/') + 1)) ;
       return { blobName: name, userContainerName: blob.container }
     })
-   
     this.blobMyImagesBLOB = this.blobMyImages;
     this.imageSearchService.deleteImages<any>(model, this.prefixToGetFolderContent)
       .subscribe(data => {      

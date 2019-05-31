@@ -45,6 +45,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
   headers: HeaderValues = new HeaderValues();
     charNav: any = {};
   pageRefresh: boolean;
+  //itemWillGetDropped: boolean = false;
   pauseItemAdd: boolean;
   pauseItemCreate: boolean;
     constructor(
@@ -229,8 +230,13 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
     }
 
     private deleteItemHelper(item: any, itemsList: any) {
-        this.isLoading = true;
-        this.alertService.startLoadingMessage("", "Deleting Item");
+      this.isLoading = true;
+      if (this.pageRefresh) {
+        this.alertService.startLoadingMessage("", "Dropping " + item.name);
+      } else {
+        this.alertService.startLoadingMessage("", "Deleting " + item.name);
+      }
+        
 
         //this.itemsService.deleteItem(item.itemId)
         //    .subscribe(
@@ -266,8 +272,13 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
                     setTimeout(() => {
                         this.isLoading = false;
                         this.alertService.stopLoadingMessage();
-                    }, 200);
+                  }, 200);
+                  if (this.pageRefresh) {
+                    this.alertService.showMessage("Item has been dropped successfully.", "", MessageSeverity.success);
+                  } else {
                     this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
+                  }
+                    
                     //this.initialize();
                     this.router.navigate(['/character/inventory', item.characterId]);
                 },
@@ -507,6 +518,9 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
             this.authService.logout();
           }
           else {
+            //if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
+            //  this.itemWillGetDropped = true;
+            //}
             if (user.isGm) {
 
               this.pageRefresh = user.isGm;

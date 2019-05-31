@@ -377,11 +377,11 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpPost("DeleteBlob")]
-        public  IActionResult DeleteBlob([FromBody] List<DeleteBlob> model,string prefixToGetFolderContent="")
+        public async Task<IActionResult> DeleteBlob([FromBody] List<DeleteBlob> model,string prefixToGetFolderContent="")
         {
             try
             {
-                bs.DeleteBlobs(model, prefixToGetFolderContent);
+                await bs.DeleteBlobs(model, prefixToGetFolderContent);
                 return Ok();
             }
             catch (Exception ex) {

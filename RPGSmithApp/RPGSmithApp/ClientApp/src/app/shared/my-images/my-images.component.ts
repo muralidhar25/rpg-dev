@@ -35,7 +35,7 @@ export class MyImagesComponent implements OnInit {
     isMouseDown: boolean = false;
     interval: any;
     usedSpace: string = '0';
-
+  availableSpace: number = 0;  
     MyImageCount: number = 39;
     previousContainerMyImageNumber: number = 0;
     isMyImagesLoading: boolean = false;
@@ -64,7 +64,8 @@ export class MyImagesComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
-            this.userid = user.id;
+          this.userid = user.id;
+          this.availableSpace = user.storageSpace;
             //this.searchBing(this.query);
             //this.Options = [{ value: IMAGE.MYIMAGES, selected: false }];
             //    this.Options.map((ele) => {

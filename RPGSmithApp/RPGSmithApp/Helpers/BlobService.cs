@@ -475,7 +475,7 @@ namespace RPGSmithApp.Helpers
             //return new { count = Count, previousContainerNumber = previousContainerNumber, blobResponse = objBlobResponse, previousContainerImageNumber = previousContainerImageNumber };
         }
 
-        public void DeleteBlobs(List<DeleteBlob> model, string prefixToGetFolderContent = "")
+        public async Task DeleteBlobs(List<DeleteBlob> model, string prefixToGetFolderContent = "")
         {
             
             foreach (var item in model)
@@ -487,7 +487,7 @@ namespace RPGSmithApp.Helpers
                    
                     CloudBlockBlob _blockBlob = container.GetBlockBlobReference(item.blobName);
                     //delete blob from container    
-                   _blockBlob.DeleteAsync().Wait();
+                    await  _blockBlob.DeleteIfExistsAsync();
                 }
                 else
                 {
@@ -495,7 +495,7 @@ namespace RPGSmithApp.Helpers
                     CloudBlobContainer sourceContainer = container;
                     CloudBlobDirectory directory = sourceContainer.GetDirectoryReference(prefixToGetFolderContent);
                     CloudBlockBlob blockblob = directory.GetBlockBlobReference(item.blobName);
-                    blockblob.DeleteAsync().Wait();
+                    await blockblob.DeleteIfExistsAsync();
                 }
                 
             }

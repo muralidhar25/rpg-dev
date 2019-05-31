@@ -70,6 +70,7 @@ export class CharacterItemsComponent implements OnInit {
   Alphabetical: boolean = false;
   Visible: boolean = false;
   pageRefresh: boolean;
+  //itemWillGetDropped: boolean = false;
   isPlayerCharacter: boolean = false;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -537,7 +538,12 @@ export class CharacterItemsComponent implements OnInit {
   }
 
   private deleteItemHelper(item: any, itemsList: any) {
-    this.alertService.startLoadingMessage("", "Deleting Item");
+    if (this.pageRefresh) {
+      this.alertService.startLoadingMessage("", "Dropping " + item.name);
+    } else {
+      this.alertService.startLoadingMessage("", "Deleting " + item.name);
+    }
+    
     //this.itemsService.deleteItem(item.itemId)
     //    .subscribe(
     //        data => {
@@ -580,7 +586,14 @@ export class CharacterItemsComponent implements OnInit {
             this.ItemsList = this.ItemsList.filter((val) => val.itemId != RecDelItem.itemId);
           })
 
-          this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
+          if (this.pageRefresh) {
+            this.alertService.showMessage("Item has been dropped successfully.", "", MessageSeverity.success);
+            //this.alertService.startLoadingMessage("", "Dropping " + item.name);
+          } else {
+            this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
+            //this.alertService.startLoadingMessage("", "Deleting " + item.name);
+          }
+          
           //this.isLoading = TRUE;
           //this.initialize();
 
@@ -939,6 +952,9 @@ export class CharacterItemsComponent implements OnInit {
             this.authService.logout();
           }
           else {
+            //if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
+            //  this.itemWillGetDropped = true;
+            //}
             if (user.isGm) {
               this.pageRefresh = user.isGm;
             }

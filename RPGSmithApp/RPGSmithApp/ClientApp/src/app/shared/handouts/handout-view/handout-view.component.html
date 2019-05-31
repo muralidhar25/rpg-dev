@@ -55,11 +55,11 @@
   <div class="modal-footer" *ngIf="!isLoading">
     <div class="form-group space-details">
       <label for="AccountType">Space Usage</label>
-      <label class="text-center mb-0">{{usedSpace}} / 1000 MB</label>
+      <label class="text-center mb-0">{{usedSpace}} / {{availableSpace}} MB</label>
       <div class="progressbar-custom">
         <span>E</span>
         <span class="progress-bar-inner">
-          <span class="inner-bar-progrss" [ngStyle]="{'width': +usedSpace/1000*100 + '%'}"></span>
+          <span class="inner-bar-progrss" [ngStyle]="{'width': +usedSpace/availableSpace*100 + '%'}"></span>
         </span>
         <span>F</span>
       </div>

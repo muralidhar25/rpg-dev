@@ -219,7 +219,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
           if (this.router.url.toUpperCase().indexOf('/RULESET/') > -1 && this.router.url.toUpperCase().indexOf('CHARACTER/RULESET') == -1
             && this.router.url.toUpperCase().indexOf('/RULESET/ADD') == -1) {
-            if (!this.signalRAdapter) {
+            if (!this.signalRAdapter && user) {
               let model: any = user;
               model.campaignID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
               //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
@@ -292,7 +292,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               
               if (data) {
                 if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
-                  if (!this.signalRAdapter ) { //get player control 265
+                  if (!this.signalRAdapter && user) { //get player control 265
                     let model: any = user;
                     if (this.headers) {
                       if (this.headers.headerId  && data.isPlayerCharacter) {
@@ -751,7 +751,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             
             if ((<NavigationStart>event).url.toUpperCase().indexOf('/RULESET/') > -1 && this.router.url.toUpperCase().indexOf('CHARACTER/RULESET') == -1
               && (<NavigationStart>event).url.toUpperCase().indexOf('/RULESET/ADD') == -1) {
-              if (!this.signalRAdapter) {
+              if (!this.signalRAdapter && user) {
                 let model: any = user;
                 model.campaignID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
                 //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
@@ -806,7 +806,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                   
                   if (data) {                    
                     if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
-                      if (!this.signalRAdapter) {
+                      if (!this.signalRAdapter && user) {
                         let model: any = user;
                         if (this.headers) {
                           if (this.headers.headerId && data.isPlayerCharacter) {

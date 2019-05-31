@@ -42,7 +42,7 @@ export class HandoutViewComponent implements OnInit {
   isMouseDown: boolean = false;
   interval: any;
   usedSpace: string = '0';
-
+  availableSpace: number = 0; 
   MyImageCount: number = 39;
   previousContainerMyImageNumber: number = 0;
   isMyImagesLoading: boolean = false;
@@ -83,6 +83,7 @@ export class HandoutViewComponent implements OnInit {
       this.authService.logout();
     else {
       this.userid = user.id;
+      this.availableSpace = user.storageSpace;
       this.rulesetService.getRulesetById<any>(this.ruleSetId)
         .subscribe(data => {
           if (data) {
@@ -93,7 +94,7 @@ export class HandoutViewComponent implements OnInit {
             this.hideShowMoreMyImage = false;
             this.searchMyImages(this.query, this.createdById);
 
-            this.userService.getBlobSpaceUsed<number>(this.createdById)
+            this.userService.getBlobSpaceUsed<number>(this.userid)
               .subscribe(
                 data => {
                   this.usedSpace = data.toFixed(2);
