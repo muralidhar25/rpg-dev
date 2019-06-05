@@ -19,12 +19,14 @@ namespace DAL.Services
         protected readonly ApplicationDbContext _context;
         private readonly IRepository<UserRuleSet> _repoUserRuleSet;
         private readonly IConfiguration _configuration;
-        public RuleSetService(IRepository<RuleSet> repo, IRepository<UserRuleSet> repoUserRuleSet, ApplicationDbContext context, IConfiguration configuration)
+        private readonly ICampaignService _campaign;
+        public RuleSetService(IRepository<RuleSet> repo, IRepository<UserRuleSet> repoUserRuleSet, ApplicationDbContext context, IConfiguration configuration, ICampaignService campaign)
         {
             _repo = repo;
             _repoUserRuleSet = repoUserRuleSet;
             this._context = context;
             _configuration = configuration;
+            _campaign = campaign;
         }
 
         public async Task<RuleSet> Insert(RuleSet RuleSetDomain)
@@ -1845,6 +1847,198 @@ namespace DAL.Services
             List<ItemMaster_Bundle> itemMasters= SearchRulesetItems(searchModel);
             List<SearchEverything> results = bindEveryThingModel(characterAbilities, abilities, characterSpells, spells, items, itemMasters);
             return results;
+        }
+        #endregion
+        #region DiceRoll
+        public async Task<DiceRollModel> GetDiceRollModelAsync(int RulesetID, int CharacterID, ApplicationUser User)
+        {
+           
+            DiceRollModel DiceRollModel = new DiceRollModel();
+
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            //string qry = "EXEC Character_GetTilesByPageID @CharacterID = '" + characterId + "' ,@PageID='" + pageId + "'";
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("GetDiceRollData", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@RulesetID", RulesetID);
+                command.Parameters.AddWithValue("@CharacterID", CharacterID);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            if (ds.Tables[8].Rows.Count > 0) //Check Ruleset Exists
+            {
+                DiceRollModel.RuleSet = _repo.GetRuleset(ds.Tables[8]);
+                DiceRollModel.RuleSet.IsDicePublicRoll= ds.Tables[8].Rows[0]["IsDicePublicRoll"] == DBNull.Value ? false : Convert.ToBoolean(ds.Tables[8].Rows[0]["IsDicePublicRoll"]);
+
+                DiceRollModel.CustomDices = new List<CustomDice>();
+                if (ds.Tables[9].Rows.Count > 0) //Custom Dices
+                {
+                    List<CustomDice> customDices = new List<CustomDice>();
+                    foreach (DataRow _diceRow in ds.Tables[9].Rows)
+                    {
+                        CustomDice dice = new CustomDice()
+                        {
+                            CustomDiceId = _diceRow["CustomDiceId"] == DBNull.Value ? 0 : Convert.ToInt32(_diceRow["CustomDiceId"]),
+                            CustomDicetype = GetCustomDicetype(_diceRow["CustomDicetype"] == DBNull.Value ? 0 : Convert.ToInt32(_diceRow["CustomDicetype"])),
+                            Icon = _diceRow["Icon"] == DBNull.Value ? null : _diceRow["Icon"].ToString(),
+                            IsNumeric = _diceRow["IsNumeric"] == DBNull.Value ? false : Convert.ToBoolean(_diceRow["IsNumeric"]),
+                            Name = _diceRow["Name"] == DBNull.Value ? null : _diceRow["Name"].ToString(),
+                            RuleSetId = _diceRow["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(_diceRow["RuleSetId"]),
+                        };
+                        List<CustomDiceResult> customDiceResults = new List<CustomDiceResult>();
+                        foreach (DataRow _diceResultRow in ds.Tables[10].Rows)
+                        {
+                            int _diceResultRow_CustomDiceId = _diceResultRow["CustomDiceId"] == DBNull.Value ? 0 : Convert.ToInt32(_diceResultRow["CustomDiceId"]);
+                            if (dice.CustomDiceId == _diceResultRow_CustomDiceId)
+                            {
+                                CustomDiceResult result = new CustomDiceResult()
+                                {
+                                    CustomDiceId = _diceResultRow_CustomDiceId,
+                                    CustomDiceResultId = _diceResultRow["CustomDiceResultId"] == DBNull.Value ? 0 : Convert.ToInt32(_diceResultRow["CustomDiceResultId"]),
+                                    DisplayContent = _diceResultRow["DisplayContent"] == DBNull.Value ? null : _diceResultRow["DisplayContent"].ToString(),
+                                    Name = _diceResultRow["Name"] == DBNull.Value ? null : _diceResultRow["Name"].ToString(),
+                                };
+                                customDiceResults.Add(result);
+                            }
+                        }
+                        dice.CustomDiceResults = customDiceResults;
+                        customDices.Add(dice);
+                    }
+                    if (customDices.Any())
+                    {
+                        DiceRollModel.CustomDices = customDices;
+                    }
+                }
+
+                DiceRollModel.DiceTrays = new List<DiceTray>();
+                if (ds.Tables[11].Rows.Count > 0) //Dice Tray
+                {
+                    List<DiceTray> _diceTrays = new List<DiceTray>();
+                    foreach (DataRow _diceTrayRow in ds.Tables[11].Rows)
+                    {
+                        DiceTray tray = new DiceTray()
+                        {
+                            DefaultDiceId = _diceTrayRow["DefaultDiceId"] == DBNull.Value ? 0 : Convert.ToInt32(_diceTrayRow["DefaultDiceId"]),
+                            CustomDiceId = _diceTrayRow["CustomDiceId"] == DBNull.Value ? 0 : Convert.ToInt32(_diceTrayRow["CustomDiceId"]),
+                            DiceTrayId = _diceTrayRow["DiceTrayId"] == DBNull.Value ? 0 : Convert.ToInt32(_diceTrayRow["DiceTrayId"]),
+                            IsCustomDice = _diceTrayRow["IsCustomDice"] == DBNull.Value ? false : Convert.ToBoolean(_diceTrayRow["IsCustomDice"]),
+                            IsDefaultDice = _diceTrayRow["IsDefaultDice"] == DBNull.Value ? false : Convert.ToBoolean(_diceTrayRow["IsDefaultDice"]),
+                            Name = _diceTrayRow["Name"] == DBNull.Value ? null : _diceTrayRow["Name"].ToString(),
+                            RuleSetId = _diceTrayRow["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(_diceTrayRow["RuleSetId"]),
+                            SortOrder = _diceTrayRow["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(_diceTrayRow["SortOrder"]),
+                        };
+                        _diceTrays.Add(tray);
+                    }
+                    if (_diceTrays.Any())
+                    {
+                        DiceRollModel.DiceTrays = _diceTrays;
+                    }
+                }
+
+                DiceRollModel.DefaultDices = new List<DefaultDice>();
+                if (ds.Tables[12].Rows.Count > 0) //Dice Tray
+                {
+                    List<DefaultDice> _defaultDices = new List<DefaultDice>();
+                    foreach (DataRow _defaultDicesRow in ds.Tables[12].Rows)
+                    {
+                        DefaultDice defaultDice = new DefaultDice()
+                        {
+                            DefaultDiceId = _defaultDicesRow["DefaultDiceId"] == DBNull.Value ? 0 : Convert.ToInt32(_defaultDicesRow["DefaultDiceId"]),
+                            Icon = _defaultDicesRow["Icon"] == DBNull.Value ? null : _defaultDicesRow["Icon"].ToString(),
+                            Name = _defaultDicesRow["Name"] == DBNull.Value ? null : _defaultDicesRow["Name"].ToString(),
+                        };
+                        _defaultDices.Add(defaultDice);
+                    }
+                    if (_defaultDices.Any())
+                    {
+                        DiceRollModel.DefaultDices = _defaultDices;
+                    }
+                }
+
+                if (ds.Tables[0].Rows.Count > 0) //Check Character Exists
+                {
+                    DiceRollModel.Character= _repo.GetCharacter(ds.Tables[0]);
+                    DiceRollModel.Character.IsDicePublicRoll = ds.Tables[0].Rows[0]["IsDicePublicRoll"] == DBNull.Value ? false : Convert.ToBoolean(ds.Tables[0].Rows[0]["IsDicePublicRoll"]);
+
+                    DiceRollModel.CharacterCommands = new List<CharacterCommand>();
+                    if (ds.Tables[7].Rows.Count > 0) //Dice Tray
+                    {
+                        List<CharacterCommand> _characterCommands = new List<CharacterCommand>();
+                        foreach (DataRow _characterCommandRow in ds.Tables[7].Rows)
+                        {
+                            CharacterCommand characterCommand = new CharacterCommand()
+                            {
+                                CharacterCommandId= _characterCommandRow["CharacterCommandId"] == DBNull.Value ? 0 : Convert.ToInt32(_characterCommandRow["CharacterCommandId"]),
+                                CharacterId= _characterCommandRow["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(_characterCommandRow["CharacterId"]),
+                                Command= _characterCommandRow["Command"] == DBNull.Value ? null : _characterCommandRow["Command"].ToString(),
+                                CreatedOn= _characterCommandRow["CreatedOn"] == DBNull.Value ? new DateTime() : Convert.ToDateTime(_characterCommandRow["CreatedOn"]),
+                                IsDeleted= _characterCommandRow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(_characterCommandRow["IsDeleted"]),
+                                UpdatedOn= _characterCommandRow["UpdatedOn"] == DBNull.Value ? new DateTime() : Convert.ToDateTime(_characterCommandRow["UpdatedOn"]),
+                                Name= _characterCommandRow["Name"] == DBNull.Value ? null : _characterCommandRow["Name"].ToString()
+                            };
+                            _characterCommands.Add(characterCommand);
+                        }
+                        if (_characterCommands.Any())
+                        {
+                            DiceRollModel.CharacterCommands = _characterCommands;
+                        }
+                    }
+
+                    DiceRollModel.CharactersCharacterStats = new List<CharactersCharacterStat>();
+                    if (ds.Tables[1].Rows.Count > 0)
+                    {
+                        utility.FillCharacterCharacterStats(DiceRollModel.CharactersCharacterStats, ds);
+                    }
+
+                }
+
+
+            }
+
+
+            if (_campaign.IsDeletedInvite(CharacterID, User.Id))
+            {
+                DiceRollModel.IsGmAccessingPlayerCharacter = false;
+            }
+            else {
+                DiceRollModel.IsGmAccessingPlayerCharacter = await _campaign.isGmAccessingPlayerCharacterUrl(CharacterID, User);
+            }            
+
+            return DiceRollModel;
+        }
+
+        private CustomDicetypeEnum GetCustomDicetype(int CustomDicetypeID)
+        {
+            switch (CustomDicetypeID)
+            {
+                case 1:
+                    return CustomDicetypeEnum.Numeric;
+                    
+                case 2:
+                    return CustomDicetypeEnum.Text;
+                    
+                default:
+                    return CustomDicetypeEnum.Image;
+                    
+            }
         }
         #endregion
     }

@@ -744,6 +744,7 @@ export class CampaignDashboardComponent implements OnInit {
     this.bsModalRef.content.character = new Characters();
     this.bsModalRef.content.recordName = this.ruleset.ruleSetName;
     this.bsModalRef.content.recordImage = this.ruleset.imageUrl;
+    this.bsModalRef.content.recordType = 'ruleset'
     this.bsModalRef.content.isFromCampaignDetail = true;
   }
   manageIcon(id: number) {
@@ -1305,6 +1306,7 @@ export class CampaignDashboardComponent implements OnInit {
               this.bsModalRef.content.character = new Characters();
               this.bsModalRef.content.recordName = this.ruleset.ruleSetName;
               this.bsModalRef.content.recordImage = this.ruleset.imageUrl;
+              this.bsModalRef.content.recordType = 'ruleset'
               this.bsModalRef.content.isFromCampaignDetail = true;
               break;
             case STAT_TYPE.Condition:
@@ -1377,6 +1379,7 @@ export class CampaignDashboardComponent implements OnInit {
           this.bsModalRef.content.recordName = this.ruleset.ruleSetName;
           this.bsModalRef.content.recordImage = this.ruleset.imageUrl;
           this.bsModalRef.content.isFromCampaignDetail = true;
+          this.bsModalRef.content.recordType = 'ruleset'
 
           //this.bsModalRef = this.modalService.show(EditImageComponent, {
           //    class: 'modal-primary modal-md',

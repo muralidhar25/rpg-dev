@@ -22,6 +22,7 @@ export class AppService1 {
   private CharacterSlotsCount = new Subject<any>();
   private TakenByLootMessage = new Subject<any>();
   private LootMessageClicked = new Subject<any>();
+  private ChatRemoveIntervals = new Subject<any>();
   
 
   updateAccountSetting1(accountSetting: any) {    
@@ -125,16 +126,21 @@ export class AppService1 {
   updateChatWithTakenByLootMessage(data: any) {
     this.TakenByLootMessage.next(data);
   }
-
   shouldUpdateChatWithTakenByLootMessage(): Observable<any> {
     return this.TakenByLootMessage.asObservable();
   }
   updateLootMessageClicked(data: any) {
     this.LootMessageClicked.next(data);
   }
-
   shouldUpdateLootMessageClicked(): Observable<any> {
     return this.LootMessageClicked.asObservable();
+  }
+
+  updateChatRemoveIntervals(data: any) {
+    this.ChatRemoveIntervals.next(data);
+  }
+  shouldUpdateChatRemoveIntervals(): Observable<any> {
+    return this.ChatRemoveIntervals.asObservable();
   }
 }
 

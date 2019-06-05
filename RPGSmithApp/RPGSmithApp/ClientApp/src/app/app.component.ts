@@ -1615,7 +1615,9 @@ export class AppComponent implements OnInit, AfterViewInit {
           
         });
       //this.signalRAdapter.LeaveChat();
+      this.app1Service.updateChatRemoveIntervals(true);
     }
+    //this.app1Service.updateChatRemoveIntervals(true);
     this.signalRAdapter = undefined;
   }
   NotifyUserForPendingInvites() {

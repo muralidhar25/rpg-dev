@@ -465,6 +465,7 @@ export class AbilitiesComponent implements OnInit {
     this.bsModalRef.content.character = new Characters();
     this.bsModalRef.content.recordName = this.rulesetModel.ruleSetName;
     this.bsModalRef.content.recordImage = this.rulesetModel.imageUrl;
+    this.bsModalRef.content.recordType = 'ruleset'
     this.bsModalRef.content.isFromCampaignDetail = true;
   }
 }

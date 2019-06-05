@@ -41,6 +41,8 @@ export class CharactersService extends EndpointFactory {
   private readonly _IsGmAccessingPlayerCharacterUrl: string = "/api/campaign/isGmAccessingPlayerCharacterUrl";
   private readonly _updatePublicPrivateRollUrl: string = "/api/Character/UpdatePublicPrivateRoll";
   private readonly _leaveChatUrl: string = "/api/chat/leaveChat";
+  private readonly _getDiceRollModelUrl: string = "/api/Ruleset/GetDiceRollData";
+  
 
   get getUrl() { return this.configurations.baseUrl + this._getUrl; }
   get createUrl() { return this.configurations.baseUrl + this._createUrl; }
@@ -59,13 +61,21 @@ export class CharactersService extends EndpointFactory {
   get IsGmAccessingPlayerCharacterUrl() { return this.configurations.baseUrl + this._IsGmAccessingPlayerCharacterUrl; }
   get updatePublicPrivateRollUrl() { return this.configurations.baseUrl + this._updatePublicPrivateRollUrl; }
   get leaveChatUrl() { return this.configurations.baseUrl + this._leaveChatUrl; }
+  get getDiceRollModelUrl() { return this.configurations.baseUrl + this._getDiceRollModelUrl; }
+  
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
     private fileUploadService: FileUploadService) {
     super(http, configurations, injector);
   }
 
-
+  getDiceRollModel<T>(rulesetId: number, characterId: number): Observable<T> {
+    let endpointUrl = `${this.getDiceRollModelUrl}?RuleSetID=${rulesetId}&CharacterID=${characterId}`;
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getDiceRollModel(rulesetId, characterId));
+      });
+  }
   getCharactersById<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getByIdUrl}?id=${Id}`;
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())

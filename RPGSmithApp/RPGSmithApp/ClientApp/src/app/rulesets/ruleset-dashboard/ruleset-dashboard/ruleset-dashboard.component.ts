@@ -723,6 +723,7 @@ export class RulesetDashboardComponent implements OnInit {
       this.bsModalRef.content.recordName = this.rulesetModel.ruleSetName;
       this.bsModalRef.content.recordImage = this.rulesetModel.imageUrl;
       this.bsModalRef.content.isFromCampaignDetail = true;
+      this.bsModalRef.content.recordType = 'ruleset'
     }
 
     manageIcon(id: number) {

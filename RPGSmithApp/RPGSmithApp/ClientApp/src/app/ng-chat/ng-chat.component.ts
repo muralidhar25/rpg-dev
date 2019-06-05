@@ -67,6 +67,12 @@ export class NgChat implements OnInit, IChatController {
         this.sendLootMessageToChatGroup(true,serviceData);
       }
     });
+    this.appService.shouldUpdateChatRemoveIntervals().subscribe((serviceData) => {
+      if (serviceData && this.fetchFriendsListInterval) {
+        debugger
+        clearInterval(this.fetchFriendsListInterval);
+      }
+    });
   }
 
   // Exposes enums for the ng-template
@@ -356,6 +362,8 @@ export class NgChat implements OnInit, IChatController {
 
   isBootstrapped: boolean = false;
 
+  fetchFriendsListInterval: any ;
+
   @ViewChildren('chatMessages') chatMessageClusters: any;
 
   @ViewChildren('chatWindowInput') chatWindowInputs: any;
@@ -412,7 +420,7 @@ export class NgChat implements OnInit, IChatController {
         if (this.pollFriendsList) {
           // Setting a long poll interval to update the friends list
           this.fetchFriendsList(true);
-          setInterval(() => this.fetchFriendsList(false), this.pollingInterval);
+          this.fetchFriendsListInterval = setInterval(() => this.fetchFriendsList(false), this.pollingInterval);
         }
         else {
           // Since polling was disabled, a friends list update mechanism will have to be implemented in the ChatAdapter.

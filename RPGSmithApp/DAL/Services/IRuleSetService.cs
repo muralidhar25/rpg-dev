@@ -53,5 +53,6 @@ namespace DAL.Services
         List<SearchEverything> SearchEveryThing(SearchModel searchModel);
         bool IsRulesetAlreadyPurchased(int ruleSetId, string userID);
         Task updateUserPurchasedRuleset(int ruleSetId, string userID);
+        Task<DiceRollModel> GetDiceRollModelAsync(int RulesetID, int CharacterID, ApplicationUser User);
     }
 }

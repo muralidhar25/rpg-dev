@@ -1652,6 +1652,7 @@ namespace RPGSmithApp.Controllers
         }
         #endregion
 
+        #region SearchResults        
         [HttpPost("GetSearchResults")]
         public IActionResult GetSearchResults([FromBody] SearchModel searchModel)
         {
@@ -1844,5 +1845,35 @@ namespace RPGSmithApp.Controllers
                     return Ok();
             }
         }
+        #endregion
+
+        #region DiceRoll
+        [HttpGet("GetDiceRollData")]
+        public async Task<IActionResult> GetDiceRollData(int CharacterID, int RuleSetID)
+        {
+            try
+            {
+                DiceRollModel diceRollModel = await _ruleSetService.GetDiceRollModelAsync(RuleSetID, CharacterID, GetUser());
+                DiceRollViewModel diceRollViewModel = new DiceRollViewModel()
+                {
+                    Character = diceRollModel.Character==null?new Character(): diceRollModel.Character,
+                    CharacterCommands = diceRollModel.CharacterCommands == null ? new List<CharacterCommand>() : diceRollModel.CharacterCommands,
+                    CharactersCharacterStats = diceRollModel.CharactersCharacterStats == null ? new List<CharactersCharacterStat>() : diceRollModel.CharactersCharacterStats,// Utilities.GetCharCharStatViewModelList( diceRollModel.CharactersCharacterStats,_characterStatChoiceService),
+                    CustomDices= Utilities.MapCustomDice(diceRollModel.CustomDices),
+                    DefaultDices= diceRollModel.DefaultDices,
+                    DiceTrays= diceRollModel.DiceTrays,
+                    IsGmAccessingPlayerCharacter= diceRollModel.IsGmAccessingPlayerCharacter,
+                     RuleSet= diceRollModel.RuleSet,
+                };
+
+
+                return Ok(diceRollViewModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion
     }
 }

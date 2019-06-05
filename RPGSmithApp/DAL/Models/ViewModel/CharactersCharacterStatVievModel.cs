@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RPGSmithApp.ViewModels
+namespace DAL.Models.SPModels
 {
     public class CharactersCharacterStatViewModel
     {

@@ -497,6 +497,7 @@ export class LootComponent implements OnInit {
     this.bsModalRef.content.character = new Characters();
     this.bsModalRef.content.recordName = this.RuleSet.ruleSetName;
     this.bsModalRef.content.recordImage = this.RuleSet.imageUrl;
+    this.bsModalRef.content.recordType = 'ruleset'
     this.bsModalRef.content.isFromCampaignDetail = true;
   }
 }
