@@ -84,8 +84,8 @@ export class AppErrorHandler extends ErrorHandler {
             //  window.location.reload(true);
             this.alertService.showDialog(this.commonErrorMessage,
               DialogType.confirm,
-              () => { this.localStorage.localStorageSetItem(DBkeys.ErrorOccured, true); window.location.reload(true); },
-              () => { this.localStorage.localStorageSetItem(DBkeys.ErrorOccured, true); window.location.reload(true); },
+              () => {window.location.reload(true); },
+              () => {  window.location.reload(true); },
               "OK", "Cancel");
           //}
         }
@@ -122,8 +122,8 @@ export class AppErrorHandler extends ErrorHandler {
           //  window.location.reload(true);
           this.alertService.showDialog(this.commonErrorMessage,
             DialogType.confirm,
-            () => { this.localStorage.localStorageSetItem(DBkeys.ErrorOccured, true); window.location.reload(true); },
-            () => { this.localStorage.localStorageSetItem(DBkeys.ErrorOccured, true); window.location.reload(true); },
+            () => { window.location.reload(true); },
+            () => { window.location.reload(true); },
             "OK", "Cancel");
         //}
       
