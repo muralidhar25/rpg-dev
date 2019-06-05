@@ -45,7 +45,7 @@ export class UserService extends EndpointFactory {
   private get userExistUrl() { return this.configurations.baseUrl + "/api/account/IsUserExist"; }
   private get deleteUserUrl() { return this.configurations.baseUrl + "/api/account/delete"; }
   private get getBlobSpaceUsedApi() { return this.configurations.baseUrl + "/api/Image/GetBlobSpaceUsed"; }
-
+  //private get saveErrorLogApi() { return this.configurations.baseUrl + "/api/account/saveErrorLog"; }
   constructor(http: HttpClient, injector: Injector, configurations: ConfigurationService,
     private router: Router,
     //private endpointFactory: EndpointFactory,
@@ -75,6 +75,9 @@ export class UserService extends EndpointFactory {
     let endpointUrl = `${this.getBlobSpaceUsedApi}?userId=${userId}`;
     return this.http.get<T>(endpointUrl);
   }
+  //saveErrorLog(errModel) {
+  //  return this.http.post<any>(this.saveErrorLogApi, errModel);    
+  //}
 
   register(user: UserRegister, emailConfirmationContent: EmailConfirmationContent) {
 

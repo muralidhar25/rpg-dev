@@ -118,7 +118,7 @@
                     </ng-container>
                     <ng-container [ngSwitch]="message.type" *ngIf="ShowThisMessage(window, message, i)">
                       <div #messageDiv *ngSwitchCase="MessageType.Text" [ngClass]="{'sent-chat-message-container': message.fromId == userId, 'received-chat-message-container': message.fromId != userId, 'system-chat-message':message.isSystemGenerated}">
-                        <span class="ng-chat-message-span" [froalaView]="message.message | emojify:emojisEnabled | linkfy:linkfyEnabled">
+                        <span (click)="message.isSystemGenerated && onMessageClick()" [ngClass]="{'crsr-pointer':message.isSystemGenerated}" class="ng-chat-message-span" [froalaView]="message.message | emojify:emojisEnabled | linkfy:linkfyEnabled">
                           
                         </span>
                         <!--<span>

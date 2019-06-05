@@ -53,6 +53,7 @@ export class AbilityRulesetViewListComponent implements OnInit {
   pageRefresh: boolean;
   pauseAbilityAdd: boolean;
   pauseAbilityCreate: boolean;
+  showManage: boolean = false;
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -486,6 +487,7 @@ export class AbilityRulesetViewListComponent implements OnInit {
     //api for player controls
     this.charactersService.getPlayerControlsByCharacterId(characterId)
       .subscribe(data => {
+        this.showManage = true;
         if (data) {
           let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
           if (user == null) {
@@ -499,6 +501,7 @@ export class AbilityRulesetViewListComponent implements OnInit {
               this.pageRefresh = data.isPlayerCharacter;
             }
             if (data.isPlayerCharacter) {
+              this.showManage = false;
               this.pauseAbilityAdd = data.pauseAbilityAdd;
               this.pauseAbilityCreate = data.pauseAbilityCreate;
               if (data.pauseGame) {
@@ -506,6 +509,8 @@ export class AbilityRulesetViewListComponent implements OnInit {
                 this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
                 setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
               }
+            } else {
+              this.showManage = true;
             }
             if (data.isDeletedInvite) {
               this.router.navigate(['/characters']);

@@ -36,6 +36,6 @@ export class DBkeys {
   public static readonly IsCharacterOpenedFromCampaign = "IsCharacterOpenedFromCampaign";
   public static readonly ChatHttpFailure = "ChatHttpFailure";
   public static readonly NotifyForPendingInvites = "NotifyForPendingInvites";
-  
+    
   
 }

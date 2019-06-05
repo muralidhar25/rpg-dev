@@ -221,21 +221,22 @@ namespace RPGSmithApp.Controllers
         public async Task<IActionResult> Add([FromBody] ItemViewModel model)
         {
             if (ModelState.IsValid)
-            {                
-                foreach (var item in model.MultiItemMasters)
-                {
-                    await AddItemToCharacter(model, item);
-                }
-                List<ItemMasterBundleItem> itemMastersListInBundles =_itemMasterBundleService.GetItemMasterIdsFromBundles(model.MultiItemMasterBundles);
-                foreach (var item in itemMastersListInBundles)
-                {                    
-                    if (item.ItemMasterId!=null)
-                    {
-                        model.Quantity = item.Quantity;
-                        await AddItemToCharacter(model, (new ItemMasterIds() { ItemMasterId = (int)item.ItemMasterId }));
-                    }
+            {
+                await _itemService.AddItemsSP(model.MultiItemMasters, model.MultiItemMasterBundles, model.CharacterId == null ? 0 : (int)model.CharacterId,false);
+                //foreach (var item in model.MultiItemMasters)
+                //{
+                //    await AddItemToCharacter(model, item);
+                //}
+                //List<ItemMasterBundleItem> itemMastersListInBundles =_itemMasterBundleService.GetItemMasterIdsFromBundles(model.MultiItemMasterBundles);
+                //foreach (var item in itemMastersListInBundles)
+                //{                    
+                //    if (item.ItemMasterId!=null)
+                //    {
+                //        model.Quantity = item.Quantity;
+                //        await AddItemToCharacter(model, (new ItemMasterIds() { ItemMasterId = (int)item.ItemMasterId }));
+                //    }
                 
-                }
+                //}
                 await this._characterService.UpdateCharacterInventoryWeight(model.CharacterId ?? 0);
                 return Ok();
             }
@@ -249,27 +250,46 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                List<ItemMasterIds> itemMasterIds = new List<ItemMasterIds>();
                 string itemNames = string.Empty;
-                foreach (var item in model.MultiLootIds)
+                List<ItemMasterLoot> loots = await _itemMasterService.getMultipleLootDetails(model.MultiLootIds.Select(x=>x.LootId).ToList());
+                foreach (var item in loots)
                 {
-                    ItemMasterLoot loot =await _itemMasterService.getLootDetails(item.LootId);
-                    if (loot != null)
-                    {
+                    ItemMasterLoot loot = item;
+                    //if (loot != null)
+                    //{
                         if (loot.IsShow)
                         {
-                            await AddItemToCharacter(model, new ItemMasterIds() { ItemMasterId = loot.ItemMasterId }, loot);
-                            await _itemMasterService.DeleteItemMasterLoot(loot.LootId);
+                            itemMasterIds.Add(new ItemMasterIds() { ItemMasterId = loot.ItemMasterId });
+                            //await AddItemToCharacter(model, new ItemMasterIds() { ItemMasterId = loot.ItemMasterId }, loot);
+                            //await _itemMasterService.DeleteItemMasterLoot(loot.LootId);
                         }
                         else
                         {
                             itemNames += loot.ItemMaster.ItemName + ", ";
                         }
-                    }
-                    else {
+                    //}
+                    //else {
+                    //    if (model.MultiLootIds.Where(x => x.LootId == item.LootId).Any())
+                    //    {
+                    //        itemNames += model.MultiLootIds.Where(x => x.LootId == item.LootId).FirstOrDefault().Name + ", ";
+                    //    }                        
+                    //}                    
+                }
+                foreach (var item in model.MultiLootIds)
+                {
+                    if (!loots.Where(x=>x.LootId==item.LootId).Any())
+                    {
                         itemNames += item.Name + ", ";
                     }
-                    
-                }                
+                }
+
+                if (itemMasterIds.Any())
+                {
+                    await _itemService.AddItemsSP(itemMasterIds, new List<ItemMasterBundleIds>(), model.CharacterId == null ? 0 : (int)model.CharacterId, true);
+                }
+                
+
                 await this._characterService.UpdateCharacterInventoryWeight(model.CharacterId ?? 0);
                 if (!string.IsNullOrEmpty(itemNames))
                 {
@@ -610,10 +630,15 @@ namespace RPGSmithApp.Controllers
                         await DeleteItemCommon(modelF.ItemId, (int)modelF.CharacterId);
                     }                   
                 }
-                if (await _campaignService.isInvitedPlayerCharacter((int)model.CharacterId))
+                var currentUser = GetUser();
+                if (currentUser.IsGm || currentUser.IsGmPermanent ) 
                 {
                     _itemService.AddItemToLoot(model.ItemMasterId);
-                }                
+                }   
+                else if (await _campaignService.isInvitedPlayerCharacter((int)model.CharacterId))
+                {
+                    _itemService.AddItemToLoot(model.ItemMasterId);
+                }
                 return Ok();
             }
             catch (Exception ex)
@@ -857,6 +882,12 @@ namespace RPGSmithApp.Controllers
             string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
             ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
             return appUser.Id;
+        }
+        private ApplicationUser GetUser()
+        {
+            string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
+            ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
+            return appUser;
         }
 
         private decimal CalculateTotalWeight(ItemEditModel itemDomain)

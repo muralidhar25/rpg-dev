@@ -9136,11 +9136,19 @@ span.user-image-name {
 .ng-chat-volume {
   float: right;
   position: absolute;
-  top: 5px;
+  top: 0;
   z-index: 111;
-  right: 10px;
+  right: 17px;
+  width: 14px;
 }
-
+  .ng-chat-volume i.fa.fa-volume-up {
+    width: 31px;
+    padding: 9px;
+  }
+  .ng-chat-volume i.fa.fa-volume-off {
+    width: 31px;
+    padding: 9px;
+  }
 .ng-chat-title {
   padding-right: 20px;
 }
@@ -9148,9 +9156,10 @@ span.user-image-name {
 .ng-chat-volume-mute {
   font-size: 7px !important;
   position: relative;
-  top: -2px;
-  margin-left: -3px;
-}
+  top: -29px;
+  margin-left: 0;
+  right: -16px;
+} 
 /* ==== Combat Accordian Css Start ===*/
 /*.combat-accordian .panel .card {
   border: 0px;
@@ -9287,4 +9296,7 @@ span.user-image-name {
 /* ===== ADS Banner Css End =====*/
 .progress-bar {
   background-color: #d66b40 !important;
+}
+.custom-common-error-message .err-heading {
+  margin-bottom: -10px;
 }

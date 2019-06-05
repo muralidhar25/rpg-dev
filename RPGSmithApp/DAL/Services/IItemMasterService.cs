@@ -43,5 +43,6 @@ namespace DAL.Services
         decimal GetContainedItemWeight(int containerItemId);
         ItemMasterLoot_ViewModel GetContainer(int? lootId);
         List<ItemMasterLoot_ViewModel> GetAvailableItems(int rulesetId);
+        Task<List<ItemMasterLoot>> getMultipleLootDetails(List<int> LootId);
     }
 }

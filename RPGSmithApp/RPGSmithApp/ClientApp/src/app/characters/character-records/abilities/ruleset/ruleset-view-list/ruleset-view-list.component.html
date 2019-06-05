@@ -141,7 +141,7 @@
                             </ul>-->
                             <div class="item-stats pl-0" *ngIf="ability?.description" [froalaView]="ability?.description"></div>                           
                         </div>
-                        <div class="card-actions-trigger" *ngIf="!ability.showIcon">
+                        <div class="card-actions-trigger" *ngIf="!ability.showIcon && showManage">
                             <button type="button" (click)="manageIcon(ability.abilityId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary"></button>
                         </div>
                         <div class="card-actions show" *ngIf="ability.showIcon && isListView && !pauseAbilityCreate">

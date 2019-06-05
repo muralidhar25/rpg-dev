@@ -1249,4 +1249,7 @@ export class NgChat implements OnInit, IChatController {
   isSmallScreen() {
     return (window.outerWidth < 610);
   }
+  onMessageClick() {
+    this.appService.updateLootMessageClicked(true);
+  }
 }

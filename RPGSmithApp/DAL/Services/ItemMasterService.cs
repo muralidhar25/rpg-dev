@@ -1193,6 +1193,14 @@ namespace DAL.Services
         public async Task<ItemMasterLoot> getLootDetails(int LootId) {
             return await _context.ItemMasterLoots.Include(x=>x.ItemMaster).Where(x => x.LootId == LootId).FirstOrDefaultAsync();
         }
+        public async Task<List<ItemMasterLoot>> getMultipleLootDetails(List<int> LootId)
+        {
+            if (LootId.Any())
+            {
+                return await _context.ItemMasterLoots.Include(x => x.ItemMaster).Where(x => LootId.Contains(x.LootId)).ToListAsync();
+            }
+            return new List<ItemMasterLoot>();
+        }
         public async Task<bool> DeleteContainer(int itemMasterId)
         {
             var item = _context.ItemMasterLoots.Where(x => x.ContainedIn == itemMasterId).ToList();

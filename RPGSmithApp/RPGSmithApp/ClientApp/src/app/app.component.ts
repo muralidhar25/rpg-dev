@@ -134,7 +134,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   signalRAdapter: SignalRGroupAdapter;
   ChatHalfScreen: boolean = false;
   ShowAds: boolean = true;
-
+  isPlayerCharacter: boolean = false;
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
     if (window.pageYOffset > 0) {
@@ -289,8 +289,9 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (this.headers.headerLink == "character") {
           this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
             .subscribe(data => {
-              
+              this.isPlayerCharacter = false;
               if (data) {
+                this.isPlayerCharacter = data.isPlayerCharacter;
                 if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
                   if (!this.signalRAdapter && user) { //get player control 265
                     let model: any = user;
@@ -328,7 +329,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                       }, () => { });
                   }
                  
-                }
+                }                
               }
             }, error => {
               let Errors = Utilities.ErrorDetail("", error);
@@ -500,7 +501,25 @@ export class AppComponent implements OnInit, AfterViewInit {
             });
       }
     });
-
+    
+    this.app1Service.shouldUpdateLootMessageClicked().subscribe((serviceData) => {
+      if (this.isPlayerCharacter) {
+        this.playerLoot();
+      }
+      else {
+        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+        if (user) {
+          if (user.isGm) {
+            if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)) {
+              this.router.navigate(['/ruleset/loot', this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)]);
+            }
+            
+          } 
+        }
+      }
+      
+      ////////this.searchCharRule = serviceData;
+    });
     this.app1Service.shouldUpdateSearchText().subscribe((serviceData) => {
       
       this.searchCharRule = serviceData;
@@ -713,6 +732,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
       };
       if (event instanceof NavigationStart) {
+        //undefined.toLowercase();
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user) {
           this.isAdmin = user.roles.some(function (value) { return (value === "administrator") });
@@ -803,8 +823,9 @@ export class AppComponent implements OnInit, AfterViewInit {
             if (this.headers.headerLink == "character") {
               this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
                 .subscribe(data => {
-                  
-                  if (data) {                    
+                  this.isPlayerCharacter = false;
+                  if (data) {
+                    this.isPlayerCharacter = data.isPlayerCharacter
                     if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
                       if (!this.signalRAdapter && user) {
                         let model: any = user;

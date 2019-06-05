@@ -127,7 +127,7 @@ export class AuthService {
   }
 
 
-  private processLoginResponse(response: LoginResponse, rememberMe: boolean) {    
+  private processLoginResponse(response: LoginResponse, rememberMe: boolean) {
     let accessToken = response.access_token;
 
     if (accessToken == null)
@@ -159,18 +159,18 @@ export class AuthService {
       decodedIdToken.phone,
       decodedIdToken.profileimage,
       Array.isArray(decodedIdToken.role) ? decodedIdToken.role : [decodedIdToken.role]);
-      user.isEnabled = true;
-      user.isGm = decodedIdToken.isgm.toLowerCase() == 'true' ? true : false;
-      user.removeAds = decodedIdToken.removeads.toLowerCase() == 'true' ? true : false;
-      user.rulesetSlot = +decodedIdToken.rulesetslot;
-      user.playerSlot = +decodedIdToken.playerslot;
-      user.characterSlot = +decodedIdToken.characterslot;
-      user.campaignSlot = +decodedIdToken.campaignslot;
-    user.storageSpace = +decodedIdToken.storagespaceinmb;
+    user.isEnabled = true;
+    user.isGm = decodedIdToken.isgm ? decodedIdToken.isgm.toLowerCase() == 'true' ? true : false : false;
+    user.removeAds = decodedIdToken.removeads ? decodedIdToken.removeads.toLowerCase() == 'true' ? true : false : false;
+    user.rulesetSlot = decodedIdToken.rulesetslot ? +decodedIdToken.rulesetslot : 3;
+    user.playerSlot = decodedIdToken.playerslot ? +decodedIdToken.playerslot : 0;
+    user.characterSlot = decodedIdToken.characterslot ? +decodedIdToken.characterslot : 3;
+    user.campaignSlot = decodedIdToken.campaignslot ? +decodedIdToken.campaignslot : 0;
+    user.storageSpace = decodedIdToken.storagespaceinmb ? +decodedIdToken.storagespaceinmb : 1000;
     this.saveUserDetails(user, permissions, accessToken, idToken, refreshToken, accessTokenExpiry, rememberMe);
 
     this.reevaluateLoginStatus(user);
-  
+
     return user;
   }
 
@@ -324,13 +324,14 @@ export class AuthService {
       this.configurations.import(decodedIdToken.configuration);
 
     let user = currentUserDetails;
-    user.isGm = decodedIdToken.isgm.toLowerCase() == 'true' ? true : false;
-    user.removeAds = decodedIdToken.removeads.toLowerCase() == 'true' ? true : false;
-    user.rulesetSlot = +decodedIdToken.rulesetslot;
-    user.playerSlot = +decodedIdToken.playerslot;
-    user.characterSlot = +decodedIdToken.characterslot;
-    user.campaignSlot = +decodedIdToken.campaignslot;
-    user.storageSpace = +decodedIdToken.storagespaceinmb;
+    console.log("updateSocialLoginUserValuesFromToken: currentUserDetails-->>", user)
+    user.isGm = decodedIdToken.isgm ? decodedIdToken.isgm.toLowerCase() == 'true' ? true : false : false;
+    user.removeAds = decodedIdToken.removeads ? decodedIdToken.removeads.toLowerCase() == 'true' ? true : false : false;
+    user.rulesetSlot = decodedIdToken.rulesetslot ? +decodedIdToken.rulesetslot : 3;
+    user.playerSlot = decodedIdToken.playerslot ? +decodedIdToken.playerslot : 0;
+    user.characterSlot = decodedIdToken.characterslot? +decodedIdToken.characterslot:3;
+    user.campaignSlot = decodedIdToken.campaignslot? +decodedIdToken.campaignslot:0;
+    user.storageSpace = decodedIdToken.storagespaceinmb? +decodedIdToken.storagespaceinmb:1000;
     
     if (this.localStorage.sessionExists(DBkeys.CURRENT_USER)) {
       this.localStorage.saveSyncedSessionData(user, DBkeys.CURRENT_USER);

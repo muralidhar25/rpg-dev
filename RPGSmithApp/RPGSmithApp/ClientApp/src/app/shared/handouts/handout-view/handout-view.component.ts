@@ -247,23 +247,24 @@ export class HandoutViewComponent implements OnInit {
     this.Initialize();
   }
   download(url, downloadName) {
-    this.alertService.startLoadingMessage("", "Downloading file...");
-    fetch(new Request("/api/Image/ConvertImageURLToBase64?url=" + url)).then((response) => {
-      response.text().then((base64) => {
-        let a = document.createElement("a");
-        document.body.appendChild(a);
-        let hrefurl: any = base64;
-        a.href = hrefurl;
-        a.download = downloadName;
-        a.target = "_blank"
-        a.click();
-        document.body.removeChild(a);
-        this.alertService.stopLoadingMessage();
-      }).catch(() => {
-        this.alertService.stopLoadingMessage();
-        this.alertService.showMessage("Some error occured.", "", MessageSeverity.error);
-      });
-    });
+    window.open(url);
+    //this.alertService.startLoadingMessage("", "Downloading file...");
+    //fetch(new Request("/api/Image/ConvertImageURLToBase64?url=" + url)).then((response) => {
+    //  response.text().then((base64) => {
+    //    let a = document.createElement("a");
+    //    document.body.appendChild(a);
+    //    let hrefurl: any = base64;
+    //    a.href = hrefurl;
+    //    a.download = downloadName;
+    //    a.target = "_blank"
+    //    a.click();
+    //    document.body.removeChild(a);
+    //    this.alertService.stopLoadingMessage();
+    //  }).catch(() => {
+    //    this.alertService.stopLoadingMessage();
+    //    this.alertService.showMessage("Some error occured.", "", MessageSeverity.error);
+    //  });
+    //});
   }
   getFolderName(name: string) {
     if (name) {

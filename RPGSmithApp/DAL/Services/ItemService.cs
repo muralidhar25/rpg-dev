@@ -35,7 +35,29 @@ namespace DAL.Services
             _itemMasterService = itemMasterService;
             this._configuration = configuration;
         }
-        
+        public async Task AddItemsSP(List<ItemMasterIds> multiItemMasters, List<ItemMasterBundleIds> multiItemMasterBundles, int characterId, bool IsLootItems)
+        {
+            DataTable ItemDT = utility.ToDataTable<CommonID>(multiItemMasters.Select(x=> new CommonID { ID=x.ItemMasterId}).ToList());
+            DataTable BundleDT = utility.ToDataTable<CommonID>(multiItemMasterBundles.Select(x => new CommonID { ID = x.ItemMasterBundleId }).ToList());
+
+            string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            using (SqlConnection con = new SqlConnection(consString))
+            {
+                using (SqlCommand cmd = new SqlCommand("AddItemsToCharacter"))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = con;
+                    cmd.Parameters.AddWithValue("@ItemsToAdd", ItemDT);
+                    cmd.Parameters.AddWithValue("@BundlesToAdd", BundleDT);
+                    cmd.Parameters.AddWithValue("@CharacterId", characterId);
+                    cmd.Parameters.AddWithValue("@IsLootItems", IsLootItems);
+                    con.Open();
+                    var a = cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
+        }
         public async Task<Item> InsertItem(Item item, List<ItemSpell> ItemSpells, List<ItemAbility> ItemAbilities, List<ItemCommand> itemCommands=null)
         {
             item.ItemAbilities = new List<ItemAbility>();

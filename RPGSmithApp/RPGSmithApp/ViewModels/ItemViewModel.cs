@@ -67,10 +67,10 @@ namespace RPGSmithApp.ViewModels
         public virtual ICollection<ItemSpell> ItemSpells { get; set; }
     }
 
-    public class ItemMasterIds
-    {
-        public int ItemMasterId { get; set; }
-    }
+    //public class ItemMasterIds
+    //{
+    //    public int ItemMasterId { get; set; }
+    //}
     public class LootIds
     {
         public int LootId { get; set; }

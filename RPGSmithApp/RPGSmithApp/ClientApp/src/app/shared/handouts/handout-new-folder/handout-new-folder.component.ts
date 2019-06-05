@@ -54,12 +54,18 @@ export class HandoutNewFolderComponent implements OnInit {
     }
   }
   CreateFolder() {
-    debugger
-    //if (this.files && this.files[0]) {
+    if (this.folderName.indexOf('/') > -1) {
+      this.alertService.showStickyMessage('', "Invalid folder name. It should not contain '/' or '\\'.", MessageSeverity.error);
+    }
+    else if (this.folderName.indexOf('\\') > -1) {
+      this.alertService.showStickyMessage('', "Invalid folder name. It should not contain '/' or '\\'.", MessageSeverity.error);
+    }
+    else {
+      //if (this.files && this.files[0]) {
       let imgList = this.files;
-    this.isLoading = true;
-    this.alertService.startLoadingMessage("", "Creating Folder...");
-      this.imageSearchService.uploadHandoutFolder<any>(imgList, this.userid, this.folderName,this.rulesetId)
+      this.isLoading = true;
+      this.alertService.startLoadingMessage("", "Creating Folder...");
+      this.imageSearchService.uploadHandoutFolder<any>(imgList, this.userid, this.folderName, this.rulesetId)
         .subscribe(data => {
           this.alertService.stopLoadingMessage();
           if (data) {
@@ -80,7 +86,9 @@ export class HandoutNewFolderComponent implements OnInit {
           else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
         },
           () => { });
-    //}
+      //}
+    }
+
   }
     private destroyModal(): void {
         try {

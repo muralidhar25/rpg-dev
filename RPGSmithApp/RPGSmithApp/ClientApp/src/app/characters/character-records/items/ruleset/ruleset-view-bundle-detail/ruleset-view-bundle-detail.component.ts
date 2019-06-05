@@ -49,6 +49,7 @@ export class RulesetViewBundleDetailComponent implements OnInit {
   pageRefresh: boolean;
   pauseItemAdd: boolean;
   pauseItemCreate: boolean;
+  showManage: boolean = false;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -383,6 +384,7 @@ export class RulesetViewBundleDetailComponent implements OnInit {
     //api for player controls
     this.charactersService.getPlayerControlsByCharacterId(characterId)
       .subscribe(data => {
+        this.showManage = true;
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (data) {
           if (user == null) {
@@ -397,6 +399,7 @@ export class RulesetViewBundleDetailComponent implements OnInit {
               this.pageRefresh = data.isPlayerCharacter;
             }
             if (data.isPlayerCharacter) {
+              this.showManage = false;
               this.pauseItemAdd = data.pauseItemAdd;
               this.pauseItemCreate = data.pauseItemCreate;
               if (data.pauseGame) {
@@ -406,6 +409,8 @@ export class RulesetViewBundleDetailComponent implements OnInit {
               }
 
               //this.pageRefresh = data.isPlayerCharacter;
+            } else {
+              this.showManage = true;
             }
             if (data.isDeletedInvite) {
               this.router.navigate(['/characters']);

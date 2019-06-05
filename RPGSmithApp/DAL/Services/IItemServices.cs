@@ -43,5 +43,6 @@ namespace DAL.Services
         List<Item> GetItemsByCharacterId(int characterId);
         List<Item> GetAvailableItems(int characterId);
         void AddItemToLoot(int? itemMasterId);
+        Task AddItemsSP(List<ItemMasterIds> multiItemMasters, List<ItemMasterBundleIds> multiItemMasterBundles, int characterId,bool IsLootItems);
     }
 }

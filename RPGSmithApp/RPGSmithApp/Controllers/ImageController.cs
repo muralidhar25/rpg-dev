@@ -16,6 +16,8 @@ using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -546,5 +548,45 @@ namespace RPGSmithApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        //[HttpGet("DownloadBlob")]
+        ////[ResponseType(typeof(HttpResponseMessage))]
+        //public async Task<HttpResponseMessage> DownloadBlob(string fileName, string userId, int campaignID = 0)
+        //{
+        //    var cloudBlobContainer = await bs.GetCloudBlobContainer("user-" + userId + "-handout" + "-" + campaignID);
+        //    //CloudBlobContainer sourceContainer = cloudBlobContainer;
+        //    CloudBlockBlob sourceBlob = cloudBlobContainer.GetBlockBlobReference(fileName);
+        //    //var stream = await sourceBlob.OpenReadAsync();
+        //    //return File(stream, sourceBlob.Properties.ContentType);
+
+        //    HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+        //    var stream = await sourceBlob.OpenReadAsync();
+        //    result.Content = new StreamContent(stream);
+        //   // result.Content = new StreamContent(stream);
+        //    result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+        //    {
+        //        FileName = fileName
+        //    };
+        //    result.Content.Headers.ContentType =  new MediaTypeHeaderValue(sourceBlob.Properties.ContentType);
+        //    return result;
+
+        //    //HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+        //    //var stream = await sourceBlob.OpenReadAsync();
+        //    //using (var ms = new MemoryStream())
+        //    //{
+        //    //    if (await sourceBlob.ExistsAsync())
+        //    //    {
+        //    //        await sourceBlob.DownloadToStreamAsync(ms);
+        //    //    }
+        //    //    //return ms.ToArray();
+        //    //    result.Content = new StreamContent(ms);
+        //    //    result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+        //    //    {
+        //    //        FileName = fileName
+        //    //    };
+        //    //    result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+        //    //    return result;
+        //    //}
+
+        //}
     }
 }

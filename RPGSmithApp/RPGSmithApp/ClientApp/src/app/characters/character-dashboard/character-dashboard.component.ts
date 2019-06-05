@@ -511,8 +511,7 @@ export class CharacterDashboardComponent implements OnInit {
             }
 
             this.layoutService.getLayoutsByCharacterId(this.characterId, -1, -1)
-              .subscribe(data => {
-                debugger
+              .subscribe(data => {                
                 this.characterlayouts = data;
                 if (this.LayoutId) {
                   this.characterlayouts.map((item) => {
@@ -869,8 +868,7 @@ export class CharacterDashboardComponent implements OnInit {
           }
         this.isLoading = true;
         this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId, rulesetId, this.isSharedLayout)
-          .subscribe(data => {
-            debugger
+          .subscribe(data => {            
             //this.isLoading = false;
             let model: any = data;
             this.CharacterStatsValues = model.characterStatsValues;
@@ -1236,8 +1234,7 @@ export class CharacterDashboardComponent implements OnInit {
 
   viewTile(tile: any, tileType: number) {
     //let _tile: any;
-    let _tile = Object.assign({}, tile);
-    debugger
+    let _tile = Object.assign({}, tile);    
     switch (tileType) {
       case TILES.NOTE: {
         if (!this.isSharedLayout) {
@@ -2634,8 +2631,7 @@ export class CharacterDashboardComponent implements OnInit {
     }
     return '';
   }
-  refresh() {
-    debugger
+  refresh() {    
     this.LayoutId = this.selectedlayout.characterDashboardLayoutId;
     this.initialize(true,false, this.LayoutId);
   }

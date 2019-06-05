@@ -124,7 +124,7 @@
                             </ul>
                             <!-- <div class="item-stats" [froalaView]="ItemMaster?.itemStats"></div> -->
                         </div>
-                        <div class="card-actions-trigger" *ngIf="!ItemMaster.showIcon">
+                        <div class="card-actions-trigger" *ngIf="!ItemMaster.showIcon  && showManage">
                             <button type="button" (click)="manageIcon(ItemMaster.itemMasterId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary"></button>
                         </div>
                         <div class="card-actions show" *ngIf="ItemMaster.showIcon && isListView && !pauseItemCreate">

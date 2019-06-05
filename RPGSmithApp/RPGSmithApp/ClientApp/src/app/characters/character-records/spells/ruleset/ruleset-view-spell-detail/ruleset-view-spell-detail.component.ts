@@ -51,6 +51,7 @@ export class RulesetViewSpellDetailComponent implements OnInit {
   pageRefresh: boolean;
   pauseSpellAdd: boolean;
   pauseSpellCreate: boolean;
+  showManage: boolean = false;
 
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -412,6 +413,7 @@ export class RulesetViewSpellDetailComponent implements OnInit {
     //api for player controls
     this.charactersService.getPlayerControlsByCharacterId(characterId)
       .subscribe(data => {
+        this.showManage = true;
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (data) {
           if (user == null) {
@@ -425,6 +427,7 @@ export class RulesetViewSpellDetailComponent implements OnInit {
               this.pageRefresh = data.isPlayerCharacter;
             }
             if (data.isPlayerCharacter) {
+              this.showManage = false;
               this.pauseSpellAdd = data.pauseSpellAdd;
               this.pauseSpellCreate = data.pauseSpellCreate;
               if (data.pauseGame) {
@@ -432,6 +435,8 @@ export class RulesetViewSpellDetailComponent implements OnInit {
                 this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
                 setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
               }
+            } else {
+              this.showManage = true;
             }
             if (data.isDeletedInvite) {
               this.router.navigate(['/characters']);

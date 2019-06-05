@@ -131,7 +131,7 @@
                             </ul>
                             <!-- <div class="item-stats" [froalaView]="spell?.description"></div> -->
                         </div>
-                        <div class="card-actions-trigger" [hidden]="spell.showIcon">
+                        <div class="card-actions-trigger" [hidden]="spell.showIcon" *ngIf="showManage">
                             <button type="button" (click)="manageIcon(spell.spellId)" tooltip="Manage" class="btn icon icon-more btn-simple-primary"></button>
                         </div>
                         <div class="card-actions show" *ngIf="spell.showIcon && isListView && !pauseSpellCreate">

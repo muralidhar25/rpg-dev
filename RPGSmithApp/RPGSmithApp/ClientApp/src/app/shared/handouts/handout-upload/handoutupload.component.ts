@@ -156,12 +156,16 @@ export class HandoutuploadComponent implements OnInit {
     }
   }
   CalculateProgress(totalSpaceOfFiles:number) {    
-    if (this.progressCompletedYet > 98) {
-      this.progressCompletedYet=99
+    if (this.progressCompletedYet > 95) {
+      this.progressCompletedYet=96
     }
     else {
-      this.progressCompletedYet = parseInt((this.progressCompletedYet + (7000000) / totalSpaceOfFiles).toString());
+      this.progressCompletedYet = (this.progressCompletedYet + (7000000) / totalSpaceOfFiles);
     }
+    //console.log("this.progressCompletedYet", this.progressCompletedYet)
+  }
+  getWholeNumber(number) {
+    return Math.ceil(number);
   }
   UploadImages(event: any) {
     let imgList: any[] = [];
@@ -169,63 +173,71 @@ export class HandoutuploadComponent implements OnInit {
       imgList = event.target.files;      
       this.isLoading = true;
       this.isUploadingFiles = true;
-      
-      let totalSpaceOfFiles = 0;
+      this.progressCompletedYet = 0;
+      let totalSpaceOfFiles: number = 0;
       for (var _fileIndex = 0; _fileIndex < event.target.files.length; _fileIndex++) {
         totalSpaceOfFiles = totalSpaceOfFiles + event.target.files[_fileIndex].size; //size in bytes
       }
-      console.log("interval started");
-      var ProgressTimer = setInterval(() => {
-        
-        this.CalculateProgress(totalSpaceOfFiles)
-      }, 100);
-      if (this.prefixToGetFolderContent) {
-        this.imageSearchService.uploadHandoutFolder<any>(imgList, this.userid, this.prefixToGetFolderContent, this.ruleset.ruleSetId)
-          .subscribe(data => {
-            if (data) {
-              if (data.result) {
-                this.isLoading = false;
-                this.isUploadingFiles = false;
-                console.log("interval end1");
-                this.progressCompletedYet = 100;
-                clearInterval(ProgressTimer);
-                this.Initialize();
+      if (totalSpaceOfFiles <= 209715200 ) { //check of 200 MB
+        //console.log("interval started");
+        var ProgressTimer = setInterval(() => {
+          //console.log("zz")
+          this.CalculateProgress(totalSpaceOfFiles)
+        }, 100);
+        if (this.prefixToGetFolderContent) {
+          this.imageSearchService.uploadHandoutFolder<any>(imgList, this.userid, this.prefixToGetFolderContent, this.ruleset.ruleSetId)
+            .subscribe(data => {
+              if (data) {
+                if (data.result) {
+                  this.isLoading = false;
+                  this.isUploadingFiles = false;
+                  //console.log("interval end1");
+                  this.progressCompletedYet = 100;
+                  clearInterval(ProgressTimer);
+                  this.Initialize();
+                }
               }
-            }
 
-          }, error => {
-            console.log("searchMyImages Error: ", error);
-            this.isLoading = false;
-            this.alertService.stopLoadingMessage();
-            let Errors = Utilities.ErrorDetail("Upload Images Api", error);
-            if (Errors.sessionExpire) this.authService.logout(true);
-            else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-          },
-            () => { });
+            }, error => {
+              console.log("searchMyImages Error: ", error);
+              this.isLoading = false;
+              this.alertService.stopLoadingMessage();
+              let Errors = Utilities.ErrorDetail("Upload Images Api", error);
+              if (Errors.sessionExpire) this.authService.logout(true);
+              else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+            },
+              () => { });
+        }
+        else {
+          this.imageSearchService.uploadHandouts<any>(imgList, this.userid, this.ruleset.ruleSetId)
+            .subscribe(data => {
+              if (data) {
+                if (data.result) {
+                  this.isLoading = false;
+                  this.isUploadingFiles = false;
+                  //console.log("interval end2");
+                  this.progressCompletedYet = 100;
+                  clearInterval(ProgressTimer);
+                  this.Initialize();
+                }
+              }
+
+            }, error => {
+              console.log("searchMyImages Error: ", error);
+              this.isLoading = false;
+              this.alertService.stopLoadingMessage();
+              let Errors = Utilities.ErrorDetail("Upload Images Api", error);
+              if (Errors.sessionExpire) this.authService.logout(true);
+              else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+            },
+              () => { });
+        }
       }
       else {
-        this.imageSearchService.uploadHandouts<any>(imgList, this.userid, this.ruleset.ruleSetId)
-          .subscribe(data => {
-            if (data) {
-              if (data.result) {
-                this.isLoading = false;
-                this.isUploadingFiles = false;
-                console.log("interval end2");
-                this.progressCompletedYet = 100;
-                clearInterval(ProgressTimer);
-                this.Initialize();
-              }
-            }
-
-          }, error => {
-            console.log("searchMyImages Error: ", error);
-            this.isLoading = false;
-            this.alertService.stopLoadingMessage();
-            let Errors = Utilities.ErrorDetail("Upload Images Api", error);
-            if (Errors.sessionExpire) this.authService.logout(true);
-            else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-          },
-            () => { });
+        event.target.value = "";
+        this.isLoading = false;
+        this.alertService.stopLoadingMessage();
+        this.alertService.showStickyMessage('', "Max. 200 MB of data can be uploaded.", MessageSeverity.error);
       }
       
     }
@@ -443,23 +455,62 @@ export class HandoutuploadComponent implements OnInit {
     this.Initialize();
   }
   download(url, downloadName) {
-    this.alertService.startLoadingMessage("", "Downloading file...");
-    fetch(new Request("/api/Image/ConvertImageURLToBase64?url=" + url)).then((response) => {
-      response.text().then((base64) => {
-        let a = document.createElement("a");
-        document.body.appendChild(a);
-        let hrefurl: any = base64;
-        a.href = hrefurl;
-        a.download = downloadName.replace('/','_');
-        a.target = "_blank"
-        a.click();
-        document.body.removeChild(a);
-        this.alertService.stopLoadingMessage();
-      }).catch(() => {
-        this.alertService.stopLoadingMessage();
-        this.alertService.showMessage("Some error occured.", "", MessageSeverity.error);
-        });
-    });
+    //debugger
+    //this.alertService.startLoadingMessage("", "Downloading file...");
+    //let a = document.createElement("a");
+    //document.body.appendChild(a);
+
+    //const data = 'some text';
+    //const blob = new Blob([data], { type: 'application/octet-stream' });
+
+
+    window.open(url);
+
+    //let hrefurl: any = "/api/Image/DownloadBlob?fileName=" + url + "&userId=" + this.userid + "&campaignID=" + this.ruleset.ruleSetId;
+    ////hrefurl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    //a.href = hrefurl;
+    //a.download = downloadName.replace('/', '_');
+    //a.target = "_blank"
+    //a.click();
+    //document.body.removeChild(a);
+   // this.alertService.stopLoadingMessage();
+
+
+    //fetch(new Request("/api/Image/DownloadBlob?fileName=" + url + "&userId=" + this.userid + "&campaignID=" + this.ruleset.ruleSetId)).then((response) => {
+    //  response.text().then((base64) => {
+    //    debugger
+    //    let a = document.createElement("a");
+    //    document.body.appendChild(a);
+    //    let hrefurl: any = base64;
+    //    a.href = hrefurl;
+    //    a.download = downloadName.replace('/','_');
+    //    a.target = "_blank"
+    //    a.click();
+    //    document.body.removeChild(a);
+    //    this.alertService.stopLoadingMessage();
+    //  }).catch(() => {
+    //    this.alertService.stopLoadingMessage();
+    //    this.alertService.showMessage("Some error occured.", "", MessageSeverity.error);
+    //    });
+    //});
+
+
+    //fetch(new Request("/api/Image/ConvertImageURLToBase64?url=" + url)).then((response) => {
+    //  response.text().then((base64) => {
+    //    let a = document.createElement("a");
+    //    document.body.appendChild(a);
+    //    let hrefurl: any = base64;
+    //    a.href = hrefurl;
+    //    a.download = downloadName.replace('/','_');
+    //    a.target = "_blank"
+    //    a.click();
+    //    document.body.removeChild(a);
+    //    this.alertService.stopLoadingMessage();
+    //  }).catch(() => {
+    //    this.alertService.stopLoadingMessage();
+    //    this.alertService.showMessage("Some error occured.", "", MessageSeverity.error);
+    //    });
+    //});
   }
   getFolderName(name:string) {
     if (name) {

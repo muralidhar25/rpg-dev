@@ -21,6 +21,7 @@ export class AppService1 {
   private AddRemove = new Subject<any>();
   private CharacterSlotsCount = new Subject<any>();
   private TakenByLootMessage = new Subject<any>();
+  private LootMessageClicked = new Subject<any>();
   
 
   updateAccountSetting1(accountSetting: any) {    
@@ -127,6 +128,13 @@ export class AppService1 {
 
   shouldUpdateChatWithTakenByLootMessage(): Observable<any> {
     return this.TakenByLootMessage.asObservable();
+  }
+  updateLootMessageClicked(data: any) {
+    this.LootMessageClicked.next(data);
+  }
+
+  shouldUpdateLootMessageClicked(): Observable<any> {
+    return this.LootMessageClicked.asObservable();
   }
 }
 

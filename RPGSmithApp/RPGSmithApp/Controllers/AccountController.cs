@@ -32,6 +32,7 @@ using System.Linq;
 using DAL.Services;
 using Stripe;
 using Microsoft.Extensions.Options;
+using DAL.Models.SPModels;
 
 namespace RPGSmithApp.Controllers
 {
@@ -1030,6 +1031,52 @@ namespace RPGSmithApp.Controllers
             string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
             ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
             return appUser.Id;
-        }        
+        }
+        [HttpPost("saveErrorLog")]
+        [AllowAnonymous]
+        public async Task<IActionResult> saveErrorLog([FromBody] LogError model)
+        {
+            try
+            {
+                string errlog = model.Error;
+                string headerValues = model.Headers;
+                string currentUser = model.CurrentUser;
+                string currentUrl = model.CurrentUrl;
+                string errorStack = model.ErrorStack;
+                if (!string.IsNullOrEmpty(errlog))
+                {
+                    string errString = DateTime.Now.ToString();
+                    errString += "\n";
+                    errString += "Url: \n" + currentUrl;
+                    errString += "\n";
+                    errString += "HeaderValues: \n" + headerValues;
+                    errString += "\n";
+                    errString += "CurrentUser: \n" + currentUser;
+                    errString += "\n";
+                    errString += "Error: \n" + errlog;
+                    errString += "\n";
+                    errString += "Error Stack: \n" + errorStack;
+                    // Set a variable to the Documents path.
+                    string docPath = Environment.CurrentDirectory + "/err-logs";// ""
+
+
+                    // Write the string array to a new file named "WriteLines.txt".
+                    string FileName = "err_log_" + DateTime.Now.ToString("MM_dd_yyyy_hh_mm_ss");
+                    if (!Directory.Exists(docPath))
+                    {
+                        Directory.CreateDirectory(docPath);
+                    }
+                    using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, FileName)))
+                    {
+                        outputFile.WriteLine(errString);
+                    }
+                }
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Ok();
+            }
+        }
     }
 }

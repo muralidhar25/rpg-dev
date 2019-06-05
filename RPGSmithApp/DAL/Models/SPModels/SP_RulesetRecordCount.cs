@@ -78,6 +78,14 @@ namespace DAL.Models.SPModels
     public class CommonID {
         public int ID { get; set; }
     }
+    public class LogError
+    {
+        public string Error { get; set; }
+        public string ErrorStack { get; set; }        
+        public string Headers { get; set; }
+        public string CurrentUser { get; set; }
+        public string CurrentUrl { get; set; }
+    }
     public class LootsToAdd
     {
         public int ID { get; set; }
@@ -300,6 +308,10 @@ namespace DAL.Models.SPModels
     public class ItemMasterBundleIds
     {
         public int ItemMasterBundleId { get; set; }
+    }
+    public class ItemMasterIds
+    {
+        public int ItemMasterId { get; set; }
     }
     public class ItemMasterLoot_ViewModel:ItemMaster
     {

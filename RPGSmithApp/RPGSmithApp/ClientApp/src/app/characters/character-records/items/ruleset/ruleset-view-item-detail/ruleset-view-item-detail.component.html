@@ -63,7 +63,7 @@
                     </li>
                   </ul>
                     <!-- Toolbar actions -->
-                  <ul class="page-toolbar-actions">
+                  <ul class="page-toolbar-actions"  *ngIf="showManage">
                     <!--<li>
       <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
   </li>-->
@@ -93,7 +93,7 @@
                   </ul>
                     <!-- End of toolbar actions -->
                 </div>
-                <ul class="page-toolbar-actions web-view">
+                <ul class="page-toolbar-actions web-view"  *ngIf="showManage">
                   <!--<li>
       <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
   </li>-->
