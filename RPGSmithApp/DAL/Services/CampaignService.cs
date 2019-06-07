@@ -304,6 +304,30 @@ namespace DAL.Services
             {
                 res.PlayerCharacterID = 0;
             }
+            else 
+            {
+                PlayerControl control = new PlayerControl()
+                {
+                    PlayerCharacterID = null,
+                    CampaignID = campaignID,
+                    PauseAbilityAdd = false,
+                    PauseAbilityCreate = false,
+                    PauseGame = false,
+                    PauseItemAdd = false,
+                    PauseItemCreate = false,
+                    PauseSpellAdd = false,
+                    PauseSpellCreate = false,
+                };
+                try
+                {
+                    await _context.PlayerControls.AddAsync(control);
+                    await _context.SaveChangesAsync();
+                } catch (Exception ex)
+                {
+                }
+               
+                return control;
+            }
             return res;
         }
         public async Task<bool> isGmAccessingPlayerCharacterUrl(int characterID, ApplicationUser currentUser) {

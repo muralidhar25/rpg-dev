@@ -205,7 +205,8 @@ export class ImageSelectorComponent implements OnInit {
 
     public event: EventEmitter<any> = new EventEmitter();
 
-    saveImageFile() {
+  saveImageFile() {
+      
         if (this.flag) {
             this.event.emit({ base64: this.charactersFormModal.Old_imageUrl, file: this.Old_fileToUpload, isUrl: this.Old_fileToUpload ? false : true });
         }
@@ -271,9 +272,10 @@ export class ImageSelectorComponent implements OnInit {
           }
             else if (data.type == 4) { //Font awesome icons
               
-              this.charactersFormModal.Old_imageUrl = data.image.absoluteUri;
-              this.charactersFormModal.imageUrl = data.image.absoluteUri;
-              this.LoadImage(data.image, false);
+              this.charactersFormModal.Old_imageUrl = data.image;
+              this.charactersFormModal.imageUrl = data.image;
+              this.LoadImage(data.image, true);
+              
             }
             //this.cropBtnText = this.Crop;
             //this.Old_imageUrl = this.charactersFormModal.imageUrl;

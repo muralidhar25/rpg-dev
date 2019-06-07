@@ -49,6 +49,7 @@ export class BingSearchComponent implements OnInit {
     hideShowMoreMyImage: boolean = false;
   fontAwesomeIcons: any[] = [];
   SearchedFontAwesomeIcons: any[] = []
+  isSearchingStockImages: boolean = false;
 
     constructor(
         private router: Router, private alertService: AlertService, private bsModalRef: BsModalRef,
@@ -100,12 +101,13 @@ export class BingSearchComponent implements OnInit {
     }
 
     submitForm() {
-
+      this.isSearchingStockImages = false;
         if (this.defaultText === IMAGE.WEB && this.query.trim() !== '')
             this.searchBing(this.query);
         else if (this.defaultText === IMAGE.STOCK) {
-          
+          //this.SearchedFontAwesomeIcons = [];
           if (this.query) {
+            this.isSearchingStockImages = true;
             this.SearchedFontAwesomeIcons = this.fontAwesomeIcons.filter(x => {
               if (x.filter ? x.filter.filter(y => y.toLowerCase().indexOf(this.query.toLowerCase()) > -1).length : false) {
                 console.log("1,",x.filter.filter(y => y.toLowerCase().indexOf(this.query.toLowerCase()) > -1))
@@ -127,14 +129,20 @@ export class BingSearchComponent implements OnInit {
             })
           }
           else {
+            this.isSearchingStockImages = false;
             this.SearchedFontAwesomeIcons = [];
           }
           
 
             let q = this.query;
             let _blobStockImages = this.blobStockImagesBLOB;
-            this.blobStockImages = _blobStockImages.filter(function (item) {
-                return (item.absoluteUri.indexOf(q) > -1) || (item.absolutePath.indexOf(q) > -1);
+          this.blobStockImages = _blobStockImages.filter(function (item) {
+
+          
+           let absoluteUri = item.absoluteUri ? item.absoluteUri.toLowerCase() : '';
+            let absolutePath = item.absolutePath ? item.absolutePath.toLowerCase() : '';
+           
+            return (absoluteUri.indexOf(q) > -1) || (absolutePath.indexOf(q) > -1);
             });
         }
         else if (this.defaultText === IMAGE.MYIMAGES) {
@@ -237,7 +245,7 @@ export class BingSearchComponent implements OnInit {
 
     onScroll() {
         if (this.defaultText === 'Stock Images') {
-            if (!this.hideShowMoreStockImge) {
+            if (!this.hideShowMoreStockImge && !this.isSearchingStockImages) {
                 this.moreStockImages();
             }
            

@@ -59,7 +59,7 @@
         <!-- Blob Search -->
         <div class="w-100 d-block">
           <ul class="input-image-search-result" *ngIf="defaultText==='Stock Images'">
-            <!--<li class="input-image-search-result-item" *ngFor="let stockImg of blobStockImages">
+            <li class="input-image-search-result-item" *ngFor="let stockImg of blobStockImages">
               <div class="input-image-search-result-item-wrapper">
 
                 
@@ -69,9 +69,10 @@
                   <button type="button" class="btn btn-accent btn-block icon-Tile-Execute" (click)="useBlobStockImage(stockImg)"> Use</button>
                 </div>
               </div>
-            </li>-->
-            <li class="input-image-search-result-item" *ngFor="let fa_icon of fontAwesomeIcons">
+            </li>
+            <li class="input-image-search-result-item" *ngFor="let fa_icon of SearchedFontAwesomeIcons">
               <div class="input-image-search-result-item-wrapper">
+                <!--{{fa_icon?.id}}/{{fa_icon?.name?.toLowerCase()}}-->
                 <!--<div class="search-image-box-section">
     <span>
       <i class="{{fa_icon.id}}"></i>
@@ -79,26 +80,15 @@
   </div>-->
 
                 <div class="search-image-box-section">
-
-                  {{fa_icon?.id?.indexOf('far ')>-1?'regular':fa_icon?.id?.indexOf('fab ')>-1?'brands':fa_icon?.id?.indexOf('fas ')>-1?'solid':'not-found'}}/{{fa_icon?.name?.toLowerCase()}}
-                  <!--<i class="{{fa_icon.id}}"></i>
-  {{fa_icon?.id?.indexOf('far ')}}-{{fa_icon?.id?.indexOf('fab ')}}-{{fa_icon?.id?.indexOf('fas ')}}-->
-            
                   <img *ngIf="fa_icon?.id?.indexOf('far ')>-1" src="../../../../assets/fontawesome-free/pngs/regular/{{fa_icon?.name?.toLowerCase()}}.png" />
                   <img *ngIf="fa_icon?.id?.indexOf('fab ')>-1" src="../../../../assets/fontawesome-free/pngs/brands/{{fa_icon?.name?.toLowerCase()}}.png" />
                   <img *ngIf="fa_icon?.id?.indexOf('fas ')>-1" src="../../../../assets/fontawesome-free/pngs/solid/{{fa_icon?.name?.toLowerCase()}}.png" />
-
-
-
                 </div>
-                <div class="search-image-box-section">
-
-
+                <!--<div class="search-image-box-section">
                   <img *ngIf="fa_icon?.id?.indexOf('far ')>-1" src="../../../../assets/fontawesome-free/svgs/regular/{{fa_icon?.name?.toLowerCase()}}.svg" />
                   <img *ngIf="fa_icon?.id?.indexOf('fab ')>-1" src="../../../../assets/fontawesome-free/svgs/brands/{{fa_icon?.name?.toLowerCase()}}.svg" />
                   <img *ngIf="fa_icon?.id?.indexOf('fas ')>-1" src="../../../../assets/fontawesome-free/svgs/solid/{{fa_icon?.name?.toLowerCase()}}.svg" />
-
-                </div>
+                </div>-->
 
                 <div class="input-image-search-result-item-use">
                   <button type="button" class="btn btn-accent btn-block icon-Tile-Execute" (click)="useFontAwesomeIcon(fa_icon)"> Use</button>
