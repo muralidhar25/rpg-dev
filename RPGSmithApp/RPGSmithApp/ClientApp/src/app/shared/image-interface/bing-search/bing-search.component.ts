@@ -13,6 +13,7 @@ import { IMAGE } from "../../../core/models/enums";
 import { DBkeys } from "../../../core/common/db-keys";
 import { Utilities } from "../../../core/common/utilities";
 import { PlatformLocation } from "@angular/common";
+import { Fa5Icons } from "../../../core/common/fontawesome.service";
 
 @Component({
     selector: 'app-bing-search',
@@ -46,6 +47,8 @@ export class BingSearchComponent implements OnInit {
     previousContainerMyImageNumber: number = 0;
     isMyImagesLoading: boolean = false;
     hideShowMoreMyImage: boolean = false;
+  fontAwesomeIcons: any[] = [];
+  SearchedFontAwesomeIcons: any[] = []
 
     constructor(
         private router: Router, private alertService: AlertService, private bsModalRef: BsModalRef,
@@ -65,7 +68,8 @@ export class BingSearchComponent implements OnInit {
             this.title = this.bsModalRef.content.title ? this.bsModalRef.content.title : 'Search Images';
             this.query = this.bsModalRef.content.query ? this.bsModalRef.content.query : '';
             this.defaultText = this.bsModalRef.content.defaultText ? this.bsModalRef.content.defaultText : 'Web';
-            this.Initialize();
+          this.Initialize();
+          this.fontAwesomeIcons = Fa5Icons;
         }, 0);
     }
 
@@ -100,6 +104,33 @@ export class BingSearchComponent implements OnInit {
         if (this.defaultText === IMAGE.WEB && this.query.trim() !== '')
             this.searchBing(this.query);
         else if (this.defaultText === IMAGE.STOCK) {
+          
+          if (this.query) {
+            this.SearchedFontAwesomeIcons = this.fontAwesomeIcons.filter(x => {
+              if (x.filter ? x.filter.filter(y => y.toLowerCase().indexOf(this.query.toLowerCase()) > -1).length : false) {
+                console.log("1,",x.filter.filter(y => y.toLowerCase().indexOf(this.query.toLowerCase()) > -1))
+                return true;
+              }
+              else if (x.aliases ? x.aliases.filter(y => y.toLowerCase().indexOf(this.query.toLowerCase()) > -1).length : false) {
+                console.log("2,", x.aliases.filter(y => y.toLowerCase().indexOf(this.query.toLowerCase()) > -1));
+                return true;
+              }
+              else if (x.name ? x.name.toLowerCase().indexOf(this.query.toLowerCase()) > -1 : false) {
+                console.log("3,", x.name.toLowerCase().indexOf(this.query.toLowerCase()));
+                return true;
+              }
+              else {
+                return false;
+              }
+                
+              
+            })
+          }
+          else {
+            this.SearchedFontAwesomeIcons = [];
+          }
+          
+
             let q = this.query;
             let _blobStockImages = this.blobStockImagesBLOB;
             this.blobStockImages = _blobStockImages.filter(function (item) {
@@ -291,7 +322,8 @@ export class BingSearchComponent implements OnInit {
         this.event.emit({ image: bingImg, type: 1 });
     }
 
-    useBlobStockImage(stockImg) {
+  useBlobStockImage(stockImg) {
+      
         this.bsModalRef.hide();
         this.event.emit({ image: stockImg, type: 2 });
     }
@@ -339,5 +371,20 @@ export class BingSearchComponent implements OnInit {
                 else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
             },
                 () => { });
+  }
+  useFontAwesomeIcon(icon) {
+    let iconName = icon.name ? icon.name.toLowerCase() : '';
+    let iconUrl = '';
+    if (icon.id.indexOf('far ') > -1) {
+      iconUrl = "../../../../assets/fontawesome-free/pngs/regular/" + iconName +".png";
+    } else if (icon.id.indexOf('fab ') > -1) {
+      iconUrl = "../../../../assets/fontawesome-free/pngs/brands/" + iconName + ".png";
+    } else if (icon.id.indexOf('fas ') > -1) {
+      iconUrl = "../../../../assets/fontawesome-free/pngs/solid/" + iconName + ".png";
     }
+    
+    this.bsModalRef.hide();
+    this.event.emit({ image: iconUrl, type: 4 });
+  }
+
 }

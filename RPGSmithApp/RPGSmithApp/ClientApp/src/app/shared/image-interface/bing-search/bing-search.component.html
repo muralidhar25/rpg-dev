@@ -25,7 +25,9 @@
     </div>
     <div class="modal-body" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="2"
                 [infiniteScrollThrottle]="300" [scrollWindow]="false">
-
+      <!--<span *ngFor="let fa_icon of fontAwesomeIcons">
+      <i class="{{fa_icon.id}}"></i>
+    </span>-->
         <!-- Search query -->
         <div class="form-group form-group-unlabelled">
             <span class="input-group-btn">
@@ -56,22 +58,57 @@
 
         <!-- Blob Search -->
         <div class="w-100 d-block">
-            <ul class="input-image-search-result" *ngIf="defaultText==='Stock Images'">
-                <li class="input-image-search-result-item" *ngFor="let stockImg of blobStockImages">
-                    <div class="input-image-search-result-item-wrapper">
+          <ul class="input-image-search-result" *ngIf="defaultText==='Stock Images'">
+            <!--<li class="input-image-search-result-item" *ngFor="let stockImg of blobStockImages">
+              <div class="input-image-search-result-item-wrapper">
 
-                        <!--<img class="card-img-top portrait" [src]="stockImg.absoluteUri"
-                [alt]="stockImg.absoluteUri">-->
-                        <div class="search-image-box-section" [ngStyle]="{'background-image': 'url('+stockImg.absoluteUri+')'}"></div>
+                
+                <div class="search-image-box-section" [ngStyle]="{'background-image': 'url('+stockImg.absoluteUri+')'}"></div>
 
-                        <div class="input-image-search-result-item-use">
-                            <button type="button" class="btn btn-accent btn-block icon-Tile-Execute" (click)="useBlobStockImage(stockImg)"> Use</button>
-                        </div>
-                    </div>
-                </li>
-                <li *ngIf="blobStockImages?.length == 0 && !isLoading" class="input-image-search-result-item" style="list-style-type: none;margin:10px;">No Record Found</li>
+                <div class="input-image-search-result-item-use">
+                  <button type="button" class="btn btn-accent btn-block icon-Tile-Execute" (click)="useBlobStockImage(stockImg)"> Use</button>
+                </div>
+              </div>
+            </li>-->
+            <li class="input-image-search-result-item" *ngFor="let fa_icon of fontAwesomeIcons">
+              <div class="input-image-search-result-item-wrapper">
+                <!--<div class="search-image-box-section">
+    <span>
+      <i class="{{fa_icon.id}}"></i>
+    </span>
+  </div>-->
 
-            </ul>
+                <div class="search-image-box-section">
+
+                  {{fa_icon?.id?.indexOf('far ')>-1?'regular':fa_icon?.id?.indexOf('fab ')>-1?'brands':fa_icon?.id?.indexOf('fas ')>-1?'solid':'not-found'}}/{{fa_icon?.name?.toLowerCase()}}
+                  <!--<i class="{{fa_icon.id}}"></i>
+  {{fa_icon?.id?.indexOf('far ')}}-{{fa_icon?.id?.indexOf('fab ')}}-{{fa_icon?.id?.indexOf('fas ')}}-->
+            
+                  <img *ngIf="fa_icon?.id?.indexOf('far ')>-1" src="../../../../assets/fontawesome-free/pngs/regular/{{fa_icon?.name?.toLowerCase()}}.png" />
+                  <img *ngIf="fa_icon?.id?.indexOf('fab ')>-1" src="../../../../assets/fontawesome-free/pngs/brands/{{fa_icon?.name?.toLowerCase()}}.png" />
+                  <img *ngIf="fa_icon?.id?.indexOf('fas ')>-1" src="../../../../assets/fontawesome-free/pngs/solid/{{fa_icon?.name?.toLowerCase()}}.png" />
+
+
+
+                </div>
+                <div class="search-image-box-section">
+
+
+                  <img *ngIf="fa_icon?.id?.indexOf('far ')>-1" src="../../../../assets/fontawesome-free/svgs/regular/{{fa_icon?.name?.toLowerCase()}}.svg" />
+                  <img *ngIf="fa_icon?.id?.indexOf('fab ')>-1" src="../../../../assets/fontawesome-free/svgs/brands/{{fa_icon?.name?.toLowerCase()}}.svg" />
+                  <img *ngIf="fa_icon?.id?.indexOf('fas ')>-1" src="../../../../assets/fontawesome-free/svgs/solid/{{fa_icon?.name?.toLowerCase()}}.svg" />
+
+                </div>
+
+                <div class="input-image-search-result-item-use">
+                  <button type="button" class="btn btn-accent btn-block icon-Tile-Execute" (click)="useFontAwesomeIcon(fa_icon)"> Use</button>
+
+                </div>
+              </div>
+            </li>
+            <li *ngIf="SearchedFontAwesomeIcons?.length==0 && blobStockImages?.length == 0 && !isLoading" class="input-image-search-result-item" style="list-style-type: none;margin:10px;">No Record Found</li>
+
+          </ul>
             <!--<div *ngIf="blobStockImages?.length != 0 && defaultText==='Stock Images'" class="row m-0">
                 <div class="col-12 text-center">
                     <a (click)="moreStockImages()" *ngIf="!hideShowMoreStockImge" class="btn btn-accent d-inline-flex" style="list-style-type: none;margin:10px;">Show More</a>

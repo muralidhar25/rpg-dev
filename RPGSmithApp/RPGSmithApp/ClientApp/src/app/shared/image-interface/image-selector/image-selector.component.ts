@@ -265,9 +265,15 @@ export class ImageSelectorComponent implements OnInit {
                 this.LoadImage(data.image.absoluteUri, false);
             }
             else if (data.type == 3) {
-                this.charactersFormModal.Old_imageUrl = data.image.absoluteUri;
-                this.charactersFormModal.imageUrl = data.image.absoluteUri;
+                this.charactersFormModal.Old_imageUrl = data.image;
+                this.charactersFormModal.imageUrl = data.image;
                 this.LoadImage(data.image.absoluteUri, false);
+          }
+            else if (data.type == 4) { //Font awesome icons
+              
+              this.charactersFormModal.Old_imageUrl = data.image.absoluteUri;
+              this.charactersFormModal.imageUrl = data.image.absoluteUri;
+              this.LoadImage(data.image, false);
             }
             //this.cropBtnText = this.Crop;
             //this.Old_imageUrl = this.charactersFormModal.imageUrl;
