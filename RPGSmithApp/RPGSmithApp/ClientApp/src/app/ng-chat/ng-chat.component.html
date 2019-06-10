@@ -155,6 +155,9 @@
                     (blur)="toggleWindowFocus(window)" 
                     (focus)="toggleWindowFocus(window)"/>
 
+                    <a class="btn-add-file"(click)="SendMessage(window)">
+                        <i class="fa fa-paper-plane"></i>
+                    </a>
                 <!-- File Upload -->
                 <!--<ng-container *ngIf="fileUploadAdapter">
                     <a *ngIf="!isUploadingFile" class="btn-add-file" (click)="triggerNativeFileUpload()">

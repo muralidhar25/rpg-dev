@@ -851,6 +851,37 @@ export class NgChat implements OnInit, IChatController {
     }
   }
 
+  SendMessage(window: Window) {    
+    if (window.newMessage && window.newMessage.trim() != "") {
+      let message = new Message();
+
+      message.fromId = this.userId;
+      message.toId = window.participant.id;
+      message.message = window.newMessage;
+      message.dateSent = new Date();
+      if (true) {
+        debugger
+        //JSON.stringify(obj1) === JSON.stringify(obj2) 
+        let currentopendwindowParticipant = this.participants.filter(x => JSON.stringify(x) == JSON.stringify(window.participant));
+        if (!currentopendwindowParticipant.length && this.participants.filter(x => x.displayName == "Everyone").length) {
+          this.onCloseChatWindow(window);
+          window = this.openChatWindow(this.participants.filter(x => x.displayName == "Everyone")[0])["0"];
+          message.toId = window.participant.id;
+        }
+      }
+
+
+
+      window.messages.push(message);
+      // console.log("SendMessageVariable", message)
+      this.adapter.sendMessage(message);
+
+      window.newMessage = ""; // Resets the new message input
+
+      this.scrollChatWindow(window, ScrollDirection.Bottom);
+
+    }
+  }
   /*  Monitors pressed keys on a chat window
       - Dispatches a message when the ENTER key is pressed
       - Tabs between windows on TAB or SHIFT + TAB
@@ -859,35 +890,7 @@ export class NgChat implements OnInit, IChatController {
   onChatInputTyped(event: any, window: Window): void {
     switch (event.keyCode) {
       case 13:
-        if (window.newMessage && window.newMessage.trim() != "") {
-          let message = new Message();
-
-          message.fromId = this.userId;
-          message.toId = window.participant.id;
-          message.message = window.newMessage;
-          message.dateSent = new Date();
-          if (true) {
-            debugger
-            //JSON.stringify(obj1) === JSON.stringify(obj2) 
-            let currentopendwindowParticipant = this.participants.filter(x => JSON.stringify(x) == JSON.stringify(window.participant));
-            if (!currentopendwindowParticipant.length && this.participants.filter(x => x.displayName == "Everyone").length) {
-              this.onCloseChatWindow(window);
-              window = this.openChatWindow(this.participants.filter(x => x.displayName == "Everyone")[0])["0"];
-              message.toId = window.participant.id;
-            }
-          }
-
-
-
-          window.messages.push(message);
-          // console.log("SendMessageVariable", message)
-          this.adapter.sendMessage(message);
-
-          window.newMessage = ""; // Resets the new message input
-
-          this.scrollChatWindow(window, ScrollDirection.Bottom);
-
-        }
+        this.SendMessage(window);
         break;
       case 9:
         event.preventDefault();
@@ -936,13 +939,22 @@ export class NgChat implements OnInit, IChatController {
 
   // Toggles a chat window visibility between maximized/minimized
   onChatWindowClicked(window: Window): void {
-    if (!this.isSmallScreen()) {
+    
+    //if (!this.isSmallScreen()) {
       window.isCollapsed = !window.isCollapsed;
       this.scrollChatWindow(window, ScrollDirection.Bottom);
       if (window.isCollapsed) {
         this.appService.updateChatHalfScreen(false);
-      }
     }
+
+    //collaspe participant list with chat window if in mobile screen
+    if (this.isSmallScreen()) {
+      this.isCollapsed = window.isCollapsed;
+    }
+    //}
+    //else {
+    //  this.isCollapsed = window.isCollapsed;
+    //}
   }
   ShowThisMessage(window: Window, message: Message, index: number): boolean {
 
@@ -1047,7 +1059,7 @@ export class NgChat implements OnInit, IChatController {
   }
 
   // Toggles a window focus on the focus/blur of a 'newMessage' input
-  toggleWindowFocus(window: Window): void {
+  toggleWindowFocus(window: Window): void {    
     window.hasFocus = !window.hasFocus;
     if (window.hasFocus) {
       const unreadMessages = window.messages.filter(message => message.dateSeen == null && message.toId == this.userId);
