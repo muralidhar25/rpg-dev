@@ -256,6 +256,8 @@ namespace DAL.Services
                     CampaignID = invite.PlayerCampaignID,
                     PauseAbilityAdd = false,
                     PauseAbilityCreate = false,
+                    PauseBuffAndEffectAdd = false,
+                    PauseBuffAndEffectCreate = false,
                     PauseGame = false,
                     PauseItemAdd = false,
                     PauseItemCreate = false,
@@ -272,6 +274,8 @@ namespace DAL.Services
                         CampaignID = invite.PlayerCampaignID,
                         PauseAbilityAdd = OldControl.PauseAbilityAdd,
                         PauseAbilityCreate = OldControl.PauseAbilityCreate,
+                        PauseBuffAndEffectAdd= OldControl.PauseBuffAndEffectAdd,
+                        PauseBuffAndEffectCreate = OldControl.PauseBuffAndEffectCreate,
                         PauseGame = OldControl.PauseGame,
                         PauseItemAdd = OldControl.PauseItemAdd,
                         PauseItemCreate = OldControl.PauseItemCreate,
@@ -312,6 +316,8 @@ namespace DAL.Services
                     CampaignID = campaignID,
                     PauseAbilityAdd = false,
                     PauseAbilityCreate = false,
+                    PauseBuffAndEffectAdd = false,
+                    PauseBuffAndEffectCreate = false,
                     PauseGame = false,
                     PauseItemAdd = false,
                     PauseItemCreate = false,
@@ -361,6 +367,8 @@ namespace DAL.Services
                     PlayerCharacterID = model.PlayerCharacterID,
                     PauseAbilityAdd = model.PauseAbilityAdd,
                     PauseAbilityCreate = model.PauseAbilityCreate,
+                    PauseBuffAndEffectAdd = model.PauseBuffAndEffectAdd,
+                    PauseBuffAndEffectCreate = model.PauseBuffAndEffectCreate,
                     PauseGame = model.PauseGame,
                     PauseItemAdd = model.PauseItemAdd,
                     PauseItemCreate = model.PauseItemCreate,
@@ -373,6 +381,8 @@ namespace DAL.Services
             List<PlayerControl> list = await _context.PlayerControls.Where(x => x.CampaignID == model.CampaignID).ToListAsync();
             foreach (var playerControl in list)
             {
+                playerControl.PauseBuffAndEffectAdd = model.PauseBuffAndEffectAdd;
+                playerControl.PauseBuffAndEffectCreate = model.PauseBuffAndEffectCreate;
                 playerControl.PauseAbilityAdd = model.PauseAbilityAdd;
                 playerControl.PauseAbilityCreate = model.PauseAbilityCreate;
                 playerControl.PauseGame = model.PauseGame;

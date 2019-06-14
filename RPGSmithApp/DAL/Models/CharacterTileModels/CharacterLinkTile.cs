@@ -20,6 +20,7 @@ namespace DAL.Models.CharacterTileModels
         public int? SpellId { get; set; }
         public int? AbilityId { get; set; }
         public int? ItemId { get; set; }
+        public int? BuffAndEffectId { get; set; }
 
         public bool ShowTitle { get; set; }    
         public bool IsDeleted { get; set; }
@@ -45,6 +46,7 @@ namespace DAL.Models.CharacterTileModels
         public virtual CharacterTile CharacterTile { get; set; }
         public virtual CharacterSpell Spell { get; set; }
         public virtual CharacterAbility Ability { get; set; }
+        public virtual CharacterBuffAndEffect BuffAndEffect { get; set; }
         public virtual Item Item { get; set; }
     }
 }

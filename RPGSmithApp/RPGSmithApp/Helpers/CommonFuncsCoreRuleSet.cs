@@ -191,6 +191,7 @@ namespace RPGSmithApp.Helpers
                 IsAbilityEnabled = ruleSet.IsAbilityEnabled,
                 IsItemEnabled = ruleSet.IsItemEnabled,
                 IsSpellEnabled = ruleSet.IsSpellEnabled,
+                IsBuffAndEffectEnabled = ruleSet.IsBuffAndEffectEnabled,
                 IsAllowSharing = ruleSet.IsAllowSharing,
                 ShareCode = ruleSet.ShareCode,
                 IsCoreRuleset = ruleSet.IsCoreRuleset,

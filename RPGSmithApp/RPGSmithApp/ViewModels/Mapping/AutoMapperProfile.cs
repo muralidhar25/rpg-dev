@@ -105,6 +105,10 @@ namespace RPGSmithApp.ViewModels
             CreateMap<CreateAbilityModel, Ability>();
             CreateMap<Ability, AbilityViewModel>();
 
+            CreateMap<EditBuffAndeffectModel, BuffAndEffect>();
+            CreateMap<CreateBuffAndEffectModel, BuffAndEffect>();
+            CreateMap<BuffAndEffect, BuffAndEffectViewModel>();
+
             CreateMap<Spell, SpellViewModel>();
             CreateMap<CharacterCommand, CharacterCommandViewModel>();
 

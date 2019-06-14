@@ -32,6 +32,7 @@ namespace RPGSmithApp.Controllers
         private readonly ITextTileService _textTileService;
         private readonly ILinkTileService _linkTileService;
         private readonly INoteTileService _noteTileService;
+        private readonly IBuffAndEffectTileService _buffAndEffectTileService;
         private readonly IColorService _colorService;
         private readonly ICharactersCharacterStatService _charactersCharacterStatService;
         private const int heightWidth = 144;
@@ -47,7 +48,8 @@ namespace RPGSmithApp.Controllers
             ILinkTileService linkTileService, 
             INoteTileService noteTileService, 
             IColorService colorService,
-            ICharactersCharacterStatService charactersCharacterStatService)
+            ICharactersCharacterStatService charactersCharacterStatService,
+            IBuffAndEffectTileService buffAndEffectTileService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._accountManager = accountManager;
@@ -62,6 +64,7 @@ namespace RPGSmithApp.Controllers
             this._colorService = colorService;
             this._charactersCharacterStatService = charactersCharacterStatService;
             this._imageTileService = imageTileService;
+            this._buffAndEffectTileService = buffAndEffectTileService;
         }
 
         [HttpGet("GetById")]
@@ -250,6 +253,13 @@ namespace RPGSmithApp.Controllers
                                     recList.Add(new multiRecord { recId = ability, recType = "Ability" });
                                 }
                             }
+                            if (model.buffAndEffectIDS.Length > 0)
+                            {
+                                foreach (var be in model.buffAndEffectIDS)
+                                {
+                                    recList.Add(new multiRecord { recId = be, recType = "BuffAndEffect" });
+                                }
+                            }
                             //int[] collectionList = new int[] { };
                             //if (model.LinkTile.LinkType.ToLower() == Enum.LinkType.spell.ToString())
                             //{
@@ -280,6 +290,7 @@ namespace RPGSmithApp.Controllers
                                         return BadRequest("SpellId field is required for LinkTile of Spell type");
                                     model.LinkTile.AbilityId = null;
                                     model.LinkTile.ItemId = null;
+                                    model.LinkTile.BuffAndEffectId = null;
                                 }
                                 else if (model.LinkTile.LinkType.ToLower() == Enum.LinkType.ability.ToString()) // "ability")
                                 {
@@ -288,6 +299,7 @@ namespace RPGSmithApp.Controllers
                                         return BadRequest("AbilityId field is required for LinkTile of Ability type");
                                     model.LinkTile.ItemId = null;
                                     model.LinkTile.SpellId = null;
+                                    model.LinkTile.BuffAndEffectId = null;
                                 }
                                 else if (model.LinkTile.LinkType.ToLower() == Enum.LinkType.item.ToString()) // "item")
                                 {
@@ -296,6 +308,16 @@ namespace RPGSmithApp.Controllers
                                         return BadRequest("ItemId field is required for LinkTile of Item type");
                                     model.LinkTile.AbilityId = null;
                                     model.LinkTile.SpellId = null;
+                                    model.LinkTile.BuffAndEffectId = null;
+                                }
+                                else if (model.LinkTile.LinkType.ToLower() == Enum.LinkType.buffandeffect.ToString()) // "ability")
+                                {
+                                    model.LinkTile.BuffAndEffectId = item.recId;
+                                    if (model.LinkTile.BuffAndEffectId == null)
+                                        return BadRequest("BuffAndEffectID field is required for LinkTile of Buff & Effect type");
+                                    model.LinkTile.ItemId = null;
+                                    model.LinkTile.SpellId = null;
+                                    model.LinkTile.AbilityId = null;
                                 }
 
                                 await _tileService.Create(_newTile);
@@ -314,7 +336,8 @@ namespace RPGSmithApp.Controllers
                                     SpellId = model.LinkTile.SpellId,
                                     TitleBgColor = model.LinkTile.TitleBgColor,
                                     TitleTextColor = model.LinkTile.TitleTextColor,
-                                    DisplayLinkImage = model.LinkTile.DisplayLinkImage
+                                    DisplayLinkImage = model.LinkTile.DisplayLinkImage,
+                                    BuffAndEffectId = model.LinkTile.BuffAndEffectId,
                                 };
 
                                 var linkTile = _LinkTile;
@@ -355,6 +378,13 @@ namespace RPGSmithApp.Controllers
                                     recListExe.Add(new multiRecord { recId = ability, recType = "Ability" });
                                 }
                             }
+                            if (model.buffAndEffectIDS.Length > 0)
+                            {
+                                foreach (var be in model.buffAndEffectIDS)
+                                {
+                                    recListExe.Add(new multiRecord { recId = be, recType = "BuffAndEffect" });
+                                }
+                            }
                             //int[] EcollectionList = new int[] { };
                             //if (model.ExecuteTile.LinkType.ToLower() == Enum.LinkType.spell.ToString())
                             //{
@@ -385,6 +415,7 @@ namespace RPGSmithApp.Controllers
                                         return BadRequest("SpellId field is required for ExecuteTile of Spell type");
                                     model.ExecuteTile.AbilityId = null;
                                     model.ExecuteTile.ItemId = null;
+                                    model.ExecuteTile.BuffAndEffectId = null;
                                 }
                                 else if (model.ExecuteTile.LinkType.ToLower() == Enum.LinkType.ability.ToString())
                                 {
@@ -393,6 +424,7 @@ namespace RPGSmithApp.Controllers
                                         return BadRequest("AbilityId field is required for ExecuteTile of ability type");
                                     model.ExecuteTile.ItemId = null;
                                     model.ExecuteTile.SpellId = null;
+                                    model.ExecuteTile.BuffAndEffectId = null;
                                 }
                                 else if (model.ExecuteTile.LinkType.ToLower() == Enum.LinkType.item.ToString())
                                 {
@@ -401,6 +433,16 @@ namespace RPGSmithApp.Controllers
                                         return BadRequest("ItemId field is required for ExecuteTile of Item type");
                                     model.ExecuteTile.AbilityId = null;
                                     model.ExecuteTile.SpellId = null;
+                                    model.ExecuteTile.BuffAndEffectId = null;
+                                }
+                                else if (model.ExecuteTile.LinkType.ToLower() == Enum.LinkType.buffandeffect.ToString())
+                                {
+                                    model.ExecuteTile.BuffAndEffectId = item.recId;
+                                    if (model.ExecuteTile.BuffAndEffectId == null)
+                                        return BadRequest("BuffAndEffectId field is required for ExecuteTile of Buff & Effect type");
+                                    model.ExecuteTile.ItemId = null;
+                                    model.ExecuteTile.SpellId = null;
+                                    model.ExecuteTile.AbilityId = null;
                                 }
 
                                 if (model.ExecuteTile.CommandId == null)
@@ -424,8 +466,8 @@ namespace RPGSmithApp.Controllers
                                     TitleBgColor = model.ExecuteTile.TitleBgColor,
                                     TitleTextColor = model.ExecuteTile.TitleTextColor,
                                     CommandId= model.ExecuteTile.CommandId,
-                                    DisplayLinkImage = model.ExecuteTile.DisplayLinkImage
-
+                                    DisplayLinkImage = model.ExecuteTile.DisplayLinkImage,
+                                    BuffAndEffectId= model.ExecuteTile.BuffAndEffectId,
                                 };
 
                                 var executeTile = _ExecuteTile;
@@ -469,6 +511,22 @@ namespace RPGSmithApp.Controllers
                             Tile.TextTiles = await _textTileService.Create(textTile);
                             SaveColorsAsync(Tile);
                             break;
+                        case (int)Enum.TILES.BUFFANDEFFECT:
+
+                            //Add BUFFANDEFFECT Tile 
+                            if (model.BuffAndEffectTile == null)
+                                return BadRequest("BuffAndEffectTile missing in request");
+
+                            await _tileService.Create(Tile);
+
+                            var buffAndEffectTile = model.BuffAndEffectTile;
+                            buffAndEffectTile.CharacterTileId = Tile.CharacterTileId;
+
+                            buffAndEffectTile.Shape = Tile.Shape;
+                            Tile.BuffAndEffectTiles = await _buffAndEffectTileService.Create(buffAndEffectTile);
+                            SaveColorsAsync(Tile);
+                            break;
+                            
                         default:
                             break;
                     }
@@ -587,6 +645,7 @@ namespace RPGSmithApp.Controllers
                                     return BadRequest("SpellId field is required for LinkTile of Spell type");
                                 model.LinkTile.AbilityId = null;
                                 model.LinkTile.ItemId = null;
+                                model.LinkTile.BuffAndEffectId = null;
                             }
                             else if (model.LinkTile.LinkType.ToLower() == Enum.LinkType.ability.ToString()) // "ability")
                             {
@@ -594,6 +653,7 @@ namespace RPGSmithApp.Controllers
                                     return BadRequest("AbilityId field is required for LinkTile of Ability type");
                                 model.LinkTile.ItemId = null;
                                 model.LinkTile.SpellId = null;
+                                model.LinkTile.BuffAndEffectId = null;
                             }
                             else if (model.LinkTile.LinkType.ToLower() == Enum.LinkType.item.ToString()) // "item")
                             {
@@ -601,6 +661,15 @@ namespace RPGSmithApp.Controllers
                                     return BadRequest("ItemId field is required for LinkTile of Item type");
                                 model.LinkTile.AbilityId = null;
                                 model.LinkTile.SpellId = null;
+                                model.LinkTile.BuffAndEffectId = null;
+                            }
+                            else if (model.LinkTile.LinkType.ToLower() == Enum.LinkType.buffandeffect.ToString()) // "ability")
+                            {
+                                if (model.LinkTile.BuffAndEffectId == null)
+                                    return BadRequest("BuffAndEffectID field is required for LinkTile of Buff & Effect type");
+                                model.LinkTile.ItemId = null;
+                                model.LinkTile.SpellId = null;
+                                model.LinkTile.AbilityId = null;
                             }
 
                             await _tileService.Update(Tile);
@@ -628,6 +697,7 @@ namespace RPGSmithApp.Controllers
                                     return BadRequest("SpellId field is required for ExecuteTile of Spell type");
                                 model.ExecuteTile.AbilityId = null;
                                 model.ExecuteTile.ItemId = null;
+                                model.ExecuteTile.BuffAndEffectId = null;
                             }
                             else if (model.ExecuteTile.LinkType.ToLower() == Enum.LinkType.ability.ToString())
                             {
@@ -635,6 +705,7 @@ namespace RPGSmithApp.Controllers
                                     return BadRequest("AbilityId field is required for ExecuteTile of ability type");
                                 model.ExecuteTile.ItemId = null;
                                 model.ExecuteTile.SpellId = null;
+                                model.ExecuteTile.BuffAndEffectId = null;
                             }
                             else if (model.ExecuteTile.LinkType.ToLower() == Enum.LinkType.item.ToString())
                             {
@@ -642,8 +713,16 @@ namespace RPGSmithApp.Controllers
                                     return BadRequest("ItemId field is required for ExecuteTile of Item type");
                                 model.ExecuteTile.AbilityId = null;
                                 model.ExecuteTile.SpellId = null;
+                                model.ExecuteTile.BuffAndEffectId = null;
                             }
-
+                            else if (model.ExecuteTile.LinkType.ToLower() == Enum.LinkType.buffandeffect.ToString())
+                            {
+                                if (model.ExecuteTile.BuffAndEffectId == null)
+                                    return BadRequest("BuffAndEffectId field is required for ExecuteTile of Buff & Effect type");
+                                model.ExecuteTile.ItemId = null;
+                                model.ExecuteTile.SpellId = null;
+                                model.ExecuteTile.AbilityId = null;
+                            }
                             if (model.ExecuteTile.CommandId == null)
                                 return BadRequest("CommandId field is required for ExecuteTile");
 
@@ -685,6 +764,21 @@ namespace RPGSmithApp.Controllers
                             textTile.CharacterTileId = Tile.CharacterTileId;
                             textTile.Shape = Tile.Shape;
                             Tile.TextTiles = await _textTileService.Update(textTile);
+                            SaveColorsAsync(Tile);
+                            break;
+                        case (int)Enum.TILES.BUFFANDEFFECT:
+                            //Update Text Tile 
+                            if (model.BuffAndEffectTile == null)
+                                return BadRequest("BuffAndEffectTile missing in request");
+                            else if (model.BuffAndEffectTile.BuffAndEffectTileId == 0)
+                                return BadRequest("BuffAndEffectTileID field is required for TextTile");
+
+                            await _tileService.Update(Tile);
+
+                            var buffAndEffect = model.BuffAndEffectTile;
+                            buffAndEffect.CharacterTileId = Tile.CharacterTileId;
+                            buffAndEffect.Shape = Tile.Shape;
+                            Tile.BuffAndEffectTiles = await _buffAndEffectTileService.Update(buffAndEffect);
                             SaveColorsAsync(Tile);
                             break;
                         default:
@@ -778,6 +872,12 @@ namespace RPGSmithApp.Controllers
                         _tileColor.BodyTextColor = Tile.TextTiles.BodyTextColor;
                         _tileColor.TitleBgColor = Tile.TextTiles.TitleBgColor;
                         _tileColor.TitleTextColor = Tile.TextTiles.TitleTextColor;
+                        break;
+                    case (int)Enum.TILES.BUFFANDEFFECT:
+                        _tileColor.BodyBgColor = Tile.BuffAndEffectTiles.BodyBgColor;
+                        _tileColor.BodyTextColor = Tile.BuffAndEffectTiles.BodyTextColor;
+                        _tileColor.TitleBgColor = Tile.BuffAndEffectTiles.TitleBgColor;
+                        _tileColor.TitleTextColor = Tile.BuffAndEffectTiles.TitleTextColor;
                         break;
                     default: break;
                 }

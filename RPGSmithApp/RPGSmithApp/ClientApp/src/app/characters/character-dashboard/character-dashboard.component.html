@@ -444,26 +444,27 @@
                      (click)="viewTile(box.tile, box.tile.tileTypeId)">
 
                   <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.linkTiles.titleTextColor, 'background-color': box.tile.linkTiles.titleBgColor}"
-                      *ngIf="box.tile.linkTiles?.showTitle && box.tile.linkTiles?.displayLinkImage" popover="{{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name : ''}}" triggers="hover"  container= "body"
+                      *ngIf="box.tile.linkTiles?.showTitle && box.tile.linkTiles?.displayLinkImage"
+                      popover="{{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name : box.tile.linkTiles?.linkType=='BuffAndEffect' ? box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.name : ''}}" triggers="hover" container="body"
                       [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
-                    {{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name : ''}}
+                    {{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name :box.tile.linkTiles?.linkType=='BuffAndEffect' ? box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.name : ''}}
                   </h5>
 
                   <div class="tile-body"   
                        [title]="((box.tile.linkTiles?.showTitle && box.tile.linkTiles?.displayLinkImage)
                        || (!box.tile.linkTiles?.showTitle && box.tile.linkTiles?.displayLinkImage)) ?
-                       box.tile.linkTiles?.linkType=='Spell' ? description(box.tile.linkTiles?.spell?.spell?.description) : box.tile.linkTiles?.linkType=='Ability' ? description(box.tile.linkTiles?.ability?.ability?.description) : box.tile.linkTiles?.linkType=='Item' ? description(box.tile.linkTiles?.item?.description) : 'Hello2'
+                       box.tile.linkTiles?.linkType=='Spell' ? description(box.tile.linkTiles?.spell?.spell?.description) : box.tile.linkTiles?.linkType=='Ability' ? description(box.tile.linkTiles?.ability?.ability?.description) : box.tile.linkTiles?.linkType=='BuffAndEffect' ? description(box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.description) : box.tile.linkTiles?.linkType=='Item' ? description(box.tile.linkTiles?.item?.description) : 'Hello2'
                        : 'Hello'">
 
-                    <img *ngIf="(box.tile.linkTiles?.showTitle && box.tile.linkTiles?.displayLinkImage) || (!box.tile.linkTiles?.showTitle && box.tile.linkTiles?.displayLinkImage)" [src]="box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.imageUrl : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.imageUrl : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.itemImage : box.tile.linkTiles?.item?.itemImage"
+                    <img *ngIf="(box.tile.linkTiles?.showTitle && box.tile.linkTiles?.displayLinkImage) || (!box.tile.linkTiles?.showTitle && box.tile.linkTiles?.displayLinkImage)" [src]="box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.imageUrl : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.imageUrl : box.tile.linkTiles?.linkType=='BuffAndEffect' ? box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.imageUrl : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.itemImage : box.tile.linkTiles?.item?.itemImage"
                          [alt]="box.tile.linkTiles?.title" class="imgwidth"
                          (error)="getErrorImage(refImg,box.tile.linkTiles)"
                          #refImg>
                     <span *ngIf=" box.tile.linkTiles?.showTitle && !box.tile.linkTiles?.displayLinkImage"
                           class="text-center-v" [ngStyle]="{'color': box.tile.linkTiles.titleTextColor}"
-                          popover="{{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name : ''}}" triggers="hover"  container= "body"
+                          popover="{{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='BuffAndEffect' ? box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name : ''}}" triggers="hover" container="body"
                           [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey" [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey" [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
-                      {{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name : ''}}
+                      {{box.tile.linkTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.linkTiles?.linkType=='Ability' ? box.tile.linkTiles?.ability?.ability?.name : box.tile.linkTiles?.linkType=='BuffAndEffect' ? box.tile.linkTiles?.buffAndEffect?.buffAndEffect?.name : box.tile.linkTiles?.linkType=='Item' ? box.tile.linkTiles?.item?.name : ''}}
                     </span>
                   </div>
                 </div>
@@ -475,25 +476,26 @@
                      (click)="viewTile(box.tile, box.tile.tileTypeId)">
 
                   <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.executeTiles.titleTextColor, 'background-color': box.tile.executeTiles.titleBgColor}"
-                      *ngIf="box.tile.executeTiles?.showTitle && box.tile.executeTiles?.displayLinkImage" popover="{{box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}"
+                      *ngIf="box.tile.executeTiles?.showTitle && box.tile.executeTiles?.displayLinkImage"
+                      popover="{{box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='BuffAndEffect' ? box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}"
                       triggers="hover"
                       [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
-                    {{box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}
+                    {{box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='BuffAndEffect' ? box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.name  : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}
                   </h5>
 
-                  <div class="tile-body" popover="{{box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}"
+                  <div class="tile-body" popover="{{box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='BuffAndEffect' ? box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}"
                        [triggers]="!box.tile.executeTiles?.showTitle ? 'hover' : ''">
 
                     <img *ngIf="(box.tile.executeTiles?.showTitle && box.tile.executeTiles?.displayLinkImage) || (!box.tile.executeTiles?.showTitle && box.tile.executeTiles?.displayLinkImage)"
-                         [src]="box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.imageUrl : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.imageUrl : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.itemImage : box.tile.executeTiles?.item?.itemImage"
+                         [src]="box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.imageUrl : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.imageUrl : box.tile.executeTiles?.linkType=='BuffAndEffect' ? box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.imageUrl : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.itemImage : box.tile.executeTiles?.item?.itemImage"
                          [alt]="box.tile.executeTiles?.title" class="imgwidth"
                          (error)="getErrorImage(refImg,box.tile.executeTiles)"
                          #refImg>
                     <span *ngIf=" box.tile.executeTiles?.showTitle && !box.tile.executeTiles?.displayLinkImage"
                           class="text-center-v" [ngStyle]="{'color': box.tile.executeTiles.titleTextColor}"
-                          popover="{{box.tile.executeTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}" triggers="hover"  container= "body"
+                          popover="{{box.tile.executeTiles?.linkType=='Spell' ? box.tile.linkTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='BuffAndEffect' ? box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}" triggers="hover" container="body"
                           [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey" [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey" [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
-                      {{box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}
+                      {{box.tile.executeTiles?.linkType=='Spell' ? box.tile.executeTiles?.spell?.spell?.name : box.tile.executeTiles?.linkType=='Ability' ? box.tile.executeTiles?.ability?.ability?.name : box.tile.executeTiles?.linkType=='BuffAndEffect' ? box.tile.executeTiles?.buffAndEffect?.buffAndEffect?.name  : box.tile.executeTiles?.linkType=='Item' ? box.tile.executeTiles?.item?.name : ''}}
 
 
                     </span>
@@ -540,6 +542,67 @@
                           [style.background-color]="box.tile.textTiles.bodyBgColor">
                       {{box.tile.textTiles?.displaytext ? box.tile.textTiles?.displaytext : box.tile.textTiles?.text}}
                     </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.BUFFANDEFFECT && box.tile.buffAndEffectTiles" [ngClass]="(box.tile.buffAndEffectTiles?.shape=='50')?'grid-rounded':(box.tile.buffAndEffectTiles?.shape=='100')?'grid-circle':''">
+                <div class="tile tile-type-note tile-color-6"
+                     [style.background-color]=" (box.tile.buffAndEffectTiles?.showTitle && !box.tile.buffAndEffectTiles?.displayLinkImage)? box.tile.buffAndEffectTiles.titleBgColor :box.tile.buffAndEffectTiles?.bodyBgColor" [ngClass]="(box.tile.buffAndEffectTiles?.shape=='50')?'grid-rounded':(box.tile.buffAndEffectTiles?.shape=='100')?'grid-circle':''"
+                     (click)="viewTile(box.tile, box.tile.tileTypeId)">
+
+                  <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor, 'background-color': box.tile.buffAndEffectTiles.titleBgColor}"
+                      popover="Buffs & Effects" triggers="hover" container="body"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?10:12">
+                    Buffs & Effects
+                  </h5>
+
+                  <div class="tile-body buff-tile-body">
+                    <ng-container *ngIf="box.tile.buffAndEffectTiles?.showTitle && !box.tile.buffAndEffectTiles?.displayLinkImage">
+                      <span [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor}"
+                                [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey"
+                            [style.line-height.px]="box.config.sizey==1?13:20+box.config.sizex+box.config.sizey"
+                            [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
+                        <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
+
+                          <span class="buff-text-only " *ngIf="CharBuff?.characterBuffAndEffect?.buffAndEffect"
+                                title="{{description(CharBuff?.characterBuffAndEffect?.buffAndEffect?.description)}}">
+                            {{CharBuff?.characterBuffAndEffect?.buffAndEffect?.name}}{{(i+1)!=box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds?.length ?',&nbsp;':''}}
+                          </span>
+
+                        </ng-container>
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="box.tile.buffAndEffectTiles?.showTitle && box.tile.buffAndEffectTiles?.displayLinkImage">                      
+                      <span class="buff-image-text-both" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor}"
+                            [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey"
+                             [style.line-height.px]="box.config.sizey==1?10:15+box.config.sizex+box.config.sizey"
+                            [style.font-size.px]="box.config.sizey==1?10:10+box.config.sizex+box.config.sizey">
+                        <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
+
+                          <span class="" title="{{description(CharBuff?.characterBuffAndEffect?.buffAndEffect?.description)}}"
+                                *ngIf="CharBuff?.characterBuffAndEffect?.buffAndEffect"
+                                >
+                            <img [src]="CharBuff?.characterBuffAndEffect?.buffAndEffect?.imageUrl" class="buff-tile-image" />
+                            &nbsp;{{CharBuff?.characterBuffAndEffect?.buffAndEffect?.name}}
+                          </span><br /><br />
+                        </ng-container>
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="!box.tile.buffAndEffectTiles?.showTitle && box.tile.buffAndEffectTiles?.displayLinkImage">
+                      <span class="buff-images-only" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor}"
+                                [style.height.px]="box.config.sizey==1?22:44+box.config.sizex+box.config.sizey"
+                            [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey"
+                            [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
+                        <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
+                          
+                            <img *ngIf="CharBuff?.characterBuffAndEffect?.buffAndEffect" title="{{description(CharBuff?.characterBuffAndEffect?.buffAndEffect?.description)}}" [src]="CharBuff?.characterBuffAndEffect?.buffAndEffect?.imageUrl" class="buff-tile-image" />
+                          
+                        </ng-container>
+                      </span>
+                    </ng-container>
+
+                    
                   </div>
                 </div>
               </div>

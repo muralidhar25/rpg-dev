@@ -59,7 +59,8 @@ export class RulesetFormComponent implements OnInit {
     }
     RcustomDices: CustomDice[] = [];
     RdefaultDices: DefaultDice[] = [];
-    RdiceTray: DiceTray[] = [];
+  RdiceTray: DiceTray[] = [];
+  IsGm: boolean = false;
     constructor(private router: Router, private alertService: AlertService,
         private authService: AuthService, private configurations: ConfigurationService,
         private rulesetService: RulesetService, private bsModalRef: BsModalRef,
@@ -97,7 +98,12 @@ export class RulesetFormComponent implements OnInit {
 
     ngOnInit() {
         setTimeout(() => {
-            
+          let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+          if (user) {
+            if (user.isGm) {
+              this.IsGm = true;
+            }
+          }
             this.title = this.bsModalRef.content.title;
             let modalContentButton = this.button = this.bsModalRef.content.button;
             let _rulesetModel = this.bsModalRef.content.rulesetModel;
@@ -135,6 +141,7 @@ export class RulesetFormComponent implements OnInit {
                     thumbnailUrl: _rulesetModel.thumbnailUrl,
                     isItemEnabled: _rulesetModel.isItemEnabled,
                     isSpellEnabled: _rulesetModel.isSpellEnabled,
+                  isBuffAndEffectEnabled: _rulesetModel.isBuffAndEffectEnabled,
                     isAbilityEnabled: _rulesetModel.isAbilityEnabled,
                     isAllowSharing: _rulesetModel.isAllowSharing,
                     shareCode: _rulesetModel.shareCode,
@@ -152,6 +159,7 @@ export class RulesetFormComponent implements OnInit {
                     isItemEnabled: true,
                     isSpellEnabled: true,
                   isAbilityEnabled: true,
+                  isBuffAndEffectEnabled:true,
                   imageUrl: 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png'
                 };
             }

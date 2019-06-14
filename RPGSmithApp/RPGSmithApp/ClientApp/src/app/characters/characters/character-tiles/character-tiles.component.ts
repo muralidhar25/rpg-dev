@@ -36,6 +36,7 @@ import { ServiceUtil } from '../../../core/services/service-util';
 import { AppService1 } from '../../../app.service';
 import { APP_BASE_HREF } from '@angular/common';
 import { debug } from 'util';
+import { BuffAndEffectTileComponent } from '../../../tile/buff-and-effect/buff-and-effect.component';
 
 
 
@@ -677,6 +678,28 @@ export class CharacterTilesComponent implements OnInit {
         })
 
         break;
+      }
+      case TILES.BUFFANDEFFECT: {
+        this.bsModalRef = this.modalService.show(BuffAndEffectTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = "Edit Buffs and Effects Tile";
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.EDIT;
+        this.bsModalRef.content.ruleSet = this.character.ruleSet;
+
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            this.showManageIcons = data;
+          }
+        })
+        break;
+
       }
       default: break;
     }

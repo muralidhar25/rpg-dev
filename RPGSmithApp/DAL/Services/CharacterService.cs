@@ -12,6 +12,7 @@ using DAL.Models.CharacterTileModels;
 using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
 using System.Data;
+using DAL.Models.SPModels;
 
 namespace DAL.Services
 {
@@ -78,6 +79,18 @@ namespace DAL.Services
                 character.Items = character.Items.Where(p => p.IsDeleted != true).ToList();
                 character.CharacterCommands = character.CharacterCommands.Where(p => p.IsDeleted != true).ToList();
             }
+
+            return characters;
+        }
+        public List<SelectedCharacter> GetOnlyCharacterRuleSetId(int ruleSetId, int buffAndEffectId)
+        {
+            List<SelectedCharacter> characters = _context.Characters.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted != true)
+                .Select(x=>new SelectedCharacter() {
+                    CharacterId=x.CharacterId,
+                    CharacterName=x.CharacterName,
+                    ImageUrl=x.ImageUrl,
+                    Selected=_context.CharacterBuffAndEffects.Where(e=>e.CharacterId== x.CharacterId && e.BuffAndEffectID== buffAndEffectId && e.IsDeleted!=true).Any()
+                }).ToList();
 
             return characters;
         }

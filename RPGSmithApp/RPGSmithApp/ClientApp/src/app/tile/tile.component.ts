@@ -14,6 +14,7 @@ import { ExecuteTileComponent } from './execute/execute.component';
 import { CommandTileComponent } from './command/command.component';
 import { TextTileComponent } from './text/text.component';
 import { PlatformLocation } from '@angular/common';
+import { BuffAndEffectTileComponent } from './buff-and-effect/buff-and-effect.component';
 
 @Component({
   selector: 'app-tile',
@@ -65,12 +66,15 @@ export class TileComponent implements OnInit {
       { tileName: 'COUNTER', tileTypeId: TILES.COUNTER, icon: TILE_ICON.COUNTER },
       { tileName: 'CHARACTER STAT', tileTypeId: TILES.CHARACTERSTAT, icon: TILE_ICON.CHARACTERSTAT },
     ];
-    this.tiles.push({ tileName: 'COMMAND', tileTypeId: TILES.COMMAND, icon: TILE_ICON.COMMAND });
-    if (this.ruleSet.isItemEnabled || this.ruleSet.isAbilityEnabled || this.ruleSet.isSpellEnabled) {
+    if (this.ruleSet.isBuffAndEffectEnabled) {
+      this.tiles.push({ tileName: 'BUFFS & EFFECTS', tileTypeId: TILES.BUFFANDEFFECT, icon: TILE_ICON.BUFFANDEFFECT });
+    }
+    if (this.ruleSet.isItemEnabled || this.ruleSet.isAbilityEnabled || this.ruleSet.isSpellEnabled || this.ruleSet.isBuffAndEffectEnabled) {
       this.tiles.push({ tileName: 'LINK', tileTypeId: TILES.LINK, icon: TILE_ICON.LINK });
       this.tiles.push({ tileName: 'EXECUTE', tileTypeId: TILES.EXECUTE, icon: TILE_ICON.EXECUTE });
     }
-
+    
+    this.tiles.push({ tileName: 'COMMAND', tileTypeId: TILES.COMMAND, icon: TILE_ICON.COMMAND });
   }
 
   addTiles(tile: any, tileTypeId: number) {
@@ -157,6 +161,7 @@ export class TileComponent implements OnInit {
         break;
       }
       case TILES.LINK: {
+        
         this.bsModalRef = this.modalService.show(LinkTileComponent, {
           class: 'modal-primary modal-md',
           ignoreBackdropClick: true,
@@ -227,6 +232,27 @@ export class TileComponent implements OnInit {
         this.bsModalRef.content.tile = tile;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.ADD;
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            this.event.emit(data);
+          }
+        })
+        break;
+      }
+      case TILES.BUFFANDEFFECT: {
+        
+        this.bsModalRef = this.modalService.show(BuffAndEffectTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = 'Add Buffs & Effects Tile';
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.ADD;
+        this.bsModalRef.content.ruleSet = this.ruleSet;
         this.bsModalRef.content.event.subscribe(data => {
           if (data) {
             this.event.emit(data);

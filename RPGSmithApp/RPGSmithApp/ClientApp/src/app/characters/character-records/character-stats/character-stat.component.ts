@@ -27,6 +27,9 @@ import { DiceComponent } from "../../../shared/dice/dice/dice.component";
 import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
 import { CharacterStatsFormComponent } from "../../../rulesets/character-stats/character-stats-form/character-stats-form.component";
 import { AppService1 } from "../../../app.service";
+import { BuffAndEffect } from "../../../core/models/view-models/buff-and-effect.model";
+import { AddBuffAndEffectComponent } from "../../../shared/buffs-and-effects/add-buffs-and-effects/add-buffs-and-effects.component";
+import { BuffAndEffectService } from "../../../core/services/buff-and-effect.service";
 
 
 @Component({
@@ -63,15 +66,21 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
     statLinkRecords: any = [];
     choiceArraySplitter: string = 'S###@Split@###S';
     ConditionsValuesList: CharactersCharacterStat[] = []
-    charNav: any = {};
+  charNav: any = {};
+  
+  BuffAndEffectsList: any[] = [];
+  selectedBuffAndEffectsList: any[] = [];
   pageRefresh: boolean;
-  isPlayerCharacter: boolean=false;
+  isPlayerCharacter: boolean = false;
+  showBuffEffects: boolean = false;
+  pauseBuffAndEffectAdd: boolean = false
+  pauseBuffAndEffectCreate: boolean = false
 
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         public modalService: BsModalService, private localStorage: LocalStoreManager, private charactersCharacterStatService: CharactersCharacterStatService,
         private sharedService: SharedService, private commonService: CommonService, private characterStatService: CharacterStatService, private charactersService: CharactersService,
-      private rulesetService: RulesetService, public appService: AppService1
+      private rulesetService: RulesetService, public appService: AppService1, private buffAndEffectService: BuffAndEffectService
     ) {
         this.route.params.subscribe(params => { this.characterId = params['id']; });
         this.sharedService.shouldUpdateCharactersCharacterStats().subscribe(sharedServiceJson => {            
@@ -86,7 +95,20 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                     val.command = diceCommand.command;
                 }
             })
-        });
+      });
+      this.sharedService.shouldUpdateCharactersCharacterStatsBuffs().subscribe(data => {
+        debugger
+        setTimeout(() => {
+         
+          if (data) {
+            let res = JSON.parse(data)
+            this.selectedBuffAndEffectsList.push({ text: res.name, value: res.buffAndEffectId, buffAndEffectId: res.buffAndEffectId, image: res.imageUrl })
+            this.SelectBuffAndEffects();
+          }
+          
+        }, 1000);
+        
+      });
     }
 
     @HostListener('document:click', ['$event.target'])
@@ -600,7 +622,8 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                     console.log("Error: ", error);
                 }, () => { });
         this.characterStatService.getCharacterStatsByRuleset<CharacterStats[]>(this.rulesetId)
-            .subscribe(data => {
+          .subscribe(data => {
+              
                // this.isLoading = false;
                 //this.characterStats = data;
                 //this.characterStats.forEach((val) => {
@@ -614,7 +637,28 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                     //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
                     this.authService.logout(true);
                 }
-            }, () => { });
+      }, () => { });
+    
+    this.buffAndEffectService.getBuffAndEffectAssignedToCharacter<any[]>(this.characterId)
+      .subscribe(data => {
+        
+        if (data) {
+          if (data.length) {
+            this.selectedBuffAndEffectsList = data.map((x) => {
+              return { text: x.name, value: x.buffAndEffectId, buffAndEffectId: x.buffAndEffectId, image: x.imageUrl }
+            })
+            this.BuffAndEffectsList = data.map((x) => {
+              return { text: x.name, value: x.buffAndEffectId, buffAndEffectId: x.buffAndEffectId, image: x.imageUrl }
+            })
+          }
+        }
+        
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      }, () => { });
 
     }
 
@@ -716,7 +760,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
     }
 
   save(characterstats: any, redirectto: any) {
-    
+    debugger
     //if (redirectto == 99) {
     //  this.isLoading = true;
     //  }
@@ -1251,7 +1295,22 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
             position: "bottom"
         };
     }
-
+  get multichoiceBuffEffectsSettings() {
+    return {
+      primaryKey: "buffAndEffectId",
+      labelKey: "buffAndEffectId",
+      text: "select Buffs & Effects",
+      enableCheckAll: true,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: false,
+      limitSelection: false,
+      enableSearchFilter: true,
+      classes: "myclass custom-class ",
+      showCheckbox: true,
+      position: "bottom"
+    };
+  }
     get singlechoiceSettings() {
         return {
             primaryKey: "statChoiceValue",
@@ -2043,7 +2102,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         this.bsModalRef.content.title = "Link Record";
         this.bsModalRef.content.characterstat = Object.assign({}, characterstat) ;
         this.bsModalRef.content.event.subscribe(data => {
-            
+            debugger
             switch (data.type) {
                 case STAT_LINK_TYPE.ITEM:
                     characterstat.linkType = STAT_LINK_TYPE.ITEM;
@@ -2059,7 +2118,12 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                     characterstat.linkType = STAT_LINK_TYPE.ABILITY;
                     characterstat.defaultValue = data.ability.characterAbilityId;
                     this.isModelChange = true;
-                    break;
+                break;
+              case STAT_LINK_TYPE.BUFFANDEFFECT:
+                    characterstat.linkType = STAT_LINK_TYPE.BUFFANDEFFECT;
+                characterstat.defaultValue = data.buffAndEffect.characterBuffAndEffectId;
+                    this.isModelChange = true;
+                break;
                 case '':
                     characterstat.linkType = null;
                     characterstat.defaultValue = 0;
@@ -2229,7 +2293,13 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                 this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
                 setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
               }
-
+             
+              this.pauseBuffAndEffectAdd = data.pauseBuffAndEffectAdd;
+              this.pauseBuffAndEffectCreate = data.pauseBuffAndEffectCreate;
+              
+            }
+            if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
+              this.showBuffEffects = true;
             }
             if (data.isDeletedInvite) {
               this.router.navigate(['/characters']);
@@ -2245,5 +2315,50 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         }
       });
   }
-    
+  SelectBuffAndEffects() {
+    this.bsModalRef = this.modalService.show(AddBuffAndEffectComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+
+    this.bsModalRef.content.rulesetID = this.rulesetId;
+    this.bsModalRef.content.characterID = this.characterId;
+    this.bsModalRef.content.selectedBuffAndEffectsList = this.selectedBuffAndEffectsList;
+    this.bsModalRef.content.pauseBuffAndEffectCreate = this.pauseBuffAndEffectCreate;
+    this.bsModalRef.content.event.subscribe(data => {
+      if (data) {
+        this.selectedBuffAndEffectsList = data;
+      }
+    });
+  }
+  selectedBuffAndEffectsListChanged(item) {
+
+    let characters: Characters[] = [];
+    characters.push(this.character)
+    let nonSelectedBuffAndEffectsList: BuffAndEffect[] = [];
+    nonSelectedBuffAndEffectsList = this.BuffAndEffectsList.map(x => {
+      if (this.selectedBuffAndEffectsList.filter(SC => SC.buffAndEffectId == x.buffAndEffectId).length) {
+
+      }
+      else {
+        return x;
+      }
+
+    })
+    nonSelectedBuffAndEffectsList = nonSelectedBuffAndEffectsList.filter(SC => SC)
+    debugger
+    this.buffAndEffectService.assignBuffAndEffectToCharacter<any>(this.selectedBuffAndEffectsList, characters, [], nonSelectedBuffAndEffectsList, this.characterId)
+      .subscribe(data => {
+       
+
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          this.authService.logout(true);
+        }
+      }, () => { });
+  }
 }

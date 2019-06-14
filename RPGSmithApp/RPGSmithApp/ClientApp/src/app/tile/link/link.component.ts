@@ -21,6 +21,7 @@ import { User } from '../../core/models/user.model';
 import { Utilities } from '../../core/common/utilities';
 import { ColorsComponent } from '../colors/colors.component';
 import { PlatformLocation } from '@angular/common';
+import { BuffAndEffectService } from '../../core/services/buff-and-effect.service';
 
 @Component({
   selector: 'app-link',
@@ -34,6 +35,7 @@ export class LinkTileComponent implements OnInit {
     limitTextSpell: string = "Show more";
     limitTextItem: string = "Show more";
     limitTextAbility: string = "Show more";
+    limitTextBuffAndEffect: string = "Show more";
     showMoreLessColorText: string = "Advanced";
     color: any;
     
@@ -48,24 +50,29 @@ export class LinkTileComponent implements OnInit {
     limitSpell: number = 4;
     limitItem: number = 4;
     limitAbility: number = 4;
+  limitBuffAndEffect: number = 4;
     tileColor: any;
     title: string;
     isLoading: boolean = false;
     isItemloaded: boolean = false;
     isIspellloaded: boolean = false;
     isAbilityloaded: boolean = false;
+    isBuffAndEffectloaded: boolean = false;
     items: any;
     spells: any;
     abilities: any;
+    BuffAndEffects: any;
     spellsList: boolean = true;
     itemsList: boolean;
     abilitiesList: boolean;
+    BuffAndEffectList: boolean;
     showMoreLessColorToggle: boolean = true;
     selectedColor: string;    
     colorList: Color[] = [];
     itemId: number = 0;
     spellId: number = 0;
     abilityId: number = 0;
+    BuffAndEffectId: number = 0;
     showTitle: boolean = true;
     shapeClass: string;
 
@@ -84,7 +91,8 @@ export class LinkTileComponent implements OnInit {
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
         private localStorage: LocalStoreManager, private authService: AuthService, private itemsService: ItemsService, private colorService: ColorService,
         private characterSpellService: CharacterSpellService, private characterAbilityService: CharacterAbilityService,
-      private linkTileService: LinkTileService, private alertService: AlertService, private location: PlatformLocation) {
+      private linkTileService: LinkTileService, private alertService: AlertService, private location: PlatformLocation,
+      private buffAndEffectService: BuffAndEffectService) {
       location.onPopState(() => this.modalService.hide(1));
      }
 
@@ -102,7 +110,7 @@ export class LinkTileComponent implements OnInit {
             this.linkTileFormModal = Object.assign({}, this.characterTileModel.linkTile);
             this.linkTileFormModal.color = this.characterTileModel.color;
             this.linkTileFormModal.shape = this.characterTileModel.shape;           
-            this._linkType = this.ruleSet.isItemEnabled ? "Item" : this.ruleSet.isSpellEnabled ? "Spell" : "Ability";            
+        this._linkType = this.ruleSet.isItemEnabled ? "Item" : this.ruleSet.isSpellEnabled ? "Spell" : this.ruleSet.isAbilityEnabled ? "Ability" : "BuffAndEffect";            
             this.showTitle = this.linkTileFormModal.showTitle;
             this.displayLinkImage = this.linkTileFormModal.displayLinkImage;
             if (this.showTitle && this.displayLinkImage ) {
@@ -194,7 +202,31 @@ export class LinkTileComponent implements OnInit {
                     }, () => { });
             } else {
               this.isAbilityloaded = true;
-            }
+          }
+          if (this.ruleSet.isBuffAndEffectEnabled) {
+            this.buffAndEffectService.getBuffAndEffectAssignedToCharacter<any[]>(this.characterId)
+              .subscribe(data => {
+                //console.log(data);
+                this.BuffAndEffects = data;
+                this.isBuffAndEffectloaded = true;
+                if (this.BuffAndEffects.length) {
+                  this.BuffAndEffects = Object.assign([], this.BuffAndEffects.map((x) => {
+                    x.selected = false;
+                    return x;
+                  }));
+                  this.showMoreCommands('BuffAndEffect', this.BuffAndEffects.length, "Show more");
+                }
+                if (this._linkType == "BuffAndEffect") {
+                  this.isLoading = false;
+
+                }
+              }, error => {
+                this.isLoading = false;
+                this.isBuffAndEffectloaded = true;
+              }, () => { });
+          } else {
+            this.isBuffAndEffectloaded = true;
+          }
             //this.isLoading = true;
             this.colorService.getRecentColors<any>()
                 .subscribe(data => {
@@ -308,6 +340,15 @@ export class LinkTileComponent implements OnInit {
                 this.limitTextAbility = "Show more";
                 this.limitAbility = 4;
             }
+      }
+        else if (fieldName == 'BuffAndEffect')  {
+          if (_limitText == "Show more") {
+            this.limitTextBuffAndEffect = "Show less";
+            this.limitBuffAndEffect = _limit;
+          } else {
+            this.limitTextBuffAndEffect = "Show more";
+            this.limitBuffAndEffect = 4;
+          }
         }
     }
     showMoreColorFields() {
@@ -421,33 +462,46 @@ export class LinkTileComponent implements OnInit {
         if (evt == "Items") {
             this.itemsList = true;
             this.spellsList = false;
-            this.abilitiesList = false;
+          this.abilitiesList = false;
+          this.BuffAndEffectList = false;
             this.linkTileFormModal.linkType = "Item";
             this._linkType = "Item";         
         }
         else if (evt == "Spells") {
             this.spellsList = true;
             this.itemsList = false;
-            this.abilitiesList = false;
+          this.abilitiesList = false;
+          this.BuffAndEffectList = false;
             this.linkTileFormModal.linkType = "Spell";
             this._linkType = "Spell";         
         }
-        else {
+        else if (evt == "Abilites") {
             this.abilitiesList = true;
             this.itemsList = false;
-            this.spellsList = false;
+          this.spellsList = false;
+          this.BuffAndEffectList = false;
             this.linkTileFormModal.linkType = "Ability";
             this._linkType = "Ability";         
+      }
+        else {
+          this.BuffAndEffectList = true;
+          this.itemsList = false;
+          this.spellsList = false;
+          this.abilitiesList = false;
+          this.linkTileFormModal.linkType = "BuffAndEffect";
+          this._linkType = "BuffAndEffect";
         }
     } 
     
     getItemValue(val: any) {
         this.abilityId = null;
         this.spellId = null;
+      this.BuffAndEffectId = null;
 
         this.linkTileFormModal.multiAbilityIds =[];
         this.linkTileFormModal.multiSpellIds = [];
         this.linkTileFormModal.multiItemIds = [];
+      this.linkTileFormModal.multiBuffAndEffectsIds = [];
 
         this.linkTileFormModal.itemId = val.itemId;
         this.linkTileFormModal.linkType = "Item";
@@ -458,10 +512,12 @@ export class LinkTileComponent implements OnInit {
     getAbilityValue(val: any) {
         this.itemId = null;
         this.spellId = null;
+      this.BuffAndEffectId = null;
 
         this.linkTileFormModal.multiItemIds = [];
         this.linkTileFormModal.multiSpellIds = [];
-        this.linkTileFormModal.multiAbilityIds = [];
+      this.linkTileFormModal.multiAbilityIds = [];
+      this.linkTileFormModal.multiBuffAndEffectsIds = [];
 
         this.linkTileFormModal.abilityId = val.characterAbilityId;
         this.linkTileFormModal.linkType = "Ability";
@@ -471,23 +527,41 @@ export class LinkTileComponent implements OnInit {
     
     getSpellValue(val: any) {
         this.abilityId = null;
-        this.itemId = null;
+      this.itemId = null;
+      this.BuffAndEffectId = null;
 
         this.linkTileFormModal.multiAbilityIds = [];
         this.linkTileFormModal.multiItemIds = [];
-        this.linkTileFormModal.multiSpellIds = [];
+      this.linkTileFormModal.multiSpellIds = [];
+      this.linkTileFormModal.multiBuffAndEffectsIds = [];
 
         this.linkTileFormModal.spellId = val.characterSpellId;
         this.linkTileFormModal.linkType = "Spell";
 
         this.linkTileFormModal.multiSpellIds.push(val.characterSpellId);
     }
+  getBuffAndEffectValue(val: any) {
+    this.itemId = null;
+    this.spellId = null;
+    this.abilityId = null;
 
+    this.linkTileFormModal.multiItemIds = [];
+    this.linkTileFormModal.multiSpellIds = [];
+    this.linkTileFormModal.multiAbilityIds = [];
+    this.linkTileFormModal.multiAbilityIds = [];
+    this.linkTileFormModal.multiBuffAndEffectsIds = [];
+
+    this.linkTileFormModal.buffAndEffectId = val.characterBuffAndEffectId;
+    this.linkTileFormModal.linkType = "BuffAndEffect";
+
+    this.linkTileFormModal.multiBuffAndEffectsIds.push(val.characterBuffAndEffectId);
+  }
     getItemValueList(e: any, val: any) {
         if (e.target.checked) {
 
             this.abilityId = null;
-            this.spellId = null;
+          this.spellId = null;
+          this.BuffAndEffectId = null;
 
             //this.linkTileFormModal.multiAbilityIds = [];
             //this.linkTileFormModal.multiSpellIds = [];
@@ -519,7 +593,8 @@ export class LinkTileComponent implements OnInit {
         if (e.target.checked) {
 
             this.itemId = null;
-            this.spellId = null;
+          this.spellId = null;
+          this.BuffAndEffectId = null;
 
             //this.linkTileFormModal.multiItemIds = [];
             //this.linkTileFormModal.multiSpellIds = [];
@@ -553,7 +628,8 @@ export class LinkTileComponent implements OnInit {
         if (e.target.checked) {
 
             this.abilityId = null;
-            this.itemId = null;
+          this.itemId = null;
+          this.BuffAndEffectId = null;
 
             //this.linkTileFormModal.multiAbilityIds = [];
             //this.linkTileFormModal.multiItemIds = [];
@@ -582,7 +658,43 @@ export class LinkTileComponent implements OnInit {
                 this.linkTileFormModal.multiSpellIds.push(x.characterSpellId);
             }
         });
+  }
+
+  getBuffAndEffectValueList(e: any, val: any) {
+    if (e.target.checked) {
+
+      this.itemId = null;
+      this.spellId = null;
+      this.abilityId = null;
+
+      //this.linkTileFormModal.multiItemIds = [];
+      //this.linkTileFormModal.multiSpellIds = [];
+
+      this.linkTileFormModal.buffAndEffectId = val.characterBuffAndEffectId;
+      this.linkTileFormModal.linkType = "BuffAndEffect";
+
+      this.BuffAndEffects.map((x) => {
+        if (x.characterBuffAndEffectId == val.characterBuffAndEffectId)
+          x.selected = true;
+      });
+
+      //this.linkTileFormModal.multiAbilityIds.push(val.characterAbilityId);
     }
+    else {
+      this.BuffAndEffects.map((x) => {
+        if (x.characterBuffAndEffectId == val.characterBuffAndEffectId)
+          x.selected = false;
+      });
+      //this.linkTileFormModal.multiAbilityIds.splice(this.linkTileFormModal.multiAbilityIds.indexOf(val.characterAbilityId), 1);
+    }
+    this.linkTileFormModal.multiBuffAndEffectsIds = [];
+    this.BuffAndEffects.map((x) => {
+      if (x.selected) {
+        this.linkTileFormModal.multiBuffAndEffectsIds.push(x.characterBuffAndEffectId);
+      }
+    });
+  }
+
     opencolorpopup() {
         this.bsModalRef = this.modalService.show(ColorsComponent, {
             class: 'modal-primary modal-md selectPopUpModal',
@@ -644,7 +756,7 @@ export class LinkTileComponent implements OnInit {
         else if (this.linkTileFormModal.linkType == "" || this.linkTileFormModal.linkType  == undefined) {
             this.alertService.showMessage("", "Link Type property is not selected.", MessageSeverity.error);
         }
-        else if (!this.linkTileFormModal.abilityId && !this.linkTileFormModal.itemId && !this.linkTileFormModal.spellId) {
+        else if (!this.linkTileFormModal.buffAndEffectId && !this.linkTileFormModal.abilityId && !this.linkTileFormModal.itemId && !this.linkTileFormModal.spellId) {
             this.alertService.showMessage("", "Link Type property is not selected.", MessageSeverity.error);
         }
         else {
@@ -671,7 +783,8 @@ export class LinkTileComponent implements OnInit {
         this.isLoading = true;
         modal.spellIDS = this.linkTileFormModal.multiSpellIds;
         modal.abilityIDS = this.linkTileFormModal.multiAbilityIds
-        modal.itemIDS = this.linkTileFormModal.multiItemIds
+      modal.itemIDS = this.linkTileFormModal.multiItemIds
+      modal.buffAndEffectIDS = this.linkTileFormModal.multiBuffAndEffectsIds
       
         this.linkTileService.createlinkTile(modal)
             .subscribe(

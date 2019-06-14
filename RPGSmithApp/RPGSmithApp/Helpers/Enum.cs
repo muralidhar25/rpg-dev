@@ -11,7 +11,8 @@ namespace RPGSmithApp.Helpers
         {
             spell,
             ability,
-            item
+            item,
+            buffandeffect
         }
 
         public enum TILES
@@ -23,7 +24,8 @@ namespace RPGSmithApp.Helpers
             LINK = 5,
             EXECUTE = 6,
             COMMAND = 7,
-            TEXT=8
+            TEXT=8,
+            BUFFANDEFFECT=9
         }
 
         public enum STAT_TYPE

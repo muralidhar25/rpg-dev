@@ -550,7 +550,7 @@ namespace RPGSmithApp.Controllers
 
             return Ok(CharacterVM);
         }
-
+        
         [HttpGet("GetCharactersByUserId")]
         public async Task<IActionResult> GetCharactersByUserId(string id)
         {
@@ -603,9 +603,7 @@ namespace RPGSmithApp.Controllers
             var CharactersVM = new CharacterViewModel
             {
                 CharacterId = Character.CharacterId,
-                CharacterName = Character.CharacterName,
-                CharacterDescription = Character.CharacterDescription,
-                //CharacterImage = Character.CharacterImage,
+                CharacterName = Character.CharacterName,               
                 ImageUrl = Character.ImageUrl,
                 ThumbnailUrl = Character.ThumbnailUrl,
                 LastCommand = Character.LastCommand,
@@ -631,7 +629,8 @@ namespace RPGSmithApp.Controllers
                     ThumbnailUrl = Character.RuleSet.ThumbnailUrl,
                     IsItemEnabled = Character.RuleSet.IsItemEnabled,
                     IsAbilityEnabled = Character.RuleSet.IsAbilityEnabled,
-                    IsSpellEnabled = Character.RuleSet.IsSpellEnabled
+                    IsSpellEnabled = Character.RuleSet.IsSpellEnabled,
+                    IsBuffAndEffectEnabled = Character.RuleSet.IsBuffAndEffectEnabled
                     //RuleSetImage = Character.RuleSet.RuleSetImage
                 },
                 RuleSets = Character.RuleSet == null ? new List<RuleSetViewModel>() : new List<RuleSetViewModel>
@@ -651,7 +650,8 @@ namespace RPGSmithApp.Controllers
                         ThumbnailUrl = Character.RuleSet.ThumbnailUrl,
                         IsItemEnabled=Character.RuleSet.IsItemEnabled,
                         IsAbilityEnabled=Character.RuleSet.IsAbilityEnabled,
-                        IsSpellEnabled=Character.RuleSet.IsSpellEnabled
+                        IsSpellEnabled=Character.RuleSet.IsSpellEnabled,
+                        IsBuffAndEffectEnabled=Character.RuleSet.IsBuffAndEffectEnabled
                         //RuleSetImage = Character.RuleSet.RuleSetImage
                     }
                 }

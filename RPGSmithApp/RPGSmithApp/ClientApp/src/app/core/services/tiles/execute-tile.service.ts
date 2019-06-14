@@ -70,7 +70,8 @@ export class ExecuteTileService extends EndpointFactory {
         linkTile: model.linkTiles,
         executeTile: model.executeTiles,
         commandTile: model.commandTiles,
-        multiCharacterStats: []
+        multiCharacterStats: [],
+        buffAndEffectTile: model.buffAndEffectTiles
       };
     }
     else {
@@ -96,6 +97,7 @@ export class ExecuteTileService extends EndpointFactory {
           linkType: '',
           spellId: 0,
           abilityId: 0,
+          buffAndEffectId: 0,
           itemId: 0,
           commandId: 0,
           showTitle: true,
@@ -113,7 +115,8 @@ export class ExecuteTileService extends EndpointFactory {
           view: view == 'add' ? VIEW.ADD : VIEW.EDIT,
           multiAbilityIds: [],
           multiItemIds: [],
-          multiSpellIds: []
+          multiSpellIds: [],
+          multiBuffAndEffectIds: []
         },
         noteTile: null,
         counterTile: null,
@@ -122,7 +125,8 @@ export class ExecuteTileService extends EndpointFactory {
         characterStatTile: null,
         linkTile: null,
         commandTile: null,
-        multiCharacterStats: []
+        multiCharacterStats: [],
+        buffAndEffectTile:null
       };
     }
     return modelData;

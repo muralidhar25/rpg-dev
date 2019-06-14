@@ -937,6 +937,8 @@ namespace DAL.Services
             res.selectedAbilityList = new List<Ability>();
             res.spellList = new List<Spell>();
             res.selectedSpellList = new List<Spell>();
+            res.buffAndEffectsList = new List<BuffAndEffect>();
+            res.selectedBuffAndEffects = new List<BuffAndEffect>();
             res.selectedItemMasterCommand = new List<ItemMasterCommand>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             //string qry = "EXEC ItemMasters_Ability_Spell_GetByRulesetID @RulesetID = '" + rulesetId + "',@ItemMasterID = '" + itemMasterId + "'";

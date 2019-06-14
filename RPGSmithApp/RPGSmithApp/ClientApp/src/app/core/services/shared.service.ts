@@ -25,6 +25,9 @@ export class SharedService {
   private pages = new Subject<any>();
   private customeDice = new Subject<any>();
   private ShareLayout = new Subject<any>();
+  private buffAndEffectList = new Subject<any>();
+  private Buff = new Subject<any>();
+  
   
   updateManageOpen(accountSetting: any) {
     this.accountSetting.next(accountSetting);
@@ -243,6 +246,21 @@ export class SharedService {
 
   shouldUpdateShareLayout(): Observable<any> {
     return this.ShareLayout.asObservable();
+  }
+
+  updateBuffAndEffectList(abilityList: any) {
+    this.buffAndEffectList.next(abilityList);
+  }
+
+  shouldUpdateBuffAndEffectList(): Observable<any> {
+    return this.buffAndEffectList.asObservable();
+  }
+  updateCharactersCharacterStatsBuffs(data: any) {
+    this.Buff.next(data);
+  }
+
+  shouldUpdateCharactersCharacterStatsBuffs(): Observable<any> {
+    return this.Buff.asObservable();
   }
 }
 

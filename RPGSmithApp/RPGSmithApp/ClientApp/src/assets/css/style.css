@@ -1087,6 +1087,43 @@
   content: "\e967";
 }
 
+
+.icon-Settings:before {
+  content: "\e971";
+}
+
+.icon-Health:before {
+  content: "\e96c";
+}
+
+.icon-MarkTarget:before {
+  content: "\e96d";
+}
+
+.icon-Combat:before {
+  content: "\e96a";
+}
+
+.icon-Monster:before {
+  content: "\e96e";
+}
+
+.icon-BnE:before {
+  content: "\e969";
+}
+.icon-Assign:before {
+  content: "\e968";
+}
+.icon-BnE:before, .icon-Monster:before, .icon-Combat:before, .icon-MarkTarget:before, .icon-Health:before, .icon-Settings:before, .icon-Assign:before {
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
 /**
  * Icons -----------------------------------------------------------------------
  */
@@ -1811,6 +1848,8 @@
 .icon-Gen-Email:before {
   content: "\e95d";
 }
+
+
 /**
  * Global Styles --------------------------------------------------------------
  */
@@ -7298,7 +7337,11 @@ rl-tag-input-item {
 .cards-inventory .card-list.view-list .card-wrapper .card .item-actions {
   width: 245px !important;
 }
-
+.cards-buff .card-list.view-list .card-wrapper .card .item-actions {
+  width: 120px !important;
+  text-align: center !important;
+  margin: 0 auto;
+}
 .cards-inventory .card-list .card-wrapper .card .item-stats.d-sm-none {
   display: block !important
 }
@@ -7322,7 +7365,7 @@ rl-tag-input-item {
     width: 100% !important;
     text-align: center !important
   }
-
+  
   .cards-inventory .card-list.view-list .card-wrapper .card-body {
     width: calc(100% - 140px);
   }
@@ -9300,3 +9343,4 @@ span.user-image-name {
 .custom-common-error-message .err-heading {
   margin-bottom: -10px;
 }
+

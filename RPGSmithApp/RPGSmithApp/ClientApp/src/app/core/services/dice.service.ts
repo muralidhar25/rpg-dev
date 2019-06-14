@@ -2,12 +2,16 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
-import { DICE, DICE_ICON, COMMAND_OPERATOR, CustomDiceResultType } from '../models/enums';
+import { DICE, DICE_ICON, COMMAND_OPERATOR, CustomDiceResultType, STAT_TYPE } from '../models/enums';
 import { CharacterCommand, DiceCommand } from '../models/view-models/character-command.model';
 import { DiceRoll } from '../models/view-models/dice-roll.model';
 import { forEach } from '@angular/router/src/utils/collection';
 import { CustomDice, DefaultDice, DiceTray, Results } from '../models/view-models/custome-dice.model';
 import { Utilities } from '../common/utilities';
+import { AlertService, MessageSeverity } from '../common/alert.service';
+import { ServiceUtil } from './service-util';
+import { Characters } from '../models/view-models/characters.model';
+import { CharacterLastCommand } from '../models/view-models/character-last-command.model';
 
 @Injectable()
 export class DiceService {
@@ -17,6 +21,9 @@ export class DiceService {
   private static Error: string = "";
   private static HasError: number;
   public static totalAndLimit: number = 6;
+  private static readonly  AND_Error_Message: string = "Only 5 ‘AND’s allowed in one command string. Please update your command and try again.";
+  private static readonly COMMAND_Error = "Invalid Command. Please check the command string and try again.";
+
   //public static isInvalidFECommand: boolean = false;
   public static copyToClipboard(value: string) {
     let copiedBox = document.createElement('textarea');
@@ -3492,6 +3499,491 @@ export class DiceService {
       return true;
     }
     return false;
+  }
+  public static rollDiceExternally(alertService: AlertService, CommandString: string, customDices: CustomDice[]): number {
+    debugger
+    let statdetails: any = [];
+    let charactersCharacterStats: any = [];
+    let diceRolledData: any = [];
+    let characterMultipleCommands: any;
+    let _mainCommandText = CommandString;
+    let calculationStringArray: any;
+    let characterCommandModel:any = {};
+    let totalAndLimit:number = 1;
+    //if (!IsRollCurrentAgain) {
+    //  IsRollCurrentAgain = false;
+    //}
+    //if (!lastResultArray) {
+    //  lastResultArray = undefined;
+    //}
+    //let OldCommandForRollCurrentAgain: any = undefined;
+    //if (IsRollCurrentAgain) {
+    //  OldCommandForRollCurrentAgain = characterMultipleCommands;
+    //}
+    let anyCommandIsCustomWithNonNumeric = false;
+    //this.loadingResult = false;
+    let command = CommandString;
+    let commandIfERROR = CommandString;
+
+    //if (!command && isFromTile) {
+    //  alertService.showMessage("The command associated with this record has been removed. Please update the record to resolve.", "", MessageSeverity.error);
+    //  if (this.diceSection = true) {
+    //    this.rollSection = false;
+    //  }
+    //  else if (this.rollSection = true) {
+    //    this.diceSection = false;
+    //  }
+    //}
+    //else if (!command) {
+    //  alertService.showMessage("Please enter a command.", "", MessageSeverity.error);
+    //  if (this.diceSection = true) {
+    //    this.rollSection = false;
+    //  }
+    //  else if (this.rollSection = true) {
+    //    this.diceSection = false;
+    //  }
+    //}
+    //else if (command.trim() == '') {
+    //  alertService.showMessage("Please enter a command.", "", MessageSeverity.error);
+    //  if (this.diceSection = true) {
+    //    this.rollSection = false;
+    //  }
+    //  else if (this.rollSection = true) {
+    //    this.diceSection = false;
+    //  }
+    //}
+   
+
+    _mainCommandText= !_mainCommandText || _mainCommandText == "" ? command : _mainCommandText;
+    command = _mainCommandText.toUpperCase();
+      if (command.length >= 500) {
+        alertService.showMessage("A maximum of 500 characters is allowed for a command. Please adjust your command string and try again.", "", MessageSeverity.error);
+        //if (this.diceSection = true) {
+        //  this.rollSection = false;
+        //}
+        //else if (this.rollSection = true) {
+        //  this.diceSection = false;
+        //}
+      }
+      else {
+
+        let AND_LIMIT = DiceService.splitWithoutEmpty(command.trim().toUpperCase(), 'AND');
+        if (AND_LIMIT.length > totalAndLimit) {
+          alertService.resetStickyMessage();
+          alertService.showStickyMessage('', this.AND_Error_Message, MessageSeverity.error);
+          setTimeout(() => { alertService.resetStickyMessage(); }, 1000);
+         // this.recycleDice();
+          characterCommandModel.command = _mainCommandText;
+          return 0;
+          ////////////////////////////return false;
+        }
+        //////////////////////////////////////////////
+       
+
+        //////////////////////////////////////////////
+        //add mod & validate command            
+        let commandToValidate = command.trim();
+
+        //this.addModArray.map(mod => {
+        //  //let charactersCharacterStatId = mod.charactersCharacterStatId;
+        //  //let selectedStatValue = mod.selectedStatValue;
+        //  let selectedStat: string = mod.selectedStat;
+        //  commandToValidate = commandToValidate.replace(selectedStat.toUpperCase(), "D");
+        //});
+        //if (isFromCampaignDetail) {
+        //  if (commandToValidate) {
+        //    commandToValidate = commandToValidate.replace(/\[(.*?)\]/g, "0");
+        //  }
+        //}
+        let isValidCommand = DiceService.validateCommandTextNew(commandToValidate);
+        let isValidCommand99 = DiceService.validateCommand99Limit(commandToValidate);
+        if (!isValidCommand || !isValidCommand99) {
+          alertService.resetStickyMessage();
+          command = commandIfERROR;
+          alertService.showStickyMessage('', this.COMMAND_Error, MessageSeverity.error);
+          setTimeout(() => { alertService.resetStickyMessage(); }, 1600);
+         // this.recycleDice();
+          characterCommandModel.command = _mainCommandText;
+          //if (this.diceSection = true) {
+          //  this.rollSection = false;
+          //}
+          //else if (this.rollSection = true) {
+          //  this.diceSection = false;
+          //}
+          return 0;
+          ////////////////////////////return false;
+        }
+
+        if (customDices.length > 0) {
+          let dArray = DiceService.commandInterpretation(command, undefined, [], customDices);
+          let IsCmdValid = true;
+          dArray.map((darr) => {
+            darr.calculationArray.map((d) => {
+
+              let valid = true;
+              if (d.dice.length >= 2) {
+                valid = false
+                //skip letter D from Dice Name------Start--------
+                //let arr = d.dice.split('D');
+                let arr = d.dice.replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_');
+                //skip letter D from Dice Name------End--------
+
+                let CountOfDice = 1;
+                if (arr.length > 1) {
+                  if (/^-?[0-9]\d*(\\d+)?$/g.test(arr[0])) {
+                    CountOfDice = parseInt(arr[0]);
+                  }
+                }
+                if (d.dice.toUpperCase().charAt(arr[0].length) == 'D' && /^[a-zA-Z]/.test(d.dice.toUpperCase().charAt(arr[0].length + 1))) {
+                  customDices.map((cd) => {
+                    if (d.dice == cd.name) {
+                      valid = true
+                    }
+                  })
+
+                  try {
+                    //skip letter D from Dice Name------Start--------
+                    // if (!valid && !d.dice.toUpperCase().split('D')[1].startsWith('F')) {
+                    //if (!valid && !d.dice.toUpperCase().replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_')[1].startsWith('F')) {
+
+                    if (!valid && d.dice.toUpperCase().replace(/\D/, '_#CapitalD#_').split('_#CapitalD#_')[1] != 'F') {
+                      //skip letter D from Dice Name------End--------
+                      IsCmdValid = false;
+                    }
+                  } catch { if (!valid) IsCmdValid = false; }
+                }
+
+              }
+            })
+          })
+
+          if (!IsCmdValid) {
+            command = commandIfERROR;
+            alertService.showMessage("Please enter a valid command.", "", MessageSeverity.error);
+            //if (this.diceSection = true) {
+            //  this.rollSection = false;
+            //}
+            //else if (this.rollSection = true) {
+            //  this.diceSection = false;
+            //}
+            return 0;
+          ////////////////////////////return false;
+          }
+        }
+
+
+        let __characterMultipleCommands: any;
+        //if (lastResultArray) {
+        //  __characterMultipleCommands = lastResultArray;
+        //  __characterMultipleCommands = lastResultArray;
+        //  this.loadingResult = true;
+        //}
+        //else if (IsRollCurrentAgain) {
+        //  try {
+        //    let newCharacterMultipleCommands = DiceService.commandInterpretation(command, undefined, this.addModArray, this.customDices, _mainCommandText.toUpperCase());
+        //    let newResultOfCurrentCommandSelected = newCharacterMultipleCommands[this.activeAndCommand];
+
+        //    OldCommandForRollCurrentAgain = OldCommandForRollCurrentAgain.map((oldCmd, oldCmdIndex) => {
+        //      if (oldCmdIndex == this.activeAndCommand) {
+        //        oldCmd = newResultOfCurrentCommandSelected;
+        //      }
+        //      return oldCmd;
+        //    })
+
+        //    characterMultipleCommands = OldCommandForRollCurrentAgain;
+        //    __characterMultipleCommands = newResultOfCurrentCommandSelected;
+
+
+        //  }
+        //  catch (e) {
+        //    characterMultipleCommands = DiceService.commandInterpretation(command, undefined, this.addModArray, this.customDices, _mainCommandText.toUpperCase());
+        //    __characterMultipleCommands = characterMultipleCommands[0];
+        //  }
+        //}
+        //else {
+          characterMultipleCommands = DiceService.commandInterpretation(command, undefined, [], customDices, _mainCommandText.toUpperCase());
+
+          __characterMultipleCommands = characterMultipleCommands[0];
+        //}
+
+        //if (this.customDices.length>0) {
+
+        //}
+        let isInvalidFECommand = false;
+        if (characterMultipleCommands) {
+          if (characterMultipleCommands.length) {
+            characterMultipleCommands.map((x) => {
+              if (x.isInvalidFECommand) {
+                alertService.showMessage("Please enter a valid command.", "", MessageSeverity.error);
+                isInvalidFECommand = true;
+                return false;
+              }
+            })
+          }
+        }
+        if (isInvalidFECommand) {
+          alertService.showMessage("Please enter a valid command.", "", MessageSeverity.error);
+          return 0;
+          ////////////////////////////return false;
+        }
+        let __calculationCommand = __characterMultipleCommands.calculationCommand.toString();
+        let __calculationResult = __characterMultipleCommands.calculationResult;
+        let __calculationString = __characterMultipleCommands.calculationString;
+        let __isCustomNumericCommand = false;
+        if (__characterMultipleCommands.isCustomNumericCommand) {
+          __isCustomNumericCommand = __characterMultipleCommands.isCustomNumericCommand;
+        }
+
+        try {
+          if (__calculationString.split("((").length - 1 === __calculationString.split("))").length - 1) {
+            __calculationString = __calculationString.replace('((', '(').replace('))', ')');
+          }
+        } catch (err) { }
+        if (__calculationString.length > 1) {
+          __calculationString = __calculationString.replace(/  /g, ' ');
+          __calculationString.split('+ -').map((x) => {
+            __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          })
+          __calculationString.split('+ *').map((x) => {
+            __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          })
+          __calculationString.split('+ /').map((x) => {
+            __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          })
+          __calculationString.split('+ +').map((x) => {
+            __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          })
+          __calculationString.split('- -').map((x) => {
+            __calculationString = __calculationString.replace('- -', '-')
+          })
+        }
+        __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+').replace('- -', '-');
+
+        diceRolledData = __characterMultipleCommands.calculationArray;
+        /*********************************************************************************/
+        let commandTxt = __calculationCommand;
+        //if (!IsRollCurrentAgain) {
+        //  this.activeAndCommand = 0;
+        //}
+
+        //let processCommandWithResult = this.processCommandWithResult(commandTxt, characterCommand);
+
+
+
+        diceRolledData.forEach(diceRoll => {
+          if (!diceRoll.static)
+            diceRoll.randomNumbersList.forEach(num => { num.isAnimated = true; });
+          else
+            diceRoll.randomNumbersList.forEach(num => { num.isAnimated = false; });
+
+          //----variable to hide Exploded dice----//
+          //let StartHidingDice = false;
+
+          //if (!lastResultArray) {
+
+            diceRoll.randomNumbersList.map((randomNumberObj, index) => {
+              if (((index) + 1 > diceRoll.randomCount) && diceRoll.isExploded) {
+                randomNumberObj.hideExplode = true;
+              }
+              //randomNumberObj.hideExplode = StartHidingDice;
+              //if (diceRoll.isExploded && (diceRoll.diceNumber == randomNumberObj.number)) {
+              //    randomNumberObj.hideExplode = StartHidingDice;
+
+              //    StartHidingDice = true;
+
+              //}
+              //else if (diceRoll.isExploded && (diceRoll.diceNumber != randomNumberObj.number)) {
+              //    StartHidingDice = false;
+              //}
+            })
+
+          //}
+
+
+          //--END variable to hide Exploded dice--//
+        });
+
+        //this.characterCommandModel.command = __calculationCommand;
+        characterCommandModel.command = _mainCommandText;
+        characterCommandModel.lastResult = __calculationResult;
+        characterCommandModel.lastResultNumbers = __calculationString;
+        characterCommandModel.isCustomNumericCommand = __isCustomNumericCommand;
+        characterCommandModel.isCustomDice = __characterMultipleCommands.isResultWithCustomDice
+
+        
+        //character.lastCommand = commandTxt;
+        //character.lastCommandResult = __calculationString;
+        //let textResult = this.fillBeforeAndAfterText(characterCommand.command, true);
+        //this.beforeResultText = textResult.start;
+        //this.afterResultText = textResult.end;
+        //if (characterMultipleCommands) {
+        //  if (characterMultipleCommands.length > 1) {
+        //    this.displayCurrentRollBtn = true;
+        //    this.rollAgainBtnText = 'Roll Current  Again';
+        //  } else {
+        //    this.displayCurrentRollBtn = false;
+        //    this.rollAgainBtnText = 'Roll Again';
+        //  }
+        //}
+
+       
+          //this.characterCommandModel.lastResult = __calculationResult;
+          //this.characterCommandModel.lastResultNumbers = __calculationString;
+
+          /*Update Last command if command is saved in charatcer command*/
+          try {
+
+            //const characterLastCommand = new CharacterLastCommand();
+            //characterLastCommand.characterId = character.characterId;
+            //characterLastCommand.lastCommand = commandTxt;
+            //characterLastCommand.lastCommandResult = __calculationString;
+            //characterLastCommand.lastCommandTotal = __calculationResult;
+
+            let lastCommandValues: string = "";
+            diceRolledData.forEach((diceRoll, index) => {
+              let numberString = '';
+              diceRoll.randomNumbersList.map((x, xIndex) => {
+                if (xIndex == diceRoll.randomNumbersList.length - 1) {
+                  numberString += x.number;
+                }
+                else {
+                  numberString += x.number + ",";
+                }
+              })
+              if (diceRoll.dice && diceRoll.diceIcon) {
+                lastCommandValues += (index === 0 ? '' : diceRoll.sign) +
+                  diceRoll.randomCount + diceRoll.dice
+                  + "=" + numberString.toString();
+                //+ "=" + diceRoll.randomNumbersListAfter.toString();
+              } else {
+                lastCommandValues += (index === 0 ? '' : diceRoll.sign) + diceRoll.randomCount
+                  + "=" + numberString.toString();
+                //+ "=" + diceRoll.randomNumbersListAfter.toString();
+              }
+
+            });
+
+          //  characterLastCommand.lastCommandValues = lastCommandValues; //
+
+            
+            /**/
+           
+
+            //alert(isFromTile);
+            //if (!isFromTile)
+            //////Save multiple command using AND keyword/////////
+
+            if (characterMultipleCommands) {
+              if (characterMultipleCommands.length > 1) {
+                characterMultipleCommands.map((cmd, index) => {
+                  if (cmd.calculationArray) {
+                    if (cmd.calculationArray.length) {
+                      cmd.calculationArray.map((x) => {
+                        if (x.isCustomDice && !x.isCustomNumeric) {
+                          anyCommandIsCustomWithNonNumeric = true;
+                        }
+                      })
+                    }
+                  }
+                  if (index > 0) {
+
+              //      characterLastCommand.lastCommand += " AND " + cmd.calculationCommand;
+              //      characterLastCommand.lastCommandResult += " AND " + cmd.calculationString;
+                    //characterLastCommand.lastCommandTotal += " AND " + __calculationResult;
+
+                    let lastCommandValues: string = "";
+                    let _diceRolledData = cmd.calculationArray;
+                    _diceRolledData.forEach((diceRoll, index) => {
+                      let numberString = '';
+                      diceRoll.randomNumbersList.map((x, xIndex) => {
+                        if (xIndex == diceRoll.randomNumbersList.length - 1) {
+                          numberString += x.number;
+                        }
+                        else {
+                          numberString += x.number + ",";
+                        }
+                      })
+
+                      if (diceRoll.dice && diceRoll.diceIcon) {
+                        lastCommandValues += (index === 0 ? '' : diceRoll.sign) +
+                          diceRoll.randomCount + diceRoll.dice
+                          + "=" + numberString.toString();
+                        //+ "=" + diceRoll.randomNumbersListAfter.toString();
+                      } else {
+                        lastCommandValues += (index === 0 ? '' : diceRoll.sign) + diceRoll.randomCount
+                          + "=" + numberString.toString();
+                        //+ "=" + diceRoll.randomNumbersListAfter.toString();
+                      }
+
+                    });
+
+             //       characterLastCommand.lastCommandValues += " AND " + lastCommandValues; //
+                  }
+                })
+              }
+            }
+            //////////////////////////////////////////////////////
+
+            //if (!anyCommandIsCustomWithNonNumeric) {
+            //this.updateLastCommand(characterLastCommand);
+            // }
+
+            //this.HideResult = false;
+
+            //diceRolledData.forEach(diceRoll => {
+            //  if (!diceRoll.static)
+            //    diceRoll.randomNumbersList.forEach(num => {
+            //      num.isAnimated = num.hideExplode ? true : false;
+            //      num.isMax = diceRoll.diceNumber === num.number ? true : false;
+            //      num.isMin = num.number === 1 ? true : false;
+            //      if (num.hideExplode) {
+
+            //        this.HideResult = true;
+            //      }
+            //    });
+            //});
+            //------Show rolling hidden Exploded dice and Then stop Rolling------//
+            //if (this.HideResult) {
+            //  this.cascadeDiceEffectCount = 0;
+            //  this.cascadeDiceEffectCurrentCount = 0;
+            //  this.cascadeDiceDisplayLength = 0;
+            //  this.CascadeExplodeDice();
+            //}
+            //----END Show rolling hidden Exploded dice and Then stop Rolling----//
+
+
+            calculationStringArray = DiceService.getCalculationStringArray(__calculationString, diceRolledData);
+            characterMultipleCommands[0].calculationStringArray = calculationStringArray;
+          } catch (err) { }
+
+        debugger
+        return characterMultipleCommands[0].calculationResult
+          //color maximum & minimum
+          //let _maxNum: number = 0;
+          //let _minNum: number = 0;
+
+          //this.diceRolledData.forEach(diceRoll => {
+          //    let _maxN = Math.max.apply(Math, diceRoll.randomNumbersListAfter);
+          //    let _minN = Math.min.apply(Math, diceRoll.randomNumbersListAfter);
+
+          //    _maxNum = +_maxN > _maxNum ? +_maxN : _maxNum;
+          //    _minNum = +_minN > _minNum ? (_minNum == 0 ? +_minN : _minNum) : +_minN;
+          //});
+          //if (!lastResultArray) {
+          //  //if (this.isDicePublicRoll || this.isSkipDicePublicRollcheck) {
+          //  if (this.isDicePublicRoll) {
+          //    //this.isSkipDicePublicRollcheck = false;
+          //    this.appService.updateChatWithDiceRoll({ characterCommandModel: this.characterCommandModel, characterMultipleCommands: characterMultipleCommands });
+          //  }
+          //}
+         // this.loadingResult = true;
+       
+
+        //this.diceSection = false;
+        //this.rollSection = true;
+
+      
+    }
   }
 }
 

@@ -45,6 +45,7 @@ import { ItemRulesetViewListComponent } from "./character-records/items/ruleset/
 import { SpellRulesetViewListComponent } from "./character-records/spells/ruleset/ruleset-view-list/ruleset-view-list.component";
 import { RulesetViewSpellDetailComponent } from "./character-records/spells/ruleset/ruleset-view-spell-detail/ruleset-view-spell-detail.component";
 import { RulesetViewBundleDetailComponent } from './character-records/items/ruleset/ruleset-view-bundle-detail/ruleset-view-bundle-detail.component';
+import { CharBuffAndEffectDetailsComponent } from "./character-records/buff-and-effects/buff-and-effect-details/buff-and-effect-details.component";
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import { RulesetViewBundleDetailComponent } from './character-records/items/rule
     ItemRulesetViewListComponent,
     SpellRulesetViewListComponent,
     RulesetViewSpellDetailComponent,
-    RulesetViewBundleDetailComponent
+    RulesetViewBundleDetailComponent,
+    CharBuffAndEffectDetailsComponent
   ],
   imports: [
     SharedModule,
@@ -121,7 +123,8 @@ import { RulesetViewBundleDetailComponent } from './character-records/items/rule
     RulesetViewItemDetailComponent,
     ItemRulesetViewListComponent,
     SpellRulesetViewListComponent,
-    RulesetViewSpellDetailComponent
+    RulesetViewSpellDetailComponent,
+    CharBuffAndEffectDetailsComponent
   ],
   entryComponents: [
   
@@ -134,7 +137,8 @@ import { RulesetViewBundleDetailComponent } from './character-records/items/rule
     EditItemComponent,
     AddCharacterSpellComponent,
     AddCharaterAbilityComponent,
-    LinkRecordComponent
+    LinkRecordComponent,
+    CharBuffAndEffectDetailsComponent
   ]
 })
 export class CharactersModule {}

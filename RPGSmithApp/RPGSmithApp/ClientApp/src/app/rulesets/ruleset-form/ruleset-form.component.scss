@@ -167,3 +167,7 @@
         top: 7px;
     }
 }
+.input-list-items .form-check-label span em {
+  overflow: initial;
+  -webkit-line-clamp: initial;
+}

@@ -12,6 +12,7 @@ import { STAT_LINK_TYPE } from '../../../../core/models/enums';
 import { User } from '../../../../core/models/user.model';
 import { DBkeys } from '../../../../core/common/db-keys';
 import { Ruleset } from '../../../../core/models/view-models/ruleset.model';
+import { BuffAndEffectService } from '../../../../core/services/buff-and-effect.service';
 
 
 @Component({
@@ -23,27 +24,33 @@ export class LinkRecordComponent implements OnInit {
     items: any;
     spells: any;
     abilities: any;
+    BuffAndEffects: any;
 
 
     ruleSet: any = new Ruleset();
     limitTextSpell: string = "Show more";
     limitTextItem: string = "Show more";
     limitTextAbility: string = "Show more";
+    limitTextBuffAndEffect: string = "Show more";
     lengthOfRecordsToDisplay: number = 10;
     limitSpell: number = this.lengthOfRecordsToDisplay;
     limitItem: number = this.lengthOfRecordsToDisplay;
     limitAbility: number = this.lengthOfRecordsToDisplay;
+    limitBuffAndEffect: number = this.lengthOfRecordsToDisplay;
     title: string;
     isLoading: boolean = false;
     spellsList: boolean = true;;
     itemsList: boolean;
     abilitiesList: boolean;
+    BuffAndEffectList: boolean;
     itemId: number = 0;
     spellId: number = 0;
     abilityId: number = 0;
+    BuffAndEffectId: number = 0;
     selectedItem: any = null;
     selectedSpell: any = null;
     selectedAbility: any = null;  
+    selectedBuffAndEffect: any = null;  
     characterId: number;
     _linkType: any;
 
@@ -54,18 +61,20 @@ export class LinkRecordComponent implements OnInit {
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
         private localStorage: LocalStoreManager, private authService: AuthService, private itemsService: ItemsService, 
         private characterSpellService: CharacterSpellService, private characterAbilityService: CharacterAbilityService,
-        private alertService: AlertService) {
+      private alertService: AlertService,private buffAndEffectService: BuffAndEffectService) {
     }
 
     ngOnInit() {
         setTimeout(() => {
             this.characterId = this.bsModalRef.content.characterId;            
-            this.ruleSet = this.bsModalRef.content.ruleSet;
+          this.ruleSet = this.bsModalRef.content.ruleSet;
+          
             this.title = this.bsModalRef.content.title;
             this.charactersCharacterStat = this.bsModalRef.content.characterstat;
             this.itemId = 0;
             this.spellId = 0;
             this.abilityId = 0;
+            this.BuffAndEffectId = 0;
             if (this.charactersCharacterStat.linkType == STAT_LINK_TYPE.ITEM) {
                 this.itemId = this.charactersCharacterStat.defaultValue;
             }
@@ -75,7 +84,10 @@ export class LinkRecordComponent implements OnInit {
             else if (this.charactersCharacterStat.linkType == STAT_LINK_TYPE.ABILITY) {
                 this.abilityId = this.charactersCharacterStat.defaultValue;
             }
-            this._linkType = this.ruleSet.isItemEnabled ? "Item" : this.ruleSet.isSpellEnabled ? "Spell" : "Ability";  
+            else if (this.charactersCharacterStat.linkType == STAT_LINK_TYPE.BUFFANDEFFECT) {
+              this.BuffAndEffectId = this.charactersCharacterStat.defaultValue;
+            }
+            this._linkType = this.ruleSet.isItemEnabled ? "Item" : this.ruleSet.isSpellEnabled ? "Spell" : this.ruleSet.isAbilityEnabled? "Ability":"BuffAndEffect";  
             this.initialize();
         }, 0);
     }
@@ -159,7 +171,7 @@ export class LinkRecordComponent implements OnInit {
 
                                     x.selected = true;
                                     this.showProperty('Abilites')
-                                    this.selectedSpell = x;
+                                    this.selectedAbility = x;
                                 }
                                 else {
                                     x.selected = false;
@@ -174,8 +186,35 @@ export class LinkRecordComponent implements OnInit {
                     }, error => {
                         this.isLoading = false;
                     }, () => { });
+          }
+          if (this.ruleSet.isBuffAndEffectEnabled) {
+            this.buffAndEffectService.getBuffAndEffectAssignedToCharacter<any[]>(this.characterId)
+                .subscribe(data => {
+
+                  this.BuffAndEffects = data;
+                  if (this.BuffAndEffects.length) {
+                    this.BuffAndEffects = Object.assign([], this.BuffAndEffects.map((x) => {
+                      if (this.BuffAndEffectId == x.characterBuffAndEffectId) {
+
+                        x.selected = true;
+                        this.showProperty('BuffAndEffects')
+                        this.selectedBuffAndEffect = x;
+                      }
+                      else {
+                        x.selected = false;
+                      }
+                      return x;
+                    }));
+                    this.showMoreCommands('BuffAndEffect', this.BuffAndEffects.length, "Show more");
+                  }
+                  if (this._linkType == "BuffAndEffect") {
+                    this.isLoading = false;
+                  } this.isLoading = false;
+                }, error => {
+                  this.isLoading = false;
+                }, () => { });
             }
-            if (!this.ruleSet.isItemEnabled && !this.ruleSet.isSpellEnabled && !this.ruleSet.isAbilityEnabled) {
+          if (!this.ruleSet.isItemEnabled && !this.ruleSet.isSpellEnabled && !this.ruleSet.isAbilityEnabled && !this.ruleSet.isBuffAndEffectEnabled) {
                 this.isLoading = false
             }
 
@@ -186,31 +225,44 @@ export class LinkRecordComponent implements OnInit {
         if (evt == "Items") {
             this.itemsList = true;
             this.spellsList = false;
-            this.abilitiesList = false;
+          this.abilitiesList = false;
+          this.BuffAndEffectList = false;
             //this.linkTileFormModal.linkType = "Item";
             this._linkType = "Item";
         }
         else if (evt == "Spells") {
             this.spellsList = true;
             this.itemsList = false;
-            this.abilitiesList = false;
+          this.abilitiesList = false;
+          this.BuffAndEffectList = false;
             //this.linkTileFormModal.linkType = "Spell";
             this._linkType = "Spell";
         }
+        else if (evt == "Abilites") {
+          this.abilitiesList = true;
+          this.itemsList = false;
+          this.spellsList = false;
+          this.BuffAndEffectList = false;
+          //this.linkTileFormModal.linkType = "Ability";
+          this._linkType = "Ability";
+        }
         else {
-            this.abilitiesList = true;
+          this.BuffAndEffectList = true;
             this.itemsList = false;
-            this.spellsList = false;
+          this.spellsList = false;
+          this.abilitiesList = false;
             //this.linkTileFormModal.linkType = "Ability";
-            this._linkType = "Ability";
+          this._linkType = "BuffAndEffect";
         }
     }
 
     getItemValue(val: any) {
         this.abilityId = 0;
         this.spellId = 0;
+        this.BuffAndEffectId = 0;
         this.selectedSpell = null;
         this.selectedAbility = null;
+        this.selectedBuffAndEffect = null;
         this.itemId = val.itemId;
         this.selectedItem = val;
     }
@@ -219,8 +271,10 @@ export class LinkRecordComponent implements OnInit {
         
         this.itemId = 0;
         this.spellId = 0;
+      this.BuffAndEffectId = 0;
         this.selectedItem = null;
         this.selectedSpell = null;
+      this.selectedBuffAndEffect = null;
         this.abilityId = val.characterAbilityId;
         this.selectedAbility = val;
     }
@@ -229,11 +283,25 @@ export class LinkRecordComponent implements OnInit {
         
         this.abilityId = 0;
         this.itemId = 0;
+      this.BuffAndEffectId = 0;
         this.selectedItem = null;
         this.selectedAbility = null;
+      this.selectedBuffAndEffect = null;
         this.spellId = val.characterSpellId;
         this.selectedSpell = val;
-    }
+  }
+  getBuffAndEffectValue(val: any) {
+
+    this.itemId = 0;
+    this.spellId = 0;
+    this.abilityId = 0;
+    this.selectedItem = null;
+    this.selectedSpell = null;
+    this.selectedAbility = null;
+    this.BuffAndEffectId= val.characterBuffAndEffectId;
+    this.selectedBuffAndEffect = val;
+    debugger
+  }
 
     showMoreCommands(fieldName: any, _limit: number, _limitText: string) {
         //console.log(fieldName);
@@ -263,6 +331,15 @@ export class LinkRecordComponent implements OnInit {
                 this.limitTextAbility = "Show more";
                 this.limitAbility = this.lengthOfRecordsToDisplay;
             }
+      }
+        else if (fieldName == 'BuffAndEffect') {
+          if (_limitText == "Show more") {
+            this.limitTextBuffAndEffect = "Show less";
+            this.limitBuffAndEffect = _limit;
+          } else {
+            this.limitTextBuffAndEffect = "Show more";
+            this.limitBuffAndEffect = this.lengthOfRecordsToDisplay;
+          }
         }
     }
 
@@ -276,11 +353,13 @@ export class LinkRecordComponent implements OnInit {
         //    itemId: this.itemId
         //};
         //
+      debugger
         this.event.emit({
             spell: this.selectedSpell,
             ability: this.selectedAbility,
-            item: this.selectedItem,
-            type: this.abilityId ? STAT_LINK_TYPE.ABILITY : this.spellId ? STAT_LINK_TYPE.SPELL : this.itemId ? STAT_LINK_TYPE.ITEM : ''
+          item: this.selectedItem,
+          buffAndEffect: this.selectedBuffAndEffect,
+          type: this.BuffAndEffectId ? STAT_LINK_TYPE.BUFFANDEFFECT : this.abilityId ? STAT_LINK_TYPE.ABILITY : this.spellId ? STAT_LINK_TYPE.SPELL : this.itemId ? STAT_LINK_TYPE.ITEM : ''
         });
         this.close();
     }   

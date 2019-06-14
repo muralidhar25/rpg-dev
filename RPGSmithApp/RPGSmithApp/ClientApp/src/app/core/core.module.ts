@@ -72,6 +72,8 @@ import { TextTileService } from "./services/tiles/text-tile.service";
 import { MarketPlaceService } from "./services/maketplace.service";
 import { CampaignService } from "./services/campaign.service";
 import { LootService } from "./services/loot.service";
+import { BuffAndEffectService } from "./services/buff-and-effect.service";
+import { BuffAandEffectTileService } from "./services/tiles/buff-and-effect-tile.service";
 
 
 @NgModule({
@@ -139,7 +141,8 @@ import { LootService } from "./services/loot.service";
     TextTileService,
     MarketPlaceService,
     CampaignService,
-    LootService
+    LootService, BuffAndEffectService,
+    BuffAandEffectTileService
     ],
   exports: [
     EqualValidator,

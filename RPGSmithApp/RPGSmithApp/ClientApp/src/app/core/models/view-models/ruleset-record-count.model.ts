@@ -5,7 +5,8 @@ export class RulesetRecordCount {
     itemMasterCount?: number,
     abilityCount?: number,
     characterStatCount?: number,
-    lootCount? : number
+    lootCount? : number,
+    buffAndEffectCount? : number
   ) {
 
         this.spellCount = spellCount;
@@ -13,7 +14,7 @@ export class RulesetRecordCount {
         this.abilityCount = abilityCount;
         this.characterStatCount = characterStatCount;
         this.lootCount = lootCount;
-
+    this.buffAndEffectCount = buffAndEffectCount;
     }
 
     public spellCount: number;
@@ -21,5 +22,6 @@ export class RulesetRecordCount {
     public abilityCount: number;
     public characterStatCount: number;
     public lootCount: number;
+  public buffAndEffectCount: number;
 }
 

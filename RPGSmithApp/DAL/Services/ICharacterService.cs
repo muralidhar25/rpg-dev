@@ -1,4 +1,5 @@
 using DAL.Models;
+using DAL.Models.SPModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,6 +11,8 @@ namespace DAL.Services
     {
         Character GetCharacterById(int Id);
         List<Character> GetCharacterRuleSetId(int ruleSetId);
+        List<SelectedCharacter> GetOnlyCharacterRuleSetId(int ruleSetId,int buffAndEffectId);
+        
         List<Character> GetCharacterUserId(string userId);
         Task<Character> InsertCharacter(Character CharacterDomain);
         Task<Character> UpdateCharacter(Character CharacterDomain);

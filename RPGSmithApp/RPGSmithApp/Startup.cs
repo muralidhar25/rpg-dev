@@ -277,6 +277,9 @@ namespace RPGSmithApp
 
             services.AddScoped<IMarketPlaceService, MarketPlaceService>();
             services.AddScoped<ICampaignService, CampaignService>();
+            services.AddScoped<IBuffAndEffectService, BuffAndEffectService>();
+            services.AddScoped<IBuffAndEffectCommandService, BuffAndEffectCommandService>();
+            services.AddScoped<IBuffAndEffectTileService, BuffAndEffectTileService>();
 
             // Register Hosted Services
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, BackgroundProcesses>();

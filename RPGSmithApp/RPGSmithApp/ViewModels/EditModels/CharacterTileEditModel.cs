@@ -38,6 +38,7 @@ namespace RPGSmithApp.ViewModels.EditModels
         public CharacterNoteTile NoteTile { get; set; }
         public CharacterImageTile ImageTile { get; set; }
         public CharacterTextTile TextTile { get; set; }
+        public CharacterBuffAndEffectTile BuffAndEffectTile { get; set; }
         public CharacterCounterTile CounterTile { get; set; }
         public CharacterCharacterStatTile CharacterStatTile { get; set; }
         public CharacterExecuteTile ExecuteTile { get; set; }

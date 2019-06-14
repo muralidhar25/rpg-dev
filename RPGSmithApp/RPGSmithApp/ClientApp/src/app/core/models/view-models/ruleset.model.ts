@@ -6,8 +6,8 @@ export class Ruleset {
     constructor(ruleSetId?: number, ruleSetName?: string, ruleSetDesc?: string, isActive?: boolean, userId?: string, ruleSetImage?: string,
         defaultDice?: string, currencyLabel?: string, weightLabel?: string, distanceLabel?: string, volumeLabel?: string,
         view?: VIEW, showIcon?: boolean, sortOrder?: number, isCoreContent?: boolean, parentRuleSetId?: number,
-        imageUrl?: string, thumbnailUrl?: string, recordCount?: RulesetRecordCount, shareCode?: string,
-        isItemEnabled?: boolean, isSpellEnabled?: boolean, isAbilityEnabled?: boolean, isAllowSharing?: boolean, isAdmin?: boolean
+      imageUrl?: string, thumbnailUrl?: string, recordCount?: RulesetRecordCount, shareCode?: string,
+      isItemEnabled?: boolean, isSpellEnabled?: boolean, isAbilityEnabled?: boolean, isAllowSharing?: boolean, isAdmin?: boolean, isBuffAndEffectEnabled?: boolean
     ) {
 
         this.ruleSetId = ruleSetId;
@@ -33,7 +33,9 @@ export class Ruleset {
         this.recordCount = recordCount;
         this.isItemEnabled = isItemEnabled;
         this.isSpellEnabled = isSpellEnabled;
-        this.isAbilityEnabled = isAbilityEnabled;
+      this.isAbilityEnabled = isAbilityEnabled;
+      this.isBuffAndEffectEnabled = isBuffAndEffectEnabled;
+      
         this.isAllowSharing = isAllowSharing;
         this.isAdmin = isAdmin;
         this.shareCode = shareCode;
@@ -61,6 +63,7 @@ export class Ruleset {
     public isItemEnabled: boolean;
     public isSpellEnabled: boolean;
     public isAbilityEnabled: boolean;
+  public isBuffAndEffectEnabled: boolean;
     public isAllowSharing: boolean;
     public isAdmin: boolean;
     public shareCode: string;

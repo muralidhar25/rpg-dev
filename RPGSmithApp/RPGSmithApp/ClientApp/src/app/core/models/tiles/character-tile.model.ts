@@ -7,6 +7,7 @@ import { ExecuteTile } from './execute-tile.model';
 import { CommandTile } from './command-tile.model';
 import { CharacterStatTile } from './character-stat-tile.model';
 import { TextTile } from './text-tile.model';
+import { BuffAndEffectTile } from './buff-and-effect-tile.model';
 
 export class CharacterTile {
     constructor(characterTileId?: number,
@@ -32,8 +33,8 @@ export class CharacterTile {
         linkTile?: LinkTile,
         executeTile?: ExecuteTile,
         commandTile?: CommandTile,
-        multiCharacterStats?: characterStatIds[]
-         
+        multiCharacterStats?: characterStatIds[],
+         buffAndEffectTile?: BuffAndEffectTile
     ) {
         this.characterTileId = characterTileId,
         this.tileTypeId = tileTypeId,
@@ -59,6 +60,7 @@ export class CharacterTile {
         this.executeTile = executeTile,
         this.commandTile = commandTile,
         this.multiCharacterStats = multiCharacterStats
+      this.buffAndEffectTile = buffAndEffectTile
     }
 
     public characterTileId: number;
@@ -84,7 +86,8 @@ export class CharacterTile {
     public linkTile: LinkTile;
     public executeTile: ExecuteTile;
     public commandTile: CommandTile;
-    public multiCharacterStats: characterStatIds[];
+  public multiCharacterStats: characterStatIds[];
+  public buffAndEffectTile: BuffAndEffectTile;
 }
 
 export class characterStatIds {

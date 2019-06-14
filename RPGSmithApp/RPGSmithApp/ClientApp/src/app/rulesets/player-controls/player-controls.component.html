@@ -5,7 +5,7 @@
   </div>
 </div>
 <div class="modal-body players-component" *ngIf="!isLoading">
-  <div class="row mb-3 align-items-center">
+  <div class="row  align-items-center">
     <div class="col-12 col-sm-7 pr-sm-0">
       <label>Pause Game - Prevents Player Changes to Character Stats and Records</label>
     </div>
@@ -34,7 +34,7 @@
       </div>
     </div>
   </div>
-  <div class="row mb-3 align-items-center">
+  <div class="row  align-items-center">
     <div class="col-12 col-sm-7 pr-sm-0">
       <label>Allow Player Item Creations</label>
     </div>
@@ -63,7 +63,7 @@
       </div>
     </div>
   </div>
-  <div class="row mb-3 align-items-center">
+  <div class="row  align-items-center">
     <div class="col-12 col-sm-7 pr-sm-0">
       <label>Allow Player Spell Creations</label>
     </div>
@@ -75,7 +75,7 @@
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="spellcreations1"
                        [checked]="!playerControls.pauseSpellCreate"
-                       (click)="AllowSpellcreation(false)" >
+                       (click)="AllowSpellcreation(false)">
                 <span>ON</span>
               </label>
             </li>
@@ -83,7 +83,7 @@
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="spellcreations2"
                        [checked]="playerControls.pauseSpellCreate"
-                       (click)="AllowSpellcreation(true)" >
+                       (click)="AllowSpellcreation(true)">
                 <span>OFF</span>
               </label>
             </li>
@@ -92,7 +92,7 @@
       </div>
     </div>
   </div>
-  <div class="row mb-3 align-items-center">
+  <div class="row  align-items-center">
     <div class="col-12 col-sm-7 pr-sm-0">
       <label>Allow Player Ability Creations</label>
     </div>
@@ -121,7 +121,8 @@
       </div>
     </div>
   </div>
-  <div class="row mb-3 align-items-center">
+
+  <div class="row  align-items-center">
     <div class="col-12 col-sm-7 pr-sm-0">
       <label>Allow Player Item Additions</label>
     </div>
@@ -141,7 +142,7 @@
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="itemadditions2"
                        [checked]="playerControls.pauseItemAdd"
-                       (click)="AllowItemAdditions(true)" >
+                       (click)="AllowItemAdditions(true)">
                 <span>OFF</span>
               </label>
             </li>
@@ -150,7 +151,7 @@
       </div>
     </div>
   </div>
-  <div class="row mb-3 align-items-center">
+  <div class="row  align-items-center">
     <div class="col-12 col-sm-7 pr-sm-0">
       <label>Allow Player Spell Additions</label>
     </div>
@@ -170,7 +171,7 @@
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="playerspelladditions2"
                        [checked]="playerControls.pauseSpellAdd"
-                     (click)="playerspellAdition(true)"  >
+                       (click)="playerspellAdition(true)">
                 <span>OFF</span>
               </label>
             </li>
@@ -179,7 +180,7 @@
       </div>
     </div>
   </div>
-  <div class="row mb-3 align-items-center">
+  <div class="row  align-items-center">
     <div class="col-12 col-sm-7 pr-sm-0">
       <label>Allow Player Ability Additions</label>
     </div>
@@ -191,7 +192,7 @@
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="abilityadditions1"
                        [checked]="!playerControls.pauseAbilityAdd"
-                    (click)="playerAbilityAdditions(false)">
+                       (click)="playerAbilityAdditions(false)">
                 <span>ON</span>
               </label>
             </li>
@@ -199,8 +200,70 @@
               <label class="form-check-label">
                 <input class="form-check-input" type="radio" name="abilityadditions2"
                        [checked]="playerControls.pauseAbilityAdd"
-                     (click)="playerAbilityAdditions(true)">
+                       (click)="playerAbilityAdditions(true)">
                 <span>OFF</span>
+              </label>
+            </li>
+          </ul>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+  <div class="row  align-items-center">
+    <div class="col-12 col-sm-7 pr-sm-0">
+      <label>Allow Player Buffs & Effects Assignment</label>
+    </div>
+    <div class="col-12 col-sm-5">
+      <div class="form-group">
+        <fieldset class="form-group input-switch input-switch-dual">
+          <ul class="input-switch-items">
+            <li class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="buffAndEffectadditions1"
+                       [checked]="!playerControls.pauseBuffAndEffectAdd"
+                       (click)="playerBuffAndEffectAdditions(false)">
+                <span>ON</span>
+              </label>
+            </li>
+            <li class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="buffAndEffectadditions2"
+                       [checked]="playerControls.pauseBuffAndEffectAdd"
+                       (click)="playerBuffAndEffectAdditions(true)">
+                <span>OFF</span>
+              </label>
+            </li>
+          </ul>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+  <div class="row  align-items-center">
+    <div class="col-12 col-sm-7 pr-sm-0">
+      <label>Allow Player Buffs & Effects Creations</label>
+    </div>
+    <div class="col-12 col-sm-5">
+      <div class="form-group">
+        <fieldset class="form-group input-switch input-switch-dual">
+          <ul class="input-switch-items">
+            <li class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="buffAndEffectcreations1"
+                       [disabled]="playerControls.pauseBuffAndEffectAdd"
+                       [checked]="!playerControls.pauseBuffAndEffectCreate"
+                       (click)="AllowBuffAndEffectCreation(false)">
+                <span  [ngClass]="{'disabled':playerControls.pauseBuffAndEffectAdd}"
+                      [title]="playerControls.pauseBuffAndEffectAdd?'Player Buffs & Effects Assignment should be allowed first':''">ON</span>
+              </label>
+            </li>
+            <li class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input"  type="radio" name="buffAndEffectcreations2"
+                       [disabled]="playerControls.pauseBuffAndEffectAdd"
+                       [checked]="playerControls.pauseBuffAndEffectCreate"
+                       (click)="AllowBuffAndEffectCreation(true)">
+                <span  [ngClass]="{'disabled':playerControls.pauseBuffAndEffectAdd}"
+                      [title]="playerControls.pauseBuffAndEffectAdd?'Player Buffs & Effects Assignment should be allowed first':''">OFF</span>
               </label>
             </li>
           </ul>

@@ -73,15 +73,25 @@ export class PlayerControlsComponent implements OnInit {
   AllowAbilityCreation(checked: boolean) {
     this.playerControls.pauseAbilityCreate = checked;
   }
+  AllowBuffAndEffectCreation(checked: boolean) {
+    this.playerControls.pauseBuffAndEffectCreate = checked;
+  }
   AllowItemAdditions(checked: boolean) {
     this.playerControls.pauseItemAdd = checked;
   }
+ 
   playerspellAdition(checked: boolean) {
     this.playerControls.pauseSpellAdd = checked;
   }
  
   playerAbilityAdditions(checked: boolean) {
     this.playerControls.pauseAbilityAdd = checked;
+  }
+  playerBuffAndEffectAdditions(checked: boolean) {
+    this.playerControls.pauseBuffAndEffectAdd = checked;
+    if (checked) {
+      this.playerControls.pauseBuffAndEffectCreate = checked;
+    }
   }
 
   //save players Controls

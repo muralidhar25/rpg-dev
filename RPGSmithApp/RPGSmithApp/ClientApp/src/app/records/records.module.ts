@@ -24,6 +24,8 @@ import { CreatelootComponent } from "./loot/createloot/createloot.component";
 import { LootAddContainerItemComponent } from "./loot/loot-add-container-item/loot-add-container-item.component";
 import { LootAddContainerComponent } from "./loot/loot-add-container/loot-add-container.component";
 import { DeleteAllLootItemsComponent } from "./loot/delete-all-loot-items/delete-all-loot-items.component";
+import { BuffAndEffectComponent } from "./buff-and-effects/buff-and-effects.component";
+import { BuffAndEffectDetailsComponent } from "./buff-and-effects/buff-and-effect-details/buff-and-effect-details.component";
 
 
 @NgModule({
@@ -46,7 +48,8 @@ import { DeleteAllLootItemsComponent } from "./loot/delete-all-loot-items/delete
     CreatelootComponent,
     LootAddContainerItemComponent,
     LootAddContainerComponent,
-    DeleteAllLootItemsComponent
+    DeleteAllLootItemsComponent,
+    BuffAndEffectComponent, BuffAndEffectDetailsComponent
   ],
   imports: [
     SharedModule
@@ -72,7 +75,8 @@ import { DeleteAllLootItemsComponent } from "./loot/delete-all-loot-items/delete
     CreatelootComponent,
     LootAddContainerItemComponent,
     LootAddContainerComponent,
-    DeleteAllLootItemsComponent
+    DeleteAllLootItemsComponent,
+    BuffAndEffectComponent, BuffAndEffectDetailsComponent
   ],
   entryComponents: [
     AddItemMasterComponent,

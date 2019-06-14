@@ -28,6 +28,7 @@ namespace RPGSmithApp.ViewModels
         public bool IsItemEnabled { get; set; }
         public bool IsAbilityEnabled { get; set; }
         public bool IsSpellEnabled { get; set; }        
+        public bool IsBuffAndEffectEnabled { get; set; }        
         public bool IsCoreRuleset { get; set; }
 
         public bool IsAllowSharing { get; set; }

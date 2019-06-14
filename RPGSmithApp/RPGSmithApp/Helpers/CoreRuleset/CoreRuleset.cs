@@ -23,11 +23,14 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         List<Ability> GetAbilitiesByRuleSetId(int rulesetId);
         int GetSpellCountByRuleSetId(int rulesetId);
         int GetAbilityCountByRuleSetId(int rulesetId);
+        int GetBuffAndEffectCountByRuleSetId(int rulesetId);
         Task<ItemMaster> CreateItemMaster(ItemMaster itemMaster, List<ItemMasterSpell> itemMasterSpellVM, List<ItemMasterAbility> itemMasterAbilityVM);
         Task<int> GetCopiedRuleSetIdFromRulesetAndUser(int RulesetID, string UserID);
         Task<Spell> CreateSpell(Spell spell);
         bool IsSpellCopiedFromCoreRuleset(int spellID, int RulesetID);
         bool IsAbilityCopiedFromCoreRuleset(int abilityId, int RulesetID);
+        bool IsBuffAndEffectCopiedFromCoreRuleset(int buffAndEffectId, int RulesetID);
+        Task<BuffAndEffect> CreateBuffAndEffect(BuffAndEffect buffAndEffect);
         Task<Ability> CreateAbility(Ability ability);
         bool IsCharacterstatCopiedFromCoreRuleset(int abilityId, int RulesetID);
         Task<CharacterStat> InsertCharacterStat(CharacterStat characterStat);
@@ -45,6 +48,7 @@ namespace RPGSmithApp.Helpers.CoreRuleset
     {
         private readonly IRuleSetService _ruleSetService;
         private readonly IAbilityService _abilityService;
+        private readonly IBuffAndEffectService _buffAndEffectService;
         private readonly IItemMasterService _itemMasterService;
         private readonly IItemMasterBundleService _itemMasterBundleService;
         private readonly ISpellService _spellService;
@@ -63,7 +67,7 @@ namespace RPGSmithApp.Helpers.CoreRuleset
             IRulesetDashboardLayoutService rulesetDashboardLayoutService,
             IItemService itemService,
             ICharactersCharacterStatService charactersCharacterStatService,
-            ICharacterService CharacterService
+            ICharacterService CharacterService, IBuffAndEffectService buffAndEffectService
         )
         {
             _ruleSetService = ruleSetService;
@@ -76,6 +80,7 @@ namespace RPGSmithApp.Helpers.CoreRuleset
             _itemService = itemService;
             _charactersCharacterStatService = charactersCharacterStatService;
             _CharacterService = CharacterService;
+            _buffAndEffectService = buffAndEffectService;
         }
         public bool IsCopiedFromCoreRuleset(int RulesetID)
         {
@@ -96,6 +101,10 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         public bool IsAbilityCopiedFromCoreRuleset(int abilityId, int RulesetID)
         {
             return _abilityService.Core_AbilityWithParentIDExists(abilityId, RulesetID);
+        }
+        public bool IsBuffAndEffectCopiedFromCoreRuleset(int buffAndEffectId, int RulesetID)
+        {
+            return _buffAndEffectService.Core_BuffAndEffectWithParentIDExists(buffAndEffectId, RulesetID);
         }
         public bool IsCharacterstatCopiedFromCoreRuleset(int abilityId, int RulesetID)
         {
@@ -124,7 +133,8 @@ namespace RPGSmithApp.Helpers.CoreRuleset
                     ItemMasterCount = res.ItemMasterCount,
                     CharacterStatCount = res.CharacterStatCount,
                     LayoutCount = res.LayoutCount,
-                    LootCount = res.LootCount
+                    LootCount = res.LootCount,
+                    BuffAndEffectCount=res.BuffAndEffectCount,
                 };
             }
             catch (Exception ex)
@@ -202,7 +212,15 @@ namespace RPGSmithApp.Helpers.CoreRuleset
             }
             return _abilityService.Core_GetCountByRuleSetId(RulesetID, (int)parentID);
         }
-
+        public int GetBuffAndEffectCountByRuleSetId(int rulesetId)
+        {
+            int? parentID = _ruleSetService.GetRuleSetById(rulesetId).Result.ParentRuleSetId;
+            if (parentID == null)
+            {
+                parentID = rulesetId;
+            }
+            return _buffAndEffectService.Core_GetCountByRuleSetId(rulesetId, (int)parentID);
+        }
         public async Task<ItemMaster> CreateItemMaster(ItemMaster itemMaster, List<ItemMasterSpell> itemMasterSpellVM, List<ItemMasterAbility> itemMasterAbilityVM)
         {
             return await _itemMasterService.Core_CreateItemMaster(itemMaster, itemMasterSpellVM, itemMasterAbilityVM);
@@ -233,6 +251,10 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         public async Task<Ability> CreateAbility(Ability ability)
         {
             return await _abilityService.Core_CreateAbility(ability);
+        }
+        public async Task<BuffAndEffect> CreateBuffAndEffect(BuffAndEffect buffAndEffect)
+        {
+            return await _buffAndEffectService.Core_CreateBuffAndEffect(buffAndEffect);
         }
         public async Task<CharacterStat> InsertCharacterStat(CharacterStat characterStat)
         {

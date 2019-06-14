@@ -29,6 +29,8 @@ export class CharactersService extends EndpointFactory {
   private readonly _getCharacters_charStatsByIdUrl: string = "/api/Character/GetCharacters_charStatsById";
   private readonly _getDiceTrayUrl: string = "/api/Character/GetDiceTray";
   private readonly _getByRulesetUrl: string = "/api/Character/GetCharactersByRuleSetId";
+  
+  
   private readonly _getByUserUrl: string = "/api/Character/GetCharactersByUserId";
   private readonly _uploadImgUrl: string = "/api/Character/UploadCharactersImage";
   private readonly _uploadImgBlobUrl: string = "/api/Character/UpLoadCharaterImageBlob";
@@ -52,6 +54,8 @@ export class CharactersService extends EndpointFactory {
   get getCharacters_charStatsByIdUrl() { return this.configurations.baseUrl + this._getCharacters_charStatsByIdUrl; }
   get getDiceTrayUrl() { return this.configurations.baseUrl + this._getDiceTrayUrl; }
   get getByRulesetUrl() { return this.configurations.baseUrl + this._getByRulesetUrl; }
+
+  
   get getByUserUrl() { return this.configurations.baseUrl + this._getByUserUrl; }
   get uploadImgUrl() { return this.configurations.baseUrl + this._uploadImgUrl; }
   get uploadImgBlobUrl() { return this.configurations.baseUrl + this._uploadImgBlobUrl; }
@@ -112,7 +116,7 @@ export class CharactersService extends EndpointFactory {
         return this.handleError(error, () => this.getCharactersByRuleSetId(Id, isFromLootGiveScreen));
       });
   }
-
+ 
   getCharactersByUserId<T>(Id: string): Observable<T> {
     let endpointUrl = `${this.getByUserUrl}?id=${Id}`;
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())

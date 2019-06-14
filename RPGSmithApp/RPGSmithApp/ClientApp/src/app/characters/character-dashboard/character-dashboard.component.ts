@@ -54,6 +54,7 @@ import { EditTextComponent } from "../../tile/text/edit-text/edit-text.component
 import { CharacterStatConditionViewModel } from "../../core/models/view-models/character-stats.model";
 import { AppService1 } from "../../app.service";
 import { HeaderValues } from "../../core/models/headers.model";
+import { BuffAndEffectService } from "../../core/services/buff-and-effect.service";
 
 
 
@@ -176,7 +177,7 @@ export class CharacterDashboardComponent implements OnInit {
     private layoutService: CharacterDashboardLayoutService, private pageService: CharacterDashboardPageService,
     private dragulaService: DragulaService, private dragulaService1: DragulaService,
     private itemsService: ItemsService, private abilityService: AbilityService, private spellsService: SpellsService,
-    private CCService: CharactersCharacterStatService, public appService: AppService1
+    private CCService: CharactersCharacterStatService, public appService: AppService1, private buffAndEffectService: BuffAndEffectService
   ) {
 
     dragulaService.drop.subscribe((value: any[]) => {
@@ -1389,6 +1390,9 @@ export class CharacterDashboardComponent implements OnInit {
               else if (_tile.characterStatTiles.charactersCharacterStat.linkType == STAT_LINK_TYPE.ITEM) {
                 this.router.navigate(['/character/inventory-details', _tile.characterStatTiles.charactersCharacterStat.defaultValue]);
               }
+              else if (_tile.characterStatTiles.charactersCharacterStat.linkType == STAT_LINK_TYPE.BUFFANDEFFECT) {
+                this.router.navigate(['/character/buff-effect-details', _tile.characterStatTiles.charactersCharacterStat.defaultValue]);
+              }
             } catch (err) { }
             break;
           //case STAT_TYPE.Condition:
@@ -1447,6 +1451,8 @@ export class CharacterDashboardComponent implements OnInit {
             this.router.navigate(['/character/ability-details', _tile.linkTiles.ability.characterAbilityId]);
           else if (_tile.linkTiles.linkType == 'Item')
             this.router.navigate(['/character/inventory-details', _tile.linkTiles.item.itemId]);
+          else if (_tile.linkTiles.linkType == 'BuffAndEffect')
+            this.router.navigate(['/character/buff-effect-details', _tile.linkTiles.buffAndEffect.characterBuffAandEffectId]);
         } catch (err) { }
         break;
       }
@@ -1518,6 +1524,29 @@ export class CharacterDashboardComponent implements OnInit {
                     this.bsModalRef.content.Character = this.character;
                   } else {
                     this.useCommand(_executeTile.ability.ability)
+                  }
+                }, error => { }, () => { });
+            }
+            break;
+          }
+          case "BuffAndEffect": {
+            if (_executeTile.buffAndEffect.buffAndEffectID) {
+              this.buffAndEffectService.getBuffAndEffectCommands_sp<any>(_executeTile.buffAndEffect.buffAndEffectID)
+                .subscribe(data => {
+                  if (data.length > 0) {
+                    this.bsModalRef = this.modalService.show(CastComponent, {
+                      class: 'modal-primary modal-md',
+                      ignoreBackdropClick: true,
+                      keyboard: false
+                    });
+
+                    this.bsModalRef.content.title = "Buffs & Effects Commands";
+                    this.bsModalRef.content.ListCommands = data;
+                    this.bsModalRef.content.BuffAndEffectID = _executeTile.buffAndEffect.buffAndEffectID;
+                    this.bsModalRef.content.Command = _executeTile.buffAndEffect.buffAndEffect;
+                    this.bsModalRef.content.Character = this.character;
+                  } else {
+                    this.useCommand(_executeTile.buffAndEffect.buffAndEffect)
                   }
                 }, error => { }, () => { });
             }
@@ -1622,6 +1651,10 @@ export class CharacterDashboardComponent implements OnInit {
       this.bsModalRef.content.recordImage = Command.imageUrl;
     }
     else if (Command.hasOwnProperty("abilityId")) {
+      this.bsModalRef.content.recordName = Command.name;
+      this.bsModalRef.content.recordImage = Command.imageUrl;
+    }
+    else if (Command.hasOwnProperty("buffAndEffectId")) {
       this.bsModalRef.content.recordName = Command.name;
       this.bsModalRef.content.recordImage = Command.imageUrl;
     }

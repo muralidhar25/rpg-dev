@@ -893,6 +893,7 @@ namespace RPGSmithApp.Controllers
                     ruleSetDomain.IsAbilityEnabled = model.IsAbilityEnabled;
                     ruleSetDomain.IsItemEnabled = model.IsItemEnabled;
                     ruleSetDomain.IsSpellEnabled = model.IsSpellEnabled;
+                    ruleSetDomain.IsBuffAndEffectEnabled = model.IsBuffAndEffectEnabled;
                     ruleSetDomain.IsAllowSharing = model.IsAllowSharing;
                     ruleSetDomain.ShareCode = model.ShareCode;
                     ruleSetDomain.ModifiedDate = DateTime.Now;

@@ -17,6 +17,7 @@ import { UseLinkComponent } from './link/use-link/use-link.component';
 import { UseExecuteComponent } from './execute/use-execute/use-execute.component';
 import { TextTileComponent } from './text/text.component';
 import { EditTextComponent } from './text/edit-text/edit-text.component';
+import { BuffAndEffectTileComponent } from './buff-and-effect/buff-and-effect.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { EditTextComponent } from './text/edit-text/edit-text.component';
     UseLinkComponent,
     UseExecuteComponent,
     TextTileComponent,
-    EditTextComponent
+    EditTextComponent,
+    BuffAndEffectTileComponent
   ],
   imports: [
     SharedModule
@@ -60,7 +62,8 @@ import { EditTextComponent } from './text/edit-text/edit-text.component';
     UseLinkComponent,
     UseExecuteComponent,
     TextTileComponent,
-    EditTextComponent
+    EditTextComponent,
+    BuffAndEffectTileComponent
   ],
   entryComponents: [
     TileComponent,
@@ -79,7 +82,8 @@ import { EditTextComponent } from './text/edit-text/edit-text.component';
     UseLinkComponent,
     UseExecuteComponent,
     TextTileComponent,
-    EditTextComponent
+    EditTextComponent,
+    BuffAndEffectTileComponent
   ]
 })
 export class TileModule {}

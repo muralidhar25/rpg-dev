@@ -196,7 +196,10 @@ namespace DAL.Repositories
             ruleset.ThumbnailUrl = dtRuleset.Rows[0]["ThumbnailUrl"] == DBNull.Value ? null : dtRuleset.Rows[0]["ThumbnailUrl"].ToString();
             ruleset.VolumeLabel = dtRuleset.Rows[0]["VolumeLabel"] == DBNull.Value ? null : dtRuleset.Rows[0]["VolumeLabel"].ToString();
             ruleset.WeightLabel = dtRuleset.Rows[0]["WeightLabel"] == DBNull.Value ? null : dtRuleset.Rows[0]["WeightLabel"].ToString();
-            
+            if (dtRuleset.Columns.Contains("IsBuffAndEffectEnabled"))
+            {
+                ruleset.IsBuffAndEffectEnabled = dtRuleset.Rows[0]["IsBuffAndEffectEnabled"] == DBNull.Value ? false : Convert.ToBoolean(dtRuleset.Rows[0]["IsBuffAndEffectEnabled"]);
+            }
             return ruleset;
         }
 

@@ -60,15 +60,20 @@
           <a class="btn icon icon-Gen-Items btn-accent" (click)="item(rulesetModel)">ITEM TEMPLATES</a>
           <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.itemMasterCount !== undefined">{{rulesetRecordCount.itemMasterCount}} </span>
         </li>
+        <li class="ng-star-inserted" *ngIf="rulesetModel.isBuffAndEffectEnabled">
+          <a class="btn icon-BnE btn-accent" (click)="buff_effects(rulesetModel)">BUFFS & EFFECTS</a>
+          <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.buffAndEffectCount !== undefined">{{rulesetRecordCount.buffAndEffectCount}}</span>
+
+        </li>
         <li class="ng-star-inserted">
           <a class="btn icon icon-Gen-Pouch btn-accent" (click)="loot(rulesetModel)">LOOT</a>
           <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.lootCount !== undefined">{{rulesetRecordCount.lootCount}}</span>
 
         </li>
         <!--<li class="ng-star-inserted">
-      <a class="btn icon icon-Gen-NPC btn-accent">GM CHARACTERS</a>
-      <span class="dropdown-menu-item-count pull-right ng-star-inserted">0</span>
-    </li>-->
+    <a class="btn icon icon-Gen-NPC btn-accent">GM CHARACTERS</a>
+    <span class="dropdown-menu-item-count pull-right ng-star-inserted">0</span>
+  </li>-->
         <li class="ng-star-inserted">
           <a class="btn icon icon-Gen-Handouts btn-accent" (click)="handOuts(rulesetModel)">HANDOUTS</a>
           <!--<span class="dropdown-menu-item-count pull-right ng-star-inserted">0</span>-->

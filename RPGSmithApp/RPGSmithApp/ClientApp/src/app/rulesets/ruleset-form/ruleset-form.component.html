@@ -135,7 +135,7 @@
           <fieldset class="form-group input-list input-list-wrap indicators">
             <legend>Rule Set Features</legend>
             <ul class="input-list-items form-check-transparent">
-              <li class="form-check col-md-4 col-sm-12 pl-0">
+              <li class="form-check col-md-3 col-sm-12 pl-0">
                 <label class="form-check-label">
                   <input class="form-check-input" type="checkbox" [(ngModel)]="rulesetFormModal.isItemEnabled" #IsItemEnabled="ngModel" [checked]="rulesetFormModal.isItemEnabled"
                          name="IsItemEnabled" />
@@ -145,7 +145,7 @@
                   </span>
                 </label>
               </li>
-              <li class="form-check col-md-4 col-sm-12 pl-0">
+              <li class="form-check col-md-3 col-sm-12 pl-0">
                 <label class="form-check-label">
                   <input class="form-check-input" type="checkbox" [(ngModel)]="rulesetFormModal.isSpellEnabled" #IsSpellEnabled="ngModel" [checked]="rulesetFormModal.isSpellEnabled"
                          name="IsSpellEnabled" />
@@ -155,7 +155,7 @@
                   </span>
                 </label>
               </li>
-              <li class="form-check col-md-4 col-sm-12 pl-0">
+              <li class="form-check col-md-3 col-sm-12 pl-0">
                 <label class="form-check-label">
                   {{rulesetFormModal.IsAbilityEnabled}}
                   <input class="form-check-input" type="checkbox" [(ngModel)]="rulesetFormModal.isAbilityEnabled" #IsAbilityEnabled="ngModel" [checked]="rulesetFormModal.isAbilityEnabled"
@@ -163,6 +163,16 @@
                   <span>
                     <i class="icon"></i>
                     <em class="icon icon-with-text">Abilities</em>
+                  </span>
+                </label>
+              </li>
+              <li class="form-check col-md-3 col-sm-12 pl-0" *ngIf="IsGm">
+                <label class="form-check-label">                  
+                  <input class="form-check-input" type="checkbox" [(ngModel)]="rulesetFormModal.isBuffAndEffectEnabled" #IsBuffAndEffectEnabled="ngModel" [checked]="rulesetFormModal.isBuffAndEffectEnabled"
+                         name="IsBuffAndEffectEnabled" />
+                  <span>
+                    <i class="icon"></i>
+                    <em class="icon icon-with-text">Buffs & Effects</em>
                   </span>
                 </label>
               </li>

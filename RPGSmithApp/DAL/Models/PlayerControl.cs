@@ -23,6 +23,8 @@ namespace DAL.Models
         public bool PauseSpellAdd { get; set; }
         public bool PauseAbilityCreate { get; set; }
         public bool PauseAbilityAdd { get; set; }
+        public bool PauseBuffAndEffectCreate { get; set; }
+        public bool PauseBuffAndEffectAdd { get; set; }
     }
     public class PlayerControlModel : PlayerControl {
         public bool IsPlayerCharacter { get; set; }

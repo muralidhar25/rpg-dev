@@ -39,9 +39,15 @@
                     <span>Abilities</span>
                   </label>
                 </li>
+                <li class="form-check" *ngIf="ruleSet?.isBuffAndEffectEnabled">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="BuffAndEffects" [checked]="_linkType=='BuffAndEffect'" [value]="_linkType" (change)="showProperty('BuffAndEffects')">
+                    <span>Buffs & Effects</span>
+                  </label>
+                </li>
               </ul>
             </fieldset>
-            <ng-container *ngIf="(isItemloaded && isIspellloaded && isAbilityloaded)">
+            <ng-container *ngIf="(isItemloaded && isIspellloaded && isAbilityloaded && isBuffAndEffectloaded)">
               <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='Spell' && ruleSet?.isSpellEnabled">
                 <ul class="input-list-items">
                   <ng-container *ngFor="let spell of spells | filterTile : query : 'spell';let i=index;">
@@ -116,10 +122,36 @@
                   <button type="button" *ngIf="abilities?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitAbility==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('ability', abilities?.length,limitTextAbility)"><span>{{limitTextAbility}}</span></button>
                 </div>
               </fieldset>
+
+              <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='BuffAndEffect' && ruleSet?.isBuffAndEffectEnabled">
+                <ul class="input-list-items">
+                  <ng-container *ngFor="let be of BuffAndEffects | filterTile : query : 'buffAndEffect';let i=index;">
+                    <li class="form-check linkli" popover="{{be.name}}" triggers="hover" *ngIf="i<limitBuffAndEffect">
+                      <label class="form-check-label">
+                        <input *ngIf="characterTileModel.view===VIEW.EDIT" class="form-check-input" type="radio" name="newLinkProperties" value="ability" (change)="getBuffAndEffectValue(be)" [checked]="be.characterBuffAndEffectId == linkTileFormModal.buffAndEffectId" />
+
+                        <input *ngIf="characterTileModel.view===VIEW.ADD" class="form-check-input" type="checkbox" name="newLinkProperties" (change)="getBuffAndEffectValueList($event,be)" [checked]="be.selected" />
+
+                        <span >
+                          <img src="{{be.imageUrl}}" onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+                          <em>
+                            {{be.name}}
+                          </em>
+                          <i class="icon"></i>
+                        </span>
+                      </label>
+                    </li>
+                  </ng-container>
+                  <li *ngIf="BuffAndEffects?.length == 0" style="list-style-type: none;">No Buffs & Effects Available</li>
+                </ul>
+                <div class="input-extend">
+                  <button type="button" *ngIf="BuffAndEffects?.length > 4" class="btn icon icon-with-text icon-arrow-down btn-link-primary" [ngClass]="(limitBuffAndEffect==4)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreCommands('BuffAndEffect', BuffAndEffects?.length,limitTextBuffAndEffect)"><span>{{limitTextBuffAndEffect}}</span></button>
+                </div>
+              </fieldset>
             </ng-container>
-            <ng-container  *ngIf="!(isItemloaded && isIspellloaded && isAbilityloaded)">
+            <ng-container  *ngIf="!(isItemloaded && isIspellloaded && isAbilityloaded && isBuffAndEffectloaded)">
               <fieldset class="form-group input-list input-list-wrap properties">
-                <app-loader [isLoading]="!(isItemloaded && isIspellloaded && isAbilityloaded)"></app-loader>
+                <app-loader [isLoading]="!(isItemloaded && isIspellloaded && isAbilityloaded && isBuffAndEffectloaded)"></app-loader>
               </fieldset>
             </ng-container>
            

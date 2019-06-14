@@ -42,6 +42,7 @@ namespace DAL.Services.CharacterTileServices
             linktile.DisplayLinkImage = item.DisplayLinkImage;
             linktile.LinkType = item.LinkType;
             linktile.AbilityId = item.AbilityId ;
+            linktile.BuffAndEffectId = item.BuffAndEffectId ;
             linktile.SpellId = item.SpellId;
             linktile.ItemId = item.ItemId;
 

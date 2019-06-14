@@ -24,7 +24,7 @@
           <span class="input-group-btn">
             <button type="button" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
           </span>
-          <input type="text" id="addItemSearchQuery" name="addItemSearchQuery" class="form-control" placeholder="Search item"
+          <input type="text" id="addItemSearchQuery" name="addItemSearchQuery" class="form-control" placeholder="Search character"
                  [(ngModel)]="searchText" />
 
         </div>
@@ -36,9 +36,9 @@
             <!-- Character ruleset -->
             <fieldset class="form-group input-list-wrap  input-list">
               <legend>Select Character</legend>
-              <div class="form-check" *ngIf="!characters">
+              <!--<div class="form-check" *ngIf="!characters">
                 <span>NOTE: <small>At least 1 Rule Set must exist before a Character can be created.</small></span>
-              </div>
+              </div>-->
               <!--<div class="form-group form-group-unlabelled search-rule-set" *ngIf="button == 'CREATE'">
                 <span class="input-group-btn">
                   <button class="btn icon icon-search btn-simple-primary" type="button"></button>

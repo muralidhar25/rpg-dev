@@ -72,6 +72,12 @@
                       <span>Abilities</span>
                     </label>
                   </li>
+                  <li class="form-check" *ngIf="character.ruleSet?.isBuffAndEffectEnabled">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="BuffAndEffects" [checked]="_linkType=='BuffAndEffect'" [value]="_linkType" (change)="showProperty('BuffAndEffects')">
+                      <span>Buffs & Effects</span>
+                    </label>
+                  </li>
                 </ul>
               </fieldset>
 
@@ -144,6 +150,30 @@
                 <div class="input-extend input-expend-and-remove">
                   <button type="button" *ngIf="abilities?.length > lengthOfRecordsToDisplay" class="btn icon icon-with-text icon-arrow-down btn-link-primary float-left" [ngClass]="(limitAbility==lengthOfRecordsToDisplay)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreLinkRecords('ability', abilities?.length,limitTextAbility)"><span>{{limitTextAbility}}</span></button>
                   <button type="button" *ngIf="(spellId || abilityId || itemId)" class="btn icon icon-Rec-Disable icon-with-text btn-link-primary float-right" (click)="RemoveSelectedLinkRecord()">Remove Link</button>
+                </div>
+              </fieldset>
+
+              <fieldset class="form-group input-list input-list-wrap properties" *ngIf="_linkType=='BuffAndEffect' && character.ruleSet?.isBuffAndEffectEnabled">
+                <ul class="input-list-items">
+                  <ng-container *ngFor="let be of BuffAndEffects;let i=index;">
+                    <li class="form-check linkli" popover="{{be.name}}" triggers="hover" *ngIf="i<limitBuffAndEffect">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="newLinkProperties" value="buffAndEffect" (change)="getBuffAndEffectValue(be)" [checked]="be.characterBuffAndEffectId==BuffAndEffectId" />
+                        <span>
+                          <img src="{{be.imageUrl}}"  onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+                          <em>
+                            {{be.name}}
+                          </em>
+                          <i class="icon"></i>
+                        </span>
+                      </label>
+                    </li>
+                  </ng-container>
+                  <li *ngIf="BuffAndEffects?.length == 0" style="list-style-type: none;">No Buffs & Effects Available</li>
+                </ul>
+                <div class="input-extend input-expend-and-remove">
+                  <button type="button" *ngIf="BuffAndEffects?.length > lengthOfRecordsToDisplay" class="btn icon icon-with-text icon-arrow-down btn-link-primary float-left" [ngClass]="(limitBuffAndEffect==lengthOfRecordsToDisplay)?'icon-arrow-down':'icon-arrow-up'" (click)="showMoreLinkRecords('BuffAndEffect', BuffAndEffects?.length,limitTextBuffAndEffect)"><span>{{limitTextBuffAndEffect}}</span></button>
+                  <button type="button" *ngIf="(spellId || abilityId || itemId || BuffAndEffectId)" class="btn icon icon-Rec-Disable icon-with-text btn-link-primary float-right" (click)="RemoveSelectedLinkRecord()">Remove Link</button>
                 </div>
               </fieldset>
             </div>

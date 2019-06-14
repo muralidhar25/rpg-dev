@@ -512,3 +512,31 @@ body {
 .no-comma:after {
   display: none !important
 }
+.buff-tile-image {
+  height: 100%;
+  border: 1px solid black;
+}
+
+.buff-tile-body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  padding: 0.25rem;
+}
+
+.buff-images-only .buff-tile-image {
+  margin: 0px 4px 8px 0px;
+}
+
+.buff-image-text-both {
+  display: inline-block
+}
+.buff-text-only {
+  text-transform:uppercase;
+}

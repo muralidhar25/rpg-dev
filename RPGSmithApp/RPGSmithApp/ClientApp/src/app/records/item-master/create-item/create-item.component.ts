@@ -42,7 +42,9 @@ export class CreateItemMsterComponent implements OnInit {
     abilitiesList = [];
     selectedAbilities = [];
     spellsList = [];
-    selectedSpells = [];
+  buffAndEffectsList = [];
+  selectedSpells = [];
+  selectedBuffAndEffects: any = [];
     metatags = [];
     uploadFromBing: boolean = false;
     bingImageUrl: string;
@@ -121,9 +123,12 @@ export class CreateItemMsterComponent implements OnInit {
                 .subscribe(data => {
                     let dataobj:any = data
                     this.abilitiesList = dataobj.abilityList;
-                    this.spellsList = dataobj.spellList;
+                  this.spellsList = dataobj.spellList;
+                  this.buffAndEffectsList = dataobj.buffAndEffectsList;
+                  
                     this.selectedAbilities = dataobj.selectedAbilityList.map(x => { return x; });
                     this.selectedSpells = dataobj.selectedSpellList.map(x => { return x; });
+                  this.selectedBuffAndEffects = dataobj.selectedBuffAndEffects.map(x => { return x; });
                     this.itemMasterFormModal.itemMasterCommandVM = dataobj.selectedItemMasterCommand;
                     this.isLoading = false;
                 }, error => { }, () => { });

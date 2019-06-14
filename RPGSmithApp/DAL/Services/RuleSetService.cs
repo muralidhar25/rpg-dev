@@ -473,6 +473,7 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@IsAllowSharing", IsNull(model.IsAllowSharing));
                 command.Parameters.AddWithValue("@IsCoreRuleset", IsNull(model.IsCoreRuleset));
                 command.Parameters.AddWithValue("@ShareCode", IsNull(model.ShareCode));
+                command.Parameters.AddWithValue("@IsBuffAndEffectEnabled", IsNull(model.IsBuffAndEffectEnabled));
 
                 command.CommandType = CommandType.StoredProcedure;
 
@@ -529,10 +530,11 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@IsAbilityEnabled", IsNull(model.IsAbilityEnabled));
                 command.Parameters.AddWithValue("@IsItemEnabled", IsNull(model.IsItemEnabled));
                 command.Parameters.AddWithValue("@IsSpellEnabled", IsNull(model.IsSpellEnabled));
+                command.Parameters.AddWithValue("@IsBuffAndEffectEnabled", IsNull(model.IsBuffAndEffectEnabled));
                 command.Parameters.AddWithValue("@IsAllowSharing", IsNull(model.IsAllowSharing));
                 command.Parameters.AddWithValue("@IsCoreRuleset", IsNull(model.IsCoreRuleset));
                 command.Parameters.AddWithValue("@ShareCode", IsNull(model.ShareCode));
-
+                command.Parameters.AddWithValue("@IsBuffAndEffectEnabled", IsNull(model.IsBuffAndEffectEnabled));
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;
@@ -681,6 +683,8 @@ namespace DAL.Services
                 res.CharacterStatCount = Convert.ToInt32(dt.Rows[0]["CharacterStatCount"]);
                 res.LayoutCount = Convert.ToInt32(dt.Rows[0]["LayoutCount"]);
                 res.LootCount = Convert.ToInt32(dt.Rows[0]["LootCount"]);
+                res.BuffAndEffectCount = Convert.ToInt32(dt.Rows[0]["BuffAndEffectCount"]);
+
             }
             return res;
         }

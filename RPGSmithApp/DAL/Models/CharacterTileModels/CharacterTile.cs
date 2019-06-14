@@ -34,6 +34,7 @@ namespace DAL.Models.CharacterTileModels
         public virtual CharacterNoteTile NoteTiles { get; set; }
         public virtual CharacterImageTile ImageTiles { get; set; }
         public virtual CharacterTextTile TextTiles { get; set; }
+        public virtual CharacterBuffAndEffectTile BuffAndEffectTiles { get; set; }
         public virtual CharacterCounterTile CounterTiles { get; set; }
         public virtual CharacterCharacterStatTile CharacterStatTiles { get; set; }
         public virtual CharacterExecuteTile ExecuteTiles { get; set; }

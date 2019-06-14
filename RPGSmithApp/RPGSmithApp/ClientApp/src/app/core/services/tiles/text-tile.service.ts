@@ -78,7 +78,8 @@ export class TextTileService extends EndpointFactory {
         linkTile: model.linkTiles,
         executeTile: model.executeTile,
         commandTile: model.commandTiles,
-        multiCharacterStats: []
+        multiCharacterStats: [],
+        buffAndEffectTile: model.buffAndEffectTiles,
       };
     }
     else {
@@ -122,7 +123,8 @@ export class TextTileService extends EndpointFactory {
         characterStatTile: null,
         executeTile: null,
         commandTile: null,
-        multiCharacterStats: []
+        multiCharacterStats: [],
+        buffAndEffectTile: null
       };
     }
     return modelData;

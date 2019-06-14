@@ -74,23 +74,29 @@ export class CharacterStatTileComponent implements OnInit {
     limitTextSpell: string = "Show more";
     limitTextItem: string = "Show more";
     limitTextAbility: string = "Show more";
+    limitTextBuffAndEffect: string = "Show more";
     lengthOfRecordsToDisplay: number = 4;
     limitSpell: number = this.lengthOfRecordsToDisplay;
     limitItem: number = this.lengthOfRecordsToDisplay;
     limitAbility: number = this.lengthOfRecordsToDisplay;    
+  limitBuffAndEffect: number = this.lengthOfRecordsToDisplay;    
     spellsList: boolean = true;;
     itemsList: boolean;
     abilitiesList: boolean;
+    BuffAndEffectsList: boolean;
     itemId: number = 0;
     spellId: number = 0;
     abilityId: number = 0;
+    BuffAndEffectId: number = 0;
     selectedItem: any = null;
     selectedSpell: any = null;
     selectedAbility: any = null;
+  selectedBuffAndEffect: any = null;
     _linkType: any;
     items: any=[];
     spells: any=[];
     abilities: any = [];
+  BuffAndEffects: any = [];
     STAT_TYPE= STAT_TYPE
     //STAT_LINK_TYPE= STAT_LINK_TYPE
 
@@ -147,11 +153,12 @@ export class CharacterStatTileComponent implements OnInit {
             this.characterStatService.getLinkRecordsDetails<any>(this.characterId)
                 .subscribe(data => {
                     try {
-                        this._linkType = this.character.ruleSet.isItemEnabled ? "Item" : this.character.ruleSet.isSpellEnabled ? "Spell" : "Ability";
+                      this._linkType = this.character.ruleSet.isItemEnabled ? "Item" : this.character.ruleSet.isSpellEnabled ? "Spell" : this.character.ruleSet.isAbilityEnabled ? "Ability" : "BuffAndEffect";
                     } catch (e) { this._linkType = ""; }
                     this.itemId = 0;
                     this.spellId = 0;
                     this.abilityId = 0;
+                  this.BuffAndEffectId = 0;
                     if (this.characterTileModel.view === VIEW.EDIT) {
                         if (this.characterTileModel.characterStatTile.charactersCharacterStat.linkType == STAT_LINK_TYPE.ITEM) {
                             this.itemId = this.characterTileModel.characterStatTile.charactersCharacterStat.defaultValue;
@@ -161,6 +168,9 @@ export class CharacterStatTileComponent implements OnInit {
                         }
                         else if (this.characterTileModel.characterStatTile.charactersCharacterStat.linkType == STAT_LINK_TYPE.ABILITY) {
                             this.abilityId = this.characterTileModel.characterStatTile.charactersCharacterStat.defaultValue;
+                        }
+                        else if (this.characterTileModel.characterStatTile.charactersCharacterStat.linkType == STAT_LINK_TYPE.BUFFANDEFFECT) {
+                          this.BuffAndEffectId = this.characterTileModel.characterStatTile.charactersCharacterStat.defaultValue;
                         }
                     }
                     this.statLinkRecords = data;
@@ -177,7 +187,11 @@ export class CharacterStatTileComponent implements OnInit {
                                             break;
                                         case STAT_LINK_TYPE.ABILITY:
                                             this.abilities.push({ characterAbilityId: link.id, name: link.name, imageUrl: link.image, isAbilityEnabled: link.isAbilityEnabled, ability: { characterAbilityId: link.id, name: link.name, imageUrl: link.image } });
-                                            break;
+                                        break;
+                                      case STAT_LINK_TYPE.BUFFANDEFFECT:
+                                        debugger
+                                        this.BuffAndEffects.push({ characterBuffAndEffectId: link.id, name: link.name, imageUrl: link.image, isBuffAndEffectEnabled: link.isBuffAndEffectEnabled, BuffAndEffect: { characterBuffAndEffectId: link.id, name: link.name, imageUrl: link.image } });
+                                        break;
                                         default:
                                     }
                                 })
@@ -231,7 +245,22 @@ export class CharacterStatTileComponent implements OnInit {
                             return x;
                         }));
                         this.showMoreLinkRecords('ability', this.abilities.length, "Show more");
-                    }
+                  }
+                  if (this.BuffAndEffects.length) {
+                    this.BuffAndEffects = Object.assign([], this.BuffAndEffects.map((x) => {
+                      if (this.BuffAndEffectId == x.characterBuffAndEffectId) {
+
+                        x.selected = true;
+                        this.showProperty('BuffAndEffects')
+                        this.selectedBuffAndEffect = x;
+                      }
+                      else {
+                        x.selected = false;
+                      }
+                      return x;
+                    }));
+                    this.showMoreLinkRecords('BuffAndEffect', this.BuffAndEffects.length, "Show more");
+                  }
                 }, error => {
                     let Errors = Utilities.ErrorDetail("", error);
                     if (Errors.sessionExpire) {
@@ -613,6 +642,11 @@ export class CharacterStatTileComponent implements OnInit {
                                         st.defaultValue = this.abilityId;
                                         this.updateStatService(st)
                                     }
+                                    else if (this.BuffAndEffectId) {
+                                      st.linkType = STAT_LINK_TYPE.BUFFANDEFFECT;
+                                      st.defaultValue = this.BuffAndEffectId;
+                                      this.updateStatService(st)
+                                    }
                                     else {
                                         st.linkType = null;
                                         st.defaultValue = 0;
@@ -642,6 +676,11 @@ export class CharacterStatTileComponent implements OnInit {
                     modal.characterStatTile.charactersCharacterStat.linkType = STAT_LINK_TYPE.ABILITY;
                     modal.characterStatTile.charactersCharacterStat.defaultValue = this.abilityId;
                     this.updateStatService(modal.characterStatTile.charactersCharacterStat)
+                }
+                else if (this.BuffAndEffectId) {
+                  modal.characterStatTile.charactersCharacterStat.linkType = STAT_LINK_TYPE.BUFFANDEFFECT;
+                  modal.characterStatTile.charactersCharacterStat.defaultValue = this.BuffAndEffectId;
+                  this.updateStatService(modal.characterStatTile.charactersCharacterStat)
                 }
                 else {
                     modal.characterStatTile.charactersCharacterStat.linkType = null;
@@ -743,40 +782,55 @@ export class CharacterStatTileComponent implements OnInit {
         if (evt == "Items") {
             this.itemsList = true;
             this.spellsList = false;
-            this.abilitiesList = false;
+          this.abilitiesList = false;
+          this.BuffAndEffectsList = false;
             //this.linkTileFormModal.linkType = "Item";
             this._linkType = "Item";
         }
         else if (evt == "Spells") {
             this.spellsList = true;
             this.itemsList = false;
-            this.abilitiesList = false;
+          this.abilitiesList = false;
+          this.BuffAndEffectsList = false;
             //this.linkTileFormModal.linkType = "Spell";
             this._linkType = "Spell";
         }
-        else {
+        else if (evt == "Abilites") {
             this.abilitiesList = true;
             this.itemsList = false;
-            this.spellsList = false;
+          this.spellsList = false;
+          this.BuffAndEffectsList = false;
             //this.linkTileFormModal.linkType = "Ability";
             this._linkType = "Ability";
+      }
+        else {
+          this.BuffAndEffectsList = true;
+          this.itemsList = false;
+          this.spellsList = false;
+          this.abilitiesList = false;
+          //this.linkTileFormModal.linkType = "Ability";
+          this._linkType = "BuffAndEffect";
         }
     }
 
     getItemValue(val: any) {
         this.abilityId = 0;
-        this.spellId = 0;
+      this.spellId = 0;
+      this.BuffAndEffectId = 0;
         this.selectedSpell = null;
         this.selectedAbility = null;
+      this.selectedBuffAndEffect = null;
         this.itemId = val.itemId;
         this.selectedItem = val;
     }
 
     getAbilityValue(val: any) {
         this.itemId = 0;
-        this.spellId = 0;
+      this.spellId = 0;
+      this.BuffAndEffectId = 0;
         this.selectedItem = null;
-        this.selectedSpell = null;
+      this.selectedSpell = null;
+      this.selectedBuffAndEffect = null;
         this.abilityId = val.characterAbilityId;
         this.selectedAbility = val;
         
@@ -784,13 +838,26 @@ export class CharacterStatTileComponent implements OnInit {
 
     getSpellValue(val: any) {
         this.abilityId = 0;
-        this.itemId = 0;
+      this.itemId = 0;
+      this.BuffAndEffectId = 0;
         this.selectedItem = null;
-        this.selectedAbility = null;
+      this.selectedAbility = null;
+      this.selectedBuffAndEffect = null;
         this.spellId = val.characterSpellId;
         this.selectedSpell = val;
         
-    }
+  }
+  getBuffAndEffectValue(val: any) {
+    this.itemId = 0;
+    this.spellId = 0;
+    this.abilityId = 0;
+    this.selectedItem = null;
+    this.selectedSpell = null;
+    this.selectedAbility = null;
+    this.BuffAndEffectId = val.characterBuffAndEffectId;
+    this.selectedBuffAndEffect = val;
+
+  }
     showMoreLinkRecords(fieldName: any, _limit: number, _limitText: string) {
         //console.log(fieldName);
         if (fieldName == 'spell') {
@@ -819,6 +886,15 @@ export class CharacterStatTileComponent implements OnInit {
                 this.limitTextAbility = "Show more";
                 this.limitAbility = this.lengthOfRecordsToDisplay;
             }
+      }
+        else if (fieldName == 'BuffAndEffect') {
+          if (_limitText == "Show more") {
+            this.limitTextBuffAndEffect = "Show less";
+            this.limitBuffAndEffect = _limit;
+          } else {
+            this.limitTextBuffAndEffect = "Show more";
+            this.limitBuffAndEffect = this.lengthOfRecordsToDisplay;
+          }
         }
     }
     //isAnyLinkTypeStat() {
@@ -849,7 +925,8 @@ export class CharacterStatTileComponent implements OnInit {
                     if (st.charactersCharacterStatId == this.characterTileModel.multiCharacterStats[0].characterStatId) {
                         this.itemId = 0;
                         this.spellId = 0;
-                        this.abilityId = 0;
+                      this.abilityId = 0;
+                      this.BuffAndEffectId = 0;
                         //if (this.characterTileModel.view === VIEW.EDIT) {
                         if (st.linkType == STAT_LINK_TYPE.ITEM) {
                             this.itemId = st.defaultValue;
@@ -862,6 +939,10 @@ export class CharacterStatTileComponent implements OnInit {
                         else if (st.linkType == STAT_LINK_TYPE.ABILITY) {
                             this.abilityId = st.defaultValue;
                             this.showProperty('Abilites');
+                      }
+                        else if (st.linkType == STAT_LINK_TYPE.BUFFANDEFFECT) {
+                          this.BuffAndEffectId = st.defaultValue;
+                          this.showProperty('BuffAndEffects');
                         }
                         //}
                     }
@@ -914,9 +995,11 @@ export class CharacterStatTileComponent implements OnInit {
         this.abilityId = 0;
         this.itemId = 0;
         this.spellId = 0;
+      this.BuffAndEffectId = 0;
         this.selectedItem = null;
         this.selectedAbility = null;
         this.selectedSpell = null;
+      this.selectedBuffAndEffect = null;
     }
     IsStatChecked(stat: any): boolean {
         if (this.characterTileModel.multiCharacterStats) {

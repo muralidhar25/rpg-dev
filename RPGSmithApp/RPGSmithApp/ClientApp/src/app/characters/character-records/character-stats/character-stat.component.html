@@ -120,6 +120,56 @@
                 <button type="submit" (click)="save(charactersCharacterStats,0)" class="btn btn-accent">Save</button>
             </div>
         </div>
+        <ng-container *ngIf="ruleSet?.isBuffAndEffectEnabled && showBuffEffects">
+          <div class="col-lg-6 col-md-6 col-6" *ngIf="isModelChange"></div>
+          <div class="col-lg-6 col-md-6 col-6">
+            <div class="form-row">
+
+              <div class="col-lg-1 col-md-1 col-sm-1 col-1 icon-charstat">
+                <div class="modifier-icon">
+                  <div popover="Buffs & Effects" triggers="hover" class="card-icon icon iconstat icon-BnE"></div>
+                </div>
+              </div>
+
+              <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+                <div class="form-group desktop-view">
+                  <label popover="Buffs & Effects" triggers="hover" class="labelcharstat">
+                    Buffs & Effects
+                  </label>
+
+                </div>
+                <div class="form-group mobile-view">
+                  <label popover="Buffs & Effects" triggers="hover" class="labelcharstat">
+                    Buffs & Effects
+                  </label>
+                </div>
+              </div>             
+              <div class="col-lg-7 col-md-7 col-sm-8 col-8">
+                
+                <div class="form-group form-group-unlabelled" (click)="!pauseBuffAndEffectAdd && SelectBuffAndEffects()">
+                  <span class="input-group-btn">
+                    <button type="button" title="Select Item"  [disabled]="pauseBuffAndEffectAdd" data-toggle="tooltip" class="btn icon-Gen-Plus btn-simple-primary "
+                            [ngClass]="{'disabled':pauseBuffAndEffectAdd}"
+                            ></button>
+                  </span>
+                  <!---THIS TAG INPUT IS USED FOR CONTAINS ITEMS SELECTED FROM POPUP-->
+                  <tag-input name="contains" (onRemove)="selectedBuffAndEffectsListChanged($event)" [(ngModel)]='selectedBuffAndEffectsList' theme='dark' inputId="contains" inputClass="form-control metatags-field" class="form-control"
+                             [identifyBy]="'value'" [displayBy]="'text'" placeholder="" secondaryPlaceholder="Select Buffs & Effects"></tag-input>
+                  <!--<angular2-multiselect id="multiBuffAndEffectsList" [data]="buffAndEffectsList" [(ngModel)]="selectedBuffAndEffectsList" name="multiBuffAndEffectsList" [settings]="multichoiceBuffEffectsSettings">
+                      <c-item id="buffEffect">
+                        <ng-template let-item="item">
+                          <span class="associate-label-name">11111</span>
+
+                        </ng-template>
+                      </c-item>
+                    </angular2-multiselect>-->
+                </div>
+                  
+               
+              </div>
+            </div>
+          </div>
+        </ng-container>
     </div>
 
     <div class="form-row" *ngIf="!isLoading" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1"
@@ -742,7 +792,7 @@
                     </div>
                 </div>
 
-                <ng-container *ngIf="characterstat?.linkType!=STAT_LINK_TYPE.ABILITY && characterstat?.linkType!=STAT_LINK_TYPE.SPELL && characterstat?.linkType!=STAT_LINK_TYPE.ITEM">
+                <ng-container *ngIf="characterstat?.linkType!=STAT_LINK_TYPE.ABILITY && characterstat?.linkType!=STAT_LINK_TYPE.SPELL && characterstat?.linkType!=STAT_LINK_TYPE.ITEM && characterstat?.linkType!=STAT_LINK_TYPE.BUFFANDEFFECT">
                     <div class="col-lg-7 col-md-7 col-sm-8 col-8">
                         <div class="form-group">
                             <ul class="input-switch-items">
@@ -756,58 +806,73 @@
                         </div>
                     </div>
                 </ng-container>
-                <ng-container *ngIf="!(characterstat?.linkType!=STAT_LINK_TYPE.ABILITY && characterstat?.linkType!=STAT_LINK_TYPE.SPELL && characterstat?.linkType!=STAT_LINK_TYPE.ITEM)">
+                <ng-container *ngIf="!(characterstat?.linkType!=STAT_LINK_TYPE.ABILITY && characterstat?.linkType!=STAT_LINK_TYPE.SPELL && characterstat?.linkType!=STAT_LINK_TYPE.ITEM && characterstat?.linkType!=STAT_LINK_TYPE.BUFFANDEFFECT)">
                     <div class="col-lg-6 col-md-6 col-sm-7 col-7">
                         <div class="form-group">
-                            <div class="">
+                          <div class="">
 
-                                <ng-container *ngIf="characterstat?.linkType==STAT_LINK_TYPE.ITEM">
-                                    <ul class="input-list-items">
-                                        <li class="form-check linkli" popover="{{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}" triggers="hover">
-                                            <label class="form-check-label">
-                                                <span style="background-color: #fafafa !important;">
-                                                    <img [src]="GetLinkRecordImage(characterstat?.defaultValue,characterstat?.linkType)">
-                                                    <em>
-                                                        {{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}
-                                                    </em>
-                                                </span>
-                                            </label>
-                                        </li>
-                                    </ul>
-                                </ng-container>
+                            <ng-container *ngIf="characterstat?.linkType==STAT_LINK_TYPE.ITEM">
+                              <ul class="input-list-items">
+                                <li class="form-check linkli" popover="{{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}" triggers="hover">
+                                  <label class="form-check-label">
+                                    <span style="background-color: #fafafa !important;">
+                                      <img [src]="GetLinkRecordImage(characterstat?.defaultValue,characterstat?.linkType)">
+                                      <em>
+                                        {{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}
+                                      </em>
+                                    </span>
+                                  </label>
+                                </li>
+                              </ul>
+                            </ng-container>
 
-                                <ng-container *ngIf="characterstat?.linkType==STAT_LINK_TYPE.SPELL">
-                                    <ul class="input-list-items">
-                                        <li class="form-check linkli" popover="{{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}" triggers="hover">
-                                            <label class="form-check-label">
-                                                <span style="background-color: #fafafa !important;">
-                                                    <img [src]="GetLinkRecordImage(characterstat?.defaultValue,characterstat?.linkType)">
-                                                    <em>
-                                                        {{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}
-                                                    </em>
-                                                </span>
-                                            </label>
-                                        </li>
-                                    </ul>
-                                </ng-container>
+                            <ng-container *ngIf="characterstat?.linkType==STAT_LINK_TYPE.SPELL">
+                              <ul class="input-list-items">
+                                <li class="form-check linkli" popover="{{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}" triggers="hover">
+                                  <label class="form-check-label">
+                                    <span style="background-color: #fafafa !important;">
+                                      <img [src]="GetLinkRecordImage(characterstat?.defaultValue,characterstat?.linkType)">
+                                      <em>
+                                        {{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}
+                                      </em>
+                                    </span>
+                                  </label>
+                                </li>
+                              </ul>
+                            </ng-container>
 
-                                <ng-container *ngIf="characterstat?.linkType==STAT_LINK_TYPE.ABILITY">
-                                    <ul class="input-list-items">
-                                        <li class="form-check linkli" popover="{{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}" triggers="hover">
-                                            <label class="form-check-label">
-                                                <span style="background-color: #fafafa !important;">
-                                                    <img [src]="GetLinkRecordImage(characterstat?.defaultValue,characterstat?.linkType)">
-                                                    <em>
-                                                        {{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}
-                                                    </em>
-                                                </span>
-                                            </label>
-                                        </li>
-                                    </ul>
-                                </ng-container>
+                            <ng-container *ngIf="characterstat?.linkType==STAT_LINK_TYPE.ABILITY">
+                              <ul class="input-list-items">
+                                <li class="form-check linkli" popover="{{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}" triggers="hover">
+                                  <label class="form-check-label">
+                                    <span style="background-color: #fafafa !important;">
+                                      <img [src]="GetLinkRecordImage(characterstat?.defaultValue,characterstat?.linkType)">
+                                      <em>
+                                        {{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}
+                                      </em>
+                                    </span>
+                                  </label>
+                                </li>
+                              </ul>
+                            </ng-container>
+                            <ng-container *ngIf="characterstat?.linkType==STAT_LINK_TYPE.BUFFANDEFFECT">
+                              <ul class="input-list-items">
+                                <li class="form-check linkli" popover="{{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}" triggers="hover">
+                                  <label class="form-check-label">
+                                    <span style="background-color: #fafafa !important;">
+                                      <img [src]="GetLinkRecordImage(characterstat?.defaultValue,characterstat?.linkType)"
+                                           onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+                                      <em>
+                                        {{GetLinkRecordName(characterstat?.defaultValue,characterstat?.linkType)}}
+                                      </em>
+                                    </span>
+                                  </label>
+                                </li>
+                              </ul>
+                            </ng-container>
 
 
-                            </div>
+                          </div>
                         </div>
                     </div>
                     <div class="col-lg-1 col-md-1 col-sm-1 col-1">

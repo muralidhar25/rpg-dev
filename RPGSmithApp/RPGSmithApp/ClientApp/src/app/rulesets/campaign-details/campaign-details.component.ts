@@ -132,7 +132,7 @@ export class CampaignDetailsComponent implements OnInit {
         this.setHeaderValues(this.ruleset);
         this.rulesetRecordCount = this.ruleset.recordCount;
         //this.isLoading = false;
-
+        debugger
         this.declinedUserList = [];
         this.invitedUsers = [];
         this.campaignService.getPlayerInviteList<any>(this.ruleSetId)
@@ -301,7 +301,18 @@ export class CampaignDetailsComponent implements OnInit {
       }
     }
   }
-
+  buff_effects(ruleset: Ruleset) {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null) {
+      this.authService.logout();
+    }
+    else {
+      if (user.isGm) {
+        this.rulesetService.ruleset = ruleset;
+        this.router.navigate(['/ruleset/buff-effect', ruleset.ruleSetId]);
+      }
+    }
+  }
   handOuts(ruleset: Ruleset) {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null) {

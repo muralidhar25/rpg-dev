@@ -15,13 +15,17 @@ namespace DAL.Models.SPModels
         public int CharacterStatCount { get; set; }
         public int LayoutCount { get; set; }
         public int LootCount { get; set; }
+        public int BuffAndEffectCount { get; set; }
+        
     }
     public class SP_AbilitySpellForItemMaster
     {
         public List<Ability> abilityList { get; set; }
         public List<Spell> spellList { get; set; }
+        public List<BuffAndEffect> buffAndEffectsList { get; set; }
         public List<Ability> selectedAbilityList { get; set; }
         public List<Spell> selectedSpellList { get; set; }
+        public List<BuffAndEffect> selectedBuffAndEffects { get; set; }
         public List<ItemMasterCommand> selectedItemMasterCommand { get; set; }
         public List<ItemCommand> selectedItemCommand { get; set; }
     }
@@ -91,6 +95,21 @@ namespace DAL.Models.SPModels
     {
         public int ID { get; set; }
         public bool IsBundle { get; set; }
+    }
+    public class AssignBuffAndEffect
+    {
+        public List<BuffAndEffect> buffAndEffectList { get; set; }
+        public List<Character> characters { get; set; }
+        public List<Character> nonSelectedCharacters { get; set; }
+        public List<BuffAndEffect> nonSelectedBuffAndEffectsList { get; set; }  
+    }
+    public class SelectedCharacter:Character
+    {
+        public bool Selected { get; set; }
+    }
+    public class CharBuffAndEffect : BuffAndEffect {
+        public int CharacterBuffAndEffectId { get; set; }
+        public string Command { get; set; }
     }
     public static class utility
     {

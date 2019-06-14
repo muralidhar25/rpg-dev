@@ -13,5 +13,7 @@ namespace DAL.Models.SPModels
         public int CharacterStatCount { get; set; }
         public int LayoutCount { get; set; }
         public int LootCount { get; set; }
+        public int BuffAndEffectCount { get; set; }
+        
     }
 }

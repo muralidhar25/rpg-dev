@@ -734,4 +734,5 @@ export class ServiceUtil {
   public static CurrentCharacters_RulesetID(localStorage: LocalStoreManager): number {
     return localStorage.getDataObject<any>(DBkeys.RULESET_ID);
   }
+  public static DefaultBuffAndEffectImage: string = '../assets/images/BnE/Def_BnE.png';
 }

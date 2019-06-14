@@ -222,6 +222,70 @@ namespace RPGSmithApp.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("DAL.Models.BuffAndEffect", b =>
+                {
+                    b.Property<int>("BuffAndEffectId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Command");
+
+                    b.Property<string>("CommandName")
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(2048)")
+                        .HasMaxLength(2048);
+
+                    b.Property<bool?>("IsDeleted");
+
+                    b.Property<string>("Metatags")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int?>("ParentBuffAndEffectId");
+
+                    b.Property<int>("RuleSetId");
+
+                    b.Property<string>("Stats")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("BuffAndEffectId");
+
+                    b.HasIndex("ParentBuffAndEffectId");
+
+                    b.HasIndex("RuleSetId");
+
+                    b.ToTable("BuffAndEffects");
+                });
+
+            modelBuilder.Entity("DAL.Models.BuffAndEffectCommand", b =>
+                {
+                    b.Property<int>("BuffAndEffectCommandId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BuffAndEffectId");
+
+                    b.Property<string>("Command");
+
+                    b.Property<bool?>("IsDeleted");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("BuffAndEffectCommandId");
+
+                    b.HasIndex("BuffAndEffectId");
+
+                    b.ToTable("BuffAndEffectCommands");
+                });
+
             modelBuilder.Entity("DAL.Models.Character", b =>
                 {
                     b.Property<int>("CharacterId")
@@ -305,6 +369,29 @@ namespace RPGSmithApp.Migrations
                     b.HasIndex("CharacterId");
 
                     b.ToTable("CharacterAbilities");
+                });
+
+            modelBuilder.Entity("DAL.Models.CharacterBuffAndEffect", b =>
+                {
+                    b.Property<int>("CharacterBuffAandEffectId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("BuffAndEffectID")
+                        .IsRequired();
+
+                    b.Property<int?>("CharacterId")
+                        .IsRequired();
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.HasKey("CharacterBuffAandEffectId");
+
+                    b.HasIndex("BuffAndEffectID");
+
+                    b.HasIndex("CharacterId");
+
+                    b.ToTable("CharacterBuffAndEffects");
                 });
 
             modelBuilder.Entity("DAL.Models.CharacterCommand", b =>
@@ -791,6 +878,66 @@ namespace RPGSmithApp.Migrations
                     b.ToTable("CharacterStatTypes");
                 });
 
+            modelBuilder.Entity("DAL.Models.CharacterTileModels.BuffAndEffectIdsForTile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BuffAndEffectTileId");
+
+                    b.Property<int>("CharacterBuffAndEffectId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BuffAndEffectTileId");
+
+                    b.HasIndex("CharacterBuffAndEffectId");
+
+                    b.ToTable("BuffAndEffectIdsForTiles");
+                });
+
+            modelBuilder.Entity("DAL.Models.CharacterTileModels.CharacterBuffAndEffectTile", b =>
+                {
+                    b.Property<int>("BuffAndEffectTileId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("BodyBgColor")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("BodyTextColor")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<int?>("CharacterTileId");
+
+                    b.Property<bool>("DisplayLinkImage");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<int>("Shape");
+
+                    b.Property<bool>("ShowTitle");
+
+                    b.Property<int>("SortOrder");
+
+                    b.Property<string>("TitleBgColor")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("TitleTextColor")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.HasKey("BuffAndEffectTileId");
+
+                    b.HasIndex("CharacterTileId");
+
+                    b.ToTable("CharacterBuffAndEffectTiles");
+                });
+
             modelBuilder.Entity("DAL.Models.CharacterTileModels.CharacterCharacterStatTile", b =>
                 {
                     b.Property<int>("CharacterStatTileId")
@@ -959,6 +1106,8 @@ namespace RPGSmithApp.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
+                    b.Property<int?>("BuffAndEffectId");
+
                     b.Property<int?>("CharacterTileId");
 
                     b.Property<int?>("CommandId");
@@ -992,6 +1141,8 @@ namespace RPGSmithApp.Migrations
                     b.HasKey("ExecuteTileId");
 
                     b.HasIndex("AbilityId");
+
+                    b.HasIndex("BuffAndEffectId");
 
                     b.HasIndex("CharacterTileId")
                         .IsUnique()
@@ -1067,6 +1218,8 @@ namespace RPGSmithApp.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
+                    b.Property<int?>("BuffAndEffectId");
+
                     b.Property<int?>("CharacterTileId");
 
                     b.Property<bool>("DisplayLinkImage");
@@ -1098,6 +1251,8 @@ namespace RPGSmithApp.Migrations
                     b.HasKey("LinkTileId");
 
                     b.HasIndex("AbilityId");
+
+                    b.HasIndex("BuffAndEffectId");
 
                     b.HasIndex("CharacterTileId")
                         .IsUnique()
@@ -1853,6 +2008,10 @@ namespace RPGSmithApp.Migrations
 
                     b.Property<bool>("PauseAbilityCreate");
 
+                    b.Property<bool>("PauseBuffAndEffectAdd");
+
+                    b.Property<bool>("PauseBuffAndEffectCreate");
+
                     b.Property<bool>("PauseGame");
 
                     b.Property<bool>("PauseItemAdd");
@@ -1986,6 +2145,8 @@ namespace RPGSmithApp.Migrations
                     b.Property<bool>("IsAbilityEnabled");
 
                     b.Property<bool>("IsAllowSharing");
+
+                    b.Property<bool>("IsBuffAndEffectEnabled");
 
                     b.Property<bool>("IsCoreRuleset");
 
@@ -3097,6 +3258,26 @@ namespace RPGSmithApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("DAL.Models.BuffAndEffect", b =>
+                {
+                    b.HasOne("DAL.Models.BuffAndEffect", "ParentBuffAndEffect")
+                        .WithMany()
+                        .HasForeignKey("ParentBuffAndEffectId");
+
+                    b.HasOne("DAL.Models.RuleSet", "RuleSet")
+                        .WithMany()
+                        .HasForeignKey("RuleSetId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("DAL.Models.BuffAndEffectCommand", b =>
+                {
+                    b.HasOne("DAL.Models.BuffAndEffect", "BuffAndEffect")
+                        .WithMany("BuffAndEffectCommand")
+                        .HasForeignKey("BuffAndEffectId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("DAL.Models.Character", b =>
                 {
                     b.HasOne("DAL.Models.Character", "Character1")
@@ -3126,6 +3307,19 @@ namespace RPGSmithApp.Migrations
 
                     b.HasOne("DAL.Models.Character", "Character")
                         .WithMany("CharacterAbilities")
+                        .HasForeignKey("CharacterId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("DAL.Models.CharacterBuffAndEffect", b =>
+                {
+                    b.HasOne("DAL.Models.BuffAndEffect", "BuffAndEffect")
+                        .WithMany()
+                        .HasForeignKey("BuffAndEffectID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("DAL.Models.Character", "Character")
+                        .WithMany()
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -3273,6 +3467,26 @@ namespace RPGSmithApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("DAL.Models.CharacterTileModels.BuffAndEffectIdsForTile", b =>
+                {
+                    b.HasOne("DAL.Models.CharacterTileModels.CharacterBuffAndEffectTile", "BuffAndEffectTile")
+                        .WithMany("MultiBuffAndEffectsIds")
+                        .HasForeignKey("BuffAndEffectTileId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("DAL.Models.CharacterBuffAndEffect", "CharacterBuffAndEffect")
+                        .WithMany()
+                        .HasForeignKey("CharacterBuffAndEffectId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("DAL.Models.CharacterTileModels.CharacterBuffAndEffectTile", b =>
+                {
+                    b.HasOne("DAL.Models.CharacterTileModels.CharacterTile", "CharacterTile")
+                        .WithMany()
+                        .HasForeignKey("CharacterTileId");
+                });
+
             modelBuilder.Entity("DAL.Models.CharacterTileModels.CharacterCharacterStatTile", b =>
                 {
                     b.HasOne("DAL.Models.CharacterTileModels.CharacterTile", "CharacterTile")
@@ -3304,6 +3518,10 @@ namespace RPGSmithApp.Migrations
                         .WithMany()
                         .HasForeignKey("AbilityId");
 
+                    b.HasOne("DAL.Models.CharacterBuffAndEffect", "BuffAndEffect")
+                        .WithMany()
+                        .HasForeignKey("BuffAndEffectId");
+
                     b.HasOne("DAL.Models.CharacterTileModels.CharacterTile", "CharacterTile")
                         .WithOne("ExecuteTiles")
                         .HasForeignKey("DAL.Models.CharacterTileModels.CharacterExecuteTile", "CharacterTileId");
@@ -3329,6 +3547,10 @@ namespace RPGSmithApp.Migrations
                     b.HasOne("DAL.Models.CharacterAbility", "Ability")
                         .WithMany()
                         .HasForeignKey("AbilityId");
+
+                    b.HasOne("DAL.Models.CharacterBuffAndEffect", "BuffAndEffect")
+                        .WithMany()
+                        .HasForeignKey("BuffAndEffectId");
 
                     b.HasOne("DAL.Models.CharacterTileModels.CharacterTile", "CharacterTile")
                         .WithOne("LinkTiles")

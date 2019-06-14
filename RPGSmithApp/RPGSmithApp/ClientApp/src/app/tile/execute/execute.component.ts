@@ -21,6 +21,7 @@ import { DBkeys } from '../../core/common/db-keys';
 import { Utilities } from '../../core/common/utilities';
 import { ColorsComponent } from '../colors/colors.component';
 import { PlatformLocation } from '@angular/common';
+import { BuffAndEffectService } from '../../core/services/buff-and-effect.service';
 
 
 @Component({
@@ -35,9 +36,11 @@ export class ExecuteTileComponent implements OnInit {
     limitTextSpell: string = "Show more";
     limitTextItem: string = "Show more";
     limitTextAbility: string = "Show more";
+    limitTextBuffAndEffect: string = "Show more";
     limitSpell: number = 4;
     limitItem: number = 4;
     limitAbility: number = 4;
+  limitBuffAndEffect: number = 4;
 
     color: any;
     tileColor: any;
@@ -46,18 +49,22 @@ export class ExecuteTileComponent implements OnInit {
     isItemloaded: boolean = false;
     isIspellloaded: boolean = false;
     isAbilityloaded: boolean = false;
+    isBuffAndEffectloaded: boolean = false;
     items: any;
     spells: any;
     abilities: any;
+    BuffAndEffects: any;
     spellsList: boolean = true;
     itemsList: boolean;
     abilitiesList: boolean;
+    BuffAndEffectList: boolean;
     selectedColor: string;
     rangeValue: number;
     colorList: Color[] = [];
     itemId: number = 0;
     spellId: number = 0;
     abilityId: number = 0;
+    BuffAndEffectId: number = 0;
 
     title: string;
     executeTileFormModal = new ExecuteTile();
@@ -83,7 +90,8 @@ export class ExecuteTileComponent implements OnInit {
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private colorService: ColorService,
         public localStorage: LocalStoreManager, private authService: AuthService, private sharedService: SharedService,
       private itemsService: ItemsService, private characterSpellService: CharacterSpellService, private characterAbilityService: CharacterAbilityService,
-      private executeTileService: ExecuteTileService, private alertService: AlertService, private location: PlatformLocation) {
+      private executeTileService: ExecuteTileService, private alertService: AlertService, private location: PlatformLocation,
+      private buffAndEffectService: BuffAndEffectService) {
       location.onPopState(() => this.modalService.hide(1));
     }
 
@@ -102,7 +110,7 @@ export class ExecuteTileComponent implements OnInit {
             this.executeTileFormModal = Object.assign({}, this.characterTileModel.executeTile);
             this.executeTileFormModal.color = this.characterTileModel.color;
             this.executeTileFormModal.shape = this.characterTileModel.shape;
-            this._linkType = this.ruleSet.isItemEnabled ? "Item" : this.ruleSet.isSpellEnabled ? "Spell" : "Ability";
+          this._linkType = this.ruleSet.isItemEnabled ? "Item" : this.ruleSet.isSpellEnabled ? "Spell" : this.ruleSet.isAbilityEnabled ? "Ability" : "BuffAndEffect";
 
             //this.setPropertyType(this.executeTileFormModal.spellId ? 'spell' : this.executeTileFormModal.abilityId ? 'ability' : this.executeTileFormModal.itemId ? 'item' : 'spell');
 
@@ -195,7 +203,31 @@ export class ExecuteTileComponent implements OnInit {
                     }, () => { });
             } else {
               this.isAbilityloaded = true;
-            }
+          }
+          if (this.ruleSet.isBuffAndEffectEnabled) {
+            this.buffAndEffectService.getBuffAndEffectAssignedToCharacter<any[]>(this.characterId)
+              .subscribe(data => {
+                this.isBuffAndEffectloaded = true;
+                debugger
+                this.BuffAndEffects = data.filter(function (val) { return val.command; });
+                if (this.BuffAndEffects.length) {
+                  this.BuffAndEffects = Object.assign([], this.BuffAndEffects.map((x) => {
+                    x.selected = false;
+                    return x;
+                  }));
+                  this.showMoreCommands('BuffAndEffect', this.BuffAndEffects.length, "Show more");
+                }
+                if (this._linkType == "BuffAndEffect")
+                  this.isLoading = false;
+
+              }, error => {
+                this.isLoading = false;
+                this.isBuffAndEffectloaded = true;
+              }, () => { });
+          } else {
+            this.isBuffAndEffectloaded = true;
+          }
+
             this.colorService.getRecentColors<any>()
                 .subscribe(data => {
                     let _colorList = [];
@@ -305,6 +337,15 @@ export class ExecuteTileComponent implements OnInit {
                 this.limitTextAbility = "Show more";
                 this.limitAbility = 4;
             }
+      }
+        else if (fieldName == 'BuffAndEffect') {
+          if (_limitText == "Show more") {
+            this.limitTextBuffAndEffect = "Show less";
+            this.limitBuffAndEffect = _limit;
+          } else {
+            this.limitTextBuffAndEffect = "Show more";
+            this.limitBuffAndEffect = 4;
+          }
         }
     }
 
@@ -418,6 +459,9 @@ export class ExecuteTileComponent implements OnInit {
         }
         else if (evt == "Abilites") {
             this.setPropertyType('ability');
+      }
+        else if (evt == "BuffAndEffects") {
+          this.setPropertyType('BuffAndEffects');
         }
     }
 
@@ -427,32 +471,45 @@ export class ExecuteTileComponent implements OnInit {
             this.itemsList = true;
             this.spellsList = false;
             this.abilitiesList = false;
+          this.BuffAndEffectList = false;
             this.executeTileFormModal.linkType = "Item";
             this._linkType = "Item";
         }
         else if (type == "spell") {
             this.spellsList = true;
             this.itemsList = false;
-            this.abilitiesList = false;
+          this.abilitiesList = false;
+          this.BuffAndEffectList = false;
             this.executeTileFormModal.linkType = "Spell";
             this._linkType = "Spell";
         }
         else if (type == "ability") {
             this.abilitiesList = true;
             this.itemsList = false;
-            this.spellsList = false;
+          this.spellsList = false;
+          this.BuffAndEffectList = false;
             this.executeTileFormModal.linkType = "Ability";
             this._linkType = "Ability";
+      }
+        else if (type == "BuffAndEffects") {
+          this.BuffAndEffectList = true;
+          this.abilitiesList = false;
+          this.itemsList = false;
+          this.spellsList = false;
+          this.executeTileFormModal.linkType = "BuffAndEffect";
+          this._linkType = "BuffAndEffect";
         }
     }
 
     getItemValue(val: any) {
         this.abilityId = null;
-        this.spellId = null;
+      this.spellId = null;
+      this.BuffAndEffectId = null;
 
         this.executeTileFormModal.multiAbilityIds = [];
         this.executeTileFormModal.multiSpellIds = [];
         this.executeTileFormModal.multiItemIds = [];
+      this.executeTileFormModal.multiBuffAndEffectIds = [];
 
         this.executeTileFormModal.itemId = val.itemId;
         this.executeTileFormModal.linkType = "Item";
@@ -462,11 +519,13 @@ export class ExecuteTileComponent implements OnInit {
 
     getAbilityValue(val: any) {
         this.itemId = null;
-        this.spellId = null;
+      this.spellId = null;
+      this.BuffAndEffectId = null;
 
         this.executeTileFormModal.multiItemIds = [];
         this.executeTileFormModal.multiSpellIds = [];
-        this.executeTileFormModal.multiAbilityIds = [];
+      this.executeTileFormModal.multiAbilityIds = [];
+      this.executeTileFormModal.multiBuffAndEffectIds = [];
 
         this.executeTileFormModal.abilityId = val.characterAbilityId;
         this.executeTileFormModal.linkType = "Ability";
@@ -476,23 +535,42 @@ export class ExecuteTileComponent implements OnInit {
 
     getSpellValue(val: any) {
         this.abilityId = null;
-        this.itemId = null;
+      this.itemId = null;
+      this.BuffAndEffectId = null;
 
         this.executeTileFormModal.multiAbilityIds = [];
         this.executeTileFormModal.multiItemIds = [];
-        this.executeTileFormModal.multiSpellIds = [];
+      this.executeTileFormModal.multiSpellIds = [];
+      this.executeTileFormModal.multiBuffAndEffectIds = [];
 
         this.executeTileFormModal.spellId = val.characterSpellId;
         this.executeTileFormModal.linkType = "Spell";
 
         this.executeTileFormModal.multiSpellIds.push(val.characterSpellId);
 
-    }
+  }
+  getBuffAndEffectValue(val: any) {
+    this.itemId = null;
+    this.spellId = null;
+    this.abilityId = null;
+
+    this.executeTileFormModal.multiItemIds = [];
+    this.executeTileFormModal.multiSpellIds = [];
+    this.executeTileFormModal.multiAbilityIds = [];
+    this.executeTileFormModal.multiBuffAndEffectIds = [];
+
+    this.executeTileFormModal.buffAndEffectId = val.characterBuffAndEffectId;
+    this.executeTileFormModal.linkType = "BuffAndEffect";
+
+    this.executeTileFormModal.multiBuffAndEffectIds.push(val.characterBuffAndEffectId);
+  }
+
     getItemValueList(e: any, val: any) {
         if (e.target.checked) {
 
             this.abilityId = null;
-            this.spellId = null;
+          this.spellId = null;
+          this.BuffAndEffectId = null;
 
             //this.executeTileFormModal.multiAbilityIds = [];
             //this.executeTileFormModal.multiSpellIds = [];
@@ -525,7 +603,8 @@ export class ExecuteTileComponent implements OnInit {
         if (e.target.checked) {
 
             this.itemId = null;
-            this.spellId = null;
+          this.spellId = null;
+          this.BuffAndEffectId = null;
 
             //this.executeTileFormModal.multiItemIds = [];
             //this.executeTileFormModal.multiSpellIds = [];
@@ -559,7 +638,8 @@ export class ExecuteTileComponent implements OnInit {
         if (e.target.checked) {
 
             this.abilityId = null;
-            this.itemId = null;
+          this.itemId = null;
+          this.BuffAndEffectId = null;
 
             //this.executeTileFormModal.multiAbilityIds = [];
             //this.executeTileFormModal.multiItemIds = [];
@@ -587,6 +667,40 @@ export class ExecuteTileComponent implements OnInit {
             }
         });
     }
+  getBuffAndEffectValueList(e: any, val: any) {
+    if (e.target.checked) {
+
+      this.itemId = null;
+      this.spellId = null;
+      this.abilityId = null;
+
+      //this.executeTileFormModal.multiItemIds = [];
+      //this.executeTileFormModal.multiSpellIds = [];
+
+      this.executeTileFormModal.buffAndEffectId = val.characterBuffAndEffectId;
+      this.executeTileFormModal.linkType = "BuffAndEffect";
+
+      this.BuffAndEffects.map((x) => {
+        if (x.characterBuffAndEffectId == val.characterBuffAndEffectId)
+          x.selected = true;
+      });
+
+      //this.executeTileFormModal.multiAbilityIds.push(val.characterAbilityId);
+    }
+    else {
+      this.BuffAndEffects.map((x) => {
+        if (x.characterBuffAndEffectId == val.characterBuffAndEffectId)
+          x.selected = false;
+      });
+      //this.executeTileFormModal.multiAbilityIds.splice(this.executeTileFormModal.multiAbilityIds.indexOf(val.characterAbilityId), 1);
+    }
+    this.executeTileFormModal.multiBuffAndEffectIds = [];
+    this.BuffAndEffects.map((x) => {
+      if (x.selected) {
+        this.executeTileFormModal.multiBuffAndEffectIds.push(x.characterBuffAndEffectId);
+      }
+    });
+  }
 
     opencolorpopup() {
         this.bsModalRef = this.modalService.show(ColorsComponent, {
@@ -647,7 +761,7 @@ export class ExecuteTileComponent implements OnInit {
         else if (this.executeTileFormModal.linkType == "" || this.executeTileFormModal.linkType == undefined) {
             this.alertService.showMessage("", "Execute Type property is not selected.", MessageSeverity.error);
         }
-        else if (!this.executeTileFormModal.abilityId && !this.executeTileFormModal.itemId && !this.executeTileFormModal.spellId) {
+        else if (!this.executeTileFormModal.buffAndEffectId && !this.executeTileFormModal.abilityId && !this.executeTileFormModal.itemId && !this.executeTileFormModal.spellId) {
             this.alertService.showMessage("", "Execute Type property is not selected.", MessageSeverity.error);
         }
         else {
@@ -670,7 +784,8 @@ export class ExecuteTileComponent implements OnInit {
         this.isLoading = true;
         modal.spellIDS = this.executeTileFormModal.multiSpellIds;
         modal.abilityIDS = this.executeTileFormModal.multiAbilityIds
-        modal.itemIDS = this.executeTileFormModal.multiItemIds
+      modal.itemIDS = this.executeTileFormModal.multiItemIds
+      modal.buffAndEffectIDS = this.executeTileFormModal.multiBuffAndEffectIds
 
         this.executeTileService.createExecuteTile(modal)
             .subscribe(

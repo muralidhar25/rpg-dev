@@ -6,6 +6,7 @@ export class ExecuteTile {
         linkType?: string,
         spellId?: number,
         abilityId?: number,
+      buffAndEffectId?: number,
         itemId?: number,
         color?: string,
         bgColor?: string,
@@ -22,13 +23,15 @@ export class ExecuteTile {
         view?: VIEW,
         multiSpellIds?: number[],
         multiAbilityIds?: number[],
-        multiItemIds?: number[],
+      multiItemIds?: number[],
+      multiBuffAndEffectIds?: number[]
     ) {
         this.executeTileId = executeTileId;
         this.characterTileId = characterTileId;
         this.linkType = linkType;
         this.spellId = spellId;
         this.abilityId = abilityId;
+      this.buffAndEffectId = buffAndEffectId;
         this.itemId = itemId;
       this.showTitle = showTitle;
       this.displayLinkImage = displayLinkImage;
@@ -45,7 +48,8 @@ export class ExecuteTile {
         this.view = view;
         this.multiSpellIds = multiSpellIds;
         this.multiAbilityIds = multiAbilityIds;
-        this.multiItemIds = multiItemIds;
+      this.multiItemIds = multiItemIds;
+      this.multiBuffAndEffectIds = multiBuffAndEffectIds
     }
 
     public executeTileId: number;
@@ -53,6 +57,7 @@ export class ExecuteTile {
     public linkType: string;
     public spellId: number;
     public abilityId: number;
+  public buffAndEffectId: number;
     public itemId: number;
     public showTitle: boolean;
     public commandId: number;
@@ -69,4 +74,5 @@ export class ExecuteTile {
     public multiSpellIds: number[];
     public multiAbilityIds: number[];
     public multiItemIds: number[];
+  public multiBuffAndEffectIds: number[];
 }

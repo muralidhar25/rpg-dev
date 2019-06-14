@@ -18,6 +18,8 @@ import { CampaignDetailsComponent } from './campaign-details/campaign-details.co
 import { LootComponent } from "../records/loot/loot.component";
 import { RulesetDetailsComponent } from "./ruleset-details/ruleset-details.component";
 import { CampaignDashboardComponent } from "./campaign-dashboard/campaign-dashboard.component";
+import { BuffAndEffectDetailsComponent } from "../records/buff-and-effects/buff-and-effect-details/buff-and-effect-details.component";
+import { BuffAndEffectComponent } from "../records/buff-and-effects/buff-and-effects.component";
 
 
 const routes: Routes = [
@@ -25,11 +27,13 @@ const routes: Routes = [
   { path: "item-master/:id", component: ItemMasterComponent, data: { title: "Item Template" } },
   { path: "spell/:id", component: SpellsComponent, data: { title: "Spells" } },
   { path: "ability/:id", component: AbilitiesComponent, data: { title: "Abilities" } },
+  { path: "buff-effect/:id", component: BuffAndEffectComponent, data: { title: "Buffs & Effects" } },
 
   { path: "item-details/:id", component: ItemDetailsComponent, data: { title: "Item Details" } },
   { path: "bundle-details/:id", component: BundleDetailsComponent, data: { title: "Bundle Details" } },
   { path: "spell-details/:id", component: SpellDetailsComponent, data: { title: "Spell Details" } },
   { path: "ability-details/:id", component: AbilityDetailsComponent, data: { title: "Ability Details" } },
+  { path: "buff-effect-details/:id", component: BuffAndEffectDetailsComponent, data: { title: "Buffs & Effects Details" } },
 
   { path: "dashboard/:id", component: RulesetDashboardComponent, data: { title: "Ruleset Dashboard" } },
   { path: "character-stats/:id", component: CharacterStatsComponent, data: { title: "Character Stats" } },

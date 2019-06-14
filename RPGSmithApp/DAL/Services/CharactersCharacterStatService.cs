@@ -373,6 +373,7 @@ namespace DAL.Services
             var itemsList = _context.Items.Where(z => z.CharacterId == characterId && z.IsDeleted != true).ToList();
             var spellsList = _context.CharacterSpells.Where(z => z.CharacterId == characterId && z.IsDeleted != true).Include(x => x.Spell).ToList();
             var abilitiesList = _context.CharacterAbilities.Where(z => z.CharacterId == characterId && z.IsDeleted != true).Include(x => x.Ability).ToList();
+            var buffAndEffectsList = _context.CharacterBuffAndEffects.Where(z => z.CharacterId == characterId && z.IsDeleted!=true).Include(x => x.BuffAndEffect).ToList();
 
             List<LinkTypeRecord> resList = new List<LinkTypeRecord>();
 
@@ -409,7 +410,16 @@ namespace DAL.Services
                     isAbilityEnabled=ability.IsEnabled
                 });
             }
-
+            foreach (var be in buffAndEffectsList)
+            {
+                resList.Add(new LinkTypeRecord()
+                {
+                    id = be.CharacterBuffAandEffectId,
+                    image = be.BuffAndEffect.ImageUrl,
+                    name = be.BuffAndEffect.Name,
+                    type = "be",                    
+                });
+            }
             return resList;
         }
         public async Task<List<CharactersCharacterStat>> GetConditionsValuesList(int characterId)

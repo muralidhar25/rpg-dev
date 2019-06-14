@@ -21,6 +21,7 @@ import { RulesetViewItemDetailComponent } from "./character-records/items/rulese
 import { RulesetViewSpellDetailComponent } from "./character-records/spells/ruleset/ruleset-view-spell-detail/ruleset-view-spell-detail.component";
 import { RulesetViewAbilityDetailComponent } from "./character-records/abilities/ruleset/ruleset-view-ability-detail/ruleset-view-ability-detail.component";
 import { RulesetViewBundleDetailComponent } from "./character-records/items/ruleset/ruleset-view-bundle-detail/ruleset-view-bundle-detail.component";
+import { CharBuffAndEffectDetailsComponent } from "./character-records/buff-and-effects/buff-and-effect-details/buff-and-effect-details.component";
 
 
 const routes: Routes = [
@@ -33,6 +34,7 @@ const routes: Routes = [
   { path: "inventory-details/:id", component: CharacterItemDetailsComponent,  data: { title: "Item Details" } },
   { path: "spell-details/:id", component: CharacterSpellDetailsComponent,  data: { title: "Spell Details" } },
   { path: "ability-details/:id", component: CharacterAbilityDetailsComponent,  data: { title: "Ability Details" } },
+  { path: "buff-effect-details/:id", component: CharBuffAndEffectDetailsComponent,  data: { title: "Buffs & Effects Details" } },
 
   { path: "spell-detail/:id", component: SpellRulesetDetailComponent,  data: { title: "Spell Details" } },
   { path: "ability-detail/:id", component: AbilityRulesetDetailComponent,  data: { title: "Ability Details" } },

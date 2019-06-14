@@ -71,7 +71,8 @@ export class LinkTileService extends EndpointFactory {
         linkTile: model.linkTiles,
         executeTile: model.executeTiles,
         commandTile: model.commandTiles,
-        multiCharacterStats: []
+        multiCharacterStats: [],
+        buffAndEffectTile: model.buffAndEffectTiles
       };
     }
     else {
@@ -113,7 +114,9 @@ export class LinkTileService extends EndpointFactory {
           view: VIEW.ADD,
           multiAbilityIds: [],
           multiItemIds: [],
-          multiSpellIds: []
+          multiSpellIds: [],
+          buffAndEffectId:0,
+          multiBuffAndEffectsIds:[]
         },
         noteTile: null,
         counterTile: null,
@@ -122,7 +125,8 @@ export class LinkTileService extends EndpointFactory {
         characterStatTile: null,
         executeTile: null,
         commandTile: null,
-        multiCharacterStats: []
+        multiCharacterStats: [],
+        buffAndEffectTile:null
       };
     }
 

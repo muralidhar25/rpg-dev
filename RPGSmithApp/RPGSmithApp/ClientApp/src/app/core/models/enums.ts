@@ -138,7 +138,8 @@ export enum TILES {
     LINK = 5,
     EXECUTE = 6,
     COMMAND = 7,
-    TEXT=8
+    TEXT=8,
+    BUFFANDEFFECT=9
 }
 
 export enum TILE_ICON {
@@ -149,7 +150,8 @@ export enum TILE_ICON {
     CHARACTERSTAT = "icon-attribute",
     LINK = "icon-link",
     EXECUTE = "icon-execute",
-    COMMAND = "icon-dice"
+    COMMAND = "icon-dice",
+  BUFFANDEFFECT = "icon-BnE"
 }
 export enum ImageError {
     MESSAGE = "High resolution images will affect loading times and diminish performance. Do you still want to upload ?",
@@ -169,7 +171,8 @@ export enum SHAPE_CLASS {
 export enum STAT_LINK_TYPE {
     ITEM = "item",
     SPELL = "spell",
-    ABILITY = "ability"
+    ABILITY = "ability",
+    BUFFANDEFFECT = "be"
 }
 export enum CONDITION_OPERATOR_ENUM {
     EQUALS = "Equals",

@@ -68,6 +68,10 @@ import { ContextMenuModule } from 'ngx-contextmenu';
 import { HandoutRenameComponent } from "./handouts/handout-rename/handout-rename.component";
 import { CampaignInviteComponent } from "../rulesets/campaign-invite/campaign-invite.component";
 import { ProgressbarModule } from "ngx-bootstrap";
+import { InputSingleResultCommandComponent } from "./input-single-result-command/input-single-result-command.component";
+import { CreateBuffAndEffectsComponent } from "./create-buff-and-effects/create-buff-and-effects.component";
+import { AddBuffAndEffectComponent } from "./buffs-and-effects/add-buffs-and-effects/add-buffs-and-effects.component";
+import { AssignBuffAndEffectComponent } from "./buffs-and-effects/assign-buffs-and-effects/assign-buffs-and-effects.component";
   
 @NgModule({
   declarations: [
@@ -102,7 +106,10 @@ import { ProgressbarModule } from "ngx-bootstrap";
     HandoutFileViewComponent,
     HandoutuploadComponent,
     HandoutNewFolderComponent,
-    HandoutRenameComponent, CampaignInviteComponent
+    HandoutRenameComponent, CampaignInviteComponent,
+    InputSingleResultCommandComponent,
+    CreateBuffAndEffectsComponent,
+    AddBuffAndEffectComponent, AssignBuffAndEffectComponent
   ],
   imports: [
     CommonModule,
@@ -194,7 +201,10 @@ import { ProgressbarModule } from "ngx-bootstrap";
     HandoutFileViewComponent,
     HandoutuploadComponent,
     HandoutNewFolderComponent,
-    HandoutRenameComponent, CampaignInviteComponent
+    HandoutRenameComponent, CampaignInviteComponent,
+    InputSingleResultCommandComponent,
+    CreateBuffAndEffectsComponent,
+    AddBuffAndEffectComponent, AssignBuffAndEffectComponent
   ],
   entryComponents: [
     AccountSettingsComponent,
@@ -226,7 +236,9 @@ import { ProgressbarModule } from "ngx-bootstrap";
     HandoutuploadComponent,
     HandoutViewComponent,
     HandoutNewFolderComponent,
-    HandoutRenameComponent, CampaignInviteComponent
+    HandoutRenameComponent, CampaignInviteComponent,
+    CreateBuffAndEffectsComponent,
+    AddBuffAndEffectComponent, AssignBuffAndEffectComponent
   ]
 })
 export class SharedModule {}

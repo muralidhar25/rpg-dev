@@ -77,7 +77,9 @@ export class playerControlModel {
     pauseSpellAdd?: boolean,
     pauseSpellCreate?: boolean,
     pauseAbilityAdd?: boolean,
-    pauseAbilityCreate?: boolean
+    pauseAbilityCreate?: boolean,
+    pauseBuffAndEffectAdd?: boolean,
+    pauseBuffAndEffectCreate?: boolean
   ) {
     this.campaignID = campaignID;
     this.id = id;
@@ -88,7 +90,8 @@ export class playerControlModel {
     this.pauseSpellAdd = pauseSpellAdd;
     this.pauseAbilityAdd = pauseAbilityAdd;
     this.pauseAbilityCreate = pauseAbilityCreate;
-
+    this.pauseBuffAndEffectAdd = pauseBuffAndEffectAdd;
+    this.pauseBuffAndEffectCreate = pauseBuffAndEffectCreate;
   }
  
   public campaignID: number;
@@ -100,4 +103,6 @@ export class playerControlModel {
   public pauseSpellAdd: boolean;
   public pauseAbilityAdd: boolean;
   public pauseAbilityCreate: boolean;
+  public pauseBuffAndEffectAdd: boolean;
+  public pauseBuffAndEffectCreate: boolean;
 }

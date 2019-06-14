@@ -120,7 +120,11 @@ namespace DAL
         //public virtual DbSet<ItemMasterLootAbility> ItemMasterLootAbilities { get; set; }
         //public virtual DbSet<ItemMasterLootCommand> ItemMasterLootCommands { get; set; }
         //public virtual DbSet<ItemMasterLootSpell> ItemMasterLootSpells { get; set; }
-
+        public virtual DbSet<BuffAndEffect> BuffAndEffects { get; set; }
+        public virtual DbSet<BuffAndEffectCommand> BuffAndEffectCommands { get; set; }
+        public virtual DbSet<CharacterBuffAndEffect> CharacterBuffAndEffects { get; set; }
+        public virtual DbSet<CharacterBuffAndEffectTile> CharacterBuffAndEffectTiles { get; set; }
+        public virtual DbSet<BuffAndEffectIdsForTile> BuffAndEffectIdsForTiles { get; set; }
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {

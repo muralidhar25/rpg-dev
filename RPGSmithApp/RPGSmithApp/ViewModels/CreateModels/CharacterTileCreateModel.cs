@@ -42,10 +42,12 @@ namespace RPGSmithApp.ViewModels.CreateModels
         public CharacterExecuteTile ExecuteTile { get; set; }
         public CharacterLinkTile LinkTile { get; set; }
         public CharacterCommandTile CommandTile { get; set; }
+        public CharacterBuffAndEffectTile BuffAndEffectTile { get; set; }
 
         public List<CharacterStatIds> MultiCharacterStats { get; set; }
         public int[] spellIDS { get; set; }
         public int[] abilityIDS { get; set; }
+        public int[] buffAndEffectIDS { get; set; }
         public int[] itemIDS { get; set; }
 
     }
