@@ -57,6 +57,7 @@ namespace RPGSmithApp.ViewModels.EditModels
         public virtual List<ItemCommand> ItemCommandVM { get; set; }
         public virtual List<ItemAbility> ItemAbilities { get; set; }
         public virtual List<ItemSpell> ItemSpells { get; set; }
+        public virtual List<ItemBuffAndEffect> ItemBuffAndEffects { get; set; }
 
         public virtual List<containerItemIds> ContainerItems { get; set; }
     }

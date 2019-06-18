@@ -142,7 +142,15 @@
                 </div>
               </div>
               <ul class="item-info-actions d-none d-md-flex" >
-                <li *ngIf="!pauseBuffAndEffectCreate">
+                <li>
+                  <button *ngIf="!isAlreadyAssigned" type="button" (click)="Assign(buffAndEffectDetail)" class="btn btn-accent icon-Assign icon-with-text assign-button">
+                    ASSIGN
+                  </button>
+                  <button *ngIf="isAlreadyAssigned" type="button" (click)="deleteBuffAndEffect(buffAndEffectDetail)" class="btn btn-accent icon icon-Rec-Remove icon-with-text assign-button">
+                    REMOVE
+                  </button>
+                </li>
+                <!--<li *ngIf="!pauseBuffAndEffectCreate">
                   <button type="button" (click)="editBuffAndEffect(buffAndEffectDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
                 </li>
                 <li *ngIf="!pauseBuffAndEffectCreate">
@@ -150,7 +158,7 @@
                 </li>
                 <li *ngIf="!pauseBuffAndEffectCreate">
                   <button type="button" (click)="duplicateBuffAndEffect(buffAndEffectDetail)" class="btn  icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
-                </li>
+                </li>-->
               </ul>
             </div>
           </div>
@@ -165,24 +173,26 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-12 col-md-6">
+            <div class="col-12">
               <div class="item-info-stats">
                 <h3>Stats</h3>
                 <p [froalaView]="buffAndEffectDetail?.stats"></p>
               </div>
             </div>
-            <div class="col-12 col-md-6">
-              <div class="item-info-stats">
-                <h3>Command</h3>
-                <p>{{buffAndEffectDetail?.command}}</p>
-              </div>
-            </div>
+            
           </div>
           <div class="row">
             <div class="col-12 col-md-6">
               <div class="item-info-tags">
                 <h3>Tags</h3>
                 <p>{{buffAndEffectDetail?.metatags}}</p>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="item-info-stats">
+                <h3>Command</h3>
+                <p>{{buffAndEffectDetail?.command}}</p>
+                <button *ngIf="buffAndEffectDetail?.command" class="btn icon icon-with-text icon-dice icon-rsi btn-primary" type="button" (click)="useBuffAndEffect(buffAndEffectDetail)">Roll</button>
               </div>
             </div>
           </div>

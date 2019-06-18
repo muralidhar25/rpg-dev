@@ -9,7 +9,7 @@ export class Ability {
         abilityId?: number, ruleSetId?: number, name?: string, level?: number, command?: string, maxNumberOfUses?: number,
         currentNumberOfUses?: number, description?: string, stats?: string, imageUrl?: string, abilityCommandVM?: abilityCommand[],
         isEnabled?: boolean, view?: VIEW, showIcon?: boolean, sortOrder?: number, ruleset?: Ruleset, metatags?: string,
-        isFromCharacter?: boolean, isFromCharacterId?: number
+      isFromCharacter?: boolean, isFromCharacterId?: number, abilityBuffAndEffectVM?:any[]
     ) {
         this.abilityId = abilityId;
         this.ruleSetId = ruleSetId;
@@ -30,7 +30,8 @@ export class Ability {
         this.metatags = metatags;
 
         this.isFromCharacter = isFromCharacter;
-        this.isFromCharacterId = isFromCharacterId;
+      this.isFromCharacterId = isFromCharacterId;
+      this.abilityBuffAndEffectVM = abilityBuffAndEffectVM;
     }
 
     public abilityId: number;
@@ -52,5 +53,6 @@ export class Ability {
     public sortOrder: number;
 
     public isFromCharacter: boolean;
-    public isFromCharacterId: number;
+  public isFromCharacterId: number;
+  public abilityBuffAndEffectVM: any[];
 }

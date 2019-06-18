@@ -459,7 +459,7 @@ export class CharacterSpellsComponent implements OnInit {
   castSpell(spell: any) {
 
     if (spell.spellId) {
-      this.spellsService.getSpellCommands_sp<any>(spell.spellId)
+      this.spellsService.getSpellCommands_sp<any>(spell.spellId,0)
         .subscribe(data => {
           if (data.length > 0) {
             this.bsModalRef = this.modalService.show(CastComponent, {

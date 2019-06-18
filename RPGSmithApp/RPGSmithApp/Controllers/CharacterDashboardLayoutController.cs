@@ -31,6 +31,7 @@ namespace RPGSmithApp.Controllers
         private readonly INoteTileService _noteTileService;
         private readonly ITileConfigService _tileConfigService;
         private readonly ITextTileService _textTileService;
+        private readonly IBuffAndEffectTileService _buffAndEffectTileService;
 
         public CharacterDashboardLayoutController(IHttpContextAccessor httpContextAccessor,
             DAL.Services.ICharacterDashboardLayoutService characterDashboardLayoutService,
@@ -44,7 +45,8 @@ namespace RPGSmithApp.Controllers
             ILinkTileService linkTileService,
             INoteTileService noteTileService,
             ITileConfigService tileConfigService,
-            ITextTileService textTileService)
+            ITextTileService textTileService,
+            IBuffAndEffectTileService buffAndEffectTileService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._characterDashboardLayoutService = characterDashboardLayoutService;
@@ -59,6 +61,7 @@ namespace RPGSmithApp.Controllers
             this._noteTileService = noteTileService;
             this._tileConfigService = tileConfigService;
             this._textTileService = textTileService;
+            this._buffAndEffectTileService = buffAndEffectTileService;
         }
 
         [HttpGet("getByCharacterId")]
@@ -387,6 +390,23 @@ namespace RPGSmithApp.Controllers
                                         TitleTextColor = textTile.TitleTextColor,
                                         IsDeleted = false,
                                         Text = textTile.Text,
+                                    });
+                                    //SaveColorsAsync(Tile);
+                                    break;
+                                case (int)Enum.TILES.BUFFANDEFFECT:
+                                    var buffTile = _tile.BuffAndEffectTiles;
+                                    Tile.BuffAndEffectTiles = await _buffAndEffectTileService.Create(new CharacterBuffAndEffectTile
+                                    {
+                                        CharacterTileId = Tile.CharacterTileId,
+                                        ShowTitle = buffTile.ShowTitle,
+                                        Shape = buffTile.Shape,
+                                        SortOrder = buffTile.SortOrder,
+                                        BodyBgColor = buffTile.BodyBgColor,
+                                        BodyTextColor = buffTile.BodyTextColor,
+                                        TitleBgColor = buffTile.TitleBgColor,
+                                        TitleTextColor = buffTile.TitleTextColor,
+                                        IsDeleted = false,
+                                        DisplayLinkImage = buffTile.DisplayLinkImage,
                                     });
                                     //SaveColorsAsync(Tile);
                                     break;

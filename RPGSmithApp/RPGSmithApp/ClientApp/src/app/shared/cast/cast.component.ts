@@ -4,6 +4,7 @@ import { Characters } from '../../core/models/view-models/characters.model';
 import { AlertService, DialogType } from '../../core/common/alert.service';
 import { DiceRollComponent } from '../dice/dice-roll/dice-roll.component';
 import { PlatformLocation } from '@angular/common';
+import { Ruleset } from '../../core/models/view-models/ruleset.model';
 
 class Command {
     name: string = '';
@@ -26,7 +27,8 @@ export class CastComponent implements OnInit {
     ListCommands: Command[] = []
     Command: Command = new Command();
     CommandData: any = new Command();
-    character: Characters = new Characters();
+  character: Characters = new Characters();
+  ruleset: Ruleset = new Ruleset();
     buttonText: string;
     recordType: string;
     recordId: string;
@@ -44,7 +46,8 @@ export class CastComponent implements OnInit {
             this.ListCommands = this.bsModalRef.content.ListCommands;
             this.Command = this.bsModalRef.content.Command;
             this.CommandData = this.bsModalRef.content.Command;
-            this.character = this.bsModalRef.content.Character;
+          this.character = this.bsModalRef.content.Character;
+          this.ruleset = this.bsModalRef.content.Ruleset ? this.bsModalRef.content.Ruleset : new Ruleset();
             this.buttonText = this.bsModalRef.content.ButtonText ? this.bsModalRef.content.ButtonText : undefined;
             this.recordType = this.bsModalRef.content.recordType;
             this.recordId = this.bsModalRef.content.recordId;
@@ -69,25 +72,44 @@ export class CastComponent implements OnInit {
             keyboard: false
         });
         this.bsModalRef.content.title = "Dice";
-        this.bsModalRef.content.tile = -2;
+      this.bsModalRef.content.tile = -2;
+      if (this.ruleset.ruleSetId > 0) {
+        this.bsModalRef.content.characterId = 0;
+        this.bsModalRef.content.character = new Characters();
+        this.bsModalRef.content.command = Command.command;
+        if (Command.hasOwnProperty("buffAndEffectId")) {
+          this.bsModalRef.content.recordName = this.CommandData.name;
+          this.bsModalRef.content.recordImage = this.CommandData.imageUrl;
+          this.bsModalRef.content.recordType = this.recordType;
+          this.bsModalRef.content.recordId = this.recordId;
+        }
+        this.bsModalRef.content.isFromCampaignDetail = true;
+      } else {
+
         this.bsModalRef.content.characterId = this.character.characterId;
         this.bsModalRef.content.character = this.character;
         this.bsModalRef.content.command = Command.command;
         this.bsModalRef.content.recordType = this.recordType;
         this.bsModalRef.content.recordId = this.recordId;
-        
+        debugger
         if (this.CommandData.hasOwnProperty("itemId")) {
-            this.bsModalRef.content.recordName = this.CommandData.name;
-            this.bsModalRef.content.recordImage = this.CommandData.itemImage;
+          this.bsModalRef.content.recordName = this.CommandData.name;
+          this.bsModalRef.content.recordImage = this.CommandData.itemImage;
         }
         else if (this.CommandData.hasOwnProperty("spellId")) {
-            this.bsModalRef.content.recordName = this.CommandData.name;
-            this.bsModalRef.content.recordImage = this.CommandData.imageUrl;
+          this.bsModalRef.content.recordName = this.CommandData.name;
+          this.bsModalRef.content.recordImage = this.CommandData.imageUrl;
         }
         else if (this.CommandData.hasOwnProperty("abilityId")) {
-            this.bsModalRef.content.recordName = this.CommandData.name;
-            this.bsModalRef.content.recordImage = this.CommandData.imageUrl;
+          this.bsModalRef.content.recordName = this.CommandData.name;
+          this.bsModalRef.content.recordImage = this.CommandData.imageUrl;
         }
+        else if (this.CommandData.hasOwnProperty("buffAndEffectId")) {
+          this.bsModalRef.content.recordName = this.CommandData.name;
+          this.bsModalRef.content.recordImage = this.CommandData.imageUrl;
+        }
+      }
+        
         this.bsModalRef.content.event.subscribe(result => {
         });
     }

@@ -534,7 +534,7 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@IsAllowSharing", IsNull(model.IsAllowSharing));
                 command.Parameters.AddWithValue("@IsCoreRuleset", IsNull(model.IsCoreRuleset));
                 command.Parameters.AddWithValue("@ShareCode", IsNull(model.ShareCode));
-                command.Parameters.AddWithValue("@IsBuffAndEffectEnabled", IsNull(model.IsBuffAndEffectEnabled));
+                //command.Parameters.AddWithValue("@IsBuffAndEffectEnabled", IsNull(model.IsBuffAndEffectEnabled));
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;

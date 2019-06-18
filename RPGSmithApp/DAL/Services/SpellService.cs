@@ -26,9 +26,40 @@ namespace DAL.Services
             this._configuration = configuration;
         }
 
-        public async Task<Spell> Create(Spell spell)
+        public async Task<Spell> Create(Spell spell,List<SpellBuffAndEffect> SpellBuffAndEffectVM)
         {
-            return await _repo.Add(spell);
+            spell.SpellBuffAndEffects = new List<SpellBuffAndEffect>();
+            var result= await _repo.Add(spell);
+
+            int spellId = result.SpellId;
+            try
+            {
+                if (spellId > 0)
+                {
+                   
+                    if (SpellBuffAndEffectVM != null && SpellBuffAndEffectVM.Count > 0)
+                    {
+                        //AssociatedBuffAndEffects.ForEach(a => a.ItemMasterId = ItemMasterId);
+                        //AssociatedBuffAndEffects.ForEach(a => a.Id = 0);
+                        List<SpellBuffAndEffect> AssociatedBuffAndEffectsList = SpellBuffAndEffectVM.Select(x => new SpellBuffAndEffect()
+                        {
+                            BuffAndEffectId = x.BuffAndEffectId,
+                        }).ToList();
+                        foreach (var be in AssociatedBuffAndEffectsList)
+                        {
+                            _context.SpellBuffAndEffects.Add(new SpellBuffAndEffect() { BuffAndEffectId = be.BuffAndEffectId, SpellId = spellId });
+                        }
+                        //_context.ItemMasterBuffAndEffects.AddRange(AssociatedBuffAndEffectsList);// _repoMasterSpell.AddRange(AssociatedSpells);
+                        _context.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception ex)
+            { }
+
+            result.SpellBuffAndEffects = SpellBuffAndEffectVM;
+            return result;
+
         }
 
         public async Task<bool> Delete(int id)
@@ -39,6 +70,14 @@ namespace DAL.Services
             var sc = _context.SpellCommands.Where(x => x.SpellId == id && x.IsDeleted != true).ToList();
 
             foreach (SpellCommand item in sc)
+            {
+                item.IsDeleted = true;
+            }
+
+            // Remove associated Buffs
+            var sbe = _context.SpellBuffAndEffects.Where(x => x.SpellId == id && x.IsDeleted != true).ToList();
+
+            foreach (SpellBuffAndEffect item in sbe)
             {
                 item.IsDeleted = true;
             }
@@ -93,6 +132,7 @@ namespace DAL.Services
                  .Include(d => d.RuleSet)
                 .Include(d => d.ItemMasterSpells)
                 .Include(d => d.SpellCommand)
+                .Include(d => d.SpellBuffAndEffects).ThenInclude(d => d.BuffAndEffect)
                 .Where(x => x.IsDeleted != true)
                 .OrderBy(o => o.Name).ToList();
 
@@ -100,6 +140,7 @@ namespace DAL.Services
             {
                 spell.ItemMasterSpells = spell.ItemMasterSpells.Where(p => p.IsDeleted != true).ToList();
                 spell.SpellCommand = spell.SpellCommand.Where(p => p.IsDeleted != true).ToList();
+                spell.SpellBuffAndEffects = spell.SpellBuffAndEffects.Where(p => p.IsDeleted != true).ToList();
             }
 
             return spells;
@@ -177,6 +218,7 @@ namespace DAL.Services
                 .Include(d => d.RuleSet)
                 .Include(d => d.ItemMasterSpells)
                 .Include(d => d.SpellCommand)
+                .Include(d => d.SpellBuffAndEffects).ThenInclude(d => d.BuffAndEffect)
                 .Where(x => x.RuleSetId == ruleSetId && x.IsDeleted != true).OrderBy(o => o.Name).ToList();
 
             if (spells == null) return spells;
@@ -185,6 +227,7 @@ namespace DAL.Services
             {
                 spell.ItemMasterSpells = spell.ItemMasterSpells.Where(p => p.IsDeleted != true).ToList();
                 spell.SpellCommand = spell.SpellCommand.Where(p => p.IsDeleted != true).ToList();
+                spell.SpellBuffAndEffects = spell.SpellBuffAndEffects.Where(p => p.IsDeleted != true).ToList();
             }
 
             return spells;
@@ -200,6 +243,7 @@ namespace DAL.Services
                 .Include(d => d.RuleSet)
                 .Include(d => d.ItemMasterSpells)
                 .Include(d => d.SpellCommand)
+                 .Include(d => d.SpellBuffAndEffects).ThenInclude(d => d.BuffAndEffect)
                 .OrderBy(o => o.Name).ToList();
 
             if (spells == null) return spells;
@@ -208,6 +252,7 @@ namespace DAL.Services
             {
                 spell.ItemMasterSpells = spell.ItemMasterSpells.Where(p => p.IsDeleted != true).ToList();
                 spell.SpellCommand = spell.SpellCommand.Where(p => p.IsDeleted != true).ToList();
+                spell.SpellBuffAndEffects = spell.SpellBuffAndEffects.Where(p => p.IsDeleted != true).ToList();
             }
 
             return spells;
@@ -219,6 +264,7 @@ namespace DAL.Services
                 .Include(d => d.RuleSet)
                 .Include(d => d.ItemMasterSpells)
                 .Include(d => d.SpellCommand)
+                .Include(d => d.SpellBuffAndEffects).ThenInclude(d => d.BuffAndEffect)
                 .Where(x => x.SpellId == id && x.IsDeleted != true)
                 .FirstOrDefault();
 
@@ -226,11 +272,12 @@ namespace DAL.Services
 
             spell.ItemMasterSpells = spell.ItemMasterSpells.Where(p => p.IsDeleted != true).ToList();
             spell.SpellCommand = spell.SpellCommand.Where(p => p.IsDeleted != true).ToList();
+            spell.SpellBuffAndEffects = spell.SpellBuffAndEffects.Where(p => p.IsDeleted != true).ToList();
 
             return spell;
         }
         
-        public async Task<Spell> Update(Spell spell)
+        public async Task<Spell> Update(Spell spell, List<SpellBuffAndEffect> SpellBuffAndEffectVM)
         {
             var spellInDb = _context.Spells.FirstOrDefault(x => x.SpellId == spell.SpellId);
 
@@ -258,15 +305,30 @@ namespace DAL.Services
             spellInDb.Memorized = spell.Memorized;
             spellInDb.Metatags = spell.Metatags;
 
+            _context.SpellBuffAndEffects.RemoveRange(_context.SpellBuffAndEffects.Where(x => x.SpellId == spell.SpellId));
             try
             {
                 _context.SaveChanges();
+
+                List<SpellBuffAndEffect> listbuffs = new List<SpellBuffAndEffect>();
+                foreach (var item in SpellBuffAndEffectVM)
+                {
+                    SpellBuffAndEffect obj = new SpellBuffAndEffect() {
+                        BuffAndEffectId= item.BuffAndEffectId,
+                        SpellId= spell.SpellId
+                    };
+                    listbuffs.Add(obj);
+                }
+                //SpellBuffAndEffectVM.ForEach(a => a.SpellId = spell.SpellId);
+                 _context.SpellBuffAndEffects.AddRange(listbuffs);
+                _context.SaveChanges();
+                spellInDb.SpellBuffAndEffects = listbuffs;
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-
+            
             return spellInDb;
         }
 
@@ -364,11 +426,44 @@ namespace DAL.Services
             }
         }
 
-        public async Task<Spell> Core_CreateSpell(Spell spell)
+        public async Task<Spell> Core_CreateSpell(Spell spell, List<SpellBuffAndEffect> SpellBuffAndEffectVM)
         {
             spell.ParentSpellId = spell.SpellId;
             spell.SpellId = 0;
-            return await _repo.Add(spell);
+
+            spell.SpellBuffAndEffects = new List<SpellBuffAndEffect>();
+
+
+             await _repo.Add(spell);
+
+            int spellID = spell.SpellId;
+            if (spellID > 0)
+            {
+               
+                if (SpellBuffAndEffectVM != null && SpellBuffAndEffectVM.Count > 0)
+                {
+                    //AssociatedBuffAndEffects.ForEach(a => a.ItemMasterId = ItemMasterId);
+                    //_context.ItemMasterBuffAndEffects.AddRange(AssociatedBuffAndEffects);
+                    //_context.SaveChanges();
+
+
+                    List<SpellBuffAndEffect> listbuffs = new List<SpellBuffAndEffect>();
+                    foreach (var item in SpellBuffAndEffectVM)
+                    {
+                        SpellBuffAndEffect obj = new SpellBuffAndEffect()
+                        {
+                            BuffAndEffectId = item.BuffAndEffectId,
+                            SpellId = spell.SpellId
+                        };
+                        listbuffs.Add(obj);
+                    }
+                    //SpellBuffAndEffectVM.ForEach(a => a.SpellId = spell.SpellId);
+                    _context.SpellBuffAndEffects.AddRange(listbuffs);
+                    _context.SaveChanges();
+                    spell.SpellBuffAndEffects = listbuffs;
+                }
+            }
+            return spell;
         }
         public bool Core_SpellWithParentIDExists(int spellID, int RulesetID)
         {
@@ -468,11 +563,14 @@ namespace DAL.Services
             return SpellList;
         }
 
-        public List<SpellCommand> SP_GetSpellCommands(int spellId)
+        public SpellAssociatedRecords SP_GetSpellCommands(int spellId,int RuleSetID)
         {
+            SpellAssociatedRecords result = new SpellAssociatedRecords();
             List<SpellCommand> _spellCommand = new List<SpellCommand>();
+            List<BuffAndEffect> _BuffAndEffects = new List<BuffAndEffect>();
+            List<BuffAndEffect> _selectedBuffAndEffects = new List<BuffAndEffect>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
-            string qry = "EXEC Spell_GetSpellCommands @SpellId = '" + spellId + "'";
+           // string qry = "EXEC Spell_GetSpellCommands @SpellId = '" + spellId + "'";
 
             SqlConnection connection = new SqlConnection(connectionString);
             SqlCommand command = new SqlCommand();
@@ -485,6 +583,7 @@ namespace DAL.Services
 
                 // Add the parameters for the SelectCommand.
                 command.Parameters.AddWithValue("@SpellId", spellId);
+                command.Parameters.AddWithValue("@RulesetID", RuleSetID);
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;
@@ -514,8 +613,37 @@ namespace DAL.Services
                     _spellCommand.Add(_spellCmd);
                 }
             }
+            if (ds.Tables[1].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[1].Rows)
+                {
+                    BuffAndEffect i = new BuffAndEffect();
+                    i.BuffAndEffectId = row["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["BuffAndEffectId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
 
-            return _spellCommand;
+                    _BuffAndEffects.Add(i);/////////
+                }
+            }
+            if (ds.Tables[2].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[2].Rows)
+                {
+                    BuffAndEffect i = new BuffAndEffect();
+                    i.BuffAndEffectId = row["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["BuffAndEffectId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    _selectedBuffAndEffects.Add(i);///////
+                }
+            }
+
+            result.SpellCommands= _spellCommand;
+            result.BuffAndEffectsList= _BuffAndEffects;
+            result.SelectedBuffAndEffects = _selectedBuffAndEffects;
+            return result;
         }
     }
 }

@@ -51,5 +51,6 @@ namespace RPGSmithApp.ViewModels.CreateModels
         public int IsFromCharacterId { get; set; }
 
         public List<SpellCommand> SpellCommandVM { get; set; }
+        public List<SpellBuffAndEffect> SpellBuffAndEffectVM { get; set; }
     }
 }

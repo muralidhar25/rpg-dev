@@ -46,8 +46,10 @@ export class CreateItemComponent implements OnInit {
 
     abilitiesList = [];
     selectedAbilities = [];
-    spellsList = [];
-    selectedSpells = [];
+  spellsList = [];
+  buffAndEffectsList = [];
+  selectedSpells = [];
+  selectedBuffAndEffects = [];
     metatags = [];
     uploadFromBing: boolean = false;
     bingImageUrl: string;
@@ -124,6 +126,7 @@ export class CreateItemComponent implements OnInit {
             this.weightWithContent = this.itemMasterFormModal.containerWeightModifier == 'Maximum Weight of' ? true : false;
             this.selectedAbilities = this.itemMasterFormModal.itemMasterAbilities.map(x => { return x.ability; });
             this.selectedSpells = this.itemMasterFormModal.itemMasterSpell.map(x => { return x.spell; });
+          this.selectedBuffAndEffects = this.itemMasterFormModal.itemMasterBuffAndEffects.map(x => { return x.buffAndEffect; });
 
             if (this.itemMasterFormModal.metatags !== '' && this.itemMasterFormModal.metatags !== undefined)
                 this.metatags = this.itemMasterFormModal.metatags.split(",");
@@ -145,8 +148,10 @@ export class CreateItemComponent implements OnInit {
                     
                     this.abilitiesList = data.abilityList;
                     this.spellsList = data.spellList;
+                  this.buffAndEffectsList = data.buffAndEffectsList;
                     this.selectedAbilities = data.selectedAbilityList.map(x => { return x; });
                     this.selectedSpells = data.selectedSpellList.map(x => { return x; });
+                  this.selectedBuffAndEffects = data.selectedBuffAndEffects.map(x => { return x; });
                     this.itemMasterFormModal.itemMasterCommandVM = data.selectedItemCommand;
                     this.isLoading = false;
                 }, error => { }, () => { });
@@ -296,7 +301,10 @@ export class CreateItemComponent implements OnInit {
 
         itemMaster.itemMasterSpellVM = this.selectedSpells.map(x => {
             return { spellId: x.spellId, itemMasterId: itemMaster.itemMasterId };
-        });
+      });
+      itemMaster.itemMasterBuffAndEffectVM = this.selectedBuffAndEffects.map(x => {
+        return { buffAndEffectId: x.buffAndEffectId, itemMasterId: itemMaster.itemMasterId };
+      });
 
         let tagsValue = this.metatags.map(x => {
             if (x.value == undefined) return x;
@@ -615,7 +623,22 @@ export class CreateItemComponent implements OnInit {
             position: "top"
         };
     }
-
+  get buffAndEffectsSettings() {
+    return {
+      primaryKey: "buffAndEffectId",
+      labelKey: "name",
+      text: "Search Buff & Effect(s)",
+      enableCheckAll: true,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: false,
+      limitSelection: false,
+      enableSearchFilter: true,
+      classes: "myclass custom-class ",
+      showCheckbox: true,
+      position: "top"
+    };
+  }
     readTempUrl(event: any) {
         if (event.target.files && event.target.files[0]) {
             var reader = new FileReader();

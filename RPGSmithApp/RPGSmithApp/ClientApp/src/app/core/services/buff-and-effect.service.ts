@@ -240,10 +240,10 @@ export class BuffAndEffectService extends EndpointFactory {
         command: BuffAndEffectVM.command,
         commandName: BuffAndEffectVM.commandName,
         showUse: BuffAndEffectVM.command == null || BuffAndEffectVM.command == undefined || BuffAndEffectVM.command == '' ? false : true,
-        buffAndEffectCommandVM: BuffAndEffectVM.BuffAndEffectCommand == undefined
+        buffAndEffectCommandVM: BuffAndEffectVM.buffAndEffectCommand == undefined
           ?
-          BuffAndEffectVM.BuffAndEffectCommandVM == undefined ? [] : BuffAndEffectVM.BuffAndEffectCommandVM
-          : BuffAndEffectVM.BuffAndEffectCommand,
+          BuffAndEffectVM.buffAndEffectCommandVM == undefined ? [] : BuffAndEffectVM.buffAndEffectCommandVM
+          : BuffAndEffectVM.buffAndEffectCommand,
       
         description: BuffAndEffectVM.description,
         stats: BuffAndEffectVM.stats,

@@ -53,7 +53,9 @@ export class CreateSpellsComponent implements OnInit {
     croppedImage: any = '';
     imageErrorMessage: string = ImageError.MESSAGE
     defaultImageSelected: string = '';
-    button:string
+  button: string
+  buffAndEffectsList = [];
+  selectedBuffAndEffects = [];
     options(placeholder?: string, initOnClick?: boolean): Object {
         return Utilities.optionsFloala(160, placeholder, initOnClick);
     }
@@ -100,7 +102,7 @@ export class CreateSpellsComponent implements OnInit {
             this.spellFormModal = this.spellsService.spellModelData(_spellVM, _view);
             this.spellFormModal.isFromCharacter = this.isFromCharacter;
             this.spellFormModal.isFromCharacterId = this.isFromCharacterId;
-            
+          this.selectedBuffAndEffects = this.spellFormModal.spellBuffAndEffects.map(x => { return x.buffAndEffect; });
             if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
                 this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.spellFormModal.ruleSetId;
             }
@@ -139,14 +141,26 @@ export class CreateSpellsComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
-            if (this.spellFormModal.spellId) {
-                this.isLoading = true;
-                this.spellsService.getSpellCommands_sp<any>(this.spellFormModal.spellId)
-                    .subscribe(data => {
-                        this.spellFormModal.spellCommandVM = data;
-                        this.isLoading = false;
-                    }, error => { }, () => { this.isLoading = false; });
-            }
+          if (this.spellFormModal.spellId) {
+            this.isLoading = true;
+            this.spellsService.getSpellCommands_sp<any>(this.spellFormModal.spellId, this._ruleSetId)
+              .subscribe(data => {
+                this.spellFormModal.spellCommandVM = data.spellCommands;
+                this.buffAndEffectsList = data.buffAndEffectsList;
+                this.selectedBuffAndEffects = data.selectedBuffAndEffects;
+                this.isLoading = false;
+              }, error => { }, () => { this.isLoading = false; });
+          }
+          else {
+            this.isLoading = true;
+            this.spellsService.getSpellCommands_sp<any>(0, this._ruleSetId)
+              .subscribe(data => {
+                //this.spellFormModal.spellCommandVM = data.spellCommands;
+                this.buffAndEffectsList = data.buffAndEffectsList;
+                //this.selectedBuffAndEffects = data.selectedBuffAndEffects;
+                this.isLoading = false;
+              }, error => { }, () => { this.isLoading = false; });
+          }
         }
     }
 
@@ -210,12 +224,18 @@ export class CreateSpellsComponent implements OnInit {
 
     validateSubmit(spell: Spell) {
         if (spell.ruleSetId == 0 || spell.ruleSetId === undefined)
-            spell.ruleSetId = this._ruleSetId;
+        spell.ruleSetId = this._ruleSetId;
+
+
 
         this.isLoading = true;
         let _msg = spell.spellId == 0 || spell.spellId === undefined ? "Creating Spell.." : "Updating Spell..";
         if (this.spellFormModal.view === VIEW.DUPLICATE) _msg = "Duplicating Spell..";
         this.alertService.startLoadingMessage("", _msg);
+
+      spell.spellBuffAndEffectVM = this.selectedBuffAndEffects.map(x => {
+        return { buffAndEffectId: x.buffAndEffectId, spellId: spell.spellId};
+      });
 
         let tagsValue = this.metatags.map(x => {
             if (x.value == undefined) return x; else return x.value;
@@ -522,5 +542,21 @@ export class CreateSpellsComponent implements OnInit {
     loadImageFailed() {
         // show message
     }
-    public event: EventEmitter<any> = new EventEmitter();
+  public event: EventEmitter<any> = new EventEmitter();
+  get buffAndEffectsSettings() {
+    return {
+      primaryKey: "buffAndEffectId",
+      labelKey: "name",
+      text: "Search Buff & Effect(s)",
+      enableCheckAll: true,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: false,
+      limitSelection: false,
+      enableSearchFilter: true,
+      classes: "myclass custom-class ",
+      showCheckbox: true,
+      position: "top"
+    };
+  }
 }

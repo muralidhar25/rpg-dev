@@ -58,10 +58,11 @@ namespace DAL.Services
                 }
             }
         }
-        public async Task<Item> InsertItem(Item item, List<ItemSpell> ItemSpells, List<ItemAbility> ItemAbilities, List<ItemCommand> itemCommands=null)
+        public async Task<Item> InsertItem(Item item, List<ItemSpell> ItemSpells, List<ItemAbility> ItemAbilities, List<ItemBuffAndEffect> ItemBuffAndEffects, List<ItemCommand> itemCommands=null)
         {
             item.ItemAbilities = new List<ItemAbility>();
             item.ItemSpells = new List<ItemSpell>();
+            item.ItemBuffAndEffects = new List<ItemBuffAndEffect>();
             await _repo.Add(item);
 
             int ItemId = item.ItemId;
@@ -77,6 +78,12 @@ namespace DAL.Services
                 {
                     ItemAbilities.ForEach(a => a.ItemId = ItemId);
                     await _repoItemAbility.AddRange(ItemAbilities);
+                }
+                if (ItemBuffAndEffects != null && ItemBuffAndEffects.Count > 0)
+                {
+                    ItemBuffAndEffects.ForEach(a => a.ItemId = ItemId);
+                    _context.ItemBuffAndEffects.AddRange(ItemBuffAndEffects);
+                    _context.SaveChanges();
                 }
                 if (itemCommands != null && itemCommands.Count > 0)
                 {
@@ -119,10 +126,10 @@ namespace DAL.Services
             itemMaster.ItemMasterSpell = model.ItemMasterSpell;
             itemMaster.ItemMasterAbilities = model.ItemMasterAbilities;
 
-            ItemMaster CreatedItemMaster =await _itemMasterService.Core_CreateItemMaster(itemMaster, itemMaster.ItemMasterSpell.ToList(), itemMaster.ItemMasterAbilities.ToList());
+            ItemMaster CreatedItemMaster =await _itemMasterService.Core_CreateItemMaster(itemMaster, itemMaster.ItemMasterSpell.ToList(), itemMaster.ItemMasterAbilities.ToList(),itemMaster.itemMasterBuffAndEffects.ToList());
             return CreatedItemMaster;
         }
-        public async Task<Item> UpdateItem(Item item, List<ItemSpell> ItemSpells, List<ItemAbility> ItemAbilities)
+        public async Task<Item> UpdateItem(Item item, List<ItemSpell> ItemSpells, List<ItemAbility> ItemAbilities, List<ItemBuffAndEffect> ItemBuffAndEffects)
         {
             var itemobj = _context.Items.Find(item.ItemId);
 
@@ -176,6 +183,13 @@ namespace DAL.Services
                     _context.ItemSpells.RemoveRange(_context.ItemSpells.Where(x => x.ItemId == item.ItemId));
                     ItemSpells.ForEach(a => a.ItemId = item.ItemId);
                     await _repoItemSpell.AddRange(ItemSpells);
+                }
+                if (ItemBuffAndEffects != null)
+                {
+                    _context.ItemBuffAndEffects.RemoveRange(_context.ItemBuffAndEffects.Where(x => x.ItemId == item.ItemId));
+                    ItemBuffAndEffects.ForEach(a => a.ItemId = item.ItemId);
+                    _context.ItemBuffAndEffects.AddRange(ItemBuffAndEffects);
+                   // _context.SaveChanges();
                 }
 
                 _context.SaveChanges();
@@ -630,6 +644,8 @@ namespace DAL.Services
             res.spellList = new List<Spell>();
             res.selectedSpellList = new List<Spell>();
             res.selectedItemCommand = new List<ItemCommand>();
+            res.buffAndEffectsList = new List<BuffAndEffect>();
+            res.selectedBuffAndEffects = new List<BuffAndEffect>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             //string qry = "EXEC Item_Ability_Spell_GetByRulesetID @RulesetID = '" + rulesetId + "',@CharacterId='" + characterId + "',@ItemID = '" + itemId + "'";
 
@@ -692,6 +708,20 @@ namespace DAL.Services
             {
                 foreach (DataRow row in ds.Tables[2].Rows)
                 {
+                    BuffAndEffect i = new BuffAndEffect();
+                    i.BuffAndEffectId = row["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["BuffAndEffectId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.buffAndEffectsList.Add(i);
+                }
+
+            }
+            if (ds.Tables[3].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[3].Rows)
+                {
                     Ability i = new Ability();
                     i.AbilityId = row["AbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(row["AbilityId"]);
                     i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
@@ -702,9 +732,9 @@ namespace DAL.Services
                 }
 
             }
-            if (ds.Tables[3].Rows.Count > 0)
+            if (ds.Tables[4].Rows.Count > 0)
             {
-                foreach (DataRow row in ds.Tables[3].Rows)
+                foreach (DataRow row in ds.Tables[4].Rows)
                 {
                     Spell i = new Spell();
                     i.SpellId = row["SpellId"] == DBNull.Value ? 0 : Convert.ToInt32(row["SpellId"]);
@@ -716,9 +746,23 @@ namespace DAL.Services
                 }
 
             }
-            if (ds.Tables[4].Rows.Count > 0)
+            if (ds.Tables[5].Rows.Count > 0)
             {
-                foreach (DataRow row in ds.Tables[4].Rows)
+                foreach (DataRow row in ds.Tables[5].Rows)
+                {
+                    BuffAndEffect i = new BuffAndEffect();
+                    i.BuffAndEffectId = row["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["BuffAndEffectId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.selectedBuffAndEffects.Add(i);
+                }
+
+            }
+            if (ds.Tables[6].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[6].Rows)
                 {
                     ItemCommand i = new ItemCommand();
                     i.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();

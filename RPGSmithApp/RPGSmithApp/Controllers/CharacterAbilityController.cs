@@ -256,7 +256,7 @@ namespace RPGSmithApp.Controllers
 
 
             //var result = await _abilityService.Create(ability);
-            var result = await _coreRulesetService.CreateAbility(ability);
+            var result = await _coreRulesetService.CreateAbility(ability,model.AbilityBuffAndEffects.ToList());
             //var result = await _abilityService.Create(ability);
             //var result = await _coreRulesetService.CreateAbility(model);
 

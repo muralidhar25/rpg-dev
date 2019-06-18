@@ -41,6 +41,14 @@
           <a class="btn icon icon-Gen-Controls btn-accent" (click)="playersControls()">PLAYER CONTROLS</a>
         </li>
         <li>
+          <a class="btn icon icon-Gen-Controls btn-accent" (click)="monsterTemplates()">MONSTER TEMPLATES</a>
+          <span class="dropdown-menu-item-count pull-right ng-star-inserted" >0</span>
+        </li>
+        <li>
+          <a class="btn icon icon-Gen-Controls btn-accent" (click)="monsters()">MONSTERS </a>
+          <span class="dropdown-menu-item-count pull-right ng-star-inserted" >0</span>
+        </li>
+        <li>
           <a class="btn icon  icon-Gen-CharStat btn-accent" (click)="characterStats(rulesetModel)">CHARACTER STATS</a>
           <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.characterStatCount !== undefined">{{rulesetRecordCount.characterStatCount}}</span>
         </li>

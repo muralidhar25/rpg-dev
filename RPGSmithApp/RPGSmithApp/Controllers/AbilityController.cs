@@ -106,7 +106,7 @@ namespace RPGSmithApp.Controllers
                     return BadRequest("The Ability Name " + model.Name + " had already been used. Please select another name.");
 
                 var ability = Mapper.Map<Ability>(model);
-                var result = await _abilityService.Create(ability);
+                var result = await _abilityService.Create(ability, model.AbilityBuffAndEffectVM);
 
                 if (model.AbilityCommandVM != null && model.AbilityCommandVM.Count > 0)
                 {
@@ -187,7 +187,7 @@ namespace RPGSmithApp.Controllers
 
             var ability = Mapper.Map<Ability>(model);
 
-            var result = await _abilityService.Update(ability, model.IsFromCharacter);
+            var result = await _abilityService.Update(ability,  model.AbilityBuffAndEffectVM, model.IsFromCharacter);
 
             if (model.AbilityCommandVM != null && model.AbilityCommandVM.Count > 0)
             {
@@ -368,7 +368,7 @@ namespace RPGSmithApp.Controllers
 
                 model.AbilityId = 0;
                 var abilityModel = Mapper.Map<Ability>(model);
-                var result = await _abilityService.Create(abilityModel);
+                var result = await _abilityService.Create(abilityModel,model.AbilityBuffAndEffectVM);
                 //var result = await _abilityService.Create(model);
 
                 foreach (var acViewModels in ability.AbilityCommand)
@@ -480,7 +480,7 @@ namespace RPGSmithApp.Controllers
 
 
             //var result = await _abilityService.Create(ability);
-            var result = await _coreRulesetService.CreateAbility(ability);
+            var result = await _coreRulesetService.CreateAbility(ability, model.AbilityBuffAndEffectVM);
 
             if (model.AbilityCommandVM != null && model.AbilityCommandVM.Count > 0)
             {
@@ -549,9 +549,15 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpGet("getAbilityCommands_sp")]
-        public async Task<IActionResult> getAbilityCommands_sp(int abilityId)
+        public async Task<IActionResult> getAbilityCommands_sp(int abilityId, int rulesetId)
         {
-            return Ok(_abilityService.SP_GetAbilityCommands(abilityId));
+            
+            var res = _abilityService.SP_GetAbilityCommands(abilityId, rulesetId);
+            if (rulesetId == 0)
+            {
+                return Ok(res.AbilityCommands);
+            }
+            return Ok(res);
         }
 
         #endregion

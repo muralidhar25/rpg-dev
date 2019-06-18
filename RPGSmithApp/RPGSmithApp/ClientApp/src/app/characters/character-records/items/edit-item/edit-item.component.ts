@@ -45,7 +45,9 @@ export class EditItemComponent implements OnInit {
     abilitiesList = [];
     selectedAbilities = [];
     spellsList = [];
+  buffAndEffectsList = [];
     selectedSpells = [];
+  selectedBuffAndEffects = [];
     metatags = [];
     uploadFromBing: boolean = false;
     bingImageUrl: string;
@@ -128,7 +130,10 @@ export class EditItemComponent implements OnInit {
                 this.selectedAbilities = this.ItemFormModal.itemAbilities.map(x => { return x.ability; });
 
             if (this.ItemFormModal.itemSpells !== null && this.ItemFormModal.itemSpells !== undefined)
-                this.selectedSpells = this.ItemFormModal.itemSpells.map(x => { return x.spell; });
+            this.selectedSpells = this.ItemFormModal.itemSpells.map(x => { return x.spell; });
+
+          if (this.ItemFormModal.itemBuffAndEffects !== null && this.ItemFormModal.itemBuffAndEffects !== undefined)
+            this.selectedBuffAndEffects = this.ItemFormModal.itemBuffAndEffects.map(x => { return x.buffAndEffect; });
 
             if (this.ItemFormModal.metatags !== '' && this.ItemFormModal.metatags !== undefined)
                 this.metatags = this.ItemFormModal.metatags.split(",");
@@ -154,9 +159,11 @@ export class EditItemComponent implements OnInit {
                 .subscribe(data => {
                     
                     this.abilitiesList = data.abilityList;
-                    this.spellsList = data.spellList;
+                  this.spellsList = data.spellList;
+                  this.buffAndEffectsList = data.buffAndEffectsList;
                     this.selectedAbilities = data.selectedAbilityList.map(x => { return x; });
-                    this.selectedSpells = data.selectedSpellList.map(x => { return x; });
+                  this.selectedSpells = data.selectedSpellList.map(x => { return x; });
+                  this.selectedBuffAndEffects = data.selectedBuffAndEffects.map(x => { return x; });
                     this.ItemFormModal.itemCommandVM = data.selectedItemCommand;
                     this.isLoading = false;
                 }, error => { }, () => { });
@@ -292,7 +299,10 @@ export class EditItemComponent implements OnInit {
 
         item.itemSpells = this.selectedSpells.map(x => {
             return { spellId: x.spellId, itemId: item.itemId };
-        });
+      });
+      item.itemBuffAndEffects = this.selectedBuffAndEffects.map(x => {
+        return { buffAndEffectId: x.buffAndEffectId, itemId: item.itemId };
+      });
 
         let tagsValue = this.metatags.map(x => {
             if (x.value == undefined) return x;
@@ -568,7 +578,22 @@ export class EditItemComponent implements OnInit {
             position: "top"
         };
     }
-
+  get buffAndEffectsSettings() {
+    return {
+      primaryKey: "buffAndEffectId",
+      labelKey: "name",
+      text: "Search Buff & Effect(s)",
+      enableCheckAll: true,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: false,
+      limitSelection: false,
+      enableSearchFilter: true,
+      classes: "myclass custom-class ",
+      showCheckbox: true,
+      position: "top"
+    };
+  }
     readTempUrl(event: any) {
         if (event.target.files && event.target.files[0]) {
             var reader = new FileReader();

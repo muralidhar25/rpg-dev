@@ -375,35 +375,49 @@
 
         </div>
         <div class="form-row">
-            <div class="col-12 col-md-6">
-                <div class="form-group">
-                    <label for="newItemAbilities">Associated Ability</label>
-                    <angular2-multiselect id="abilitiesList" [data]="abilitiesList" [(ngModel)]="selectedAbilities" name="newItemAbilities" [settings]="abilitiesSettings">
-                        <c-item id="ability">
-                            <ng-template let-item="item">
-                                <span class="associate-label-name">{{item.name}}</span>
-                                <img [src]="item.imageUrl" class="pull-right associate-img"
-                                     onerror="this.src = '../assets/images/DefaultImages/ability.png';" />
-                            </ng-template>
-                        </c-item>
-                    </angular2-multiselect>
-                </div>
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label for="newItemAbilities">Associated Ability</label>
+              <angular2-multiselect id="abilitiesList" [data]="abilitiesList" [(ngModel)]="selectedAbilities" name="newItemAbilities" [settings]="abilitiesSettings">
+                <c-item id="ability">
+                  <ng-template let-item="item">
+                    <span class="associate-label-name">{{item.name}}</span>
+                    <img [src]="item.imageUrl" class="pull-right associate-img"
+                         onerror="this.src = '../assets/images/DefaultImages/ability.png';" />
+                  </ng-template>
+                </c-item>
+              </angular2-multiselect>
             </div>
+          </div>
 
-            <div class="col-12 col-md-6">
-                <div class="form-group">
-                    <label for="newItemSpells">Associated Spell</label>
-                    <angular2-multiselect id="spellsList" [data]="spellsList" [(ngModel)]="selectedSpells" name="newItemSpells" [settings]="spellsSettings">
-                        <c-item id="spell">
-                            <ng-template let-item="item">
-                                <span class="associate-label-name">{{item.name}}</span>
-                                <img [src]="item.imageUrl" class="pull-right associate-img"
-                                     onerror="this.src = '../assets/images/DefaultImages/Spell.jpg';" />
-                            </ng-template>
-                        </c-item>
-                    </angular2-multiselect>
-                </div>
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label for="newItemSpells">Associated Spell</label>
+              <angular2-multiselect id="spellsList" [data]="spellsList" [(ngModel)]="selectedSpells" name="newItemSpells" [settings]="spellsSettings">
+                <c-item id="spell">
+                  <ng-template let-item="item">
+                    <span class="associate-label-name">{{item.name}}</span>
+                    <img [src]="item.imageUrl" class="pull-right associate-img"
+                         onerror="this.src = '../assets/images/DefaultImages/Spell.jpg';" />
+                  </ng-template>
+                </c-item>
+              </angular2-multiselect>
             </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="form-group">
+              <label for="newItemSpells">Associated Buffs And Effects</label>
+              <angular2-multiselect id="buffAndEffectsList" [data]="buffAndEffectsList" [(ngModel)]="selectedBuffAndEffects" name="newItemBuffAndEffests" [settings]="buffAndEffectsSettings">
+                <c-item id="spell">
+                  <ng-template let-item="item">
+                    <span class="associate-label-name">{{item.name}}</span>
+                    <img [src]="item.imageUrl" class="pull-right associate-img"
+                         onerror="this.src = '../assets/images/BnE/Def_BnE.png'" />
+                  </ng-template>
+                </c-item>
+              </angular2-multiselect>
+            </div>
+          </div>
         </div>
 
     </div>

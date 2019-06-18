@@ -244,7 +244,9 @@ export class CreateItemMsterComponent implements OnInit {
         itemMaster.itemMasterSpellVM = this.selectedSpells.map(x => {
             return { spellId: x.spellId, itemMasterId: itemMaster.itemMasterId };
         });
-
+      itemMaster.itemMasterBuffAndEffectVM = this.selectedBuffAndEffects.map(x => {
+        return { buffAndEffectId: x.buffAndEffectId, itemMasterId: itemMaster.itemMasterId };
+      });
         let tagsValue = this.metatags.map(x => {
             if (x.value == undefined) return x;
             else return x.value;
@@ -267,6 +269,8 @@ export class CreateItemMsterComponent implements OnInit {
             itemMaster.itemMasterSpell = itemMaster.itemMasterSpellVM;
         //else if (itemMaster.itemMasterSpell.length > 0 && itemMaster.itemMasterSpellVM.length == 0)
          //   itemMaster.itemMasterSpellVM = itemMaster.itemMasterSpell;
+
+      itemMaster.itemMasterBuffAndEffects = itemMaster.itemMasterBuffAndEffectVM;
 
         this.isLoading = true;
         let _msg = itemMaster.itemMasterId == 0 || itemMaster.itemMasterId === undefined ? "Creating Item Template.." : "Updating Item Template..";
@@ -503,6 +507,23 @@ export class CreateItemMsterComponent implements OnInit {
             position: "top"
         };
     }
+
+  get buffAndEffectsSettings() {
+    return {
+      primaryKey: "buffAndEffectId",
+      labelKey: "name",
+      text: "Search Buff & Effect(s)",
+      enableCheckAll: true,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: false,
+      limitSelection: false,
+      enableSearchFilter: true,
+      classes: "myclass custom-class ",
+      showCheckbox: true,
+      position: "top"
+    };
+  }
 
     //Here the multiselect methods
     onItemSelect(item: any) {

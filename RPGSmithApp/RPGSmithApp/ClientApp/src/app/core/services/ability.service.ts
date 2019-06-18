@@ -113,8 +113,8 @@ export class AbilityService extends EndpointFactory {
       });
   }
 
-  getAbilityCommands_sp<T>(Id: number): Observable<T> {
-    let endpointUrl = `${this.getAbilityCommands_api}?abilityId=${Id}`;
+  getAbilityCommands_sp<T>(Id: number, rulesetId: number): Observable<T> {
+    let endpointUrl = `${this.getAbilityCommands_api}?abilityId=${Id}&rulesetId=${rulesetId}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
@@ -220,8 +220,10 @@ export class AbilityService extends EndpointFactory {
         ruleset: abilityVM.ruleset,
         showIcon: false,
         metatags: abilityVM.metatags == null || abilityVM.metatags == undefined ? '' : abilityVM.metatags,
-        view: _view === 'DUPLICATE' ? VIEW.DUPLICATE : VIEW.EDIT
+        view: _view === 'DUPLICATE' ? VIEW.DUPLICATE : VIEW.EDIT,
         //sortOrder: abilityVM.sortOrder
+        abilityBuffAndEffects: abilityVM.abilityBuffAndEffects == null ? [] : abilityVM.abilityBuffAndEffects,
+        abilityBuffAndEffectVM: abilityVM.abilityBuffAndEffectVM == undefined ? [] : abilityVM.abilityBuffAndEffectVM,
       }
     }
     else {
@@ -236,8 +238,10 @@ export class AbilityService extends EndpointFactory {
         view: VIEW.ADD,
         metatags: '',
         level: '',
-        commandName: 'Default'
+        commandName: 'Default',
         //sortOrder: abilityVM.sortOrder
+        abilityBuffAndEffects: [],
+        abilityBuffAndEffectVM: []
       }
     }
 

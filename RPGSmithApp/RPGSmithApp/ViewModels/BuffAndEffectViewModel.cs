@@ -33,5 +33,6 @@ namespace RPGSmithApp.ViewModels
     public class CharacterBuffAndEffectViewModel : BuffAndEffectViewModel {
         public int CharacterId { get; set; }
         public int CharacterBuffAandEffectId { get; set; }
+        public Character Character { get; set; }
     }
 }

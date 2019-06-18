@@ -72,6 +72,8 @@ namespace RPGSmithApp.ViewModels.CreateModels
         public List<ItemMasterCommand> itemMasterCommandVM { get; set; }
 
         public virtual List<containerItemIds> ContainerItems { get; set; }
+
+        public List<ItemMasterBuffAndEffect> itemMasterBuffAndEffectVM { get; set; }
     }
     public class CreateItemMasterLootModel : CreateItemMasterModel {
        

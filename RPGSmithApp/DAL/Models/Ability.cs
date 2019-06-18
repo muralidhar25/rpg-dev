@@ -51,5 +51,6 @@ namespace DAL.Models
 
         public virtual ICollection<ItemMasterAbility> ItemMasterAbilities { get; set; }
         public virtual ICollection<AbilityCommand> AbilityCommand { get; set; }
+        public virtual ICollection<AbilityBuffAndEffect> AbilityBuffAndEffects { get; set; }
     }
 }

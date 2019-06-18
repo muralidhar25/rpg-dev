@@ -132,7 +132,7 @@ namespace RPGSmithApp.Controllers
                 }
                 else
                 {
-                    result = await _itemMasterService.CreateItemMaster(itemMaster, itemDomain.itemMasterSpellVM, itemDomain.itemMasterAbilityVM);
+                    result = await _itemMasterService.CreateItemMaster(itemMaster, itemDomain.itemMasterSpellVM, itemDomain.itemMasterAbilityVM,itemDomain.itemMasterBuffAndEffectVM);
                 }
 
 
@@ -171,6 +171,14 @@ namespace RPGSmithApp.Controllers
                                 SpellId = spell.SpellId
                             });
                         }
+                        var ItemBuffAndEffects = new List<ItemBuffAndEffect>();
+                        foreach (var be in itemDomain.itemMasterBuffAndEffectVM)
+                        {
+                            ItemBuffAndEffects.Add(new ItemBuffAndEffect
+                            {
+                                BuffAndEffectId = be.BuffAndEffectId
+                            });
+                        }
 
                         var _itemInsert = await _itemService.InsertItem(new Item
                         {
@@ -206,7 +214,7 @@ namespace RPGSmithApp.Controllers
                             CommandName = itemDomain.CommandName
                         },
                         ItemSpells,
-                        ItemAbilities);
+                        ItemAbilities,ItemBuffAndEffects);
 
                         if (itemDomain.itemMasterCommandVM != null)
                         {
@@ -323,7 +331,7 @@ namespace RPGSmithApp.Controllers
 
 
             var itemMaster = Mapper.Map<ItemMaster>(model);
-            var result = await _itemMasterService.UpdateItemMaster(itemMaster, model.ItemMasterSpellVM, model.ItemMasterAbilityVM);
+            var result = await _itemMasterService.UpdateItemMaster(itemMaster, model.ItemMasterSpellVM, model.ItemMasterAbilityVM, model.ItemMasterBuffAndEffectVM);
 
             if (model.ItemMasterCommandVM != null && model.ItemMasterCommandVM.Count > 0)
             {
@@ -423,7 +431,7 @@ namespace RPGSmithApp.Controllers
             itemMaster.IsDeleted = IsDeleted;
 
 
-            ItemMaster result = await _coreRulesetService.CreateItemMaster(itemMaster, model.ItemMasterSpellVM, model.ItemMasterAbilityVM);
+            ItemMaster result = await _coreRulesetService.CreateItemMaster(itemMaster, model.ItemMasterSpellVM, model.ItemMasterAbilityVM,model.ItemMasterBuffAndEffectVM);
 
             if (model.ItemMasterCommandVM != null && model.ItemMasterCommandVM.Count > 0)
             {
@@ -627,7 +635,7 @@ namespace RPGSmithApp.Controllers
 
                 model.ItemMasterId = 0;
                 var itemMasterModel = Mapper.Map<ItemMaster>(model);
-                var result = await _itemMasterService.CreateItemMaster(itemMasterModel, itemmaster.ItemMasterSpell.ToList(), itemmaster.ItemMasterAbilities.ToList());
+                var result = await _itemMasterService.CreateItemMaster(itemMasterModel, itemmaster.ItemMasterSpell.ToList(), itemmaster.ItemMasterAbilities.ToList(), itemmaster.itemMasterBuffAndEffects.ToList());
 
                 foreach (var imcViewModels in itemmaster.ItemMasterCommand)
                 {
@@ -659,6 +667,14 @@ namespace RPGSmithApp.Controllers
                             ItemSpells.Add(new ItemSpell
                             {
                                 SpellId = spell.SpellId
+                            });
+                        }
+                        var ItemBuffAndEffects = new List<ItemBuffAndEffect>();
+                        foreach (var be in model.itemMasterBuffAndEffectVM)
+                        {
+                            ItemBuffAndEffects.Add(new ItemBuffAndEffect
+                            {
+                                BuffAndEffectId = be.BuffAndEffectId
                             });
                         }
 
@@ -696,7 +712,7 @@ namespace RPGSmithApp.Controllers
                             ContainerWeightModifier = result.ContainerWeightModifier
                         },
                         ItemSpells,
-                        ItemAbilities);
+                        ItemAbilities, ItemBuffAndEffects);
 
                         if (itemmaster.ItemMasterCommand != null)
                         {
@@ -911,7 +927,7 @@ namespace RPGSmithApp.Controllers
                 }
                 else
                 {
-                    result = await _itemMasterService.CreateItemMaster(itemMaster, itemDomain.itemMasterSpellVM, itemDomain.itemMasterAbilityVM);
+                    result = await _itemMasterService.CreateItemMaster(itemMaster, itemDomain.itemMasterSpellVM, itemDomain.itemMasterAbilityVM, itemDomain.itemMasterBuffAndEffectVM);
                 }
 
                 ItemMasterLoot loot = new ItemMasterLoot()
@@ -1202,6 +1218,14 @@ namespace RPGSmithApp.Controllers
                     SpellId = spell.SpellId
                 });
             }
+            var ItemBuffAndEffects = new List<ItemBuffAndEffect>();
+            foreach (var be in ItemTemplate.itemMasterBuffAndEffects)
+            {
+                ItemBuffAndEffects.Add(new ItemBuffAndEffect
+                {
+                    BuffAndEffectId = be.BuffAndEffectId
+                });
+            }
             var ItemCommands = new List<ItemCommand>();
             foreach (var command in ItemTemplate.ItemMasterCommand)
             {
@@ -1246,7 +1270,7 @@ namespace RPGSmithApp.Controllers
                 CommandName = ItemTemplate.CommandName
             },
             ItemSpells,
-            ItemAbilities, ItemCommands);
+            ItemAbilities, ItemBuffAndEffects, ItemCommands);
         }
         [HttpPost("deleteLoot_up")]
         public async Task<IActionResult> DeleteItemMasterLoot([FromBody] EditItemMasterLootModel model)
@@ -1391,7 +1415,7 @@ namespace RPGSmithApp.Controllers
 
                 model.ItemMasterId = 0;
                 var itemMasterModel = Mapper.Map<ItemMaster>(model);
-                var result = await _itemMasterService.CreateItemMaster(itemMasterModel, itemmaster.ItemMasterSpell.ToList(), itemmaster.ItemMasterAbilities.ToList());
+                var result = await _itemMasterService.CreateItemMaster(itemMasterModel, itemmaster.ItemMasterSpell.ToList(), itemmaster.ItemMasterAbilities.ToList(), itemmaster.itemMasterBuffAndEffects.ToList());
 
                 foreach (var imcViewModels in itemmaster.ItemMasterCommand)
                 {

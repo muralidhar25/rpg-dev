@@ -1462,7 +1462,7 @@ export class CharacterDashboardComponent implements OnInit {
         switch (_executeTile.linkType) {
           case "Spell": {
             if (_executeTile.spell.spellId) {
-              this.spellsService.getSpellCommands_sp<any>(_executeTile.spell.spellId)
+              this.spellsService.getSpellCommands_sp<any>(_executeTile.spell.spellId,0)
                 .subscribe(data => {
 
                   if (data.length > 0) {
@@ -1508,7 +1508,7 @@ export class CharacterDashboardComponent implements OnInit {
           }
           case "Ability": {
             if (_executeTile.ability.abilityId) {
-              this.abilityService.getAbilityCommands_sp<any>(_executeTile.ability.abilityId)
+              this.abilityService.getAbilityCommands_sp<any>(_executeTile.ability.abilityId,0)
                 .subscribe(data => {
                   if (data.length > 0) {
                     this.bsModalRef = this.modalService.show(CastComponent, {

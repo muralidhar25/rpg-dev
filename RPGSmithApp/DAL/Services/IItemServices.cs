@@ -9,8 +9,8 @@ namespace DAL.Services
 {
     public interface IItemService
     {
-        Task<Item> InsertItem(Item item, List<ItemSpell> ItemSpells, List<ItemAbility> ItemAbilities, List<ItemCommand> itemCommands=null);
-        Task<Item> UpdateItem(Item item, List<ItemSpell> ItemSpells, List<ItemAbility> ItemAbilities);
+        Task<Item> InsertItem(Item item, List<ItemSpell> ItemSpells, List<ItemAbility> ItemAbilities, List<ItemBuffAndEffect> ItemBuffAndEffects, List<ItemCommand> itemCommands=null);
+        Task<Item> UpdateItem(Item item, List<ItemSpell> ItemSpells, List<ItemAbility> ItemAbilities, List<ItemBuffAndEffect> ItemBuffAndEffects);
         List<Item> GetAll();
         Item GetById(int? id);
         List<Item> GetByCharacterId(int characterId);

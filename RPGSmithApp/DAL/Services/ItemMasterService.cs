@@ -30,10 +30,11 @@ namespace DAL.Services
             _configuration = configuration;
         }
 
-        public async Task<ItemMaster> CreateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities)
+        public async Task<ItemMaster> CreateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities, List<ItemMasterBuffAndEffect> AssociatedBuffAndEffects)
         {
             item.ItemMasterAbilities = new List<ItemMasterAbility>();
             item.ItemMasterSpell = new List<ItemMasterSpell>();
+            item.itemMasterBuffAndEffects = new List<ItemMasterBuffAndEffect>();
             _context.ItemMasters.Add(item);
             _context.SaveChanges();//_repo.Add(item);
             int ItemMasterId = item.ItemMasterId;
@@ -53,15 +54,31 @@ namespace DAL.Services
                         _context.ItemMasterSpells.AddRange(AssociatedSpells);// _repoMasterSpell.AddRange(AssociatedSpells);
                         _context.SaveChanges();
                     }
+                    if (AssociatedBuffAndEffects != null && AssociatedBuffAndEffects.Count > 0)
+                    {
+                        //AssociatedBuffAndEffects.ForEach(a => a.ItemMasterId = ItemMasterId);
+                        //AssociatedBuffAndEffects.ForEach(a => a.Id = 0);
+                       List<ItemMasterBuffAndEffect> AssociatedBuffAndEffectsList = AssociatedBuffAndEffects.Select(x => new ItemMasterBuffAndEffect() {
+                            BuffAndEffectId=x.BuffAndEffectId,                            
+                       }).ToList();
+                        foreach (var be in AssociatedBuffAndEffectsList)
+                        {
+                            _context.ItemMasterBuffAndEffects.Add(new ItemMasterBuffAndEffect() {BuffAndEffectId= be.BuffAndEffectId, ItemMasterId= ItemMasterId });
+                        }
+                        //_context.ItemMasterBuffAndEffects.AddRange(AssociatedBuffAndEffectsList);// _repoMasterSpell.AddRange(AssociatedSpells);
+                        _context.SaveChanges();
+                    }
                 }
             }
-            catch { }
+            catch (Exception ex)
+            { }
             item.ItemMasterAbilities = AssociatedAbilities;
             item.ItemMasterSpell = AssociatedSpells;
+            item.itemMasterBuffAndEffects = AssociatedBuffAndEffects;
             return item;
         }
 
-        public async Task<ItemMaster> Core_CreateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities)
+        public async Task<ItemMaster> Core_CreateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities, List<ItemMasterBuffAndEffect> AssociatedBuffAndEffects)
         {
             item.ParentItemMasterId = item.ItemMasterId;
             item.ItemMasterId = 0;
@@ -70,6 +87,7 @@ namespace DAL.Services
             {
                 item.ItemMasterSpell = new List<ItemMasterSpell>();
                 item.ItemMasterAbilities = new List<ItemMasterAbility>();
+                item.itemMasterBuffAndEffects = new List<ItemMasterBuffAndEffect>();
                 await _repo.Add(item);
                 int ItemMasterId = item.ItemMasterId;
                 if (ItemMasterId > 0)
@@ -84,6 +102,27 @@ namespace DAL.Services
                         AssociatedSpells.ForEach(a => a.ItemMasterId = ItemMasterId);
                         await _repoMasterSpell.AddRange(AssociatedSpells);
                     }
+                    if (AssociatedBuffAndEffects != null && AssociatedBuffAndEffects.Count > 0)
+                    {
+                        //AssociatedBuffAndEffects.ForEach(a => a.ItemMasterId = ItemMasterId);
+                        //_context.ItemMasterBuffAndEffects.AddRange(AssociatedBuffAndEffects);
+                        //_context.SaveChanges();
+
+                        List<ItemMasterBuffAndEffect> listbuffs = new List<ItemMasterBuffAndEffect>();
+                        foreach (var be in AssociatedBuffAndEffects)
+                        {
+                            ItemMasterBuffAndEffect obj = new ItemMasterBuffAndEffect()
+                            {
+                                BuffAndEffectId = be.BuffAndEffectId,
+                                ItemMasterId = ItemMasterId
+                            };
+                            listbuffs.Add(obj);
+                        }
+                        //SpellBuffAndEffectVM.ForEach(a => a.SpellId = spell.SpellId);
+                        _context.ItemMasterBuffAndEffects.AddRange(listbuffs);
+                        _context.SaveChanges();
+                        item.itemMasterBuffAndEffects = listbuffs;
+                    }
                 }
                 var loots = _context.ItemMasterLoots.Where(x => x.ItemMasterId == item.ParentItemMasterId).ToList();
                 foreach (var loot in loots)
@@ -95,7 +134,7 @@ namespace DAL.Services
             catch (Exception ex) { }
             return item;
         }
-        public async Task<ItemMaster> UpdateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities)
+        public async Task<ItemMaster> UpdateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities,List<ItemMasterBuffAndEffect> AssociatedBuffAndEffects)
         {
             var itemMaster = _context.ItemMasters.Include("RuleSet").Include("ItemMasterAbilities").Where(x => x.ItemMasterId == item.ItemMasterId).FirstOrDefault();
 
@@ -125,6 +164,7 @@ namespace DAL.Services
 
             _context.ItemMasterAbilities.RemoveRange(_context.ItemMasterAbilities.Where(x => x.ItemMasterId == item.ItemMasterId));
             _context.ItemMasterSpells.RemoveRange(_context.ItemMasterSpells.Where(x => x.ItemMasterId == item.ItemMasterId));
+            _context.ItemMasterBuffAndEffects.RemoveRange(_context.ItemMasterBuffAndEffects.Where(x => x.ItemMasterId == item.ItemMasterId));
 
 
             try
@@ -136,6 +176,10 @@ namespace DAL.Services
 
                 AssociatedSpells.ForEach(a => a.ItemMasterId = item.ItemMasterId);
                 await _repoMasterSpell.AddRange(AssociatedSpells);
+
+                AssociatedBuffAndEffects.ForEach(a => a.ItemMasterId = item.ItemMasterId);
+                _context.ItemMasterBuffAndEffects.AddRange(AssociatedBuffAndEffects);
+                _context.SaveChanges();
 
             }
             catch (Exception ex)
@@ -162,6 +206,14 @@ namespace DAL.Services
             foreach (ItemMasterSpell ims_item in ims)
             {
                 ims_item.IsDeleted = true;
+            }
+
+            // Remove associated Buffs And Effects
+            var imbe = _context.ItemMasterBuffAndEffects.Where(x => x.ItemMasterId == id && x.IsDeleted != true);
+
+            foreach (ItemMasterBuffAndEffect imbe_item in imbe)
+            {
+                imbe_item.IsDeleted = true;
             }
 
             // Remove associated Players
@@ -248,6 +300,7 @@ namespace DAL.Services
               .Include(d => d.RuleSet)
               .Include(d => d.ItemMasterAbilities).ThenInclude(d => d.Abilitiy)
               .Include(d => d.ItemMasterSpell).ThenInclude(d => d.Spell)
+              .Include(d => d.itemMasterBuffAndEffects).ThenInclude(d => d.BuffAndEffect)
               .Include(d => d.ItemMasterCommand)
               .Include(d => d.Items)
               .Where(d => d.ItemMasterId == id && d.IsDeleted != true)
@@ -257,6 +310,7 @@ namespace DAL.Services
 
             itemmaster.ItemMasterAbilities = itemmaster.ItemMasterAbilities.Where(p => p.IsDeleted != true).ToList();
             itemmaster.ItemMasterSpell = itemmaster.ItemMasterSpell.Where(p => p.IsDeleted != true).ToList();
+            itemmaster.itemMasterBuffAndEffects = itemmaster.itemMasterBuffAndEffects.Where(p => p.IsDeleted != true).ToList();
             //  itemmaster.ItemMasterPlayers = itemmaster.ItemMasterPlayers.Where(p => p.IsDeleted != true).ToList();
             itemmaster.ItemMasterCommand = itemmaster.ItemMasterCommand.Where(p => p.IsDeleted != true).ToList();
             itemmaster.Items = itemmaster.Items.Where(p => p.IsDeleted != true).ToList();
@@ -1001,6 +1055,20 @@ namespace DAL.Services
             {
                 foreach (DataRow row in ds.Tables[2].Rows)
                 {
+                    BuffAndEffect i = new BuffAndEffect();
+                    i.BuffAndEffectId = row["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["BuffAndEffectId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.buffAndEffectsList.Add(i);/////////
+                }
+
+            }
+            if (ds.Tables[3].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[3].Rows)
+                {
                     Ability i = new Ability();
                     i.AbilityId = row["AbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(row["AbilityId"]);
                     i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
@@ -1011,9 +1079,9 @@ namespace DAL.Services
                 }
 
             }
-            if (ds.Tables[3].Rows.Count > 0)
+            if (ds.Tables[4].Rows.Count > 0)
             {
-                foreach (DataRow row in ds.Tables[3].Rows)
+                foreach (DataRow row in ds.Tables[4].Rows)
                 {
                     Spell i = new Spell();
                     i.SpellId = row["SpellId"] == DBNull.Value ? 0 : Convert.ToInt32(row["SpellId"]);
@@ -1025,9 +1093,23 @@ namespace DAL.Services
                 }
 
             }
-            if (ds.Tables[4].Rows.Count > 0)
+            if (ds.Tables[5].Rows.Count > 0)
             {
-                foreach (DataRow row in ds.Tables[4].Rows)
+                foreach (DataRow row in ds.Tables[5].Rows)
+                {
+                    BuffAndEffect i = new BuffAndEffect();
+                    i.BuffAndEffectId = row["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["BuffAndEffectId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.selectedBuffAndEffects.Add(i);///////
+                }
+
+            }
+            if (ds.Tables[6].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[6].Rows)
                 {
                     ItemMasterCommand i = new ItemMasterCommand();
                     i.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();

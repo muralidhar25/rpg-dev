@@ -107,7 +107,7 @@ namespace RPGSmithApp.Controllers
                     return BadRequest("The Spell Name '" + model.Name + "' had already been used. Please select another name.");
 
                 var spell = Mapper.Map<Spell>(model);
-                var result = await _spellService.Create(spell);
+                var result = await _spellService.Create(spell,model.SpellBuffAndEffectVM);
 
 
                 if (model.SpellCommandVM != null && model.SpellCommandVM.Count > 0)
@@ -183,7 +183,7 @@ namespace RPGSmithApp.Controllers
                 scIds.AddRange(spellobj.SpellCommand.Select(x => x.SpellCommandId).ToList());
 
             var spell = Mapper.Map<Spell>(model);
-            var result = await _spellService.Update(spell);
+            var result = await _spellService.Update(spell,model.SpellBuffAndEffectVM);
 
             if (model.SpellCommandVM != null && model.SpellCommandVM.Count > 0)
             {
@@ -348,7 +348,7 @@ namespace RPGSmithApp.Controllers
 
                 model.SpellId = 0;
                 var spellModel = Mapper.Map<Spell>(model);
-                var result = await _spellService.Create(spellModel);
+                var result = await _spellService.Create(spellModel,model.SpellBuffAndEffectVM);
                 //var result = await _spellService.Create(model);
 
                 foreach (var spellCommand in spells.SpellCommand)
@@ -365,7 +365,7 @@ namespace RPGSmithApp.Controllers
                 {
                     //when duplcating from character
                     if (model.IsFromCharacter && model.IsFromCharacterId > 0)
-                    {
+                    {                        
                         await _characterSpellService.InsertCharacterSpell(new CharacterSpell
                         {
                             CharacterId = model.IsFromCharacterId,
@@ -464,7 +464,7 @@ namespace RPGSmithApp.Controllers
                 spell.Memorized = model.Memorized == null ? false : (bool)model.Memorized;
             }
             //var result = await _spellService.Create(spell);
-            var result = await _coreRulesetService.CreateSpell(spell);
+            var result = await _coreRulesetService.CreateSpell(spell,model.SpellBuffAndEffectVM);
 
             if (model.SpellCommandVM != null && model.SpellCommandVM.Count > 0)
             {
@@ -525,9 +525,14 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpGet("getSpellCommands_sp")]
-        public async Task<IActionResult> getSpellCommands_sp(int spellId)
+        public async Task<IActionResult> getSpellCommands_sp(int spellId,int rulesetId)
         {
-            return Ok(_spellService.SP_GetSpellCommands(spellId));
+            var res = _spellService.SP_GetSpellCommands(spellId, rulesetId);
+            if (rulesetId==0)
+            {
+                return Ok(res.SpellCommands);
+            }
+            return Ok(res);
         }
 
         #endregion

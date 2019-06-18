@@ -51,7 +51,9 @@ export class CreateAbilitiesComponent implements OnInit {
     croppedImage: any = '';
     imageErrorMessage: string = ImageError.MESSAGE;
     defaultImageSelected: string = '';
-    button:string
+  button: string
+  buffAndEffectsList = [];
+  selectedBuffAndEffects = [];
     options(placeholder?: string): Object {
         return Utilities.optionsFloala(160, placeholder);
     }
@@ -103,7 +105,10 @@ export class CreateAbilitiesComponent implements OnInit {
             this.abilityFormModal.isFromCharacterAbilityId = this.isFromCharacterAbilityId;
             this.abilityFormModal.characterId = this.abilityFormModal.characterId ? this.abilityFormModal.characterId : this.isFromCharacterId;
             this.abilityFormModal.currentNumberOfUses = this.isFromCharacter ? this.isFromCharacterAbilityCurrent : this.abilityFormModal.currentNumberOfUses;
-            this.abilityFormModal.maxNumberOfUses = this.isFromCharacter ? this.isFromCharacterAbilityMax : this.abilityFormModal.maxNumberOfUses;
+          this.abilityFormModal.maxNumberOfUses = this.isFromCharacter ? this.isFromCharacterAbilityMax : this.abilityFormModal.maxNumberOfUses;
+
+          this.selectedBuffAndEffects = this.abilityFormModal.abilityBuffAndEffects.map(x => { return x.buffAndEffect; });
+
             try {
                 if (this.abilityFormModal.metatags !== '' && this.abilityFormModal.metatags !== undefined)
                     this.metatags = this.abilityFormModal.metatags.split(",");
@@ -135,14 +140,27 @@ export class CreateAbilitiesComponent implements OnInit {
         if (user == null)
             this.authService.logout();
         else {
-            if (this.abilityFormModal.abilityId) {
-                this.isLoading = true;
-                this.abilityService.getAbilityCommands_sp<any>(this.abilityFormModal.abilityId)
-                    .subscribe(data => {
-                        this.abilityFormModal.abilityCommandVM = data;
-                        this.isLoading = false;
-                    }, error => { }, () => { this.isLoading = false; });
-            }
+          if (this.abilityFormModal.abilityId) {
+            this.isLoading = true;
+            this.abilityService.getAbilityCommands_sp<any>(this.abilityFormModal.abilityId, this._ruleSetId)
+              .subscribe(data => {
+                debugger
+                this.abilityFormModal.abilityCommandVM = data.abilityCommands;
+                this.buffAndEffectsList = data.buffAndEffectsList;
+                this.selectedBuffAndEffects = data.selectedBuffAndEffects;
+                this.isLoading = false;
+              }, error => { }, () => { this.isLoading = false; });
+          }
+          else {
+            this.isLoading = true;
+            this.abilityService.getAbilityCommands_sp<any>(0, this._ruleSetId)
+              .subscribe(data => {
+              //  this.abilityFormModal.abilityCommandVM = data;
+                this.buffAndEffectsList = data.buffAndEffectsList;
+               // this.selectedBuffAndEffects = data.selectedBuffAndEffects;
+                this.isLoading = false;
+              }, error => { }, () => { this.isLoading = false; });
+          }
         }
     }
 
@@ -189,7 +207,12 @@ export class CreateAbilitiesComponent implements OnInit {
         ability.isFromCharacterAbilityId = ability.isFromCharacterAbilityId;
 
         if (ability.ruleSetId === 0 || ability.ruleSetId === undefined)
-            ability.ruleSetId = this._ruleSetId;
+        ability.ruleSetId = this._ruleSetId;
+
+      ability.abilityBuffAndEffectVM = this.selectedBuffAndEffects.map(x => {
+        return { buffAndEffectId: x.buffAndEffectId, abilityId: ability.abilityId };
+      });
+
 
         this.isLoading = true;
         let _msg = ability.abilityId === 0 || ability.abilityId === undefined ? "Creating Ability.." : "Updating Ability..";
@@ -488,5 +511,21 @@ export class CreateAbilitiesComponent implements OnInit {
     loadImageFailed() {
         // show message
     }
-    public event: EventEmitter<any> = new EventEmitter();
+  public event: EventEmitter<any> = new EventEmitter();
+  get buffAndEffectsSettings() {
+    return {
+      primaryKey: "buffAndEffectId",
+      labelKey: "name",
+      text: "Search Buff & Effect(s)",
+      enableCheckAll: true,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: false,
+      limitSelection: false,
+      enableSearchFilter: true,
+      classes: "myclass custom-class ",
+      showCheckbox: true,
+      position: "top"
+    };
+  }
 }

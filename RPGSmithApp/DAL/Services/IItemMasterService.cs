@@ -12,8 +12,8 @@ namespace DAL.Services
         ItemMaster GetItemMasterById(int? id);
         List<ItemMaster> GetItemMasters();
         List<ItemMaster> GetItemMastersByRuleSetId(int ruleSetId);
-        Task<ItemMaster> CreateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities);
-        Task<ItemMaster> UpdateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities);
+        Task<ItemMaster> CreateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities, List<ItemMasterBuffAndEffect> AssociatedBuffAndEffects);
+        Task<ItemMaster> UpdateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities, List<ItemMasterBuffAndEffect> AssociatedBuffAndEffects);
         Task<bool> DeleteItemMaster(int id);
         Task<int> GetItemMasterCount();
         int GetCountByRuleSetId(int ruleSetId);
@@ -21,7 +21,7 @@ namespace DAL.Services
         Task<bool> CheckDuplicateItemMaster(string value, int? ruleSetId,int? itemMasterId = 0);
         Task<ItemMaster> GetDuplicateItemMaster(string value, int? ruleSetId, int? itemMasterId = 0);
         List<ItemMaster> Core_GetItemMastersByRuleSetId(int ruleSetId, int ParentID);
-        Task<ItemMaster> Core_CreateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities);
+        Task<ItemMaster> Core_CreateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities,List<ItemMasterBuffAndEffect> AssociatedBuffAndEffects);
         bool Core_ItemMasterWithParentIDExists(int itemMasterID, int RulesetID);
         List<ItemMaster_Bundle> SP_GetItemMastersByRuleSetId(int rulesetId, int page, int pageSize);
         SP_AbilitySpellForItemMaster AbilitySpellForItemsByRuleset_sp(int rulesetId, int itemMasterId);

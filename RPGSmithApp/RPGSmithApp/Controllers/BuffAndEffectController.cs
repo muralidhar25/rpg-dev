@@ -80,21 +80,22 @@ namespace RPGSmithApp.Controllers
                 return new CharacterBuffAndEffectViewModel();
             }
             CharacterBuffAndEffectViewModel model = new CharacterBuffAndEffectViewModel() {
-                BuffAndEffectCommand= buffAndEffect.BuffAndEffect.BuffAndEffectCommand,
-                BuffAndEffectId= buffAndEffect.BuffAndEffect.BuffAndEffectId,
-                CharacterBuffAandEffectId=buffAndEffect.CharacterBuffAandEffectId,
-                CharacterId= buffAndEffect.CharacterId==null ? 0 : (int)buffAndEffect.CharacterId,
-                Command= buffAndEffect.BuffAndEffect.Command,
-               CommandName = buffAndEffect.BuffAndEffect.CommandName,
-               Description = buffAndEffect.BuffAndEffect.Description,
-                ImageUrl= buffAndEffect.BuffAndEffect.ImageUrl,
-                IsDeleted= buffAndEffect.BuffAndEffect.IsDeleted,
-                Metatags= buffAndEffect.BuffAndEffect.Metatags,
-                Name= buffAndEffect.BuffAndEffect.Name,
-                ParentBuffAndEffectId= buffAndEffect.BuffAndEffect.ParentBuffAndEffectId,
-                RuleSet= buffAndEffect.BuffAndEffect.RuleSet,
-               RuleSetId = buffAndEffect.BuffAndEffect.RuleSetId,
-                Stats= buffAndEffect.BuffAndEffect.Stats,
+                BuffAndEffectCommand = buffAndEffect.BuffAndEffect.BuffAndEffectCommand,
+                BuffAndEffectId = buffAndEffect.BuffAndEffect.BuffAndEffectId,
+                CharacterBuffAandEffectId = buffAndEffect.CharacterBuffAandEffectId,
+                CharacterId = buffAndEffect.CharacterId == null ? 0 : (int)buffAndEffect.CharacterId,
+                Command = buffAndEffect.BuffAndEffect.Command,
+                CommandName = buffAndEffect.BuffAndEffect.CommandName,
+                Description = buffAndEffect.BuffAndEffect.Description,
+                ImageUrl = buffAndEffect.BuffAndEffect.ImageUrl,
+                IsDeleted = buffAndEffect.BuffAndEffect.IsDeleted,
+                Metatags = buffAndEffect.BuffAndEffect.Metatags,
+                Name = buffAndEffect.BuffAndEffect.Name,
+                ParentBuffAndEffectId = buffAndEffect.BuffAndEffect.ParentBuffAndEffectId,
+                RuleSet = buffAndEffect.BuffAndEffect.RuleSet,
+                RuleSetId = buffAndEffect.BuffAndEffect.RuleSetId,
+                Stats = buffAndEffect.BuffAndEffect.Stats,
+                Character = buffAndEffect.Character
             };
 
             return model;

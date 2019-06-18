@@ -74,6 +74,7 @@ namespace DAL.Models
 
         public virtual ICollection<ItemMasterSpell> ItemMasterSpells { get; set; }
         public virtual ICollection<SpellCommand> SpellCommand { get; set; }
+        public virtual ICollection<SpellBuffAndEffect> SpellBuffAndEffects { get; set; }
       
     }
 }

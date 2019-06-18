@@ -25,9 +25,42 @@ namespace DAL.Services
             this._configuration = configuration;
         }
 
-        public async Task<Ability> Create(Ability item)
+        public async Task<Ability> Create(Ability item, List<AbilityBuffAndEffect> AbilityBuffAndEffectVM)
         {
-            return await _repo.Add(item);
+            //return await _repo.Add(item);
+
+            item.AbilityBuffAndEffects = new List<AbilityBuffAndEffect>();
+            var result = await _repo.Add(item);
+
+            int abilityId = result.AbilityId;
+            try
+            {
+                if (abilityId > 0)
+                {
+
+                    if (AbilityBuffAndEffectVM != null && AbilityBuffAndEffectVM.Count > 0)
+                    {
+                        //AssociatedBuffAndEffects.ForEach(a => a.ItemMasterId = ItemMasterId);
+                        //AssociatedBuffAndEffects.ForEach(a => a.Id = 0);
+                        List<AbilityBuffAndEffect> AssociatedBuffAndEffectsList = AbilityBuffAndEffectVM.Select(x => new AbilityBuffAndEffect()
+                        {
+                            BuffAndEffectId = x.BuffAndEffectId,
+                        }).ToList();
+                        foreach (var be in AssociatedBuffAndEffectsList)
+                        {
+                            _context.AbilityBuffAndEffects.Add(new AbilityBuffAndEffect() { BuffAndEffectId = be.BuffAndEffectId, AbilityId = abilityId });
+                        }
+                        //_context.ItemMasterBuffAndEffects.AddRange(AssociatedBuffAndEffectsList);// _repoMasterSpell.AddRange(AssociatedSpells);
+                        _context.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception ex)
+            { }
+
+            result.AbilityBuffAndEffects = AbilityBuffAndEffectVM;
+            return result;
+
         }
 
         public async  Task<bool> Delete(int id)
@@ -36,6 +69,14 @@ namespace DAL.Services
             var ac = _context.AbilityCommands.Where(x => x.AbilityId == id && x.IsDeleted !=true).ToList();
 
             foreach(AbilityCommand item in ac)
+            {
+                item.IsDeleted = true;
+            }
+
+            // Remove associated Buffs
+            var abe = _context.AbilityBuffAndEffects.Where(x => x.AbilityId == id && x.IsDeleted != true).ToList();
+
+            foreach (AbilityBuffAndEffect item in abe)
             {
                 item.IsDeleted = true;
             }
@@ -93,6 +134,7 @@ namespace DAL.Services
                  .Include(d => d.RuleSet)
                 .Include(d => d.ItemMasterAbilities)
                 .Include(d => d.AbilityCommand)
+                .Include(d => d.AbilityBuffAndEffects).ThenInclude(d => d.BuffAndEffect)
                 .Where(x => x.IsDeleted != true).OrderBy(o => o.Name).ToList();
 
 
@@ -102,6 +144,7 @@ namespace DAL.Services
             {
                 a.ItemMasterAbilities = a.ItemMasterAbilities.Where(p => p.IsDeleted != true).ToList();
                 a.AbilityCommand = a.AbilityCommand.Where(p => p.IsDeleted != true).ToList();
+                a.AbilityBuffAndEffects = a.AbilityBuffAndEffects.Where(p => p.IsDeleted != true).ToList();
             }
 
             return abilities;
@@ -113,6 +156,7 @@ namespace DAL.Services
                 .Include(d=>d.RuleSet)
                 .Include(d=>d.ItemMasterAbilities)
                 .Include(d=>d.AbilityCommand)
+                .Include(d => d.AbilityBuffAndEffects).ThenInclude(d => d.BuffAndEffect)
                 .Where(x => x.AbilityId  == id && x.IsDeleted != true)
                 .FirstOrDefault();
 
@@ -120,6 +164,7 @@ namespace DAL.Services
 
             ability.ItemMasterAbilities = ability.ItemMasterAbilities.Where(p => p.IsDeleted != true).ToList();
             ability.AbilityCommand = ability.AbilityCommand.Where(p => p.IsDeleted != true).ToList();
+            ability.AbilityBuffAndEffects = ability.AbilityBuffAndEffects.Where(p => p.IsDeleted != true).ToList();
 
             return ability;
         }
@@ -186,6 +231,7 @@ namespace DAL.Services
                 .Include(d => d.RuleSet)
                 .Include(d => d.ItemMasterAbilities)
                 .Include(d => d.AbilityCommand)
+                .Include(d => d.AbilityBuffAndEffects).ThenInclude(d => d.BuffAndEffect)
                 .Where(x => x.RuleSetId == ruleSetId && x.IsDeleted!=true)
                 .OrderBy(o => o.Name).ToList();
 
@@ -195,6 +241,7 @@ namespace DAL.Services
             {
                 a.ItemMasterAbilities = a.ItemMasterAbilities.Where(p => p.IsDeleted != true).ToList();
                 a.AbilityCommand = a.AbilityCommand.Where(p => p.IsDeleted != true).ToList();
+                a.AbilityBuffAndEffects = a.AbilityBuffAndEffects.Where(p => p.IsDeleted != true).ToList();
             }
 
             return abilities;
@@ -212,7 +259,8 @@ namespace DAL.Services
                 .Include(d => d.RuleSet)
                 .Include(d => d.ItemMasterAbilities)
                 .Include(d => d.AbilityCommand)
-                
+                .Include(d => d.AbilityBuffAndEffects).ThenInclude(d => d.BuffAndEffect)
+
                 .OrderBy(o => o.Name).ToList();
 
             if (abilities == null) return abilities;
@@ -221,11 +269,12 @@ namespace DAL.Services
             {
                 a.ItemMasterAbilities = a.ItemMasterAbilities.Where(p => p.IsDeleted != true).ToList();
                 a.AbilityCommand = a.AbilityCommand.Where(p => p.IsDeleted != true).ToList();
+                a.AbilityBuffAndEffects = a.AbilityBuffAndEffects.Where(p => p.IsDeleted != true).ToList();
             }
 
             return abilities;
         }
-        public async Task<Ability> Update(Ability item, bool IsFromCharacter = false)
+        public async Task<Ability> Update(Ability item, List<AbilityBuffAndEffect> AbilityBuffAndEffectVM, bool IsFromCharacter = false)
         {
             var ability = _context.Abilities.FirstOrDefault(x => x.AbilityId == item.AbilityId);
 
@@ -247,9 +296,26 @@ namespace DAL.Services
                 ability.MaxNumberOfUses = item.MaxNumberOfUses;
                 ability.CurrentNumberOfUses = item.CurrentNumberOfUses;
             }
+
+            _context.AbilityBuffAndEffects.RemoveRange(_context.AbilityBuffAndEffects.Where(x => x.AbilityId == item.AbilityId));
             try
             {
                 _context.SaveChanges();
+
+                List<AbilityBuffAndEffect> listbuffs = new List<AbilityBuffAndEffect>();
+                foreach (var be in AbilityBuffAndEffectVM)
+                {
+                    AbilityBuffAndEffect obj = new AbilityBuffAndEffect()
+                    {
+                        BuffAndEffectId = be.BuffAndEffectId,
+                        AbilityId = item.AbilityId
+                    };
+                    listbuffs.Add(obj);
+                }
+                //SpellBuffAndEffectVM.ForEach(a => a.SpellId = spell.SpellId);
+                _context.AbilityBuffAndEffects.AddRange(listbuffs);
+                _context.SaveChanges();
+                ability.AbilityBuffAndEffects = listbuffs;
             }
             catch (Exception ex)
             {
@@ -369,10 +435,41 @@ namespace DAL.Services
             }
             return false;
         }
-        public async Task<Ability> Core_CreateAbility(Ability ability) {
+        public async Task<Ability> Core_CreateAbility(Ability ability, List<AbilityBuffAndEffect> AbilityBuffAndEffectVM) {
             ability.ParentAbilityId = ability.AbilityId;
             ability.AbilityId = 0;
-            return await _repo.Add(ability);
+
+            ability.AbilityBuffAndEffects = new List<AbilityBuffAndEffect>();
+            await _repo.Add(ability);
+
+            int abilityID = ability.AbilityId;
+            if (abilityID > 0)
+            {
+
+                if (AbilityBuffAndEffectVM != null && AbilityBuffAndEffectVM.Count > 0)
+                {
+                    //AssociatedBuffAndEffects.ForEach(a => a.ItemMasterId = ItemMasterId);
+                    //_context.ItemMasterBuffAndEffects.AddRange(AssociatedBuffAndEffects);
+                    //_context.SaveChanges();
+
+
+                    List<AbilityBuffAndEffect> listbuffs = new List<AbilityBuffAndEffect>();
+                    foreach (var item in AbilityBuffAndEffectVM)
+                    {
+                        AbilityBuffAndEffect obj = new AbilityBuffAndEffect()
+                        {
+                            BuffAndEffectId = item.BuffAndEffectId,
+                            AbilityId = ability.AbilityId
+                        };
+                        listbuffs.Add(obj);
+                    }
+                    //SpellBuffAndEffectVM.ForEach(a => a.SpellId = spell.SpellId);
+                    _context.AbilityBuffAndEffects.AddRange(listbuffs);
+                    _context.SaveChanges();
+                    ability.AbilityBuffAndEffects = listbuffs;
+                }
+            }
+            return ability;
         }
 
         public List<Ability> SP_GetAbilityByRuleSetId(int rulesetId, int page, int pageSize)
@@ -446,11 +543,15 @@ namespace DAL.Services
             return _abilityList;
         }
 
-        public List<AbilityCommand> SP_GetAbilityCommands(int abilityId)
+        public AbilityAssociatedRecords SP_GetAbilityCommands(int abilityId, int RuleSetID)
         {
+            
+            AbilityAssociatedRecords result = new AbilityAssociatedRecords();
             List<AbilityCommand> _abilityCommand = new List<AbilityCommand>();
+            List<BuffAndEffect> _BuffAndEffects = new List<BuffAndEffect>();
+            List<BuffAndEffect> _selectedBuffAndEffects = new List<BuffAndEffect>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
-            string qry = "EXEC Ability_GetAbilityCommands @AbilityId = '" + abilityId + "'";
+           // string qry = "EXEC Ability_GetAbilityCommands @AbilityId = '" + abilityId + "'";
 
             SqlConnection connection = new SqlConnection(connectionString);
             SqlCommand command = new SqlCommand();
@@ -463,6 +564,7 @@ namespace DAL.Services
 
                 // Add the parameters for the SelectCommand.
                 command.Parameters.AddWithValue("@AbilityId", abilityId);
+                command.Parameters.AddWithValue("@RulesetID", RuleSetID);
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;
@@ -491,8 +593,38 @@ namespace DAL.Services
                     _abilityCommand.Add(_cmd);
                 }
             }
+            if (ds.Tables[1].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[1].Rows)
+                {
+                    BuffAndEffect i = new BuffAndEffect();
+                    i.BuffAndEffectId = row["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["BuffAndEffectId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
 
-            return _abilityCommand;
+                    _BuffAndEffects.Add(i);/////////
+                }
+            }
+            if (ds.Tables[2].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[2].Rows)
+                {
+                    BuffAndEffect i = new BuffAndEffect();
+                    i.BuffAndEffectId = row["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["BuffAndEffectId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    _selectedBuffAndEffects.Add(i);///////
+                }
+            }
+
+            result.AbilityCommands = _abilityCommand;
+            result.BuffAndEffectsList = _BuffAndEffects;
+            result.SelectedBuffAndEffects = _selectedBuffAndEffects;
+            return result;
+           // return _abilityCommand;
         }
     }
 }

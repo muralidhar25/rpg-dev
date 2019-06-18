@@ -325,6 +325,7 @@ export class ItemsService extends EndpointFactory {
 
         itemAbilities: _itemVM.itemAbilities == null || _itemVM.itemAbilities == undefined ? [] : _itemVM.itemAbilities,
         itemSpells: _itemVM.itemSpells == null || _itemVM.itemSpells == undefined ? [] : _itemVM.itemSpells,
+        itemBuffAndEffects: _itemVM.itemBuffAndEffects == null || _itemVM.itemBuffAndEffects == undefined ? [] : _itemVM.itemBuffAndEffects,
         view: _view === 'DUPLICATE' ? VIEW.DUPLICATE : VIEW.EDIT,
       }
     }
@@ -344,7 +345,7 @@ export class ItemsService extends EndpointFactory {
         view: VIEW.ADD,
         itemAbilities: [],
         itemSpells: [],
-
+        itemBuffAndEffects:[],
         commandName: 'Default',
         multiItemMasters: [],
         multiItemMasterBundles: []
@@ -415,6 +416,7 @@ export class ItemsService extends EndpointFactory {
         itemMasterAbilityVM: _itemTemplateVM.itemMasterAbilityVM == undefined ? [] : _itemTemplateVM.itemMasterAbilityVM,
         itemMasterPlayerVM: _itemTemplateVM.itemMasterPlayerVM == undefined ? [] : _itemTemplateVM.itemMasterPlayerVM,
         itemMasterSpellVM: _itemTemplateVM.itemMasterSpellVM == undefined ? [] : _itemTemplateVM.itemMasterSpellVM,
+        itemMasterBuffAndEffectVM: _itemTemplateVM.itemMasterBuffAndEffectVM == undefined ? [] : _itemTemplateVM.itemMasterBuffAndEffectVM,
 
         currencyLabel: _itemVM.ruleSet == undefined ? ''
           : _itemVM.ruleSet.currencyLabel == undefined || _itemVM.ruleSet.currencyLabel == null ? '' : '(' + _itemVM.ruleSet.currencyLabel + ')',
@@ -425,15 +427,18 @@ export class ItemsService extends EndpointFactory {
 
         itemMasterSpell: _itemTemplateVM.itemMasterSpell == null ? [] : _itemTemplateVM.itemMasterSpell,
         itemMasterAbilities: _itemTemplateVM.itemMasterAbilities == null ? [] : _itemTemplateVM.itemMasterAbilities,
+        itemMasterBuffAndEffects: _itemTemplateVM.itemMasterBuffAndEffects == null ? [] : _itemTemplateVM.itemMasterBuffAndEffects,
         itemMasterCommand: _itemTemplateVM.itemMasterCommand == null ? [] : _itemTemplateVM.itemMasterCommand,
         itemMasterCommandVM: _itemTemplateVM.itemMasterCommandVM == null ? [] : _itemTemplateVM.itemMasterCommandVM,
         //associate spell-ability changes
 
         itemMasterSpellId: _itemTemplateVM.itemMasterSpell == undefined ? 0 : _itemTemplateVM.itemMasterSpell.length > 0 ? _itemTemplateVM.itemMasterSpell[0].spellId : 0,
         itemMasterAbilityId: _itemTemplateVM.itemMasterAbilities == undefined ? 0 : _itemTemplateVM.itemMasterAbilities.length > 0 ? _itemTemplateVM.itemMasterAbilities[0].abilityId : 0,
+        itemMasterBuffAndEffectId: _itemTemplateVM.itemMasterBuffAndEffects == undefined ? 0 : _itemTemplateVM.itemMasterBuffAndEffects.length > 0 ? _itemTemplateVM.itemMasterBuffAndEffects[0].buffAndEffectId : 0,
 
         spellDetail: _itemTemplateVM.itemMasterSpell == undefined ? undefined : _itemTemplateVM.itemMasterSpell.length > 0 ? _itemTemplateVM.itemMasterSpell[0].spell : undefined,
-        abilityDetail: _itemTemplateVM.itemMasterAbilities == undefined ? undefined : _itemTemplateVM.itemMasterAbilities.length > 0 ? _itemTemplateVM.itemMasterAbilities[0].abilitiy : undefined
+        abilityDetail: _itemTemplateVM.itemMasterAbilities == undefined ? undefined : _itemTemplateVM.itemMasterAbilities.length > 0 ? _itemTemplateVM.itemMasterAbilities[0].abilitiy : undefined,
+       buffAndEffectDetail: _itemTemplateVM.itemMasterBuffAndEffects == undefined ? undefined : _itemTemplateVM.itemMasterBuffAndEffects.length > 0 ? _itemTemplateVM.itemMasterBuffAndEffects[0].buffAndEffectId : undefined
       }
     }
     else {
@@ -463,6 +468,7 @@ export class ItemsService extends EndpointFactory {
         itemMasterAbilityVM: [],
         itemMasterPlayerVM: [],
         itemMasterSpellVM: [],
+        itemMasterBuffAndEffectVM: [],
         commandVM: [],
         currencyLabel: _itemVM.ruleSet == undefined ? ''
           : _itemVM.ruleSet.currencyLabel == undefined || _itemVM.ruleSet.currencyLabel == null ? '' : '(' + _itemVM.ruleSet.currencyLabel + ')',
@@ -473,10 +479,12 @@ export class ItemsService extends EndpointFactory {
 
         itemMasterSpell: [],
         itemMasterAbilities: [],
+        itemMasterBuffAndEffects: [],
         itemMasterCommandVM: [],
         itemMasterCommand: [],
         itemMasterSpellId: 0,
-        itemMasterAbilityId: 0
+        itemMasterAbilityId: 0,
+        itemMasterBuffAndEffectId: 0
       }
     }
     return itemMasterFormModal;

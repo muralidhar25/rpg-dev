@@ -129,3 +129,28 @@ tag-input {
 .input-command .row{
     margin-bottom: -15px;
 }
+.associate-img {
+  width: 30px;
+  border: 1px solid #efefef;
+  margin-top: -5px;
+}
+
+.associate-label-name {
+  display: inline-block;
+  text-overflow: ellipsis;
+  max-width: 120px;
+  overflow: hidden;
+  color: #be8917;
+  font-weight: 500;
+}
+
+.associate-img {
+  width: 30px;
+  border: 1px solid #efefef;
+}
+
+.associate-label-name {
+  text-overflow: ellipsis;
+  max-width: 120px;
+  overflow: hidden;
+}

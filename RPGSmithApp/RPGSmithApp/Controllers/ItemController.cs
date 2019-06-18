@@ -366,6 +366,14 @@ namespace RPGSmithApp.Controllers
                     SpellId = spell.SpellId
                 });
             }
+            var ItemBuffAndEffects = new List<ItemBuffAndEffect>();
+            foreach (var be in ItemTemplate.itemMasterBuffAndEffects)
+            {
+                ItemBuffAndEffects.Add(new ItemBuffAndEffect
+                {
+                    BuffAndEffectId = be.BuffAndEffectId
+                });
+            }
             var ItemCommands = new List<ItemCommand>();
             foreach (var command in ItemTemplate.ItemMasterCommand)
             {
@@ -410,7 +418,7 @@ namespace RPGSmithApp.Controllers
                 CommandName = ItemTemplate.CommandName
             },
             ItemSpells,
-            ItemAbilities, ItemCommands);
+            ItemAbilities, ItemBuffAndEffects, ItemCommands);
         }
 
         [HttpPost("create")]
@@ -424,7 +432,7 @@ namespace RPGSmithApp.Controllers
                 model.TotalWeight = model.Quantity * model.Weight;
                 var _item = Mapper.Map<Item>(model);
 
-                var result = await _itemService.InsertItem(_item, model.ItemSpells, model.ItemAbilities);
+                var result = await _itemService.InsertItem(_item, model.ItemSpells, model.ItemAbilities,model.ItemBuffAndEffects);
 
                 ///////if non-conatiner item remove/update its container
                 if (_item.ContainedIn > 0 && !model.IsContainer)
@@ -522,7 +530,7 @@ namespace RPGSmithApp.Controllers
 
             model.TotalWeight = model.Quantity * model.Weight;
             var _item = Mapper.Map<Item>(model);            
-            var result = await _itemService.UpdateItem(_item, model.ItemSpells, model.ItemAbilities);
+            var result = await _itemService.UpdateItem(_item, model.ItemSpells, model.ItemAbilities, model.ItemBuffAndEffects);
 
             ///////if non-conatiner item remove/update its container
             if (((item.ContainedIn > 0 && result.ContainedIn == 0)
@@ -678,7 +686,7 @@ namespace RPGSmithApp.Controllers
                 else if (item.ContainedIn == id)
                 {
                     item.ContainedIn = null;
-                    await _itemService.UpdateItem(item, new List<ItemSpell>(), new List<ItemAbility>());
+                    await _itemService.UpdateItem(item, new List<ItemSpell>(), new List<ItemAbility>(),new List<ItemBuffAndEffect>());
                 }
             }
             await _itemService.DeleteItem(id);
@@ -782,7 +790,7 @@ namespace RPGSmithApp.Controllers
 
             model.ItemId = 0;
             var itemModel = Mapper.Map<Item>(model);
-            var result = await _itemService.InsertItem(itemModel, model.ItemSpells, model.ItemAbilities);
+            var result = await _itemService.InsertItem(itemModel, model.ItemSpells, model.ItemAbilities,model.ItemBuffAndEffects);
 
             if (model.ItemCommandVM != null)
             {

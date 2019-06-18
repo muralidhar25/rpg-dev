@@ -743,7 +743,8 @@ namespace RPGSmithApp.Controllers
                             ContainerWeightModifier = item.ContainerWeightModifier
                         },
                         item.ItemSpells.ToList(),
-                        item.ItemAbilities.ToList());
+                        item.ItemAbilities.ToList(), item.ItemBuffAndEffects.ToList());
+
                     }
                     foreach (var cc in character.CharacterCommands)
                     {

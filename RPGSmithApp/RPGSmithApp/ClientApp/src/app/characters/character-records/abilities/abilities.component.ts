@@ -488,7 +488,7 @@ export class CharacterAbilitiesComponent implements OnInit {
   useAbility(ability: any) {
 
     if (ability.abilityId) {
-      this.abilityService.getAbilityCommands_sp<any>(ability.abilityId)
+      this.abilityService.getAbilityCommands_sp<any>(ability.abilityId,0)
         .subscribe(data => {
           if (data.length > 0) {
             this.bsModalRef = this.modalService.show(CastComponent, {

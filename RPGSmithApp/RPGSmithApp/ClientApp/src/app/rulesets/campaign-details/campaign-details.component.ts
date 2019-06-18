@@ -618,5 +618,6 @@ export class CampaignDetailsComponent implements OnInit {
     this.rulesetService.ruleset = ruleset;
     this.router.navigate(['/ruleset/campaign-dashboard', ruleset.ruleSetId]);
   }
-  
+  monsterTemplates() { }
+  monsters() { }
 }

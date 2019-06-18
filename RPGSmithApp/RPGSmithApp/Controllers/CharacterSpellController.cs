@@ -219,7 +219,7 @@ namespace RPGSmithApp.Controllers
 
 
             //var result = await _spellService.Create(spell);
-            var result = await _coreRulesetService.CreateSpell(spell);
+            var result = await _coreRulesetService.CreateSpell(spell,model.SpellBuffAndEffects.ToList());
 
             if (model.SpellCommand != null && model.SpellCommand.Count > 0)
             {

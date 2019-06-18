@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using DAL.Models.SPModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,8 +11,8 @@ namespace DAL.Services
     {
         Ability GetById(int? id);
         List<Ability> GetAll();
-        Task<Ability> Create(Ability item);
-        Task<Ability> Update(Ability item, bool IsFromCharacter = false);
+        Task<Ability> Create(Ability item,List<AbilityBuffAndEffect> AbilityBuffAndEffectVM);
+        Task<Ability> Update(Ability item, List<AbilityBuffAndEffect> AbilityBuffAndEffectVM, bool IsFromCharacter = false);
         Task<bool> Delete(int id);
         List<Ability> GetAbilitiesByRuleSetId(int ruleSetId);
         int GetCountByRuleSetId(int ruleSetId);
@@ -20,9 +21,9 @@ namespace DAL.Services
         void ToggleEnableAbility(int Id);
         List<Ability> Core_GetAbilitiesByRuleSetId(int ruleSetId, int parentID);
         bool Core_AbilityWithParentIDExists(int abilityId, int RulesetID);
-        Task<Ability> Core_CreateAbility(Ability ability);
+        Task<Ability> Core_CreateAbility(Ability ability,List<AbilityBuffAndEffect> AbilityBuffAndEffectVM);
         List<Ability> SP_GetAbilityByRuleSetId(int rulesetId, int page, int pageSize);
-        List<AbilityCommand> SP_GetAbilityCommands(int abilityId);
+        AbilityAssociatedRecords SP_GetAbilityCommands(int abilityId, int RuleSetID);
         List<Ability> GetAbilitiesByRuleSetId_add(int rulesetId);
     }
 }

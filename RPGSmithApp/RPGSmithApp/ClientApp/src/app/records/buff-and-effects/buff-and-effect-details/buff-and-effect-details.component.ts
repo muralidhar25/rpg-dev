@@ -16,6 +16,11 @@ import { DBkeys } from "../../../core/common/db-keys";
 import { Utilities } from "../../../core/common/utilities";
 import { CreateBuffAndEffectsComponent } from "../../../shared/create-buff-and-effects/create-buff-and-effects.component";
 import { ImageViewerComponent } from "../../../shared/image-interface/image-viewer/image-viewer.component";
+import { AssignBuffAndEffectComponent } from "../../../shared/buffs-and-effects/assign-buffs-and-effects/assign-buffs-and-effects.component";
+import { Characters } from "../../../core/models/view-models/characters.model";
+import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
+import { CastComponent } from "../../../shared/cast/cast.component";
+import { STAT_TYPE } from "../../../core/models/enums";
 
 
 @Component({
@@ -79,7 +84,7 @@ export class BuffAndEffectDetailsComponent implements OnInit {
           if (!this.buffAndEffectDetail.ruleset) {
             this.buffAndEffectDetail.ruleset = data.ruleSet;
           }
-
+          debugger
           this.ruleSetId = this.buffAndEffectDetail.ruleSetId;
           this.rulesetService.GetCopiedRulesetID(this.buffAndEffectDetail.ruleSetId, user.id).subscribe(data => {
             let id: any = data
@@ -210,30 +215,53 @@ export class BuffAndEffectDetailsComponent implements OnInit {
   
 
   useBuffAndEffect(buffAndEffect: any) {
+    if (this.buffAndEffectDetail.buffAndEffectCommandVM.length) {
+      this.bsModalRef = this.modalService.show(CastComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
 
-    let msg = "The command value for " + buffAndEffect.name
-      + " Buff & Effect has not been provided. Edit this record to input one.";
-
-    if (buffAndEffect.buffAndEffectCommand == undefined || buffAndEffect.buffAndEffectCommand == null) {
-      this.alertService.showDialog(msg, DialogType.alert, () => this.useBuffAndEffectHelper(buffAndEffect));
+      this.bsModalRef.content.title = "Buffs & Effects Commands"
+      this.bsModalRef.content.ListCommands = this.buffAndEffectDetail.buffAndEffectCommandVM
+      this.bsModalRef.content.Command = this.buffAndEffectDetail
+      this.bsModalRef.content.Character = new Characters();
+      this.bsModalRef.content.Ruleset = this.buffAndEffectDetail.ruleset
+    } else {
+      this.useCommand(this.buffAndEffectDetail, buffAndEffect.buffAndEffectId)
     }
-    else if (buffAndEffect.buffAndEffectCommand.length == 0) {
-      this.alertService.showDialog(msg, DialogType.alert, () => this.useBuffAndEffectHelper(buffAndEffect));
+  }
+  useCommand(buffAndEffectDetail: any, buffAndEffectId: string = '') {
+    let msg = "The command value for " + buffAndEffectDetail.name
+      + " has not been provided. Edit this record to input one.";
+    if (buffAndEffectDetail.command == undefined || buffAndEffectDetail.command == null || buffAndEffectDetail.command == '') {
+      this.alertService.showDialog(msg, DialogType.alert, () => this.useCommandHelper(buffAndEffectDetail));
     }
     else {
       //TODO
-      this.useBuffAndEffectHelper(buffAndEffect);
+      this.useCommandHelper(buffAndEffectDetail, buffAndEffectId);
     }
   }
-
-  private useBuffAndEffectHelper(buffAndEffect: any) {
-    this.isLoading = true;
-    this.alertService.startLoadingMessage("", "TODO => Use Buff & Effect");
-    //TODO- PENDING ACTION
-    setTimeout(() => {
-      this.isLoading = false;
-      this.alertService.stopLoadingMessage();
-    }, 200);
+  private useCommandHelper(buffAndEffectDetail: any, buffAndEffectId: string = '') {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.command = buffAndEffectDetail.command;
+    if (buffAndEffectDetail.hasOwnProperty("buffAndEffectId")) {
+      this.bsModalRef.content.recordName = buffAndEffectDetail.name;
+      this.bsModalRef.content.recordImage = buffAndEffectDetail.imageUrl;
+      this.bsModalRef.content.recordType = 'buffAndEffect';
+      this.bsModalRef.content.recordId = buffAndEffectId;
+    }
+    this.bsModalRef.content.isFromCampaignDetail = true;
+    this.bsModalRef.content.event.subscribe(result => {
+    });
   }
 
   RedirectBack() {
@@ -253,4 +281,40 @@ export class BuffAndEffectDetailsComponent implements OnInit {
       this.bsModalRef.content.ViewImageAlt = img.alt;
     }
   }
+  Assign(buffAndEffect: any) {
+    this.bsModalRef = this.modalService.show(AssignBuffAndEffectComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.BuffAndEffectToAssign = buffAndEffect;
+    this.bsModalRef.content.ruleSetId = this.ruleSetId;
+    this.bsModalRef.content.event.subscribe(data => {
+      if (data == true) {
+        buffAndEffect.isAssignedToAnyCharacter = data;
+      } else if (data == false) {
+        buffAndEffect.isAssignedToAnyCharacter = data;
+      }
+
+    });
+  }
+  //DiceRoll(command) {
+  //  this.bsModalRef = this.modalService.show(DiceRollComponent, {
+  //    class: 'modal-primary modal-md',
+  //    ignoreBackdropClick: true,
+  //    keyboard: false
+  //  });
+  //  this.bsModalRef.content.title = "Dice";
+  //  this.bsModalRef.content.rulesetId = this.ruleSetId;
+  //  this.bsModalRef.content.ruleset = this.buffAndEffectDetail.ruleset;
+  //  //this.bsModalRef.content.tile = TILES.COMMAND;
+  //  //this.bsModalRef.content.commandTile = _tile.commandTiles;
+
+  //  this.bsModalRef.content.characterId = 0;
+  //  this.bsModalRef.content.character = new Characters();
+  //  this.bsModalRef.content.recordName = this.buffAndEffectDetail.ruleset.ruleSetName;
+  //  this.bsModalRef.content.recordImage = this.buffAndEffectDetail.ruleset.imageUrl;
+  //  this.bsModalRef.content.isFromCampaignDetail = true;
+  //  this.bsModalRef.content.recordType = 'ruleset'
+  //}
 }

@@ -35,5 +35,6 @@ namespace RPGSmithApp.ViewModels.EditModels
         public int IsFromCharacterAbilityId { get; set; }
 
         public List<AbilityCommand> AbilityCommandVM { get; set; }
+        public List<AbilityBuffAndEffect> AbilityBuffAndEffectVM { get; set; }
     }
 }

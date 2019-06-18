@@ -10,7 +10,7 @@ export class Spell {
         materialComponent?: string, isSomaticComponent?: boolean, isVerbalComponent?: boolean, castingTime?: number,
         description?: string, stats?: string, hitEffect?: string, missEffect?: string, effectDescription?: string,
         shouldCast?: boolean, imageUrl?: string, memorized?: boolean, metatags?: string, isMaterialComponent?: boolean,
-        view?: VIEW, showIcon?: boolean, sortOrder?: number, ruleset?: Ruleset, isFromCharacter?: boolean, isFromCharacterId?: number
+      view?: VIEW, showIcon?: boolean, sortOrder?: number, ruleset?: Ruleset, isFromCharacter?: boolean, isFromCharacterId?: number, spellBuffAndEffectVM?:any[]
     ) {
         this.spellId = spellId;
         this.ruleSetId = ruleSetId;
@@ -41,7 +41,8 @@ export class Spell {
         //this.itemMasterSpellVM = itemMasterSpellVM;
 
         this.isFromCharacter = isFromCharacter;
-        this.isFromCharacterId = isFromCharacterId;
+      this.isFromCharacterId = isFromCharacterId;
+      this.spellBuffAndEffectVM = spellBuffAndEffectVM;
     }
     public spellId: number;
     public ruleSetId: number;
@@ -72,6 +73,8 @@ export class Spell {
     //public itemMasterSpellVM: itemMasterSpell[];
 
     public isFromCharacter: boolean;
-    public isFromCharacterId: number;
+  public isFromCharacterId: number;
+  public spellBuffAndEffectVM: any[];
+
 }
 

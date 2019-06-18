@@ -20,6 +20,8 @@ import { User } from "../../../../core/models/user.model";
 import { HeaderValues } from "../../../../core/models/headers.model";
 import { CharactersService } from "../../../../core/services/characters.service";
 import { Characters } from "../../../../core/models/view-models/characters.model";
+import { CastComponent } from "../../../../shared/cast/cast.component";
+import { DiceRollComponent } from "../../../../shared/dice/dice-roll/dice-roll.component";
 
 
 
@@ -44,6 +46,8 @@ export class CharBuffAndEffectDetailsComponent implements OnInit {
   characterId: number = 0;
   pauseBuffAndEffectCreate: boolean = false;
   pageRefresh: boolean;
+  character: Characters = new Characters();
+  isAlreadyAssigned: boolean = false;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -86,13 +90,19 @@ export class CharBuffAndEffectDetailsComponent implements OnInit {
       this.gameStatus(this.characterId);
       this.buffAndEffectService.getCharacterBuffAndEffectById<any>(this.buffAndEffectId)
         .subscribe(data => {
-
+          debugger
           if (data)
             this.buffAndEffectDetail = this.buffAndEffectService.BuffAndEffectsModelData(data, "UPDATE");
           if (!this.buffAndEffectDetail.ruleset) {
             this.buffAndEffectDetail.ruleset = data.ruleSet;
           }
-
+          this.character = data.character;
+          if (this.character) {
+            if (this.character.characterId) {
+              this.isAlreadyAssigned = true;
+            }
+          }
+          
           this.ruleSetId = this.buffAndEffectDetail.ruleSetId;
           this.rulesetService.GetCopiedRulesetID(this.buffAndEffectDetail.ruleSetId, user.id).subscribe(data => {
             let id: any = data
@@ -208,7 +218,8 @@ export class CharBuffAndEffectDetailsComponent implements OnInit {
         this.isLoading = false;
         this.alertService.stopLoadingMessage();
         this.alertService.showMessage("Buff & Effect has been deleted successfully.", "", MessageSeverity.success);
-        this.router.navigate(['/character/dashboard', this.characterId]);
+        //this.router.navigate(['/character/dashboard', this.characterId]);
+        this.isAlreadyAssigned = false;
       }, error => {
         this.isLoading = false;
         let Errors = Utilities.ErrorDetail("", error);
@@ -225,30 +236,52 @@ export class CharBuffAndEffectDetailsComponent implements OnInit {
   
 
   useBuffAndEffect(buffAndEffect: any) {
+    if (this.buffAndEffectDetail.buffAndEffectCommandVM.length) {
+      this.bsModalRef = this.modalService.show(CastComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
 
-    let msg = "The command value for " + buffAndEffect.name
-      + " Buff & Effect has not been provided. Edit this record to input one.";
-
-    if (buffAndEffect.buffAndEffectCommand == undefined || buffAndEffect.buffAndEffectCommand == null) {
-      this.alertService.showDialog(msg, DialogType.alert, () => this.useBuffAndEffectHelper(buffAndEffect));
+      this.bsModalRef.content.title = "Buffs & Effects Commands"
+      this.bsModalRef.content.ListCommands = this.buffAndEffectDetail.buffAndEffectCommandVM
+      this.bsModalRef.content.Command = this.buffAndEffectDetail
+      debugger
+      this.bsModalRef.content.Character = this.character
+    } else {
+      this.useCommand(this.buffAndEffectDetail, buffAndEffect.characterAbilityId)
     }
-    else if (buffAndEffect.buffAndEffectCommand.length == 0) {
-      this.alertService.showDialog(msg, DialogType.alert, () => this.useBuffAndEffectHelper(buffAndEffect));
+  }
+  useCommand(Command: any, buffAndEffectId: string = '') {
+    let msg = "The command value for " + Command.name
+      + " has not been provided. Edit this record to input one.";
+    if (Command.command == undefined || Command.command == null || Command.command == '') {
+      this.alertService.showDialog(msg, DialogType.alert, () => this.useCommandHelper(Command));
     }
     else {
       //TODO
-      this.useBuffAndEffectHelper(buffAndEffect);
+      this.useCommandHelper(Command, buffAndEffectId);
     }
   }
-
-  private useBuffAndEffectHelper(buffAndEffect: any) {
-    this.isLoading = true;
-    this.alertService.startLoadingMessage("", "TODO => Use Buff & Effect");
-    //TODO- PENDING ACTION
-    setTimeout(() => {
-      this.isLoading = false;
-      this.alertService.stopLoadingMessage();
-    }, 200);
+  private useCommandHelper(Command: any, buffAndEffectId: string = '') {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = this.character.characterId;
+    this.bsModalRef.content.character = this.character;
+    this.bsModalRef.content.command = Command.command;
+    if (Command.hasOwnProperty("abilityId")) {
+      this.bsModalRef.content.recordName = Command.name;
+      this.bsModalRef.content.recordImage = Command.imageUrl;
+      this.bsModalRef.content.recordType = 'buffAndEffect';
+      this.bsModalRef.content.recordId = buffAndEffectId;
+    }
+    this.bsModalRef.content.event.subscribe(result => {
+    });
   }
 
   RedirectBack() {
@@ -311,5 +344,46 @@ export class CharBuffAndEffectDetailsComponent implements OnInit {
   }
   refresh() {
     this.initialize();
+  }
+  Assign(buffAndEffectDetail: BuffAndEffect) {
+    debugger
+    //this.isLoading = true;
+    //this.alertService.startLoadingMessage("", "Assigning Buffs & Effects to characters.");
+    //let buffs: BuffAndEffect[] = [];
+    //buffs.push(this.BuffAndEffectToAssign)
+    //debugger
+    //let nonSelectedCharacters: Characters[] = this.characters.map(x => {
+    //  if (this.selectercharacters.filter(SC => SC.characterId == x.characterId).length) {
+
+    //  }
+    //  else {
+    //    return x;
+    //  }
+
+    //})
+    //nonSelectedCharacters = nonSelectedCharacters.filter(SC => SC)
+    //debugger
+    //this.buffAndEffectService.assignBuffAndEffectToCharacter<any>(buffs, this.selectercharacters, nonSelectedCharacters, [], 0)
+    //  .subscribe(data => {
+    //    this.isLoading = false;
+    //    this.alertService.stopLoadingMessage();
+    //    this.alertService.showMessage("Buffs & Effects assigned successfully.", "", MessageSeverity.success);
+    //    if (this.selectercharacters) {
+    //      if (this.selectercharacters.length) {
+    //        this.event.emit(true);
+    //      }
+    //      else if (this.selectercharacters.length == 0) {
+    //        this.event.emit(false);
+    //      }
+    //    }
+    //    this.close();
+    //  }, error => {
+    //    this.isLoading = false;
+    //    let Errors = Utilities.ErrorDetail("", error);
+    //    if (Errors.sessionExpire) {
+    //      //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+    //      this.authService.logout(true);
+    //    }
+    //  }, () => { });
   }
 }

@@ -112,8 +112,8 @@ export class SpellsService extends EndpointFactory {
       });
   }
 
-  getSpellCommands_sp<T>(Id: number): Observable<T> {
-    let endpointUrl = `${this.getSpellCommands_api}?spellId=${Id}`;
+  getSpellCommands_sp<T>(Id: number,rulesetId:number): Observable<T> {
+    let endpointUrl = `${this.getSpellCommands_api}?spellId=${Id}&rulesetId=${rulesetId}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
@@ -223,7 +223,9 @@ export class SpellsService extends EndpointFactory {
         ruleset: spellVM.ruleset,
         metatags: spellVM.metatags == null || spellVM.metatags == undefined ? '' : spellVM.metatags,
         showIcon: false,
-        view: _view === 'DUPLICATE' ? VIEW.DUPLICATE : VIEW.EDIT
+        view: _view === 'DUPLICATE' ? VIEW.DUPLICATE : VIEW.EDIT,
+        spellBuffAndEffects: spellVM.spellBuffAndEffects == null ? [] : spellVM.spellBuffAndEffects,
+        spellBuffAndEffectVM: spellVM.spellBuffAndEffectVM == undefined ? [] : spellVM.spellBuffAndEffectVM,
         //sortOrder: spellVM.sortOrder
       }
     }
@@ -245,8 +247,10 @@ export class SpellsService extends EndpointFactory {
         school: '',
         class: '',
         levels: '',
-        commandName: 'Default'
+        commandName: 'Default',
         //sortOrder: spellVM.sortOrder
+        spellBuffAndEffects: [],
+        spellBuffAndEffectVM:[]
       }
     }
 

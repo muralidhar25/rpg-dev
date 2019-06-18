@@ -438,6 +438,7 @@ namespace DAL.Services
         public async Task<CharacterBuffAndEffect> GetCharacterBuffAndEffectById(int CharacterBuffAndEffectID) {
             CharacterBuffAndEffect characterBuffAndEffect =await _context.CharacterBuffAndEffects
                 .Where(x => x.CharacterBuffAandEffectId == CharacterBuffAndEffectID && x.IsDeleted!=true)
+                .Include(x => x.Character)
                 .Include(x => x.BuffAndEffect)
                 .Include(d => d.BuffAndEffect.RuleSet)
                 .Include(d => d.BuffAndEffect.BuffAndEffectCommand).FirstOrDefaultAsync();

@@ -34,6 +34,20 @@ namespace DAL.Models.SPModels
         public List<CharactersCharacterStat> charactersCharacterStat { get; set; }
         public Character character { get; set; }
     }
+    public class SpellAssociatedRecords
+    {
+        public List<SpellCommand> SpellCommands { get; set; }
+        public List<BuffAndEffect> BuffAndEffectsList { get; set; }
+        public List<BuffAndEffect> SelectedBuffAndEffects { get; set; }
+
+    }
+    public class AbilityAssociatedRecords
+    {
+        public List<AbilityCommand> AbilityCommands { get; set; }
+        public List<BuffAndEffect> BuffAndEffectsList { get; set; }
+        public List<BuffAndEffect> SelectedBuffAndEffects { get; set; }
+
+    }
     public class CommonTileConfig
     {
         public int RowNum { get; set; }

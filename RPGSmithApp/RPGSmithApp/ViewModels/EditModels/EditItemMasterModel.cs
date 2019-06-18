@@ -60,6 +60,7 @@ namespace RPGSmithApp.ViewModels.EditModels
        // public string UserID { get; set; }
 
         public List<ItemMasterAbility> ItemMasterAbilityVM { get; set; }
+        public List<ItemMasterBuffAndEffect> ItemMasterBuffAndEffectVM { get; set; }
 
         public List<ItemMasterSpell> ItemMasterSpellVM { get; set; }
 
