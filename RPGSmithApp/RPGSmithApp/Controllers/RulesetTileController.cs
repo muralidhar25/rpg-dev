@@ -29,6 +29,8 @@ namespace RPGSmithApp.Controllers
         private readonly IRulesetTextTileService _textTileService;
         private readonly IRulesetNoteTileService _noteTileService;
         private readonly IRulesetTileColorService _colorService;
+        private readonly IRulesetBuffAndEffectTileService _buffAndEffectTileService;
+        
         private const int heightWidth = 144;
 
         public RulesetTileController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager,
@@ -39,7 +41,8 @@ namespace RPGSmithApp.Controllers
             IRulesetImageTileService imageTileService,
             IRulesetTextTileService textTileService,
             IRulesetNoteTileService noteTileService,
-            IRulesetTileColorService colorService)
+            IRulesetTileColorService colorService,
+            IRulesetBuffAndEffectTileService buffAndEffectTileService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._accountManager = accountManager;
@@ -51,6 +54,7 @@ namespace RPGSmithApp.Controllers
             this._textTileService = textTileService;
             this._noteTileService = noteTileService;
             this._colorService = colorService;
+            this._buffAndEffectTileService = buffAndEffectTileService;
         }
 
         [HttpGet("GetById")]
@@ -223,6 +227,20 @@ namespace RPGSmithApp.Controllers
                             Tile.TextTiles = await _textTileService.Create(textTile);
                             SaveColorsAsync(Tile);
                             break;
+                        case (int)Enum.TILES.BUFFANDEFFECT:
+                            //Add Image Tile 
+                            if (model.BuffAndEffectTile == null)
+                                return BadRequest("Buff And Effect missing in request");
+
+                            await _tileService.Create(Tile);
+
+                            var buffAndEffectTile = model.BuffAndEffectTile;
+                            buffAndEffectTile.RulesetTileId = Tile.RulesetTileId;
+                            //imageTile.Color = Tile.Color;
+                            buffAndEffectTile.Shape = Tile.Shape;
+                            Tile.BuffAndEffectTiles = await _buffAndEffectTileService.Create(buffAndEffectTile);
+                            SaveColorsAsync(Tile);
+                            break;
                         default:
                             break;
                     }               
@@ -363,6 +381,21 @@ namespace RPGSmithApp.Controllers
                             Tile.TextTiles = await _textTileService.Update(TextTile);
                             SaveColorsAsync(Tile);
                             break;
+                        case (int)Enum.TILES.BUFFANDEFFECT:
+                            //Update BUFFANDEFFECT Tile 
+                            if (model.BuffAndEffectTile == null)
+                                return BadRequest("BuffAndEffectTile missing in request");
+                            else if (model.TextTile.TextTileId == 0)
+                                return BadRequest("BuffAndEffectTileId field is required for TextTile");
+
+                            await _tileService.Update(Tile);
+
+                            var buffAndEffectTile = model.BuffAndEffectTile;
+                            buffAndEffectTile.RulesetTileId = Tile.RulesetTileId;
+                            buffAndEffectTile.Shape = Tile.Shape;
+                            Tile.BuffAndEffectTiles = await _buffAndEffectTileService.Update(buffAndEffectTile);
+                            SaveColorsAsync(Tile);
+                            break;
                         default:
                             break;
                     }
@@ -450,6 +483,12 @@ namespace RPGSmithApp.Controllers
                         _tileColor.TitleTextColor = Tile.CommandTiles.TitleTextColor;
                         break;
                     case (int)Enum.TILES.TEXT:
+                        _tileColor.BodyBgColor = Tile.TextTiles.BodyBgColor;
+                        _tileColor.BodyTextColor = Tile.TextTiles.BodyTextColor;
+                        _tileColor.TitleBgColor = Tile.TextTiles.TitleBgColor;
+                        _tileColor.TitleTextColor = Tile.TextTiles.TitleTextColor;
+                        break;
+                    case (int)Enum.TILES.BUFFANDEFFECT:
                         _tileColor.BodyBgColor = Tile.TextTiles.BodyBgColor;
                         _tileColor.BodyTextColor = Tile.TextTiles.BodyTextColor;
                         _tileColor.TitleBgColor = Tile.TextTiles.TitleBgColor;

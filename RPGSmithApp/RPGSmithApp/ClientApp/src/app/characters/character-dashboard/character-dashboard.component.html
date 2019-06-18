@@ -551,11 +551,11 @@
                      [style.background-color]=" (box.tile.buffAndEffectTiles?.showTitle && !box.tile.buffAndEffectTiles?.displayLinkImage)? box.tile.buffAndEffectTiles.titleBgColor :box.tile.buffAndEffectTiles?.bodyBgColor" [ngClass]="(box.tile.buffAndEffectTiles?.shape=='50')?'grid-rounded':(box.tile.buffAndEffectTiles?.shape=='100')?'grid-circle':''"
                      (click)="viewTile(box.tile, box.tile.tileTypeId)">
 
-                  <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor, 'background-color': box.tile.buffAndEffectTiles.titleBgColor}"
+                  <!--<h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor, 'background-color': box.tile.buffAndEffectTiles.titleBgColor}"
                       popover="Buffs & Effects" triggers="hover" container="body"
                       [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?10:12">
                     Buffs & Effects
-                  </h5>
+                  </h5>-->
 
                   <div class="tile-body buff-tile-body">
                     <ng-container *ngIf="box.tile.buffAndEffectTiles?.showTitle && !box.tile.buffAndEffectTiles?.displayLinkImage">
@@ -565,9 +565,9 @@
                             [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
                         <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
 
-                          <span class="buff-text-only " *ngIf="CharBuff?.characterBuffAndEffect?.buffAndEffect"
-                                title="{{description(CharBuff?.characterBuffAndEffect?.buffAndEffect?.description)}}">
-                            {{CharBuff?.characterBuffAndEffect?.buffAndEffect?.name}}{{(i+1)!=box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds?.length ?',&nbsp;':''}}
+                          <span class="buff-text-only " *ngIf="CharBuff?.buffAndEffect"
+                                title="{{description(CharBuff?.buffAndEffect?.description)}}">
+                            {{CharBuff?.buffAndEffect?.name}}{{(i+1)!=box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds?.length ?',&nbsp;':''}}
                           </span>
 
                         </ng-container>
@@ -577,27 +577,27 @@
                       <span class="buff-image-text-both" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor}"
                             [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey"
                              [style.line-height.px]="box.config.sizey==1?10:15+box.config.sizex+box.config.sizey"
-                            [style.font-size.px]="box.config.sizey==1?10:10+box.config.sizex+box.config.sizey">
+                            [style.font-size.px]="box.config.sizey==1?10:10+box.config.sizex+box.config.sizey"
+                            >
                         <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
 
-                          <span class="" title="{{description(CharBuff?.characterBuffAndEffect?.buffAndEffect?.description)}}"
-                                *ngIf="CharBuff?.characterBuffAndEffect?.buffAndEffect"
-                                >
-                            <img [src]="CharBuff?.characterBuffAndEffect?.buffAndEffect?.imageUrl" class="buff-tile-image" />
-                            &nbsp;{{CharBuff?.characterBuffAndEffect?.buffAndEffect?.name}}
+                          <span class="" title="{{description(CharBuff?.buffAndEffect?.description)}}"
+                                *ngIf="CharBuff?.buffAndEffect"
+                                popover="{{CharBuff?.buffAndEffect?.name}}" triggers="hover" container="body">
+                            <img [src]="CharBuff?.buffAndEffect?.imageUrl" class="buff-tile-image" [ngStyle]="{'width': (getTileSize().max-4)+'px'}"/>
+                            &nbsp;{{CharBuff?.buffAndEffect?.name}}
                           </span><br /><br />
                         </ng-container>
                       </span>
                     </ng-container>
                     <ng-container *ngIf="!box.tile.buffAndEffectTiles?.showTitle && box.tile.buffAndEffectTiles?.displayLinkImage">
-                      <span class="buff-images-only" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor}"
-                                [style.height.px]="box.config.sizey==1?22:44+box.config.sizex+box.config.sizey"
-                            [style.line-height.px]="box.config.sizey==1?13:30+box.config.sizex+box.config.sizey"
-                            [style.font-size.px]="box.config.sizey==1?13:15+box.config.sizex+box.config.sizey">
+                      <span >
                         <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
-                          
-                            <img *ngIf="CharBuff?.characterBuffAndEffect?.buffAndEffect" title="{{description(CharBuff?.characterBuffAndEffect?.buffAndEffect?.description)}}" [src]="CharBuff?.characterBuffAndEffect?.buffAndEffect?.imageUrl" class="buff-tile-image" />
-                          
+
+                          <img *ngIf="CharBuff?.buffAndEffect" title="{{description(CharBuff?.buffAndEffect?.description)}}" [src]="CharBuff?.buffAndEffect?.imageUrl"
+                               class="buff-tile-image" [ngStyle]="{'width': (getTileSize().max)+'px','height': (getTileSize().max)+'px'}" style="margin:0px 2px 0px 0px"
+                               popover="{{CharBuff?.buffAndEffect?.name}}" triggers="hover" container="body"/>
+
                         </ng-container>
                       </span>
                     </ng-container>

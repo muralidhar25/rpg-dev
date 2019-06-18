@@ -1,17 +1,18 @@
-﻿using System;
+﻿using DAL.Models.RulesetTileModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DAL.Models.CharacterTileModels
+namespace DAL.Models.RulesetTileModels
 {
-   public class CharacterBuffAndEffectTile
+   public class RulesetBuffAndEffectTile
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int BuffAndEffectTileId { get; set; }
        
-        public int? CharacterTileId { get; set; }
+        public int? RulesetTileId { get; set; }
 
         public bool ShowTitle { get; set; }    
         public bool IsDeleted { get; set; }
@@ -35,7 +36,7 @@ namespace DAL.Models.CharacterTileModels
         public bool DisplayLinkImage { get; set; }
         //public virtual List<CharacterBuffAndEffect>  MultiBuffAndEffectsIds { get; set; }
 
-        public virtual CharacterTile CharacterTile { get; set; }
+        public virtual RulesetTile RulesetTile { get; set; }
         
     }
     //public class BuffAndEffectIdsForTile {
@@ -48,8 +49,9 @@ namespace DAL.Models.CharacterTileModels
     //    public virtual CharacterBuffAndEffect CharacterBuffAndEffect { get; set; }
     //    public virtual CharacterBuffAndEffectTile BuffAndEffectTile { get; set; }
     //}
-    public class CharacterBuffAndEffectTileVM : CharacterBuffAndEffectTile {
-        public virtual List<CharacterBuffAndEffect> MultiBuffAndEffectsIds { get; set; }
+    public class RulesetBuffAndEffectTileVM : RulesetBuffAndEffectTile
+    {
+        public List<BuffAndEffect> MultiBuffAndEffectsIds { get; set; }
     }
 }
 //INSERT INTO[TileTypes] ([Name]) values('BuffAndEffectTile')

@@ -33,6 +33,7 @@ namespace DAL.Models.RulesetTileModels
         public virtual RulesetNoteTile NoteTiles { get; set; }
         public virtual RulesetImageTile ImageTiles { get; set; }
         public virtual RulesetTextTile TextTiles { get; set; }
+        public virtual RulesetBuffAndEffectTile BuffAndEffectTiles { get; set; }
         public virtual RulesetCounterTile CounterTiles { get; set; }
         public virtual RulesetCharacterStatTile CharacterStatTiles { get; set; }
         //public virtual RulesetExecuteTile ExecuteTiles { get; set; }

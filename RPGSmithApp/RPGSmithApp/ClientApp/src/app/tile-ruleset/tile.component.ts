@@ -11,6 +11,7 @@ import { RulesetCharacterStatTileComponent } from './character-stat/character-st
 import { RulesetCommandTileComponent } from './command/command.component';
 import { RulesetTextTileComponent } from './text/text.component';
 import { PlatformLocation } from '@angular/common';
+import { RulesetBuffAndEffectTileComponent } from './buff-and-effect/buff-and-effect.component';
 
 @Component({
   selector: 'app-tile',
@@ -58,9 +59,13 @@ export class RulesetTileComponent implements OnInit {
             { tileName: 'NOTE', tileTypeId: TILES.NOTE, icon: TILE_ICON.NOTE },
             { tileName: 'IMAGE', tileTypeId: TILES.IMAGE, icon: TILE_ICON.IMAGE },
             { tileName: 'COUNTER', tileTypeId: TILES.COUNTER, icon: TILE_ICON.COUNTER },
-            { tileName: 'CHARACTER STAT', tileTypeId: TILES.CHARACTERSTAT, icon: TILE_ICON.CHARACTERSTAT },
-            { tileName: 'COMMAND', tileTypeId: TILES.COMMAND, icon: TILE_ICON.COMMAND }
-        ];
+          { tileName: 'CHARACTER STAT', tileTypeId: TILES.CHARACTERSTAT, icon: TILE_ICON.CHARACTERSTAT },
+            
+      ];
+      if (this.ruleSet.isBuffAndEffectEnabled) {
+        this.tiles.push({ tileName: 'BUFFS & EFFECTS', tileTypeId: TILES.BUFFANDEFFECT, icon: TILE_ICON.BUFFANDEFFECT });
+      }
+      this.tiles.push({ tileName: 'COMMAND', tileTypeId: TILES.COMMAND, icon: TILE_ICON.COMMAND });
     }
     
     addTiles(tile:any, tileTypeId: number) {
@@ -189,7 +194,27 @@ export class RulesetTileComponent implements OnInit {
               }
             })
                 break;
-            }
+          }
+          case TILES.BUFFANDEFFECT: {
+
+            this.bsModalRef = this.modalService.show(RulesetBuffAndEffectTileComponent, {
+              class: 'modal-primary modal-md',
+              ignoreBackdropClick: true,
+              keyboard: false
+            });
+            this.bsModalRef.content.title = 'Add Buffs & Effects Tile';
+            this.bsModalRef.content.rulesetId = this.rulesetId;
+            this.bsModalRef.content.pageId = this.pageId;
+            this.bsModalRef.content.tile = tile;
+            this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+            this.bsModalRef.content.view = VIEW.ADD;
+            this.bsModalRef.content.event.subscribe(data => {
+              if (data) {
+                this.event.emit(data);
+              }
+            })
+            break;
+          }
             default: break;
         }        
     }

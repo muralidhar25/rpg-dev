@@ -41,5 +41,6 @@ namespace RPGSmithApp.ViewModels.EditModels
         public RulesetCounterTile CounterTile { get; set; }
         public RulesetCharacterStatTile CharacterStatTile { get; set; }
         public RulesetCommandTile CommandTile { get; set; }
+        public RulesetBuffAndEffectTile BuffAndEffectTile { get; set; }
     }
 }

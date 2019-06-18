@@ -18,6 +18,7 @@ export class BuffAndEffectTile {
     displayLinkImage?: boolean,
     view?: VIEW,
     multiBuffAndEffectsIds?: number[],
+    rulesetTileId?:number
   ) {
     this.buffAndEffectTileId = buffAndEffectTileId;
     this.characterTileId = characterTileId;
@@ -35,11 +36,12 @@ export class BuffAndEffectTile {
     this.sortOrder = sortOrder;
     this.view = view;
     this.multiBuffAndEffectsIds = multiBuffAndEffectsIds;
+    this.rulesetTileId = rulesetTileId;
   }
 
   public buffAndEffectTileId: number;
   public characterTileId: number;
-
+  public rulesetTileId: number;
  
   public showTitle: boolean;
   public displayLinkImage: boolean;

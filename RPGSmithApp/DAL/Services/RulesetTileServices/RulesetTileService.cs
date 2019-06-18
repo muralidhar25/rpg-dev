@@ -557,6 +557,55 @@ namespace DAL.Services.RulesetTileServices
                             }
                             tile.TextTiles = TT;
                             break;
+                        case 9://TextTiles
+                            RulesetBuffAndEffectTileVM BET = null;
+                            if (ds.Tables[16].Rows.Count > 0)
+                            {
+                                foreach (DataRow BET_Row in ds.Tables[16].Rows)
+                                {
+                                    int RulesetTileId = BET_Row["RulesetTileId"] == DBNull.Value ? 0 : Convert.ToInt32(BET_Row["RulesetTileId"]);
+                                    if (RulesetTileId == tile.RulesetTileId)
+                                    {
+                                        BET = new RulesetBuffAndEffectTileVM();
+                                        BET.BodyBgColor = BET_Row["BodyBgColor"] == DBNull.Value ? null : BET_Row["BodyBgColor"].ToString();
+                                        BET.BodyTextColor = BET_Row["BodyTextColor"] == DBNull.Value ? null : BET_Row["BodyTextColor"].ToString();
+                                        BET.RulesetTileId = RulesetTileId;
+                                        BET.IsDeleted = BET_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(BET_Row["IsDeleted"]);
+                                        BET.BuffAndEffectTileId = BET_Row["BuffAndEffectTileId"] == DBNull.Value ? 0 : Convert.ToInt32(BET_Row["BuffAndEffectTileId"]);
+                                        BET.Shape = BET_Row["Shape"] == DBNull.Value ? 0 : Convert.ToInt32(BET_Row["Shape"]);
+                                        BET.ShowTitle = BET_Row["ShowTitle"] == DBNull.Value ? false : Convert.ToBoolean(BET_Row["ShowTitle"]);
+                                        BET.SortOrder = BET_Row["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(BET_Row["SortOrder"]);
+                                        BET.TitleBgColor = BET_Row["TitleBgColor"] == DBNull.Value ? null : BET_Row["TitleBgColor"].ToString();
+                                        BET.TitleTextColor = BET_Row["TitleTextColor"] == DBNull.Value ? null : BET_Row["TitleTextColor"].ToString();
+                                        BET.DisplayLinkImage = BET_Row["DisplayLinkImage"] == DBNull.Value ? false : Convert.ToBoolean(BET_Row["DisplayLinkImage"]);
+                                        BET.MultiBuffAndEffectsIds = new List<BuffAndEffect>();
+                                        if (ds.Tables[17].Rows.Count > 0)
+                                        {
+                                            foreach (DataRow BE_Row in ds.Tables[17].Rows)
+                                            {
+                                                BuffAndEffect BuffAndEffect = new BuffAndEffect()
+                                                //int CharacterBuffAndEffectId = CCBE_Row["CharacterBuffAandEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(CCBE_Row["CharacterBuffAandEffectId"]);
+                                                //if (CharacterBuffAndEffectId == buffAndEffectIdsForTile.CharacterBuffAndEffectId)
+                                                //{
+                                                {
+                                                    ImageUrl = BE_Row["ImageUrl"] == DBNull.Value ? null : BE_Row["ImageUrl"].ToString(),
+                                                    Name = BE_Row["Name"] == DBNull.Value ? null : BE_Row["Name"].ToString(),
+                                                    BuffAndEffectId = BE_Row["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(BE_Row["BuffAndEffectId"]),
+                                                    Description = BE_Row["Description"] == DBNull.Value ? null : BE_Row["Description"].ToString(),
+
+                                                };
+
+                                                //}
+                                                BET.MultiBuffAndEffectsIds.Add(BuffAndEffect);
+                                            }
+
+
+                                        }
+                                    }
+                                }
+                            }
+                            tile.BuffAndEffectTiles = BET;
+                            break;
                         default:
                             break;
                     }

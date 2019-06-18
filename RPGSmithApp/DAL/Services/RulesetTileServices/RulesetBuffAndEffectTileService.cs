@@ -4,30 +4,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Models;
-using DAL.Models.CharacterTileModels;
+using DAL.Models.RulesetTileModels;
 using DAL.Repositories.Interfaces;
 
-namespace DAL.Services.CharacterTileServices
+namespace DAL.Services.RulesetTileServices
 {
-    public class BuffAndEffectTileService : IBuffAndEffectTileService
+    public class RulesetBuffAndEffectTileService : IRulesetBuffAndEffectTileService
     {
-          private readonly IRepository<CharacterBuffAndEffectTile> _repo;
+          private readonly IRepository<RulesetBuffAndEffectTile> _repo;
         protected readonly ApplicationDbContext _context;
 
 
-        public BuffAndEffectTileService(ApplicationDbContext context, IRepository<CharacterBuffAndEffectTile> repo)
+        public RulesetBuffAndEffectTileService(ApplicationDbContext context, IRepository<RulesetBuffAndEffectTile> repo)
         {
             _repo = repo;
             _context = context;
 
         }
 
-        public CharacterBuffAndEffectTile GetById(int? id)
+        public RulesetBuffAndEffectTile GetById(int? id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<CharacterBuffAndEffectTile> Create(CharacterBuffAndEffectTile item)
+        public async Task<RulesetBuffAndEffectTile> Create(RulesetBuffAndEffectTile item)
         {
             var res = await _repo.Add(item);
             //if (item.MultiBuffAndEffectsIds.Count>0)
@@ -42,7 +42,7 @@ namespace DAL.Services.CharacterTileServices
             return res;
         }
 
-        public async Task<CharacterBuffAndEffectTile> Update(CharacterBuffAndEffectTile item)
+        public async Task<RulesetBuffAndEffectTile> Update(RulesetBuffAndEffectTile item)
         {
             var buffAndEffectTile = await _repo.Get((int)item.BuffAndEffectTileId);
 

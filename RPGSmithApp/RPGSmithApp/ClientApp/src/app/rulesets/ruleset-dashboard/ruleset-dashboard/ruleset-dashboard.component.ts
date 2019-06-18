@@ -2124,4 +2124,28 @@ export class RulesetDashboardComponent implements OnInit {
     this.localStorage.deleteData(DBkeys.RULESET_ID);
     this.localStorage.saveSyncedSessionData(rulesetId, DBkeys.RULESET_ID);
   }
+  description(text) {
+
+    if (text) {
+
+      var encodedStr = text;
+
+      var parser = new DOMParser;
+      var dom = parser.parseFromString(
+        '<!doctype html><body>' + encodedStr,
+        'text/html');
+      var decodedString = dom.body.textContent;
+
+
+      return decodedString;
+      //text = text.replace(/<{1}[^<>]{1,}>{1}/g, " ");
+      ////if (text.length >= 100) {
+      ////  let trimmedString = text.substring(0, 100);
+      ////  trimmedString += '...';
+      ////  return trimmedString;
+      ////}
+      //return text;
+    }
+    return '';
+  }
 }

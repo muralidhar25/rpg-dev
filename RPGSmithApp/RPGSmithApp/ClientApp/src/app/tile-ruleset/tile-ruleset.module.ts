@@ -16,6 +16,7 @@ import { RulesetCharacterStatTileComponent } from './character-stat/character-st
 import { RulesetEditCharacterStatComponent } from './character-stat/edit-character-stat/edit-character-stat.component';
 import { RulesetTextTileComponent } from './text/text.component';
 import { RulesetEditTextComponent } from './text/edit-text/edit-text.component';
+import { RulesetBuffAndEffectTileComponent } from "./buff-and-effect/buff-and-effect.component";
 
 
 @NgModule({
@@ -31,7 +32,7 @@ import { RulesetEditTextComponent } from './text/edit-text/edit-text.component';
     RulesetCharacterStatTileComponent,
     RulesetEditCharacterStatComponent,
     RulesetTextTileComponent,
-    RulesetEditTextComponent
+    RulesetEditTextComponent, RulesetBuffAndEffectTileComponent
   ],
   imports: [
     SharedModule
@@ -50,7 +51,7 @@ import { RulesetEditTextComponent } from './text/edit-text/edit-text.component';
     RulesetCharacterStatTileComponent,
     RulesetEditCharacterStatComponent,
     RulesetTextTileComponent,
-    RulesetEditTextComponent
+    RulesetEditTextComponent, RulesetBuffAndEffectTileComponent
   ],
   entryComponents: [
     RulesetTileComponent,
@@ -64,7 +65,7 @@ import { RulesetEditTextComponent } from './text/edit-text/edit-text.component';
     RulesetCharacterStatTileComponent,
     RulesetEditCharacterStatComponent,
     RulesetTextTileComponent,
-    RulesetEditTextComponent,
+    RulesetEditTextComponent, RulesetBuffAndEffectTileComponent
   ]
 })
 export class TileRulesetModule {}

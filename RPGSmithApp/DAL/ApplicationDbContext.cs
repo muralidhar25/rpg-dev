@@ -124,7 +124,7 @@ namespace DAL
         public virtual DbSet<BuffAndEffectCommand> BuffAndEffectCommands { get; set; }
         public virtual DbSet<CharacterBuffAndEffect> CharacterBuffAndEffects { get; set; }
         public virtual DbSet<CharacterBuffAndEffectTile> CharacterBuffAndEffectTiles { get; set; }
-        public virtual DbSet<BuffAndEffectIdsForTile> BuffAndEffectIdsForTiles { get; set; }
+        public virtual DbSet<RulesetBuffAndEffectTile> RulesetBuffAndEffectTiles { get; set; }
         public virtual DbSet<ItemMasterBuffAndEffect> ItemMasterBuffAndEffects { get; set; }
         public virtual DbSet<SpellBuffAndEffect> SpellBuffAndEffects { get; set; }
         public virtual DbSet<AbilityBuffAndEffect> AbilityBuffAndEffects { get; set; }

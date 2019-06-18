@@ -280,6 +280,7 @@ namespace RPGSmithApp
             services.AddScoped<IBuffAndEffectService, BuffAndEffectService>();
             services.AddScoped<IBuffAndEffectCommandService, BuffAndEffectCommandService>();
             services.AddScoped<IBuffAndEffectTileService, BuffAndEffectTileService>();
+            services.AddScoped<IRulesetBuffAndEffectTileService, RulesetBuffAndEffectTileService>();
 
             // Register Hosted Services
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, BackgroundProcesses>();

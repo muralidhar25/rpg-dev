@@ -347,43 +347,24 @@ export class CharBuffAndEffectDetailsComponent implements OnInit {
   }
   Assign(buffAndEffectDetail: BuffAndEffect) {
     debugger
-    //this.isLoading = true;
-    //this.alertService.startLoadingMessage("", "Assigning Buffs & Effects to characters.");
-    //let buffs: BuffAndEffect[] = [];
-    //buffs.push(this.BuffAndEffectToAssign)
-    //debugger
-    //let nonSelectedCharacters: Characters[] = this.characters.map(x => {
-    //  if (this.selectercharacters.filter(SC => SC.characterId == x.characterId).length) {
+    this.isLoading = true;
+    let characters: Characters[] = [];
+    characters.push(new Characters(this.character.characterId));
+    let nonSelectedBuffAndEffectsList: BuffAndEffect[] = [];
+    let selectedBuffAndEffectsList: BuffAndEffect[] = [];
+    selectedBuffAndEffectsList.push(new BuffAndEffect(buffAndEffectDetail.buffAndEffectId))
+    this.buffAndEffectService.assignBuffAndEffectToCharacter<any>(selectedBuffAndEffectsList, characters, [], [], 0)
+      .subscribe(data => {
+        this.isLoading = false;
+        this.isAlreadyAssigned = true;
 
-    //  }
-    //  else {
-    //    return x;
-    //  }
-
-    //})
-    //nonSelectedCharacters = nonSelectedCharacters.filter(SC => SC)
-    //debugger
-    //this.buffAndEffectService.assignBuffAndEffectToCharacter<any>(buffs, this.selectercharacters, nonSelectedCharacters, [], 0)
-    //  .subscribe(data => {
-    //    this.isLoading = false;
-    //    this.alertService.stopLoadingMessage();
-    //    this.alertService.showMessage("Buffs & Effects assigned successfully.", "", MessageSeverity.success);
-    //    if (this.selectercharacters) {
-    //      if (this.selectercharacters.length) {
-    //        this.event.emit(true);
-    //      }
-    //      else if (this.selectercharacters.length == 0) {
-    //        this.event.emit(false);
-    //      }
-    //    }
-    //    this.close();
-    //  }, error => {
-    //    this.isLoading = false;
-    //    let Errors = Utilities.ErrorDetail("", error);
-    //    if (Errors.sessionExpire) {
-    //      //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-    //      this.authService.logout(true);
-    //    }
-    //  }, () => { });
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          this.authService.logout(true);
+        }
+      }, () => { });
   }
 }

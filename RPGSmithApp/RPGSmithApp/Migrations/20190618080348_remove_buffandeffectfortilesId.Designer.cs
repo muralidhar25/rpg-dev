@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace RPGSmithApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190618080348_remove_buffandeffectfortilesId")]
+    partial class remove_buffandeffectfortilesId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2279,47 +2281,6 @@ namespace RPGSmithApp.Migrations
                     b.ToTable("RuleSetGenres");
                 });
 
-            modelBuilder.Entity("DAL.Models.RulesetTileModels.RulesetBuffAndEffectTile", b =>
-                {
-                    b.Property<int>("BuffAndEffectTileId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("BodyBgColor")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<string>("BodyTextColor")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<bool>("DisplayLinkImage");
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<int?>("RulesetTileId");
-
-                    b.Property<int>("Shape");
-
-                    b.Property<bool>("ShowTitle");
-
-                    b.Property<int>("SortOrder");
-
-                    b.Property<string>("TitleBgColor")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<string>("TitleTextColor")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.HasKey("BuffAndEffectTileId");
-
-                    b.HasIndex("RulesetTileId");
-
-                    b.ToTable("RulesetBuffAndEffectTiles");
-                });
-
             modelBuilder.Entity("DAL.Models.RulesetTileModels.RulesetCharacterStatTile", b =>
                 {
                     b.Property<int>("CharacterStatTileId")
@@ -3976,13 +3937,6 @@ namespace RPGSmithApp.Migrations
                     b.HasOne("DAL.Models.RuleSetGenre", "RuleSetGenre")
                         .WithMany("RuleSets")
                         .HasForeignKey("RuleSetGenreId");
-                });
-
-            modelBuilder.Entity("DAL.Models.RulesetTileModels.RulesetBuffAndEffectTile", b =>
-                {
-                    b.HasOne("DAL.Models.RulesetTileModels.RulesetTile", "RulesetTile")
-                        .WithMany()
-                        .HasForeignKey("RulesetTileId");
                 });
 
             modelBuilder.Entity("DAL.Models.RulesetTileModels.RulesetCharacterStatTile", b =>

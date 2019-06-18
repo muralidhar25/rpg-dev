@@ -17,18 +17,20 @@ import { ColorService } from '../../core/services/tiles/color.service';
 import { DBkeys } from '../../core/common/db-keys';
 import { User } from '../../core/models/user.model';
 import { Utilities } from '../../core/common/utilities';
-import { ColorsComponent } from '../colors/colors.component';
 import { PlatformLocation } from '@angular/common';
 import { BuffAndEffectService } from '../../core/services/buff-and-effect.service';
 import { BuffAndEffectTile } from '../../core/models/tiles/buff-and-effect-tile.model';
 import { BuffAandEffectTileService } from '../../core/services/tiles/buff-and-effect-tile.service';
+import { RulesetTile } from '../../core/models/tiles/ruleset-tile.model';
+import { ColorsComponent } from '../../tile/colors/colors.component';
+import { RulesetDashboardPage } from '../../core/models/view-models/ruleset-dashboard-page.model';
 
 @Component({
   selector: 'app-buff-and-effect',
   templateUrl: './buff-and-effect.component.html',
   styleUrls: ['./buff-and-effect.component.scss']
 })
-export class BuffAndEffectTileComponent implements OnInit {
+export class RulesetBuffAndEffectTileComponent implements OnInit {
 
   public event: EventEmitter<any> = new EventEmitter();
     ruleSet: any = new Ruleset();
@@ -64,12 +66,12 @@ export class BuffAndEffectTileComponent implements OnInit {
     shapeClass: string;
 
   buffAndEffectTileFormModal = new BuffAndEffectTile();
-    characterTileModel = new CharacterTile();
+  rulesetTileModel = new RulesetTile();
     pageId: number;
-    characterId: number;
+  rulesetId: number;
     //_linkType: any;
     query: string = '';
-    pageDefaultData = new CharacterDashboardPage();
+    pageDefaultData = new RulesetDashboardPage();
     VIEW = VIEW;
     displayboth: boolean = false;
   displayLinkImage: boolean = true;
@@ -86,27 +88,51 @@ export class BuffAndEffectTileComponent implements OnInit {
   ngOnInit() {
     
       setTimeout(() => {
-      debugger
-            this.characterId = this.bsModalRef.content.characterId;
-            this.title = this.bsModalRef.content.title;
-            this.pageId = this.bsModalRef.content.pageId;
-            let model = this.bsModalRef.content.tile;
-            let view = this.bsModalRef.content.view;
-            this.pageDefaultData = this.bsModalRef.content.pageDefaultData;
-            this.ruleSet = this.bsModalRef.content.ruleSet;
-        this.characterTileModel = this.buffAndEffectTileService.buffAndEffectTileModelData(model, this.characterId, this.pageId, view, this.pageDefaultData);
-        this.buffAndEffectTileFormModal = Object.assign({}, this.characterTileModel.buffAndEffectTile);
-            this.buffAndEffectTileFormModal.color = this.characterTileModel.color;
-            this.buffAndEffectTileFormModal.shape = this.characterTileModel.shape;           
-            this.showTitle = this.buffAndEffectTileFormModal.showTitle;
-            this.displayLinkImage = this.buffAndEffectTileFormModal.displayLinkImage;
-            if (this.showTitle && this.displayLinkImage ) {
-              this.displayboth   = true;
-            }
-            this.shapeClass = this.buffAndEffectTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.buffAndEffectTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE); 
+        debugger
+        this.rulesetId = this.bsModalRef.content.rulesetId;
+        this.title = this.bsModalRef.content.title;
+        this.pageId = this.bsModalRef.content.pageId;
+        let model = this.bsModalRef.content.tile;
+        let view = this.bsModalRef.content.view;
+        this.pageDefaultData = this.bsModalRef.content.pageDefaultData;
+
+        this.rulesetTileModel = this.buffAndEffectTileService.RulesetbuffAndEffectTileModelData(model, this.rulesetId, this.pageId, view, this.pageDefaultData);
+        this.buffAndEffectTileFormModal = Object.assign({}, this.rulesetTileModel.buffAndEffectTile);
+        this.buffAndEffectTileFormModal.color = this.rulesetTileModel.color;
+        this.buffAndEffectTileFormModal.shape = this.rulesetTileModel.shape;
 
         
-            this.initialize(this.buffAndEffectTileFormModal);
+        this.showTitle = this.buffAndEffectTileFormModal.showTitle;
+        this.displayLinkImage = this.buffAndEffectTileFormModal.displayLinkImage;
+        if (this.showTitle && this.displayLinkImage) {
+          this.displayboth = true;
+        }
+        this.shapeClass = this.buffAndEffectTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.buffAndEffectTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE); 
+
+
+        this.initialize(this.buffAndEffectTileFormModal);
+
+
+            //this.characterId = this.bsModalRef.content.characterId;
+            //this.title = this.bsModalRef.content.title;
+            //this.pageId = this.bsModalRef.content.pageId;
+            //let model = this.bsModalRef.content.tile;
+            //let view = this.bsModalRef.content.view;
+        //    this.pageDefaultData = this.bsModalRef.content.pageDefaultData;
+        //this.ruleSet = this.bsModalRef.content.ruleSet;
+        //this.characterTileModel = this.buffAndEffectTileService.buffAndEffectTileModelData(model, this.rulesetId, this.pageId, view, this.pageDefaultData);
+        //this.buffAndEffectTileFormModal = Object.assign({}, this.characterTileModel.buffAndEffectTile);
+        //    this.buffAndEffectTileFormModal.color = this.characterTileModel.color;
+        //    this.buffAndEffectTileFormModal.shape = this.characterTileModel.shape;           
+        //    this.showTitle = this.buffAndEffectTileFormModal.showTitle;
+        //    this.displayLinkImage = this.buffAndEffectTileFormModal.displayLinkImage;
+        //    if (this.showTitle && this.displayLinkImage ) {
+        //      this.displayboth   = true;
+        //    }
+        //    this.shapeClass = this.buffAndEffectTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.buffAndEffectTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE); 
+
+        
+        //    this.initialize(this.buffAndEffectTileFormModal);
         }, 0);  
     }
    
@@ -454,11 +480,11 @@ export class BuffAndEffectTileComponent implements OnInit {
             this.buffAndEffectTileFormModal.bodyBgColor = defaultColor;
     }
 
-    submitForm() {
-        if (this.characterTileModel.characterId == 0 || this.characterTileModel.characterId == undefined) {
-            this.alertService.showMessage("", "Character is not selected.", MessageSeverity.error);
+  submitForm() {
+    if (this.rulesetTileModel.rulesetId == 0 || this.rulesetTileModel.rulesetId == undefined) {
+            this.alertService.showMessage("", "Ruleset is not selected.", MessageSeverity.error);
         }
-        else if (this.characterTileModel.tileTypeId == 0 || this.characterTileModel.tileTypeId == undefined) {
+    else if (this.rulesetTileModel.tileTypeId == 0 || this.rulesetTileModel.tileTypeId == undefined) {
             this.alertService.showMessage("", "Buffs & Effects tile is not selected.", MessageSeverity.error);
         }
 
@@ -468,9 +494,9 @@ export class BuffAndEffectTileComponent implements OnInit {
         else {
          
             this.buffAndEffectTileFormModal.color = this.tileColor ? this.tileColor : '#343038';
-            this.characterTileModel.color = this.buffAndEffectTileFormModal.color;
-          this.characterTileModel.shape = this.buffAndEffectTileFormModal.shape;
-          this.characterTileModel.buffAndEffectTile = this.buffAndEffectTileFormModal;
+      this.rulesetTileModel.color = this.buffAndEffectTileFormModal.color;
+      this.rulesetTileModel.shape = this.buffAndEffectTileFormModal.shape;
+      this.rulesetTileModel.buffAndEffectTile = this.buffAndEffectTileFormModal;
             //this.setDefaultColors(this.buffAndEffectTileFormModal.color);
             this.buffAndEffectTileFormModal.showTitle = this.showTitle;
           this.buffAndEffectTileFormModal.displayLinkImage = this.displayLinkImage;
@@ -479,7 +505,7 @@ export class BuffAndEffectTileComponent implements OnInit {
           let _msg = this.buffAndEffectTileFormModal.buffAndEffectTileId == 0 || this.buffAndEffectTileFormModal.buffAndEffectTileId === undefined
             ? "Creating Buffs And Effects Tile..." : "Updating Buffs And Effects Tile...";
        this.alertService.startLoadingMessage("", _msg);
-            this.addEditBuffAndEffectTile(this.characterTileModel);
+      this.addEditBuffAndEffectTile(this.rulesetTileModel);
         }
     }
 
@@ -506,7 +532,7 @@ export class BuffAndEffectTileComponent implements OnInit {
       //}
       
 debugger
-      this.buffAndEffectTileService.createBuffAndEffectTile(modal)
+      this.buffAndEffectTileService.createRulesetBuffAndEffectTile(modal)
             .subscribe(
                 data => {
                   
@@ -515,7 +541,7 @@ debugger
 
                   let message = modal.buffAndEffectTile.buffAndEffectTileId == 0 || modal.buffAndEffectTile.buffAndEffectTileId === undefined ? "Buffs & Effects Tile has been added successfully." : "Buffs & Effects Tile has been updated successfully.";
                     this.alertService.showMessage(message, "", MessageSeverity.success);
-                    this.sharedService.updateCharacterList(data);
+                  this.sharedService.updateRulesetDashboard(data);
                     this.close();
                 },
                 error => {
