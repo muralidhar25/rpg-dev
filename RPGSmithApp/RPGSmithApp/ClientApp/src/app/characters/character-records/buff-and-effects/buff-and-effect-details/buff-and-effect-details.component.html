@@ -63,7 +63,7 @@
   </li>-->
             <li>
               <!-- Manage item -->
-              <div class="dropdown dropdown-buttons" *ngIf="!pauseBuffAndEffectCreate">
+              <div class="dropdown dropdown-buttons" *ngIf="!pauseBuffAndEffectCreate && isAlreadyAssigned">
                 <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show icon-Gen-Edit"> MANAGE BUFF/EFFECT</button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
                   <ul class="dropdown-menu-list">
@@ -94,7 +94,7 @@
   </li>-->
           <li>
             <!-- Manage item -->
-            <div class="dropdown dropdown-buttons" *ngIf="!pauseBuffAndEffectCreate">
+            <div class="dropdown dropdown-buttons" *ngIf="!pauseBuffAndEffectCreate && isAlreadyAssigned">
               <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> MANAGE BUFF/EFFECT</button>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
                 <ul class="dropdown-menu-list">
@@ -137,8 +137,11 @@
                   {{buffAndEffectDetail?.name}}
                 </h2>
                 <div class="item-info-props-indics">
-                 
-                  
+                  <ul class="item-info-indics">
+                    <li *ngIf="isAlreadyAssigned">
+                      <i class="icon-Assign"></i>
+                    </li>
+                  </ul>                  
                 </div>
               </div>
               <ul class="item-info-actions d-none d-md-flex" >
@@ -146,7 +149,7 @@
                   <button *ngIf="!isAlreadyAssigned" type="button" (click)="Assign(buffAndEffectDetail)" class="btn btn-accent icon-Assign icon-with-text assign-button">
                     ASSIGN
                   </button>
-                  <button *ngIf="isAlreadyAssigned" type="button" (click)="deleteBuffAndEffect(buffAndEffectDetail)" class="btn btn-accent icon icon-Rec-Remove icon-with-text assign-button">
+                  <button *ngIf="isAlreadyAssigned" type="button" (click)="deleteBuffAndEffect(buffAndEffectDetail,true)" class="btn btn-accent icon icon-Rec-Remove icon-with-text assign-button">
                     REMOVE
                   </button>
                 </li>

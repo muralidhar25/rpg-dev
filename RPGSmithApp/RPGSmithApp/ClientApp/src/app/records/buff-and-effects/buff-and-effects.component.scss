@@ -561,3 +561,8 @@ filter-toggle-btn-light {
 .dense-list .card .item-actions {
   display:block;
 }
+@media only screen and (max-width: 1023px) {
+  .assign-button {
+    top: -5px;
+  }
+}

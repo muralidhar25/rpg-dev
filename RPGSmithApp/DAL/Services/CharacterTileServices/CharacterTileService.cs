@@ -1452,7 +1452,59 @@ namespace DAL.Services.CharacterTileServices
                             }
                             tile.TextTiles = TT;
                             break;
+                        case 9://BuffAndEffectTiles
+                            CharacterBuffAndEffectTileVM CBET = null;
+                            if (ds.Tables[18].Rows.Count > 0)
+                            {
+                                foreach (DataRow CBET_Row in ds.Tables[18].Rows)
+                                {
+                                    int CharacterTileId = CBET_Row["RulesetTileId"] == DBNull.Value ? 0 : Convert.ToInt32(CBET_Row["RulesetTileId"]);
+                                    if (CharacterTileId == tile.CharacterTileId)
+                                    {
+                                        CBET = new CharacterBuffAndEffectTileVM();
+                                        CBET.BodyBgColor = CBET_Row["BodyBgColor"] == DBNull.Value ? null : CBET_Row["BodyBgColor"].ToString();
+                                        CBET.BodyTextColor = CBET_Row["BodyTextColor"] == DBNull.Value ? null : CBET_Row["BodyTextColor"].ToString();
+                                        CBET.CharacterTileId = CharacterTileId;
+                                        CBET.IsDeleted = CBET_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CBET_Row["IsDeleted"]);
+                                        CBET.BuffAndEffectTileId = CBET_Row["BuffAndEffectTileId"] == DBNull.Value ? 0 : Convert.ToInt32(CBET_Row["BuffAndEffectTileId"]);
+                                        CBET.Shape = CBET_Row["Shape"] == DBNull.Value ? 0 : Convert.ToInt32(CBET_Row["Shape"]);
+                                        CBET.ShowTitle = CBET_Row["ShowTitle"] == DBNull.Value ? false : Convert.ToBoolean(CBET_Row["ShowTitle"]);
+                                        CBET.SortOrder = CBET_Row["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(CBET_Row["SortOrder"]);
+                                        CBET.TitleBgColor = CBET_Row["TitleBgColor"] == DBNull.Value ? null : CBET_Row["TitleBgColor"].ToString();
+                                        CBET.TitleTextColor = CBET_Row["TitleTextColor"] == DBNull.Value ? null : CBET_Row["TitleTextColor"].ToString();
+                                        CBET.DisplayLinkImage = CBET_Row["DisplayLinkImage"] == DBNull.Value ? false : Convert.ToBoolean(CBET_Row["DisplayLinkImage"]);
+                                        CBET.MultiBuffAndEffectsIds = new List<CharacterBuffAndEffect>();
+                                        if (ds.Tables[19].Rows.Count > 0)
+                                        {
+                                            foreach (DataRow CCBE_Row in ds.Tables[19].Rows)
+                                            {
+                                                CharacterBuffAndEffect characterBuffAndEffect = new CharacterBuffAndEffect();
+                                                //int CharacterBuffAndEffectId = CCBE_Row["CharacterBuffAandEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(CCBE_Row["CharacterBuffAandEffectId"]);
+                                                //if (CharacterBuffAndEffectId == buffAndEffectIdsForTile.CharacterBuffAndEffectId)
+                                                //{
+                                                characterBuffAndEffect.CharacterBuffAandEffectId = CCBE_Row["CharacterBuffAandEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(CCBE_Row["CharacterBuffAandEffectId"]);
+                                                characterBuffAndEffect.BuffAndEffectID = CCBE_Row["BuffAndEffectID"] == DBNull.Value ? 0 : Convert.ToInt32(CCBE_Row["BuffAndEffectID"]);
+                                                characterBuffAndEffect.CharacterId = CCBE_Row["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(CCBE_Row["CharacterId"]);
+                                                characterBuffAndEffect.BuffAndEffect = new BuffAndEffect()
+                                                {
+                                                    ImageUrl = CCBE_Row["ImageUrl"] == DBNull.Value ? null : CCBE_Row["ImageUrl"].ToString(),
+                                                    Name = CCBE_Row["Name"] == DBNull.Value ? null : CCBE_Row["Name"].ToString(),
+                                                    BuffAndEffectId = (int)characterBuffAndEffect.BuffAndEffectID,
+                                                    Description = CCBE_Row["Description"] == DBNull.Value ? null : CCBE_Row["Description"].ToString(),
 
+                                                };
+
+                                                //}
+                                                CBET.MultiBuffAndEffectsIds.Add(characterBuffAndEffect);
+                                            }
+
+
+                                        }
+                                    }
+                                }
+                            }
+                            tile.BuffAndEffectTiles = CBET;
+                            break;
                         default:
                             break;
                     }

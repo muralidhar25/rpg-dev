@@ -705,3 +705,76 @@ body {
 .btn-simple-primary:disabled {
   cursor: default !important;
 }
+.buff-tile-image {
+  height: 100%;
+  /*border: 1px solid black;*/
+}
+
+.buff-tile-body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  padding: 0rem;
+}
+
+.buff-images-only .buff-tile-image {
+  /*margin: 0px 2px 7px 0px;*/
+}
+
+.buff-image-text-both {
+  display: inline-block
+}
+
+.buff-text-only {
+  text-transform: uppercase;
+}
+
+.buff-padding {
+  padding: 4px 4px 6px 4px;
+}
+
+.box-img {
+  /*float: left;
+  width: 60px;
+  height: 65px;
+  margin: 0px 3px;*/
+}
+
+.box-img img.buff-tile-image {
+  width: 52px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.box-img p {
+  margin-bottom: 2px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+span.buff-images-only img.buff-tile-image {
+  /*padding: 5px;*/
+  max-width: 100%;
+  width: 100%;
+}
+
+.inline-buff-image {
+  display: inline-block;
+}
+
+.buff-image-div {
+  padding: 5px;
+}
+
+@media (max-width:767px) {
+  .buff-image-div {
+    padding: 0px;
+  }
+}
