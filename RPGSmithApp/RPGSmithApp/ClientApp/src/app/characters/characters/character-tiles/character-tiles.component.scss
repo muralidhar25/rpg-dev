@@ -514,7 +514,7 @@ body {
 }
 .buff-tile-image {
   height: 100%;
-  border: 1px solid black;
+  /*border: 1px solid black;*/
 }
 
 .buff-tile-body {
@@ -527,7 +527,7 @@ body {
   -webkit-box-align: start;
   -ms-flex-align: start;
   align-items: flex-start;
-  padding: 0.25rem;
+  padding: 0rem;
 }
 
 .buff-images-only .buff-tile-image {
@@ -539,4 +539,32 @@ body {
 }
 .buff-text-only {
   text-transform:uppercase;
+}
+.buff-padding {
+  padding: 4px 4px 6px 4px;
+}
+.box-img {
+  float: left;
+  width: 60px;
+  height: 65px;
+  margin: 0px 3px;
+}
+.box-img img.buff-tile-image {
+  width: 52px;
+  height: 40px;
+  object-fit: contain;
+}
+.box-img p {
+  margin-bottom: 2px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+}
+span.buff-images-only img.buff-tile-image {
+  padding: 5px 0px 5px 8px;
+}
+.inline-buff-image{
+
+
 }

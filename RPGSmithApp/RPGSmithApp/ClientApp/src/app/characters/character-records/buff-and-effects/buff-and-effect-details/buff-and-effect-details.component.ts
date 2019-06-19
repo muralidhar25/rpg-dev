@@ -195,12 +195,18 @@ export class CharBuffAndEffectDetailsComponent implements OnInit {
 
   
 
-  deleteBuffAndEffect(buffAndEffect: BuffAndEffect) {
-    let message = "Are you sure you want to delete this " + buffAndEffect.name
-      + " Buff & Effect?";
+  deleteBuffAndEffect(buffAndEffect: BuffAndEffect, skipPopup = false) {
+    if (!skipPopup) {
+      let message = "Are you sure you want to delete this " + buffAndEffect.name
+        + " Buff & Effect?";
 
-    this.alertService.showDialog(message,
-      DialogType.confirm, () => this.deleteBuffAndEffectHelper(buffAndEffect), null, 'Yes', 'No');
+      this.alertService.showDialog(message,
+        DialogType.confirm, () => this.deleteBuffAndEffectHelper(buffAndEffect), null, 'Yes', 'No');
+    }
+    else {
+      this.deleteBuffAndEffectHelper(buffAndEffect)
+    }
+    
   }
 
   private deleteBuffAndEffectHelper(buffAndEffect: BuffAndEffect) {
