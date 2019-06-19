@@ -1262,7 +1262,7 @@ export class DiceRollComponent implements OnInit {
     } catch (err) { }
   }
   onClickRoll(characterCommand: CharacterCommand, _mainCommandText: string, lastResultArray?: any, IsRollCurrentAgain:boolean=false) {
-    
+    debugger;
     let OldCommandForRollCurrentAgain: any= undefined;
     if (IsRollCurrentAgain) {
       OldCommandForRollCurrentAgain = this.characterMultipleCommands;
@@ -1302,6 +1302,7 @@ export class DiceRollComponent implements OnInit {
     else {
 
       this.mainCommandText = !_mainCommandText || _mainCommandText == "" ? command : _mainCommandText;
+      console.log('main commandtext',this.mainCommandText);
       command = this.mainCommandText.toUpperCase();
       if (command.length >= 500) {
         this.alertService.showMessage("A maximum of 500 characters is allowed for a command. Please adjust your command string and try again.", "", MessageSeverity.error);
@@ -1596,11 +1597,13 @@ export class DiceRollComponent implements OnInit {
           catch (e) {
             this.characterMultipleCommands = DiceService.commandInterpretation(command, undefined, this.addModArray, this.customDices, this.mainCommandText.toUpperCase());
             __characterMultipleCommands = this.characterMultipleCommands[0];
+            console.log('catch', this.characterMultipleCommands);
           }
         }
         else {
           this.characterMultipleCommands = DiceService.commandInterpretation(command, undefined, this.addModArray, this.customDices, this.mainCommandText.toUpperCase());
-
+          console.log('else', this.characterMultipleCommands, this.mainCommandText);
+         
           __characterMultipleCommands = this.characterMultipleCommands[0];
         }
 
@@ -1699,7 +1702,7 @@ export class DiceRollComponent implements OnInit {
 
           //--END variable to hide Exploded dice--//
         });
-
+       
         //this.characterCommandModel.command = __calculationCommand;
         this.characterCommandModel.command = this.mainCommandText;
         this.characterCommandModel.lastResult = __calculationResult;
@@ -1715,6 +1718,17 @@ export class DiceRollComponent implements OnInit {
         //let textResult = this.fillBeforeAndAfterText(characterCommand.command, true);
         //this.beforeResultText = textResult.start;
         //this.afterResultText = textResult.end;
+        for (let i = 0; i < this.characterMultipleCommands.length; i++) {
+            let result;
+          if (this.characterMultipleCommands[i].afterResult != "") {
+                result = this.mainCommandText.substring(this.mainCommandText.toLowerCase().indexOf(this.characterMultipleCommands[i].afterResult.trim().toLowerCase()), this.mainCommandText.toLowerCase().indexOf(this.characterMultipleCommands[i].afterResult.trim().toLowerCase()) + this.characterMultipleCommands[i].afterResult.trim().length)
+                this.characterMultipleCommands[i].afterResult = result;
+            }
+          if (this.characterMultipleCommands[i].beforeResult != "") { 
+               result = this.mainCommandText.substring(this.mainCommandText.toLowerCase().indexOf(this.characterMultipleCommands[i].beforeResult.trim().toLowerCase()), this.mainCommandText.toLowerCase().indexOf(this.characterMultipleCommands[i].beforeResult.trim().toLowerCase()) + this.characterMultipleCommands[i].beforeResult.trim().length)
+                this.characterMultipleCommands[i].beforeResult = result;
+          }
+        }
         if (this.characterMultipleCommands) {
           if (this.characterMultipleCommands.length > 1) {
             this.displayCurrentRollBtn = true;
@@ -1858,6 +1872,7 @@ export class DiceRollComponent implements OnInit {
 
 
             this.calculationStringArray = DiceService.getCalculationStringArray(__calculationString, this.diceRolledData);
+            console.log('calculationstring array',this.calculationStringArray);
             this.characterMultipleCommands[0].calculationStringArray = this.calculationStringArray;
           } catch (err) { }
 
@@ -4068,4 +4083,7 @@ export class DiceRollComponent implements OnInit {
   sendToChat() {
     this.appService.updateChatWithDiceRoll({ characterCommandModel: this.characterCommandModel, characterMultipleCommands: this.characterMultipleCommands });
   }
+
+
+  
 }
