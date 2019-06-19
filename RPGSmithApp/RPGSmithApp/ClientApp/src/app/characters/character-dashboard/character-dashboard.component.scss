@@ -491,7 +491,7 @@ body {
 }
 
 .buff-images-only .buff-tile-image {
-  margin: 0px 2px 7px 0px;
+  /*margin: 0px 2px 7px 0px;*/
 }
 
 .buff-image-text-both {
@@ -507,10 +507,10 @@ body {
 }
 
 .box-img {
-  float: left;
+  /*float: left;
   width: 60px;
   height: 65px;
-  margin: 0px 3px;
+  margin: 0px 3px;*/
 }
 
 .box-img img.buff-tile-image {
@@ -524,7 +524,24 @@ body {
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 span.buff-images-only img.buff-tile-image {
-  padding: 5px 0px 5px 8px;
+  /*padding: 5px;*/
+  max-width: 100%;
+  width: 100%;
+}
+
+.inline-buff-image {
+  display: inline-block;
+}
+
+.buff-image-div {
+  padding: 5px;
+}
+
+@media (max-width:767px) {
+  .buff-image-div {
+    padding: 0px;
+  }
 }
