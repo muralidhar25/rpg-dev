@@ -22,8 +22,10 @@ export class AssignBuffAndEffectComponent implements OnInit {
   isLoading: boolean = false;
   BuffAndEffectToAssign: any;
   ruleSetId: number;
-  characters: Characters[] = [];
-  selectercharacters: Characters[]=[];
+  characters: any[] = [];
+  selectercharacters: Characters[] = [];
+  allSelected: boolean = false;
+  itemsList: any;
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private location: PlatformLocation,
     private buffAndEffectService: BuffAndEffectService, private authService: AuthService, private charactersService: CharactersService,
     private alertService: AlertService) {
@@ -37,12 +39,19 @@ export class AssignBuffAndEffectComponent implements OnInit {
       this.initialize();
     }, 0);
   }
-  initialize() {
+  initialize() {    
     this.isLoading = true;
     this.buffAndEffectService.getOnlyCharactersByRuleSetId<any>(this.ruleSetId, this.BuffAndEffectToAssign.buffAndEffectId)
       .subscribe(data => {
         this.characters = data;
-        this.selectercharacters = this.characters.filter((x:any) => x.selected)
+        this.selectercharacters = this.characters.filter((x: any) => x.selected)
+
+        this.allSelected = true;
+        this.characters.map(x => {
+          if (x.selected == false)
+            this.allSelected = false;
+        })
+        
         this.isLoading = false;
       }, error => {
         let Errors = Utilities.ErrorDetail("", error);
@@ -62,14 +71,38 @@ export class AssignBuffAndEffectComponent implements OnInit {
     }
     else {
       this.selectercharacters = this.selectercharacters.filter(x => x.characterId != _selectedcharacter.characterId) ;
+
     }
-   
+    this.allSelected = true;
+    this.characters.map(x => {
+      if (x.selected == false)
+        this.allSelected = false;
+    })
   }
-  Assign() {
+  selectDeselectFilters(selected) {    
+    this.allSelected = selected;
+
+    if (this.allSelected) {
+
+      this.characters.map((item) => {
+        item.selected = true;
+       
+      })
+
+    }
+    else {
+      this.characters.map((item) => {
+        item.selected = false;
+      })
+
+    }
+  }
+  Assign() {    
     this.isLoading = true;
     this.alertService.startLoadingMessage("", "Assigning Buffs & Effects to characters.");
     let buffs: BuffAndEffect[] = [];
     buffs.push(this.BuffAndEffectToAssign)
+    this.selectercharacters = this.characters.filter(x => x.selected == true);
     debugger
     let nonSelectedCharacters:Characters[] = this.characters.map(x => {
       if (this.selectercharacters.filter(SC => SC.characterId == x.characterId).length) {
@@ -80,6 +113,8 @@ export class AssignBuffAndEffectComponent implements OnInit {
       }
       
     })
+
+   
     nonSelectedCharacters = nonSelectedCharacters.filter(SC => SC)
     debugger
     this.buffAndEffectService.assignBuffAndEffectToCharacter<any>(buffs, this.selectercharacters, nonSelectedCharacters,[],0)
