@@ -31,8 +31,8 @@
               </div>
               <div class="col-6  text-right">
                 <legend>
-                  <a class="filter-select-deselect" (click)="selectDeselectFilters(true)" *ngIf="!allSelected">Select All</a>
-                  <a class="filter-select-deselect" (click)="selectDeselectFilters(false)" *ngIf="allSelected">Deselect All</a>
+                  <a class="filter-select-deselect" (click)="selectDeselectFilters(true)" *ngIf="!allSelected ">Select All</a>
+                  <a class="filter-select-deselect" (click)="selectDeselectFilters(false)" *ngIf="allSelected && itemsList?.length > 0">Deselect All</a>
                 </legend>
               </div>
             </div>
