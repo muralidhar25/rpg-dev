@@ -55,6 +55,7 @@ import { CharacterStatConditionViewModel } from "../../core/models/view-models/c
 import { AppService1 } from "../../app.service";
 import { HeaderValues } from "../../core/models/headers.model";
 import { BuffAndEffectService } from "../../core/services/buff-and-effect.service";
+import { AddBuffAndEffectComponent } from "../../shared/buffs-and-effects/add-buffs-and-effects/add-buffs-and-effects.component";
 
 
 
@@ -169,6 +170,9 @@ export class CharacterDashboardComponent implements OnInit {
   ConditionsValuesList: CharactersCharacterStat[] = [];
   charNav: any = {};
   haspageRefresh: boolean;
+
+  pauseBuffAndEffectAdd: boolean = false
+  pauseBuffAndEffectCreate: boolean = false
 
   constructor(
     private router: Router, private alertService: AlertService, private authService: AuthService, private sharedService: SharedService,
@@ -2691,7 +2695,8 @@ export class CharacterDashboardComponent implements OnInit {
                 this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
                 setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
               }
-
+              this.pauseBuffAndEffectAdd = data.pauseBuffAndEffectAdd;
+              this.pauseBuffAndEffectCreate = data.pauseBuffAndEffectCreate;
             }
             if (data.isDeletedInvite) {
               this.router.navigate(['/characters']);
@@ -2709,5 +2714,39 @@ export class CharacterDashboardComponent implements OnInit {
         //  this.authService.logout(true);
         //}
       });
+  }
+  AssignBuffsToCharacter(buffsList) {
+    debugger
+    if (!this.pauseBuffAndEffectAdd) {
+      let selectedbuffs = [];
+
+      if (buffsList) {
+        if (buffsList.length) {
+          buffsList.map((x) => {
+            if (x.buffAndEffect) {
+              selectedbuffs.push({ text: x.buffAndEffect.name, value: x.buffAndEffectID, buffAndEffectId: x.buffAndEffectID, image: x.buffAndEffect.imageUrl })
+            }
+          })
+        }
+      }
+     
+
+      this.bsModalRef = this.modalService.show(AddBuffAndEffectComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      debugger
+      this.bsModalRef.content.rulesetID = this.rulesetModel.ruleSetId;
+      this.bsModalRef.content.characterID = this.characterId;
+      this.bsModalRef.content.selectedBuffAndEffectsList = selectedbuffs;
+      this.bsModalRef.content.pauseBuffAndEffectCreate = this.pauseBuffAndEffectCreate;
+      this.bsModalRef.content.event.subscribe(data => {
+        if (data) {
+          this.initialize(true);
+        }
+      });
+    }
+    
   }
 }

@@ -79,12 +79,28 @@ namespace DAL.Services
 
        
 
-        public BuffAndEffect GetById(int? id)
+        public BuffAndEffectVM GetById(int? id)
         {
-            BuffAndEffect buffAndEffect = _context.BuffAndEffects
+            BuffAndEffectVM buffAndEffect = _context.BuffAndEffects
                 .Include(d=>d.RuleSet)
                 .Include(d=>d.BuffAndEffectCommand)
                 .Where(x => x.BuffAndEffectId  == id && x.IsDeleted != true)
+                .Select(x=> new BuffAndEffectVM (){
+                    BuffAndEffectCommand=x.BuffAndEffectCommand,
+                    BuffAndEffectId=x.BuffAndEffectId,
+                    Command=x.Command,
+                    CommandName=x.CommandName,
+                    Description=x.Description,
+                    ImageUrl=x.ImageUrl,
+                    IsAssignedToAnyCharacter=_context.CharacterBuffAndEffects.Where(q=>q.BuffAndEffectID==x.BuffAndEffectId && x.IsDeleted != true).Any(),
+                    IsDeleted=x.IsDeleted,
+                    Metatags=x.Metatags,
+                    Name=x.Name,
+                    ParentBuffAndEffectId=x.ParentBuffAndEffectId,
+                    RuleSet=x.RuleSet,
+                    RuleSetId=x.RuleSetId,
+                    Stats=x.Stats,
+                })
                 .FirstOrDefault();
 
             if (buffAndEffect == null) return buffAndEffect;

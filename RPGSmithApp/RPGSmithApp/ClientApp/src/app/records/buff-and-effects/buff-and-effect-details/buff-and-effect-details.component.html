@@ -139,8 +139,11 @@
                   {{buffAndEffectDetail?.name}}
                 </h2>
                 <div class="item-info-props-indics">
-                 
-                  
+                  <ul class="item-info-indics" *ngIf="buffAndEffectDetail?.isAssignedToAnyCharacter">
+                    <li>
+                      <i class="icon-Assign"></i>
+                    </li>
+                  </ul>
                 </div>
               </div>
               <ul class="item-info-actions d-none d-md-flex">
@@ -149,6 +152,9 @@
                     ASSIGN
                   </button>
                   <!--<button type="button" (click)="editBuffAndEffect(buffAndEffectDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>-->
+                </li>
+                <li *ngIf="buffAndEffectDetail?.command">
+                  <button *ngIf="buffAndEffectDetail?.command" class="btn btn-accent icon icon-with-text icon-dice icon-rsi" type="button" (click)="useBuffAndEffect(buffAndEffectDetail)">Roll</button>
                 </li>
                 <!--<li>
                   <button type="button" (click)="deleteBuffAndEffect(buffAndEffectDetail)" class="btn icon  icon-with-text icon-trash btn-accent"> Delete</button>
@@ -188,7 +194,7 @@
               <div class="item-info-stats">
                 <h3>Command</h3>
                 <p>{{buffAndEffectDetail?.command}}</p>
-                <button *ngIf="buffAndEffectDetail?.command" class="btn icon icon-with-text icon-dice icon-rsi btn-primary" type="button" (click)="useBuffAndEffect(buffAndEffectDetail)">Roll</button>
+                
               </div>
             </div>
           </div>

@@ -129,6 +129,15 @@ namespace DAL
         public virtual DbSet<SpellBuffAndEffect> SpellBuffAndEffects { get; set; }
         public virtual DbSet<AbilityBuffAndEffect> AbilityBuffAndEffects { get; set; }
         public virtual DbSet<ItemBuffAndEffect> ItemBuffAndEffects { get; set; }
+        public virtual DbSet<MonsterTemplate> MonsterTemplates { get; set; }
+        public virtual DbSet<MonsterTemplateCommand> MonsterTemplateCommands { get; set; }
+        public virtual DbSet<MonsterTemplateAbility> MonsterTemplateAbilities { get; set; }
+        public virtual DbSet<MonsterTemplateSpell> MonsterTemplateSpells { get; set; }
+        public virtual DbSet<MonsterTemplateMonster> MonsterTemplateMonsters { get; set; }
+        public virtual DbSet<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffects { get; set; }
+        public virtual DbSet<RandomizationEngine> RandomizationEngines { get; set; }
+        public virtual DbSet<MonsterTemplateRandomizationEngine> MonsterTemplateRandomizationEngines { get; set; }
+        public virtual DbSet<Monster> Monsters { get; set; }
         
 
         public ApplicationDbContext(DbContextOptions options) : base(options)

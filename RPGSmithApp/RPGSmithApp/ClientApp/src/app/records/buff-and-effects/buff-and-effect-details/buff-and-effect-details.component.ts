@@ -84,6 +84,7 @@ export class BuffAndEffectDetailsComponent implements OnInit {
           if (!this.buffAndEffectDetail.ruleset) {
             this.buffAndEffectDetail.ruleset = data.ruleSet;
           }
+          this.buffAndEffectDetail.isAssignedToAnyCharacter = data.isAssignedToAnyCharacter;
           debugger
           this.ruleSetId = this.buffAndEffectDetail.ruleSetId;
           this.rulesetService.GetCopiedRulesetID(this.buffAndEffectDetail.ruleSetId, user.id).subscribe(data => {

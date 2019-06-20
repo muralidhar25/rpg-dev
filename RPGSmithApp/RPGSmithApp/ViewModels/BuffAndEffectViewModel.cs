@@ -20,6 +20,8 @@ namespace RPGSmithApp.ViewModels
         public string Metatags { get; set; }
         public bool? IsDeleted { get; set; }
 
+        public bool IsAssignedToAnyCharacter { get; set; }
+
         public virtual RuleSet RuleSet { get; set; }
 
       //  public virtual ICollection<ItemMasterAbility> ItemMasterAbilities { get; set; }

@@ -362,3 +362,13 @@
 .help-icon:before {
   font-size: 20px;
 }
+/*------Top Arrow----*/
+.back-to-top {
+  bottom: 62px !important;
+}
+
+@media screen and (max-width:1199px) {
+  .back-to-top {
+    right: 2px !important;
+  }
+}

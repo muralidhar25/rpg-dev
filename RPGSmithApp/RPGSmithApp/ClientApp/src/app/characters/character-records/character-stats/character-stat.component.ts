@@ -2316,6 +2316,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
       });
   }
   SelectBuffAndEffects() {
+    debugger
     this.bsModalRef = this.modalService.show(AddBuffAndEffectComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,

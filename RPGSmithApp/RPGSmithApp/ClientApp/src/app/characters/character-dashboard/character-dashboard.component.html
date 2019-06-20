@@ -557,7 +557,7 @@
                     Buffs & Effects
                   </h5>-->
 
-                  <div class="tile-body buff-tile-body">
+                  <div class="tile-body buff-tile-body" (click)="AssignBuffsToCharacter(box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds)">
                     <ng-container *ngIf="box.tile.buffAndEffectTiles?.showTitle && !box.tile.buffAndEffectTiles?.displayLinkImage">
                       <span [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor}"
                                 [style.height.px]="box.config.sizey==1?20:40+box.config.sizex+box.config.sizey"

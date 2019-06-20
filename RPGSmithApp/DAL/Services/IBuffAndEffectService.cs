@@ -12,7 +12,7 @@ namespace DAL.Services
         Task<BuffAndEffect> Create(BuffAndEffect item);
         Task<BuffAndEffect> Update(BuffAndEffect item);
         Task<bool> Delete(int id);
-        BuffAndEffect GetById(int? id);
+        BuffAndEffectVM GetById(int? id);
         int GetCountByRuleSetId(int ruleSetId);
         int Core_GetCountByRuleSetId(int ruleSetId, int parentID);
         Task<bool> CheckDuplicateBuffAndEffect(string value, int? ruleSetId, int? buffAndEffectId = 0);

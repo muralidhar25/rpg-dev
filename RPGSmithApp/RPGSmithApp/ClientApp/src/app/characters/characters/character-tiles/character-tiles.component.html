@@ -496,7 +496,7 @@
                                     </div>
                                 </div>
 
-                                <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.BUFFANDEFFECT && box.tile.buffAndEffectTiles" [ngClass]="(box.tile.buffAndEffectTiles?.shape=='50')?'grid-rounded':(box.tile.buffAndEffectTiles?.shape=='100')?'grid-circle':''">
+                                <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.BUFFANDEFFECT && box.tile.buffAndEffectTiles">
                                   <div class="tile tile-type-note tile-color-6 buff-padding"
                                        [style.background-color]=" (box.tile.buffAndEffectTiles?.showTitle && !box.tile.buffAndEffectTiles?.displayLinkImage)? box.tile.buffAndEffectTiles.titleBgColor :box.tile.buffAndEffectTiles?.bodyBgColor" [ngClass]="(box.tile.buffAndEffectTiles?.shape=='50')?'grid-rounded':(box.tile.buffAndEffectTiles?.shape=='100')?'grid-circle':''"
                                        >

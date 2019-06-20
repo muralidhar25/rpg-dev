@@ -167,3 +167,20 @@ p {
     display: none;
   }
 }
+@media screen and (min-width: 992px) {
+  .page-item-details .item-info-indics {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 0px;
+  }
+}
+
+.item-info-banner .item-info-indics li {
+  font-size: 10px;
+  text-align: left;
+}
+
+.page-item-details .item-info-indics li i:before {
+  font-size: 2rem;
+  color: #ffffff;
+}

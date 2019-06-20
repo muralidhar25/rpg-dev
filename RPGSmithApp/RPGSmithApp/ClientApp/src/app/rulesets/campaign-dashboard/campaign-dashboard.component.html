@@ -529,7 +529,7 @@
               </div>
 
 
-              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.BUFFANDEFFECT && box.tile.buffAndEffectTiles" [ngClass]="(box.tile.buffAndEffectTiles?.shape=='50')?'grid-rounded':(box.tile.buffAndEffectTiles?.shape=='100')?'grid-circle':''">
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.BUFFANDEFFECT && box.tile.buffAndEffectTiles">
                 <div class="tile tile-type-note tile-color-6 buff-padding"
                      [style.background-color]=" (box.tile.buffAndEffectTiles?.showTitle && !box.tile.buffAndEffectTiles?.displayLinkImage)? box.tile.buffAndEffectTiles.titleBgColor :box.tile.buffAndEffectTiles?.bodyBgColor" [ngClass]="(box.tile.buffAndEffectTiles?.shape=='50')?'grid-rounded':(box.tile.buffAndEffectTiles?.shape=='100')?'grid-circle':''"
                      (click)="viewTile(box.tile, box.tile.tileTypeId)">
@@ -608,10 +608,11 @@
                                           <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
                                             <div class="inline-buff-image box-img" [ngStyle]="{'width': (getTileSize().max)+'px', 'height': (box.config.sizey<3?getTileSize().max:getTileSize().max+box.config.sizey+1)+'px'}"
                                                 title="{{description(CharBuff?.description)}}"
+                                                 popover="{{CharBuff?.name}}" triggers="hover" container="body"
                                [routerLink]="['/ruleset/buff-effect-details/', CharBuff?.buffAndEffectId]" > 
                                               <img *ngIf="CharBuff" [src]="CharBuff?.imageUrl" class="buff-tile-image"
                                                    [ngStyle]="{'width': ((getTileSize().max-4)<24?24 :(getTileSize().max-4))+'px','height': ((getTileSize().max-26)<24?24 :(getTileSize().max-26))+'px'}"
-                                                   popover="{{CharBuff?.name}}" triggers="hover" container="body" />
+                                                    />
                                               <p [style.font-size.px]="box.config.sizey==1?10:10+box.config.sizex+box.config.sizey">{{CharBuff?.name}}</p>
                                             </div>
                                           </ng-container>

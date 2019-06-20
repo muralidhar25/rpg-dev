@@ -153,6 +153,9 @@
                     REMOVE
                   </button>
                 </li>
+                <li>
+                  <button *ngIf="buffAndEffectDetail?.command" class="btn btn-accent icon icon-with-text icon-dice icon-rsi btn-primary" type="button" (click)="useBuffAndEffect(buffAndEffectDetail)">ROLL</button>
+                </li>
                 <!--<li *ngIf="!pauseBuffAndEffectCreate">
                   <button type="button" (click)="editBuffAndEffect(buffAndEffectDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
                 </li>
@@ -195,7 +198,7 @@
               <div class="item-info-stats">
                 <h3>Command</h3>
                 <p>{{buffAndEffectDetail?.command}}</p>
-                <button *ngIf="buffAndEffectDetail?.command" class="btn icon icon-with-text icon-dice icon-rsi btn-primary" type="button" (click)="useBuffAndEffect(buffAndEffectDetail)">Roll</button>
+                
               </div>
             </div>
           </div>
