@@ -19,6 +19,7 @@ import { DBkeys } from '../../../core/common/db-keys';
 import { DiceComponent } from '../../../shared/dice/dice/dice.component';
 import { ImageSelectorComponent } from '../../../shared/image-interface/image-selector/image-selector.component';
 import { DiceService } from '../../../core/services/dice.service';
+import { AddItemMonsterComponent } from '../Add-items-monster/add-item-monster.component';
 
 @Component({
   selector: 'app-create-monster-template',
@@ -54,6 +55,9 @@ export class CreateMonsterTemplateComponent implements OnInit {
   selectedSpells = [];
   associateMonsterTemplateList = [];
   selectedAssociateMonsterTemplates = [];
+  SelectedItemsList = [];
+ 
+
     options(placeholder?: string): Object {
         return Utilities.optionsFloala(160, placeholder);
     }
@@ -134,11 +138,10 @@ export class CreateMonsterTemplateComponent implements OnInit {
             this.isLoading = true;
             this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(this.monsterTemplateFormModal.monsterTemplateId, this._ruleSetId)
               .subscribe(data => {
-                debugger
+ 
                 this.monsterTemplateFormModal.monsterTemplateCommandVM = data.monsterTemplateCommands;
                 this.buffAndEffectsList = data.buffAndEffectsList;
                 this.selectedBuffAndEffects = data.selectedBuffAndEffects;
-
                 this.abilitiesList = data.abilityList;
                 this.selectedAbilities = data.selectedAbilityList;
                 this.spellsList = data.spellList;
@@ -615,5 +618,31 @@ export class CreateMonsterTemplateComponent implements OnInit {
     catch (e) {
       return false;
     }
+  }
+  selectedBuffAndEffectsListChanged(item) {
+    console.log(item);
+  }
+  SelectBuffAndEffects() {
+   
+    this.bsModalRef = this.modalService.show(AddItemMonsterComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Add Items';
+    this.bsModalRef.content.button = 'ADD';
+    //this.bsModalRef.content.itemVM = { characterId: this.characterId };
+    //this.bsModalRef.content.characterItems = this.ItemsList;
+
+    this.bsModalRef.content.rulesetID = this._ruleSetId;
+    this.bsModalRef.content.SelectedItemsList = this.SelectedItemsList;
+   // this.bsModalRef.content.characterID = this.characterId;
+
+    this.bsModalRef.content.event.subscribe(data => {
+      if (data) {
+        this.SelectedItemsList = data;
+      }
+    });
+
   }
 }

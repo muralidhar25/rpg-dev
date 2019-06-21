@@ -19,6 +19,7 @@ import { Characters } from "../../core/models/view-models/characters.model";
 import { MonsterTemplateService } from "../../core/services/monster-template.service";
 import { MonsterTemplate } from "../../core/models/view-models/monster-template.model";
 import { CreateMonsterTemplateComponent } from "./create-monster-template/create-monster-template.component";
+import { DeployMonsterComponent } from "./deploy-monster/deploy-monster.component";
 
 @Component({
   selector: 'app-monster-template',
@@ -96,8 +97,8 @@ export class MonsterTemplateComponent implements OnInit {
                //check for ruleset
                 if (data.RuleSet)
                   this.monsterTemplateList = Utilities.responseData(data.monsterTemplates, this.pageSize);
-               
-                  this.rulesetModel = data.RuleSet;
+
+                this.rulesetModel = data.RuleSet;
                   this.setHeaderValues(this.rulesetModel);
                 this.monsterTemplateList.forEach(function (val) { val.showIcon = false; val.xPValue = val.xpValue });
                     try {
@@ -433,7 +434,7 @@ export class MonsterTemplateComponent implements OnInit {
   }
 
   openDiceRollModal() {
-    
+ 
     this.bsModalRef = this.modalService.show(DiceRollComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -446,5 +447,18 @@ export class MonsterTemplateComponent implements OnInit {
     this.bsModalRef.content.recordImage = this.rulesetModel.imageUrl;
     this.bsModalRef.content.recordType = 'ruleset'
     this.bsModalRef.content.isFromCampaignDetail = true;
+  }
+
+  deployMonster(item) {
+    console.log(item);
+    this.bsModalRef = this.modalService.show(DeployMonsterComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Quantity";
+    this.bsModalRef.content.monsterInfo = item;
+
+
   }
 }
