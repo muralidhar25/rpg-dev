@@ -33,7 +33,7 @@ namespace DAL.Services
         List<MonsterTemplateBuffAndEffect> insertAssociateBuffAndEffects(List<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffectVM);
         List<MonsterTemplateMonster> insertAssociateMonsterTemplates(List<MonsterTemplateMonster> MonsterTemplateMonsterVM);
         List<MonsterTemplateItemMaster> insertAssociateItemMasters(List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM);
-void deployMonster(int qty, int monsterTemplateId, int RulesetId);
+void deployMonster(DeployMonsterTemplate model);
         // List<MonsterTemplate> GetByRuleSetId_add(int rulesetId);
 
     }

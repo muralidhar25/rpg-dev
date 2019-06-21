@@ -540,11 +540,11 @@ namespace RPGSmithApp.Controllers
         //}
 
         [HttpPost("DeployMonsterTemplate")]
-        public async Task<IActionResult> DeployMonsterTemplate(int qty, int monsterTemplateId, int RulesetId)
+        public async Task<IActionResult> DeployMonsterTemplate([FromBody]  DeployMonsterTemplate model)
         {
             try
             {
-               _monsterTemplateService.deployMonster(qty, monsterTemplateId, RulesetId);
+               _monsterTemplateService.deployMonster(model);
                 return Ok();
             }
             catch (Exception ex)

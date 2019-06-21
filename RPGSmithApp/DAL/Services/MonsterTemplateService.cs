@@ -680,7 +680,7 @@ namespace DAL.Services
             return MonsterTemplateItemMasterVM;
         }
 
-        public void deployMonster(int qty, int monsterTemplateId, int RulesetId)
+        public void deployMonster(DeployMonsterTemplate model)
         {
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
 
@@ -691,15 +691,15 @@ namespace DAL.Services
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Connection = con;
-                    cmd.Parameters.AddWithValue("@RulesetID", RulesetId);
-                    cmd.Parameters.AddWithValue("@MonsterTemplateId", monsterTemplateId);
-                    cmd.Parameters.AddWithValue("@Qty", qty);
-                    cmd.Parameters.AddWithValue("@HealthCurrent", qty);
-                    cmd.Parameters.AddWithValue("@HealthMax", qty);
-                    cmd.Parameters.AddWithValue("@ArmorClass", qty);
-                    cmd.Parameters.AddWithValue("@XPValue", qty);
-                    cmd.Parameters.AddWithValue("@ChallangeRating", qty);
-                    cmd.Parameters.AddWithValue("@AddToCombat", qty);
+                    cmd.Parameters.AddWithValue("@RulesetID", model.rulesetId);
+                    cmd.Parameters.AddWithValue("@MonsterTemplateId", model.monsterTemplateId);
+                    cmd.Parameters.AddWithValue("@Qty", model.qty);
+                    cmd.Parameters.AddWithValue("@HealthCurrent", model.healthCurrent);
+                    cmd.Parameters.AddWithValue("@HealthMax", model.healthMax);
+                    cmd.Parameters.AddWithValue("@ArmorClass", model.armorClass);
+                    cmd.Parameters.AddWithValue("@XPValue", model.xpValue);
+                    cmd.Parameters.AddWithValue("@ChallangeRating", model.challangeRating);
+                    cmd.Parameters.AddWithValue("@AddToCombat", model.addToCombat);
 
                     con.Open();
                     try

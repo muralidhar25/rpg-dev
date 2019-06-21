@@ -141,7 +141,20 @@ namespace DAL.Models.SPModels
         public int CharacterBuffAndEffectId { get; set; }
         public string Command { get; set; }
     }
-    
+
+    public class DeployMonsterTemplate
+    {
+        public int qty { get; set; }
+        public int monsterTemplateId { get; set; }
+        public int rulesetId { get; set; }
+        public int healthCurrent { get; set; }
+        public int healthMax { get; set; }
+        public int armorClass { get; set; }
+        public int xpValue { get; set; }
+        public int challangeRating { get; set; }
+        public bool addToCombat { get; set; }
+    }
+
     public static class utility
     {
         public static DataTable ToDataTable<T>(List<T> items)

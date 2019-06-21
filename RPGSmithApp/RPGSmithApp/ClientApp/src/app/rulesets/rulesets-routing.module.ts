@@ -21,6 +21,7 @@ import { CampaignDashboardComponent } from "./campaign-dashboard/campaign-dashbo
 import { BuffAndEffectDetailsComponent } from "../records/buff-and-effects/buff-and-effect-details/buff-and-effect-details.component";
 import { BuffAndEffectComponent } from "../records/buff-and-effects/buff-and-effects.component";
 import { MonsterTemplateComponent } from "../records/monster-template/monster-template.component";
+import { MonsterTemplateDetailsComponent } from "../records/monster-template/monster-template-details/monster-template-details.component";
 
 
 const routes: Routes = [
@@ -36,6 +37,7 @@ const routes: Routes = [
   { path: "spell-details/:id", component: SpellDetailsComponent, data: { title: "Spell Details" } },
   { path: "ability-details/:id", component: AbilityDetailsComponent, data: { title: "Ability Details" } },
   { path: "buff-effect-details/:id", component: BuffAndEffectDetailsComponent, data: { title: "Buffs & Effects Details" } },
+  { path: "monster-template-details/:id", component: MonsterTemplateDetailsComponent, data: { title: "Buffs & Effects Details" } },
 
   { path: "dashboard/:id", component: RulesetDashboardComponent, data: { title: "Ruleset Dashboard" } },
   { path: "character-stats/:id", component: CharacterStatsComponent, data: { title: "Character Stats" } },
