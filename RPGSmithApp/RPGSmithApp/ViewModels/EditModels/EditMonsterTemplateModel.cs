@@ -54,5 +54,6 @@ namespace RPGSmithApp.ViewModels.EditModels
         public List<MonsterTemplateAbility> MonsterTemplateAbilityVM { get; set; }
         public List<MonsterTemplateSpell> MonsterTemplateSpellVM { get; set; }
         public List<MonsterTemplateMonster> MonsterTemplateAssociateMonsterTemplateVM { get; set; }
+        public List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM { get; set; }
     }
 }

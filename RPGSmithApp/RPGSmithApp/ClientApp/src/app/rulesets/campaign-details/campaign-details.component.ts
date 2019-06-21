@@ -97,9 +97,16 @@ export class CampaignDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.destroyModalOnInit();
     this.initialize();
   }
-
+  private destroyModalOnInit(): void {
+    try {
+      this.modalService.hide(1);
+      document.body.classList.remove('modal-open');
+      //$(".modal-backdrop").remove();
+    } catch (err) { }
+  }
   playersControls() {
     this.bsModalRef = this.modalService.show(PlayerControlsComponent, {
       class: 'modal-primary modal-md',

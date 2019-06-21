@@ -143,6 +143,15 @@ namespace RPGSmithApp.Controllers
                     //    });
                     //}
                 }
+                if (model.MonsterTemplateItemMasterVM != null && model.MonsterTemplateItemMasterVM.Count > 0)
+                {
+                    foreach (var item in model.MonsterTemplateItemMasterVM)
+                    {
+                        item.MonsterTemplateId = result.MonsterTemplateId;
+                    }
+                    _monsterTemplateService.insertAssociateItemMasters(model.MonsterTemplateItemMasterVM);
+                   
+                }
 
                 return Ok(result);
             }
@@ -185,7 +194,7 @@ namespace RPGSmithApp.Controllers
 
             var monsterTemplate = Mapper.Map<MonsterTemplate>(model);
 
-            var result = await _monsterTemplateService.Update(monsterTemplate);
+            var result = await _monsterTemplateService.Update(monsterTemplate,model.MonsterTemplateAbilityVM,model.MonsterTemplateAssociateMonsterTemplateVM,model.MonsterTemplateBuffAndEffectVM,model.MonsterTemplateItemMasterVM,model.MonsterTemplateSpellVM);
 
             if (model.MonsterTemplateCommandVM != null && model.MonsterTemplateCommandVM.Count > 0)
             {
@@ -350,8 +359,75 @@ namespace RPGSmithApp.Controllers
                     });
                 }
 
-                
-                
+                if (model.MonsterTemplateAbilityVM != null && model.MonsterTemplateAbilityVM.Count > 0)
+                {
+                    foreach (var item in model.MonsterTemplateAbilityVM)
+                    {
+                        item.MonsterTemplateId = result.MonsterTemplateId;
+                    }
+                    _monsterTemplateService.insertAssociateAbilities(model.MonsterTemplateAbilityVM);
+                }
+                if (model.MonsterTemplateSpellVM != null && model.MonsterTemplateSpellVM.Count > 0)
+                {
+                    foreach (var item in model.MonsterTemplateSpellVM)
+                    {
+                        item.MonsterTemplateId = result.MonsterTemplateId;
+                    }
+                    _monsterTemplateService.insertAssociateSpells(model.MonsterTemplateSpellVM);
+                    //foreach (var acViewModels in model.MonsterTemplateCommandVM)
+                    //{
+                    //    await _monsterTemplateCommandService.InsertMonsterTemplateCommand(new MonsterTemplateCommand()
+                    //    {
+                    //        Command = acViewModels.Command,
+                    //        Name = acViewModels.Name,
+                    //        MonsterTemplateId = result.MonsterTemplateId
+                    //    });
+                    //}
+                }
+                if (model.MonsterTemplateBuffAndEffectVM != null && model.MonsterTemplateBuffAndEffectVM.Count > 0)
+                {
+                    foreach (var item in model.MonsterTemplateBuffAndEffectVM)
+                    {
+                        item.MonsterTemplateId = result.MonsterTemplateId;
+                    }
+                    _monsterTemplateService.insertAssociateBuffAndEffects(model.MonsterTemplateBuffAndEffectVM);
+                    //foreach (var acViewModels in model.MonsterTemplateBuffAndEffectVM)
+                    //{
+                    //    await _monsterTemplateCommandService.InsertMonsterTemplateCommand(new MonsterTemplateCommand()
+                    //    {
+                    //        Command = acViewModels.Command,
+                    //        Name = acViewModels.Name,
+                    //        MonsterTemplateId = result.MonsterTemplateId
+                    //    });
+                    //}
+                }
+                if (model.MonsterTemplateAssociateMonsterTemplateVM != null && model.MonsterTemplateAssociateMonsterTemplateVM.Count > 0)
+                {
+                    foreach (var item in model.MonsterTemplateAssociateMonsterTemplateVM)
+                    {
+                        item.MonsterTemplateId = result.MonsterTemplateId;
+                    }
+                    _monsterTemplateService.insertAssociateMonsterTemplates(model.MonsterTemplateAssociateMonsterTemplateVM);
+                    //foreach (var acViewModels in model.MonsterTemplateCommandVM)
+                    //{
+                    //    await _monsterTemplateCommandService.InsertMonsterTemplateCommand(new MonsterTemplateCommand()
+                    //    {
+                    //        Command = acViewModels.Command,
+                    //        Name = acViewModels.Name,
+                    //        MonsterTemplateId = result.MonsterTemplateId
+                    //    });
+                    //}
+                }
+                if (model.MonsterTemplateItemMasterVM != null && model.MonsterTemplateItemMasterVM.Count > 0)
+                {
+                    foreach (var item in model.MonsterTemplateItemMasterVM)
+                    {
+                        item.MonsterTemplateId = result.MonsterTemplateId;
+                    }
+                    _monsterTemplateService.insertAssociateItemMasters(model.MonsterTemplateItemMasterVM);
+
+                }
+
 
                 return Ok();
             }
@@ -445,7 +521,15 @@ namespace RPGSmithApp.Controllers
                 _monsterTemplateService.insertAssociateMonsterTemplates(model.MonsterTemplateAssociateMonsterTemplateVM);
                
             }
+            if (model.MonsterTemplateItemMasterVM != null && model.MonsterTemplateItemMasterVM.Count > 0)
+            {
+                foreach (var item in model.MonsterTemplateItemMasterVM)
+                {
+                    item.MonsterTemplateId = result.MonsterTemplateId;
+                }
+                _monsterTemplateService.insertAssociateItemMasters(model.MonsterTemplateItemMasterVM);
 
+            }
             return Ok(result.MonsterTemplateId);
         }
         //[HttpGet("getByRuleSetId_add")]
@@ -454,6 +538,22 @@ namespace RPGSmithApp.Controllers
         //    List<BuffAndEffect> result = _monsterTemplateService.GetByRuleSetId_add(rulesetId);
         //    return result;
         //}
+
+        [HttpPost("DeployMonsterTemplate")]
+        public async Task<IActionResult> DeployMonsterTemplate(int qty, int monsterTemplateId, int RulesetId)
+        {
+            try
+            {
+               _monsterTemplateService.deployMonster(qty, monsterTemplateId, RulesetId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {               
+                    return BadRequest(ex.Message);
+            }
+        }
+
+
         #region API Using SP
         [HttpGet("getByRuleSetId_sp")]
         public async Task<IActionResult> getByRuleSetId_sp(int rulesetId, int page = 1, int pageSize = 30)

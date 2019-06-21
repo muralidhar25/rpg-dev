@@ -37,10 +37,12 @@ namespace DAL.Models.SPModels
         public List<Spell> spellList { get; set; }
         public List<BuffAndEffect> buffAndEffectsList { get; set; }
         public List<MonsterTemplate> monsterTemplatesList { get; set; }
+        public List<ItemMaster> itemMasterList { get; set; }
         public List<Ability> selectedAbilityList { get; set; }
         public List<Spell> selectedSpellList { get; set; }
         public List<BuffAndEffect> selectedBuffAndEffects { get; set; }
         public List<MonsterTemplate> selectedMonsterTemplates { get; set; }
+        public List<MonsterTemplate> selectedItemMasters { get; set; }
         public List<MonsterTemplateCommand> monsterTemplateCommands { get; set; }        
     }
     public class SP_CharactersCharacterStat
@@ -139,6 +141,7 @@ namespace DAL.Models.SPModels
         public int CharacterBuffAndEffectId { get; set; }
         public string Command { get; set; }
     }
+    
     public static class utility
     {
         public static DataTable ToDataTable<T>(List<T> items)

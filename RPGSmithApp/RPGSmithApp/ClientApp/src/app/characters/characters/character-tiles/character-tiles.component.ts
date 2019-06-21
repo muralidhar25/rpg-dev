@@ -176,6 +176,7 @@ export class CharacterTilesComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.characterId = params['id'];
     });
+    this.destroyModalOnInit();
     this.pageId = this.localStorage.getDataObject<number>('pageId');
     this.Initialize();
 
@@ -266,6 +267,13 @@ export class CharacterTilesComponent implements OnInit {
     //  }, 10);
     //}
     this.appService.updateToggleChatParticipantList(true);
+  }
+  private destroyModalOnInit(): void {
+    try {
+      this.modalService.hide(1);
+      document.body.classList.remove('modal-open');
+      //$(".modal-backdrop").remove();
+    } catch (err) { }
   }
   private Initialize() {
     this.showManageIcons = true;

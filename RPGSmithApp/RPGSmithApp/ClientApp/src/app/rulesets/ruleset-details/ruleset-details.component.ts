@@ -83,10 +83,17 @@ export class RulesetDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.destroyModalOnInit();
     this.initialize();
   }
 
-  
+  private destroyModalOnInit(): void {
+    try {
+      this.modalService.hide(1);
+      document.body.classList.remove('modal-open');
+      //$(".modal-backdrop").remove();
+    } catch (err) { }
+  }
   initialize() {
 
     this.marketPlaceService.getmarketplaceItems<any>().subscribe(data => {

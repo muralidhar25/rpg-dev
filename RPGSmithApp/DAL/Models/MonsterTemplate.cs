@@ -144,6 +144,19 @@ namespace DAL.Models
         public virtual MonsterTemplate MonsterTemplate { get; set; }
         public virtual RandomizationEngine RandomizationEngine { get; set; }
     }
+    public class MonsterTemplateItemMaster
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        public int MonsterTemplateId { get; set; }
+        public int ItemMasterId { get; set; }
+        public int Qty { get; set; }
+        public bool IsDeleted { get; set; }
+
+        public virtual MonsterTemplate MonsterTemplate { get; set; }
+        public virtual ItemMaster ItemMaster { get; set; }
+    }
     public class Monster
     {
         [Key]
@@ -176,14 +189,14 @@ namespace DAL.Models
         public int ArmorClass { get; set; }
         public int XPValue { get; set; }
         public int ChallangeRating { get; set; }
-        
 
-        
-
+        public bool AddToCombatTracker { get; set; }
 
 
 
-        
+
+
+
 
         public virtual RuleSet RuleSet { get; set; }
         public virtual MonsterTemplate MonsterTemplate { get; set; }

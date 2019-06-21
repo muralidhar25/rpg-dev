@@ -80,6 +80,13 @@ namespace DAL.Services
                 item.IsDeleted = true;
             }
 
+            // Remove Itemmasters
+            var mti = _context.MonsterTemplateItemMasters.Where(x => x.MonsterTemplateId == id && x.IsDeleted != true).ToList();
+
+            foreach (MonsterTemplateItemMaster item in mti)
+            {
+                item.IsDeleted = true;
+            }
 
             // Remove Monster Template
             var monsterTemplate = await _repo.Get(id);
@@ -124,7 +131,12 @@ namespace DAL.Services
 
 
 
-        public async Task<MonsterTemplate> Update(MonsterTemplate item)
+        public async Task<MonsterTemplate> Update(MonsterTemplate item,
+            List<MonsterTemplateAbility> MonsterTemplateAbilityVM,
+            List<MonsterTemplateMonster> MonsterTemplateMonsterVM,
+            List<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffectVM,
+            List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM,
+            List<MonsterTemplateSpell> MonsterTemplateSpellVM)
         {
             var monsterTemplate = _context.MonsterTemplates.FirstOrDefault(x => x.MonsterTemplateId == item.MonsterTemplateId);
 
@@ -149,8 +161,83 @@ namespace DAL.Services
             monsterTemplate.IsRandomizationEngine = item.IsRandomizationEngine;
 
 
+            //try
+            //{
+            //    _context.SaveChanges();
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw ex;
+            //}
+            _context.MonsterTemplateAbilities.RemoveRange(_context.MonsterTemplateAbilities.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
+            _context.MonsterTemplateSpells.RemoveRange(_context.MonsterTemplateSpells.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
+            _context.MonsterTemplateBuffAndEffects.RemoveRange(_context.MonsterTemplateBuffAndEffects.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
+            _context.MonsterTemplateMonsters.RemoveRange(_context.MonsterTemplateMonsters.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
+            _context.MonsterTemplateItemMasters.RemoveRange(_context.MonsterTemplateItemMasters.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
             try
             {
+                _context.SaveChanges();
+
+                List<MonsterTemplateAbility> Alist = new List<MonsterTemplateAbility>();
+                foreach (var be in MonsterTemplateAbilityVM)
+                {
+                    MonsterTemplateAbility obj = new MonsterTemplateAbility()
+                    {
+                        AbilityId = be.AbilityId,
+                        MonsterTemplateId = item.MonsterTemplateId
+                    };
+                    Alist.Add(obj);
+                }                
+                _context.MonsterTemplateAbilities.AddRange(Alist);
+
+                List<MonsterTemplateSpell> Slist = new List<MonsterTemplateSpell>();
+                foreach (var be in MonsterTemplateSpellVM)
+                {
+                    MonsterTemplateSpell obj = new MonsterTemplateSpell()
+                    {
+                        SpellId = be.SpellId,
+                        MonsterTemplateId = item.MonsterTemplateId
+                    };
+                    Slist.Add(obj);
+                }
+                _context.MonsterTemplateSpells.AddRange(Slist);
+
+                List<MonsterTemplateBuffAndEffect> Blist = new List<MonsterTemplateBuffAndEffect>();
+                foreach (var be in MonsterTemplateBuffAndEffectVM)
+                {
+                    MonsterTemplateBuffAndEffect obj = new MonsterTemplateBuffAndEffect()
+                    {
+                        BuffAndEffectId = be.BuffAndEffectId,
+                        MonsterTemplateId = item.MonsterTemplateId
+                    };
+                    Blist.Add(obj);
+                }
+                _context.MonsterTemplateBuffAndEffects.AddRange(Blist);
+
+                List<MonsterTemplateMonster> Mlist = new List<MonsterTemplateMonster>();
+                foreach (var be in MonsterTemplateMonsterVM)
+                {
+                    MonsterTemplateMonster obj = new MonsterTemplateMonster()
+                    {
+                        AssociateMonsterTemplateId = be.AssociateMonsterTemplateId,
+                        MonsterTemplateId = item.MonsterTemplateId
+                    };
+                    Mlist.Add(obj);
+                }
+                _context.MonsterTemplateMonsters.AddRange(Mlist);
+
+                List<MonsterTemplateItemMaster> Ilist = new List<MonsterTemplateItemMaster>();
+                foreach (var be in MonsterTemplateItemMasterVM)
+                {
+                    MonsterTemplateItemMaster obj = new MonsterTemplateItemMaster()
+                    {
+                        ItemMasterId = be.ItemMasterId,
+                        MonsterTemplateId = item.MonsterTemplateId,
+                        Qty= be.Qty
+                    };
+                    Ilist.Add(obj);
+                }
+                _context.MonsterTemplateItemMasters.AddRange(Ilist);
                 _context.SaveChanges();
             }
             catch (Exception ex)
@@ -581,8 +668,142 @@ namespace DAL.Services
             } catch (Exception ex) { }
             return MonsterTemplateMonsterVM;
         }
+        public List<MonsterTemplateItemMaster> insertAssociateItemMasters(List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM)
+        {
+            try
+            {
+                _context.MonsterTemplateItemMasters.AddRange(MonsterTemplateItemMasterVM);
+                _context.SaveChanges();
+
+            }
+            catch (Exception ex) { }
+            return MonsterTemplateItemMasterVM;
+        }
+
+        public void deployMonster(int qty, int monsterTemplateId, int RulesetId)
+        {
+            string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            using (SqlConnection con = new SqlConnection(consString))
+            {
+
+                using (SqlCommand cmd = new SqlCommand("MonsterTemplate_Deploy"))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = con;
+                    cmd.Parameters.AddWithValue("@RulesetID", RulesetId);
+                    cmd.Parameters.AddWithValue("@MonsterTemplateId", monsterTemplateId);
+                    cmd.Parameters.AddWithValue("@Qty", qty);
+                    cmd.Parameters.AddWithValue("@HealthCurrent", qty);
+                    cmd.Parameters.AddWithValue("@HealthMax", qty);
+                    cmd.Parameters.AddWithValue("@ArmorClass", qty);
+                    cmd.Parameters.AddWithValue("@XPValue", qty);
+                    cmd.Parameters.AddWithValue("@ChallangeRating", qty);
+                    cmd.Parameters.AddWithValue("@AddToCombat", qty);
+
+                    con.Open();
+                    try
+                    {
+                        var a = cmd.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        con.Close();
+                        throw ex;
+                    }
+                    con.Close();
+                    
+                }
+            }
+        }
 
 
+        public List<Monster> SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize)
+        {
+            List<Monster> _monsterList = new List<Monster>();
+            RuleSet ruleset = new RuleSet();
+
+            short num = 0;
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("Monster_GetByRulesetID", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@RulesetID", rulesetId);
+                command.Parameters.AddWithValue("@page", page);
+                command.Parameters.AddWithValue("@size", pageSize);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+
+
+
+            if (ds.Tables[1].Rows.Count > 0)
+                ruleset = _repo.GetRuleset(ds.Tables[1], num);
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    Monster _monster = new Monster()
+                    {
+                        AddToCombatTracker= row["AddToCombatTracker"] == DBNull.Value ? false : Convert.ToBoolean(row["AddToCombatTracker"]),
+                        ArmorClass= row["ArmorClass"] == DBNull.Value ? 0 : Convert.ToInt32(row["ArmorClass"].ToString()),
+                        ChallangeRating= row["ChallangeRating"] == DBNull.Value ? 0 : Convert.ToInt32(row["ChallangeRating"].ToString()),
+                        HealthCurrent= row["HealthCurrent"] == DBNull.Value ? 0 : Convert.ToInt32(row["HealthCurrent"].ToString()),
+                        HealthMax= row["HealthMax"] == DBNull.Value ? 0 : Convert.ToInt32(row["HealthMax"].ToString()),
+                        ImageUrl= row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString(),
+                        IsDeleted= row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]),
+                        Metatags= row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString(),
+                        MonsterId= row["MonsterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterId"].ToString()),
+                        MonsterTemplateId= row["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterTemplateId"].ToString()),
+                        Name= row["Name"] == DBNull.Value ? null : row["Name"].ToString(),
+                        RuleSetId= row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString()),
+                        XPValue= row["XPValue"] == DBNull.Value ? 0 : Convert.ToInt32(row["XPValue"].ToString()),                        
+                    };
+
+
+
+
+                    MonsterTemplate _MonsterTemplate = new MonsterTemplate();
+                    _MonsterTemplate.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
+                    _MonsterTemplate.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
+                    _MonsterTemplate.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
+                    _MonsterTemplate.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    _MonsterTemplate.MonsterTemplateId = row["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterTemplateId"].ToString());
+                    _MonsterTemplate.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
+                    _MonsterTemplate.Health = row["Health"] == DBNull.Value ? null : row["Health"].ToString();
+                    _MonsterTemplate.ArmorClass = row["ArmorClass"] == DBNull.Value ? null : row["ArmorClass"].ToString();
+                    _MonsterTemplate.ChallangeRating = row["ChallangeRating"] == DBNull.Value ? null : row["ChallangeRating"].ToString();
+                    _MonsterTemplate.XPValue = row["XPValue"] == DBNull.Value ? null : row["XPValue"].ToString();
+                    _MonsterTemplate.InitiativeCommand = row["InitiativeCommand"] == DBNull.Value ? null : row["InitiativeCommand"].ToString();
+
+
+                    _monster.RuleSet = ruleset;
+                    _monster.MonsterTemplate = _MonsterTemplate;
+                    _monsterList.Add(_monster);
+                }
+            }
+            return _monsterList;
+        }
         //public List<BuffAndEffect> GetByRuleSetId_add(int rulesetId)
         //{
         //    List<BuffAndEffect> buffAndEffectList = new List<BuffAndEffect>();

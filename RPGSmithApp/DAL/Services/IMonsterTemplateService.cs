@@ -10,7 +10,13 @@ namespace DAL.Services
     public interface IMonsterTemplateService
     {
         Task<MonsterTemplate> Create(MonsterTemplate item);
-        Task<MonsterTemplate> Update(MonsterTemplate item);
+        Task<MonsterTemplate> Update(MonsterTemplate item, 
+            List<MonsterTemplateAbility> MonsterTemplateAbilityVM,
+            List<MonsterTemplateMonster> MonsterTemplateMonsterVM,
+            List<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffectVM,
+            List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM,
+            List<MonsterTemplateSpell> MonsterTemplateSpellVM
+            );
         Task<bool> Delete(int id);
         MonsterTemplate GetById(int? id);
         int GetCountByRuleSetId(int ruleSetId);
@@ -26,7 +32,9 @@ namespace DAL.Services
         List<MonsterTemplateSpell> insertAssociateSpells(List<MonsterTemplateSpell> MonsterTemplateSpellVM);
         List<MonsterTemplateBuffAndEffect> insertAssociateBuffAndEffects(List<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffectVM);
         List<MonsterTemplateMonster> insertAssociateMonsterTemplates(List<MonsterTemplateMonster> MonsterTemplateMonsterVM);
-       // List<MonsterTemplate> GetByRuleSetId_add(int rulesetId);
+        List<MonsterTemplateItemMaster> insertAssociateItemMasters(List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM);
+void deployMonster(int qty, int monsterTemplateId, int RulesetId);
+        // List<MonsterTemplate> GetByRuleSetId_add(int rulesetId);
 
     }
 }
