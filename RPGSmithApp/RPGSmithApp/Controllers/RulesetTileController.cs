@@ -385,7 +385,7 @@ namespace RPGSmithApp.Controllers
                             //Update BUFFANDEFFECT Tile 
                             if (model.BuffAndEffectTile == null)
                                 return BadRequest("BuffAndEffectTile missing in request");
-                            else if (model.TextTile.TextTileId == 0)
+                            else if (model.BuffAndEffectTile.BuffAndEffectTileId == 0)
                                 return BadRequest("BuffAndEffectTileId field is required for TextTile");
 
                             await _tileService.Update(Tile);

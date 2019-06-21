@@ -45,6 +45,7 @@ import { CharacterStatConditionViewModel } from '../../core/models/view-models/c
 import { RulesetEditTextComponent } from '../../tile-ruleset/text/edit-text/edit-text.component';
 import { EditCharacterStatComponent } from '../../tile/character-stat/edit-character-stat/edit-character-stat.component';
 import { Characters } from '../../core/models/view-models/characters.model';
+import { RulesetBuffAndEffectTileComponent } from '../../tile-ruleset/buff-and-effect/buff-and-effect.component';
 
 @Component({
   selector: 'app-campaign-dashboard',
@@ -1799,6 +1800,26 @@ export class CampaignDashboardComponent implements OnInit {
           keyboard: false
         });
         this.bsModalRef.content.title = "Edit Text Tile";
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.rulesetId = this.ruleSetId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.EDIT;
+
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            this.showManageIcons = data;
+          }
+        })
+        break;
+      }
+      case TILES.BUFFANDEFFECT: {
+        this.bsModalRef = this.modalService.show(RulesetBuffAndEffectTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = "Edit Buffs & Effects Tile";
         this.bsModalRef.content.tile = tile;
         this.bsModalRef.content.rulesetId = this.ruleSetId;
         this.bsModalRef.content.pageId = this.pageId;

@@ -41,6 +41,7 @@ import { AppService1 } from "../../../app.service";
 import { PlatformLocation } from "@angular/common";
 import { HeaderValues } from "../../../core/models/headers.model";
 import { Characters } from "../../../core/models/view-models/characters.model";
+import { RulesetBuffAndEffectTileComponent } from "../../../tile-ruleset/buff-and-effect/buff-and-effect.component";
 
 @Component({
     selector: 'app-ruleset-dashboard',
@@ -1668,7 +1669,27 @@ export class RulesetDashboardComponent implements OnInit {
                   }
                 })
                 break;
-            }
+          }
+          case TILES.BUFFANDEFFECT: {
+            this.bsModalRef = this.modalService.show(RulesetBuffAndEffectTileComponent, {
+              class: 'modal-primary modal-md',
+              ignoreBackdropClick: true,
+              keyboard: false
+            });
+            this.bsModalRef.content.title = "Edit Buffs & Effects Tile";
+            this.bsModalRef.content.tile = tile;
+            this.bsModalRef.content.rulesetId = this.ruleSetId;
+            this.bsModalRef.content.pageId = this.pageId;
+            this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+            this.bsModalRef.content.view = VIEW.EDIT;
+
+            this.bsModalRef.content.event.subscribe(data => {
+              if (data) {
+                this.showManageIcons = data;
+              }
+            })
+            break;
+          }
             default: break;
         }
         // }
