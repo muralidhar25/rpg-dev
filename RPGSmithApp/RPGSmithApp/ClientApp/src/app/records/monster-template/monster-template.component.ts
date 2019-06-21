@@ -19,6 +19,7 @@ import { Characters } from "../../core/models/view-models/characters.model";
 import { MonsterTemplateService } from "../../core/services/monster-template.service";
 import { MonsterTemplate } from "../../core/models/view-models/monster-template.model";
 import { CreateMonsterTemplateComponent } from "./create-monster-template/create-monster-template.component";
+import { DeployMonsterComponent } from "./deploy-monster/deploy-monster.component";
 
 @Component({
   selector: 'app-monster-template',
@@ -448,8 +449,16 @@ export class MonsterTemplateComponent implements OnInit {
     this.bsModalRef.content.isFromCampaignDetail = true;
   }
 
-  deployMonster(Item) {
-    console.log('deploy', Item);
+  deployMonster(item) {
+    console.log(item);
+    this.bsModalRef = this.modalService.show(DeployMonsterComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Quantity";
+    this.bsModalRef.content.monsterInfo = item;
+
 
   }
 }

@@ -1,0 +1,43 @@
+<div class="modal-content">
+  <div class="modal-header" style="height:3rem">
+
+    <!--<h5 class="modal-title" id="viewCounterPopupTitle">{{title}}</h5>
+  <a href="https://rpgsmith.com/help/#countertile " class=" help-icon  icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+  <button type="button" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>-->
+    <h5 class="modal-title" id="dicePopupTitle">
+      <span>{{title}}</span>
+      <span class="manage-ruleset-header">
+        <span>
+          <img [src]="monsterImage" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
+        </span>
+        <span>{{monsterInfo?.name}}</span>
+      </span>
+    </h5>
+    <a href="https://rpgsmith.com/help/#Dice" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+  </div>
+        <div class="modal-body">
+            <form>
+                <div class="form-group input-counter">
+                    <div class="input-group">
+                        <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDown(-1)" (mouseup)="mouseUp()" (click)="decrement()"></button>
+                        <input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" (change)="changeCurrentValue($event)" [(ngModel)]="value" name="currentValue">
+                        <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (mousedown)="mouseDown(1)" (mouseup)="mouseUp()" (click)="increment()"></button>
+                    </div>
+
+                    <div class="row">
+                        <div class="col text-right">
+                            <button type="button" class="btn icon icon-with-text icon-reset btn-link-primary" (click)="resetValue()"><span>Reset to {{value}}</span></button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <div class="w-100 m-0">
+                <button type="button" class="btn float-right btn-accent" (click)="saveCounter()">SAVE</button>
+            </div>
+        </div>
+    </div>
+

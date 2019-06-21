@@ -29,6 +29,7 @@ import { BuffAndEffectDetailsComponent } from "./buff-and-effects/buff-and-effec
 import { MonsterTemplateComponent } from "./monster-template/monster-template.component";
 import { CreateMonsterTemplateComponent } from "./monster-template/create-monster-template/create-monster-template.component";
 import { AddItemMonsterComponent } from "./monster-template/Add-items-monster/add-item-monster.component";
+import { DeployMonsterComponent } from "./monster-template/deploy-monster/deploy-monster.component";
 
 
 @NgModule({
@@ -56,7 +57,8 @@ import { AddItemMonsterComponent } from "./monster-template/Add-items-monster/ad
     BuffAndEffectDetailsComponent,
     MonsterTemplateComponent,
     CreateMonsterTemplateComponent,
-    AddItemMonsterComponent
+    AddItemMonsterComponent,
+    DeployMonsterComponent
   ],
   imports: [
     SharedModule
@@ -87,7 +89,8 @@ import { AddItemMonsterComponent } from "./monster-template/Add-items-monster/ad
     BuffAndEffectDetailsComponent,
     MonsterTemplateComponent,
     CreateMonsterTemplateComponent,
-    AddItemMonsterComponent
+    AddItemMonsterComponent,
+    DeployMonsterComponent
   ],
   entryComponents: [
     AddItemMasterComponent,
@@ -102,7 +105,8 @@ import { AddItemMonsterComponent } from "./monster-template/Add-items-monster/ad
     LootAddContainerComponent,
     DeleteAllLootItemsComponent,
     CreateMonsterTemplateComponent,
-    AddItemMonsterComponent
+    AddItemMonsterComponent,
+    DeployMonsterComponent
   ]
 })
 export class RecordsModule {}
