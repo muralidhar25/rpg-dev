@@ -611,3 +611,6 @@ span.buff-images-only img.buff-tile-image {
 /*.inline-buff-image-height-3 {
   height: calc(100% - -3px) !important;
 }*/
+img.buff-tile-image {
+  object-fit: contain;
+}
