@@ -96,8 +96,8 @@ export class MonsterTemplateComponent implements OnInit {
                //check for ruleset
                 if (data.RuleSet)
                   this.monsterTemplateList = Utilities.responseData(data.monsterTemplates, this.pageSize);
-               
-                  this.rulesetModel = data.RuleSet;
+
+                this.rulesetModel = data.RuleSet;
                   this.setHeaderValues(this.rulesetModel);
                 this.monsterTemplateList.forEach(function (val) { val.showIcon = false; val.xPValue = val.xpValue });
                     try {
@@ -433,7 +433,7 @@ export class MonsterTemplateComponent implements OnInit {
   }
 
   openDiceRollModal() {
-    
+ 
     this.bsModalRef = this.modalService.show(DiceRollComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -446,5 +446,10 @@ export class MonsterTemplateComponent implements OnInit {
     this.bsModalRef.content.recordImage = this.rulesetModel.imageUrl;
     this.bsModalRef.content.recordType = 'ruleset'
     this.bsModalRef.content.isFromCampaignDetail = true;
+  }
+
+  deployMonster(Item) {
+    console.log('deploy', Item);
+
   }
 }
