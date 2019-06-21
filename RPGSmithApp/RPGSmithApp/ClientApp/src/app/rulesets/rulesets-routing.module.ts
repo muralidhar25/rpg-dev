@@ -20,6 +20,7 @@ import { RulesetDetailsComponent } from "./ruleset-details/ruleset-details.compo
 import { CampaignDashboardComponent } from "./campaign-dashboard/campaign-dashboard.component";
 import { BuffAndEffectDetailsComponent } from "../records/buff-and-effects/buff-and-effect-details/buff-and-effect-details.component";
 import { BuffAndEffectComponent } from "../records/buff-and-effects/buff-and-effects.component";
+import { MonsterTemplateComponent } from "../records/monster-template/monster-template.component";
 
 
 const routes: Routes = [
@@ -28,6 +29,7 @@ const routes: Routes = [
   { path: "spell/:id", component: SpellsComponent, data: { title: "Spells" } },
   { path: "ability/:id", component: AbilitiesComponent, data: { title: "Abilities" } },
   { path: "buff-effect/:id", component: BuffAndEffectComponent, data: { title: "Buffs & Effects" } },
+  { path: "monster-template/:id", component: MonsterTemplateComponent, data: { title: "Monster Templates" } },
 
   { path: "item-details/:id", component: ItemDetailsComponent, data: { title: "Item Details" } },
   { path: "bundle-details/:id", component: BundleDetailsComponent, data: { title: "Bundle Details" } },

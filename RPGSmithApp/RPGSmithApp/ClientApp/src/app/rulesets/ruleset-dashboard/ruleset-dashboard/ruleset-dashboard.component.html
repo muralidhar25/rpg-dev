@@ -568,7 +568,7 @@
                     <ng-container *ngIf="!box.tile.buffAndEffectTiles?.showTitle && box.tile.buffAndEffectTiles?.displayLinkImage">
                       <span class="buff-images-only" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor}"
                             [style.height.px]="getTileSize().max"
-                            [style.font-size.px]="box.config.sizex<3?7:18+box.config.sizex+1">
+                            [style.font-size.px]="box.config.sizex<3?7:(box.config.sizex<5?16:18)+box.config.sizex+(box.config.sizex>6?4:1)">
                         <ng-container *ngFor="let CharBuff of box.tile.buffAndEffectTiles?.multiBuffAndEffectsIds; let i = index">
 
                           <!--<img *ngIf="CharBuff" [src]="CharBuff?.imageUrl" class="buff-tile-image"

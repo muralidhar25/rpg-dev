@@ -3500,8 +3500,7 @@ export class DiceService {
     }
     return false;
   }
-  public static rollDiceExternally(alertService: AlertService, CommandString: string, customDices: CustomDice[]): number {
-    debugger
+  public static rollDiceExternally(alertService: AlertService, CommandString: string, customDices: CustomDice[]) {
     let statdetails: any = [];
     let charactersCharacterStats: any = [];
     let diceRolledData: any = [];
@@ -3556,25 +3555,21 @@ export class DiceService {
 
     _mainCommandText= !_mainCommandText || _mainCommandText == "" ? command : _mainCommandText;
     command = _mainCommandText.toUpperCase();
-      if (command.length >= 500) {
-        alertService.showMessage("A maximum of 500 characters is allowed for a command. Please adjust your command string and try again.", "", MessageSeverity.error);
-        //if (this.diceSection = true) {
-        //  this.rollSection = false;
-        //}
-        //else if (this.rollSection = true) {
-        //  this.diceSection = false;
-        //}
+    if (command.length >= 500) {
+      
+      //alertService.showMessage("A maximum of 500 characters is allowed for a command. Please adjust your command string and try again.", "", MessageSeverity.error);
+      return "error";
       }
       else {
 
         let AND_LIMIT = DiceService.splitWithoutEmpty(command.trim().toUpperCase(), 'AND');
         if (AND_LIMIT.length > totalAndLimit) {
-          alertService.resetStickyMessage();
-          alertService.showStickyMessage('', this.AND_Error_Message, MessageSeverity.error);
-          setTimeout(() => { alertService.resetStickyMessage(); }, 1000);
-         // this.recycleDice();
+          //alertService.resetStickyMessage();
+          //alertService.showStickyMessage('', this.AND_Error_Message, MessageSeverity.error);
+          //setTimeout(() => { alertService.resetStickyMessage(); }, 1000);
+          
           characterCommandModel.command = _mainCommandText;
-          return 0;
+          return "error2";
           ////////////////////////////return false;
         }
         //////////////////////////////////////////////
@@ -3598,19 +3593,14 @@ export class DiceService {
         let isValidCommand = DiceService.validateCommandTextNew(commandToValidate);
         let isValidCommand99 = DiceService.validateCommand99Limit(commandToValidate);
         if (!isValidCommand || !isValidCommand99) {
-          alertService.resetStickyMessage();
+          //alertService.resetStickyMessage();
           command = commandIfERROR;
-          alertService.showStickyMessage('', this.COMMAND_Error, MessageSeverity.error);
-          setTimeout(() => { alertService.resetStickyMessage(); }, 1600);
-         // this.recycleDice();
+          //alertService.showStickyMessage('', this.COMMAND_Error, MessageSeverity.error);
+          //setTimeout(() => { alertService.resetStickyMessage(); }, 1600);
+         
           characterCommandModel.command = _mainCommandText;
-          //if (this.diceSection = true) {
-          //  this.rollSection = false;
-          //}
-          //else if (this.rollSection = true) {
-          //  this.diceSection = false;
-          //}
-          return 0;
+          return "error3";
+          //return 0;
           ////////////////////////////return false;
         }
 
@@ -3659,14 +3649,9 @@ export class DiceService {
 
           if (!IsCmdValid) {
             command = commandIfERROR;
-            alertService.showMessage("Please enter a valid command.", "", MessageSeverity.error);
-            //if (this.diceSection = true) {
-            //  this.rollSection = false;
-            //}
-            //else if (this.rollSection = true) {
-            //  this.diceSection = false;
-            //}
-            return 0;
+            //alertService.showMessage("Please enter a valid command.", "", MessageSeverity.error);
+            return "error4";
+           // return 0;
           ////////////////////////////return false;
           }
         }
@@ -3714,7 +3699,7 @@ export class DiceService {
           if (characterMultipleCommands.length) {
             characterMultipleCommands.map((x) => {
               if (x.isInvalidFECommand) {
-                alertService.showMessage("Please enter a valid command.", "", MessageSeverity.error);
+                //alertService.showMessage("Please enter a valid command.", "", MessageSeverity.error);
                 isInvalidFECommand = true;
                 return false;
               }
@@ -3722,8 +3707,9 @@ export class DiceService {
           }
         }
         if (isInvalidFECommand) {
-          alertService.showMessage("Please enter a valid command.", "", MessageSeverity.error);
-          return 0;
+          //alertService.showMessage("Please enter a valid command.", "", MessageSeverity.error);
+          return "error5";
+          //return 0;
           ////////////////////////////return false;
         }
         let __calculationCommand = __characterMultipleCommands.calculationCommand.toString();
@@ -3956,7 +3942,7 @@ export class DiceService {
             characterMultipleCommands[0].calculationStringArray = calculationStringArray;
           } catch (err) { }
 
-        debugger
+        
         return characterMultipleCommands[0].calculationResult
           //color maximum & minimum
           //let _maxNum: number = 0;

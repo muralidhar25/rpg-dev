@@ -282,6 +282,9 @@ namespace RPGSmithApp
             services.AddScoped<IBuffAndEffectTileService, BuffAndEffectTileService>();
             services.AddScoped<IRulesetBuffAndEffectTileService, RulesetBuffAndEffectTileService>();
 
+            services.AddScoped<IMonsterTemplateService, MonsterTemplateService>();
+            services.AddScoped<IMonsterTemplateCommandService, MonsterTemplateCommandService>();
+
             // Register Hosted Services
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, BackgroundProcesses>();
 

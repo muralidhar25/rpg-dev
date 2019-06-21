@@ -74,6 +74,7 @@ import { CampaignService } from "./services/campaign.service";
 import { LootService } from "./services/loot.service";
 import { BuffAndEffectService } from "./services/buff-and-effect.service";
 import { BuffAandEffectTileService } from "./services/tiles/buff-and-effect-tile.service";
+import { MonsterTemplateService } from "./services/monster-template.service";
 
 
 @NgModule({
@@ -142,7 +143,8 @@ import { BuffAandEffectTileService } from "./services/tiles/buff-and-effect-tile
     MarketPlaceService,
     CampaignService,
     LootService, BuffAndEffectService,
-    BuffAandEffectTileService
+    BuffAandEffectTileService,
+    MonsterTemplateService
     ],
   exports: [
     EqualValidator,

@@ -1107,14 +1107,16 @@
 .icon-Monster:before {
   content: "\e96e";
 }
-
+.icon-MonsterTemp:before {
+  content: "\e96f";
+}
 .icon-BnE:before {
   content: "\e969";
 }
 .icon-Assign:before {
   content: "\e968";
 }
-.icon-BnE:before, .icon-Monster:before, .icon-Combat:before, .icon-MarkTarget:before, .icon-Health:before, .icon-Settings:before, .icon-Assign:before {
+.icon-BnE:before, .icon-Monster:before, .icon-MonsterTemp:before, .icon-Combat:before, .icon-MarkTarget:before, .icon-Health:before, .icon-Settings:before, .icon-Assign:before {
   font-family: 'icomoon' !important;
   speak: none;
   font-style: normal;

@@ -721,7 +721,7 @@ body {
 }
 
 .buff-padding {
-  padding: 4px 4px 6px 4px;
+  padding: 4px 6px 6px 7px;
 }
 
 .box-img {
@@ -755,7 +755,8 @@ span.buff-images-only img.buff-tile-image {
 }
 
 .buff-image-div {
-  padding: 5px;
+  padding: 3px;
+  margin-bottom: 3px;
 }
 
 @media (max-width:767px) {

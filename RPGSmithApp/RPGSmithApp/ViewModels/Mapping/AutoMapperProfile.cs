@@ -110,6 +110,11 @@ namespace RPGSmithApp.ViewModels
             CreateMap<BuffAndEffect, BuffAndEffectViewModel>();
             CreateMap<BuffAndEffectVM, BuffAndEffectViewModel>();
 
+            CreateMap<EditMonsterTemplateModel, MonsterTemplate>();
+            CreateMap<CreateMonsterTemplateModel, MonsterTemplate>();
+            CreateMap<MonsterTemplate, MonsterTemplateViewModel>();
+            
+
             CreateMap<Spell, SpellViewModel>();
             CreateMap<CharacterCommand, CharacterCommandViewModel>();
 

@@ -24,13 +24,16 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         int GetSpellCountByRuleSetId(int rulesetId);
         int GetAbilityCountByRuleSetId(int rulesetId);
         int GetBuffAndEffectCountByRuleSetId(int rulesetId);
+        int GetMonsterTemplateCountByRuleSetId(int rulesetId);
         Task<ItemMaster> CreateItemMaster(ItemMaster itemMaster, List<ItemMasterSpell> itemMasterSpellVM, List<ItemMasterAbility> itemMasterAbilityVM, List<ItemMasterBuffAndEffect> itemMasterBuffAndEffectVM);
         Task<int> GetCopiedRuleSetIdFromRulesetAndUser(int RulesetID, string UserID);
         Task<Spell> CreateSpell(Spell spell, List<SpellBuffAndEffect> SpellBuffAndEffectVM);
         bool IsSpellCopiedFromCoreRuleset(int spellID, int RulesetID);
         bool IsAbilityCopiedFromCoreRuleset(int abilityId, int RulesetID);
         bool IsBuffAndEffectCopiedFromCoreRuleset(int buffAndEffectId, int RulesetID);
+        bool IsMonsterTemplateCopiedFromCoreRuleset(int MonsterTemplateId, int RulesetID);
         Task<BuffAndEffect> CreateBuffAndEffect(BuffAndEffect buffAndEffect);
+        Task<MonsterTemplate> CreateMonsterTemplate(MonsterTemplate MonsterTemplate);        
         Task<Ability> CreateAbility(Ability ability, List<AbilityBuffAndEffect> AbilityBuffAndEffectVM);
         bool IsCharacterstatCopiedFromCoreRuleset(int abilityId, int RulesetID);
         Task<CharacterStat> InsertCharacterStat(CharacterStat characterStat);
@@ -49,6 +52,7 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         private readonly IRuleSetService _ruleSetService;
         private readonly IAbilityService _abilityService;
         private readonly IBuffAndEffectService _buffAndEffectService;
+        private readonly IMonsterTemplateService _monsterTemplateService;
         private readonly IItemMasterService _itemMasterService;
         private readonly IItemMasterBundleService _itemMasterBundleService;
         private readonly ISpellService _spellService;
@@ -67,7 +71,8 @@ namespace RPGSmithApp.Helpers.CoreRuleset
             IRulesetDashboardLayoutService rulesetDashboardLayoutService,
             IItemService itemService,
             ICharactersCharacterStatService charactersCharacterStatService,
-            ICharacterService CharacterService, IBuffAndEffectService buffAndEffectService
+            ICharacterService CharacterService, IBuffAndEffectService buffAndEffectService,
+            IMonsterTemplateService monsterTemplateService
         )
         {
             _ruleSetService = ruleSetService;
@@ -81,6 +86,7 @@ namespace RPGSmithApp.Helpers.CoreRuleset
             _charactersCharacterStatService = charactersCharacterStatService;
             _CharacterService = CharacterService;
             _buffAndEffectService = buffAndEffectService;
+            _monsterTemplateService = monsterTemplateService;
         }
         public bool IsCopiedFromCoreRuleset(int RulesetID)
         {
@@ -105,6 +111,10 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         public bool IsBuffAndEffectCopiedFromCoreRuleset(int buffAndEffectId, int RulesetID)
         {
             return _buffAndEffectService.Core_BuffAndEffectWithParentIDExists(buffAndEffectId, RulesetID);
+        }
+        public bool IsMonsterTemplateCopiedFromCoreRuleset(int monsterTemplatId, int RulesetID)
+        {
+            return _monsterTemplateService.Core_MonsterTemplateWithParentIDExists(monsterTemplatId, RulesetID);
         }
         public bool IsCharacterstatCopiedFromCoreRuleset(int abilityId, int RulesetID)
         {
@@ -221,6 +231,15 @@ namespace RPGSmithApp.Helpers.CoreRuleset
             }
             return _buffAndEffectService.Core_GetCountByRuleSetId(rulesetId, (int)parentID);
         }
+        public int GetMonsterTemplateCountByRuleSetId(int rulesetId)
+        {
+            int? parentID = _ruleSetService.GetRuleSetById(rulesetId).Result.ParentRuleSetId;
+            if (parentID == null)
+            {
+                parentID = rulesetId;
+            }
+            return _monsterTemplateService.Core_GetCountByRuleSetId(rulesetId, (int)parentID);
+        }
         public async Task<ItemMaster> CreateItemMaster(ItemMaster itemMaster, List<ItemMasterSpell> itemMasterSpellVM, List<ItemMasterAbility> itemMasterAbilityVM, List<ItemMasterBuffAndEffect> itemMasterBuffAndEffectVM)
         {
             return await _itemMasterService.Core_CreateItemMaster(itemMaster, itemMasterSpellVM, itemMasterAbilityVM,itemMasterBuffAndEffectVM);
@@ -255,6 +274,10 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         public async Task<BuffAndEffect> CreateBuffAndEffect(BuffAndEffect buffAndEffect)
         {
             return await _buffAndEffectService.Core_CreateBuffAndEffect(buffAndEffect);
+        }
+        public async Task<MonsterTemplate> CreateMonsterTemplate(MonsterTemplate MonsterTemplate)
+        {
+            return await _monsterTemplateService.Core_CreateMonsterTemplate(MonsterTemplate);
         }
         public async Task<CharacterStat> InsertCharacterStat(CharacterStat characterStat)
         {

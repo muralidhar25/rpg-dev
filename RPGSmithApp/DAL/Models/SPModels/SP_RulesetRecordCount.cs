@@ -16,6 +16,8 @@ namespace DAL.Models.SPModels
         public int LayoutCount { get; set; }
         public int LootCount { get; set; }
         public int BuffAndEffectCount { get; set; }
+        public int MonsterTemplateCount { get; set; }
+        public int MonsterCount { get; set; }
         
     }
     public class SP_AbilitySpellForItemMaster
@@ -28,6 +30,18 @@ namespace DAL.Models.SPModels
         public List<BuffAndEffect> selectedBuffAndEffects { get; set; }
         public List<ItemMasterCommand> selectedItemMasterCommand { get; set; }
         public List<ItemCommand> selectedItemCommand { get; set; }
+    }
+    public class SP_AssociateForMonsterTemplate
+    {
+        public List<Ability> abilityList { get; set; }
+        public List<Spell> spellList { get; set; }
+        public List<BuffAndEffect> buffAndEffectsList { get; set; }
+        public List<MonsterTemplate> monsterTemplatesList { get; set; }
+        public List<Ability> selectedAbilityList { get; set; }
+        public List<Spell> selectedSpellList { get; set; }
+        public List<BuffAndEffect> selectedBuffAndEffects { get; set; }
+        public List<MonsterTemplate> selectedMonsterTemplates { get; set; }
+        public List<MonsterTemplateCommand> monsterTemplateCommands { get; set; }        
     }
     public class SP_CharactersCharacterStat
     {
