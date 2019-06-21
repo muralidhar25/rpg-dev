@@ -1205,8 +1205,8 @@ export class NgChat implements OnInit, IChatController {
         if (x.afterResult) {
           _afterResult = x.afterResult.replace(/"/g, '');
         }
-        ExpandResult += "<span class='ng-chat-grey-text'>" + x.calculationString + "</span> = <b>" + _beforeResult + " <u>" + x.calculationResult + "</u> " + _afterResult + "</b><br/>";
-        CollaspedResult += "<b>" + _beforeResult + " <u>" + x.calculationResult + "</u> " + _afterResult + "</b><br/>";
+        ExpandResult += "<span class='ng-chat-grey-text'>" + x.calculationString + "</span> " + (x.calculationString ? '=' : '') + " <b>" + _beforeResult + " <u>" + (x.calculationResult ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
+        CollaspedResult += "<b>" + _beforeResult + " <u>" + (x.calculationResult ? x.calculationResult:'')+ "</u> " + _afterResult + "</b><br/>";
       })
     }
     ExpandedMessage = "<span class='ng-chat-message-expand d-none'><span class='ng-chat-orange-text'>Rolled: </span><span class='ng-chat-grey-text'>" + commandModel.command + "</span><br/><span class='ng-chat-orange-text'>Result: </span>" + ExpandResult + "</span>";
