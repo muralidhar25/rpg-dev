@@ -58,6 +58,7 @@ export class PlayerLootComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
+      this.allSelected = false;
       this.isLoading = true;
       this.lootService.getLootItemsForPlayers<any>(this.rulesetId)
         .subscribe(data => {
@@ -65,6 +66,16 @@ export class PlayerLootComponent implements OnInit {
             
             this.characterItemModal.itemMasterId = -1;
             this.itemsList = data;
+            if (this.itemsList.filter(x => x.selected == true).length === data.length)
+              this.allSelected = true;
+            //else this.allSelected = false;
+
+            //this.allSelected = true;
+            //this.itemsList.map(x => {
+            //  if (x.selected == false)
+            //    this.allSelected = false;
+            //})
+
           }
           this.isLoading = false;
         }, error => {
@@ -88,9 +99,16 @@ export class PlayerLootComponent implements OnInit {
       if (item.lootId == itemMaster.lootId) {
         item.selected = event.target.checked;
       }
+      if (item.selected == false) this.allSelected = false;
+
       return item;
     })
+    //this.allSelected = true;
+    if (this.itemsList.filter(x => x.selected == true).length === this.itemsList.length)
+      this.allSelected = true;   
+    
   }
+
   submitForm(itemMaster: any) {
     this.characterItemModal.multiLootIds = [];
     this.itemsList.map((item) => {
@@ -137,7 +155,7 @@ export class PlayerLootComponent implements OnInit {
   }
 
   selectDeselectFilters(selected) {
-   
+       
     this.allSelected = selected;
    
     if (this.allSelected) {
