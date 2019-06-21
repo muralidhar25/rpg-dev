@@ -30,6 +30,7 @@ import { MonsterTemplateComponent } from "./monster-template/monster-template.co
 import { CreateMonsterTemplateComponent } from "./monster-template/create-monster-template/create-monster-template.component";
 import { AddItemMonsterComponent } from "./monster-template/Add-items-monster/add-item-monster.component";
 import { DeployMonsterComponent } from "./monster-template/deploy-monster/deploy-monster.component";
+import { MonsterTemplateDetailsComponent } from "./monster-template/monster-template-details/monster-template-details.component";
 
 
 @NgModule({
@@ -58,7 +59,7 @@ import { DeployMonsterComponent } from "./monster-template/deploy-monster/deploy
     MonsterTemplateComponent,
     CreateMonsterTemplateComponent,
     AddItemMonsterComponent,
-    DeployMonsterComponent
+    DeployMonsterComponent, MonsterTemplateDetailsComponent 
   ],
   imports: [
     SharedModule
@@ -90,7 +91,7 @@ import { DeployMonsterComponent } from "./monster-template/deploy-monster/deploy
     MonsterTemplateComponent,
     CreateMonsterTemplateComponent,
     AddItemMonsterComponent,
-    DeployMonsterComponent
+    DeployMonsterComponent, MonsterTemplateDetailsComponent 
   ],
   entryComponents: [
     AddItemMasterComponent,
@@ -106,7 +107,7 @@ import { DeployMonsterComponent } from "./monster-template/deploy-monster/deploy
     DeleteAllLootItemsComponent,
     CreateMonsterTemplateComponent,
     AddItemMonsterComponent,
-    DeployMonsterComponent
+    DeployMonsterComponent, MonsterTemplateDetailsComponent 
   ]
 })
 export class RecordsModule {}
