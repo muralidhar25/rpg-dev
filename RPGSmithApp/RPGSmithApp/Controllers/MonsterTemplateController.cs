@@ -556,14 +556,31 @@ namespace RPGSmithApp.Controllers
 
         #region API Using SP
         [HttpGet("getByRuleSetId_sp")]
-        public async Task<IActionResult> getByRuleSetId_sp(int rulesetId, int page = 1, int pageSize = 30)
+        public async Task<IActionResult> getByRuleSetId_sp(int rulesetId, int page = 1, int pageSize = 30, int sortType = 1)
         {
             dynamic Response = new ExpandoObject();
-            var monsterTemplatesList = _monsterTemplateService.SP_GetMonsterTemplateByRuleSetId(rulesetId, page, pageSize);
+            var monsterTemplatesList = _monsterTemplateService.SP_GetMonsterTemplateByRuleSetId(rulesetId, page, pageSize, sortType);
             Response.monsterTemplates = monsterTemplatesList; // Utilities.CleanModel<Ability>(abilityList);
             if (monsterTemplatesList.Any())
             {
                 Response.RuleSet = monsterTemplatesList.FirstOrDefault().RuleSet;
+            }
+            else
+            {
+                Response.RuleSet = _ruleSetService.GetRuleSetById(rulesetId).Result;
+            }
+            return Ok(Response);
+        }
+
+        [HttpGet("getMonsterByRuleSetId_sp")]
+        public async Task<IActionResult> getMonsterByRuleSetId_sp(int rulesetId, int page = 1, int pageSize = 30, int sortType = 1)
+        {
+            dynamic Response = new ExpandoObject();
+            var monsterList = _monsterTemplateService.SP_GetMonstersByRuleSetId(rulesetId, page, pageSize, sortType);
+            Response.monsters = monsterList; // Utilities.CleanModel<Ability>(abilityList);
+            if (monsterList.Any())
+            {
+                Response.RuleSet = monsterList.FirstOrDefault().RuleSet;
             }
             else
             {

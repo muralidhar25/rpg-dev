@@ -341,7 +341,7 @@ namespace DAL.Services
             return await _repo.Add(monsterTemplate);
         }
 
-        public List<MonsterTemplate> SP_GetMonsterTemplateByRuleSetId(int rulesetId, int page, int pageSize)
+        public List<MonsterTemplate> SP_GetMonsterTemplateByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1)
         {
             List<MonsterTemplate> _monsterTemplateList = new List<MonsterTemplate>();
             RuleSet ruleset = new RuleSet();
@@ -362,6 +362,7 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@RulesetID", rulesetId);
                 command.Parameters.AddWithValue("@page", page);
                 command.Parameters.AddWithValue("@size", pageSize);
+                command.Parameters.AddWithValue("@SortType", sortType);
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;
@@ -718,7 +719,7 @@ namespace DAL.Services
         }
 
 
-        public List<Monster> SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize)
+        public List<Monster> SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1)
         {
             List<Monster> _monsterList = new List<Monster>();
             RuleSet ruleset = new RuleSet();
@@ -739,6 +740,7 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@RulesetID", rulesetId);
                 command.Parameters.AddWithValue("@page", page);
                 command.Parameters.AddWithValue("@size", pageSize);
+                command.Parameters.AddWithValue("@SortType", sortType);
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;
@@ -790,10 +792,10 @@ namespace DAL.Services
                     _MonsterTemplate.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
                     _MonsterTemplate.MonsterTemplateId = row["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterTemplateId"].ToString());
                     _MonsterTemplate.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
-                    _MonsterTemplate.Health = row["Health"] == DBNull.Value ? null : row["Health"].ToString();
-                    _MonsterTemplate.ArmorClass = row["ArmorClass"] == DBNull.Value ? null : row["ArmorClass"].ToString();
-                    _MonsterTemplate.ChallangeRating = row["ChallangeRating"] == DBNull.Value ? null : row["ChallangeRating"].ToString();
-                    _MonsterTemplate.XPValue = row["XPValue"] == DBNull.Value ? null : row["XPValue"].ToString();
+                    _MonsterTemplate.Health = row["MTHealth"] == DBNull.Value ? null : row["MTHealth"].ToString();
+                    _MonsterTemplate.ArmorClass = row["MTArmorClass"] == DBNull.Value ? null : row["MTArmorClass"].ToString();
+                    _MonsterTemplate.ChallangeRating = row["MTChallangeRating"] == DBNull.Value ? null : row["MTChallangeRating"].ToString();
+                    _MonsterTemplate.XPValue = row["MTXPValue"] == DBNull.Value ? null : row["MTXPValue"].ToString();
                     _MonsterTemplate.InitiativeCommand = row["InitiativeCommand"] == DBNull.Value ? null : row["InitiativeCommand"].ToString();
 
 
