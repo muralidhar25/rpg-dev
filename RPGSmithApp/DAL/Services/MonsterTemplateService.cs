@@ -118,6 +118,11 @@ namespace DAL.Services
             MonsterTemplate monsterTemplate = _context.MonsterTemplates
                 .Include(d => d.RuleSet)
                 .Include(d => d.MonsterTemplateCommands)
+                //.Include(d => d.MonsterTemplateAbilities)
+                //.Include(d => d.MonsterTemplateSpells)
+                //.Include(d => d.MonsterTemplateBuffAndEffects)
+                //.Include(d => d.MonsterTemplateMonsters)
+                //.Include(d => d.MonsterTemplateItemMasters)
                 .Where(x => x.MonsterTemplateId == id && x.IsDeleted != true)
 
                 .FirstOrDefault();
@@ -128,7 +133,17 @@ namespace DAL.Services
 
             return monsterTemplate;
         }
+        public Monster GetMonsterById(int? id) {
+            Monster monster =   _context.Monsters
+                .Include(d => d.RuleSet).Include(d => d.MonsterTemplate)   
+                .Where(x => x.MonsterId == id && x.IsDeleted != true).FirstOrDefault();
 
+            if (monster == null) return monster;
+
+            
+
+            return monster;
+        }
 
 
         public async Task<MonsterTemplate> Update(MonsterTemplate item,
@@ -246,6 +261,118 @@ namespace DAL.Services
             }
 
             return monsterTemplate;
+        }
+
+        public async Task<MonsterTemplate> UpdateMonster(Monster item,
+            List<MonsterTemplateAbility> MonsterTemplateAbilityVM,
+            List<MonsterTemplateMonster> MonsterTemplateMonsterVM,
+            List<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffectVM,
+            List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM,
+            List<MonsterTemplateSpell> MonsterTemplateSpellVM)
+        {
+            return null;
+            //var monster = _context.Monsters.FirstOrDefault(x => x.MonsterId == item.MonsterId);
+
+            //if (monster == null)
+            //    return monster;
+
+            //monster.Name = item.Name;
+            //monster.ImageUrl = item.ImageUrl;
+            //monster.Metatags = item.Metatags;
+
+            //monsterTemplate.ArmorClass = item.ArmorClass;
+            //monsterTemplate.ChallangeRating = item.ChallangeRating;
+            //monsterTemplate.XPValue = item.XPValue;
+            //monsterTemplate.Health = item.Health;
+            //monsterTemplate.InitiativeCommand = item.InitiativeCommand;
+            //monsterTemplate.IsRandomizationEngine = item.IsRandomizationEngine;
+
+
+            ////try
+            ////{
+            ////    _context.SaveChanges();
+            ////}
+            ////catch (Exception ex)
+            ////{
+            ////    throw ex;
+            ////}
+            //_context.MonsterTemplateAbilities.RemoveRange(_context.MonsterTemplateAbilities.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
+            //_context.MonsterTemplateSpells.RemoveRange(_context.MonsterTemplateSpells.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
+            //_context.MonsterTemplateBuffAndEffects.RemoveRange(_context.MonsterTemplateBuffAndEffects.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
+            //_context.MonsterTemplateMonsters.RemoveRange(_context.MonsterTemplateMonsters.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
+            //_context.MonsterTemplateItemMasters.RemoveRange(_context.MonsterTemplateItemMasters.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
+            //try
+            //{
+            //    _context.SaveChanges();
+
+            //    List<MonsterTemplateAbility> Alist = new List<MonsterTemplateAbility>();
+            //    foreach (var be in MonsterTemplateAbilityVM)
+            //    {
+            //        MonsterTemplateAbility obj = new MonsterTemplateAbility()
+            //        {
+            //            AbilityId = be.AbilityId,
+            //            MonsterTemplateId = item.MonsterTemplateId
+            //        };
+            //        Alist.Add(obj);
+            //    }
+            //    _context.MonsterTemplateAbilities.AddRange(Alist);
+
+            //    List<MonsterTemplateSpell> Slist = new List<MonsterTemplateSpell>();
+            //    foreach (var be in MonsterTemplateSpellVM)
+            //    {
+            //        MonsterTemplateSpell obj = new MonsterTemplateSpell()
+            //        {
+            //            SpellId = be.SpellId,
+            //            MonsterTemplateId = item.MonsterTemplateId
+            //        };
+            //        Slist.Add(obj);
+            //    }
+            //    _context.MonsterTemplateSpells.AddRange(Slist);
+
+            //    List<MonsterTemplateBuffAndEffect> Blist = new List<MonsterTemplateBuffAndEffect>();
+            //    foreach (var be in MonsterTemplateBuffAndEffectVM)
+            //    {
+            //        MonsterTemplateBuffAndEffect obj = new MonsterTemplateBuffAndEffect()
+            //        {
+            //            BuffAndEffectId = be.BuffAndEffectId,
+            //            MonsterTemplateId = item.MonsterTemplateId
+            //        };
+            //        Blist.Add(obj);
+            //    }
+            //    _context.MonsterTemplateBuffAndEffects.AddRange(Blist);
+
+            //    List<MonsterTemplateMonster> Mlist = new List<MonsterTemplateMonster>();
+            //    foreach (var be in MonsterTemplateMonsterVM)
+            //    {
+            //        MonsterTemplateMonster obj = new MonsterTemplateMonster()
+            //        {
+            //            AssociateMonsterTemplateId = be.AssociateMonsterTemplateId,
+            //            MonsterTemplateId = item.MonsterTemplateId
+            //        };
+            //        Mlist.Add(obj);
+            //    }
+            //    _context.MonsterTemplateMonsters.AddRange(Mlist);
+
+            //    List<MonsterTemplateItemMaster> Ilist = new List<MonsterTemplateItemMaster>();
+            //    foreach (var be in MonsterTemplateItemMasterVM)
+            //    {
+            //        MonsterTemplateItemMaster obj = new MonsterTemplateItemMaster()
+            //        {
+            //            ItemMasterId = be.ItemMasterId,
+            //            MonsterTemplateId = item.MonsterTemplateId,
+            //            Qty = be.Qty
+            //        };
+            //        Ilist.Add(obj);
+            //    }
+            //    _context.MonsterTemplateItemMasters.AddRange(Ilist);
+            //    _context.SaveChanges();
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw ex;
+            //}
+
+            //return monsterTemplate;
         }
 
         public int GetCountByRuleSetId(int ruleSetId)
@@ -806,6 +933,15 @@ namespace DAL.Services
             }
             return _monsterList;
         }
+
+        public async Task enableCombatTracker(int monsterId, bool enableCombatTracker) {
+            var monster =await _context.Monsters.Where(x => x.MonsterId == monsterId && x.IsDeleted != true).FirstOrDefaultAsync();
+            if (monster!=null)
+            {
+                monster.AddToCombatTracker = enableCombatTracker;
+               await _context.SaveChangesAsync();
+            }
+        }
         //public List<BuffAndEffect> GetByRuleSetId_add(int rulesetId)
         //{
         //    List<BuffAndEffect> buffAndEffectList = new List<BuffAndEffect>();
@@ -852,6 +988,43 @@ namespace DAL.Services
         //    }
         //    return buffAndEffectList;
         //}
+        public async Task<MonsterTemplate> Core_CreateMonsterTemplateUsingMonster(int monsterTemplateId, int rulesetID)
+        {
+            MonsterTemplate model = GetById(monsterTemplateId);// GetItemMasterById(ItemMasterID);
+            MonsterTemplate monsterTemplate = new MonsterTemplate()
 
+            {
+                MonsterTemplateId = model.MonsterTemplateId,
+                Command = model.Command,
+                Metatags = model.Metatags,
+                RuleSetId = rulesetID,
+                ArmorClass = model.ArmorClass,
+                ChallangeRating = model.ChallangeRating,
+                CommandName = model.CommandName,
+                Description = model.Description,
+                Health = model.Health,
+                ImageUrl = model.ImageUrl,
+                InitiativeCommand = model.InitiativeCommand,
+
+                IsRandomizationEngine = model.IsRandomizationEngine,
+                //MonsterTemplateAbilities = model.MonsterTemplateAbilities,
+                //MonsterTemplateBuffAndEffects = model.MonsterTemplateBuffAndEffects,
+                //MonsterTemplateCommands = model.MonsterTemplateCommands,
+                //MonsterTemplateItemMasters = model.MonsterTemplateItemMasters,
+                //MonsterTemplateMonsters = model.MonsterTemplateMonsters,
+                //MonsterTemplateSpells = model.MonsterTemplateSpells,
+                Name = model.Name,
+
+
+
+                Stats = model.Stats,
+                XPValue = model.XPValue,
+            };
+
+
+
+            MonsterTemplate CreatedItemMaster = await Core_CreateMonsterTemplate(monsterTemplate);
+            return CreatedItemMaster;
+        }
     }
 }

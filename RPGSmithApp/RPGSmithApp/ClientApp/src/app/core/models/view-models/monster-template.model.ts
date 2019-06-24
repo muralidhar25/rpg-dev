@@ -7,7 +7,16 @@ export class MonsterTemplate {
     monsterTemplateId?: number, ruleSetId?: number, name?: string, command?: string, description?: string, stats?: string, imageUrl?: string,
     monsterTemplateCommandVM?: MonsterTemplateCommand[], view?: VIEW, showIcon?: boolean, ruleset?: Ruleset, metatags?: string,
     health?: string, armorClass?: string, xPValue?: string, challangeRating?: string, initiativeCommand?: string, isRandomizationEngine?: boolean,
-    monsterTemplateBuffAndEffectVM?: any[], monsterTemplateAbilityVM?: any[], monsterTemplateSpellVM?: any[], monsterTemplateAssociateMonsterTemplateVM?: any[]
+    monsterTemplateBuffAndEffectVM?: any[], monsterTemplateAbilityVM?: any[], monsterTemplateSpellVM?: any[], monsterTemplateAssociateMonsterTemplateVM?: any[],
+    monsterHealthCurrent?: number,
+    monsterHealthMax?: number,
+    monsterArmorClass?: number,
+    monsterChallangeRating?: number,
+    monsterXPValue?: number,
+    //monsterImage?: string,
+    //monsterName?: string,
+    //monsterMetatags?: string,
+
   ) {
     this.monsterTemplateId = monsterTemplateId;
     this.ruleSetId = ruleSetId;
@@ -21,7 +30,6 @@ export class MonsterTemplate {
     this.showIcon = showIcon;
     this.ruleset = ruleset;
     this.metatags = metatags;
-    this.metatags = metatags;
     this.health = health;
     this.armorClass = armorClass;
     this.xPValue = xPValue;
@@ -32,6 +40,14 @@ export class MonsterTemplate {
     this.monsterTemplateAbilityVM = monsterTemplateAbilityVM;
     this.monsterTemplateSpellVM = monsterTemplateSpellVM;
     this.monsterTemplateAssociateMonsterTemplateVM = monsterTemplateAssociateMonsterTemplateVM;
+    this.monsterHealthCurrent = monsterHealthCurrent;
+    this.monsterHealthMax = monsterHealthMax;
+    this.monsterArmorClass = monsterArmorClass;
+    this.monsterChallangeRating = monsterChallangeRating;
+    this.monsterXPValue = monsterXPValue;
+    //this.monsterImage = monsterImage;
+    //this.monsterName = monsterName;
+    //this.monsterMetatags = monsterMetatags;
   }
 
   public monsterTemplateId: number;
@@ -60,4 +76,13 @@ export class MonsterTemplate {
   public monsterTemplateAbilities: any[];
   public monsterTemplateSpells: any[];
   public monsterTemplateAssociateMonsterTemplates: any[];
+  public monsterHealthCurrent: number;
+  public monsterHealthMax: number;
+  public monsterArmorClass: number;
+  public monsterChallangeRating: number;
+  public monsterXPValue: number;
+  //public monsterImage: string;
+  //public monsterName: string;
+  //public monsterMetatags: string;
+
 }

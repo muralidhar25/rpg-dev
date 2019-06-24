@@ -629,6 +629,6 @@ export class CampaignDetailsComponent implements OnInit {
     this.router.navigate(['/ruleset/monster-template', this.ruleSetId]);
   }
   monsters() {
-    this.router.navigate(['/ruleset/monster-template-details', this.ruleSetId]);
+    this.router.navigate(['/ruleset/monster', this.ruleSetId]);
   }
 }

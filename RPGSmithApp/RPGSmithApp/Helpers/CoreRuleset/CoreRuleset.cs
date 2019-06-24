@@ -38,6 +38,7 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         bool IsCharacterstatCopiedFromCoreRuleset(int abilityId, int RulesetID);
         Task<CharacterStat> InsertCharacterStat(CharacterStat characterStat);
         Task<ItemMaster> CreateItemMasterUsingItem(int ItemMasterId, int RulesetID);
+        Task<MonsterTemplate> CreateMonsterTemplateUsingMonster(int MonsterTemplateId, int RulesetID);
         Task<int> _updateParentIDForAllRelatedItems(int characterId, int oldParentItemMasterID, int itemMasterIDInserted, char Type);
         Task<List<Character>> GetCharactersByRulesetID(int ruleSetId);
         int GetItemCountByRuleSetId(int rulesetId);
@@ -251,6 +252,10 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         public async Task<ItemMaster> CreateItemMasterUsingItem(int ItemMasterId, int RulesetID)
         {
             return await _itemService.Core_CreateItemMasterUsingItem(ItemMasterId, RulesetID);
+        }
+        public async Task<MonsterTemplate> CreateMonsterTemplateUsingMonster(int MonsterTemplateId, int RulesetID)
+        {
+            return await _monsterTemplateService.Core_CreateMonsterTemplateUsingMonster(MonsterTemplateId, RulesetID);
         }
         public async Task<int> GetCopiedRuleSetIdFromRulesetAndUser(int RulesetID, string UserID)
         {

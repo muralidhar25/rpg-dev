@@ -22,6 +22,7 @@ import { BuffAndEffectDetailsComponent } from "../records/buff-and-effects/buff-
 import { BuffAndEffectComponent } from "../records/buff-and-effects/buff-and-effects.component";
 import { MonsterTemplateComponent } from "../records/monster-template/monster-template.component";
 import { MonsterTemplateDetailsComponent } from "../records/monster-template/monster-template-details/monster-template-details.component";
+import { MonsterComponent } from "../records/monster/monster.component";
 
 
 const routes: Routes = [
@@ -31,6 +32,7 @@ const routes: Routes = [
   { path: "ability/:id", component: AbilitiesComponent, data: { title: "Abilities" } },
   { path: "buff-effect/:id", component: BuffAndEffectComponent, data: { title: "Buffs & Effects" } },
   { path: "monster-template/:id", component: MonsterTemplateComponent, data: { title: "Monster Templates" } },
+  { path: "monster/:id", component: MonsterComponent, data: { title: "Monsters" } },
 
   { path: "item-details/:id", component: ItemDetailsComponent, data: { title: "Item Details" } },
   { path: "bundle-details/:id", component: BundleDetailsComponent, data: { title: "Bundle Details" } },
@@ -38,7 +40,7 @@ const routes: Routes = [
   { path: "ability-details/:id", component: AbilityDetailsComponent, data: { title: "Ability Details" } },
   { path: "buff-effect-details/:id", component: BuffAndEffectDetailsComponent, data: { title: "Buffs & Effects Details" } },
   { path: "monster-template-details/:id", component: MonsterTemplateDetailsComponent, data: { title: "Buffs & Effects Details" } },
-
+  ///ruleset/monster-details
   { path: "dashboard/:id", component: RulesetDashboardComponent, data: { title: "Ruleset Dashboard" } },
   { path: "character-stats/:id", component: CharacterStatsComponent, data: { title: "Character Stats" } },
   { path: "add", component: RulesetAddInterfaceComponent, canActivate: [AuthGuard], data: { title: "Add Ruleset" } },
