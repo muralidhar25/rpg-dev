@@ -15,17 +15,22 @@ import { ImageViewerComponent } from "../../../shared/image-interface/image-view
 import { PlatformLocation } from "@angular/common";
 import { MonsterTemplate } from "../../../core/models/view-models/monster-template.model";
 import { MonsterTemplateService } from "../../../core/services/monster-template.service";
-import { CreateMonsterTemplateComponent } from "../create-monster-template/create-monster-template.component";
-import { DeployMonsterComponent } from "../deploy-monster/deploy-monster.component";
-import { CreateMonsterGroupComponent } from "../moster-group/monster-group.component";
+import { DropItemsMonsterComponent } from "../drop-items-monster/drop-items-monster.component";
+import { EditMonsterComponent } from "../edit-monster/edit-monster.component";
+//import { CreateMonsterTemplateComponent } from "../create-monster-template/create-monster-template.component";
+//import { DeployMonsterComponent } from "../deploy-monster/deploy-monster.component";
+//import { DropItemsMonsterComponent } from "../drop-items-monster/drop-items-monster.component";
+//import { CreateMonsterGroupComponent } from "../moster-group/monster-group.component";
+
+
 
 @Component({
-  selector: 'app-monster-template-details',
-  templateUrl: './monster-template-details.component.html',
-  styleUrls: ['./monster-template-details.component.scss']
+  selector: 'app-monster-details',
+  templateUrl: './monster-details.component.html',
+  styleUrls: ['./monster-details.component.scss']
 })
 
-export class MonsterTemplateDetailsComponent implements OnInit {
+export class MonsterDetailsComponent implements OnInit {
 
     isLoading = false;
     showActions: boolean = true;
@@ -34,14 +39,16 @@ export class MonsterTemplateDetailsComponent implements OnInit {
     monsterTemplateId: number;
     ruleSetId: number;
   bsModalRef: BsModalRef;
-  monsterTemplateDetail: any = new MonsterTemplate();
+ // monsterTemplateDetail: any = new MonsterTemplate();
+  monsterDetail: any = new MonsterTemplate();
   buffAndEffectsList = [];
   selectedBuffAndEffects = [];
   selectedAbilities = [];
   selectedSpells = [];
   selectedAssociateMonsterTemplates = [];
   selectedItemMasters = [];
-  xpValue: any;
+  _editMonster: any;
+
   IsGm: boolean = false;
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -79,16 +86,18 @@ export class MonsterTemplateDetailsComponent implements OnInit {
             this.IsGm = user.isGm;            
           }
           this.isLoading = true;
-          this.monsterTemplateService.getMonsterTemplateById<any>(this.monsterTemplateId)
+          this.monsterTemplateService.getMonsterById<any>(this.monsterTemplateId)
             .subscribe(data => {
-                if (data)
-                this.monsterTemplateDetail = this.monsterTemplateService.MonsterTemplateModelData(data, "UPDATE");
-                this.xpValue = data.xpValue;
-                if (!this.monsterTemplateDetail.ruleset) {
-                  this.monsterTemplateDetail.ruleset = data.ruleSet;
 
-                  }
-                this.ruleSetId = this.monsterTemplateDetail.ruleSetId;
+              if (data)
+                this.monsterDetail = this.monsterTemplateService.MonsterModelData(data, "UPDATE");
+              this._editMonster = data;
+              console.log('monsterDetail', this.monsterDetail);
+              if (!this.monsterDetail.ruleset) {
+                this.monsterDetail.ruleset = data.ruleSet;
+
+               }
+              this.ruleSetId = this.monsterDetail.ruleSetId;
 
                 this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(this.monsterTemplateId, this.ruleSetId)
                   .subscribe(data => {
@@ -104,7 +113,7 @@ export class MonsterTemplateDetailsComponent implements OnInit {
 
                   }, () => { });
              
-                this.rulesetService.GetCopiedRulesetID(this.monsterTemplateDetail.ruleSetId, user.id).subscribe(data => {
+              this.rulesetService.GetCopiedRulesetID(this.monsterDetail.ruleSetId, user.id).subscribe(data => {
                         let id: any = data
                         //this.ruleSetId = id;
                         this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
@@ -150,87 +159,113 @@ export class MonsterTemplateDetailsComponent implements OnInit {
         }
     }
 
-  editMonsterTemplate(monsterTemplate: MonsterTemplate) {
 
-    this.bsModalRef = this.modalService.show(CreateMonsterTemplateComponent, {
+      
+  
+
+  editMonster(monster: any) {
+    this.bsModalRef = this.modalService.show(EditMonsterComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
       keyboard: false
     });
     this.bsModalRef.content.title = 'Edit Monster Template';
     this.bsModalRef.content.button = 'UPDATE';
-    this.bsModalRef.content.monsterTemplateVM = monsterTemplate;
+    this.bsModalRef.content.monsterVM = this._editMonster;
     this.bsModalRef.content.rulesetID = this.ruleSetId;
-    this.bsModalRef.content.event.subscribe(data => {
-      this.monsterTemplateId = data.monsterTemplateId;
-      this.initialize();
-    })
+    debugger
   }
-      
-  duplicateMonsterTemplate(monsterTemplate: MonsterTemplate) {
-    // this.alertService.startLoadingMessage("", "Checking records");      
-    this.monsterTemplateService.getMonsterTemplateCount(this.ruleSetId)
-      .subscribe(data => {
-        //this.alertService.stopLoadingMessage();
-        if (data < 2000) {
-          this.bsModalRef = this.modalService.show(CreateMonsterTemplateComponent, {
-            class: 'modal-primary modal-custom',
-            ignoreBackdropClick: true,
-            keyboard: false
-          });
-          this.bsModalRef.content.title = 'Duplicate Monster Template';
-          this.bsModalRef.content.button = 'DUPLICATE';
-          this.bsModalRef.content.monsterTemplateVM = monsterTemplate;
-          this.bsModalRef.content.rulesetID = this.ruleSetId;
-        }
-        else {
-          //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
-          this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
-        }
-      }, error => { }, () => { });
+
+  duplicateMonster(monster: any) {
+
 
   }
 
-  deleteMonsterTemplate(monsterTemplate: MonsterTemplate) {
-    let message = "Are you sure you want to delete this " + monsterTemplate.name
-      + " Monster Template?";
+  deleteMonster(monster: any) {
 
-    this.alertService.showDialog(message,
-      DialogType.confirm, () => this.deleteMonsterTemplateHelper(monsterTemplate), null, 'Yes', 'No');
+
   }
 
-  private deleteMonsterTemplateHelper(monsterTemplate: MonsterTemplate) {
-    monsterTemplate.ruleSetId = this.ruleSetId;
-    this.isLoading = true;
-    this.alertService.startLoadingMessage("", "Deleting a Monster Template");
+  //deleteMonsterTemplate(monsterTemplate: MonsterTemplate) {
+  //  let message = "Are you sure you want to delete this " + monsterTemplate.name
+  //    + " Monster Template?";
+
+  //  this.alertService.showDialog(message,
+  //    DialogType.confirm, () => this.deleteMonsterTemplateHelper(monsterTemplate), null, 'Yes', 'No');
+  //}
+
+  //private deleteMonsterTemplateHelper(monsterTemplate: MonsterTemplate) {
+  //  monsterTemplate.ruleSetId = this.ruleSetId;
+  //  this.isLoading = true;
+  //  this.alertService.startLoadingMessage("", "Deleting a Monster Template");
 
 
-    this.monsterTemplateService.deleteMonsterTemplate_up(monsterTemplate)
+  //  this.monsterTemplateService.deleteMonsterTemplate_up(monsterTemplate)
+  //    .subscribe(
+  //      data => {
+  //        this.isLoading = false;
+  //        this.alertService.stopLoadingMessage();
+  //        this.alertService.showMessage("Monster Template has been deleted successfully.", "", MessageSeverity.success);
+  //        //this.initialize();
+  //        //this.location.replaceState('/'); 
+  //        this.router.navigate(['/ruleset/monster-template', this.ruleSetId]);
+  //        //this.initialize();
+  //      },
+  //      error => {
+  //        this.isLoading = false;
+  //        this.alertService.stopLoadingMessage();
+  //        let Errors = Utilities.ErrorDetail("Unable to Delete", error);
+  //        if (Errors.sessionExpire) {
+  //          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+  //          this.authService.logout(true);
+  //        }
+  //        else
+  //          this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+  //      });
+  //}
+
+  enableCombatTracker(monster: any) {
+    console.log('monster',monster);
+    //this.isLoading = true;
+    let enableTxt = monster.addToCombatTracker ? 'Disable' : 'Enable';
+    let enableCombatTracker = !monster.addToCombatTracker;
+    this.monsterTemplateService.enableCombatTracker(monster.monsterId, enableCombatTracker)
       .subscribe(
         data => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          this.alertService.showMessage("Monster Template has been deleted successfully.", "", MessageSeverity.success);
-          //this.initialize();
-          //this.location.replaceState('/'); 
-          this.router.navigate(['/ruleset/monster-template', this.ruleSetId]);
-          //this.initialize();
+          monster.addToCombatTracker = enableCombatTracker;
         },
         error => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          let Errors = Utilities.ErrorDetail("Unable to Delete", error);
+          let Errors = Utilities.ErrorDetail("Unable to " + enableTxt, error);
           if (Errors.sessionExpire) {
-            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
             this.authService.logout(true);
           }
           else
             this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-        });
-  }
-
+      });
 
    
+  }
+   
+  dropMonsterItems(monster: any) {
+      this.bsModalRef = this.modalService.show(DropItemsMonsterComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Drop Items';
+    this.bsModalRef.content.button = 'Drop';
+    this.bsModalRef.content.monsterId = this._editMonster.monsterId;
+    this.bsModalRef.content.rulesetID = this.ruleSetId;
+    }
+
+
+  useMonster(monster: any) {
+
+  }
 
   
 
@@ -322,27 +357,37 @@ export class MonsterTemplateDetailsComponent implements OnInit {
   }
 
   deployMonster(monsterInfo) {
-    console.log(monsterInfo);
-    this.bsModalRef = this.modalService.show(DeployMonsterComponent, {
-      class: 'modal-primary modal-md',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
-    this.bsModalRef.content.title = "Quantity";
-    this.bsModalRef.content.monsterInfo = monsterInfo;
+    //console.log(monsterInfo);
+    //this.bsModalRef = this.modalService.show(DeployMonsterComponent, {
+    //  class: 'modal-primary modal-md',
+    //  ignoreBackdropClick: true,
+    //  keyboard: false
+    //});
+    //this.bsModalRef.content.title = "Quantity";
+    //this.bsModalRef.content.monsterInfo = monsterInfo;
 
   }
-  
+  DropItem() {
+    console.log('Dropitem');
+    //this.bsModalRef = this.modalService.show(DropItemsMonsterComponent, {
+    //  class: 'modal-primary modal-md',
+    //  ignoreBackdropClick: true,
+    //  keyboard: false
+    //});
+    //this.bsModalRef.content.title = 'Drop Items';
+    //this.bsModalRef.content.button = 'Drop';
+    //this.bsModalRef.content.rulesetID = this.ruleSetId;
+  }
 
   createMonsterGroup() {
-    this.bsModalRef = this.modalService.show(CreateMonsterGroupComponent, {
-      class: 'modal-primary modal-md',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
-    this.bsModalRef.content.title = 'Create Monster Group';
-    this.bsModalRef.content.button = 'Create';
-    this.bsModalRef.content.rulesetID = this.ruleSetId;
+    //this.bsModalRef = this.modalService.show(CreateMonsterGroupComponent, {
+    //  class: 'modal-primary modal-md',
+    //  ignoreBackdropClick: true,
+    //  keyboard: false
+    //});
+    //this.bsModalRef.content.title = 'Create Monster Group';
+    //this.bsModalRef.content.button = 'Create';
+    //this.bsModalRef.content.rulesetID = this.ruleSetId;
   }
   
 }

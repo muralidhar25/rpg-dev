@@ -47,6 +47,7 @@ namespace DAL.Models.SPModels
     }
     public class ItemMasterForMonsterTemplate
     {
+        public int ItemId { get; set; }
         public int ItemMasterId { get; set; }
         public int RuleSetId { get; set; }
         public string Name { get; set; }

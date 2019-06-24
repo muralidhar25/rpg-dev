@@ -20,18 +20,18 @@
               <div class="page-toolbar-wrapper initial show recordes-menu">
                 <!-- Toolbar links -->
                 <ul class="page-toolbar-links" *ngIf="!isLoading">
-                  <li *ngIf="monsterTemplateDetail?.ruleset" class="hidden-tab">
+                  <li *ngIf="monsterDetail?.ruleset" class="hidden-tab">
                     <a *ngIf="!IsGm" [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
                     <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
                   </li>
-                  <li (click)="Redirect('/ruleset/item-master/')" class="hidden-tab" *ngIf="monsterTemplateDetail?.ruleset?.isItemEnabled">
+                  <li (click)="Redirect('/ruleset/item-master/')" class="hidden-tab" *ngIf="monsterDetail?.ruleset?.isItemEnabled">
                     <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Item Templates</span></a>
                   </li>
-                  <li *ngIf="monsterTemplateDetail?.ruleset?.isSpellEnabled" (click)="Redirect('/ruleset/spell/')" class="hidden-tab">
+                  <li *ngIf="monsterDetail?.ruleset?.isSpellEnabled" (click)="Redirect('/ruleset/spell/')" class="hidden-tab">
                     <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
                   </li>
                   <li *ngIf="IsGm" class="hidden-tab">
-                    <a [routerLink]="['/ruleset/monster-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-MonsterTemp"> <span>Monster Templates</span></a>
+                    <a [routerLink]="['/ruleset/monster-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-MonsterTemp"> <span>Monster</span></a>
                   </li>
                   <!--<li class="hidden-tab"  *ngIf="monsterTemplateDetail?.ruleset" >
           <a [routerLink]="['/ruleset/character-stats/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
@@ -41,18 +41,18 @@
                       <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
                       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                         <ul class="dropdown-menu-list" *ngIf="!isLoading">
-                          <li *ngIf="monsterTemplateDetail?.ruleset" class="dropdown-menu-item">
+                          <li *ngIf="monsterDetail?.ruleset" class="dropdown-menu-item">
                             <a *ngIf="!IsGm" [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
                             <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
                           </li>
-                          <li class="dropdown-menu-item" *ngIf="monsterTemplateDetail?.ruleset">
+                          <li class="dropdown-menu-item" *ngIf="monsterDetail?.ruleset">
                             <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection  icon-Gen-Items"> Inventory</a>
                           </li>
-                          <li class="dropdown-menu-item" *ngIf="monsterTemplateDetail?.ruleset?.isSpellEnabled">
+                          <li class="dropdown-menu-item" *ngIf="monsterDetail?.ruleset?.isSpellEnabled">
                             <a [routerLink]="charNav?.spells" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
                           </li>
                           <li *ngIf="IsGm" class="dropdown-menu-item">
-                            <a [routerLink]="['/ruleset/monster-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-MonsterTemp"> <span>Monster Templates</span></a>
+                            <a [routerLink]="['/ruleset/monster-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-MonsterTemp"> <span>Monster</span></a>
                           </li>
 
                           <!--<li class="dropdown-menu-item" *ngIf="monsterTemplateDetail?.ruleset">
@@ -72,17 +72,17 @@
                   <li>
                     <!-- Manage item -->
                     <div class="dropdown dropdown-buttons">
-                      <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show icon-Gen-Edit"> Manage Monster Template</button>
+                      <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show icon-Gen-Edit"> Manage Item</button>
                       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
                         <ul class="dropdown-menu-list">
                           <li class="dropdown-menu-item">
-                            <button type="button" (click)="editMonsterTemplate(monsterTemplateDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
+                            <button type="button" (click)="editMonsterTemplate(monsterDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
                           </li>
                           <li class="dropdown-menu-item">
-                            <button type="button" (click)="duplicateMonsterTemplate(monsterTemplateDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
+                            <button type="button" (click)="duplicateMonsterTemplate(monsterDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
                           </li>
                           <li class="dropdown-menu-item">
-                            <button type="button" (click)="deleteMonsterTemplate(monsterTemplateDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
+                            <button type="button" (click)="deleteMonsterTemplate(monsterDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
                           </li>
                         </ul>
                       </div>
@@ -100,17 +100,17 @@
                 <li>
                   <!-- Manage item -->
                   <div class="dropdown dropdown-buttons">
-                    <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> Manage Monster Template</button>
+                    <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> Manage Item</button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
                       <ul class="dropdown-menu-list">
                         <li class="dropdown-menu-item">
-                          <button type="button" (click)="editMonsterTemplate(monsterTemplateDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
+                          <button type="button" (click)="editMonster(monsterDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
                         </li>
                         <li class="dropdown-menu-item">
-                          <button type="button" (click)="duplicateMonsterTemplate(monsterTemplateDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
+                          <button type="button" (click)="duplicateMonster(monsterDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
                         </li>
                         <li class="dropdown-menu-item">
-                          <button type="button" (click)="deleteMonsterTemplate(monsterTemplateDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
+                          <button type="button" (click)="deleteMonster(monsterDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
                         </li>
                       </ul>
                     </div>
@@ -132,22 +132,23 @@
                 <div class="col">
                   <div class="item-info-banner">
                     <div class="item-info-image">
-                      <img class="card-img-top" [src]="monsterTemplateDetail?.imageUrl" [alt]="monsterTemplateDetail?.name"
+                      <img class="card-img-top" [src]="monsterDetail?.imageUrl" [alt]="monsterDetail?.name"
                            onerror="this.src='../assets/images/DefaultImages/Item.jpg';" #imgref (click)="ViewImage(imgref)" />
                     </div>
                     <h2 class="item-info-name">
-                      {{monsterTemplateDetail?.name}}
+                      {{monsterDetail?.name}}
+                     
                     </h2>
                     <div class="item-info-props-indics">
                       <ul class="item-info-props">
-                        <li *ngIf="monsterTemplateDetail?.level" popover="{{monsterTemplateDetail?.level}} Level" triggers="hover" popoverTitle="LEVEL">{{monsterTemplateDetail?.level}} Level</li>
-                        <li *ngIf="monsterTemplateDetail.challangeRating" popover="CR: {{monsterTemplateDetail?.challangeRating}} Level" triggers="hover" popoverTitle="challangeRating">Cr: {{monsterTemplateDetail?.challangeRating}}</li>
-                        <li *ngIf="monsterTemplateDetail.armorClass" popover="AC: {{monsterTemplateDetail?.armorClass}}" triggers="hover" popoverTitle="ArmorClass">AC : {{monsterTemplateDetail?.armorClass}}</li>
-                        <li *ngIf="monsterTemplateDetail?.health" popover="{{monsterTemplateDetail?.health}}" triggers="hover" popoverTitle="Health">H : {{monsterTemplateDetail?.health}}</li>
+                        <li *ngIf="monsterDetail?.level" popover="{{monsterDetail?.level}} Level" triggers="hover" popoverTitle="LEVEL">{{monsterDetail?.level}} Level</li>
+                        <li *ngIf="monsterDetail?.monsterChallangeRating" popover="CR: {{monsterDetail?.monsterChallangeRating}}" triggers="hover" popoverTitle="challangeRating">Cr: {{monsterDetail?.monsterChallangeRating}}</li>
+                        <li *ngIf="monsterDetail?.monsterArmorClass" popover="AC: {{monsterDetail?.monsterArmorClass}}" triggers="hover" popoverTitle="ArmorClass">AC : {{monsterDetail?.monsterArmorClass}}</li>
+                        <li *ngIf="monsterDetail?.monsterHealthCurrent" popover="{{monsterDetail?.monsterHealthCurrent}} / {{monsterDetail?.monsterHealthMax}}" triggers="hover" popoverTitle="Health">{{monsterDetail?.monsterHealthCurrent}} / {{monsterDetail?.monsterHealthMax}}</li>
                       </ul>
                     
                       <ul class="item-info-indics">
-                        <li *ngIf="monsterTemplateDetail.isEnabled">
+                        <li *ngIf="monsterDetail.isEnabled">
                           <i class="icon icon-ico icon-Rec-Enabled"></i>
                         </li>
                       </ul>
@@ -155,14 +156,14 @@
                   </div>
                   <ul class="item-info-actions d-none d-md-flex">
                     <li>
-                      <button type="button" (click)="deployMonster(monsterTemplateDetail)" class="btn icon icon-with-text icon-Rec-Add btn-accent"> Deploy</button>
-                    </li>
-                    <!--<li>
-                      <button type="button" (click)="DropItem()" class="btn icon  icon-with-text icon-trash btn-accent"> Drop</button>
+                      <button type="button" (click)="enableCombatTracker(monsterDetail)" class="btn  btn-accent "  [ngClass]="{'icon-Rec-Add':!monsterDetail?.addToCombatTracker,'icon-Rec-Remove':monsterDetail?.addToCombatTracker}"> Combat</button>
                     </li>
                     <li>
-                      <button type="button" (click)="createMonsterGroup()" class="btn  icon icon-with-text icon-copy icon-rsi btn-accent"> Group</button>
-                    </li>-->
+                      <button type="button" (click)="dropMonsterItems(monsterDetail)" class="btn icon  icon-with-text icon-Rec-Drop btn-accent"> Drop</button>
+                    </li>
+                    <li>
+                      <button type="button" (click)="useMonster(monsterDetail)" class="btn  icon icon-with-text icon-Tile-Execute btn-accent"> Attack</button>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -172,7 +173,7 @@
                 <div class="col-md-12">
                   <div class="item-info-desc">
                     <h3>Description</h3>
-                    <p [froalaView]="monsterTemplateDetail?.description"></p>
+                    <p [froalaView]="monsterDetail?.description"></p>
                   </div>
                 </div>
               </div>
@@ -180,13 +181,13 @@
                 <div class="col-12 col-md-6">
                   <div class="item-info-stats">
                     <h3>Stats</h3>
-                    <p [froalaView]="monsterTemplateDetail?.stats"></p>
+                    <p [froalaView]="monsterDetail?.stats"></p>
                   </div>
                 </div>
                 <div class="col-12 col-md-6">
                   <div class="item-info-stats">
                     <h3>Command</h3>
-                    <p>{{monsterTemplateDetail?.command}}</p>
+                    <p>{{monsterDetail?.command}}</p>
                   </div>
                 </div>
               </div>
@@ -194,19 +195,19 @@
                 <div class="col-12 col-md-6">
                   <div class="item-info-tags">
                     <h3>Tags</h3>
-                    <p>{{monsterTemplateDetail?.metatags}}</p>
+                    <p>{{monsterDetail?.metatags}}</p>
                   </div>
                 </div>
                 <div class="col-12 col-md-6">
                   <div class="item-info-tags">
                     <h3>XP Value</h3>
-                    <p>{{xpValue}}</p>
+                    <p>{{monsterDetail?.monsterXPValue}}</p>
                   </div>
                 </div>
                 <div class="col-12 col-md-6">
                   <div class="item-info-tags">
                     <h3>Initiative Command</h3>
-                    <p>{{monsterTemplateDetail?.initiativeCommand}}</p>
+                    <p>{{monsterDetail?.initiativeCommand}}</p>
                   </div>
                 </div>
               </div>
@@ -219,7 +220,7 @@
                     <div class="form-group output-list output-list-wrap">
                       <ul class="output-list-items" *ngIf="selectedItemMasters">
                         <li class="output-list-item" *ngFor="let Item of selectedItemMasters">
-                          <div (click)="GoToItems(Item?.abilityId)" style="cursor:pointer;" popover="{{Item?.name}}" triggers="hover">
+                          <div (click)="GoToItems(Item?.itemMasterId)" style="cursor:pointer;" popover="{{Item?.name}}" triggers="hover">
                             <img class="card-img-top" [src]="Item?.imageUrl" [alt]="Item?.name"
                                  onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
                             <span>{{Item?.name}}</span>

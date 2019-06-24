@@ -1045,7 +1045,10 @@ namespace DAL.Services
 
         public List<ItemMasterForMonsterTemplate> getMonsterItemsToDrop(int monsterId) {
             return _context.ItemMasterMonsterItems.Where(x => x.MonsterId == monsterId && x.IsDeleted != true).Include(x=>x.ItemMaster).Select(x=> new ItemMasterForMonsterTemplate() {
-                ImageUrl=x.ItemMaster.ItemImage,
+
+
+                ItemId = x.ItemId,
+                ImageUrl = x.ItemMaster.ItemImage,
                 ItemMasterId= x.ItemMasterId,
                 Name = x.ItemMaster.ItemName,
                 Qty = (int)x.Quantity,

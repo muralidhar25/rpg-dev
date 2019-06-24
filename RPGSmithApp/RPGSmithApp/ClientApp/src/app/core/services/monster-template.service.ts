@@ -29,7 +29,7 @@ export class MonsterTemplateService extends EndpointFactory {
   private readonly _getByRulesetUrl_add: string = "/api/MonsterTemplate/getByRuleSetId_add";
   private readonly _uploadUrl: string = "/api/MonsterTemplate/upLoadMonsterTemplateImageBlob";
   private readonly _duplicateUrl: string = "/api/MonsterTemplate/duplicate";
-
+ 
   
 
   //private readonly _enableAbilityUrl: string = "/api/MonsterTemplate/toggleEnableAbility";
@@ -42,8 +42,11 @@ export class MonsterTemplateService extends EndpointFactory {
   private readonly createMonsterUrl: string = this.configurations.baseUrl +  "/api/MonsterTemplate/createMonster";
   private readonly updateMonsterUrl: string = this.configurations.baseUrl +  "/api/MonsterTemplate/updateMonster";
   
-
   private readonly deployMonster_api = this.configurations.baseUrl + "/api/MonsterTemplate/DeployMonsterTemplate";
+  private readonly getMonsterByIdUrl = this.configurations.baseUrl + "/api/MonsterTemplate/GetMonsterById";
+  private readonly getMonsterItemsToDropUrl = this.configurations.baseUrl + "/api/MonsterTemplate/GetMonsterItemsToDrop";
+  private readonly dropMonsterItemsUrl = this.configurations.baseUrl + "/api/MonsterTemplate/dropMonsterItems";
+
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
@@ -87,6 +90,15 @@ export class MonsterTemplateService extends EndpointFactory {
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getMonsterTemplateById(Id));
+      });
+  }
+
+  getMonsterById<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getMonsterByIdUrl}?id=${Id}`;
+    console.log('endpointUrl', endpointUrl);
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getMonsterById(Id));
       });
   }
 
@@ -147,6 +159,22 @@ export class MonsterTemplateService extends EndpointFactory {
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getMonsterTemplateAssociateRecords_sp(Id, rulesetId));
+      });
+  }
+
+  getMonsterItemToDrop<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getMonsterItemsToDropUrl}?monsterId=${Id}`;
+        return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+          .catch(error => {
+            return this.handleError(error, () => this.getMonsterItemToDrop(Id));
+          });
+  }
+
+  dropMonsterItems<T>(monsterItems): Observable<T> {
+    let endpointUrl = `${this.dropMonsterItemsUrl}`;
+    return this.http.post(endpointUrl, JSON.stringify(monsterItems), { headers: this.getRequestHeadersNew(), responseType: "text" })
+      .catch(error => {
+        return this.handleError(error, () => this.dropMonsterItems(monsterItems));
       });
   }
 

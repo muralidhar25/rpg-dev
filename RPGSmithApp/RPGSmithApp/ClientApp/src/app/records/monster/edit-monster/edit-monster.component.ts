@@ -77,12 +77,14 @@ export class EditMonsterComponent implements OnInit {
             
           if (diceCommand.parentIndex === -1) {
             this.monsterFormModal.command = diceCommand.command;
-            } else {
-            if (this.monsterFormModal.monsterTemplateSpellVM.length > 0) {
-              this.monsterFormModal.monsterTemplateSpellVM.forEach(item => {
-                var index = this.monsterFormModal.monsterTemplateSpellVM.indexOf(item);
+          }  else if (diceCommand.parentIndex === -2) {
+            this.monsterFormModal.initiativeCommand = diceCommand.command;
+          }else {
+            if (this.monsterFormModal.monsterTemplateCommandVM.length > 0) {
+              this.monsterFormModal.monsterTemplateCommandVM.forEach(item => {
+                var index = this.monsterFormModal.monsterTemplateCommandVM.indexOf(item);
                         if (index === diceCommand.parentIndex) {
-                          this.monsterFormModal.monsterTemplateSpellVM[index].command = diceCommand.command;
+                          this.monsterFormModal.monsterTemplateCommandVM[index].command = diceCommand.command;
                         }
                     });
                 }
@@ -97,8 +99,8 @@ export class EditMonsterComponent implements OnInit {
             this.title = this.bsModalRef.content.title;
             let _view = this.button = this.bsModalRef.content.button;
           let _monsterVM = this.bsModalRef.content.monsterVM;
+         
           this.monsterFormModal = this.monsterTemplateService.MonsterModelData(_monsterVM, _view);
-           
           this.selectedBuffAndEffects = this.monsterFormModal.monsterTemplateBuffAndEffects.map(x => { return x.buffAndEffect; });
           this.selectedAbilities = this.monsterFormModal.monsterTemplateAbilities.map(x => { return x.buffAndEffect; });
           this.selectedAssociateMonsterTemplates = this.monsterFormModal.monsterTemplateAssociateMonsterTemplates.map(x => { return x.buffAndEffect; });
@@ -352,7 +354,8 @@ export class EditMonsterComponent implements OnInit {
                     //if (this.fromDetail)
                     // this.router.navigate(['/ruleset/ability-details', modal.abilityId]);
                     if (this.fromDetail) {
-                        if (data) {
+                      if (data) {
+                        debugger;
                             let id = data;
                             if (!isNaN(parseInt(id))) {
                                 this.router.navigate(['/ruleset/monster-details', id]);
@@ -571,7 +574,7 @@ export class EditMonsterComponent implements OnInit {
   }
   get associateMonsterTemplatesSettings() {
     return {
-      primaryKey: "associateMonsterTemplateId",
+      primaryKey: "monsterTemplateId",
       labelKey: "name",
       text: "Search Monster Template(s)",
       enableCheckAll: true,
