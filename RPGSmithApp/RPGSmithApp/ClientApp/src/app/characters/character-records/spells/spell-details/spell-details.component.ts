@@ -378,4 +378,17 @@ export class CharacterSpellDetailsComponent implements OnInit {
         }
       });
   }
+
+  openDiceRollModal() {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.characterId = this.characterId;
+    this.bsModalRef.content.character = this.character;
+    this.bsModalRef.content.recordName = this.character.characterName;
+    this.bsModalRef.content.recordImage = this.character.imageUrl;
+  }
 }

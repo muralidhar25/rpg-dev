@@ -398,17 +398,17 @@ export class CharacterStatsComponent implements OnInit {
         window.history.back();
   }
 
-  openDiceRollModal() {
-    this.bsModalRef = this.modalService.show(DiceRollComponent, {
-      class: 'modal-primary modal-md',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
-    this.bsModalRef.content.title = "Dice";
-    this.bsModalRef.content.characterId = 0;
-    this.bsModalRef.content.character = new Characters();
-    this.bsModalRef.content.recordName = this.rulesetModel.ruleSetName;
-    this.bsModalRef.content.recordImage = this.rulesetModel.imageUrl;
-    this.bsModalRef.content.isFromCampaignDetail = true;
-  }
+  //openDiceRollModal() {
+  //  this.bsModalRef = this.modalService.show(DiceRollComponent, {
+  //    class: 'modal-primary modal-md',
+  //    ignoreBackdropClick: true,
+  //    keyboard: false
+  //  });
+  //  this.bsModalRef.content.title = "Dice";
+  //  this.bsModalRef.content.characterId = 0;
+  //  this.bsModalRef.content.character = new Characters();
+  //  this.bsModalRef.content.recordName = this.rulesetModel.ruleSetName;
+  //  this.bsModalRef.content.recordImage = this.rulesetModel.imageUrl;
+  //  this.bsModalRef.content.isFromCampaignDetail = true;
+  //}
 }

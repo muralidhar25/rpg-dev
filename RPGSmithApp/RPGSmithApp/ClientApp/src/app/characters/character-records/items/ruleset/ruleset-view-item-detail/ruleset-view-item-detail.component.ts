@@ -21,6 +21,7 @@ import { ImageViewerComponent } from "../../../../../shared/image-interface/imag
 import { CreateItemMsterComponent } from "../../../../../records/item-master/create-item/create-item.component";
 import { AppService1 } from "../../../../../app.service";
 import { CharactersService } from "../../../../../core/services/characters.service";
+import { DiceRollComponent } from "../../../../../shared/dice/dice-roll/dice-roll.component";
 
 @Component({
   selector: 'app-ruleset-view-item-detail',
@@ -412,6 +413,19 @@ export class RulesetViewItemDetailComponent implements OnInit {
         this.authService.logout(true);
       }
     });
-}
+  }
+
+  openDiceRollModal() {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.characterId = this.character.characterId;
+    this.bsModalRef.content.character = this.character;
+    this.bsModalRef.content.recordName = this.character.characterName;
+    this.bsModalRef.content.recordImage = this.character.imageUrl;
+  }
 }
 

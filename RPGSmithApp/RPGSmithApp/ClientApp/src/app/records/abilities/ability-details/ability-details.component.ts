@@ -16,6 +16,8 @@ import { Utilities } from "../../../core/common/utilities";
 import { CreateAbilitiesComponent } from "../../../shared/create-abilities/create-abilities.component";
 import { ImageViewerComponent } from "../../../shared/image-interface/image-viewer/image-viewer.component";
 import { PlatformLocation } from "@angular/common";
+import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
+import { Characters } from "../../../core/models/view-models/characters.model";
 
 @Component({
     selector: 'app-ability-details',
@@ -287,5 +289,19 @@ export class AbilityDetailsComponent implements OnInit {
             this.bsModalRef.content.ViewImageUrl = img.src;
             this.bsModalRef.content.ViewImageAlt = img.alt;
         }
-    }
+  }
+  openDiceRollModal() {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.recordName = this.AbilityDetail.ruleset.ruleSetName;
+    this.bsModalRef.content.recordImage = this.AbilityDetail.ruleset.imageUrl;
+    this.bsModalRef.content.recordType = 'ruleset'
+    this.bsModalRef.content.isFromCampaignDetail = true;
+  }
 }

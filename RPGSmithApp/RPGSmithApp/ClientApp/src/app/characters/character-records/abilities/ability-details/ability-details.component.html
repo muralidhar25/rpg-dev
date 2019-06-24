@@ -84,6 +84,11 @@
                     <li class="refresh-btn" *ngIf="pageRefresh">
                       <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
                     </li>
+                    <li>
+                      <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">
+                        <span class="text-hide-tab"> Dice</span>
+                      </button>
+                    </li>
                   </ul>
                     <!-- End of toolbar actions -->
                 </div>
@@ -114,6 +119,11 @@
                   </li>
                   <li class="refresh-btn" *ngIf="pageRefresh">
                     <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
+                  </li>
+                  <li>
+                    <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">
+                      <span class="text-hide-tab"> Dice</span>
+                    </button>
                   </li>
                 </ul>
                 <!-- End of toolbar actions -->
