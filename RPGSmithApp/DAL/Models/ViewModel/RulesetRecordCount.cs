@@ -14,6 +14,7 @@ namespace DAL.Models.SPModels
         public int LayoutCount { get; set; }
         public int LootCount { get; set; }
         public int BuffAndEffectCount { get; set; }
-        
+        public int MonsterTemplateCount { get; set; }
+        public int MonsterCount { get; set; }
     }
 }

@@ -38,6 +38,7 @@ void deployMonster(DeployMonsterTemplate model);
         List<Monster> SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1);
         Task enableCombatTracker(int monsterId, bool enableCombatTracker);
         Task<MonsterTemplate> Core_CreateMonsterTemplateUsingMonster(int monsterTemplateId, int rulesetID);
+        List<ItemMasterForMonsterTemplate> getMonsterItemsToDrop(int monsterId);
         // List<MonsterTemplate> GetByRuleSetId_add(int rulesetId);
 
     }

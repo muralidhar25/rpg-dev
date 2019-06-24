@@ -37,13 +37,22 @@ namespace DAL.Models.SPModels
         public List<Spell> spellList { get; set; }
         public List<BuffAndEffect> buffAndEffectsList { get; set; }
         public List<MonsterTemplate> monsterTemplatesList { get; set; }
-        public List<ItemMaster> itemMasterList { get; set; }
+        public List<ItemMasterForMonsterTemplate> itemMasterList { get; set; }
         public List<Ability> selectedAbilityList { get; set; }
         public List<Spell> selectedSpellList { get; set; }
         public List<BuffAndEffect> selectedBuffAndEffects { get; set; }
         public List<MonsterTemplate> selectedMonsterTemplates { get; set; }
-        public List<MonsterTemplate> selectedItemMasters { get; set; }
+        public List<ItemMasterForMonsterTemplate> selectedItemMasters { get; set; }
         public List<MonsterTemplateCommand> monsterTemplateCommands { get; set; }        
+    }
+    public class ItemMasterForMonsterTemplate
+    {
+        public int ItemMasterId { get; set; }
+        public int RuleSetId { get; set; }
+        public string Name { get; set; }
+        public string ImageUrl { get; set; }
+        public int Qty { get; set; }
+
     }
     public class SP_CharactersCharacterStat
     {

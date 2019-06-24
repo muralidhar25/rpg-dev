@@ -138,6 +138,7 @@ namespace DAL
         public virtual DbSet<RandomizationEngine> RandomizationEngines { get; set; }
         public virtual DbSet<MonsterTemplateRandomizationEngine> MonsterTemplateRandomizationEngines { get; set; }
         public virtual DbSet<MonsterTemplateItemMaster> MonsterTemplateItemMasters { get; set; }
+        public virtual DbSet<ItemMasterMonsterItem> ItemMasterMonsterItems { get; set; }
         
         public virtual DbSet<Monster> Monsters { get; set; }
         

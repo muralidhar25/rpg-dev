@@ -605,6 +605,7 @@ namespace DAL.Services
             res.monsterTemplatesList = new List<MonsterTemplate>();
             res.selectedMonsterTemplates = new List<MonsterTemplate>();
             res.monsterTemplateCommands = new List<MonsterTemplateCommand>();
+            res.selectedItemMasters = new List<ItemMasterForMonsterTemplate>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
 
 
@@ -760,7 +761,21 @@ namespace DAL.Services
                 }
 
             }
+            if (ds.Tables[9].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[9].Rows)
+                {
+                    ItemMasterForMonsterTemplate i = new ItemMasterForMonsterTemplate();
+                    i.ItemMasterId = row["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemMasterId"]);
+                    i.ImageUrl = row["ItemImage"] == DBNull.Value ? null : row["ItemImage"].ToString();
+                    i.Name = row["ItemName"] == DBNull.Value ? null : row["ItemName"].ToString();
+                    i.Qty = row["Qty"] == DBNull.Value ? 0 : Convert.ToInt32(row["Qty"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
 
+                    res.selectedItemMasters.Add(i);///////
+                }
+
+            }
             return res;
         }
 
@@ -793,7 +808,8 @@ namespace DAL.Services
                 _context.MonsterTemplateMonsters.AddRange(MonsterTemplateMonsterVM);
                 _context.SaveChanges();
                 
-            } catch (Exception ex) { }
+            } catch (Exception ex) {
+            }
             return MonsterTemplateMonsterVM;
         }
         public List<MonsterTemplateItemMaster> insertAssociateItemMasters(List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM)
@@ -1025,6 +1041,16 @@ namespace DAL.Services
 
             MonsterTemplate CreatedItemMaster = await Core_CreateMonsterTemplate(monsterTemplate);
             return CreatedItemMaster;
+        }
+
+        public List<ItemMasterForMonsterTemplate> getMonsterItemsToDrop(int monsterId) {
+            return _context.ItemMasterMonsterItems.Where(x => x.MonsterId == monsterId && x.IsDeleted != true).Include(x=>x.ItemMaster).Select(x=> new ItemMasterForMonsterTemplate() {
+                ImageUrl=x.ItemMaster.ItemImage,
+                ItemMasterId= x.ItemMasterId,
+                Name = x.ItemMaster.ItemName,
+                Qty = (int)x.Quantity,
+                RuleSetId = x.ItemMaster.RuleSetId
+            } ).ToList();
         }
     }
 }
