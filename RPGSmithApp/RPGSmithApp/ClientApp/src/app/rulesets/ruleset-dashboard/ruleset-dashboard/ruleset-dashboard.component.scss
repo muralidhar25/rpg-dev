@@ -818,3 +818,218 @@ span.buff-images-only img.buff-tile-image {
 img.buff-tile-image {
   object-fit: contain;
 }
+@media screen and (min-width: 1200px) and (max-width: 1359px)
+{
+  .tiles .tile-body .buff-tile-font-33 {
+    font-size: 45px !important;
+  }
+  .tiles .tile-body .buff-tile-font-31 {
+    font-size: 36px !important;
+  }
+  .tiles .tile-body .buff-tile-font-32 {
+    font-size: 40px !important;
+  }
+  .tiles .tile-body .buff-tile-font-29 {
+    font-size: 68px !important;
+  }
+  .tiles .tile-body .buff-tile-font-27 {
+    font-size: 66px !important;
+  }
+  .tiles .tile-body .buff-tile-font-20 {
+    font-size: 64px !important;
+  }
+  .tiles .tile-body .buff-tile-font-24 {
+    font-size: 66px !important;
+  }
+  .tiles .tile-body .buff-tile-font-34 {
+    font-size: 48px !important;
+  }
+  .tiles .tile-body .buff-tile-font-30 {
+    font-size: 68px !important;
+  }
+  .tiles .tile-body .buff-tile-font-20 {
+    font-size: 60px !important;
+  }
+  .tiles .tile-body .buff-tile-font-12 {
+    font-size: 60px !important;
+  }
+  .tiles .tile-body .buff-tile-font-7 {
+    font-size: 60px !important;
+  }
+}
+@media screen and (min-width: 1024px) and (max-width: 1199px) {
+  .tiles .tile-body .buff-tile-font-33 {
+    font-size: 45px !important;
+  }
+  .buff-padding-2-tiles{
+    padding: 4px 0px 6px !important;
+  }
+  .tiles .tile-body .buff-tile-font-31 {
+    font-size: 36px !important;
+  }
+  .buff-padding-2-plus-tiles{
+    padding: 6px 4px 6px 3px !important;
+  }
+  .tiles .tile-body .buff-tile-font-32 {
+    font-size: 40px !important;
+  }
+
+  .tiles .tile-body .buff-tile-font-29 {
+    font-size: 15px !important;
+  }
+
+  .tiles .tile-body .buff-tile-font-27 {
+    font-size: 14px !important;
+  }
+
+  .tiles .tile-body .buff-tile-font-20 {
+    font-size: 64px !important;
+  }
+
+  .tiles .tile-body .buff-tile-font-24 {
+    font-size: 12px !important;
+  }
+
+  .tiles .tile-body .buff-tile-font-30 {
+    font-size: 16px !important;
+  }
+
+  .tiles .tile-body .buff-tile-font-20 {
+    font-size: 8px !important;
+  }
+
+  .tiles .tile-body .buff-tile-font-12 {
+    font-size: 0px !important;
+  }
+
+  .tiles .tile-body .buff-tile-font-7 {
+    font-size: 2px !important;
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1023px)
+{
+  .inline-buff-image .buff-image-padding-5 {
+    padding: 0px !important;
+  }
+  .buff-padding-1-tile{
+    padding: 6px 4px 7px 6px !important;
+  }
+  .tiles .tile-body .buff-tile-font-7 {
+    font-size: 65px !important;
+  }
+  .tiles .tile-body .buff-tile-font-12 {
+    font-size: 70px !important;
+  }
+  .tiles .tile-body .buff-tile-font-20 {
+    font-size: 70px !important;
+  }
+  .tiles .tile-body .buff-tile-font-24 {
+    font-size: 72px !important;
+  }
+  .tiles .tile-body .buff-tile-font-27 {
+    font-size: 75px !important;
+  }
+  .tiles .tile-body .buff-tile-font-29 {
+    font-size: 75px !important;
+  }
+  .tiles .tile-body .buff-tile-font-30 {
+    font-size: 74px !important;
+  }
+  .tiles .tile-body .buff-tile-font-31 {
+    font-size: 75px !important;
+  }
+  .tiles .tile-body .buff-tile-font-32 {
+    font-size: 75px !important;
+  }
+  .tiles .tile-body .buff-image-padding-bottom-10 {
+    padding-bottom: 0px;
+  }
+ }
+@media screen and (min-width: 480px) and (max-width: 767px)
+{
+  .tiles .tile-body .buff-image-padding-5 {
+    padding: 0px !important;
+  }
+  .tiles .tile-body .buff-image-padding-bottom-10 {
+    padding-bottom: 5px;
+  }
+  .tiles .tile-body .buff-tile-font-7 {
+    font-size: 30px !important;
+  }
+  .tiles .tile-body .buff-tile-font-12 {
+    font-size: 35px !important;
+  }
+  .tiles .tile-body .buff-tile-font-20 {
+    font-size: 40px !important;
+  }
+  .tiles .tile-body .buff-tile-font-24 {
+    font-size: 40px !important;
+  }
+  .tiles .tile-body .buff-tile-font-27 {
+    font-size: 46px !important;
+  }
+  .tiles .tile-body .buff-tile-font-29 {
+    font-size: 50px !important;
+  }
+  .tiles .tile-body .buff-tile-font-30 {
+    font-size: 50px !important;
+  }
+  .tiles .tile-body .buff-tile-font-31 {
+    font-size: 50px !important;
+  }
+  .tiles .tile-body .buff-tile-font-32 {
+    font-size: 48px !important;
+  }
+  .buff-padding-2-plus-tiles{
+    padding: 0px 4px 0px 7px !important;
+  }
+}
+@media screen and (min-width: 320px) and (max-width: 479px) {
+  .tiles .tile-body .buff-image-padding-5 {
+    padding: 0px !important;
+  }
+
+  .tiles .tile-body .buff-image-padding-bottom-10 {
+    padding-bottom: 5px;
+  }
+
+  .tiles .tile-body .buff-tile-font-7 {
+    font-size: 30px !important;
+  }
+
+  .tiles .tile-body .buff-tile-font-12 {
+    font-size: 60px !important;
+  }
+
+  .tiles .tile-body .buff-tile-font-20 {
+    font-size: 18px !important;
+  }
+
+  .tiles .tile-body .buff-tile-font-24 {
+    font-size: 18px !important;
+  }
+
+  .tiles .tile-body .buff-tile-font-27 {
+    font-size: 20px !important;
+  }
+
+  .tiles .tile-body .buff-tile-font-29 {
+    font-size: 22px !important;
+  }
+
+  .tiles .tile-body .buff-tile-font-30 {
+    font-size:22px !important;
+  }
+
+  .tiles .tile-body .buff-tile-font-31 {
+    font-size: 50px !important;
+  }
+
+  .tiles .tile-body .buff-tile-font-32 {
+    font-size: 24px !important;
+  }
+
+  .buff-padding-2-plus-tiles {
+    padding: 0px 4px 0px 7px !important;
+  }
+}
