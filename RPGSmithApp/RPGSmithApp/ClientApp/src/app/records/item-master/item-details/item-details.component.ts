@@ -16,6 +16,8 @@ import { Utilities } from "../../../core/common/utilities";
 import { CreateItemMsterComponent } from "../create-item/create-item.component";
 import { ImageViewerComponent } from "../../../shared/image-interface/image-viewer/image-viewer.component";
 import { PlatformLocation } from "@angular/common";
+import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
+import { Characters } from "../../../core/models/view-models/characters.model";
 
 @Component({
     selector: 'app-item-details',
@@ -32,7 +34,9 @@ export class ItemDetailsComponent implements OnInit {
   isDropdownOpen: boolean = false;
     ruleSetId: number;
     bsModalRef: BsModalRef;
-    ItemMasterDetail: any = new ItemMaster();
+  ItemMasterDetail: any = new ItemMaster();
+  RuleSet: any;
+
   IsGm: boolean = false;
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -69,13 +73,18 @@ export class ItemDetailsComponent implements OnInit {
             this.IsGm = user.isGm;
           }
             this.isLoading = true;
-            this.itemMasterService.getItemMasterById<any[]>(this.itemMasterId)
+            this.itemMasterService.getItemMasterById<any>(this.itemMasterId)
               .subscribe(data => {
-                  if(data)
+                console.log('data', data.ruleSet);
+                if (data)
+                  debugger;
+                    this.RuleSet = data.ruleSet;
                     this.ItemMasterDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");     
                     //this.ItemMasterDetail.forEach(function (val) { val.showIcon = false; });
                     this.rulesetService.GetCopiedRulesetID(this.ItemMasterDetail.ruleSetId, user.id).subscribe(data => {
-                        let id: any=data
+
+                      let id: any = data
+                      
                         //this.ruleSetId = id;
                         this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
                         this.isLoading = false;
@@ -259,5 +268,20 @@ export class ItemDetailsComponent implements OnInit {
             this.bsModalRef.content.ViewImageUrl = img.src;
             this.bsModalRef.content.ViewImageAlt = img.alt;
         }
-    }
+  }
+
+  openDiceRollModal() {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.recordName = this.RuleSet.ruleSetName;
+    this.bsModalRef.content.recordImage = this.RuleSet.imageUrl;
+    this.bsModalRef.content.recordType = 'ruleset'
+    this.bsModalRef.content.isFromCampaignDetail = true;
+  }
 }

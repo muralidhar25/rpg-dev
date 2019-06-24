@@ -162,4 +162,21 @@ export class RulesetAddInterfaceComponent implements OnInit {
      
     });
   }
+  description(text) {
+    if (text) {
+
+      var encodedStr = text;
+
+      var parser = new DOMParser;
+      var dom = parser.parseFromString(
+        '<!doctype html><body>' + encodedStr,
+        'text/html');
+      var decodedString = dom.body.textContent;
+
+
+      return decodedString;
+
+    }
+    return '';
+  }
 }

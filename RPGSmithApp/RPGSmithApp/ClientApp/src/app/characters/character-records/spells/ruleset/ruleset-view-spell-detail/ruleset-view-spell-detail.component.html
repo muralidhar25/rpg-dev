@@ -63,7 +63,7 @@
   </li>-->
                   </ul>
                     <!-- Toolbar actions -->
-                  <ul class="page-toolbar-actions"  *ngIf="showManage">
+                  <ul class="page-toolbar-actions" *ngIf="showManage">
                     <!--<li>
       <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
   </li>-->
@@ -90,11 +90,14 @@
                     <li class="refresh-btn" *ngIf="pageRefresh">
                       <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
                     </li>
+                    <li>
+                      <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary"><span class="text-hide-tab">Dice</span></button>
+                    </li>
                   </ul>
                     <!-- End of toolbar actions -->
                 </div>
                 <!-- Toolbar actions -->
-                <ul class="page-toolbar-actions web-view"  *ngIf="showManage">
+                <ul class="page-toolbar-actions web-view" *ngIf="showManage">
                   <!--<li>
       <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
   </li>-->
@@ -120,6 +123,9 @@
                   </li>
                   <li class="refresh-btn" *ngIf="pageRefresh">
                     <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
+                  </li>
+                  <li>
+                    <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary"><span class="text-hide-tab">Dice</span></button>
                   </li>
                 </ul>
                 <!-- End of toolbar actions -->
