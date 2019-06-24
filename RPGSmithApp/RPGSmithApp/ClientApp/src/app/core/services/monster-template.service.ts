@@ -39,9 +39,9 @@ export class MonsterTemplateService extends EndpointFactory {
   private readonly getMonsterTemplateCommands_api: string = this.configurations.baseUrl + "/api/MonsterTemplate/getCommands_sp";
   private readonly getMonsterTemplateAssociateRecords_sp_api: string = this.configurations.baseUrl + "/api/MonsterTemplate/SP_GetAssociateRecords";
   private readonly enableCombatTrackerUrl: string = this.configurations.baseUrl + "/api/MonsterTemplate/enableCombatTracker";
-  private readonly _createMonsterUrl: string = this.configurations.baseUrl +  "/api/MonsterTemplate/createMonster";
-  private readonly _updateMonsterUrl: string = this.configurations.baseUrl +  "/api/MonsterTemplate/updateMonster";
-
+  private readonly createMonsterUrl: string = this.configurations.baseUrl +  "/api/MonsterTemplate/createMonster";
+  private readonly updateMonsterUrl: string = this.configurations.baseUrl +  "/api/MonsterTemplate/updateMonster";
+  
 
   private readonly deployMonster_api = this.configurations.baseUrl + "/api/MonsterTemplate/DeployMonsterTemplate";
 

@@ -390,33 +390,33 @@ export class EditMonsterComponent implements OnInit {
   private duplicateMonster(modal: MonsterTemplate) {
         modal.ruleSetId = this._ruleSetId;
         this.isLoading = true;
-        this.monsterTemplateService.duplicateMonster<any>(modal)
-            .subscribe(
-                data => {
-                    this.isLoading = false;
-                    this.alertService.stopLoadingMessage();
-                  let message = "Monster has been duplicated successfully.";
-                    if (data !== "" && data !== null && data !== undefined) message = data;
-                    this.alertService.showMessage(message, "", MessageSeverity.success);
-                    this.close();
-                  this.sharedService.updateMonsterList(true);
-                    //this.sharedService.UpdateCharacterAbilityList(true);
-                    if (this.fromDetail)
-                        this.router.navigate(['/ruleset/monster-template', this._ruleSetId]);
+        //this.monsterTemplateService.duplicateMonster<any>(modal)
+        //    .subscribe(
+        //        data => {
+        //            this.isLoading = false;
+        //            this.alertService.stopLoadingMessage();
+        //          let message = "Monster has been duplicated successfully.";
+        //            if (data !== "" && data !== null && data !== undefined) message = data;
+        //            this.alertService.showMessage(message, "", MessageSeverity.success);
+        //            this.close();
+        //          this.sharedService.updateMonsterList(true);
+        //            //this.sharedService.UpdateCharacterAbilityList(true);
+        //            if (this.fromDetail)
+        //                this.router.navigate(['/ruleset/monster-template', this._ruleSetId]);
                     
-                },
-                error => {
-                    this.isLoading = false;
-                    this.alertService.stopLoadingMessage();
-                    let _message = "Unable to Duplicate ";
-                    let Errors = Utilities.ErrorDetail(_message, error);
-                    if (Errors.sessionExpire) {
-                        this.authService.logout(true);
-                    }
-                    else
-                        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        //        },
+        //        error => {
+        //            this.isLoading = false;
+        //            this.alertService.stopLoadingMessage();
+        //            let _message = "Unable to Duplicate ";
+        //            let Errors = Utilities.ErrorDetail(_message, error);
+        //            if (Errors.sessionExpire) {
+        //                this.authService.logout(true);
+        //            }
+        //            else
+        //                this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
 
-                });
+        //        });
     }
 
     //private enableAbility(characterAbilityId: number, isEnabled: boolean) {
