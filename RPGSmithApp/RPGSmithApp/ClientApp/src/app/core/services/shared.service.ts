@@ -28,6 +28,7 @@ export class SharedService {
   private buffAndEffectList = new Subject<any>();
   private Buff = new Subject<any>();
   private MonsterTemplate = new Subject<any>();
+  private Monster = new Subject<any>();
   
   
   updateManageOpen(accountSetting: any) {
@@ -270,6 +271,13 @@ export class SharedService {
 
   shouldUpdateMonsterTemplateList(): Observable<any> {
     return this.MonsterTemplate.asObservable();
+  }
+  updateMonsterList(data: any) {
+    this.Monster.next(data);
+  }
+
+  shouldUpdateMonsterList(): Observable<any> {
+    return this.Monster.asObservable();
   }
 }
 

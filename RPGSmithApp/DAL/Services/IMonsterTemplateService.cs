@@ -19,6 +19,7 @@ namespace DAL.Services
             );
         Task<bool> Delete(int id);
         MonsterTemplate GetById(int? id);
+        Monster GetMonsterById(int? id);
         int GetCountByRuleSetId(int ruleSetId);
         int Core_GetCountByRuleSetId(int ruleSetId, int parentID);
         Task<bool> CheckDuplicateMonsterTemplate(string value, int? ruleSetId, int? MonsterTemplateId = 0);
@@ -35,6 +36,8 @@ namespace DAL.Services
         List<MonsterTemplateItemMaster> insertAssociateItemMasters(List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM);
 void deployMonster(DeployMonsterTemplate model);
         List<Monster> SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1);
+        Task enableCombatTracker(int monsterId, bool enableCombatTracker);
+        Task<MonsterTemplate> Core_CreateMonsterTemplateUsingMonster(int monsterTemplateId, int rulesetID);
         // List<MonsterTemplate> GetByRuleSetId_add(int rulesetId);
 
     }

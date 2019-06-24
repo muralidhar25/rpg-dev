@@ -31,6 +31,8 @@ import { CreateMonsterTemplateComponent } from "./monster-template/create-monste
 import { AddItemMonsterComponent } from "./monster-template/Add-items-monster/add-item-monster.component";
 import { DeployMonsterComponent } from "./monster-template/deploy-monster/deploy-monster.component";
 import { MonsterTemplateDetailsComponent } from "./monster-template/monster-template-details/monster-template-details.component";
+import { MonsterComponent } from "./monster/monster.component";
+import { EditMonsterComponent } from "./monster/edit-monster/edit-monster.component";
 import { DropItemsMonsterComponent } from "./monster-template/drop-items-monster/drop-items-monster.component";
 import { CreateMonsterGroupComponent } from "./monster-template/moster-group/monster-group.component";
 
@@ -62,10 +64,8 @@ import { CreateMonsterGroupComponent } from "./monster-template/moster-group/mon
     MonsterTemplateComponent,
     CreateMonsterTemplateComponent,
     AddItemMonsterComponent,
-    DeployMonsterComponent,
-    MonsterTemplateDetailsComponent,
-    DropItemsMonsterComponent,
-    CreateMonsterGroupComponent
+    DeployMonsterComponent, MonsterTemplateDetailsComponent,
+    MonsterComponent, EditMonsterComponent
   ],
   imports: [
     SharedModule
@@ -97,10 +97,7 @@ import { CreateMonsterGroupComponent } from "./monster-template/moster-group/mon
     MonsterTemplateComponent,
     CreateMonsterTemplateComponent,
     AddItemMonsterComponent,
-    DeployMonsterComponent,
-    MonsterTemplateDetailsComponent,
-    DropItemsMonsterComponent,
-    CreateMonsterGroupComponent
+    DeployMonsterComponent, MonsterTemplateDetailsComponent, MonsterComponent, EditMonsterComponent
   ],
   entryComponents: [
     AddItemMasterComponent,
@@ -116,6 +113,7 @@ import { CreateMonsterGroupComponent } from "./monster-template/moster-group/mon
     DeleteAllLootItemsComponent,
     CreateMonsterTemplateComponent,
     AddItemMonsterComponent,
+    DeployMonsterComponent, EditMonsterComponent
     DeployMonsterComponent,
     MonsterTemplateDetailsComponent,
     DropItemsMonsterComponent,

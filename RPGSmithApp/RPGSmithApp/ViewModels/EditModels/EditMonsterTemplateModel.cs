@@ -56,4 +56,15 @@ namespace RPGSmithApp.ViewModels.EditModels
         public List<MonsterTemplateMonster> MonsterTemplateAssociateMonsterTemplateVM { get; set; }
         public List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM { get; set; }
     }
+    public class EditMonsterModel: EditMonsterTemplateModel
+    {
+
+        [Required]
+        public int MonsterId { get; set; }
+        public int MonsterHealthCurrent { get; set; }
+        public int MonsterHealthMax { get; set; }
+        public int MonsterArmorClass { get; set; }
+        public int MonsterXPValue { get; set; }
+        public int MonsterChallangeRating { get; set; }
+    }
 }

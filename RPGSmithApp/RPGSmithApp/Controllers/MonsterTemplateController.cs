@@ -59,7 +59,22 @@ namespace RPGSmithApp.Controllers
             return _monsterTemplate;
         }
 
-        
+        [HttpGet("GetMonsterById")]
+        public async Task<IActionResult> GetMonsterById(int id)
+        {
+            var monster = _monsterTemplateService.GetMonsterById(id);
+
+            if (monster == null) return null;
+
+            //var _monster = Mapper.Map<MonsterTemplateViewModel>(monsterTemplate);
+
+            
+
+
+            return Ok(monster);
+        }
+
+
         [HttpPost("create")]
         [ProducesResponseType(200, Type = typeof(string))]
         public async Task<IActionResult> Create([FromBody] CreateMonsterTemplateModel model)
@@ -178,6 +193,96 @@ namespace RPGSmithApp.Controllers
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
 
+        [HttpPost("updateMonster")]
+        public async Task<IActionResult> updateMonster([FromBody] EditMonsterModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                int rulesetID = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
+                if (_coreRulesetService.IsCopiedFromCoreRuleset(rulesetID))
+                {
+                    return await Core_UpdateMonster(model);
+                }
+                else
+                {
+                    return await UpdateMonsterTemplateCommon(model);
+                }
+            }
+            return BadRequest(Utilities.ModelStateError(ModelState));
+        }
+        private async Task<IActionResult> Core_UpdateMonster(EditMonsterModel model)
+        {
+            try
+            {
+                await CheckCoreRuleset(model);
+                return await Update_Monster_Common(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        private async Task<int> CheckCoreRuleset(EditMonsterModel model)
+        {
+            int MonsterTemplateId = model.MonsterTemplateId == null ? 0 : (int)model.MonsterTemplateId;
+            if (!_coreRulesetService.IsMonsterTemplateCopiedFromCoreRuleset(MonsterTemplateId, (int)model.RuleSetId))
+            {
+                int OldParentMonsterTemplateId = MonsterTemplateId;
+                int MonsterTemplateIdInserted =CreateMonsterForCopiedRuleset(model).Result.MonsterTemplateId;
+                model.MonsterTemplateId = MonsterTemplateIdInserted;
+                model.ParentMonsterTemplateId = MonsterTemplateIdInserted;
+                return await _coreRulesetService._updateParentIDForAllRelatedItems((int)model.RuleSetId, OldParentMonsterTemplateId, MonsterTemplateIdInserted, 'M');
+            }
+            return 0;
+        }
+        private async Task<MonsterTemplate> CreateMonsterForCopiedRuleset(EditMonsterModel model)
+        {
+            var result = await _coreRulesetService.CreateMonsterTemplateUsingMonster((int)model.MonsterTemplateId, (int)model.RuleSetId);
+            bool IsDeleted = false;
+            if (model.MonsterTemplateCommandVM != null && model.MonsterTemplateCommandVM.Count > 0)
+            {
+                foreach (var acViewModels in model.MonsterTemplateCommandVM)
+                {
+                    await _monsterTemplateCommandService.InsertMonsterTemplateCommand(new MonsterTemplateCommand()
+                    {
+                        Command = acViewModels.Command,
+                        Name = acViewModels.Name,
+                        MonsterTemplateId = result.MonsterTemplateId,
+                        //IsDeleted = IsDeleted == null ? false : Convert.ToBoolean(monsterTemplate.IsDeleted)
+                        IsDeleted = IsDeleted == null ? false : Convert.ToBoolean(false)
+                    });
+                }
+            }
+            if (model.MonsterTemplateAbilityVM != null && model.MonsterTemplateAbilityVM.Count > 0)
+            {
+                _monsterTemplateService.insertAssociateAbilities(model.MonsterTemplateAbilityVM);
+            }
+            if (model.MonsterTemplateSpellVM != null && model.MonsterTemplateSpellVM.Count > 0)
+            {
+                _monsterTemplateService.insertAssociateSpells(model.MonsterTemplateSpellVM);
+
+            }
+            if (model.MonsterTemplateBuffAndEffectVM != null && model.MonsterTemplateBuffAndEffectVM.Count > 0)
+            {
+                _monsterTemplateService.insertAssociateBuffAndEffects(model.MonsterTemplateBuffAndEffectVM);
+
+            }
+            if (model.MonsterTemplateAssociateMonsterTemplateVM != null && model.MonsterTemplateAssociateMonsterTemplateVM.Count > 0)
+            {
+                _monsterTemplateService.insertAssociateMonsterTemplates(model.MonsterTemplateAssociateMonsterTemplateVM);
+
+            }
+            if (model.MonsterTemplateItemMasterVM != null && model.MonsterTemplateItemMasterVM.Count > 0)
+            {
+                foreach (var item in model.MonsterTemplateItemMasterVM)
+                {
+                    item.MonsterTemplateId = result.MonsterTemplateId;
+                }
+                _monsterTemplateService.insertAssociateItemMasters(model.MonsterTemplateItemMasterVM);
+
+            }
+            return result;
+        }
         private async Task<IActionResult> UpdateMonsterTemplateCommon(EditMonsterTemplateModel model)
         {
             if (_monsterTemplateService.CheckDuplicateMonsterTemplate(model.Name.Trim(), model.RuleSetId, model.MonsterTemplateId).Result)
@@ -246,7 +351,46 @@ namespace RPGSmithApp.Controllers
             return Ok();
         }
 
-     
+
+        private async Task<IActionResult> Update_Monster_Common(EditMonsterModel model)
+        {
+            //var item = _monsterTemplateService.GetMonsterById(model.MonsterId);
+            //if (item == null) return BadRequest("Monster not found");
+
+            //item.Name = model.Name;
+            //item.ImageUrl = model.ImageUrl;
+            //item.Metatags = model.Metatags;
+            //item.HealthCurrent = model.MonsterHealthCurrent;
+            //item.HealthMax= model.MonsterHealthMax;
+            //item.ArmorClass = model.MonsterArmorClass;
+            //item.XPValue = model.MonsterXPValue;
+            //item.ChallangeRating = model.MonsterChallangeRating;
+
+
+            
+            //var result = await _monsterTemplateService.UpdateMonster(_item, model.ItemSpells, model.ItemAbilities, model.ItemBuffAndEffects);
+
+           
+
+            //if (model.ItemCommandVM != null)
+            //{
+            //    //remove all commands
+            //    await _itemCommandService.DeleteItemCommandByItemId(model.ItemId);
+            //    foreach (var command in model.ItemCommandVM)
+            //    {
+            //        await _itemCommandService.InsertItemCommand(new ItemCommand()
+            //        {
+            //            Command = command.Command,
+            //            Name = command.Name,
+            //            ItemId = model.ItemId
+            //        });
+            //    }
+            //}
+          
+
+            return Ok();
+        }
+
         [HttpPost("delete_up")]
         public async Task<IActionResult> Delete([FromBody] EditMonsterTemplateModel model)
         {
@@ -553,6 +697,21 @@ namespace RPGSmithApp.Controllers
             }
         }
 
+        
+
+             [HttpPost("enableCombatTracker")]
+        public async Task<IActionResult> enableCombatTracker(int monsterId, bool enableCombatTracker)
+        {
+            try
+            {
+               await _monsterTemplateService.enableCombatTracker(monsterId, enableCombatTracker);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         #region API Using SP
         [HttpGet("getByRuleSetId_sp")]
