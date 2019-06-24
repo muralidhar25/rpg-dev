@@ -74,15 +74,24 @@ export class CreateMonsterTemplateComponent implements OnInit {
         this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
 
         this.sharedService.getCommandData().subscribe(diceCommand => {
-            
           if (diceCommand.parentIndex === -1) {
             this.monsterTemplateFormModal.command = diceCommand.command;
-            } else {
-            if (this.monsterTemplateFormModal.monsterTemplateSpellVM.length > 0) {
-              this.monsterTemplateFormModal.monsterTemplateSpellVM.forEach(item => {
-                var index = this.monsterTemplateFormModal.monsterTemplateSpellVM.indexOf(item);
+          } else if (diceCommand.parentIndex === -2) {
+            this.monsterTemplateFormModal.health = diceCommand.command;
+          }else if (diceCommand.parentIndex === -3) {
+            this.monsterTemplateFormModal.armorClass = diceCommand.command;
+          }else if (diceCommand.parentIndex === -4) {
+            this.monsterTemplateFormModal.challangeRating = diceCommand.command;
+          }else if (diceCommand.parentIndex === -5) {
+            this.monsterTemplateFormModal.xPValue = diceCommand.command;
+          }else if (diceCommand.parentIndex === -6) {
+            this.monsterTemplateFormModal.initiativeCommand = diceCommand.command;
+          }else {
+            if (this.monsterTemplateFormModal.monsterTemplateCommandVM.length > 0) {
+              this.monsterTemplateFormModal.monsterTemplateCommandVM.forEach(item => {
+                var index = this.monsterTemplateFormModal.monsterTemplateCommandVM.indexOf(item);
                         if (index === diceCommand.parentIndex) {
-                          this.monsterTemplateFormModal.monsterTemplateSpellVM[index].command = diceCommand.command;
+                          this.monsterTemplateFormModal.monsterTemplateCommandVM[index].command = diceCommand.command;
                         }
                     });
                 }
@@ -138,7 +147,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
             this.isLoading = true;
             this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(this.monsterTemplateFormModal.monsterTemplateId, this._ruleSetId)
               .subscribe(data => {
- 
+                debugger;
                 this.monsterTemplateFormModal.monsterTemplateCommandVM = data.monsterTemplateCommands;
                 this.buffAndEffectsList = data.buffAndEffectsList;
                 this.selectedBuffAndEffects = data.selectedBuffAndEffects;
@@ -147,7 +156,9 @@ export class CreateMonsterTemplateComponent implements OnInit {
                 this.spellsList = data.spellList;
                 this.selectedSpells = data.selectedSpellList;
                 this.associateMonsterTemplateList = data.monsterTemplatesList;
+               
                 this.selectedAssociateMonsterTemplates = data.selectedMonsterTemplates;
+                console.log('selected monster list', this.selectedAssociateMonsterTemplates);
                 this.isLoading = false;
               }, error => { }, () => { this.isLoading = false; });
           }
@@ -167,15 +178,17 @@ export class CreateMonsterTemplateComponent implements OnInit {
         }
     }
 
-    addCommand(monsterTemplateCommand: any): void {
+  addCommand(monsterTemplateCommand: any): void {
+    debugger;
       let _monsterTemplateCommand = monsterTemplateCommand == undefined ? [] : monsterTemplateCommand;
       _monsterTemplateCommand.push({ monsterTemplateCommandId: 0, command: '', name: '' });
       this.monsterTemplateFormModal.monsterTemplateCommandVM = _monsterTemplateCommand;
+      //this.monsterTemplateFormModal.monsterTemplateCommandVM = _monsterTemplateCommand;
     }
 
     removeCommand(command: any): void {
         this.monsterTemplateFormModal.monsterTemplateCommandVM
-            .splice(this.monsterTemplateFormModal.monsterTemplateCommandVM.indexOf(command), 1);
+          .splice(this.monsterTemplateFormModal.monsterTemplateCommandVM.indexOf(command), 1);
     }
 
     //setEnableDisable(checked: boolean) {
@@ -541,7 +554,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
     return {
       primaryKey: "abilityId",
       labelKey: "name",
-      text: "Search Buff & Effect(s)",
+      text: "Search abiliti(es)",
       enableCheckAll: true,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',
@@ -557,7 +570,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
     return {
       primaryKey: "spellId",
       labelKey: "name",
-      text: "Search Buff & Effect(s)",
+      text: "Search spell(s)",
       enableCheckAll: true,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',
@@ -571,9 +584,9 @@ export class CreateMonsterTemplateComponent implements OnInit {
   }
   get associateMonsterTemplatesSettings() {
     return {
-      primaryKey: "associateMonsterTemplateId",
+      primaryKey: "monsterTemplateId",
       labelKey: "name",
-      text: "Search Buff & Effect(s)",
+      text: "Search Monster(s)",
       enableCheckAll: true,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',

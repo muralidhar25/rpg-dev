@@ -16,6 +16,9 @@ import { PlatformLocation } from "@angular/common";
 import { MonsterTemplate } from "../../../core/models/view-models/monster-template.model";
 import { MonsterTemplateService } from "../../../core/services/monster-template.service";
 import { CreateMonsterTemplateComponent } from "../create-monster-template/create-monster-template.component";
+import { DeployMonsterComponent } from "../deploy-monster/deploy-monster.component";
+import { DropItemsMonsterComponent } from "../drop-items-monster/drop-items-monster.component";
+import { CreateMonsterGroupComponent } from "../moster-group/monster-group.component";
 
 @Component({
   selector: 'app-monster-template-details',
@@ -33,6 +36,13 @@ export class MonsterTemplateDetailsComponent implements OnInit {
     ruleSetId: number;
   bsModalRef: BsModalRef;
   monsterTemplateDetail: any = new MonsterTemplate();
+  buffAndEffectsList = [];
+  selectedBuffAndEffects = [];
+  selectedAbilities = [];
+  selectedSpells = [];
+  selectedAssociateMonsterTemplates = [];
+  selectedItemMasters = [];
+  xpValue: any;
   IsGm: boolean = false;
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -71,16 +81,30 @@ export class MonsterTemplateDetailsComponent implements OnInit {
           }
           this.isLoading = true;
           this.monsterTemplateService.getMonsterTemplateById<any>(this.monsterTemplateId)
-              .subscribe(data => {
-  
+            .subscribe(data => {
                 if (data)
-                  this.monsterTemplateDetail = this.monsterTemplateService.MonsterTemplateModelData(data, "UPDATE");
+                this.monsterTemplateDetail = this.monsterTemplateService.MonsterTemplateModelData(data, "UPDATE");
+                this.xpValue = data.xpValue;
                 if (!this.monsterTemplateDetail.ruleset) {
                   this.monsterTemplateDetail.ruleset = data.ruleSet;
-                  }
 
+                  }
                 this.ruleSetId = this.monsterTemplateDetail.ruleSetId;
-                  
+
+                this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(this.monsterTemplateId, this.ruleSetId)
+                  .subscribe(data => {
+                    console.log('result', data);
+                    this.selectedBuffAndEffects = data.selectedBuffAndEffects;
+                    this.selectedAbilities = data.selectedAbilityList;
+                    this.selectedSpells = data.selectedSpellList;
+                    this.selectedItemMasters = data.selectedItemMasters;
+                   // this.associateMonsterTemplateList = data.monsterTemplatesList;
+                    this.selectedAssociateMonsterTemplates = data.selectedMonsterTemplates;
+
+                  }, error => {
+
+                  }, () => { });
+             
                 this.rulesetService.GetCopiedRulesetID(this.monsterTemplateDetail.ruleSetId, user.id).subscribe(data => {
                         let id: any = data
                         //this.ruleSetId = id;
@@ -93,7 +117,9 @@ export class MonsterTemplateDetailsComponent implements OnInit {
                             //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
                             this.authService.logout(true);
                         }
-                    }, () => { });
+                  }, () => { });
+
+               
                     
                 }, error => {
                     this.isLoading = false;
@@ -276,4 +302,58 @@ export class MonsterTemplateDetailsComponent implements OnInit {
             this.bsModalRef.content.ViewImageAlt = img.alt;
         }
     }
+
+  GoToCharAbility(RulesetAbilityId: number) {
+    this.router.navigate(['/ruleset/ability-details', RulesetAbilityId]);
+  }
+  GoToBuffEfects(buffAndEffectId : number) {
+    this.router.navigate(['/ruleset/buff-effect-details', buffAndEffectId]);
+  }
+
+  GoToCharSpell(RulesetSpellID: number) {
+    this.router.navigate(['/ruleset/spell-details', RulesetSpellID]);
+  }
+  GoToAssociateMonster(monsterTemplateId:number) {
+
+    this.router.navigate(['/ruleset/monster-template-details', monsterTemplateId]);
+  }
+  GoToItems(Itemid:number) {
+
+    this.router.navigate(['/ruleset/item-details', Itemid]);
+  }
+
+  deployMonster(monsterInfo) {
+    console.log(monsterInfo);
+    this.bsModalRef = this.modalService.show(DeployMonsterComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Quantity";
+    this.bsModalRef.content.monsterInfo = monsterInfo;
+
+  }
+  DropItem() {
+    console.log('Dropitem');
+    this.bsModalRef = this.modalService.show(DropItemsMonsterComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Drop Items';
+    this.bsModalRef.content.button = 'Drop';
+    this.bsModalRef.content.rulesetID = this.ruleSetId;
+  }
+
+  createMonsterGroup() {
+    this.bsModalRef = this.modalService.show(CreateMonsterGroupComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Create Monster Group';
+    this.bsModalRef.content.button = 'Create';
+    this.bsModalRef.content.rulesetID = this.ruleSetId;
+  }
+  
 }

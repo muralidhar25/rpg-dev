@@ -29,12 +29,16 @@ export class MonsterTemplateService extends EndpointFactory {
   private readonly _getByRulesetUrl_add: string = "/api/MonsterTemplate/getByRuleSetId_add";
   private readonly _uploadUrl: string = "/api/MonsterTemplate/upLoadMonsterTemplateImageBlob";
   private readonly _duplicateUrl: string = "/api/MonsterTemplate/duplicate";
+
+  
+
   //private readonly _enableAbilityUrl: string = "/api/MonsterTemplate/toggleEnableAbility";
 
   private readonly getByRuleSetId_sp: string = this.configurations.baseUrl + "/api/MonsterTemplate/getByRuleSetId_sp";
   private readonly getMonsterTemplateCommands_api: string = this.configurations.baseUrl + "/api/MonsterTemplate/getCommands_sp";
   private readonly getMonsterTemplateAssociateRecords_sp_api: string = this.configurations.baseUrl + "/api/MonsterTemplate/SP_GetAssociateRecords";
-  
+
+  private readonly deployMonster_api = this.configurations.baseUrl + "/api/MonsterTemplate/DeployMonsterTemplate";
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
@@ -107,12 +111,12 @@ export class MonsterTemplateService extends EndpointFactory {
       });
   }
 
-  getMonsterTemplateByRuleset_spWithPagination<T>(Id: number, page: number, pageSize: number): Observable<T> {
-    let endpointUrl = `${this.getByRuleSetId_sp}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}`;
+  getMonsterTemplateByRuleset_spWithPagination<T>(Id: number, page: number, pageSize: number, sortType: number): Observable<T> {
+    let endpointUrl = `${this.getByRuleSetId_sp}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}&sortType=${sortType}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.getMonsterTemplateByRuleset_spWithPagination(Id, page, pageSize));
+        return this.handleError(error, () => this.getMonsterTemplateByRuleset_spWithPagination(Id, page, pageSize,sortType));
       });
   }
 
@@ -182,6 +186,16 @@ export class MonsterTemplateService extends EndpointFactory {
       .catch(error => {
         return this.handleError(error, () => this.deleteMonsterTemplate_up(MonsterTemplate));
       });
+  }
+
+  deployMonster<T>(deployMonsterInfo): Observable<T>{
+    let endpointUrl = this.deployMonster_api;
+
+    return this.http.post<T>(endpointUrl, JSON.stringify(deployMonsterInfo), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deployMonster(deployMonsterInfo));
+      });
+
   }
   //enableAbility<T>(Id: number): Observable<T> {
   //  let endpointUrl = `${this.enableAbilityUrl}?id=${Id}`;

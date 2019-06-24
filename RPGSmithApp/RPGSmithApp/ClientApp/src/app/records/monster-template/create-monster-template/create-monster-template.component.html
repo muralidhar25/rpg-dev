@@ -21,7 +21,7 @@
             <div class="adjst-dice-position">
               <label>Health</label>
               <span class="input-group-btn">
-                <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,monsterTemplateFormModal.health)"></button>
+                <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-2,monsterTemplateFormModal.health)"></button>
               </span>
               <input name="health" type="text" class="form-control" placeholder="Value"
                      [(ngModel)]="monsterTemplateFormModal.health" #health="ngModel" (change)="getHealthResult($event)" />
@@ -35,7 +35,7 @@
             <div class="adjst-dice-position">
               <label>Armor Class</label>
               <span class="input-group-btn">
-                <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,monsterTemplateFormModal.armorClass)"></button>
+                <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-3,monsterTemplateFormModal.armorClass)"></button>
               </span>
               <input name="armorClass" type="text" class="form-control" placeholder="Value"
                      [(ngModel)]="monsterTemplateFormModal.armorClass" #armorClass="ngModel" (change)="getArmorClassResult($event)" />
@@ -49,7 +49,7 @@
             <div class="adjst-dice-position">
               <label>Challange Ratting</label>
               <span class="input-group-btn">
-                <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,monsterTemplateFormModal.challangeRating)"></button>
+                <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-4,monsterTemplateFormModal.challangeRating)"></button>
               </span>
               <input name="challangeRating" type="text" class="form-control" placeholder="Value"
                      [(ngModel)]="monsterTemplateFormModal.challangeRating" #challangeRating="ngModel" (change)="getChallangeRatingResult($event)" />
@@ -87,7 +87,7 @@
             <div class="adjst-dice-position">
               <label>XP Value</label>
               <span class="input-group-btn">
-                <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,monsterTemplateFormModal.xPValue)"></button>
+                <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-5,monsterTemplateFormModal.xPValue)"></button>
               </span>
               <input name="xPValue" type="text" class="form-control" placeholder="Value"
                      [(ngModel)]="monsterTemplateFormModal.xPValue" #xPValue="ngModel" (change)="getXPValueResult($event)" />
@@ -117,7 +117,7 @@
           <div class="form-group">
             <label for="newMonsterTemplateCommand">Initiative Modifier</label>
             <span class="input-group-btn command-dice">
-              <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, monsterTemplateFormModal.initiativeCommand)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+              <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-6, monsterTemplateFormModal.initiativeCommand)" class="btn icon icon-dice icon-rsi btn-simple-primary btn-modifier"></button>
             </span>
             <input type="text" id="newMonsterTemplateInitiativeCommand" name="newMonsterTemplateInitiativeCommand" class="form-control mr-1" placeholder="Value"
                    [(ngModel)]="monsterTemplateFormModal.initiativeCommand" #newMonsterTemplateInitiativeCommand="ngModel" />
@@ -261,7 +261,7 @@
         <div class="col-12 col-md-6">
           <div class="form-group">
             <label for="newItemSpells">Associated Spell</label>
-            <angular2-multiselect id="buffAndEffectsList" [data]="spellsList" [(ngModel)]="selectedSpells" name="newSpells" [settings]="spellsSettings">
+            <angular2-multiselect id="associateSpellList" [data]="spellsList" [(ngModel)]="selectedSpells" name="newSpells" [settings]="spellsSettings">
               <c-item id="spell">
                 <ng-template let-item="item">
                   <span class="associate-label-name">{{item.name}}</span>
@@ -275,7 +275,7 @@
         <div class="col-12 col-md-6">
           <div class="form-group">
             <label for="newItemSpells">Associated Monsters</label>
-            <angular2-multiselect id="buffAndEffectsList" [data]="associateMonsterTemplateList" [(ngModel)]="selectedAssociateMonsterTemplates" name="newMonsters" [settings]="associateMonsterTemplatesSettings">
+            <angular2-multiselect id="associateSpellList" [data]="associateMonsterTemplateList" [(ngModel)]="selectedAssociateMonsterTemplates" name="newMonsters" [settings]="associateMonsterTemplatesSettings">
               <c-item id="spell">
                 <ng-template let-item="item">
                   <span class="associate-label-name">{{item.name}}</span>
@@ -306,53 +306,34 @@
       <div class="form-separator"></div>
       <div class="form-row">
         <div class="col-12">
-          <!--<div class="form-group">
-    <label for="newItemSpells">Items</label>
-
-    <span class="custom-checkbox">
-              <input type="checkbox" name="randomization" id="randomization" #randomization="ngModel" [(ngModel)]="monsterTemplateFormModal.isRandomizationEngine" /> <span>Randomization Engine</span>
-            </span>
-
-    <angular2-multiselect id="buffAndEffectsList" [data]="abilitiesList" [(ngModel)]="selectedAbilities" name="newAbilities" [settings]="abilitiesSettings">
-      <c-item id="spell">
-        <ng-template let-item="item">
-          <span class="associate-label-name">{{item.name}}</span>
-          <img [src]="item.imageUrl" class="pull-right associate-img"
-               onerror="this.src = '../assets/images/DefaultImages/ability.png'" />
-        </ng-template>
-      </c-item>
-    </angular2-multiselect>
-  </div>-->
-          <div class="form-group form-group-unlabelled" (click)="SelectBuffAndEffects()">
-            <span class="input-group-btn">
-              Items
-              <!--<button type="button" title="Select Item" [disabled]="pauseBuffAndEffectAdd" data-toggle="tooltip" class="btn icon-Gen-Plus btn-simple-primary "
-          [ngClass]="{'disabled':pauseBuffAndEffectAdd}"></button>-->
-            </span>
-            <!---THIS TAG INPUT IS USED FOR CONTAINS ITEMS SELECTED FROM POPUP-->
-            <tag-input name="contains"
-                       (onRemove)="selectedBuffAndEffectsListChanged($event)"
-                       [(ngModel)]='SelectedItemsList'
-                       theme='dark'
-                       inputId="contains"
-                       inputClass="form-control metatags-field"
-                       class="form-control"
-                       [identifyBy]="'value'"
-                       [displayBy]="'text'"
-                       placeholder=""
-                       secondaryPlaceholder="Search Buffs & Effects"
-                       >
-
-            </tag-input>
-            <!--<angular2-multiselect id="multiBuffAndEffectsList" [data]="buffAndEffectsList" [(ngModel)]="selectedBuffAndEffectsList" name="multiBuffAndEffectsList" [settings]="multichoiceBuffEffectsSettings">
-        <c-item id="buffEffect">
-          <ng-template let-item="item">
-            <span class="associate-label-name">11111</span>
-
-          </ng-template>
-        </c-item>
-      </angular2-multiselect>-->
+          
+          <div class="form-group form-row item-checkbox">
+            <div class="col-md-6">
+              <label for="newItemSpells" class="random-checkbox-span">Items</label>
+            </div>
+            <div class="col-md-6">
+              <span class="custom-checkbox random-checkbox">
+                <input type="checkbox" name="randomization" id="randomization" #randomization="ngModel" [(ngModel)]="monsterTemplateFormModal.isRandomizationEngine" />
+                <span class="random-checkbox-span">Randomization Engine</span>
+              </span>
+            </div>
           </div>
+        <div class="form-group form-group-unlabelled" (click)="SelectBuffAndEffects()">
+    <!---THIS TAG INPUT IS USED FOR CONTAINS ITEMS SELECTED FROM POPUP-->
+          <tag-input name="contains"
+                     (onRemove)="selectedBuffAndEffectsListChanged($event)"
+                     [(ngModel)]='SelectedItemsList'
+                     theme='dark'
+                     inputId="contains"
+                     inputClass="form-control metatags-field"
+                     class="form-control"
+                     [identifyBy]="'value'"
+                     [displayBy]="'text'"
+                     placeholder="Search Items"
+                     secondaryPlaceholder="Search Buffs & Effects">
+
+          </tag-input>
+        </div>
         </div>
         
       </div>

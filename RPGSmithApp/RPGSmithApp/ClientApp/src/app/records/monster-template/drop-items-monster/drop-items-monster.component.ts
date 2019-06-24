@@ -17,11 +17,11 @@ import { AuthService } from '../../../core/auth/auth.service';
 
 
 @Component({
-    selector: 'app-add-item-monster',
-    templateUrl: './add-item-monster.component.html',
-    styleUrls: ['./add-item-monster.component.scss']
+    selector: 'app-drop-items-monster',
+    templateUrl: './drop-items-monster.component.html',
+    styleUrls: ['./drop-items-monster.component.scss']
 })
-export class AddItemMonsterComponent implements OnInit {
+export class DropItemsMonsterComponent implements OnInit {
 
   public event: EventEmitter<any> = new EventEmitter();
     isLoading = false;
@@ -49,23 +49,9 @@ export class AddItemMonsterComponent implements OnInit {
             this.title = this.bsModalRef.content.title;
             this._view = this.bsModalRef.content.button;
             let _itemVM = this.bsModalRef.content.itemVM;
-            this.characterItemModal = this.itemsService.itemModelData(_itemVM, this._view);
-           // this.characterId = this.characterItemModal.characterId;
+          this.characterItemModal = this.itemsService.itemModelData(_itemVM, this._view);
           this.rulesetId = this.bsModalRef.content.rulesetID;
-            //this.characterItems = this.bsModalRef.content.characterItems;
-          //let selectedItems: any[] = this.bsModalRef.content.SelectedItemsList;
-          //if (selectedItems) {
-          //  if (selectedItems.length) {
-          //    this.selectedItemsList = selectedItems;
-          //  }
-          //}
-          let SelectedBuffs: any[] = this.bsModalRef.content.SelectedItemsList;
-          if (SelectedBuffs) {
-            if (SelectedBuffs.length) {
-              this.selectedItemsList = SelectedBuffs;
-              console.log(this.selectedItemsList);
-            }
-          }
+          
             if (this.rulesetId == undefined)
                 this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 
@@ -119,22 +105,14 @@ export class AddItemMonsterComponent implements OnInit {
     }
 
   submitForm(itemMaster: any) {
-    console.log(this.selectedItemsList);
     this.isLoading = true;
-    this.event.emit(this.selectedItemsList);
+    console.log(this.selectedItemsList);
+    
     this.isLoading = false;
     this.close();
   }
 
-  quantityChanged(quantity, item) {
-    console.log(quantity, item.quantity);
-    
-       this.selectedItemsList.map(function (itm) {
-         if (itm.itemId == item.itemMasterId) {
-           itm.quantity = quantity;
-         }
-      });
-  }
+  
     //this.characterItemModal.multiItemMasterBundles = [];
     //    this.itemsList.map((item) => {
     //      if (item.selected) {

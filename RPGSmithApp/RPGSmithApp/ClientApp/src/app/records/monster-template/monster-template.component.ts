@@ -21,6 +21,7 @@ import { MonsterTemplate } from "../../core/models/view-models/monster-template.
 import { CreateMonsterTemplateComponent } from "./create-monster-template/create-monster-template.component";
 import { DeployMonsterComponent } from "./deploy-monster/deploy-monster.component";
 
+
 @Component({
   selector: 'app-monster-template',
   templateUrl: './monster-template.component.html',
@@ -31,13 +32,13 @@ export class MonsterTemplateComponent implements OnInit {
 
     rulesetModel: any;
     isLoading = false;
-  isListView: boolean = false;
-  isDenseView: boolean = false; 
+    isListView: boolean = false;
+    isDenseView: boolean = false; 
     showActions: boolean = true;
     actionText: string;
     bsModalRef: BsModalRef;
     ruleSetId: number;
-  monsterTemplateId: number;
+    monsterTemplateId: number;
     monsterTemplateList: any;
     pageLastView: any;
     isDropdownOpen: boolean = false;
@@ -47,8 +48,21 @@ export class MonsterTemplateComponent implements OnInit {
     timeoutHandler: any;
     pageSize: number = 28;
     offset = (this.page - 1) * this.pageSize;
-  backURL: string = '/rulesets';
-  IsGm: boolean = false;
+    backURL: string = '/rulesets';
+    IsGm: boolean = false;
+    Alphabetical: boolean = false;
+    ChallangeRating: boolean = false;
+    Health: boolean = false;
+      monsterFilter: any = {
+        type: 1,
+        name: 'Alphabetical',
+        icon: '',
+        viewableCount: 0
+      };
+  alphabetCount: number;
+  ChallangeRatingCount: number;
+  HealthCount: number;
+
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -84,6 +98,12 @@ export class MonsterTemplateComponent implements OnInit {
 
     private initialize() {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+      debugger;
+        let localStorageFilters = this.localStorage.getDataObject<number>('monsterFilters');
+        if (localStorageFilters  != null) {
+          this.monsterFilter = localStorageFilters;
+        }
+        console.log('106',this.monsterFilter);
         if (user == null)
             this.authService.logout();
         else {
@@ -91,12 +111,31 @@ export class MonsterTemplateComponent implements OnInit {
             this.IsGm = user.isGm;
             this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
           }
+
+          this.getFilters();
+
           this.isLoading = true;
-          this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+         
+          this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, this.monsterFilter.type)
               .subscribe(data => {
                //check for ruleset
                 if (data.RuleSet)
                   this.monsterTemplateList = Utilities.responseData(data.monsterTemplates, this.pageSize);
+                debugger;
+                if (this.monsterFilter.type == 1) {
+                  this.monsterFilter.viewableCount = this.monsterTemplateList.length;
+                  this.alphabetCount = this.monsterTemplateList.length;
+                }
+                if (this.monsterFilter.type == 2) {
+                  let result = this.monsterTemplateList.filter(s => s.challangeRating);
+                  this.ChallangeRatingCount = result.length;
+                }
+                if (this.monsterFilter.type == 3) {
+                  let result = this.monsterTemplateList.filter(s => s.health);
+                  this.HealthCount = result.length;
+                }
+
+                this.applyFilters(this.monsterFilter.type, true);
 
                 this.rulesetModel = data.RuleSet;
                   this.setHeaderValues(this.rulesetModel);
@@ -104,6 +143,7 @@ export class MonsterTemplateComponent implements OnInit {
                     try {
                       this.noRecordFound = !data.monsterTemplates.length;
                     } catch (err) { }
+                
                     this.isLoading = false;
                 }, error => {
                     this.isLoading = false;
@@ -151,7 +191,7 @@ export class MonsterTemplateComponent implements OnInit {
         ++this.page;
         this.scrollLoading = true;
       //this.isLoading = true;
-      this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+      this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, this.monsterFilter.type)
             .subscribe(data => {
 
               var _monsterTemplates = data.monsterTemplates;
@@ -162,7 +202,23 @@ export class MonsterTemplateComponent implements OnInit {
                 this.monsterTemplateList.push(_monsterTemplates[i]);
                 }
                 //this.isLoading = false;
-                this.scrollLoading = false;
+              this.scrollLoading = false;
+
+              if (this.monsterFilter.type == 1) {
+                this.alphabetCount = this.monsterTemplateList.length;
+              }
+
+              if (this.monsterFilter.type == 2) {
+                let result = this.monsterTemplateList.filter(s => s.challangeRating);
+                this.ChallangeRatingCount = result.length;
+              }
+
+              if (this.monsterFilter.type == 3) {
+                let result = this.monsterTemplateList.filter(s => s.health);
+                this.HealthCount = result.length;
+              }
+              this.applyFilters(this.monsterFilter.type, true);
+
             }, error => {
                 this.isLoading = false;
                 this.scrollLoading = false;
@@ -458,7 +514,130 @@ export class MonsterTemplateComponent implements OnInit {
     });
     this.bsModalRef.content.title = "Quantity";
     this.bsModalRef.content.monsterInfo = item;
+  }
 
+
+  applyFilters(present_filter, apply_same = false, IsCalledFromClickFunction = false) {
+
+    if (present_filter == 1) {
+      this.Alphabetical = true;
+      this.Health = false;
+      this.ChallangeRating = false;
+    }
+    if (present_filter == 2) {
+      this.ChallangeRating = true;
+      this.Alphabetical = false;
+      this.Health = false;
+    }
+    if (present_filter == 3) {
+      this.Health = true;
+      this.Alphabetical = false;
+      this.ChallangeRating = false;
+    }
+
+    this.monsterFilter.type = present_filter;
+    if (IsCalledFromClickFunction) {
+      this.isLoading = true;
+      this.page = 1
+      this.pageSize = 28;
+      this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, this.monsterFilter.type)
+        .subscribe(data => {
+
+          if (data.RuleSet)
+            this.monsterTemplateList = Utilities.responseData(data.monsterTemplates, this.pageSize);
+
+          this.rulesetModel = data.RuleSet;
+
+          this.setHeaderValues(this.rulesetModel);
+
+          this.monsterTemplateList.forEach(function (val) { val.showIcon = false; val.xPValue = val.xpValue });
+
+          try {
+            this.noRecordFound = !data.monsterTemplates.length;
+          } catch (err) { }
+          this.ImplementFilter();
+          this.isLoading = false;
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => { });
+
+    }
+  }
+
+  ImplementFilter() {
+
+    this.monsterFilter.viewableCount = this.monsterTemplateList.length;
+
+    switch (this.monsterFilter.type) {
+      case 1: // Alphabetical
+      default:
+        this.monsterFilter.viewableCount = this.monsterTemplateList.length;
+        this.monsterFilter.name = 'Alphabetical';
+        this.monsterFilter.icon = '';
+        break;
+      case 2: //challange Rating
+        this.monsterFilter.viewableCount = 0;
+        this.monsterTemplateList.map((item) => {
+          if (item.challangeRating) {
+            this.monsterFilter.viewableCount++;
+          }
+        })
+        this.monsterFilter.name = 'ChallangeRating';
+        this.monsterFilter.icon = '';
+        break;
+      case 2: //Health
+        this.monsterFilter.viewableCount = 0;
+        this.monsterTemplateList.map((item) => {
+          if (item.health) {
+            this.monsterFilter.viewableCount++;
+          }
+        })
+        this.monsterFilter.name = 'Health';
+        this.monsterFilter.icon = 'icon icon-Health';
+        break;
+    }
+    this.localStorage.saveSyncedSessionData(this.monsterFilter, 'monsterFilter');
 
   }
+
+
+  getFilters() {
+   
+    if (this.monsterFilter.type == 2 || this.monsterFilter.type == 3) {
+      this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize,1)
+        .subscribe(data => {
+          this.alphabetCount = data.monsterTemplates.length;
+         
+        }, error => {
+
+        }, () => { });
+    }
+    if (this.monsterFilter.type == 1 || this.monsterFilter.type == 3) {
+
+      this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, 2)
+        .subscribe(data => {
+          let result = data.monsterTemplates.filter(s => s.challangeRating);
+          this.ChallangeRatingCount = result.length;
+        }, error => {
+
+        }, () => { });
+
+    }
+    if (this.monsterFilter.type == 1 || this.monsterFilter.type == 2) {
+      this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, 3)
+        .subscribe(data => {
+          let result = data.monsterTemplates.filter(s => s.health);
+          this.HealthCount = result.length;
+        }, error => {
+
+        }, () => { });
+     
+    }
+  }
+
 }

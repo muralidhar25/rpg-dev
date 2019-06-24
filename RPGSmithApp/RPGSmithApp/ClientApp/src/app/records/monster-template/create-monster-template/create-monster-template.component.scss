@@ -196,8 +196,8 @@ tag-input {
   border-style: solid;
   border-color: #58514c transparent transparent #58514c;
   transform: rotate(-135deg);
-  left: 10px;
-  top: 9px;
+  left: -25px;
+  top: 2px;
 }
 @media screen and (min-width:768px) {
   .adjst-dice-position .input-group-btn {
@@ -207,4 +207,19 @@ tag-input {
   .adjst-dice-position label + .input-group-btn {
     top: 1.75rem;
   }
+}
+
+.random-checkbox {
+  float: right;
+}
+
+.random-checkbox-span {
+  position: relative;
+  top: 7px;
+  color: #be8917 !important;
+}
+
+
+.btn-modifier{
+  top: -10px !important;
 }

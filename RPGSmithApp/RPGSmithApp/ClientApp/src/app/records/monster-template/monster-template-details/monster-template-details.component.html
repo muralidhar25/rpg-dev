@@ -2,200 +2,300 @@
     <!-- Toolbar -->
     <div class="page-toolbar">
         <div class="container">
-            <div class="page-toolbar-wrapper">
-                <div class="page-toolbar-title">
-                    <!--<a (click)="RedirectBack()" class="icon icon-back"></a>-->
-                   
-                    <!--<h1>Back</h1>-->
-                    <a (click)="RedirectBack()" class="icon icon-back">
-                        <h1 class="d-inline-block"> Back</h1>
-                    </a>
-                </div>
-                <!--<div class="page-toolbar-wrapper-toggle-trigger">
-                    <button type="button" class="btn icon icon-with-text btn-accent btn-block" (click)="showActionButtons(showActions)"
-                            [ngClass]="{'icon-arrow-up' : showActions,  'icon-arrow-down' : !showActions}">
-                        {{actionText}}
-                    </button>
-                </div>-->
-                <div class="page-toolbar-wrapper initial show recordes-menu">
-                    <!-- Toolbar links -->
-                  <ul class="page-toolbar-links" *ngIf="!isLoading">
-                    <li *ngIf="monsterTemplateDetail?.ruleset" class="hidden-tab">
-                      <a *ngIf="!IsGm" [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
-                      <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
-                    </li>
-                    <li (click)="Redirect('/ruleset/item-master/')" class="hidden-tab" *ngIf="monsterTemplateDetail?.ruleset?.isItemEnabled">
-                      <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Item Templates</span></a>
-                    </li>
-                    <li *ngIf="monsterTemplateDetail?.ruleset?.isSpellEnabled" (click)="Redirect('/ruleset/spell/')" class="hidden-tab">
-                      <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
-                    </li>
-                    <li *ngIf="IsGm" class="hidden-tab">
-                      <a [routerLink]="['/ruleset/monster-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-MonsterTemp"> <span>Monster Templates</span></a>
-                    </li>
-                    <!--<li class="hidden-tab"  *ngIf="monsterTemplateDetail?.ruleset" >
-    <a [routerLink]="['/ruleset/character-stats/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
-  </li>-->
-                    <li class="visible-tab mt-0">
-                      <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
-                        <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
-                          <ul class="dropdown-menu-list" *ngIf="!isLoading">
-                            <li *ngIf="monsterTemplateDetail?.ruleset" class="dropdown-menu-item">
-                              <a *ngIf="!IsGm" [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
-                              <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
-                            </li>
-                            <li class="dropdown-menu-item" *ngIf="monsterTemplateDetail?.ruleset">
-                              <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection  icon-Gen-Items"> Inventory</a>
-                            </li>
-                            <li class="dropdown-menu-item" *ngIf="monsterTemplateDetail?.ruleset?.isSpellEnabled">
-                              <a [routerLink]="charNav?.spells" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
-                            </li>
-                            <li *ngIf="IsGm" class="dropdown-menu-item">
-                              <a [routerLink]="['/ruleset/monster-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-MonsterTemp"> <span>Monster Templates</span></a>
-                            </li>
+          <div class="page-toolbar-wrapper">
+            <div class="page-toolbar-title">
+              <!--<a (click)="RedirectBack()" class="icon icon-back"></a>-->
+              <!--<h1>Back</h1>-->
+              <a (click)="RedirectBack()" class="icon icon-back">
+                <h1 class="d-inline-block"> Back</h1>
+              </a>
+            </div>
+            <!--<div class="page-toolbar-wrapper-toggle-trigger">
+            <button type="button" class="btn icon icon-with-text btn-accent btn-block" (click)="showActionButtons(showActions)"
+                    [ngClass]="{'icon-arrow-up' : showActions,  'icon-arrow-down' : !showActions}">
+                {{actionText}}
+            </button>
+        </div>-->
+        
+              <div class="page-toolbar-wrapper initial show recordes-menu">
+                <!-- Toolbar links -->
+                <ul class="page-toolbar-links" *ngIf="!isLoading">
+                  <li *ngIf="monsterTemplateDetail?.ruleset" class="hidden-tab">
+                    <a *ngIf="!IsGm" [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                    <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                  </li>
+                  <li (click)="Redirect('/ruleset/item-master/')" class="hidden-tab" *ngIf="monsterTemplateDetail?.ruleset?.isItemEnabled">
+                    <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Item Templates</span></a>
+                  </li>
+                  <li *ngIf="monsterTemplateDetail?.ruleset?.isSpellEnabled" (click)="Redirect('/ruleset/spell/')" class="hidden-tab">
+                    <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+                  </li>
+                  <li *ngIf="IsGm" class="hidden-tab">
+                    <a [routerLink]="['/ruleset/monster-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-MonsterTemp"> <span>Monster Templates</span></a>
+                  </li>
+                  <!--<li class="hidden-tab"  *ngIf="monsterTemplateDetail?.ruleset" >
+          <a [routerLink]="['/ruleset/character-stats/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
+        </li>-->
+                  <li class="visible-tab mt-0">
+                    <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                      <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                        <ul class="dropdown-menu-list" *ngIf="!isLoading">
+                          <li *ngIf="monsterTemplateDetail?.ruleset" class="dropdown-menu-item">
+                            <a *ngIf="!IsGm" [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                            <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
+                          </li>
+                          <li class="dropdown-menu-item" *ngIf="monsterTemplateDetail?.ruleset">
+                            <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection  icon-Gen-Items"> Inventory</a>
+                          </li>
+                          <li class="dropdown-menu-item" *ngIf="monsterTemplateDetail?.ruleset?.isSpellEnabled">
+                            <a [routerLink]="charNav?.spells" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
+                          </li>
+                          <li *ngIf="IsGm" class="dropdown-menu-item">
+                            <a [routerLink]="['/ruleset/monster-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-MonsterTemp"> <span>Monster Templates</span></a>
+                          </li>
 
-                            <!--<li class="dropdown-menu-item" *ngIf="monsterTemplateDetail?.ruleset">
-                              <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> Character Stats</a>
-                            </li>-->
-                          </ul>
-                        </div>
+                          <!--<li class="dropdown-menu-item" *ngIf="monsterTemplateDetail?.ruleset">
+                  <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> Character Stats</a>
+                </li>-->
+                        </ul>
                       </div>
-                    </li>
-                  </ul>
-                    <!-- End of toolbar links -->
-                    <!-- Toolbar actions -->
-                    <ul class="page-toolbar-actions">
-                        <!--<li>
-                            <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles1</button>
-                        </li>-->
-                        <li>
-                            <!-- Manage item -->
-                            <div class="dropdown dropdown-buttons">
-                              <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show icon-Gen-Edit"> Manage Monster Template</button>
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
-                                    <ul class="dropdown-menu-list">
-                                        <li class="dropdown-menu-item">
-                                            <button type="button" (click)="monsterTemplateDetail(monsterTemplateDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
-                                        </li>
-                                        <li class="dropdown-menu-item">
-                                            <button type="button" (click)="duplicateMonsterTemplate(monsterTemplateDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
-                                        </li>
-                                        <li class="dropdown-menu-item">
-                                            <button type="button" (click)="deleteMonsterTemplate(monsterTemplateDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- Manage item -->
-                        </li>
-                    </ul>
-                    <!-- End of toolbar actions -->
-                </div>
-                <!-- Toolbar actions --> 
-                <ul class="page-toolbar-actions web-view">
-                    <!--<li>
-                        <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
-                    </li>-->
-                    <li>
-                        <!-- Manage item -->
-                        <div class="dropdown dropdown-buttons">
-                          <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> Manage Monster Template</button>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
-                                <ul class="dropdown-menu-list">
-                                    <li class="dropdown-menu-item">
-                                        <button type="button" (click)="monsterTemplateDetail(monsterTemplateDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
-                                    </li>
-                                    <li class="dropdown-menu-item">
-                                        <button type="button" (click)="duplicateMonsterTemplate(monsterTemplateDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
-                                    </li>
-                                    <li class="dropdown-menu-item">
-                                        <button type="button" (click)="deleteMonsterTemplate(monsterTemplateDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- Manage item -->
-                    </li>
+                    </div>
+                  </li>
+                </ul>
+                <!-- End of toolbar links -->
+                <!-- Toolbar actions -->
+                <ul class="page-toolbar-actions">
+                  <!--<li>
+            <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles1</button>
+        </li>-->
+                  <li>
+                    <!-- Manage item -->
+                    <div class="dropdown dropdown-buttons">
+                      <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show icon-Gen-Edit"> Manage Monster Template</button>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
+                        <ul class="dropdown-menu-list">
+                          <li class="dropdown-menu-item">
+                            <button type="button" (click)="editMonsterTemplate(monsterTemplateDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
+                          </li>
+                          <li class="dropdown-menu-item">
+                            <button type="button" (click)="duplicateMonsterTemplate(monsterTemplateDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
+                          </li>
+                          <li class="dropdown-menu-item">
+                            <button type="button" (click)="deleteMonsterTemplate(monsterTemplateDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <!-- Manage item -->
+                  </li>
                 </ul>
                 <!-- End of toolbar actions -->
+              </div>
+              <!-- Toolbar actions -->
+              <ul class="page-toolbar-actions web-view">
+                <!--<li>
+          <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
+      </li>-->
+                <li>
+                  <!-- Manage item -->
+                  <div class="dropdown dropdown-buttons">
+                    <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> Manage Monster Template</button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
+                      <ul class="dropdown-menu-list">
+                        <li class="dropdown-menu-item">
+                          <button type="button" (click)="editMonsterTemplate(monsterTemplateDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
+                        </li>
+                        <li class="dropdown-menu-item">
+                          <button type="button" (click)="duplicateMonsterTemplate(monsterTemplateDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
+                        </li>
+                        <li class="dropdown-menu-item">
+                          <button type="button" (click)="deleteMonsterTemplate(monsterTemplateDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <!-- Manage item -->
+                </li>
+              </ul>
+              <!-- End of toolbar actions -->
             </div>
-        </div>
+          </div>
     </div>
     <!-- End of toolbar -->
     <!-- Item info -->
     <div class="item-info" *ngIf="!isLoading">
         <div class="container">
-            <div class="item-info-wrapper">
-                <div class="item-info-top-section">
-                    <div class="row">
-                        <div class="col">
-                            <div class="item-info-banner">
-                                <div class="item-info-image">
-                                    <img class="card-img-top" [src]="monsterTemplateDetail?.imageUrl" [alt]="monsterTemplateDetail?.name"
-                                         onerror="this.src='../assets/images/DefaultImages/Item.jpg';" #imgref (click)="ViewImage(imgref)"/>
-                                </div>
-                                <h2 class="item-info-name">
-                                    {{monsterTemplateDetail?.name}}
-                                </h2>
-                                <div class="item-info-props-indics">
-                                    <ul class="item-info-props">
-                                        <li *ngIf="monsterTemplateDetail?.level" popover="{{monsterTemplateDetail?.level}} Level" triggers="hover" popoverTitle="LEVEL">{{monsterTemplateDetail?.level}} Level</li>
-                                    </ul>
-                                    <ul class="item-info-indics">
-                                        <li *ngIf="monsterTemplateDetail.isEnabled">
-                                            <i class="icon icon-ico icon-Rec-Enabled"></i>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <ul class="item-info-actions d-none d-md-flex">
-                                <li>
-                                    <button type="button" (click)="monsterTemplateDetail(monsterTemplateDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
-                                </li>
-                                <li>
-                                    <button type="button" (click)="deleteMonsterTemplate(monsterTemplateDetail)" class="btn icon  icon-with-text icon-trash btn-accent"> Delete</button>
-                                </li>
-                                <li>
-                                    <button type="button" (click)="duplicateMonsterTemplate(monsterTemplateDetail)" class="btn  icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
-                                </li>
-                            </ul>
-                        </div>
+          <div class="item-info-wrapper">
+            <div class="item-info-top-section">
+              <div class="row">
+                <div class="col">
+                  <div class="item-info-banner">
+                    <div class="item-info-image">
+                      <img class="card-img-top" [src]="monsterTemplateDetail?.imageUrl" [alt]="monsterTemplateDetail?.name"
+                           onerror="this.src='../assets/images/DefaultImages/Item.jpg';" #imgref (click)="ViewImage(imgref)" />
                     </div>
+                    <h2 class="item-info-name">
+                      {{monsterTemplateDetail?.name}}
+                    </h2>
+                    <div class="item-info-props-indics">
+                      <ul class="item-info-props">
+                        <li *ngIf="monsterTemplateDetail?.level" popover="{{monsterTemplateDetail?.level}} Level" triggers="hover" popoverTitle="LEVEL">{{monsterTemplateDetail?.level}} Level</li>
+                        <li *ngIf="monsterTemplateDetail.challangeRating" popover="CR: {{monsterTemplateDetail?.challangeRating}} Level" triggers="hover" popoverTitle="challangeRating">Cr: {{monsterTemplateDetail?.challangeRating}}</li>
+                        <li *ngIf="monsterTemplateDetail.armorClass" popover="AC: {{monsterTemplateDetail?.armorClass}}" triggers="hover" popoverTitle="ArmorClass">AC : {{monsterTemplateDetail?.armorClass}}</li>
+                        <li *ngIf="monsterTemplateDetail?.health" popover="{{monsterTemplateDetail?.health}}" triggers="hover" popoverTitle="Health">H : {{monsterTemplateDetail?.health}}</li>
+                      </ul>
+                    
+                      <ul class="item-info-indics">
+                        <li *ngIf="monsterTemplateDetail.isEnabled">
+                          <i class="icon icon-ico icon-Rec-Enabled"></i>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <ul class="item-info-actions d-none d-md-flex">
+                    <li>
+                      <button type="button" (click)="deployMonster(monsterTemplateDetail)" class="btn icon icon-with-text icon-Rec-Add btn-accent"> Deploy</button>
+                    </li>
+                    <li>
+                      <button type="button" (click)="DropItem()" class="btn icon  icon-with-text icon-trash btn-accent"> Drop</button>
+                    </li>
+                    <li>
+                      <button type="button" (click)="createMonsterGroup()" class="btn  icon icon-with-text icon-copy icon-rsi btn-accent"> Group</button>
+                    </li>
+                  </ul>
                 </div>
-                <div class="item-info-bottom-section">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="item-info-desc">
-                                <h3>Description</h3>
-                                <p [froalaView]="monsterTemplateDetail?.description"></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <div class="item-info-stats">
-                                <h3>Stats</h3>
-                                <p [froalaView]="monsterTemplateDetail?.stats"></p>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="item-info-stats">
-                                <h3>Command</h3>
-                                <p>{{monsterTemplateDetail?.command}}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <div class="item-info-tags">
-                                <h3>Tags</h3>
-                                <p>{{monsterTemplateDetail?.metatags}}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              </div>
             </div>
+            <div class="item-info-bottom-section">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="item-info-desc">
+                    <h3>Description</h3>
+                    <p [froalaView]="monsterTemplateDetail?.description"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 col-md-6">
+                  <div class="item-info-stats">
+                    <h3>Stats</h3>
+                    <p [froalaView]="monsterTemplateDetail?.stats"></p>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="item-info-stats">
+                    <h3>Command</h3>
+                    <p>{{monsterTemplateDetail?.command}}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 col-md-6">
+                  <div class="item-info-tags">
+                    <h3>Tags</h3>
+                    <p>{{monsterTemplateDetail?.metatags}}</p>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="item-info-tags">
+                    <h3>XP Value</h3>
+                    <p>{{xpValue}}</p>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="item-info-tags">
+                    <h3>Initiative Command</h3>
+                    <p>{{monsterTemplateDetail?.initiativeCommand}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="item-info-bottom-section">
+              <div class="row">
+                <div class="col-12 col-md-6">
+                  <div class="item-info-abils">
+                    <h3>Items</h3>
+                    <div class="form-group output-list output-list-wrap">
+                      <ul class="output-list-items" *ngIf="selectedItemMasters">
+                        <li class="output-list-item" *ngFor="let Item of selectedItemMasters">
+                          <div (click)="GoToItems(Item?.abilityId)" style="cursor:pointer;" popover="{{Item?.name}}" triggers="hover">
+                            <img class="card-img-top" [src]="Item?.imageUrl" [alt]="Item?.name"
+                                 onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                            <span>{{Item?.name}}</span>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="item-info-abils">
+                    <h3>Associated Monsters</h3>
+                    <div class="form-group output-list output-list-wrap">
+                      <ul class="output-list-items" *ngIf="selectedAssociateMonsterTemplates">
+                        <li class="output-list-item" *ngFor="let AssociateMonster of selectedAssociateMonsterTemplates">
+                          <div (click)="GoToAssociateMonster(AssociateMonster?.monsterTemplateId)" style="cursor:pointer;" popover="{{AssociateMonster?.name}}" triggers="hover">
+                            <img class="card-img-top" [src]="AssociateMonster?.imageUrl" [alt]="AssociateMonster?.name"
+                                 onerror="this.src='../assets/images/DefaultImages/Item.png';" />
+                            <span>{{AssociateMonster?.name}}</span>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="item-info-abils">
+                    <h3>Abilities</h3>
+                    <div class="form-group output-list output-list-wrap">
+                      <ul class="output-list-items" *ngIf="selectedAbilities">
+                        <li class="output-list-item" *ngFor="let ability of selectedAbilities">
+                          <div (click)="GoToCharAbility(ability?.abilityId)" style="cursor:pointer;" popover="{{ability?.name}}" triggers="hover">
+                            <img class="card-img-top" [src]="ability?.imageUrl" [alt]="ability?.name"
+                                 onerror="this.src='../assets/images/DefaultImages/ability.png';" />
+                            <span>{{ability?.name}}</span>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="item-info-spells">
+                    <h3>Buffs and Effects</h3>
+                    <div class="form-group output-list output-list-wrap">
+                      <ul class="output-list-items" *ngIf="selectedBuffAndEffects">
+                        <li class="output-list-item" *ngFor="let  BuffAndEffects of selectedBuffAndEffects">
+                          <div (click)="GoToBuffEfects(BuffAndEffects.buffAndEffectId)" style="cursor:pointer;" popover="{{BuffAndEffects?.name}}" triggers="hover">
+                            <img class="card-img-top" [src]="BuffAndEffects.imageUrl" [alt]="BuffAndEffects?.name"
+                                 onerror="this.src='../assets/images/BnE/Def_BnE.png';" />
+                            <span>{{BuffAndEffects?.name}}</span>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="item-info-spells">
+                    <h3>Spells</h3>
+                    <div class="form-group output-list output-list-wrap">
+                      <ul class="output-list-items" *ngIf="selectedSpells">
+                        <li class="output-list-item" *ngFor="let spell of selectedSpells">
+                          <div (click)="GoToCharSpell(spell.spellId)" style="cursor:pointer;" popover="{{spell?.name}}" triggers="hover">
+                            <img class="card-img-top" [src]="spell?.imageUrl" [alt]="spell?.spell?.name"
+                                 onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
+                            <span>{{spell?.name}}</span>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
     </div>
     <!-- End of item info -->

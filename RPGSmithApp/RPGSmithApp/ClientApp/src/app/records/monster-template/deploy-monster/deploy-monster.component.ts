@@ -11,6 +11,9 @@ import { AlertService, MessageSeverity } from '../../../core/common/alert.servic
 import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
 
 import { PlatformLocation } from '@angular/common';
+import { MonsterTemplateService } from '../../../core/services/monster-template.service';
+import { Utilities } from '../../../core/common/utilities';
+import { DiceService } from '../../../core/services/dice.service';
 
 @Component({
   selector: 'app-deploy-monster',
@@ -27,10 +30,13 @@ export class DeployMonsterComponent implements OnInit {
   monsterImage: any;
   title: string;
   monsterInfo: any;
+  addToCombat: boolean = false;
+
 
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
     private colorService: ColorService, private localStorage: LocalStoreManager, private counterTileService: CounterTileService,
-    private alertService: AlertService, private authService: AuthService, private location: PlatformLocation) {
+    private alertService: AlertService, private authService: AuthService, private location: PlatformLocation,
+    private monsterTemplateService: MonsterTemplateService) {
     location.onPopState(() => this.modalService.hide(1));
   }
 
@@ -40,6 +46,8 @@ export class DeployMonsterComponent implements OnInit {
       this.monsterInfo = this.bsModalRef.content.monsterInfo;
       this.monsterImage = this.monsterInfo.imageUrl;
       this.value = 1;
+
+      console.log('monsterInfo', this.monsterInfo);
     }, 0);
   }
 
@@ -58,69 +66,42 @@ export class DeployMonsterComponent implements OnInit {
     } catch (err) { }
   }
 
+  changeCheckbox(event) {
+    console.log(event);
+    this.addToCombat = event.target.checked;
+  }
+
   saveCounter() {
-    console.log(this.value);
-    //debugger
-    //let validForm = true;
-    //if (this.tileModel.characterId == 0 || this.tileModel.characterId == undefined) {
-    //  if (this.isSharedLayout) {
-    //    this.alertService.showMessage("", "Disallowed, only the GM can update this counter.", MessageSeverity.error);
-    //  }
-    //  else {
-    //    this.alertService.showMessage("", "Character is not selected.", MessageSeverity.error);
-    //  }
-    //  validForm = false;
-    //}
-    //else if (this.tileModel.tileTypeId == 0 || this.tileModel.tileTypeId == undefined) {
-    //  this.alertService.showMessage("", "Character tile is not selected.", MessageSeverity.error);
-    //  validForm = false;
-    //}
-    //else if ((this.counterFormModel.minimum === undefined && this.counterFormModel.maximum !== undefined)
-    //  || (this.counterFormModel.minimum === null && this.counterFormModel.maximum !== null)) {
-    //  this.alertService.showMessage("", "The minimum value can not be empty if maximum value is provided.", MessageSeverity.error);
-    //  validForm = false;
-    //}
-    //else if ((this.counterFormModel.minimum !== undefined && this.counterFormModel.maximum === undefined)
-    //  || (this.counterFormModel.minimum !== null && this.counterFormModel.maximum === null)) {
-    //  this.alertService.showMessage("", "The maximum value can not be empty if minimum value is provided.", MessageSeverity.error);
-    //  validForm = false;
-    //}
-    //else if ((this.counterFormModel.minimum && this.counterFormModel.maximum)
-    //  || (this.counterFormModel.minimum === 0 || this.counterFormModel.maximum === 0)) {
+    let health = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.health ? this.monsterInfo.health: '0' , [])
+    let armorClass = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.armorClass ? this.monsterInfo.armorClass :'0', [])
+    let xpValue = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.xpValue ? this.monsterInfo.xpValue : '0' , [])
+    let challangeRating = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.challangeRating ? this.monsterInfo.challangeRating: '0', [])
+    let deployMonsterInfo = {
+      qty: this.value,
+      monsterTemplateId: this.monsterInfo.monsterTemplateId,
+      rulesetId: this.monsterInfo.ruleSetId,
+      healthCurrent: health,
+      healthMax: health,
+      armorClass: armorClass ,
+      xpValue: xpValue,
+      challangeRating: challangeRating,
+      addToCombat: this.addToCombat,
+    }
+    
+    this.monsterTemplateService.deployMonster<any>(deployMonsterInfo)
+      .subscribe(data => {
+        console.log(data);
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          this.authService.logout(true);
+        }
+      }, () => { });
 
-    //  if (this.counterFormModel.minimum > this.counterFormModel.maximum) {
-    //    this.alertService.showMessage("", "The minimum value could not be greater than the maximum value.", MessageSeverity.error);
-    //    validForm = false;
-    //  }
-    //  else if (this.counterFormModel.defaultValue !== undefined) {
-    //    if (this.counterFormModel.minimum > this.counterFormModel.defaultValue
-    //      || this.counterFormModel.maximum < this.counterFormModel.defaultValue
-    //    ) {
-    //      this.alertService.showMessage("", "The Default Value would need to be a value that is no less than the minimum and no greater than the maximum.", MessageSeverity.error);
-    //      validForm = false;
-    //    }
-    //  }
-    //  if (this.counterFormModel.currentValue !== undefined) {
-    //    if (this.counterFormModel.minimum > this.counterFormModel.currentValue
-    //      || this.counterFormModel.maximum < this.counterFormModel.currentValue
-    //    ) {
-    //      if (validForm)
-    //        this.alertService.showMessage("", "The Current Value would need to be a value that is no less than the minimum and no greater than the maximum.", MessageSeverity.error);
-    //      validForm = false;
-    //    }
-    //  }
-    //}
 
-    //if (validForm) {
-
-    //  this.tileModel.counterTile = this.counterFormModel;
-
-    //  this.isLoading = true;
-    //  let _msg = "Updating Counter Tile...";
-
-    //  this.alertService.startLoadingMessage("", _msg);
-    //  this.addEditCounterTile(this.tileModel);
-    //}
+    
   }
 
 
@@ -139,19 +120,13 @@ export class DeployMonsterComponent implements OnInit {
     }
   }
 
-  resetValue() {
-    this.value = 1;
-  }
+  
 
   changeCurrentValue(event: any) {
     let value = +event.target.value;
   }
 
-//  setCurrentValue(value: number) {
-//    //setTimeout(() => {
-//    this.counterFormModel.currentValue = value;
-//    //}, 0);
-//  }
+
   mouseDown(type) {
     let time = new Date();
     time.setMilliseconds(time.getMilliseconds() + 600); //600 miliseconds delay to start the numbering
