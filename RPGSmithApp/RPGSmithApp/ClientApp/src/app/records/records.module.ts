@@ -64,8 +64,12 @@ import { CreateMonsterGroupComponent } from "./monster-template/moster-group/mon
     MonsterTemplateComponent,
     CreateMonsterTemplateComponent,
     AddItemMonsterComponent,
-    DeployMonsterComponent, MonsterTemplateDetailsComponent,
-    MonsterComponent, EditMonsterComponent
+    DeployMonsterComponent,
+    MonsterTemplateDetailsComponent,
+    MonsterComponent,
+    EditMonsterComponent,
+    DropItemsMonsterComponent,
+    CreateMonsterGroupComponent
   ],
   imports: [
     SharedModule
@@ -97,7 +101,12 @@ import { CreateMonsterGroupComponent } from "./monster-template/moster-group/mon
     MonsterTemplateComponent,
     CreateMonsterTemplateComponent,
     AddItemMonsterComponent,
-    DeployMonsterComponent, MonsterTemplateDetailsComponent, MonsterComponent, EditMonsterComponent
+    DeployMonsterComponent,
+    MonsterTemplateDetailsComponent,
+    MonsterComponent,
+    EditMonsterComponent,
+    DropItemsMonsterComponent,
+    CreateMonsterGroupComponent
   ],
   entryComponents: [
     AddItemMasterComponent,
@@ -113,8 +122,8 @@ import { CreateMonsterGroupComponent } from "./monster-template/moster-group/mon
     DeleteAllLootItemsComponent,
     CreateMonsterTemplateComponent,
     AddItemMonsterComponent,
-    DeployMonsterComponent, EditMonsterComponent
     DeployMonsterComponent,
+    EditMonsterComponent,   
     MonsterTemplateDetailsComponent,
     DropItemsMonsterComponent,
     CreateMonsterGroupComponent
