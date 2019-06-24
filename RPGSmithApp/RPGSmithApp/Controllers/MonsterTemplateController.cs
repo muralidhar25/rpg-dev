@@ -73,7 +73,12 @@ namespace RPGSmithApp.Controllers
 
             return Ok(monster);
         }
-
+        [HttpGet("GetMonsterItemsToDrop")]
+        public async Task<IActionResult> GetMonsterItemsToDrop(int monsterId)
+        {
+            List<ItemMasterForMonsterTemplate> MonsterItemsToDrop = _monsterTemplateService.getMonsterItemsToDrop(monsterId);
+            return Ok(MonsterItemsToDrop);
+        }
 
         [HttpPost("create")]
         [ProducesResponseType(200, Type = typeof(string))]

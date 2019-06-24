@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace RPGSmithApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190624060521_monster_associateItem")]
+    partial class monster_associateItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1981,11 +1983,7 @@ namespace RPGSmithApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("IsDeleted");
-
                     b.Property<int>("ItemMasterId");
-
-                    b.Property<int>("MonsterId");
 
                     b.Property<decimal>("Quantity")
                         .HasColumnType("decimal(18, 3)");
@@ -1993,8 +1991,6 @@ namespace RPGSmithApp.Migrations
                     b.HasKey("ItemId");
 
                     b.HasIndex("ItemMasterId");
-
-                    b.HasIndex("MonsterId");
 
                     b.ToTable("ItemMasterMonsterItems");
                 });
@@ -4173,11 +4169,6 @@ namespace RPGSmithApp.Migrations
                     b.HasOne("DAL.Models.ItemMaster", "ItemMaster")
                         .WithMany()
                         .HasForeignKey("ItemMasterId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("DAL.Models.Monster", "Monster")
-                        .WithMany()
-                        .HasForeignKey("MonsterId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

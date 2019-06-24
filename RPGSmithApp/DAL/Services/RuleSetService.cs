@@ -684,7 +684,8 @@ namespace DAL.Services
                 res.LayoutCount = Convert.ToInt32(dt.Rows[0]["LayoutCount"]);
                 res.LootCount = Convert.ToInt32(dt.Rows[0]["LootCount"]);
                 res.BuffAndEffectCount = Convert.ToInt32(dt.Rows[0]["BuffAndEffectCount"]);
-
+                res.MonsterCount = Convert.ToInt32(dt.Rows[0]["MonsterCount"]);
+                res.MonsterTemplateCount = Convert.ToInt32(dt.Rows[0]["MonsterTemplateCount"]);
             }
             return res;
         }

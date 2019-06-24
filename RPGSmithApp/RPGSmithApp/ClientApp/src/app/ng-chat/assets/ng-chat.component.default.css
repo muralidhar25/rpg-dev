@@ -422,3 +422,8 @@
     right:0px !important
   }
 }
+.ng-chat-send-icon {
+  font-size: 20px;
+  -webkit-transform: rotate(43deg);
+  transform: rotate(43deg);
+}
