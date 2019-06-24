@@ -150,18 +150,18 @@ export class MonsterTemplateService extends EndpointFactory {
       });
   }
 
-  createMonsterTemplate<T>(MonsterTemplate: MonsterTemplate): Observable<T> {
+  createMonsterTemplate<T>(MonsterTemplate: MonsterTemplate, isCreatingFromMonsterScreen: boolean, armorClass: number, health: number, challangeRating: number, xpValue: number): Observable<T> {
 
-    let endpointUrl = this.createUrl;
+    let endpointUrl = `${this.createUrl}?isCreatingFromMonsterScreen=${isCreatingFromMonsterScreen}&armorClass=${armorClass}&health=${health}&challangeRating=${challangeRating}&xpValue=${xpValue}`; 
 
     if (MonsterTemplate.monsterTemplateId == 0 || MonsterTemplate.monsterTemplateId === undefined)
-      endpointUrl = this.createUrl;
+      endpointUrl = `${this.createUrl}?isCreatingFromMonsterScreen=${isCreatingFromMonsterScreen}&armorClass=${armorClass}&health=${health}&challangeRating=${challangeRating}&xpValue=${xpValue}`; 
     else
       endpointUrl = this.updateUrl;
 
     return this.http.post(endpointUrl, JSON.stringify(MonsterTemplate), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {
-        return this.handleError(error, () => this.createMonsterTemplate(MonsterTemplate));
+        return this.handleError(error, () => this.createMonsterTemplate(MonsterTemplate, isCreatingFromMonsterScreen, armorClass, health, challangeRating, xpValue));
       });
   }
   createMonster<T>(MonsterTemplate: MonsterTemplate): Observable<T> {
@@ -179,13 +179,13 @@ export class MonsterTemplateService extends EndpointFactory {
       });
   }
 
-  duplicateMonsterTemplate<T>(MonsterTemplate: MonsterTemplate): Observable<T> {
+  duplicateMonsterTemplate<T>(MonsterTemplate: MonsterTemplate, isCreatingFromMonsterScreen: boolean, armorClass: number, health: number, challangeRating: number, xpValue: number): Observable<T> {
     //ability.abilityId = 0;
-    let endpointUrl = this.duplicateUrl;
+    let endpointUrl = `${this.duplicateUrl}?isCreatingFromMonsterScreen=${isCreatingFromMonsterScreen}&armorClass=${armorClass}&health=${health}&challangeRating=${challangeRating}&xpValue=${xpValue}`; 
 
     return this.http.post(endpointUrl, JSON.stringify(MonsterTemplate), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {
-        return this.handleError(error, () => this.duplicateMonsterTemplate(MonsterTemplate));
+        return this.handleError(error, () => this.duplicateMonsterTemplate(MonsterTemplate, isCreatingFromMonsterScreen, armorClass, health, challangeRating, xpValue));
       });
   }
 
@@ -301,6 +301,10 @@ export class MonsterTemplateService extends EndpointFactory {
         monsterTemplateSpellVM: monsterTemplateVM.monsterTemplateSpellVM == undefined ? [] : monsterTemplateVM.monsterTemplateSpellVM,
         monsterTemplateAssociateMonsterTemplates: monsterTemplateVM.monsterTemplateAssociateMonsterTemplates == null ? [] : monsterTemplateVM.monsterTemplateAssociateMonsterTemplates,
         monsterTemplateAssociateMonsterTemplateVM: monsterTemplateVM.monsterTemplateAssociateMonsterTemplateVM == undefined ? [] : monsterTemplateVM.monsterTemplateAssociateMonsterTemplateVM,
+        
+        monsterTemplateItemMasters: monsterTemplateVM.monsterTemplateItemMasters == null ? [] : monsterTemplateVM.monsterTemplateItemMasters,
+        monsterTemplateItemMasterVM: monsterTemplateVM.monsterTemplateItemMasterVM == undefined ? [] : monsterTemplateVM.monsterTemplateItemMasterVM,
+
       }
     }
     else {
@@ -334,7 +338,10 @@ export class MonsterTemplateService extends EndpointFactory {
         monsterTemplateSpells: [],
         monsterTemplateSpellVM: [],
         monsterTemplateAssociateMonsterTemplates: [],
-        monsterTemplateAssociateMonsterTemplateVM: []
+        monsterTemplateAssociateMonsterTemplateVM: [],
+        monsterTemplateItemMasters: [],
+        monsterTemplateItemMasterVM: [],
+
       }
     }
 

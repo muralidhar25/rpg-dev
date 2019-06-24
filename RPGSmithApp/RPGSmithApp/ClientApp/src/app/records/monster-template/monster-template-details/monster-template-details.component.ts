@@ -51,7 +51,10 @@ export class MonsterTemplateDetailsComponent implements OnInit {
       private monsterTemplateService:MonsterTemplateService, private rulesetService: RulesetService,
       private location: PlatformLocation) {
       location.onPopState(() => this.modalService.hide(1));
-      this.route.params.subscribe(params => { this.monsterTemplateId = params['id']; });
+      this.route.params.subscribe(params => {
+        this.monsterTemplateId = params['id'];
+        this.initialize();
+      });
       this.sharedService.shouldUpdateMonsterTemplateList().subscribe(sharedServiceJson => {
             if (sharedServiceJson) this.initialize();
         });
@@ -67,7 +70,7 @@ export class MonsterTemplateDetailsComponent implements OnInit {
   //}
 
     ngOnInit() {
-        this.initialize();
+        //this.initialize();
         this.showActionButtons(this.showActions);
     }
     
@@ -93,7 +96,7 @@ export class MonsterTemplateDetailsComponent implements OnInit {
 
                 this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(this.monsterTemplateId, this.ruleSetId)
                   .subscribe(data => {
-                    console.log('result', data);
+                    debugger
                     this.selectedBuffAndEffects = data.selectedBuffAndEffects;
                     this.selectedAbilities = data.selectedAbilityList;
                     this.selectedSpells = data.selectedSpellList;

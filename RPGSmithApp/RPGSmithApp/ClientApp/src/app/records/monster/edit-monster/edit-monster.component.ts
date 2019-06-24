@@ -338,8 +338,8 @@ export class EditMonsterComponent implements OnInit {
 
   private addEditMonster(modal: MonsterTemplate) {
         modal.ruleSetId = this._ruleSetId;
-        this.isLoading = true;
-        this.monsterTemplateService.createMonsterTemplate<any>(modal)
+    this.isLoading = true;
+    this.monsterTemplateService.createMonsterTemplate<any>(modal, false,0,0,0,0)
             .subscribe(
                 data => {
                     this.isLoading = false;

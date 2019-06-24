@@ -42,11 +42,11 @@
         </li>
         <li>
           <a class="btn icon icon-MonsterTemp btn-accent" (click)="monsterTemplates()">MONSTER TEMPLATES</a>
-          <span class="dropdown-menu-item-count pull-right ng-star-inserted" >0</span>
+          <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.monsterTemplateCount !== undefined">{{rulesetRecordCount.monsterTemplateCount}}</span>
         </li>
         <li>
           <a class="btn icon icon-Monster btn-accent" (click)="monsters()">MONSTERS </a>
-          <span class="dropdown-menu-item-count pull-right ng-star-inserted" >0</span>
+          <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.monsterCount !== undefined">{{rulesetRecordCount.monsterCount}}</span>
         </li>
         <li>
           <a class="btn icon  icon-Gen-CharStat btn-accent" (click)="characterStats(rulesetModel)">CHARACTER STATS</a>

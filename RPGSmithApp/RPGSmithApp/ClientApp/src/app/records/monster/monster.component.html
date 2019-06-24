@@ -60,9 +60,24 @@
                       </div>
                     </li>
                     <li>
-                      <div class="dropdown dropdown-buttons">
-                        <button type="button" (click)="createMonster()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block"> <span>Create Monster</span></button>
+                      <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                        <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle is-show">
+                          <span class="text-hide-tab  is-show">New Monster</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                          <ul class="dropdown-menu-list">
+                            <li class="dropdown-menu-item">
+                              <button type="button" (click)="addMonster()" class="btn btn-accent icon-Gen-Edit"> Add Monster</button>
+                            </li>
+                            <li class="dropdown-menu-item">
+                              <button type="button" (click)="createMonster()" class="btn btn-accent icon-Gen-Edit"> Create Monster</button>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
+                      <!--<div class="dropdown dropdown-buttons">
+    <button type="button" (click)="createMonster()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block"> <span>Create Monster</span></button>
+  </div>-->
                     </li>                  
                   </ul>
                     <!-- End of toolbar links -->
@@ -87,9 +102,24 @@
                     </div>
                   </li>
                   <li>
-                    <div class="dropdown dropdown-buttons">
-                      <button type="button" (click)="createMonster()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block"><span class="text-hide-tab  is-show">Create Monster</span></button>
+                    <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                      <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle is-show">
+                        <span class="text-hide-tab  is-show">New Monster</span>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                        <ul class="dropdown-menu-list">
+                          <li class="dropdown-menu-item">
+                            <button type="button" (click)="addMonster()" class="btn btn-accent icon-Gen-Edit"> Add Monster</button>
+                          </li>
+                          <li class="dropdown-menu-item">
+                            <button type="button" (click)="createMonster()" class="btn btn-accent icon-Gen-Edit"> Create Monster</button>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
+                    <!--<div class="dropdown dropdown-buttons">
+    <button type="button" (click)="createMonster()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block"><span class="text-hide-tab  is-show">Create Monster</span></button>
+  </div>-->
                   </li>
                   <li>
                     <button type="button" *ngIf="IsGm && !isLoading" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>

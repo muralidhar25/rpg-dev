@@ -12,7 +12,7 @@ export class MonsterTemplate {
     monsterHealthMax?: number,
     monsterArmorClass?: number,
     monsterChallangeRating?: number,
-    monsterXPValue?: number,
+    monsterXPValue?: number, monsterTemplateItemMasterVM?: any[]
     //monsterImage?: string,
     //monsterName?: string,
     //monsterMetatags?: string,
@@ -40,6 +40,7 @@ export class MonsterTemplate {
     this.monsterTemplateAbilityVM = monsterTemplateAbilityVM;
     this.monsterTemplateSpellVM = monsterTemplateSpellVM;
     this.monsterTemplateAssociateMonsterTemplateVM = monsterTemplateAssociateMonsterTemplateVM;
+    this.monsterTemplateItemMasterVM = monsterTemplateItemMasterVM;
     this.monsterHealthCurrent = monsterHealthCurrent;
     this.monsterHealthMax = monsterHealthMax;
     this.monsterArmorClass = monsterArmorClass;
@@ -72,10 +73,12 @@ export class MonsterTemplate {
   public monsterTemplateAbilityVM: any[];
   public monsterTemplateSpellVM: any[];
   public monsterTemplateAssociateMonsterTemplateVM: any[];
+  public monsterTemplateItemMasterVM: any[];  
   public monsterTemplateBuffAndEffects: any[];
   public monsterTemplateAbilities: any[];
   public monsterTemplateSpells: any[];
   public monsterTemplateAssociateMonsterTemplates: any[];
+  public monsterTemplateItemMasters: any[];
   public monsterHealthCurrent: number;
   public monsterHealthMax: number;
   public monsterArmorClass: number;
