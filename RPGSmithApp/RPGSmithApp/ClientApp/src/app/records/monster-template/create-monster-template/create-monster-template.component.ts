@@ -56,7 +56,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
   associateMonsterTemplateList = [];
   selectedAssociateMonsterTemplates = [];
   SelectedItemsList = [];
- 
+  isCreatingFromMonsterScreen: boolean = false;
 
     options(placeholder?: string): Object {
         return Utilities.optionsFloala(160, placeholder);
@@ -101,7 +101,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
     ngOnInit() {
         setTimeout(() => {
-            
+          this.isCreatingFromMonsterScreen=this.bsModalRef.content.isCreatingFromMonsterScreen
             this.fromDetail = this.bsModalRef.content.fromDetail == undefined ? false : this.bsModalRef.content.fromDetail;
             this.title = this.bsModalRef.content.title;
             let _view = this.button = this.bsModalRef.content.button;
@@ -158,7 +158,10 @@ export class CreateMonsterTemplateComponent implements OnInit {
                 this.associateMonsterTemplateList = data.monsterTemplatesList;
                
                 this.selectedAssociateMonsterTemplates = data.selectedMonsterTemplates;
-                console.log('selected monster list', this.selectedAssociateMonsterTemplates);
+
+                this.SelectedItemsList = data.selectedItemMasters.map((x) => {
+                  return { text: x.name, itemId: x.itemMasterId, image: x.imageUrl, quantity: x.qty }
+                });
                 this.isLoading = false;
               }, error => { }, () => { this.isLoading = false; });
           }
@@ -235,7 +238,10 @@ export class CreateMonsterTemplateComponent implements OnInit {
       return { spellId: x.spellId, monsterTemplateId: monsterTemplate.monsterTemplateId };
     });
     monsterTemplate.monsterTemplateAssociateMonsterTemplateVM = this.selectedAssociateMonsterTemplates.map(x => {
-      return { associateMonsterTemplateId: x.associateMonsterTemplateId, monsterTemplateId: monsterTemplate.monsterTemplateId };
+      return { associateMonsterTemplateId: x.monsterTemplateId, monsterTemplateId: monsterTemplate.monsterTemplateId };
+    });
+    monsterTemplate.monsterTemplateItemMasterVM = this.SelectedItemsList.map(x => {
+      return { itemMasterId: x.itemId, qty: x.quantity, monsterTemplateId: monsterTemplate.monsterTemplateId };
     });
 
 
@@ -350,15 +356,26 @@ export class CreateMonsterTemplateComponent implements OnInit {
     }
 
   private addEditMonsterTemplate(modal: MonsterTemplate) {
+    debugger
         modal.ruleSetId = this._ruleSetId;
-        this.isLoading = true;
-        this.monsterTemplateService.createMonsterTemplate<any>(modal)
+    this.isLoading = true;
+    let armorClass: number = 0;
+    let health: number = 0;
+    let challangeRating: number = 0;
+    let xpValue: number = 0;
+    if (this.isCreatingFromMonsterScreen) {
+      armorClass = modal.armorClass ? DiceService.rollDiceExternally(this.alertService, modal.armorClass, []) : 0;
+      health = modal.health ? DiceService.rollDiceExternally(this.alertService, modal.health, []) : 0;
+      challangeRating = modal.challangeRating ? DiceService.rollDiceExternally(this.alertService, modal.challangeRating, []) : 0;
+      xpValue = modal.xPValue ? DiceService.rollDiceExternally(this.alertService, modal.xPValue, []) : 0;
+    }
+    this.monsterTemplateService.createMonsterTemplate<any>(modal, this.isCreatingFromMonsterScreen, armorClass, health, challangeRating, xpValue)
             .subscribe(
                 data => {
                     this.isLoading = false;
                     this.alertService.stopLoadingMessage();
                   let message = modal.monsterTemplateId == 0 || modal.monsterTemplateId === undefined ? "Monster Template has been created successfully." : "Monster Template has been updated successfully.";
-                    if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
+                    //if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
                     this.alertService.showMessage(message, "", MessageSeverity.success);
                     this.close();
                     
@@ -402,8 +419,18 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
   private duplicateMonsterTemplate(modal: MonsterTemplate) {
         modal.ruleSetId = this._ruleSetId;
-        this.isLoading = true;
-        this.monsterTemplateService.duplicateMonsterTemplate<any>(modal)
+    this.isLoading = true;
+    let armorClass: number = 0;
+    let health: number = 0;
+    let challangeRating: number = 0;
+    let xpValue: number = 0;
+    if (this.isCreatingFromMonsterScreen) {
+      armorClass = modal.armorClass ? DiceService.rollDiceExternally(this.alertService, modal.armorClass, []) : 0;
+      health = modal.health ? DiceService.rollDiceExternally(this.alertService, modal.health, []) : 0;
+      challangeRating = modal.challangeRating ? DiceService.rollDiceExternally(this.alertService, modal.challangeRating, []) : 0;
+      xpValue = modal.xPValue ? DiceService.rollDiceExternally(this.alertService, modal.xPValue, []) : 0;
+    }
+    this.monsterTemplateService.duplicateMonsterTemplate<any>(modal, this.isCreatingFromMonsterScreen, armorClass, health, challangeRating, xpValue)
             .subscribe(
                 data => {
                     this.isLoading = false;

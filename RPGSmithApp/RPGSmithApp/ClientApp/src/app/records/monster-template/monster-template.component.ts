@@ -639,5 +639,6 @@ export class MonsterTemplateComponent implements OnInit {
      
     }
   }
+  createMonsterGroup() { }
 
 }

@@ -116,8 +116,8 @@
         <div class="col-12 col-md-6">
           <div class="form-group">
             <label for="newMonsterTemplateCommand">Initiative Modifier</label>
-            <span class="input-group-btn command-dice">
-              <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-6, monsterTemplateFormModal.initiativeCommand)" class="btn icon icon-dice icon-rsi btn-simple-primary btn-modifier"></button>
+            <span class="input-group-btn">
+              <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-6, monsterTemplateFormModal.initiativeCommand)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
             </span>
             <input type="text" id="newMonsterTemplateInitiativeCommand" name="newMonsterTemplateInitiativeCommand" class="form-control mr-1" placeholder="Value"
                    [(ngModel)]="monsterTemplateFormModal.initiativeCommand" #newMonsterTemplateInitiativeCommand="ngModel" />
@@ -275,7 +275,7 @@
         <div class="col-12 col-md-6">
           <div class="form-group">
             <label for="newItemSpells">Associated Monsters</label>
-            <angular2-multiselect id="associateSpellList" [data]="associateMonsterTemplateList" [(ngModel)]="selectedAssociateMonsterTemplates" name="newMonsters" [settings]="associateMonsterTemplatesSettings">
+            <angular2-multiselect id="associateMonsterTemplateList" [data]="associateMonsterTemplateList" [(ngModel)]="selectedAssociateMonsterTemplates" name="newMonsters" [settings]="associateMonsterTemplatesSettings">
               <c-item id="spell">
                 <ng-template let-item="item">
                   <span class="associate-label-name">{{item.name}}</span>
@@ -343,7 +343,12 @@
 
     <div class="modal-footer">
       <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
-      <button type="submit" [disabled]="isLoading" class="btn btn-accent">{{button}}</button>
+      <button type="submit" [disabled]="isLoading 
+              || (monsterTemplateFormModal.health && !isValidSingleNumberCommand(monsterTemplateFormModal.health))
+              || (monsterTemplateFormModal.armorClass && !isValidSingleNumberCommand(monsterTemplateFormModal.armorClass))
+              || (monsterTemplateFormModal.challangeRating && !isValidSingleNumberCommand(monsterTemplateFormModal.challangeRating))
+              || (monsterTemplateFormModal.xPValue && !isValidSingleNumberCommand(monsterTemplateFormModal.xPValue))
+              " class="btn btn-accent">{{button}}</button>
     </div>
 
 </form>

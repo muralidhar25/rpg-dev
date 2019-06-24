@@ -82,7 +82,9 @@ namespace RPGSmithApp.Controllers
 
         [HttpPost("create")]
         [ProducesResponseType(200, Type = typeof(string))]
-        public async Task<IActionResult> Create([FromBody] CreateMonsterTemplateModel model)
+        public async Task<IActionResult> Create([FromBody] CreateMonsterTemplateModel model,bool isCreatingFromMonsterScreen,
+            int armorClass, int health, int challangeRating, int xpValue
+            )
         {
             if (ModelState.IsValid)
             {
@@ -172,7 +174,21 @@ namespace RPGSmithApp.Controllers
                     _monsterTemplateService.insertAssociateItemMasters(model.MonsterTemplateItemMasterVM);
                    
                 }
-
+                if (isCreatingFromMonsterScreen)
+                {
+                    DeployMonsterTemplate deploy = new DeployMonsterTemplate() {
+                        addToCombat=true,
+                        armorClass=armorClass,
+                        challangeRating=challangeRating,
+                        healthCurrent=health,
+                        healthMax=health,
+                        monsterTemplateId= result.MonsterTemplateId,
+                        rulesetId= result.RuleSetId,
+                        qty=1,
+                        xpValue=xpValue
+                    };
+                    _monsterTemplateService.deployMonster(deploy);
+                }
                 return Ok(result);
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
@@ -197,7 +213,13 @@ namespace RPGSmithApp.Controllers
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
-
+        [HttpPost("dropMonsterItems")]
+        public async Task<IActionResult> dropMonsterItems(List<ItemMasterForMonsterTemplate> list)
+        {
+            
+            await _monsterTemplateService.DropItemsToLoot(list);
+            return Ok();
+        }
         [HttpPost("updateMonster")]
         public async Task<IActionResult> updateMonster([FromBody] EditMonsterModel model)
         {
@@ -484,7 +506,8 @@ namespace RPGSmithApp.Controllers
 
         [AllowAnonymous]
         [HttpPost("duplicate")]
-        public async Task<IActionResult> Duplicate([FromBody] CreateMonsterTemplateModel model)
+        public async Task<IActionResult> Duplicate([FromBody] CreateMonsterTemplateModel model, bool isCreatingFromMonsterScreen,
+            int armorClass, int health, int challangeRating, int xpValue)
         {
             if (ModelState.IsValid)
             {
@@ -577,7 +600,22 @@ namespace RPGSmithApp.Controllers
 
                 }
 
-
+                if (isCreatingFromMonsterScreen)
+                {
+                    DeployMonsterTemplate deploy = new DeployMonsterTemplate()
+                    {
+                        addToCombat = true,
+                        armorClass = armorClass,
+                        challangeRating = challangeRating,
+                        healthCurrent = health,
+                        healthMax = health,
+                        monsterTemplateId = result.MonsterTemplateId,
+                        rulesetId = result.RuleSetId,
+                        qty = 1,
+                        xpValue = xpValue
+                    };
+                    _monsterTemplateService.deployMonster(deploy);
+                }
                 return Ok();
             }
 

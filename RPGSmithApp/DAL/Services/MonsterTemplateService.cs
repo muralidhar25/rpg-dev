@@ -18,11 +18,13 @@ namespace DAL.Services
         private readonly IRepository<MonsterTemplate> _repo;
         protected readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
-        public MonsterTemplateService(ApplicationDbContext context, IRepository<MonsterTemplate> repo, IConfiguration configuration)
+        private readonly IItemMasterService _itemMasterService;
+        public MonsterTemplateService(ApplicationDbContext context, IRepository<MonsterTemplate> repo, IConfiguration configuration, IItemMasterService itemMasterService)
         {
             _repo = repo;
             _context = context;
             this._configuration = configuration;
+            this._itemMasterService = itemMasterService;
         }
 
         public async Task<MonsterTemplate> Create(MonsterTemplate item)
@@ -1054,6 +1056,21 @@ namespace DAL.Services
                 Qty = (int)x.Quantity,
                 RuleSetId = x.ItemMaster.RuleSetId
             } ).ToList();
+        }
+        public async Task DropItemsToLoot(List<ItemMasterForMonsterTemplate> list)
+        {
+            foreach (var item in list)
+            {
+                ItemMaster obj = _context.ItemMasters.Where(x => x.ItemMasterId == item.ItemMasterId).FirstOrDefault();
+                if (obj != null)
+                {
+                    _itemMasterService.CreateItemMasterLoot(obj, new ItemMasterLoot()
+                    {
+                        IsShow = true,
+                        Quantity = item.Qty
+                    });
+                }
+            }
         }
     }
 }

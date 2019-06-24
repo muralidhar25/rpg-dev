@@ -125,8 +125,8 @@
         <div class="col-12 col-md-6">
           <div class="form-group">
             <label for="newMonsterTemplateCommand">Initiative Modifier</label>
-            <span class="input-group-btn command-dice">
-              <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-2, monsterFormModal.initiativeCommand)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+            <span class="input-group-btn">
+              <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-1, monsterFormModal.initiativeCommand)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
             </span>
             <input type="text" id="newMonsterTemplateInitiativeCommand" name="newMonsterTemplateInitiativeCommand" class="form-control mr-1" placeholder="Value"
                    [(ngModel)]="monsterFormModal.initiativeCommand" #newMonsterTemplateInitiativeCommand="ngModel" />

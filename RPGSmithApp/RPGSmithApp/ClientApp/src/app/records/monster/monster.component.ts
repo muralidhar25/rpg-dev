@@ -19,6 +19,7 @@ import { Characters } from "../../core/models/view-models/characters.model";
 import { MonsterTemplateService } from "../../core/services/monster-template.service";
 import { MonsterTemplate } from "../../core/models/view-models/monster-template.model";
 import { EditMonsterComponent } from "./edit-monster/edit-monster.component";
+import { CreateMonsterTemplateComponent } from "../monster-template/create-monster-template/create-monster-template.component";
 
 @Component({
   selector: 'app-monster',
@@ -245,28 +246,30 @@ export class MonsterComponent implements OnInit {
     //    });
     //}
 
-  //createMonster() {
-  //     // this.alertService.startLoadingMessage("", "Checking records");      
-  //      this.monsterTemplateService.getMonsterTemplateCount(this.ruleSetId)
-  //          .subscribe(data => {
-  //              //this.alertService.stopLoadingMessage();
-  //              if (data<2000) {
-  //                this.bsModalRef = this.modalService.show(CreateMonsterTemplateComponent, {
-  //                      class: 'modal-primary modal-custom',
-  //                      ignoreBackdropClick: true,
-  //                      keyboard: false
-  //                  });
-  //                this.bsModalRef.content.title = 'Create New Monster Template';
-  //                  this.bsModalRef.content.button = 'CREATE';
-  //                  this.bsModalRef.content.ruleSetId = this.ruleSetId;
-  //                this.bsModalRef.content.monsterTemplateVM = { ruleSetId: this.ruleSetId };
-  //              }
-  //              else {
-  //                  //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
-  //                  this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);                                        
-  //              }
-  //          }, error => { }, () => { });        
-  //  }
+  createMonster() {
+       // this.alertService.startLoadingMessage("", "Checking records");      
+        this.monsterTemplateService.getMonsterTemplateCount(this.ruleSetId)
+            .subscribe(data => {
+                //this.alertService.stopLoadingMessage();
+                if (data<2000) {
+                  this.bsModalRef = this.modalService.show(CreateMonsterTemplateComponent, {
+                        class: 'modal-primary modal-custom',
+                        ignoreBackdropClick: true,
+                        keyboard: false
+                    });
+                  this.bsModalRef.content.title = 'Create New Monster';
+                    this.bsModalRef.content.button = 'CREATE';
+                    this.bsModalRef.content.ruleSetId = this.ruleSetId;
+                  this.bsModalRef.content.monsterTemplateVM = { ruleSetId: this.ruleSetId };
+                  this.bsModalRef.content.isCreatingFromMonsterScreen = true;
+
+                }
+                else {
+                    //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
+                    this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);                                        
+                }
+            }, error => { }, () => { });        
+    }
 
   editMonster(monster: any) {
       this.bsModalRef = this.modalService.show(EditMonsterComponent, {
@@ -449,4 +452,6 @@ export class MonsterComponent implements OnInit {
     this.bsModalRef.content.recordType = 'ruleset'
     this.bsModalRef.content.isFromCampaignDetail = true;
   }
+  
+  addMonster() { }
 }

@@ -219,7 +219,7 @@
                     <div class="form-group output-list output-list-wrap">
                       <ul class="output-list-items" *ngIf="selectedItemMasters">
                         <li class="output-list-item" *ngFor="let Item of selectedItemMasters">
-                          <div (click)="GoToItems(Item?.abilityId)" style="cursor:pointer;" popover="{{Item?.name}}" triggers="hover">
+                          <div (click)="GoToItems(Item?.itemMasterId)" style="cursor:pointer;" popover="{{Item?.name}}" triggers="hover">
                             <img class="card-img-top" [src]="Item?.imageUrl" [alt]="Item?.name"
                                  onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
                             <span>{{Item?.name}}</span>
