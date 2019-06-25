@@ -232,7 +232,7 @@ namespace RPGSmithApp.Controllers
                 }
                 else
                 {
-                    return await UpdateMonsterTemplateCommon(model);
+                    return await Update_Monster_Common(model);
                 }
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
@@ -364,13 +364,7 @@ namespace RPGSmithApp.Controllers
             }
             else
             {
-                if (becIds.Count > 0)
-                {
-                    foreach (var id in becIds)
-                    {
-                        await _monsterTemplateCommandService.DeleteMonsterTemplateCommand(id);
-                    }
-                }
+                await _monsterTemplateCommandService.DeleteMonsterTemplateAllCommands(result.MonsterTemplateId);
             }
 
             
@@ -381,39 +375,77 @@ namespace RPGSmithApp.Controllers
 
         private async Task<IActionResult> Update_Monster_Common(EditMonsterModel model)
         {
-            //var item = _monsterTemplateService.GetMonsterById(model.MonsterId);
-            //if (item == null) return BadRequest("Monster not found");
+            var item = _monsterTemplateService.GetMonsterById(model.MonsterId);
+            if (item == null) return BadRequest("Monster not found");
 
-            //item.Name = model.Name;
-            //item.ImageUrl = model.ImageUrl;
-            //item.Metatags = model.Metatags;
-            //item.HealthCurrent = model.MonsterHealthCurrent;
-            //item.HealthMax= model.MonsterHealthMax;
-            //item.ArmorClass = model.MonsterArmorClass;
-            //item.XPValue = model.MonsterXPValue;
-            //item.ChallangeRating = model.MonsterChallangeRating;
-
-
-            
-            //var result = await _monsterTemplateService.UpdateMonster(_item, model.ItemSpells, model.ItemAbilities, model.ItemBuffAndEffects);
+            item.Name = model.Name;
+            item.ImageUrl = model.ImageUrl;
+            item.Metatags = model.Metatags;
+            item.HealthCurrent = model.MonsterHealthCurrent;
+            item.HealthMax = model.MonsterHealthMax;
+            item.ArmorClass = model.MonsterArmorClass;
+            item.XPValue = model.MonsterXPValue;
+            item.ChallangeRating = model.MonsterChallangeRating;            
 
            
 
-            //if (model.ItemCommandVM != null)
-            //{
-            //    //remove all commands
-            //    await _itemCommandService.DeleteItemCommandByItemId(model.ItemId);
-            //    foreach (var command in model.ItemCommandVM)
-            //    {
-            //        await _itemCommandService.InsertItemCommand(new ItemCommand()
-            //        {
-            //            Command = command.Command,
-            //            Name = command.Name,
-            //            ItemId = model.ItemId
-            //        });
-            //    }
-            //}
-          
+            var monsterTemplate = Mapper.Map<MonsterTemplate>(model);
+
+            var result = await _monsterTemplateService.Update(monsterTemplate, model.MonsterTemplateAbilityVM, model.MonsterTemplateAssociateMonsterTemplateVM, model.MonsterTemplateBuffAndEffectVM, model.MonsterTemplateItemMasterVM, model.MonsterTemplateSpellVM,false);
+
+            await _monsterTemplateService.UpdateMonster(item);
+
+
+            var becIds = new List<int>();
+
+            if (monsterTemplate == null)
+                return Ok("Monster Template not found");
+
+            if (model.MonsterTemplateCommandVM.Count > 0)
+                becIds.AddRange(model.MonsterTemplateCommandVM.Select(x => x.MonsterTemplateCommandId).ToList());
+
+
+            if (model.MonsterTemplateCommandVM != null && model.MonsterTemplateCommandVM.Count > 0)
+            {
+                if (becIds.Count > 0)
+                {
+                    foreach (var id in becIds)
+                    {
+                        if (model.MonsterTemplateCommandVM.Where(x => x.MonsterTemplateCommandId == id).FirstOrDefault() == null)
+                            await _monsterTemplateCommandService.DeleteMonsterTemplateCommand(id);
+                    }
+                }
+
+                foreach (var becViewModels in model.MonsterTemplateCommandVM)
+                {
+                    if (becViewModels.MonsterTemplateCommandId > 0)
+                    {
+                        await _monsterTemplateCommandService.UdateMonsterTemplateCommand(new MonsterTemplateCommand()
+                        {
+                            MonsterTemplateCommandId = becViewModels.MonsterTemplateCommandId,
+                            Command = becViewModels.Command,
+                            Name = becViewModels.Name,
+                            MonsterTemplateId = becViewModels.MonsterTemplateId
+                        });
+                    }
+                    else
+                    {
+                        await _monsterTemplateCommandService.InsertMonsterTemplateCommand(new MonsterTemplateCommand()
+                        {
+                            Command = becViewModels.Command,
+                            Name = becViewModels.Name,
+                            MonsterTemplateId = result.MonsterTemplateId
+                        });
+                    }
+                }
+            }
+            else
+            {
+                
+                        await _monsterTemplateCommandService.DeleteMonsterTemplateAllCommands(result.MonsterTemplateId);
+                  
+            }
+
 
             return Ok();
         }

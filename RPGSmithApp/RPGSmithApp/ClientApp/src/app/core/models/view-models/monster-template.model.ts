@@ -12,10 +12,12 @@ export class MonsterTemplate {
     monsterHealthMax?: number,
     monsterArmorClass?: number,
     monsterChallangeRating?: number,
-    monsterXPValue?: number, monsterTemplateItemMasterVM?: any[]
-    //monsterImage?: string,
-    //monsterName?: string,
-    //monsterMetatags?: string,
+    monsterXPValue?: number, monsterTemplateItemMasterVM?: any[],
+    monsterImage?: string,
+    monsterName?: string,
+    monsterMetatags?: string,
+    monsterId?: number,
+    addToCombatTracker?: boolean
 
   ) {
     this.monsterTemplateId = monsterTemplateId;
@@ -46,9 +48,11 @@ export class MonsterTemplate {
     this.monsterArmorClass = monsterArmorClass;
     this.monsterChallangeRating = monsterChallangeRating;
     this.monsterXPValue = monsterXPValue;
-    //this.monsterImage = monsterImage;
-    //this.monsterName = monsterName;
-    //this.monsterMetatags = monsterMetatags;
+    this.monsterImage = monsterImage;
+    this.monsterName = monsterName;
+    this.monsterMetatags = monsterMetatags;
+    this.monsterId = monsterId;
+    this.addToCombatTracker = addToCombatTracker;
   }
 
   public monsterTemplateId: number;
@@ -84,6 +88,10 @@ export class MonsterTemplate {
   public monsterArmorClass: number;
   public monsterChallangeRating: number;
   public monsterXPValue: number;
+  public monsterImage: string;
+  public monsterName: string;
+  public monsterMetatags: string;
+  public monsterId: number;
   public addToCombatTracker: boolean;
   //public monsterImage: string;
   //public monsterName: string;

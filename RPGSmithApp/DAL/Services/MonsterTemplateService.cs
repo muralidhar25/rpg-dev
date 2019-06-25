@@ -153,22 +153,28 @@ namespace DAL.Services
             List<MonsterTemplateMonster> MonsterTemplateMonsterVM,
             List<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffectVM,
             List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM,
-            List<MonsterTemplateSpell> MonsterTemplateSpellVM)
+            List<MonsterTemplateSpell> MonsterTemplateSpellVM,bool IsFromMonsterTemplateScreen = true)
         {
             var monsterTemplate = _context.MonsterTemplates.FirstOrDefault(x => x.MonsterTemplateId == item.MonsterTemplateId);
 
             if (monsterTemplate == null)
                 return monsterTemplate;
 
-            monsterTemplate.Name = item.Name;
+            if (IsFromMonsterTemplateScreen)
+            {
+                monsterTemplate.Name = item.Name;
+                monsterTemplate.ImageUrl = item.ImageUrl;
+                monsterTemplate.Metatags = item.Metatags;
+            }
+            
 
             monsterTemplate.Command = item.Command;
             monsterTemplate.CommandName = item.CommandName;
             monsterTemplate.Description = item.Description;
             monsterTemplate.Stats = item.Stats;
-            monsterTemplate.ImageUrl = item.ImageUrl;
+           
 
-            monsterTemplate.Metatags = item.Metatags;
+           
 
             monsterTemplate.ArmorClass = item.ArmorClass;
             monsterTemplate.ChallangeRating = item.ChallangeRating;
@@ -190,7 +196,11 @@ namespace DAL.Services
             _context.MonsterTemplateSpells.RemoveRange(_context.MonsterTemplateSpells.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
             _context.MonsterTemplateBuffAndEffects.RemoveRange(_context.MonsterTemplateBuffAndEffects.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
             _context.MonsterTemplateMonsters.RemoveRange(_context.MonsterTemplateMonsters.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
-            _context.MonsterTemplateItemMasters.RemoveRange(_context.MonsterTemplateItemMasters.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
+            if (IsFromMonsterTemplateScreen)
+            {
+                _context.MonsterTemplateItemMasters.RemoveRange(_context.MonsterTemplateItemMasters.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
+            }
+            
             try
             {
                 _context.SaveChanges();
@@ -243,19 +253,24 @@ namespace DAL.Services
                 }
                 _context.MonsterTemplateMonsters.AddRange(Mlist);
 
-                List<MonsterTemplateItemMaster> Ilist = new List<MonsterTemplateItemMaster>();
-                foreach (var be in MonsterTemplateItemMasterVM)
+                
+                if (IsFromMonsterTemplateScreen)
                 {
-                    MonsterTemplateItemMaster obj = new MonsterTemplateItemMaster()
+                    List<MonsterTemplateItemMaster> Ilist = new List<MonsterTemplateItemMaster>();
+                    foreach (var be in MonsterTemplateItemMasterVM)
                     {
-                        ItemMasterId = be.ItemMasterId,
-                        MonsterTemplateId = item.MonsterTemplateId,
-                        Qty= be.Qty
-                    };
-                    Ilist.Add(obj);
+                        MonsterTemplateItemMaster obj = new MonsterTemplateItemMaster()
+                        {
+                            ItemMasterId = be.ItemMasterId,
+                            MonsterTemplateId = item.MonsterTemplateId,
+                            Qty = be.Qty
+                        };
+                        Ilist.Add(obj);
+                    }
+                    _context.MonsterTemplateItemMasters.AddRange(Ilist);
+                    _context.SaveChanges();
                 }
-                _context.MonsterTemplateItemMasters.AddRange(Ilist);
-                _context.SaveChanges();
+                
             }
             catch (Exception ex)
             {
@@ -265,39 +280,30 @@ namespace DAL.Services
             return monsterTemplate;
         }
 
-        public async Task<MonsterTemplate> UpdateMonster(Monster item,
-            List<MonsterTemplateAbility> MonsterTemplateAbilityVM,
-            List<MonsterTemplateMonster> MonsterTemplateMonsterVM,
-            List<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffectVM,
-            List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM,
-            List<MonsterTemplateSpell> MonsterTemplateSpellVM)
+        public async Task<Monster> UpdateMonster(Monster model)
         {
-            return null;
-            //var monster = _context.Monsters.FirstOrDefault(x => x.MonsterId == item.MonsterId);
+            //return null;
+            var item = GetMonsterById(model.MonsterId);
+            if (item == null) return model;
 
-            //if (monster == null)
-            //    return monster;
-
-            //monster.Name = item.Name;
-            //monster.ImageUrl = item.ImageUrl;
-            //monster.Metatags = item.Metatags;
-
-            //monsterTemplate.ArmorClass = item.ArmorClass;
-            //monsterTemplate.ChallangeRating = item.ChallangeRating;
-            //monsterTemplate.XPValue = item.XPValue;
-            //monsterTemplate.Health = item.Health;
-            //monsterTemplate.InitiativeCommand = item.InitiativeCommand;
-            //monsterTemplate.IsRandomizationEngine = item.IsRandomizationEngine;
+            item.Name = model.Name;
+            item.ImageUrl = model.ImageUrl;
+            item.Metatags = model.Metatags;
+            item.HealthCurrent = model.HealthCurrent;
+            item.HealthMax = model.HealthMax;
+            item.ArmorClass = model.ArmorClass;
+            item.XPValue = model.XPValue;
+            item.ChallangeRating = model.ChallangeRating;
 
 
-            ////try
-            ////{
-            ////    _context.SaveChanges();
-            ////}
-            ////catch (Exception ex)
-            ////{
-            ////    throw ex;
-            ////}
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
             //_context.MonsterTemplateAbilities.RemoveRange(_context.MonsterTemplateAbilities.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
             //_context.MonsterTemplateSpells.RemoveRange(_context.MonsterTemplateSpells.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
             //_context.MonsterTemplateBuffAndEffects.RemoveRange(_context.MonsterTemplateBuffAndEffects.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
@@ -374,7 +380,7 @@ namespace DAL.Services
             //    throw ex;
             //}
 
-            //return monsterTemplate;
+            return model;
         }
 
         public int GetCountByRuleSetId(int ruleSetId)

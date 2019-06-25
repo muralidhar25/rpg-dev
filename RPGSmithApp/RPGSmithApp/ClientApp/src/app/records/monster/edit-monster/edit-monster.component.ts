@@ -210,7 +210,7 @@ export class EditMonsterComponent implements OnInit {
         //}
 
     //monsterTemplate.isFromCharacterAbilityId = ability.isFromCharacterAbilityId;
-
+    debugger
     if (monsterTemplate.ruleSetId === 0 || monsterTemplate.ruleSetId === undefined)
       monsterTemplate.ruleSetId = this._ruleSetId;
 
@@ -224,9 +224,8 @@ export class EditMonsterComponent implements OnInit {
       return { spellId: x.spellId, monsterTemplateId: monsterTemplate.monsterTemplateId };
     });
     monsterTemplate.monsterTemplateAssociateMonsterTemplateVM = this.selectedAssociateMonsterTemplates.map(x => {
-      return { associateMonsterTemplateId: x.associateMonsterTemplateId, monsterTemplateId: monsterTemplate.monsterTemplateId };
+      return { associateMonsterTemplateId: x.monsterTemplateId, monsterTemplateId: monsterTemplate.monsterTemplateId };
     });
-
 
         this.isLoading = true;
     let _msg = monsterTemplate.monsterTemplateId === 0 || monsterTemplate.monsterTemplateId === undefined ? "Creating Monster.." : "Updating Monster..";
@@ -341,7 +340,7 @@ export class EditMonsterComponent implements OnInit {
   private addEditMonster(modal: MonsterTemplate) {
         modal.ruleSetId = this._ruleSetId;
     this.isLoading = true;
-    this.monsterTemplateService.createMonsterTemplate<any>(modal, false,0,0,0,0)
+    this.monsterTemplateService.createMonster<any>(modal)
             .subscribe(
                 data => {
                     this.isLoading = false;

@@ -445,9 +445,10 @@ export class MonsterTemplateService extends EndpointFactory {
         monsterArmorClass: monsterVM.armorClass,
         monsterChallangeRating: monsterVM.challangeRating,
         monsterXPValue: monsterVM.xPValue,
-        //monsterImage: monsterVM.imageUrl,
-        //monsterName: monsterVM.name,
-        //monsterMetatags: monsterVM.metatags,
+        monsterImage: monsterVM.imageUrl,
+        monsterName: monsterVM.name,
+        monsterMetatags: monsterVM.metatags,
+        monsterId: monsterVM.monsterId,
       }
     }
     else {

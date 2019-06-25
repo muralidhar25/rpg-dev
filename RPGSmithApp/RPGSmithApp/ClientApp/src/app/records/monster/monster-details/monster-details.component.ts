@@ -171,7 +171,7 @@ export class MonsterDetailsComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Edit Monster Template';
+    this.bsModalRef.content.title = 'Edit Monster';
     this.bsModalRef.content.button = 'UPDATE';
     this.bsModalRef.content.monsterVM = this._editMonster;
     this.bsModalRef.content.rulesetID = this.ruleSetId;

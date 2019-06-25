@@ -282,36 +282,44 @@ export class MonsterComponent implements OnInit {
             ignoreBackdropClick: true,
             keyboard: false
         });
-    this.bsModalRef.content.title = 'Edit Monster Template';
+    this.bsModalRef.content.title = 'Edit Monster';
         this.bsModalRef.content.button = 'UPDATE';
     this.bsModalRef.content.monsterVM = monster;
     this.bsModalRef.content.rulesetID = this.ruleSetId;
     debugger
     }
 
-  ////duplicateMonsterTemplate(monsterTemplate: MonsterTemplate) {
-  ////      // this.alertService.startLoadingMessage("", "Checking records");      
-  ////      this.monsterTemplateService.getMonsterTemplateCount(this.ruleSetId)
-  ////          .subscribe(data => {
-  ////              //this.alertService.stopLoadingMessage();
-  ////              if (data < 2000) {
-  ////                this.bsModalRef = this.modalService.show(CreateMonsterTemplateComponent, {
-  ////                      class: 'modal-primary modal-custom',
-  ////                      ignoreBackdropClick: true,
-  ////                      keyboard: false
-  ////                  });
-  ////                this.bsModalRef.content.title = 'Duplicate Monster Template';
-  ////                  this.bsModalRef.content.button = 'DUPLICATE';
-  ////                this.bsModalRef.content.monsterTemplateVM = monsterTemplate;
-  ////                  this.bsModalRef.content.rulesetID = this.ruleSetId;
-  ////              }
-  ////              else {
-  ////                  //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
-  ////                  this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
-  ////              }
-  ////          }, error => { }, () => { });     
+  duplicateMonster(monsterTemplate: MonsterTemplate) {
+        // this.alertService.startLoadingMessage("", "Checking records");      
+        this.monsterTemplateService.getMonsterTemplateCount(this.ruleSetId)
+            .subscribe(data => {
+                //this.alertService.stopLoadingMessage();
+                if (data < 2000) {
+                  this.bsModalRef = this.modalService.show(CreateMonsterTemplateComponent, {
+                        class: 'modal-primary modal-custom',
+                        ignoreBackdropClick: true,
+                        keyboard: false
+                  });
+                  this.bsModalRef.content.title = 'Duplicate New Monster';
+                  this.bsModalRef.content.button = 'DUPLICATE';
+                  this.bsModalRef.content.ruleSetId = this.ruleSetId;
+                  debugger
+                  this.bsModalRef.content.monsterTemplateVM = monsterTemplate;
+                  this.bsModalRef.content.isCreatingFromMonsterScreen = true;
+
+
+                  //this.bsModalRef.content.title = 'Duplicate Monster Template';
+                  //  this.bsModalRef.content.button = 'DUPLICATE';
+                  //this.bsModalRef.content.monsterTemplateVM = monsterTemplate;
+                  //  this.bsModalRef.content.rulesetID = this.ruleSetId;
+                }
+                else {
+                    //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
+                    this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
+                }
+            }, error => { }, () => { });     
        
-  ////  }
+    }
 
   //deleteMonster(monster: Monster) {
   //  let message = "Are you sure you want to delete this " + monster.name

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Models;
@@ -85,6 +86,10 @@ namespace DAL.Services
             }
 
             return ac;
+        }
+        public async Task DeleteMonsterTemplateAllCommands(int monsterTemplateId) {
+            _context.MonsterTemplateCommands.RemoveRange(_context.MonsterTemplateCommands.Where(x => x.MonsterTemplateId == monsterTemplateId));
+            await _context.SaveChangesAsync();
         }
     }
 }

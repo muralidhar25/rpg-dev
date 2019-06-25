@@ -15,7 +15,7 @@ namespace DAL.Services
             List<MonsterTemplateMonster> MonsterTemplateMonsterVM,
             List<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffectVM,
             List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM,
-            List<MonsterTemplateSpell> MonsterTemplateSpellVM
+            List<MonsterTemplateSpell> MonsterTemplateSpellVM,bool IsFromMonsterTemplateScreen= true
             );
         Task<bool> Delete(int id);
         MonsterTemplate GetById(int? id);
@@ -40,6 +40,8 @@ void deployMonster(DeployMonsterTemplate model);
         Task<MonsterTemplate> Core_CreateMonsterTemplateUsingMonster(int monsterTemplateId, int rulesetID);
         List<ItemMasterForMonsterTemplate> getMonsterItemsToDrop(int monsterId);
         Task DropItemsToLoot(List<ItemMasterForMonsterTemplate> list);
+        Task<Monster> UpdateMonster(Monster model);
+
         // List<MonsterTemplate> GetByRuleSetId_add(int rulesetId);
 
     }
