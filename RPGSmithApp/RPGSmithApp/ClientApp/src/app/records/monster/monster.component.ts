@@ -119,7 +119,7 @@ export class MonsterComponent implements OnInit {
           this.getFilters();
 
           this.isLoading = true;
-          this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+          this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, this.monstersFilter.type)
               .subscribe(data => {
                //check for ruleset
                 if (data.RuleSet)
@@ -191,7 +191,7 @@ export class MonsterComponent implements OnInit {
         ++this.page;
         this.scrollLoading = true;
       //this.isLoading = true;
-      this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+      this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, this.monstersFilter.type)
             .subscribe(data => {
 
               var _monster = data.monsters;
@@ -603,7 +603,7 @@ export class MonsterComponent implements OnInit {
       this.isLoading = true;
       this.page = 1
       this.pageSize = 28;
-      this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+      this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, this.monstersFilter.type )
         .subscribe(data => {
           if (data.RuleSet)
             this.monsterList = Utilities.responseData(data.monsters, this.pageSize);
@@ -661,7 +661,7 @@ export class MonsterComponent implements OnInit {
   }
   getFilters() {
     if (this.monstersFilter.type == 2 || this.monstersFilter.type == 3) {
-      this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+      this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize,1)
         .subscribe(data => {
           this.alphabetCount = data.monsters.length;
         }, error => {
@@ -671,7 +671,7 @@ export class MonsterComponent implements OnInit {
     }
     if (this.monstersFilter.type == 1 || this.monstersFilter.type == 3) {
 
-      this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+      this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize,2)
         .subscribe(data => {
           let result = data.monsters.filter(s => s.challangeRating);
           this.ChallangeRatingCount = result.length;
@@ -681,7 +681,7 @@ export class MonsterComponent implements OnInit {
     }
     if (this.monstersFilter.type == 1 || this.monstersFilter.type == 2) {
 
-      this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+      this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize,3)
         .subscribe(data => {
           let result = data.monsters.filter(s => s.health);
           this.HealthCount = result.length;

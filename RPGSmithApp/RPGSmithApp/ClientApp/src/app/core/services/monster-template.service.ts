@@ -136,12 +136,12 @@ export class MonsterTemplateService extends EndpointFactory {
         return this.handleError(error, () => this.getMonsterTemplateByRuleset_spWithPagination(Id, page, pageSize,sortType));
       });
   }
-  getMonsterByRuleset_spWithPagination<T>(Id: number, page: number, pageSize: number): Observable<T> {
-    let endpointUrl = `${this.getMonstersByRuleSetId_sp}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}`;
+  getMonsterByRuleset_spWithPagination<T>(Id: number, page: number, pageSize: number,sortType: number): Observable<T> {
+    let endpointUrl = `${this.getMonstersByRuleSetId_sp}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}&sortType=${sortType}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.getMonsterByRuleset_spWithPagination(Id, page, pageSize));
+        return this.handleError(error, () => this.getMonsterByRuleset_spWithPagination(Id, page, pageSize,sortType));
       });
   }
 
