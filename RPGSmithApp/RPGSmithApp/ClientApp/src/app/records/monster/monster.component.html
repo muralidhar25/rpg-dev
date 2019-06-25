@@ -85,21 +85,36 @@
                 <ul class="page-toolbar-actions">
                   <li class="view-switch">
                     <div class="btn-group" role="group">
-                      <!--<button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="{'selected':!isListView}" (click)="showListView(false)"></button>
-                             <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="{'selected':isListView}" (click)="showListView(true)"></button>-->
+
                       <div class="dropdown">
-                        <button class="btn dropdown-toggle filter-toggle-btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <i [ngClass]="isDenseView ? 'icon-Rec-Dense': '' "></i>
-                          <i [ngClass]="!isListView && !isDenseView ? 'icon icon-grid' :''"></i>
-                          <i [ngClass]="isListView && !isDenseView ? 'icon icon-list' :''"></i>
+                        <button class="btn dropdown-toggle filter-toggle-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" popover="{{monstersFilter.name}}" triggers="hover click">
+                          &nbsp;{{monstersFilter.viewableCount}}
+                          <span *ngIf="monstersFilter.type == 1"><i>A</i></span>
+                          <span *ngIf="monstersFilter.type == 2"><i>CR</i></span>
+                          <span *ngIf="monstersFilter.type == 3"><i class="icon icon-Health"> </i></span>
                         </button>
-                        <div class="dropdown-menu filter-toggle-btn-menu" aria-labelledby="dropdownMenuButton">
-                          <button type="button" id="gridViewTrigger" class="btn icon icon-list" [ngClass]="isListView && !isDenseView ? 'selected' :''" (click)="showListView(true)"> List</button>
-                          <button type="button" id="listViewTrigger" class="btn icon icon-grid" [ngClass]="!isListView && !isDenseView ? 'selected' :''" (click)="showListView(false)"> Grid </button>
-                          <button type="button" id="denseViewTrigger" class="btn icon icon-Rec-Dense" [ngClass]="isDenseView ? 'selected': '' " (click)="showDenseview(true)"> Dense</button>
+                          <div class="dropdown-menu filter-toggle-btn-menu" aria-labelledby="dropdownMenuButton">
+                            <button type="button" id="listViewTrigger" class="btn" [ngClass]="Alphabetical ? 'selected' :''" (click)="applyFilters(1,false,true)"><i>A</i>Alphabetical <span>{{alphabetCount}}</span></button>
+                            <button type="button" id="challageViewTrigger" class="btn" [ngClass]="ChallangeRating ? 'selected' :''" (click)="applyFilters(2,false,true)"><i>CR</i>Challenge Rating <span>{{ChallangeRatingCount}}</span></button>
+                            <button type="button" id="HealthViewTrigger" class="btn icon icon-Health" [ngClass]="Health ? 'selected' :''" (click)="applyFilters(3,false,true)">Health <span>{{HealthCount}}</span></button>
+                          </div>
+                        </div>
+
+                        <!--<button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="{'selected':!isListView}" (click)="showListView(false)"></button>
+         <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="{'selected':isListView}" (click)="showListView(true)"></button>-->
+                        <div class="dropdown">
+                          <button class="btn dropdown-toggle filter-toggle-btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i [ngClass]="isDenseView ? 'icon-Rec-Dense': '' "></i>
+                            <i [ngClass]="!isListView && !isDenseView ? 'icon icon-grid' :''"></i>
+                            <i [ngClass]="isListView && !isDenseView ? 'icon icon-list' :''"></i>
+                          </button>
+                          <div class="dropdown-menu filter-toggle-btn-menu" aria-labelledby="dropdownMenuButton">
+                            <button type="button" id="gridViewTrigger" class="btn icon icon-list" [ngClass]="isListView && !isDenseView ? 'selected' :''" (click)="showListView(true)"> List</button>
+                            <button type="button" id="listViewTrigger" class="btn icon icon-grid" [ngClass]="!isListView && !isDenseView ? 'selected' :''" (click)="showListView(false)"> Grid </button>
+                            <button type="button" id="denseViewTrigger" class="btn icon icon-Rec-Dense" [ngClass]="isDenseView ? 'selected': '' " (click)="showDenseview(true)"> Dense</button>
+                          </div>
                         </div>
                       </div>
-                    </div>
                   </li>
                   <li>
                     <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
