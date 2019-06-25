@@ -35,13 +35,13 @@ export class MonsterComponent implements OnInit {
 
     rulesetModel: any;
     isLoading = false;
-  isListView: boolean = false;
-  isDenseView: boolean = false; 
+    isListView: boolean = false;
+    isDenseView: boolean = false; 
     showActions: boolean = true;
     actionText: string;
     bsModalRef: BsModalRef;
     ruleSetId: number;
-  monsterId: number;
+    monsterId: number;
     monsterList: any;
     pageLastView: any;
     isDropdownOpen: boolean = false;
@@ -51,8 +51,21 @@ export class MonsterComponent implements OnInit {
     timeoutHandler: any;
     pageSize: number = 28;
     offset = (this.page - 1) * this.pageSize;
-  backURL: string = '/rulesets';
-  IsGm: boolean = false;
+    backURL: string = '/rulesets';
+    IsGm: boolean = false;
+    Alphabetical: boolean = false;
+    ChallangeRating: boolean = false;
+    Health: boolean = false;
+    monstersFilter: any = {
+        type: 1,
+        name: 'Alphabetical',
+        icon: '',
+        viewableCount: 0
+    };
+    alphabetCount: number;
+    ChallangeRatingCount: number;
+    HealthCount: number;
+
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -89,6 +102,12 @@ export class MonsterComponent implements OnInit {
 
     private initialize() {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+        let localStorageFilters = this.localStorage.getDataObject<number>('monstersFilters');
+        if (localStorageFilters != null) {
+          this.monstersFilter = localStorageFilters;
+        }
+       console.log('106', this.monstersFilter);
+
         if (user == null)
             this.authService.logout();
         else {
@@ -96,14 +115,30 @@ export class MonsterComponent implements OnInit {
             this.IsGm = user.isGm;
             this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
           }
+
+          this.getFilters();
+
           this.isLoading = true;
           this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
               .subscribe(data => {
                //check for ruleset
                 if (data.RuleSet)
                   this.monsterList = Utilities.responseData(data.monsters, this.pageSize);
+                  if (this.monstersFilter.type == 1) {
+                    this.monstersFilter.viewableCount = this.monsterList.length;
+                    this.alphabetCount = this.monsterList.length;
+                  }
+                  if (this.monstersFilter.type == 2) {
+                    let result = this.monsterList.filter(s => s.challangeRating);
+                    this.ChallangeRatingCount = result.length;
+                  }
+                  if (this.monstersFilter.type == 3) {
+                    let result = this.monsterList.filter(s => s.health);
+                    this.HealthCount = result.length;
+                }
 
-                this.rulesetModel = data.RuleSet;
+                this.applyFilters(this.monstersFilter.type, true);
+                  this.rulesetModel = data.RuleSet;
                   this.setHeaderValues(this.rulesetModel);
                 this.monsterList.forEach(function (val) { val.showIcon = false; val.xPValue = val.xpValue });
                     try {
@@ -168,6 +203,20 @@ export class MonsterComponent implements OnInit {
                 }
                 //this.isLoading = false;
                 this.scrollLoading = false;
+              if (this.monstersFilter.type == 1) {
+                this.monstersFilter.viewableCount = this.monsterList.length;
+                this.alphabetCount = this.monsterList.length;
+              }
+              if (this.monstersFilter.type == 2) {
+                let result = this.monsterList.filter(s => s.challangeRating);
+                this.ChallangeRatingCount = result.length;
+              }
+              if (this.monstersFilter.type == 3) {
+                let result = this.monsterList.filter(s => s.health);
+                this.HealthCount = result.length;
+              }
+
+              this.applyFilters(this.monstersFilter.type, true);
             }, error => {
                 this.isLoading = false;
                 this.scrollLoading = false;
@@ -532,4 +581,115 @@ export class MonsterComponent implements OnInit {
     this.bsModalRef.content.monsterId = monster.monsterId;
     this.bsModalRef.content.rulesetID = this.ruleSetId;
   }
+
+  applyFilters(present_filter, apply_same = false, IsCalledFromClickFunction = false) {
+    if (present_filter == 1) {
+      this.Alphabetical = true;
+      this.Health = false;
+      this.ChallangeRating = false;
+    }
+    if (present_filter == 2) {
+      this.ChallangeRating = true;
+      this.Alphabetical = false;
+      this.Health = false;
+    }
+    if (present_filter == 3) {
+      this.Health = true;
+      this.Alphabetical = false;
+      this.ChallangeRating = false;
+    }
+    this.monstersFilter.type = present_filter;
+    if (IsCalledFromClickFunction) {
+      this.isLoading = true;
+      this.page = 1
+      this.pageSize = 28;
+      this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+        .subscribe(data => {
+          if (data.RuleSet)
+            this.monsterList = Utilities.responseData(data.monsters, this.pageSize);
+            this.rulesetModel = data.RuleSet;
+            this.setHeaderValues(this.rulesetModel);
+          this.monsterList.forEach(function (val) { val.showIcon = false; val.xPValue = val.xpValue });
+          try {
+            this.noRecordFound = !data.monsters.length;
+          } catch (err) { }
+          this.ImplementFilter();
+          this.isLoading = false;
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => { });
+    }
+  }
+  ImplementFilter() {
+    this.monstersFilter.viewableCount = this.monsterList.length;
+
+    switch (this.monstersFilter.type) {
+      case 1: // Alphabetical
+      default:
+        this.monstersFilter.viewableCount = this.monsterList.length;
+        this.monstersFilter.name = 'Alphabetical';
+        this.monstersFilter.icon = '';
+        break;
+      case 2: //challange Rating
+        this.monstersFilter.viewableCount = 0;
+        this.monsterList.map((item) => {
+          if (item.challangeRating) {
+            this.monstersFilter.viewableCount++;
+          }
+        })
+        this.monstersFilter.name = 'ChallangeRating';
+        this.monstersFilter.icon = '';
+        break;
+      case 2: //Health
+        this.monstersFilter.viewableCount = 0;
+        this.monsterList.map((item) => {
+          if (item.health) {
+            this.monstersFilter.viewableCount++;
+          }
+        })
+        this.monstersFilter.name = 'Health';
+        this.monstersFilter.icon = 'icon icon-Health';
+        break;
+    }
+    this.localStorage.saveSyncedSessionData(this.monstersFilter, 'monstersFilter');
+
+  }
+  getFilters() {
+    if (this.monstersFilter.type == 2 || this.monstersFilter.type == 3) {
+      this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+        .subscribe(data => {
+          this.alphabetCount = data.monsters.length;
+        }, error => {
+          
+
+        }, () => { });
+    }
+    if (this.monstersFilter.type == 1 || this.monstersFilter.type == 3) {
+
+      this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+        .subscribe(data => {
+          let result = data.monsters.filter(s => s.challangeRating);
+          this.ChallangeRatingCount = result.length;
+        }, error => {
+
+        }, () => { });
+    }
+    if (this.monstersFilter.type == 1 || this.monstersFilter.type == 2) {
+
+      this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize)
+        .subscribe(data => {
+          let result = data.monsters.filter(s => s.health);
+          this.HealthCount = result.length;
+        }, error => {
+
+        }, () => { });
+
+    }
+  }
+
 }
