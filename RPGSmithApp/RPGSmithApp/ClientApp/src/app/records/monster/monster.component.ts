@@ -133,7 +133,7 @@ export class MonsterComponent implements OnInit {
                     this.ChallangeRatingCount = result.length;
                   }
                   if (this.monstersFilter.type == 3) {
-                    let result = this.monsterList.filter(s => s.health);
+                    let result = this.monsterList.filter(s => s.healthCurrent || s.healthMax);
                     this.HealthCount = result.length;
                 }
 
@@ -212,7 +212,7 @@ export class MonsterComponent implements OnInit {
                 this.ChallangeRatingCount = result.length;
               }
               if (this.monstersFilter.type == 3) {
-                let result = this.monsterList.filter(s => s.health);
+                let result = this.monsterList.filter(s => s.healthCurrent || s.healthMax);
                 this.HealthCount = result.length;
               }
 
@@ -645,10 +645,11 @@ export class MonsterComponent implements OnInit {
         this.monstersFilter.name = 'ChallangeRating';
         this.monstersFilter.icon = '';
         break;
-      case 2: //Health
+      case 3: //Health
         this.monstersFilter.viewableCount = 0;
+        debugger
         this.monsterList.map((item) => {
-          if (item.health) {
+          if (item.healthCurrent || item.healthMax) {
             this.monstersFilter.viewableCount++;
           }
         })
@@ -683,7 +684,7 @@ export class MonsterComponent implements OnInit {
 
       this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize,3)
         .subscribe(data => {
-          let result = data.monsters.filter(s => s.health);
+          let result = data.monsters.filter(s => s.healthCurrent || s.healthMax);
           this.HealthCount = result.length;
         }, error => {
 
