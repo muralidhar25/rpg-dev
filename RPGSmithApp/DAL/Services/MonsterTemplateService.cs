@@ -31,7 +31,29 @@ namespace DAL.Services
         {
             return await _repo.Add(item);
         }
+        public async Task<bool> DeleteMonster(int monsterId)
+        {
+            var monsterItems = _context.ItemMasterMonsterItems.Where(x => x.MonsterId == monsterId).ToList();
+            foreach (var item in monsterItems)
+            {
+                item.IsDeleted = true;
+            }
+            var monster = _context.Monsters.Where(x => x.MonsterId == monsterId).FirstOrDefault();
+            if (monster!=null)
+            {
+                monster.IsDeleted = true;
+            }
 
+            try
+            {
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public async Task<bool> Delete(int id)
         {
             // Remove associated Commands
@@ -601,7 +623,7 @@ namespace DAL.Services
             return _monsterTemplateCommand;
         }
 
-        public SP_AssociateForMonsterTemplate SP_GetAssociateRecords(int monsterTemplateId, int rulesetId)
+        public SP_AssociateForMonsterTemplate SP_GetAssociateRecords(int monsterTemplateId, int rulesetId, int MonsterID)
         {
             SP_AssociateForMonsterTemplate res = new SP_AssociateForMonsterTemplate();
             res.abilityList = new List<Ability>();
@@ -629,6 +651,7 @@ namespace DAL.Services
                 // Add the parameters for the SelectCommand.
                 command.Parameters.AddWithValue("@MonsterTemplateId", monsterTemplateId);
                 command.Parameters.AddWithValue("@RulesetID", rulesetId);
+                command.Parameters.AddWithValue("@MonsterID", MonsterID);
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;
@@ -774,6 +797,11 @@ namespace DAL.Services
                 foreach (DataRow row in ds.Tables[9].Rows)
                 {
                     ItemMasterForMonsterTemplate i = new ItemMasterForMonsterTemplate();
+                    DataColumnCollection columns = ds.Tables[9].Columns;
+                    if (columns.Contains("ItemId")) {
+                        i.ItemId = row["ItemId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemId"]);
+                    }
+                       
                     i.ItemMasterId = row["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemMasterId"]);
                     i.ImageUrl = row["ItemImage"] == DBNull.Value ? null : row["ItemImage"].ToString();
                     i.Name = row["ItemName"] == DBNull.Value ? null : row["ItemName"].ToString();
@@ -1067,7 +1095,9 @@ namespace DAL.Services
         {
             foreach (var item in list)
             {
-                ItemMaster obj = _context.ItemMasters.Where(x => x.ItemMasterId == item.ItemMasterId).FirstOrDefault();
+                _context.ItemMasterMonsterItems.RemoveRange(_context.ItemMasterMonsterItems.Where(x => x.ItemId == item.ItemId));
+                _context.SaveChanges();
+                   ItemMaster obj = _context.ItemMasters.Where(x => x.ItemMasterId == item.ItemMasterId).FirstOrDefault();
                 if (obj != null)
                 {
                     _itemMasterService.CreateItemMasterLoot(obj, new ItemMasterLoot()

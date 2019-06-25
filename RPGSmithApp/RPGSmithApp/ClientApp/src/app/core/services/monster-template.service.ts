@@ -47,6 +47,9 @@ export class MonsterTemplateService extends EndpointFactory {
   private readonly getMonsterItemsToDropUrl = this.configurations.baseUrl + "/api/MonsterTemplate/GetMonsterItemsToDrop";
   private readonly dropMonsterItemsUrl = this.configurations.baseUrl + "/api/MonsterTemplate/dropMonsterItems";
   private readonly addMonsterUrl = this.configurations.baseUrl + "";
+  private readonly deleteMonsterUrl_up = this.configurations.baseUrl + "/api/MonsterTemplate/deleteMonster_up";
+
+  
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
@@ -153,8 +156,8 @@ export class MonsterTemplateService extends EndpointFactory {
         return this.handleError(error, () => this.getMonsterTemplateCommands_sp(Id));
       });
   }
-  getMonsterTemplateAssociateRecords_sp<T>(Id: number, rulesetId: number): Observable<T> {
-    let endpointUrl = `${this.getMonsterTemplateAssociateRecords_sp_api}?MonsterTemplateId=${Id}&rulesetId=${rulesetId}`;
+  getMonsterTemplateAssociateRecords_sp<T>(Id: number, rulesetId: number, MonsterID:number=0): Observable<T> {
+    let endpointUrl = `${this.getMonsterTemplateAssociateRecords_sp_api}?MonsterTemplateId=${Id}&rulesetId=${rulesetId}&MonsterID=${MonsterID}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
@@ -252,7 +255,14 @@ export class MonsterTemplateService extends EndpointFactory {
         return this.handleError(error, () => this.deleteMonsterTemplate_up(MonsterTemplate));
       });
   }
+  deleteMonster_up<T>(Monster: any): Observable<T> {
+    let endpointUrl = this.deleteMonsterUrl_up; //`${this.deleteUrl}?id=${Id}`;
 
+    return this.http.post<T>(endpointUrl, JSON.stringify(Monster), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deleteMonster_up(Monster));
+      });
+  }
   deployMonster<T>(deployMonsterInfo): Observable<T>{
     let endpointUrl = this.deployMonster_api;
 

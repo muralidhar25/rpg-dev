@@ -214,7 +214,7 @@ namespace RPGSmithApp.Controllers
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
         [HttpPost("dropMonsterItems")]
-        public async Task<IActionResult> dropMonsterItems(List<ItemMasterForMonsterTemplate> list)
+        public async Task<IActionResult> dropMonsterItems([FromBody] List<ItemMasterForMonsterTemplate> list)
         {
             
             await _monsterTemplateService.DropItemsToLoot(list);
@@ -477,7 +477,57 @@ namespace RPGSmithApp.Controllers
                     return BadRequest(ex.Message);
             }
         }
-
+        
+            [HttpPost("deleteMonster_up")]
+        public async Task<IActionResult> deleteMonster_up([FromBody] EditMonsterModel model)
+        {
+            try
+            {                
+                //var model = data.item;
+                int rulesetID = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
+                if (_coreRulesetService.IsCopiedFromCoreRuleset(rulesetID))
+                {
+                    await Core_DeleteMonster(model);
+                }
+                else
+                {
+                    await DeleteMonsterCommon(model.MonsterId);
+                }
+                
+                //var currentUser = GetUser();
+                //if (currentUser.IsGm || currentUser.IsGmPermanent)
+                //{
+                //    _itemService.AddItemToLoot(model.ItemMasterId);
+                //}
+                //else if (await _campaignService.isInvitedPlayerCharacter((int)model.CharacterId))
+                //{
+                //    _itemService.AddItemToLoot(model.ItemMasterId);
+                //}
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        private async Task<IActionResult> Core_DeleteMonster(EditMonsterModel model)
+        {
+            try
+            {
+                await CheckCoreRuleset(model);
+                return await DeleteMonsterCommon(model.MonsterId);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        private async Task<IActionResult> DeleteMonsterCommon(int monsterId)
+        {
+          
+            await _monsterTemplateService.DeleteMonster(monsterId);
+            return Ok();
+        }
         [HttpGet("getCountByRuleSetId")]
         public async Task<IActionResult> getCountByRuleSetId(int rulesetId)
         {
@@ -829,8 +879,8 @@ namespace RPGSmithApp.Controllers
             return Ok(_monsterTemplateService.SP_GetMonsterTemplateCommands(monsterTemplateID));
         }
         [HttpGet("SP_GetAssociateRecords")]
-        public async Task<IActionResult> SP_GetAssociateRecords(int monsterTemplateId, int rulesetId) {
-            return Ok(_monsterTemplateService.SP_GetAssociateRecords(monsterTemplateId, rulesetId));
+        public async Task<IActionResult> SP_GetAssociateRecords(int monsterTemplateId, int rulesetId, int MonsterID = 0) {
+            return Ok(_monsterTemplateService.SP_GetAssociateRecords(monsterTemplateId, rulesetId, MonsterID));
         }
         //[HttpGet("getBuffAndEffectAssignedToCharacter")]
         //public async Task<IActionResult> getBuffAndEffectAssignedToCharacter(int characterID)

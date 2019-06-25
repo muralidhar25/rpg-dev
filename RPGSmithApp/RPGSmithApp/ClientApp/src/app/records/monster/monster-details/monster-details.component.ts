@@ -20,6 +20,7 @@ import { EditMonsterComponent } from "../edit-monster/edit-monster.component";
 import { CastComponent } from "../../../shared/cast/cast.component";
 import { Characters } from "../../../core/models/view-models/characters.model";
 import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
+import { CreateMonsterTemplateComponent } from "../../monster-template/create-monster-template/create-monster-template.component";
 //import { CreateMonsterTemplateComponent } from "../create-monster-template/create-monster-template.component";
 //import { DeployMonsterComponent } from "../deploy-monster/deploy-monster.component";
 //import { DropItemsMonsterComponent } from "../drop-items-monster/drop-items-monster.component";
@@ -39,7 +40,7 @@ export class MonsterDetailsComponent implements OnInit {
     showActions: boolean = true;
     isDropdownOpen: boolean = false;
     actionText: string;
-    monsterTemplateId: number;
+    monsterId: number;
     ruleSetId: number;
   bsModalRef: BsModalRef;
  // monsterTemplateDetail: any = new MonsterTemplate();
@@ -60,10 +61,14 @@ export class MonsterDetailsComponent implements OnInit {
       private monsterTemplateService:MonsterTemplateService, private rulesetService: RulesetService,
       private location: PlatformLocation) {
       location.onPopState(() => this.modalService.hide(1));
-      this.route.params.subscribe(params => { this.monsterTemplateId = params['id']; });
-      this.sharedService.shouldUpdateMonsterTemplateList().subscribe(sharedServiceJson => {
+      this.route.params.subscribe(params => { this.monsterId = params['id']; });
+      this.sharedService.shouldUpdateMonsterList().subscribe(sharedServiceJson => {
             if (sharedServiceJson) this.initialize();
-        });
+      });
+      this.sharedService.shouldUpdateDropMonsterList().subscribe(sharedServiceJson => {
+        if (sharedServiceJson) this.initialize();
+      });
+      
     }
 
   //@HostListener('document:click', ['$event.target'])
@@ -89,7 +94,7 @@ export class MonsterDetailsComponent implements OnInit {
             this.IsGm = user.isGm;            
           }
           this.isLoading = true;
-          this.monsterTemplateService.getMonsterById<any>(this.monsterTemplateId)
+          this.monsterTemplateService.getMonsterById<any>(this.monsterId)
             .subscribe(data => {
 
               if (data)
@@ -102,7 +107,7 @@ export class MonsterDetailsComponent implements OnInit {
                }
               this.ruleSetId = this.monsterDetail.ruleSetId;
 
-                this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(this.monsterTemplateId, this.ruleSetId)
+              this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(this.monsterDetail.monsterTemplateId, this.ruleSetId, this.monsterId)
                   .subscribe(data => {
                     this.selectedBuffAndEffects = data.selectedBuffAndEffects;
                     this.selectedAbilities = data.selectedAbilityList;
@@ -165,6 +170,21 @@ export class MonsterDetailsComponent implements OnInit {
       
   
 
+  //editMonster(monster: any) {
+  //  this.bsModalRef = this.modalService.show(EditMonsterComponent, {
+  //    class: 'modal-primary modal-custom',
+  //    ignoreBackdropClick: true,
+  //    keyboard: false
+  //  });
+  //  this.bsModalRef.content.title = 'Edit Monster';
+  //  this.bsModalRef.content.button = 'UPDATE';
+  //  this.bsModalRef.content.monsterVM = this._editMonster;
+  //  this.bsModalRef.content.rulesetID = this.ruleSetId;
+  //  debugger
+  //}
+
+ 
+
   editMonster(monster: any) {
     this.bsModalRef = this.modalService.show(EditMonsterComponent, {
       class: 'modal-primary modal-custom',
@@ -179,52 +199,76 @@ export class MonsterDetailsComponent implements OnInit {
   }
 
   duplicateMonster(monster: any) {
+    // this.alertService.startLoadingMessage("", "Checking records");      
+    this.monsterTemplateService.getMonsterTemplateCount(this.ruleSetId)
+      .subscribe(data => {
+        //this.alertService.stopLoadingMessage();
+        if (data < 2000) {
+          this.bsModalRef = this.modalService.show(CreateMonsterTemplateComponent, {
+            class: 'modal-primary modal-custom',
+            ignoreBackdropClick: true,
+            keyboard: false
+          });
+          this.bsModalRef.content.title = 'Duplicate New Monster';
+          this.bsModalRef.content.button = 'DUPLICATE';
+          this.bsModalRef.content.ruleSetId = this.ruleSetId;
+          debugger
+          this.bsModalRef.content.monsterTemplateVM = this._editMonster;
+          this.bsModalRef.content.isCreatingFromMonsterScreen = true;
 
+
+          //this.bsModalRef.content.title = 'Duplicate Monster Template';
+          //  this.bsModalRef.content.button = 'DUPLICATE';
+          //this.bsModalRef.content.monsterTemplateVM = monsterTemplate;
+          //  this.bsModalRef.content.rulesetID = this.ruleSetId;
+        }
+        else {
+          //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
+          this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
+        }
+      }, error => { }, () => { });
 
   }
 
   deleteMonster(monster: any) {
+    let message = "Are you sure you want to delete this " + monster.name
+      + " Monster?";
 
-
+    this.alertService.showDialog(message,
+      DialogType.confirm, () => this.deleteMonsterHelper(monster), null, 'Yes', 'No');
   }
 
-  //deleteMonsterTemplate(monsterTemplate: MonsterTemplate) {
-  //  let message = "Are you sure you want to delete this " + monsterTemplate.name
-  //    + " Monster Template?";
-
-  //  this.alertService.showDialog(message,
-  //    DialogType.confirm, () => this.deleteMonsterTemplateHelper(monsterTemplate), null, 'Yes', 'No');
-  //}
-
-  //private deleteMonsterTemplateHelper(monsterTemplate: MonsterTemplate) {
-  //  monsterTemplate.ruleSetId = this.ruleSetId;
-  //  this.isLoading = true;
-  //  this.alertService.startLoadingMessage("", "Deleting a Monster Template");
+  private deleteMonsterHelper(monster: any) {
+    monster.ruleSetId = this.ruleSetId;
+    this.isLoading = true;
+    this.alertService.startLoadingMessage("", "Deleting a Monster");
 
 
-  //  this.monsterTemplateService.deleteMonsterTemplate_up(monsterTemplate)
-  //    .subscribe(
-  //      data => {
-  //        this.isLoading = false;
-  //        this.alertService.stopLoadingMessage();
-  //        this.alertService.showMessage("Monster Template has been deleted successfully.", "", MessageSeverity.success);
-  //        //this.initialize();
-  //        //this.location.replaceState('/'); 
-  //        this.router.navigate(['/ruleset/monster-template', this.ruleSetId]);
-  //        //this.initialize();
-  //      },
-  //      error => {
-  //        this.isLoading = false;
-  //        this.alertService.stopLoadingMessage();
-  //        let Errors = Utilities.ErrorDetail("Unable to Delete", error);
-  //        if (Errors.sessionExpire) {
-  //          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-  //          this.authService.logout(true);
-  //        }
-  //        else
-  //          this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-  //      });
-  //}
+    this.monsterTemplateService.deleteMonster_up(monster)
+      .subscribe(
+        data => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          this.alertService.showMessage("Monster has been deleted successfully.", "", MessageSeverity.success);
+          this.router.navigate(['/ruleset/monster', this.ruleSetId]);
+          //this.monsterList = this.monsterList.filter((val) => val.monsterId != monster.monsterId);
+          //try {
+          //  this.noRecordFound = !this.monsterList.length;
+          //} catch (err) { }
+          //this.initialize();
+        },
+        error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let Errors = Utilities.ErrorDetail("Unable to Delete", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        });
+  }
 
   enableCombatTracker(monster: any) {
     //this.isLoading = true;

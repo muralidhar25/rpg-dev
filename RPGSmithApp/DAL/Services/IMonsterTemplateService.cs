@@ -26,7 +26,7 @@ namespace DAL.Services
         bool Core_MonsterTemplateWithParentIDExists(int monsterTemplateId, int RulesetID);
         List<MonsterTemplate> SP_GetMonsterTemplateByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1);
         List<MonsterTemplateCommand> SP_GetMonsterTemplateCommands(int MonsterTemplateId);
-        SP_AssociateForMonsterTemplate SP_GetAssociateRecords(int monsterTemplateId, int rulesetId);
+        SP_AssociateForMonsterTemplate SP_GetAssociateRecords(int monsterTemplateId, int rulesetId, int MonsterID);
         Task<MonsterTemplate> Core_CreateMonsterTemplate(MonsterTemplate MonsterTemplate);
 
         List<MonsterTemplateAbility> insertAssociateAbilities(List<MonsterTemplateAbility> MonsterTemplateAbilityVM);
@@ -41,7 +41,7 @@ void deployMonster(DeployMonsterTemplate model);
         List<ItemMasterForMonsterTemplate> getMonsterItemsToDrop(int monsterId);
         Task DropItemsToLoot(List<ItemMasterForMonsterTemplate> list);
         Task<Monster> UpdateMonster(Monster model);
-
+        Task<bool> DeleteMonster(int monsterId);
         // List<MonsterTemplate> GetByRuleSetId_add(int rulesetId);
 
     }
