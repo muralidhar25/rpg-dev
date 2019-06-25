@@ -233,31 +233,6 @@ export class MonsterTemplateDetailsComponent implements OnInit {
   }
 
 
-   
-
-  
-
-    //enableAbility(ability: Ability) {
-    //    //this.isLoading = true;
-    //    let enableTxt = ability.isEnabled ? 'Disable' : 'Enable';
-    //    this.abilityService.enableAbility(ability.abilityId)
-    //        .subscribe(
-    //            data => {
-    //                this.isLoading = false; 
-    //                this.alertService.stopLoadingMessage();
-    //                ability.isEnabled = ability.isEnabled ? false : true;
-    //            },
-    //            error => {
-    //                this.isLoading = false; 
-    //                this.alertService.stopLoadingMessage();
-    //                let Errors = Utilities.ErrorDetail("Unable to " + enableTxt, error);
-    //                if (Errors.sessionExpire) {
-    //                    this.authService.logout(true);
-    //                }
-    //                else
-    //                    this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-    //            });
-    //}
   useMonsterTemplate(monsterTemplate: any) {
 
     let msg = "The command value for " + monsterTemplate.name
@@ -325,7 +300,6 @@ export class MonsterTemplateDetailsComponent implements OnInit {
   }
 
   deployMonster(monsterInfo) {
-    console.log(monsterInfo);
     this.bsModalRef = this.modalService.show(DeployMonsterComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -335,17 +309,5 @@ export class MonsterTemplateDetailsComponent implements OnInit {
     this.bsModalRef.content.monsterInfo = monsterInfo;
 
   }
-  
-
-  createMonsterGroup() {
-    this.bsModalRef = this.modalService.show(CreateMonsterGroupComponent, {
-      class: 'modal-primary modal-md',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
-    this.bsModalRef.content.title = 'Create Monster Group';
-    this.bsModalRef.content.button = 'Create';
-    this.bsModalRef.content.rulesetID = this.ruleSetId;
-  }
-  
+ 
 }

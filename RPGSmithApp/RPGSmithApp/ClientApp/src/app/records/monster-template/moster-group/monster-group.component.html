@@ -9,8 +9,8 @@
       <div class="col-12 col-md-12">
         <div class="form-group">
           <label for="newItemName">Name</label>
-          <input *ngIf="bundleFormModal.view != 'edit'" type="text" id="newItemName" name="newItemName" class="form-control" placeholder="Bundle Name" [ngStyle]="{'border-color': f.submitted && !newItemName.valid ? 'red' : '#d3cfce'}" [autofocus] [(ngModel)]="bundleFormModal.bundleName" #newItemName="ngModel" required>
-          <input *ngIf="bundleFormModal.view == 'edit'" type="text" id="newItemName" name="newItemName" class="form-control" placeholder="Bundle Name" [ngStyle]="{'border-color': f.submitted && !newItemName.valid ? 'red' : '#d3cfce'}" [(ngModel)]="bundleFormModal.bundleName" #newItemName="ngModel" required>
+          <input *ngIf="bundleFormModal.view != 'edit'" type="text" id="newItemName" name="newItemName" class="form-control" placeholder="Group Name" [ngStyle]="{'border-color': f.submitted && !newItemName.valid ? 'red' : '#d3cfce'}" [autofocus] [(ngModel)]="bundleFormModal.bundleName" #newItemName="ngModel" required>
+          <input *ngIf="bundleFormModal.view == 'edit'" type="text" id="newItemName" name="newItemName" class="form-control" placeholder="Group Name" [ngStyle]="{'border-color': f.submitted && !newItemName.valid ? 'red' : '#d3cfce'}" [(ngModel)]="bundleFormModal.bundleName" #newItemName="ngModel" required>
         </div>
       </div>
     </div>
@@ -101,9 +101,9 @@
 
     <div class="form-row">
       <div class="col-12 col-md-12">
-        <div class="form-group">
-          <label for="contains">Contains</label>
-          <div class="form-group form-group-unlabelled" (click)="addContainerItem(bundleFormModal)">
+        <div class="form-group mb-2">
+          <label for="contains">Monsters</label>
+          <div class="form-group form-group-unlabelled mb-1" (click)="addContainerItem(bundleFormModal)">
             <span class="input-group-btn">
               <button type="button" title="Select Item" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
             </span>
@@ -113,7 +113,7 @@
           </div>
         </div>
       </div>
-      <div class="col-12 col-md-12">
+      <div class="col-12 col-md-12" *ngIf="SelectedItemsList.length">
         <div class="form-group">
           <ul class="input-list-items row">
             <li class="form-check col-md-6 col-sm-12" *ngFor="let item of SelectedItemsList;let i = index;" popover="{{item.itemName}}" triggers="hover">
@@ -131,6 +131,15 @@
             </li>
           </ul>
         </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="checkbox-sec col-md-12">
+        <label class="check-box">
+          <input class="form-check-input" type="checkbox" name="newItem" [checked]="addToCombat" (change)="AddtoCombat($event)" />
+          <span class="checkmark"></span>
+        </label>
+        <span class="icon icon-with-text mt-1 add-combat">Add To combat</span>
       </div>
     </div>
   </div>

@@ -20,6 +20,7 @@ import { MonsterTemplateService } from "../../core/services/monster-template.ser
 import { MonsterTemplate } from "../../core/models/view-models/monster-template.model";
 import { CreateMonsterTemplateComponent } from "./create-monster-template/create-monster-template.component";
 import { DeployMonsterComponent } from "./deploy-monster/deploy-monster.component";
+import { CreateMonsterGroupComponent } from "./moster-group/monster-group.component";
 
 
 @Component({
@@ -639,6 +640,15 @@ export class MonsterTemplateComponent implements OnInit {
      
     }
   }
-  createMonsterGroup() { }
+  createMonsterGroup() {
+    this.bsModalRef = this.modalService.show(CreateMonsterGroupComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Create Monster Group';
+    this.bsModalRef.content.button = 'Create';
+    this.bsModalRef.content.rulesetID = this.ruleSetId;
+  }
 
 }
