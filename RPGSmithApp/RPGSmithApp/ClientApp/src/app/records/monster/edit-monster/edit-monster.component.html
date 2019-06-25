@@ -312,33 +312,14 @@
       </div>
 
 
-      <div class="form-separator"></div>
+      <!--<div class="form-separator"></div>
       <div class="form-row">
         <div class="col-12">
-          <!--<div class="form-group">
-    <label for="newItemSpells">Items</label>
-
-    <span class="custom-checkbox">
-              <input type="checkbox" name="randomization" id="randomization" #randomization="ngModel" [(ngModel)]="monsterFormModal.isRandomizationEngine" /> <span>Randomization Engine</span>
-            </span>
-
-    <angular2-multiselect id="buffAndEffectsList" [data]="abilitiesList" [(ngModel)]="selectedAbilities" name="newAbilities" [settings]="abilitiesSettings">
-      <c-item id="spell">
-        <ng-template let-item="item">
-          <span class="associate-label-name">{{item.name}}</span>
-          <img [src]="item.imageUrl" class="pull-right associate-img"
-               onerror="this.src = '../assets/images/DefaultImages/ability.png'" />
-        </ng-template>
-      </c-item>
-    </angular2-multiselect>
-  </div>-->
+          
           <div class="form-group form-group-unlabelled" (click)="SelectBuffAndEffects()">
             <span class="input-group-btn">
-              Items
-              <!--<button type="button" title="Select Item" [disabled]="pauseBuffAndEffectAdd" data-toggle="tooltip" class="btn icon-Gen-Plus btn-simple-primary "
-          [ngClass]="{'disabled':pauseBuffAndEffectAdd}"></button>-->
-            </span>
-            <!---THIS TAG INPUT IS USED FOR CONTAINS ITEMS SELECTED FROM POPUP-->
+              Items              
+            </span>          
             <tag-input name="contains"
                        (onRemove)="selectedBuffAndEffectsListChanged($event)"
                        [(ngModel)]='SelectedItemsList'
@@ -352,19 +333,11 @@
                        secondaryPlaceholder="Search Buffs & Effects"
                        >
 
-            </tag-input>
-            <!--<angular2-multiselect id="multiBuffAndEffectsList" [data]="buffAndEffectsList" [(ngModel)]="selectedBuffAndEffectsList" name="multiBuffAndEffectsList" [settings]="multichoiceBuffEffectsSettings">
-        <c-item id="buffEffect">
-          <ng-template let-item="item">
-            <span class="associate-label-name">11111</span>
-
-          </ng-template>
-        </c-item>
-      </angular2-multiselect>-->
+            </tag-input>            
           </div>
         </div>
         
-      </div>
+      </div>-->
 
     </div>
 
