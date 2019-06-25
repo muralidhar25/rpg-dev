@@ -46,7 +46,7 @@ export class MonsterTemplateService extends EndpointFactory {
   private readonly getMonsterByIdUrl = this.configurations.baseUrl + "/api/MonsterTemplate/GetMonsterById";
   private readonly getMonsterItemsToDropUrl = this.configurations.baseUrl + "/api/MonsterTemplate/GetMonsterItemsToDrop";
   private readonly dropMonsterItemsUrl = this.configurations.baseUrl + "/api/MonsterTemplate/dropMonsterItems";
-
+  private readonly addMonsterUrl = this.configurations.baseUrl + "";
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
@@ -177,6 +177,16 @@ export class MonsterTemplateService extends EndpointFactory {
         return this.handleError(error, () => this.dropMonsterItems(monsterItems));
       });
   }
+
+  addMonster<T>(monsters): Observable<T> {
+    let endpointUrl = `${this.addMonsterUrl}`;
+
+    return this.http.post(endpointUrl, JSON.stringify(monsters), { headers: this.getRequestHeadersNew(), responseType: "text" })
+      .catch(error => {
+        return this.handleError(error, () => this.addMonster(monsters));
+      });
+  }
+
 
   createMonsterTemplate<T>(MonsterTemplate: MonsterTemplate, isCreatingFromMonsterScreen: boolean, armorClass: number, health: number, challangeRating: number, xpValue: number): Observable<T> {
 
@@ -429,7 +439,7 @@ export class MonsterTemplateService extends EndpointFactory {
         monsterTemplateAssociateMonsterTemplates: monsterTemplateVM.monsterTemplateAssociateMonsterTemplates == null ? [] : monsterTemplateVM.monsterTemplateAssociateMonsterTemplates,
         monsterTemplateAssociateMonsterTemplateVM: monsterTemplateVM.monsterTemplateAssociateMonsterTemplateVM == undefined ? [] : monsterTemplateVM.monsterTemplateAssociateMonsterTemplateVM,
 
-
+        addToCombatTracker: monsterVM.addToCombatTracker,
         monsterHealthCurrent: monsterVM.healthCurrent,
         monsterHealthMax: monsterVM.healthMax,
         monsterArmorClass: monsterVM.armorClass,
@@ -460,7 +470,6 @@ export class MonsterTemplateService extends EndpointFactory {
         challangeRating: '',
         initiativeCommand: '',
         isRandomizationEngine: false,
-
 
 
 

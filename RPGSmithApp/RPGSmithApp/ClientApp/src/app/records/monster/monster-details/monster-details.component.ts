@@ -17,6 +17,9 @@ import { MonsterTemplate } from "../../../core/models/view-models/monster-templa
 import { MonsterTemplateService } from "../../../core/services/monster-template.service";
 import { DropItemsMonsterComponent } from "../drop-items-monster/drop-items-monster.component";
 import { EditMonsterComponent } from "../edit-monster/edit-monster.component";
+import { CastComponent } from "../../../shared/cast/cast.component";
+import { Characters } from "../../../core/models/view-models/characters.model";
+import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
 //import { CreateMonsterTemplateComponent } from "../create-monster-template/create-monster-template.component";
 //import { DeployMonsterComponent } from "../deploy-monster/deploy-monster.component";
 //import { DropItemsMonsterComponent } from "../drop-items-monster/drop-items-monster.component";
@@ -101,7 +104,6 @@ export class MonsterDetailsComponent implements OnInit {
 
                 this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(this.monsterTemplateId, this.ruleSetId)
                   .subscribe(data => {
-                    console.log('result', data);
                     this.selectedBuffAndEffects = data.selectedBuffAndEffects;
                     this.selectedAbilities = data.selectedAbilityList;
                     this.selectedSpells = data.selectedSpellList;
@@ -225,7 +227,6 @@ export class MonsterDetailsComponent implements OnInit {
   //}
 
   enableCombatTracker(monster: any) {
-    console.log('monster',monster);
     //this.isLoading = true;
     let enableTxt = monster.addToCombatTracker ? 'Disable' : 'Enable';
     let enableCombatTracker = !monster.addToCombatTracker;
@@ -250,72 +251,83 @@ export class MonsterDetailsComponent implements OnInit {
    
   }
    
-  dropMonsterItems(monster: any) {
+  dropMonsterItems() {
       this.bsModalRef = this.modalService.show(DropItemsMonsterComponent, {
         class: 'modal-primary modal-md',
         ignoreBackdropClick: true,
         keyboard: false
       });
       this.bsModalRef.content.title = 'Drop Items';
-    this.bsModalRef.content.button = 'Drop';
-    this.bsModalRef.content.monsterId = this._editMonster.monsterId;
-    this.bsModalRef.content.rulesetID = this.ruleSetId;
+      this.bsModalRef.content.button = 'Drop';
+      this.bsModalRef.content.monsterId = this._editMonster.monsterId;
+      this.bsModalRef.content.rulesetID = this.ruleSetId;
     }
-
-
-  useMonster(monster: any) {
-
-  }
-
   
+  useMonster() {
 
-    //enableAbility(ability: Ability) {
-    //    //this.isLoading = true;
-    //    let enableTxt = ability.isEnabled ? 'Disable' : 'Enable';
-    //    this.abilityService.enableAbility(ability.abilityId)
-    //        .subscribe(
-    //            data => {
-    //                this.isLoading = false; 
-    //                this.alertService.stopLoadingMessage();
-    //                ability.isEnabled = ability.isEnabled ? false : true;
-    //            },
-    //            error => {
-    //                this.isLoading = false; 
-    //                this.alertService.stopLoadingMessage();
-    //                let Errors = Utilities.ErrorDetail("Unable to " + enableTxt, error);
-    //                if (Errors.sessionExpire) {
-    //                    this.authService.logout(true);
-    //                }
-    //                else
-    //                    this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-    //            });
-    //}
-  useMonsterTemplate(monsterTemplate: any) {
+    let _monstertemplate = Object.assign({}, this._editMonster.monsterTemplate);
+    _monstertemplate.imageUrl = this._editMonster.imageUrl;
+    _monstertemplate.name = this._editMonster.name;
 
-    let msg = "The command value for " + monsterTemplate.name
-      + " Monster Template has not been provided. Edit this record to input one.";
+    if (_monstertemplate.monsterTemplateId) {
+      this.monsterTemplateService.getMonsterTemplateCommands_sp<any>(_monstertemplate.monsterTemplateId)
+        .subscribe(data => {
+          if (data.length > 0) {
+            this.bsModalRef = this.modalService.show(CastComponent, {
+              class: 'modal-primary modal-md',
+              ignoreBackdropClick: true,
+              keyboard: false
+            });
 
-    if (monsterTemplate.monsterTemplateCommand == undefined || monsterTemplate.monsterTemplateCommand == null) {
-      this.alertService.showDialog(msg, DialogType.alert, () => this.useMonsterTemplateHelper(monsterTemplate));
+            this.bsModalRef.content.title = "Monster Commands";
+            this.bsModalRef.content.ListCommands = data;
+            this.bsModalRef.content.Command = _monstertemplate;
+            this.bsModalRef.content.Character = new Characters();
+            this.bsModalRef.content.recordType = 'monster';
+            this.bsModalRef.content.recordId = this._editMonster.monsterId;
+          } else {
+
+            this.useCommand(_monstertemplate, this._editMonster);
+          }
+        }, error => { }, () => { });
     }
-    else if (monsterTemplate.monsterTemplateCommand.length == 0) {
-      this.alertService.showDialog(msg, DialogType.alert, () => this.useMonsterTemplateHelper(monsterTemplate));
-    }
-    else {
+  }
+
+  useCommand(monsterTemplate: any, monster) {
+   
+    let msg = "The command value for " + monster.name
+      + " Monster has not been provided. Edit this record to input one.";
+    if (monsterTemplate.command == undefined || monsterTemplate.command == null || monsterTemplate.command == '') {
+      this.alertService.showDialog(msg, DialogType.alert, () => this.useMonsterTemplateHelper(monsterTemplate, monster));
+    }else {
       //TODO
-      this.useMonsterTemplateHelper(monsterTemplate);
+      this.useMonsterTemplateHelper(monsterTemplate, monster);
     }
   }
 
-  private useMonsterTemplateHelper(monsterTemplate: MonsterTemplate) {
-    this.isLoading = true;
-    this.alertService.startLoadingMessage("", "TODO => Use Monster Template");
-    //TODO- PENDING ACTION
-    setTimeout(() => {
-    this.isLoading = false;
-      this.alertService.stopLoadingMessage();
-    }, 200);
+  private useMonsterTemplateHelper(monsterTemplate: MonsterTemplate, monster) {
+
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.command = monsterTemplate.command;
+    if (monsterTemplate.hasOwnProperty("monsterTemplateId")) {
+      this.bsModalRef.content.recordName = monster.name;
+      this.bsModalRef.content.recordImage = monster.imageUrl;
+      this.bsModalRef.content.recordType = 'monster';
+      this.bsModalRef.content.recordId = monster.monsterId;
+    }
+    this.bsModalRef.content.event.subscribe(result => {
+    });
   }
+
+   
 
    
     RedirectBack() {
@@ -356,38 +368,8 @@ export class MonsterDetailsComponent implements OnInit {
     this.router.navigate(['/ruleset/item-details', Itemid]);
   }
 
-  deployMonster(monsterInfo) {
-    //console.log(monsterInfo);
-    //this.bsModalRef = this.modalService.show(DeployMonsterComponent, {
-    //  class: 'modal-primary modal-md',
-    //  ignoreBackdropClick: true,
-    //  keyboard: false
-    //});
-    //this.bsModalRef.content.title = "Quantity";
-    //this.bsModalRef.content.monsterInfo = monsterInfo;
+  
+  
 
-  }
-  DropItem() {
-    console.log('Dropitem');
-    //this.bsModalRef = this.modalService.show(DropItemsMonsterComponent, {
-    //  class: 'modal-primary modal-md',
-    //  ignoreBackdropClick: true,
-    //  keyboard: false
-    //});
-    //this.bsModalRef.content.title = 'Drop Items';
-    //this.bsModalRef.content.button = 'Drop';
-    //this.bsModalRef.content.rulesetID = this.ruleSetId;
-  }
-
-  createMonsterGroup() {
-    //this.bsModalRef = this.modalService.show(CreateMonsterGroupComponent, {
-    //  class: 'modal-primary modal-md',
-    //  ignoreBackdropClick: true,
-    //  keyboard: false
-    //});
-    //this.bsModalRef.content.title = 'Create Monster Group';
-    //this.bsModalRef.content.button = 'Create';
-    //this.bsModalRef.content.rulesetID = this.ruleSetId;
-  }
   
 }

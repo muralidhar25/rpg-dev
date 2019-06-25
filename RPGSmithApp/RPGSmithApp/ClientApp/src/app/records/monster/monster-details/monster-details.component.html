@@ -31,7 +31,7 @@
                     <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
                   </li>
                   <li *ngIf="IsGm" class="hidden-tab">
-                    <a [routerLink]="['/ruleset/monster-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-MonsterTemp"> <span>Monster</span></a>
+                    <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-MonsterTemp"> <span>Monster</span></a>
                   </li>
                   <!--<li class="hidden-tab"  *ngIf="monsterTemplateDetail?.ruleset" >
           <a [routerLink]="['/ruleset/character-stats/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
@@ -52,7 +52,7 @@
                             <a [routerLink]="charNav?.spells" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
                           </li>
                           <li *ngIf="IsGm" class="dropdown-menu-item">
-                            <a [routerLink]="['/ruleset/monster-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-MonsterTemp"> <span>Monster</span></a>
+                            <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-MonsterTemp"> <span>Monster</span></a>
                           </li>
 
                           <!--<li class="dropdown-menu-item" *ngIf="monsterTemplateDetail?.ruleset">
@@ -159,10 +159,10 @@
                       <button type="button" (click)="enableCombatTracker(monsterDetail)" class="btn  btn-accent "  [ngClass]="{'icon-Rec-Add':!monsterDetail?.addToCombatTracker,'icon-Rec-Remove':monsterDetail?.addToCombatTracker}"> Combat</button>
                     </li>
                     <li>
-                      <button type="button" (click)="dropMonsterItems(monsterDetail)" class="btn icon  icon-with-text icon-Rec-Drop btn-accent"> Drop</button>
+                      <button type="button" (click)="dropMonsterItems()" class="btn icon  icon-with-text icon-Rec-Drop btn-accent"> Drop</button>
                     </li>
                     <li>
-                      <button type="button" (click)="useMonster(monsterDetail)" class="btn  icon icon-with-text icon-Tile-Execute btn-accent"> Attack</button>
+                      <button *ngIf="monsterDetail?.command" type="button" (click)="useMonster()" class="btn  icon icon-with-text icon-Tile-Execute btn-accent"> Attack</button>
                     </li>
                   </ul>
                 </div>

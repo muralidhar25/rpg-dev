@@ -3921,6 +3921,10 @@ export class DiceRollComponent implements OnInit {
         this.diceNav = '/character/ability-details/' + this.recordId;
         break;
 
+      case 'monster':
+        this.diceNav = '/ruleset/monster-details/' + this.recordId;
+        break;
+
       case 'ch-rs-ability':
         this.diceNav = '/character/ruleset/ability-details/' + this.recordId;
         break;

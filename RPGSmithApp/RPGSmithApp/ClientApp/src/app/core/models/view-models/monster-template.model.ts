@@ -84,6 +84,7 @@ export class MonsterTemplate {
   public monsterArmorClass: number;
   public monsterChallangeRating: number;
   public monsterXPValue: number;
+  public addToCombatTracker: boolean;
   //public monsterImage: string;
   //public monsterName: string;
   //public monsterMetatags: string;

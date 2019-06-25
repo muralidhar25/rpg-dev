@@ -1,4 +1,4 @@
-<form name="itemsForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
+<form name="itemsForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm(characterItemModal)">
 
     <div class="modal-header">
         <h5 class="modal-title" id="addItemPopupTitle">{{title}}</h5>
@@ -12,7 +12,7 @@
                     <span class="input-group-btn">
                         <button type="button" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
                     </span>
-                    <input type="text" id="addItemSearchQuery" name="addItemSearchQuery" class="form-control" placeholder="Search item"
+                    <input type="text" id="addItemSearchQuery" name="addItemSearchQuery" class="form-control" placeholder="Search Monsters"
                            [(ngModel)]="searchText" />
 
                 </div>
@@ -20,8 +20,8 @@
 
             <div class="col-12 col-md-12 col-sm-12">
                 <fieldset class="form-group input-list input-list-wrap items">
-                    <legend *ngIf="itemsList?.length == 0">No Item Template Available</legend>
-                    <legend *ngIf="itemsList?.length > 0">Select Item Template</legend>
+                  <legend *ngIf="itemsList?.length == 0">No Monster Template Available</legend>
+                    <legend *ngIf="itemsList?.length > 0">Select Monster Template</legend>
                     <ul class="input-list-items">
                         <li class="form-check col-md-6 col-sm-12" *ngFor="let item of itemsList | filter : searchText : 'itemName';let i = index;"  popover="{{item.itemName}}" triggers="hover">
                           <label class="form-check-label">

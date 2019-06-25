@@ -14,14 +14,15 @@ import { ItemMasterService } from '../../../core/services/item-master.service';
 import { CommonService } from '../../../core/services/shared/common.service';
 import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
 import { AuthService } from '../../../core/auth/auth.service';
+import { MonsterTemplateService } from '../../../core/services/monster-template.service';
 
 
 @Component({
-    selector: 'app-add-item-monster',
-    templateUrl: './add-item-monster.component.html',
-    styleUrls: ['./add-item-monster.component.scss']
+    selector: 'app-add-monster',
+    templateUrl: './add-monster.component.html',
+    styleUrls: ['./add-monster.component.scss']
 })
-export class AddItemMonsterComponent implements OnInit {
+export class AddMonsterComponent implements OnInit {
 
   public event: EventEmitter<any> = new EventEmitter();
     isLoading = false;
@@ -33,11 +34,12 @@ export class AddItemMonsterComponent implements OnInit {
     searchText: string;
     itemsList: any[] = [];
     selectedItemsList: any[] = [];
+
     constructor(
         private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
         public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
         private sharedService: SharedService, private commonService: CommonService,
-        private itemsService: ItemsService, private itemMasterService: ItemMasterService
+      private itemsService: ItemsService, private itemMasterService: ItemMasterService, private monsterTemplateService: MonsterTemplateService
     ) {
         this.route.params.subscribe(params => { this.characterId = params['id']; });
     }
@@ -47,21 +49,7 @@ export class AddItemMonsterComponent implements OnInit {
 
             this.title = this.bsModalRef.content.title;
             this._view = this.bsModalRef.content.button;
-          this.rulesetId = this.bsModalRef.content.rulesetID;
-
-          //let selectedItems: any[] = this.bsModalRef.content.SelectedItemsList;
-          //if (selectedItems) {
-          //  if (selectedItems.length) {
-          //    this.selectedItemsList = selectedItems;
-          //  }
-          //}
-          let SelectedBuffs: any[] = this.bsModalRef.content.SelectedItemsList;
-          if (SelectedBuffs) {
-            if (SelectedBuffs.length) {
-              this.selectedItemsList = SelectedBuffs;
-              console.log(this.selectedItemsList);
-            }
-          }
+            this.rulesetId = this.bsModalRef.content.rulesetID;
             if (this.rulesetId == undefined)
                 this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 
@@ -98,10 +86,10 @@ export class AddItemMonsterComponent implements OnInit {
 
       if (event.target.checked) {
         const _containsItems = Object.assign([], this.selectedItemsList);
-        _containsItems.push({ text: itemMaster.itemName, itemId: itemMaster.itemMasterId, image: itemMaster.itemImage, quantity: itemMaster.quantity });
+        _containsItems.push(itemMaster);
         this.selectedItemsList = _containsItems;
         } else {
-            let _item = { text: itemMaster.itemName, itemId: itemMaster.itemMasterId, image: itemMaster.itemImage, quantity: itemMaster.quantity };
+        let _item = itemMaster;
             const index: number = this.selectedItemsList.indexOf(_item);
             if (index !== -1) {
               this.selectedItemsList.splice(index, 1);
@@ -115,26 +103,42 @@ export class AddItemMonsterComponent implements OnInit {
     }
 
   submitForm() {
-    console.log(this.selectedItemsList);
-    this.isLoading = true;
-    this.event.emit(this.selectedItemsList);
-    this.isLoading = false;
-    this.close();
+
+    debugger;
+    if (this.selectedItemsList.length) {
+      this.isLoading = true;
+      let _msg = ' Adding Monster ....';
+      this.alertService.startLoadingMessage("", _msg);
+      this.monsterTemplateService.addMonster(this.selectedItemsList)
+        .subscribe(data => {
+          this.alertService.stopLoadingMessage();
+          this.isLoading = false;
+          this.close();
+        }, error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          this.alertService.showMessage(error, "", MessageSeverity.error);
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+        }, () => { });
+    } else {
+      let message = 'Please select atleast one Monster';
+      this.alertService.showMessage(message, "", MessageSeverity.error);
+    }
+   
   }
 
   quantityChanged(quantity, item) {
-    console.log(quantity, item.quantity);
-    
        this.selectedItemsList.map(function (itm) {
-         if (itm.itemId == item.itemMasterId) {
+         if (itm.itemId == item.itemId) {
            itm.quantity = quantity;
          }
       });
   }
-  
-
-    close() {
+  close() {
         this.bsModalRef.hide();
-    }
+   }
 
 }

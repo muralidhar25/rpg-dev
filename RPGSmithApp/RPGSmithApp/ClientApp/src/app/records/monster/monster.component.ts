@@ -20,6 +20,10 @@ import { MonsterTemplateService } from "../../core/services/monster-template.ser
 import { MonsterTemplate } from "../../core/models/view-models/monster-template.model";
 import { EditMonsterComponent } from "./edit-monster/edit-monster.component";
 import { CreateMonsterTemplateComponent } from "../monster-template/create-monster-template/create-monster-template.component";
+import { DropItemsMonsterComponent } from "./drop-items-monster/drop-items-monster.component";
+import { AddMonsterComponent } from "./Add-monster/add-monster.component";
+import { ItemsService } from "../../core/services/items.service";
+import { CastComponent } from "../../shared/cast/cast.component";
 
 @Component({
   selector: 'app-monster',
@@ -53,7 +57,8 @@ export class MonsterComponent implements OnInit {
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
         private sharedService: SharedService, private commonService: CommonService, private pageLastViewsService: PageLastViewsService,
-      private monsterTemplateService: MonsterTemplateService, private rulesetService: RulesetService, public appService: AppService1
+      private monsterTemplateService: MonsterTemplateService, private itemsService: ItemsService,
+      private rulesetService: RulesetService, public appService: AppService1
     ) {
         
       this.sharedService.shouldUpdateMonsterList().subscribe(sharedServiceJson => {
@@ -368,33 +373,77 @@ export class MonsterComponent implements OnInit {
                     else
                         this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
                 });
+  }
+
+
+
+
+  useMonster(monster: any) {
+    //let _monstertemplate = monster.monsterTemplate;
+    let _monstertemplate = Object.assign({}, monster.monsterTemplate);
+      _monstertemplate.imageUrl = monster.imageUrl;
+      _monstertemplate.name = monster.name;
+    if (_monstertemplate.monsterTemplateId) {
+      this.monsterTemplateService.getMonsterTemplateCommands_sp<any>(_monstertemplate.monsterTemplateId)
+        .subscribe(data => {
+          if (data.length > 0) {
+            this.bsModalRef = this.modalService.show(CastComponent, {
+              class: 'modal-primary modal-md',
+              ignoreBackdropClick: true,
+              keyboard: false
+            });
+
+            this.bsModalRef.content.title = "Monster Commands";
+            this.bsModalRef.content.ListCommands = data;
+            this.bsModalRef.content.Command = _monstertemplate;
+            this.bsModalRef.content.Character = new Characters();
+            this.bsModalRef.content.recordType = 'monster';
+            this.bsModalRef.content.recordId = monster.monsterId;
+          } else {
+            this.useCommand(_monstertemplate, monster);
+          }
+        }, error => { }, () => { });
     }
 
-  //useMonster(monsterTemplate: any, monsterName: string) {
+  }
+
+  
+
+  useCommand(monsterTemplate: any, monster) {
         
-  //  let msg = "The command value for " + monsterName
-  //        + " Monster has not been provided. Edit this record to input one.";
+    let msg = "The command value for " + monster.name
+          + " Monster has not been provided. Edit this record to input one.";
+    
+      if (monsterTemplate.command == undefined || monsterTemplate.command == null || monsterTemplate.command == '') {
+            this.alertService.showDialog(msg, DialogType.alert, () => this.useMonsterTemplateHelper(monsterTemplate, monster));
+       }else {
+              //TODO
+            this.useMonsterTemplateHelper(monsterTemplate, monster);
+      }
+    }
 
-  //  if (monsterTemplate.monsterTemplateCommand == undefined || monsterTemplate.monsterTemplateCommand == null) {
-  //    this.alertService.showDialog(msg, DialogType.alert, () => this.useMonsterTemplateHelper(monsterTemplate));
-  //      }
-  //  else if (monsterTemplate.monsterTemplateCommand.length == 0) {
-  //    this.alertService.showDialog(msg, DialogType.alert, () => this.useMonsterTemplateHelper(monsterTemplate));
-  //      }
-  //      else {
-  //          //TODO
-  //    this.useMonsterTemplateHelper(monsterTemplate);
-  //      }
-  //  }
+  private useMonsterTemplateHelper(monsterTemplate: MonsterTemplate, monster) {
+   
+      this.bsModalRef = this.modalService.show(DiceRollComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = "Dice";
+      this.bsModalRef.content.tile = -2;
+      this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.command = monsterTemplate.command;
+    if (monsterTemplate.hasOwnProperty("monsterTemplateId")) {
+      this.bsModalRef.content.recordName = monster.name;
+      this.bsModalRef.content.recordImage = monster.imageUrl;
+      this.bsModalRef.content.recordType = 'monster';
+      this.bsModalRef.content.recordId = monster.monsterId;
+      }
+      this.bsModalRef.content.event.subscribe(result => {
+      });
 
-  //private useMonsterTemplateHelper(monsterTemplate: MonsterTemplate) {
-  //      this.isLoading = true;
-  //  this.alertService.startLoadingMessage("", "TODO => Use Monster Template");
-  //      //TODO- PENDING ACTION
-  //      setTimeout(() => { this.isLoading = false; 
-  //          this.alertService.stopLoadingMessage();
-  //      }, 200);
-  //  }
+    }
 
     private destroyModalOnInit(): void {
         try {
@@ -453,5 +502,26 @@ export class MonsterComponent implements OnInit {
     this.bsModalRef.content.isFromCampaignDetail = true;
   }
   
-  addMonster() { }
+  addMonster() {
+    this.bsModalRef = this.modalService.show(AddMonsterComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Add Monsters';
+    this.bsModalRef.content.button = 'ADD';
+    this.bsModalRef.content.rulesetID = this.ruleSetId;
+  }
+
+  dropMonsterItems(monster : any){
+    this.bsModalRef = this.modalService.show(DropItemsMonsterComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Drop Items';
+    this.bsModalRef.content.button = 'Drop';
+    this.bsModalRef.content.monsterId = monster.monsterId;
+    this.bsModalRef.content.rulesetID = this.ruleSetId;
+  }
 }

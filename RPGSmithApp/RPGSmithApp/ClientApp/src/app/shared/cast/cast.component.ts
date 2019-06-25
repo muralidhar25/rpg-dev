@@ -83,6 +83,13 @@ export class CastComponent implements OnInit {
           this.bsModalRef.content.recordType = this.recordType;
           this.bsModalRef.content.recordId = this.recordId;
         }
+        if (Command.hasOwnProperty("monsterTemplateId")) {
+         
+          this.bsModalRef.content.recordName = this.CommandData.name;
+          this.bsModalRef.content.recordImage = this.CommandData.imageUrl;
+          this.bsModalRef.content.recordType = this.recordType;
+          this.bsModalRef.content.recordId = this.recordId;
+        }
         this.bsModalRef.content.isFromCampaignDetail = true;
       } else {
 
@@ -105,6 +112,11 @@ export class CastComponent implements OnInit {
           this.bsModalRef.content.recordImage = this.CommandData.imageUrl;
         }
         else if (this.CommandData.hasOwnProperty("buffAndEffectId")) {
+          this.bsModalRef.content.recordName = this.CommandData.name;
+          this.bsModalRef.content.recordImage = this.CommandData.imageUrl;
+        }
+        else if (this.CommandData.hasOwnProperty("monsterTemplateId")) {
+       
           this.bsModalRef.content.recordName = this.CommandData.name;
           this.bsModalRef.content.recordImage = this.CommandData.imageUrl;
         }
