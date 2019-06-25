@@ -105,8 +105,7 @@ export class DropItemsMonsterComponent implements OnInit {
 
   submitForm() {
     
-    console.log(this.selectedItemsList.length);
-    debugger;
+    
     if (this.selectedItemsList.length) {
       this.isLoading = true;
       let _msg = 'Droping Monster Items ...';
@@ -116,6 +115,7 @@ export class DropItemsMonsterComponent implements OnInit {
           this.alertService.stopLoadingMessage();
           this.isLoading = false;
           this.close();
+          this.sharedService.updateDropMonsterList(true);
         }, error => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();

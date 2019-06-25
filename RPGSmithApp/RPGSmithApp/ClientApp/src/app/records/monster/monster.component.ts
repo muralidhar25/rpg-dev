@@ -338,7 +338,7 @@ export class MonsterComponent implements OnInit {
     debugger
     }
 
-  duplicateMonster(monsterTemplate: MonsterTemplate) {
+  duplicateMonster(monster: any) {
         // this.alertService.startLoadingMessage("", "Checking records");      
         this.monsterTemplateService.getMonsterTemplateCount(this.ruleSetId)
             .subscribe(data => {
@@ -353,7 +353,7 @@ export class MonsterComponent implements OnInit {
                   this.bsModalRef.content.button = 'DUPLICATE';
                   this.bsModalRef.content.ruleSetId = this.ruleSetId;
                   debugger
-                  this.bsModalRef.content.monsterTemplateVM = monsterTemplate;
+                  this.bsModalRef.content.monsterTemplateVM = monster.monsterTemplate;
                   this.bsModalRef.content.isCreatingFromMonsterScreen = true;
 
 
@@ -370,44 +370,44 @@ export class MonsterComponent implements OnInit {
        
     }
 
-  //deleteMonster(monster: Monster) {
-  //  let message = "Are you sure you want to delete this " + monster.name
-  //    + " Monster?";
+  deleteMonster(monster: any) {
+    let message = "Are you sure you want to delete this " + monster.name
+      + " Monster?";
 
-  //      this.alertService.showDialog(message,
-  //        DialogType.confirm, () => this.deleteMonsterHelper(monster), null, 'Yes', 'No');
-  //  }
+        this.alertService.showDialog(message,
+          DialogType.confirm, () => this.deleteMonsterHelper(monster), null, 'Yes', 'No');
+    }
 
-  //private deleteMonsterHelper(monster: Monster) {
-  //  monsterTemplate.ruleSetId = this.ruleSetId;
-  //      this.isLoading = true;
-  //  this.alertService.startLoadingMessage("", "Deleting a Monster");
+  private deleteMonsterHelper(monster: any) {
+    monster.ruleSetId = this.ruleSetId;
+        this.isLoading = true;
+    this.alertService.startLoadingMessage("", "Deleting a Monster");
 
        
-  //  this.monsterTemplateService.deleteMonster_up(monster)
-  //          .subscribe(
-  //              data => {
-  //                  this.isLoading = false;
-  //                  this.alertService.stopLoadingMessage();
-  //                this.alertService.showMessage("Monster has been deleted successfully.", "", MessageSeverity.success);
-  //                this.monsterList = this.monsterList.filter((val) => val.monsterId != monster.monsterId);
-  //                  try {
-  //                      this.noRecordFound = !this.monsterList.length;
-  //                  } catch (err) { }
-  //                  //this.initialize();
-  //              },
-  //              error => {
-  //                  this.isLoading = false;
-  //                  this.alertService.stopLoadingMessage();
-  //                  let Errors = Utilities.ErrorDetail("Unable to Delete", error);
-  //                  if (Errors.sessionExpire) {
-  //                      //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-  //                      this.authService.logout(true);
-  //                  }
-  //                  else
-  //                      this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-  //              });
-  //  }
+    this.monsterTemplateService.deleteMonster_up(monster)
+            .subscribe(
+                data => {
+                    this.isLoading = false;
+                    this.alertService.stopLoadingMessage();
+                  this.alertService.showMessage("Monster has been deleted successfully.", "", MessageSeverity.success);
+                  this.monsterList = this.monsterList.filter((val) => val.monsterId != monster.monsterId);
+                    try {
+                        this.noRecordFound = !this.monsterList.length;
+                    } catch (err) { }
+                    //this.initialize();
+                },
+                error => {
+                    this.isLoading = false;
+                    this.alertService.stopLoadingMessage();
+                    let Errors = Utilities.ErrorDetail("Unable to Delete", error);
+                    if (Errors.sessionExpire) {
+                        //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                        this.authService.logout(true);
+                    }
+                    else
+                        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+                });
+    }
 
     enableCombatTracker(monster: any) {
         //this.isLoading = true;
