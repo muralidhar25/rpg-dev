@@ -170,7 +170,7 @@
                           <ul class="item-properties">
                             <li class="item-property item-property-text weight" *ngIf="monster?.challangeRating">CR: {{monster?.challangeRating}}</li>
                             <li class="item-property item-property-text weight" *ngIf="monster?.armorClass">AC: {{monster?.armorClass}}</li>
-                            <li class="item-property item-property-text weight" *ngIf="monster?.health">H: {{monster?.healthCurrent}} /  {{monster?.healthMax}}</li>
+                            <li class="item-property item-property-text weight" *ngIf="monster?.healthCurrent || monster?.healthMax">H: {{monster?.healthCurrent}} /  {{monster?.healthMax}}</li>
                           </ul>
                           <ul class="item-properties " *ngIf="isListView || isDenseView">
                             <li *ngIf="monster?.addToCombatTracker" title="Combat" data-toggle="tooltip">

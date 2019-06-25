@@ -591,7 +591,7 @@ export class MonsterTemplateComponent implements OnInit {
         this.monsterFilter.name = 'ChallangeRating';
         this.monsterFilter.icon = '';
         break;
-      case 2: //Health
+      case 3: //Health
         this.monsterFilter.viewableCount = 0;
         this.monsterTemplateList.map((item) => {
           if (item.health) {
