@@ -153,22 +153,28 @@ namespace DAL.Services
             List<MonsterTemplateMonster> MonsterTemplateMonsterVM,
             List<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffectVM,
             List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM,
-            List<MonsterTemplateSpell> MonsterTemplateSpellVM,bool deleteItemMasters=true)
+            List<MonsterTemplateSpell> MonsterTemplateSpellVM,bool IsFromMonsterTemplateScreen = true)
         {
             var monsterTemplate = _context.MonsterTemplates.FirstOrDefault(x => x.MonsterTemplateId == item.MonsterTemplateId);
 
             if (monsterTemplate == null)
                 return monsterTemplate;
 
-            monsterTemplate.Name = item.Name;
+            if (IsFromMonsterTemplateScreen)
+            {
+                monsterTemplate.Name = item.Name;
+                monsterTemplate.ImageUrl = item.ImageUrl;
+                monsterTemplate.Metatags = item.Metatags;
+            }
+            
 
             monsterTemplate.Command = item.Command;
             monsterTemplate.CommandName = item.CommandName;
             monsterTemplate.Description = item.Description;
             monsterTemplate.Stats = item.Stats;
-            monsterTemplate.ImageUrl = item.ImageUrl;
+           
 
-            monsterTemplate.Metatags = item.Metatags;
+           
 
             monsterTemplate.ArmorClass = item.ArmorClass;
             monsterTemplate.ChallangeRating = item.ChallangeRating;
@@ -190,7 +196,7 @@ namespace DAL.Services
             _context.MonsterTemplateSpells.RemoveRange(_context.MonsterTemplateSpells.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
             _context.MonsterTemplateBuffAndEffects.RemoveRange(_context.MonsterTemplateBuffAndEffects.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
             _context.MonsterTemplateMonsters.RemoveRange(_context.MonsterTemplateMonsters.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
-            if (deleteItemMasters)
+            if (IsFromMonsterTemplateScreen)
             {
                 _context.MonsterTemplateItemMasters.RemoveRange(_context.MonsterTemplateItemMasters.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
             }
@@ -248,7 +254,7 @@ namespace DAL.Services
                 _context.MonsterTemplateMonsters.AddRange(Mlist);
 
                 
-                if (deleteItemMasters)
+                if (IsFromMonsterTemplateScreen)
                 {
                     List<MonsterTemplateItemMaster> Ilist = new List<MonsterTemplateItemMaster>();
                     foreach (var be in MonsterTemplateItemMasterVM)

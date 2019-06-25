@@ -364,13 +364,7 @@ namespace RPGSmithApp.Controllers
             }
             else
             {
-                if (becIds.Count > 0)
-                {
-                    foreach (var id in becIds)
-                    {
-                        await _monsterTemplateCommandService.DeleteMonsterTemplateCommand(id);
-                    }
-                }
+                await _monsterTemplateCommandService.DeleteMonsterTemplateAllCommands(result.MonsterTemplateId);
             }
 
             
@@ -407,8 +401,8 @@ namespace RPGSmithApp.Controllers
             if (monsterTemplate == null)
                 return Ok("Monster Template not found");
 
-            if (monsterTemplate.MonsterTemplateCommands.Count > 0)
-                becIds.AddRange(monsterTemplate.MonsterTemplateCommands.Select(x => x.MonsterTemplateCommandId).ToList());
+            if (model.MonsterTemplateCommandVM.Count > 0)
+                becIds.AddRange(model.MonsterTemplateCommandVM.Select(x => x.MonsterTemplateCommandId).ToList());
 
 
             if (model.MonsterTemplateCommandVM != null && model.MonsterTemplateCommandVM.Count > 0)
@@ -447,13 +441,9 @@ namespace RPGSmithApp.Controllers
             }
             else
             {
-                if (becIds.Count > 0)
-                {
-                    foreach (var id in becIds)
-                    {
-                        await _monsterTemplateCommandService.DeleteMonsterTemplateCommand(id);
-                    }
-                }
+                
+                        await _monsterTemplateCommandService.DeleteMonsterTemplateAllCommands(result.MonsterTemplateId);
+                  
             }
 
 

@@ -15,7 +15,7 @@ namespace DAL.Services
             List<MonsterTemplateMonster> MonsterTemplateMonsterVM,
             List<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffectVM,
             List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM,
-            List<MonsterTemplateSpell> MonsterTemplateSpellVM,bool deleteItemMasters= true
+            List<MonsterTemplateSpell> MonsterTemplateSpellVM,bool IsFromMonsterTemplateScreen= true
             );
         Task<bool> Delete(int id);
         MonsterTemplate GetById(int? id);
