@@ -24,7 +24,7 @@ namespace DAL.Services
         int Core_GetCountByRuleSetId(int ruleSetId, int parentID);
         Task<bool> CheckDuplicateMonsterTemplate(string value, int? ruleSetId, int? MonsterTemplateId = 0);
         bool Core_MonsterTemplateWithParentIDExists(int monsterTemplateId, int RulesetID);
-        List<MonsterTemplate> SP_GetMonsterTemplateByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1);
+        List<MonsterTemplate_Bundle> SP_GetMonsterTemplateByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1);
         List<MonsterTemplateCommand> SP_GetMonsterTemplateCommands(int MonsterTemplateId);
         SP_AssociateForMonsterTemplate SP_GetAssociateRecords(int monsterTemplateId, int rulesetId, int MonsterID);
         Task<MonsterTemplate> Core_CreateMonsterTemplate(MonsterTemplate MonsterTemplate);
@@ -42,6 +42,8 @@ void deployMonster(DeployMonsterTemplate model);
         Task DropItemsToLoot(List<ItemMasterForMonsterTemplate> list);
         Task<Monster> UpdateMonster(Monster model);
         Task<bool> DeleteMonster(int monsterId);
+        List<MonsterTemplate_Bundle> GetMonsterTemplatesByRuleSetId_add(int rulesetId, bool includeBundles = false);
+        bool Core_BundleWithParentIDExists(int bundleId, int rulesetID);
         // List<MonsterTemplate> GetByRuleSetId_add(int rulesetId);
 
     }

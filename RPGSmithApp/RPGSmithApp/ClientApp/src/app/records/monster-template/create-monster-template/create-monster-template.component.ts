@@ -20,6 +20,8 @@ import { DiceComponent } from '../../../shared/dice/dice/dice.component';
 import { ImageSelectorComponent } from '../../../shared/image-interface/image-selector/image-selector.component';
 import { DiceService } from '../../../core/services/dice.service';
 import { AddItemMonsterComponent } from '../Add-items-monster/add-item-monster.component';
+import { CustomDice } from '../../../core/models/view-models/custome-dice.model';
+import { RulesetService } from '../../../core/services/ruleset.service';
 
 @Component({
   selector: 'app-create-monster-template',
@@ -57,7 +59,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
   selectedAssociateMonsterTemplates = [];
   SelectedItemsList = [];
   isCreatingFromMonsterScreen: boolean = false;
-
+  customDices: CustomDice[] = [];
     options(placeholder?: string): Object {
         return Utilities.optionsFloala(160, placeholder);
     }
@@ -67,7 +69,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
         public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
       private sharedService: SharedService, private commonService: CommonService,
       private monsterTemplateService: MonsterTemplateService, 
-        private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,
+      private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,private rulesetService: RulesetService, 
     
      private location: PlatformLocation) {
       location.onPopState(() => this.modalService.hide(1)); 
@@ -100,7 +102,8 @@ export class CreateMonsterTemplateComponent implements OnInit {
     }
 
     ngOnInit() {
-        setTimeout(() => {
+      setTimeout(() => {
+        
           this.isCreatingFromMonsterScreen=this.bsModalRef.content.isCreatingFromMonsterScreen
             this.fromDetail = this.bsModalRef.content.fromDetail == undefined ? false : this.bsModalRef.content.fromDetail;
             this.title = this.bsModalRef.content.title;
@@ -133,7 +136,17 @@ export class CreateMonsterTemplateComponent implements OnInit {
             else {
                 this._ruleSetId = this.monsterTemplateFormModal.ruleSetId;
             }
+        this.rulesetService.getCustomDice(this._ruleSetId)
+          .subscribe(data => {
+            debugger
+            this.customDices = data
 
+          }, error => {
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              this.authService.logout(true);
+            }
+          })
             this.initialize();
         }, 0);
     }
@@ -364,10 +377,10 @@ export class CreateMonsterTemplateComponent implements OnInit {
     let challangeRating: number = 0;
     let xpValue: number = 0;
     if (this.isCreatingFromMonsterScreen) {
-      armorClass = modal.armorClass ? DiceService.rollDiceExternally(this.alertService, modal.armorClass, []) : 0;
-      health = modal.health ? DiceService.rollDiceExternally(this.alertService, modal.health, []) : 0;
-      challangeRating = modal.challangeRating ? DiceService.rollDiceExternally(this.alertService, modal.challangeRating, []) : 0;
-      xpValue = modal.xPValue ? DiceService.rollDiceExternally(this.alertService, modal.xPValue, []) : 0;
+      armorClass = modal.armorClass ? DiceService.rollDiceExternally(this.alertService, modal.armorClass, this.customDices) : 0;
+      health = modal.health ? DiceService.rollDiceExternally(this.alertService, modal.health, this.customDices) : 0;
+      challangeRating = modal.challangeRating ? DiceService.rollDiceExternally(this.alertService, modal.challangeRating, this.customDices) : 0;
+      xpValue = modal.xPValue ? DiceService.rollDiceExternally(this.alertService, modal.xPValue, this.customDices) : 0;
     }
     this.monsterTemplateService.createMonsterTemplate<any>(modal, this.isCreatingFromMonsterScreen, armorClass, health, challangeRating, xpValue)
             .subscribe(
@@ -425,10 +438,10 @@ export class CreateMonsterTemplateComponent implements OnInit {
     let challangeRating: number = 0;
     let xpValue: number = 0;
     if (this.isCreatingFromMonsterScreen) {
-      armorClass = modal.armorClass ? DiceService.rollDiceExternally(this.alertService, modal.armorClass, []) : 0;
-      health = modal.health ? DiceService.rollDiceExternally(this.alertService, modal.health, []) : 0;
-      challangeRating = modal.challangeRating ? DiceService.rollDiceExternally(this.alertService, modal.challangeRating, []) : 0;
-      xpValue = modal.xPValue ? DiceService.rollDiceExternally(this.alertService, modal.xPValue, []) : 0;
+      armorClass = modal.armorClass ? DiceService.rollDiceExternally(this.alertService, modal.armorClass, this.customDices) : 0;
+      health = modal.health ? DiceService.rollDiceExternally(this.alertService, modal.health, this.customDices) : 0;
+      challangeRating = modal.challangeRating ? DiceService.rollDiceExternally(this.alertService, modal.challangeRating, this.customDices) : 0;
+      xpValue = modal.xPValue ? DiceService.rollDiceExternally(this.alertService, modal.xPValue, this.customDices) : 0;
     }
     this.monsterTemplateService.duplicateMonsterTemplate<any>(modal, this.isCreatingFromMonsterScreen, armorClass, health, challangeRating, xpValue)
             .subscribe(
@@ -647,7 +660,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
       }
     }
     try {
-      let number = DiceService.rollDiceExternally(this.alertService, command, []);
+      let number = DiceService.rollDiceExternally(this.alertService, command, this.customDices);
       if (isNaN(number)) {
         return false;
       }

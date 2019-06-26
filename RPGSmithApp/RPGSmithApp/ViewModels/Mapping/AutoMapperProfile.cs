@@ -182,6 +182,8 @@ namespace RPGSmithApp.ViewModels
                 .ForMember(d => d.ItemMasterBundleItems, map => map.Ignore())
                 .ForMember(d => d.RuleSet, map => map.Ignore()
               );
+
+            CreateMap<MonsterTemplateBundleViewModel, MonsterTemplateBundle>();
         }
     }
 }

@@ -21,6 +21,9 @@ import { MonsterTemplate } from "../../core/models/view-models/monster-template.
 import { CreateMonsterTemplateComponent } from "./create-monster-template/create-monster-template.component";
 import { DeployMonsterComponent } from "./deploy-monster/deploy-monster.component";
 import { CreateMonsterGroupComponent } from "./moster-group/monster-group.component";
+import { Bundle } from "../../core/models/view-models/bundle.model";
+import { VIEW } from "../../core/models/enums";
+import { CustomDice } from "../../core/models/view-models/custome-dice.model";
 
 
 @Component({
@@ -63,6 +66,7 @@ export class MonsterTemplateComponent implements OnInit {
   alphabetCount: number;
   ChallangeRatingCount: number;
   HealthCount: number;
+  
 
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -116,6 +120,7 @@ export class MonsterTemplateComponent implements OnInit {
           this.getFilters();
 
           this.isLoading = true;
+          
          
           this.monsterTemplateService.getMonsterTemplateByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, this.monsterFilter.type)
               .subscribe(data => {
@@ -327,15 +332,41 @@ export class MonsterTemplateComponent implements OnInit {
     }
 
   editMonsterTemplate(monsterTemplate: MonsterTemplate) {
+
+    if (monsterTemplate.isBundle) {
+      this.bsModalRef = this.modalService.show(CreateMonsterGroupComponent, {
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Edit Group';
+      this.bsModalRef.content.button = 'UPDATE';
+      this.bsModalRef.content.rulesetID = this.ruleSetId;      
+      this.bsModalRef.content.bundleVM = {
+        bundleId: monsterTemplate.monsterTemplateId,
+        ruleSetId: this.ruleSetId,
+        bundleName: monsterTemplate.name,
+        bundleImage: monsterTemplate.imageUrl,
+        bundleVisibleDesc: monsterTemplate.description,       
+        metatags: monsterTemplate.metatags,        
+        ruleSet: this.rulesetModel,  
+        addToCombat: monsterTemplate.isRandomizationEngine //isRandomizationEngine is user for addToCombat   
+      };
+    }
+    else {
       this.bsModalRef = this.modalService.show(CreateMonsterTemplateComponent, {
-            class: 'modal-primary modal-custom',
-            ignoreBackdropClick: true,
-            keyboard: false
-        });
-    this.bsModalRef.content.title = 'Edit Monster Template';
-        this.bsModalRef.content.button = 'UPDATE';
-    this.bsModalRef.content.monsterTemplateVM = monsterTemplate;
-        this.bsModalRef.content.rulesetID = this.ruleSetId;
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Edit Monster Template';
+      this.bsModalRef.content.button = 'UPDATE';
+      this.bsModalRef.content.monsterTemplateVM = monsterTemplate;
+      this.bsModalRef.content.rulesetID = this.ruleSetId;
+    }
+
+
+
     }
 
   duplicateMonsterTemplate(monsterTemplate: MonsterTemplate) {
@@ -343,16 +374,41 @@ export class MonsterTemplateComponent implements OnInit {
         this.monsterTemplateService.getMonsterTemplateCount(this.ruleSetId)
             .subscribe(data => {
                 //this.alertService.stopLoadingMessage();
-                if (data < 2000) {
+              if (data < 2000) {
+
+                if (monsterTemplate.isBundle) {
+                  this.bsModalRef = this.modalService.show(CreateMonsterGroupComponent, {
+                    class: 'modal-primary modal-custom',
+                    ignoreBackdropClick: true,
+                    keyboard: false
+                  });
+                  this.bsModalRef.content.title = 'Edit Group';
+                  this.bsModalRef.content.button = 'DUPLICATE';
+                  this.bsModalRef.content.rulesetID = this.ruleSetId;                  
+                  this.bsModalRef.content.bundleVM = {
+                    bundleId: monsterTemplate.monsterTemplateId,
+                    ruleSetId: this.ruleSetId,
+                    bundleName: monsterTemplate.name,
+                    bundleImage: monsterTemplate.imageUrl,
+                    bundleVisibleDesc: monsterTemplate.description,
+                    metatags: monsterTemplate.metatags,
+                    ruleSet: this.rulesetModel,
+                    addToCombat: monsterTemplate.isRandomizationEngine //isRandomizationEngine is user for addToCombat
+                  };
+                }
+                else {
                   this.bsModalRef = this.modalService.show(CreateMonsterTemplateComponent, {
-                        class: 'modal-primary modal-custom',
-                        ignoreBackdropClick: true,
-                        keyboard: false
-                    });
+                    class: 'modal-primary modal-custom',
+                    ignoreBackdropClick: true,
+                    keyboard: false
+                  });
                   this.bsModalRef.content.title = 'Duplicate Monster Template';
-                    this.bsModalRef.content.button = 'DUPLICATE';
+                  this.bsModalRef.content.button = 'DUPLICATE';
                   this.bsModalRef.content.monsterTemplateVM = monsterTemplate;
-                    this.bsModalRef.content.rulesetID = this.ruleSetId;
+                  this.bsModalRef.content.rulesetID = this.ruleSetId;
+                }
+
+                  
                 }
                 else {
                     //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
@@ -372,34 +428,70 @@ export class MonsterTemplateComponent implements OnInit {
 
   private deleteMonsterTemplateHelper(monsterTemplate: MonsterTemplate) {
     monsterTemplate.ruleSetId = this.ruleSetId;
-        this.isLoading = true;
-    this.alertService.startLoadingMessage("", "Deleting a Monster Template");
+    this.isLoading = true;
 
-       
-    this.monsterTemplateService.deleteMonsterTemplate_up(monsterTemplate)
-            .subscribe(
-                data => {
-                    this.isLoading = false;
-                    this.alertService.stopLoadingMessage();
-                  this.alertService.showMessage("Monster Template has been deleted successfully.", "", MessageSeverity.success);
-                  this.monsterTemplateList = this.monsterTemplateList.filter((val) => val.monsterTemplateId != monsterTemplate.monsterTemplateId);
-                    try {
-                        this.noRecordFound = !this.monsterTemplateList.length;
-                    } catch (err) { }
-                    //this.initialize();
-                },
-                error => {
-                    this.isLoading = false;
-                    this.alertService.stopLoadingMessage();
-                    let Errors = Utilities.ErrorDetail("Unable to Delete", error);
-                    if (Errors.sessionExpire) {
-                        //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-                        this.authService.logout(true);
-                    }
-                    else
-                        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-                });
+    if (monsterTemplate.isBundle) {
+      this.alertService.startLoadingMessage("", "Deleting Bundle");
+      let bundleObj: Bundle = new Bundle(
+        monsterTemplate.monsterTemplateId, monsterTemplate.ruleSetId, monsterTemplate.name, monsterTemplate.imageUrl, monsterTemplate.description, 0,
+        0, 0, new Ruleset(), VIEW.ADD, '', monsterTemplate.metatags, '', '', '', [], monsterTemplate.isRandomizationEngine //isRandomizationEngine is user for addToCombat
+      );
+      this.monsterTemplateService.deleteBundle(bundleObj)
+        .subscribe(
+          data => {
+            setTimeout(() => {
+              this.isLoading = false;
+              this.alertService.stopLoadingMessage();
+            }, 200);
+            this.alertService.showMessage("Group has been deleted successfully.", "", MessageSeverity.success);
+            this.monsterTemplateList = this.monsterTemplateList.filter((val) => val.monsterTemplateId != monsterTemplate.monsterTemplateId);
+            try {
+              this.noRecordFound = !this.monsterTemplateList.length;
+            } catch (err) { }
+            //this.initialize();
+          },
+          error => {
+            setTimeout(() => {
+              this.isLoading = false;
+              this.alertService.stopLoadingMessage();
+            }, 200);
+            let _message = "Unable to Delete";
+            let Errors = Utilities.ErrorDetail(_message, error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
+            }
+            else
+              this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+          });
     }
+    else {
+      this.alertService.startLoadingMessage("", "Deleting a Monster Template");
+      this.monsterTemplateService.deleteMonsterTemplate_up(monsterTemplate)
+        .subscribe(
+          data => {
+            this.isLoading = false;
+            this.alertService.stopLoadingMessage();
+            this.alertService.showMessage("Monster Template has been deleted successfully.", "", MessageSeverity.success);
+            this.monsterTemplateList = this.monsterTemplateList.filter((val) => val.monsterTemplateId != monsterTemplate.monsterTemplateId);
+            try {
+              this.noRecordFound = !this.monsterTemplateList.length;
+            } catch (err) { }
+            //this.initialize();
+          },
+          error => {
+            this.isLoading = false;
+            this.alertService.stopLoadingMessage();
+            let Errors = Utilities.ErrorDetail("Unable to Delete", error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
+            }
+            else
+              this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+          });
+    }
+  }
 
     //enableAbility(ability: Ability) {
     //    //this.isLoading = true;
@@ -641,14 +733,43 @@ export class MonsterTemplateComponent implements OnInit {
     }
   }
   createMonsterGroup() {
-    this.bsModalRef = this.modalService.show(CreateMonsterGroupComponent, {
-      class: 'modal-primary modal-md',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
-    this.bsModalRef.content.title = 'Create Monster Group';
-    this.bsModalRef.content.button = 'Create';
-    this.bsModalRef.content.rulesetID = this.ruleSetId;
+    
+
+
+    
+    // this.alertService.startLoadingMessage("", "Checking records");      
+    this.monsterTemplateService.getMonsterTemplateCount(this.ruleSetId)
+        .subscribe(data => {
+          //this.alertService.stopLoadingMessage();
+          if (data < 2000) {
+            this.bsModalRef = this.modalService.show(CreateMonsterGroupComponent, {
+              class: 'modal-primary modal-md',
+              ignoreBackdropClick: true,
+              keyboard: false
+            });
+            this.bsModalRef.content.title = 'Create Monster Group';
+            this.bsModalRef.content.button = 'Create';
+            this.bsModalRef.content.rulesetID = this.ruleSetId;
+            this.bsModalRef.content.bundleVM = {
+              ruleSetId: this.ruleSetId,
+              ruleSet: this.rulesetModel
+            };
+            
+          }
+          else {
+            //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
+            this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
+          }
+        }, error => { }, () => { });
+
+  }
+  GoToDetails(monsterTemplate: MonsterTemplate) {
+    if (monsterTemplate.isBundle) {
+      this.router.navigate(['/ruleset/monster-bundle-details', monsterTemplate.monsterTemplateId]);
+    }
+    else {
+      this.router.navigate(['/ruleset/monster-template-details', monsterTemplate.monsterTemplateId]);
+    }
   }
 
 }
