@@ -116,7 +116,7 @@ export class CreatelootComponent implements OnInit {
         let _itemTemplateVM = this.bsModalRef.content.itemMasterVM;
         this.itemMasterFormModal = this.itemMasterService.itemMasterModelData(_itemTemplateVM, _view);
         this.itemMasterFormModal.itemMasterCommandVM = this.itemMasterFormModal.itemMasterCommand
-
+        debugger
         if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
           this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.itemMasterFormModal.ruleSetId;
 
@@ -150,7 +150,7 @@ export class CreatelootComponent implements OnInit {
       this.authService.logout();
     else {
       this.isLoading = true;
-      this.itemMasterService.getAbilitySpellForItemsByRuleset_sp<any[]>(this.itemMasterFormModal.ruleSetId, this.itemMasterFormModal.itemMasterId)
+      this.itemMasterService.getAbilitySpellForLootsByRuleset_sp<any[]>(this.itemMasterFormModal.ruleSetId, this.itemMasterFormModal.lootId)
         .subscribe(data => {
           let dataobj: any = data
           this.abilitiesList = dataobj.abilityList;
@@ -392,20 +392,24 @@ export class CreatelootComponent implements OnInit {
     this.lootService.createLootItem<any>(modal)
       .subscribe(
       data => {
+        debugger
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           let message = modal.itemMasterId == 0 || modal.itemMasterId === undefined ? "Loot Item Template has been created successfully." : " Loot Item Template has been updated successfully.";
           if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
         this.close();
-        this.appService.updateChatWithLootMessage(true);
+        if (modal.lootId == 0 || modal.lootId === undefined) {
+          this.appService.updateChatWithLootMessage(true); //loot created...
+        }
+        
           if (this.fromDetail) {
             if (data) {
               let id = data;
               if (!isNaN(parseInt(id))) {
-                this.router.navigate(['/ruleset/item-details', id]);
+                this.router.navigate(['/ruleset/loot-details', id]);
                 this.event.emit({ itemMasterId: id });
-                //this.sharedService.updateItemMasterDetailList(true);
+                //this.sharedService.updateItemMasterDetailList(true);                
               }
               else
                 this.sharedService.updateItemMasterDetailList(true);
@@ -611,6 +615,7 @@ export class CreatelootComponent implements OnInit {
     this.bsModalRef.content.containerItemId = this.itemMasterFormModal.containerItemId;
   }
   addContainerItem(itemMaster: any) {
+    debugger
     this.bsModalRef = this.modalService.show(LootAddContainerItemComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -621,7 +626,7 @@ export class CreatelootComponent implements OnInit {
     this.bsModalRef.content.button = 'SELECT';
     //this.bsModalRef.content.characterId = this.isFromCharacterId;
     this.bsModalRef.content.rulesetId = this._ruleSetId;
-    this.bsModalRef.content.itemId = 0;
+    this.bsModalRef.content.itemId = itemMaster.lootId;
     this.bsModalRef.content.itemName = itemMaster.containerName;
     this.bsModalRef.content.contains = itemMaster.contains;
     this.bsModalRef.content.containerItemId = itemMaster.containerItemId;

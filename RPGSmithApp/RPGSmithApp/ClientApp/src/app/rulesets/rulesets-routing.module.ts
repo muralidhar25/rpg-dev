@@ -25,6 +25,7 @@ import { MonsterTemplateDetailsComponent } from "../records/monster-template/mon
 import { MonsterComponent } from "../records/monster/monster.component";
 import { MonsterDetailsComponent } from "../records/monster/monster-details/monster-details.component";
 import { MonsterBundleDetailsComponent } from "../records/monster-template/monster-bundle-details/monster-bundle-details.component";
+import { LootDetailsComponent } from "../records/loot/loot-details/loot-details.component";
 
 
 const routes: Routes = [
@@ -43,6 +44,8 @@ const routes: Routes = [
   { path: "buff-effect-details/:id", component: BuffAndEffectDetailsComponent, data: { title: "Buffs & Effects Details" } },
   { path: "monster-template-details/:id", component: MonsterTemplateDetailsComponent, data: { title: "Buffs & Effects Details" } },
   { path: "monster-bundle-details/:id", component: MonsterBundleDetailsComponent, data: { title: "Monster Bundle Details" } },
+  { path: "loot-details/:id", component: LootDetailsComponent, data: { title: "Loot Details" } },
+  
   ///ruleset/monster-details
   { path: "monster-details/:id", component: MonsterDetailsComponent, data: { title: "Monster Details" } },
   { path: "dashboard/:id", component: RulesetDashboardComponent, data: { title: "Ruleset Dashboard" } },

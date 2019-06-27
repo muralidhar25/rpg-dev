@@ -624,10 +624,15 @@ namespace DAL.Models.SPModels
     {
         public int ItemMasterId { get; set; }
     }
+    public class ItemMasterLootIds
+    {
+        public int ItemMasterLootId { get; set; }
+    }
     public class ItemMasterLoot_ViewModel:ItemMaster
     {
         
         public int LootId { get; set; }
+        public int ParentLootId { get; set; }
 
       
         //public int ItemMasterId { get; set; }

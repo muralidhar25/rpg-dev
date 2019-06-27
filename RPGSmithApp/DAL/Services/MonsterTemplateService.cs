@@ -1107,7 +1107,12 @@ namespace DAL.Services
                     {
                         IsShow = true,
                         Quantity = item.Qty
-                    });
+                    },
+                    new List<ItemMasterLootSpell>(),
+                    new List<ItemMasterLootAbility>(),
+                    new List<ItemMasterLootBuffAndEffect>(),
+                    new List<ItemMasterLootCommand>()
+                    );
                 }
             }
         }

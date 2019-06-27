@@ -15,6 +15,7 @@ namespace RPGSmithApp.Helpers.CoreRuleset
     {
         bool IsCopiedFromCoreRuleset(int RulesetID);
         bool IsItemCopiedFromCoreRuleset(int ItemMasterID, int rulesetID);
+        bool IsItemLootCopiedFromCoreRuleset(int LootID, int rulesetID);
         bool IsBundleCopiedFromCoreRuleset(int bundleId, int rulesetID);
         bool IsMonsterBundleCopiedFromCoreRuleset(int bundleId, int rulesetID);
         RulesetRecordCount GetRulesetRecordCounts(int RulesetID);
@@ -101,6 +102,10 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         public bool IsItemCopiedFromCoreRuleset(int ItemMasterID, int rulesetID)
         {
             return _itemMasterService.Core_ItemMasterWithParentIDExists(ItemMasterID, rulesetID);
+        }
+        public bool IsItemLootCopiedFromCoreRuleset(int LootID, int rulesetID)
+        {
+            return _itemMasterService.Core_ItemMasterLootWithParentIDExists(LootID, rulesetID);
         }
         public bool IsBundleCopiedFromCoreRuleset(int bundleId, int rulesetID)
         {

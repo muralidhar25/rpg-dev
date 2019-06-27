@@ -905,19 +905,63 @@ namespace DAL.Services
         }
 
         #endregion
-        public void AddItemToLoot(int? itemMasterId) {
-            if (itemMasterId!=null)
+        public void AddItemToLoot(int? itemId)
+        {
+            if (itemId != null)
             {
-                ItemMaster obj = _context.ItemMasters.Where(x => x.ItemMasterId == (int)itemMasterId).FirstOrDefault();
+                
+                Item obj = _context.Items.Where(x => x.ItemId == (int)itemId)
+                    .Include(x=>x.ItemCommandVM)
+                    .Include(x=>x.ItemAbilities)
+                    .Include(x=>x.ItemSpells)
+                    .Include(x=>x.ItemBuffAndEffects)
+                    .FirstOrDefault();
+                ItemMaster objItemMaster = _context.ItemMasters.Where(x => x.ItemMasterId == obj.ItemMasterId).FirstOrDefault();
+
+                var ItemMasterAbilities = new List<ItemMasterLootAbility>();
+                var ItemMasterSpell = new List<ItemMasterLootSpell>();
+                var itemMasterBuffAndEffects = new List<ItemMasterLootBuffAndEffect>();
+                var ItemMasterCommand = new List<ItemMasterLootCommand>();
+                if (obj.ItemSpells != null)
+                {
+                    ItemMasterSpell = obj.ItemSpells.Select(x => new ItemMasterLootSpell()
+                    {
+                        SpellId = x.SpellId,
+                    }).ToList();
+                }
+                if (obj.ItemAbilities != null)
+                {
+                    ItemMasterAbilities = obj.ItemAbilities.Select(x => new ItemMasterLootAbility()
+                    {
+                        AbilityId = x.AbilityId,
+                    }).ToList();
+                }
+                if (obj.ItemBuffAndEffects != null)
+                {
+                    itemMasterBuffAndEffects = obj.ItemBuffAndEffects.Select(x => new ItemMasterLootBuffAndEffect()
+                    {
+                        BuffAndEffectId = x.BuffAndEffectId,
+                    }).ToList();
+                }
+                if (obj.ItemCommandVM != null)
+                {
+                    ItemMasterCommand = obj.ItemCommandVM.Select(x => new ItemMasterLootCommand()
+                    {
+                        Command = x.Command,
+                        Name = x.Name
+                    }).ToList();
+                }
                 if (obj != null)
                 {
-                    _itemMasterService.CreateItemMasterLoot(obj, new ItemMasterLoot()
+                    _itemMasterService.CreateItemMasterLoot(objItemMaster, new ItemMasterLoot()
                     {
                         IsShow = true
-                    });
+                    },
+                    ItemMasterSpell, ItemMasterAbilities, itemMasterBuffAndEffects, ItemMasterCommand, obj
+                    );
                 }
             }
-            
+
         }
     }
 }

@@ -39,6 +39,7 @@ import { DropItemsMonsterComponent } from "./monster/drop-items-monster/drop-ite
 import { AddMonsterComponent } from "./monster/Add-monster/add-monster.component";
 import { AddMonsterTemplateComponent } from "./monster-template/add-monster-template/add-monster-template.component";
 import { MonsterBundleDetailsComponent } from "./monster-template/monster-bundle-details/monster-bundle-details.component";
+import { LootDetailsComponent } from "./loot/loot-details/loot-details.component";
 
 
 
@@ -77,7 +78,8 @@ import { MonsterBundleDetailsComponent } from "./monster-template/monster-bundle
     MonsterDetailsComponent,
     AddMonsterComponent,
     AddMonsterTemplateComponent,
-    MonsterBundleDetailsComponent
+    MonsterBundleDetailsComponent,
+    LootDetailsComponent
   ],
   imports: [
     SharedModule
@@ -118,7 +120,8 @@ import { MonsterBundleDetailsComponent } from "./monster-template/monster-bundle
     MonsterDetailsComponent,
     AddMonsterComponent,
     AddMonsterTemplateComponent,
-    MonsterBundleDetailsComponent
+    MonsterBundleDetailsComponent,
+    LootDetailsComponent
   ],
   entryComponents: [
     AddItemMasterComponent,
