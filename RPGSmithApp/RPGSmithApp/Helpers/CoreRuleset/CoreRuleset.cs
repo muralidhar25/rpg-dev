@@ -15,7 +15,9 @@ namespace RPGSmithApp.Helpers.CoreRuleset
     {
         bool IsCopiedFromCoreRuleset(int RulesetID);
         bool IsItemCopiedFromCoreRuleset(int ItemMasterID, int rulesetID);
+        bool IsItemLootCopiedFromCoreRuleset(int LootID, int rulesetID);
         bool IsBundleCopiedFromCoreRuleset(int bundleId, int rulesetID);
+        bool IsMonsterBundleCopiedFromCoreRuleset(int bundleId, int rulesetID);
         RulesetRecordCount GetRulesetRecordCounts(int RulesetID);
         List<CharacterStat> Character_GetCharacterStatByRuleSetId(int RulesetID);
         List<ItemMaster> GetItemMastersByRuleSetId(int RulesetID);
@@ -46,6 +48,7 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         List<Spell> GetSpellsByRuleSetId_add(int rulesetId);
         List<Ability> GetAbilitiesByRuleSetId_add(int rulesetId);
         Task<ItemMasterBundle> CreateItemMasterBundle(ItemMasterBundle bundle, List<ItemMasterBundleItem> bundleItems);
+        Task<MonsterTemplateBundle> CreateMonsterTemplateBundle(MonsterTemplateBundle bundle, List<MonsterTemplateBundleItem> bundleItems);
     }
 
     public class CoreRuleset : ICoreRuleset
@@ -62,6 +65,8 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         private readonly IItemService _itemService;
         private readonly ICharactersCharacterStatService _charactersCharacterStatService;
         private readonly ICharacterService _CharacterService;
+        private readonly IMonsterTemplateBundleService _monsterTemplateBundleService;
+
 
         public CoreRuleset(IRuleSetService ruleSetService,
             ICharacterStatService characterStatService,
@@ -73,7 +78,7 @@ namespace RPGSmithApp.Helpers.CoreRuleset
             IItemService itemService,
             ICharactersCharacterStatService charactersCharacterStatService,
             ICharacterService CharacterService, IBuffAndEffectService buffAndEffectService,
-            IMonsterTemplateService monsterTemplateService
+            IMonsterTemplateService monsterTemplateService, IMonsterTemplateBundleService monsterTemplateBundleService
         )
         {
             _ruleSetService = ruleSetService;
@@ -88,6 +93,7 @@ namespace RPGSmithApp.Helpers.CoreRuleset
             _CharacterService = CharacterService;
             _buffAndEffectService = buffAndEffectService;
             _monsterTemplateService = monsterTemplateService;
+            _monsterTemplateBundleService = monsterTemplateBundleService;
         }
         public bool IsCopiedFromCoreRuleset(int RulesetID)
         {
@@ -97,9 +103,17 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         {
             return _itemMasterService.Core_ItemMasterWithParentIDExists(ItemMasterID, rulesetID);
         }
+        public bool IsItemLootCopiedFromCoreRuleset(int LootID, int rulesetID)
+        {
+            return _itemMasterService.Core_ItemMasterLootWithParentIDExists(LootID, rulesetID);
+        }
         public bool IsBundleCopiedFromCoreRuleset(int bundleId, int rulesetID)
         {
             return _itemMasterService.Core_BundleWithParentIDExists(bundleId, rulesetID);
+        }
+        public bool IsMonsterBundleCopiedFromCoreRuleset(int bundleId, int rulesetID)
+        {
+            return _monsterTemplateService.Core_BundleWithParentIDExists(bundleId, rulesetID);
         }
         public bool IsSpellCopiedFromCoreRuleset(int spellID, int RulesetID)
         {
@@ -250,6 +264,10 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         }
         public async Task<ItemMasterBundle> CreateItemMasterBundle(ItemMasterBundle bundle, List<ItemMasterBundleItem> bundleItems) {
             return await _itemMasterBundleService.Core_CreateItemMasterBundle(bundle, bundleItems);
+        }
+        public async Task<MonsterTemplateBundle> CreateMonsterTemplateBundle(MonsterTemplateBundle bundle, List<MonsterTemplateBundleItem> bundleItems)
+        {
+            return await _monsterTemplateBundleService.Core_CreateMonsterTemplateBundle(bundle, bundleItems);
         }
         public async Task<ItemMaster> CreateItemMasterUsingItem(int ItemMasterId, int RulesetID)
         {

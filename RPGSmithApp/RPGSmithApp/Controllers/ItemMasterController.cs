@@ -75,6 +75,11 @@ namespace RPGSmithApp.Controllers
         {
             return _itemMasterService.GetItemMasterById(id);
         }
+        [HttpGet("getLootById")]
+        public ItemMasterLoot getLootById(int id)
+        {
+            return _itemMasterService.GetLootById(id);
+        }
 
         [HttpGet("getByRuleSetId")]
         public async Task<IActionResult> getByRuleSetId(int rulesetId)
@@ -829,17 +834,22 @@ namespace RPGSmithApp.Controllers
         {
             return Ok(_itemMasterService.AbilitySpellForItemsByRuleset_sp(rulesetId, itemMasterId));
         }
+        [HttpGet("AbilitySpellForLootsByRuleset_sp")]
+        public async Task<IActionResult> AbilitySpellForLootsByRuleset_sp(int rulesetId, int LootID)
+        {
+            return Ok(_itemMasterService.AbilitySpellForLootsByRuleset_sp(rulesetId, LootID));
+        }
         #endregion
         #region Loot
         [HttpPost("AddItemMastersToLoot")]
-        public async Task<IActionResult> AddItemMastersToLoot([FromBody] List<LootsToAdd> ItemList)
+        public async Task<IActionResult> AddItemMastersToLoot([FromBody] List<LootsToAdd> ItemList, int rulesetID)
         {
             //ItemList = new List<CommonID>();
             //ItemList.Add(new CommonID() { ID = 8499 });
             //ItemList.Add(new CommonID() { ID = 8500 });
             try
             {
-                await _itemMasterService._AddItemsToLoot(ItemList);
+                await _itemMasterService._AddItemsToLoot(ItemList,rulesetID);
             }
             catch (Exception ex)
             {
@@ -937,10 +947,64 @@ namespace RPGSmithApp.Controllers
                     IsShow = itemDomain.IsShow,
                     IsVisible = itemDomain.IsVisible,
                     Quantity = itemDomain.Quantity,
-                    ItemMasterId = itemDomain.ItemMasterId,
-                };
-
-              var newLoot=  _itemMasterService.CreateItemMasterLoot(result, loot);
+                    ItemMasterId = result.ItemMasterId,
+                    Command= itemDomain.Command,
+                    CommandName= itemDomain.CommandName,
+                    ContainerVolumeMax= itemDomain.ContainerVolumeMax,
+                    ContainerWeightMax= itemDomain.ContainerWeightMax,
+                    ContainerWeightModifier= itemDomain.ContainerWeightModifier,
+                    IsConsumable= itemDomain.IsConsumable==null?false:(bool)itemDomain.IsConsumable,
+                    IsContainer= itemDomain.IsContainer == null ? false : (bool)itemDomain.IsContainer,                    
+                    IsMagical= itemDomain.IsMagical == null ? false : (bool)itemDomain.IsMagical,
+                    ItemCalculation= itemDomain.ItemCalculation,
+                    ItemImage= itemDomain.ItemImage,
+                    ItemName= itemDomain.ItemName,
+                    ItemStats= itemDomain.ItemStats,
+                    ItemVisibleDesc= itemDomain.ItemVisibleDesc,
+                    Metatags= itemDomain.Metatags,
+                    PercentReduced= itemDomain.PercentReduced,
+                    Rarity= itemDomain.Rarity,
+                    RuleSetId= itemDomain.RuleSetId,
+                  // TotalWeight = itemDomain.to,
+                    Value= itemDomain.Value == null ? 0 : (decimal)itemDomain.Value,
+                    TotalWeightWithContents= itemDomain.TotalWeightWithContents,
+                    Volume= itemDomain.Volume == null ? 0 : (decimal)itemDomain.Volume,
+                    Weight= itemDomain.Weight == null ? 0 : (decimal)itemDomain.Weight,
+                    TotalWeight= itemDomain.Quantity * (itemDomain.Weight == null ? 0 : (decimal)itemDomain.Weight)
+            };
+                var ItemMasterAbilities = new List<ItemMasterLootAbility>();
+                var ItemMasterSpell = new List<ItemMasterLootSpell>();
+                var itemMasterBuffAndEffects = new List<ItemMasterLootBuffAndEffect>();
+                var ItemMasterCommand = new List<ItemMasterLootCommand>();
+                if (itemDomain.itemMasterSpellVM!=null)
+                {
+                    ItemMasterSpell = itemDomain.itemMasterSpellVM.Select(x => new ItemMasterLootSpell() {
+                        SpellId=x.SpellId,
+                    }).ToList();
+                }
+                if (itemDomain.itemMasterAbilityVM != null)
+                {
+                    ItemMasterAbilities = itemDomain.itemMasterAbilityVM.Select(x => new ItemMasterLootAbility()
+                    {
+                        AbilityId = x.AbilityId,
+                    }).ToList();
+                }
+                if (itemDomain.itemMasterBuffAndEffectVM != null)
+                {
+                    itemMasterBuffAndEffects = itemDomain.itemMasterBuffAndEffectVM.Select(x => new ItemMasterLootBuffAndEffect()
+                    {
+                        BuffAndEffectId = x.BuffAndEffectId,
+                    }).ToList();
+                }
+                if (itemDomain.itemMasterCommandVM != null)
+                {
+                    ItemMasterCommand = itemDomain.itemMasterCommandVM.Select(x => new ItemMasterLootCommand()
+                    {
+                        Command = x.Command,
+                        Name =x.Name
+                    }).ToList();
+                }
+                var newLoot=  _itemMasterService.CreateItemMasterLoot(result, loot, ItemMasterSpell, ItemMasterAbilities, itemMasterBuffAndEffects, ItemMasterCommand);
                 
                 //var ruleset = _ruleSetService.GetRuleSetById((int)(itemDomain.RuleSetId));
                 
@@ -1035,104 +1099,220 @@ namespace RPGSmithApp.Controllers
                 int rulesetID = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
                 if (_coreRulesetService.IsCopiedFromCoreRuleset(rulesetID))
                 {
-                    await Core_UpdateItemMaster(model);
+                    await Core_UpdateItemMasterLoot(model);
                 }
                 else
                 {
-                    await UpdateItemMasterCommon(model);
+                    await UpdateItemMasterLootCommon(model);
                 }
-                ItemMasterLoot OldLoot =await _itemMasterService.getLootDetails(model.LootId);
-                ItemMasterLoot loot = new ItemMasterLoot()
-                {
-                    LootId= OldLoot.LootId,
-                    ContainedIn = model.ContainedIn,
-                    IsIdentified = model.IsIdentified,
-                    IsShow = model.IsShow,
-                    IsVisible = model.IsVisible,
-                    Quantity = model.Quantity,
-                    ItemMasterId = OldLoot.ItemMasterId,
-                };
-               var result= await _itemMasterService.UpdateItemMasterLoot(loot);
-
-
-                var item = OldLoot;
-                ///////if non-conatiner item remove/update its container
-                if (((item.ContainedIn > 0 && result.ContainedIn == 0)
-                    || (item.ContainedIn == 0 && result.ContainedIn > 0)
-                    || (item.ContainedIn == result.ContainedIn && result.ContainedIn > 0)) && model.IsContainer!=true)
-                {
-                    int __itemContainerId = (item.ContainedIn > 0 && result.ContainedIn == 0) ? item.ContainedIn ?? 0
-                         : ((item.ContainedIn == 0 && result.ContainedIn > 0) ? result.ContainedIn ?? 0
-                         : ((result.ContainedIn > 0) ? result.ContainedIn ?? 0 : 0));
-
-                    var containerItem = _itemMasterService.getLootDetails(__itemContainerId).Result;
-                    var _itemContainer = model;//Mapper.Map<ItemEditModel>(containerItem);
-
-                    List<ViewModels.EditModels.containerItemIds> _containerItemIds = new List<ViewModels.EditModels.containerItemIds>();
-                    foreach (var itm in await _itemMasterService.GetByContainerId(containerItem.LootId))
-                    {
-                        if (itm.LootId != result.LootId)
-                        {
-                            ViewModels.EditModels.containerItemIds __containerItemIds = new ViewModels.EditModels.containerItemIds();
-                            __containerItemIds.ItemId = itm.LootId;
-                            _containerItemIds.Add(__containerItemIds);
-                        }
-                    }
-                    if ((item.ContainedIn == 0 && result.ContainedIn > 0) || (item.ContainedIn == result.ContainedIn))
-                    {
-                        ViewModels.EditModels.containerItemIds __containerItemIds = new ViewModels.EditModels.containerItemIds();
-                        __containerItemIds.ItemId = result.LootId;
-                        _containerItemIds.Add(__containerItemIds);
-                    }
-                    _itemContainer.ContainerItems = _containerItemIds;
-
-                    decimal TotalWeight = CalculateTotalWeightItem(new ItemEditModel()
-                    {
-                        Weight = _itemContainer.Weight == null ? 0 : (decimal)_itemContainer.Weight,
-                        Quantity = _itemContainer.Quantity,
-                        ContainerItems = model.ContainerItems == null ? new List<ViewModels.EditModels.containerItemIds>() : model.ContainerItems.Select(x => new ViewModels.EditModels.containerItemIds()
-                        {
-                            ItemId = x.ItemId,
-                        }).ToList(),
-                        ContainerWeightModifier = _itemContainer.ContainerWeightModifier,
-                        PercentReduced = _itemContainer.PercentReduced,
-                        TotalWeightWithContents = _itemContainer.TotalWeightWithContents,
-                    });
-                    await _itemMasterService.UpdateWeight(_itemContainer.ItemMasterId==null?0:(int)_itemContainer.ItemMasterId, TotalWeight);
-                }
-                ///////////
-                                
-                if (model.ContainerItems != null && model.ContainerItems.Count>0)
-                {
-                    //remove all contains item
-                    await _itemMasterService.DeleteContainer(OldLoot.LootId);
-                    foreach (var itm in model.ContainerItems)
-                    {
-                        await _itemMasterService.UpdateContainer(itm.ItemId,OldLoot.LootId );
-                    }
-                    //_itemService.ManageContainer(model.ItemId, model.ContainerItems.Select(q => new CommonID { ID=q.ItemId }).ToList());
-                }
-                if (model.IsContainer == true)
-                {
-                    decimal TotalWeight = CalculateTotalWeightItem(new ItemEditModel()
-                    {
-                        Weight = model.Weight == null ? 0 : (decimal)model.Weight,
-                        Quantity = model.Quantity,
-                        ContainerItems = model.ContainerItems==null?new List<ViewModels.EditModels.containerItemIds>(): model.ContainerItems.Select(x => new ViewModels.EditModels.containerItemIds()
-                        {
-                            ItemId = x.ItemId,
-                        }).ToList(),
-                        ContainerWeightModifier = model.ContainerWeightModifier,
-                        PercentReduced = model.PercentReduced,
-                        TotalWeightWithContents = model.TotalWeightWithContents,
-                    });
-                    await _itemMasterService.UpdateWeight(OldLoot.ItemMasterId, TotalWeight);
-                }
+              
                 return Ok();
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
 
         }
+        private async Task<IActionResult> UpdateItemMasterLootCommon(EditItemMasterLootModel model)
+        {
+            ItemMasterLoot OldLoot = await _itemMasterService.getLootDetails(model.LootId);
+            if (OldLoot == null) return BadRequest("Loot not found");
+
+            model.TotalWeight = model.Quantity * (model.Weight==null?0:(decimal)model.Weight);
+
+
+
+
+            
+            ItemMasterLoot loot = new ItemMasterLoot()
+            {
+                LootId = OldLoot.LootId,
+                ContainedIn = model.ContainedIn,
+                IsIdentified = model.IsIdentified,
+                IsShow = model.IsShow,
+                IsVisible = model.IsVisible,
+                Quantity = model.Quantity,
+                ItemMasterId = OldLoot.ItemMasterId,
+                Command = model.Command,
+                CommandName = model.CommandName,
+                ContainerVolumeMax = model.ContainerVolumeMax,
+                ContainerWeightMax = model.ContainerWeightMax,
+                ContainerWeightModifier = model.ContainerWeightModifier,
+                IsConsumable = model.IsConsumable == null ? false : (bool)model.IsConsumable,
+                IsContainer = model.IsContainer == null ? false : (bool)model.IsContainer,
+                IsMagical = model.IsMagical == null ? false : (bool)model.IsMagical,
+                ItemCalculation = model.ItemCalculation,
+                ItemImage = model.ItemImage,
+                ItemName = model.ItemName,
+                ItemStats = model.ItemStats,
+                ItemVisibleDesc = model.ItemVisibleDesc,
+                Metatags = model.Metatags,
+                PercentReduced = model.PercentReduced,
+                Rarity = model.Rarity,
+                RuleSetId = model.RuleSetId,
+                // TotalWeight = model.to,
+                Value = model.Value == null ? 0 : (decimal)model.Value,
+                TotalWeightWithContents = model.TotalWeightWithContents,
+                Volume = model.Volume == null ? 0 : (decimal)model.Volume,
+                Weight = model.Weight == null ? 0 : (decimal)model.Weight,
+                TotalWeight= model.TotalWeight
+            };
+
+            var ItemMasterAbilities = new List<ItemMasterLootAbility>();
+            var ItemMasterSpell = new List<ItemMasterLootSpell>();
+            var itemMasterBuffAndEffects = new List<ItemMasterLootBuffAndEffect>();
+            var ItemMasterCommand = new List<ItemMasterLootCommand>();
+            if (model.ItemMasterSpellVM != null)
+            {
+                ItemMasterSpell = model.ItemMasterSpellVM.Select(x => new ItemMasterLootSpell()
+                {
+                    SpellId = x.SpellId,
+                }).ToList();
+            }
+            if (model.ItemMasterAbilityVM != null)
+            {
+                ItemMasterAbilities = model.ItemMasterAbilityVM.Select(x => new ItemMasterLootAbility()
+                {
+                    AbilityId = x.AbilityId,
+                }).ToList();
+            }
+            if (model.ItemMasterBuffAndEffectVM != null)
+            {
+                itemMasterBuffAndEffects = model.ItemMasterBuffAndEffectVM.Select(x => new ItemMasterLootBuffAndEffect()
+                {
+                    BuffAndEffectId = x.BuffAndEffectId,
+                }).ToList();
+            }
+            if (model.ItemMasterCommandVM != null)
+            {
+                ItemMasterCommand = model.ItemMasterCommandVM.Select(x => new ItemMasterLootCommand()
+                {
+                    Command = x.Command,
+                    Name = x.Name
+                }).ToList();
+            }
+
+            var result = await _itemMasterService.UpdateItemMasterLoot(loot,ItemMasterSpell, ItemMasterAbilities, itemMasterBuffAndEffects, ItemMasterCommand);
+
+
+            var item = OldLoot;
+            ///////if non-conatiner item remove/update its container
+            if (((item.ContainedIn > 0 && result.ContainedIn == 0)
+                || (item.ContainedIn == 0 && result.ContainedIn > 0)
+                || (item.ContainedIn == result.ContainedIn && result.ContainedIn > 0)) && model.IsContainer != true)
+            {
+                int __itemContainerId = (item.ContainedIn > 0 && result.ContainedIn == 0) ? item.ContainedIn ?? 0
+                     : ((item.ContainedIn == 0 && result.ContainedIn > 0) ? result.ContainedIn ?? 0
+                     : ((result.ContainedIn > 0) ? result.ContainedIn ?? 0 : 0));
+
+                var containerItem = _itemMasterService.getLootDetails(__itemContainerId).Result;
+                var _itemContainer = model;//Mapper.Map<ItemEditModel>(containerItem);
+
+                List<ViewModels.EditModels.containerItemIds> _containerItemIds = new List<ViewModels.EditModels.containerItemIds>();
+                foreach (var itm in await _itemMasterService.GetByContainerId(containerItem.LootId))
+                {
+                    if (itm.LootId != result.LootId)
+                    {
+                        ViewModels.EditModels.containerItemIds __containerItemIds = new ViewModels.EditModels.containerItemIds();
+                        __containerItemIds.ItemId = itm.LootId;
+                        _containerItemIds.Add(__containerItemIds);
+                    }
+                }
+                if ((item.ContainedIn == 0 && result.ContainedIn > 0) || (item.ContainedIn == result.ContainedIn))
+                {
+                    ViewModels.EditModels.containerItemIds __containerItemIds = new ViewModels.EditModels.containerItemIds();
+                    __containerItemIds.ItemId = result.LootId;
+                    _containerItemIds.Add(__containerItemIds);
+                }
+                _itemContainer.ContainerItems = _containerItemIds;
+
+                decimal TotalWeight = CalculateTotalWeightItem(new ItemEditModel()
+                {
+                    Weight = _itemContainer.Weight == null ? 0 : (decimal)_itemContainer.Weight,
+                    Quantity = _itemContainer.Quantity,
+                    ContainerItems = model.ContainerItems == null ? new List<ViewModels.EditModels.containerItemIds>() : model.ContainerItems.Select(x => new ViewModels.EditModels.containerItemIds()
+                    {
+                        ItemId = x.ItemId,
+                    }).ToList(),
+                    ContainerWeightModifier = _itemContainer.ContainerWeightModifier,
+                    PercentReduced = _itemContainer.PercentReduced,
+                    TotalWeightWithContents = _itemContainer.TotalWeightWithContents,
+                });
+                await _itemMasterService.UpdateWeight(_itemContainer.ItemMasterId == null ? 0 : (int)_itemContainer.ItemMasterId, TotalWeight);
+            }
+            ///////////
+
+            if (model.ContainerItems != null && model.ContainerItems.Count > 0)
+            {
+                //remove all contains item
+                await _itemMasterService.DeleteContainer(OldLoot.LootId);
+                foreach (var itm in model.ContainerItems)
+                {
+                    await _itemMasterService.UpdateContainer(itm.ItemId, OldLoot.LootId);
+                }
+                //_itemService.ManageContainer(model.ItemId, model.ContainerItems.Select(q => new CommonID { ID=q.ItemId }).ToList());
+            }
+            if (model.IsContainer == true)
+            {
+                decimal TotalWeight = CalculateTotalWeightItem(new ItemEditModel()
+                {
+                    Weight = model.Weight == null ? 0 : (decimal)model.Weight,
+                    Quantity = model.Quantity,
+                    ContainerItems = model.ContainerItems == null ? new List<ViewModels.EditModels.containerItemIds>() : model.ContainerItems.Select(x => new ViewModels.EditModels.containerItemIds()
+                    {
+                        ItemId = x.ItemId,
+                    }).ToList(),
+                    ContainerWeightModifier = model.ContainerWeightModifier,
+                    PercentReduced = model.PercentReduced,
+                    TotalWeightWithContents = model.TotalWeightWithContents,
+                });
+                await _itemMasterService.UpdateWeight(OldLoot.ItemMasterId, TotalWeight);
+            }
+            
+
+            return Ok();
+        }
+        private async Task<IActionResult> Core_UpdateItemMasterLoot(EditItemMasterLootModel model)
+        {
+            try
+            {
+                await CheckCoreRuleset(model);
+                return await UpdateItemMasterLootCommon(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        private async Task<int> CheckCoreRuleset(EditItemMasterLootModel model)
+        {
+            int ItemMasterID = model.ItemMasterId == null ? 0 : (int)model.ItemMasterId;
+            if (!_coreRulesetService.IsItemCopiedFromCoreRuleset(ItemMasterID, (int)model.RuleSetId))
+            {
+                int OldParentItemMasterID = ItemMasterID;
+                int ItemMasterIDInserted = CreateItemMasterForCopiedRuleset((int)model.ItemMasterId, (int)model.RuleSetId).Result.ItemMasterId;
+                model.ItemMasterId = ItemMasterIDInserted;
+                model.ParentLootId = ItemMasterIDInserted;
+                return await _coreRulesetService._updateParentIDForAllRelatedItems((int)model.RuleSetId, OldParentItemMasterID, ItemMasterIDInserted, 'L');
+            }
+            return 0;
+
+
+            //int LootId = model.LootId;
+            //if (!_coreRulesetService.IsItemLootCopiedFromCoreRuleset(LootId, (int)model.RuleSetId))
+            //{
+            //    int OldParentLootID = LootId;
+            //    int LootIDInserted = CreateItemMasterForCopiedRuleset((int)model.ItemMasterId,(int)model.RuleSetId).Result.ItemMasterId;
+            //    model.LootId = LootIDInserted;
+            //    model.ParentLootId = LootIDInserted;
+            //    return await _coreRulesetService._updateParentIDForAllRelatedItems((int)model.RuleSetId, OldParentLootID, LootIDInserted, 'L');
+            //}
+            //return 0;
+        }
+
+        private async Task<ItemMaster> CreateItemMasterForCopiedRuleset(int ItemMasterId, int RuleSetId)
+        {
+            return await _coreRulesetService.CreateItemMasterUsingItem(ItemMasterId, RuleSetId);
+        }
+
         [HttpPost("giveItemsToCharacters")]
         public async Task<IActionResult> giveItemsToCharacters([FromBody] List<CommonID> CharacterIds,int LootID)
         {          
@@ -1145,7 +1325,7 @@ namespace RPGSmithApp.Controllers
                         ItemMasterLoot loot = await _itemMasterService.getLootDetails(LootID);
                         if (loot != null)
                         {
-                            await AddItemToCharacter(charID.ID, new ItemMasterIds() { ItemMasterId = loot.ItemMasterId }, loot);
+                            await AddItemToCharacter(charID.ID, new ItemMasterIds() { ItemMasterId = loot.LootId }, loot);
                         }
 
                     //}
@@ -1165,7 +1345,7 @@ namespace RPGSmithApp.Controllers
             ItemViewModel model = new ItemViewModel();
             model.CharacterId = charID;
             //count += 1;
-            var ItemTemplate = _itemMasterService.GetItemMasterById(item.ItemMasterId);
+            var ItemTemplate = _itemMasterService.GetItemMasterById(item.ItemMasterId);////////need to implemet check for loot record.....
             if (Loot != null)
             {
                 model.ItemMasterId = Loot.ItemMasterId;
@@ -1173,104 +1353,207 @@ namespace RPGSmithApp.Controllers
                 model.IsIdentified = Loot.IsIdentified;
                 model.IsVisible = Loot.IsVisible;
                 //model.cont = Loot.Quantity; ContainedIn is pending
-            }
-            var _ItemName = ItemTemplate.ItemName;
-            var existingNameItems = _itemService.getDuplicateItems(model.CharacterId, ItemTemplate.ItemMasterId);
-            //if (await _itemService.CheckDuplicateItem(ItemTemplate.ItemName, model.CharacterId))
-            //    _ItemName = ItemTemplate.ItemName + "_" + count;
 
-
-            if (existingNameItems != null)
-            {
-                int count = 0;
-                if (existingNameItems.Where(p => p.Name == ItemTemplate.ItemName).Any())
-                {
-
-                    foreach (var rec in existingNameItems)
-                    {
-                        count++;
-                        if (count > 0 && existingNameItems.Count != 0)
-                        {
-                            if (!existingNameItems.Where(p => p.Name == ItemTemplate.ItemName + "_" + count).Any())
-                                _ItemName = ItemTemplate.ItemName + "_" + count;
-                        }
-
-                    }
-                }
-                //int count = existingNameItems.Count;
-                //if (count > 0)
+                var _ItemName = Loot.ItemName;
+                var existingNameItems = _itemService.getDuplicateItems(model.CharacterId, Loot.ItemMasterId);
+                //if (await _itemService.CheckDuplicateItem(ItemTemplate.ItemName, model.CharacterId))
                 //    _ItemName = ItemTemplate.ItemName + "_" + count;
-            }
 
-            var ItemAbilities = new List<ItemAbility>();
-            foreach (var ability in ItemTemplate.ItemMasterAbilities)
-            {
-                ItemAbilities.Add(new ItemAbility
-                {
-                    AbilityId = ability.AbilityId
-                });
-            }
-            var ItemSpells = new List<ItemSpell>();
-            foreach (var spell in ItemTemplate.ItemMasterSpell)
-            {
-                ItemSpells.Add(new ItemSpell
-                {
-                    SpellId = spell.SpellId
-                });
-            }
-            var ItemBuffAndEffects = new List<ItemBuffAndEffect>();
-            foreach (var be in ItemTemplate.itemMasterBuffAndEffects)
-            {
-                ItemBuffAndEffects.Add(new ItemBuffAndEffect
-                {
-                    BuffAndEffectId = be.BuffAndEffectId
-                });
-            }
-            var ItemCommands = new List<ItemCommand>();
-            foreach (var command in ItemTemplate.ItemMasterCommand)
-            {
-                ItemCommands.Add(new ItemCommand
-                {
-                    Command = command.Command,
-                    Name = command.Name,
-                });
-            }
-            //no container whiling adding item master
-            var result = await _itemService.InsertItem(new Item
-            {
-                Name = _ItemName,
-                Description = ItemTemplate.ItemVisibleDesc,
-                ItemImage = ItemTemplate.ItemImage,
-                CharacterId = model.CharacterId,
-                ItemMasterId = ItemTemplate.ItemMasterId,
-                //ContainerId = _container.ContainerId,
-                IsIdentified = model.IsIdentified,
-                IsVisible = model.IsVisible,
-                IsEquipped = model.IsEquipped,
-                ParentItemId = item.ItemMasterId,
-                Command = ItemTemplate.Command,
-                IsContainer = ItemTemplate.IsContainer,
-                IsConsumable = ItemTemplate.IsConsumable,
-                IsMagical = ItemTemplate.IsMagical,
-                ItemCalculation = ItemTemplate.ItemCalculation,
-                Metatags = ItemTemplate.Metatags,
-                Rarity = ItemTemplate.Rarity,
-                Value = ItemTemplate.Value,
-                Volume = ItemTemplate.Volume,
-                Weight = ItemTemplate.Weight,
-                Quantity = model.Quantity == 0 ? 1 : model.Quantity,
-                TotalWeight = ItemTemplate.Weight * (model.Quantity == 0 ? 1 : model.Quantity),
 
-                ItemStats = ItemTemplate.ItemStats,
-                ContainerWeightMax = ItemTemplate.ContainerWeightMax,
-                ContainerVolumeMax = ItemTemplate.ContainerVolumeMax,
-                PercentReduced = ItemTemplate.PercentReduced,
-                TotalWeightWithContents = ItemTemplate.TotalWeightWithContents,
-                ContainerWeightModifier = ItemTemplate.ContainerWeightModifier,
-                CommandName = ItemTemplate.CommandName
-            },
-            ItemSpells,
-            ItemAbilities, ItemBuffAndEffects, ItemCommands);
+                if (existingNameItems != null)
+                {
+                    int count = 0;
+                    if (existingNameItems.Where(p => p.Name == Loot.ItemName).Any())
+                    {
+
+                        foreach (var rec in existingNameItems)
+                        {
+                            count++;
+                            if (count > 0 && existingNameItems.Count != 0)
+                            {
+                                if (!existingNameItems.Where(p => p.Name == Loot.ItemName + "_" + count).Any())
+                                    _ItemName = Loot.ItemName + "_" + count;
+                            }
+
+                        }
+                    }
+                    //int count = existingNameItems.Count;
+                    //if (count > 0)
+                    //    _ItemName = ItemTemplate.ItemName + "_" + count;
+                }
+
+                var ItemAbilities = new List<ItemAbility>();
+                foreach (var ability in Loot.ItemMasterAbilities)
+                {
+                    ItemAbilities.Add(new ItemAbility
+                    {
+                        AbilityId = ability.AbilityId
+                    });
+                }
+                var ItemSpells = new List<ItemSpell>();
+                foreach (var spell in Loot.ItemMasterSpell)
+                {
+                    ItemSpells.Add(new ItemSpell
+                    {
+                        SpellId = spell.SpellId
+                    });
+                }
+                var ItemBuffAndEffects = new List<ItemBuffAndEffect>();
+                foreach (var be in Loot.itemMasterBuffAndEffects)
+                {
+                    ItemBuffAndEffects.Add(new ItemBuffAndEffect
+                    {
+                        BuffAndEffectId = be.BuffAndEffectId
+                    });
+                }
+                var ItemCommands = new List<ItemCommand>();
+                foreach (var command in Loot.ItemMasterCommand)
+                {
+                    ItemCommands.Add(new ItemCommand
+                    {
+                        Command = command.Command,
+                        Name = command.Name,
+                    });
+                }
+
+                //no container whiling adding item master
+                var result = await _itemService.InsertItem(new Item
+                {
+                    Name = _ItemName,
+                    Description = Loot.ItemVisibleDesc,
+                    ItemImage = Loot.ItemImage,
+                    CharacterId = model.CharacterId,
+                    ItemMasterId = Loot.ItemMasterId,
+                    //ContainerId = _container.ContainerId,
+                    IsIdentified = model.IsIdentified,
+                    IsVisible = model.IsVisible,
+                    IsEquipped = model.IsEquipped,
+                    ParentItemId = item.ItemMasterId,
+                    Command = Loot.Command,
+                    IsContainer = Loot.IsContainer,
+                    IsConsumable = Loot.IsConsumable,
+                    IsMagical = Loot.IsMagical,
+                    ItemCalculation = Loot.ItemCalculation,
+                    Metatags = Loot.Metatags,
+                    Rarity = Loot.Rarity,
+                    Value = Loot.Value,
+                    Volume = Loot.Volume,
+                    Weight = Loot.Weight,
+                    Quantity = model.Quantity == 0 ? 1 : model.Quantity,
+                    TotalWeight = Loot.Weight * (model.Quantity == 0 ? 1 : model.Quantity),
+
+                    ItemStats = Loot.ItemStats,
+                    ContainerWeightMax = Loot.ContainerWeightMax,
+                    ContainerVolumeMax = Loot.ContainerVolumeMax,
+                    PercentReduced = Loot.PercentReduced,
+                    TotalWeightWithContents = Loot.TotalWeightWithContents,
+                    ContainerWeightModifier = Loot.ContainerWeightModifier,
+                    CommandName = Loot.CommandName
+                },
+                ItemSpells,
+                ItemAbilities, ItemBuffAndEffects, ItemCommands);
+            }
+            else {
+                var _ItemName = ItemTemplate.ItemName;
+                var existingNameItems = _itemService.getDuplicateItems(model.CharacterId, ItemTemplate.ItemMasterId);
+                //if (await _itemService.CheckDuplicateItem(ItemTemplate.ItemName, model.CharacterId))
+                //    _ItemName = ItemTemplate.ItemName + "_" + count;
+
+
+                if (existingNameItems != null)
+                {
+                    int count = 0;
+                    if (existingNameItems.Where(p => p.Name == ItemTemplate.ItemName).Any())
+                    {
+
+                        foreach (var rec in existingNameItems)
+                        {
+                            count++;
+                            if (count > 0 && existingNameItems.Count != 0)
+                            {
+                                if (!existingNameItems.Where(p => p.Name == ItemTemplate.ItemName + "_" + count).Any())
+                                    _ItemName = ItemTemplate.ItemName + "_" + count;
+                            }
+
+                        }
+                    }
+                    //int count = existingNameItems.Count;
+                    //if (count > 0)
+                    //    _ItemName = ItemTemplate.ItemName + "_" + count;
+                }
+
+                var ItemAbilities = new List<ItemAbility>();
+                foreach (var ability in ItemTemplate.ItemMasterAbilities)
+                {
+                    ItemAbilities.Add(new ItemAbility
+                    {
+                        AbilityId = ability.AbilityId
+                    });
+                }
+                var ItemSpells = new List<ItemSpell>();
+                foreach (var spell in ItemTemplate.ItemMasterSpell)
+                {
+                    ItemSpells.Add(new ItemSpell
+                    {
+                        SpellId = spell.SpellId
+                    });
+                }
+                var ItemBuffAndEffects = new List<ItemBuffAndEffect>();
+                foreach (var be in ItemTemplate.itemMasterBuffAndEffects)
+                {
+                    ItemBuffAndEffects.Add(new ItemBuffAndEffect
+                    {
+                        BuffAndEffectId = be.BuffAndEffectId
+                    });
+                }
+                var ItemCommands = new List<ItemCommand>();
+                foreach (var command in ItemTemplate.ItemMasterCommand)
+                {
+                    ItemCommands.Add(new ItemCommand
+                    {
+                        Command = command.Command,
+                        Name = command.Name,
+                    });
+                }
+                //no container whiling adding item master
+                var result = await _itemService.InsertItem(new Item
+                {
+                    Name = _ItemName,
+                    Description = ItemTemplate.ItemVisibleDesc,
+                    ItemImage = ItemTemplate.ItemImage,
+                    CharacterId = model.CharacterId,
+                    ItemMasterId = ItemTemplate.ItemMasterId,
+                    //ContainerId = _container.ContainerId,
+                    IsIdentified = model.IsIdentified,
+                    IsVisible = model.IsVisible,
+                    IsEquipped = model.IsEquipped,
+                    ParentItemId = item.ItemMasterId,
+                    Command = ItemTemplate.Command,
+                    IsContainer = ItemTemplate.IsContainer,
+                    IsConsumable = ItemTemplate.IsConsumable,
+                    IsMagical = ItemTemplate.IsMagical,
+                    ItemCalculation = ItemTemplate.ItemCalculation,
+                    Metatags = ItemTemplate.Metatags,
+                    Rarity = ItemTemplate.Rarity,
+                    Value = ItemTemplate.Value,
+                    Volume = ItemTemplate.Volume,
+                    Weight = ItemTemplate.Weight,
+                    Quantity = model.Quantity == 0 ? 1 : model.Quantity,
+                    TotalWeight = ItemTemplate.Weight * (model.Quantity == 0 ? 1 : model.Quantity),
+
+                    ItemStats = ItemTemplate.ItemStats,
+                    ContainerWeightMax = ItemTemplate.ContainerWeightMax,
+                    ContainerVolumeMax = ItemTemplate.ContainerVolumeMax,
+                    PercentReduced = ItemTemplate.PercentReduced,
+                    TotalWeightWithContents = ItemTemplate.TotalWeightWithContents,
+                    ContainerWeightModifier = ItemTemplate.ContainerWeightModifier,
+                    CommandName = ItemTemplate.CommandName
+                },
+                ItemSpells,
+                ItemAbilities, ItemBuffAndEffects, ItemCommands);
+            }
+           
+            
         }
         [HttpPost("deleteLoot_up")]
         public async Task<IActionResult> DeleteItemMasterLoot([FromBody] EditItemMasterLootModel model)
@@ -1408,16 +1691,28 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_itemMasterService.CheckDuplicateItemMaster(model.ItemName.Trim(), model.RuleSetId).Result)
+                if (_itemMasterService.CheckDuplicateItemMasterLoot(model.ItemName.Trim(), model.RuleSetId).Result)
                     return BadRequest("The Loot Name " + model.ItemName + " had already been used. Please select another name.");
 
-                var itemmaster = _itemMasterService.GetItemMasterById(model.ItemMasterId);
+                var itemmaster = await _itemMasterService.getLootDetails(model.LootId);
 
                 model.ItemMasterId = 0;
                 var itemMasterModel = Mapper.Map<ItemMaster>(model);
-                var result = await _itemMasterService.CreateItemMaster(itemMasterModel, itemmaster.ItemMasterSpell.ToList(), itemmaster.ItemMasterAbilities.ToList(), itemmaster.itemMasterBuffAndEffects.ToList());
+                if (model.itemMasterSpellVM==null)
+                {
+                    model.itemMasterSpellVM = new List<ItemMasterSpell>();
+                }
+                if (model.itemMasterAbilityVM == null)
+                {
+                    model.itemMasterAbilityVM = new List<ItemMasterAbility>();
+                }
+                if (model.itemMasterBuffAndEffectVM== null)
+                {
+                    model.itemMasterBuffAndEffectVM = new List<ItemMasterBuffAndEffect>();
+                }
+                var result = await _itemMasterService.CreateItemMaster(itemMasterModel, model.itemMasterSpellVM.ToList(), model.itemMasterAbilityVM.ToList(), model.itemMasterBuffAndEffectVM.ToList());
 
-                foreach (var imcViewModels in itemmaster.ItemMasterCommand)
+                foreach (var imcViewModels in model.itemMasterCommandVM)
                 {
                     await _iItemMasterCommandService.InsertItemMasterCommand(new ItemMasterCommand()
                     {
@@ -1437,9 +1732,65 @@ namespace RPGSmithApp.Controllers
                         IsVisible = model.IsVisible,
                         Quantity = model.Quantity,
                         ItemMasterId = result.ItemMasterId,
+                        
+                        Command = model.Command,
+                        CommandName = model.CommandName,
+                        ContainerVolumeMax = model.ContainerVolumeMax,
+                        ContainerWeightMax = model.ContainerWeightMax,
+                        ContainerWeightModifier = model.ContainerWeightModifier,
+                        IsConsumable = model.IsConsumable == null ? false : (bool)model.IsConsumable,
+                        IsContainer = model.IsContainer == null ? false : (bool)model.IsContainer,
+                        IsMagical = model.IsMagical == null ? false : (bool)model.IsMagical,
+                        ItemCalculation = model.ItemCalculation,
+                        ItemImage = model.ItemImage,
+                        ItemName = model.ItemName,
+                        ItemStats = model.ItemStats,
+                        ItemVisibleDesc = model.ItemVisibleDesc,
+                        Metatags = model.Metatags,
+                        PercentReduced = model.PercentReduced,
+                        Rarity = model.Rarity,
+                        RuleSetId = model.RuleSetId,
+                        // TotalWeight = model.to,
+                        Value = model.Value == null ? 0 : (decimal)model.Value,
+                        TotalWeightWithContents = model.TotalWeightWithContents,
+                        Volume = model.Volume == null ? 0 : (decimal)model.Volume,
+                        Weight = model.Weight == null ? 0 : (decimal)model.Weight,
                     };
+                    var ItemMasterAbilities = new List<ItemMasterLootAbility>();
+                    var ItemMasterSpell = new List<ItemMasterLootSpell>();
+                    var itemMasterBuffAndEffects = new List<ItemMasterLootBuffAndEffect>();
+                    var ItemMasterCommand = new List<ItemMasterLootCommand>();
+                    if (model.itemMasterSpellVM != null)
+                    {
+                        ItemMasterSpell = model.itemMasterSpellVM.Select(x => new ItemMasterLootSpell()
+                        {
+                            SpellId = x.SpellId,
+                        }).ToList();
+                    }
+                    if (model.itemMasterAbilityVM != null)
+                    {
+                        ItemMasterAbilities = model.itemMasterAbilityVM.Select(x => new ItemMasterLootAbility()
+                        {
+                            AbilityId = x.AbilityId,
+                        }).ToList();
+                    }
+                    if (model.itemMasterBuffAndEffectVM != null)
+                    {
+                        itemMasterBuffAndEffects = model.itemMasterBuffAndEffectVM.Select(x => new ItemMasterLootBuffAndEffect()
+                        {
+                            BuffAndEffectId = x.BuffAndEffectId,
+                        }).ToList();
+                    }
+                    if (model.itemMasterCommandVM != null)
+                    {
+                        ItemMasterCommand = model.itemMasterCommandVM.Select(x => new ItemMasterLootCommand()
+                        {
+                            Command = x.Command,
+                            Name = x.Name
+                        }).ToList();
+                    }
 
-                    var newLoot = _itemMasterService.CreateItemMasterLoot(result, loot);
+                    var newLoot = _itemMasterService.CreateItemMasterLoot(result, loot, ItemMasterSpell, ItemMasterAbilities, itemMasterBuffAndEffects, ItemMasterCommand);
                     var itemDomain = model;
                     if (itemDomain.ContainedIn != null && itemDomain.ContainedIn > 0 && !(itemDomain.IsContainer == null ? false : true))
                     {

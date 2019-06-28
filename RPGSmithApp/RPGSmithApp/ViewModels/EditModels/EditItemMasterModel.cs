@@ -73,6 +73,7 @@ namespace RPGSmithApp.ViewModels.EditModels
     {
 
         public int LootId { get; set; }
+        public int ParentLootId { get; set; }
 
         public bool IsShow { get; set; }
 
@@ -80,6 +81,7 @@ namespace RPGSmithApp.ViewModels.EditModels
 
 
         public decimal Quantity { get; set; }
+        public decimal TotalWeight { get; set; }
 
         public bool? IsIdentified { get; set; }
         public bool? IsVisible { get; set; }

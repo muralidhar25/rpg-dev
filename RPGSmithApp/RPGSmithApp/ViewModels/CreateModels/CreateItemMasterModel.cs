@@ -78,6 +78,7 @@ namespace RPGSmithApp.ViewModels.CreateModels
     public class CreateItemMasterLootModel : CreateItemMasterModel {
        
         public int LootId { get; set; }
+        public int ParentLootId { get; set; }
 
         public bool IsShow { get; set; }
 

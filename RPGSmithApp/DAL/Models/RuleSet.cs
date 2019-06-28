@@ -95,6 +95,7 @@ namespace DAL.Models
         public virtual ICollection<Spell> Spells { get; set; }
         public virtual ICollection<Ability> Abilities { get; set; }
         public virtual ICollection<SearchFilter> SearchFilters { get; set; }
+        public virtual ICollection<ItemMasterLoot> ItemMasterLoots { get; set; }
 
     }
 }

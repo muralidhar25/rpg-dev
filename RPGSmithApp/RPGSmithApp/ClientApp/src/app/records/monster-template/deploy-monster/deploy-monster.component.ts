@@ -14,6 +14,8 @@ import { PlatformLocation } from '@angular/common';
 import { MonsterTemplateService } from '../../../core/services/monster-template.service';
 import { Utilities } from '../../../core/common/utilities';
 import { DiceService } from '../../../core/services/dice.service';
+import { CustomDice } from '../../../core/models/view-models/custome-dice.model';
+import { RulesetService } from '../../../core/services/ruleset.service';
 
 @Component({
   selector: 'app-deploy-monster',
@@ -31,12 +33,12 @@ export class DeployMonsterComponent implements OnInit {
   title: string;
   monsterInfo: any;
   addToCombat: boolean = false;
-
+  customDices: CustomDice[] = [];
 
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
     private colorService: ColorService, private localStorage: LocalStoreManager, private counterTileService: CounterTileService,
     private alertService: AlertService, private authService: AuthService, private location: PlatformLocation,
-    private monsterTemplateService: MonsterTemplateService) {
+    private monsterTemplateService: MonsterTemplateService, private rulesetService: RulesetService, ) {
     location.onPopState(() => this.modalService.hide(1));
   }
 
@@ -46,8 +48,19 @@ export class DeployMonsterComponent implements OnInit {
       this.monsterInfo = this.bsModalRef.content.monsterInfo;
       this.monsterImage = this.monsterInfo.imageUrl;
       this.value = 1;
+      debugger
+      this.rulesetService.getCustomDice(this.monsterInfo.ruleSetId)
+        .subscribe(data => {
+          debugger
+          this.customDices = data
 
-      console.log('monsterInfo', this.monsterInfo);
+        }, error => {
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+        })
+      
     }, 0);
   }
 
@@ -72,10 +85,10 @@ export class DeployMonsterComponent implements OnInit {
   }
 
   saveCounter() {
-    let health = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.health ? this.monsterInfo.health: '0' , [])
-    let armorClass = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.armorClass ? this.monsterInfo.armorClass :'0', [])
-    let xpValue = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.xpValue ? this.monsterInfo.xpValue : '0' , [])
-    let challangeRating = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.challangeRating ? this.monsterInfo.challangeRating: '0', [])
+    let health = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.health ? this.monsterInfo.health : '0', this.customDices)
+    let armorClass = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.armorClass ? this.monsterInfo.armorClass : '0', this.customDices)
+    let xpValue = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.xpValue ? this.monsterInfo.xpValue : '0', this.customDices)
+    let challangeRating = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.challangeRating ? this.monsterInfo.challangeRating : '0', this.customDices)
     let deployMonsterInfo = {
       qty: this.value,
       monsterTemplateId: this.monsterInfo.monsterTemplateId,

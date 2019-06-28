@@ -30,6 +30,8 @@ export class SharedService {
   private MonsterTemplate = new Subject<any>();
   private Monster = new Subject<any>();
   private MonsterDrop = new Subject<any>();
+  private MonsterTemplateDetail = new Subject<any>();
+  private AddMonsterTemplatesList = new Subject<any>();
   
   
   updateManageOpen(accountSetting: any) {
@@ -286,6 +288,20 @@ export class SharedService {
 
   shouldUpdateDropMonsterList(): Observable<any> {
     return this.MonsterDrop.asObservable();
+  }
+  updateMonsterTemplateDetailList(data: any) {
+    this.MonsterTemplateDetail.next(data);
+  }
+
+  shouldUpdateMonsterTemplateDetailList(): Observable<any> {
+    return this.MonsterTemplateDetail.asObservable();
+  }
+  updateAddMonsterTemplatesList(itemsList: any) {
+    this.AddMonsterTemplatesList.next(itemsList);
+  }
+
+  shouldUpdateAddMonsterTemplatesList(): Observable<any> {
+    return this.AddMonsterTemplatesList.asObservable();
   }
 }
 

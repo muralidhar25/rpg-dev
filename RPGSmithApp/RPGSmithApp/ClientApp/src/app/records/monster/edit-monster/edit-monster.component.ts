@@ -20,6 +20,8 @@ import { DiceComponent } from '../../../shared/dice/dice/dice.component';
 import { ImageSelectorComponent } from '../../../shared/image-interface/image-selector/image-selector.component';
 import { DiceService } from '../../../core/services/dice.service';
 import { AddItemMonsterComponent } from '../../monster-template/Add-items-monster/add-item-monster.component';
+import { CustomDice } from '../../../core/models/view-models/custome-dice.model';
+import { RulesetService } from '../../../core/services/ruleset.service';
 
 @Component({
   selector: 'app-edit-monster',
@@ -56,7 +58,7 @@ export class EditMonsterComponent implements OnInit {
   associateMonsterTemplateList = [];
   selectedAssociateMonsterTemplates = [];
   SelectedItemsList = [];
- 
+  customDices: CustomDice[] = [];
 
     options(placeholder?: string): Object {
         return Utilities.optionsFloala(160, placeholder);
@@ -67,7 +69,7 @@ export class EditMonsterComponent implements OnInit {
         public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
       private sharedService: SharedService, private commonService: CommonService,
       private monsterTemplateService: MonsterTemplateService, 
-        private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,
+      private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService, private rulesetService: RulesetService, 
     
      private location: PlatformLocation) {
       location.onPopState(() => this.modalService.hide(1)); 
@@ -126,7 +128,17 @@ export class EditMonsterComponent implements OnInit {
             else {
                 this._ruleSetId = this.monsterFormModal.ruleSetId;
             }
+          this.rulesetService.getCustomDice(this._ruleSetId)
+            .subscribe(data => {
+              debugger
+              this.customDices = data
 
+            }, error => {
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
+            })
             this.initialize();
         }, 0);
     }
@@ -609,7 +621,7 @@ export class EditMonsterComponent implements OnInit {
       }
     }
     try {
-      let number = DiceService.rollDiceExternally(this.alertService, command, []);
+      let number = DiceService.rollDiceExternally(this.alertService, command, this.customDices );
       if (isNaN(number)) {
         return false;
       }
@@ -651,7 +663,7 @@ export class EditMonsterComponent implements OnInit {
     debugger
     let command = monsterFormModal.armorClass;
     if (command) {
-      let res = DiceService.rollDiceExternally(this.alertService, command, []);
+      let res = DiceService.rollDiceExternally(this.alertService, command, this.customDices );
       if (isNaN(res)) {
         this.monsterFormModal.monsterArmorClass = 0;
       }
@@ -668,7 +680,7 @@ export class EditMonsterComponent implements OnInit {
     debugger
     let command = monsterFormModal.challangeRating;
     if (command) {
-      let res = DiceService.rollDiceExternally(this.alertService, command, []);
+      let res = DiceService.rollDiceExternally(this.alertService, command, this.customDices );
       if (isNaN(res)) {
         this.monsterFormModal.monsterChallangeRating= 0;
       }
@@ -684,7 +696,7 @@ export class EditMonsterComponent implements OnInit {
     debugger
     let command = monsterFormModal.xPValue;
     if (command) {
-      let res = DiceService.rollDiceExternally(this.alertService, command, []);
+      let res = DiceService.rollDiceExternally(this.alertService, command, this.customDices );
       if (isNaN(res)) {
         this.monsterFormModal.monsterXPValue = 0;
       }

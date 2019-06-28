@@ -498,9 +498,9 @@ namespace DAL.Services
             return await _repo.Add(monsterTemplate);
         }
 
-        public List<MonsterTemplate> SP_GetMonsterTemplateByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1)
+        public List<MonsterTemplate_Bundle> SP_GetMonsterTemplateByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1)
         {
-            List<MonsterTemplate> _monsterTemplateList = new List<MonsterTemplate>();
+            List<MonsterTemplate_Bundle> _monsterTemplateList = new List<MonsterTemplate_Bundle>();
             RuleSet ruleset = new RuleSet();
 
             short num = 0;
@@ -520,6 +520,7 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@page", page);
                 command.Parameters.AddWithValue("@size", pageSize);
                 command.Parameters.AddWithValue("@SortType", sortType);
+                command.Parameters.AddWithValue("@includeBundles", true);
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;
@@ -544,7 +545,7 @@ namespace DAL.Services
 
                 foreach (DataRow row in ds.Tables[0].Rows)
                 {
-                    MonsterTemplate _MonsterTemplate = new MonsterTemplate();
+                    MonsterTemplate_Bundle _MonsterTemplate = new MonsterTemplate_Bundle();
                     _MonsterTemplate.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
                     _MonsterTemplate.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
                     _MonsterTemplate.Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString();
@@ -565,7 +566,9 @@ namespace DAL.Services
                     _MonsterTemplate.ChallangeRating = row["ChallangeRating"] == DBNull.Value ? null : row["ChallangeRating"].ToString();
                     _MonsterTemplate.XPValue = row["XPValue"] == DBNull.Value ? null : row["XPValue"].ToString();
                     _MonsterTemplate.InitiativeCommand = row["InitiativeCommand"] == DBNull.Value ? null : row["InitiativeCommand"].ToString();
+                    _MonsterTemplate.IsRandomizationEngine = row["IsRandomizationEngine"] == DBNull.Value ? false : Convert.ToBoolean(row["IsRandomizationEngine"]);
 
+                    _MonsterTemplate.IsBundle = row["IsBundle"] == DBNull.Value ? false : Convert.ToBoolean(row["IsBundle"]);
 
                     _MonsterTemplate.RuleSet = ruleset;
                     _monsterTemplateList.Add(_MonsterTemplate);
@@ -1104,9 +1107,91 @@ namespace DAL.Services
                     {
                         IsShow = true,
                         Quantity = item.Qty
-                    });
+                    },
+                    new List<ItemMasterLootSpell>(),
+                    new List<ItemMasterLootAbility>(),
+                    new List<ItemMasterLootBuffAndEffect>(),
+                    new List<ItemMasterLootCommand>()
+                    );
                 }
             }
+        }
+        public List<MonsterTemplate_Bundle> GetMonsterTemplatesByRuleSetId_add(int rulesetId, bool includeBundles=false)
+        {
+            List<MonsterTemplate_Bundle> monsterList = new List<MonsterTemplate_Bundle>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            // string qry = "EXEC ItemMasterGetAllDetailsByRulesetID_add @RulesetID = '" + rulesetId + "'";
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("MonsterTemplateGetAllDetailsByRulesetID_add", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@RulesetID", rulesetId);
+                command.Parameters.AddWithValue("@includeBundles", includeBundles);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow ItemRow in ds.Tables[0].Rows)
+                {
+                    MonsterTemplate_Bundle MonsterTemp = new MonsterTemplate_Bundle() {
+                        ArmorClass = ItemRow["ArmorClass"] == DBNull.Value ? null : ItemRow["ArmorClass"].ToString(),
+                        ChallangeRating = ItemRow["ChallangeRating"] == DBNull.Value ? null : ItemRow["ChallangeRating"].ToString(),
+                        Command = ItemRow["Command"] == DBNull.Value ? null : ItemRow["Command"].ToString(),
+                        CommandName = ItemRow["CommandName"] == DBNull.Value ? null : ItemRow["CommandName"].ToString(),
+                        Description = ItemRow["Description"] == DBNull.Value ? null : ItemRow["Description"].ToString(),
+                        Health = ItemRow["Health"] == DBNull.Value ? null : ItemRow["Health"].ToString(),
+                        ImageUrl = ItemRow["ImageUrl"] == DBNull.Value ? null : ItemRow["ImageUrl"].ToString(),
+                        InitiativeCommand = ItemRow["InitiativeCommand"] == DBNull.Value ? null : ItemRow["InitiativeCommand"].ToString(),
+                        IsDeleted = ItemRow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(ItemRow["IsDeleted"]),
+                        IsRandomizationEngine = ItemRow["IsRandomizationEngine"] == DBNull.Value ? false : Convert.ToBoolean(ItemRow["IsRandomizationEngine"]),
+                        Metatags = ItemRow["Metatags"] == DBNull.Value ? null : ItemRow["Metatags"].ToString(),                       
+                        MonsterTemplateId = ItemRow["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(ItemRow["MonsterTemplateId"]),
+                        Name = ItemRow["Name"] == DBNull.Value ? null : ItemRow["Name"].ToString(),
+                        ParentMonsterTemplateId = ItemRow["ParentMonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(ItemRow["ParentMonsterTemplateId"]),
+                        RuleSetId = ItemRow["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(ItemRow["RuleSetId"]),
+                        Stats = ItemRow["Stats"] == DBNull.Value ? null : ItemRow["Stats"].ToString(),
+                        XPValue = ItemRow["XPValue"] == DBNull.Value ? null : ItemRow["XPValue"].ToString(),
+                        IsBundle = ItemRow["IsBundle"] == DBNull.Value ? false : Convert.ToBoolean(ItemRow["IsBundle"]),
+                    };
+                    monsterList.Add(MonsterTemp);
+                }
+            }
+            return monsterList;
+
+        }
+        public bool Core_BundleWithParentIDExists(int bundleId, int rulesetID)
+        {
+            if (_context.MonsterTemplateBundles.Where(x => x.BundleId == bundleId && x.ParentMonsterTemplateBundleId != null).Any())
+            {
+                return true;
+            }
+            else
+            {
+                var model = _context.MonsterTemplateBundles.Where(x => x.BundleId == bundleId && x.ParentMonsterTemplateBundleId == null);
+                if (model.FirstOrDefault().RuleSetId == rulesetID)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

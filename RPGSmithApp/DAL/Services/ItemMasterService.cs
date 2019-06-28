@@ -854,6 +854,13 @@ namespace DAL.Services
             else
                 return _context.ItemMasters.Where(x => x.ItemName.ToLower() == value.ToLower() && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
         }
+        public async Task<bool> CheckDuplicateItemMasterLoot(string value, int? ruleSetId, int? lootID = 0)
+        {
+            if (ruleSetId > 0)
+                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.RuleSetId == ruleSetId && x.LootId != lootID && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
+            else
+                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
+        }
         public async Task<ItemMaster> GetDuplicateItemMaster(string value, int? ruleSetId, int? itemMasterId = 0)
         {
             //var items = _repo.GetAll();
@@ -880,6 +887,24 @@ namespace DAL.Services
             else
             {
                 var model = _context.ItemMasters.Where(x => x.ItemMasterId == itemMasterID && x.ParentItemMasterId == null && x.IsDeleted != true);
+                if (model.FirstOrDefault().RuleSetId == RulesetID)
+                {
+                    return true;
+                }
+            }
+            return false;
+            //var rec = _context.ItemMasters.Where(x => x.ItemMasterId == itemMasterID && x.ParentItemMasterId != null && x.IsDeleted != true).FirstOrDefault().
+            //return _context.ItemMasters.Where(x => x.ItemMasterId == itemMasterID && x.ParentItemMasterId != null && x.IsDeleted != true).Any();
+        }
+        public bool Core_ItemMasterLootWithParentIDExists(int LootID, int RulesetID)
+        {
+            if (_context.ItemMasterLoots.Where(x => x.LootId == LootID && x.ParentLootId != null && x.IsDeleted != true).Any())
+            {
+                return true;
+            }
+            else
+            {
+                var model = _context.ItemMasterLoots.Where(x => x.LootId == LootID && x.ParentLootId == null && x.IsDeleted != true);
                 if (model.FirstOrDefault().RuleSetId == RulesetID)
                 {
                     return true;
@@ -1123,9 +1148,147 @@ namespace DAL.Services
             }
             return res;
         }
+        public SP_AbilitySpellForItemMaster AbilitySpellForLootsByRuleset_sp(int rulesetId, int lootID)
+        {
+            SP_AbilitySpellForItemMaster res = new SP_AbilitySpellForItemMaster();
+            res.abilityList = new List<Ability>();
+            res.selectedAbilityList = new List<Ability>();
+            res.spellList = new List<Spell>();
+            res.selectedSpellList = new List<Spell>();
+            res.buffAndEffectsList = new List<BuffAndEffect>();
+            res.selectedBuffAndEffects = new List<BuffAndEffect>();
+            res.selectedItemMasterCommand = new List<ItemMasterCommand>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            //string qry = "EXEC ItemMasters_Ability_Spell_GetByRulesetID @RulesetID = '" + rulesetId + "',@ItemMasterID = '" + itemMasterId + "'";
 
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("Loots_Ability_Spell_GetByRulesetID", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@RulesetID", rulesetId);
+                command.Parameters.AddWithValue("@LootID", lootID);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    Ability i = new Ability();
+                    i.AbilityId = row["AbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(row["AbilityId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.abilityList.Add(i);
+                }
+
+            }
+            if (ds.Tables[1].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[1].Rows)
+                {
+                    Spell i = new Spell();
+                    i.SpellId = row["SpellId"] == DBNull.Value ? 0 : Convert.ToInt32(row["SpellId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.spellList.Add(i);
+                }
+
+            }
+            if (ds.Tables[2].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[2].Rows)
+                {
+                    BuffAndEffect i = new BuffAndEffect();
+                    i.BuffAndEffectId = row["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["BuffAndEffectId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.buffAndEffectsList.Add(i);/////////
+                }
+
+            }
+            if (ds.Tables[3].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[3].Rows)
+                {
+                    Ability i = new Ability();
+                    i.AbilityId = row["AbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(row["AbilityId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.selectedAbilityList.Add(i);
+                }
+
+            }
+            if (ds.Tables[4].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[4].Rows)
+                {
+                    Spell i = new Spell();
+                    i.SpellId = row["SpellId"] == DBNull.Value ? 0 : Convert.ToInt32(row["SpellId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.selectedSpellList.Add(i);
+                }
+
+            }
+            if (ds.Tables[5].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[5].Rows)
+                {
+                    BuffAndEffect i = new BuffAndEffect();
+                    i.BuffAndEffectId = row["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["BuffAndEffectId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.selectedBuffAndEffects.Add(i);///////
+                }
+
+            }
+            if (ds.Tables[6].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[6].Rows)
+                {
+                    ItemMasterCommand i = new ItemMasterCommand();
+                    i.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
+                    i.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ItemMasterCommandId = row["ItemMasterLootCommandId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemMasterLootCommandId"]);
+                    i.ItemMasterId = row["ItemMasterLootId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemMasterLootId"]);
+                    res.selectedItemMasterCommand.Add(i);
+                }
+
+            }
+            return res;
+        }
         #region Loot
-        public async Task _AddItemsToLoot(List<LootsToAdd> itemList) {
+        public async Task _AddItemsToLoot(List<LootsToAdd> itemList, int rulesetID) {
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             DataTable Datatable_Ids = utility.ToDataTable<LootsToAdd>(itemList);
             using (SqlConnection con = new SqlConnection(consString))
@@ -1136,6 +1299,7 @@ namespace DAL.Services
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Connection = con;
                     cmd.Parameters.AddWithValue("@IdsToInsert", Datatable_Ids);
+                    cmd.Parameters.AddWithValue("@RulesetID", rulesetID);
                     con.Open();
                     try
                     {
@@ -1211,7 +1375,8 @@ namespace DAL.Services
                     i.ItemStats = row["ItemStats"] == DBNull.Value ? null : row["ItemStats"].ToString();
                     i.ItemVisibleDesc = row["ItemVisibleDesc"] == DBNull.Value ? null : row["ItemVisibleDesc"].ToString();
                     i.Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString();
-                    i.ParentItemMasterId = row["ParentItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentItemMasterId"].ToString());
+                   //i.ParentItemMasterId = row["ParentItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentItemMasterId"].ToString());
+                    i.ParentLootId = row["ParentLootId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentLootId"].ToString());
                     i.PercentReduced = row["PercentReduced"] == DBNull.Value ? 0 : Convert.ToDecimal(row["PercentReduced"]);
                     i.Rarity = row["Rarity"] == DBNull.Value ? null : row["Rarity"].ToString();
                     i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
@@ -1244,22 +1409,158 @@ namespace DAL.Services
             var res =await GetItemMasterLoots(rulesetID, 1, 999999);
             return res.Where(x => x.IsShow == true && x.IsDeleted != true).OrderBy(x=>x.ItemName).ToList();
         }
-        public ItemMasterLoot CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot) {
-            var Newloot = new ItemMasterLoot()
+        public ItemMasterLoot CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot, 
+            List<ItemMasterLootSpell> AssociateSpellVM, 
+            List<ItemMasterLootAbility> AssociateAbilityVM, 
+            List<ItemMasterLootBuffAndEffect> AssociateBuffAndEffectVM, 
+            List<ItemMasterLootCommand> AssociateCommandVM, Item item=null)
+        {
+            var Newloot = new ItemMasterLoot();
+            if (item != null)
             {
-                ContainedIn = loot.ContainedIn,
-                IsIdentified = loot.IsIdentified,
-                IsVisible = loot.IsVisible,
-                IsShow = loot.IsShow,
-                ItemMasterId = result.ItemMasterId,
-                Quantity = loot.Quantity,
-            };
+                 Newloot = new ItemMasterLoot()
+                {
+                    //ContainedIn = loot.ContainedIn,
+                    IsIdentified = item.IsIdentified,
+                    IsVisible = item.IsVisible,
+                    IsShow = loot.IsShow,
+                    ItemMasterId = result.ItemMasterId,
+                    Quantity = item.Quantity,
+
+                    Command = item.Command,
+                    CommandName = item.CommandName,
+                    ContainerVolumeMax = item.ContainerVolumeMax,
+                    ContainerWeightMax = item.ContainerWeightMax,
+                    ContainerWeightModifier = item.ContainerWeightModifier,
+                    IsConsumable = item.IsConsumable,
+                    IsContainer = item.IsContainer,
+                    IsMagical = item.IsMagical,
+                    ItemCalculation = item.ItemCalculation,
+                    ItemImage = item.ItemImage,
+                    ItemName = item.Name,
+                    ItemStats = item.ItemStats,
+                    ItemVisibleDesc = item.Description,
+                    Metatags = item.Metatags,
+                    PercentReduced = item.PercentReduced,
+                    Rarity = item.Rarity,
+                    RuleSetId = result.RuleSetId,////////////////
+                    // TotalWeight = itemDomain.to,
+                    Value = item.Value,
+                    TotalWeightWithContents = item.TotalWeightWithContents,
+                    Volume = item.Volume,
+                    Weight = item.Weight,
+                     TotalWeight = item.TotalWeight
+                 };
+            }
+            else {
+                 Newloot = new ItemMasterLoot()
+                {
+                    ContainedIn = loot.ContainedIn,
+                    IsIdentified = loot.IsIdentified,
+                    IsVisible = loot.IsVisible,
+                    IsShow = loot.IsShow,
+                    ItemMasterId = result.ItemMasterId,
+                    Quantity = loot.Quantity,
+
+                    Command = loot.Command,
+                    CommandName = loot.CommandName,
+                    ContainerVolumeMax = loot.ContainerVolumeMax,
+                    ContainerWeightMax = loot.ContainerWeightMax,
+                    ContainerWeightModifier = loot.ContainerWeightModifier,
+                    IsConsumable = loot.IsConsumable,
+                    IsContainer = loot.IsContainer,
+                    IsMagical = loot.IsMagical,
+                    ItemCalculation = loot.ItemCalculation,
+                    ItemImage = loot.ItemImage,
+                    ItemName = loot.ItemName,
+                    ItemStats = loot.ItemStats,
+                    ItemVisibleDesc = loot.ItemVisibleDesc,
+                    Metatags = loot.Metatags,
+                    PercentReduced = loot.PercentReduced,
+                    Rarity = loot.Rarity,
+                    RuleSetId = loot.RuleSetId,
+                    // TotalWeight = itemDomain.to,
+                    Value = loot.Value,
+                    TotalWeightWithContents = loot.TotalWeightWithContents,
+                    Volume = loot.Volume,
+                    Weight = loot.Weight,
+                   TotalWeight= loot.Quantity * (loot.Weight)
+                 };
+            }
+            
                 _context.ItemMasterLoots.Add(Newloot);
             _context.SaveChanges();
+            ///////////////////////////////////////////// return Newloot;
+
+            Newloot.ItemMasterAbilities = new List<ItemMasterLootAbility>();
+            Newloot.ItemMasterSpell = new List<ItemMasterLootSpell>();
+            Newloot.itemMasterBuffAndEffects = new List<ItemMasterLootBuffAndEffect>();
+            Newloot.ItemMasterCommand = new List<ItemMasterLootCommand>();
+           
+           
+            int ItemMasterLootId = Newloot.LootId;
+            try
+            {
+                if (ItemMasterLootId > 0)
+                {
+
+                    if (AssociateAbilityVM != null && AssociateAbilityVM.Count > 0)
+                    {
+                        AssociateAbilityVM.ForEach(a => a.ItemMasterLootId = ItemMasterLootId);
+                        _context.ItemMasterLootAbilitys.AddRange(AssociateAbilityVM);
+                        _context.SaveChanges();
+                    }
+                    if (AssociateSpellVM != null && AssociateSpellVM.Count > 0)
+                    {
+                        AssociateSpellVM.ForEach(a => a.ItemMasterLootId = ItemMasterLootId);
+                        _context.ItemMasterLootSpells.AddRange(AssociateSpellVM);// _repoMasterSpell.AddRange(AssociatedSpells);
+                        _context.SaveChanges();
+                    }
+                    if (AssociateBuffAndEffectVM != null && AssociateBuffAndEffectVM.Count > 0)
+                    {
+                        //AssociatedBuffAndEffects.ForEach(a => a.ItemMasterId = ItemMasterId);
+                        //AssociatedBuffAndEffects.ForEach(a => a.Id = 0);
+                        List<ItemMasterLootBuffAndEffect> AssociatedBuffAndEffectsList = AssociateBuffAndEffectVM.Select(x => new ItemMasterLootBuffAndEffect()
+                        {
+                            BuffAndEffectId = x.BuffAndEffectId,
+                        }).ToList();
+                        foreach (var be in AssociatedBuffAndEffectsList)
+                        {
+                            _context.ItemMasterLootBuffAndEffects.Add(new ItemMasterLootBuffAndEffect() { BuffAndEffectId = be.BuffAndEffectId, ItemMasterLootId = ItemMasterLootId });
+                        }
+                        //_context.ItemMasterBuffAndEffects.AddRange(AssociatedBuffAndEffectsList);// _repoMasterSpell.AddRange(AssociatedSpells);
+                        _context.SaveChanges();
+                    }
+                    if (AssociateCommandVM != null && AssociateCommandVM.Count > 0)
+                    {
+                        foreach (var imcViewModels in AssociateCommandVM)
+                        {
+                            _context.ItemMasterLootCommands.Add(new ItemMasterLootCommand()
+                            {
+                                Command = imcViewModels.Command,
+                                Name = imcViewModels.Name,
+                                ItemMasterLootId = ItemMasterLootId
+                            });
+                           
+                        }
+                        _context.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception ex)
+            { }
+            Newloot.ItemMasterAbilities = AssociateAbilityVM;
+            Newloot.ItemMasterSpell = AssociateSpellVM;
+            Newloot.itemMasterBuffAndEffects = AssociateBuffAndEffectVM;
+            Newloot.ItemMasterCommand = AssociateCommandVM;
             return Newloot;
 
         }
-        public async  Task<ItemMasterLoot> UpdateItemMasterLoot(ItemMasterLoot loot)
+        public async  Task<ItemMasterLoot> UpdateItemMasterLoot(ItemMasterLoot loot,
+            List<ItemMasterLootSpell> itemMasterSpell, 
+            List<ItemMasterLootAbility> itemMasterAbilities,
+            List<ItemMasterLootBuffAndEffect> itemMasterBuffAndEffects, 
+            List<ItemMasterLootCommand> itemMasterCommand)
         {
             ItemMasterLoot obj = _context.ItemMasterLoots.Where(x => x.LootId == loot.LootId).FirstOrDefault();
             if (obj!=null)
@@ -1270,12 +1571,92 @@ namespace DAL.Services
                     obj.IsShow = loot.IsShow;
                     obj.ItemMasterId = loot.ItemMasterId;
                     obj.Quantity = loot.Quantity;
+
+               
+               
+                
+                obj.Command = loot.Command;
+                obj.CommandName = loot.CommandName;
+                obj.ContainerVolumeMax = loot.ContainerVolumeMax;
+                obj.ContainerWeightMax = loot.ContainerWeightMax;
+                obj.ContainerWeightModifier = loot.ContainerWeightModifier;
+                obj.IsConsumable = loot.IsConsumable;
+                obj.IsContainer = loot.IsContainer;
+                obj.IsMagical = loot.IsMagical;
+                obj.ItemCalculation = loot.ItemCalculation;
+                obj.ItemImage = loot.ItemImage;
+                obj.ItemName = loot.ItemName;
+                obj.ItemStats = loot.ItemStats;
+                obj.ItemVisibleDesc = loot.ItemVisibleDesc;
+                obj.Metatags = loot.Metatags;
+                obj.PercentReduced = loot.PercentReduced;
+                obj.Rarity = loot.Rarity;
+                
+                
+                obj.Value = loot.Value;
+                obj.TotalWeightWithContents = loot.TotalWeightWithContents;
+                obj.Volume = loot.Volume;
+                obj.Weight = loot.Weight ;
+                obj.TotalWeight = loot.TotalWeight;
+
+                _context.ItemMasterLootAbilitys.RemoveRange(_context.ItemMasterLootAbilitys.Where(x => x.ItemMasterLootId == loot.LootId));
+                _context.ItemMasterLootSpells.RemoveRange(_context.ItemMasterLootSpells.Where(x => x.ItemMasterLootId == loot.LootId));
+                _context.ItemMasterLootBuffAndEffects.RemoveRange(_context.ItemMasterLootBuffAndEffects.Where(x => x.ItemMasterLootId == loot.LootId));
+                _context.ItemMasterLootCommands.RemoveRange(_context.ItemMasterLootCommands.Where(x => x.ItemMasterLootId == loot.LootId));
                 await _context.SaveChangesAsync();
+                int LootId = loot.LootId;
+                try
+                {
+                    if (LootId > 0)
+                    {
+                        if (itemMasterAbilities != null && itemMasterAbilities.Count > 0)
+                        {
+                            itemMasterAbilities.ForEach(a => a.ItemMasterLootId = LootId);
+                            _context.ItemMasterLootAbilitys.AddRange(itemMasterAbilities);
+                            _context.SaveChanges();
+                        }
+                        if (itemMasterSpell != null && itemMasterSpell.Count > 0)
+                        {
+                            itemMasterSpell.ForEach(a => a.ItemMasterLootId = LootId);
+                            _context.ItemMasterLootSpells.AddRange(itemMasterSpell);// _repoMasterSpell.AddRange(AssociatedSpells);
+                            _context.SaveChanges();
+                        }
+                        if (itemMasterBuffAndEffects != null && itemMasterBuffAndEffects.Count > 0)
+                        {
+                           
+                            List<ItemMasterLootBuffAndEffect> AssociatedBuffAndEffectsList = itemMasterBuffAndEffects.Select(x => new ItemMasterLootBuffAndEffect()
+                            {
+                                BuffAndEffectId = x.BuffAndEffectId,
+                            }).ToList();
+                            foreach (var be in AssociatedBuffAndEffectsList)
+                            {
+                                _context.ItemMasterLootBuffAndEffects.Add(new ItemMasterLootBuffAndEffect() { BuffAndEffectId = be.BuffAndEffectId, ItemMasterLootId = LootId });
+                            }
+                           _context.SaveChanges();
+                        }
+                        if (itemMasterCommand != null && itemMasterCommand.Count > 0)
+                        {
+                            itemMasterCommand.ForEach(a => a.ItemMasterLootId = LootId);
+                            _context.ItemMasterLootCommands.AddRange(itemMasterCommand);// _repoMasterSpell.AddRange(AssociatedSpells);
+                            _context.SaveChanges();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                { }
+
+
+               
             }
             return obj;
         }
         public async Task<ItemMasterLoot> getLootDetails(int LootId) {
-            return await _context.ItemMasterLoots.Include(x=>x.ItemMaster).Where(x => x.LootId == LootId).FirstOrDefaultAsync();
+            return await _context.ItemMasterLoots.Include(x=>x.ItemMaster)
+                .Include(x=>x.ItemMasterAbilities)
+                .Include(x=>x.ItemMasterSpell)
+                .Include(x=>x.itemMasterBuffAndEffects)
+                .Include(x=>x.ItemMasterCommand)
+                .Where(x => x.LootId == LootId).FirstOrDefaultAsync();
         }
         public async Task<List<ItemMasterLoot>> getMultipleLootDetails(List<int> LootId)
         {
@@ -1375,8 +1756,35 @@ namespace DAL.Services
             return item;
         }
         public async Task DeleteItemMasterLoot(int lootId) {
-            _context.ItemMasterLoots.Remove(_context.ItemMasterLoots.Where(x => x.LootId == lootId).FirstOrDefault());
-            await _context.SaveChangesAsync();
+            var loot = _context.ItemMasterLoots.Where(x => x.LootId == lootId).FirstOrDefault();
+            if (loot!=null)
+            {
+                var as_ability = _context.ItemMasterLootAbilitys.Where(x => x.ItemMasterLootId == lootId).ToList();
+                var as_spell = _context.ItemMasterLootSpells.Where(x => x.ItemMasterLootId == lootId).ToList();
+                var as_buffeffect = _context.ItemMasterLootBuffAndEffects.Where(x => x.ItemMasterLootId == lootId).ToList();
+                var as_command = _context.ItemMasterLootCommands.Where(x => x.ItemMasterLootId == lootId).ToList();
+
+                foreach (var item in as_ability)
+                {
+                    item.IsDeleted = true;
+                }
+                foreach (var item in as_spell)
+                {
+                    item.IsDeleted = true;
+                }
+                foreach (var item in as_buffeffect)
+                {
+                    item.IsDeleted = true;
+                }
+                foreach (var item in as_command)
+                {
+                    item.IsDeleted = true;
+                }
+
+                loot.IsDeleted = true;
+                await _context.SaveChangesAsync();
+            }           
+            
         }
         public async Task ShowLoot(int lootID, bool isShow) {
             var loot = _context.ItemMasterLoots.Where(x => x.LootId == lootID).FirstOrDefault();
@@ -1473,6 +1881,27 @@ namespace DAL.Services
             //    item.ItemMasterLoot = _context.ItemMasterLoots.Where(x => x.ItemMasterId == item.ItemMasterId).FirstOrDefault();
             //}
             return res;
+        }
+        public ItemMasterLoot GetLootById(int id) {
+            var loot = _context.ItemMasterLoots
+              .Include(d => d.RuleSet)
+              .Include(d => d.ItemMasterAbilities).ThenInclude(d => d.Ability)
+              .Include(d => d.ItemMasterSpell).ThenInclude(d => d.Spell)
+              .Include(d => d.itemMasterBuffAndEffects).ThenInclude(d => d.BuffAndEffect)
+              .Include(d => d.ItemMasterCommand)              
+              .Where(d => d.LootId == id && d.IsDeleted != true)
+              .FirstOrDefault();
+
+            if (loot == null) return loot;
+
+            loot.ItemMasterAbilities = loot.ItemMasterAbilities.Where(p => p.IsDeleted != true).ToList();
+            loot.ItemMasterSpell = loot.ItemMasterSpell.Where(p => p.IsDeleted != true).ToList();
+            loot.itemMasterBuffAndEffects = loot.itemMasterBuffAndEffects.Where(p => p.IsDeleted != true).ToList();
+            //  itemmaster.ItemMasterPlayers = itemmaster.ItemMasterPlayers.Where(p => p.IsDeleted != true).ToList();
+            loot.ItemMasterCommand = loot.ItemMasterCommand.Where(p => p.IsDeleted != true).ToList();
+            
+
+            return loot;
         }
         #endregion
     }

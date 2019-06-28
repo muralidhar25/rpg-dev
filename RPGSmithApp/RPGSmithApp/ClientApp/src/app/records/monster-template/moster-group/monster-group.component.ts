@@ -2,13 +2,11 @@ import { Component, OnInit, OnDestroy, Input, OnChanges, Output, EventEmitter } 
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import 'rxjs/add/operator/switchMap';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
-import { ItemMaster } from '../../../core/models/view-models/item-master.model';
 import { ImageError, VIEW } from '../../../core/models/enums';
 import { Utilities } from '../../../core/common/utilities';
 import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
 import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
 import { AuthService } from '../../../core/auth/auth.service';
-import { ItemMasterService } from '../../../core/services/item-master.service';
 import { SharedService } from '../../../core/services/shared.service';
 import { AbilityService } from '../../../core/services/ability.service';
 import { FileUploadService } from '../../../core/common/file-upload.service';
@@ -20,8 +18,10 @@ import { DBkeys } from '../../../core/common/db-keys';
 import { DiceComponent } from '../../../shared/dice/dice/dice.component';
 import { ImageSelectorComponent } from '../../../shared/image-interface/image-selector/image-selector.component';
 import { PlatformLocation } from '@angular/common';
-//import { AddItemMasterComponent } from '../add-item/add-item.component';
 import { Bundle } from '../../../core/models/view-models/bundle.model';
+import { MonsterTemplateService } from '../../../core/services/monster-template.service';
+import { AddMonsterComponent } from '../../monster/Add-monster/add-monster.component';
+import { AddMonsterTemplateComponent } from '../add-monster-template/add-monster-template.component';
 
 @Component({
   selector: 'app-monster-group',
@@ -56,8 +56,8 @@ export class CreateMonsterGroupComponent implements OnInit {
   defaultImageSelected: string = '';
   button: string
   isFromCharacterId: any;
-  SelectedItemsList: any[] = [];
-  itemsList: any[] = [];
+  SelectedMonstersList: any[] = [];
+  monstersList: any[] = [];
 
   addToCombat: boolean = false;
 
@@ -68,20 +68,20 @@ export class CreateMonsterGroupComponent implements OnInit {
     private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
     private sharedService: SharedService, private commonService: CommonService, private abilityService: AbilityService,
-    private itemMasterService: ItemMasterService, private spellsService: SpellsService,
+    private monsterTemplateService: MonsterTemplateService, private spellsService: SpellsService,
     private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService,
     private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
 
 
-    this.sharedService.shouldUpdateAddItemMastersList().subscribe(sharedServiceJson => {
+    this.sharedService.shouldUpdateAddMonsterTemplatesList().subscribe(sharedServiceJson => {
       if (sharedServiceJson) {
         if (sharedServiceJson.length) {
           
           sharedServiceJson.map((x) => {
             x.quantityToAdd = 1
-            this.SelectedItemsList.push(x)
+            this.SelectedMonstersList.push(x)
             this.quantityChanged();
           })
           
@@ -92,11 +92,12 @@ export class CreateMonsterGroupComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
+      debugger
       this.fromDetail = this.bsModalRef.content.fromDetail == undefined ? false : this.bsModalRef.content.fromDetail;
       this.title = this.bsModalRef.content.title;
       let _view = this.button = this.bsModalRef.content.button;
       let _bundleVM = this.bsModalRef.content.bundleVM;
-      this.bundleFormModal = this.itemMasterService.bundleModelData(_bundleVM, _view);
+      this.bundleFormModal = this.monsterTemplateService.bundleModelData(_bundleVM, _view);
 
       if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
         this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.bundleFormModal.ruleSetId;
@@ -131,23 +132,23 @@ export class CreateMonsterGroupComponent implements OnInit {
         //  },
         //    () => { });
       }
-      this.itemMasterService.getItemMasterByRuleset_add<any>(this._ruleSetId, false)
+      this.monsterTemplateService.getMonsterTemplateByRuleset_add<any>(this._ruleSetId, false)
         .subscribe(data => {
-          this.itemsList = data.ItemMaster;
-
-          this.itemsList.forEach(function (val) { val.showIcon = false; val.selected = false; });
+          this.monstersList = data.MonsterTemplate;
+          debugger
+          this.monstersList.forEach(function (val) { val.showIcon = false; val.selected = false; });
           if (this.bundleFormModal.view === VIEW.EDIT || this.bundleFormModal.view === VIEW.DUPLICATE) {
-            this.itemMasterService.getBundleItems<any>(this.bundleFormModal.bundleId)
+            this.monsterTemplateService.getBundleItems<any>(this.bundleFormModal.bundleId)
               .subscribe(data => {
                 
                 if (data) {
                   if (data.length) {
-                    this.SelectedItemsList = [];
+                    this.SelectedMonstersList = [];
                     this.bundleFormModal.totalWeight = 0;
                     data.map((x) => {
-                      let item = this.itemsList.filter(y => y.itemMasterId == x.itemMasterId)[0];
+                      let item = this.monstersList.filter(y => y.monsterTemplateId == x.monsterTemplateId)[0];
                       item.quantityToAdd = x.quantity;
-                      this.SelectedItemsList.push(item)
+                      this.SelectedMonstersList.push(item)
                       this.quantityChanged();
                     })
                   }
@@ -192,24 +193,24 @@ export class CreateMonsterGroupComponent implements OnInit {
     }
     return false;
   }
-  validateSubmit(itemMaster: any) { 
+  validateSubmit(monsterTemplate: any) { 
     let tagsValue = this.metatags.map(x => {
       if (x.value == undefined) return x;
       else return x.value;
     });
-    itemMaster.metatags = tagsValue.join(', ');
+    monsterTemplate.metatags = tagsValue.join(', ');
 
-    if (itemMaster.ruleSetId == 0 || itemMaster.ruleSetId === undefined)
-      itemMaster.ruleSetId = this._ruleSetId;   
+    if (monsterTemplate.ruleSetId == 0 || monsterTemplate.ruleSetId === undefined)
+      monsterTemplate.ruleSetId = this._ruleSetId;   
     
-
+    debugger
     this.isLoading = true;
-    let _msg = itemMaster.itemMasterId == 0 || itemMaster.itemMasterId === undefined ? "Creating Bundle.." : "Updating Bundle..";
-    if (this.bundleFormModal.view === VIEW.DUPLICATE) _msg = "Duplicating Bundle..";
+    let _msg = monsterTemplate.bundleId == 0 || monsterTemplate.bundleId === undefined ? "Creating Group.." : "Updating Group..";
+    if (this.bundleFormModal.view === VIEW.DUPLICATE) _msg = "Duplicating Group..";
     this.alertService.startLoadingMessage("", _msg);
 
     if (this.fileToUpload != null) {
-      this.fileUpload(itemMaster);
+      this.fileUpload(monsterTemplate);
     }
     else if (this.bingImageUrl !== this.bundleFormModal.bundleImage) {
       try {
@@ -217,17 +218,17 @@ export class CreateMonsterGroupComponent implements OnInit {
         var extension = regex.exec(this.bundleFormModal.bundleImage)[1];
         extension = extension ? extension : 'jpg';
       } catch{ }
-      this.fileUploadFromBing(this.bundleFormModal.bundleImage, extension, itemMaster);
+      this.fileUploadFromBing(this.bundleFormModal.bundleImage, extension, monsterTemplate);
     }
     else {
-      this.submit(itemMaster);
+      this.submit(monsterTemplate);
     }
   }
-  submitForm(itemMaster: any) {
-    this.validateSubmit(itemMaster);
+  submitForm(monsterTemplate: any) {
+    this.validateSubmit(monsterTemplate);
   }
 
-  private fileUploadFromBing(file: string, ext: string, itemMaster: any) {
+  private fileUploadFromBing(file: string, ext: string, monsterTemplate: any) {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
       this.authService.logout(true);
@@ -237,18 +238,18 @@ export class CreateMonsterGroupComponent implements OnInit {
           data => {
             this.bundleFormModal.bundleImage = data.ImageUrl;
             //this.rulesetFormModal.thumbnailUrl = data.ThumbnailUrl;
-            this.submit(itemMaster);
+            this.submit(monsterTemplate);
           },
           error => {
             let Errors = Utilities.ErrorDetail('Error', error);
             if (Errors.sessionExpire) {
               this.authService.logout(true);
-            } else this.submit(itemMaster);
+            } else this.submit(monsterTemplate);
           });
     }
   }
 
-  private fileUpload(itemMaster: any) {
+  private fileUpload(monsterTemplate: any) {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
       this.authService.logout(true);
@@ -257,57 +258,57 @@ export class CreateMonsterGroupComponent implements OnInit {
         .subscribe(
           data => {
             this.bundleFormModal.bundleImage = data.ImageUrl;
-            this.submit(itemMaster);
+            this.submit(monsterTemplate);
           },
           error => {
             let Errors = Utilities.ErrorDetail('Error', error);
             if (Errors.sessionExpire) {
               this.authService.logout(true);
-            } else this.submit(itemMaster);
+            } else this.submit(monsterTemplate);
           });
     }
   }
 
-  private fileUploadOLD(itemMaster: any) {
+  private fileUploadOLD(monsterTemplate: any) {
     //file upload
-    this.itemMasterService.fileUpload(this.fileToUpload)
+    this.monsterTemplateService.fileUpload(this.fileToUpload)
       .subscribe(
         data => {
-          itemMaster.itemImage = data.ImageUrl;
-          this.submit(itemMaster);
+          monsterTemplate.imageUrl = data.ImageUrl;
+          this.submit(monsterTemplate);
         },
         error => {
-          this.submit(itemMaster);
+          this.submit(monsterTemplate);
         });
   }
 
-  private submit(itemMaster) {
+  private submit(monsterTemplate) {
     if (!this.bundleFormModal.bundleImage) {
       this.bundleFormModal.bundleImage = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Backpack.jpg';
-      itemMaster.itemImage = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Backpack.jpg';
+      monsterTemplate.imageUrl = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Backpack.jpg';
     }
     //console.log(this.bundleFormModal.bundleImage);
-    itemMaster.bundleItems = this.SelectedItemsList.map((x) => {
+    monsterTemplate.bundleItems = this.SelectedMonstersList.map((x) => {
       
-      return { itemMasterId: x.itemMasterId, quantity: x.quantityToAdd};
+      return { monsterTemplateId: x.monsterTemplateId, quantity: x.quantityToAdd};
     })
     
     if (this.bundleFormModal.view === VIEW.DUPLICATE) {
-      this.duplicateItemMaster(itemMaster);
+      this.duplicateMonsterTemplate(monsterTemplate);
     }
     else {
       if (this.defaultImageSelected && !this.bundleFormModal.bundleImage) {
-        let model = Object.assign({}, itemMaster)
-        model.itemImage = this.defaultImageSelected
-        this.addEditItemMaster(model);
+        let model = Object.assign({}, monsterTemplate)
+        model.imageUrl = this.defaultImageSelected
+        this.addEditMonsterTemplate(model);
       } else {
-        this.addEditItemMaster(itemMaster);
+        this.addEditMonsterTemplate(monsterTemplate);
       }
 
     }
   }
 
-  addEditItemMaster(modal: any) {
+  addEditMonsterTemplate(modal: any) {
     modal.RuleSetId = this._ruleSetId;
     // modal.userID = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER).id
     
@@ -318,13 +319,13 @@ export class CreateMonsterGroupComponent implements OnInit {
     }
     
     this.isLoading = true;
-    this.itemMasterService.createBundle<any>(modal)
+    this.monsterTemplateService.createBundle<any>(modal)
       .subscribe(
       data => {
           
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-        let message = modal.bundleId == 0 || modal.bundleId === undefined ? "Bundle has been created successfully." : "Bundle has been updated successfully.";
+        let message = modal.bundleId == 0 || modal.bundleId === undefined ? "Group has been created successfully." : "Group has been updated successfully.";
           //if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
           this.close();
@@ -334,17 +335,16 @@ export class CreateMonsterGroupComponent implements OnInit {
               if (!isNaN(parseInt(id))) {
                 this.router.navigate(['/ruleset/detail-details', id]);
                 this.event.emit({ bundleId: id });
-                //this.sharedService.updateItemMasterDetailList(true);
               }
               else
-                this.sharedService.updateItemMasterDetailList(true);
+                this.sharedService.updateMonsterTemplateDetailList(true);
             }
             else {
-              this.sharedService.updateItemMasterDetailList(true);
+              this.sharedService.updateMonsterTemplateDetailList(true);
             }
           }
         else
-        this.sharedService.updateItemMasterList(true);
+            this.sharedService.updateMonsterTemplateList(true);
         },
         error => {
           this.isLoading = false;
@@ -361,7 +361,7 @@ export class CreateMonsterGroupComponent implements OnInit {
       );
   }
 
-  duplicateItemMaster(modal: any) {
+  duplicateMonsterTemplate(modal: any) {
     modal.RuleSetId = this._ruleSetId;
     this.isLoading = true;
     
@@ -370,21 +370,21 @@ export class CreateMonsterGroupComponent implements OnInit {
         modal.bundleItems = modal.bundleItems.filter(x => x.quantity);
       }
     }
-    this.itemMasterService.duplicateBundle<any>(modal)
+    this.monsterTemplateService.duplicateBundle<any>(modal)
       .subscribe(
       data => {
           
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          let message = "Bundle has been duplicated successfully.";
+          let message = "Group has been duplicated successfully.";
           //if (data !== "" && data !== null && data !== undefined)
           //  message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
           this.close();
           if (this.fromDetail)
-            this.router.navigate(['/ruleset/item-master', this._ruleSetId]);
+            this.router.navigate(['/ruleset/monster-template', this._ruleSetId]);
         else
-        this.sharedService.updateItemMasterList(true);
+            this.sharedService.updateMonsterTemplateList(true);
         },
         error => {
           this.isLoading = false;
@@ -431,7 +431,23 @@ export class CreateMonsterGroupComponent implements OnInit {
     this.destroyModalOnInit();
 
   }
-  addContainerItem(itemMaster: any) {
+  addContainerItem(monsterTemplate: any) {
+    
+    this.bsModalRef = this.modalService.show(AddMonsterTemplateComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Add Monsters';
+      this.bsModalRef.content.button = 'ADD';
+    this.bsModalRef.content.rulesetID = this._ruleSetId;
+
+    let MonsterList = Object.assign([], this.monstersList);
+    this.SelectedMonstersList.map((x) => {
+      MonsterList = MonsterList.filter(y => y.monsterTemplateId != x.monsterTemplateId);
+    })
+    this.bsModalRef.content.itemsList = MonsterList;
+
 
     //this.bsModalRef = this.modalService.show(AddItemMasterComponent, {
     //  class: 'modal-primary modal-md',
@@ -449,7 +465,7 @@ export class CreateMonsterGroupComponent implements OnInit {
   quantityChanged() {
     let totalWeight:number = 0;
 
-    this.SelectedItemsList.map((x) => {
+    this.SelectedMonstersList.map((x) => {
       if (+x.quantityToAdd) {
         totalWeight += (+x.quantityToAdd * +x.weight);
       }
@@ -457,9 +473,9 @@ export class CreateMonsterGroupComponent implements OnInit {
     this.bundleFormModal.totalWeight = totalWeight;
     
   }
-  removeItemFromBundle(item: any) {
+  removeItemFromBundle(monsterTemplate: any) {
     
-    this.SelectedItemsList = this.SelectedItemsList.filter(x => x.itemMasterId != item.itemMasterId);
+    this.SelectedMonstersList = this.SelectedMonstersList.filter(x => x.monsterTemplateId != monsterTemplate.monsterTemplateId);
     this.quantityChanged();
   }
 
@@ -502,7 +518,7 @@ export class CreateMonsterGroupComponent implements OnInit {
   public event: EventEmitter<any> = new EventEmitter();
 
   AddtoCombat(event) {
-    this.addToCombat = event.target.checked;
+    this.bundleFormModal.addToCombat = event.target.checked;
   }
 }
 

@@ -1181,68 +1181,75 @@ export class NgChat implements OnInit, IChatController {
     this.appService.updateChatHalfScreen(window.isHalfScreen);
   }
   sendDiceRolledToChatGroup(diceR: any) {
-    let message = new Message();
-    message.fromId = this.userId;
-    message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;
-    //message.isSystemGenerated = true;
-    debugger
-    let diceResult = Object.assign({}, diceR)
-    let commandModel: CharacterCommand = diceResult.characterCommandModel;
-    let characterMultipleCommands: any[] = diceResult.characterMultipleCommands;
-    let ExpandResult: string = commandModel.lastResult ? commandModel.lastResult.toString() : '0';
-    let CollaspedResult: string = commandModel.lastResult ? commandModel.lastResult.toString() : '0';
-    let CollaspedMessage = '';
-    let ExpandedMessage = '';
-    if (characterMultipleCommands.length) {
-      ExpandResult = '';
-      CollaspedResult = '';
-      characterMultipleCommands.map((x) => {
-        let _beforeResult = "";
-        let _afterResult = "";
-        if (x.beforeResult) {
-          _beforeResult = x.beforeResult.replace(/"/g, '');
+    try {
+      let message = new Message();
+      message.fromId = this.userId;
+      message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;
+      //message.isSystemGenerated = true;
+      
+      let diceResult = Object.assign({}, diceR)
+      let commandModel: CharacterCommand = diceResult.characterCommandModel;
+      let characterMultipleCommands: any[] = diceResult.characterMultipleCommands;
+      let ExpandResult: string = commandModel.lastResult ? commandModel.lastResult.toString() : '0';
+      let CollaspedResult: string = commandModel.lastResult ? commandModel.lastResult.toString() : '0';
+      let CollaspedMessage = '';
+      let ExpandedMessage = '';
+      if (characterMultipleCommands.length) {
+        ExpandResult = '';
+        CollaspedResult = '';
+        characterMultipleCommands.map((x) => {
+          let _beforeResult = "";
+          let _afterResult = "";
+          if (x.beforeResult) {
+            _beforeResult = x.beforeResult.replace(/"/g, '');
+          }
+          if (x.afterResult) {
+            _afterResult = x.afterResult.replace(/"/g, '');
+          }
+          ExpandResult += "<span class='ng-chat-grey-text'>" + x.calculationString + "</span> " + (x.calculationString ? '=' : '') + " <b>" + _beforeResult + " <u>" + (x.calculationResult ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
+          CollaspedResult += "<b>" + _beforeResult + " <u>" + (x.calculationResult ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
+        })
+      }
+      ExpandedMessage = "<span class='ng-chat-message-expand d-none'><span class='ng-chat-orange-text'>Rolled: </span><span class='ng-chat-grey-text'>" + commandModel.command + "</span><br/><span class='ng-chat-orange-text'>Result: </span>" + ExpandResult + "</span>";
+      CollaspedMessage = "<span class='ng-chat-message-collaspe'><span class='ng-chat-orange-text'>Result: </span>" + CollaspedResult + "</span>";
+      message.message = CollaspedMessage + ExpandedMessage;
+      message.dateSent = new Date();
+      //console.log("SendMessageVariable", message)
+      this.windows.map((x) => {
+        if (!x.isCollapsed && x.participant.displayName == "Everyone") {
+          x.messages.push(message);
+          this.scrollChatWindow(x, ScrollDirection.Bottom);
         }
-        if (x.afterResult) {
-          _afterResult = x.afterResult.replace(/"/g, '');
-        }
-        ExpandResult += "<span class='ng-chat-grey-text'>" + x.calculationString + "</span> " + (x.calculationString ? '=' : '') + " <b>" + _beforeResult + " <u>" + (x.calculationResult ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
-        CollaspedResult += "<b>" + _beforeResult + " <u>" + (x.calculationResult ? x.calculationResult:'')+ "</u> " + _afterResult + "</b><br/>";
       })
-    }
-    ExpandedMessage = "<span class='ng-chat-message-expand d-none'><span class='ng-chat-orange-text'>Rolled: </span><span class='ng-chat-grey-text'>" + commandModel.command + "</span><br/><span class='ng-chat-orange-text'>Result: </span>" + ExpandResult + "</span>";
-    CollaspedMessage = "<span class='ng-chat-message-collaspe'><span class='ng-chat-orange-text'>Result: </span>" + CollaspedResult + "</span>";
-    message.message = CollaspedMessage + ExpandedMessage;
-    message.dateSent = new Date();
-    //console.log("SendMessageVariable", message)
-    this.windows.map((x) => {
-      if (!x.isCollapsed && x.participant.displayName == "Everyone") {
-        x.messages.push(message);
-        this.scrollChatWindow(x, ScrollDirection.Bottom);
-      }
-    })
-    //window.messages.push(message);
-    this.adapter.sendMessage(message);
+      //window.messages.push(message);
+      this.adapter.sendMessage(message);
+    } catch (e) {}
   }
-  sendLootMessageToChatGroup(isLootTakenByCharacter = false,CharacterName='') {
-    let message = new Message();
-    message.fromId = this.userId;
-    message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;
-    if (isLootTakenByCharacter) {
-      message.message = "<span class='ng-chat-orange-text'>" + CharacterName +" Has Taken Loot</span>";
-    }
-    else {
-      message.message = "<span class='ng-chat-orange-text'>New Loot is Available</span>";
-    }   
-    message.dateSent = new Date();
-    message.isSystemGenerated = true;
-    //window.messages.push(message);
-    this.windows.map((x) => {
-      if (!x.isCollapsed && x.participant.displayName == "Everyone") {
-        x.messages.push(message);
-        this.scrollChatWindow(x, ScrollDirection.Bottom);
+  sendLootMessageToChatGroup(isLootTakenByCharacter = false, CharacterName = '') {
+    try {
+      let message = new Message();
+      message.fromId = this.userId;
+      message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;
+      if (isLootTakenByCharacter) {
+        message.message = "<span class='ng-chat-orange-text'>" + CharacterName + " Has Taken Loot</span>";
       }
-    })
-    this.adapter.sendMessage(message);
+      else {
+        message.message = "<span class='ng-chat-orange-text'>New Loot is Available</span>";
+      }
+      message.dateSent = new Date();
+      message.isSystemGenerated = true;
+      //window.messages.push(message);
+      this.windows.map((x) => {
+        if (!x.isCollapsed && x.participant.displayName == "Everyone") {
+          x.messages.push(message);
+          this.scrollChatWindow(x, ScrollDirection.Bottom);
+        }
+      })
+      this.adapter.sendMessage(message);
+    }
+    catch (e) {
+
+    }
   } 
   toggleNotificationSound() {
     this.audioEnabled = !this.audioEnabled;

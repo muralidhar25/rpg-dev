@@ -260,7 +260,7 @@ namespace RPGSmithApp.Controllers
                     //{
                         if (loot.IsShow)
                         {
-                            itemMasterIds.Add(new ItemMasterIds() { ItemMasterId = loot.ItemMasterId });
+                            itemMasterIds.Add(new ItemMasterIds() { ItemMasterId = loot.LootId });
                             //await AddItemToCharacter(model, new ItemMasterIds() { ItemMasterId = loot.ItemMasterId }, loot);
                             //await _itemMasterService.DeleteItemMasterLoot(loot.LootId);
                         }
@@ -641,11 +641,11 @@ namespace RPGSmithApp.Controllers
                 var currentUser = GetUser();
                 if (currentUser.IsGm || currentUser.IsGmPermanent ) 
                 {
-                    _itemService.AddItemToLoot(model.ItemMasterId);
+                    _itemService.AddItemToLoot(model.ItemId);
                 }   
                 else if (await _campaignService.isInvitedPlayerCharacter((int)model.CharacterId))
                 {
-                    _itemService.AddItemToLoot(model.ItemMasterId);
+                    _itemService.AddItemToLoot(model.ItemId);
                 }
                 return Ok();
             }

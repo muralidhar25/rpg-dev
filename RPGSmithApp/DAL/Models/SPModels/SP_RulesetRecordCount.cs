@@ -608,18 +608,31 @@ namespace DAL.Models.SPModels
     public class ItemMaster_Bundle : ItemMaster {
         public bool IsBundle { get; set; }
     }
+    public class MonsterTemplate_Bundle : MonsterTemplate
+    {
+        public bool IsBundle { get; set; }
+    }
     public class ItemMasterBundleIds
     {
         public int ItemMasterBundleId { get; set; }
+    }
+    public class MonsterTemplateBundleIds
+    {
+        public int MonsterTemplateBundleId { get; set; }
     }
     public class ItemMasterIds
     {
         public int ItemMasterId { get; set; }
     }
+    public class ItemMasterLootIds
+    {
+        public int ItemMasterLootId { get; set; }
+    }
     public class ItemMasterLoot_ViewModel:ItemMaster
     {
         
         public int LootId { get; set; }
+        public int ParentLootId { get; set; }
 
       
         //public int ItemMasterId { get; set; }

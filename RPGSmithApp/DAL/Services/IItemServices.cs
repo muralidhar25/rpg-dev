@@ -42,7 +42,7 @@ namespace DAL.Services
         List<Item> GetNestedContainerItems(int itemid);
         List<Item> GetItemsByCharacterId(int characterId);
         List<Item> GetAvailableItems(int characterId);
-        void AddItemToLoot(int? itemMasterId);
+        void AddItemToLoot(int? itemId);
         Task AddItemsSP(List<ItemMasterIds> multiItemMasters, List<ItemMasterBundleIds> multiItemMasterBundles, int characterId,bool IsLootItems);
     }
 }

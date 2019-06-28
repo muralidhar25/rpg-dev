@@ -882,35 +882,17 @@ namespace RPGSmithApp.Controllers
         public async Task<IActionResult> SP_GetAssociateRecords(int monsterTemplateId, int rulesetId, int MonsterID = 0) {
             return Ok(_monsterTemplateService.SP_GetAssociateRecords(monsterTemplateId, rulesetId, MonsterID));
         }
-        //[HttpGet("getBuffAndEffectAssignedToCharacter")]
-        //public async Task<IActionResult> getBuffAndEffectAssignedToCharacter(int characterID)
-        //{
-        //    return Ok(await _monsterTemplateService.getBuffAndEffectAssignedToCharacter(characterID));
-        //}
+        [HttpGet("getByRuleSetId_add")]
+        public async Task<IActionResult> getByRuleSetId_add(int rulesetId, bool includeBundles = false)
+        {            
+            dynamic Response = new ExpandoObject();
+            List<MonsterTemplate_Bundle> MonsterTemplateList = _monsterTemplateService.GetMonsterTemplatesByRuleSetId_add(rulesetId, includeBundles);
 
-        //[HttpPost("assignBuffAndEffectToCharacter")]        
-        //public async Task<IActionResult> assignBuffAndEffectToCharacter([FromBody] AssignBuffAndEffect model, int CharacterID)
-        //{
-        //    await _monsterTemplateService.SP_AssignBuffAndEffectToCharacter(model.buffAndEffectList, model.characters, model.nonSelectedCharacters, model.nonSelectedBuffAndEffectsList,CharacterID);
-        //    return Ok();
-        //}
+            Response.MonsterTemplate = Utilities.CleanModel<MonsterTemplate_Bundle>(MonsterTemplateList);
+            Response.RuleSet = Utilities.CleanModel<RuleSet>(_ruleSetService.GetRuleSetById(rulesetId).Result);
+            return Ok(Response);
 
-        //[HttpGet("GetOnlyCharactersByRuleSetId")]
-        //public async Task<IActionResult> GetOnlyCharactersByRuleSetId(int id, int buffAndEffectId)
-        //{
-        //    var characters = _CharacterService.GetOnlyCharacterRuleSetId(id, buffAndEffectId);
-
-        //    //If Limited edition
-        //    //if (characters != null && !IsAdminUser() && !isFromLootGiveScreen)
-        //    //{
-        //    //    await TotalCharacterSlotsAvailableForCurrentUser();
-        //    //    characters = characters.Take(characters.Count >= TotalCharacterSlotsAvailable ? TotalCharacterSlotsAvailable : characters.Count).ToList();
-        //    //}
-
-
-
-        //    return Ok(characters);
-        //}
+        }
         #endregion
     }
 }

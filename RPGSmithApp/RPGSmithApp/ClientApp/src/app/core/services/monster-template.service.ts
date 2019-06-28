@@ -14,6 +14,8 @@ import { DBkeys } from '../common/db-keys';
 //import { Ability } from '../models/view-models/monster-template.model';
 import { ICON, VIEW } from '../models/enums';
 import { MonsterTemplate } from '../models/view-models/monster-template.model';
+import { MonsterBundle } from '../models/view-models/monster-bundle.model';
+import { Bundle } from '../models/view-models/bundle.model';
 
 @Injectable()
 export class MonsterTemplateService extends EndpointFactory {
@@ -48,8 +50,13 @@ export class MonsterTemplateService extends EndpointFactory {
   private readonly dropMonsterItemsUrl = this.configurations.baseUrl + "/api/MonsterTemplate/dropMonsterItems";
   private readonly addMonsterUrl = this.configurations.baseUrl + "";
   private readonly deleteMonsterUrl_up = this.configurations.baseUrl + "/api/MonsterTemplate/deleteMonster_up";
+  private readonly getByBundleUrl: string = this.configurations.baseUrl + "/api/MonsterTemplateBundle/getItemsByBundleId";
 
-  
+  private readonly createBundleUrl: string = this.configurations.baseUrl + "/api/MonsterTemplateBundle/create";
+  private readonly updateBundleUrl: string = this.configurations.baseUrl + "/api/MonsterTemplateBundle/update";
+  private readonly duplicateBundleUrl: string = this.configurations.baseUrl + "/api/MonsterTemplateBundle/DuplicateBundle";
+  private readonly deleteBundleUrl: string = this.configurations.baseUrl + "/api/MonsterTemplateBundle/delete_up";
+  private readonly getDetailByIdUrl: string = this.configurations.baseUrl + "/api/MonsterTemplateBundle/getDetailById";
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
@@ -104,7 +111,14 @@ export class MonsterTemplateService extends EndpointFactory {
         return this.handleError(error, () => this.getMonsterById(Id));
       });
   }
+  getBundleById<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getDetailByIdUrl}?id=${Id}`;
 
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getBundleById(Id));
+      });
+  }
   getMonsterTemplateByRuleset<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getByRulesetUrl}?rulesetId=${Id}`;
 
@@ -113,15 +127,22 @@ export class MonsterTemplateService extends EndpointFactory {
         return this.handleError(error, () => this.getMonsterTemplateByRuleset(Id));
       });
   }
-  //getMonsterTemplateByRuleset_add<T>(Id: number): Observable<T> {
-  //  let endpointUrl = `${this.getByRulesetUrl_add}?rulesetId=${Id}`;
+  getMonsterTemplateByRuleset_add<T>(Id: number, includeBundles: boolean = false): Observable<T> {
+    let endpointUrl = `${this.getByRulesetUrl_add}?rulesetId=${Id}&includeBundles=${includeBundles}`;
 
-  //  return this.http.get<T>(endpointUrl, this.getRequestHeaders())
-  //    .catch(error => {
-  //      return this.handleError(error, () => this.getMonsterTemplateByRuleset_add(Id));
-  //    });
-  //}
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getMonsterTemplateByRuleset_add(Id, includeBundles));
+      });
+  }
+  getBundleItems<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getByBundleUrl}?bundleId=${Id}`;
 
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getBundleItems(Id));
+      });
+  }
   getMonsterTemplateByRuleset_sp<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getByRuleSetId_sp}?rulesetId=${Id}`;
 
@@ -219,7 +240,20 @@ export class MonsterTemplateService extends EndpointFactory {
         return this.handleError(error, () => this.createMonster(MonsterTemplate));
       });
   }
+  createBundle<T>(bundle: MonsterBundle): Observable<T> {
 
+    let endpointUrl = this.createBundleUrl;
+
+    if (bundle.bundleId == 0 || bundle.bundleId === undefined)
+      endpointUrl = this.createBundleUrl;
+    else
+      endpointUrl = this.updateBundleUrl;
+
+    return this.http.post(endpointUrl, JSON.stringify(bundle), { headers: this.getRequestHeadersNew(), responseType: "text" })
+      .catch(error => {
+        return this.handleError(error, () => this.createBundle(bundle));
+      });
+  }
   duplicateMonsterTemplate<T>(MonsterTemplate: MonsterTemplate, isCreatingFromMonsterScreen: boolean, armorClass: number, health: number, challangeRating: number, xpValue: number): Observable<T> {
     //ability.abilityId = 0;
     let endpointUrl = `${this.duplicateUrl}?isCreatingFromMonsterScreen=${isCreatingFromMonsterScreen}&armorClass=${armorClass}&health=${health}&challangeRating=${challangeRating}&xpValue=${xpValue}`; 
@@ -229,7 +263,15 @@ export class MonsterTemplateService extends EndpointFactory {
         return this.handleError(error, () => this.duplicateMonsterTemplate(MonsterTemplate, isCreatingFromMonsterScreen, armorClass, health, challangeRating, xpValue));
       });
   }
+  duplicateBundle<T>(model: any): Observable<T> {
+    //itemMaster.itemMasterId = 0;
+    let endpointUrl = this.duplicateBundleUrl;
 
+    return this.http.post(endpointUrl, JSON.stringify(model), { headers: this.getRequestHeadersNew(), responseType: "text" })
+      .catch(error => {
+        return this.handleError(error, () => this.duplicateBundle(model));
+      });
+  }
   updateMonsterTemplate<T>(MonsterTemplate: MonsterTemplate): Observable<T> {
 
     return this.http.put<T>(this.updateUrl, JSON.stringify(MonsterTemplate), this.getRequestHeaders())
@@ -261,6 +303,14 @@ export class MonsterTemplateService extends EndpointFactory {
     return this.http.post<T>(endpointUrl, JSON.stringify(Monster), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.deleteMonster_up(Monster));
+      });
+  }
+  deleteBundle<T>(bundle: Bundle): Observable<T> {
+    let endpointUrl = this.deleteBundleUrl;// `${this.deleteBundleUrl}?id=${Id}`;
+
+    return this.http.post<T>(endpointUrl, JSON.stringify(bundle), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deleteBundle(bundle));
       });
   }
   deployMonster<T>(deployMonsterInfo): Observable<T>{
@@ -505,6 +555,36 @@ export class MonsterTemplateService extends EndpointFactory {
 
     return monsterTemplateFormModal;
   }
+  public bundleModelData(_bundleTemplateVM: any, _view: string): any {
 
+    if (_bundleTemplateVM == null) return { bundleId: 0, ruleSetId: 0 };
+
+    let bundleFormModal: any;
+
+    if (_view === 'DUPLICATE' || _view === 'UPDATE') {
+      bundleFormModal = {
+        bundleId: _bundleTemplateVM.bundleId,
+        ruleSetId: _bundleTemplateVM.ruleSetId,
+        bundleName: _view === 'DUPLICATE' ? '' : _bundleTemplateVM.bundleName,
+        bundleImage: _bundleTemplateVM.bundleImage,
+        bundleVisibleDesc: _bundleTemplateVM.bundleVisibleDesc,       
+        metatags: _bundleTemplateVM.metatags == null ? '' : _bundleTemplateVM.metatags,        
+        ruleSet: _bundleTemplateVM.ruleSet,
+        view: _view === 'DUPLICATE' ? VIEW.DUPLICATE : VIEW.EDIT,
+        addToCombat: _bundleTemplateVM.addToCombat
+      }
+    }
+    else {
+      bundleFormModal = {
+        bundleId: 0,
+        ruleSetId: _bundleTemplateVM.ruleSetId,
+        view: VIEW.ADD,       
+        ruleSet: _bundleTemplateVM.ruleSet,        
+        metatags: '',
+        addToCombat: false
+      }
+    }
+    return bundleFormModal;
+  }
 
 }

@@ -31,6 +31,8 @@ export class ItemMasterService extends EndpointFactory {
   
   private readonly deleteUrl_up: string = this.configurations.baseUrl + "/api/ItemMaster/delete_up";
   private readonly getByIdUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getById";
+  private readonly getLootByIdUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getLootById";
+  
   private readonly getDetailByIdUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/getDetailById";  
   private readonly getByRulesetUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getByRuleSetId";
   private readonly getByRulesetUrl_add: string = this.configurations.baseUrl + "/api/ItemMaster/getByRuleSetId_add";
@@ -42,6 +44,7 @@ export class ItemMasterService extends EndpointFactory {
   private readonly duplicateUrl: string = this.configurations.baseUrl + "/api/ItemMaster/DuplicateItemMaster";
   private readonly duplicateBundleUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/DuplicateBundle";  
   private readonly AbilitySpellForItemsByRuleset_sp: string = this.configurations.baseUrl + "/api/ItemMaster/AbilitySpellForItemsByRuleset_sp";
+  private readonly AbilitySpellForLootsByRuleset_sp: string = this.configurations.baseUrl + "/api/ItemMaster/AbilitySpellForLootsByRuleset_sp";
   private readonly getByBundleUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/getItemsByBundleId";
   
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
@@ -72,6 +75,14 @@ export class ItemMasterService extends EndpointFactory {
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getItemMasterById(Id));
+      });
+  }
+  getlootById<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getLootByIdUrl}?id=${Id}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getlootById(Id));
       });
   }
   getBundleById<T>(Id: number): Observable<T> {
@@ -286,7 +297,7 @@ export class ItemMasterService extends EndpointFactory {
         itemMasterAbilityId: _itemTemplateVM.itemMasterAbilities == undefined ? 0 : _itemTemplateVM.itemMasterAbilities.length > 0 ? _itemTemplateVM.itemMasterAbilities[0].abilityId : 0,
 
         spellDetail: _itemTemplateVM.itemMasterSpell == undefined ? undefined : _itemTemplateVM.itemMasterSpell.length > 0 ? _itemTemplateVM.itemMasterSpell[0].spell : undefined,
-        abilityDetail: _itemTemplateVM.itemMasterAbilities == undefined ? undefined : _itemTemplateVM.itemMasterAbilities.length > 0 ? _itemTemplateVM.itemMasterAbilities[0].abilitiy : undefined,
+        abilityDetail: _itemTemplateVM.itemMasterAbilities == undefined ? undefined : _itemTemplateVM.itemMasterAbilities.length > 0 ? _itemTemplateVM.itemMasterAbilities[0].abilitiy ? _itemTemplateVM.itemMasterAbilities[0].abilitiy : _itemTemplateVM.itemMasterAbilities[0].ability : undefined,
 
         lootId: _itemTemplateVM.lootId,
         isShow: _itemTemplateVM.isShow,
@@ -356,6 +367,14 @@ export class ItemMasterService extends EndpointFactory {
   }
   getAbilitySpellForItemsByRuleset_sp<T>(Id: number, ItemId: number): Observable<T> {
     let endpointUrl = `${this.AbilitySpellForItemsByRuleset_sp}?rulesetId=${Id}&itemMasterId=${ItemId}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getAbilitySpellForItemsByRuleset_sp(Id, ItemId));
+      });
+  }
+  getAbilitySpellForLootsByRuleset_sp<T>(Id: number, ItemId: number): Observable<T> {
+    let endpointUrl = `${this.AbilitySpellForLootsByRuleset_sp}?rulesetId=${Id}&LootID=${ItemId}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {

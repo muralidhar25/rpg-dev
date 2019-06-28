@@ -325,9 +325,9 @@ export class LootComponent implements OnInit {
 
   
 
-   GoToDetails(item: ItemMaster) {
+   GoToDetails(item: any) {
     
-      this.router.navigate(['/ruleset/item-details', item.itemMasterId]);
+      this.router.navigate(['/ruleset/loot-details', item.lootId]);
     
   }
 
@@ -442,7 +442,7 @@ export class LootComponent implements OnInit {
       DialogType.confirm, () => this.deleteLootItem(itemMaster), null, 'Yes', 'No');
   }
 
-  deleteLootItem(itemMaster: ItemMaster) {
+  deleteLootItem(itemMaster: any) {
     this.alertService.startLoadingMessage("", "Deleting Item");
  
     //this.isLoading = true;
@@ -453,7 +453,7 @@ export class LootComponent implements OnInit {
           this.alertService.stopLoadingMessage();
         }, 200);
         this.alertService.showMessage("loot Item Template has been deleted successfully.", "", MessageSeverity.success);
-        this.ItemMasterList = this.ItemMasterList.filter((val) => val.itemMasterId != itemMaster.itemMasterId);
+        this.ItemMasterList = this.ItemMasterList.filter((val) => val.lootId != itemMaster.lootId);
         try {
           this.noRecordFound = !this.ItemMasterList.length;
         } catch (err) { }

@@ -1604,6 +1604,8 @@ namespace RPGSmithApp.Migrations
                     b.Property<string>("ContainerWeightModifier")
                         .HasColumnType("varchar(50)");
 
+                    b.Property<int?>("CopiedLootID");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -1951,20 +1953,85 @@ namespace RPGSmithApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Command");
+
+                    b.Property<string>("CommandName")
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<int?>("ContainedIn");
 
+                    b.Property<decimal>("ContainerVolumeMax")
+                        .HasColumnType("decimal(18, 8)");
+
+                    b.Property<decimal>("ContainerWeightMax")
+                        .HasColumnType("decimal(18, 3)");
+
+                    b.Property<string>("ContainerWeightModifier")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("IsConsumable");
+
+                    b.Property<bool>("IsContainer");
+
+                    b.Property<bool>("IsDeleted");
+
                     b.Property<bool?>("IsIdentified");
+
+                    b.Property<bool>("IsMagical");
 
                     b.Property<bool>("IsShow");
 
                     b.Property<bool?>("IsVisible");
 
+                    b.Property<string>("ItemCalculation")
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("ItemImage")
+                        .HasColumnType("nvarchar(2048)")
+                        .HasMaxLength(2048);
+
                     b.Property<int>("ItemMasterId");
+
+                    b.Property<string>("ItemName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
+
+                    b.Property<string>("ItemStats")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ItemVisibleDesc")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Metatags")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentLootId");
+
+                    b.Property<decimal>("PercentReduced")
+                        .HasColumnType("decimal(18, 3)");
 
                     b.Property<decimal>("Quantity")
                         .HasColumnType("decimal(18, 3)");
 
+                    b.Property<string>("Rarity")
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int?>("RuleSetId");
+
                     b.Property<decimal>("TotalWeight")
+                        .HasColumnType("decimal(18, 3)");
+
+                    b.Property<decimal>("TotalWeightWithContents")
+                        .HasColumnType("decimal(18, 3)");
+
+                    b.Property<decimal>("Value")
+                        .HasColumnType("decimal(18, 8)");
+
+                    b.Property<decimal>("Volume")
+                        .HasColumnType("decimal(18, 8)");
+
+                    b.Property<decimal>("Weight")
                         .HasColumnType("decimal(18, 3)");
 
                     b.HasKey("LootId");
@@ -1972,7 +2039,95 @@ namespace RPGSmithApp.Migrations
                     b.HasIndex("ItemMasterId")
                         .IsUnique();
 
+                    b.HasIndex("ParentLootId");
+
+                    b.HasIndex("RuleSetId");
+
                     b.ToTable("ItemMasterLoots");
+                });
+
+            modelBuilder.Entity("DAL.Models.ItemMasterLootAbility", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AbilityId");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<int>("ItemMasterLootId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AbilityId");
+
+                    b.HasIndex("ItemMasterLootId");
+
+                    b.ToTable("ItemMasterLootAbilitys");
+                });
+
+            modelBuilder.Entity("DAL.Models.ItemMasterLootBuffAndEffect", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BuffAndEffectId");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<int>("ItemMasterLootId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BuffAndEffectId");
+
+                    b.HasIndex("ItemMasterLootId");
+
+                    b.ToTable("ItemMasterLootBuffAndEffects");
+                });
+
+            modelBuilder.Entity("DAL.Models.ItemMasterLootCommand", b =>
+                {
+                    b.Property<int>("ItemMasterLootCommandId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Command");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<int>("ItemMasterLootId");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("ItemMasterLootCommandId");
+
+                    b.HasIndex("ItemMasterLootId");
+
+                    b.ToTable("ItemMasterLootCommands");
+                });
+
+            modelBuilder.Entity("DAL.Models.ItemMasterLootSpell", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<int>("ItemMasterLootId");
+
+                    b.Property<int>("SpellId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemMasterLootId");
+
+                    b.HasIndex("SpellId");
+
+                    b.ToTable("ItemMasterLootSpells");
                 });
 
             modelBuilder.Entity("DAL.Models.ItemMasterMonsterItem", b =>
@@ -2186,6 +2341,66 @@ namespace RPGSmithApp.Migrations
                     b.HasIndex("MonsterTemplateId");
 
                     b.ToTable("MonsterTemplateBuffAndEffects");
+                });
+
+            modelBuilder.Entity("DAL.Models.MonsterTemplateBundle", b =>
+                {
+                    b.Property<int>("BundleId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("AddToCombat");
+
+                    b.Property<string>("BundleImage")
+                        .HasColumnType("nvarchar(2048)")
+                        .HasMaxLength(2048);
+
+                    b.Property<string>("BundleName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
+
+                    b.Property<string>("BundleVisibleDesc")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsDeleted");
+
+                    b.Property<string>("Metatags")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentMonsterTemplateBundleId");
+
+                    b.Property<int?>("RuleSetId");
+
+                    b.HasKey("BundleId");
+
+                    b.HasIndex("ParentMonsterTemplateBundleId");
+
+                    b.HasIndex("RuleSetId");
+
+                    b.ToTable("MonsterTemplateBundles");
+                });
+
+            modelBuilder.Entity("DAL.Models.MonsterTemplateBundleItem", b =>
+                {
+                    b.Property<int>("BundleItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("BundleId");
+
+                    b.Property<int?>("MonsterTemplateId");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18, 3)");
+
+                    b.HasKey("BundleItemId");
+
+                    b.HasIndex("BundleId");
+
+                    b.HasIndex("MonsterTemplateId");
+
+                    b.ToTable("MonsterTemplateBundleItems");
                 });
 
             modelBuilder.Entity("DAL.Models.MonsterTemplateCommand", b =>
@@ -4166,6 +4381,61 @@ namespace RPGSmithApp.Migrations
                         .WithOne("ItemMasterLoot")
                         .HasForeignKey("DAL.Models.ItemMasterLoot", "ItemMasterId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("DAL.Models.ItemMasterLoot", "ParentLoot")
+                        .WithMany()
+                        .HasForeignKey("ParentLootId");
+
+                    b.HasOne("DAL.Models.RuleSet", "RuleSet")
+                        .WithMany("ItemMasterLoots")
+                        .HasForeignKey("RuleSetId");
+                });
+
+            modelBuilder.Entity("DAL.Models.ItemMasterLootAbility", b =>
+                {
+                    b.HasOne("DAL.Models.Ability", "Ability")
+                        .WithMany()
+                        .HasForeignKey("AbilityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("DAL.Models.ItemMasterLoot", "ItemMasterLoot")
+                        .WithMany("ItemMasterAbilities")
+                        .HasForeignKey("ItemMasterLootId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("DAL.Models.ItemMasterLootBuffAndEffect", b =>
+                {
+                    b.HasOne("DAL.Models.BuffAndEffect", "BuffAndEffect")
+                        .WithMany()
+                        .HasForeignKey("BuffAndEffectId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("DAL.Models.ItemMasterLoot", "ItemMasterLoot")
+                        .WithMany("itemMasterBuffAndEffects")
+                        .HasForeignKey("ItemMasterLootId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("DAL.Models.ItemMasterLootCommand", b =>
+                {
+                    b.HasOne("DAL.Models.ItemMasterLoot", "ItemMasterLoot")
+                        .WithMany("ItemMasterCommand")
+                        .HasForeignKey("ItemMasterLootId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("DAL.Models.ItemMasterLootSpell", b =>
+                {
+                    b.HasOne("DAL.Models.ItemMasterLoot", "ItemMasterLoot")
+                        .WithMany("ItemMasterSpell")
+                        .HasForeignKey("ItemMasterLootId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("DAL.Models.Spell", "Spell")
+                        .WithMany()
+                        .HasForeignKey("SpellId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("DAL.Models.ItemMasterMonsterItem", b =>
@@ -4269,6 +4539,28 @@ namespace RPGSmithApp.Migrations
                         .WithMany()
                         .HasForeignKey("MonsterTemplateId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("DAL.Models.MonsterTemplateBundle", b =>
+                {
+                    b.HasOne("DAL.Models.MonsterTemplateBundle", "ParentMonsterTemplateBundle")
+                        .WithMany()
+                        .HasForeignKey("ParentMonsterTemplateBundleId");
+
+                    b.HasOne("DAL.Models.RuleSet", "RuleSet")
+                        .WithMany()
+                        .HasForeignKey("RuleSetId");
+                });
+
+            modelBuilder.Entity("DAL.Models.MonsterTemplateBundleItem", b =>
+                {
+                    b.HasOne("DAL.Models.MonsterTemplateBundle", "MonsterTemplateBundle")
+                        .WithMany("MonsterTemplateBundleItems")
+                        .HasForeignKey("BundleId");
+
+                    b.HasOne("DAL.Models.MonsterTemplate", "MonsterTemplate")
+                        .WithMany()
+                        .HasForeignKey("MonsterTemplateId");
                 });
 
             modelBuilder.Entity("DAL.Models.MonsterTemplateCommand", b =>

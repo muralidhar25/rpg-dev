@@ -113,15 +113,15 @@
           </div>
         </div>
       </div>
-      <div class="col-12 col-md-12" *ngIf="SelectedItemsList.length">
+      <div class="col-12 col-md-12" *ngIf="SelectedMonstersList.length">
         <div class="form-group">
           <ul class="input-list-items row">
-            <li class="form-check col-md-6 col-sm-12" *ngFor="let item of SelectedItemsList;let i = index;" popover="{{item.itemName}}" triggers="hover">
+            <li class="form-check col-md-6 col-sm-12" *ngFor="let item of SelectedMonstersList;let i = index;" popover="{{item.name}}" triggers="hover">
               <label class="form-check-label">
                 <span>
-                  <img [alt]="item.itemName" [src]="item.itemImage"
+                  <img [alt]="item.name" [src]="item.imageUrl"
                        onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
-                  <em>{{item.itemName}}</em>
+                  <em>{{item.name}}</em>
                   <span class="input-box">
                     <input type="number" max="99999" class="w-100 h-100 text-center border-0" id="qty{{i}}" name="qty{{i}}" [(ngModel)]="item.quantityToAdd" #qty="ngModel" (change)="quantityChanged(item)" />
                   </span>
@@ -136,7 +136,10 @@
     <div class="form-row">
       <div class="checkbox-sec col-md-12">
         <label class="check-box">
-          <input class="form-check-input" type="checkbox" name="newItem" [checked]="addToCombat" (change)="AddtoCombat($event)" />
+          <input class="form-check-input" type="checkbox"
+                 [checked]="bundleFormModal.addToCombat" [value]="bundleFormModal.addToCombat"
+                                       name="addToCombat" [(ngModel)]="bundleFormModal.addToCombat" #addToCombat="ngModel" 
+                  />
           <span class="checkmark"></span>
         </label>
         <span class="icon icon-with-text mt-1 add-combat">Add To combat</span>

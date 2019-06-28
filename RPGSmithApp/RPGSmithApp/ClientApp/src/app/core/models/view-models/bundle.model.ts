@@ -6,7 +6,8 @@ export class Bundle {
   constructor(
     bundleId?: number, ruleSetId?: number, bundleName?: string, bundleImage?: string, bundleVisibleDesc?: string,
     value?: number, volume?: number, totalWeight?: number, ruleset?: Ruleset, view?: VIEW, currencyLabel?: string,
-    metatags?: string, rarity?: string, weightLabel?: string, volumeLabel?: string, bundleItems?: BundleItems[]
+    metatags?: string, rarity?: string, weightLabel?: string, volumeLabel?: string, bundleItems?: BundleItems[],
+    addToCombat?: boolean
   ) {
     this.bundleId = bundleId;
     this.ruleSetId = ruleSetId;
@@ -24,6 +25,7 @@ export class Bundle {
     this.currencyLabel = currencyLabel;
     this.volumeLabel = volumeLabel;
     this.bundleItems = bundleItems;
+    this.addToCombat = addToCombat;
   }
 
   public bundleId: number;
@@ -43,6 +45,8 @@ export class Bundle {
   public currencyLabel: string;
   public volumeLabel: string;
   public bundleItems: BundleItems[];
+
+  public addToCombat: boolean;
 }
 
 export class BundleItems {
