@@ -105,7 +105,7 @@ export class AddCustomDiceComponent implements OnInit {
         this.customDice.icon = this.customDice.icon ? this.customDice.icon : this.ICON.DX;
         if (!this.customDice.results) {
           this.customDice.results = [];
-          this.customDice.results.push({ customDiceResultId: 0, name: '', displayContent:'' });
+          this.customDice.results.push({ customDiceResultId: 0, name: '', displayContent: '', deckIcon : '' });
         }
     }
 

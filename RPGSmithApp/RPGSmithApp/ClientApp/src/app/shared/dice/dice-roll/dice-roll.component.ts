@@ -200,8 +200,8 @@ export class DiceRollComponent implements OnInit {
             this.characterCommandModel = this.characterCommandService.commandModelData({ characterId: this.characterId, character: this.character }, "ADD");
             this.diceRolledData = this.characterCommandService.DiceRollData(this.characterId);
 
-            
 
+          
             if (this.isFromTile) {
               this.rollSection = true;
               this.isLoading = true;
@@ -1302,7 +1302,6 @@ export class DiceRollComponent implements OnInit {
     else {
 
       this.mainCommandText = !_mainCommandText || _mainCommandText == "" ? command : _mainCommandText;
-      console.log('main commandtext',this.mainCommandText);
       command = this.mainCommandText.toUpperCase();
       if (command.length >= 500) {
         this.alertService.showMessage("A maximum of 500 characters is allowed for a command. Please adjust your command string and try again.", "", MessageSeverity.error);
@@ -3984,7 +3983,7 @@ export class DiceRollComponent implements OnInit {
             if (Cdice.customDicetype == CustomDiceResultType.IMAGE) {
               if (Cdice.isNumeric) {
                 return this.GetDisplayContentFromResultName(DiceCalculativeContent, Cdice.results, true, result);
-              }
+              }             
               return DiceCalculativeContent;
               //var x = document.createElement("IMG");
               //x.setAttribute("src", "https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/Assassin.jpg");
@@ -3996,6 +3995,9 @@ export class DiceRollComponent implements OnInit {
             else if (Cdice.customDicetype == CustomDiceResultType.TEXT) {
               if (Cdice.isNumeric) {
                 return this.GetDisplayContentFromResultName(DiceCalculativeContent, Cdice.results, false, result);
+              }
+              if (dice.dice == 'DOC' || dice.dice == 'DECK') {
+               return this.geticon(DiceCalculativeContent, Cdice.results,result);
               }
               return DiceCalculativeContent;
             }
@@ -4035,6 +4037,18 @@ export class DiceRollComponent implements OnInit {
       }
     }
     return ResultName;
+  }
+
+  geticon(ResultName, Results: Results[], result) {
+    if (Results) {
+      if (Results.length) {
+        let Result_s: Results[] = Results.filter(x => x.name == ResultName);
+        if (Result_s.length) {
+          console.log(Result_s);
+          return Result_s[0].deckIcon;
+        }
+      }
+    }
   }
   IsImageDice(diceName): boolean {
 
@@ -4089,5 +4103,5 @@ export class DiceRollComponent implements OnInit {
   }
 
 
-  
+
 }

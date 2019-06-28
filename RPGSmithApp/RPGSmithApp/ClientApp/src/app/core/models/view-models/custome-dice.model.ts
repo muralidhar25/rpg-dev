@@ -22,7 +22,8 @@ export class Results {
     public name: string;
     //public number: number;
   public displayContent: string;
-    //public IsNumeric: boolean;
+  //public IsNumeric: boolean;
+  public deckIcon: string;
 }
 export class DefaultDice {
     public defaultDiceId: number;
