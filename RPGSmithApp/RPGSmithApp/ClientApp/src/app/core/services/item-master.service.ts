@@ -31,6 +31,9 @@ export class ItemMasterService extends EndpointFactory {
   
   private readonly deleteUrl_up: string = this.configurations.baseUrl + "/api/ItemMaster/delete_up";
   private readonly getByIdUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getById";
+  private readonly getMonsterItemByIdUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getMonsterItemById";
+
+  
   private readonly getLootByIdUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getLootById";
   
   private readonly getDetailByIdUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/getDetailById";  
@@ -75,6 +78,14 @@ export class ItemMasterService extends EndpointFactory {
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getItemMasterById(Id));
+      });
+  }
+  getMonsterItemById<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getMonsterItemByIdUrl}?id=${Id}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getMonsterItemById(Id));
       });
   }
   getlootById<T>(Id: number): Observable<T> {

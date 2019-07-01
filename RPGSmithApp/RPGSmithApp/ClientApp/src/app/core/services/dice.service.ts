@@ -3420,7 +3420,7 @@ export class DiceService {
       { customDiceResultId: 32, name: 'Seven of Diamonds', displayContent: '', deckIcon: '../assets/images/card-images/Seven of Diamonds.png'},
       { customDiceResultId: 33, name: 'Eight of Diamonds', displayContent: '', deckIcon: '../assets/images/card-images/Eight of Diamonds.png' },
       { customDiceResultId: 34, name: 'Nine of Diamonds', displayContent: '', deckIcon: '../assets/images/card-images/Nine of Diamonds.png'  },
-      { customDiceResultId: 35, name: 'Ten of Diamonds', displayContent: '', deckIcon: '../assets/images/card-images/Ten of Diamondspng' },
+      { customDiceResultId: 35, name: 'Ten of Diamonds', displayContent: '', deckIcon: '../assets/images/card-images/Ten of Diamonds.png' },
       { customDiceResultId: 36, name: 'Jack of Diamonds', displayContent: '', deckIcon: '../assets/images/card-images/Jack of Diamonds.png'  },
       { customDiceResultId: 37, name: 'Queen of Diamonds', displayContent: '', deckIcon: '../assets/images/card-images/Queen of Diamonds.png'  },
       { customDiceResultId: 38, name: 'King of Diamonds', displayContent: '', deckIcon: '../assets/images/card-images/King of Dianìmonds.png'  },

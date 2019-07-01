@@ -101,7 +101,7 @@ export class EditMonsterComponent implements OnInit {
             this.title = this.bsModalRef.content.title;
             let _view = this.button = this.bsModalRef.content.button;
           let _monsterVM = this.bsModalRef.content.monsterVM;
-         
+         debugger
           this.monsterFormModal = this.monsterTemplateService.MonsterModelData(_monsterVM, _view);
           this.selectedBuffAndEffects = this.monsterFormModal.monsterTemplateBuffAndEffects.map(x => { return x.buffAndEffect; });
           this.selectedAbilities = this.monsterFormModal.monsterTemplateAbilities.map(x => { return x.buffAndEffect; });
@@ -150,7 +150,7 @@ export class EditMonsterComponent implements OnInit {
         else {
           if (this.monsterFormModal.monsterTemplateId) {
             this.isLoading = true;
-            this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(this.monsterFormModal.monsterTemplateId, this._ruleSetId)
+            this.monsterTemplateService.getMonsterAssociateRecords_sp<any>(this.monsterFormModal.monsterId, this._ruleSetId)
               .subscribe(data => {
  
                 this.monsterFormModal.monsterTemplateCommandVM = data.monsterTemplateCommands;

@@ -157,13 +157,20 @@ namespace DAL.Models.SPModels
         public int qty { get; set; }
         public int monsterTemplateId { get; set; }
         public int rulesetId { get; set; }
-        public int healthCurrent { get; set; }
-        public int healthMax { get; set; }
-        public int armorClass { get; set; }
-        public int xpValue { get; set; }
-        public int challangeRating { get; set; }
+        public List<int> healthCurrent { get; set; }
+        public List<int> healthMax { get; set; }
+        public List<int> armorClass { get; set; }
+        public List<int> xpValue { get; set; }
+        public List<int> challangeRating { get; set; }
         public bool addToCombat { get; set; }
+        public bool isBundle { get; set; }
     }
+    public class numbersList
+    {
+        public int RowNum { get; set; }
+        public int Number { get; set; }
+    }
+
 
     public static class utility
     {

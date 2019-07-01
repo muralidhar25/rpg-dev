@@ -66,5 +66,7 @@ namespace RPGSmithApp.ViewModels.EditModels
         public int MonsterArmorClass { get; set; }
         public int MonsterXPValue { get; set; }
         public int MonsterChallangeRating { get; set; }
+        public int? ParentMonsterId { get; set; }
+
     }
 }

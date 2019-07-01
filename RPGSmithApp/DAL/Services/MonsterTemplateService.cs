@@ -157,14 +157,25 @@ namespace DAL.Services
 
             return monsterTemplate;
         }
-        public Monster GetMonsterById(int? id) {
+        public Monster GetMonsterById(int? id,bool IsGettingDetailsForDetailScreenAPI) {
             Monster monster =   _context.Monsters
                 .Include(d => d.RuleSet).Include(d => d.MonsterTemplate)   
                 .Where(x => x.MonsterId == id && x.IsDeleted != true).FirstOrDefault();
 
             if (monster == null) return monster;
 
+            if (IsGettingDetailsForDetailScreenAPI)
+            {
+                monster.MonsterTemplate.Command = monster.Command;
+                monster.MonsterTemplate.CommandName = monster.CommandName;
+                monster.MonsterTemplate.Description = monster.Description;
+                monster.MonsterTemplate.InitiativeCommand = monster.InitiativeCommand;
+                monster.MonsterTemplate.Stats = monster.Stats;
+            }
+
             
+
+
 
             return monster;
         }
@@ -302,10 +313,15 @@ namespace DAL.Services
             return monsterTemplate;
         }
 
-        public async Task<Monster> UpdateMonster(Monster model)
+        public async Task<Monster> UpdateMonster(Monster model,
+            List<MonsterTemplateAbility> monsterAbilityVM,
+            List<MonsterTemplateMonster> monsterAssociateMonsterVM,
+            List<MonsterTemplateBuffAndEffect> monsterBuffAndEffectVM,
+            List<MonsterTemplateSpell> monsterSpellVM,
+            List<MonsterTemplateCommand> monsterCommandVM)
         {
             //return null;
-            var item = GetMonsterById(model.MonsterId);
+            var item = GetMonsterById(model.MonsterId,false);
             if (item == null) return model;
 
             item.Name = model.Name;
@@ -317,90 +333,99 @@ namespace DAL.Services
             item.XPValue = model.XPValue;
             item.ChallangeRating = model.ChallangeRating;
 
+            item.Command = model.Command;
+            item.CommandName = model.CommandName;
+            item.Description = model.Description;
+            item.InitiativeCommand = model.InitiativeCommand;
+            item.Stats = model.Stats;
 
-            try
-            {
-                _context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            //_context.MonsterTemplateAbilities.RemoveRange(_context.MonsterTemplateAbilities.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
-            //_context.MonsterTemplateSpells.RemoveRange(_context.MonsterTemplateSpells.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
-            //_context.MonsterTemplateBuffAndEffects.RemoveRange(_context.MonsterTemplateBuffAndEffects.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
-            //_context.MonsterTemplateMonsters.RemoveRange(_context.MonsterTemplateMonsters.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
-            //_context.MonsterTemplateItemMasters.RemoveRange(_context.MonsterTemplateItemMasters.Where(x => x.MonsterTemplateId == item.MonsterTemplateId));
+
             //try
             //{
-            //    _context.SaveChanges();
-
-            //    List<MonsterTemplateAbility> Alist = new List<MonsterTemplateAbility>();
-            //    foreach (var be in MonsterTemplateAbilityVM)
-            //    {
-            //        MonsterTemplateAbility obj = new MonsterTemplateAbility()
-            //        {
-            //            AbilityId = be.AbilityId,
-            //            MonsterTemplateId = item.MonsterTemplateId
-            //        };
-            //        Alist.Add(obj);
-            //    }
-            //    _context.MonsterTemplateAbilities.AddRange(Alist);
-
-            //    List<MonsterTemplateSpell> Slist = new List<MonsterTemplateSpell>();
-            //    foreach (var be in MonsterTemplateSpellVM)
-            //    {
-            //        MonsterTemplateSpell obj = new MonsterTemplateSpell()
-            //        {
-            //            SpellId = be.SpellId,
-            //            MonsterTemplateId = item.MonsterTemplateId
-            //        };
-            //        Slist.Add(obj);
-            //    }
-            //    _context.MonsterTemplateSpells.AddRange(Slist);
-
-            //    List<MonsterTemplateBuffAndEffect> Blist = new List<MonsterTemplateBuffAndEffect>();
-            //    foreach (var be in MonsterTemplateBuffAndEffectVM)
-            //    {
-            //        MonsterTemplateBuffAndEffect obj = new MonsterTemplateBuffAndEffect()
-            //        {
-            //            BuffAndEffectId = be.BuffAndEffectId,
-            //            MonsterTemplateId = item.MonsterTemplateId
-            //        };
-            //        Blist.Add(obj);
-            //    }
-            //    _context.MonsterTemplateBuffAndEffects.AddRange(Blist);
-
-            //    List<MonsterTemplateMonster> Mlist = new List<MonsterTemplateMonster>();
-            //    foreach (var be in MonsterTemplateMonsterVM)
-            //    {
-            //        MonsterTemplateMonster obj = new MonsterTemplateMonster()
-            //        {
-            //            AssociateMonsterTemplateId = be.AssociateMonsterTemplateId,
-            //            MonsterTemplateId = item.MonsterTemplateId
-            //        };
-            //        Mlist.Add(obj);
-            //    }
-            //    _context.MonsterTemplateMonsters.AddRange(Mlist);
-
-            //    List<MonsterTemplateItemMaster> Ilist = new List<MonsterTemplateItemMaster>();
-            //    foreach (var be in MonsterTemplateItemMasterVM)
-            //    {
-            //        MonsterTemplateItemMaster obj = new MonsterTemplateItemMaster()
-            //        {
-            //            ItemMasterId = be.ItemMasterId,
-            //            MonsterTemplateId = item.MonsterTemplateId,
-            //            Qty = be.Qty
-            //        };
-            //        Ilist.Add(obj);
-            //    }
-            //    _context.MonsterTemplateItemMasters.AddRange(Ilist);
             //    _context.SaveChanges();
             //}
             //catch (Exception ex)
             //{
             //    throw ex;
             //}
+            _context.MonsterAbilitys.RemoveRange(_context.MonsterAbilitys.Where(x => x.MonsterId == item.MonsterId));
+            _context.MonsterSpells.RemoveRange(_context.MonsterSpells.Where(x => x.MonsterId == item.MonsterId));
+            _context.MonsterBuffAndEffects.RemoveRange(_context.MonsterBuffAndEffects.Where(x => x.MonsterId == item.MonsterId));
+            _context.MonsterMonsters.RemoveRange(_context.MonsterMonsters.Where(x => x.MonsterId == item.MonsterId));
+            _context.MonsterCommands.RemoveRange(_context.MonsterCommands.Where(x => x.MonsterId == item.MonsterId));
+            try
+            {
+                _context.SaveChanges();
+
+                List<MonsterAbility> Alist = new List<MonsterAbility>();
+                foreach (var be in monsterAbilityVM)
+                {
+                    MonsterAbility obj = new MonsterAbility()
+                    {
+                        AbilityId = be.AbilityId,
+                        MonsterId = item.MonsterId
+                    };
+                    Alist.Add(obj);
+                }
+                _context.MonsterAbilitys.AddRange(Alist);
+
+                List<MonsterSpell> Slist = new List<MonsterSpell>();
+                foreach (var be in monsterSpellVM)
+                {
+                    MonsterSpell obj = new MonsterSpell()
+                    {
+                        SpellId = be.SpellId,
+                        MonsterId = item.MonsterId
+                    };
+                    Slist.Add(obj);
+                }
+                _context.MonsterSpells.AddRange(Slist);
+
+                List<MonsterBuffAndEffect> Blist = new List<MonsterBuffAndEffect>();
+                foreach (var be in monsterBuffAndEffectVM)
+                {
+                    MonsterBuffAndEffect obj = new MonsterBuffAndEffect()
+                    {
+                        BuffAndEffectId = be.BuffAndEffectId,
+                        MonsterId = item.MonsterId
+                    };
+                    Blist.Add(obj);
+                }
+                _context.MonsterBuffAndEffects.AddRange(Blist);
+
+                List<MonsterMonster> Mlist = new List<MonsterMonster>();
+                foreach (var be in monsterAssociateMonsterVM)
+                {
+                    MonsterMonster obj = new MonsterMonster()
+                    {
+                        AssociateMonsterId = be.AssociateMonsterTemplateId,
+                        MonsterId = item.MonsterId
+                    };
+                    Mlist.Add(obj);
+                }
+                _context.MonsterMonsters.AddRange(Mlist);
+
+                List<MonsterCommand> Clist = new List<MonsterCommand>();
+                foreach (var be in monsterCommandVM)
+                {
+                    MonsterCommand obj = new MonsterCommand()
+                    {
+                        Command = be.Command,
+                        Name = be.Name,
+                        MonsterId = item.MonsterId
+                    };
+                    Clist.Add(obj);
+                }
+                _context.MonsterCommands.AddRange(Clist);
+
+
+                
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
             return model;
         }
@@ -625,7 +650,7 @@ namespace DAL.Services
 
             return _monsterTemplateCommand;
         }
-
+        
         public SP_AssociateForMonsterTemplate SP_GetAssociateRecords(int monsterTemplateId, int rulesetId, int MonsterID)
         {
             SP_AssociateForMonsterTemplate res = new SP_AssociateForMonsterTemplate();
@@ -818,6 +843,203 @@ namespace DAL.Services
             return res;
         }
 
+
+
+        public SP_AssociateForMonsterTemplate SP_GetMonsterAssociateRecords(int monsterID, int rulesetId)
+        {
+            SP_AssociateForMonsterTemplate res = new SP_AssociateForMonsterTemplate();
+            res.abilityList = new List<Ability>();
+            res.selectedAbilityList = new List<Ability>();
+            res.spellList = new List<Spell>();
+            res.selectedSpellList = new List<Spell>();
+            res.buffAndEffectsList = new List<BuffAndEffect>();
+            res.selectedBuffAndEffects = new List<BuffAndEffect>();
+            res.monsterTemplatesList = new List<MonsterTemplate>();
+            res.selectedMonsterTemplates = new List<MonsterTemplate>();
+            res.monsterTemplateCommands = new List<MonsterTemplateCommand>();
+            res.selectedItemMasters = new List<ItemMasterForMonsterTemplate>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("Monster_GetAssociateRecords", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@MonsterID", monsterID);
+                command.Parameters.AddWithValue("@RulesetID", rulesetId);
+                
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    MonsterTemplateCommand _cmd = new MonsterTemplateCommand();
+
+                    _cmd.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
+                    _cmd.MonsterTemplateId = row["MonsterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterId"].ToString());
+                    _cmd.MonsterTemplateCommandId = row["MonsterCommandId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterCommandId"].ToString());
+                    _cmd.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
+                    _cmd.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+
+                    res.monsterTemplateCommands.Add(_cmd);
+                }
+            }
+            if (ds.Tables[1].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[1].Rows)
+                {
+                    Ability i = new Ability();
+                    i.AbilityId = row["AbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(row["AbilityId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.abilityList.Add(i);
+                }
+
+            }
+            if (ds.Tables[2].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[2].Rows)
+                {
+                    Spell i = new Spell();
+                    i.SpellId = row["SpellId"] == DBNull.Value ? 0 : Convert.ToInt32(row["SpellId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.spellList.Add(i);
+                }
+
+            }
+            if (ds.Tables[3].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[3].Rows)
+                {
+                    BuffAndEffect i = new BuffAndEffect();
+                    i.BuffAndEffectId = row["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["BuffAndEffectId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.buffAndEffectsList.Add(i);/////////
+                }
+
+            }
+            if (ds.Tables[4].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[4].Rows)
+                {
+                    MonsterTemplate i = new MonsterTemplate();
+                    i.MonsterTemplateId = row["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterTemplateId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.monsterTemplatesList.Add(i);/////////
+                }
+
+            }
+            if (ds.Tables[5].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[5].Rows)
+                {
+                    Ability i = new Ability();
+                    i.AbilityId = row["AbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(row["AbilityId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.selectedAbilityList.Add(i);
+                }
+
+            }
+            if (ds.Tables[6].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[6].Rows)
+                {
+                    Spell i = new Spell();
+                    i.SpellId = row["SpellId"] == DBNull.Value ? 0 : Convert.ToInt32(row["SpellId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.selectedSpellList.Add(i);
+                }
+
+            }
+            if (ds.Tables[7].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[7].Rows)
+                {
+                    BuffAndEffect i = new BuffAndEffect();
+                    i.BuffAndEffectId = row["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["BuffAndEffectId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.selectedBuffAndEffects.Add(i);///////
+                }
+
+            }
+            if (ds.Tables[8].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[8].Rows)
+                {
+                    MonsterTemplate i = new MonsterTemplate();
+                    i.MonsterTemplateId = row["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterTemplateId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.selectedMonsterTemplates.Add(i);///////
+                }
+
+            }
+            if (ds.Tables[9].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[9].Rows)
+                {
+                    ItemMasterForMonsterTemplate i = new ItemMasterForMonsterTemplate();
+                    DataColumnCollection columns = ds.Tables[9].Columns;
+                    if (columns.Contains("ItemId"))
+                    {
+                        i.ItemId = row["ItemId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemId"]);
+                    }
+
+                    i.ItemMasterId = row["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemMasterId"]);
+                    i.ImageUrl = row["ItemImage"] == DBNull.Value ? null : row["ItemImage"].ToString();
+                    i.Name = row["ItemName"] == DBNull.Value ? null : row["ItemName"].ToString();
+                    i.Qty = row["Qty"] == DBNull.Value ? 0 : Convert.ToInt32(row["Qty"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+
+                    res.selectedItemMasters.Add(i);///////
+                }
+
+            }
+            return res;
+        }
+
+
+
         public List<MonsterTemplateAbility> insertAssociateAbilities(List<MonsterTemplateAbility> MonsterTemplateAbilityVM) {
             try {
                 _context.MonsterTemplateAbilities.AddRange(MonsterTemplateAbilityVM);
@@ -862,10 +1084,83 @@ namespace DAL.Services
             catch (Exception ex) { }
             return MonsterTemplateItemMasterVM;
         }
-
+        private static int Getindex(int index)
+        {
+            index = index + 1;
+            return index;
+        }
         public void deployMonster(DeployMonsterTemplate model)
         {
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+
+            //assign datatable for list records of dice results.
+            int index = 0;
+            List<numbersList> healthCurrent = model.healthCurrent.Select(x => new numbersList() {
+                RowNum = index = Getindex(index),
+                Number = x }).ToList();
+
+            index = 0;
+            List<numbersList> healthMax = model.healthMax.Select(x => new numbersList() {
+                RowNum = index = Getindex(index),
+                Number = x }).ToList();
+
+            index = 0;
+            List<numbersList> armorClass = model.armorClass.Select(x => new numbersList() {
+                RowNum = index = Getindex(index),
+                Number = x }).ToList();
+
+            index = 0;
+            List<numbersList> xpValue = model.xpValue.Select(x => new numbersList() {
+                RowNum = index = Getindex(index),
+                Number = x }).ToList();
+
+            index = 0;
+            List<numbersList> challangeRating = model.challangeRating.Select(x => new numbersList() {
+                RowNum = index = Getindex(index),
+                Number = x }).ToList();
+
+            DataTable DT_healthCurrent = new DataTable();
+           
+                if (healthCurrent.Count > 0)
+                {
+                    DT_healthCurrent= utility.ToDataTable<numbersList>(healthCurrent);
+                }
+            
+             
+            DataTable DT_healthMax = new DataTable();
+            
+                if (healthMax.Count > 0)
+                {
+                    DT_healthMax = utility.ToDataTable<numbersList>(healthMax);
+                }
+            
+            
+            DataTable DT_armorClass = new DataTable();
+           
+                if (armorClass.Count > 0)
+                {
+                    DT_armorClass = utility.ToDataTable<numbersList>(armorClass);
+                }
+            
+            
+            DataTable DT_xpValue = new DataTable();
+           
+                if (xpValue.Count > 0)
+                {
+                    DT_xpValue = utility.ToDataTable<numbersList>(xpValue);
+                }
+            
+            
+            DataTable DT_challangeRating = new DataTable();
+            
+                if (challangeRating.Count > 0)
+                {
+                    DT_challangeRating = utility.ToDataTable<numbersList>(challangeRating);
+                }
+            
+            
+
 
             using (SqlConnection con = new SqlConnection(consString))
             {
@@ -877,12 +1172,13 @@ namespace DAL.Services
                     cmd.Parameters.AddWithValue("@RulesetID", model.rulesetId);
                     cmd.Parameters.AddWithValue("@MonsterTemplateId", model.monsterTemplateId);
                     cmd.Parameters.AddWithValue("@Qty", model.qty);
-                    cmd.Parameters.AddWithValue("@HealthCurrent", model.healthCurrent);
-                    cmd.Parameters.AddWithValue("@HealthMax", model.healthMax);
-                    cmd.Parameters.AddWithValue("@ArmorClass", model.armorClass);
-                    cmd.Parameters.AddWithValue("@XPValue", model.xpValue);
-                    cmd.Parameters.AddWithValue("@ChallangeRating", model.challangeRating);
+                    cmd.Parameters.AddWithValue("@HealthCurrentList", DT_healthCurrent);
+                    cmd.Parameters.AddWithValue("@HealthMaxList", DT_healthMax);
+                    cmd.Parameters.AddWithValue("@ArmorClassList", DT_armorClass);
+                    cmd.Parameters.AddWithValue("@XPValueList", DT_xpValue);
+                    cmd.Parameters.AddWithValue("@ChallangeRatingList", DT_challangeRating);
                     cmd.Parameters.AddWithValue("@AddToCombat", model.addToCombat);
+                    //cmd.Parameters.AddWithValue("@IsBundle", model.isBundle);
 
                     con.Open();
                     try
@@ -1098,7 +1394,65 @@ namespace DAL.Services
         {
             foreach (var item in list)
             {
-                _context.ItemMasterMonsterItems.RemoveRange(_context.ItemMasterMonsterItems.Where(x => x.ItemId == item.ItemId));
+                var ItemMasterLootSpells = new List<ItemMasterLootSpell>();
+                var ItemMasterLootAbilitys = new List<ItemMasterLootAbility>();
+                   var ItemMasterLootBuffAndEffects = new List<ItemMasterLootBuffAndEffect>();
+                   var ItemMasterLootCommands = new List<ItemMasterLootCommand>();
+
+                var ItemMasterMonsterItem = _context.ItemMasterMonsterItems.Where(x => x.ItemId == item.ItemId)
+                    .Include(x=>x.ItemMasterCommand)
+                    .Include(x=>x.ItemMasterAbilities)
+                    .Include(x=>x.ItemMasterSpell)
+                    .Include(x=>x.itemMasterBuffAndEffects)
+                    .FirstOrDefault();
+                if (ItemMasterMonsterItem!=null)
+                {
+                    ItemMasterMonsterItem.IsDeleted = true;
+                    if (ItemMasterMonsterItem.ItemMasterCommand!=null && ItemMasterMonsterItem.ItemMasterCommand.Count>0)
+                    {
+                        foreach (var record in ItemMasterMonsterItem.ItemMasterCommand)
+                        {
+                            ItemMasterLootCommand rec = new ItemMasterLootCommand() {
+                                Command=record.Command,
+                                Name=record.Name
+                            };
+                            ItemMasterLootCommands.Add(rec);
+                        }
+                    }
+                    if (ItemMasterMonsterItem.ItemMasterAbilities != null && ItemMasterMonsterItem.ItemMasterAbilities.Count > 0)
+                    {
+                        foreach (var record in ItemMasterMonsterItem.ItemMasterAbilities)
+                        {
+                            ItemMasterLootAbility rec = new ItemMasterLootAbility()
+                            {                                
+                                AbilityId = record.AbilityId
+                            };
+                            ItemMasterLootAbilitys.Add(rec);
+                        }
+                    }
+                    if (ItemMasterMonsterItem.ItemMasterSpell != null && ItemMasterMonsterItem.ItemMasterSpell.Count > 0)
+                    {
+                        foreach (var record in ItemMasterMonsterItem.ItemMasterSpell)
+                        {
+                            ItemMasterLootSpell rec = new ItemMasterLootSpell()
+                            {
+                                SpellId = record.SpellId
+                            };
+                            ItemMasterLootSpells.Add(rec);
+                        }
+                    }
+                    if (ItemMasterMonsterItem.itemMasterBuffAndEffects != null && ItemMasterMonsterItem.itemMasterBuffAndEffects.Count > 0)
+                    {
+                        foreach (var record in ItemMasterMonsterItem.itemMasterBuffAndEffects)
+                        {
+                            ItemMasterLootBuffAndEffect rec = new ItemMasterLootBuffAndEffect()
+                            {
+                                BuffAndEffectId = record.BuffAndEffectId
+                            };
+                            ItemMasterLootBuffAndEffects.Add(rec);
+                        }
+                    }
+                }
                 _context.SaveChanges();
                    ItemMaster obj = _context.ItemMasters.Where(x => x.ItemMasterId == item.ItemMasterId).FirstOrDefault();
                 if (obj != null)
@@ -1106,12 +1460,36 @@ namespace DAL.Services
                     _itemMasterService.CreateItemMasterLoot(obj, new ItemMasterLoot()
                     {
                         IsShow = true,
-                        Quantity = item.Qty
+                        Quantity = ItemMasterMonsterItem.Quantity,
+                        Command= ItemMasterMonsterItem.Command,
+                        CommandName= ItemMasterMonsterItem.CommandName,
+                       ContainerVolumeMax =ItemMasterMonsterItem.ContainerVolumeMax,
+                       ContainerWeightMax =ItemMasterMonsterItem.ContainerWeightMax,
+                        ContainerWeightModifier=ItemMasterMonsterItem.ContainerWeightModifier,
+                        IsConsumable=ItemMasterMonsterItem.IsConsumable,
+                        IsContainer=ItemMasterMonsterItem.IsContainer,
+                        IsIdentified=ItemMasterMonsterItem.IsIdentified,
+                        IsMagical=ItemMasterMonsterItem.IsMagical,
+                        IsVisible=ItemMasterMonsterItem.IsVisible,
+                        ItemCalculation=ItemMasterMonsterItem.ItemCalculation,
+                        ItemImage=ItemMasterMonsterItem.ItemImage,
+                        ItemName=ItemMasterMonsterItem.ItemName,
+                        ItemStats=ItemMasterMonsterItem.ItemStats,
+                        ItemVisibleDesc=ItemMasterMonsterItem.ItemVisibleDesc,
+                        Metatags=ItemMasterMonsterItem.Metatags,
+                        PercentReduced=ItemMasterMonsterItem.PercentReduced,
+                        Rarity=ItemMasterMonsterItem.Rarity,
+                        RuleSetId=ItemMasterMonsterItem.RuleSetId,
+                        TotalWeight=ItemMasterMonsterItem.TotalWeight,
+                        TotalWeightWithContents=ItemMasterMonsterItem.TotalWeightWithContents,
+                        Value=ItemMasterMonsterItem.Value,
+                        Volume=ItemMasterMonsterItem.Volume,
+                        Weight=ItemMasterMonsterItem.Weight,
                     },
-                    new List<ItemMasterLootSpell>(),
-                    new List<ItemMasterLootAbility>(),
-                    new List<ItemMasterLootBuffAndEffect>(),
-                    new List<ItemMasterLootCommand>()
+                    ItemMasterLootSpells,
+                   ItemMasterLootAbilitys,
+                    ItemMasterLootBuffAndEffects,
+                   ItemMasterLootCommands
                     );
                 }
             }

@@ -290,9 +290,9 @@ export class MonsterTemplateComponent implements OnInit {
         }
       });
   }
-    manageIcon(id: number) {
+  manageIcon(id: number, isBundle: boolean=false) {
         this.monsterTemplateList.forEach(function (val) {
-          if (id === val.monsterTemplateId) {
+          if (id === val.monsterTemplateId && isBundle === val.isBundle) {
                 val.showIcon = true;
             } else {
                 val.showIcon = false;

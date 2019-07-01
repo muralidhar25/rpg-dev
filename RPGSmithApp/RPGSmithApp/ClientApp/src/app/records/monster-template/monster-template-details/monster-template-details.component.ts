@@ -83,7 +83,7 @@ export class MonsterTemplateDetailsComponent implements OnInit {
           }
           this.isLoading = true;
           this.monsterTemplateService.getMonsterTemplateById<any>(this.monsterTemplateId)
-            .subscribe(data => {
+            .subscribe(data => {debugger
                 if (data)
                 this.monsterTemplateDetail = this.monsterTemplateService.MonsterTemplateModelData(data, "UPDATE");
                 this.xpValue = data.xpValue;

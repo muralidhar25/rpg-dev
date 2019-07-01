@@ -40,6 +40,7 @@ namespace DAL.Services
         ItemMasterLoot GetLootById(int id);
         Task<ItemMasterLoot> UpdateWeight(int itemMasterId, decimal TotalWeight);
         Task<ItemMasterLoot> UpdateContainer(int itemId, int containerItemId);
+        ItemMasterMonsterItem getMonsterItemById(int id);
         Task DeleteItemMasterLoot(int lootId);
         Task ShowLoot(int lootID, bool isShow);
         Task<List<ItemMasterLoot_ViewModel>> GetAvailableContainerItems(int rulesetId, int ItemMasterId);

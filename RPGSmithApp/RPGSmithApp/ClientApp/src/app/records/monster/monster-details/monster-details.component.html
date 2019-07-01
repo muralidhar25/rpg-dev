@@ -46,10 +46,10 @@
                             <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
                           </li>
                           <li class="dropdown-menu-item" *ngIf="monsterDetail?.ruleset">
-                            <a [routerLink]="charNav?.items" class="btn btn-link-primary nav-redirection  icon-Gen-Items"> Inventory</a>
+                            <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection  icon-Gen-Items"> Item Templates</a>
                           </li>
                           <li class="dropdown-menu-item" *ngIf="monsterDetail?.ruleset?.isSpellEnabled">
-                            <a [routerLink]="charNav?.spells" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
+                            <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
                           </li>
                           <li *ngIf="IsGm" class="dropdown-menu-item">
                             <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-MonsterTemp"> <span>Monster</span></a>

@@ -85,20 +85,36 @@ export class DeployMonsterComponent implements OnInit {
   }
 
   saveCounter() {
-    let health = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.health ? this.monsterInfo.health : '0', this.customDices)
-    let armorClass = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.armorClass ? this.monsterInfo.armorClass : '0', this.customDices)
-    let xpValue = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.xpValue ? this.monsterInfo.xpValue : '0', this.customDices)
-    let challangeRating = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.challangeRating ? this.monsterInfo.challangeRating : '0', this.customDices)
+    let healthNumberArray = [];
+    let armorClassNumberArray = [];
+    let xpValueNumberArray = [];
+    let challangeRatingNumberArray = [];
+    if (+this.value) {
+      for (var i = 0; i < this.value; i++) {
+        let health = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.health ? this.monsterInfo.health : '0', this.customDices)
+        let armorClass = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.armorClass ? this.monsterInfo.armorClass : '0', this.customDices)
+        let xpValue = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.xpValue ? this.monsterInfo.xpValue : '0', this.customDices)
+        let challangeRating = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.challangeRating ? this.monsterInfo.challangeRating : '0', this.customDices)
+
+
+        healthNumberArray.push(health);
+        armorClassNumberArray.push(armorClass);
+        xpValueNumberArray.push(xpValue);
+        challangeRatingNumberArray.push(challangeRating);
+      }
+    }
+    
     let deployMonsterInfo = {
       qty: this.value,
       monsterTemplateId: this.monsterInfo.monsterTemplateId,
       rulesetId: this.monsterInfo.ruleSetId,
-      healthCurrent: health,
-      healthMax: health,
-      armorClass: armorClass ,
-      xpValue: xpValue,
-      challangeRating: challangeRating,
+      healthCurrent: healthNumberArray,
+      healthMax: healthNumberArray,
+      armorClass: armorClassNumberArray ,
+      xpValue: xpValueNumberArray,
+      challangeRating: challangeRatingNumberArray,
       addToCombat: this.addToCombat,
+      isBundle: this.monsterInfo.isBundle
     }
     this.alertService.startLoadingMessage("", "Deploying Monster Template...");
     this.monsterTemplateService.deployMonster<any>(deployMonsterInfo)

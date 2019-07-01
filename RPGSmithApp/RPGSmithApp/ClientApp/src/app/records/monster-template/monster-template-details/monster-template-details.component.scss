@@ -79,7 +79,7 @@ p {
 }
 .nav-redirection.selected {
     border: 2px solid #cccc !important;
-    pointer-events: none;
+    /*pointer-events: none;*/
     cursor: pointer;
     text-decoration: none;
 }

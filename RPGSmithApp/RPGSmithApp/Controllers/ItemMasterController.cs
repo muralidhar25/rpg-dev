@@ -80,6 +80,12 @@ namespace RPGSmithApp.Controllers
         {
             return _itemMasterService.GetLootById(id);
         }
+        
+            [HttpGet("getMonsterItemById")]
+        public ItemMasterMonsterItem getMonsterItemById(int id)
+        {
+            return _itemMasterService.getMonsterItemById(id);
+        }
 
         [HttpGet("getByRuleSetId")]
         public async Task<IActionResult> getByRuleSetId(int rulesetId)

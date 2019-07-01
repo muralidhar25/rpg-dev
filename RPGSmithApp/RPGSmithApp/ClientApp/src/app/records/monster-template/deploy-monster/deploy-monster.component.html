@@ -34,7 +34,7 @@
             </span>
           </label>
         </div>-->
-        <div class="checkbox-sec">
+        <div class="checkbox-sec" *ngIf="!monsterInfo?.isBundle">
           <label class="check-box">
             <input class="form-check-input" type="checkbox" name="newItem" [checked]="addToCombat" (change)="changeCheckbox($event)" />
             <span class="checkmark"></span>

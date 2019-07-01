@@ -339,6 +339,9 @@ export class MonsterComponent implements OnInit {
     }
 
   duplicateMonster(monster: any) {
+    monster.monsterTemplate.xPValue = monster.monsterTemplate.xpValue;
+    monster.monsterTemplate.imageUrl = monster.imageUrl;
+    monster.monsterTemplate.metatags = monster.metatags;
         // this.alertService.startLoadingMessage("", "Checking records");      
         this.monsterTemplateService.getMonsterTemplateCount(this.ruleSetId)
             .subscribe(data => {
@@ -560,14 +563,14 @@ export class MonsterComponent implements OnInit {
   }
   
   addMonster() {
-    this.bsModalRef = this.modalService.show(AddMonsterComponent, {
-      class: 'modal-primary modal-md',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
-    this.bsModalRef.content.title = 'Add Monsters';
-    this.bsModalRef.content.button = 'ADD';
-    this.bsModalRef.content.rulesetID = this.ruleSetId;
+    //this.bsModalRef = this.modalService.show(AddMonsterComponent, {
+    //  class: 'modal-primary modal-md',
+    //  ignoreBackdropClick: true,
+    //  keyboard: false
+    //});
+    //this.bsModalRef.content.title = 'Add Monsters';
+    //this.bsModalRef.content.button = 'ADD';
+    //this.bsModalRef.content.rulesetID = this.ruleSetId;
   }
 
   dropMonsterItems(monster : any){

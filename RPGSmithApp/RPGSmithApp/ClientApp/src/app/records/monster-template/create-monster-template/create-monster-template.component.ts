@@ -404,15 +404,19 @@ export class CreateMonsterTemplateComponent implements OnInit {
                             }
                             else {
                                 
-                                 this.sharedService.updateMonsterTemplateList(true);
+                              this.sharedService.updateMonsterTemplateList(true);
+                              this.sharedService.updateMonsterList(true);
+                              
                             }
                         }
                         else {
                           this.sharedService.updateMonsterTemplateList(true);
+                          this.sharedService.updateMonsterList(true);
                         }
                     }
                     else {
                       this.sharedService.updateMonsterTemplateList(true);
+                      this.sharedService.updateMonsterList(true);
                     }
                 },
                 error => {
@@ -452,7 +456,9 @@ export class CreateMonsterTemplateComponent implements OnInit {
                     if (data !== "" && data !== null && data !== undefined) message = data;
                     this.alertService.showMessage(message, "", MessageSeverity.success);
                     this.close();
-                    this.sharedService.updateMonsterTemplateList(true);
+                  this.sharedService.updateMonsterTemplateList(true);
+
+                  this.sharedService.updateMonsterList(true);
                     //this.sharedService.UpdateCharacterAbilityList(true);
                     if (this.fromDetail)
                         this.router.navigate(['/ruleset/monster-template', this._ruleSetId]);
@@ -656,6 +662,9 @@ export class CreateMonsterTemplateComponent implements OnInit {
         return false;
       }
       if (command.indexOf('"') > -1) {
+        return false;
+      }
+      if (command.indexOf("'") > -1) {
         return false;
       }
     }

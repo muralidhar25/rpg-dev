@@ -163,52 +163,7 @@ namespace DAL.Models
         public virtual MonsterTemplate MonsterTemplate { get; set; }
         public virtual ItemMaster ItemMaster { get; set; }
     }
-    public class Monster
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int MonsterId { get; set; }
-
-       
-        public int MonsterTemplateId { get; set; }
-
-        public int RuleSetId { get; set; }
-
-        [Required]
-        [Column(TypeName = "nvarchar(255)")]
-        public string Name { get; set; }
-
-       
-        [MaxLength(2048, ErrorMessage = "The field must be string with maximum length of 2048 characters")]
-        [Column(TypeName = "nvarchar(2048)")]
-        public string ImageUrl { get; set; }
-
-        [Column(TypeName = "nvarchar(max)")]
-        public string Metatags { get; set; }
-
-        
-
-        public bool IsDeleted { get; set; }
-
-        public int HealthCurrent { get; set; }
-        public int HealthMax { get; set; }
-        public int ArmorClass { get; set; }
-        public int XPValue { get; set; }
-        public int ChallangeRating { get; set; }
-
-        public bool AddToCombatTracker { get; set; }
-
-
-
-
-
-
-
-        public virtual RuleSet RuleSet { get; set; }
-        public virtual MonsterTemplate MonsterTemplate { get; set; }
-
-       
-    }
+   
 }
 
 //update[RuleSets] set[IsBuffAndEffectEnabled] = 0

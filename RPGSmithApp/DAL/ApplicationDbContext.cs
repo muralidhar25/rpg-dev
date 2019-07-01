@@ -147,7 +147,18 @@ namespace DAL
         public virtual DbSet<ItemMasterLootAbility> ItemMasterLootAbilitys { get; set; }
         public virtual DbSet<ItemMasterLootBuffAndEffect> ItemMasterLootBuffAndEffects { get; set; }
         public virtual DbSet<ItemMasterLootSpell> ItemMasterLootSpells { get; set; }
-        
+
+        public virtual DbSet<MonsterCommand> MonsterCommands { get; set; }
+        public virtual DbSet<MonsterAbility> MonsterAbilitys { get; set; }
+        public virtual DbSet<MonsterBuffAndEffect> MonsterBuffAndEffects { get; set; }
+        public virtual DbSet<MonsterSpell> MonsterSpells { get; set; }
+        public virtual DbSet<MonsterMonster> MonsterMonsters { get; set; }
+
+        public virtual DbSet<ItemMasterMonsterItemCommand> ItemMasterMonsterItemCommands { get; set; }
+        public virtual DbSet<ItemMasterMonsterItemAbility> ItemMasterMonsterItemAbilitys { get; set; }
+        public virtual DbSet<ItemMasterMonsterItemBuffAndEffect> ItemMasterMonsterItemBuffAndEffects { get; set; }
+        public virtual DbSet<ItemMasterMonsterItemSpell> ItemMasterMonsterItemSpells { get; set; }
+
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {

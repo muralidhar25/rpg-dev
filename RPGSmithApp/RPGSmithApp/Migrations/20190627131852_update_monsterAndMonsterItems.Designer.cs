@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace RPGSmithApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190627131852_update_monsterAndMonsterItems")]
+    partial class update_monsterAndMonsterItems
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2488,27 +2490,6 @@ namespace RPGSmithApp.Migrations
                     b.ToTable("MonsterCommands");
                 });
 
-            modelBuilder.Entity("DAL.Models.MonsterMonster", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("AssociateMonsterId");
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<int>("MonsterId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AssociateMonsterId");
-
-                    b.HasIndex("MonsterId");
-
-                    b.ToTable("MonsterMonsters");
-                });
-
             modelBuilder.Entity("DAL.Models.MonsterSpell", b =>
                 {
                     b.Property<int>("Id")
@@ -4876,19 +4857,6 @@ namespace RPGSmithApp.Migrations
                 {
                     b.HasOne("DAL.Models.Monster", "Monster")
                         .WithMany("MonsterCommands")
-                        .HasForeignKey("MonsterId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("DAL.Models.MonsterMonster", b =>
-                {
-                    b.HasOne("DAL.Models.MonsterTemplate", "AssociateMonster")
-                        .WithMany()
-                        .HasForeignKey("AssociateMonsterId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("DAL.Models.Monster", "Monster")
-                        .WithMany()
                         .HasForeignKey("MonsterId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

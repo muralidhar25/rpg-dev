@@ -19,7 +19,7 @@ namespace DAL.Services
             );
         Task<bool> Delete(int id);
         MonsterTemplate GetById(int? id);
-        Monster GetMonsterById(int? id);
+        Monster GetMonsterById(int? id,bool IsGettingDetailsForDetailScreenAPI);
         int GetCountByRuleSetId(int ruleSetId);
         int Core_GetCountByRuleSetId(int ruleSetId, int parentID);
         Task<bool> CheckDuplicateMonsterTemplate(string value, int? ruleSetId, int? MonsterTemplateId = 0);
@@ -40,10 +40,16 @@ void deployMonster(DeployMonsterTemplate model);
         Task<MonsterTemplate> Core_CreateMonsterTemplateUsingMonster(int monsterTemplateId, int rulesetID);
         List<ItemMasterForMonsterTemplate> getMonsterItemsToDrop(int monsterId);
         Task DropItemsToLoot(List<ItemMasterForMonsterTemplate> list);
-        Task<Monster> UpdateMonster(Monster model);
+        Task<Monster> UpdateMonster(Monster model, 
+            List<MonsterTemplateAbility> monsterTemplateAbilityVM, 
+            List<MonsterTemplateMonster> monsterTemplateAssociateMonsterTemplateVM, 
+            List<MonsterTemplateBuffAndEffect> monsterTemplateBuffAndEffectVM,            
+            List<MonsterTemplateSpell> monsterTemplateSpellVM, 
+            List<MonsterTemplateCommand> monsterTemplateCommandVM);
         Task<bool> DeleteMonster(int monsterId);
         List<MonsterTemplate_Bundle> GetMonsterTemplatesByRuleSetId_add(int rulesetId, bool includeBundles = false);
         bool Core_BundleWithParentIDExists(int bundleId, int rulesetID);
+        SP_AssociateForMonsterTemplate SP_GetMonsterAssociateRecords(int monsterID, int rulesetId);
         // List<MonsterTemplate> GetByRuleSetId_add(int rulesetId);
 
     }

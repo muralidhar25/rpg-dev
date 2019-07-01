@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace RPGSmithApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190628063049_add_monster_monster")]
+    partial class add_monster_monster
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -4882,7 +4884,7 @@ namespace RPGSmithApp.Migrations
 
             modelBuilder.Entity("DAL.Models.MonsterMonster", b =>
                 {
-                    b.HasOne("DAL.Models.MonsterTemplate", "AssociateMonster")
+                    b.HasOne("DAL.Models.Monster", "AssociateMonster")
                         .WithMany()
                         .HasForeignKey("AssociateMonsterId")
                         .OnDelete(DeleteBehavior.Cascade);

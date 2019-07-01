@@ -96,7 +96,7 @@ export class MonsterDetailsComponent implements OnInit {
           this.isLoading = true;
           this.monsterTemplateService.getMonsterById<any>(this.monsterId)
             .subscribe(data => {
-
+              debugger
               if (data)
                 this.monsterDetail = this.monsterTemplateService.MonsterModelData(data, "UPDATE");
               this._editMonster = data;
@@ -107,7 +107,7 @@ export class MonsterDetailsComponent implements OnInit {
                }
               this.ruleSetId = this.monsterDetail.ruleSetId;
 
-              this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(this.monsterDetail.monsterTemplateId, this.ruleSetId, this.monsterId)
+              this.monsterTemplateService.getMonsterAssociateRecords_sp<any>(this.monsterDetail.monsterId, this.ruleSetId)
                   .subscribe(data => {
                     this.selectedBuffAndEffects = data.selectedBuffAndEffects;
                     this.selectedAbilities = data.selectedAbilityList;
@@ -409,7 +409,7 @@ export class MonsterDetailsComponent implements OnInit {
   }
   GoToItems(Itemid:number) {
 
-    this.router.navigate(['/ruleset/item-details', Itemid]);
+    this.router.navigate(['/ruleset/monster-item-details', Itemid]);
   }
 
   

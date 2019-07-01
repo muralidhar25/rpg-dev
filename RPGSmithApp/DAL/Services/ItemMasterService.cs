@@ -317,7 +317,27 @@ namespace DAL.Services
 
             return itemmaster;
         }
+        public ItemMasterMonsterItem getMonsterItemById(int id) {
+            var item = _context.ItemMasterMonsterItems
+              .Include(d => d.RuleSet)
+              .Include(d => d.ItemMasterAbilities).ThenInclude(d => d.Ability)
+              .Include(d => d.ItemMasterSpell).ThenInclude(d => d.Spell)
+              .Include(d => d.itemMasterBuffAndEffects).ThenInclude(d => d.BuffAndEffect)
+              .Include(d => d.ItemMasterCommand)
+              .Where(d => d.ItemMasterId == id && d.IsDeleted != true)
+              .FirstOrDefault();
 
+            if (item == null) return null;
+
+            item.ItemMasterAbilities = item.ItemMasterAbilities.Where(p => p.IsDeleted != true).ToList();
+            item.ItemMasterSpell = item.ItemMasterSpell.Where(p => p.IsDeleted != true).ToList();
+            item.itemMasterBuffAndEffects = item.itemMasterBuffAndEffects.Where(p => p.IsDeleted != true).ToList();
+            //  itemmaster.ItemMasterPlayers = itemmaster.ItemMasterPlayers.Where(p => p.IsDeleted != true).ToList();
+            item.ItemMasterCommand = item.ItemMasterCommand.Where(p => p.IsDeleted != true).ToList();
+            
+
+            return item;
+        }
         public List<ItemMaster> GetItemMastersByRuleSetId(int ruleSetId)
         {
             //var query = "EXEC ItemMaster_GetByRulesetID @RulesetID = " + ruleSetId;
