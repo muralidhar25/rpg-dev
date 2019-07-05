@@ -87,157 +87,164 @@ export class DeployMonsterComponent implements OnInit {
   }
 
   saveCounter() {
-    if (this.monsterInfo.isBundle) {
+    debugger
+    if (+this.value <= 0) {
+      this.alertService.showMessage("Please enter a valid number", "", MessageSeverity.error);
+      return false;
+    }
+    else {
+      if (this.monsterInfo.isBundle) {
 
-      this.alertService.startLoadingMessage("", "Deploying Monster Template...");
-      let BundleItemsToDeploy: any = [];
-      if (this.bundleItems) {
-        if (this.bundleItems.length) {
+        this.alertService.startLoadingMessage("", "Deploying Monster Template...");
+        let BundleItemsToDeploy: any = [];
+        if (this.bundleItems) {
+          if (this.bundleItems.length) {
 
-          this.bundleItems.map((b) => {
-            let itemQtyCount = +b.quantity;
-            for (var i_itemQty = 0; i_itemQty < itemQtyCount; i_itemQty++) {
-              let healthNumberArray = [];
-              let armorClassNumberArray = [];
-              let xpValueNumberArray = [];
-              let challangeRatingNumberArray = [];
-              var reItems = [];
-              if (+this.value) {
-                for (var i = 0; i < this.value; i++) {
-                  let health = DiceService.rollDiceExternally(this.alertService, b.monsterTemplate.health ? b.monsterTemplate.health : '0', this.customDices)
-                  let armorClass = DiceService.rollDiceExternally(this.alertService, b.monsterTemplate.armorClass ? b.monsterTemplate.armorClass : '0', this.customDices)
-                  let xpValue = DiceService.rollDiceExternally(this.alertService, b.monsterTemplate.xpValue ? b.monsterTemplate.xpValue : '0', this.customDices)
-                  let challangeRating = DiceService.rollDiceExternally(this.alertService, b.monsterTemplate.challangeRating ? b.monsterTemplate.challangeRating : '0', this.customDices)
+            this.bundleItems.map((b) => {
+              let itemQtyCount = +b.quantity;
+              for (var i_itemQty = 0; i_itemQty < itemQtyCount; i_itemQty++) {
+                let healthNumberArray = [];
+                let armorClassNumberArray = [];
+                let xpValueNumberArray = [];
+                let challangeRatingNumberArray = [];
+                var reItems = [];
+                if (+this.value) {
+                  for (var i = 0; i < this.value; i++) {
+                    let health = DiceService.rollDiceExternally(this.alertService, b.monsterTemplate.health ? b.monsterTemplate.health : '0', this.customDices)
+                    let armorClass = DiceService.rollDiceExternally(this.alertService, b.monsterTemplate.armorClass ? b.monsterTemplate.armorClass : '0', this.customDices)
+                    let xpValue = DiceService.rollDiceExternally(this.alertService, b.monsterTemplate.xpValue ? b.monsterTemplate.xpValue : '0', this.customDices)
+                    let challangeRating = DiceService.rollDiceExternally(this.alertService, b.monsterTemplate.challangeRating ? b.monsterTemplate.challangeRating : '0', this.customDices)
 
 
-                  healthNumberArray.push(health);
-                  armorClassNumberArray.push(armorClass);
-                  xpValueNumberArray.push(xpValue);
-                  challangeRatingNumberArray.push(challangeRating);
+                    healthNumberArray.push(health);
+                    armorClassNumberArray.push(armorClass);
+                    xpValueNumberArray.push(xpValue);
+                    challangeRatingNumberArray.push(challangeRating);
 
-                  if (b.monsterTemplate.isRandomizationEngine) {
- 
-                    let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine(b.monsterTemplate.randomizationEngine, this.alertService);
-                    if (currentItemsToDeploy && currentItemsToDeploy.length) {
-                      currentItemsToDeploy.map((re) => {
-                        re.deployCount = i + 1;
+                    if (b.monsterTemplate.isRandomizationEngine) {
 
-                        reItems.push(re);
-                      });
+                      let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine(b.monsterTemplate.randomizationEngine, this.alertService);
+                      if (currentItemsToDeploy && currentItemsToDeploy.length) {
+                        currentItemsToDeploy.map((re) => {
+                          re.deployCount = i + 1;
+
+                          reItems.push(re);
+                        });
+                      }
                     }
                   }
                 }
+
+                BundleItemsToDeploy.push({
+                  qty: this.value,
+                  monsterTemplateId: b.monsterTemplateId,
+                  rulesetId: this.monsterInfo.ruleSetId,
+                  healthCurrent: healthNumberArray,
+                  healthMax: healthNumberArray,
+                  armorClass: armorClassNumberArray,
+                  xpValue: xpValueNumberArray,
+                  challangeRating: challangeRatingNumberArray,
+                  addToCombat: this.addToCombat,
+                  isBundle: this.monsterInfo.isBundle,
+                  reItems: reItems
+                });
               }
 
-              BundleItemsToDeploy.push({
-                qty: this.value,
-                monsterTemplateId: b.monsterTemplateId,
-                rulesetId: this.monsterInfo.ruleSetId,
-                healthCurrent: healthNumberArray,
-                healthMax: healthNumberArray,
-                armorClass: armorClassNumberArray,
-                xpValue: xpValueNumberArray,
-                challangeRating: challangeRatingNumberArray,
-                addToCombat: this.addToCombat,
-                isBundle: this.monsterInfo.isBundle,
-                reItems: reItems
-              });
+
+            })
+          }
+        }
+        this.monsterTemplateService.addMonster(BundleItemsToDeploy)
+          .subscribe(data => {
+
+            this.alertService.stopLoadingMessage();
+            this.alertService.showMessage("Monster Group has been deployed successfully.", "", MessageSeverity.success);
+            this.isLoading = false;
+            this.close();
+            this.sharedService.updateMonsterList(true);
+          }, error => {
+            this.isLoading = false;
+            this.alertService.stopLoadingMessage();
+            this.alertService.showMessage(error, "", MessageSeverity.error);
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              this.authService.logout(true);
+            }
+          }, () => { });
+
+
+      }
+      else {
+        let healthNumberArray = [];
+        let armorClassNumberArray = [];
+        let xpValueNumberArray = [];
+        let challangeRatingNumberArray = [];
+        var reItems = [];
+        if (+this.value) {
+          for (var i = 0; i < this.value; i++) {
+            let health = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.health ? this.monsterInfo.health : '0', this.customDices)
+            let armorClass = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.armorClass ? this.monsterInfo.armorClass : '0', this.customDices)
+            let xpValue = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.xpValue ? this.monsterInfo.xpValue : '0', this.customDices)
+            let challangeRating = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.challangeRating ? this.monsterInfo.challangeRating : '0', this.customDices)
+
+
+            healthNumberArray.push(health);
+            armorClassNumberArray.push(armorClass);
+            xpValueNumberArray.push(xpValue);
+            challangeRatingNumberArray.push(challangeRating);
+
+
+            if (this.monsterInfo.isRandomizationEngine) {
+              let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine(this.monsterInfo.randomizationEngine, this.alertService);
+              if (currentItemsToDeploy && currentItemsToDeploy.length) {
+                currentItemsToDeploy.map((re) => {
+                  re.deployCount = i + 1;
+
+                  reItems.push(re);
+                })
+
+
+              }
             }
 
-
-          })
-        }
-      }
-      this.monsterTemplateService.addMonster(BundleItemsToDeploy)
-        .subscribe(data => {
-
-          this.alertService.stopLoadingMessage();
-          this.alertService.showMessage("Monster Group has been deployed successfully.", "", MessageSeverity.success);
-          this.isLoading = false;
-          this.close();
-          this.sharedService.updateMonsterList(true);
-        }, error => {
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          this.alertService.showMessage(error, "", MessageSeverity.error);
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
           }
-        }, () => { });
+        }
 
-     
-    }
-    else {
-      let healthNumberArray = [];
-      let armorClassNumberArray = [];
-      let xpValueNumberArray = [];
-      let challangeRatingNumberArray = [];
-      var reItems = [];
-      if (+this.value) {
-        for (var i = 0; i < this.value; i++) {
-          let health = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.health ? this.monsterInfo.health : '0', this.customDices)
-          let armorClass = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.armorClass ? this.monsterInfo.armorClass : '0', this.customDices)
-          let xpValue = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.xpValue ? this.monsterInfo.xpValue : '0', this.customDices)
-          let challangeRating = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.challangeRating ? this.monsterInfo.challangeRating : '0', this.customDices)
-
-
-          healthNumberArray.push(health);
-          armorClassNumberArray.push(armorClass);
-          xpValueNumberArray.push(xpValue);
-          challangeRatingNumberArray.push(challangeRating);
-
-          
-          if (this.monsterInfo.isRandomizationEngine) {
-          let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine(this.monsterInfo.randomizationEngine, this.alertService);
-            if (currentItemsToDeploy && currentItemsToDeploy.length) {
-              currentItemsToDeploy.map((re) => {
-                re.deployCount = i + 1;
-
-                reItems.push(re);
-              })
-
-             
+        let deployMonsterInfo = {
+          qty: this.value,
+          monsterTemplateId: this.monsterInfo.monsterTemplateId,
+          rulesetId: this.monsterInfo.ruleSetId,
+          healthCurrent: healthNumberArray,
+          healthMax: healthNumberArray,
+          armorClass: armorClassNumberArray,
+          xpValue: xpValueNumberArray,
+          challangeRating: challangeRatingNumberArray,
+          addToCombat: this.addToCombat,
+          isBundle: this.monsterInfo.isBundle,
+          reItems: reItems
+        }
+        this.alertService.startLoadingMessage("", "Deploying Monster Template...");
+        this.monsterTemplateService.deployMonster<any>(deployMonsterInfo)
+          .subscribe(data => {
+            this.alertService.stopLoadingMessage();
+            let message = "Monster Template has been deployed successfully.";
+            //if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
+            this.alertService.showMessage(message, "", MessageSeverity.success);
+            this.close()
+          }, error => {
+            this.alertService.stopLoadingMessage();
+            this.isLoading = false;
+            let _message = "Unable to deploy ";
+            let Errors = Utilities.ErrorDetail(_message, error);
+            //let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
             }
-          }
+          }, () => { });
 
-        }
+
       }
-      
-      let deployMonsterInfo = {
-        qty: this.value,
-        monsterTemplateId: this.monsterInfo.monsterTemplateId,
-        rulesetId: this.monsterInfo.ruleSetId,
-        healthCurrent: healthNumberArray,
-        healthMax: healthNumberArray,
-        armorClass: armorClassNumberArray,
-        xpValue: xpValueNumberArray,
-        challangeRating: challangeRatingNumberArray,
-        addToCombat: this.addToCombat,
-        isBundle: this.monsterInfo.isBundle,
-        reItems: reItems
-      }
-      this.alertService.startLoadingMessage("", "Deploying Monster Template...");
-      this.monsterTemplateService.deployMonster<any>(deployMonsterInfo)
-        .subscribe(data => {
-          this.alertService.stopLoadingMessage();
-          let message = "Monster Template has been deployed successfully.";
-          //if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
-          this.alertService.showMessage(message, "", MessageSeverity.success);
-          this.close()
-        }, error => {
-          this.alertService.stopLoadingMessage();
-          this.isLoading = false;
-          let _message = "Unable to deploy ";
-          let Errors = Utilities.ErrorDetail(_message, error);
-          //let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-            this.authService.logout(true);
-          }
-        }, () => { });
-
-
     }
   }
 
