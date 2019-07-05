@@ -1651,6 +1651,10 @@ namespace DAL.Services
             {
                 DT_reItems = utility.ToDataTable<REItems>(model.REItems);
             }
+            else {
+                model.REItems.Add(new REItems() { itemMasterId = 0, qty = 0 });
+                DT_reItems = utility.ToDataTable<REItems>(model.REItems);
+            }
 
             DataTable DT_healthCurrent = new DataTable();
 

@@ -191,8 +191,10 @@ namespace DAL.Models.SPModels
 
     public class REItems
     {
+        
         public int itemMasterId { get; set; }
         public int qty { get; set; }
+        public int deployCount { get; set; }
     }
 
 
