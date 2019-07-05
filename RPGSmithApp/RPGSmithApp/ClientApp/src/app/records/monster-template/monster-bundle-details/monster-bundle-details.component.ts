@@ -17,6 +17,8 @@ import { Bundle } from "../../../core/models/view-models/bundle.model";
 import { MonsterTemplateService } from "../../../core/services/monster-template.service";
 import { CreateMonsterGroupComponent } from "../moster-group/monster-group.component";
 import { DeployMonsterComponent } from "../deploy-monster/deploy-monster.component";
+import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
+import { Characters } from "../../../core/models/view-models/characters.model";
 
 @Component({
   selector: 'app-monster-bundle-details',
@@ -258,5 +260,19 @@ export class MonsterBundleDetailsComponent implements OnInit {
     this.bsModalRef.content.monsterInfo = monsterInfo;
     this.bsModalRef.content.bundleItems =this.bundleItems
 
+  }
+  openDiceRollModal() {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.recordName = this.bundleDetail.ruleset.ruleSetName;
+    this.bsModalRef.content.recordImage = this.bundleDetail.ruleset.imageUrl;
+    this.bsModalRef.content.recordType = 'ruleset'
+    this.bsModalRef.content.isFromCampaignDetail = true;
   }
 }

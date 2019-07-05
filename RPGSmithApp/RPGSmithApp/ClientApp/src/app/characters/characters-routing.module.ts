@@ -22,6 +22,7 @@ import { RulesetViewSpellDetailComponent } from "./character-records/spells/rule
 import { RulesetViewAbilityDetailComponent } from "./character-records/abilities/ruleset/ruleset-view-ability-detail/ruleset-view-ability-detail.component";
 import { RulesetViewBundleDetailComponent } from "./character-records/items/ruleset/ruleset-view-bundle-detail/ruleset-view-bundle-detail.component";
 import { CharBuffAndEffectDetailsComponent } from "./character-records/buff-and-effects/buff-and-effect-details/buff-and-effect-details.component";
+import { CharBuffAndEffectRulesetDetailsComponent } from "./character-records/buff-and-effects/buff-and-effect-ruleset-detail/buff-and-effect-ruleset-detail.component";
 
 
 const routes: Routes = [
@@ -38,7 +39,8 @@ const routes: Routes = [
 
   { path: "spell-detail/:id", component: SpellRulesetDetailComponent,  data: { title: "Spell Details" } },
   { path: "ability-detail/:id", component: AbilityRulesetDetailComponent,  data: { title: "Ability Details" } },
-
+  { path: "buff-effect-detail/:id", component: CharBuffAndEffectRulesetDetailsComponent, data: { title: "Buffs & Effects Details" } },
+  
   { path: "tiles/:id", component: CharacterTilesComponent,  data: { title: "Tiles" } },
   { path: "dashboard/:id", component: CharacterDashboardComponent, data: { title: "Character Dashboard" } },
   { path: "ruleset/items/:id", component: ItemRulesetViewListComponent, canActivate: [AuthGuard], data: { title: "Items" } },

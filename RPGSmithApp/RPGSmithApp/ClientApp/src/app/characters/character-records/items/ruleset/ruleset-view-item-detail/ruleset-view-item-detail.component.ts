@@ -125,7 +125,8 @@ export class RulesetViewItemDetailComponent implements OnInit {
                 error => {
                 });
             this.itemMasterService.getItemMasterById<any[]>(this.itemMasterId)
-                .subscribe(data => {
+              .subscribe(data => {
+                  debugger
                     this.ItemMasterDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");
                     //this.ItemMasterDetail.forEach(function (val) { val.showIcon = false; });
                     this.rulesetService.GetCopiedRulesetID(this.ItemMasterDetail.ruleSetId, user.id).subscribe(data => {
@@ -426,6 +427,9 @@ export class RulesetViewItemDetailComponent implements OnInit {
     this.bsModalRef.content.character = this.character;
     this.bsModalRef.content.recordName = this.character.characterName;
     this.bsModalRef.content.recordImage = this.character.imageUrl;
+  }
+  GoToRuleBuff(RulesetBuffID: number) {
+    this.router.navigate(['/ruleset/buff-effect-details', RulesetBuffID]);
   }
 }
 

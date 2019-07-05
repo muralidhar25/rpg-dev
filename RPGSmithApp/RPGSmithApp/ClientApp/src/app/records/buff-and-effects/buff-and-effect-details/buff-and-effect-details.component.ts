@@ -318,4 +318,18 @@ export class BuffAndEffectDetailsComponent implements OnInit {
   //  this.bsModalRef.content.isFromCampaignDetail = true;
   //  this.bsModalRef.content.recordType = 'ruleset'
   //}
+  openDiceRollModal() {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.recordName = this.buffAndEffectDetail.ruleset.ruleSetName;
+    this.bsModalRef.content.recordImage = this.buffAndEffectDetail.ruleset.imageUrl;
+    this.bsModalRef.content.recordType = 'ruleset'
+    this.bsModalRef.content.isFromCampaignDetail = true;
+  }
 }

@@ -467,4 +467,7 @@ export class RulesetViewSpellDetailComponent implements OnInit {
     this.bsModalRef.content.recordImage = this.character.imageUrl;
 
   }
+  GoToRuleBuff(RulesetBuffID: number) {
+    this.router.navigate(['/ruleset/buff-effect-details', RulesetBuffID]);
+  }
 }

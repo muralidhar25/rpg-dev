@@ -284,4 +284,7 @@ export class ItemDetailsComponent implements OnInit {
     this.bsModalRef.content.recordType = 'ruleset'
     this.bsModalRef.content.isFromCampaignDetail = true;
   }
+  GoToRuleBuff(RulesetBuffID: number) {
+    this.router.navigate(['/ruleset/buff-effect-details', RulesetBuffID]);
+  }
 }

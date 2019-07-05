@@ -300,4 +300,5 @@ export class MonsterItemDetailsComponent implements OnInit {
   GoToBuffEfects(buffAndEffectId: number) {
     this.router.navigate(['/ruleset/buff-effect-details', buffAndEffectId]);
   }
+ 
 }

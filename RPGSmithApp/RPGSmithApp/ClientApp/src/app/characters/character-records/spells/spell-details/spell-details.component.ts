@@ -112,7 +112,7 @@ export class CharacterSpellDetailsComponent implements OnInit {
           this.gameStatus(this.characterId);
             this.characterSpellService.getCharacterSpellById<any>(this.spellId)
               .subscribe(data => {
-                  
+                  debugger
                     this.spellDetail = this.characterSpellService.spellModelDetailData(data, "UPDATE");
                    // this.ruleSetId = this.spellDetail.ruleSetId;
                     this.characterId = this.spellDetail.characterId;
@@ -390,5 +390,8 @@ export class CharacterSpellDetailsComponent implements OnInit {
     this.bsModalRef.content.character = this.character;
     this.bsModalRef.content.recordName = this.character.characterName;
     this.bsModalRef.content.recordImage = this.character.imageUrl;
+  }
+  GoToCharbuff(RulesetBuffID: number) {
+    this.router.navigate(['/character/buff-effect-detail', RulesetBuffID]);
   }
 }

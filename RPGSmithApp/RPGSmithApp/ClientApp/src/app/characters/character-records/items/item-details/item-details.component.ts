@@ -127,7 +127,8 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
           this.isLoading = true;
           this.gameStatus(this.characterId);
             this.itemsService.getItemById<any>(this.itemId)
-                .subscribe(data => {
+              .subscribe(data => {
+                  debugger
                     this.ItemDetail = this.itemsService.itemModelData(data, "UPDATE");
                     this.ruleSetId = this.ItemDetail.ruleSetId;
                     this.characterId = this.ItemDetail.characterId;
@@ -436,7 +437,10 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
                     else
                         this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
                 });
-    }
+  }
+  GoToCharbuff(RulesetBuffID: number) {
+    this.router.navigate(['/character/buff-effect-detail', RulesetBuffID]);
+  }
     GoToCharAbility(RulesetAbilityId: number) {
         this.isLoading = true;
         this.itemsService.GetCharAbilityID(RulesetAbilityId, this.characterId)
@@ -563,5 +567,8 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
     this.bsModalRef.content.character = this.character;
     this.bsModalRef.content.recordName = this.character.characterName;
     this.bsModalRef.content.recordImage = this.character.imageUrl;
+  }
+  GoToBuffEffect() {
+
   }
 }

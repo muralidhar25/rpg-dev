@@ -65,7 +65,7 @@
                   </ul>
                     <!-- End of toolbar links -->
                     <!-- Toolbar actions -->
-                  <ul class="page-toolbar-actions">
+                  <ul class="page-toolbar-actions" *ngIf="!isLoading">
                     <!--<li>
       <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
   </li>-->
@@ -96,7 +96,7 @@
                     <!-- End of toolbar actions -->
                 </div>
                 <!-- Toolbar actions -->
-                <ul class="page-toolbar-actions web-view">
+                <ul class="page-toolbar-actions web-view" *ngIf="!isLoading">
                   <!--<li>
       <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
   </li>-->
@@ -175,70 +175,89 @@
                     </div>
                 </div>
                 <div class="item-info-bottom-section">
-                    <div class="row ">
-                        <div class="col-12 col-md-6">
-                            <div class="item-info-stats">
-                                <h3>Class</h3>
-                                <p>{{spellDetail?.class}}</p>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="item-info-command">
-                                <h3>School</h3>
-                                <p>{{spellDetail?.school}}</p>
-                            </div>
-                        </div>
+                  <div class="row ">
+                    <div class="col-12 col-md-6">
+                      <div class="item-info-stats">
+                        <h3>Class</h3>
+                        <p>{{spellDetail?.class}}</p>
+                      </div>
                     </div>
-                    <div class="form-row">
-                        <div class="col-md-12">
-                            <div class="item-info-command">
-                                <h3>Description</h3>
-                                <p [froalaView]="spellDetail?.description"></p>
-                            </div>
-                        </div>
+                    <div class="col-12 col-md-6">
+                      <div class="item-info-command">
+                        <h3>School</h3>
+                        <p>{{spellDetail?.school}}</p>
+                      </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <div class="item-info-stats">
-                                <h3>Stats</h3>
-                                <p [froalaView]="spellDetail?.stats"></p>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="item-info-command">
-                                <h3>Command</h3>
-                                <p>{{spellDetail?.command}}</p>
-                            </div>
-                        </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="col-md-12">
+                      <div class="item-info-command">
+                        <h3>Description</h3>
+                        <p [froalaView]="spellDetail?.description"></p>
+                      </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <div class="item-info-desc">
-                                <h3>Material Component(s)</h3>
-                                <p [froalaView]="spellDetail?.materialComponent"></p>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="item-info-tags">
-                                <h3>Tags</h3>
-                                <p>{{spellDetail?.metatags}}</p>
-                            </div>
-                        </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 col-md-6">
+                      <div class="item-info-stats">
+                        <h3>Stats</h3>
+                        <p [froalaView]="spellDetail?.stats"></p>
+                      </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <div class="item-info-desc">
-                                <h3>Hit Effect</h3>
-                                <p>{{spellDetail?.hitEffect}}</p>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="item-info-tags">
-                                <h3>Miss Effect</h3>
-                                <p>{{spellDetail?.missEffect}}</p>
-                            </div>
-                        </div>
+                    <div class="col-12 col-md-6">
+                      <div class="item-info-command">
+                        <h3>Command</h3>
+                        <p>{{spellDetail?.command}}</p>
+                      </div>
                     </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 col-md-6">
+                      <div class="item-info-desc">
+                        <h3>Material Component(s)</h3>
+                        <p [froalaView]="spellDetail?.materialComponent"></p>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <div class="item-info-tags">
+                        <h3>Tags</h3>
+                        <p>{{spellDetail?.metatags}}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 col-md-6">
+                      <div class="item-info-desc">
+                        <h3>Hit Effect</h3>
+                        <p>{{spellDetail?.hitEffect}}</p>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <div class="item-info-tags">
+                        <h3>Miss Effect</h3>
+                        <p>{{spellDetail?.missEffect}}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 col-md-6">
+                      <div class="item-info-buffs">
+                        <h3>Buffs & Effects</h3>
+                        <div class="form-group output-list output-list-wrap">
+                          <ul class="output-list-items" *ngIf="spellDetail?.spellBuffAndEffects !== undefined">
+                            <li class="output-list-item" *ngFor="let rec of spellDetail?.spellBuffAndEffects">
+                              <div (click)="GoToRuleBuff(rec.buffAndEffectId)" style="cursor:pointer;" popover="{{rec?.buffAndEffect?.name}}" triggers="hover">
+                                <img class="card-img-top" [src]="rec?.buffAndEffect?.imageUrl" [alt]="rec?.buffAndEffect?.name"
+                                     onerror="this.src='../assets/images/BnE/Def_BnE.png';" />
+                                <span>{{rec?.buffAndEffect?.name}}</span>
+                              </div>
+                            </li>
+                          </ul>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
             </div>
         </div>

@@ -19,7 +19,7 @@
         </div>-->
         <div class="page-toolbar-wrapper initial show recordes-menu">
           <!-- Toolbar links -->
-          <ul class="page-toolbar-links">
+          <ul class="page-toolbar-links" *ngIf="!isLoading">
             <li *ngIf="bundleDetail?.ruleSet" class="hidden-tab">
               <a *ngIf="!IsGm" [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
               <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
@@ -66,10 +66,10 @@
           </ul>
           <!-- End of toolbar links -->
           <!-- Toolbar actions -->
-          <ul class="page-toolbar-actions">
+          <ul class="page-toolbar-actions" *ngIf="!isLoading">
             <!--<li>
-                <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
-            </li>-->
+      <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
+  </li>-->
             <li>
               <!-- Manage item -->
               <div class="dropdown dropdown-buttons">
@@ -90,14 +90,17 @@
               </div>
               <!-- Manage item -->
             </li>
+            <li>
+              <button type="button" *ngIf="IsGm && !isLoading" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>
+            </li>
           </ul>
           <!-- End of toolbar actions -->
         </div>
         <!-- Toolbar actions -->
-        <ul class="page-toolbar-actions web-view">
+        <ul class="page-toolbar-actions web-view" *ngIf="!isLoading">
           <!--<li>
-              <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
-          </li>-->
+      <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
+  </li>-->
           <li>
             <!-- Manage item -->
             <div class="dropdown dropdown-buttons">
@@ -117,6 +120,9 @@
               </div>
             </div>
             <!-- Manage item -->
+          </li>
+          <li>
+            <button type="button" *ngIf="IsGm && !isLoading" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary">Dice</button>
           </li>
         </ul>
         <!-- End of toolbar actions -->

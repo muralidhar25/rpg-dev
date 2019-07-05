@@ -509,5 +509,19 @@ export class MonsterDetailsComponent implements OnInit {
     this.bsModalRef.content.itemsList = this.ListSpells;
     this.bsModalRef.content.recordName = this.monsterDetail.name;
     this.bsModalRef.content.recordImage = this.monsterDetail.imageUrl;
-  }  
+  }
+  openDiceRollModal() {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.recordName = this.monsterDetail.ruleset.ruleSetName;
+    this.bsModalRef.content.recordImage = this.monsterDetail.ruleset.imageUrl;
+    this.bsModalRef.content.recordType = 'ruleset'
+    this.bsModalRef.content.isFromCampaignDetail = true;
+  }
 }
