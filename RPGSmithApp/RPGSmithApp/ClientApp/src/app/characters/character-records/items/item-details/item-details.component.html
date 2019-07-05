@@ -220,42 +220,59 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-12 col-md-6">
-                            <div class="item-info-abils">
-                                <h3>Abilities</h3>
-                                <div class="form-group output-list output-list-wrap">
-                                    <ul class="output-list-items" *ngIf="ItemDetail?.itemAbilities != undefined">
-                                        <li class="output-list-item" *ngFor="let ability of ItemDetail?.itemAbilities">
-                                            <div (click)="GoToCharAbility(ability?.abilityId)" style="cursor:pointer;"  popover="{{ability?.ability?.name}}" triggers="hover">
-                                                <img class="card-img-top" [src]="ability?.ability?.imageUrl" [alt]="ability?.ability?.name"
-                                                     onerror="this.src='../assets/images/DefaultImages/ability.png';" />
-                                                <span>{{ability?.ability?.name}}</span>
-                                            </div>
-                                        </li>
-
-                                    </ul>
-
+                      <div class="col-12 col-md-6">
+                        <div class="item-info-abils">
+                          <h3>Abilities</h3>
+                          <div class="form-group output-list output-list-wrap">
+                            <ul class="output-list-items" *ngIf="ItemDetail?.itemAbilities != undefined">
+                              <li class="output-list-item" *ngFor="let ability of ItemDetail?.itemAbilities">
+                                <div (click)="GoToCharAbility(ability?.abilityId)" style="cursor:pointer;" popover="{{ability?.ability?.name}}" triggers="hover">
+                                  <img class="card-img-top" [src]="ability?.ability?.imageUrl" [alt]="ability?.ability?.name"
+                                       onerror="this.src='../assets/images/DefaultImages/ability.png';" />
+                                  <span>{{ability?.ability?.name}}</span>
                                 </div>
-                            </div>
+                              </li>
+
+                            </ul>
+
+                          </div>
                         </div>
+                      </div>
 
-                        <div class="col-12 col-md-6">
-                            <div class="item-info-spells">
-                                <h3>Spells</h3>
-                                <div class="form-group output-list output-list-wrap">
-                                    <ul class="output-list-items" *ngIf="ItemDetail?.itemSpells !== undefined">
-                                        <li class="output-list-item" *ngFor="let spell of ItemDetail?.itemSpells">
-                                            <div (click)="GoToCharSpell(spell.spellId)" style="cursor:pointer;"  popover="{{spell?.spell?.name}}" triggers="hover">
-                                                <img class="card-img-top" [src]="spell?.spell?.imageUrl" [alt]="spell?.spell?.name"
-                                                     onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
-                                                <span>{{spell?.spell?.name}}</span>
-                                            </div>
-                                        </li>
-                                    </ul>
-
+                      <div class="col-12 col-md-6">
+                        <div class="item-info-spells">
+                          <h3>Spells</h3>
+                          <div class="form-group output-list output-list-wrap">
+                            <ul class="output-list-items" *ngIf="ItemDetail?.itemSpells !== undefined">
+                              <li class="output-list-item" *ngFor="let spell of ItemDetail?.itemSpells">
+                                <div (click)="GoToCharSpell(spell.spellId)" style="cursor:pointer;" popover="{{spell?.spell?.name}}" triggers="hover">
+                                  <img class="card-img-top" [src]="spell?.spell?.imageUrl" [alt]="spell?.spell?.name"
+                                       onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
+                                  <span>{{spell?.spell?.name}}</span>
                                 </div>
-                            </div>
+                              </li>
+                            </ul>
+
+                          </div>
                         </div>
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <div class="item-info-buffs">
+                          <h3>Buffs & Effects</h3>
+                          <div class="form-group output-list output-list-wrap">
+                            <ul class="output-list-items" *ngIf="ItemDetail?.itemBuffAndEffects !== undefined">
+                              <li class="output-list-item" *ngFor="let rec of ItemDetail?.itemBuffAndEffects">
+                                <div (click)="GoToCharbuff(rec.buffAndEffectId)" style="cursor:pointer;" popover="{{rec?.buffAndEffect?.name}}" triggers="hover">
+                                  <img class="card-img-top" [src]="rec?.buffAndEffect?.imageUrl" [alt]="rec?.buffAndEffect?.name"
+                                       onerror="this.src='../assets/images/BnE/Def_BnE.png';" />
+                                  <span>{{rec?.buffAndEffect?.name}}</span>
+                                </div>
+                              </li>
+                            </ul>
+
+                          </div>
+                        </div>
+                      </div>
 
                     </div>
                     <!--<div class="row">

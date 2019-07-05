@@ -78,7 +78,7 @@
           </ul>
           <!-- End of toolbar links -->
         </div>
-        <ul class="page-toolbar-actions">
+        <ul class="page-toolbar-actions" *ngIf="!isLoading">
           <li class="view-switch">
             <div class="btn-group" role="group">
               <!--<button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="{'selected':!isListView}" (click)="showListView(false)"></button>

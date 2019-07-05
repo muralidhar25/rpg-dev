@@ -125,6 +125,7 @@ namespace DAL.Services
             itemMaster.Weight = model.Weight;
             itemMaster.ItemMasterSpell = model.ItemMasterSpell;
             itemMaster.ItemMasterAbilities = model.ItemMasterAbilities;
+            itemMaster.itemMasterBuffAndEffects = model.itemMasterBuffAndEffects;
 
             ItemMaster CreatedItemMaster =await _itemMasterService.Core_CreateItemMaster(itemMaster, itemMaster.ItemMasterSpell.ToList(), itemMaster.ItemMasterAbilities.ToList(),itemMaster.itemMasterBuffAndEffects.ToList());
             return CreatedItemMaster;
@@ -516,6 +517,7 @@ namespace DAL.Services
                 .Include(d => d.ItemCommandVM)
                 .Include(d => d.ItemSpells).ThenInclude(d => d.Spell)
                 .Include(d => d.ItemAbilities).ThenInclude(d => d.Ability)
+                .Include(d => d.ItemBuffAndEffects).ThenInclude(d => d.BuffAndEffect)
                 .FirstOrDefault(x => x.ItemId == id && x.IsDeleted != true);
         }
         

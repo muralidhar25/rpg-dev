@@ -40,5 +40,6 @@ namespace RPGSmithApp.ViewModels
 
         public int CharacterId { get; set; }
         public virtual Character Character { get; set; }
+        public virtual ICollection<SpellBuffAndEffect> SpellBuffAndEffects { get; set; }
     }
 }

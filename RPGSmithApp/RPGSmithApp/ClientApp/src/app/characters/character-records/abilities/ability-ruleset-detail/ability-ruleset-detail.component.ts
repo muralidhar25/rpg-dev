@@ -411,4 +411,7 @@ export class AbilityRulesetDetailComponent implements OnInit {
   }
 });
   }
+  GoToRuleBuff(RulesetBuffID: number) {
+    this.router.navigate(['/ruleset/buff-effect-details', RulesetBuffID]);
+  }
 }

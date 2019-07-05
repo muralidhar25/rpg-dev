@@ -65,7 +65,7 @@
                   </ul>
                     <!-- End of toolbar links -->
                     <!-- Toolbar actions -->
-                  <ul class="page-toolbar-actions">
+                  <ul class="page-toolbar-actions" *ngIf="!isLoading">
                     <!--<li>
       <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
   </li>-->
@@ -96,7 +96,7 @@
                     <!-- End of toolbar actions -->
                 </div>
                 <!-- Toolbar actions -->
-                <ul class="page-toolbar-actions web-view">
+                <ul class="page-toolbar-actions web-view" *ngIf="!isLoading">
                   <!--<li>
       <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
   </li>-->
@@ -202,46 +202,63 @@
                             </div>
                         </div>
                     </div>                  
-                    <div class="row">                       
-                        <div class="col-12 col-md-6" *ngIf="ItemMasterDetail.abilityDetail != undefined">
-                            <div class="item-info-abils">
-                                <h3>Abilities</h3>
-                                <div class="form-group output-list output-list-wrap">
-                                    <ul class="output-list-items">
-                                        <li class="output-list-item" *ngFor="let abilitiy of ItemMasterDetail.itemMasterAbilities">
-                                            <div [routerLink]="['/ruleset/ability-details', abilitiy.abilitiy.abilityId]" style="cursor:pointer;" popover="{{abilitiy.abilitiy.name}}" triggers="hover">
-                                                <img class="card-img-top" [src]="abilitiy.abilitiy.imageUrl" [alt]="abilitiy.abilitiy.name"
-                                                     onerror="this.src='../assets/images/DefaultImages/ability.png';" />
-                                                <span>{{abilitiy.abilitiy.name}}</span>
-                                            </div>
-                                        </li>
+                    <div class="row">
+                      <div class="col-12 col-md-6" *ngIf="ItemMasterDetail.abilityDetail != undefined">
+                        <div class="item-info-abils">
+                          <h3>Abilities</h3>
+                          <div class="form-group output-list output-list-wrap">
+                            <ul class="output-list-items">
+                              <li class="output-list-item" *ngFor="let abilitiy of ItemMasterDetail.itemMasterAbilities">
+                                <div [routerLink]="['/ruleset/ability-details', abilitiy.abilitiy.abilityId]" style="cursor:pointer;" popover="{{abilitiy.abilitiy.name}}" triggers="hover">
+                                  <img class="card-img-top" [src]="abilitiy.abilitiy.imageUrl" [alt]="abilitiy.abilitiy.name"
+                                       onerror="this.src='../assets/images/DefaultImages/ability.png';" />
+                                  <span>{{abilitiy.abilitiy.name}}</span>
+                                </div>
+                              </li>
 
-                                    </ul>
-                                    <!--<div class="input-extend">
-                                        <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
-                                    </div>-->
-                                </div>
-                            </div>
+                            </ul>
+                            <!--<div class="input-extend">
+            <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
+        </div>-->
+                          </div>
                         </div>
-                         <div class="col-12 col-md-6" *ngIf="ItemMasterDetail.spellDetail !== undefined">
-                            <div class="item-info-spells">
-                                <h3>Spells</h3>
-                                <div class="form-group output-list output-list-wrap">
-                                    <ul class="output-list-items">
-                                        <li class="output-list-item" *ngFor="let spell of ItemMasterDetail.itemMasterSpell">
-                                            <div [routerLink]="['/ruleset/spell-details', spell.spell.spellId]" style="cursor:pointer;" popover="{{spell.spell.name}}" triggers="hover">
-                                                <img class="card-img-top" [src]="spell.spell.imageUrl" [alt]="spell.spell.name"
-                                                     onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
-                                                <span>{{spell.spell.name}}</span>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                    <!--<div class="input-extend">
-                                        <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
-                                    </div>-->
+                      </div>
+                      <div class="col-12 col-md-6" *ngIf="ItemMasterDetail.spellDetail !== undefined">
+                        <div class="item-info-spells">
+                          <h3>Spells</h3>
+                          <div class="form-group output-list output-list-wrap">
+                            <ul class="output-list-items">
+                              <li class="output-list-item" *ngFor="let spell of ItemMasterDetail.itemMasterSpell">
+                                <div [routerLink]="['/ruleset/spell-details', spell.spell.spellId]" style="cursor:pointer;" popover="{{spell.spell.name}}" triggers="hover">
+                                  <img class="card-img-top" [src]="spell.spell.imageUrl" [alt]="spell.spell.name"
+                                       onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
+                                  <span>{{spell.spell.name}}</span>
                                 </div>
-                            </div>
+                              </li>
+                            </ul>
+                            <!--<div class="input-extend">
+            <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
+        </div>-->
+                          </div>
                         </div>
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <div class="item-info-buffs">
+                          <h3>Buffs & Effects</h3>
+                          <div class="form-group output-list output-list-wrap">
+                            <ul class="output-list-items" *ngIf="ItemMasterDetail?.itemMasterBuffAndEffects !== undefined">
+                              <li class="output-list-item" *ngFor="let rec of ItemMasterDetail?.itemMasterBuffAndEffects">
+                                <div (click)="GoToRuleBuff(rec.buffAndEffectId)" style="cursor:pointer;" popover="{{rec?.buffAndEffect?.name}}" triggers="hover">
+                                  <img class="card-img-top" [src]="rec?.buffAndEffect?.imageUrl" [alt]="rec?.buffAndEffect?.name"
+                                       onerror="this.src='../assets/images/BnE/Def_BnE.png';" />
+                                  <span>{{rec?.buffAndEffect?.name}}</span>
+                                </div>
+                              </li>
+                            </ul>
+
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     <div class="row">
                           <div class="col-md-12 col-md-6">

@@ -171,36 +171,55 @@
                     </div>
                 </div>
                 <div class="item-info-bottom-section">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="item-info-desc">
-                                <h3>Description</h3>
-                                <p [froalaView]="AbilityDetail?.description"></p>
-                            </div>
-                        </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="item-info-desc">
+                        <h3>Description</h3>
+                        <p [froalaView]="AbilityDetail?.description"></p>
+                      </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <div class="item-info-stats">
-                                <h3>Stats</h3>
-                                <p [froalaView]="AbilityDetail?.stats"></p>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="item-info-stats">
-                                <h3>Command</h3>
-                                <p>{{AbilityDetail?.command}}</p>
-                            </div>
-                        </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 col-md-6">
+                      <div class="item-info-stats">
+                        <h3>Stats</h3>
+                        <p [froalaView]="AbilityDetail?.stats"></p>
+                      </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <div class="item-info-tags">
-                                <h3>Tags</h3>
-                                <p>{{AbilityDetail?.metatags}}</p>
-                            </div>
-                        </div>
+                    <div class="col-12 col-md-6">
+                      <div class="item-info-stats">
+                        <h3>Command</h3>
+                        <p>{{AbilityDetail?.command}}</p>
+                      </div>
                     </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 col-md-6">
+                      <div class="item-info-tags">
+                        <h3>Tags</h3>
+                        <p>{{AbilityDetail?.metatags}}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 col-md-6">
+                      <div class="item-info-buffs">
+                        <h3>Buffs & Effects</h3>
+                        <div class="form-group output-list output-list-wrap">
+                          <ul class="output-list-items" *ngIf="AbilityDetail?.abilityBuffAndEffects !== undefined">
+                            <li class="output-list-item" *ngFor="let rec of AbilityDetail?.abilityBuffAndEffects">
+                              <div (click)="GoToRuleBuff(rec.buffAndEffectId)" style="cursor:pointer;" popover="{{rec?.buffAndEffect?.name}}" triggers="hover">
+                                <img class="card-img-top" [src]="rec?.buffAndEffect?.imageUrl" [alt]="rec?.buffAndEffect?.name"
+                                     onerror="this.src='../assets/images/BnE/Def_BnE.png';" />
+                                <span>{{rec?.buffAndEffect?.name}}</span>
+                              </div>
+                            </li>
+                          </ul>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
             </div>
         </div>

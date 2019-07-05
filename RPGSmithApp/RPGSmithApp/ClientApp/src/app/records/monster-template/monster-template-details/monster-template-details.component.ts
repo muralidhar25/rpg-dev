@@ -18,6 +18,8 @@ import { MonsterTemplateService } from "../../../core/services/monster-template.
 import { CreateMonsterTemplateComponent } from "../create-monster-template/create-monster-template.component";
 import { DeployMonsterComponent } from "../deploy-monster/deploy-monster.component";
 import { CreateMonsterGroupComponent } from "../moster-group/monster-group.component";
+import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
+import { Characters } from "../../../core/models/view-models/characters.model";
 
 @Component({
   selector: 'app-monster-template-details',
@@ -309,5 +311,18 @@ export class MonsterTemplateDetailsComponent implements OnInit {
     this.bsModalRef.content.monsterInfo = monsterInfo;
 
   }
- 
+  openDiceRollModal() {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.recordName = this.monsterTemplateDetail.ruleset.ruleSetName;
+    this.bsModalRef.content.recordImage = this.monsterTemplateDetail.ruleset.imageUrl;
+    this.bsModalRef.content.recordType = 'ruleset'
+    this.bsModalRef.content.isFromCampaignDetail = true;
+  }
 }

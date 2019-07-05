@@ -74,7 +74,7 @@ export class AbilityDetailsComponent implements OnInit {
             this.isLoading = true;
             this.abilityService.getAbilityById<any>(this.abilityId)
               .subscribe(data => {
-  
+  debugger
                   if(data)
                   this.AbilityDetail = this.abilityService.abilityModelData(data, "UPDATE");
                   if (!this.AbilityDetail.ruleset) {
@@ -303,5 +303,8 @@ export class AbilityDetailsComponent implements OnInit {
     this.bsModalRef.content.recordImage = this.AbilityDetail.ruleset.imageUrl;
     this.bsModalRef.content.recordType = 'ruleset'
     this.bsModalRef.content.isFromCampaignDetail = true;
+  }
+  GoToRuleBuff(RulesetBuffID: number) {
+    this.router.navigate(['/ruleset/buff-effect-details', RulesetBuffID]);
   }
 }

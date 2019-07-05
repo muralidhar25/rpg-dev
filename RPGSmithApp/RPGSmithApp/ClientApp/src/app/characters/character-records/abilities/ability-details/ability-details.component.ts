@@ -116,7 +116,7 @@ export class CharacterAbilityDetailsComponent implements OnInit {
       this.gameStatus(this.characterId);
       this.characterAbilityService.getCharacterAbilityById<any>(this.abilityId)
         .subscribe(data => {
-
+          debugger
           this.AbilityDetail = this.characterAbilityService.abilityModelDetailData(data, "UPDATE");
           this.AbilityDetail.currentNumberOfUses = data.currentNumberOfUses ? data.currentNumberOfUses : 0;
           this.AbilityDetail.maxNumberOfUses = data.maxNumberOfUses ? data.maxNumberOfUses : 0;
@@ -414,5 +414,7 @@ export class CharacterAbilityDetailsComponent implements OnInit {
     this.bsModalRef.content.recordName = this.character.characterName;
     this.bsModalRef.content.recordImage = this.character.imageUrl;
   }
-
+  GoToCharbuff(RulesetBuffID: number) {
+    this.router.navigate(['/character/buff-effect-detail', RulesetBuffID]);
+  }
 }
