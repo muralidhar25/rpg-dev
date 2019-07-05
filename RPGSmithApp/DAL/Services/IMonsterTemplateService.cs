@@ -39,20 +39,26 @@ namespace DAL.Services
         List<RandomizationEngine> insertRandomizationEngines(List<RandomizationEngine> RandomizationEngine, int MonsterTemplateId);
         void deployMonster(DeployMonsterTemplate model);
         List<Monster> SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1);
+
+        List<MonsterWithItemCount> SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1);
         Task enableCombatTracker(int monsterId, bool enableCombatTracker);
         Task<MonsterTemplate> Core_CreateMonsterTemplateUsingMonster(int monsterTemplateId, int rulesetID);
         List<ItemMasterForMonsterTemplate> getMonsterItemsToDrop(int monsterId);
-        Task DropItemsToLoot(List<ItemMasterForMonsterTemplate> list);
-        Task<Monster> UpdateMonster(Monster model,
-            List<MonsterTemplateAbility> monsterTemplateAbilityVM,
-            List<MonsterTemplateMonster> monsterTemplateAssociateMonsterTemplateVM,
-            List<MonsterTemplateBuffAndEffect> monsterTemplateBuffAndEffectVM,
-            List<MonsterTemplateSpell> monsterTemplateSpellVM,
-            List<MonsterTemplateCommand> monsterTemplateCommandVM);
+        Task<int> DropItemsToLoot(List<ItemMasterForMonsterTemplate> list, int monsterId);
+        Task<Monster> UpdateMonster(Monster model, 
+            List<MonsterTemplateAbility> monsterTemplateAbilityVM, 
+            List<MonsterTemplateMonster> monsterTemplateAssociateMonsterTemplateVM, 
+            List<MonsterTemplateBuffAndEffect> monsterTemplateBuffAndEffectVM,            
+            List<MonsterTemplateSpell> monsterTemplateSpellVM, 
+            List<MonsterTemplateCommand> monsterTemplateCommandVM,
+            List<ItemMasterForMonsterTemplate> monsterTemplateItemVM);
         Task<bool> DeleteMonster(int monsterId);
         List<MonsterTemplate_Bundle> GetMonsterTemplatesByRuleSetId_add(int rulesetId, bool includeBundles = false);
+        void addRemoveMonsterRecords(List<AddRemoveRecords> model, int monsterId, string type);
         bool Core_BundleWithParentIDExists(int bundleId, int rulesetID);
         SP_AssociateForMonsterTemplate SP_GetMonsterAssociateRecords(int monsterID, int rulesetId);
+        void AddMonsters(List<DeployMonsterTemplate> model);
+        ItemMasterMonsterItem GetMonsterItemDetailByItemId(int itemId);
         // List<MonsterTemplate> GetByRuleSetId_add(int rulesetId);
 
     }

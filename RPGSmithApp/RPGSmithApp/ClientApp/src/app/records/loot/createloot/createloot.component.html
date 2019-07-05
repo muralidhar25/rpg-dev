@@ -379,10 +379,10 @@
         <div class="form-group">
 
           <label for="contains">Contains</label>
-          <div class="form-group form-group-unlabelled">
+          <div class="form-group form-group-unlabelled" (click)="addContainerItem(itemMasterFormModal)">
             <span class="input-group-btn">
               <button type="button" title="Select Item" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"
-                      (click)="addContainerItem(itemMasterFormModal)" ></button>
+                       ></button>
             </span>
             <!---THIS TAG INPUT IS USED FOR CONTAINS ITEMS SELECTED FROM POPUP-->
             <tag-input name="contains" [(ngModel)]='itemMasterFormModal.contains' theme='dark' inputId="contains" inputClass="form-control metatags-field" class="form-control"

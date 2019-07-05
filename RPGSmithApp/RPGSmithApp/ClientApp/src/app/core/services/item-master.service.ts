@@ -28,6 +28,7 @@ export class ItemMasterService extends EndpointFactory {
   private readonly updateBundleUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/update";
   private readonly deleteUrl: string = this.configurations.baseUrl + "/api/ItemMaster/delete";
   private readonly deleteBundleUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/delete_up";
+  private readonly deleteMonsterItemUrl: string = this.configurations.baseUrl + "/api/ItemMaster/deleteMonsterItem";
   
   private readonly deleteUrl_up: string = this.configurations.baseUrl + "/api/ItemMaster/delete_up";
   private readonly getByIdUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getById";
@@ -243,7 +244,14 @@ export class ItemMasterService extends EndpointFactory {
         return this.handleError(error, () => this.deleteBundle(bundle));
       });
   }
+  deleteMonsterItem<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.deleteMonsterItemUrl}?id=${Id}`;
 
+    return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deleteMonsterItem(Id));
+      });
+  }
   fileUpload(fileToUpload: File) {
     return this.fileUploadMethod<any>(fileToUpload);
   }
@@ -256,7 +264,7 @@ export class ItemMasterService extends EndpointFactory {
   public itemMasterModelData(_itemTemplateVM: any, _view: string): any {
 
     if (_itemTemplateVM == null) return { itemMasterId: 0, ruleSetId: 0 };
-
+    debugger
     let itemMasterFormModal: any;
     if (_view === 'DUPLICATE' || _view === 'UPDATE') {
       itemMasterFormModal = {
@@ -276,6 +284,7 @@ export class ItemMasterService extends EndpointFactory {
         isContainer: _itemTemplateVM.isContainer,
         isMagical: _itemTemplateVM.isMagical,
         isConsumable: _itemTemplateVM.isConsumable,
+        isEquipped: _itemTemplateVM.isEquipped,
         containerWeightMax: _itemTemplateVM.containerWeightMax,
         containerWeightModifier: _itemTemplateVM.containerWeightModifier == undefined || _itemTemplateVM.containerWeightModifier == null ? 'None' : _itemTemplateVM.containerWeightModifier,
         containerVolumeMax: _itemTemplateVM.containerVolumeMax,
@@ -301,6 +310,7 @@ export class ItemMasterService extends EndpointFactory {
 
         itemMasterSpell: _itemTemplateVM.itemMasterSpell == null ? [] : _itemTemplateVM.itemMasterSpell,
         itemMasterAbilities: _itemTemplateVM.itemMasterAbilities == null ? [] : _itemTemplateVM.itemMasterAbilities,
+        itemMasterBuffAndEffects: _itemTemplateVM.itemMasterBuffAndEffects == null ? [] : _itemTemplateVM.itemMasterBuffAndEffects,
         itemMasterCommand: _itemTemplateVM.itemMasterCommand == null ? [] : _itemTemplateVM.itemMasterCommand,
         //associate spell-ability changes
 
@@ -311,6 +321,7 @@ export class ItemMasterService extends EndpointFactory {
         abilityDetail: _itemTemplateVM.itemMasterAbilities == undefined ? undefined : _itemTemplateVM.itemMasterAbilities.length > 0 ? _itemTemplateVM.itemMasterAbilities[0].abilitiy ? _itemTemplateVM.itemMasterAbilities[0].abilitiy : _itemTemplateVM.itemMasterAbilities[0].ability : undefined,
 
         lootId: _itemTemplateVM.lootId,
+        monsterItemId: _itemTemplateVM.itemId,
         isShow: _itemTemplateVM.isShow,
         //containedIn: _itemTemplateVM.containedIn,
         //quantity: _itemTemplateVM.quantity,
@@ -328,6 +339,7 @@ export class ItemMasterService extends EndpointFactory {
        
         isIdentified: _itemTemplateVM.isIdentified,
         isVisible: _itemTemplateVM.isVisible,
+        container: _itemTemplateVM.container,
       }
     }
     else {
@@ -356,6 +368,7 @@ export class ItemMasterService extends EndpointFactory {
 
         itemMasterSpell: [],
         itemMasterAbilities: [],
+        itemMasterBuffAndEffects:[],
         itemMasterCommand: [],
         itemMasterSpellId: 0,
         itemMasterAbilityId: 0,
@@ -364,6 +377,7 @@ export class ItemMasterService extends EndpointFactory {
         commandName: 'Default',
 
         lootId: 0,
+        monsterItemId: 0,
         isShow: false,
         containedIn: null,
         quantity: 1,

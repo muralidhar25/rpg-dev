@@ -101,6 +101,7 @@ export class DiceRollComponent implements OnInit {
   //isSkipDicePublicRollcheck: boolean=false;
   isShowSendtoChat: boolean;
   isFromRulesetSharedLayout: boolean = false;
+DiceImage : any;
   constructor(
     private router: Router, public modalService: BsModalService, private bsModalRef: BsModalRef, private alertService: AlertService,
     private charactersCharacterStatService: CharactersCharacterStatService, private charactersService: CharactersService,
@@ -134,7 +135,7 @@ export class DiceRollComponent implements OnInit {
 
   ngOnInit() {    
     setTimeout(() => {
-
+      this.DiceImage = DiceService.GetDeckDices();
       if (this.rulesetId == undefined)
         this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 

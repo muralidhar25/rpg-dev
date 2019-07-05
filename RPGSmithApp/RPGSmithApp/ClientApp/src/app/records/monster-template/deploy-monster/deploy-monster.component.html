@@ -10,7 +10,7 @@
         <span>
           <img [src]="monsterImage" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
         </span>
-        <span>{{monsterInfo?.name}}</span>
+        <span>{{(monsterInfo?.name) ? monsterInfo?.name : monsterInfo?.bundleName ? monsterInfo?.bundleName : ''}}</span>
       </span>
     </h5>
     <a href="https://rpgsmith.com/help/#Dice" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
@@ -47,7 +47,7 @@
         <div class="modal-footer">
           
             <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
-            <button type="button" class="btn float-right btn-accent" (click)="saveCounter()">SAVE</button>
+            <button type="button" class="btn float-right btn-accent" (click)="saveCounter()">DEPLOY</button>
         
         </div>
     </div>

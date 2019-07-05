@@ -72,7 +72,7 @@
                   <li>
                     <!-- Manage item -->
                     <div class="dropdown dropdown-buttons">
-                      <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show icon-Gen-Edit"> Manage Item</button>
+                      <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show icon-Gen-Edit"> Manage Monster</button>
                       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
                         <ul class="dropdown-menu-list">
                           <li class="dropdown-menu-item">
@@ -100,7 +100,7 @@
                 <li>
                   <!-- Manage item -->
                   <div class="dropdown dropdown-buttons">
-                    <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> Manage Item</button>
+                    <button type="button" id="manageItemTrigger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn btn-primary dropdown-toggle icon-Gen-Edit"> Manage Monster</button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger">
                       <ul class="dropdown-menu-list">
                         <li class="dropdown-menu-item">
@@ -159,7 +159,7 @@
                       <button type="button" (click)="enableCombatTracker(monsterDetail)" class="btn  btn-accent "  [ngClass]="{'icon-Rec-Add':!monsterDetail?.addToCombatTracker,'icon-Rec-Remove':monsterDetail?.addToCombatTracker}"> Combat</button>
                     </li>
                     <li>
-                      <button type="button" (click)="dropMonsterItems()" class="btn icon  icon-with-text icon-Rec-Drop btn-accent"> Drop</button>
+                      <button type="button" *ngIf="selectedItemMasters?.length" (click)="dropMonsterItems()" class="btn icon  icon-with-text icon-Rec-Drop btn-accent"> Drop</button>
                     </li>
                     <li>
                       <button *ngIf="monsterDetail?.command" type="button" (click)="useMonster()" class="btn  icon icon-with-text icon-Tile-Execute btn-accent"> Attack</button>
@@ -216,7 +216,7 @@
               <div class="row">
                 <div class="col-12 col-md-6">
                   <div class="item-info-abils">
-                    <h3>Items</h3>
+                    <h3 class="crsr-pointer" (click)="AddRemoveItems()">Items</h3>
                     <div class="form-group output-list output-list-wrap">
                       <ul class="output-list-items" *ngIf="selectedItemMasters">
                         <li class="output-list-item" *ngFor="let Item of selectedItemMasters">
@@ -232,7 +232,7 @@
                 </div>
                 <div class="col-12 col-md-6">
                   <div class="item-info-abils">
-                    <h3>Associated Monsters</h3>
+                    <h3 class="crsr-pointer" (click)="AddRemoveMonsters()">Associated Monsters</h3>
                     <div class="form-group output-list output-list-wrap">
                       <ul class="output-list-items" *ngIf="selectedAssociateMonsterTemplates">
                         <li class="output-list-item" *ngFor="let AssociateMonster of selectedAssociateMonsterTemplates">
@@ -248,7 +248,7 @@
                 </div>
                 <div class="col-12 col-md-6">
                   <div class="item-info-abils">
-                    <h3>Abilities</h3>
+                    <h3 class="crsr-pointer" (click)="AddRemoveAbilities()">Abilities</h3>
                     <div class="form-group output-list output-list-wrap">
                       <ul class="output-list-items" *ngIf="selectedAbilities">
                         <li class="output-list-item" *ngFor="let ability of selectedAbilities">
@@ -264,7 +264,7 @@
                 </div>
                 <div class="col-12 col-md-6">
                   <div class="item-info-spells">
-                    <h3>Buffs and Effects</h3>
+                    <h3 class="crsr-pointer" (click)="AddRemoveBEs()">Buffs and Effects</h3>
                     <div class="form-group output-list output-list-wrap">
                       <ul class="output-list-items" *ngIf="selectedBuffAndEffects">
                         <li class="output-list-item" *ngFor="let  BuffAndEffects of selectedBuffAndEffects">
@@ -280,7 +280,7 @@
                 </div>
                 <div class="col-12 col-md-6">
                   <div class="item-info-spells">
-                    <h3>Spells</h3>
+                    <h3 class="crsr-pointer" (click)="AddRemoveSpells()">Spells</h3>
                     <div class="form-group output-list output-list-wrap">
                       <ul class="output-list-items" *ngIf="selectedSpells">
                         <li class="output-list-item" *ngFor="let spell of selectedSpells">

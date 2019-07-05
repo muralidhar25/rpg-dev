@@ -24,6 +24,7 @@ import { DropItemsMonsterComponent } from "./drop-items-monster/drop-items-monst
 import { AddMonsterComponent } from "./Add-monster/add-monster.component";
 import { ItemsService } from "../../core/services/items.service";
 import { CastComponent } from "../../shared/cast/cast.component";
+import { CustomDice } from "../../core/models/view-models/custome-dice.model";
 
 @Component({
   selector: 'app-monster',
@@ -64,7 +65,8 @@ export class MonsterComponent implements OnInit {
     };
     alphabetCount: number;
     ChallangeRatingCount: number;
-    HealthCount: number;
+  HealthCount: number;
+  customDices: CustomDice[] = [];
 
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -97,7 +99,18 @@ export class MonsterComponent implements OnInit {
         this.setRulesetId(this.ruleSetId);
         this.destroyModalOnInit();
         this.initialize();
-        this.showActionButtons(this.showActions);
+      this.showActionButtons(this.showActions);
+      this.rulesetService.getCustomDice(this.ruleSetId)
+      .subscribe(data => {
+        
+        this.customDices = data
+
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      })
     }
 
     private initialize() {
@@ -335,7 +348,7 @@ export class MonsterComponent implements OnInit {
         this.bsModalRef.content.button = 'UPDATE';
     this.bsModalRef.content.monsterVM = monster;
     this.bsModalRef.content.rulesetID = this.ruleSetId;
-    debugger
+    
     }
 
   duplicateMonster(monster: any) {
@@ -355,7 +368,7 @@ export class MonsterComponent implements OnInit {
                   this.bsModalRef.content.title = 'Duplicate New Monster';
                   this.bsModalRef.content.button = 'DUPLICATE';
                   this.bsModalRef.content.ruleSetId = this.ruleSetId;
-                  debugger
+                  
                   this.bsModalRef.content.monsterTemplateVM = monster.monsterTemplate;
                   this.bsModalRef.content.isCreatingFromMonsterScreen = true;
 
@@ -571,6 +584,7 @@ export class MonsterComponent implements OnInit {
     this.bsModalRef.content.title = 'Add Monsters';
     this.bsModalRef.content.button = 'ADD';
     this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.customDices = this.customDices;
   }
 
   dropMonsterItems(monster : any){
@@ -583,6 +597,11 @@ export class MonsterComponent implements OnInit {
     this.bsModalRef.content.button = 'Drop';
     this.bsModalRef.content.monsterId = monster.monsterId;
     this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.monsterName = monster.name;
+    this.bsModalRef.content.monsterImage = monster.imageUrl;
+    this.bsModalRef.content.event.subscribe(data => {
+      monster.itemsCount = +data;     
+    });
   }
 
   applyFilters(present_filter, apply_same = false, IsCalledFromClickFunction = false) {
@@ -650,7 +669,7 @@ export class MonsterComponent implements OnInit {
         break;
       case 3: //Health
         this.monstersFilter.viewableCount = 0;
-        debugger
+        
         this.monsterList.map((item) => {
           if (item.healthCurrent || item.healthMax) {
             this.monstersFilter.viewableCount++;

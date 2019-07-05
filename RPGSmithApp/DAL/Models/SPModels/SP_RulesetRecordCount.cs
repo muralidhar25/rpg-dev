@@ -56,6 +56,16 @@ namespace DAL.Models.SPModels
         public int Qty { get; set; }
 
     }
+    public class AddRemoveRecords
+    {
+        public int ItemMasterId { get; set; }
+        public int ItemId { get; set; }
+        public int SpellId { get; set; }
+        public int AbilityId { get; set; }
+        public int BuffAndEffectId { get; set; }
+        public int MonsterTemplateId { get; set; }
+        public bool Selected { get; set; }
+    }
     public class SP_CharactersCharacterStat
     {
         public List<CharactersCharacterStat> charactersCharacterStat { get; set; }
@@ -124,6 +134,10 @@ namespace DAL.Models.SPModels
     public class CommonID
     {
         public int ID { get; set; }
+    }
+    public class MonsterWithItemCount:Monster
+    {
+        public int ItemsCount { get; set; }
     }
     public class LogError
     {
@@ -630,6 +644,7 @@ namespace DAL.Models.SPModels
     public class MonsterTemplate_Bundle : MonsterTemplate
     {
         public bool IsBundle { get; set; }
+        public List<MonsterTemplateBundleItem> BundleItems { get; set; }
         public List<RandomizationEngine> RandomizationEngine { get; set; }
     }
     public class ItemMasterBundleIds

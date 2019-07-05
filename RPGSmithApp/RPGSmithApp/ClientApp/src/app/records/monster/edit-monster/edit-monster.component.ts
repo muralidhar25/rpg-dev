@@ -60,6 +60,9 @@ export class EditMonsterComponent implements OnInit {
   SelectedItemsList = [];
   customDices: CustomDice[] = [];
 
+  monsterItemsList = [];
+  selectedMonsterItems = [];
+
     options(placeholder?: string): Object {
         return Utilities.optionsFloala(160, placeholder);
     }
@@ -101,7 +104,7 @@ export class EditMonsterComponent implements OnInit {
             this.title = this.bsModalRef.content.title;
             let _view = this.button = this.bsModalRef.content.button;
           let _monsterVM = this.bsModalRef.content.monsterVM;
-         debugger
+         
           this.monsterFormModal = this.monsterTemplateService.MonsterModelData(_monsterVM, _view);
           this.selectedBuffAndEffects = this.monsterFormModal.monsterTemplateBuffAndEffects.map(x => { return x.buffAndEffect; });
           this.selectedAbilities = this.monsterFormModal.monsterTemplateAbilities.map(x => { return x.buffAndEffect; });
@@ -130,7 +133,7 @@ export class EditMonsterComponent implements OnInit {
             }
           this.rulesetService.getCustomDice(this._ruleSetId)
             .subscribe(data => {
-              debugger
+              
               this.customDices = data
 
             }, error => {
@@ -162,6 +165,9 @@ export class EditMonsterComponent implements OnInit {
                 this.selectedSpells = data.selectedSpellList;
                 this.associateMonsterTemplateList = data.monsterTemplatesList;
                 this.selectedAssociateMonsterTemplates = data.selectedMonsterTemplates;
+                this.monsterItemsList = data.itemMasterList;
+                this.selectedMonsterItems = data.selectedItemMasters;
+               
                 this.isLoading = false;
               }, error => { }, () => { this.isLoading = false; });
           }
@@ -222,7 +228,7 @@ export class EditMonsterComponent implements OnInit {
         //}
 
     //monsterTemplate.isFromCharacterAbilityId = ability.isFromCharacterAbilityId;
-    debugger
+    
     if (monsterTemplate.ruleSetId === 0 || monsterTemplate.ruleSetId === undefined)
       monsterTemplate.ruleSetId = this._ruleSetId;
 
@@ -237,6 +243,10 @@ export class EditMonsterComponent implements OnInit {
     });
     monsterTemplate.monsterTemplateAssociateMonsterTemplateVM = this.selectedAssociateMonsterTemplates.map(x => {
       return { associateMonsterTemplateId: x.monsterTemplateId, monsterTemplateId: monsterTemplate.monsterTemplateId };
+    });
+    
+    monsterTemplate.monsterTemplateItemVM = this.selectedMonsterItems.map(x => {
+      return { itemId: x.itemId ? x.itemId:0, itemMasterId: x.itemMasterId, monsterTemplateId: monsterTemplate.monsterTemplateId };
     });
 
         this.isLoading = true;
@@ -356,8 +366,8 @@ export class EditMonsterComponent implements OnInit {
             .subscribe(
                 data => {
                     this.isLoading = false;
-                    this.alertService.stopLoadingMessage();
-                  let message = modal.monsterTemplateId == 0 || modal.monsterTemplateId === undefined ? "Monster has been created successfully." : "Monster Template has been updated successfully.";
+                  this.alertService.stopLoadingMessage();
+                  let message = modal.monsterTemplateId == 0 || modal.monsterTemplateId === undefined ? "Monster has been created successfully." : modal.name + " has been updated.";
                     if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
                     this.alertService.showMessage(message, "", MessageSeverity.success);
                     this.close();
@@ -599,6 +609,22 @@ export class EditMonsterComponent implements OnInit {
       position: "top"
     };
   }
+  get monsterItemsSettings() {
+    return {
+      primaryKey: "itemMasterId",
+      labelKey: "name",
+      text: "Search Item(s)",
+      enableCheckAll: true,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: false,
+      limitSelection: false,
+      enableSearchFilter: true,
+      classes: "myclass custom-class ",
+      showCheckbox: true,
+      position: "top"
+    };
+  }
   getHealthResult(e) {
     debugger
   }
@@ -660,7 +686,7 @@ export class EditMonsterComponent implements OnInit {
 
   }
   ArmorClassReroll(monsterFormModal: MonsterTemplate) {
-    debugger
+    
     let command = monsterFormModal.armorClass;
     if (command) {
       let res = DiceService.rollDiceExternally(this.alertService, command, this.customDices );
@@ -677,7 +703,7 @@ export class EditMonsterComponent implements OnInit {
     
   }
   ChallangeRatingReroll(monsterFormModal: MonsterTemplate) {
-    debugger
+    
     let command = monsterFormModal.challangeRating;
     if (command) {
       let res = DiceService.rollDiceExternally(this.alertService, command, this.customDices );
@@ -693,7 +719,7 @@ export class EditMonsterComponent implements OnInit {
     }
   }
   XPReroll(monsterFormModal: MonsterTemplate) {
-    debugger
+    
     let command = monsterFormModal.xPValue;
     if (command) {
       let res = DiceService.rollDiceExternally(this.alertService, command, this.customDices );
@@ -706,6 +732,26 @@ export class EditMonsterComponent implements OnInit {
     }
     else {
       this.monsterFormModal.monsterXPValue = 0;
+    }
+  }
+  HealthReroll(monsterFormModal: MonsterTemplate) {
+    let command = monsterFormModal.health;
+    if (command) {
+      let res = DiceService.rollDiceExternally(this.alertService, command, this.customDices);
+      if (isNaN(res)) {
+        this.monsterFormModal.monsterHealthCurrent = 0;
+        this.monsterFormModal.monsterHealthMax = 0;
+      }
+      else {
+        //this.monsterFormModal.monsterXPValue = res;
+        this.monsterFormModal.monsterHealthCurrent = res;
+        this.monsterFormModal.monsterHealthMax = res;
+      }
+    }
+    else {
+      //this.monsterFormModal.monsterXPValue = 0;
+      this.monsterFormModal.monsterHealthCurrent = 0;
+      this.monsterFormModal.monsterHealthMax = 0;
     }
   }
   isNonStaticNumber(str) {

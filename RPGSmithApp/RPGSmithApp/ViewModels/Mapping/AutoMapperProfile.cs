@@ -113,7 +113,10 @@ namespace RPGSmithApp.ViewModels
             CreateMap<EditMonsterTemplateModel, MonsterTemplate>();
             CreateMap<CreateMonsterTemplateModel, MonsterTemplate>();
             CreateMap<MonsterTemplate, MonsterTemplateViewModel>();
+            CreateMap<ItemMasterMonsterItem, ItemMasterMonsterItemVM>();
             
+
+
 
             CreateMap<Spell, SpellViewModel>();
             CreateMap<CharacterCommand, CharacterCommandViewModel>();

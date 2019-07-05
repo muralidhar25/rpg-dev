@@ -35,6 +35,7 @@ export class DeployMonsterComponent implements OnInit {
   monsterInfo: any;
   addToCombat: boolean = false;
   customDices: CustomDice[] = [];
+  bundleItems: any[] = [];
 
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
     private colorService: ColorService, private localStorage: LocalStoreManager, private counterTileService: CounterTileService,
@@ -47,7 +48,8 @@ export class DeployMonsterComponent implements OnInit {
     setTimeout(() => {
       this.title = this.bsModalRef.content.title;
       this.monsterInfo = this.bsModalRef.content.monsterInfo;
-      this.monsterImage = this.monsterInfo.imageUrl;
+      this.monsterImage = (this.monsterInfo.imageUrl) ? this.monsterInfo.imageUrl : this.monsterInfo.bundleImage ? this.monsterInfo.bundleImage : '../assets/images/DefaultImages/Item.jpg';
+      this.bundleItems = this.bsModalRef.content.bundleItems ? this.bsModalRef.content.bundleItems : [];
       this.value = 1;
       debugger
       this.rulesetService.getCustomDice(this.monsterInfo.ruleSetId)
@@ -81,21 +83,107 @@ export class DeployMonsterComponent implements OnInit {
   }
 
   changeCheckbox(event) {
-    console.log(event);
     this.addToCombat = event.target.checked;
   }
 
   saveCounter() {
-    let healthNumberArray = [];
-    let armorClassNumberArray = [];
-    let xpValueNumberArray = [];
-    let challangeRatingNumberArray = [];
-    if (+this.value) {
-      for (var i = 0; i < this.value; i++) {
-        let health = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.health ? this.monsterInfo.health : '0', this.customDices)
-        let armorClass = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.armorClass ? this.monsterInfo.armorClass : '0', this.customDices)
-        let xpValue = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.xpValue ? this.monsterInfo.xpValue : '0', this.customDices)
-        let challangeRating = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.challangeRating ? this.monsterInfo.challangeRating : '0', this.customDices)
+    if (this.monsterInfo.isBundle) {
+      
+      this.alertService.startLoadingMessage("", "Deploying Monster Template...");
+      let BundleItemsToDeploy: any = [];
+      if (this.bundleItems) {
+        if (this.bundleItems.length) {
+          
+          this.bundleItems.map((b) => {
+            debugger
+            let itemQtyCount = +b.quantity;
+            for (var i_itemQty = 0; i_itemQty < itemQtyCount; i_itemQty++) {
+              let healthNumberArray = [];
+              let armorClassNumberArray = [];
+              let xpValueNumberArray = [];
+              let challangeRatingNumberArray = [];
+              if (+this.value) {
+                for (var i = 0; i < this.value; i++) {
+                  let health = DiceService.rollDiceExternally(this.alertService, b.monsterTemplate.health ? b.monsterTemplate.health : '0', this.customDices)
+                  let armorClass = DiceService.rollDiceExternally(this.alertService, b.monsterTemplate.armorClass ? b.monsterTemplate.armorClass : '0', this.customDices)
+                  let xpValue = DiceService.rollDiceExternally(this.alertService, b.monsterTemplate.xpValue ? b.monsterTemplate.xpValue : '0', this.customDices)
+                  let challangeRating = DiceService.rollDiceExternally(this.alertService, b.monsterTemplate.challangeRating ? b.monsterTemplate.challangeRating : '0', this.customDices)
+
+
+                  healthNumberArray.push(health);
+                  armorClassNumberArray.push(armorClass);
+                  xpValueNumberArray.push(xpValue);
+                  challangeRatingNumberArray.push(challangeRating);
+                }
+              }
+
+              BundleItemsToDeploy.push({
+                qty: this.value,
+                monsterTemplateId: b.monsterTemplateId,
+                rulesetId: this.monsterInfo.ruleSetId,
+                healthCurrent: healthNumberArray,
+                healthMax: healthNumberArray,
+                armorClass: armorClassNumberArray,
+                xpValue: xpValueNumberArray,
+                challangeRating: challangeRatingNumberArray,
+                addToCombat: this.addToCombat,
+                isBundle: this.monsterInfo.isBundle
+              });
+            }
+
+          
+          })
+        }
+      }
+      debugger
+      this.monsterTemplateService.addMonster(BundleItemsToDeploy)
+        .subscribe(data => {
+
+          this.alertService.stopLoadingMessage();
+          this.alertService.showMessage("Monster Group has been deployed successfully.", "", MessageSeverity.success);
+          this.isLoading = false;
+          this.close();
+          this.sharedService.updateMonsterList(true);
+        }, error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          this.alertService.showMessage(error, "", MessageSeverity.error);
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+        }, () => { });
+      
+      //this.monsterTemplateService.deployMonster<any>(deployMonsterInfo)
+      //  .subscribe(data => {
+      //    this.alertService.stopLoadingMessage();
+      //    let message = "Monster Template has been deployed successfully.";
+      //    //if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
+      //    this.alertService.showMessage(message, "", MessageSeverity.success);
+      //    this.close()
+      //  }, error => {
+      //    this.alertService.stopLoadingMessage();
+      //    this.isLoading = false;
+      //    let _message = "Unable to deploy ";
+      //    let Errors = Utilities.ErrorDetail(_message, error);
+      //    //let Errors = Utilities.ErrorDetail("", error);
+      //    if (Errors.sessionExpire) {
+      //      //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+      //      this.authService.logout(true);
+      //    }
+      //  }, () => { });
+    }
+    else {
+      let healthNumberArray = [];
+      let armorClassNumberArray = [];
+      let xpValueNumberArray = [];
+      let challangeRatingNumberArray = [];
+      if (+this.value) {
+        for (var i = 0; i < this.value; i++) {
+          let health = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.health ? this.monsterInfo.health : '0', this.customDices)
+          let armorClass = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.armorClass ? this.monsterInfo.armorClass : '0', this.customDices)
+          let xpValue = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.xpValue ? this.monsterInfo.xpValue : '0', this.customDices)
+          let challangeRating = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.challangeRating ? this.monsterInfo.challangeRating : '0', this.customDices)
 
 
         healthNumberArray.push(health);
@@ -145,8 +233,6 @@ export class DeployMonsterComponent implements OnInit {
 
 
   }
-
-
 
   increment() {
     let step: number = 1;

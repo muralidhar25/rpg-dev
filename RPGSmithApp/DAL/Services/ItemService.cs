@@ -201,7 +201,90 @@ namespace DAL.Services
 
             return itemobj;
         }
+        public ItemMasterMonsterItem UpdateMonsterItem(ItemMasterMonsterItem item, 
+            List<ItemSpell> ItemSpells, 
+            List<ItemAbility> ItemAbilities, 
+            List<ItemBuffAndEffect> ItemBuffAndEffects,
+            List<ItemCommand> itemCommandVM) {
+            var itemobj = _context.ItemMasterMonsterItems.Find(item.ItemId);
 
+            if (itemobj == null)
+                return item;
+            try
+            {
+                itemobj.ContainedIn = item.ContainedIn;
+                itemobj.Quantity = item.Quantity;
+                itemobj.TotalWeight = item.TotalWeight;
+                itemobj.IsIdentified = item.IsIdentified;
+                itemobj.IsEquipped = item.IsEquipped;
+                itemobj.IsVisible = item.IsVisible;
+
+                itemobj.ItemName = item.ItemName;
+                itemobj.ItemVisibleDesc = item.ItemVisibleDesc;
+                //itemobj.CharacterId = item.CharacterId;
+               // itemobj.ItemMasterId = item.ItemMasterId;
+                itemobj.ItemImage = item.ItemImage;
+
+                itemobj.ContainedIn = item.ContainedIn;
+                itemobj.IsContainer = item.IsContainer;
+
+                itemobj.IsConsumable = item.IsConsumable;
+                itemobj.IsMagical = item.IsMagical;
+                itemobj.ItemCalculation = item.ItemCalculation;
+                itemobj.Metatags = item.Metatags;
+                itemobj.Rarity = item.Rarity;
+                itemobj.Value = item.Value;
+                itemobj.Volume = item.Volume;
+                itemobj.Weight = item.Weight;
+                itemobj.Command = item.Command;
+
+                itemobj.ItemStats = item.ItemStats;
+                itemobj.ContainerWeightMax = item.ContainerWeightMax;
+                itemobj.ContainerVolumeMax = item.ContainerVolumeMax;
+                itemobj.PercentReduced = item.PercentReduced;
+                itemobj.TotalWeightWithContents = item.TotalWeightWithContents;
+                itemobj.ContainerWeightModifier = item.ContainerWeightModifier;
+                itemobj.CommandName = item.CommandName;
+
+                if (ItemAbilities != null)
+                {
+                    _context.ItemMasterMonsterItemAbilitys.RemoveRange(_context.ItemMasterMonsterItemAbilitys.Where(x => x.ItemMasterMonsterItemId == item.ItemId));
+                    
+                    _context.ItemMasterMonsterItemAbilitys.AddRange(ItemAbilities.Select(x=> new ItemMasterMonsterItemAbility() { AbilityId=x.AbilityId, ItemMasterMonsterItemId= item.ItemId }));
+                }
+
+                if (ItemSpells != null)
+                {
+                    _context.ItemMasterMonsterItemSpells.RemoveRange(_context.ItemMasterMonsterItemSpells.Where(x => x.ItemMasterMonsterItemId == item.ItemId));
+
+                    _context.ItemMasterMonsterItemSpells.AddRange(ItemSpells.Select(x => new ItemMasterMonsterItemSpell() { SpellId = x.SpellId, ItemMasterMonsterItemId = item.ItemId }));
+
+                   
+                }
+                if (ItemBuffAndEffects != null)
+                {
+                    _context.ItemMasterMonsterItemBuffAndEffects.RemoveRange(_context.ItemMasterMonsterItemBuffAndEffects.Where(x => x.ItemMasterMonsterItemId == item.ItemId));
+                    _context.ItemMasterMonsterItemBuffAndEffects.AddRange(ItemBuffAndEffects.Select(x => new ItemMasterMonsterItemBuffAndEffect() { BuffAndEffectId = x.BuffAndEffectId, ItemMasterMonsterItemId = item.ItemId }));
+
+
+                }
+                if (itemCommandVM != null)
+                {
+                    _context.ItemMasterMonsterItemCommands.RemoveRange(_context.ItemMasterMonsterItemCommands.Where(x => x.ItemMasterMonsterItemId == item.ItemId));
+                    _context.ItemMasterMonsterItemCommands.AddRange(itemCommandVM.Select(x => new ItemMasterMonsterItemCommand() { Command = x.Command,Name=x.Name, ItemMasterMonsterItemId = item.ItemId }));
+
+
+                }
+
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return itemobj;
+        }
         public async Task<Item> UpdateContainer(int itemId, int containerItemId)
         {
             var item = _context.Items.Where(x => x.ItemId == itemId && x.IsDeleted != true).FirstOrDefault();
@@ -390,6 +473,13 @@ namespace DAL.Services
         {
             // get all character items exept item itself
             return _context.Items.Where(x => x.CharacterId == characterId && x.ItemId != itemId
+                && x.IsContainer == true && x.IsDeleted != true).ToList();
+            //&& x.ContainedIn == null //if isContainer is true then item is a container & an item can act as container for many item
+        }
+        public List<ItemMasterMonsterItem> getAvailableMonsterContainerItems(int rulesetId, int itemId)
+        {
+            // get all character items exept item itself
+            return _context.ItemMasterMonsterItems.Where(x => x.RuleSetId == rulesetId && x.ItemId != itemId
                 && x.IsContainer == true && x.IsDeleted != true).ToList();
             //&& x.ContainedIn == null //if isContainer is true then item is a container & an item can act as container for many item
         }
@@ -953,11 +1043,17 @@ namespace DAL.Services
                 }
                 if (obj != null)
                 {
+                    int rulesetId = objItemMaster.RuleSetId;
+                    var character= _context.Characters.Where(x => x.CharacterId == obj.CharacterId).FirstOrDefault();
+                    if (character!=null)
+                    {
+                        rulesetId = character.RuleSetId!=null? (int)character.RuleSetId : objItemMaster.RuleSetId;
+                    }
                     _itemMasterService.CreateItemMasterLoot(objItemMaster, new ItemMasterLoot()
                     {
                         IsShow = true
                     },
-                    ItemMasterSpell, ItemMasterAbilities, itemMasterBuffAndEffects, ItemMasterCommand, obj
+                    ItemMasterSpell, ItemMasterAbilities, itemMasterBuffAndEffects, ItemMasterCommand, rulesetId, obj
                     );
                 }
             }

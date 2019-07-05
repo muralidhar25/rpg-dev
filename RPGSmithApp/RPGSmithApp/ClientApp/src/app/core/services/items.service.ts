@@ -30,6 +30,8 @@ export class ItemsService extends EndpointFactory {
   private readonly resetUrl: string = this.configurations.baseUrl + "/api/Item/reset";
   private readonly createUrl: string = this.configurations.baseUrl + "/api/Item/create";
   private readonly updateUrl: string = this.configurations.baseUrl + "/api/Item/update";
+  private readonly updateMonsterUrl: string = this.configurations.baseUrl + "/api/Item/updateMonster";
+  
   private readonly deleteUrl: string = this.configurations.baseUrl + "/api/Item/delete";
   private readonly deleteUrl_up: string = this.configurations.baseUrl + "/api/Item/delete_up";
   private readonly GetNestedContainerItems_url: string = this.configurations.baseUrl + "/api/Item/GetNestedContainerItems";
@@ -37,6 +39,8 @@ export class ItemsService extends EndpointFactory {
   private readonly getByCharacterIdUrl: string = this.configurations.baseUrl + "/api/Item/getByCharacterId";
   private readonly getItemByCharacterIdUrl: string = this.configurations.baseUrl + "/api/Item/getItemByCharacterId";
   private readonly getAvailableContainerItemsUrl: string = this.configurations.baseUrl + "/api/Item/getAvailableContainerItems";
+  private readonly getAvailableMonsterContainerItemsUrl: string = this.configurations.baseUrl + "/api/Item/getAvailableMonsterContainerItems";
+  
   private readonly getAvailableItemsUrl: string = this.configurations.baseUrl + "/api/Item/GetAvailableItems";
   private readonly toggleEquippedUrl: string = this.configurations.baseUrl + "/api/Item/toggleEquippedItem";
   private readonly duplicateUrl: string = this.configurations.baseUrl + "/api/Item/DuplicateItem";
@@ -133,6 +137,14 @@ export class ItemsService extends EndpointFactory {
         return this.handleError(error, () => this.getAvailableContainerItems(characterId, itemId));
       });
   }
+  getAvailableMonsterContainerItems<T>(rulesetId: number, itemId: number): Observable<T> {
+    let endpointUrl = `${this.getAvailableMonsterContainerItemsUrl}?rulesetId=${rulesetId}&itemId=${itemId}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getAvailableMonsterContainerItems(rulesetId, itemId));
+      });
+  }
   GetCharSpellID<T>(RulesetSpellID: number, characterId: number): Observable<T> {
     let endpointUrl = `${this.GetCharSpellIDUrl}?RulesetSpellID=${RulesetSpellID}&characterId=${characterId}`;
 
@@ -216,6 +228,13 @@ export class ItemsService extends EndpointFactory {
     return this.http.post<T>(this.updateUrl, JSON.stringify(item), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.updateItem(item));
+      });
+  }
+  updateMonsterItem<T>(item:any): Observable<T> {
+
+    return this.http.post<T>(this.updateMonsterUrl, JSON.stringify(item), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.updateMonsterItem(item));
       });
   }
 
@@ -490,5 +509,104 @@ export class ItemsService extends EndpointFactory {
     return itemMasterFormModal;
   }
 
+  public monsterItemModelData(_itemVM: any, _view: string): any {
+    debugger;
+    if (_itemVM == null) return {
+      itemId: 0,
+      ruleSetId: 0,
+      characterId: 0,
+      itemMasterId: 0,
+      showUse: false
+    };
 
+    let itemFormModal: any;
+
+    if (_view === 'DUPLICATE' || _view === 'UPDATE') {
+      itemFormModal = {
+        itemId: _itemVM.monsterItemId,
+        name: _view === 'DUPLICATE' ? '' : _itemVM.itemName,
+        description: _itemVM.itemVisibleDesc,
+        itemImage: _itemVM.itemImage,
+        isEquipped: _itemVM.isEquipped,
+        isIdentified: _itemVM.isIdentified,
+        isVisible: _itemVM.isVisible,
+        quantity: _itemVM.quantity,
+        totalWeight: _itemVM.totalWeight,
+
+        command: _itemVM.command,
+        commandName: _itemVM.commandName,
+        showUse: _itemVM.command == null || _itemVM.command == undefined || _itemVM.command == '' ? false : true,
+        itemCommandVM: _itemVM.itemMasterCommand == undefined ? [] : _itemVM.itemMasterCommand,
+
+        isConsumable: _itemVM.isConsumable,
+        isMagical: _itemVM.isMagical,
+        itemCalculation: _itemVM.itemCalculation,
+        metatags: _itemVM.metatags,
+        rarity: _itemVM.rarity,
+        value: _itemVM.value,
+        volume: _itemVM.volume,
+        weight: _itemVM.weight,
+
+        itemStats: _itemVM.itemStats,
+        containerWeightMax: _itemVM.containerWeightMax,
+        containerVolumeMax: _itemVM.containerVolumeMax,
+        percentReduced: _itemVM.percentReduced,
+        totalWeightWithContents: _itemVM.totalWeightWithContents,
+        containerWeightModifier: _itemVM.containerWeightModifier == undefined || _itemVM.containerWeightModifier == null ? 'None' : _itemVM.containerWeightModifier,
+
+        isContainer: _itemVM.isContainer,
+        containedIn: _itemVM.containedIn,
+        container: _itemVM.container,
+        containerName: _itemVM.containerName,
+        containerItemId: _itemVM.containedIn,
+        containerItems: _itemVM.containerItems == null || _itemVM.containerItems == undefined
+          ? [] : _view === 'DUPLICATE' ? [] : _itemVM.containerItems,
+
+        //parentItemId: _itemVM.parentItemId,
+        //isDeleted: _itemVM.isDeleted,
+        //character: _itemVM.character,
+        //characterId: _itemVM.characterId,
+
+        ruleSet: _itemVM.ruleSet == null || _itemVM.ruleSet == undefined ? {} : _itemVM.ruleSet,
+
+        currencyLabel: _itemVM.ruleSet == undefined ? ''
+          : _itemVM.ruleSet.currencyLabel == undefined || _itemVM.ruleSet.currencyLabel == null ? '' : '(' + _itemVM.ruleSet.currencyLabel + ')',
+        weightLabel: _itemVM.ruleSet == undefined ? ''
+          : _itemVM.ruleSet.weightLabel == undefined || _itemVM.ruleSet.weightLabel == null ? '' : '(' + _itemVM.ruleSet.weightLabel + ')',
+        volumeLabel: _itemVM.ruleSet == undefined ? ''
+          : _itemVM.ruleSet.volumeLabel == undefined || _itemVM.ruleSet.volumeLabel == null ? '' : '(' + _itemVM.ruleSet.volumeLabel + ')',
+
+        itemMaster: _itemVM.itemMaster,
+        itemMasterId: _itemVM.itemMasterId,
+
+        itemAbilities: _itemVM.itemMasterAbilities == null || _itemVM.itemMasterAbilities == undefined ? [] : _itemVM.itemMasterAbilities,
+        itemSpells: _itemVM.itemMasterSpell == null || _itemVM.itemMasterSpell == undefined ? [] : _itemVM.itemMasterSpell,
+        itemBuffAndEffects: _itemVM.itemMasterBuffAndEffects == null || _itemVM.itemMasterBuffAndEffects == undefined ? [] : _itemVM.itemMasterBuffAndEffects,
+        view: _view === 'DUPLICATE' ? VIEW.DUPLICATE : VIEW.EDIT,
+      }
+    }
+    else {
+      itemFormModal = {
+        itemId: 0,
+        containerItemId: 0,
+        containerName: '',
+        showUse: false,
+        itemCommandVM: [],
+        //characterId: _itemVM.characterId,
+        itemMasterId: _itemVM.itemMasterId,
+        isIdentified: false,
+        isVisible: false,
+        isEquipped: false,
+        showIcon: false,
+        view: VIEW.ADD,
+        itemAbilities: [],
+        itemSpells: [],
+        itemBuffAndEffects: [],
+        commandName: 'Default',
+        multiItemMasters: [],
+        multiItemMasterBundles: []
+      }
+    }
+    return itemFormModal;
+  }
 }

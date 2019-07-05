@@ -50,7 +50,9 @@ export class MonsterTemplateService extends EndpointFactory {
   private readonly getMonsterByIdUrl = this.configurations.baseUrl + "/api/MonsterTemplate/GetMonsterById";
   private readonly getMonsterItemsToDropUrl = this.configurations.baseUrl + "/api/MonsterTemplate/GetMonsterItemsToDrop";
   private readonly dropMonsterItemsUrl = this.configurations.baseUrl + "/api/MonsterTemplate/dropMonsterItems";
-  private readonly addMonsterUrl = this.configurations.baseUrl + "";
+  private readonly addRemoveMonsterRecordsUrl = this.configurations.baseUrl + "/api/MonsterTemplate/addRemoveMonsterRecords";
+  
+  private readonly addMonsterUrl = this.configurations.baseUrl + "/api/MonsterTemplate/AddMonsters";
   private readonly deleteMonsterUrl_up = this.configurations.baseUrl + "/api/MonsterTemplate/deleteMonster_up";
   private readonly getByBundleUrl: string = this.configurations.baseUrl + "/api/MonsterTemplateBundle/getItemsByBundleId";
 
@@ -204,11 +206,18 @@ export class MonsterTemplateService extends EndpointFactory {
           });
   }
 
-  dropMonsterItems<T>(monsterItems): Observable<T> {
-    let endpointUrl = `${this.dropMonsterItemsUrl}`;
+  dropMonsterItems<T>(monsterItems, monsterId): Observable<T> {
+    let endpointUrl = `${this.dropMonsterItemsUrl}?monsterId=${monsterId}`;
     return this.http.post(endpointUrl, JSON.stringify(monsterItems), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {
-        return this.handleError(error, () => this.dropMonsterItems(monsterItems));
+        return this.handleError(error, () => this.dropMonsterItems(monsterItems, monsterId));
+      });
+  }
+  AddRemoveMonsterRecords<T>(records, monsterId, type): Observable<T> {
+    let endpointUrl = `${this.addRemoveMonsterRecordsUrl}?monsterId=${monsterId}&type=${type}`;
+    return this.http.post(endpointUrl, JSON.stringify(records), { headers: this.getRequestHeadersNew(), responseType: "text" })
+      .catch(error => {
+        return this.handleError(error, () => this.AddRemoveMonsterRecords(records, monsterId, type));
       });
   }
 

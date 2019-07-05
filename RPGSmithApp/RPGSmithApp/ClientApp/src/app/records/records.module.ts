@@ -41,6 +41,13 @@ import { AddMonsterTemplateComponent } from "./monster-template/add-monster-temp
 import { MonsterBundleDetailsComponent } from "./monster-template/monster-bundle-details/monster-bundle-details.component";
 import { LootDetailsComponent } from "./loot/loot-details/loot-details.component";
 import { MonsterItemDetailsComponent } from "./monster/monster-item-details/monster-item-details.component";
+import { EditMonsterItemComponent } from "./monster/edit-item/edit-item.component";
+import { AddMonsterContainerComponent } from "./monster/add-container/add-container.component";
+import { AddRemoveAssociateItemsComponent } from "./monster/Add-remove-associate-items/Add-remove-associate-items.component";
+import { AddRemoveAssociateAbilitiesComponent } from "./monster/add-remove-associate-abilities/add-remove-associate-abilities.component";
+import { AddRemoveAssociateBuffAndEffectsComponent } from "./monster/add-remove-associate-buff-effects/add-remove-associate-buff-effects.component";
+import { AddRemoveAssociateMonstersComponent } from "./monster/add-remove-associate-items-monsters/add-remove-associate-items-monsters.component";
+import { AddRemoveAssociateSpellsComponent } from "./monster/add-remove-associate-items-spells/add-remove-associate-items-spells.component";
 import { SingleItemMonsterComponent } from "./monster-template/single-item/single-item-monster.component";
 
 
@@ -83,6 +90,14 @@ import { SingleItemMonsterComponent } from "./monster-template/single-item/singl
     MonsterBundleDetailsComponent,
     LootDetailsComponent,
     MonsterItemDetailsComponent,
+    EditMonsterItemComponent,
+    AddMonsterContainerComponent,
+    AddRemoveAssociateItemsComponent,
+    AddRemoveAssociateAbilitiesComponent,
+    AddRemoveAssociateBuffAndEffectsComponent,
+    AddRemoveAssociateMonstersComponent,
+    AddRemoveAssociateSpellsComponent
+    
     SingleItemMonsterComponent
   ],
   imports: [
@@ -126,8 +141,16 @@ import { SingleItemMonsterComponent } from "./monster-template/single-item/singl
     AddMonsterTemplateComponent,
     MonsterBundleDetailsComponent,
     LootDetailsComponent,
-    MonsterItemDetailsComponent,
+    
     SingleItemMonsterComponent
+    MonsterItemDetailsComponent,
+    EditMonsterItemComponent,
+    AddMonsterContainerComponent,
+    AddRemoveAssociateItemsComponent,
+    AddRemoveAssociateAbilitiesComponent,
+    AddRemoveAssociateBuffAndEffectsComponent,
+    AddRemoveAssociateMonstersComponent,
+    AddRemoveAssociateSpellsComponent
   ],
   entryComponents: [
     AddItemMasterComponent,
@@ -149,8 +172,16 @@ import { SingleItemMonsterComponent } from "./monster-template/single-item/singl
     DropItemsMonsterComponent,
     CreateMonsterGroupComponent,
     AddMonsterComponent,
-    AddMonsterTemplateComponent,
+    
     SingleItemMonsterComponent
+    AddMonsterTemplateComponent,
+    EditMonsterItemComponent,
+    AddMonsterContainerComponent,
+    AddRemoveAssociateItemsComponent,
+    AddRemoveAssociateAbilitiesComponent,
+    AddRemoveAssociateBuffAndEffectsComponent,
+    AddRemoveAssociateMonstersComponent,
+    AddRemoveAssociateSpellsComponent
   
   ]
 })

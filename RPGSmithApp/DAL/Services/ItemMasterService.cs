@@ -1307,6 +1307,22 @@ namespace DAL.Services
             }
             return res;
         }
+        public ItemMasterMonsterItem GetMonsterContainer(int? containedIn) {
+            return _context.ItemMasterMonsterItems.Where(x => x.ItemId == containedIn && x.IsDeleted != true).FirstOrDefault();
+        }
+        public List<ItemMasterMonsterItem> GetByMonsterContainerId(int itemId) {
+            return _context.ItemMasterMonsterItems
+               .Where(x => x.ContainedIn == itemId && x.IsDeleted != true)
+               .OrderBy(o => o.ItemName).ToList();
+        }
+        public async Task DeleteMonsterItem(int id) {
+            var res = _context.ItemMasterMonsterItems.Where(x => x.ItemId == id).FirstOrDefault();
+            if (res != null) 
+            {
+                res.IsDeleted = true;
+               await _context.SaveChangesAsync();
+            }
+        }
         #region Loot
         public async Task _AddItemsToLoot(List<LootsToAdd> itemList, int rulesetID) {
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -1433,7 +1449,7 @@ namespace DAL.Services
             List<ItemMasterLootSpell> AssociateSpellVM, 
             List<ItemMasterLootAbility> AssociateAbilityVM, 
             List<ItemMasterLootBuffAndEffect> AssociateBuffAndEffectVM, 
-            List<ItemMasterLootCommand> AssociateCommandVM, Item item=null)
+            List<ItemMasterLootCommand> AssociateCommandVM,int rulesetId, Item item=null)
         {
             var Newloot = new ItemMasterLoot();
             if (item != null)
@@ -1463,7 +1479,7 @@ namespace DAL.Services
                     Metatags = item.Metatags,
                     PercentReduced = item.PercentReduced,
                     Rarity = item.Rarity,
-                    RuleSetId = result.RuleSetId,////////////////
+                    RuleSetId = rulesetId,////////////////
                     // TotalWeight = itemDomain.to,
                     Value = item.Value,
                     TotalWeightWithContents = item.TotalWeightWithContents,
@@ -1498,7 +1514,7 @@ namespace DAL.Services
                     Metatags = loot.Metatags,
                     PercentReduced = loot.PercentReduced,
                     Rarity = loot.Rarity,
-                    RuleSetId = loot.RuleSetId,
+                    RuleSetId = rulesetId,
                     // TotalWeight = itemDomain.to,
                     Value = loot.Value,
                     TotalWeightWithContents = loot.TotalWeightWithContents,

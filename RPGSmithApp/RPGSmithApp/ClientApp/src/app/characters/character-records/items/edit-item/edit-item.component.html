@@ -361,10 +361,10 @@
                 <div class="form-group">
                     <label for="contains">Contains</label>
 
-                    <div class="form-group form-group-unlabelled">
+                    <div class="form-group form-group-unlabelled" (click)="addContainerItem(ItemFormModal)">
                         <span class="input-group-btn">
                             <button type="button" title="Select Item" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"
-                                    (click)="addContainerItem(ItemFormModal)"></button>
+                                    ></button>
                         </span>
                         <tag-input name="contains" [(ngModel)]='ItemFormModal.contains' theme='dark' inputId="contains" inputClass="form-control" class="form-control"
                                    [identifyBy]="'value'" [displayBy]="'text'" placeholder="" secondaryPlaceholder="Select Item"></tag-input>

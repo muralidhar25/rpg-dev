@@ -28,7 +28,7 @@
    
     <ul class="input-image-search-result">
       <li class="input-image-search-result-item" *ngFor="let myImages of blobMyImages">        
-        <div class="input-image-search-result-item-wrapper hangout-images-section">
+        <div class="input-image-search-result-item-wrapper hangout-images-section div-img-width-auto">
           <div  *ngIf="myImages.contentType.indexOf(imagemap) > -1" class="search-image-box-section" [ngStyle]="{'background-image': 'url('+myImages.absoluteUri+')'}"></div>
           
           <div *ngIf="myImages.contentType.indexOf(imagemap) == -1" class="search-image-box-section" [contextMenu]="basicMenu" [contextMenuSubject]="myImages">

@@ -16,6 +16,7 @@ import { PlatformLocation } from "@angular/common";
 import { Bundle } from "../../../core/models/view-models/bundle.model";
 import { MonsterTemplateService } from "../../../core/services/monster-template.service";
 import { CreateMonsterGroupComponent } from "../moster-group/monster-group.component";
+import { DeployMonsterComponent } from "../deploy-monster/deploy-monster.component";
 
 @Component({
   selector: 'app-monster-bundle-details',
@@ -245,5 +246,17 @@ export class MonsterBundleDetailsComponent implements OnInit {
       this.bsModalRef.content.ViewImageUrl = img.src;
       this.bsModalRef.content.ViewImageAlt = img.alt;
     }
+  }
+  deployMonster(monsterInfo) {
+    monsterInfo.isBundle = true;
+    this.bsModalRef = this.modalService.show(DeployMonsterComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Quantity";
+    this.bsModalRef.content.monsterInfo = monsterInfo;
+    this.bsModalRef.content.bundleItems =this.bundleItems
+
   }
 }

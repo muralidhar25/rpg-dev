@@ -599,7 +599,7 @@ export class MonsterTemplateComponent implements OnInit {
   }
 
   deployMonster(item) {
-    console.log(item);
+    
     this.bsModalRef = this.modalService.show(DeployMonsterComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -607,6 +607,9 @@ export class MonsterTemplateComponent implements OnInit {
     });
     this.bsModalRef.content.title = "Quantity";
     this.bsModalRef.content.monsterInfo = item;
+    if (item.isBundle) {
+      this.bsModalRef.content.bundleItems = item.bundleItems
+    }
   }
 
 
@@ -743,7 +746,7 @@ export class MonsterTemplateComponent implements OnInit {
           //this.alertService.stopLoadingMessage();
           if (data < 2000) {
             this.bsModalRef = this.modalService.show(CreateMonsterGroupComponent, {
-              class: 'modal-primary modal-md',
+              class: 'modal-primary modal-custom',
               ignoreBackdropClick: true,
               keyboard: false
             });

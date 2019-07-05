@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using DAL.Models.SPModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -68,6 +69,6 @@ namespace RPGSmithApp.ViewModels.EditModels
         public int MonsterXPValue { get; set; }
         public int MonsterChallangeRating { get; set; }
         public int? ParentMonsterId { get; set; }
-
+        public List<ItemMasterForMonsterTemplate> MonsterTemplateItemVM { get; set; }
     }
 }

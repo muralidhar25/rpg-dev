@@ -873,10 +873,10 @@ namespace RPGSmithApp.Controllers
                     var userId = GetUserId();
                     var ruleSetDomain = _ruleSetService.GetRuleSetById(model.RuleSetId).Result;
 
-                    if (IsAdminUser())
-                        ruleSetDomain.IsCoreRuleset = true;
-                    else
-                        ruleSetDomain.IsCoreRuleset = false;
+                    //if (IsAdminUser())
+                    //    ruleSetDomain.IsCoreRuleset = true;
+                    //else
+                    //    ruleSetDomain.IsCoreRuleset = false;
 
                     ruleSetDomain.RuleSetName = model.RuleSetName;
                     ruleSetDomain.RuleSetDesc = model.RuleSetDesc;

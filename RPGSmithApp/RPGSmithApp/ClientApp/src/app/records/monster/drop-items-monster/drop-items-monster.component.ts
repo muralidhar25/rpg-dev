@@ -34,7 +34,9 @@ export class DropItemsMonsterComponent implements OnInit {
     itemsList: any[] = [];
     selectedItemsList: any[] = [];
     monsterId: number;
-
+  monsterName: string = '';
+  monsterImage: string = '';
+  allSelected: boolean = false;
     constructor(
         private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
         public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
@@ -49,7 +51,8 @@ export class DropItemsMonsterComponent implements OnInit {
         setTimeout(() => {
             this.title = this.bsModalRef.content.title;
             this._view = this.bsModalRef.content.button;
-            
+          this.monsterName = this.bsModalRef.content.monsterName;
+          this.monsterImage = this.bsModalRef.content.monsterImage;
             
             this.rulesetId = this.bsModalRef.content.rulesetID;
             this.monsterId = this.bsModalRef.content.monsterId;
@@ -61,7 +64,7 @@ export class DropItemsMonsterComponent implements OnInit {
     }
 
   private initialize() {
-    debugger;
+   
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)
             this.authService.logout();
@@ -84,24 +87,31 @@ export class DropItemsMonsterComponent implements OnInit {
     }
 
   setItemMaster(event: any, itemMaster: any) {
-
-      if (event.target.checked) {
-        const _containsItems = Object.assign([], this.selectedItemsList);
-        _containsItems.push(itemMaster);
-        this.selectedItemsList = _containsItems;
-        } else {
-        let _item = itemMaster;
-            const index: number = this.selectedItemsList.indexOf(_item);
-            if (index !== -1) {
-              this.selectedItemsList.splice(index, 1);
-            }else {
-              const _arrayItems = Object.assign([], this.selectedItemsList);
-              this.selectedItemsList = _arrayItems.filter(function (itm) {
-                if (itm.itemId !== _item.itemId) return _item;
-              });
-            }
+    itemMaster.selected = event.target.checked;
+    if (event.target.checked) {
+      const _containsItems = Object.assign([], this.selectedItemsList);
+      _containsItems.push(itemMaster);
+      this.selectedItemsList = _containsItems;
+    } else {
+      let _item = itemMaster;
+      const index: number = this.selectedItemsList.indexOf(_item);
+      if (index !== -1) {
+        this.selectedItemsList.splice(index, 1);
+      } else {
+        const _arrayItems = Object.assign([], this.selectedItemsList);
+        this.selectedItemsList = _arrayItems.filter(function (itm) {
+          if (itm.itemId !== _item.itemId) return _item;
+        });
       }
     }
+
+    if (this.selectedItemsList.length === this.itemsList.length) {
+      this.allSelected = true;
+    }
+    else {
+      this.allSelected = false;
+    }
+  }
 
   submitForm() {
     
@@ -110,8 +120,11 @@ export class DropItemsMonsterComponent implements OnInit {
       this.isLoading = true;
       let _msg = 'Droping Monster Items ...';
       this.alertService.startLoadingMessage("", _msg);
-      this.monsterTemplateService.dropMonsterItems(this.selectedItemsList)
+      this.monsterTemplateService.dropMonsterItems(this.selectedItemsList, this.monsterId)
         .subscribe(data => {
+          //if (data) {
+            this.event.emit(data);
+          //}
           this.alertService.stopLoadingMessage();
           this.isLoading = false;
           this.close();
@@ -139,5 +152,20 @@ export class DropItemsMonsterComponent implements OnInit {
     close() {
         this.bsModalRef.hide();
     }
-
+  selectDeselectFilters(isSelectAll) {
+    this.allSelected = isSelectAll;
+    this.selectedItemsList = [];
+    debugger
+    if (this.allSelected) {
+      this.itemsList.map((item) => {
+        item.selected = true;
+        this.selectedItemsList.push(item);
+      })
+    }
+    else {
+      this.itemsList.map((item) => {
+        item.selected = false;
+      })
+    }
+  }
 }

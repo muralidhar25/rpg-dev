@@ -20,6 +20,8 @@ export class MonsterTemplate {
     monsterId?: number,
     addToCombatTracker?: boolean,
     isBundle?: boolean,
+    monsterTemplateItemVM?:any[]
+    
     randomizationEngine?:randomization[]
   ) {
     this.monsterTemplateId = monsterTemplateId;
@@ -56,6 +58,7 @@ export class MonsterTemplate {
     this.monsterId = monsterId;
     this.addToCombatTracker = addToCombatTracker;
     this.isBundle = isBundle;
+    this.monsterTemplateItemVM = monsterTemplateItemVM;
     this.randomizationEngine = randomizationEngine;
   }
 
@@ -98,6 +101,7 @@ export class MonsterTemplate {
   public monsterId: number;
   public addToCombatTracker: boolean;
   public isBundle: boolean;
+  public monsterTemplateItemVM: any[];
   public randomizationEngine: randomization[];
   //public monsterImage: string;
   //public monsterName: string;

@@ -79,6 +79,13 @@ namespace RPGSmithApp.Controllers
             List<ItemMasterForMonsterTemplate> MonsterItemsToDrop = _monsterTemplateService.getMonsterItemsToDrop(monsterId);
             return Ok(MonsterItemsToDrop);
         }
+        [HttpPost("addRemoveMonsterRecords")]
+        public async Task<IActionResult> addRemoveMonsterRecords([FromBody] List<AddRemoveRecords> model,int monsterId, string type)
+        {
+            _monsterTemplateService.addRemoveMonsterRecords(model,monsterId, type);
+            return Ok();
+        }
+        
 
         [HttpPost("create")]
         [ProducesResponseType(200, Type = typeof(string))]
@@ -239,11 +246,11 @@ namespace RPGSmithApp.Controllers
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
         [HttpPost("dropMonsterItems")]
-        public async Task<IActionResult> dropMonsterItems([FromBody] List<ItemMasterForMonsterTemplate> list)
+        public async Task<IActionResult> dropMonsterItems([FromBody] List<ItemMasterForMonsterTemplate> list, int monsterId)
         {
-
-            await _monsterTemplateService.DropItemsToLoot(list);
-            return Ok();
+            
+          int itemCountAfterDelete=  await _monsterTemplateService.DropItemsToLoot(list,monsterId);
+            return Ok(itemCountAfterDelete);
         }
         [HttpPost("updateMonster")]
         public async Task<IActionResult> updateMonster([FromBody] EditMonsterModel model)
@@ -434,7 +441,7 @@ namespace RPGSmithApp.Controllers
 
             //var result = await _monsterTemplateService.Update(monsterTemplate, model.MonsterTemplateAbilityVM, model.MonsterTemplateAssociateMonsterTemplateVM, model.MonsterTemplateBuffAndEffectVM, model.MonsterTemplateItemMasterVM, model.MonsterTemplateSpellVM,false);
 
-            await _monsterTemplateService.UpdateMonster(item, model.MonsterTemplateAbilityVM, model.MonsterTemplateAssociateMonsterTemplateVM, model.MonsterTemplateBuffAndEffectVM, model.MonsterTemplateSpellVM, model.MonsterTemplateCommandVM);
+            await _monsterTemplateService.UpdateMonster(item, model.MonsterTemplateAbilityVM, model.MonsterTemplateAssociateMonsterTemplateVM, model.MonsterTemplateBuffAndEffectVM, model.MonsterTemplateSpellVM,model.MonsterTemplateCommandVM,model.MonsterTemplateItemVM);
 
 
             //var becIds = new List<int>();
@@ -891,7 +898,19 @@ namespace RPGSmithApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        [HttpPost("AddMonsters")]
+        public async Task<IActionResult> AddMonsters([FromBody]  List<DeployMonsterTemplate> model)
+        {
+            try
+            {
+                _monsterTemplateService.AddMonsters(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
         [HttpPost("enableCombatTracker")]

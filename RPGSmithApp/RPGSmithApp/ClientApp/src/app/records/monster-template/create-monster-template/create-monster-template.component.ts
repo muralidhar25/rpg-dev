@@ -766,7 +766,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
   }
   isValidSingleNumberCommand(command, randomization_Item = undefined) {
     if (command) {
-      if (command.indexOf(' and') > -1) {
+        if (command.toLowerCase().indexOf(' and') > -1) {
         if (randomization_Item) {
           randomization_Item.isValidQty = false;
         }
