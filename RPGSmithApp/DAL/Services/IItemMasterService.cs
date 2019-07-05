@@ -31,7 +31,7 @@ namespace DAL.Services
         bool Core_BundleWithParentIDExists(int bundleId, int rulesetID);
         Task _AddItemsToLoot(List<LootsToAdd> itemList, int rulesetID);
         Task<List<ItemMasterLoot_ViewModel>> GetItemMasterLoots(int rulesetID, int page = 1, int pageSize = 30);
-        ItemMasterLoot CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot, List<ItemMasterLootSpell> AssociateSpellVM, List<ItemMasterLootAbility> AssociateAbilityVM, List<ItemMasterLootBuffAndEffect> AssociateBuffAndEffectVM, List<ItemMasterLootCommand> AssociateCommandVM, Item item = null);
+        ItemMasterLoot CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot, List<ItemMasterLootSpell> AssociateSpellVM, List<ItemMasterLootAbility> AssociateAbilityVM, List<ItemMasterLootBuffAndEffect> AssociateBuffAndEffectVM, List<ItemMasterLootCommand> AssociateCommandVM, int rulesetId, Item item = null);
         Task<ItemMasterLoot> UpdateItemMasterLoot(ItemMasterLoot loot, List<ItemMasterLootSpell> itemMasterSpell, List<ItemMasterLootAbility> itemMasterAbilities, List<ItemMasterLootBuffAndEffect> itemMasterBuffAndEffects, List<ItemMasterLootCommand> itemMasterCommand);
         Task<List<ItemMasterLoot_ViewModel>> GetLootItemsForPlayers(int rulesetID);
         Task<ItemMasterLoot> getLootDetails(int LootId);
@@ -46,8 +46,11 @@ namespace DAL.Services
         Task<List<ItemMasterLoot_ViewModel>> GetAvailableContainerItems(int rulesetId, int ItemMasterId);
         decimal GetContainedItemWeight(int containerItemId);
         ItemMasterLoot_ViewModel GetContainer(int? lootId);
+        ItemMasterMonsterItem GetMonsterContainer(int? containedIn);
+        List<ItemMasterMonsterItem> GetByMonsterContainerId(int itemId);
         List<ItemMasterLoot_ViewModel> GetAvailableItems(int rulesetId);
         Task<List<ItemMasterLoot>> getMultipleLootDetails(List<int> LootId);
         SP_AbilitySpellForItemMaster AbilitySpellForLootsByRuleset_sp(int rulesetId, int lootID);
+        Task DeleteMonsterItem(int id);
     }
 }

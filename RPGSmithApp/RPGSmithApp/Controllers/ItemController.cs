@@ -31,11 +31,14 @@ namespace RPGSmithApp.Controllers
         private readonly IItemMasterBundleService _itemMasterBundleService;
         private readonly ICampaignService _campaignService;
         private readonly IRuleSetService _rulesetService;
+        private readonly IMonsterTemplateService _monsterTemplateService;
+
 
         public ItemController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager,
             IItemService itemService, IItemCommandService itemCommandService,
             IItemMasterService itemMasterService, ICharacterService characterService, ICoreRuleset coreRulesetService,
-            IItemMasterBundleService itemMasterBundleService, ICampaignService campaignService, IRuleSetService rulesetService)
+            IItemMasterBundleService itemMasterBundleService, ICampaignService campaignService, IRuleSetService rulesetService,
+            IMonsterTemplateService monsterTemplateService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._accountManager = accountManager;
@@ -47,6 +50,7 @@ namespace RPGSmithApp.Controllers
             this._itemMasterBundleService = itemMasterBundleService;
             this._campaignService = campaignService;
             this._rulesetService = rulesetService;
+            this._monsterTemplateService = monsterTemplateService;
         }
 
         [HttpGet("getall")]
@@ -213,6 +217,16 @@ namespace RPGSmithApp.Controllers
 
             if (items == null || items.Count == 0)
                 return new List<Item>();
+
+            return items;
+        }
+        [HttpGet("getAvailableMonsterContainerItems")]
+        public IEnumerable<ItemMasterMonsterItem> getAvailableMonsterContainerItems(int rulesetId, int itemId)
+        {
+            List<ItemMasterMonsterItem> items = _itemService.getAvailableMonsterContainerItems(rulesetId, itemId);
+
+            if (items == null || items.Count == 0)
+                return new List<ItemMasterMonsterItem>();
 
             return items;
         }
@@ -485,6 +499,123 @@ namespace RPGSmithApp.Controllers
 
             return BadRequest(Utilities.ModelStateError(ModelState));
 
+        }
+        [HttpPost("updateMonster")]
+        public async Task<IActionResult> updateMonster([FromBody] ItemEditModel model)
+        {
+            if (ModelState.IsValid)
+            {
+
+                var item = _monsterTemplateService.GetMonsterItemDetailByItemId(model.ItemId);
+                if (item == null) return BadRequest("Item not found");
+
+                model.TotalWeight = model.Quantity * model.Weight;
+                var _item = new ItemMasterMonsterItem()
+                {ItemId=model.ItemId,
+                    ContainedIn = model.ContainedIn,
+                    Quantity = model.Quantity,
+                    TotalWeight = model.TotalWeight,
+                    IsIdentified = model.IsIdentified,
+                    IsEquipped = model.IsEquipped,
+                    IsVisible = model.IsVisible,
+
+                    ItemName = model.Name,
+                    ItemVisibleDesc = model.Description,
+                    ItemImage = model.ItemImage,
+
+
+                    IsContainer = model.IsContainer,
+
+                    IsConsumable = model.IsConsumable,
+                    IsMagical = model.IsMagical,
+                    ItemCalculation = model.ItemCalculation,
+                    Metatags = model.Metatags,
+                    Rarity = model.Rarity,
+                    Value = model.Value,
+                    Volume = model.Volume,
+                    Weight = model.Weight,
+                    Command = model.Command,
+
+                    ItemStats = model.ItemStats,
+                    ContainerWeightMax = model.ContainerWeightMax,
+                    ContainerVolumeMax = model.ContainerVolumeMax,
+                    PercentReduced = model.PercentReduced,
+                    TotalWeightWithContents = model.TotalWeightWithContents,
+                    ContainerWeightModifier = model.ContainerWeightModifier,
+                    CommandName = model.CommandName,
+                };
+                var result = _itemService.UpdateMonsterItem(_item, model.ItemSpells, model.ItemAbilities, model.ItemBuffAndEffects, model.ItemCommandVM);
+
+                /////////if non-conatiner item remove/update its container
+                //if (((item.ContainedIn > 0 && result.ContainedIn == 0)
+                //    || (item.ContainedIn == 0 && result.ContainedIn > 0)
+                //    || (item.ContainedIn == result.ContainedIn && result.ContainedIn > 0)) && !model.IsContainer)
+                //{
+                //    int __itemContainerId = (item.ContainedIn > 0 && result.ContainedIn == 0) ? item.ContainedIn ?? 0
+                //         : ((item.ContainedIn == 0 && result.ContainedIn > 0) ? result.ContainedIn ?? 0
+                //         : ((result.ContainedIn > 0) ? result.ContainedIn ?? 0 : 0));
+
+                //    var containerItem = _itemMasterService.getMonsterItemById(__itemContainerId);
+                //    var _itemContainer = Mapper.Map<ItemEditModel>(containerItem);
+
+                //    List<ViewModels.EditModels.containerItemIds> _containerItemIds = new List<ViewModels.EditModels.containerItemIds>();
+                //    foreach (var itm in _itemService.GetByContainerId(containerItem.ItemId))
+                //    {
+                //        if (itm.ItemId != result.ItemId)
+                //        {
+                //            ViewModels.EditModels.containerItemIds __containerItemIds = new ViewModels.EditModels.containerItemIds();
+                //            __containerItemIds.ItemId = itm.ItemId;
+                //            _containerItemIds.Add(__containerItemIds);
+                //        }
+                //    }
+                //    if ((item.ContainedIn == 0 && result.ContainedIn > 0) || (item.ContainedIn == result.ContainedIn))
+                //    {
+                //        ViewModels.EditModels.containerItemIds __containerItemIds = new ViewModels.EditModels.containerItemIds();
+                //        __containerItemIds.ItemId = result.ItemId;
+                //        _containerItemIds.Add(__containerItemIds);
+                //    }
+                //    _itemContainer.ContainerItems = _containerItemIds;
+
+                //    decimal TotalWeight = CalculateTotalWeight(_itemContainer);
+                //    await _itemService.UpdateWeight(_itemContainer.ItemId, TotalWeight);
+                //}
+                /////////////
+
+                //if (model.ItemCommandVM != null)
+                //{
+                //    //remove all commands
+                //    await _itemCommandService.DeleteItemCommandByItemId(model.ItemId);
+                //    foreach (var command in model.ItemCommandVM)
+                //    {
+                //        await _itemCommandService.InsertItemCommand(new ItemCommand()
+                //        {
+                //            Command = command.Command,
+                //            Name = command.Name,
+                //            ItemId = model.ItemId
+                //        });
+                //    }
+                //}
+                //if (model.ContainerItems != null)
+                //{
+                //    //remove all contains item
+                //    await _itemService.DeleteContainer(model.ItemId);
+                //    foreach (var itm in model.ContainerItems)
+                //    {
+                //        await _itemService.UpdateContainer(itm.ItemId, model.ItemId);
+                //    }
+                //    //_itemService.ManageContainer(model.ItemId, model.ContainerItems.Select(q => new CommonID { ID=q.ItemId }).ToList());
+                //}
+                //if (model.IsContainer == true)
+                //{
+                //    decimal TotalWeight = CalculateTotalWeight(model);
+                //    await _itemService.UpdateWeight(model.ItemId, TotalWeight);
+                //}
+                //await this._characterService.UpdateCharacterInventoryWeight(model.CharacterId ?? 0);
+
+                return Ok();
+
+            }
+            return BadRequest(Utilities.ModelStateError(ModelState));
         }
 
         [HttpPost("update")]

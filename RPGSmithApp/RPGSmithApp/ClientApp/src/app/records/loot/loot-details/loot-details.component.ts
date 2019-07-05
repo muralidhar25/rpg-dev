@@ -46,7 +46,7 @@ export class LootDetailsComponent implements OnInit {
       private itemMasterService: ItemMasterService, private rulesetService: RulesetService, public lootService: LootService,
       private location: PlatformLocation) {
       location.onPopState(() => this.modalService.hide(1));
-      this.route.params.subscribe(params => { this.LootId = params['id']; });
+      this.route.params.subscribe(params => { this.LootId = params['id']; this.initialize();});
       
       this.sharedService.shouldUpdateItemMasterDetailList().subscribe(sharedServiceJson => {
         debugger
@@ -255,5 +255,13 @@ export class LootDetailsComponent implements OnInit {
     this.bsModalRef.content.recordImage = this.RuleSet.imageUrl;
     this.bsModalRef.content.recordType = 'ruleset'
     this.bsModalRef.content.isFromCampaignDetail = true;
+  }
+
+  redirectToItem(itemId: number) {
+    debugger
+    if (itemId) {
+      this.router.navigate(['/ruleset/loot-details', itemId]);
+      //this.sharedService.updateItemsList({ onPage: false });
+    }
   }
 }

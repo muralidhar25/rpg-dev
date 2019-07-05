@@ -76,15 +76,99 @@ namespace RPGSmithApp.Controllers
             return _itemMasterService.GetItemMasterById(id);
         }
         [HttpGet("getLootById")]
-        public ItemMasterLoot getLootById(int id)
+        public ItemMasterLoot_ViewModel getLootById(int id)
         {
-            return _itemMasterService.GetLootById(id);
+            var loot=_itemMasterService.GetLootById(id);
+
+            if (loot == null)
+                return new ItemMasterLoot_ViewModel();
+            
+            ItemMasterLoot_ViewModel listobj = new ItemMasterLoot_ViewModel();
+            listobj = new ItemMasterLoot_ViewModel()
+            {
+                LootId = loot.LootId,
+                ItemMasterId = loot.ItemMasterId,
+                IsShow = loot.IsShow,
+                ContainedIn = loot.ContainedIn,
+                Quantity = loot.Quantity,
+                IsIdentified = loot.IsIdentified,
+                IsVisible = loot.IsVisible,
+                TotalWeight = loot.TotalWeight,
+                ItemName = loot.ItemName,
+                ItemImage = loot.ItemImage,
+                ItemStats = loot.ItemStats,
+                ItemVisibleDesc = loot.ItemVisibleDesc,
+                Command = loot.Command,
+                ItemCalculation = loot.ItemCalculation,
+                Value = loot.Value,
+                Volume = loot.Volume,
+                Weight = loot.Weight,
+                IsContainer = loot.IsContainer,
+                ContainerWeightMax = loot.ContainerWeightMax,
+                ContainerVolumeMax = loot.ContainerVolumeMax,
+                ContainerWeightModifier = loot.ContainerWeightModifier,
+                PercentReduced = loot.PercentReduced,
+                TotalWeightWithContents = loot.TotalWeightWithContents,
+                IsMagical = loot.IsMagical,
+                IsConsumable = loot.IsConsumable,
+                Metatags = loot.Metatags,
+                Rarity = loot.Rarity,
+                ParentLootId = loot.ParentLootId == null ? 0 : (int)loot.ParentLootId,
+                IsDeleted = loot.IsDeleted,
+                CommandName = loot.CommandName,
+                RuleSetId = loot.RuleSetId == null ? 0 : (int)loot.RuleSetId,
+            };
+
+
+            if (listobj.ContainedIn != null)
+                {
+                    if (listobj.ContainedIn > 0)
+                    {
+                    listobj.Container = _itemMasterService.GetContainer(listobj.ContainedIn);
+                    }
+
+                }
+
+            listobj.ContainerItems = _itemMasterService.GetByContainerId(listobj.LootId).Result;
+
+
+
+           
+
+            //var item = _itemService.GetById(id);
+
+            //if (item == null)
+            //    return new ItemListViewModel();
+
+            //ItemListViewModel listobj = new ItemListViewModel();
+            //listobj = Mapper.Map<ItemListViewModel>(item);
+
+            //if (item.ContainedIn != null)
+            //    listobj.Container = _itemService.GetContainer(item.ContainedIn);
+            //listobj.ContainerItems = _itemService.GetByContainerId(item.ItemId);
+            //listobj.RuleSet = item.Character == null ? null : item.Character.RuleSet;
+
+            return listobj;
+
         }
         
             [HttpGet("getMonsterItemById")]
-        public ItemMasterMonsterItem getMonsterItemById(int id)
+        public ItemMasterMonsterItemVM getMonsterItemById(int id)
         {
-            return _itemMasterService.getMonsterItemById(id);
+            var item = _itemMasterService.getMonsterItemById(id);
+
+            if (item == null)
+                return new ItemMasterMonsterItemVM();
+            ItemMasterMonsterItemVM listobj = new ItemMasterMonsterItemVM();
+            listobj = Mapper.Map<ItemMasterMonsterItemVM>(item);
+
+            if (item.ContainedIn != null)
+                listobj.Container = _itemMasterService.GetMonsterContainer(item.ContainedIn);
+            listobj.ContainerItems = _itemMasterService.GetByMonsterContainerId(item.ItemId);
+            listobj.RuleSet = item.RuleSet;
+
+            return listobj;
+            
         }
 
         [HttpGet("getByRuleSetId")]
@@ -581,6 +665,14 @@ namespace RPGSmithApp.Controllers
             await _itemMasterService.DeleteItemMaster(Id);
             return Ok();
         }
+        [HttpDelete("deleteMonsterItem")]
+        public async Task<IActionResult> deleteMonsterItem(int Id)
+        {
+           
+            await _itemMasterService.DeleteMonsterItem(Id);
+            return Ok();
+        }
+        
 
         [HttpPost("delete_up")]
         public async Task<IActionResult> DeleteItemMaster([FromBody] EditItemMasterModel model)
@@ -1010,7 +1102,7 @@ namespace RPGSmithApp.Controllers
                         Name =x.Name
                     }).ToList();
                 }
-                var newLoot=  _itemMasterService.CreateItemMasterLoot(result, loot, ItemMasterSpell, ItemMasterAbilities, itemMasterBuffAndEffects, ItemMasterCommand);
+                var newLoot=  _itemMasterService.CreateItemMasterLoot(result, loot, ItemMasterSpell, ItemMasterAbilities, itemMasterBuffAndEffects, ItemMasterCommand, result.RuleSetId);
                 
                 //var ruleset = _ruleSetService.GetRuleSetById((int)(itemDomain.RuleSetId));
                 
@@ -1796,7 +1888,7 @@ namespace RPGSmithApp.Controllers
                         }).ToList();
                     }
 
-                    var newLoot = _itemMasterService.CreateItemMasterLoot(result, loot, ItemMasterSpell, ItemMasterAbilities, itemMasterBuffAndEffects, ItemMasterCommand);
+                    var newLoot = _itemMasterService.CreateItemMasterLoot(result, loot, ItemMasterSpell, ItemMasterAbilities, itemMasterBuffAndEffects, ItemMasterCommand, result.RuleSetId);
                     var itemDomain = model;
                     if (itemDomain.ContainedIn != null && itemDomain.ContainedIn > 0 && !(itemDomain.IsContainer == null ? false : true))
                     {

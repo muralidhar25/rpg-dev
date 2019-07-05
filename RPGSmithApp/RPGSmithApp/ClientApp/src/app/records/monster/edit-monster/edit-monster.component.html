@@ -24,10 +24,11 @@
     <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,monsterFormModal.health)"></button>
   </span>-->
               <div class="form-row">
-                <input name="monsterHealthCurrent" type="number" class="col-6 form-control input-type-number" placeholder="Current"
+                <input name="monsterHealthCurrent" type="number" class="col-4 form-control input-type-number" placeholder="Current"
                        [(ngModel)]="monsterFormModal.monsterHealthCurrent" #monsterHealthCurrent="ngModel" />
-                <input name="monsterHealthMax" type="number" class="col-6 form-control input-type-number" placeholder="Maximum"
+                <input name="monsterHealthMax" type="number" class="col-4 form-control input-type-number" placeholder="Maximum"
                        [(ngModel)]="monsterFormModal.monsterHealthMax" #monsterHealthMax="ngModel" />
+                <button *ngIf="isNonStaticNumber(monsterFormModal.health)" type="button" (click)="HealthReroll(monsterFormModal)" class="col-4 btn btn-primary">ReRoll</button>
               </div>
               </div>
             <!--<app-input-single-result-command _placeholder="Value" [command]="monsterFormModal.health"
@@ -94,18 +95,26 @@
             <div class="adjst-dice-position">
               <label>XP Value</label>
               <!--<span class="input-group-btn">
-    <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,monsterFormModal.xPValue)"></button>
-  </span>-->
+        <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,monsterFormModal.xPValue)"></button>
+      </span>-->
               <div class="form-row">
                 <input name="monsterXPValue" type="number" class="col-6 form-control  input-type-number" placeholder="Value"
                        [(ngModel)]="monsterFormModal.monsterXPValue" #monsterXPValue="ngModel" />
                 <button *ngIf="isNonStaticNumber(monsterFormModal.xPValue)" type="button" (click)="XPReroll(monsterFormModal)" class="col-6 btn btn-primary">ReRoll</button>
               </div>
             </div>
-              <!--<app-input-single-result-command _placeholder="Value" [command]="monsterFormModal.xPValue"
-                         labelText="XP Value" (getResult)="getXPValueResult($event)"
-                         ></app-input-single-result-command>-->
-            </div>
+            <!--<app-input-single-result-command _placeholder="Value" [command]="monsterFormModal.xPValue"
+               labelText="XP Value" (getResult)="getXPValueResult($event)"
+               ></app-input-single-result-command>-->
+          </div>
+          <div class="form-group">
+            <label for="newMonsterTemplateCommand">Initiative Modifier</label>
+            <span class="input-group-btn">
+              <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-2, monsterFormModal.initiativeCommand)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
+            </span>
+            <input type="text" id="newMonsterTemplateInitiativeCommand" name="newMonsterTemplateInitiativeCommand" class="form-control mr-1" placeholder="Value"
+                   [(ngModel)]="monsterFormModal.initiativeCommand" #newMonsterTemplateInitiativeCommand="ngModel" />
+          </div>
         </div>
         <div class="col-12 col-md-6">
           <div class="form-group">
@@ -122,16 +131,7 @@
           </div>
 
         </div>
-        <div class="col-12 col-md-6">
-          <div class="form-group">
-            <label for="newMonsterTemplateCommand">Initiative Modifier</label>
-            <span class="input-group-btn">
-              <button type="button" title="Show dice" tooltip="Show dice" (click)="openDiceModal(-2, monsterFormModal.initiativeCommand)" class="btn icon icon-dice icon-rsi btn-simple-primary"></button>
-            </span>
-            <input type="text" id="newMonsterTemplateInitiativeCommand" name="newMonsterTemplateInitiativeCommand" class="form-control mr-1" placeholder="Value"
-                   [(ngModel)]="monsterFormModal.initiativeCommand" #newMonsterTemplateInitiativeCommand="ngModel" />
-          </div>
-        </div>
+        
 
 
       </div>
@@ -255,7 +255,7 @@
       <div class="form-row">
         <div class="col-12 col-md-6">
           <div class="form-group">
-            <label for="newItemSpells">Associated Ability</label>
+            <label for="newItemSpells">Ability</label>
             <angular2-multiselect id="buffAndEffectsList" [data]="abilitiesList" [(ngModel)]="selectedAbilities" name="newAbilities" [settings]="abilitiesSettings">
               <c-item id="spell">
                 <ng-template let-item="item">
@@ -269,7 +269,7 @@
         </div>
         <div class="col-12 col-md-6">
           <div class="form-group">
-            <label for="newItemSpells">Associated Spell</label>
+            <label for="newItemSpells">Spell</label>
             <angular2-multiselect id="buffAndEffectsList" [data]="spellsList" [(ngModel)]="selectedSpells" name="newSpells" [settings]="spellsSettings">
               <c-item id="spell">
                 <ng-template let-item="item">
@@ -297,13 +297,27 @@
         </div>
         <div class="col-12 col-md-6">
           <div class="form-group">
-            <label for="newItemSpells">Associated Buffs And Effects</label>
+            <label for="newItemSpells">Buffs And Effects</label>
             <angular2-multiselect id="buffAndEffectsList" [data]="buffAndEffectsList" [(ngModel)]="selectedBuffAndEffects" name="newItemBuffAndEffests" [settings]="buffAndEffectsSettings">
               <c-item id="spell">
                 <ng-template let-item="item">
                   <span class="associate-label-name">{{item.name}}</span>
                   <img [src]="item.imageUrl" class="pull-right associate-img"
                        onerror="this.src = '../assets/images/BnE/Def_BnE.png'" />
+                </ng-template>
+              </c-item>
+            </angular2-multiselect>
+          </div>
+        </div>
+        <div class="col-12 col-md-12">
+          <div class="form-group">
+            <label for="newItemSpells">Items</label>
+            <angular2-multiselect id="monsterItemsList" [data]="monsterItemsList" [(ngModel)]="selectedMonsterItems" name="newItemItems" [settings]="monsterItemsSettings">
+              <c-item id="spell">
+                <ng-template let-item="item">
+                  <span class="associate-label-name">{{item.name}}</span>
+                  <img [src]="item.imageUrl" class="pull-right associate-img"
+                       onerror="this.src = '../assets/images/DefaultImages/Item.jpg'" />
                 </ng-template>
               </c-item>
             </angular2-multiselect>

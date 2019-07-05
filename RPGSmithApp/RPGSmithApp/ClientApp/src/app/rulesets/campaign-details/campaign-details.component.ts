@@ -139,7 +139,6 @@ export class CampaignDetailsComponent implements OnInit {
         this.setHeaderValues(this.ruleset);
         this.rulesetRecordCount = this.ruleset.recordCount;
         //this.isLoading = false;
-        debugger
         this.declinedUserList = [];
         this.invitedUsers = [];
         this.campaignService.getPlayerInviteList<any>(this.ruleSetId)

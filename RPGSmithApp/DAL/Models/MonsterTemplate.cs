@@ -130,7 +130,7 @@ namespace DAL.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int RandomizationEngineId { get; set; }
         public decimal Percentage { get; set; }
-        public int Qty { get; set; }
+        public string Qty { get; set; }
         public int SortOrder { get; set; }
         public int ItemMasterId { get; set; }
         public bool IsOr { get; set; }

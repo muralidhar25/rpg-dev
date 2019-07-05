@@ -658,7 +658,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
   }
   isValidSingleNumberCommand(command) {
     if (command) {
-      if (command.indexOf(' and')>-1) {
+      if (command.toLowerCase().indexOf(' and')>-1) {
         return false;
       }
       if (command.indexOf('"') > -1) {

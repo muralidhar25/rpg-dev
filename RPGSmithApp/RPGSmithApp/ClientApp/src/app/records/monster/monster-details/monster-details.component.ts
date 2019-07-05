@@ -21,6 +21,11 @@ import { CastComponent } from "../../../shared/cast/cast.component";
 import { Characters } from "../../../core/models/view-models/characters.model";
 import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
 import { CreateMonsterTemplateComponent } from "../../monster-template/create-monster-template/create-monster-template.component";
+import { AddRemoveAssociateItemsComponent } from "../Add-remove-associate-items/Add-remove-associate-items.component";
+import { AddRemoveAssociateMonstersComponent } from "../add-remove-associate-items-monsters/add-remove-associate-items-monsters.component";
+import { AddRemoveAssociateAbilitiesComponent } from "../add-remove-associate-abilities/add-remove-associate-abilities.component";
+import { AddRemoveAssociateBuffAndEffectsComponent } from "../add-remove-associate-buff-effects/add-remove-associate-buff-effects.component";
+import { AddRemoveAssociateSpellsComponent } from "../add-remove-associate-items-spells/add-remove-associate-items-spells.component";
 //import { CreateMonsterTemplateComponent } from "../create-monster-template/create-monster-template.component";
 //import { DeployMonsterComponent } from "../deploy-monster/deploy-monster.component";
 //import { DropItemsMonsterComponent } from "../drop-items-monster/drop-items-monster.component";
@@ -51,6 +56,13 @@ export class MonsterDetailsComponent implements OnInit {
   selectedSpells = [];
   selectedAssociateMonsterTemplates = [];
   selectedItemMasters = [];
+
+  ListBuffAndEffects = [];
+  ListAbilities = [];
+  ListSpells = [];
+  ListAssociateMonsterTemplates = [];
+  ListItemMasters = [];
+
   _editMonster: any;
 
   IsGm: boolean = false;
@@ -96,7 +108,7 @@ export class MonsterDetailsComponent implements OnInit {
           this.isLoading = true;
           this.monsterTemplateService.getMonsterById<any>(this.monsterId)
             .subscribe(data => {
-              debugger
+              
               if (data)
                 this.monsterDetail = this.monsterTemplateService.MonsterModelData(data, "UPDATE");
               this._editMonster = data;
@@ -113,8 +125,14 @@ export class MonsterDetailsComponent implements OnInit {
                     this.selectedAbilities = data.selectedAbilityList;
                     this.selectedSpells = data.selectedSpellList;
                     this.selectedItemMasters = data.selectedItemMasters;
-                   // this.associateMonsterTemplateList = data.monsterTemplatesList;
+                   // this.associateMonsterTemplateList = data.monsterTemplatesList;                    
                     this.selectedAssociateMonsterTemplates = data.selectedMonsterTemplates;
+
+                    this.ListBuffAndEffects = data.buffAndEffectsList;
+                    this.ListAbilities = data.abilityList;
+                    this.ListSpells = data.spellList;
+                    this.ListItemMasters = data.itemMasterList;
+                    this.ListAssociateMonsterTemplates = data.monsterTemplatesList;
 
                   }, error => {
 
@@ -304,7 +322,9 @@ export class MonsterDetailsComponent implements OnInit {
       this.bsModalRef.content.title = 'Drop Items';
       this.bsModalRef.content.button = 'Drop';
       this.bsModalRef.content.monsterId = this._editMonster.monsterId;
-      this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.monsterName = this._editMonster.name;
+    this.bsModalRef.content.monsterImage = this._editMonster.imageUrl;
     }
   
   useMonster() {
@@ -412,8 +432,82 @@ export class MonsterDetailsComponent implements OnInit {
     this.router.navigate(['/ruleset/monster-item-details', Itemid]);
   }
 
-  
-  
+  AddRemoveItems() {
+    this.bsModalRef = this.modalService.show(AddRemoveAssociateItemsComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Select Items';
+    this.bsModalRef.content.button = 'Save';
+    this.bsModalRef.content.monster = this.monsterDetail;
+    this.bsModalRef.content.selectedItems = this.selectedItemMasters;
+    this.bsModalRef.content.itemsList = this.ListItemMasters;
+    this.bsModalRef.content.recordName = this.monsterDetail.name;
+    this.bsModalRef.content.recordImage = this.monsterDetail.imageUrl;
+  }
 
-  
+  AddRemoveMonsters() {
+    
+    this.bsModalRef = this.modalService.show(AddRemoveAssociateMonstersComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Select Monsters';
+    this.bsModalRef.content.button = 'Save';
+    this.bsModalRef.content.monster = this.monsterDetail;
+    this.bsModalRef.content.selectedItems = this.selectedAssociateMonsterTemplates;
+    this.bsModalRef.content.itemsList = this.ListAssociateMonsterTemplates;
+    this.bsModalRef.content.recordName = this.monsterDetail.name;
+    this.bsModalRef.content.recordImage = this.monsterDetail.imageUrl;
+  }
+
+  AddRemoveAbilities() {
+    
+    this.bsModalRef = this.modalService.show(AddRemoveAssociateAbilitiesComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Select Abilities';
+    this.bsModalRef.content.button = 'Save';
+    this.bsModalRef.content.monster = this.monsterDetail;
+    this.bsModalRef.content.selectedItems = this.selectedAbilities;
+    this.bsModalRef.content.itemsList = this.ListAbilities;
+    this.bsModalRef.content.recordName = this.monsterDetail.name;
+    this.bsModalRef.content.recordImage = this.monsterDetail.imageUrl;
+  }
+
+  AddRemoveBEs() {
+    
+    this.bsModalRef = this.modalService.show(AddRemoveAssociateBuffAndEffectsComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Select Buffs & Effects';
+    this.bsModalRef.content.button = 'Save';
+    this.bsModalRef.content.monster = this.monsterDetail;
+    this.bsModalRef.content.selectedItems = this.selectedBuffAndEffects;
+    this.bsModalRef.content.itemsList = this.ListBuffAndEffects;
+    this.bsModalRef.content.recordName = this.monsterDetail.name;
+    this.bsModalRef.content.recordImage = this.monsterDetail.imageUrl;
+  }
+
+  AddRemoveSpells() {
+    
+    this.bsModalRef = this.modalService.show(AddRemoveAssociateSpellsComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Select Spells';
+    this.bsModalRef.content.button = 'Save';
+    this.bsModalRef.content.monster = this.monsterDetail;
+    this.bsModalRef.content.selectedItems = this.selectedSpells;
+    this.bsModalRef.content.itemsList = this.ListSpells;
+    this.bsModalRef.content.recordName = this.monsterDetail.name;
+    this.bsModalRef.content.recordImage = this.monsterDetail.imageUrl;
+  }  
 }

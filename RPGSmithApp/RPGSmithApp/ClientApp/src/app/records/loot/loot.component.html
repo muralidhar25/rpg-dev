@@ -166,7 +166,7 @@
                 </div>
               </div>
               <!--(click)="GoToDetails(ItemMaster)"-->
-              <div class="card-body">
+              <div class="card-body" (click)="GoToDetails(ItemMaster)">
                 <!--<h4 class="card-title" popover="{{ItemMaster.itemName}}" triggers="hover">{{ItemMaster.itemName}}</h4>-->
                 <h4 class="card-title" *ngIf="ItemMaster?.quantity<=1" popover="{{ItemMaster?.itemName}}" triggers="hover">{{ItemMaster?.itemName}}</h4>
                 <h4 class="card-title" *ngIf="ItemMaster?.quantity>1" popover="({{ItemMaster?.quantity}}) {{ItemMaster?.itemName}}" triggers="hover">({{ItemMaster?.quantity}}) {{ItemMaster?.itemName}}</h4>

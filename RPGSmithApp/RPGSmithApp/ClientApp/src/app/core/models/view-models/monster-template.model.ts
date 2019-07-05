@@ -18,7 +18,8 @@ export class MonsterTemplate {
     monsterMetatags?: string,
     monsterId?: number,
     addToCombatTracker?: boolean,
-    isBundle?: boolean
+    isBundle?: boolean,
+    monsterTemplateItemVM?:any[]
   ) {
     this.monsterTemplateId = monsterTemplateId;
     this.ruleSetId = ruleSetId;
@@ -54,6 +55,7 @@ export class MonsterTemplate {
     this.monsterId = monsterId;
     this.addToCombatTracker = addToCombatTracker;
     this.isBundle = isBundle;
+    this.monsterTemplateItemVM = monsterTemplateItemVM;
   }
 
   public monsterTemplateId: number;
@@ -95,6 +97,7 @@ export class MonsterTemplate {
   public monsterId: number;
   public addToCombatTracker: boolean;
   public isBundle: boolean;
+  public monsterTemplateItemVM: any[];
   //public monsterImage: string;
   //public monsterName: string;
   //public monsterMetatags: string;

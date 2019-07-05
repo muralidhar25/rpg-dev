@@ -195,12 +195,12 @@
                         </div>
                         <div class="item-actions mobile-buttons">
                           <button type="button" (click)="enableCombatTracker(monster)" class="btn btn-accent" [ngClass]="{'icon-Rec-Add':!monster?.addToCombatTracker,'icon-Rec-Remove':monster?.addToCombatTracker}"> COMBAT</button>
-                          <button type="button" (click)="dropMonsterItems(monster)" class="btn btn-accent icon-Rec-Drop"> DROP</button>
+                          <button  *ngIf="monster?.itemsCount" type="button" (click)="dropMonsterItems(monster)" class="btn btn-accent icon-Rec-Drop"> DROP</button>
                           <button *ngIf="monster?.monsterTemplate?.command"  type="button" (click)="useMonster(monster)" class="btn btn-accent icon-Tile-Execute"> ATTACK</button>
                         </div>
                         <div class="item-actions">
                           <button type="button" (click)="enableCombatTracker(monster)" class="btn btn-accent" [ngClass]="{'icon-Rec-Add':!monster?.addToCombatTracker,'icon-Rec-Remove':monster?.addToCombatTracker}"> COMBAT</button>
-                          <button type="button" (click)="dropMonsterItems(monster)" class="btn btn-accent icon-Rec-Drop"> DROP</button>
+                          <button *ngIf="monster?.itemsCount" type="button" (click)="dropMonsterItems(monster)" class="btn btn-accent icon-Rec-Drop"> DROP</button>
                           <button  *ngIf="monster?.monsterTemplate?.command" type="button" (click)="useMonster(monster)" class="btn btn-accent icon-Tile-Execute"> ATTACK</button>
                         </div>
                         </div>

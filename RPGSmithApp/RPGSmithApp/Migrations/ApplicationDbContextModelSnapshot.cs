@@ -2158,6 +2158,8 @@ namespace RPGSmithApp.Migrations
 
                     b.Property<bool>("IsDeleted");
 
+                    b.Property<bool?>("IsEquipped");
+
                     b.Property<bool?>("IsIdentified");
 
                     b.Property<bool>("IsMagical");
@@ -2924,7 +2926,7 @@ namespace RPGSmithApp.Migrations
 
                     b.Property<decimal>("Percentage");
 
-                    b.Property<int>("Qty");
+                    b.Property<string>("Qty");
 
                     b.Property<int>("SortOrder");
 

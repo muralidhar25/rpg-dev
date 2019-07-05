@@ -25,7 +25,7 @@ namespace DAL.Models
 
         public bool? IsIdentified { get; set; }
         public bool? IsVisible { get; set; }
-        //public bool? IsEquipped { get; set; }
+        public bool? IsEquipped { get; set; }
         [Column(TypeName = "decimal(18, 3)")]
         public decimal TotalWeight { get; set; }
 
@@ -157,5 +157,9 @@ namespace DAL.Models
 
         public virtual ItemMasterMonsterItem ItemMasterMonsterItem { get; set; }
         public virtual BuffAndEffect BuffAndEffect { get; set; }
+    }
+    public class ItemMasterMonsterItemVM : ItemMasterMonsterItem {
+        public ItemMasterMonsterItem Container { get; set; }
+        public List<ItemMasterMonsterItem> ContainerItems { get; set; }
     }
 }

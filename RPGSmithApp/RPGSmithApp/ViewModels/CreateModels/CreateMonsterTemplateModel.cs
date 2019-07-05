@@ -55,4 +55,5 @@ namespace RPGSmithApp.ViewModels.CreateModels
         public List<MonsterTemplateMonster> MonsterTemplateAssociateMonsterTemplateVM { get; set; }
         public List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM { get; set; }
     }
+    
 }
