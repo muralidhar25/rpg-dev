@@ -20,7 +20,7 @@ export class MonsterTemplate {
     monsterId?: number,
     addToCombatTracker?: boolean,
     isBundle?: boolean,
-    monsterTemplateItemVM?:any[]
+    monsterTemplateItemVM?:any[],
     
     randomizationEngine?:randomization[]
   ) {

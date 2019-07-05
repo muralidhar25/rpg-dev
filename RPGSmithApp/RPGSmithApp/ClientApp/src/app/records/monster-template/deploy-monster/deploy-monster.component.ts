@@ -88,12 +88,12 @@ export class DeployMonsterComponent implements OnInit {
 
   saveCounter() {
     if (this.monsterInfo.isBundle) {
-      
+
       this.alertService.startLoadingMessage("", "Deploying Monster Template...");
       let BundleItemsToDeploy: any = [];
       if (this.bundleItems) {
         if (this.bundleItems.length) {
-          
+
           this.bundleItems.map((b) => {
             debugger
             let itemQtyCount = +b.quantity;
@@ -131,7 +131,7 @@ export class DeployMonsterComponent implements OnInit {
               });
             }
 
-          
+
           })
         }
       }
@@ -153,7 +153,7 @@ export class DeployMonsterComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => { });
-      
+
       //this.monsterTemplateService.deployMonster<any>(deployMonsterInfo)
       //  .subscribe(data => {
       //    this.alertService.stopLoadingMessage();
@@ -186,52 +186,52 @@ export class DeployMonsterComponent implements OnInit {
           let challangeRating = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.challangeRating ? this.monsterInfo.challangeRating : '0', this.customDices)
 
 
-        healthNumberArray.push(health);
-        armorClassNumberArray.push(armorClass);
-        xpValueNumberArray.push(xpValue);
-        challangeRatingNumberArray.push(challangeRating);
-      }
-    }
-    var reItems = [];
-    if (this.monsterInfo.isRandomizationEngine) {
-      reItems = ServiceUtil.getItemsFromRandomizationEngine(this.monsterInfo.randomizationEngine, this.alertService);
-    }    
-    debugger;
-    let deployMonsterInfo = {
-      qty: this.value,
-      monsterTemplateId: this.monsterInfo.monsterTemplateId,
-      rulesetId: this.monsterInfo.ruleSetId,
-      healthCurrent: healthNumberArray,
-      healthMax: healthNumberArray,
-      armorClass: armorClassNumberArray,
-      xpValue: xpValueNumberArray,
-      challangeRating: challangeRatingNumberArray,
-      addToCombat: this.addToCombat,
-      isBundle: this.monsterInfo.isBundle,
-      reItems: reItems 
-    }
-    this.alertService.startLoadingMessage("", "Deploying Monster Template...");
-    this.monsterTemplateService.deployMonster<any>(deployMonsterInfo)
-      .subscribe(data => {
-        this.alertService.stopLoadingMessage();
-        let message = "Monster Template has been deployed successfully.";
-        //if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
-        this.alertService.showMessage(message, "", MessageSeverity.success);
-        this.close()
-      }, error => {
-        this.alertService.stopLoadingMessage();
-        this.isLoading = false;
-        let _message = "Unable to deploy ";
-        let Errors = Utilities.ErrorDetail(_message, error);
-        //let Errors = Utilities.ErrorDetail("", error);
-        if (Errors.sessionExpire) {
-          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-          this.authService.logout(true);
+          healthNumberArray.push(health);
+          armorClassNumberArray.push(armorClass);
+          xpValueNumberArray.push(xpValue);
+          challangeRatingNumberArray.push(challangeRating);
         }
-      }, () => { });
+      }
+      var reItems = [];
+      if (this.monsterInfo.isRandomizationEngine) {
+        reItems = ServiceUtil.getItemsFromRandomizationEngine(this.monsterInfo.randomizationEngine, this.alertService);
+      }
+      debugger;
+      let deployMonsterInfo = {
+        qty: this.value,
+        monsterTemplateId: this.monsterInfo.monsterTemplateId,
+        rulesetId: this.monsterInfo.ruleSetId,
+        healthCurrent: healthNumberArray,
+        healthMax: healthNumberArray,
+        armorClass: armorClassNumberArray,
+        xpValue: xpValueNumberArray,
+        challangeRating: challangeRatingNumberArray,
+        addToCombat: this.addToCombat,
+        isBundle: this.monsterInfo.isBundle,
+        reItems: reItems
+      }
+      this.alertService.startLoadingMessage("", "Deploying Monster Template...");
+      this.monsterTemplateService.deployMonster<any>(deployMonsterInfo)
+        .subscribe(data => {
+          this.alertService.stopLoadingMessage();
+          let message = "Monster Template has been deployed successfully.";
+          //if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
+          this.alertService.showMessage(message, "", MessageSeverity.success);
+          this.close()
+        }, error => {
+          this.alertService.stopLoadingMessage();
+          this.isLoading = false;
+          let _message = "Unable to deploy ";
+          let Errors = Utilities.ErrorDetail(_message, error);
+          //let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => { });
 
 
-
+    }
   }
 
   increment() {

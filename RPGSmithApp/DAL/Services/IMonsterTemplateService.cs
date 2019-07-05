@@ -38,7 +38,7 @@ namespace DAL.Services
         List<MonsterTemplateItemMaster> insertAssociateItemMasters(List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM);
         List<RandomizationEngine> insertRandomizationEngines(List<RandomizationEngine> RandomizationEngine, int MonsterTemplateId);
         void deployMonster(DeployMonsterTemplate model);
-        List<Monster> SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1);
+        //List<Monster> SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1);
 
         List<MonsterWithItemCount> SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1);
         Task enableCombatTracker(int monsterId, bool enableCombatTracker);

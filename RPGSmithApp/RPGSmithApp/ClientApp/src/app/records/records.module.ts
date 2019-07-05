@@ -96,7 +96,7 @@ import { SingleItemMonsterComponent } from "./monster-template/single-item/singl
     AddRemoveAssociateAbilitiesComponent,
     AddRemoveAssociateBuffAndEffectsComponent,
     AddRemoveAssociateMonstersComponent,
-    AddRemoveAssociateSpellsComponent
+    AddRemoveAssociateSpellsComponent,
     
     SingleItemMonsterComponent
   ],
@@ -142,7 +142,7 @@ import { SingleItemMonsterComponent } from "./monster-template/single-item/singl
     MonsterBundleDetailsComponent,
     LootDetailsComponent,
     
-    SingleItemMonsterComponent
+    SingleItemMonsterComponent,
     MonsterItemDetailsComponent,
     EditMonsterItemComponent,
     AddMonsterContainerComponent,
@@ -173,7 +173,7 @@ import { SingleItemMonsterComponent } from "./monster-template/single-item/singl
     CreateMonsterGroupComponent,
     AddMonsterComponent,
     
-    SingleItemMonsterComponent
+    SingleItemMonsterComponent,
     AddMonsterTemplateComponent,
     EditMonsterItemComponent,
     AddMonsterContainerComponent,
