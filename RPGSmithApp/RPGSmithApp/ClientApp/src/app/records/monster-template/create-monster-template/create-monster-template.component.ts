@@ -27,6 +27,7 @@ import { randomization } from '../../../core/models/view-models/randomization.mo
 import { forEach } from '@angular/router/src/utils/collection';
 import { debounce } from 'rxjs/operator/debounce';
 import { isEmpty } from 'rxjs/operators';
+import { ServiceUtil } from '../../../core/services/service-util';
 
 @Component({
   selector: 'app-create-monster-template',
@@ -465,11 +466,18 @@ export class CreateMonsterTemplateComponent implements OnInit {
     let health: number = 0;
     let challangeRating: number = 0;
     let xpValue: number = 0;
+    let reItems: any;
     if (this.isCreatingFromMonsterScreen) {
       armorClass = modal.armorClass ? DiceService.rollDiceExternally(this.alertService, modal.armorClass, this.customDices) : 0;
       health = modal.health ? DiceService.rollDiceExternally(this.alertService, modal.health, this.customDices) : 0;
       challangeRating = modal.challangeRating ? DiceService.rollDiceExternally(this.alertService, modal.challangeRating, this.customDices) : 0;
       xpValue = modal.xPValue ? DiceService.rollDiceExternally(this.alertService, modal.xPValue, this.customDices) : 0;
+      modal.REitems = ServiceUtil.getItemsFromRandomizationEngine(modal.randomizationEngine, this.alertService);
+      if (modal.REitems && modal.REitems.length) {
+        modal.REitems.map((re) => {
+          re.deployCount = 1;
+        });
+      }
     }
     this.monsterTemplateService.createMonsterTemplate<any>(modal, this.isCreatingFromMonsterScreen, armorClass, health, challangeRating, xpValue)
       .subscribe(

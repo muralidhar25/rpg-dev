@@ -217,7 +217,8 @@ namespace RPGSmithApp.Controllers
                         monsterTemplateId = result.MonsterTemplateId,
                         rulesetId = result.RuleSetId,
                         qty = 1,
-                        xpValue = xpValueList
+                        xpValue = xpValueList,
+                        REItems = model.REItems
                     };
                     _monsterTemplateService.deployMonster(deploy);
                 }

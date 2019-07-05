@@ -396,7 +396,7 @@ namespace DAL.Services
             _context.MonsterBuffAndEffects.RemoveRange(_context.MonsterBuffAndEffects.Where(x => x.MonsterId == item.MonsterId));
             _context.MonsterMonsters.RemoveRange(_context.MonsterMonsters.Where(x => x.MonsterId == item.MonsterId));
             _context.MonsterCommands.RemoveRange(_context.MonsterCommands.Where(x => x.MonsterId == item.MonsterId));
-           
+
             try
             {
                 _context.SaveChanges();
@@ -466,50 +466,51 @@ namespace DAL.Services
                 var itemsList = _context.ItemMasterMonsterItems.Where(x => x.MonsterId == item.MonsterId && x.IsDeleted != true).ToList();
                 foreach (var MI in itemsList)
                 {
-                    if (!monsterTemplateItemVM.Where(x=>x.ItemId==MI.ItemId).Any())
+                    if (!monsterTemplateItemVM.Where(x => x.ItemId == MI.ItemId).Any())
                     {
                         MI.IsDeleted = true;
                     }
                 }
                 foreach (var MI in monsterTemplateItemVM)
-                {                    
-                    if (MI.ItemId==0)
+                {
+                    if (MI.ItemId == 0)
                     {
                         int qtyToSave = 1;
                         var ItemMasterMonsterItem = //_itemMasterService.GetItemMasterById(MI.ItemMasterId);
-                        _context.ItemMasters.Where(x => x.ItemMasterId == MI.ItemMasterId && x.IsDeleted!=true)
-                            .Select(x=>new ItemMasterMonsterItem() {
-                                Command=x.Command,
-                                CommandName=x.CommandName,
-                                ContainerVolumeMax=x.ContainerVolumeMax,
-                                ContainerWeightMax=x.ContainerWeightMax,
-                                ContainerWeightModifier=x.ContainerWeightModifier,
-                                IsConsumable=x.IsConsumable,
-                                IsContainer=x.IsContainer,
-                                IsEquipped=false,
-                                IsIdentified=false,
-                                IsMagical=x.IsMagical,
-                                IsVisible=false,
-                                ItemCalculation=x.ItemCalculation,
-                                ItemImage=x.ItemImage,
-                                ItemName=x.ItemName,
-                                ItemStats=x.ItemStats,
-                                ItemVisibleDesc=x.ItemVisibleDesc,
-                                Metatags=x.Metatags,
-                                PercentReduced=x.PercentReduced,
-                                Quantity= qtyToSave,
-                                Rarity=x.Rarity,
-                                TotalWeight= qtyToSave*x.Weight,
-                                Value=x.Value,
-                                Volume=x.Volume,
-                                Weight=x.Weight,
-                                TotalWeightWithContents=x.TotalWeightWithContents,
-                                ItemMasterId =MI.ItemMasterId,
+                        _context.ItemMasters.Where(x => x.ItemMasterId == MI.ItemMasterId && x.IsDeleted != true)
+                            .Select(x => new ItemMasterMonsterItem()
+                            {
+                                Command = x.Command,
+                                CommandName = x.CommandName,
+                                ContainerVolumeMax = x.ContainerVolumeMax,
+                                ContainerWeightMax = x.ContainerWeightMax,
+                                ContainerWeightModifier = x.ContainerWeightModifier,
+                                IsConsumable = x.IsConsumable,
+                                IsContainer = x.IsContainer,
+                                IsEquipped = false,
+                                IsIdentified = false,
+                                IsMagical = x.IsMagical,
+                                IsVisible = false,
+                                ItemCalculation = x.ItemCalculation,
+                                ItemImage = x.ItemImage,
+                                ItemName = x.ItemName,
+                                ItemStats = x.ItemStats,
+                                ItemVisibleDesc = x.ItemVisibleDesc,
+                                Metatags = x.Metatags,
+                                PercentReduced = x.PercentReduced,
+                                Quantity = qtyToSave,
+                                Rarity = x.Rarity,
+                                TotalWeight = qtyToSave * x.Weight,
+                                Value = x.Value,
+                                Volume = x.Volume,
+                                Weight = x.Weight,
+                                TotalWeightWithContents = x.TotalWeightWithContents,
+                                ItemMasterId = MI.ItemMasterId,
                                 MonsterId = item.MonsterId,
 
-                            } )
+                            })
                             .FirstOrDefault();
-                        if (ItemMasterMonsterItem!=null)
+                        if (ItemMasterMonsterItem != null)
                         {
                             _context.ItemMasterMonsterItems.Add(ItemMasterMonsterItem);
 
@@ -556,10 +557,10 @@ namespace DAL.Services
 
                             //_context.SaveChanges();
                         }
-                        
+
                     }
                 }
-                
+
                 _context.SaveChanges();
 
 
@@ -789,7 +790,7 @@ namespace DAL.Services
                     _MonsterTemplate.IsBundle = row["IsBundle"] == DBNull.Value ? false : Convert.ToBoolean(row["IsBundle"]);
 
                     _MonsterTemplate.RuleSet = ruleset;
-                    _MonsterTemplate.BundleItems = new List<MonsterTemplateBundleItem>();
+                    _MonsterTemplate.BundleItems = new List<MonsterTemplate_BundleItemsWithRandomItems>();
                     if (ds.Tables.Count > 2 && _MonsterTemplate.IsBundle)
                     {
                         if (ds.Tables[2].Rows.Count > 0)
@@ -799,21 +800,55 @@ namespace DAL.Services
                                 int monsterBundleId = BundleItemRow["BundleID"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["BundleID"]);
                                 if (monsterBundleId == _MonsterTemplate.MonsterTemplateId)
                                 {
-                                    MonsterTemplateBundleItem obj = new MonsterTemplateBundleItem()
+                                    MonsterTemplate_BundleItemsWithRandomItems obj = new MonsterTemplate_BundleItemsWithRandomItems()
                                     {
                                         BundleId = monsterBundleId,
                                         BundleItemId = BundleItemRow["BundleItemId"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["BundleItemId"]),
                                         MonsterTemplateId = BundleItemRow["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["MonsterTemplateId"]),
                                         Quantity = BundleItemRow["Quantity"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["Quantity"]),
-                                        MonsterTemplate = new MonsterTemplate()
+                                        MonsterTemplate = new MonsterTemplate_WithRandomItems()
                                         {
                                             ArmorClass = BundleItemRow["ArmorClass"] == DBNull.Value ? "0" : BundleItemRow["ArmorClass"].ToString(),
                                             ChallangeRating = BundleItemRow["ChallangeRating"] == DBNull.Value ? "0" : BundleItemRow["ChallangeRating"].ToString(),
                                             XPValue = BundleItemRow["XPValue"] == DBNull.Value ? "0" : BundleItemRow["XPValue"].ToString(),
                                             Health = BundleItemRow["Health"] == DBNull.Value ? "0" : BundleItemRow["Health"].ToString(),
                                             RuleSetId = rulesetId,
+                                            IsRandomizationEngine = BundleItemRow["IsRandomizationEngine"] == DBNull.Value ? false : Convert.ToBoolean(BundleItemRow["IsRandomizationEngine"]),
+                                            RandomizationEngine = new List<RandomizationEngine>()
+
+
                                         }
+
+
                                     };
+                                    //obj.MonsterTemplate.RandomizationEngine
+                                    if (ds.Tables[3].Rows.Count > 0)
+                                    {
+                                        foreach (DataRow RErow in ds.Tables[3].Rows)
+                                        {
+                                            int MT_ID = RErow["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["MonsterTemplateId"]);
+                                            if (obj.MonsterTemplateId == MT_ID)
+                                            {
+                                                RandomizationEngine RE = new RandomizationEngine();
+                                                RE.RandomizationEngineId = RErow["RandomizationEngineId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["RandomizationEngineId"]);
+                                                RE.Qty = RErow["Qty"] == DBNull.Value ? string.Empty : RErow["Qty"].ToString();
+                                                RE.Percentage = RErow["Percentage"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["Percentage"]);
+                                                RE.SortOrder = RErow["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["SortOrder"]);
+                                                RE.ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]);
+                                                RE.IsOr = RErow["IsOr"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsOr"]);
+                                                RE.IsDeleted = RErow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsDeleted"]);
+
+                                                RE.ItemMaster = new ItemMaster()
+                                                {
+                                                    ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]),
+                                                    ItemName = RErow["ItemName"] == DBNull.Value ? null : RErow["ItemName"].ToString(),
+                                                    ItemImage = RErow["ItemImage"] == DBNull.Value ? null : RErow["ItemImage"].ToString()
+                                                };
+                                                obj.MonsterTemplate.RandomizationEngine.Add(RE);
+                                            }
+                                        }
+                                    }
+
                                     _MonsterTemplate.BundleItems.Add(obj);
                                 }
 
@@ -1321,12 +1356,12 @@ namespace DAL.Services
                 foreach (DataRow row in ds.Tables[10].Rows)
                 {
                     ItemMasterForMonsterTemplate i = new ItemMasterForMonsterTemplate();
-                   
-                   
+
+
 
                     i.ItemMasterId = row["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemMasterId"]);
                     i.ImageUrl = row["ItemImage"] == DBNull.Value ? null : row["ItemImage"].ToString();
-                    i.Name = row["ItemName"] == DBNull.Value ? null : row["ItemName"].ToString();                    
+                    i.Name = row["ItemName"] == DBNull.Value ? null : row["ItemName"].ToString();
                     i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
 
                     res.itemMasterList.Add(i);///////
@@ -1336,13 +1371,14 @@ namespace DAL.Services
             return res;
         }
 
-        public void addRemoveMonsterRecords(List<AddRemoveRecords> model, int monsterId, string type) {
-            if (type=="I")
+        public void addRemoveMonsterRecords(List<AddRemoveRecords> model, int monsterId, string type)
+        {
+            if (type == "I")
             {
                 var itemsList = _context.ItemMasterMonsterItems.Where(x => x.MonsterId == monsterId && x.IsDeleted != true).ToList();
                 foreach (var MI in itemsList)
                 {
-                    if (!model.Where(x => x.ItemId == MI.ItemId && x.Selected==true).Any())
+                    if (!model.Where(x => x.ItemId == MI.ItemId && x.Selected == true).Any())
                     {
                         MI.IsDeleted = true;
                     }
@@ -1431,7 +1467,7 @@ namespace DAL.Services
                                 });
                             }
 
-                           
+
                         }
 
                     }
@@ -1501,7 +1537,7 @@ namespace DAL.Services
                 List<MonsterMonster> Mlist = new List<MonsterMonster>();
                 foreach (var be in model)
                 {
-                    if (be.Selected==true)
+                    if (be.Selected == true)
                     {
                         MonsterMonster obj = new MonsterMonster()
                         {
@@ -1510,7 +1546,7 @@ namespace DAL.Services
                         };
                         Mlist.Add(obj);
                     }
-                   
+
                 }
                 _context.MonsterMonsters.AddRange(Mlist);
                 _context.SaveChanges();
@@ -1651,7 +1687,8 @@ namespace DAL.Services
             {
                 DT_reItems = utility.ToDataTable<REItems>(model.REItems);
             }
-            else {
+            else
+            {
                 model.REItems.Add(new REItems() { itemMasterId = 0, qty = 0 });
                 DT_reItems = utility.ToDataTable<REItems>(model.REItems);
             }
@@ -1782,20 +1819,20 @@ namespace DAL.Services
                 {
                     MonsterWithItemCount _monster = new MonsterWithItemCount()
                     {
-                        AddToCombatTracker= row["AddToCombatTracker"] == DBNull.Value ? false : Convert.ToBoolean(row["AddToCombatTracker"]),
-                        ArmorClass= row["ArmorClass"] == DBNull.Value ? 0 : Convert.ToInt32(row["ArmorClass"].ToString()),
-                        ChallangeRating= row["ChallangeRating"] == DBNull.Value ? 0 : Convert.ToInt32(row["ChallangeRating"].ToString()),
-                        HealthCurrent= row["HealthCurrent"] == DBNull.Value ? 0 : Convert.ToInt32(row["HealthCurrent"].ToString()),
-                        HealthMax= row["HealthMax"] == DBNull.Value ? 0 : Convert.ToInt32(row["HealthMax"].ToString()),
-                        ImageUrl= row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString(),
-                        IsDeleted= row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]),
-                        Metatags= row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString(),
-                        MonsterId= row["MonsterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterId"].ToString()),
-                        MonsterTemplateId= row["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterTemplateId"].ToString()),
-                        Name= row["Name"] == DBNull.Value ? null : row["Name"].ToString(),
-                        RuleSetId= row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString()),
-                        XPValue= row["XPValue"] == DBNull.Value ? 0 : Convert.ToInt32(row["XPValue"].ToString()),
-                        ItemsCount = row["ItemsCount"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemsCount"].ToString()),                        
+                        AddToCombatTracker = row["AddToCombatTracker"] == DBNull.Value ? false : Convert.ToBoolean(row["AddToCombatTracker"]),
+                        ArmorClass = row["ArmorClass"] == DBNull.Value ? 0 : Convert.ToInt32(row["ArmorClass"].ToString()),
+                        ChallangeRating = row["ChallangeRating"] == DBNull.Value ? 0 : Convert.ToInt32(row["ChallangeRating"].ToString()),
+                        HealthCurrent = row["HealthCurrent"] == DBNull.Value ? 0 : Convert.ToInt32(row["HealthCurrent"].ToString()),
+                        HealthMax = row["HealthMax"] == DBNull.Value ? 0 : Convert.ToInt32(row["HealthMax"].ToString()),
+                        ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString(),
+                        IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]),
+                        Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString(),
+                        MonsterId = row["MonsterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterId"].ToString()),
+                        MonsterTemplateId = row["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterTemplateId"].ToString()),
+                        Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString(),
+                        RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString()),
+                        XPValue = row["XPValue"] == DBNull.Value ? 0 : Convert.ToInt32(row["XPValue"].ToString()),
+                        ItemsCount = row["ItemsCount"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemsCount"].ToString()),
                     };
 
 
@@ -1999,40 +2036,40 @@ namespace DAL.Services
                 ItemMaster obj = _context.ItemMasters.Where(x => x.ItemMasterId == item.ItemMasterId).FirstOrDefault();
                 if (obj != null)
                 {
-                    int rulesetId = ItemMasterMonsterItem.RuleSetId!=null? (int)ItemMasterMonsterItem.RuleSetId: obj.RuleSetId;
+                    int rulesetId = ItemMasterMonsterItem.RuleSetId != null ? (int)ItemMasterMonsterItem.RuleSetId : obj.RuleSetId;
                     var monster = _context.Monsters.Where(x => x.MonsterId == monsterId).FirstOrDefault();
                     if (monster != null)
                     {
-                        rulesetId = monster.RuleSetId ;
+                        rulesetId = monster.RuleSetId;
                     }
                     _itemMasterService.CreateItemMasterLoot(obj, new ItemMasterLoot()
                     {
                         IsShow = true,
                         Quantity = ItemMasterMonsterItem.Quantity,
-                        Command= ItemMasterMonsterItem.Command,
-                        CommandName= ItemMasterMonsterItem.CommandName,
-                       ContainerVolumeMax =ItemMasterMonsterItem.ContainerVolumeMax,
-                       ContainerWeightMax =ItemMasterMonsterItem.ContainerWeightMax,
-                        ContainerWeightModifier=ItemMasterMonsterItem.ContainerWeightModifier,
-                        IsConsumable=ItemMasterMonsterItem.IsConsumable,
-                        IsContainer=ItemMasterMonsterItem.IsContainer,
-                        IsIdentified=ItemMasterMonsterItem.IsIdentified,
-                        IsMagical=ItemMasterMonsterItem.IsMagical,
-                        IsVisible=ItemMasterMonsterItem.IsVisible,
-                        ItemCalculation=ItemMasterMonsterItem.ItemCalculation,
-                        ItemImage=ItemMasterMonsterItem.ItemImage,
-                        ItemName=ItemMasterMonsterItem.ItemName,
-                        ItemStats=ItemMasterMonsterItem.ItemStats,
-                        ItemVisibleDesc=ItemMasterMonsterItem.ItemVisibleDesc,
-                        Metatags=ItemMasterMonsterItem.Metatags,
-                        PercentReduced=ItemMasterMonsterItem.PercentReduced,
-                        Rarity=ItemMasterMonsterItem.Rarity,
-                        RuleSetId= rulesetId,
-                        TotalWeight=ItemMasterMonsterItem.TotalWeight,
-                        TotalWeightWithContents=ItemMasterMonsterItem.TotalWeightWithContents,
-                        Value=ItemMasterMonsterItem.Value,
-                        Volume=ItemMasterMonsterItem.Volume,
-                        Weight=ItemMasterMonsterItem.Weight,
+                        Command = ItemMasterMonsterItem.Command,
+                        CommandName = ItemMasterMonsterItem.CommandName,
+                        ContainerVolumeMax = ItemMasterMonsterItem.ContainerVolumeMax,
+                        ContainerWeightMax = ItemMasterMonsterItem.ContainerWeightMax,
+                        ContainerWeightModifier = ItemMasterMonsterItem.ContainerWeightModifier,
+                        IsConsumable = ItemMasterMonsterItem.IsConsumable,
+                        IsContainer = ItemMasterMonsterItem.IsContainer,
+                        IsIdentified = ItemMasterMonsterItem.IsIdentified,
+                        IsMagical = ItemMasterMonsterItem.IsMagical,
+                        IsVisible = ItemMasterMonsterItem.IsVisible,
+                        ItemCalculation = ItemMasterMonsterItem.ItemCalculation,
+                        ItemImage = ItemMasterMonsterItem.ItemImage,
+                        ItemName = ItemMasterMonsterItem.ItemName,
+                        ItemStats = ItemMasterMonsterItem.ItemStats,
+                        ItemVisibleDesc = ItemMasterMonsterItem.ItemVisibleDesc,
+                        Metatags = ItemMasterMonsterItem.Metatags,
+                        PercentReduced = ItemMasterMonsterItem.PercentReduced,
+                        Rarity = ItemMasterMonsterItem.Rarity,
+                        RuleSetId = rulesetId,
+                        TotalWeight = ItemMasterMonsterItem.TotalWeight,
+                        TotalWeightWithContents = ItemMasterMonsterItem.TotalWeightWithContents,
+                        Value = ItemMasterMonsterItem.Value,
+                        Volume = ItemMasterMonsterItem.Volume,
+                        Weight = ItemMasterMonsterItem.Weight,
                     },
                     ItemMasterLootSpells,
                    ItemMasterLootAbilitys,
@@ -2043,7 +2080,7 @@ namespace DAL.Services
             }
 
             int pendingItemsCount = 0;
-            if (monsterId>0)
+            if (monsterId > 0)
             {
                 pendingItemsCount = _context.ItemMasterMonsterItems.Where(x => x.MonsterId == monsterId && x.IsDeleted != true).Count();
             }
@@ -2104,33 +2141,35 @@ namespace DAL.Services
                         Stats = ItemRow["Stats"] == DBNull.Value ? null : ItemRow["Stats"].ToString(),
                         XPValue = ItemRow["XPValue"] == DBNull.Value ? null : ItemRow["XPValue"].ToString(),
                         IsBundle = ItemRow["IsBundle"] == DBNull.Value ? false : Convert.ToBoolean(ItemRow["IsBundle"]),
-                        BundleItems = new List<MonsterTemplateBundleItem>()
+                        BundleItems = new List<MonsterTemplate_BundleItemsWithRandomItems>()
                     };
-                    if (ds.Tables.Count>1 && MonsterTemp.IsBundle)
+                    if (ds.Tables.Count > 1 && MonsterTemp.IsBundle)
                     {
                         if (ds.Tables[1].Rows.Count > 0)
                         {
-                            foreach (DataRow BundleItemRow in ds.Tables[1].Rows) {
+                            foreach (DataRow BundleItemRow in ds.Tables[1].Rows)
+                            {
                                 int monsterBundleId = BundleItemRow["BundleID"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["BundleID"]);
-                                if (monsterBundleId==MonsterTemp.MonsterTemplateId)
+                                if (monsterBundleId == MonsterTemp.MonsterTemplateId)
                                 {
-                                    MonsterTemplateBundleItem obj = new MonsterTemplateBundleItem()
+                                    MonsterTemplate_BundleItemsWithRandomItems obj = new MonsterTemplate_BundleItemsWithRandomItems()
                                     {
-                                        BundleId= monsterBundleId,
-                                        BundleItemId= BundleItemRow["BundleItemId"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["BundleItemId"]),
-                                        MonsterTemplateId= BundleItemRow["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["MonsterTemplateId"]),
-                                        Quantity= BundleItemRow["Quantity"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["Quantity"]),
-                                        MonsterTemplate=new MonsterTemplate() {
+                                        BundleId = monsterBundleId,
+                                        BundleItemId = BundleItemRow["BundleItemId"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["BundleItemId"]),
+                                        MonsterTemplateId = BundleItemRow["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["MonsterTemplateId"]),
+                                        Quantity = BundleItemRow["Quantity"] == DBNull.Value ? 0 : Convert.ToInt32(BundleItemRow["Quantity"]),
+                                        MonsterTemplate = new MonsterTemplate_WithRandomItems()
+                                        {
                                             ArmorClass = BundleItemRow["ArmorClass"] == DBNull.Value ? "0" : BundleItemRow["ArmorClass"].ToString(),
-                                            ChallangeRating= BundleItemRow["ChallangeRating"] == DBNull.Value ? "0" : BundleItemRow["ChallangeRating"].ToString(),
-                                            XPValue= BundleItemRow["XPValue"] == DBNull.Value ? "0" : BundleItemRow["XPValue"].ToString(),
-                                            Health= BundleItemRow["Health"] == DBNull.Value ? "0" : BundleItemRow["Health"].ToString(),
+                                            ChallangeRating = BundleItemRow["ChallangeRating"] == DBNull.Value ? "0" : BundleItemRow["ChallangeRating"].ToString(),
+                                            XPValue = BundleItemRow["XPValue"] == DBNull.Value ? "0" : BundleItemRow["XPValue"].ToString(),
+                                            Health = BundleItemRow["Health"] == DBNull.Value ? "0" : BundleItemRow["Health"].ToString(),
                                             RuleSetId = rulesetId,
                                         }
                                     };
                                     MonsterTemp.BundleItems.Add(obj);
                                 }
-                               
+
                             }
                         }
                     }
@@ -2156,13 +2195,16 @@ namespace DAL.Services
             }
             return false;
         }
-        public ItemMasterMonsterItem GetMonsterItemDetailByItemId(int itemId) {
+        public ItemMasterMonsterItem GetMonsterItemDetailByItemId(int itemId)
+        {
             return _context.ItemMasterMonsterItems.Where(x => x.ItemId == itemId && x.IsDeleted != true).FirstOrDefault();
         }
-        public void AddMonsters(List<DeployMonsterTemplate> model) {
+        public void AddMonsters(List<DeployMonsterTemplate> model)
+        {
             foreach (var item in model)
             {
-                try {
+                try
+                {
                     deployMonster(item);
                 }
                 catch (Exception ex)
@@ -2171,7 +2213,7 @@ namespace DAL.Services
                 }
 
             }
-            
+
         }
     }
 }

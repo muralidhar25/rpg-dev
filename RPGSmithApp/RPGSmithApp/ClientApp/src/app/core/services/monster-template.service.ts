@@ -421,7 +421,7 @@ export class MonsterTemplateService extends EndpointFactory {
         
         monsterTemplateItemMasters: monsterTemplateVM.monsterTemplateItemMasters == null ? [] : monsterTemplateVM.monsterTemplateItemMasters,
         monsterTemplateItemMasterVM: monsterTemplateVM.monsterTemplateItemMasterVM == undefined ? [] : monsterTemplateVM.monsterTemplateItemMasterVM,
-
+        randomizationEngine: monsterTemplateVM.randomizationEngine ? [] : monsterTemplateVM.randomizationEngine,
       }
     }
     else {

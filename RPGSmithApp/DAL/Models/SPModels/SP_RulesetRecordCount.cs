@@ -646,7 +646,17 @@ namespace DAL.Models.SPModels
     public class MonsterTemplate_Bundle : MonsterTemplate
     {
         public bool IsBundle { get; set; }
-        public List<MonsterTemplateBundleItem> BundleItems { get; set; }
+        public List<MonsterTemplate_BundleItemsWithRandomItems> BundleItems { get; set; }
+        public List<RandomizationEngine> RandomizationEngine { get; set; }
+    }
+    
+        public class MonsterTemplate_BundleItemsWithRandomItems : MonsterTemplateBundleItem
+    {
+        public MonsterTemplate_WithRandomItems MonsterTemplate { get; set; }
+        
+    }
+    public class MonsterTemplate_WithRandomItems : MonsterTemplate
+    {
         public List<RandomizationEngine> RandomizationEngine { get; set; }
     }
     public class ItemMasterBundleIds

@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using DAL.Models.SPModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -55,6 +56,7 @@ namespace RPGSmithApp.ViewModels.CreateModels
         public List<MonsterTemplateMonster> MonsterTemplateAssociateMonsterTemplateVM { get; set; }
         public List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM { get; set; }
         public List<RandomizationEngine> RandomizationEngine { get; set; }
+        public List<REItems> REItems { get; set; }
     }
     
 }

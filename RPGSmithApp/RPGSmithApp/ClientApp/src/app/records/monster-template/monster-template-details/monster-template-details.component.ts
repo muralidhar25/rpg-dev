@@ -95,11 +95,18 @@ export class MonsterTemplateDetailsComponent implements OnInit {
 
                 this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(this.monsterTemplateId, this.ruleSetId)
                   .subscribe(data => {
-                    debugger
                     this.selectedBuffAndEffects = data.selectedBuffAndEffects;
                     this.selectedAbilities = data.selectedAbilityList;
                     this.selectedSpells = data.selectedSpellList;
-                    this.selectedItemMasters = data.selectedItemMasters;
+                 
+                    this.monsterTemplateDetail.randomizationEngine = data.randomizationEngine;
+                    if (this.monsterTemplateDetail.isRandomizationEngine) {
+                      data.randomizationEngine.map(x => {
+                        this.selectedItemMasters.push({ imageUrl: x.itemMaster.itemImage, itemId: 0, itemMasterId: x.itemMaster.itemMasterId, name: x.itemMaster.itemName, qty: 1, ruleSetId: this.monsterTemplateDetail.ruleSetId })
+                      });
+                    } else {
+                      this.selectedItemMasters = data.selectedItemMasters;
+                    }
                    // this.associateMonsterTemplateList = data.monsterTemplatesList;
                     this.selectedAssociateMonsterTemplates = data.selectedMonsterTemplates;
 
