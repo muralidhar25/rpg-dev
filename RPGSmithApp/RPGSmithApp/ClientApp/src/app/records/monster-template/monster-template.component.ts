@@ -103,12 +103,10 @@ export class MonsterTemplateComponent implements OnInit {
 
     private initialize() {
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-      debugger;
         let localStorageFilters = this.localStorage.getDataObject<number>('monsterFilters');
         if (localStorageFilters  != null) {
           this.monsterFilter = localStorageFilters;
         }
-        console.log('106',this.monsterFilter);
         if (user == null)
             this.authService.logout();
         else {
@@ -127,7 +125,6 @@ export class MonsterTemplateComponent implements OnInit {
                //check for ruleset
                 if (data.RuleSet)
                   this.monsterTemplateList = Utilities.responseData(data.monsterTemplates, this.pageSize);
-                debugger;
                 if (this.monsterFilter.type == 1) {
                   this.monsterFilter.viewableCount = this.monsterTemplateList.length;
                   this.alphabetCount = this.monsterTemplateList.length;

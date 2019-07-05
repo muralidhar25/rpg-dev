@@ -178,6 +178,7 @@ export class DeployMonsterComponent implements OnInit {
       let armorClassNumberArray = [];
       let xpValueNumberArray = [];
       let challangeRatingNumberArray = [];
+      var reItems = [];
       if (+this.value) {
         for (var i = 0; i < this.value; i++) {
           let health = DiceService.rollDiceExternally(this.alertService, this.monsterInfo.health ? this.monsterInfo.health : '0', this.customDices)
@@ -190,12 +191,24 @@ export class DeployMonsterComponent implements OnInit {
           armorClassNumberArray.push(armorClass);
           xpValueNumberArray.push(xpValue);
           challangeRatingNumberArray.push(challangeRating);
+
+          
+          if (this.monsterInfo.isRandomizationEngine) {
+          let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine(this.monsterInfo.randomizationEngine, this.alertService);
+            if (currentItemsToDeploy && currentItemsToDeploy.length) {
+              currentItemsToDeploy.map((re) => {
+                re.deployCount = i + 1;
+
+                reItems.push(re);
+              })
+
+             
+            }
+          }
+
         }
       }
-      var reItems = [];
-      if (this.monsterInfo.isRandomizationEngine) {
-        reItems = ServiceUtil.getItemsFromRandomizationEngine(this.monsterInfo.randomizationEngine, this.alertService);
-      }
+      
       debugger;
       let deployMonsterInfo = {
         qty: this.value,
