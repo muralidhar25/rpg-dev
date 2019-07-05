@@ -44,7 +44,7 @@ namespace RPGSmithApp.Controllers
             this._CharacterService = CharacterService;
         }
 
-        
+
         [HttpGet("GetById")]
         public MonsterTemplateViewModel GetById(int id)
         {
@@ -54,7 +54,7 @@ namespace RPGSmithApp.Controllers
 
             var _monsterTemplate = Mapper.Map<MonsterTemplateViewModel>(monsterTemplate);
 
-           
+
 
             return _monsterTemplate;
         }
@@ -62,13 +62,13 @@ namespace RPGSmithApp.Controllers
         [HttpGet("GetMonsterById")]
         public async Task<IActionResult> GetMonsterById(int id)
         {
-            var monster = _monsterTemplateService.GetMonsterById(id,true);
+            var monster = _monsterTemplateService.GetMonsterById(id, true);
 
             if (monster == null) return null;
 
             //var _monster = Mapper.Map<MonsterTemplateViewModel>(monsterTemplate);
 
-            
+
 
 
             return Ok(monster);
@@ -82,7 +82,7 @@ namespace RPGSmithApp.Controllers
 
         [HttpPost("create")]
         [ProducesResponseType(200, Type = typeof(string))]
-        public async Task<IActionResult> Create([FromBody] CreateMonsterTemplateModel model,bool isCreatingFromMonsterScreen,
+        public async Task<IActionResult> Create([FromBody] CreateMonsterTemplateModel model, bool isCreatingFromMonsterScreen,
             int armorClass, int health, int challangeRating, int xpValue
             )
         {
@@ -165,15 +165,27 @@ namespace RPGSmithApp.Controllers
                     //    });
                     //}
                 }
-                if (model.MonsterTemplateItemMasterVM != null && model.MonsterTemplateItemMasterVM.Count > 0)
+                if (model.IsRandomizationEngine)
                 {
-                    foreach (var item in model.MonsterTemplateItemMasterVM)
+                    if (model.RandomizationEngine != null && model.RandomizationEngine.Count > 0)
                     {
-                        item.MonsterTemplateId = result.MonsterTemplateId;
+                        _monsterTemplateService.insertRandomizationEngines(model.RandomizationEngine, result.MonsterTemplateId);
                     }
-                    _monsterTemplateService.insertAssociateItemMasters(model.MonsterTemplateItemMasterVM);
-                   
                 }
+                else
+                {
+                    if (model.MonsterTemplateItemMasterVM != null && model.MonsterTemplateItemMasterVM.Count > 0)
+                    {
+                        foreach (var item in model.MonsterTemplateItemMasterVM)
+                        {
+                            item.MonsterTemplateId = result.MonsterTemplateId;
+                        }
+                        _monsterTemplateService.insertAssociateItemMasters(model.MonsterTemplateItemMasterVM);
+
+                    }
+                }
+
+
                 if (isCreatingFromMonsterScreen)
                 {
                     List<int> armorClassList = new List<int>();
@@ -188,16 +200,17 @@ namespace RPGSmithApp.Controllers
                     List<int> xpValueList = new List<int>();
                     xpValueList.Add(xpValue);
 
-                    DeployMonsterTemplate deploy = new DeployMonsterTemplate() {
-                        addToCombat=true,
-                        armorClass= armorClassList,
-                        challangeRating= challangeRatingList,
-                        healthCurrent= healthList,
-                        healthMax= healthList,
-                        monsterTemplateId= result.MonsterTemplateId,
-                        rulesetId= result.RuleSetId,
-                        qty=1,
-                        xpValue= xpValueList
+                    DeployMonsterTemplate deploy = new DeployMonsterTemplate()
+                    {
+                        addToCombat = true,
+                        armorClass = armorClassList,
+                        challangeRating = challangeRatingList,
+                        healthCurrent = healthList,
+                        healthMax = healthList,
+                        monsterTemplateId = result.MonsterTemplateId,
+                        rulesetId = result.RuleSetId,
+                        qty = 1,
+                        xpValue = xpValueList
                     };
                     _monsterTemplateService.deployMonster(deploy);
                 }
@@ -206,7 +219,7 @@ namespace RPGSmithApp.Controllers
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
 
-        
+
         [HttpPost("update")]
         public async Task<IActionResult> Update([FromBody] EditMonsterTemplateModel model)
         {
@@ -228,7 +241,7 @@ namespace RPGSmithApp.Controllers
         [HttpPost("dropMonsterItems")]
         public async Task<IActionResult> dropMonsterItems([FromBody] List<ItemMasterForMonsterTemplate> list)
         {
-            
+
             await _monsterTemplateService.DropItemsToLoot(list);
             return Ok();
         }
@@ -348,7 +361,7 @@ namespace RPGSmithApp.Controllers
 
             var monsterTemplate = Mapper.Map<MonsterTemplate>(model);
 
-            var result = await _monsterTemplateService.Update(monsterTemplate,model.MonsterTemplateAbilityVM,model.MonsterTemplateAssociateMonsterTemplateVM,model.MonsterTemplateBuffAndEffectVM,model.MonsterTemplateItemMasterVM,model.MonsterTemplateSpellVM);
+            var result = await _monsterTemplateService.Update(monsterTemplate, model.MonsterTemplateAbilityVM, model.MonsterTemplateAssociateMonsterTemplateVM, model.MonsterTemplateBuffAndEffectVM, model.MonsterTemplateItemMasterVM, model.MonsterTemplateSpellVM, model.RandomizationEngine);
 
             if (model.MonsterTemplateCommandVM != null && model.MonsterTemplateCommandVM.Count > 0)
             {
@@ -389,7 +402,7 @@ namespace RPGSmithApp.Controllers
                 await _monsterTemplateCommandService.DeleteMonsterTemplateAllCommands(result.MonsterTemplateId);
             }
 
-            
+
 
             return Ok();
         }
@@ -397,7 +410,7 @@ namespace RPGSmithApp.Controllers
 
         private async Task<IActionResult> Update_Monster_Common(EditMonsterModel model)
         {
-            var item = _monsterTemplateService.GetMonsterById(model.MonsterId,false);
+            var item = _monsterTemplateService.GetMonsterById(model.MonsterId, false);
             if (item == null) return BadRequest("Monster not found");
 
             item.Name = model.Name;
@@ -421,12 +434,12 @@ namespace RPGSmithApp.Controllers
 
             //var result = await _monsterTemplateService.Update(monsterTemplate, model.MonsterTemplateAbilityVM, model.MonsterTemplateAssociateMonsterTemplateVM, model.MonsterTemplateBuffAndEffectVM, model.MonsterTemplateItemMasterVM, model.MonsterTemplateSpellVM,false);
 
-            await _monsterTemplateService.UpdateMonster(item, model.MonsterTemplateAbilityVM, model.MonsterTemplateAssociateMonsterTemplateVM, model.MonsterTemplateBuffAndEffectVM, model.MonsterTemplateSpellVM,model.MonsterTemplateCommandVM);
+            await _monsterTemplateService.UpdateMonster(item, model.MonsterTemplateAbilityVM, model.MonsterTemplateAssociateMonsterTemplateVM, model.MonsterTemplateBuffAndEffectVM, model.MonsterTemplateSpellVM, model.MonsterTemplateCommandVM);
 
 
             //var becIds = new List<int>();
 
-            
+
 
             //if (model.MonsterTemplateCommandVM.Count > 0)
             //    becIds.AddRange(model.MonsterTemplateCommandVM.Select(x => x.MonsterTemplateCommandId).ToList());
@@ -468,9 +481,9 @@ namespace RPGSmithApp.Controllers
             //}
             //else
             //{
-                
+
             //            await _monsterTemplateCommandService.DeleteMonsterTemplateAllCommands(result.MonsterTemplateId);
-                  
+
             //}
 
 
@@ -504,12 +517,12 @@ namespace RPGSmithApp.Controllers
                     return BadRequest(ex.Message);
             }
         }
-        
-            [HttpPost("deleteMonster_up")]
+
+        [HttpPost("deleteMonster_up")]
         public async Task<IActionResult> deleteMonster_up([FromBody] EditMonsterModel model)
         {
             try
-            {                
+            {
                 //var model = data.item;
                 int rulesetID = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
                 if (_coreRulesetService.IsCopiedFromCoreRuleset(rulesetID))
@@ -520,7 +533,7 @@ namespace RPGSmithApp.Controllers
                 {
                     await DeleteMonsterCommon(model.MonsterId);
                 }
-                
+
                 //var currentUser = GetUser();
                 //if (currentUser.IsGm || currentUser.IsGmPermanent)
                 //{
@@ -551,7 +564,7 @@ namespace RPGSmithApp.Controllers
         }
         private async Task<IActionResult> DeleteMonsterCommon(int monsterId)
         {
-          
+
             await _monsterTemplateService.DeleteMonster(monsterId);
             return Ok();
         }
@@ -592,7 +605,7 @@ namespace RPGSmithApp.Controllers
                 {
                     try
                     {
-                        BlobService bs = new BlobService(_httpContextAccessor,_accountManager,_ruleSetService);
+                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _ruleSetService);
                         var container = bs.GetCloudBlobContainer().Result;
                         string imageName = Guid.NewGuid().ToString();
                         dynamic Response = new ExpandoObject();
@@ -628,7 +641,7 @@ namespace RPGSmithApp.Controllers
                 model.MonsterTemplateId = 0;
                 var monsterTemplateModel = Mapper.Map<MonsterTemplate>(model);
                 var result = await _monsterTemplateService.Create(monsterTemplateModel);
-               
+
 
                 foreach (var acViewModels in monsterTemplate.MonsterTemplateCommands)
                 {
@@ -742,7 +755,7 @@ namespace RPGSmithApp.Controllers
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
 
-        
+
 
         //get user id methods
         private string GetUserId()
@@ -790,7 +803,7 @@ namespace RPGSmithApp.Controllers
             monsterTemplate.Stats = model.Stats;
             monsterTemplate.IsDeleted = IsDeleted == null ? false : Convert.ToBoolean(monsterTemplate.IsDeleted);
 
-           
+
 
 
             //var result = await _abilityService.Create(ability);
@@ -806,7 +819,7 @@ namespace RPGSmithApp.Controllers
                         Name = acViewModels.Name,
                         MonsterTemplateId = result.MonsterTemplateId,
                         IsDeleted = IsDeleted == null ? false : Convert.ToBoolean(monsterTemplate.IsDeleted)
-                });
+                    });
                 }
             }
             if (model.MonsterTemplateAbilityVM != null && model.MonsterTemplateAbilityVM.Count > 0)
@@ -816,26 +829,45 @@ namespace RPGSmithApp.Controllers
             if (model.MonsterTemplateSpellVM != null && model.MonsterTemplateSpellVM.Count > 0)
             {
                 _monsterTemplateService.insertAssociateSpells(model.MonsterTemplateSpellVM);
-                
+
             }
             if (model.MonsterTemplateBuffAndEffectVM != null && model.MonsterTemplateBuffAndEffectVM.Count > 0)
             {
                 _monsterTemplateService.insertAssociateBuffAndEffects(model.MonsterTemplateBuffAndEffectVM);
-                
+
             }
             if (model.MonsterTemplateAssociateMonsterTemplateVM != null && model.MonsterTemplateAssociateMonsterTemplateVM.Count > 0)
             {
                 _monsterTemplateService.insertAssociateMonsterTemplates(model.MonsterTemplateAssociateMonsterTemplateVM);
-               
-            }
-            if (model.MonsterTemplateItemMasterVM != null && model.MonsterTemplateItemMasterVM.Count > 0)
-            {
-                foreach (var item in model.MonsterTemplateItemMasterVM)
-                {
-                    item.MonsterTemplateId = result.MonsterTemplateId;
-                }
-                _monsterTemplateService.insertAssociateItemMasters(model.MonsterTemplateItemMasterVM);
 
+            }
+            //if (model.MonsterTemplateItemMasterVM != null && model.MonsterTemplateItemMasterVM.Count > 0)
+            //{
+            //    foreach (var item in model.MonsterTemplateItemMasterVM)
+            //    {
+            //        item.MonsterTemplateId = result.MonsterTemplateId;
+            //    }
+            //    _monsterTemplateService.insertAssociateItemMasters(model.MonsterTemplateItemMasterVM);
+
+            //}
+            if (model.IsRandomizationEngine)
+            {
+                if (model.RandomizationEngine != null && model.RandomizationEngine.Count > 0)
+                {
+                    _monsterTemplateService.insertRandomizationEngines(model.RandomizationEngine, result.MonsterTemplateId);
+                }
+            }
+            else
+            {
+                if (model.MonsterTemplateItemMasterVM != null && model.MonsterTemplateItemMasterVM.Count > 0)
+                {
+                    foreach (var item in model.MonsterTemplateItemMasterVM)
+                    {
+                        item.MonsterTemplateId = result.MonsterTemplateId;
+                    }
+                    _monsterTemplateService.insertAssociateItemMasters(model.MonsterTemplateItemMasterVM);
+
+                }
             }
             return Ok(result.MonsterTemplateId);
         }
@@ -851,23 +883,23 @@ namespace RPGSmithApp.Controllers
         {
             try
             {
-               _monsterTemplateService.deployMonster(model);
+                _monsterTemplateService.deployMonster(model);
                 return Ok();
             }
             catch (Exception ex)
-            {               
-                    return BadRequest(ex.Message);
+            {
+                return BadRequest(ex.Message);
             }
         }
 
-        
 
-             [HttpPost("enableCombatTracker")]
+
+        [HttpPost("enableCombatTracker")]
         public async Task<IActionResult> enableCombatTracker(int monsterId, bool enableCombatTracker)
         {
             try
             {
-               await _monsterTemplateService.enableCombatTracker(monsterId, enableCombatTracker);
+                await _monsterTemplateService.enableCombatTracker(monsterId, enableCombatTracker);
                 return Ok();
             }
             catch (Exception ex)
@@ -917,7 +949,8 @@ namespace RPGSmithApp.Controllers
             return Ok(_monsterTemplateService.SP_GetMonsterTemplateCommands(monsterTemplateID));
         }
         [HttpGet("SP_GetAssociateRecords")]
-        public async Task<IActionResult> SP_GetAssociateRecords(int monsterTemplateId, int rulesetId, int MonsterID = 0) {
+        public async Task<IActionResult> SP_GetAssociateRecords(int monsterTemplateId, int rulesetId, int MonsterID = 0)
+        {
             return Ok(_monsterTemplateService.SP_GetAssociateRecords(monsterTemplateId, rulesetId, MonsterID));
         }
         [HttpGet("SP_GetMonsterAssociateRecords")]
@@ -927,7 +960,7 @@ namespace RPGSmithApp.Controllers
         }
         [HttpGet("getByRuleSetId_add")]
         public async Task<IActionResult> getByRuleSetId_add(int rulesetId, bool includeBundles = false)
-        {            
+        {
             dynamic Response = new ExpandoObject();
             List<MonsterTemplate_Bundle> MonsterTemplateList = _monsterTemplateService.GetMonsterTemplatesByRuleSetId_add(rulesetId, includeBundles);
 

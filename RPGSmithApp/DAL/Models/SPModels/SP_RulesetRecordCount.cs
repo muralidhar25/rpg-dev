@@ -18,7 +18,7 @@ namespace DAL.Models.SPModels
         public int BuffAndEffectCount { get; set; }
         public int MonsterTemplateCount { get; set; }
         public int MonsterCount { get; set; }
-        
+
     }
     public class SP_AbilitySpellForItemMaster
     {
@@ -43,7 +43,8 @@ namespace DAL.Models.SPModels
         public List<BuffAndEffect> selectedBuffAndEffects { get; set; }
         public List<MonsterTemplate> selectedMonsterTemplates { get; set; }
         public List<ItemMasterForMonsterTemplate> selectedItemMasters { get; set; }
-        public List<MonsterTemplateCommand> monsterTemplateCommands { get; set; }        
+        public List<MonsterTemplateCommand> monsterTemplateCommands { get; set; }
+        public List<RandomizationEngine> RandomizationEngine { get; set; }
     }
     public class ItemMasterForMonsterTemplate
     {
@@ -108,25 +109,26 @@ namespace DAL.Models.SPModels
         public int CalculationResult { get; set; }
 
         public int Minimum { get; set; }
-        public int DefaultValue { get; set; }        
+        public int DefaultValue { get; set; }
         public string ComboText { get; set; }
 
         public bool IsDeleted { get; set; }
 
         public bool Display { get; set; }
         public bool ShowCheckbox { get; set; }
-        public bool IsCustom { get; set; }        
+        public bool IsCustom { get; set; }
         public bool IsYes { get; set; }
         public bool IsOn { get; set; }
         public string LinkType { get; set; }
     }
-    public class CommonID {
+    public class CommonID
+    {
         public int ID { get; set; }
     }
     public class LogError
     {
         public string Error { get; set; }
-        public string ErrorStack { get; set; }        
+        public string ErrorStack { get; set; }
         public string Headers { get; set; }
         public string CurrentUser { get; set; }
         public string CurrentUrl { get; set; }
@@ -141,13 +143,14 @@ namespace DAL.Models.SPModels
         public List<BuffAndEffect> buffAndEffectList { get; set; }
         public List<Character> characters { get; set; }
         public List<Character> nonSelectedCharacters { get; set; }
-        public List<BuffAndEffect> nonSelectedBuffAndEffectsList { get; set; }  
+        public List<BuffAndEffect> nonSelectedBuffAndEffectsList { get; set; }
     }
-    public class SelectedCharacter:Character
+    public class SelectedCharacter : Character
     {
         public bool Selected { get; set; }
     }
-    public class CharBuffAndEffect : BuffAndEffect {
+    public class CharBuffAndEffect : BuffAndEffect
+    {
         public int CharacterBuffAndEffectId { get; set; }
         public string Command { get; set; }
     }
@@ -164,11 +167,18 @@ namespace DAL.Models.SPModels
         public List<int> challangeRating { get; set; }
         public bool addToCombat { get; set; }
         public bool isBundle { get; set; }
+        public List<REItems> REItems { get; set; }
     }
     public class numbersList
     {
         public int RowNum { get; set; }
         public int Number { get; set; }
+    }
+
+    public class REItems
+    {
+        public int itemMasterId { get; set; }
+        public int qty { get; set; }
     }
 
 
@@ -528,7 +538,8 @@ namespace DAL.Models.SPModels
             }
         }
     }
-    public class LinkTypeRecord {
+    public class LinkTypeRecord
+    {
         public int id { get; set; }
         public string name { get; set; }
         public string image { get; set; }
@@ -612,12 +623,14 @@ namespace DAL.Models.SPModels
         public Ability RulesetAbility { get; set; }
         public Spell RulesetSpell { get; set; }
     }
-    public class ItemMaster_Bundle : ItemMaster {
+    public class ItemMaster_Bundle : ItemMaster
+    {
         public bool IsBundle { get; set; }
     }
     public class MonsterTemplate_Bundle : MonsterTemplate
     {
         public bool IsBundle { get; set; }
+        public List<RandomizationEngine> RandomizationEngine { get; set; }
     }
     public class ItemMasterBundleIds
     {
@@ -635,25 +648,25 @@ namespace DAL.Models.SPModels
     {
         public int ItemMasterLootId { get; set; }
     }
-    public class ItemMasterLoot_ViewModel:ItemMaster
+    public class ItemMasterLoot_ViewModel : ItemMaster
     {
-        
+
         public int LootId { get; set; }
         public int ParentLootId { get; set; }
 
-      
+
         //public int ItemMasterId { get; set; }
 
         public bool IsShow { get; set; }
 
         public int? ContainedIn { get; set; }
 
-        
+
         public decimal Quantity { get; set; }
 
         public bool? IsIdentified { get; set; }
-        public bool? IsVisible { get; set; }        
-       
+        public bool? IsVisible { get; set; }
+
         public decimal TotalWeight { get; set; }
 
         public ItemMaster Container { get; set; }

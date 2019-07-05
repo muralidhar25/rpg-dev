@@ -563,14 +563,14 @@ export class MonsterComponent implements OnInit {
   }
   
   addMonster() {
-    //this.bsModalRef = this.modalService.show(AddMonsterComponent, {
-    //  class: 'modal-primary modal-md',
-    //  ignoreBackdropClick: true,
-    //  keyboard: false
-    //});
-    //this.bsModalRef.content.title = 'Add Monsters';
-    //this.bsModalRef.content.button = 'ADD';
-    //this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef = this.modalService.show(AddMonsterComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Add Monsters';
+    this.bsModalRef.content.button = 'ADD';
+    this.bsModalRef.content.rulesetID = this.ruleSetId;
   }
 
   dropMonsterItems(monster : any){

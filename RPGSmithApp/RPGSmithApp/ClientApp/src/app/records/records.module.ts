@@ -41,6 +41,7 @@ import { AddMonsterTemplateComponent } from "./monster-template/add-monster-temp
 import { MonsterBundleDetailsComponent } from "./monster-template/monster-bundle-details/monster-bundle-details.component";
 import { LootDetailsComponent } from "./loot/loot-details/loot-details.component";
 import { MonsterItemDetailsComponent } from "./monster/monster-item-details/monster-item-details.component";
+import { SingleItemMonsterComponent } from "./monster-template/single-item/single-item-monster.component";
 
 
 
@@ -81,7 +82,8 @@ import { MonsterItemDetailsComponent } from "./monster/monster-item-details/mons
     AddMonsterTemplateComponent,
     MonsterBundleDetailsComponent,
     LootDetailsComponent,
-    MonsterItemDetailsComponent
+    MonsterItemDetailsComponent,
+    SingleItemMonsterComponent
   ],
   imports: [
     SharedModule
@@ -124,7 +126,8 @@ import { MonsterItemDetailsComponent } from "./monster/monster-item-details/mons
     AddMonsterTemplateComponent,
     MonsterBundleDetailsComponent,
     LootDetailsComponent,
-    MonsterItemDetailsComponent
+    MonsterItemDetailsComponent,
+    SingleItemMonsterComponent
   ],
   entryComponents: [
     AddItemMasterComponent,
@@ -146,7 +149,8 @@ import { MonsterItemDetailsComponent } from "./monster/monster-item-details/mons
     DropItemsMonsterComponent,
     CreateMonsterGroupComponent,
     AddMonsterComponent,
-    AddMonsterTemplateComponent
+    AddMonsterTemplateComponent,
+    SingleItemMonsterComponent
   
   ]
 })

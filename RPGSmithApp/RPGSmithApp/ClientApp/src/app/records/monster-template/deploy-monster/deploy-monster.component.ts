@@ -16,6 +16,7 @@ import { Utilities } from '../../../core/common/utilities';
 import { DiceService } from '../../../core/services/dice.service';
 import { CustomDice } from '../../../core/models/view-models/custome-dice.model';
 import { RulesetService } from '../../../core/services/ruleset.service';
+import { ServiceUtil } from '../../../core/services/service-util';
 
 @Component({
   selector: 'app-deploy-monster',
@@ -24,7 +25,7 @@ import { RulesetService } from '../../../core/services/ruleset.service';
 })
 export class DeployMonsterComponent implements OnInit {
 
- 
+
   value: number;
   isLoading: boolean = false;
   isMouseDown: boolean = false;
@@ -60,11 +61,11 @@ export class DeployMonsterComponent implements OnInit {
             this.authService.logout(true);
           }
         })
-      
+
     }, 0);
   }
 
-  
+
 
   close() {
     this.bsModalRef.hide();
@@ -103,18 +104,23 @@ export class DeployMonsterComponent implements OnInit {
         challangeRatingNumberArray.push(challangeRating);
       }
     }
-    
+    var reItems = [];
+    if (this.monsterInfo.isRandomizationEngine) {
+      reItems = ServiceUtil.getItemsFromRandomizationEngine(this.monsterInfo.randomizationEngine, this.alertService);
+    }    
+    debugger;
     let deployMonsterInfo = {
       qty: this.value,
       monsterTemplateId: this.monsterInfo.monsterTemplateId,
       rulesetId: this.monsterInfo.ruleSetId,
       healthCurrent: healthNumberArray,
       healthMax: healthNumberArray,
-      armorClass: armorClassNumberArray ,
+      armorClass: armorClassNumberArray,
       xpValue: xpValueNumberArray,
       challangeRating: challangeRatingNumberArray,
       addToCombat: this.addToCombat,
-      isBundle: this.monsterInfo.isBundle
+      isBundle: this.monsterInfo.isBundle,
+      reItems: reItems 
     }
     this.alertService.startLoadingMessage("", "Deploying Monster Template...");
     this.monsterTemplateService.deployMonster<any>(deployMonsterInfo)
@@ -137,14 +143,14 @@ export class DeployMonsterComponent implements OnInit {
       }, () => { });
 
 
-    
+
   }
 
 
 
   increment() {
-      let step: number =  1;
-      this.value += step;
+    let step: number = 1;
+    this.value += step;
   }
 
   decrement() {
@@ -156,7 +162,7 @@ export class DeployMonsterComponent implements OnInit {
     }
   }
 
-  
+
 
   changeCurrentValue(event: any) {
     let value = +event.target.value;

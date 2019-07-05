@@ -1,6 +1,7 @@
 import { VIEW } from '../enums';
 import { Ruleset } from '../view-models/ruleset.model';
 import { MonsterTemplateCommand } from './monster-template-command.model';
+import { randomization } from './randomization.model ';
 
 export class MonsterTemplate {
   constructor(
@@ -18,7 +19,8 @@ export class MonsterTemplate {
     monsterMetatags?: string,
     monsterId?: number,
     addToCombatTracker?: boolean,
-    isBundle?: boolean
+    isBundle?: boolean,
+    randomizationEngine?:randomization[]
   ) {
     this.monsterTemplateId = monsterTemplateId;
     this.ruleSetId = ruleSetId;
@@ -54,6 +56,7 @@ export class MonsterTemplate {
     this.monsterId = monsterId;
     this.addToCombatTracker = addToCombatTracker;
     this.isBundle = isBundle;
+    this.randomizationEngine = randomizationEngine;
   }
 
   public monsterTemplateId: number;
@@ -95,6 +98,7 @@ export class MonsterTemplate {
   public monsterId: number;
   public addToCombatTracker: boolean;
   public isBundle: boolean;
+  public randomizationEngine: randomization[];
   //public monsterImage: string;
   //public monsterName: string;
   //public monsterMetatags: string;

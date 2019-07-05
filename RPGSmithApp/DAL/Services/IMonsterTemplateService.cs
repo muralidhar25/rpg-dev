@@ -10,16 +10,18 @@ namespace DAL.Services
     public interface IMonsterTemplateService
     {
         Task<MonsterTemplate> Create(MonsterTemplate item);
-        Task<MonsterTemplate> Update(MonsterTemplate item, 
+        Task<MonsterTemplate> Update(MonsterTemplate item,
             List<MonsterTemplateAbility> MonsterTemplateAbilityVM,
             List<MonsterTemplateMonster> MonsterTemplateMonsterVM,
             List<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffectVM,
             List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM,
-            List<MonsterTemplateSpell> MonsterTemplateSpellVM,bool IsFromMonsterTemplateScreen= true
+            List<MonsterTemplateSpell> MonsterTemplateSpellVM,
+            List<RandomizationEngine> RandomizationEngine,
+            bool IsFromMonsterTemplateScreen = true
             );
         Task<bool> Delete(int id);
         MonsterTemplate GetById(int? id);
-        Monster GetMonsterById(int? id,bool IsGettingDetailsForDetailScreenAPI);
+        Monster GetMonsterById(int? id, bool IsGettingDetailsForDetailScreenAPI);
         int GetCountByRuleSetId(int ruleSetId);
         int Core_GetCountByRuleSetId(int ruleSetId, int parentID);
         Task<bool> CheckDuplicateMonsterTemplate(string value, int? ruleSetId, int? MonsterTemplateId = 0);
@@ -34,17 +36,18 @@ namespace DAL.Services
         List<MonsterTemplateBuffAndEffect> insertAssociateBuffAndEffects(List<MonsterTemplateBuffAndEffect> MonsterTemplateBuffAndEffectVM);
         List<MonsterTemplateMonster> insertAssociateMonsterTemplates(List<MonsterTemplateMonster> MonsterTemplateMonsterVM);
         List<MonsterTemplateItemMaster> insertAssociateItemMasters(List<MonsterTemplateItemMaster> MonsterTemplateItemMasterVM);
-void deployMonster(DeployMonsterTemplate model);
+        List<RandomizationEngine> insertRandomizationEngines(List<RandomizationEngine> RandomizationEngine, int MonsterTemplateId);
+        void deployMonster(DeployMonsterTemplate model);
         List<Monster> SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1);
         Task enableCombatTracker(int monsterId, bool enableCombatTracker);
         Task<MonsterTemplate> Core_CreateMonsterTemplateUsingMonster(int monsterTemplateId, int rulesetID);
         List<ItemMasterForMonsterTemplate> getMonsterItemsToDrop(int monsterId);
         Task DropItemsToLoot(List<ItemMasterForMonsterTemplate> list);
-        Task<Monster> UpdateMonster(Monster model, 
-            List<MonsterTemplateAbility> monsterTemplateAbilityVM, 
-            List<MonsterTemplateMonster> monsterTemplateAssociateMonsterTemplateVM, 
-            List<MonsterTemplateBuffAndEffect> monsterTemplateBuffAndEffectVM,            
-            List<MonsterTemplateSpell> monsterTemplateSpellVM, 
+        Task<Monster> UpdateMonster(Monster model,
+            List<MonsterTemplateAbility> monsterTemplateAbilityVM,
+            List<MonsterTemplateMonster> monsterTemplateAssociateMonsterTemplateVM,
+            List<MonsterTemplateBuffAndEffect> monsterTemplateBuffAndEffectVM,
+            List<MonsterTemplateSpell> monsterTemplateSpellVM,
             List<MonsterTemplateCommand> monsterTemplateCommandVM);
         Task<bool> DeleteMonster(int monsterId);
         List<MonsterTemplate_Bundle> GetMonsterTemplatesByRuleSetId_add(int rulesetId, bool includeBundles = false);
