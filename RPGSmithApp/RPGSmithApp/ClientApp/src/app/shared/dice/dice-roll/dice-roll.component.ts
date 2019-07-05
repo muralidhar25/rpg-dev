@@ -101,7 +101,7 @@ export class DiceRollComponent implements OnInit {
   //isSkipDicePublicRollcheck: boolean=false;
   isShowSendtoChat: boolean;
   isFromRulesetSharedLayout: boolean = false;
-DiceImage : any;
+  DiceImage: any;
   constructor(
     private router: Router, public modalService: BsModalService, private bsModalRef: BsModalRef, private alertService: AlertService,
     private charactersCharacterStatService: CharactersCharacterStatService, private charactersService: CharactersService,
@@ -133,7 +133,7 @@ DiceImage : any;
   //    }, () => { });
   //}
 
-  ngOnInit() {    
+  ngOnInit() {
     setTimeout(() => {
       this.DiceImage = DiceService.GetDeckDices();
       if (this.rulesetId == undefined)
@@ -156,7 +156,7 @@ DiceImage : any;
       //this.character = this.bsModalRef.content.character;
       //if (this.character.lastCommandResult)
       //    this.calculationStringArray = DiceService.getCalculationStringArray(this.character.lastCommandResult);
-      
+
       //this.character = undefined;
       this.isLoading = true;
       this.isFromTile = this.bsModalRef.content.tile ? true : false;
@@ -164,7 +164,7 @@ DiceImage : any;
         .subscribe(data => {
           this.isLoading = false;
           if (data) {
-           
+
             debugger;
             this.character = data.character;
 
@@ -178,23 +178,23 @@ DiceImage : any;
 
             this.charactersCharacterStats = data.charactersCharacterStats;
 
-           
-          if (!this.characterId) {
-            this.character = new Characters();
-          }
-          this.isDicePublicRoll = this.character.isDicePublicRoll;
-          this.showTotal = true;
-          try {
-            if (this.character.lastCommandResult)
-              this.calculationStringArray = DiceService.getCalculationStringArray(this.character.lastCommandResult);
-          } catch (err) { }
 
-          this.charactersCharacterStats.forEach(item => {
-            item.number = item.number == 0 ? "" : item.number;
-            item.current = item.current == 0 ? "" : item.current;
-            item.maximum = item.maximum == 0 ? "" : item.maximum;
-            item.value = item.value == 0 ? "" : item.value;
-            item.subValue = item.subValue == 0 ? "" : item.subValue;
+            if (!this.characterId) {
+              this.character = new Characters();
+            }
+            this.isDicePublicRoll = this.character.isDicePublicRoll;
+            this.showTotal = true;
+            try {
+              if (this.character.lastCommandResult)
+                this.calculationStringArray = DiceService.getCalculationStringArray(this.character.lastCommandResult);
+            } catch (err) { }
+
+            this.charactersCharacterStats.forEach(item => {
+              item.number = item.number == 0 ? "" : item.number;
+              item.current = item.current == 0 ? "" : item.current;
+              item.maximum = item.maximum == 0 ? "" : item.maximum;
+              item.value = item.value == 0 ? "" : item.value;
+              item.subValue = item.subValue == 0 ? "" : item.subValue;
             });
 
             this.diceRollModel = this.characterCommandService.DiceRollData(this.characterId);
@@ -202,99 +202,99 @@ DiceImage : any;
             this.diceRolledData = this.characterCommandService.DiceRollData(this.characterId);
 
 
-          
+
             if (this.isFromTile) {
               this.rollSection = true;
               this.isLoading = true;
             }
 
 
-          if (this.isFromCampaignDetail) {
-            this.isDicePublicRoll = data.ruleSet.isDicePublicRoll;
-          }
+            if (this.isFromCampaignDetail) {
+              this.isDicePublicRoll = data.ruleSet.isDicePublicRoll;
+            }
 
-          let model: any = data;
-            this.statdetails = { charactersCharacterStat: model.charactersCharacterStats, character: data.character};
+            let model: any = data;
+            this.statdetails = { charactersCharacterStat: model.charactersCharacterStats, character: data.character };
 
             this.customDices = model.customDices;
 
-          this.customDices = DiceService.BindDeckCustomDices(this.customDices);
+            this.customDices = DiceService.BindDeckCustomDices(this.customDices);
             this.diceTray = model.diceTrays;
             this.defaultDices = model.defaultDices;
             let ruleset = model.ruleSet;
-          if (this.diceTray)
-            if (this.diceTray.length > 0) {
-              this.diceRollModel = this.characterCommandService.DiceRollDataFromDiceTray(this.characterId, this.customDices, this.diceTray, this.defaultDices);
-              this.diceRolledData = this.characterCommandService.DiceRollDataFromDiceTray(this.characterId, this.customDices, this.diceTray, this.defaultDices);
-            }
+            if (this.diceTray)
+              if (this.diceTray.length > 0) {
+                this.diceRollModel = this.characterCommandService.DiceRollDataFromDiceTray(this.characterId, this.customDices, this.diceTray, this.defaultDices);
+                this.diceRolledData = this.characterCommandService.DiceRollDataFromDiceTray(this.characterId, this.customDices, this.diceTray, this.defaultDices);
+              }
 
-          //for character tile & records
-          if (this.isFromTile) {
-            //this.isSkipDicePublicRollcheck = true;
-            if (+this.bsModalRef.content.tile == TILES.EXECUTE) {
-              let executeFormModel = this.bsModalRef.content.executeTile;
-              let executeTile = executeFormModel.linkType == 'Spell' ? executeFormModel.spell.spell : executeFormModel.linkType == 'Ability' ? executeFormModel.ability.ability : executeFormModel.linkType == 'Item' ? executeFormModel.item : {};
+            //for character tile & records
+            if (this.isFromTile) {
+              //this.isSkipDicePublicRollcheck = true;
+              if (+this.bsModalRef.content.tile == TILES.EXECUTE) {
+                let executeFormModel = this.bsModalRef.content.executeTile;
+                let executeTile = executeFormModel.linkType == 'Spell' ? executeFormModel.spell.spell : executeFormModel.linkType == 'Ability' ? executeFormModel.ability.ability : executeFormModel.linkType == 'Item' ? executeFormModel.item : {};
 
-              this.characterCommandModel.command = executeTile.command;
-              this.onClickRoll(this.characterCommandModel, executeTile.command);
-            }
-            else if (+this.bsModalRef.content.tile == TILES.COMMAND) {
-              let commandTile = this.bsModalRef.content.commandTile;
+                this.characterCommandModel.command = executeTile.command;
+                this.onClickRoll(this.characterCommandModel, executeTile.command);
+              }
+              else if (+this.bsModalRef.content.tile == TILES.COMMAND) {
+                let commandTile = this.bsModalRef.content.commandTile;
 
-              this.characterCommandModel.command = commandTile.command;
-              this.onClickRoll(this.characterCommandModel, commandTile.command);
-            }
-            else if (+this.bsModalRef.content.tile == TILES.CHARACTERSTAT) {
-              let characterStatTile = this.bsModalRef.content.characterStatTile;
-              //for ruleset shared layout
-              if (this.bsModalRef.content.isFromRulesetSharedLayout) {
-                if (characterStatTile.characterStat.characterStatDefaultValues) {
-                  if (characterStatTile.characterStat.characterStatDefaultValues.length) {
-                    this.characterCommandModel.command = characterStatTile.characterStat.characterStatDefaultValues[0].defaultValue;
+                this.characterCommandModel.command = commandTile.command;
+                this.onClickRoll(this.characterCommandModel, commandTile.command);
+              }
+              else if (+this.bsModalRef.content.tile == TILES.CHARACTERSTAT) {
+                let characterStatTile = this.bsModalRef.content.characterStatTile;
+                //for ruleset shared layout
+                if (this.bsModalRef.content.isFromRulesetSharedLayout) {
+                  if (characterStatTile.characterStat.characterStatDefaultValues) {
+                    if (characterStatTile.characterStat.characterStatDefaultValues.length) {
+                      this.characterCommandModel.command = characterStatTile.characterStat.characterStatDefaultValues[0].defaultValue;
+                    }
                   }
                 }
+                else {
+                  this.characterCommandModel.command = characterStatTile.charactersCharacterStat.command;
+                }
+                //for ruleset shared layout end
+                //this.characterCommandModel.command = characterStatTile.charactersCharacterStat.command; //Commented for ruleset shared
+                this.onClickRoll(this.characterCommandModel, this.characterCommandModel.command);
               }
-              else {
-                this.characterCommandModel.command = characterStatTile.charactersCharacterStat.command;
+              else if (+this.bsModalRef.content.tile == -1) {
+                this.numberToAdd = undefined;// this.bsModalRef.content.numberToAdd
+                this.showShowDiceBtn = this.showDetailsByDefault = true;
               }
-              //for ruleset shared layout end
-              //this.characterCommandModel.command = characterStatTile.charactersCharacterStat.command; //Commented for ruleset shared
-              this.onClickRoll(this.characterCommandModel, this.characterCommandModel.command);
+              else if (+this.bsModalRef.content.tile == -2) {
+                let command = this.bsModalRef.content.command;
+                this.characterCommandModel.command = command;
+                this.onClickRoll(this.characterCommandModel, command);
+              }
+              else if (+this.bsModalRef.content.tile == -3) {
+                //this.numberToAdd = this.bsModalRef.content.numberToAdd
+                this.showShowDiceBtn = true;
+                this.showDetailsByDefault = false;
+                let old = ruleset.defaultDice; //this.character.lastCommand;
+                this.oldCommandSaved = old;
+                let command = '';
+                if (!this.numberToAdd)
+                  command = ruleset.defaultDice; //+ " + 0"; //this.character.lastCommand + " + 0"
+                else if (this.numberToAdd.toString() === '0')
+                  command = ruleset.defaultDice; //this.character.lastCommand
+                else if (this.numberToAdd ? this.numberToAdd.toString().charAt(0) === '-' : false)
+                  command = ruleset.defaultDice ? ruleset.defaultDice + " " + this.numberToAdd.toString() : this.numberToAdd.toString();
+                else
+                  command = ruleset.defaultDice ? ruleset.defaultDice + " + " + this.numberToAdd.toString() : this.numberToAdd.toString();
+
+                this.characterCommandModel.command = command;
+                this.onClickRoll(this.characterCommandModel, command);
+              }
             }
-            else if (+this.bsModalRef.content.tile == -1) {
-              this.numberToAdd = undefined;// this.bsModalRef.content.numberToAdd
-              this.showShowDiceBtn = this.showDetailsByDefault = true;
-            }
-            else if (+this.bsModalRef.content.tile == -2) {
-              let command = this.bsModalRef.content.command;
-              this.characterCommandModel.command = command;
-              this.onClickRoll(this.characterCommandModel, command);
-            }
-            else if (+this.bsModalRef.content.tile == -3) {
-              //this.numberToAdd = this.bsModalRef.content.numberToAdd
-              this.showShowDiceBtn = true;
-              this.showDetailsByDefault = false;
-              let old = ruleset.defaultDice; //this.character.lastCommand;
-              this.oldCommandSaved = old;
-              let command = '';
-              if (!this.numberToAdd)
-                command = ruleset.defaultDice; //+ " + 0"; //this.character.lastCommand + " + 0"
-              else if (this.numberToAdd.toString() === '0')
-                command = ruleset.defaultDice; //this.character.lastCommand
-              else if (this.numberToAdd ? this.numberToAdd.toString().charAt(0) === '-' : false)
-                command = ruleset.defaultDice ? ruleset.defaultDice + " " + this.numberToAdd.toString() : this.numberToAdd.toString();
-              else
-                command = ruleset.defaultDice ? ruleset.defaultDice + " + " + this.numberToAdd.toString() : this.numberToAdd.toString();
-                         
-              this.characterCommandModel.command = command;
-              this.onClickRoll(this.characterCommandModel, command);
-            }
+            setTimeout(() => {
+              if (this.isLoading) this.isLoading = false;
+            }, 200);
           }
-          setTimeout(() => {
-            if (this.isLoading) this.isLoading = false;
-          }, 200);
-          }
-          
+
         }, error => {
           this.isLoading = false;
           this.character = new Characters();
@@ -303,7 +303,7 @@ DiceImage : any;
             this.authService.logout(true);
           }
         }, () => {
-          
+
 
         });
 
@@ -311,7 +311,7 @@ DiceImage : any;
       //this.charactersService.getCharactersById<any>(this.characterId)
       //  .subscribe(data => {
       //    this.character = data;
-         
+
       //    if (!this.characterId) {
       //      this.character = new Characters();
       //    }
@@ -324,8 +324,8 @@ DiceImage : any;
       //  }, error => {
       //    this.character = new Characters();
       //  }, () => { });
-      
-     
+
+
       //this.characterCommandService.getByCharacterId<any>(this.characterId)
       //  .subscribe(data => {
       //    this.characterCommandData = data;//.slice(0, 3);
@@ -344,15 +344,15 @@ DiceImage : any;
       //      if (this.localStorage.localStorageGetItem(DBkeys.IsCharacterOpenedFromCampaign)) {
       //        this.isShowSendtoChat = true;
       //      }
-            
-            
+
+
       //      //let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
       //      //if (user != null) {
       //      //  if (user.isGm && (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter)) {
       //      //    this.isShowSendtoChat = true;   //if this line is commented then no need to hit this API remove this API next time
       //      //  }
       //      //}
-           
+
       //    }
 
       //  }, error => {
@@ -380,11 +380,11 @@ DiceImage : any;
       //        });
       //        this.charactersService.getRuleset_charStats_ById<any>(this.rulesetId, this.characterId)
       //          .subscribe(data => {
-                  
+
       //            if (this.isFromCampaignDetail) {
       //              this.isDicePublicRoll = data.ruleSet.isDicePublicRoll;
       //            }
-                  
+
       //            let model: any = data;
       //            this.statdetails = model.characterCharacterstats;
 
@@ -517,7 +517,7 @@ DiceImage : any;
 
 
       //  });
-     
+
 
 
       this.Initialize();
@@ -1262,9 +1262,9 @@ DiceImage : any;
 
     } catch (err) { }
   }
-  onClickRoll(characterCommand: CharacterCommand, _mainCommandText: string, lastResultArray?: any, IsRollCurrentAgain:boolean=false) {
+  onClickRoll(characterCommand: CharacterCommand, _mainCommandText: string, lastResultArray?: any, IsRollCurrentAgain: boolean = false) {
     debugger;
-    let OldCommandForRollCurrentAgain: any= undefined;
+    let OldCommandForRollCurrentAgain: any = undefined;
     if (IsRollCurrentAgain) {
       OldCommandForRollCurrentAgain = this.characterMultipleCommands;
     }
@@ -1578,11 +1578,11 @@ DiceImage : any;
           this.loadingResult = true;
         }
         else if (IsRollCurrentAgain) {
-          try {            
+          try {
             let newCharacterMultipleCommands = DiceService.commandInterpretation(command, undefined, this.addModArray, this.customDices, this.mainCommandText.toUpperCase());
             let newResultOfCurrentCommandSelected = newCharacterMultipleCommands[this.activeAndCommand];
 
-            OldCommandForRollCurrentAgain= OldCommandForRollCurrentAgain.map((oldCmd, oldCmdIndex) => {
+            OldCommandForRollCurrentAgain = OldCommandForRollCurrentAgain.map((oldCmd, oldCmdIndex) => {
               if (oldCmdIndex == this.activeAndCommand) {
                 oldCmd = newResultOfCurrentCommandSelected;
               }
@@ -1603,7 +1603,7 @@ DiceImage : any;
         else {
           this.characterMultipleCommands = DiceService.commandInterpretation(command, undefined, this.addModArray, this.customDices, this.mainCommandText.toUpperCase());
           console.log('else', this.characterMultipleCommands, this.mainCommandText);
-         
+
           __characterMultipleCommands = this.characterMultipleCommands[0];
         }
 
@@ -1665,7 +1665,7 @@ DiceImage : any;
         if (!IsRollCurrentAgain) {
           this.activeAndCommand = 0;
         }
-        
+
         //let processCommandWithResult = this.processCommandWithResult(commandTxt, characterCommand);
 
 
@@ -1702,7 +1702,7 @@ DiceImage : any;
 
           //--END variable to hide Exploded dice--//
         });
-       
+
         //this.characterCommandModel.command = __calculationCommand;
         this.characterCommandModel.command = this.mainCommandText;
         this.characterCommandModel.lastResult = __calculationResult;
@@ -1719,14 +1719,14 @@ DiceImage : any;
         //this.beforeResultText = textResult.start;
         //this.afterResultText = textResult.end;
         for (let i = 0; i < this.characterMultipleCommands.length; i++) {
-            let result;
+          let result;
           if (this.characterMultipleCommands[i].afterResult != "") {
-                result = this.mainCommandText.substring(this.mainCommandText.toLowerCase().indexOf(this.characterMultipleCommands[i].afterResult.trim().toLowerCase()), this.mainCommandText.toLowerCase().indexOf(this.characterMultipleCommands[i].afterResult.trim().toLowerCase()) + this.characterMultipleCommands[i].afterResult.trim().length)
-                this.characterMultipleCommands[i].afterResult = result;
-            }
-          if (this.characterMultipleCommands[i].beforeResult != "") { 
-               result = this.mainCommandText.substring(this.mainCommandText.toLowerCase().indexOf(this.characterMultipleCommands[i].beforeResult.trim().toLowerCase()), this.mainCommandText.toLowerCase().indexOf(this.characterMultipleCommands[i].beforeResult.trim().toLowerCase()) + this.characterMultipleCommands[i].beforeResult.trim().length)
-                this.characterMultipleCommands[i].beforeResult = result;
+            result = this.mainCommandText.substring(this.mainCommandText.toLowerCase().indexOf(this.characterMultipleCommands[i].afterResult.trim().toLowerCase()), this.mainCommandText.toLowerCase().indexOf(this.characterMultipleCommands[i].afterResult.trim().toLowerCase()) + this.characterMultipleCommands[i].afterResult.trim().length)
+            this.characterMultipleCommands[i].afterResult = result;
+          }
+          if (this.characterMultipleCommands[i].beforeResult != "") {
+            result = this.mainCommandText.substring(this.mainCommandText.toLowerCase().indexOf(this.characterMultipleCommands[i].beforeResult.trim().toLowerCase()), this.mainCommandText.toLowerCase().indexOf(this.characterMultipleCommands[i].beforeResult.trim().toLowerCase()) + this.characterMultipleCommands[i].beforeResult.trim().length)
+            this.characterMultipleCommands[i].beforeResult = result;
           }
         }
         if (this.characterMultipleCommands) {
@@ -1872,7 +1872,7 @@ DiceImage : any;
 
 
             this.calculationStringArray = DiceService.getCalculationStringArray(__calculationString, this.diceRolledData);
-            console.log('calculationstring array',this.calculationStringArray);
+            console.log('calculationstring array', this.calculationStringArray);
             this.characterMultipleCommands[0].calculationStringArray = this.calculationStringArray;
           } catch (err) { }
 
@@ -1889,9 +1889,9 @@ DiceImage : any;
           //    _maxNum = +_maxN > _maxNum ? +_maxN : _maxNum;
           //    _minNum = +_minN > _minNum ? (_minNum == 0 ? +_minN : _minNum) : +_minN;
           //});
-          if (!lastResultArray) {            
+          if (!lastResultArray) {
             //if (this.isDicePublicRoll || this.isSkipDicePublicRollcheck) {
-              if (this.isDicePublicRoll) {
+            if (this.isDicePublicRoll) {
               //this.isSkipDicePublicRollcheck = false;
               this.appService.updateChatWithDiceRoll({ characterCommandModel: this.characterCommandModel, characterMultipleCommands: this.characterMultipleCommands });
             }
@@ -3246,8 +3246,31 @@ DiceImage : any;
     DiceService.copyToClipboard(commandText);
   }
 
-  copyCommandResultText(characterCommandModel: CharacterCommand) {
-    let commandResultText = characterCommandModel.lastResultNumbers + ' = ' + characterCommandModel.lastResult;
+  copyCommandResultText(characterCommandModel: CharacterCommand, command) {
+
+    //let commandResultText = characterCommandModel.lastResultNumbers + ' = ' + characterCommandModel.lastResult;
+
+    let commandResultText = '';
+    if (command.isResultWithCustomDice) {
+      commandResultText = command.calculationString;
+    }
+    else {
+      commandResultText = command.calculationString;
+      if (command.calculationString) {
+        commandResultText += " = ";
+      }
+      else {
+        commandResultText += " ";
+      }
+      commandResultText += command.beforeResult;
+      if (command.calculationResult) {
+        commandResultText += (command.calculationResult);
+      } else {
+        commandResultText += " ";
+      }
+      commandResultText += command.afterResult;
+    }
+
     DiceService.copyToClipboard(commandResultText);
   }
 
@@ -3943,7 +3966,7 @@ DiceImage : any;
         }
         else {
           this.diceNav = '/ruleset/ruleset-details/' + this.rulesetId;
-        }        
+        }
         break;
       default:
         this.diceNav = '/character/dashboard';
@@ -3984,7 +4007,7 @@ DiceImage : any;
             if (Cdice.customDicetype == CustomDiceResultType.IMAGE) {
               if (Cdice.isNumeric) {
                 return this.GetDisplayContentFromResultName(DiceCalculativeContent, Cdice.results, true, result);
-              }             
+              }
               return DiceCalculativeContent;
               //var x = document.createElement("IMG");
               //x.setAttribute("src", "https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/Assassin.jpg");
@@ -3998,7 +4021,7 @@ DiceImage : any;
                 return this.GetDisplayContentFromResultName(DiceCalculativeContent, Cdice.results, false, result);
               }
               if (dice.dice == 'DOC' || dice.dice == 'DECK') {
-               return this.geticon(DiceCalculativeContent, Cdice.results,result);
+                return this.geticon(DiceCalculativeContent, Cdice.results, result);
               }
               return DiceCalculativeContent;
             }
