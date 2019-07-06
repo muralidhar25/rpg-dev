@@ -815,11 +815,7 @@ namespace DAL.Services
                                             RuleSetId = rulesetId,
                                             IsRandomizationEngine = BundleItemRow["IsRandomizationEngine"] == DBNull.Value ? false : Convert.ToBoolean(BundleItemRow["IsRandomizationEngine"]),
                                             RandomizationEngine = new List<RandomizationEngine>()
-
-
                                         }
-
-
                                     };
                                     //obj.MonsterTemplate.RandomizationEngine
                                     if (ds.Tables[3].Rows.Count > 0)
@@ -1683,15 +1679,24 @@ namespace DAL.Services
             }).ToList();
 
             DataTable DT_reItems = new DataTable();
-            if (model.REItems.Count > 0)
+            if (model.REItems != null)
             {
-                DT_reItems = utility.ToDataTable<REItems>(model.REItems);
+                if (model.REItems.Count > 0)
+                {
+                    DT_reItems = utility.ToDataTable<REItems>(model.REItems);
+                }
+                else
+                {
+                    model.REItems.Add(new REItems() { itemMasterId = 0, qty = 0 });
+                    DT_reItems = utility.ToDataTable<REItems>(model.REItems);
+                }
             }
             else
             {
                 model.REItems.Add(new REItems() { itemMasterId = 0, qty = 0 });
                 DT_reItems = utility.ToDataTable<REItems>(model.REItems);
             }
+
 
             DataTable DT_healthCurrent = new DataTable();
 
@@ -2165,11 +2170,72 @@ namespace DAL.Services
                                             XPValue = BundleItemRow["XPValue"] == DBNull.Value ? "0" : BundleItemRow["XPValue"].ToString(),
                                             Health = BundleItemRow["Health"] == DBNull.Value ? "0" : BundleItemRow["Health"].ToString(),
                                             RuleSetId = rulesetId,
+                                            IsRandomizationEngine = BundleItemRow["IsRandomizationEngine"] == DBNull.Value ? false : Convert.ToBoolean(BundleItemRow["IsRandomizationEngine"]),
+                                            RandomizationEngine = new List<RandomizationEngine>()
                                         }
                                     };
+
+                                    //Randomization Add for Bundles/Group
+                                    if (ds.Tables[2].Rows.Count > 0)
+                                    {
+                                        foreach (DataRow RErow in ds.Tables[2].Rows)
+                                        {
+                                            int MT_ID = RErow["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["MonsterTemplateId"]);
+                                            if (obj.MonsterTemplateId == MT_ID)
+                                            {
+                                                RandomizationEngine RE = new RandomizationEngine();
+                                                RE.RandomizationEngineId = RErow["RandomizationEngineId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["RandomizationEngineId"]);
+                                                RE.Qty = RErow["Qty"] == DBNull.Value ? string.Empty : RErow["Qty"].ToString();
+                                                RE.Percentage = RErow["Percentage"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["Percentage"]);
+                                                RE.SortOrder = RErow["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["SortOrder"]);
+                                                RE.ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]);
+                                                RE.IsOr = RErow["IsOr"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsOr"]);
+                                                RE.IsDeleted = RErow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsDeleted"]);
+
+                                                RE.ItemMaster = new ItemMaster()
+                                                {
+                                                    ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]),
+                                                    ItemName = RErow["ItemName"] == DBNull.Value ? null : RErow["ItemName"].ToString(),
+                                                    ItemImage = RErow["ItemImage"] == DBNull.Value ? null : RErow["ItemImage"].ToString()
+                                                };
+                                                obj.MonsterTemplate.RandomizationEngine.Add(RE);
+                                            }
+                                        }
+                                    }
                                     MonsterTemp.BundleItems.Add(obj);
                                 }
 
+                            }
+                        }
+                    }
+
+                    if (!MonsterTemp.IsBundle)
+                    {
+                        MonsterTemp.RandomizationEngine = new List<RandomizationEngine>();
+                        if (ds.Tables[2].Rows.Count > 0)
+                        {
+                            foreach (DataRow RErow in ds.Tables[2].Rows)
+                            {
+                                int MT_ID = RErow["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["MonsterTemplateId"]);
+                                if (MT_ID == MonsterTemp.MonsterTemplateId && !MonsterTemp.IsBundle)
+                                {
+                                    RandomizationEngine RE = new RandomizationEngine();
+                                    RE.RandomizationEngineId = RErow["RandomizationEngineId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["RandomizationEngineId"]);
+                                    RE.Qty = RErow["Qty"] == DBNull.Value ? string.Empty : RErow["Qty"].ToString();
+                                    RE.Percentage = RErow["Percentage"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["Percentage"]);
+                                    RE.SortOrder = RErow["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["SortOrder"]);
+                                    RE.ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]);
+                                    RE.IsOr = RErow["IsOr"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsOr"]);
+                                    RE.IsDeleted = RErow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsDeleted"]);
+
+                                    RE.ItemMaster = new ItemMaster()
+                                    {
+                                        ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]),
+                                        ItemName = RErow["ItemName"] == DBNull.Value ? null : RErow["ItemName"].ToString(),
+                                        ItemImage = RErow["ItemImage"] == DBNull.Value ? null : RErow["ItemImage"].ToString()
+                                    };
+                                    MonsterTemp.RandomizationEngine.Add(RE);
+                                }
                             }
                         }
                     }

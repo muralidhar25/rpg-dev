@@ -752,7 +752,12 @@ export class ServiceUtil {
         AndArray.push(OrArray);
         OrArray = [];
         OrArray.push(item);
+
+        if (!item.isOr && index == REList.length - 1) {
+          AndArray.push(OrArray);
+        }
       }
+      
 
     });
 

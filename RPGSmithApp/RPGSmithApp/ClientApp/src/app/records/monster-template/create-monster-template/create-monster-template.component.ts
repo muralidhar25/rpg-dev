@@ -774,7 +774,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
   }
   isValidSingleNumberCommand(command, randomization_Item = undefined) {
     if (command) {
-        if (command.toLowerCase().indexOf(' and') > -1) {
+      if (command.toLowerCase().indexOf(' and') > -1) {
         if (randomization_Item) {
           randomization_Item.isValidQty = false;
         }
@@ -861,8 +861,29 @@ export class CreateMonsterTemplateComponent implements OnInit {
   }
 
   commonOR(i) {
-    let _randomization = new randomization();    _randomization.percentage = null;    _randomization.qty = null;    _randomization.isOr = true;    _randomization.selectedItem = [];    let index = i + 1;    _randomization.sortOrder = index;    this.randomizationInfo.splice(index, 0, _randomization);
-    console.log(this.randomizationInfo);
+    let _randomization = new randomization();    _randomization.percentage = null;    _randomization.qty = null;    _randomization.isOr = true;    _randomization.selectedItem = [];    let indexToInsert = i + 1;    _randomization.sortOrder = indexToInsert;    this.randomizationInfo.splice(indexToInsert, 0, _randomization);    // add remaining percentage out of 100    let AndArray = [];
+    let OrArray = [];
+    this.randomizationInfo.map((item, index) => {
+      if (index == 0) {
+        OrArray.push(item);
+      }
+      if (item.isOr && index != 0) {
+        OrArray.push(item);
+      }
+      if ((!item.isOr && index != 0) || index == this.randomizationInfo.length - 1) {
+        AndArray.push(OrArray);
+        OrArray = [];
+        OrArray.push(item);
+
+        if (!item.isOr && index == this.randomizationInfo.length - 1) {
+          AndArray.push(OrArray);
+        }
+
+      }
+    });    AndArray.map((and) => {      let totalPercent: number = 100;      and.map((or) => {        totalPercent = totalPercent - (+or.percentage);      })      if (totalPercent <= 100) {
+        this.randomizationInfo[indexToInsert].percentage = totalPercent;
+      }    });
+
   }
 
   // Parent OR method
@@ -871,8 +892,39 @@ export class CreateMonsterTemplateComponent implements OnInit {
   }
 
   // Child or method
-  randomizationOr(i) {    this.commonOR(i);    //console.log(i);    //if (i) {    //  let _randomization = new randomization();    //  _randomization.isOr = true;    //  _randomization.selectedItem = [];    //  let index = i + 1;    //  console.log('inif', index);    //  _randomization.sortOrder = index;    //  this.randomizationInfo.splice(index, 0, _randomization);    //  console.log(this.randomizationInfo);    //} else {    //  let _randomization = new randomization();    //  _randomization.isOr = true;    //  _randomization.sortOrder = i;    //  _randomization.selectedItem = [];    //  this.randomizationInfo.push(_randomization);    //  //this.randomizationInfo.splice(1, 0, _randomization);    //  console.log('randomizationInfo', this.randomizationInfo);    //}  }  randomizationAnd() {    let _randomization = new randomization();    _randomization.percentage = null;    _randomization.qty = null;    _randomization.isOr = false;    this.randomizationInfo.push(_randomization);  }  removeRandom(item, index) {    if (index > -1) {      this.randomizationInfo.splice(index, 1);    }    console.log('afterdelete', this.randomizationInfo);  }  SelectItem(item, i) {    this.bsModalRef = this.modalService.show(SingleItemMonsterComponent, {      class: 'modal-primary modal-md',      ignoreBackdropClick: true,      keyboard: false    });    this.bsModalRef.content.title = 'Add Item';    this.bsModalRef.content.button = 'ADD';    this.bsModalRef.content.rulesetID = this._ruleSetId;    this.bsModalRef.content.SelectedItems = item.selectedItem;    this.bsModalRef.content.event.subscribe(data => {      if (data) {        console.log('itemselected', item.selectedItem);        item.selectedItem = data;        console.log(this.randomizationInfo);      }    });  }  validateRandomization(mt) {    console.log(this.randomizationInfo);    let total: number = 0;    for (let i = 0; i < this.randomizationInfo.length; i++) {      console.log(this.randomizationInfo[i].isOr);      if (this.randomizationInfo[i].selectedItem == null && mt.isRandomizationEngine) {        let message = "Please select item and try again.";
+  randomizationOr(i) {    this.commonOR(i);  }  randomizationAnd() {    let _randomization = new randomization();    _randomization.percentage = null;    _randomization.qty = null;    _randomization.isOr = false;    this.randomizationInfo.push(_randomization);  }  removeRandom(item, index) {    if (index > -1) {      this.randomizationInfo.splice(index, 1);    }    console.log('afterdelete', this.randomizationInfo);  }  SelectItem(item, i) {    this.bsModalRef = this.modalService.show(SingleItemMonsterComponent, {      class: 'modal-primary modal-md',      ignoreBackdropClick: true,      keyboard: false    });    this.bsModalRef.content.title = 'Add Item';    this.bsModalRef.content.button = 'ADD';    this.bsModalRef.content.rulesetID = this._ruleSetId;    this.bsModalRef.content.SelectedItems = item.selectedItem;    this.bsModalRef.content.event.subscribe(data => {      if (data) {        console.log('itemselected', item.selectedItem);        item.selectedItem = data;        console.log(this.randomizationInfo);      }    });  }  validateRandomization(mt) {    if (!mt.isRandomizationEngine) {
+      return true;
+    }    let isValidPrecentage = true;    let isValidItem = true;    let AndArray = [];
+    let OrArray = [];
+    this.randomizationInfo.map((item, index) => {
+
+      if (index == 0) {
+        OrArray.push(item);
+      }
+      if (item.isOr && index != 0) {
+        OrArray.push(item);
+      }
+      if ((!item.isOr && index != 0) || index == this.randomizationInfo.length - 1) {
+        AndArray.push(OrArray);
+        OrArray = [];
+        OrArray.push(item);
+
+        if (!item.isOr && index == this.randomizationInfo.length - 1) {
+          AndArray.push(OrArray);
+        }
+
+      }
+
+    });    AndArray.map((and) => {      let totalPercent: number = 0;      and.map((or) => {        totalPercent = totalPercent + (+or.percentage);        if (!or.selectedItem || !or.selectedItem.length) {
+          isValidItem = false;
+        }      })      if (totalPercent > 100) {
+        isValidPrecentage = false;
+      }    })    if (isValidPrecentage && isValidItem) {
+      return true;
+    }    else {      if (!isValidItem) {
+        let message = "Please select item and try again.";
         this.alertService.showMessage(message, "", MessageSeverity.error);
-        return false;
-      }      else if (this.randomizationInfo[i].isOr == true || this.randomizationInfo[i].isOr == null) {        total += +this.randomizationInfo[i].percentage;        if (total > 100) {          let message = "Total percent chance for a section can't exceed 100%, Please adjust these values and try again.";          this.alertService.showMessage(message, "", MessageSeverity.error);          return false;        }      } else {        if (total > 100) {          let message = "Total percent chance for a section can't exceed 100%, Please adjust these values and try again.";          this.alertService.showMessage(message, "", MessageSeverity.error);          return false;        } else {          total = 0;          total = this.randomizationInfo[i].percentage;          return true;        }      }      return true;    }  }
+      }      if (!isValidPrecentage) {
+        let message = "Total percent chance for a section can't exceed 100%, Please adjust these values and try again.";        this.alertService.showMessage(message, "", MessageSeverity.error);
+      }      return false;    }  }
 }

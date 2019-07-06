@@ -17,6 +17,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { MonsterTemplateService } from '../../../core/services/monster-template.service';
 import { DiceService } from '../../../core/services/dice.service';
 import { CustomDice } from '../../../core/models/view-models/custome-dice.model';
+import { ServiceUtil } from '../../../core/services/service-util';
 
 
 @Component({
@@ -61,7 +62,6 @@ export class AddMonsterComponent implements OnInit {
     }
 
   private initialize() {
-    debugger;
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)
             this.authService.logout();
@@ -69,6 +69,7 @@ export class AddMonsterComponent implements OnInit {
             this.isLoading = true;
           this.monsterTemplateService.getMonsterTemplateByRuleset_add<any>(this.rulesetId, true)//true
             .subscribe(data => {
+              debugger
               this.itemsList = data.MonsterTemplate;
                   this.itemsList.map((item) => {
                    item.quantity = 1;
@@ -110,6 +111,8 @@ export class AddMonsterComponent implements OnInit {
     
     if (this.selectedItemsList.length) {
       var selectedMonsters: any = [];
+      
+      debugger;
       this.selectedItemsList.map((x) => {
 
        
@@ -118,12 +121,14 @@ export class AddMonsterComponent implements OnInit {
           if (x.bundleItems) {
             if (x.bundleItems.length) {
               x.bundleItems.map((bi) => {
+                debugger
                 let itemQtyCount = +bi.quantity;
                 for (var i_itemQty = 0; i_itemQty < itemQtyCount; i_itemQty++) {
                   let healthNumberArray = [];
                   let armorClassNumberArray = [];
                   let xpValueNumberArray = [];
                   let challangeRatingNumberArray = [];
+                  var reItems = [];
                   if (+x.quantity) {
                     for (var i = 0; i < x.quantity; i++) {
                       let health = DiceService.rollDiceExternally(this.alertService, bi.monsterTemplate.health ? bi.monsterTemplate.health : '0', this.customDices)
@@ -136,6 +141,18 @@ export class AddMonsterComponent implements OnInit {
                       armorClassNumberArray.push(armorClass);
                       xpValueNumberArray.push(xpValue);
                       challangeRatingNumberArray.push(challangeRating);
+
+                      if (bi.monsterTemplate.isRandomizationEngine) {
+                        debugger;
+                        let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine(bi.monsterTemplate.randomizationEngine, this.alertService);
+                        if (currentItemsToDeploy && currentItemsToDeploy.length) {
+                          currentItemsToDeploy.map((re) => {
+                            re.deployCount = i + 1;
+                            reItems.push(re);
+                          });
+                        }
+                      }
+
                     }
                   }
                   selectedMonsters.push({
@@ -148,7 +165,8 @@ export class AddMonsterComponent implements OnInit {
                     xpValue: xpValueNumberArray,
                     challangeRating: challangeRatingNumberArray,
                     addToCombat: this.addToCombat,
-                    isBundle: false // as this will insert as a single item now.
+                    isBundle: false, // as this will insert as a single item now.
+                    reItems:reItems
                   });
                 }
                 
@@ -164,6 +182,7 @@ export class AddMonsterComponent implements OnInit {
           let armorClassNumberArray = [];
           let xpValueNumberArray = [];
           let challangeRatingNumberArray = [];
+          var reItems = [];
           if (+x.quantity) {
             for (var i = 0; i < x.quantity; i++) {
               let health = DiceService.rollDiceExternally(this.alertService, x.health ? x.health : '0', this.customDices)
@@ -176,6 +195,17 @@ export class AddMonsterComponent implements OnInit {
               armorClassNumberArray.push(armorClass);
               xpValueNumberArray.push(xpValue);
               challangeRatingNumberArray.push(challangeRating);
+
+              if (x.isRandomizationEngine) {
+                debugger;
+                let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine(x.randomizationEngine, this.alertService);
+                if (currentItemsToDeploy && currentItemsToDeploy.length) {
+                  currentItemsToDeploy.map((re) => {
+                    re.deployCount = i + 1;
+                    reItems.push(re);
+                  });
+                }
+              }
             }
           }
           selectedMonsters.push({
@@ -188,7 +218,8 @@ export class AddMonsterComponent implements OnInit {
             xpValue: xpValueNumberArray,
             challangeRating: challangeRatingNumberArray,
             addToCombat: this.addToCombat,
-            isBundle: x.isBundle
+            isBundle: x.isBundle,
+            reitems: reItems
           });
         }
         
