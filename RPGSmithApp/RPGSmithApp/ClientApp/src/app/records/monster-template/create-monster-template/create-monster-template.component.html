@@ -357,7 +357,8 @@
                     <div (click)="SelectItem(item,i)">
                       <tag-input [id]="'contains_'+i" [name]="'contains'+ i" theme='dark' [(ngModel)]='item.selectedItem'
                                  [inputId]="'contains'+i" inputClass="form-control metatags-field" class="form-control"
-                                 [identifyBy]="'value'" [displayBy]="'text'" [placeholder]="''" [secondaryPlaceholder]="'Select Item'">
+                                 [identifyBy]="'value'" [displayBy]="'text'" [placeholder]="''" [secondaryPlaceholder]="'Select Item'"
+                                 style="width: 300px;">
                       </tag-input>
                     </div>
                     <!--Parent OR button-->
@@ -385,7 +386,8 @@
                     <div (click)="SelectItem(item,i)">
                       <tag-input [id]="'contains_'+i" [name]="'contains'+ i" theme='dark' [inputId]="'contains'+ i"
                                  [(ngModel)]='item.selectedItem' inputClass="form-control metatags-field" class="form-control"
-                                 [identifyBy]="'value'" [displayBy]="'text'" [placeholder]="''" [secondaryPlaceholder]="'Select Item'">
+                                 [identifyBy]="'value'" [displayBy]="'text'" [placeholder]="''" [secondaryPlaceholder]="'Select Item'"
+                                 style="width: 300px;">
                       </tag-input>
                     </div>
                     <!--Child OR with Delete button-->
@@ -412,11 +414,11 @@
                   </span>
                   <div class="search-field-randominzation">
                     <div (click)="SelectItem(item,i)">
-                      <tag-input [id]="'contains_'+i" [name]="'contains'+ i" theme='dark' [(ngModel)]='item.selectedItem' [inputId]="'contains'+ i" inputClass="form-control metatags-field" class="form-control" [identifyBy]="'value'" [displayBy]="'text'" [placeholder]="''" [secondaryPlaceholder]="'Select Item'">
+                      <tag-input [id]="'contains_'+i" [name]="'contains'+ i" theme='dark' [(ngModel)]='item.selectedItem' [inputId]="'contains'+ i" inputClass="form-control metatags-field" class="form-control" [identifyBy]="'value'" [displayBy]="'text'" [placeholder]="''" [secondaryPlaceholder]="'Select Item'" style="width: 300px;">
                       </tag-input>
                     </div>
                     <!--child OR-->
-                    <button type="button" class="btn-orange-icons icon-Gen-Trash" (click)="removeRandom(item,i)"></button>
+                    <button type="button" class="btn-orange-icons icon-Gen-Trash unvisible" (click)="removeRandom(item,i)"></button>
                     <a href="javascript:void(0);" class="orange-text-randominzation visible" (click)="randomizationOR(i)">OR</a>
                   </div>
                 </div>

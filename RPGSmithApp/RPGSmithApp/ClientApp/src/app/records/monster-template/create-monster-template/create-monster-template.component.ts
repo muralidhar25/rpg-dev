@@ -921,9 +921,11 @@ export class CreateMonsterTemplateComponent implements OnInit {
         }
 
       }
-    });    AndArray.map((and) => {      let totalPercent: number = 100;      and.map((or) => {        totalPercent = totalPercent - (+or.percentage);      })      if (totalPercent <= 100) {
+    });    debugger    let currentOrCount = 0;        AndArray.map((and) => {      let isCurrentOrInWhichItemIsInsert = false;      let totalPercent: number = 100;      and.map((or) => {              totalPercent = totalPercent - (+or.percentage);        currentOrCount = currentOrCount + 1;        if (currentOrCount == indexToInsert) {
+          isCurrentOrInWhichItemIsInsert = true;
+        }      })      if (totalPercent <= 100 && currentOrCount >= indexToInsert && isCurrentOrInWhichItemIsInsert) {
         this.randomizationInfo[indexToInsert].percentage = totalPercent;
-      }    });
+      }          });
 
   }
 
@@ -933,7 +935,32 @@ export class CreateMonsterTemplateComponent implements OnInit {
   }
 
   // Child or method
-  randomizationOr(i) {    this.commonOR(i);  }  randomizationAnd() {    let _randomization = new randomization();    _randomization.percentage = null;    _randomization.qty = null;    _randomization.isOr = false;    this.randomizationInfo.push(_randomization);  }  removeRandom(item, index) {    if (index > -1) {      this.randomizationInfo.splice(index, 1);    }  }  SelectItem(item, i) {    this.bsModalRef = this.modalService.show(SingleItemMonsterComponent, {      class: 'modal-primary modal-md',      ignoreBackdropClick: true,      keyboard: false    });    this.bsModalRef.content.title = 'Add Item';    this.bsModalRef.content.button = 'ADD';    this.bsModalRef.content.rulesetID = this._ruleSetId;    this.bsModalRef.content.SelectedItems = item.selectedItem;    this.bsModalRef.content.event.subscribe(data => {      if (data) {        item.selectedItem = data;      }    });  }  validateRandomization(mt) {    if (!mt.isRandomizationEngine) {
+  randomizationOr(i) {    this.commonOR(i);  }  randomizationAnd() {    let _randomization = new randomization();    _randomization.percentage = null;    _randomization.qty = null;    _randomization.isOr = false;    this.randomizationInfo.push(_randomization);  }  removeRandom(item, index) {    this.randomizationInfo.splice(index, 1);    //if (index > -1 && item.isOr) {    //  this.randomizationInfo.splice(index, 1);    //}    //else {    //  let AndArray = [];
+    //  let OrArray = [];
+    //  this.randomizationInfo.map((item, index) => {
+
+    //    if (index == 0) {
+    //      OrArray.push(item);
+    //    }
+    //    if (item.isOr && index != 0) {
+    //      OrArray.push(item);
+    //    }
+    //    if ((!item.isOr && index != 0) || index == this.randomizationInfo.length - 1) {
+    //      AndArray.push(OrArray);
+    //      OrArray = [];
+    //      OrArray.push(item);
+
+    //      if (!item.isOr && index == this.randomizationInfo.length - 1) {
+    //        AndArray.push(OrArray);
+    //      }
+
+    //    }
+
+    //  });    //  let currentOrCount = 0;    //  let currentOrCount_Delete = 0;    //  AndArray.map((and) => {    //    let isCurrentOrInWhichItemIsDeleted = false;            //    and.map((or) => {              //      currentOrCount = currentOrCount + 1;    //      if (currentOrCount == index) {
+    //        isCurrentOrInWhichItemIsDeleted = true;
+    //      }    //    })    //    if (isCurrentOrInWhichItemIsDeleted) {
+    //      and.map((or) => {    //        currentOrCount_Delete = currentOrCount_Delete + 1;    //        this.randomizationInfo.splice(currentOrCount_Delete, 1);                //      })
+    //    }    //  });    //}  }  SelectItem(item, i) {    this.bsModalRef = this.modalService.show(SingleItemMonsterComponent, {      class: 'modal-primary modal-md',      ignoreBackdropClick: true,      keyboard: false    });    this.bsModalRef.content.title = 'Add Item';    this.bsModalRef.content.button = 'ADD';    this.bsModalRef.content.rulesetID = this._ruleSetId;    this.bsModalRef.content.SelectedItems = item.selectedItem;    this.bsModalRef.content.event.subscribe(data => {      if (data) {        item.selectedItem = data;      }    });  }  validateRandomization(mt) {    if (!mt.isRandomizationEngine) {
       return true;
     }    let isValidPrecentage = true;    let isValidItem = true;    let AndArray = [];
     let OrArray = [];
