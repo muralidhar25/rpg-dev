@@ -10,7 +10,7 @@ export class DiceGif implements PipeTransform {
             if (isValueProperty) {
                 gifs.push({ gif: gifVal, value: value[gifVal] });
                 
-                // console.log("enum member: ", value[enumMember]);
+                
             }
         }
         return gifs;

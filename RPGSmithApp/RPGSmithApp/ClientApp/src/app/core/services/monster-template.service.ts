@@ -109,7 +109,7 @@ export class MonsterTemplateService extends EndpointFactory {
 
   getMonsterById<T>(Id: number): Observable<T> {
     let endpointUrl = `${this.getMonsterByIdUrl}?id=${Id}`;
-    console.log('endpointUrl', endpointUrl);
+    
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getMonsterById(Id));

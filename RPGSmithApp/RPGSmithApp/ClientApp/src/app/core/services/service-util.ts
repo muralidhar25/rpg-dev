@@ -654,9 +654,9 @@ export class ServiceUtil {
                 let characterStatConditionsfilter = charactersCharacterStats.filter((stat) => stat.characterStat.statName.toUpperCase() == rec.id);
                 let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
                 let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], character, charactersCharacterStats);
-               // console.log(result);
+               
                 //let result = this.conditionStat(characterStatConditions);
-                //console.log(result);
+                
                 //if (isNaN(+result)) {
                 //  num = 0;
                 //} else {
@@ -668,7 +668,7 @@ export class ServiceUtil {
                 break;
             }
             //calculationString = calculationString.replace(rec.originaltext, conditionResult);
-            //console.log('calc',calculationString);
+            
             if (num) {
 
               calculationString = calculationString.replace(rec.originaltext, num.toString());
@@ -684,7 +684,6 @@ export class ServiceUtil {
         });
 
         finalCalcString = calculationString;
-        //console.log('calculationString', finalCalcString);
       });
     }
     ////////////////////////////////                    
@@ -760,14 +759,14 @@ export class ServiceUtil {
     AndArray.map((Or) => {
       let totalPercentRunning: number = 0;
       let rolledPercentageValue = DiceService.rollDiceExternally(alertService, "D100", []);
-      console.log('rolledPercentageValue', rolledPercentageValue);
+      
       let skip_Or = false;
 
       Or.map(x => {
         totalPercentRunning = totalPercentRunning + +x.percentage;
         if (+totalPercentRunning >= +rolledPercentageValue && !skip_Or) {
           let CurrentQty = DiceService.rollDiceExternally(alertService, x.qty, []);
-          console.log('CurrentQty', CurrentQty);
+          
           Items.push({ itemMasterId: x.itemMasterId, qty: CurrentQty });
           skip_Or = true;
         }

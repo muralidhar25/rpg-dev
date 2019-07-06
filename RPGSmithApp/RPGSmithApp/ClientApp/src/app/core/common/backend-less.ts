@@ -126,7 +126,7 @@ export class BackendLessInterceptor implements HttpInterceptor {
             if (request.url.endsWith('/character-stat') && request.method === 'GET') {
             
                 let _characterStat: any[] = characterStatList;
-                //console.log(_characterStat);
+               
 
                 return Observable.of(new HttpResponse({ status: 200, body: _characterStat }));
             }
@@ -134,7 +134,7 @@ export class BackendLessInterceptor implements HttpInterceptor {
             if (request.url.endsWith('/api/characters/GetCharacters') && request.method === 'GET') {
            
                 let _characters: any[] = charactersList;
-               // console.log(_characters);
+               
 
                 return Observable.of(new HttpResponse({ status: 200, body: _characters }));
             }

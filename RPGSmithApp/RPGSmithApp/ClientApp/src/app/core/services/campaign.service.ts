@@ -77,7 +77,7 @@ export class CampaignService extends EndpointFactory {
   declineInvite<T>(inviteId: number): Observable<T> {
 
     let endpointUrl = `${this.getDeclineInviteUrl}?inviteID=${inviteId}`;
-    //console.log(endpointUrl);
+    
     return this.http.post(endpointUrl, JSON.stringify({}), { headers: this.getRequestHeadersNew() })
       .catch(error => {
         return this.handleError(error, () => this.declineInvite(inviteId));

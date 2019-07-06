@@ -103,7 +103,7 @@ export class ColorService extends EndpointFactory {
         //else this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
       }, () => { });
 
-    //console.log(presetColors);
+    
     return presetColors;
   }
 

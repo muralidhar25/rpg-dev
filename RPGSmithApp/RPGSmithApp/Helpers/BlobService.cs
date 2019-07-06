@@ -388,9 +388,12 @@ namespace RPGSmithApp.Helpers
                     blobContinuationToken = results.Result.ContinuationToken;
                     var StockImagesResult = results.Result.Results.Skip(start).Take(Count).ToList();
                     start = 0;
+
+                    int loopCount = 0;
                     foreach (IListBlobItem _blobItem in StockImagesResult)
                     {
-                        CloudBlockBlob item = _blobItem as CloudBlockBlob;
+                        loopCount = loopCount + 1;
+                           CloudBlockBlob item = _blobItem as CloudBlockBlob;
                         if (item != null)
                         {
                             Items _item = new Items();
@@ -404,7 +407,7 @@ namespace RPGSmithApp.Helpers
                             if (_items.Count >= Count)
                             {
                                 previousContainerNumber = i;
-                                previousContainerImageNumber = results.Result.Results.Count() - 1;
+                                previousContainerImageNumber = loopCount;//results.Result.Results.Count() - 1;
                                 break;
                             }
                         }
@@ -412,7 +415,7 @@ namespace RPGSmithApp.Helpers
                     if (_items.Count >= Count)
                     {
                         previousContainerNumber = i;
-                        previousContainerImageNumber = results.Result.Results.Count() - 1;
+                        previousContainerImageNumber = loopCount;// results.Result.Results.Count() - 1;
                         break;
                     }
                 }

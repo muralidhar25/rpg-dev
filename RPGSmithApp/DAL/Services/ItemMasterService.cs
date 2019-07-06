@@ -324,7 +324,7 @@ namespace DAL.Services
               .Include(d => d.ItemMasterSpell).ThenInclude(d => d.Spell)
               .Include(d => d.itemMasterBuffAndEffects).ThenInclude(d => d.BuffAndEffect)
               .Include(d => d.ItemMasterCommand)
-              .Where(d => d.ItemMasterId == id && d.IsDeleted != true)
+              .Where(d => d.ItemId == id && d.IsDeleted != true)
               .FirstOrDefault();
 
             if (item == null) return null;

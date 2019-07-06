@@ -78,11 +78,12 @@ export class LootDetailsComponent implements OnInit {
             this.isLoading = true;
           this.itemMasterService.getlootById<any>(this.LootId)
               .subscribe(data => {
-                console.log('data', data.ruleSet);
-                if (data)
+               
+                if (data) {
                   debugger;
-                    this.RuleSet = data.ruleSet;
-                    this.ItemMasterDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");     
+                  this.RuleSet = data.ruleSet;
+                  this.ItemMasterDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");
+                }  
                     //this.ItemMasterDetail.forEach(function (val) { val.showIcon = false; });
                     this.rulesetService.GetCopiedRulesetID(this.ItemMasterDetail.ruleSetId, user.id).subscribe(data => {
 
@@ -263,5 +264,8 @@ export class LootDetailsComponent implements OnInit {
       this.router.navigate(['/ruleset/loot-details', itemId]);
       //this.sharedService.updateItemsList({ onPage: false });
     }
+  }
+  GoToRuleBuff(RulesetBuffID: number) {
+    this.router.navigate(['/ruleset/buff-effect-details', RulesetBuffID]);
   }
 }

@@ -208,18 +208,18 @@
                         <h3>Abilities</h3>
                         <div class="form-group output-list output-list-wrap">
                           <ul class="output-list-items">
-                            <li class="output-list-item" *ngFor="let ability of ItemMasterDetail.itemMasterAbilities">
-                              <div [routerLink]="['/ruleset/ability-details', ability.ability.abilityId]" style="cursor:pointer;" popover="{{ability.ability.name}}" triggers="hover">
-                                <img class="card-img-top" [src]="ability.ability.imageUrl" [alt]="ability.ability.name"
+                            <li class="output-list-item" *ngFor="let abilitiy of ItemMasterDetail.itemMasterAbilities">
+                              <div [routerLink]="['/ruleset/ability-details', abilitiy.abilitiy.abilityId]" style="cursor:pointer;" popover="{{abilitiy.abilitiy.name}}" triggers="hover">
+                                <img class="card-img-top" [src]="abilitiy.abilitiy.imageUrl" [alt]="abilitiy.abilitiy.name"
                                      onerror="this.src='../assets/images/DefaultImages/ability.png';" />
-                                <span>{{ability.ability.name}}</span>
+                                <span>{{abilitiy.abilitiy.name}}</span>
                               </div>
                             </li>
 
                           </ul>
                           <!--<div class="input-extend">
-              <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
-          </div>-->
+          <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
+      </div>-->
                         </div>
                       </div>
                     </div>
@@ -237,8 +237,25 @@
                             </li>
                           </ul>
                           <!--<div class="input-extend">
-              <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
-          </div>-->
+            <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary"><span>Show more</span></button>
+        </div>-->
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <div class="item-info-buffs">
+                        <h3>Buffs & Effects</h3>
+                        <div class="form-group output-list output-list-wrap">
+                          <ul class="output-list-items" *ngIf="ItemMasterDetail?.itemMasterBuffAndEffects !== undefined">
+                            <li class="output-list-item" *ngFor="let rec of ItemMasterDetail?.itemMasterBuffAndEffects">
+                              <div (click)="GoToRuleBuff(rec.buffAndEffectId)" style="cursor:pointer;" popover="{{rec?.buffAndEffect?.name}}" triggers="hover">
+                                <img class="card-img-top" [src]="rec?.buffAndEffect?.imageUrl" [alt]="rec?.buffAndEffect?.name"
+                                     onerror="this.src='../assets/images/BnE/Def_BnE.png';" />
+                                <span>{{rec?.buffAndEffect?.name}}</span>
+                              </div>
+                            </li>
+                          </ul>
+
                         </div>
                       </div>
                     </div>

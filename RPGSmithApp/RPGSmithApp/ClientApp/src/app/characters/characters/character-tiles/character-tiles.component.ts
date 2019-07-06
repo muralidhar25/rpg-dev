@@ -812,7 +812,7 @@ export class CharacterTilesComponent implements OnInit {
   }
 
   onChangeStart(event: NgGridItemEvent): void {
-    //console.log('onChangeStart', event);
+    
     //this.preventClick = true;
     //alert(this.preventClick);       
   }
@@ -826,7 +826,7 @@ export class CharacterTilesComponent implements OnInit {
   }
 
   onResize(box: any, index: number, event: NgGridItemEvent): void {
-    //console.log( event.height + ' - ' + event.width);
+   
     this.preventClick = true;
     //alert(this.preventClick);
   }
@@ -838,7 +838,7 @@ export class CharacterTilesComponent implements OnInit {
     //    let heightTile = event.currentTarget.childNodes[1].clientHeight;
     //    let widthTile = event.currentTarget.childNodes[1].clientWidth;
 
-    //    console.log('widthTile', widthTile, 'heightTile', heightTile);
+    
 
     //    let offsetLeftLI = this.ref.nativeElement.childNodes[1].childNodes[2].childNodes[1].childNodes[8].childNodes[1].childNodes[3].offsetLeft;
     //    let offsetTopLI = this.ref.nativeElement.childNodes[1].childNodes[2].childNodes[1].childNodes[8].childNodes[1].childNodes[3].offsetTop;
@@ -1069,7 +1069,7 @@ export class CharacterTilesComponent implements OnInit {
                 }
               }
               ////////////////////////////////////////////
-              //console.log(finalCalStr)
+              
             }
             else {
               //For Old Records

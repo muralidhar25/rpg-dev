@@ -229,7 +229,6 @@ export class NgChat implements OnInit, IChatController {
   };
 
   get filteredParticipants(): IChatParticipant[] {
-    //console.log("this.participants", this.participants)
     this.participants = this.filterCampaignParticipants(this.participants)
     if (this.searchInput.length > 0) {
       // Searches in the friend list by the inputted search string

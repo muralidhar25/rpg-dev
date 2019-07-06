@@ -78,7 +78,6 @@ export class MonsterItemDetailsComponent implements OnInit {
             this.isLoading = true;
           this.itemMasterService.getMonsterItemById<any>(this.itemId)
               .subscribe(data => {
-                console.log('data', data.ruleSet);
                 if (data)
                   debugger;
                 this.monsterId = data.monsterId;

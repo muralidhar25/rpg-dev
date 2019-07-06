@@ -177,11 +177,27 @@ namespace DAL.Services
         public Monster GetMonsterById(int? id, bool IsGettingDetailsForDetailScreenAPI)
         {
             Monster monster = _context.Monsters
-                .Include(d => d.RuleSet).Include(d => d.MonsterTemplate)
+                .Include(d => d.RuleSet)
+                .Include(d => d.MonsterTemplate)
+                //.ThenInclude(d => d.MonsterTemplateRandomizationEngine)
+                //.ThenInclude(d=>d.RandomizationEngine)
+                //.ThenInclude(d=>d.ItemMaster)
+
                 .Where(x => x.MonsterId == id && x.IsDeleted != true).FirstOrDefault();
 
             if (monster == null) return monster;
+            //if (monster.MonsterTemplate!=null)
+            //{
+            //    if (monster.MonsterTemplate.MonsterTemplateRandomizationEngine != null)
+            //    {
+            //        monster.MonsterTemplate.MonsterTemplateRandomizationEngine =
+            //            monster.MonsterTemplate.MonsterTemplateRandomizationEngine.Where(x => x.IsDeleted != true).ToList();
+                    
+            //    }
+                
 
+            //}
+            
             if (IsGettingDetailsForDetailScreenAPI)
             {
                 monster.MonsterTemplate.Command = monster.Command;
@@ -1838,7 +1854,7 @@ namespace DAL.Services
 
 
 
-                    MonsterTemplate _MonsterTemplate = new MonsterTemplate();
+                    MonsterTemplate_Bundle _MonsterTemplate = new MonsterTemplate_Bundle();
                     _MonsterTemplate.Stats = row["Stats"] == DBNull.Value ? null : row["Stats"].ToString();
                     _MonsterTemplate.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
                     _MonsterTemplate.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
@@ -1850,6 +1866,36 @@ namespace DAL.Services
                     _MonsterTemplate.ChallangeRating = row["MTChallangeRating"] == DBNull.Value ? null : row["MTChallangeRating"].ToString();
                     _MonsterTemplate.XPValue = row["MTXPValue"] == DBNull.Value ? null : row["MTXPValue"].ToString();
                     _MonsterTemplate.InitiativeCommand = row["InitiativeCommand"] == DBNull.Value ? null : row["InitiativeCommand"].ToString();
+                    _MonsterTemplate.IsRandomizationEngine = row["MTIsRandomizationEngine"] == DBNull.Value ? false : Convert.ToBoolean(row["MTIsRandomizationEngine"]);
+
+                    _MonsterTemplate.RandomizationEngine = new List<RandomizationEngine>();
+                    if (ds.Tables[2].Rows.Count > 0)
+                    {
+                        foreach (DataRow RErow in ds.Tables[2].Rows)
+                        {
+                            int MT_ID = RErow["MonsterTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["MonsterTemplateId"]);
+                            if (MT_ID == _MonsterTemplate.MonsterTemplateId && !_MonsterTemplate.IsBundle)
+                            {
+                                RandomizationEngine RE = new RandomizationEngine();
+                                RE.RandomizationEngineId = RErow["RandomizationEngineId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["RandomizationEngineId"]);
+                                RE.Qty = RErow["Qty"] == DBNull.Value ? string.Empty : RErow["Qty"].ToString();
+                                RE.Percentage = RErow["Percentage"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["Percentage"]);
+                                RE.SortOrder = RErow["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["SortOrder"]);
+                                RE.ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]);
+                                RE.IsOr = RErow["IsOr"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsOr"]);
+                                RE.IsDeleted = RErow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsDeleted"]);
+
+                                RE.ItemMaster = new ItemMaster()
+                                {
+                                    ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]),
+                                    ItemName = RErow["ItemName"] == DBNull.Value ? null : RErow["ItemName"].ToString(),
+                                    ItemImage = RErow["ItemImage"] == DBNull.Value ? null : RErow["ItemImage"].ToString()
+                                };
+                                _MonsterTemplate.RandomizationEngine.Add(RE);
+                            }
+                        }
+                    }
+
 
 
                     _monster.RuleSet = ruleset;

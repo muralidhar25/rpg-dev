@@ -57,7 +57,7 @@ export class CachingInterceptor implements HttpInterceptor {
         //    if (req.url === data.url && req.method != "DELETE"
         //      && req.body.toLowerCase().replace(/ /g, '') === data.body.toLowerCase().replace(/ /g, '')) {
         //      useCache = false;
-        //      //console.log(req.url + ' ' + data.method);
+        //      
         //    }
         //  } catch (err) { }
         //  if (useCache && size - nReq <= 3 && size >= nReq

@@ -74,7 +74,7 @@ export class CommonService {
     this.rulesetService.getRulesetAndCharactrCount(userId)
       .subscribe(data => {
         let model: any = data;
-        //console.log('RulesetsCount: ' + data);
+        
         this._rulesetCount = model.rulesetCount;
         this._characterCount = model.characetrCount;
       },
@@ -87,7 +87,7 @@ export class CommonService {
     this.rulesetService.getRulesetAndCharactrCount(userId)
       .subscribe(data => {
         let model: any = data;
-        //console.log('RulesetsCount: ' + data);
+        
         this.setRulesetCount(model.rulesetCount);
       },
         error => {
@@ -99,7 +99,7 @@ export class CommonService {
     this.rulesetService.getRulesetAndCharactrCount(userId)
       .subscribe(data => {
         let model: any = data;
-        //console.log('CharactersCount: ' + data);
+        
         this.setCharactersCount(model.characetrCount);
       },
         error => {

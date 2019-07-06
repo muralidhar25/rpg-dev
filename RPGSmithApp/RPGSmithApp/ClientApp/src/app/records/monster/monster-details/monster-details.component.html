@@ -226,7 +226,7 @@
                     <div class="form-group output-list output-list-wrap">
                       <ul class="output-list-items" *ngIf="selectedItemMasters">
                         <li class="output-list-item" *ngFor="let Item of selectedItemMasters">
-                          <div (click)="GoToItems(Item?.itemMasterId)" style="cursor:pointer;" popover="{{Item?.name}}" triggers="hover">
+                          <div (click)="GoToItems(Item?.itemId)" style="cursor:pointer;" popover="{{Item?.name}}" triggers="hover">
                             <img class="card-img-top" [src]="Item?.imageUrl" [alt]="Item?.name"
                                  onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
                             <span>{{Item?.name}}</span>
@@ -269,7 +269,7 @@
                   </div>
                 </div>
                 <div class="col-12 col-md-6">
-                  <div class="item-info-spells">
+                  <div class="item-info-abils">
                     <h3 class="crsr-pointer" (click)="AddRemoveBEs()">Buffs and Effects</h3>
                     <div class="form-group output-list output-list-wrap">
                       <ul class="output-list-items" *ngIf="selectedBuffAndEffects">

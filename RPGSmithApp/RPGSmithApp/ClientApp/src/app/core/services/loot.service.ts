@@ -149,7 +149,7 @@ export class LootService extends EndpointFactory {
 
   deleteLootItem<T>(item): Observable<T> {
     let endpointUrl = this._getDeleteLootItemUrl;
-    //console.log(item);
+    
     return this.http.post<T>(endpointUrl, JSON.stringify(item), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.deleteLootItem(item));

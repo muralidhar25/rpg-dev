@@ -1162,7 +1162,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                 data => {
                     this.page = 1;
                     this.pageSize = 30;
-                    //console.log("data: ", data);
+                    
                     this.alertService.stopLoadingMessage();
                   let message = "Characters stats has been updated successfully.";
                   this.alertService.showMessage(message, "", MessageSeverity.success);
@@ -1809,7 +1809,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
     
     public inputValidator(event: any, id: any, type: any) {
 
-        //console.log(event.target.value);
+        
         const pattern = /^[0-9]*$/g;
         let IsNegative: boolean = false;
         if (event.target.value.length) {

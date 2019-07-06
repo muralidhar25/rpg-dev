@@ -110,15 +110,15 @@ export class BingSearchComponent implements OnInit {
             this.isSearchingStockImages = true;
             this.SearchedFontAwesomeIcons = this.fontAwesomeIcons.filter(x => {
               if (x.filter ? x.filter.filter(y => y.toLowerCase().indexOf(this.query.toLowerCase()) > -1).length : false) {
-                console.log("1,",x.filter.filter(y => y.toLowerCase().indexOf(this.query.toLowerCase()) > -1))
+                
                 return true;
               }
               else if (x.aliases ? x.aliases.filter(y => y.toLowerCase().indexOf(this.query.toLowerCase()) > -1).length : false) {
-                console.log("2,", x.aliases.filter(y => y.toLowerCase().indexOf(this.query.toLowerCase()) > -1));
+                
                 return true;
               }
               else if (x.name ? x.name.toLowerCase().indexOf(this.query.toLowerCase()) > -1 : false) {
-                console.log("3,", x.name.toLowerCase().indexOf(this.query.toLowerCase()));
+                
                 return true;
               }
               else {

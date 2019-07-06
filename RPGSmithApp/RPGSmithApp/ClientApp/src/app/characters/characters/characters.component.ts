@@ -302,7 +302,7 @@ export class CharactersComponent implements OnInit {
     private setRulesetId(rulesetId: number) {
         this.localStorage.deleteData(DBkeys.RULESET_ID);
         this.localStorage.saveSyncedSessionData(rulesetId, DBkeys.RULESET_ID);
-        //console.log(' rulesetId => '+ this.localStorage.getDataObject<number>(DBkeys.RULESET_ID));
+        
     }
 
     private destroyModalOnInit(): void {

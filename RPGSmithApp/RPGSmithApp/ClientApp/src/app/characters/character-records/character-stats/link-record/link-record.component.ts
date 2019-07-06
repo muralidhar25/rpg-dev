@@ -304,7 +304,7 @@ export class LinkRecordComponent implements OnInit {
   }
 
     showMoreCommands(fieldName: any, _limit: number, _limitText: string) {
-        //console.log(fieldName);
+        
         if (fieldName == 'spell') {
             if (_limitText == "Show more") {
                 this.limitTextSpell = "Show less";

@@ -46,6 +46,8 @@ export class CreatelootComponent implements OnInit {
   selectedAbilities = [];
   spellsList = [];
   selectedSpells = [];
+  buffAndEffectsList = [];
+  selectedBuffAndEffects = [];
   metatags = [];
   uploadFromBing: boolean = false;
   bingImageUrl: string;
@@ -152,11 +154,14 @@ export class CreatelootComponent implements OnInit {
       this.isLoading = true;
       this.itemMasterService.getAbilitySpellForLootsByRuleset_sp<any[]>(this.itemMasterFormModal.ruleSetId, this.itemMasterFormModal.lootId)
         .subscribe(data => {
+          debugger
           let dataobj: any = data
           this.abilitiesList = dataobj.abilityList;
           this.spellsList = dataobj.spellList;
+          this.buffAndEffectsList = dataobj.buffAndEffectsList;
           this.selectedAbilities = dataobj.selectedAbilityList.map(x => { return x; });
           this.selectedSpells = dataobj.selectedSpellList.map(x => { return x; });
+          this.selectedBuffAndEffects = dataobj.selectedBuffAndEffects.map(x => { return x; });
           this.itemMasterFormModal.itemMasterCommandVM = dataobj.selectedItemMasterCommand;
           this.isLoading = false;
         }, error => { }, () => { });
@@ -268,7 +273,10 @@ export class CreatelootComponent implements OnInit {
     itemMaster.itemMasterSpellVM = this.selectedSpells.map(x => {
       return { spellId: x.spellId, itemMasterId: itemMaster.itemMasterId };
     });
-
+    itemMaster.itemMasterBuffAndEffectVM = this.selectedBuffAndEffects.map(x => {
+      return { buffAndEffectId: x.buffAndEffectId, itemMasterId: itemMaster.itemMasterId };
+    });
+    debugger
     let tagsValue = this.metatags.map(x => {
       if (x.value == undefined) return x;
       else return x.value;
@@ -295,6 +303,9 @@ export class CreatelootComponent implements OnInit {
     itemMaster.itemMasterSpell = itemMaster.itemMasterSpellVM;
     //else if (itemMaster.itemMasterSpell.length > 0 && itemMaster.itemMasterSpellVM.length == 0)
     //   itemMaster.itemMasterSpellVM = itemMaster.itemMasterSpell;
+    itemMaster.itemMasterBuffAndEffects = itemMaster.itemMasterBuffAndEffectVM;
+
+
     this.isLoading = true;
     let _msg = itemMaster.itemMasterId == 0 || itemMaster.itemMasterId === undefined ? "Creating Loot Item Template.." : "Updating Loot Item Template..";
     if (this.itemMasterFormModal.view === VIEW.DUPLICATE) _msg = "Duplicating loot Item Template..";
@@ -639,6 +650,22 @@ export class CreatelootComponent implements OnInit {
       this.itemMasterFormModal.quantity = quantity;
       this.itemMasterFormModal.totalWeight = (weight * quantity).toFixed(3);
     } catch (err) { }
+  }
+  get buffAndEffectsSettings() {
+    return {
+      primaryKey: "buffAndEffectId",
+      labelKey: "name",
+      text: "Search Buff & Effect(s)",
+      enableCheckAll: true,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: false,
+      limitSelection: false,
+      enableSearchFilter: true,
+      classes: "myclass custom-class ",
+      showCheckbox: true,
+      position: "top"
+    };
   }
   public event: EventEmitter<any> = new EventEmitter();
 }
