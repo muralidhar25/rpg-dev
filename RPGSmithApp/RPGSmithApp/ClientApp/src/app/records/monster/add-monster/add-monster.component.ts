@@ -69,7 +69,7 @@ export class AddMonsterComponent implements OnInit {
             this.isLoading = true;
           this.monsterTemplateService.getMonsterTemplateByRuleset_add<any>(this.rulesetId, true)//true
             .subscribe(data => {
-              debugger
+              
               this.itemsList = data.MonsterTemplate;
                   this.itemsList.map((item) => {
                    item.quantity = 1;
@@ -112,7 +112,6 @@ export class AddMonsterComponent implements OnInit {
     if (this.selectedItemsList.length) {
       var selectedMonsters: any = [];
       
-      debugger;
       this.selectedItemsList.map((x) => {
 
        
@@ -121,7 +120,7 @@ export class AddMonsterComponent implements OnInit {
           if (x.bundleItems) {
             if (x.bundleItems.length) {
               x.bundleItems.map((bi) => {
-                debugger
+                
                 let itemQtyCount = +bi.quantity;
                 for (var i_itemQty = 0; i_itemQty < itemQtyCount; i_itemQty++) {
                   let healthNumberArray = [];
@@ -143,7 +142,7 @@ export class AddMonsterComponent implements OnInit {
                       challangeRatingNumberArray.push(challangeRating);
 
                       if (bi.monsterTemplate.isRandomizationEngine) {
-                        debugger;
+                        
                         let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine(bi.monsterTemplate.randomizationEngine, this.alertService);
                         if (currentItemsToDeploy && currentItemsToDeploy.length) {
                           currentItemsToDeploy.map((re) => {
@@ -197,7 +196,7 @@ export class AddMonsterComponent implements OnInit {
               challangeRatingNumberArray.push(challangeRating);
 
               if (x.isRandomizationEngine) {
-                debugger;
+                
                 let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine(x.randomizationEngine, this.alertService);
                 if (currentItemsToDeploy && currentItemsToDeploy.length) {
                   currentItemsToDeploy.map((re) => {
