@@ -1116,7 +1116,10 @@
 .icon-Assign:before {
   content: "\e968";
 }
-.icon-BnE:before, .icon-Monster:before, .icon-MonsterTemp:before, .icon-Combat:before, .icon-MarkTarget:before, .icon-Health:before, .icon-Settings:before, .icon-Assign:before {
+.icon-DefLayouts:before {
+  content: "\e96b";
+}
+.icon-BnE:before, .icon-Monster:before, .icon-MonsterTemp:before, .icon-Combat:before, .icon-MarkTarget:before, .icon-Health:before, .icon-Settings:before, .icon-Assign:before, .icon-DefLayouts:before {
   font-family: 'icomoon' !important;
   speak: none;
   font-style: normal;
