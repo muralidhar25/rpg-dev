@@ -86,15 +86,16 @@ export class MonsterTemplateDetailsComponent implements OnInit {
           this.isLoading = true;
           this.monsterTemplateService.getMonsterTemplateById<any>(this.monsterTemplateId)
             .subscribe(data => {debugger
-                if (data)
+              if (data) {
                 this.monsterTemplateDetail = this.monsterTemplateService.MonsterTemplateModelData(data, "UPDATE");
                 this.xpValue = data.xpValue;
+              
                 if (!this.monsterTemplateDetail.ruleset) {
                   this.monsterTemplateDetail.ruleset = data.ruleSet;
 
                   }
                 this.ruleSetId = this.monsterTemplateDetail.ruleSetId;
-
+              }
                 this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(this.monsterTemplateId, this.ruleSetId)
                   .subscribe(data => {
                     this.selectedBuffAndEffects = data.selectedBuffAndEffects;

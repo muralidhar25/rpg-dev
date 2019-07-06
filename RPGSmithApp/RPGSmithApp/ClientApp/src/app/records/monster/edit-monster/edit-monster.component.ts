@@ -660,7 +660,6 @@ export class EditMonsterComponent implements OnInit {
     }
   }
   selectedBuffAndEffectsListChanged(item) {
-    console.log(item);
   }
   SelectBuffAndEffects() {
    

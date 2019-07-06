@@ -51,7 +51,6 @@ export class SingleItemMonsterComponent implements OnInit {
           if (SelectedBuffs) {
             if (SelectedBuffs.length) {
               this.SelectedItems = SelectedBuffs;
-              console.log(this.SelectedItems);
             }
           }
             if (this.rulesetId == undefined)
@@ -84,8 +83,6 @@ export class SingleItemMonsterComponent implements OnInit {
     }
 
   setItemMaster(event: any, itemMaster: any) {
-    console.log(event);
-    debugger;
     this.SelectedItems = [];
     if (event.target.checked) {
       const _containsItems = Object.assign([], this.SelectedItems);
@@ -107,8 +104,6 @@ export class SingleItemMonsterComponent implements OnInit {
   }
 
   submitForm() {
-    console.log(this.SelectedItems);
-    console.log(this.SelectedItems.slice(-1).pop());
     this.isLoading = true;
     //this.SelectedItems = this.SelectedItems.slice(-1).pop();
     this.event.emit(this.SelectedItems);

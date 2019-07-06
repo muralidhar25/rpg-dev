@@ -398,7 +398,7 @@ export class DiceService {
           let IsFEDice = _commandTxt.indexOf('FE') > -1 ? true : false;
           diceARRAY[arr].diceArray = this.splitCommandToArray(_commandTxt, [], IsFEDice);
           //diceARRAY[arr].FeCommand = _commandTxt;
-         // console.log('diceARRAY[arr].diceArray', diceARRAY[arr].diceArray )
+         
         }
       }
 
@@ -1395,7 +1395,7 @@ export class DiceService {
 
 
             New_sortedRandomNumbersToShowSort = CurrentDiceNewResults.randomNumbersListAfter
-            ////////////////////////////console.log('sortedRandomNumbersToShowSort', New_sortedRandomNumbersToShowSort)
+            
             
             New_sortedRandomNumbersToShowSort.map((RandomNum) => {
               if (Flag_ToInsertNumbrersInNewRandomNumList) {
@@ -1406,7 +1406,7 @@ export class DiceService {
                 FE_Comparison = '==';
               }
               let comparisonString = RandomNum + ' ' + FE_Comparison + ' ' + FE_ComparisonValue;
-              //////////////////////////////// console.log('comparisonString', comparisonString)
+              
               try {
                 if (eval(comparisonString)) {
                   CalculativeString += FE_Result;
@@ -1434,8 +1434,7 @@ export class DiceService {
           }
         }
       })
-     /////////////////////// console.log('CalculativeString', CalculativeString)
-     /////////////////////// console.log('CalculativeStringResult', +eval(CalculativeString))
+     
       //let newRndmList: number[] = [];
       //newRndmList.push(+eval(CalculativeString));
 
@@ -1671,15 +1670,14 @@ export class DiceService {
     if (commandText.trim() === '+' || commandText.trim() === '/' || commandText.trim() === '*') return false;
     //else if (commandText.split("(").length - 1 !== commandText.split(")").length - 1) {
     //  
-    //  console.log('commandText.split("(").length - 1',commandText.split("(").length - 1)
-    //  console.log('commandText.split(")").length - 1',commandText.split(")").length - 1)
+    
     //  return false
     //}
     else if ((commandText.split("/").length - 1 < ((commandText.split("RU").length - 1) + (commandText.split("RD").length - 1))) && !this.RU_RD_ContainsInQuotes(commandText)) {
       
-      //console.log('commandText.split(" / ").length - 1', commandText.split("/").length - 1)
-      //console.log('commandText.split("RU").length - 1', commandText.split("RU").length - 1)
-      //console.log('commandText.split("RD").length - 1', commandText.split("RD").length - 1)
+      
+      
+      
       return false
     }
 
@@ -2757,7 +2755,7 @@ export class DiceService {
         // matched text: match[0]
         // match start: match.index
         // capturing group n: match[n]
-        //console.log(match[0])
+        
         matchArr.push(match[0])
         match = myRegexp.exec(str);
       }
@@ -2785,7 +2783,7 @@ export class DiceService {
         // matched text: match[0]
         // match start: match.index
         // capturing group n: match[n]
-        //console.log(match[0])
+        
         matchArr.push(match[0])
         match = myRegexp.exec(str);
       }
@@ -2813,7 +2811,7 @@ export class DiceService {
     //    // matched text: match[0]
     //    // match start: match.index
     //    // capturing group n: match[n]
-    //    //console.log(match[0])
+    //   
     //    matchArr.push(match[0])
     //    match = myRegexp.exec(str);
     //  }
@@ -3253,7 +3251,7 @@ export class DiceService {
   //    // matched text: match[0]
   //    // match start: match.index
   //    // capturing group n: match[n]
-  //    //console.log(match[0])
+  //    
   //    matchArr.push(match[0])
   //    match = myRegexp.exec(commandText);
   //  }
@@ -3284,7 +3282,7 @@ export class DiceService {
       // matched text: match[0]
       // match start: match.index
       // capturing group n: match[n]
-      //console.log(match[0])
+      
       matchArr.push(match[0])
       match = myRegexp.exec(commandText);
     }
@@ -3328,7 +3326,7 @@ export class DiceService {
       // matched text: match[0]
       // match start: match.index
       // capturing group n: match[n]
-      //console.log(match[0])
+     
       matchArr.push(match[0])
       match = myRegexp.exec(calculationString);
     }
@@ -3352,7 +3350,7 @@ export class DiceService {
       // matched text: match[0]
       // match start: match.index
       // capturing group n: match[n]
-      //console.log(match[0])
+      
       matchArr.push(match[0])
       match = myRegexp.exec(calculationString);
     }
@@ -3460,7 +3458,7 @@ export class DiceService {
       // matched text: match[0]
       // match start: match.index
       // capturing group n: match[n]
-      //console.log(match[0])
+      
       matchArr.push(match[0])
       match = myRegexp.exec(str);
     }

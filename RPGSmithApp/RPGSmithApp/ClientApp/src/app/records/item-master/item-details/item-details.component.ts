@@ -74,8 +74,7 @@ export class ItemDetailsComponent implements OnInit {
           }
             this.isLoading = true;
             this.itemMasterService.getItemMasterById<any>(this.itemMasterId)
-              .subscribe(data => {
-                console.log('data', data.ruleSet);
+              .subscribe(data => {                
                 if (data)
                   debugger;
                     this.RuleSet = data.ruleSet;

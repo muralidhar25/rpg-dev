@@ -117,6 +117,58 @@ namespace RPGSmithApp.Controllers
                 IsDeleted = loot.IsDeleted,
                 CommandName = loot.CommandName,
                 RuleSetId = loot.RuleSetId == null ? 0 : (int)loot.RuleSetId,
+                ItemMasterAbilities=loot.ItemMasterAbilities.ToList().Select(x=> new ItemMasterAbility() {
+                    Abilitiy=x.Ability,
+                    AbilityId=x.AbilityId,
+                    IsDeleted=x.IsDeleted,
+                    ItemMaster = new ItemMaster()
+                    {
+                        ItemName = x.ItemMasterLoot.ItemName,
+                        ItemImage = x.ItemMasterLoot.ItemImage,
+                        ItemMasterId = x.ItemMasterLoot.LootId,
+                    },
+                    ItemMasterId =x.ItemMasterLootId
+                }).ToList(),
+                ItemMasterSpell=loot.ItemMasterSpell.ToList().Select(x => new ItemMasterSpell()
+                {
+                    Spell = x.Spell,
+                    SpellId = x.SpellId,
+                    IsDeleted = x.IsDeleted,
+                    ItemMaster =new ItemMaster() {
+                        ItemName=x.ItemMasterLoot.ItemName,
+                        ItemImage=x.ItemMasterLoot.ItemImage,
+                        ItemMasterId=x.ItemMasterLoot.LootId,
+                    },
+                    ItemMasterId = x.ItemMasterLootId
+                }).ToList(),
+                itemMasterBuffAndEffects =loot.itemMasterBuffAndEffects.ToList().Select(x => new ItemMasterBuffAndEffect()
+                {
+                    BuffAndEffect = x.BuffAndEffect,
+                    BuffAndEffectId = x.BuffAndEffectId,
+                    IsDeleted = x.IsDeleted,
+                    ItemMaster = new ItemMaster()
+                    {
+                        ItemName = x.ItemMasterLoot.ItemName,
+                        ItemImage = x.ItemMasterLoot.ItemImage,
+                        ItemMasterId = x.ItemMasterLoot.LootId,
+                    },
+                    ItemMasterId = x.ItemMasterLootId
+                }).ToList(),
+                ItemMasterCommand =loot.ItemMasterCommand.ToList().Select(x => new ItemMasterCommand()
+                {
+                    Command = x.Command,
+                    Name = x.Name,
+                    IsDeleted = x.IsDeleted,
+                    ItemMaster = new ItemMaster()
+                    {
+                        ItemName = x.ItemMasterLoot.ItemName,
+                        ItemImage = x.ItemMasterLoot.ItemImage,
+                        ItemMasterId = x.ItemMasterLoot.LootId,
+                    },
+                    ItemMasterId = x.ItemMasterLootId
+                }).ToList(),
+                RuleSet= loot.RuleSet
+
             };
 
 

@@ -424,7 +424,7 @@ export class CreateItemComponent implements OnInit {
         this.itemMasterService.fileUpload(this.fileToUpload)
             .subscribe(
                 data => {
-                   // console.log(data);
+                   
                     itemMaster.itemImage = data.ImageUrl;
                     this.submit(itemMaster);
                 }, error => { this.submit(itemMaster); });

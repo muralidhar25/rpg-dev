@@ -109,16 +109,15 @@ export class MonsterDetailsComponent implements OnInit {
           this.monsterTemplateService.getMonsterById<any>(this.monsterId)
             .subscribe(data => {
               
-              if (data)
+              if (data) {
                 this.monsterDetail = this.monsterTemplateService.MonsterModelData(data, "UPDATE");
-              this._editMonster = data;
-              console.log('monsterDetail', this.monsterDetail);
-              if (!this.monsterDetail.ruleset) {
-                this.monsterDetail.ruleset = data.ruleSet;
+                this._editMonster = data;
+                if (!this.monsterDetail.ruleset) {
+                  this.monsterDetail.ruleset = data.ruleSet;
 
-               }
-              this.ruleSetId = this.monsterDetail.ruleSetId;
-
+                }
+                this.ruleSetId = this.monsterDetail.ruleSetId;
+              }
               this.monsterTemplateService.getMonsterAssociateRecords_sp<any>(this.monsterDetail.monsterId, this.ruleSetId)
                   .subscribe(data => {
                     this.selectedBuffAndEffects = data.selectedBuffAndEffects;
@@ -233,6 +232,7 @@ export class MonsterDetailsComponent implements OnInit {
           debugger
           this.bsModalRef.content.monsterTemplateVM = this._editMonster;
           this.bsModalRef.content.isCreatingFromMonsterScreen = true;
+          this.bsModalRef.content.isCreatingFromMonsterDetailScreen = true;
 
 
           //this.bsModalRef.content.title = 'Duplicate Monster Template';

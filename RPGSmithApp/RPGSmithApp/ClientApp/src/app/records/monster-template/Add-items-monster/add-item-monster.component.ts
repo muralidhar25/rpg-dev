@@ -59,7 +59,6 @@ export class AddItemMonsterComponent implements OnInit {
           if (SelectedBuffs) {
             if (SelectedBuffs.length) {
               this.selectedItemsList = SelectedBuffs;
-              console.log(this.selectedItemsList);
             }
           }
             if (this.rulesetId == undefined)
@@ -115,7 +114,6 @@ export class AddItemMonsterComponent implements OnInit {
     }
 
   submitForm() {
-    console.log(this.selectedItemsList);
     this.isLoading = true;
     this.event.emit(this.selectedItemsList);
     this.isLoading = false;
@@ -123,7 +121,6 @@ export class AddItemMonsterComponent implements OnInit {
   }
 
   quantityChanged(quantity, item) {
-    console.log(quantity, item.quantity);
     
        this.selectedItemsList.map(function (itm) {
          if (itm.itemId == item.itemMasterId) {

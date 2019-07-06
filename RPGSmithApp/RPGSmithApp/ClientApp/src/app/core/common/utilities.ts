@@ -901,7 +901,7 @@ export class Utilities {
   }
 
   public static RedriectToPageWithoutId(originalUrl: string, displayUrl: string, router: Router,RedriectFromCode:number) {
-    //console.log({ RedriectFromCode: RedriectFromCode, originalUrl: originalUrl, displayUrl: displayUrl });
+    
     router.navigate([originalUrl], { skipLocationChange: true });
     window.history.pushState('', '', displayUrl);
   }
@@ -959,7 +959,7 @@ export class Utilities {
     return false;
   }
   public static Kickstarterlink() {
-    //console.log('kickstarter');
+    
     let url = 'https://www.kickstarter.com/projects/rpgsmith/rpgsmith-gm-campaigns';
     window.open(url, "_blank");
   }

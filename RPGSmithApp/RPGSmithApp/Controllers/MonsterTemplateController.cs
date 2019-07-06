@@ -729,7 +729,25 @@ namespace RPGSmithApp.Controllers
                     _monsterTemplateService.insertAssociateItemMasters(model.MonsterTemplateItemMasterVM);
 
                 }
+                if (model.IsRandomizationEngine)
+                {
+                    if (model.RandomizationEngine != null && model.RandomizationEngine.Count > 0)
+                    {
+                        _monsterTemplateService.insertRandomizationEngines(model.RandomizationEngine, result.MonsterTemplateId);
+                    }
+                }
+                else
+                {
+                    if (model.MonsterTemplateItemMasterVM != null && model.MonsterTemplateItemMasterVM.Count > 0)
+                    {
+                        foreach (var item in model.MonsterTemplateItemMasterVM)
+                        {
+                            item.MonsterTemplateId = result.MonsterTemplateId;
+                        }
+                        _monsterTemplateService.insertAssociateItemMasters(model.MonsterTemplateItemMasterVM);
 
+                    }
+                }
                 if (isCreatingFromMonsterScreen)
                 {
                     List<int> armorClassList = new List<int>();
@@ -753,7 +771,8 @@ namespace RPGSmithApp.Controllers
                         monsterTemplateId = result.MonsterTemplateId,
                         rulesetId = result.RuleSetId,
                         qty = 1,
-                        xpValue = xpValueList
+                        xpValue = xpValueList,
+                        REItems = model.REItems
                     };
                     _monsterTemplateService.deployMonster(deploy);
                 }

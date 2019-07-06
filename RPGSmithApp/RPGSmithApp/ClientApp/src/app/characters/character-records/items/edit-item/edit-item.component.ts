@@ -400,7 +400,7 @@ export class EditItemComponent implements OnInit {
         this.itemsService.fileUpload(this.fileToUpload)
             .subscribe(
                 data => {
-                    //console.log(data);
+                    
                     item.itemImage = data.ImageUrl;
                     this.submit(item);
                 }, error => {

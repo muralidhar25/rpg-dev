@@ -99,7 +99,7 @@ export class CharacterItemsComponent implements OnInit {
     //    // stop the event from bubbling up
     //    e.preventDefault()
 
-    //    console.log(e.target);
+    
     //});
   }
 

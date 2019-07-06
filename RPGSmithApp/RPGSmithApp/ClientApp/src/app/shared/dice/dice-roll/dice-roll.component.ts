@@ -1597,13 +1597,11 @@ export class DiceRollComponent implements OnInit {
           catch (e) {
             this.characterMultipleCommands = DiceService.commandInterpretation(command, undefined, this.addModArray, this.customDices, this.mainCommandText.toUpperCase());
             __characterMultipleCommands = this.characterMultipleCommands[0];
-            console.log('catch', this.characterMultipleCommands);
           }
         }
         else {
           this.characterMultipleCommands = DiceService.commandInterpretation(command, undefined, this.addModArray, this.customDices, this.mainCommandText.toUpperCase());
-          console.log('else', this.characterMultipleCommands, this.mainCommandText);
-
+          
           __characterMultipleCommands = this.characterMultipleCommands[0];
         }
 
@@ -1872,7 +1870,7 @@ export class DiceRollComponent implements OnInit {
 
 
             this.calculationStringArray = DiceService.getCalculationStringArray(__calculationString, this.diceRolledData);
-            console.log('calculationstring array', this.calculationStringArray);
+            
             this.characterMultipleCommands[0].calculationStringArray = this.calculationStringArray;
           } catch (err) { }
 
@@ -4068,7 +4066,6 @@ export class DiceRollComponent implements OnInit {
       if (Results.length) {
         let Result_s: Results[] = Results.filter(x => x.name == ResultName);
         if (Result_s.length) {
-          console.log(Result_s);
           return Result_s[0].deckIcon;
         }
       }

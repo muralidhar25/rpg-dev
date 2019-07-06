@@ -119,7 +119,6 @@ export class MonsterComponent implements OnInit {
         if (localStorageFilters != null) {
           this.monstersFilter = localStorageFilters;
         }
-       console.log('106', this.monstersFilter);
 
         if (user == null)
             this.authService.logout();
