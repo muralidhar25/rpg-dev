@@ -395,8 +395,8 @@ export class MonsterDetailsComponent implements OnInit {
 
    
     RedirectBack() {
-      //this.router.navigate(['/ruleset/ability', this.ruleSetId]);
-        window.history.back();
+      this.router.navigate(['/ruleset/monster', this.ruleSetId]);
+        //window.history.back();
     }
     Redirect(path) {
         this.router.navigate([path, this.ruleSetId]);

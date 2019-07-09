@@ -245,8 +245,9 @@
     <div class="form-row">
       <div class="col-12 col-md-6">
         <div class="form-group">
-          <label for="newItemSpells">Ability</label>
-          <angular2-multiselect id="buffAndEffectsList" [data]="abilitiesList" [(ngModel)]="selectedAbilities" name="newAbilities" [settings]="abilitiesSettings">
+          <label for="newItemSpells">Abilities</label>
+          <angular2-multiselect id="buffAndEffectsList" [data]="abilitiesList" [(ngModel)]="selectedAbilities" name="newAbilities"
+                                [settings]="abilitiesSettings">
             <c-item id="spell">
               <ng-template let-item="item">
                 <span class="associate-label-name">{{item.name}}</span>
@@ -259,7 +260,7 @@
       </div>
       <div class="col-12 col-md-6">
         <div class="form-group">
-          <label for="newItemSpells">Spell</label>
+          <label for="newItemSpells">Spells</label>
           <angular2-multiselect id="associateSpellList" [data]="spellsList" [(ngModel)]="selectedSpells" name="newSpells" [settings]="spellsSettings">
             <c-item id="spell">
               <ng-template let-item="item">
@@ -337,15 +338,17 @@
           <div class="randominzation-engine-content">
             <!-- First section end -->
             <!-- After click or -->
-            <div *ngIf="randomizationInfo.length >= 0 ">              
+            <div *ngIf="randomizationInfo.length >= 0 ">
               <div *ngFor="let item of randomizationInfo;let i = index">
                 <div *ngIf="item.isOr == undefined">
                   <h3>
                     This Monster has a
-                    <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage"
-                           (change)="percentage($event, item)" />% chance of having
+                    <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)"
+                           [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />
+                    % chance of having
                     <span>
-                      <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)" />
+                      <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)"
+                             [ngStyle]="{'border-color': f.submitted && !item.qty ? 'red' : '#d3cfce'}" required />
                       <i class="icon-CharStat-Command" [id]="'diceModal_'+i" (click)="openDiceModal(((i+10)*-1),item.qty)"></i>
                     </span>
                   </h3>
@@ -370,16 +373,18 @@
                 <div *ngIf="item.isOr">
                   <h3>
                     or a
-                    <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage"
-                           (change)="percentage($event, item)" />% chance of having
+                    <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)"
+                           [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />
+                    % chance of having
                     <span>
-                      <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)" />
+                      <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)"
+                             [ngStyle]="{'border-color': f.submitted && !item.qty ? 'red' : '#d3cfce'}" required />
                       <i class="icon-CharStat-Command" [id]="'diceModal_'+i" (click)="openDiceModal(((i+10)*-1),item.qty)"></i>
                     </span>
                   </h3>
                   <!--validation message-->
                   <span *ngIf="item.qty && !isValidSingleNumberCommand(item.qty?item.qty.toString():'', item)" class="errorMessage text-danger">
-                  The 'And' and Text optiopns are disallowed for this comand
+                    The 'And' and Text optiopns are disallowed for this comand
                   </span>
 
                   <div class="search-field-randominzation">
@@ -401,16 +406,18 @@
                   <div class="adn-seprater"><span>and</span></div>
                   <h3>
                     This Monster has a
-                    <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage"
-                           (change)="percentage($event, item)" />% chance of having
+                    <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)"
+                           [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />
+                    % chance of having
                     <span>
-                      <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)" />
+                      <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)"
+                             [ngStyle]="{'border-color': f.submitted && !item.qty ? 'red' : '#d3cfce'}" required />
                       <i class="icon-CharStat-Command" [id]="'diceModal_'+i" (click)="openDiceModal(((i+10)*-1),item.qty)"></i>
                     </span>
                   </h3>
                   <!-- Quantity Validation Message-->
                   <span *ngIf="item.qty && !isValidSingleNumberCommand(item.qty?item.qty.toString():'', item)" class="errorMessage text-danger">
-                  The 'And' and Text optiopns are disallowed for this comand
+                    The 'And' and Text optiopns are disallowed for this comand
                   </span>
                   <div class="search-field-randominzation">
                     <div (click)="SelectItem(item,i)">
@@ -424,12 +431,12 @@
                 </div>
                 <!--End AND part-->
               </div>
-              </div>
-              <!-- After Click And end-->
-              <div class="and-field-randominzation">
-                <a href="javascript:void(0);" class="orange-text-randominzation" (click)="randomizationAnd()">AND</a>
-              </div>
             </div>
+            <!-- After Click And end-->
+            <div class="and-field-randominzation">
+              <a href="javascript:void(0);" class="orange-text-randominzation" (click)="randomizationAnd()">AND</a>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -445,7 +452,6 @@
               || (monsterTemplateFormModal.armorClass && !isValidSingleNumberCommand(monsterTemplateFormModal.armorClass))
               || (monsterTemplateFormModal.challangeRating && !isValidSingleNumberCommand(monsterTemplateFormModal.challangeRating))
               || (monsterTemplateFormModal.xPValue && !isValidSingleNumberCommand(monsterTemplateFormModal.xPValue))
-              || (monsterTemplateFormModal.isRandomizationEngine && isValidQuantity())
               " class="btn btn-accent">
       {{button}}
     </button>
