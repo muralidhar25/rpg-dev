@@ -203,7 +203,7 @@
                         </div>
                     </div>                  
                     <div class="row">
-                      <div class="col-12 col-md-6" *ngIf="ItemMasterDetail.abilityDetail != undefined">
+                      <div class="col-12 col-md-6" *ngIf="ItemMasterDetail?.itemMasterAbilities?.length">
                         <div class="item-info-abils">
                           <h3>Abilities</h3>
                           <div class="form-group output-list output-list-wrap">
@@ -223,7 +223,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-12 col-md-6" *ngIf="ItemMasterDetail.spellDetail !== undefined">
+                      <div class="col-12 col-md-6" *ngIf="ItemMasterDetail?.itemMasterSpell?.length">
                         <div class="item-info-spells">
                           <h3>Spells</h3>
                           <div class="form-group output-list output-list-wrap">
@@ -242,7 +242,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-12 col-md-6">
+                      <div class="col-12 col-md-6" *ngIf="ItemMasterDetail?.itemMasterBuffAndEffects?.length">
                         <div class="item-info-buffs">
                           <h3>Buffs & Effects</h3>
                           <div class="form-group output-list output-list-wrap">

@@ -236,7 +236,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-6" *ngIf="selectedAssociateMonsterTemplates?.length">
                   <div class="item-info-abils">
                     <h3 class="crsr-pointer" (click)="AddRemoveMonsters()">Associated Monsters</h3>
                     <div class="form-group output-list output-list-wrap">
@@ -252,7 +252,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-6" *ngIf="selectedAbilities?.length">
                   <div class="item-info-abils">
                     <h3 class="crsr-pointer" (click)="AddRemoveAbilities()">Abilities</h3>
                     <div class="form-group output-list output-list-wrap">
@@ -268,7 +268,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-6" *ngIf="selectedBuffAndEffects?.length">
                   <div class="item-info-abils">
                     <h3 class="crsr-pointer" (click)="AddRemoveBEs()">Buffs and Effects</h3>
                     <div class="form-group output-list output-list-wrap">
@@ -284,7 +284,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-6" *ngIf="selectedSpells?.length">
                   <div class="item-info-spells">
                     <h3 class="crsr-pointer" (click)="AddRemoveSpells()">Spells</h3>
                     <div class="form-group output-list output-list-wrap">
