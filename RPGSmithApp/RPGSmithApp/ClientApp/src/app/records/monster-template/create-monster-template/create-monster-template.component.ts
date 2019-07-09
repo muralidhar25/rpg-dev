@@ -935,7 +935,16 @@ export class CreateMonsterTemplateComponent implements OnInit {
   }
 
   // Child or method
-  randomizationOr(i) {    this.commonOR(i);  }  randomizationAnd() {    let _randomization = new randomization();    _randomization.percentage = null;    _randomization.qty = null;    _randomization.isOr = false;    this.randomizationInfo.push(_randomization);  }  removeRandom(item, index) {    this.randomizationInfo.splice(index, 1);    //if (index > -1 && item.isOr) {    //  this.randomizationInfo.splice(index, 1);    //}    //else {    //  let AndArray = [];
+  randomizationOr(i) {    this.commonOR(i);  }  randomizationAnd() {    let _randomization = new randomization();    _randomization.percentage = null;    _randomization.qty = null;    _randomization.isOr = false;    this.randomizationInfo.push(_randomization);  }  removeRandom(item, index) {    if (this.randomizationInfo[index].isOr) {
+      this.randomizationInfo.splice(index, 1);
+    } else {
+      this.randomizationInfo.splice(index, 1);
+      if (this.randomizationInfo[index]) {
+        if (this.randomizationInfo[index].isOr) {
+          this.randomizationInfo[index].isOr = false;
+        }
+      }
+    }    //if (index > -1 && item.isOr) {    //  this.randomizationInfo.splice(index, 1);    //}    //else {    //  let AndArray = [];
     //  let OrArray = [];
     //  this.randomizationInfo.map((item, index) => {
 
