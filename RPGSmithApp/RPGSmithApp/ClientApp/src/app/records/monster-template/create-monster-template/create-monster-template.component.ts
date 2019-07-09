@@ -276,9 +276,9 @@ export class CreateMonsterTemplateComponent implements OnInit {
                   x.isOr = undefined;
                 }
                 x.selectedItem.push({ image: x.itemMaster.itemImage, itemId: x.itemMaster.itemMasterId, text: x.itemMaster.itemName })
-              });
+                });
             }
-
+            
             this.SelectedItemsList = data.selectedItemMasters.map((x) => {
               return { text: x.name, itemId: x.itemMasterId, image: x.imageUrl, quantity: x.qty }
             });
@@ -401,7 +401,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
   }
   submitForm(monsterTemplate: MonsterTemplate) {
-    monsterTemplate.randomizationEngine = [];    this.randomizationInfo.map((x: randomization, index) => {      //let _randomization = new randomization(undefined, +x.percentage, +x.sortOrder, +x.itemMasterId, x.isOr, x.isDeleted, +x.qty,undefined,undefined);      //monsterTemplate.randomizationEngine.push(_randomization1);      let _randomization1 = new randomization();      _randomization1.percentage = +x.percentage;      _randomization1.qty = x.qty;      _randomization1.isOr = x.isOr ? true : false;      //_randomization1.randomizationEngineId = x.randomizationEngineId;      if (x.selectedItem) {
+    monsterTemplate.randomizationEngine = [];    this.randomizationInfo.map((x: randomization, index) => {      //let _randomization = new randomization(undefined, +x.percentage, +x.sortOrder, +x.itemMasterId, x.isOr, x.isDeleted, +x.qty,undefined,undefined);      //monsterTemplate.randomizationEngine.push(_randomization1);      let _randomization1 = new randomization();      _randomization1.percentage = +x.percentage;      _randomization1.qty = x.qty;      _randomization1.isOr = x.isOr ? true : false;            //_randomization1.randomizationEngineId = x.randomizationEngineId;      if (x.selectedItem) {
         if (x.selectedItem.length) {
           _randomization1.itemMasterId = +x.selectedItem[0].itemId;
         }
@@ -486,7 +486,6 @@ export class CreateMonsterTemplateComponent implements OnInit {
   }
 
   private addEditMonsterTemplate(modal: MonsterTemplate) {
-    debugger
     modal.ruleSetId = this._ruleSetId;
     this.isLoading = true;
     let armorClass: number = 0;
@@ -499,6 +498,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
       health = modal.health ? DiceService.rollDiceExternally(this.alertService, modal.health, this.customDices) : 0;
       challangeRating = modal.challangeRating ? DiceService.rollDiceExternally(this.alertService, modal.challangeRating, this.customDices) : 0;
       xpValue = modal.xPValue ? DiceService.rollDiceExternally(this.alertService, modal.xPValue, this.customDices) : 0;
+      
       modal.REitems = ServiceUtil.getItemsFromRandomizationEngine(modal.randomizationEngine, this.alertService);
       if (modal.REitems && modal.REitems.length) {
         modal.REitems.map((re) => {
@@ -506,6 +506,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
         });
       }
     }
+    
     this.monsterTemplateService.createMonsterTemplate<any>(modal, this.isCreatingFromMonsterScreen, armorClass, health, challangeRating, xpValue)
       .subscribe(
         data => {
@@ -883,16 +884,16 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
   }
 
-  isValidQuantity() {
-    // debugger;
-    let res: boolean = false;
-    this.randomizationInfo.forEach(item => {
-      if (!item.isValidQty) {
-        res = true;
-      }
-    });
-    return res;
-  }
+  //isValidQuantity() {
+  //  // debugger;
+  //  let res: boolean = false;
+  //  this.randomizationInfo.forEach(item => {
+  //    if (!item.isValidQty) {
+  //      res = true;
+  //    }
+  //  });
+  //  return res;
+  //}
 
   percentage(e, item) {
     item.percentage = e.target.value;
@@ -962,7 +963,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
     //      and.map((or) => {    //        currentOrCount_Delete = currentOrCount_Delete + 1;    //        this.randomizationInfo.splice(currentOrCount_Delete, 1);                //      })
     //    }    //  });    //}  }  SelectItem(item, i) {    this.bsModalRef = this.modalService.show(SingleItemMonsterComponent, {      class: 'modal-primary modal-md',      ignoreBackdropClick: true,      keyboard: false    });    this.bsModalRef.content.title = 'Add Item';    this.bsModalRef.content.button = 'ADD';    this.bsModalRef.content.rulesetID = this._ruleSetId;    this.bsModalRef.content.SelectedItems = item.selectedItem;    this.bsModalRef.content.event.subscribe(data => {      if (data) {        item.selectedItem = data;      }    });  }  validateRandomization(mt) {    if (!mt.isRandomizationEngine) {
       return true;
-    }    let isValidPrecentage = true;    let isValidItem = true;    let AndArray = [];
+    }    let isValidPrecentage = true;    let isValidItem = true;    let isPercentageFieldsAreValid = true;    let isQtyFieldsAreValid = true;    let AndArray = [];
     let OrArray = [];
     this.randomizationInfo.map((item, index) => {
 
@@ -983,16 +984,20 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
       }
 
-    });    AndArray.map((and) => {      let totalPercent: number = 0;      and.map((or) => {        totalPercent = totalPercent + (+or.percentage);        if (!or.selectedItem || !or.selectedItem.length) {
+    });    AndArray.map((and) => {      let totalPercent: number = 0;      and.map((or) => {        if (or.percentage == undefined || or.percentage == null || or.percentage == '') {
+          isPercentageFieldsAreValid = false;
+        }        if (or.qty == undefined || or.qty == null || or.qty == '') {
+          isQtyFieldsAreValid = false;
+        }        totalPercent = totalPercent + (+or.percentage);        if (!or.selectedItem || !or.selectedItem.length) {
           isValidItem = false;
         }      })      if (totalPercent > 100) {
         isValidPrecentage = false;
-      }    })    if (isValidPrecentage && isValidItem) {
+      }    })    if (isValidPrecentage && isValidItem && isPercentageFieldsAreValid && isQtyFieldsAreValid) {
       return true;
     }    else {      if (!isValidItem) {
         let message = "Please select item and try again.";
         this.alertService.showMessage(message, "", MessageSeverity.error);
       }      if (!isValidPrecentage) {
         let message = "Total percent chance for a section can't exceed 100%, Please adjust these values and try again.";        this.alertService.showMessage(message, "", MessageSeverity.error);
-      }      return false;    }  }
+      }      return false;    }  }
 }

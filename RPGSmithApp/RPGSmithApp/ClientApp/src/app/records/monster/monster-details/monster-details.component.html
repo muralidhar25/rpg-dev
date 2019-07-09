@@ -152,12 +152,16 @@
                         <li *ngIf="monsterDetail?.monsterArmorClass" popover="AC: {{monsterDetail?.monsterArmorClass}}" triggers="hover" popoverTitle="ArmorClass">AC : {{monsterDetail?.monsterArmorClass}}</li>
                         <li *ngIf="monsterDetail?.monsterHealthCurrent" popover="{{monsterDetail?.monsterHealthCurrent}} / {{monsterDetail?.monsterHealthMax}}" triggers="hover" popoverTitle="Health">{{monsterDetail?.monsterHealthCurrent}} / {{monsterDetail?.monsterHealthMax}}</li>
                       </ul>
-                    
+
                       <ul class="item-info-indics">
                         <li *ngIf="monsterDetail.isEnabled">
                           <i class="icon icon-ico icon-Rec-Enabled"></i>
                         </li>
+                        <li *ngIf="monsterDetail?.addToCombatTracker">
+                          <i class="icon icon-with-text icon-Combat icon-rsi"></i>
+                        </li>
                       </ul>
+                      
                     </div>
                   </div>
                   <ul class="item-info-actions d-none d-md-flex">
@@ -229,7 +233,9 @@
                           <div (click)="GoToItems(Item?.itemId)" style="cursor:pointer;" popover="{{Item?.name}}" triggers="hover">
                             <img class="card-img-top" [src]="Item?.imageUrl" [alt]="Item?.name"
                                  onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
-                            <span>{{Item?.name}}</span>
+                            <span class="w-50">{{Item?.name}}</span>
+                            <!--<span><input class="w-100 h-100 text-center border-0 " type="number" readonly [value]="Item?.qty"></span>-->
+                            <span class="itemQty">{{Item?.qty}}</span>
                           </div>
                         </li>
                       </ul>
