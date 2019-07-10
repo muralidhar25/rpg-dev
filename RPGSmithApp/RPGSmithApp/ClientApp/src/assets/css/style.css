@@ -6898,13 +6898,13 @@ span.search-content span {
   margin-top: -13px !important;
 }
 
-.selected-list .c-list .c-token .c-label {
+/*.selected-list .c-list .c-token .c-label {
   overflow: hidden;
   text-overflow: ellipsis;
   word-wrap: break-word;
   white-space: nowrap;
   max-width: 50px;
-}
+}*/
 
 .dark.ng2-tag-input, .ng-tns-c6-1 {
   border-bottom: none !important;

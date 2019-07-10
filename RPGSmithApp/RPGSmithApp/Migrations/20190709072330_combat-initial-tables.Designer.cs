@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace RPGSmithApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190709072330_combat-initial-tables")]
+    partial class combatinitialtables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1426,42 +1428,19 @@ namespace RPGSmithApp.Migrations
                     b.ToTable("ChatMessages");
                 });
 
-            modelBuilder.Entity("DAL.Models.Combat", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("CampaignId");
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<bool>("IsStarted");
-
-                    b.Property<int>("Round");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CampaignId");
-
-                    b.ToTable("Combats");
-                });
-
             modelBuilder.Entity("DAL.Models.CombatInitiative", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CharacterId");
+                    b.Property<int>("CampaignID");
 
-                    b.Property<int?>("CombatId");
+                    b.Property<int?>("CharacterID");
 
                     b.Property<decimal>("Initiative");
 
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<int?>("MonsterId");
+                    b.Property<int?>("MonsterID");
 
                     b.Property<int>("SortOrder");
 
@@ -1469,11 +1448,11 @@ namespace RPGSmithApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CharacterId");
+                    b.HasIndex("CampaignID");
 
-                    b.HasIndex("CombatId");
+                    b.HasIndex("CharacterID");
 
-                    b.HasIndex("MonsterId");
+                    b.HasIndex("MonsterID");
 
                     b.ToTable("CombatInitiatives");
                 });
@@ -1484,45 +1463,20 @@ namespace RPGSmithApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("AccessMonsterDetails");
+                    b.Property<int>("CampaignID");
 
-                    b.Property<string>("CharcterHealthStats");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
 
-                    b.Property<string>("CharcterXpStats");
+                    b.Property<int>("TypeId");
 
-                    b.Property<int?>("CombatId");
-
-                    b.Property<bool>("DisplayMonsterRollResultInChat");
-
-                    b.Property<bool>("DropItemsForDeletedMonsters");
-
-                    b.Property<int>("GameRoundLength");
-
-                    b.Property<string>("GroupInitFormula");
-
-                    b.Property<bool>("GroupInitiative");
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<bool>("MonsterVisibleByDefault");
-
-                    b.Property<string>("PcInitiativeFormula");
-
-                    b.Property<bool>("RollInitiativeEveryRound");
-
-                    b.Property<bool>("RollInitiativeForPlayer");
-
-                    b.Property<bool>("SeeMonsterBuffEffects");
-
-                    b.Property<bool>("SeeMonsterItems");
-
-                    b.Property<bool>("ShowMonsterHealth");
-
-                    b.Property<bool>("XPDistributionforDeletedMonster");
+                    b.Property<string>("Value");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CombatId");
+                    b.HasIndex("CampaignID");
 
                     b.ToTable("CombatSettings");
                 });
@@ -4606,33 +4560,28 @@ namespace RPGSmithApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("DAL.Models.Combat", b =>
+            modelBuilder.Entity("DAL.Models.CombatInitiative", b =>
                 {
                     b.HasOne("DAL.Models.RuleSet", "Campaign")
                         .WithMany()
-                        .HasForeignKey("CampaignId");
-                });
+                        .HasForeignKey("CampaignID")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity("DAL.Models.CombatInitiative", b =>
-                {
                     b.HasOne("DAL.Models.Character", "Character")
                         .WithMany()
-                        .HasForeignKey("CharacterId");
-
-                    b.HasOne("DAL.Models.Combat", "Combat")
-                        .WithMany()
-                        .HasForeignKey("CombatId");
+                        .HasForeignKey("CharacterID");
 
                     b.HasOne("DAL.Models.Monster", "Monster")
                         .WithMany()
-                        .HasForeignKey("MonsterId");
+                        .HasForeignKey("MonsterID");
                 });
 
             modelBuilder.Entity("DAL.Models.CombatSetting", b =>
                 {
-                    b.HasOne("DAL.Models.Combat", "Combat")
+                    b.HasOne("DAL.Models.RuleSet", "Campaign")
                         .WithMany()
-                        .HasForeignKey("CombatId");
+                        .HasForeignKey("CampaignID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("DAL.Models.CustomDice", b =>

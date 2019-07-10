@@ -159,6 +159,11 @@ namespace DAL
         public virtual DbSet<ItemMasterMonsterItemBuffAndEffect> ItemMasterMonsterItemBuffAndEffects { get; set; }
         public virtual DbSet<ItemMasterMonsterItemSpell> ItemMasterMonsterItemSpells { get; set; }
 
+        public virtual DbSet<Combat> Combats { get; set; }
+        public virtual DbSet<CombatInitiative> CombatInitiatives { get; set; }
+        public virtual DbSet<CombatSetting> CombatSettings { get; set; }
+
+
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
