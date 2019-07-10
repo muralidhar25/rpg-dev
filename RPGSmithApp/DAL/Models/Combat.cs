@@ -20,7 +20,7 @@ namespace DAL.Models
 
         public bool IsDeleted { get; set; }
 
-        public virtual ICollection<CombatInitiative> CombatInitiatives { get; set; }
+        public virtual ICollection<CombatantList> CombatantLists { get; set; }
         public virtual CombatSetting CombatSettings { get; set; }
     }
 }

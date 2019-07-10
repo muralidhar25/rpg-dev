@@ -16,6 +16,8 @@ namespace DAL.Services
 {
     public class CombatService : ICombatService
     {
+        private readonly string CombatantTypeCharacter = "character";
+        private readonly string CombatantTypeMonster = "monster";
         protected readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly IRepository<RuleSet> _repo;
@@ -69,7 +71,7 @@ namespace DAL.Services
                         IsStarted = Row["IsStarted"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsStarted"]),
                         Round = Row["Round"] == DBNull.Value ? 0 : Convert.ToInt32(Row["Round"]),
                         Campaign = new RuleSet(),
-                        CombatInitiatives = new List<Combatant_ViewModel>(),
+                        CombatantList = new List<Combatant_ViewModel>(),
                         CombatSettings = new CombatSetting(),                        
 
                     };
@@ -140,15 +142,42 @@ namespace DAL.Services
                         int? nullInt = null;
                         foreach (DataRow CombatantRow in ds.Tables[3].Rows)
                         {
-                            Combatant_ViewModel combatInit = new Combatant_ViewModel() {
+                            Combatant_ViewModel combatant = new Combatant_ViewModel() {
                                 CharacterId= CombatantRow["CharacterId"] == DBNull.Value ? nullInt : Convert.ToInt32(CombatantRow["CharacterId"]),
                                 InitiativeCommand= CombatantRow["InitiativeCommand"] == DBNull.Value ? string.Empty : CombatantRow["InitiativeCommand"].ToString(),
-                                CombatId = combat.Id,
+                                CombatId = CombatantRow["CombatId"] == DBNull.Value ? nullInt : Convert.ToInt32(CombatantRow["CombatId"]),
                                 MonsterId= CombatantRow["MonsterId"] == DBNull.Value ? nullInt : Convert.ToInt32(CombatantRow["MonsterId"]),
-                                SortOrder= 0,
+                                SortOrder= CombatantRow["Id"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["Id"]),
                                 Type= CombatantRow["Type"] == DBNull.Value ? string.Empty : CombatantRow["Type"].ToString(),
-                            };
-
+                                Id= CombatantRow["Id"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["Id"]),
+                                //Character = new Character(),
+                                //Monster=new Monster()
+                        };
+                            if (combatant.CharacterId!=null && combatant.Type== CombatantTypeCharacter)
+                            {
+                                if (combatant.CharacterId>0)
+                                {
+                                    combatant.Character = new  Character() {
+                                        CharacterId= CombatantRow["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["CharacterId"]),
+                                        CharacterName= CombatantRow["C_CharacterName"] == DBNull.Value ? string.Empty : CombatantRow["C_CharacterName"].ToString(),
+                                        ImageUrl= CombatantRow["C_ImageUrl"] == DBNull.Value ? string.Empty : CombatantRow["C_ImageUrl"].ToString(),
+                                    };
+                                }
+                            }
+                            if (combatant.MonsterId != null && combatant.Type == CombatantTypeMonster)
+                            {
+                                if (combatant.MonsterId > 0)
+                                {
+                                    combatant.Monster = new Monster() {
+                                        MonsterId = CombatantRow["MonsterId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["MonsterId"]),
+                                        Name = CombatantRow["M_Name"] == DBNull.Value ? string.Empty : CombatantRow["M_Name"].ToString(),
+                                        ImageUrl = CombatantRow["M_ImageUrl"] == DBNull.Value ? string.Empty : CombatantRow["M_ImageUrl"].ToString(),
+                                        HealthCurrent= CombatantRow["M_HealthCurrent"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_HealthCurrent"]),
+                                        HealthMax= CombatantRow["M_HealthMax"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_HealthMax"])
+                                    };
+                                }
+                            }
+                            combat.CombatantList.Add(combatant);
                         }
                     }
                 }

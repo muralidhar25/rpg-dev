@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DAL.Models
 {
-   public class CombatInitiative
+   public class CombatantList
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -15,7 +15,7 @@ namespace DAL.Models
         public int? CombatId { get; set; }
         public virtual Combat Combat { get; set; }
 
-        public int Type { get; set; }
+        public string Type { get; set; }
 
         public int? CharacterId { get; set; }
         public virtual Character Character { get; set; }
@@ -25,7 +25,7 @@ namespace DAL.Models
 
         public int SortOrder { get; set; }        
 
-        public decimal Initiative { get; set; }
+        public decimal? Initiative { get; set; }
 
         public bool IsDeleted { get; set; }
     }

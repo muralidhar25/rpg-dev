@@ -160,7 +160,7 @@ namespace DAL
         public virtual DbSet<ItemMasterMonsterItemSpell> ItemMasterMonsterItemSpells { get; set; }
 
         public virtual DbSet<Combat> Combats { get; set; }
-        public virtual DbSet<CombatInitiative> CombatInitiatives { get; set; }
+        public virtual DbSet<CombatantList> CombatantLists { get; set; }
         public virtual DbSet<CombatSetting> CombatSettings { get; set; }
 
 

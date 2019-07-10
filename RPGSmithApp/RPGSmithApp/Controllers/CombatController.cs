@@ -54,7 +54,7 @@ namespace RPGSmithApp.Controllers
 
 
         [HttpPost("UpdateCombatSettings")]
-        public async Task<IActionResult> CreateCharacter([FromBody] CombatSetting model)
+        public async Task<IActionResult> UpdateCombatSettings([FromBody] CombatSetting model)
         {
             if (ModelState.IsValid)
             {
@@ -68,7 +68,23 @@ namespace RPGSmithApp.Controllers
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
+        [HttpPost("UpdateCombatList")]
+        public async Task<IActionResult> UpdateCombatList([FromBody] CombatantList model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                   // return Ok(_combatService.UpdateSettings(model));
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
 
+            }
+            return BadRequest(Utilities.ModelStateError(ModelState));
+        }
         private string GetUserId()
         {
             string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();

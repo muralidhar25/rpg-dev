@@ -16,7 +16,7 @@ namespace DAL.Models.SPModels
 
         public bool IsDeleted { get; set; }
 
-        public List<Combatant_ViewModel> CombatInitiatives { get; set; }
+        public List<Combatant_ViewModel> CombatantList { get; set; }
         public CombatSetting CombatSettings { get; set; }
     }
     public class Combatant_ViewModel
@@ -37,6 +37,8 @@ namespace DAL.Models.SPModels
         public int SortOrder { get; set; }
 
         public string InitiativeCommand { get; set; }
+
+        public decimal? Initiative { get; set; }
 
         public bool IsDeleted { get; set; }
     }
