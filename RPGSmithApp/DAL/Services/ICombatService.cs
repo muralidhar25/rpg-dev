@@ -12,5 +12,9 @@ namespace DAL.Services
     {
       Task <Combat_ViewModel> GetCombatDetails(int CampaignId, string UserID);
         Task<CombatSetting> UpdateSettings(CombatSetting model);
+        List<CombatAllTypeMonsters> GetCombatAllTypeMonsters(int CampaignId);
+        void AddDeployedMonstersToCombat(List<CombatAllTypeMonsters> model);
+        List<Monster> GetCombat_MonstersList(int campaignId);
+        void RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster);
     }
 }

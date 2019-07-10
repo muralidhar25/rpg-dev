@@ -42,4 +42,16 @@ namespace DAL.Models.SPModels
 
         public bool IsDeleted { get; set; }
     }
+    public class CombatAllTypeMonsters : MonsterTemplate
+    {
+        public bool IsBundle { get; set; }
+        public bool IsMonster { get; set; }
+        public int? MonsterId { get; set; }
+
+        public List<MonsterTemplate_BundleItemsWithRandomItems> BundleItems { get; set; }
+        public List<RandomizationEngine> RandomizationEngine { get; set; }
+    }
+    public class MonsterIds {
+        public int MonsterId { get; set; }
+    }
 }

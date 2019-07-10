@@ -15,6 +15,7 @@ import { CommonService } from '../../../core/services/shared/common.service';
 import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { MonsterTemplateService } from '../../../core/services/monster-template.service';
+import { CombatService } from '../../../core/services/combat.service';
 //import { AddMonster } from '../../../core/models/view-models/addMonster.model';
 
 
@@ -42,7 +43,7 @@ export class RemoveCombatMonsterComponent  implements OnInit {
         private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
         public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
         private sharedService: SharedService, private commonService: CommonService,
-      private itemsService: ItemsService, private itemMasterService: ItemMasterService, private monsterTemplateService: MonsterTemplateService
+      private combatService: CombatService, private monsterTemplateService: MonsterTemplateService
     ) {
         this.route.params.subscribe(params => { this.characterId = params['id']; });
     }
@@ -62,75 +63,84 @@ export class RemoveCombatMonsterComponent  implements OnInit {
 
   private initialize() {
    
-    this.itemsList = [
-      {
-          recordId: 1,
-          name: 'Monster1',
-          image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
-          selected: false,
-          type: '',
-          quantity: 0
-      },
-      {
-        recordId: 2,
-        name: 'Monster2',
-        image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
-        selected: false,
-        type: '',
-        quantity: 0
-      },
-      {
-        recordId:3,
-        name: 'Monster3',
-        image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
-        selected: false,
-        type: '',
-        quantity: 0
-      },
-      {
-        recordId: 4,
-        name: 'Monster4',
-        image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
-        selected: false,
-        type: '',
-        quantity: 0
-      },
-      {
-        recordId: 5,
-        name: 'Monster5',
-        image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
-        selected: false,
-        type: '',
-        quantity: 0
-      }
-    ]
+    //this.itemsList = [
+    //  {
+    //      recordId: 1,
+    //      name: 'Monster1',
+    //      image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
+    //      selected: false,
+    //      type: '',
+    //      quantity: 0
+    //  },
+    //  {
+    //    recordId: 2,
+    //    name: 'Monster2',
+    //    image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
+    //    selected: false,
+    //    type: '',
+    //    quantity: 0
+    //  },
+    //  {
+    //    recordId:3,
+    //    name: 'Monster3',
+    //    image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
+    //    selected: false,
+    //    type: '',
+    //    quantity: 0
+    //  },
+    //  {
+    //    recordId: 4,
+    //    name: 'Monster4',
+    //    image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
+    //    selected: false,
+    //    type: '',
+    //    quantity: 0
+    //  },
+    //  {
+    //    recordId: 5,
+    //    name: 'Monster5',
+    //    image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
+    //    selected: false,
+    //    type: '',
+    //    quantity: 0
+    //  }
+    //]
 
-        //let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-        //if (user == null)
-        //    this.authService.logout();
-        //else {
-        //    this.isLoading = true;
-        //  this.itemMasterService.getItemMasterByRuleset_add<any>(this.rulesetId, false)//true
-        //        .subscribe(data => {
-        //          this.itemsList = data.ItemMaster;
-        //          this.itemsList.map((item) => {
-        //           item.quantity = 1;
-        //          });
-        //            this.isLoading = false;
-        //        }, error => {
-        //            this.isLoading = false;
-        //            let Errors = Utilities.ErrorDetail("", error);
-        //            if (Errors.sessionExpire) {
-        //                //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-        //                this.authService.logout(true);
-        //            }
-        //        }, () => { });
-        //}
+        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+        if (user == null)
+            this.authService.logout();
+        else {
+            this.isLoading = true;
+          this.combatService.getCombat_MonstersList<any>(this.rulesetId)
+            .subscribe(data => {
+              if (data) {
+                this.itemsList = data.map((rec) => {
+                  return {
+                    recordId: rec.monsterId,
+                    name: rec.name,
+                    image: rec.imageUrl,
+                    selected: false,                    
+                  };
+                })
+              }
+                  
+                    this.isLoading = false;
+                }, error => {
+                    this.isLoading = false;
+                    let Errors = Utilities.ErrorDetail("", error);
+                    if (Errors.sessionExpire) {
+                        //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                        this.authService.logout(true);
+                    } else {
+                      this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+                    }
+                }, () => { });
+        }
     }
 
   setItemMaster(event: any, itemMaster: any) {
     debugger
-
+    itemMaster.selected = event.target.checked;
       if (event.target.checked) {
         const _containsItems = Object.assign([], this.selectedItemsList);
         _containsItems.push(itemMaster);
@@ -150,31 +160,30 @@ export class RemoveCombatMonsterComponent  implements OnInit {
     }
 
   submitForm() {
-    //used for delete monsters
-    console.log(this.isChecked);
-    //debugger;
-    console.log('selecteditem list',this.selectedItemsList);
+    
     if (this.selectedItemsList.length) {
       this.isLoading = true;
       let _msg = ' Removing Monster ....';
       this.alertService.startLoadingMessage("", _msg);
-      this.alertService.stopLoadingMessage();
-      this.isLoading = false;
-      this.close();
-      //this.monsterTemplateService.addMonster(this.selectedItemsList)
-      //  .subscribe(data => {
-      //    this.alertService.stopLoadingMessage();
-      //    this.isLoading = false;
-      //    this.close();
-      //  }, error => {
-      //    this.isLoading = false;
-      //    this.alertService.stopLoadingMessage();
-      //    this.alertService.showMessage(error, "", MessageSeverity.error);
-      //    let Errors = Utilities.ErrorDetail("", error);
-      //    if (Errors.sessionExpire) {
-      //      this.authService.logout(true);
-      //    }
-      //  }, () => { });
+      let monstersToRemove = this.selectedItemsList.map((m) => {
+        return { monsterId: m.recordId };
+      });
+      this.combatService.removeMonsters(monstersToRemove, this.isChecked)
+        .subscribe(data => {
+          this.alertService.stopLoadingMessage();
+          this.isLoading = false;
+          this.close();
+        }, error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          this.alertService.showMessage(error, "", MessageSeverity.error);
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          } else {
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+          }
+        }, () => { });
     } else {
       let message = 'Please select atleast one Monster';
       this.alertService.showMessage(message, "", MessageSeverity.error);

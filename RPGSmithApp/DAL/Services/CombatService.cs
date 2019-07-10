@@ -21,11 +21,14 @@ namespace DAL.Services
         protected readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly IRepository<RuleSet> _repo;
-        public CombatService(IRepository<RuleSet> repo, ApplicationDbContext context, IConfiguration configuration)
+        private readonly IMonsterTemplateService _monsterTemplateService;
+        public CombatService(IRepository<RuleSet> repo, ApplicationDbContext context, IConfiguration configuration,
+            IMonsterTemplateService monsterTemplateService)
         {
             _repo = repo;
             _context = context;
             _configuration = configuration;
+            _monsterTemplateService = monsterTemplateService;
         }
 
         public async Task<Combat_ViewModel> GetCombatDetails(int CampaignId, string UserID)
@@ -209,6 +212,78 @@ namespace DAL.Services
                 await _context.SaveChangesAsync();                
             }
             return combatsetting;
+        }
+        public List<CombatAllTypeMonsters> GetCombatAllTypeMonsters(int CampaignId) {
+            List<MonsterWithItemCount> Monsters = _monsterTemplateService.SP_GetMonstersByRuleSetId(CampaignId, 1, 9999);
+            List<MonsterTemplate_Bundle> MonsterTemplates = _monsterTemplateService.SP_GetMonsterTemplateByRuleSetId(CampaignId, 1, 9999);
+            List<CombatAllTypeMonsters> allTypeMonsters = new List<CombatAllTypeMonsters>();
+
+            foreach (var monster in Monsters)
+            {
+                CombatAllTypeMonsters obj = new CombatAllTypeMonsters()
+                {
+                    MonsterId = monster.MonsterId,
+                    ImageUrl = monster.ImageUrl,
+                    Name = monster.Name,
+                };
+                allTypeMonsters.Add(obj);
+            }
+            foreach (var monsterTemplate in MonsterTemplates)
+            {
+                CombatAllTypeMonsters obj = new CombatAllTypeMonsters()
+                {
+                    IsBundle= monsterTemplate.IsBundle,
+                    BundleItems= monsterTemplate.BundleItems,
+                    RandomizationEngine= monsterTemplate.RandomizationEngine,
+
+                    MonsterTemplateId = monsterTemplate.MonsterTemplateId,
+                    ImageUrl = monsterTemplate.ImageUrl,
+                    Name = monsterTemplate.Name,
+                    ArmorClass= monsterTemplate.ArmorClass,
+                    ChallangeRating= monsterTemplate.ChallangeRating,
+                    Command= monsterTemplate.Command,
+                    CommandName= monsterTemplate.CommandName,
+                    Description= monsterTemplate.Description,
+                    Health= monsterTemplate.Health,
+                    InitiativeCommand= monsterTemplate.InitiativeCommand,
+                    IsMonster=false,
+                    IsRandomizationEngine= monsterTemplate.IsRandomizationEngine,
+                    Metatags= monsterTemplate.Metatags,
+                    MonsterId=null,
+                    MonsterTemplateCommands= monsterTemplate.MonsterTemplateCommands,
+                    ParentMonsterTemplate= monsterTemplate.ParentMonsterTemplate,
+                    ParentMonsterTemplateId= monsterTemplate.ParentMonsterTemplateId,
+                    RuleSet= monsterTemplate.RuleSet,
+                    RuleSetId= monsterTemplate.RuleSetId,
+                   IsDeleted = monsterTemplate.IsDeleted,
+                   Stats = monsterTemplate.Stats,
+                    XPValue= monsterTemplate.XPValue,
+
+                };
+                allTypeMonsters.Add(obj);
+            }
+            return allTypeMonsters;
+        }
+        public void AddDeployedMonstersToCombat(List<CombatAllTypeMonsters> model)
+        {
+            foreach (var item in model)
+            {
+                var monster = _context.Monsters.Where(x => x.MonsterId == item.MonsterId && item.IsDeleted != true).FirstOrDefault();
+                monster.AddToCombatTracker = true;
+            }
+            if (model.Count > 0)
+            {
+                _context.SaveChanges();
+            }
+        }
+        public List<Monster> GetCombat_MonstersList(int campaignId) {
+            return _context.Monsters.Where(x => x.RuleSetId == campaignId && x.IsDeleted != true && x.AddToCombatTracker == true).ToList();
+        }
+        public void RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster) {
+            //foreach (var item in collection)
+            //{
+
+            //}
         }
     }
 }
