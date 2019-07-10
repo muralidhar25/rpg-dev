@@ -317,6 +317,7 @@ export class CombatComponent implements OnInit {
     this.bsModalRef.content.title = 'Add Monsters';
     this.bsModalRef.content.button = 'ADD';
     this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.customDices = this.customDices
   }
   monsterRemove() {
     console.log('monsterRemove');

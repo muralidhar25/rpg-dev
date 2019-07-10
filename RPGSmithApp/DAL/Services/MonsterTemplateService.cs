@@ -33,11 +33,41 @@ namespace DAL.Services
         }
         public async Task<bool> DeleteMonster(int monsterId)
         {
+            //remove monsters Items
             var monsterItems = _context.ItemMasterMonsterItems.Where(x => x.MonsterId == monsterId).ToList();
             foreach (var item in monsterItems)
             {
                 item.IsDeleted = true;
             }
+
+            //remove monsters Spells
+            var monsterSpells = _context.MonsterSpells.Where(x => x.MonsterId == monsterId).ToList();
+            foreach (var item in monsterSpells)
+            {
+                item.IsDeleted = true;
+            }
+
+            //remove monsters Abilities
+            var monsterAbilities = _context.MonsterAbilitys.Where(x => x.MonsterId == monsterId).ToList();
+            foreach (var item in monsterAbilities)
+            {
+                item.IsDeleted = true;
+            }
+
+            //remove monsters B&E
+            var monsterBE = _context.MonsterBuffAndEffects.Where(x => x.MonsterId == monsterId).ToList();
+            foreach (var item in monsterBE)
+            {
+                item.IsDeleted = true;
+            }
+
+            //remove monsters Commands
+            var monsterCmds = _context.MonsterCommands.Where(x => x.MonsterId == monsterId).ToList();
+            foreach (var item in monsterCmds)
+            {
+                item.IsDeleted = true;
+            }
+
             var monster = _context.Monsters.Where(x => x.MonsterId == monsterId).FirstOrDefault();
             if (monster != null)
             {

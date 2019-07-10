@@ -85,6 +85,64 @@ namespace RPGSmithApp.Controllers
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
+        [HttpGet("GetCombat_AddMonsterList")]
+        public async Task<IActionResult> GetCombat_AddMonsterList(int CampaignId)
+        {
+            try
+            {
+                List<CombatAllTypeMonsters> model = _combatService.GetCombatAllTypeMonsters(CampaignId);
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("GetCombat_MonstersList")]
+        public async Task<IActionResult> GetCombat_MonstersList(int CampaignId)
+        {
+            try
+            {
+                List<Monster> model = _combatService.GetCombat_MonstersList(CampaignId);
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("AddDeployedMonstersToCombat")]
+        public async Task<IActionResult> AddDeployedMonstersToCombat([FromBody] List<CombatAllTypeMonsters> model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _combatService.AddDeployedMonstersToCombat(model);
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+
+            }
+            return BadRequest(Utilities.ModelStateError(ModelState));
+        }
+        [HttpGet("RemoveMonsters")]
+        public async Task<IActionResult> RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster)
+        {
+            try
+            {
+                _combatService.RemoveMonsters(monsterIds, deleteMonster);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         private string GetUserId()
         {
             string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();

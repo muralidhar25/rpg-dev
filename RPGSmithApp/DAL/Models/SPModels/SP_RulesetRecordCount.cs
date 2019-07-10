@@ -650,7 +650,7 @@ namespace DAL.Models.SPModels
         public List<RandomizationEngine> RandomizationEngine { get; set; }
     }
     
-        public class MonsterTemplate_BundleItemsWithRandomItems : MonsterTemplateBundleItem
+    public class MonsterTemplate_BundleItemsWithRandomItems : MonsterTemplateBundleItem
     {
         public MonsterTemplate_WithRandomItems MonsterTemplate { get; set; }
         
