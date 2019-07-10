@@ -1,0 +1,387 @@
+<div class="page-toolbar">
+  <div class="container">
+    <!--<div class="page-toolbar-wrapper">
+      <div class="page-toolbar-title">
+        <a [routerLink]="['/ruleset/combat', ruleSetId]" class="icon icon-back">
+          <h1 class="d-none d-md-inline-block"> Back</h1>
+        </a>
+      </div>
+        </div>-->
+  </div>
+  <div class="page-toolbar-wrapper initial show">
+    <ul class="page-toolbar-links">
+      <li class="hidden-tab">
+        <a class="btn btn-link-primary nav-redirection selected icon-Gen-Items"> <span>Inventory</span></a>
+      </li>
+      <li class="hidden-tab">
+        <a class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+      </li>
+      <li class="hidden-tab">
+        <a class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+      </li>
+      <li class="hidden-tab">
+        <a class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
+      </li>
+      <li>
+        <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary"><span class="text-hide-tab">Dice</span></button>
+      </li>
+    </ul>
+  </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-md-8">
+        <div class="table-responsive combat-table">
+          <table class="table">
+            <thead>
+              <tr>
+                <th><span>NAME</span></th>
+                <th><span>HEALTH</span></th>
+                <th><span>TEAM</span></th>
+                <th><span>BUFFS & EFFECTS</span></th>
+                <th><span>TARGET</span></th>
+                <th><span>ACTIONS</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of combatants; let i = index"
+                  [ngClass]="{'black-outer-filed': item.isCurrentTurn, 'red-outer-filed': item.frameColor =='red', '': item.frameColor =='grey', 'blue-outer-filed':item.frameColor == 'blue' }"
+                  (click)="frameClick(item)">
+                <td>
+                  <div class="white-section name-data">{{item?.name}}</div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <div class="progress green">
+                      <span class="progress-left">
+                        <span class="progress-bar"></span>
+                      </span>
+                      <span class="progress-right">
+                        <span class="progress-bar"></span>
+                      </span>
+                      <div class="progress-value">90%</div>
+                    </div>
+                  </div>
+                </td>
+
+                <td>
+                  <div class="white-section">
+                    <span class="visible-icon" [style.background]="item.colorCode"></span>
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <ul class="visiblity-list">
+                      <li class="icon-Rec-Visible" (click)="buffEffectclick();$event.stopPropagation()"></li> /
+                      <li class="icon-CharStat-Command" (click)="buffEffectclick();$event.stopPropagation()"></li>
+                    </ul>
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <div _ngcontent-c1="" class="initiative-title-box monsters-title-box">
+                      <img _ngcontent-c1="" class="ng-tns-c1-0" src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg">
+                      <p _ngcontent-c1="" class="ng-tns-c1-0"><span _ngcontent-c1="" class="ng-tns-c1-0">BugBear</span></p>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <ul class="action-buttons-table">
+                      <li class="action-button-icon-orange icon-Gen-Chat" (click)="target(item)"></li>
+                      <li class="action-button-icon-orange icon-MarkTarget" (click)="markItem(item)"></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              <!--<tr class="blue-outer-filed">
+                <td>
+                  <div class="white-section name-data">Silven</div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <div class="progress green">
+                      <span class="progress-left">
+                        <span class="progress-bar"></span>
+                      </span>
+                      <span class="progress-right">
+                        <span class="progress-bar"></span>
+                      </span>
+                      <div class="progress-value">90%</div>
+                    </div>
+                  </div>
+                </td>
+
+                <td>
+                  <div class="white-section">
+                    <span class="visible-icon"></span>
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <ul class="visiblity-list">
+                      <li class="icon-Rec-Visible"></li> /
+                      <li class="icon-CharStat-Command"></li>
+                    </ul>
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <div _ngcontent-c1="" class="initiative-title-box monsters-title-box">
+                      <img _ngcontent-c1="" class="ng-tns-c1-0" src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg">
+                      <p _ngcontent-c1="" class="ng-tns-c1-0"><span _ngcontent-c1="" class="ng-tns-c1-0">BugBear</span></p>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <ul class="action-buttons-table">
+                      <li class="action-button-icon-orange icon-Gen-Chat"></li>
+                      <li class="action-button-icon-orange icon-MarkTarget"></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="white-section name-data">Silven</div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <div class="progress green">
+                      <span class="progress-left">
+                        <span class="progress-bar"></span>
+                      </span>
+                      <span class="progress-right">
+                        <span class="progress-bar"></span>
+                      </span>
+                      <div class="progress-value">90%</div>
+                    </div>
+                  </div>
+                </td>
+
+                <td>
+                  <div class="white-section">
+                    <span class="visible-icon"></span>
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <ul class="visiblity-list">
+                      <li class="icon-Rec-Visible"></li> /
+                      <li class="icon-CharStat-Command"></li>
+                    </ul>
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <div _ngcontent-c1="" class="initiative-title-box monsters-title-box">
+                      <img _ngcontent-c1="" class="ng-tns-c1-0" src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg">
+                      <p _ngcontent-c1="" class="ng-tns-c1-0"><span _ngcontent-c1="" class="ng-tns-c1-0">BugBear</span></p>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <ul class="action-buttons-table">
+                      <li class="action-button-icon-orange icon-Gen-Chat"></li>
+                      <li class="action-button-icon-orange icon-MarkTarget"></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              <tr class="black-outer-filed">
+                <td>
+                  <div class="white-section name-data">Silven</div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <div class="progress green">
+                      <span class="progress-left">
+                        <span class="progress-bar"></span>
+                      </span>
+                      <span class="progress-right">
+                        <span class="progress-bar"></span>
+                      </span>
+                      <div class="progress-value">65%</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <span class="unvisible-icon"></span>
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <div _ngcontent-c1="" class="initiative-title-box monsters-title-box">
+                      <img _ngcontent-c1="" class="ng-tns-c1-0" src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg">
+                      <p _ngcontent-c1="" class="ng-tns-c1-0"><span _ngcontent-c1="" class="ng-tns-c1-0">BugBear</span></p>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <ul class="action-buttons-table">
+                      <li class="action-button-icon-orange icon-Gen-Chat"></li>
+                      <li class="action-button-icon-orange icon-MarkTarget"></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              <tr class="red-outer-filed">
+                <td>
+                  <div class="white-section name-data">Silven</div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <div class="progress green">
+                      <span class="progress-left">
+                        <span class="progress-bar"></span>
+                      </span>
+                      <span class="progress-right">
+                        <span class="progress-bar"></span>
+                      </span>
+                      <div class="progress-value">65%</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <span class="unvisible-icon"></span>
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <div _ngcontent-c1="" class="initiative-title-box monsters-title-box">
+                      <img _ngcontent-c1="" class="ng-tns-c1-0" src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg">
+                      <p _ngcontent-c1="" class="ng-tns-c1-0"><span _ngcontent-c1="" class="ng-tns-c1-0">BugBear</span></p>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <ul class="action-buttons-table">
+                      <li class="action-button-icon-orange icon-Gen-Chat"></li>
+                      <li class="action-button-icon-orange icon-MarkTarget"></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>-->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="combat-round-count small-count-size mb-3">
+          <ul>
+            <li class="round-count-icon-purple">ROUND <span>{{roundCounter}}</span></li>
+            <li class="round-count-icon-purple">INIT COUNT <span>{{CurrentInitiativeValue}}</span></li>
+            <li class="round-count-icon-purple">GAME Time <span>{{gametime}}</span></li>
+          </ul>
+        </div>
+        <div class="image-section-combat">
+          <img [src]="combatDetails.image" />
+          <span>{{combatDetails?.name}}</span>
+        </div>
+        <div class="row mt-3 ">
+          <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
+            <button class="btn-orange btn-block icon-CharStat-Command" (click)="command()"> Command</button>
+          </div>
+          <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
+            <button class="btn-orange btn-block icon-Rec-Drop" (click)="dropItems()"> Drop Items</button>
+          </div>
+          <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
+            <button class="btn-black btn-block  icon-Health" (click)="health()"> Health</button>
+          </div>
+          <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
+            <button class="btn-red btn-block icon-Rec-Remove" (click)=" remove()"> Remove</button>
+          </div>
+        </div>
+        <div class="combat-accordian">
+          <accordion>
+            <!--<accordion-group #p1 heading="STATS">
+              <div class="row">
+                <div class="col-12">
+
+                  <div [froalaView]="combatDetails.stats" name="stat"></div>
+                </div>
+              </div>
+            </accordion-group>-->
+            <accordion-group #p2 heading="BUFFS & EFFECTS">
+              <div class="row">
+                <div class="text-center" *ngIf="combatDetails.buffEffects?.length == 0">
+                  <legend>No Buffs & Effects Available</legend>
+                </div>
+                <div class="col-6 accordin-items" *ngFor="let item of  combatDetails.buffEffects">
+                  <div class="accordin-box">
+                    <img [src]="item.image" />
+                    <p>{{item.name}}</p>
+                  </div>
+                </div>
+              </div>
+            </accordion-group>
+            <!--<accordion-group #p3 heading="DESCRIPTION">
+              <div class="row">
+                <div class="col-12">
+                  <div [froalaView]="combatDetails.desc" name="Desc"></div>
+                </div>
+              </div>
+            </accordion-group>-->
+            <accordion-group #p4 heading="ITEMS">
+              <div class="row">
+                <div class="text-center" *ngIf="combatDetails.items?.length == 0">
+                  <legend>No Items  Available</legend>
+                </div>
+                <div class="col-6 accordin-items" *ngFor="let item of  combatDetails.items">
+                  <div class="accordin-box ">
+                    <img [src]="item.image" />
+                    <p>{{item.name}}</p>
+                  </div>
+                </div>
+              </div>
+            </accordion-group>
+
+            <!--<accordion-group #p5 heading="SPELLS">
+              <div class="row">
+                <div class="text-center" *ngIf="combatDetails.spells?.length == 0">
+                  <legend>No Spells Available</legend>
+                </div>
+                <div class="col-6 accordin-items" *ngFor="let item of  combatDetails.spells">
+                  <div class="accordin-box">
+                    <img [src]="item.image" />
+                    <p>{{item.name}}</p>
+                  </div>
+                </div>
+              </div>
+            </accordion-group>-->
+            <!--<accordion-group #p5 heading="ABILITIES">
+              <div class="row">
+                <div lass="text-center" *ngIf="combatDetails.abilites?.length == 0">
+                  <legend>No Abilities Available</legend>
+                </div>
+                <div class="col-6 accordin-items" *ngFor="let item of  combatDetails.abilites">
+                  <div class="accordin-box">
+                    <img [src]="item.image" />
+                    <p>{{item.name}}</p>
+                  </div>
+                </div>
+              </div>
+            </accordion-group>-->
+          </accordion>
+        </div>
+      </div>
+    </div>
+  </div>

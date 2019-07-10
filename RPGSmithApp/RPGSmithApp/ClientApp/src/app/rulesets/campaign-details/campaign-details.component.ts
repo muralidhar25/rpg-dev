@@ -631,7 +631,7 @@ export class CampaignDetailsComponent implements OnInit {
     this.router.navigate(['/ruleset/monster', this.ruleSetId]);
   }
   openCombatTracker() {
-    //this.router.navigate(['/ruleset/combat', this.ruleSetId]);
+    this.router.navigate(['/ruleset/combat', this.ruleSetId]);
   }
   lootPiletemplate() {
     //console.log('lootpiletemplate');

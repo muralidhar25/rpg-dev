@@ -141,12 +141,12 @@ namespace DAL.Services
                         foreach (DataRow CombatantRow in ds.Tables[3].Rows)
                         {
                             Combatant_ViewModel combatInit = new Combatant_ViewModel() {
-                                CharacterId= Row["CharacterId"] == DBNull.Value ? nullInt : Convert.ToInt32(Row["CharacterId"]),
-                                InitiativeCommand= Row["InitiativeCommand"] == DBNull.Value ? string.Empty : Row["InitiativeCommand"].ToString(),
+                                CharacterId= CombatantRow["CharacterId"] == DBNull.Value ? nullInt : Convert.ToInt32(CombatantRow["CharacterId"]),
+                                InitiativeCommand= CombatantRow["InitiativeCommand"] == DBNull.Value ? string.Empty : CombatantRow["InitiativeCommand"].ToString(),
                                 CombatId = combat.Id,
-                                MonsterId= Row["MonsterId"] == DBNull.Value ? nullInt : Convert.ToInt32(Row["MonsterId"]),
+                                MonsterId= CombatantRow["MonsterId"] == DBNull.Value ? nullInt : Convert.ToInt32(CombatantRow["MonsterId"]),
                                 SortOrder= 0,
-                                Type= Row["Type"] == DBNull.Value ? string.Empty : Row["Type"].ToString(),
+                                Type= CombatantRow["Type"] == DBNull.Value ? string.Empty : CombatantRow["Type"].ToString(),
                             };
 
                         }

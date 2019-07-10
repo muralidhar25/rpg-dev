@@ -19,6 +19,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from './app.component';
 
 import { IncompatibleBrowserComponent } from "./incompatible-browser/incompatible-browser.component";
+import { AccordionModule, AccordionConfig } from 'ngx-bootstrap/accordion';
 
 
 //import { AdsenseModule } from 'ng2-adsense';
@@ -54,6 +55,7 @@ import { AdsenseModule } from 'ng2-adsense';
     ModalModule.forRoot(),
     CarouselModule.forRoot(),
     ContextMenuModule.forRoot(),
+    AccordionModule.forRoot(),
     NgxSocialLoginModule.init(
         {
             //'648640285849-3labmk96l8d4q372jc82ljrfcg73f9fs.apps.googleusercontent.com'
@@ -85,7 +87,8 @@ import { AdsenseModule } from 'ng2-adsense';
     }),    
   ],
   providers: [
-AppService1
+    AppService1,
+    { provide: AccordionConfig, useValue: { closeOthers: true } },
   ],
   exports: [
    // CampaignInviteComponent,
