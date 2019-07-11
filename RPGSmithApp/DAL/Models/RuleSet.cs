@@ -67,6 +67,11 @@ namespace DAL.Models
         public bool IsAllowSharing { get; set; }
         public bool IsCoreRuleset { get; set; }
 
+        public string LastCommand { get; set; }
+        public string LastCommandResult { get; set; }
+        public int LastCommandTotal { get; set; }
+        public string LastCommandValues { get; set; }
+
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid? ShareCode { get; set; }
 
