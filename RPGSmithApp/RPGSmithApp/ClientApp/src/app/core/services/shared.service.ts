@@ -33,6 +33,7 @@ export class SharedService {
   private MonsterTemplateDetail = new Subject<any>();
   private AddMonsterTemplatesList = new Subject<any>();
   private CombatantList = new Subject<any>();
+  private MonsterVisibility = new Subject<any>();
   
   
   updateManageOpen(accountSetting: any) {
@@ -311,6 +312,14 @@ export class SharedService {
 
   shouldUpdateCombatantList(): Observable<any> {
     return this.CombatantList.asObservable();
+  }
+
+  updateMonsterVisibility(combatantList: any) {
+    this.MonsterVisibility.next(combatantList);
+  }
+
+  shouldUpdateMonsterVisibility(): Observable<any> {
+    return this.MonsterVisibility.asObservable();
   }
 }
 

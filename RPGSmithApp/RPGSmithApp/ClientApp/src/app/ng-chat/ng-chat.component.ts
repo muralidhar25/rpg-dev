@@ -73,6 +73,13 @@ export class NgChat implements OnInit, IChatController {
         clearInterval(this.fetchFriendsListInterval);
       }
     });
+
+    this.appService.shouldUpdateChatFromCombat().subscribe((serviceData) => {
+        debugger;
+      if (serviceData) {
+        this.sendCombatMessageToChatGroup(serviceData);
+      }
+    });
   }
 
   // Exposes enums for the ng-template
@@ -1235,6 +1242,30 @@ export class NgChat implements OnInit, IChatController {
       else {
         message.message = "<span class='ng-chat-orange-text'>New Loot is Available</span>";
       }
+      message.dateSent = new Date();
+      message.isSystemGenerated = true;
+      //window.messages.push(message);
+      this.windows.map((x) => {
+        if (!x.isCollapsed && x.participant.displayName == "Everyone") {
+          x.messages.push(message);
+          this.scrollChatWindow(x, ScrollDirection.Bottom);
+        }
+      })
+      this.adapter.sendMessage(message);
+    }
+    catch (e) {
+
+    }
+  }
+
+  sendCombatMessageToChatGroup(combatMessage) {
+    try {
+      let message = new Message();
+      message.fromId = this.userId;
+      message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;
+      
+      message.message = "<span class='ng-chat-orange-text'>" + combatMessage+"</span>";
+     
       message.dateSent = new Date();
       message.isSystemGenerated = true;
       //window.messages.push(message);

@@ -19,7 +19,8 @@ export class CombatService extends EndpointFactory {
   private readonly AddDeployedMonstersToCombat: string = this.configurations.baseUrl + "/api/Combat/AddDeployedMonstersToCombat";
   private readonly GetCombatMonstersList: string = this.configurations.baseUrl + "/api/Combat/GetCombat_MonstersList";
   private readonly Combat_RemoveMonsters: string = this.configurations.baseUrl + "/api/Combat/RemoveMonsters";
-  
+  private readonly SaveCombatantTurn: string = this.configurations.baseUrl + "/api/Combat/SaveCombatantTurn";
+
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
     super(http, configurations, injector);
   }
@@ -50,7 +51,15 @@ export class CombatService extends EndpointFactory {
       });
   }
 
-  
+  saveCombatantTurn<T>(curretnCombatant, roundCount: number): Observable<T> {
+    debugger;
+    let saveCombatantTurn = `${this.SaveCombatantTurn}?roundCount=${roundCount}`
+    return this.http.post<T>(saveCombatantTurn, JSON.stringify(curretnCombatant), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.saveCombatantTurn(curretnCombatant, roundCount));
+      });
+  }
+
   getCombat_AddMonstersList<T>(CampaignID: number): Observable<T> {
     let endpointUrl = `${this.GetCombatAddMonstersList}?CampaignId=${CampaignID}`;
 
@@ -67,7 +76,7 @@ export class CombatService extends EndpointFactory {
         return this.handleError(error, () => this.getCombat_MonstersList(CampaignID));
       });
   }
-  AddMonstersOnly<T>(SelectedDeployedMonsters:any[]): Observable<T> {
+  AddMonstersOnly<T>(SelectedDeployedMonsters: any[]): Observable<T> {
     let url = `${this.AddDeployedMonstersToCombat}`
     return this.http.post<T>(url, JSON.stringify(SelectedDeployedMonsters), this.getRequestHeaders())
       .catch(error => {

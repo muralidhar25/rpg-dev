@@ -1107,18 +1107,23 @@
 .icon-Monster:before {
   content: "\e96e";
 }
+
 .icon-MonsterTemp:before {
   content: "\e96f";
 }
+
 .icon-BnE:before {
   content: "\e969";
 }
+
 .icon-Assign:before {
   content: "\e968";
 }
+
 .icon-DefLayouts:before {
   content: "\e96b";
 }
+
 .icon-BnE:before, .icon-Monster:before, .icon-MonsterTemp:before, .icon-Combat:before, .icon-MarkTarget:before, .icon-Health:before, .icon-Settings:before, .icon-Assign:before, .icon-DefLayouts:before {
   font-family: 'icomoon' !important;
   speak: none;
@@ -3374,22 +3379,27 @@ a {
 .image-auto-size img {
   max-width: 100%;
 }
+
 .modal-dialog.modal-primary .modal-body .image-auto-size {
   padding: 0px !important;
   margin: 0px !important
 }
-.modal-dialog.modal-primary .modal-body .image-auto-size img {
-  max-width: 100%;
-  max-height: -webkit-fill-available;
-  max-height: -moz-fill-available;
-  max-height: -o-fill-available;
+
+  .modal-dialog.modal-primary .modal-body .image-auto-size img {
+    max-width: 100%;
+    max-height: -webkit-fill-available;
+    max-height: -moz-fill-available;
+    max-height: -o-fill-available;
+  }
+
+.modal-custom-image .modal-body {
+  padding: 0px;
 }
-.modal-custom-image .modal-body{
-  padding:0px;
-}
+
 .modal-custom-image .modal-footer .btn.btn-edit {
   margin-right: 10px
 }
+
 .modal-footer {
   flex-direction: column;
   align-items: stretch;
@@ -7342,11 +7352,13 @@ rl-tag-input-item {
 .cards-inventory .card-list.view-list .card-wrapper .card .item-actions {
   width: 245px !important;
 }
+
 .cards-buff .card-list.view-list .card-wrapper .card .item-actions {
   width: 120px !important;
   text-align: center !important;
   margin: 0 auto;
 }
+
 .cards-inventory .card-list .card-wrapper .card .item-stats.d-sm-none {
   display: block !important
 }
@@ -7370,7 +7382,7 @@ rl-tag-input-item {
     width: 100% !important;
     text-align: center !important
   }
-  
+
   .cards-inventory .card-list.view-list .card-wrapper .card-body {
     width: calc(100% - 140px);
   }
@@ -8430,6 +8442,7 @@ li.popup-new-tile-trigger.cross-li .btn {
 .popover-body {
   min-width: 50px !important
 }
+
 .popover-header {
   color: #686868;
   text-align: center;
@@ -9057,7 +9070,8 @@ angular2-multiselect .c-btn.form-control {
   border-radius: 2px;
   margin-top: 13.5px;
 }
-.ng-chat-title.secondary-background a:hover {  
+
+.ng-chat-title.secondary-background a:hover {
   text-decoration: none;
 }
 
@@ -9189,14 +9203,17 @@ span.user-image-name {
   right: 17px;
   width: 14px;
 }
+
   .ng-chat-volume i.fa.fa-volume-up {
     width: 31px;
     padding: 9px;
   }
+
   .ng-chat-volume i.fa.fa-volume-off {
     width: 31px;
     padding: 9px;
   }
+
 .ng-chat-title {
   padding-right: 20px;
 }
@@ -9207,7 +9224,7 @@ span.user-image-name {
   top: -29px;
   margin-left: 0;
   right: -16px;
-} 
+}
 /* ==== Combat Accordian Css Start ===*/
 /*.combat-accordian .panel .card {
   border: 0px;
@@ -9345,6 +9362,7 @@ span.user-image-name {
 .progress-bar {
   background-color: #d66b40 !important;
 }
+
 .custom-common-error-message .err-heading {
   margin-bottom: -10px;
 }
@@ -9356,6 +9374,11 @@ input-type-number::-webkit-outer-spin-button {
   appearance: none;
   margin: 0;
 }
+
 .div-img-width-auto img {
-width:auto !important;
+  width: auto !important;
+}
+
+.smallPopup {
+  max-width: 178px !important;
 }
