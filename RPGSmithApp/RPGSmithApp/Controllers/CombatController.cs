@@ -69,14 +69,14 @@ namespace RPGSmithApp.Controllers
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
         [HttpPost("SaveCombatantList")]
-        public async Task<IActionResult> SaveCombatantList([FromBody] List<CombatantList> model)
+        public async Task<IActionResult> SaveCombatantList([FromBody] List<Combatant_DTModel> model, int CampaignID)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _combatService.SaveCombatantList(model);
-                    return Ok();
+                    List<Combatant_ViewModel> list = _combatService.SaveCombatantList(model, CampaignID,GetUserId());
+                    return Ok(list);
                 }
                 catch (Exception ex)
                 {
@@ -143,6 +143,19 @@ namespace RPGSmithApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPost("Combat_Start")]
+        public async Task<IActionResult> Combat_Start(int CombatId,bool Start)
+        {
+            try
+            {
+                _combatService.Combat_Start(CombatId, Start);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }        
 
         private string GetUserId()
         {

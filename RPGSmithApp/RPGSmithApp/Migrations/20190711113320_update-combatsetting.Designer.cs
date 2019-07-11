@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace RPGSmithApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190711113320_update-combatsetting")]
+    partial class updatecombatsetting
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1494,8 +1496,6 @@ namespace RPGSmithApp.Migrations
 
                     b.Property<bool>("AccessMonsterDetails");
 
-                    b.Property<int?>("CampaignId");
-
                     b.Property<string>("CharcterHealthStats")
                         .HasColumnType("nvarchar(255)");
 
@@ -1533,8 +1533,6 @@ namespace RPGSmithApp.Migrations
                     b.Property<bool>("XPDistributionforDeletedMonster");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CampaignId");
 
                     b.ToTable("CombatSettings");
                 });
@@ -4646,13 +4644,6 @@ namespace RPGSmithApp.Migrations
                     b.HasOne("DAL.Models.Monster", "Monster")
                         .WithMany()
                         .HasForeignKey("MonsterId");
-                });
-
-            modelBuilder.Entity("DAL.Models.CombatSetting", b =>
-                {
-                    b.HasOne("DAL.Models.RuleSet", "Campaign")
-                        .WithMany()
-                        .HasForeignKey("CampaignId");
                 });
 
             modelBuilder.Entity("DAL.Models.CustomDice", b =>

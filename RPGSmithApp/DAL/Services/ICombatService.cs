@@ -16,6 +16,7 @@ namespace DAL.Services
         void AddDeployedMonstersToCombat(List<CombatAllTypeMonsters> model);
         List<Monster> GetCombat_MonstersList(int campaignId);
         void RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster);
-        void SaveCombatantList(List<CombatantList> model);
+        List<Combatant_ViewModel> SaveCombatantList(List<Combatant_DTModel> model, int campaignId, string UserId);
+        void Combat_Start(int combatId, bool start);
     }
 }

@@ -12,8 +12,8 @@ namespace DAL.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public int? CombatId { get; set; }
-        public virtual Combat Combat { get; set; }
+        public int? CampaignId { get; set; }
+        public virtual RuleSet Campaign { get; set; }
 
         [Column(TypeName = "nvarchar(500)")]
         public string PcInitiativeFormula { get; set; }

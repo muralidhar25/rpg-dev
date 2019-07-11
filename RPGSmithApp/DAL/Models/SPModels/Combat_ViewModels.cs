@@ -47,6 +47,7 @@ namespace DAL.Models.SPModels
         public string VisibilityColor { get; set; }
 
         public bool IsCurrentTurn { get; set; }
+        
     }
     public class CombatAllTypeMonsters : MonsterTemplate
     {
@@ -60,8 +61,28 @@ namespace DAL.Models.SPModels
     public class MonsterIds {
         public int MonsterId { get; set; }
     }
-    public class CombatantList_ViewModel
+    //public class CombatantList_ViewModel
+    //{
+    //    public int Id { get; set; }
+
+    //    public int? CombatId { get; set; }
+
+    //    public string Type { get; set; }
+
+    //    public int? CharacterId { get; set; }
+
+    //    public int? MonsterId { get; set; }
+
+    //    public int SortOrder { get; set; }
+
+    //    public decimal? InitiativeValue { get; set; }
+
+    //    public bool IsDeleted { get; set; }
+    //}
+    public class Combatant_DTModel
     {
+        public int RowNum { get; set; }
+
         public int Id { get; set; }
 
         public int? CombatId { get; set; }
@@ -73,9 +94,16 @@ namespace DAL.Models.SPModels
         public int? MonsterId { get; set; }
 
         public int SortOrder { get; set; }
-
-        public decimal? InitiativeValue { get; set; }
+        
+        public decimal? Initiative { get; set; }
 
         public bool IsDeleted { get; set; }
+
+        public string VisibilityColor { get; set; }
+
+        public bool VisibleToPc { get; set; }
+
+        public bool IsCurrentTurn { get; set; }
+
     }
 }
