@@ -9,20 +9,21 @@ import { CombatDetails } from '../../core/models/view-models/combat-details.mode
 import { Utilities } from '../../core/common/utilities';
 import { AddCombatMonsterComponent } from './add-combat-monster/add-monster-combat.component';
 import { RemoveCombatMonsterComponent } from './remove-combat-monster/remove-monster-combat.component';
-import { combatantType, COMBAT_SETTINGS } from '../../core/models/enums';
+import { combatantType, COMBAT_SETTINGS, CombatItemsType } from '../../core/models/enums';
 import { combatant } from '../../core/models/view-models/combatants.model';
 import { CombatHealthComponent } from './update-combat-health/update-combat-health.component';
 import { DropItemsCombatMonsterComponent } from './drop-monstercombat-items/drop-items-monstercombat.component';
 import { CombatVisibilityComponent } from './change-combat-visiblity/change-combat-visiblity.component';
 import { CombatSettings } from '../../core/models/view-models/combatSettings.model';
 import { CustomDice } from '../../core/models/view-models/custome-dice.model';
-import { AlertService } from '../../core/common/alert.service';
+import { AlertService, MessageSeverity, DialogType } from '../../core/common/alert.service';
 import { DiceService } from '../../core/services/dice.service';
 import { DiceRollComponent } from '../../shared/dice/dice-roll/dice-roll.component';
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
 import { CombatBuffeffectDetailsComponent } from './combat-buffeffects-details/combat-buffeffects-details.component';
 import { CombatService } from '../../core/services/combat.service';
 import { AuthService } from '../../core/auth/auth.service';
+import { SharedService } from '../../core/services/shared.service';
 
 @Component({
   selector: 'app-combat',
@@ -36,7 +37,7 @@ export class CombatComponent implements OnInit {
   character: Characters = new Characters();
   details = new CombatDetails();
   combatDetails: any;
-  combatants: any;
+  combatants: any[];
   roundCounter: number;
   customDices: CustomDice[] = [];
   CurrentInitiativeValue: number;
@@ -44,8 +45,9 @@ export class CombatComponent implements OnInit {
   rulesetModel: Ruleset = new Ruleset();
   settings: CombatSettings = new CombatSettings();
   COMBAT_SETTINGS = COMBAT_SETTINGS;
-
   showCombatOptions: boolean = false;
+  isLoading: boolean = false;
+  combatItemsType = CombatItemsType;
 
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
@@ -62,8 +64,15 @@ export class CombatComponent implements OnInit {
     private route: ActivatedRoute,
     private alertService: AlertService,
     private combatService: CombatService,
-    private authService: AuthService) {
+    private authService: AuthService,
+    private sharedService: SharedService) {
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
+
+    this.sharedService.shouldUpdateCombatantList().subscribe(combatantListJson => {
+      if (combatantListJson) {
+        this.combatants = combatantListJson;
+      }
+    });
 
     //roundcounter
     this.roundCounter = 1;
@@ -128,6 +137,7 @@ export class CombatComponent implements OnInit {
       ]
     };
 
+    //Mock data
     this.combatants = [
       {
         id: 1,
@@ -253,21 +263,57 @@ export class CombatComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.GetCombatDetails();
+    this.GetCombatantList();
+  }
 
+  // Combat Settings
+  GetCombatDetails() {
+    this.isLoading = true;
     this.combatService.getCombatDetails(this.ruleSetId).subscribe(res => {
-      debugger;
       if (res) {
         let combatModal: any = res;
         this.settings = combatModal.combatSettings;
+        // Game Time
+        this.gametime = this.time_convert(this.settings.gameRoundLength);
       }
+      this.isLoading = false;
     }, error => {
+      this.isLoading = false;
       let Errors = Utilities.ErrorDetail("", error);
       if (Errors.sessionExpire) {
         this.authService.logout(true);
+      } else {
+        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
       }
     });
   }
 
+  //Combatant List
+  GetCombatantList() {
+      this.isLoading = true;
+      this.combatService.getCombatDetails(this.ruleSetId).subscribe(res => {
+        if (res) {
+          debugger;
+          let model: any = res;
+          this.combatants = model.combatantList;
+        }
+        this.isLoading = false;
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        } else {
+          this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        }
+      });    
+  }
+
+  // Send message to chat
+  SendSystemMessageToChat(message) {
+
+  }
 
   openpopup() {
     console.log('Open popup');
@@ -487,18 +533,28 @@ export class CombatComponent implements OnInit {
   startCombat() {
     //this.roundCounter = 1;
     this.Init();
-    this.showCombatOptions = true;;
+    this.showCombatOptions = true;
+    let msg = "Combat Started";
+    this.SendSystemMessageToChat(msg);
+  }
+
+  endCombat() {
+    let message = "Are you sure you want to end the combat?";
+    this.alertService.showDialog(message,
+      DialogType.confirm, () => this.stopCombat(), null, 'Yes', 'No');
   }
 
   //endCombat
-  endCombat() {
+  stopCombat() {
+    debugger;
     //this.router.navigate(['/ruleset/combatplayer', this.ruleSetId]);
     this.showCombatOptions = false;
+    let msg = "Combat Ended";
+    this.SendSystemMessageToChat(msg);
   }
 
   //change settings here
   UpdateSettings(e, type) {
-    debugger
     switch (type) {
       case COMBAT_SETTINGS.PC_INITIATIVE_FORMULA:
         this.settings.pcInitiativeFormula = e.target.value;
@@ -555,11 +611,18 @@ export class CombatComponent implements OnInit {
   }
 
   UpdateCombatSettings(settings: CombatSettings) {
-    debugger;
+    this.isLoading = true;
     this.combatService.updateCombatSettings(this.settings).subscribe(res => {
       let result = res;
+      this.isLoading = false;
     }, error => {
-      console.log(error);
+      this.isLoading = false;
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      } else {
+        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+      }
     });
   }
 

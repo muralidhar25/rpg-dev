@@ -32,6 +32,7 @@ export class SharedService {
   private MonsterDrop = new Subject<any>();
   private MonsterTemplateDetail = new Subject<any>();
   private AddMonsterTemplatesList = new Subject<any>();
+  private CombatantList = new Subject<any>();
   
   
   updateManageOpen(accountSetting: any) {
@@ -302,6 +303,14 @@ export class SharedService {
 
   shouldUpdateAddMonsterTemplatesList(): Observable<any> {
     return this.AddMonsterTemplatesList.asObservable();
+  }
+
+  updateCombatantList(combatantList: any) {
+    this.CombatantList.next(combatantList);
+  }
+
+  shouldUpdateCombatantList(): Observable<any> {
+    return this.CombatantList.asObservable();
   }
 }
 

@@ -69,7 +69,7 @@ button.btn-top {
 }
 
 .initiative-options-field input {
-  font-size: 18px;
+  font-size: 15px;
   width: calc(100% - 149px);
   padding: 8px 10px;
   margin: 0px 10px 0px 0px;
@@ -84,4 +84,11 @@ button.btn-top {
 .initiative-popup h2 {
   font-size: 16px;
   color: #e6723c;
+}
+
+p.text-ellipsis {
+  display: block !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

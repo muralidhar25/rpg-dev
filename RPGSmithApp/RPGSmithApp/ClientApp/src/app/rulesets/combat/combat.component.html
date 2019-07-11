@@ -1,5 +1,8 @@
 <div class="container">
-  <div class="row">
+  <!--Loader-->
+  <app-loader [isLoading]="isLoading"></app-loader>
+
+  <div class="row" *ngIf="!isLoading">
     <div class="col-12">
       <ul class="btns-combat-actions">
         <li>
@@ -35,7 +38,7 @@
                       <input type="text" class="sec-txtbox" name="GameRoundLength" [(ngModel)]="settings.gameRoundLength"
                              (change)="UpdateSettings($event, COMBAT_SETTINGS.IN_GAME_ROUND_LENGTH)" />
                       <label class="sec-label">Seconds</label>
-                      
+
                     </li>
                   </ul>
                 </div>
@@ -292,7 +295,9 @@
                 [ngClass]="{'black-outer-filed': item.isCurrentTurn, 'red-outer-filed': item.frameColor =='red', '': item.frameColor =='grey' }"
                 (click)="frameClick(item)">
               <td>
-                <div class="white-section name-data" (click)="nameClicked(item);$event.stopPropagation()">{{item?.name}}</div>
+                <div class="white-section name-data" (click)="nameClicked(item);$event.stopPropagation()">
+                  {{item.type == combatItemsType.CHARACTER?item?.character?.characterName:item?.monster?.name}}
+                </div>
               </td>
               <td>
                 <div class="white-section">
@@ -525,6 +530,8 @@
     </div>
   </div>
 </div>
+
+
 <!-- Popup Html Start Here -->
 <!--<div class="initiative-popup">
   <h2>ORDER</h2>

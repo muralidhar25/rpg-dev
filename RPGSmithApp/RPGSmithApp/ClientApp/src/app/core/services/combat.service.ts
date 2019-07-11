@@ -7,11 +7,14 @@ import 'rxjs/add/operator/map';
 import { EndpointFactory } from '../common/endpoint-factory.service';
 import { ConfigurationService } from '../common/configuration.service';
 import { CombatSettings } from '../models/view-models/combatSettings.model';
+import { initiative } from '../models/view-models/initiative.model';
 
 @Injectable()
 export class CombatService extends EndpointFactory {
   private readonly GetCombatDetails: string = this.configurations.baseUrl + "/api/Combat/GetCombatDetails";
   private readonly UpdateCombatSettings: string = this.configurations.baseUrl + "/api/Combat/UpdateCombatSettings";
+  private readonly SaveCombatantList: string = this.configurations.baseUrl + "/api/Combat/SaveCombatantList";
+
   private readonly GetCombatAddMonstersList: string = this.configurations.baseUrl + "/api/Combat/GetCombat_AddMonsterList";
   private readonly AddDeployedMonstersToCombat: string = this.configurations.baseUrl + "/api/Combat/AddDeployedMonstersToCombat";
   private readonly GetCombatMonstersList: string = this.configurations.baseUrl + "/api/Combat/GetCombat_MonstersList";
@@ -31,12 +34,22 @@ export class CombatService extends EndpointFactory {
   }
 
   updateCombatSettings<T>(settings: CombatSettings): Observable<T> {
-    let updateUrl = `${this.UpdateCombatSettings}`
-    return this.http.post<T>(updateUrl, JSON.stringify(settings), this.getRequestHeaders())
+    let updateCombatSettingsUrl = `${this.UpdateCombatSettings}`
+    return this.http.post<T>(updateCombatSettingsUrl, JSON.stringify(settings), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.updateCombatSettings(settings));
       });
   }
+
+  saveCombatantList<T>(combatants: any[]): Observable<T> {
+    debugger;
+    let saveInitiativeUrl = `${this.SaveCombatantList}`
+    return this.http.post<T>(saveInitiativeUrl, JSON.stringify(combatants), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.saveCombatantList(combatants));
+      });
+  }
+
   
   getCombat_AddMonstersList<T>(CampaignID: number): Observable<T> {
     let endpointUrl = `${this.GetCombatAddMonstersList}?CampaignId=${CampaignID}`;
