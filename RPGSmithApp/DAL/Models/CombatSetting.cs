@@ -15,15 +15,22 @@ namespace DAL.Models
         public int? CombatId { get; set; }
         public virtual Combat Combat { get; set; }
 
+        [Column(TypeName = "nvarchar(500)")]
         public string PcInitiativeFormula { get; set; }
         public bool RollInitiativeForPlayer { get; set; }
         public bool RollInitiativeEveryRound { get; set; }
         public int GameRoundLength { get; set; }
         public bool XPDistributionforDeletedMonster { get; set; }
+
+        [Column(TypeName = "nvarchar(255)")]
         public string CharcterXpStats { get; set; }
+
+        [Column(TypeName = "nvarchar(255)")]
         public string CharcterHealthStats { get; set; }
         public bool AccessMonsterDetails { get; set; }
         public bool GroupInitiative { get; set; }
+
+        [Column(TypeName = "nvarchar(255)")]
         public string GroupInitFormula { get; set; }
         public bool DropItemsForDeletedMonsters { get; set; }
         public bool MonsterVisibleByDefault { get; set; }

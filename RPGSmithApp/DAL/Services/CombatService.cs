@@ -153,9 +153,12 @@ namespace DAL.Services
                                 SortOrder= CombatantRow["Id"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["Id"]),
                                 Type= CombatantRow["Type"] == DBNull.Value ? string.Empty : CombatantRow["Type"].ToString(),
                                 Id= CombatantRow["Id"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["Id"]),
+                                IsCurrentTurn= CombatantRow["IsCurrentTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsCurrentTurn"]),
+                                VisibilityColor= CombatantRow["VisibilityColor"] == DBNull.Value ? string.Empty : CombatantRow["VisibilityColor"].ToString(),
+                                VisibleToPc = CombatantRow["VisibleToPc"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["VisibleToPc"])
                                 //Character = new Character(),
                                 //Monster=new Monster()
-                        };
+                            };
                             if (combatant.CharacterId!=null && combatant.Type== CombatantTypeCharacter)
                             {
                                 if (combatant.CharacterId>0)
@@ -309,6 +312,37 @@ namespace DAL.Services
             {
                 throw ex;
             }
+        }
+        public void SaveCombatantList(List<CombatantList> model)
+        {
+            //string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            //// string qry = "EXEC ItemMasterGetAllDetailsByRulesetID_add @RulesetID = '" + rulesetId + "'";
+
+            //SqlConnection connection = new SqlConnection(connectionString);
+            //SqlCommand command = new SqlCommand();
+            //SqlDataAdapter adapter = new SqlDataAdapter();
+            //DataSet ds = new DataSet();
+            //try
+            //{
+            //    connection.Open();
+            //    command = new SqlCommand("SaveCombatantList", connection);
+
+            //    // Add the parameters for the SelectCommand.
+            //    command.Parameters.AddWithValue("@CampaignId", CampaignId);
+            //    command.Parameters.AddWithValue("@UserID", UserID);
+            //    command.CommandType = CommandType.StoredProcedure;
+
+            //    adapter.SelectCommand = command;
+
+            //    adapter.Fill(ds);
+            //    command.Dispose();
+            //    connection.Close();
+            //}
+            //catch (Exception ex)
+            //{
+            //    command.Dispose();
+            //    connection.Close();
+            //}
         }
     }
 }

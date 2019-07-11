@@ -68,14 +68,15 @@ namespace RPGSmithApp.Controllers
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
-        [HttpPost("UpdateCombatList")]
-        public async Task<IActionResult> UpdateCombatList([FromBody] CombatantList model)
+        [HttpPost("SaveCombatantList")]
+        public async Task<IActionResult> SaveCombatantList([FromBody] List<CombatantList> model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    return Ok(_combatService.UpdateSettings(model));
+                    _combatService.SaveCombatantList(model);
+                    return Ok();
                 }
                 catch (Exception ex)
                 {

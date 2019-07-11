@@ -15,6 +15,7 @@ namespace DAL.Models
         public int? CombatId { get; set; }
         public virtual Combat Combat { get; set; }
 
+        [Column(TypeName = "nvarchar(100)")]
         public string Type { get; set; }
 
         public int? CharacterId { get; set; }
@@ -28,5 +29,12 @@ namespace DAL.Models
         public decimal? Initiative { get; set; }
 
         public bool IsDeleted { get; set; }
+
+        public bool VisibleToPc { get; set; }
+
+        [Column(TypeName = "nvarchar(100)")]
+        public string VisibilityColor { get; set; }
+
+        public bool IsCurrentTurn { get; set; }
     }
 }
