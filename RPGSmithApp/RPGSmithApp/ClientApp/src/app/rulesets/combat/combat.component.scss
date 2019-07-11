@@ -139,7 +139,7 @@ body {
 .visible-icon {
   width: 13px;
   height: 13px;
- // background: #22af61;
+  // background: #22af61;
   display: inline-block;
   border-radius: 100%;
   position: absolute;
@@ -151,7 +151,7 @@ body {
 .unvisible-icon {
   width: 13px;
   height: 13px;
- // background: #da5040;
+  // background: #da5040;
   display: inline-block;
   border-radius: 100%;
   position: absolute;
@@ -350,6 +350,10 @@ body {
 
 .progress.green .progress-left .progress-bar {
   animation: loading-5 1.2s linear forwards 1.8s;
+}
+
+.progress-bar {
+  background-color: transparent !important;
 }
 
 @keyframes loading-1 {
@@ -1058,6 +1062,7 @@ button.btn-top {
 .accordin-items {
   padding: 0px 3px;
 }
+
 .accordin-box {
   float: left;
   width: 100%;
@@ -1087,13 +1092,27 @@ button.btn-top {
   width: 120px !important;
   padding: 7px 7px !important;
 }
+
 .sec-txtbox {
   padding: 7px 7px !important;
   width: 45px !important;
   text-align: center;
 }
+
 .sec-label {
   align-self: center;
   margin-bottom: 0px !important;
   margin-left: 5px;
+}
+
+div.text-ellipsis {
+  display: block !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.unvisible-Circle {
+  background: white;
+  border: 1px solid;
 }

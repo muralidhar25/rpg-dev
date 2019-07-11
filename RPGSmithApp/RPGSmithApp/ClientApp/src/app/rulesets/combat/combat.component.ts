@@ -24,6 +24,7 @@ import { CombatBuffeffectDetailsComponent } from './combat-buffeffects-details/c
 import { CombatService } from '../../core/services/combat.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { SharedService } from '../../core/services/shared.service';
+import { AppService1 } from '../../app.service';
 
 @Component({
   selector: 'app-combat',
@@ -36,7 +37,7 @@ export class CombatComponent implements OnInit {
   ruleSetId: number;
   character: Characters = new Characters();
   details = new CombatDetails();
-  combatDetails: any;
+  combatantDetails: any;
   combatants: any[];
   roundCounter: number;
   customDices: CustomDice[] = [];
@@ -48,6 +49,10 @@ export class CombatComponent implements OnInit {
   showCombatOptions: boolean = false;
   isLoading: boolean = false;
   combatItemsType = CombatItemsType;
+  curretnCombatant: any;
+  combatantName: string;
+  isDropdownOpen: boolean = false;
+
   CombatId:number =0;
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
@@ -59,13 +64,20 @@ export class CombatComponent implements OnInit {
       this.nextTurn();
     }
   }
+
+  @HostListener('document:click', ['$event.target'])  documentClick(target: any) {    try {      if (target.className.endsWith("setting-toggle-btn")) {
+        this.isDropdownOpen = !this.isDropdownOpen;
+      }      else if (this.hasSomeParentTheClass(target, 'setting-toggle'))        this.isDropdownOpen = true;      else this.isDropdownOpen = false;    } catch (err) { this.isDropdownOpen = false; }  }
+
+  hasSomeParentTheClass(element, classname) {    if (element.className.split(' ').indexOf(classname) >= 0) return true;    return element.parentNode && this.hasSomeParentTheClass(element.parentNode, classname);  }
   constructor(private modalService: BsModalService,
     private router: Router,
     private route: ActivatedRoute,
     private alertService: AlertService,
     private combatService: CombatService,
     private authService: AuthService,
-    private sharedService: SharedService) {
+    private sharedService: SharedService,
+    private appService: AppService1) {
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
 
     this.sharedService.shouldUpdateCombatantList().subscribe(combatantListJson => {
@@ -74,10 +86,17 @@ export class CombatComponent implements OnInit {
       }
     });
 
+    //this.sharedService.shouldUpdateMonsterVisibility().subscribe(v => {
+    //    debugger
+    //  if (this.curretnCombatant) {
+    //    this.curretnCombatant.visibility = v;
+    //  }
+    //});
+
     //roundcounter
     this.roundCounter = 1;
 
-    this.combatDetails = {
+    this.combatantDetails = {
       id: 1,
       name: 'ORC SHAMAN',
       image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
@@ -283,8 +302,16 @@ export class CombatComponent implements OnInit {
         this.combatants.map((x) => {
           if (!x.combatId) {
             x.combatId = combatModal.id;
-          } 
-        })
+          }
+          if (!x.visibilityColor) {
+            if (x.type == this.combatItemsType.CHARACTER) {
+              x.visibilityColor = "green";
+            }
+            else if (x.type == this.combatItemsType.MONSTER) {
+              x.visibilityColor = "red";
+            }
+          }
+        });      
 
         // Game Time
         this.gametime = this.time_convert(this.settings.gameRoundLength);
@@ -303,28 +330,59 @@ export class CombatComponent implements OnInit {
 
   ////Combatant List
   //GetCombatantList() {
-  //    this.isLoading = true;
-  //    this.combatService.getCombatDetails(this.ruleSetId).subscribe(res => {
-  //      if (res) {
-  //        debugger;
-  //        let model: any = res;
-  //        this.combatants = model.combatantList;
-  //      }
-  //      this.isLoading = false;
-  //    }, error => {
-  //      this.isLoading = false;
-  //      let Errors = Utilities.ErrorDetail("", error);
-  //      if (Errors.sessionExpire) {
-  //        this.authService.logout(true);
-  //      } else {
-  //        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-  //      }
-  //    });    
+  //  this.isLoading = true;
+  //  this.combatService.getCombatDetails(this.ruleSetId).subscribe(res => {
+  //    if (res) {
+  //      debugger;
+  //      let model: any = res;
+  //      this.combatants = model.combatantList;
+  //      this.combatants.forEach(item => {
+  //        if (!item.visibilityColor) {
+  //          if (item.type == this.combatItemsType.CHARACTER) {
+  //            item.visibilityColor = "green";
+  //          }
+  //          else if (item.type == this.combatItemsType.MONSTER) {
+  //            item.visibilityColor = "red";
+  //          }
+  //        }
+          
+  //      });
+
+  //    }
+  //    this.isLoading = false;
+  //  }, error => {
+  //    this.isLoading = false;
+  //    let Errors = Utilities.ErrorDetail("", error);
+  //    if (Errors.sessionExpire) {
+  //      this.authService.logout(true);
+  //    } else {
+  //      this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+  //    }
+  //  });
   //}
+
+  // Current Turn
+  SaveCombatantTurn(curretnCombatant, roundCount) {
+    debugger;
+    //this.isLoading = true;
+    this.combatService.saveCombatantTurn(curretnCombatant, roundCount).subscribe(res => {
+      let result = res;
+      //this.isLoading = false;
+    }, error => {
+      //this.isLoading = false;
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      } else {
+        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+      }
+    });
+  }
 
   // Send message to chat
   SendSystemMessageToChat(message) {
-
+    debugger
+    this.appService.updateChatFromCombat(message);
   }
 
   openpopup() {
@@ -335,6 +393,8 @@ export class CombatComponent implements OnInit {
     //  keyboard: false
     //});
   }
+
+  //open Initiative popup
   Init() {
     this.bsModalRef = this.modalService.show(CombatInitiativeComponent, {
       class: 'modal-primary modal-custom',
@@ -342,7 +402,6 @@ export class CombatComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
-
   }
 
   openDiceRollModal() {
@@ -391,13 +450,15 @@ export class CombatComponent implements OnInit {
   }
 
   prevTurn() {
-    console.log('prev');
+    //console.log('prev');
     for (let i = 0; i < this.combatants.length; i++) {
       if (this.combatants[i].isCurrentTurn && this.combatants[i - 1]) {
         this.combatants[i].isCurrentTurn = false;
         this.combatants[i - 1].isCurrentTurn = true;
+        this.curretnCombatant = this.combatants[i - 1];
         let valueofinitiative = this.combatants[i - 1].initiativeValue;
         this.CurrentInitiativeValue = valueofinitiative;
+        this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
         return;
       }
 
@@ -407,9 +468,11 @@ export class CombatComponent implements OnInit {
         console.log(this.combatants[i].isCurrentTurn);
         let index = this.combatants.length - 1;
         this.combatants[i].isCurrentTurn = false;
+        this.curretnCombatant = this.combatants[i + index];
         this.combatants[i + index].isCurrentTurn = true;
         let valueofinitiative = this.combatants[i + index].initiativeValue;
         this.CurrentInitiativeValue = valueofinitiative;
+        this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
         return;
       }
     }
@@ -419,19 +482,23 @@ export class CombatComponent implements OnInit {
       if (this.combatants[i].isCurrentTurn == true && this.combatants[i + 1]) {
         this.combatants[i].isCurrentTurn = false;
         this.combatants[i + 1].isCurrentTurn = true;
+        this.curretnCombatant = this.combatants[i + 1];
         let valueofinitiative = this.combatants[i + 1].initiativeValue;
         this.CurrentInitiativeValue = valueofinitiative;
+        this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
         return;
       }
       else if (!this.combatants[i + 1]) {
         this.combatants[i].isCurrentTurn = false;
         this.combatants[i - i].isCurrentTurn = true;
+        this.curretnCombatant = this.combatants[i - 1];
         let valueofinitiative = this.combatants[i - i].initiativeValue;
         this.CurrentInitiativeValue = valueofinitiative;
         this.roundCounter = this.roundCounter + 1;
         //convert time
         let roundTime = this.settings.gameRoundLength * this.roundCounter;
         this.gametime = this.time_convert(roundTime);
+        this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
         return;
       }
 
@@ -439,18 +506,21 @@ export class CombatComponent implements OnInit {
   }
 
   changeColor(item) {
-    console.log('colorchange', item);
+    //console.log('colorchange', item);
     this.bsModalRef = this.modalService.show(CombatVisibilityComponent, {
-      class: 'modal-primary modal-sm',
+      class: 'modal-primary modal-sm smallPopup',
       ignoreBackdropClick: false,
       keyboard: false
     });
     this.bsModalRef.content.title = "Change Visibility";
-    this.bsModalRef.content.color = item.colorCode;
-    this.bsModalRef.content.visibility = this.settings.monsterVisibleByDefault;
+    this.bsModalRef.content.color = item.visibilityColor;
+    this.bsModalRef.content.visibility = item.visibility;
     this.bsModalRef.content.event.subscribe(result => {
       //  console.log('resultEmiited', result);
-      item.colorCode = result.bodyBgColor;
+      item.visibilityColor = result.bodyBgColor;
+    });
+    this.sharedService.shouldUpdateMonsterVisibility().subscribe(v => {
+      item.visibility = v;
     });
   }
   progressHealth(item) {
@@ -469,7 +539,13 @@ export class CombatComponent implements OnInit {
   }
   frameClick(item) {
     debugger;
-    console.log('frameClick', item.frameColor);
+    //console.log('frameClick', item.frameColor);
+    if (item.type == this.combatItemsType.CHARACTER) {
+      this.combatantName = item.character.characterName;
+    } else {
+      this.combatantName = item.monster.name;
+    }
+
     this.combatants.map(function (itm) {
       if (itm.frameColor) {
         itm.frameColor = '';
@@ -584,7 +660,7 @@ export class CombatComponent implements OnInit {
     let _msg = "Ending Combat..";
     this.alertService.startLoadingMessage("", _msg);
     //this.router.navigate(['/ruleset/combatplayer', this.ruleSetId]);
-    this.combatService.StartCombat(this.CombatId, true).subscribe(res => {
+    this.combatService.StartCombat(this.CombatId, false).subscribe(res => {
       
         this.alertService.stopLoadingMessage();
 
@@ -667,12 +743,12 @@ export class CombatComponent implements OnInit {
   }
 
   UpdateCombatSettings(settings: CombatSettings) {
-    this.isLoading = true;
+    //this.isLoading = true;
     this.combatService.updateCombatSettings(this.settings).subscribe(res => {
       let result = res;
-      this.isLoading = false;
+      //this.isLoading = false;
     }, error => {
-      this.isLoading = false;
+      //this.isLoading = false;
       let Errors = Utilities.ErrorDetail("", error);
       if (Errors.sessionExpire) {
         this.authService.logout(true);

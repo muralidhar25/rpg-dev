@@ -153,9 +153,9 @@
               <button class="btn-orange-icons" (click)="openDiceRollModal()"><span class="icon icon-CharStat-Command mr-2"></span> DICE</button>
             </li>
             <li>
-              <div class="btn-group">
-                <button class="setting-btn icon-Settings dropdown-toggle" type="button" data-toggle="dropdown"></button>
-                <div class="dropdown-menu">
+              <div class="btn-group" [ngClass]="{'open': isDropdownOpen}">
+                <button class="setting-btn icon-Settings dropdown-toggle setting-toggle-btn" type="button" ></button>
+                <div class="dropdown-menu setting-toggle">
                   <div class="row m-0">
                     <div class="col-12 col-sm-6 col-md-3">
                       <h3>INITIATIVE</h3>
@@ -295,7 +295,8 @@
                 [ngClass]="{'black-outer-filed': item.isCurrentTurn, 'red-outer-filed': item.frameColor =='red', '': item.frameColor =='grey' }"
                 (click)="frameClick(item)">
               <td>
-                <div class="white-section name-data" (click)="nameClicked(item);$event.stopPropagation()">
+                <div class="white-section name-data text-ellipsis" (click)="nameClicked(item);$event.stopPropagation()"
+                     popover="{{item.type == combatItemsType.CHARACTER ? item?.character?.characterName :item?.monster?.name}}" triggers="hover">
                   {{item.type == combatItemsType.CHARACTER?item?.character?.characterName:item?.monster?.name}}
                 </div>
               </td>
@@ -308,7 +309,13 @@
                     <span class="progress-right">
                       <span class="progress-bar"></span>
                     </span>
-                    <div class="progress-value">50%</div>
+                    <div class="progress-value" *ngIf="item.type==combatItemsType.CHARACTER">
+                    <!--{{item?.character?.healthCurrent}}/{{item?.character?.healthMax}}-->
+                      c/c
+                    </div>
+                    <div class="progress-value" *ngIf="item.type==combatItemsType.MONSTER">
+                    {{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}
+                    </div>
                   </div>
                 </div>
               </td>
@@ -326,7 +333,8 @@
               </td>
               <td>
                 <div class="white-section">
-                  <span class="visible-icon" [style.background]="item.colorCode" (click)="changeColor(item);$event.stopPropagation()"></span>
+                  <span class="visible-icon" *ngIf="item.visibility" [style.background]="item.visibilityColor" (click)="changeColor(item);$event.stopPropagation()"></span>
+                  <span class="visible-icon unvisible-Circle" [style.border-color]="item.visibilityColor" *ngIf="!item.visibility" (click)="changeColor(item);$event.stopPropagation()"></span>
                 </div>
               </td>
               <td>
@@ -437,8 +445,8 @@
     </div>
     <div class="col-12 col-md-4">
       <div class="image-section-combat">
-        <img [src]="combatDetails.image" />
-        <span>{{combatDetails?.name}}</span>
+        <img [src]="combatantDetails.image" />
+        <span>{{combatantName}}</span>
       </div>
       <div class="row mt-3 ">
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
@@ -460,16 +468,16 @@
             <div class="row">
               <div class="col-12">
                 <!--<label for="Desc">Stats</label>-->
-                <div [froalaView]="combatDetails.stats" name="stat"></div>
+                <div [froalaView]="combatantDetails.stats" name="stat"></div>
               </div>
             </div>
           </accordion-group>
           <accordion-group #p2 heading="BUFFS & EFFECTS">
             <div class="row">
-              <div class="text-center" *ngIf="combatDetails.buffEffects?.length == 0">
+              <div class="text-center" *ngIf="combatantDetails.buffEffects?.length == 0">
                 <legend>No Buffs & Effects Available</legend>
               </div>
-              <div class="col-6 accordin-items" *ngFor="let item of  combatDetails.buffEffects">
+              <div class="col-6 accordin-items" *ngFor="let item of  combatantDetails.buffEffects">
                 <div class="accordin-box">
                   <img [src]="item.image" />
                   <p>{{item.name}}</p>
@@ -482,16 +490,16 @@
               <div class="col-12">
                 <!--<label for="Desc">Description</label>-->
 
-                <div [froalaView]="combatDetails.desc" name="Desc"></div>
+                <div [froalaView]="combatantDetails.desc" name="Desc"></div>
               </div>
             </div>
           </accordion-group>
           <accordion-group #p4 heading="ITEMS">
             <div class="row">
-              <div class="text-center" *ngIf="combatDetails.items?.length == 0">
+              <div class="text-center" *ngIf="combatantDetails.items?.length == 0">
                 <legend>No Items  Available</legend>
               </div>
-              <div class="col-6 accordin-items" *ngFor="let item of  combatDetails.items">
+              <div class="col-6 accordin-items" *ngFor="let item of  combatantDetails.items">
                 <div class="accordin-box ">
                   <img [src]="item.image" />
                   <p>{{item.name}}</p>
@@ -501,10 +509,10 @@
           </accordion-group>
           <accordion-group #p5 heading="SPELLS">
             <div class="row">
-              <div class="text-center" *ngIf="combatDetails.spells?.length == 0">
+              <div class="text-center" *ngIf="combatantDetails.spells?.length == 0">
                 <legend>No Spells Available</legend>
               </div>
-              <div class="col-6 accordin-items" *ngFor="let item of  combatDetails.spells">
+              <div class="col-6 accordin-items" *ngFor="let item of  combatantDetails.spells">
                 <div class="accordin-box">
                   <img [src]="item.image" />
                   <p>{{item.name}}</p>
@@ -514,10 +522,10 @@
           </accordion-group>
           <accordion-group #p5 heading="ABILITIES">
             <div class="row">
-              <div lass="text-center" *ngIf="combatDetails.abilites?.length == 0">
+              <div lass="text-center" *ngIf="combatantDetails.abilites?.length == 0">
                 <legend>No Abilities Available</legend>
               </div>
-              <div class="col-6 accordin-items" *ngFor="let item of  combatDetails.abilites">
+              <div class="col-6 accordin-items" *ngFor="let item of  combatantDetails.abilites">
                 <div class="accordin-box">
                   <img [src]="item.image" />
                   <p>{{item.name}}</p>

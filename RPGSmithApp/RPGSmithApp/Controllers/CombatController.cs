@@ -156,7 +156,7 @@ namespace RPGSmithApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost("SwitchCombatantTurn")]
+        [HttpPost("SaveCombatantTurn")]
         public async Task<IActionResult> SwitchCombatantTurn([FromBody] Combatant_ViewModel model, int roundCount)
         {
             if (ModelState.IsValid)
