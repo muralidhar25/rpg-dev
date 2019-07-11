@@ -262,7 +262,7 @@ namespace DAL.Services
                 };
                 allTypeMonsters.Add(obj);
             }
-            return allTypeMonsters;
+            return allTypeMonsters.OrderBy(x=>x.Name).ToList();
         }
         public void AddDeployedMonstersToCombat(List<CombatAllTypeMonsters> model)
         {
@@ -280,10 +280,35 @@ namespace DAL.Services
             return _context.Monsters.Where(x => x.RuleSetId == campaignId && x.IsDeleted != true && x.AddToCombatTracker == true).ToList();
         }
         public void RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster) {
-            //foreach (var item in collection)
-            //{
 
-            //}
+            List<CommonID> monsterIdList = monsterIds.Select(o => new CommonID()
+            {               
+                ID = o.MonsterId
+            }).ToList();
+
+            DataTable dt = utility.ToDataTable<CommonID>(monsterIdList);
+
+            string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(consString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("Combat_RemoveMonsters"))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@MonsterIds", dt);
+                        cmd.Parameters.AddWithValue("@DeleteMonster", deleteMonster);
+                        con.Open();
+                        var a = cmd.ExecuteNonQuery();
+                        con.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

@@ -217,7 +217,7 @@ export class AddCombatMonsterComponent implements OnInit {
 
   AddMonsters() {
 
-    let DeployedMonstersList = this.selectedItemsList.filter((itm) => { itm.type == CombatMonsterTypeItems.MONSTER });
+    let DeployedMonstersList = this.selectedItemsList.filter(itm => itm.type == CombatMonsterTypeItems.MONSTER);
     
     //let Non_DeployedMonstersList = this.selectedItemsList.filter((itm) => { itm.type != CombatMonsterTypeItems.MONSTER });
     //if (Non_DeployedMonstersList.length) {
@@ -293,10 +293,11 @@ export class AddCombatMonsterComponent implements OnInit {
     this.monsterTemplateService.addMonster(selectedMonsterGroups) /////Adding Groups To Monsters and Combat
       .subscribe(data => {
 
-        if (DeployedMonstersList.length) {
+        
           let selectedDeployedMonster = DeployedMonstersList.map((D_Monster) => {
             return D_Monster.record;
-          })
+        })
+        debugger
           this.combatService.AddMonstersOnly(selectedDeployedMonster) /////Adding Deployed Monsters to Combat.
             .subscribe(data => {
               this.alertService.stopLoadingMessage();
@@ -315,7 +316,7 @@ export class AddCombatMonsterComponent implements OnInit {
                 this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
               }
             }, () => { });
-        }        
+              
       }, error => {
         this.isLoading = false;
         this.alertService.stopLoadingMessage();

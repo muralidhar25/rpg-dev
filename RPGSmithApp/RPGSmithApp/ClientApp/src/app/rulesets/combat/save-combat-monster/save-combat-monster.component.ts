@@ -37,7 +37,7 @@ export class SaveCombatMonsterComponent implements OnInit {
     characterItems: any;
     searchText: string;
     itemsList: any[] = [];
-    selectedItemsList: any[] = [];
+    //selectedItemsList: any[] = [];
   isChecked: boolean = false;
   customDices: CustomDice[] = [];
     constructor(
@@ -89,31 +89,31 @@ export class SaveCombatMonsterComponent implements OnInit {
         //}
     }
 
-  setItemMaster(event: any, itemMaster: any) {
+  //setItemMaster(event: any, itemMaster: any) {
 
-      if (event.target.checked) {
-        const _containsItems = Object.assign([], this.selectedItemsList);
-        _containsItems.push(itemMaster);
-        this.selectedItemsList = _containsItems;
-        } else {
-        let _item = itemMaster;
-            const index: number = this.selectedItemsList.indexOf(_item);
-            if (index !== -1) {
-              this.selectedItemsList.splice(index, 1);
-            }else {
-              const _arrayItems = Object.assign([], this.selectedItemsList);
-              this.selectedItemsList = _arrayItems.filter(function (itm) {
-                if (itm.recordId !== _item.recordId) return _item;
-              });
-            }
-      }
-    }
+  //    if (event.target.checked) {
+  //      const _containsItems = Object.assign([], this.selectedItemsList);
+  //      _containsItems.push(itemMaster);
+  //      this.selectedItemsList = _containsItems;
+  //      } else {
+  //      let _item = itemMaster;
+  //          const index: number = this.selectedItemsList.indexOf(_item);
+  //          if (index !== -1) {
+  //            this.selectedItemsList.splice(index, 1);
+  //          }else {
+  //            const _arrayItems = Object.assign([], this.selectedItemsList);
+  //            this.selectedItemsList = _arrayItems.filter(function (itm) {
+  //              if (itm.recordId !== _item.recordId) return _item;
+  //            });
+  //          }
+  //    }
+  //  }
 
   submitForm() {
     
-
-    if (this.selectedItemsList.length) {
-      let DeployedMonstersList = this.selectedItemsList.filter((itm) => { itm.type == CombatMonsterTypeItems.MONSTER });
+    
+    if (this.itemsList.length) {
+      let DeployedMonstersList = this.itemsList.filter(itm =>  itm.type == CombatMonsterTypeItems.MONSTER );
       this.isLoading = true;
       let _msg = ' Adding Monster ....';
       this.alertService.startLoadingMessage("", _msg);
@@ -121,7 +121,7 @@ export class SaveCombatMonsterComponent implements OnInit {
 
       var selectedMonsters: any = [];
 
-      this.selectedItemsList.map((rec) => {
+      this.itemsList.map((rec) => {
 
         let x = rec.record;
         x.quantity = rec.quantity;
@@ -236,10 +236,11 @@ export class SaveCombatMonsterComponent implements OnInit {
       this.monsterTemplateService.addMonster(selectedMonsters) /////Adding MonsterTemplates/Groups To Monsters and Combat
         .subscribe(data => {
 
-          if (DeployedMonstersList.length) {
+          
             let selectedDeployedMonster = DeployedMonstersList.map((D_Monster) => {
               return D_Monster.record;
-            })
+          })
+          debugger
             this.combatService.AddMonstersOnly(selectedDeployedMonster) /////Adding Deployed Monsters to Combat.
               .subscribe(data => {
                 this.alertService.stopLoadingMessage();
@@ -258,7 +259,7 @@ export class SaveCombatMonsterComponent implements OnInit {
                   this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
                 }
               }, () => { });
-          }
+          
         }, error => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
@@ -280,7 +281,7 @@ export class SaveCombatMonsterComponent implements OnInit {
   }
 
   quantityChanged(quantity, item) {
-       this.selectedItemsList.map(function (itm) {
+    this.itemsList.map(function (itm) {
          if (itm.recordId == item.recordId) {
            itm.quantity = quantity;
          }

@@ -75,7 +75,7 @@ namespace RPGSmithApp.Controllers
             {
                 try
                 {
-                   // return Ok(_combatService.UpdateSettings(model));
+                    return Ok(_combatService.UpdateSettings(model));
                 }
                 catch (Exception ex)
                 {
