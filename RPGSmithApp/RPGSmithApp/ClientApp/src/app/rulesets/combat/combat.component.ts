@@ -48,7 +48,7 @@ export class CombatComponent implements OnInit {
   showCombatOptions: boolean = false;
   isLoading: boolean = false;
   combatItemsType = CombatItemsType;
-
+  CombatId:number =0;
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
   }
@@ -264,7 +264,7 @@ export class CombatComponent implements OnInit {
 
   ngOnInit() {
     this.GetCombatDetails();
-    this.GetCombatantList();
+    //this.GetCombatantList();
   }
 
   // Combat Settings
@@ -273,7 +273,19 @@ export class CombatComponent implements OnInit {
     this.combatService.getCombatDetails(this.ruleSetId).subscribe(res => {
       if (res) {
         let combatModal: any = res;
+        this.roundCounter = combatModal.round;
+        this.showCombatOptions = combatModal.isStarted;
+        this.CombatId = combatModal.id
+
         this.settings = combatModal.combatSettings;
+        this.combatants = combatModal.combatantList;
+        debugger
+        this.combatants.map((x) => {
+          if (!x.combatId) {
+            x.combatId = combatModal.id;
+          } 
+        })
+
         // Game Time
         this.gametime = this.time_convert(this.settings.gameRoundLength);
       }
@@ -289,26 +301,26 @@ export class CombatComponent implements OnInit {
     });
   }
 
-  //Combatant List
-  GetCombatantList() {
-      this.isLoading = true;
-      this.combatService.getCombatDetails(this.ruleSetId).subscribe(res => {
-        if (res) {
-          debugger;
-          let model: any = res;
-          this.combatants = model.combatantList;
-        }
-        this.isLoading = false;
-      }, error => {
-        this.isLoading = false;
-        let Errors = Utilities.ErrorDetail("", error);
-        if (Errors.sessionExpire) {
-          this.authService.logout(true);
-        } else {
-          this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-        }
-      });    
-  }
+  ////Combatant List
+  //GetCombatantList() {
+  //    this.isLoading = true;
+  //    this.combatService.getCombatDetails(this.ruleSetId).subscribe(res => {
+  //      if (res) {
+  //        debugger;
+  //        let model: any = res;
+  //        this.combatants = model.combatantList;
+  //      }
+  //      this.isLoading = false;
+  //    }, error => {
+  //      this.isLoading = false;
+  //      let Errors = Utilities.ErrorDetail("", error);
+  //      if (Errors.sessionExpire) {
+  //        this.authService.logout(true);
+  //      } else {
+  //        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+  //      }
+  //    });    
+  //}
 
   // Send message to chat
   SendSystemMessageToChat(message) {
@@ -532,10 +544,32 @@ export class CombatComponent implements OnInit {
   //startcombat
   startCombat() {
     //this.roundCounter = 1;
-    this.Init();
-    this.showCombatOptions = true;
-    let msg = "Combat Started";
-    this.SendSystemMessageToChat(msg);
+    let _msg = "Starting Combat..";    
+    this.alertService.startLoadingMessage("", _msg);
+    this.combatService.StartCombat(this.CombatId, true).subscribe(res => {
+     
+        this.alertService.stopLoadingMessage();
+
+        let message = "Combat has been starter successfully.";       
+        this.alertService.showMessage(message, "", MessageSeverity.success);
+
+        this.Init();
+        this.showCombatOptions = true;
+        let msg = "Combat Started";
+        this.SendSystemMessageToChat(msg);
+     
+      this.isLoading = false;
+    }, error => {
+      this.alertService.stopLoadingMessage();
+      this.isLoading = false;
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      } else {
+        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+      }
+    });
+    
   }
 
   endCombat() {
@@ -547,10 +581,32 @@ export class CombatComponent implements OnInit {
   //endCombat
   stopCombat() {
     debugger;
+    let _msg = "Ending Combat..";
+    this.alertService.startLoadingMessage("", _msg);
     //this.router.navigate(['/ruleset/combatplayer', this.ruleSetId]);
-    this.showCombatOptions = false;
-    let msg = "Combat Ended";
-    this.SendSystemMessageToChat(msg);
+    this.combatService.StartCombat(this.CombatId, true).subscribe(res => {
+      
+        this.alertService.stopLoadingMessage();
+
+        let message = "Combat has been ended successfully.";
+        this.alertService.showMessage(message, "", MessageSeverity.success);
+
+        this.showCombatOptions = false;
+        let msg = "Combat Ended";
+        this.SendSystemMessageToChat(msg);
+     
+      this.isLoading = false;
+    }, error => {
+      this.alertService.stopLoadingMessage();
+      this.isLoading = false;
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      } else {
+        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+      }
+    });
+   
   }
 
   //change settings here

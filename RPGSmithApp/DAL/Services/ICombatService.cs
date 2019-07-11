@@ -18,5 +18,6 @@ namespace DAL.Services
         void RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster);
         List<Combatant_ViewModel> SaveCombatantList(List<Combatant_DTModel> model, int campaignId, string UserId);
         void Combat_Start(int combatId, bool start);
+        void SwitchCombatantTurn(Combatant_ViewModel model, int roundCount);
     }
 }

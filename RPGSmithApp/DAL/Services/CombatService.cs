@@ -447,7 +447,30 @@ namespace DAL.Services
             }
             _context.SaveChanges();
         }
-
+        public void SwitchCombatantTurn(Combatant_ViewModel model, int roundCount) {
+            string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(consString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("SwitchCombatantTurn"))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@CombatantID", model.Id);
+                        cmd.Parameters.AddWithValue("@CombatID", model.CombatId);
+                        cmd.Parameters.AddWithValue("@RoundCount", roundCount);
+                        con.Open();
+                        var a = cmd.ExecuteNonQuery();
+                        con.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         private static int Getindex(int index)
         {
             index = index + 1;

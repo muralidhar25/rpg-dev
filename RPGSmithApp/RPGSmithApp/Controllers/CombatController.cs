@@ -130,7 +130,7 @@ namespace RPGSmithApp.Controllers
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
-        [HttpGet("RemoveMonsters")]
+        [HttpPost("RemoveMonsters")]
         public async Task<IActionResult> RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster)
         {
             try
@@ -155,8 +155,25 @@ namespace RPGSmithApp.Controllers
             {
                 return BadRequest(ex.Message);
             }
-        }        
+        }
+        [HttpPost("SwitchCombatantTurn")]
+        public async Task<IActionResult> SwitchCombatantTurn([FromBody] Combatant_ViewModel model, int roundCount)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _combatService.SwitchCombatantTurn(model, roundCount);
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
 
+            }
+            return BadRequest(Utilities.ModelStateError(ModelState));
+        }
         private string GetUserId()
         {
             string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();

@@ -19,6 +19,8 @@ export class CombatService extends EndpointFactory {
   private readonly AddDeployedMonstersToCombat: string = this.configurations.baseUrl + "/api/Combat/AddDeployedMonstersToCombat";
   private readonly GetCombatMonstersList: string = this.configurations.baseUrl + "/api/Combat/GetCombat_MonstersList";
   private readonly Combat_RemoveMonsters: string = this.configurations.baseUrl + "/api/Combat/RemoveMonsters";
+  private readonly Combat_Start: string = this.configurations.baseUrl + "/api/Combat/Combat_Start";
+  
   
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
     super(http, configurations, injector);
@@ -41,12 +43,12 @@ export class CombatService extends EndpointFactory {
       });
   }
 
-  saveCombatantList<T>(combatants: any[]): Observable<T> {
+  saveCombatantList<T>(combatants: any[], CampaignID:number): Observable<T> {
     debugger;
-    let saveInitiativeUrl = `${this.SaveCombatantList}`
+    let saveInitiativeUrl = `${this.SaveCombatantList}?CampaignID=${CampaignID}`
     return this.http.post<T>(saveInitiativeUrl, JSON.stringify(combatants), this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.saveCombatantList(combatants));
+        return this.handleError(error, () => this.saveCombatantList(combatants, CampaignID));
       });
   }
 
@@ -79,6 +81,13 @@ export class CombatService extends EndpointFactory {
     return this.http.post<T>(url, JSON.stringify(monsters), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.removeMonsters(monsters, shouldDeleteMonsters));
+      });
+  }
+  StartCombat<T>(CombatId: number, Start:boolean): Observable<T> {
+    let url = `${this.Combat_Start}?CombatId=${CombatId}&Start=${Start}`
+    return this.http.post<T>(url, JSON.stringify({}), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.StartCombat(CombatId, Start));
       });
   }
 }

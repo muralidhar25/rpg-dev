@@ -148,8 +148,20 @@ export class CombatInitiativeComponent implements OnInit {
 
   //Save Initiative Details
   saveInitiativeDetails() {
+    debugger
     this.isLoading = true;
-    this.combatService.saveCombatantList(this.initiativeInfo).subscribe(res => {
+    //let combatantList = this.initiativeInfo.map((rec) => {
+    //  return {
+    //    id: rec.id,
+    //    combatId: rec.combatId,
+    //    type: rec.type,
+    //    characterId: rec.characterId,
+    //    monsterId: rec.monsterId,
+    //    sortOrder: rec.sortOrder,
+    //    initiativeValue: rec.initiativeValue,
+    //  };
+    //});
+    this.combatService.saveCombatantList(this.initiativeInfo, this.ruleSetId).subscribe(res => {
       debugger
       let result = res;
       this.isLoading = false;
