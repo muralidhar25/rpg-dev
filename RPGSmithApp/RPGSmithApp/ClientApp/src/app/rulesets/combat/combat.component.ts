@@ -16,7 +16,7 @@ import { DropItemsCombatMonsterComponent } from './drop-monstercombat-items/drop
 import { CombatVisibilityComponent } from './change-combat-visiblity/change-combat-visiblity.component';
 import { CombatSettings } from '../../core/models/view-models/combatSettings.model';
 import { CustomDice } from '../../core/models/view-models/custome-dice.model';
-import { AlertService, MessageSeverity } from '../../core/common/alert.service';
+import { AlertService, MessageSeverity, DialogType } from '../../core/common/alert.service';
 import { DiceService } from '../../core/services/dice.service';
 import { DiceRollComponent } from '../../shared/dice/dice-roll/dice-roll.component';
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
@@ -137,6 +137,7 @@ export class CombatComponent implements OnInit {
       ]
     };
 
+    //Mock data
     this.combatants = [
       {
         id: 1,
@@ -263,8 +264,10 @@ export class CombatComponent implements OnInit {
 
   ngOnInit() {
     this.GetCombatDetails();
+    this.GetCombatantList();
   }
 
+  // Combat Settings
   GetCombatDetails() {
     this.isLoading = true;
     this.combatService.getCombatDetails(this.ruleSetId).subscribe(res => {
@@ -286,6 +289,28 @@ export class CombatComponent implements OnInit {
     });
   }
 
+  //Combatant List
+  GetCombatantList() {
+      this.isLoading = true;
+      this.combatService.getCombatDetails(this.ruleSetId).subscribe(res => {
+        if (res) {
+          debugger;
+          let model: any = res;
+          this.combatants = model.combatantList;
+        }
+        this.isLoading = false;
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        } else {
+          this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        }
+      });    
+  }
+
+  // Send message to chat
   SendSystemMessageToChat(message) {
 
   }
@@ -513,15 +538,23 @@ export class CombatComponent implements OnInit {
     this.SendSystemMessageToChat(msg);
   }
 
-  //endCombat
   endCombat() {
+    let message = "Are you sure you want to end the combat?";
+    this.alertService.showDialog(message,
+      DialogType.confirm, () => this.stopCombat(), null, 'Yes', 'No');
+  }
+
+  //endCombat
+  stopCombat() {
+    debugger;
     //this.router.navigate(['/ruleset/combatplayer', this.ruleSetId]);
     this.showCombatOptions = false;
+    let msg = "Combat Ended";
+    this.SendSystemMessageToChat(msg);
   }
 
   //change settings here
   UpdateSettings(e, type) {
-    debugger
     switch (type) {
       case COMBAT_SETTINGS.PC_INITIATIVE_FORMULA:
         this.settings.pcInitiativeFormula = e.target.value;
