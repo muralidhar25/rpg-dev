@@ -39,6 +39,8 @@ export class MonsterTemplateService extends EndpointFactory {
   private readonly getByRuleSetId_sp: string = this.configurations.baseUrl + "/api/MonsterTemplate/getByRuleSetId_sp";
   private readonly getMonstersByRuleSetId_sp: string = this.configurations.baseUrl + "/api/MonsterTemplate/getMonsterByRuleSetId_sp";
   private readonly getMonsterTemplateCommands_api: string = this.configurations.baseUrl + "/api/MonsterTemplate/getCommands_sp";
+  private readonly getMonsterCommands_api: string = this.configurations.baseUrl + "/api/MonsterTemplate/getMonsterCommands_sp";
+  
   private readonly getMonsterTemplateAssociateRecords_sp_api: string = this.configurations.baseUrl + "/api/MonsterTemplate/SP_GetAssociateRecords";
   private readonly getMonsterAssociateRecords_sp_api: string = this.configurations.baseUrl + "/api/MonsterTemplate/SP_GetMonsterAssociateRecords";
   
@@ -179,6 +181,14 @@ export class MonsterTemplateService extends EndpointFactory {
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getMonsterTemplateCommands_sp(Id));
+      });
+  }
+  getMonsterCommands_sp<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getMonsterCommands_api}?monsterId=${Id}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getMonsterCommands_sp(Id));
       });
   }
   getMonsterTemplateAssociateRecords_sp<T>(Id: number, rulesetId: number, MonsterID:number=0): Observable<T> {

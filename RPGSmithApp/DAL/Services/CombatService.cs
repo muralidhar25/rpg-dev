@@ -75,7 +75,11 @@ namespace DAL.Services
                         Round = Row["Round"] == DBNull.Value ? 0 : Convert.ToInt32(Row["Round"]),
                         Campaign = new RuleSet(),
                         CombatantList = new List<Combatant_ViewModel>(),
-                        CombatSettings = new CombatSetting(),                        
+                        CombatSettings = new CombatSetting(),     
+                        isCharacterAbilityEnabled= Row["IsAbilityEnabled"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsAbilityEnabled"]),
+                        isCharacterSpellEnabled= Row["IsSpellEnabled"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsSpellEnabled"]),
+                        isCharacterItemEnabled= Row["IsItemEnabled"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsItemEnabled"]),
+                        isCharacterBuffAndEffectEnabled = Row["IsBuffAndEffectEnabled"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsBuffAndEffectEnabled"]),
 
                     };
 
@@ -179,7 +183,9 @@ namespace DAL.Services
                                         Name = CombatantRow["M_Name"] == DBNull.Value ? string.Empty : CombatantRow["M_Name"].ToString(),
                                         ImageUrl = CombatantRow["M_ImageUrl"] == DBNull.Value ? string.Empty : CombatantRow["M_ImageUrl"].ToString(),
                                         HealthCurrent= CombatantRow["M_HealthCurrent"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_HealthCurrent"]),
-                                        HealthMax= CombatantRow["M_HealthMax"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_HealthMax"])
+                                        HealthMax= CombatantRow["M_HealthMax"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_HealthMax"]),
+                                        Command= CombatantRow["M_Command"] == DBNull.Value ? null : CombatantRow["M_Command"].ToString(),
+                                        CommandName= CombatantRow["M_CommandName"] == DBNull.Value ? null : CombatantRow["M_CommandName"].ToString()
                                     };
                                 }
                             }

@@ -447,16 +447,13 @@ export class MonsterComponent implements OnInit {
                 });
   }
 
-
-
-
   useMonster(monster: any) {
-    //let _monstertemplate = monster.monsterTemplate;
-    let _monstertemplate = Object.assign({}, monster.monsterTemplate);
-      _monstertemplate.imageUrl = monster.imageUrl;
-      _monstertemplate.name = monster.name;
-    if (_monstertemplate.monsterTemplateId) {
-      this.monsterTemplateService.getMonsterTemplateCommands_sp<any>(_monstertemplate.monsterTemplateId)
+    debugger
+    let _monster = Object.assign({}, monster);
+
+
+    if (_monster.monsterId) {
+      this.monsterTemplateService.getMonsterCommands_sp<any>(_monster.monsterId)
         .subscribe(data => {
           if (data.length > 0) {
             this.bsModalRef = this.modalService.show(CastComponent, {
@@ -467,55 +464,119 @@ export class MonsterComponent implements OnInit {
 
             this.bsModalRef.content.title = "Monster Commands";
             this.bsModalRef.content.ListCommands = data;
-            this.bsModalRef.content.Command = _monstertemplate;
+            this.bsModalRef.content.Command = _monster;
             this.bsModalRef.content.Character = new Characters();
             this.bsModalRef.content.recordType = 'monster';
-            this.bsModalRef.content.recordId = monster.monsterId;
+            this.bsModalRef.content.recordId = _monster.monsterId;
           } else {
-            this.useCommand(_monstertemplate, monster);
+
+            this.useCommand(_monster);
           }
         }, error => { }, () => { });
     }
-
   }
 
-  
+  useCommand(monster: any) {
 
-  useCommand(monsterTemplate: any, monster) {
-        
     let msg = "The command value for " + monster.name
-          + " Monster has not been provided. Edit this record to input one.";
-    
-      if (monsterTemplate.command == undefined || monsterTemplate.command == null || monsterTemplate.command == '') {
-            this.alertService.showDialog(msg, DialogType.alert, () => this.useMonsterTemplateHelper(monsterTemplate, monster));
-       }else {
-              //TODO
-            this.useMonsterTemplateHelper(monsterTemplate, monster);
-      }
+      + " Monster has not been provided. Edit this record to input one.";
+    if (monster.command == undefined || monster.command == null || monster.command == '') {
+      this.alertService.showDialog(msg, DialogType.alert, () => this.useMonsterHelper(monster));
+    } else {
+      //TODO
+      this.useMonsterHelper(monster);
     }
+  }
 
-  private useMonsterTemplateHelper(monsterTemplate: MonsterTemplate, monster) {
-   
-      this.bsModalRef = this.modalService.show(DiceRollComponent, {
-        class: 'modal-primary modal-md',
-        ignoreBackdropClick: true,
-        keyboard: false
-      });
-      this.bsModalRef.content.title = "Dice";
-      this.bsModalRef.content.tile = -2;
-      this.bsModalRef.content.characterId = 0;
+  private useMonsterHelper(monster: any) {
+
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.character = new Characters();
-    this.bsModalRef.content.command = monsterTemplate.command;
-    if (monsterTemplate.hasOwnProperty("monsterTemplateId")) {
+    this.bsModalRef.content.command = monster.command;
+    if (monster.hasOwnProperty("monsterId")) {
       this.bsModalRef.content.recordName = monster.name;
       this.bsModalRef.content.recordImage = monster.imageUrl;
       this.bsModalRef.content.recordType = 'monster';
       this.bsModalRef.content.recordId = monster.monsterId;
-      }
-      this.bsModalRef.content.event.subscribe(result => {
-      });
-
     }
+    this.bsModalRef.content.event.subscribe(result => {
+    });
+  }
+
+
+  //useMonster(monster: any) {
+  //  //let _monstertemplate = monster.monsterTemplate;
+  //  let _monstertemplate = Object.assign({}, monster.monsterTemplate);
+  //    _monstertemplate.imageUrl = monster.imageUrl;
+  //    _monstertemplate.name = monster.name;
+  //  if (_monstertemplate.monsterTemplateId) {
+  //    this.monsterTemplateService.getMonsterTemplateCommands_sp<any>(_monstertemplate.monsterTemplateId)
+  //      .subscribe(data => {
+  //        if (data.length > 0) {
+  //          this.bsModalRef = this.modalService.show(CastComponent, {
+  //            class: 'modal-primary modal-md',
+  //            ignoreBackdropClick: true,
+  //            keyboard: false
+  //          });
+
+  //          this.bsModalRef.content.title = "Monster Commands";
+  //          this.bsModalRef.content.ListCommands = data;
+  //          this.bsModalRef.content.Command = _monstertemplate;
+  //          this.bsModalRef.content.Character = new Characters();
+  //          this.bsModalRef.content.recordType = 'monster';
+  //          this.bsModalRef.content.recordId = monster.monsterId;
+  //        } else {
+  //          this.useCommand(_monstertemplate, monster);
+  //        }
+  //      }, error => { }, () => { });
+  //  }
+
+  //}
+
+  
+
+  //useCommand(monsterTemplate: any, monster) {
+        
+  //  let msg = "The command value for " + monster.name
+  //        + " Monster has not been provided. Edit this record to input one.";
+    
+  //    if (monsterTemplate.command == undefined || monsterTemplate.command == null || monsterTemplate.command == '') {
+  //          this.alertService.showDialog(msg, DialogType.alert, () => this.useMonsterTemplateHelper(monsterTemplate, monster));
+  //     }else {
+  //            //TODO
+  //          this.useMonsterTemplateHelper(monsterTemplate, monster);
+  //    }
+  //  }
+
+  //private useMonsterTemplateHelper(monsterTemplate: MonsterTemplate, monster) {
+   
+  //    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+  //      class: 'modal-primary modal-md',
+  //      ignoreBackdropClick: true,
+  //      keyboard: false
+  //    });
+  //    this.bsModalRef.content.title = "Dice";
+  //    this.bsModalRef.content.tile = -2;
+  //    this.bsModalRef.content.characterId = 0;
+  //  this.bsModalRef.content.character = new Characters();
+  //  this.bsModalRef.content.command = monsterTemplate.command;
+  //  if (monsterTemplate.hasOwnProperty("monsterTemplateId")) {
+  //    this.bsModalRef.content.recordName = monster.name;
+  //    this.bsModalRef.content.recordImage = monster.imageUrl;
+  //    this.bsModalRef.content.recordType = 'monster';
+  //    this.bsModalRef.content.recordId = monster.monsterId;
+  //    }
+  //    this.bsModalRef.content.event.subscribe(result => {
+  //    });
+
+  //  }
 
     private destroyModalOnInit(): void {
         try {

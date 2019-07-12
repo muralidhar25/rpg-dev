@@ -328,13 +328,12 @@ export class MonsterDetailsComponent implements OnInit {
     }
   
   useMonster() {
+     debugger
+    let _monster = Object.assign({}, this._editMonster);
+    
 
-    let _monstertemplate = Object.assign({}, this._editMonster.monsterTemplate);
-    _monstertemplate.imageUrl = this._editMonster.imageUrl;
-    _monstertemplate.name = this._editMonster.name;
-
-    if (_monstertemplate.monsterTemplateId) {
-      this.monsterTemplateService.getMonsterTemplateCommands_sp<any>(_monstertemplate.monsterTemplateId)
+    if (_monster.monsterId) {
+      this.monsterTemplateService.getMonsterCommands_sp<any>(_monster.monsterId)
         .subscribe(data => {
           if (data.length > 0) {
             this.bsModalRef = this.modalService.show(CastComponent, {
@@ -345,31 +344,31 @@ export class MonsterDetailsComponent implements OnInit {
 
             this.bsModalRef.content.title = "Monster Commands";
             this.bsModalRef.content.ListCommands = data;
-            this.bsModalRef.content.Command = _monstertemplate;
+            this.bsModalRef.content.Command = _monster;
             this.bsModalRef.content.Character = new Characters();
             this.bsModalRef.content.recordType = 'monster';
             this.bsModalRef.content.recordId = this._editMonster.monsterId;
           } else {
 
-            this.useCommand(_monstertemplate, this._editMonster);
+            this.useCommand(_monster);
           }
         }, error => { }, () => { });
     }
   }
 
-  useCommand(monsterTemplate: any, monster) {
+  useCommand(monster: any) {
    
     let msg = "The command value for " + monster.name
       + " Monster has not been provided. Edit this record to input one.";
-    if (monsterTemplate.command == undefined || monsterTemplate.command == null || monsterTemplate.command == '') {
-      this.alertService.showDialog(msg, DialogType.alert, () => this.useMonsterTemplateHelper(monsterTemplate, monster));
+    if (monster.command == undefined || monster.command == null || monster.command == '') {
+      this.alertService.showDialog(msg, DialogType.alert, () => this.useMonsterHelper(monster));
     }else {
       //TODO
-      this.useMonsterTemplateHelper(monsterTemplate, monster);
+      this.useMonsterHelper(monster);
     }
   }
 
-  private useMonsterTemplateHelper(monsterTemplate: MonsterTemplate, monster) {
+  private useMonsterHelper(monster:any) {
 
     this.bsModalRef = this.modalService.show(DiceRollComponent, {
       class: 'modal-primary modal-md',
@@ -380,8 +379,8 @@ export class MonsterDetailsComponent implements OnInit {
     this.bsModalRef.content.tile = -2;
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.character = new Characters();
-    this.bsModalRef.content.command = monsterTemplate.command;
-    if (monsterTemplate.hasOwnProperty("monsterTemplateId")) {
+    this.bsModalRef.content.command = monster.command;
+    if (monster.hasOwnProperty("monsterId")) {
       this.bsModalRef.content.recordName = monster.name;
       this.bsModalRef.content.recordImage = monster.imageUrl;
       this.bsModalRef.content.recordType = 'monster';

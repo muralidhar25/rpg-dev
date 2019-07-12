@@ -41,6 +41,7 @@ namespace RPGSmithApp.ViewModels
         public decimal Price { get; set; }
         public bool IsAlreadyPurchased { get; set; }
         public bool IsDicePublicRoll { get; set; }
+        public bool IsCombatStarted { get; set; }
         public virtual ICollection<ItemMaster> ItemMasters { get; set; }
         public virtual ICollection<Spell> Spells { get; set; }
         public virtual ICollection<Ability> Abilities { get; set; }
