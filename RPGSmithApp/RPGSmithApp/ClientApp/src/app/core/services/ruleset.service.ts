@@ -14,6 +14,7 @@ import { RulesetEndpoint } from './ruleset-endpoint.service';
 import { FileUploadService } from "../common/file-upload.service";
 import { Ruleset } from '../models/view-models/ruleset.model';
 import { CustomDice } from '../models/view-models/custome-dice.model';
+import { RuleSetLastCommand } from '../models/view-models/character-last-command.model';
 
 @Injectable()
 export class RulesetService {
@@ -127,5 +128,13 @@ export class RulesetService {
   updateUserPurchasedRuleset<T>(ruleset: Ruleset): Observable<any> {
     return this.rulesetEndpoint.updateUserPurchasedRuleset(ruleset);
   }
+  updateLastCommand<T>(ruleSetLastCommand: RuleSetLastCommand): Observable<any> {
+    return this.rulesetEndpoint.updateLastCommand(ruleSetLastCommand);
+  }
+
+  addOrEdit<T>(model: any): Observable<T> {
+    return this.rulesetEndpoint.addOrEdit(model);
+  }
+
   //
 }

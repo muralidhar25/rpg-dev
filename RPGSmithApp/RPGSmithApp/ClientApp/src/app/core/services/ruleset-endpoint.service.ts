@@ -25,8 +25,11 @@ export class RulesetEndpoint extends EndpointFactory {
   private readonly _duplicateUrl: string = "/api/RuleSet/DuplicateRuleSet";
   private readonly _addEditCustomDiceUrl: string = "/api/RuleSet/addEditCustomDice";
   private readonly _getCustomDiceUrl: string = "/api/RuleSet/GetCustomDice";
-  private readonly _getDefaultDiceUrl: string = "/api/RuleSet/GetDefaultDice";  
+  private readonly _getDefaultDiceUrl: string = "/api/RuleSet/GetDefaultDice";
 
+
+  
+  
 
   private readonly getByIdUrl: string = this.configurations.baseUrl + "/api/RuleSet/GetRuleSetById";
   private readonly getAllRuleSetByUserIdUrl: string = this.configurations.baseUrl + "/api/RuleSet/GetAllRuleSetByUserId";
@@ -36,7 +39,10 @@ export class RulesetEndpoint extends EndpointFactory {
   private readonly getCoreRulesetsApi: string = this.configurations.baseUrl + "/api/RuleSet/GetCoreRuleSets";
   private readonly addRulesetsApi: string = this.configurations.baseUrl + "/api/RuleSet/addRuleSets";
   private readonly updateUserPurchasedRulesetApi: string = this.configurations.baseUrl + "/api/RuleSet/updateUserPurchasedRuleset";
-  
+  private readonly updateLastCommandUrl: string = this.configurations.baseUrl + "/api/RuleSet/UpdateLastCommand";
+  private readonly createCommandUrl: string = this.configurations.baseUrl + "/api/RuleSet/createCommand";
+  private readonly updateCommandUrl: string = this.configurations.baseUrl + "/api/RuleSet/updateCommand";
+
   private readonly GetCopiedRulesetIDApi: string = this.configurations.baseUrl + "/api/RuleSet/GetCopiedRulesetID";
 
   get getUrl() { return this.configurations.baseUrl + this._getUrl; }
@@ -273,6 +279,30 @@ export class RulesetEndpoint extends EndpointFactory {
     return this.http.get<T>(getDefaultDiceEndpoint, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getDefaultDices());
+      });
+  }
+
+  updateLastCommand<T>(model: any): Observable<T> {
+
+    let endpointUrl = this.updateLastCommandUrl;
+    return this.http.post<T>(endpointUrl, JSON.stringify(model), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.updateLastCommand(model));
+      });
+  }
+
+  addOrEdit<T>(model: any): Observable<T> {
+
+    let endpointUrl = this.createUrl;
+
+    if (model.characterCommandId == 0 || model.characterCommandId === undefined)
+      endpointUrl = this.createCommandUrl;
+    else
+      endpointUrl = this.updateCommandUrl;
+
+    return this.http.post<T>(endpointUrl, JSON.stringify(model), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.addOrEdit(model));
       });
   }
 }

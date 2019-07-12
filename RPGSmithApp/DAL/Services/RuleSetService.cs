@@ -409,7 +409,7 @@ namespace DAL.Services
 
         public List<RuleSet> GetRuleSetToCreateCharacterByUserId(string UserId, int page, int pageSize)
         {
-            List<RuleSet> UserRulesets = _context.RuleSets.Include(p => p.AspNetUser).Where(x => x.AspNetUser.Id == UserId && x.IsDeleted != true).OrderBy(x=>x.RuleSetName).ToList();
+            List<RuleSet> UserRulesets = _context.RuleSets.Include(p => p.AspNetUser).Where(x => x.AspNetUser.Id == UserId && x.IsDeleted != true).OrderBy(x => x.RuleSetName).ToList();
 
             var CoreRuleSetIdsToRemove = UserRulesets.Where(x => x.ParentRuleSetId != null).Select(x => x.ParentRuleSetId).ToArray();
 
@@ -693,15 +693,17 @@ namespace DAL.Services
         {
             return _context.RuleSets.Where(q => q.ShareCode == rulesetSharecode).FirstOrDefaultAsync();
         }
-        public bool IsRulesetAlreadyPurchased(int ruleSetId, string userID) {
-            if (userID!=null)
+        public bool IsRulesetAlreadyPurchased(int ruleSetId, string userID)
+        {
+            if (userID != null)
             {
                 return _context.PurchasedRuleSets.Where(x => x.RuleSetId == ruleSetId && x.UserId == userID).Any();
             }
             return false;
-            
+
         }
-        public async Task updateUserPurchasedRuleset(int ruleSetId, string userID) {
+        public async Task updateUserPurchasedRuleset(int ruleSetId, string userID)
+        {
             _context.PurchasedRuleSets.Add(new PurchasedRuleSet()
             {
                 RuleSetId = ruleSetId,
@@ -714,13 +716,13 @@ namespace DAL.Services
         {
             foreach (var dice in diceList)
             {
-                CustomDice d = new CustomDice() { Icon = dice.Icon, IsNumeric = dice.IsNumeric, Name = dice.Name,CustomDicetype=dice.CustomDicetype, RuleSetId = rulesetID };
-                _context.CustomDices.Add(d);               
+                CustomDice d = new CustomDice() { Icon = dice.Icon, IsNumeric = dice.IsNumeric, Name = dice.Name, CustomDicetype = dice.CustomDicetype, RuleSetId = rulesetID };
+                _context.CustomDices.Add(d);
                 foreach (var res in dice.CustomDiceResults)
                 {
-                    CustomDiceResult r = new CustomDiceResult() { Name = res.Name, CustomDiceId = d.CustomDiceId ,DisplayContent=res.DisplayContent};
-                    _context.CustomDiceResults.Add(r);                    
-                }                
+                    CustomDiceResult r = new CustomDiceResult() { Name = res.Name, CustomDiceId = d.CustomDiceId, DisplayContent = res.DisplayContent };
+                    _context.CustomDiceResults.Add(r);
+                }
             }
             try
             {
@@ -752,20 +754,20 @@ namespace DAL.Services
             List<DiceTray> oldDiceTrays = GetDiceTray(copyFromRulesetID);
             foreach (var dice in oldCustomDices)
             {
-                CustomDice d = new CustomDice() { Icon = dice.Icon, IsNumeric = dice.IsNumeric, Name = dice.Name,CustomDicetype=dice.CustomDicetype, RuleSetId = copyToRulesetID };
+                CustomDice d = new CustomDice() { Icon = dice.Icon, IsNumeric = dice.IsNumeric, Name = dice.Name, CustomDicetype = dice.CustomDicetype, RuleSetId = copyToRulesetID };
                 _context.CustomDices.Add(d);
                 foreach (var res in dice.CustomDiceResults)
                 {
-                    CustomDiceResult r = new CustomDiceResult() { Name = res.Name, CustomDiceId = d.CustomDiceId ,DisplayContent=res.DisplayContent};
+                    CustomDiceResult r = new CustomDiceResult() { Name = res.Name, CustomDiceId = d.CustomDiceId, DisplayContent = res.DisplayContent };
                     _context.CustomDiceResults.Add(r);
                 }
-            }            
+            }
             _context.SaveChanges();
             addEditDiceTray(GetCustomDice(copyToRulesetID), oldDiceTrays, copyToRulesetID);
         }
         public List<DiceTray> GetDiceTray(int ruleSetId)
         {
-            return _context.DiceTrays.Where(r => r.RuleSetId == ruleSetId).OrderBy(x=>x.SortOrder).ToList();
+            return _context.DiceTrays.Where(r => r.RuleSetId == ruleSetId).OrderBy(x => x.SortOrder).ToList();
         }
         public List<DefaultDice> GetDefaultDices()
         {
@@ -793,7 +795,7 @@ namespace DAL.Services
                             IsDefaultDice = true,
                             Name = model.Name,
                             RuleSetId = rulesetID,
-                            SortOrder=model.SortOrder,
+                            SortOrder = model.SortOrder,
                         });
                     }
                     else if (model.IsCustomDice)
@@ -822,7 +824,8 @@ namespace DAL.Services
                             });
                         }
                     }
-                    else {
+                    else
+                    {
                         _context.DiceTrays.Add(new DiceTray()
                         {
                             CustomDiceId = null,
@@ -842,7 +845,7 @@ namespace DAL.Services
         }
         public string GetUserImageFromRulesetID(int ruleSetId)
         {
-            return _context.RuleSets.Where(x=>x.RuleSetId== ruleSetId).Include(x=>x.AspNetUser).Select(x=>x.AspNetUser.ProfileImage).FirstOrDefault();
+            return _context.RuleSets.Where(x => x.RuleSetId == ruleSetId).Include(x => x.AspNetUser).Select(x => x.AspNetUser.ProfileImage).FirstOrDefault();
         }
         #endregion
 
@@ -850,9 +853,9 @@ namespace DAL.Services
         public List<CharacterAbility> SearchCharacterAbilities(SearchModel searchModel, int[] idsToSearch = null)
         {
             DataTable dt_ids = new DataTable();
-            if (idsToSearch!=null)
+            if (idsToSearch != null)
             {
-                if (idsToSearch.Length>0)
+                if (idsToSearch.Length > 0)
                 {
                     dt_ids = ConvertIntArrayToDataTable(idsToSearch);
                     //dt_ids = utility.ToDataTable<int>(idsToSearch.ToList());
@@ -876,16 +879,17 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@RecordType", SP_SearchType.CharacterAbilities);
                 command.Parameters.AddWithValue("@CharacterID", searchModel.CharacterID);
                 command.Parameters.AddWithValue("@RulesetID", searchModel.RulesetID);
-                
+
                 if (searchModel.SearchType == SP_SearchType.Everything)
                 {
-                    command.Parameters.AddWithValue("@IsEverything",true);
-                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName );
-                    command.Parameters.AddWithValue("@IsEverythingTag",  searchModel.EverythingFilters.IsEverythingTags);
+                    command.Parameters.AddWithValue("@IsEverything", true);
+                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName);
+                    command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
                 }
-                else {
+                else
+                {
                     command.Parameters.AddWithValue("@IsAbilityName", searchModel.AbilityFilters.IsAbilityName);
                     command.Parameters.AddWithValue("@IsAbilityTags", searchModel.AbilityFilters.IsAbilityTags);
                     command.Parameters.AddWithValue("@IsAbilityStats", searchModel.AbilityFilters.IsAbilityStats);
@@ -895,7 +899,7 @@ namespace DAL.Services
 
                 if (idsToSearch != null)
                 {
-                    if (idsToSearch.Length > 0 && dt_ids.Rows.Count>0)
+                    if (idsToSearch.Length > 0 && dt_ids.Rows.Count > 0)
                     {
                         command.Parameters.AddWithValue("@OldSearchIds", dt_ids);
                     }
@@ -961,7 +965,7 @@ namespace DAL.Services
 
         private DataTable ConvertIntArrayToDataTable(int[] idsToSearch)
         {
-            
+
             DataTable dt = new DataTable();
             dt.Columns.Add("ID");
             DataRow row;
@@ -1005,8 +1009,8 @@ namespace DAL.Services
                 if (searchModel.SearchType == SP_SearchType.Everything)
                 {
                     command.Parameters.AddWithValue("@IsEverything", true);
-                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName );
-                    command.Parameters.AddWithValue("@IsEverythingTag",  searchModel.EverythingFilters.IsEverythingTags);
+                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName);
+                    command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
                 }
@@ -1102,8 +1106,8 @@ namespace DAL.Services
                 if (searchModel.SearchType == SP_SearchType.Everything)
                 {
                     command.Parameters.AddWithValue("@IsEverything", true);
-                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName );
-                    command.Parameters.AddWithValue("@IsEverythingTag",  searchModel.EverythingFilters.IsEverythingTags);
+                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName);
+                    command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
                 }
@@ -1228,8 +1232,8 @@ namespace DAL.Services
                 if (searchModel.SearchType == SP_SearchType.Everything)
                 {
                     command.Parameters.AddWithValue("@IsEverything", true);
-                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName );
-                    command.Parameters.AddWithValue("@IsEverythingTag",  searchModel.EverythingFilters.IsEverythingTags);
+                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName);
+                    command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
                 }
@@ -1343,8 +1347,8 @@ namespace DAL.Services
                 if (searchModel.SearchType == SP_SearchType.Everything)
                 {
                     command.Parameters.AddWithValue("@IsEverything", true);
-                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName );
-                    command.Parameters.AddWithValue("@IsEverythingTag",  searchModel.EverythingFilters.IsEverythingTags);
+                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName);
+                    command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
                 }
@@ -1459,8 +1463,8 @@ namespace DAL.Services
                 if (searchModel.SearchType == SP_SearchType.Everything)
                 {
                     command.Parameters.AddWithValue("@IsEverything", true);
-                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName );
-                    command.Parameters.AddWithValue("@IsEverythingTag",  searchModel.EverythingFilters.IsEverythingTags);
+                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName);
+                    command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
                     command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
                     command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
                 }
@@ -1548,17 +1552,17 @@ namespace DAL.Services
                 searchModel.SearchType == SP_SearchType.CharacterItems
                 )
             {
-                if (searchModel.CharacterID!=0)
+                if (searchModel.CharacterID != 0)
                 {
                     bool isItem = (searchModel.SearchType == SP_SearchType.CharacterItems);
                     bool isSpell = (searchModel.SearchType == SP_SearchType.CharacterSpells);
                     bool isAbility = (searchModel.SearchType == SP_SearchType.CharacterAbilities);
-                    if (_context.SearchFilter.Any(x => x.CharacterId == searchModel.CharacterID && x.IsCharacter==true && x.IsRuleSet == false &&
+                    if (_context.SearchFilter.Any(x => x.CharacterId == searchModel.CharacterID && x.IsCharacter == true && x.IsRuleSet == false &&
                         x.IsItem == isItem && x.IsSpell == isSpell && x.IsAbility == isAbility))
                     {
-                       
-                        filter = _context.SearchFilter.Where(x => x.CharacterId == searchModel.CharacterID && x.IsCharacter == true && x.IsRuleSet == false && 
-                        x.IsItem== isItem && x.IsSpell== isSpell && x.IsAbility==isAbility
+
+                        filter = _context.SearchFilter.Where(x => x.CharacterId == searchModel.CharacterID && x.IsCharacter == true && x.IsRuleSet == false &&
+                        x.IsItem == isItem && x.IsSpell == isSpell && x.IsAbility == isAbility
                         ).FirstOrDefault();
                         if (filter != null)
                         {
@@ -1567,7 +1571,8 @@ namespace DAL.Services
                             _context.SaveChanges();
                         }
                     }
-                    else {
+                    else
+                    {
                         filter = setFilterValues(filter, searchModel);
                         _context.SearchFilter.Add(filter);
                         _context.SaveChanges();
@@ -1578,7 +1583,7 @@ namespace DAL.Services
             {
                 if (searchModel.CharacterID != 0 && searchModel.RulesetID != 0)
                 {
-                    if (_context.SearchFilter.Any(x => x.CharacterId == searchModel.CharacterID && x.RulesetId == searchModel.RulesetID 
+                    if (_context.SearchFilter.Any(x => x.CharacterId == searchModel.CharacterID && x.RulesetId == searchModel.RulesetID
                     && x.IsCharacter == true && x.IsRuleSet == true))
                     {
 
@@ -1599,7 +1604,8 @@ namespace DAL.Services
                     }
                 }
             }
-            else {
+            else
+            {
                 if (searchModel.RulesetID != 0)
                 {
                     bool isItem = (searchModel.SearchType == SP_SearchType.RulesetItems);
@@ -1629,7 +1635,7 @@ namespace DAL.Services
 
         private SearchFilter setFilterValues(SearchFilter filter, SearchModel searchModel)
         {
-            if (filter==null)
+            if (filter == null)
             {
                 filter = new SearchFilter();
             }
@@ -1686,7 +1692,7 @@ namespace DAL.Services
                         break;
                 }
             }
-           else   if (searchModel.SearchType == SP_SearchType.Everything)
+            else if (searchModel.SearchType == SP_SearchType.Everything)
             {
                 filter.IsCharacter = true;
                 filter.CharacterId = searchModel.CharacterID;
@@ -1700,13 +1706,14 @@ namespace DAL.Services
                         filter.IsName = searchModel.EverythingFilters.IsEverythingName;
                         filter.IsTags = searchModel.EverythingFilters.IsEverythingTags;
                         filter.IsStats = searchModel.EverythingFilters.IsEverythingStats;
-                        filter.IsDesc = searchModel.EverythingFilters.IsEverythingDesc;                        
-                        break;                    
+                        filter.IsDesc = searchModel.EverythingFilters.IsEverythingDesc;
+                        break;
                     default:
                         break;
                 }
             }
-            else {
+            else
+            {
                 filter.IsRuleSet = true;
                 filter.RulesetId = searchModel.RulesetID;
 
@@ -1761,7 +1768,8 @@ namespace DAL.Services
             List<SearchEverything> results = new List<SearchEverything>();
             foreach (var item in characterAbilities)
             {
-                SearchEverything obj = new SearchEverything() {
+                SearchEverything obj = new SearchEverything()
+                {
                     id = item.CharacterAbilityId,
                     image = item.Ability.ImageUrl,
                     name = item.Ability.Name,
@@ -1780,11 +1788,11 @@ namespace DAL.Services
                     RecordType = SP_SearchType.RulesetAbilities,
                     RulesetAbility = item
                 };
-                if (!characterAbilities.Any(x=>x.AbilityId== item.AbilityId &&  x.Ability.Name== item.Name))
+                if (!characterAbilities.Any(x => x.AbilityId == item.AbilityId && x.Ability.Name == item.Name))
                 {
                     results.Add(obj);
                 }
-                
+
             }
             foreach (var item in characterSpells)
             {
@@ -1840,16 +1848,16 @@ namespace DAL.Services
             }
 
 
-            return results.OrderBy(x=>x.name).ToList();
+            return results.OrderBy(x => x.name).ToList();
         }
         public List<SearchEverything> SearchEveryThing(SearchModel searchModel)
         {
-            List<CharacterAbility> characterAbilities= SearchCharacterAbilities(searchModel);
-            List<Ability> abilities= SearchRulesetAbilities(searchModel);
-            List<CharacterSpell> characterSpells= SearchCharacterSpells(searchModel);
-            List<Spell> spells= SearchRulesetSpells(searchModel);
-            List<Item> items= SearchCharacterItems(searchModel);
-            List<ItemMaster_Bundle> itemMasters= SearchRulesetItems(searchModel);
+            List<CharacterAbility> characterAbilities = SearchCharacterAbilities(searchModel);
+            List<Ability> abilities = SearchRulesetAbilities(searchModel);
+            List<CharacterSpell> characterSpells = SearchCharacterSpells(searchModel);
+            List<Spell> spells = SearchRulesetSpells(searchModel);
+            List<Item> items = SearchCharacterItems(searchModel);
+            List<ItemMaster_Bundle> itemMasters = SearchRulesetItems(searchModel);
             List<SearchEverything> results = bindEveryThingModel(characterAbilities, abilities, characterSpells, spells, items, itemMasters);
             return results;
         }
@@ -1857,7 +1865,7 @@ namespace DAL.Services
         #region DiceRoll
         public async Task<DiceRollModel> GetDiceRollModelAsync(int RulesetID, int CharacterID, ApplicationUser User)
         {
-           
+
             DiceRollModel DiceRollModel = new DiceRollModel();
 
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -1891,7 +1899,7 @@ namespace DAL.Services
             if (ds.Tables[8].Rows.Count > 0) //Check Ruleset Exists
             {
                 DiceRollModel.RuleSet = _repo.GetRuleset(ds.Tables[8]);
-                DiceRollModel.RuleSet.IsDicePublicRoll= ds.Tables[8].Rows[0]["IsDicePublicRoll"] == DBNull.Value ? false : Convert.ToBoolean(ds.Tables[8].Rows[0]["IsDicePublicRoll"]);
+                DiceRollModel.RuleSet.IsDicePublicRoll = ds.Tables[8].Rows[0]["IsDicePublicRoll"] == DBNull.Value ? false : Convert.ToBoolean(ds.Tables[8].Rows[0]["IsDicePublicRoll"]);
 
                 DiceRollModel.CustomDices = new List<CustomDice>();
                 if (ds.Tables[9].Rows.Count > 0) //Custom Dices
@@ -1980,7 +1988,7 @@ namespace DAL.Services
 
                 if (ds.Tables[0].Rows.Count > 0) //Check Character Exists
                 {
-                    DiceRollModel.Character= _repo.GetCharacter(ds.Tables[0]);
+                    DiceRollModel.Character = _repo.GetCharacter(ds.Tables[0]);
                     DiceRollModel.Character.IsDicePublicRoll = ds.Tables[0].Rows[0]["IsDicePublicRoll"] == DBNull.Value ? false : Convert.ToBoolean(ds.Tables[0].Rows[0]["IsDicePublicRoll"]);
 
                     DiceRollModel.CharacterCommands = new List<CharacterCommand>();
@@ -1991,13 +1999,13 @@ namespace DAL.Services
                         {
                             CharacterCommand characterCommand = new CharacterCommand()
                             {
-                                CharacterCommandId= _characterCommandRow["CharacterCommandId"] == DBNull.Value ? 0 : Convert.ToInt32(_characterCommandRow["CharacterCommandId"]),
-                                CharacterId= _characterCommandRow["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(_characterCommandRow["CharacterId"]),
-                                Command= _characterCommandRow["Command"] == DBNull.Value ? null : _characterCommandRow["Command"].ToString(),
-                                CreatedOn= _characterCommandRow["CreatedOn"] == DBNull.Value ? new DateTime() : Convert.ToDateTime(_characterCommandRow["CreatedOn"]),
-                                IsDeleted= _characterCommandRow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(_characterCommandRow["IsDeleted"]),
-                                UpdatedOn= _characterCommandRow["UpdatedOn"] == DBNull.Value ? new DateTime() : Convert.ToDateTime(_characterCommandRow["UpdatedOn"]),
-                                Name= _characterCommandRow["Name"] == DBNull.Value ? null : _characterCommandRow["Name"].ToString()
+                                CharacterCommandId = _characterCommandRow["CharacterCommandId"] == DBNull.Value ? 0 : Convert.ToInt32(_characterCommandRow["CharacterCommandId"]),
+                                CharacterId = _characterCommandRow["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(_characterCommandRow["CharacterId"]),
+                                Command = _characterCommandRow["Command"] == DBNull.Value ? null : _characterCommandRow["Command"].ToString(),
+                                CreatedOn = _characterCommandRow["CreatedOn"] == DBNull.Value ? new DateTime() : Convert.ToDateTime(_characterCommandRow["CreatedOn"]),
+                                IsDeleted = _characterCommandRow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(_characterCommandRow["IsDeleted"]),
+                                UpdatedOn = _characterCommandRow["UpdatedOn"] == DBNull.Value ? new DateTime() : Convert.ToDateTime(_characterCommandRow["UpdatedOn"]),
+                                Name = _characterCommandRow["Name"] == DBNull.Value ? null : _characterCommandRow["Name"].ToString()
                             };
                             _characterCommands.Add(characterCommand);
                         }
@@ -2016,6 +2024,31 @@ namespace DAL.Services
                 }
 
 
+                if (ds.Tables[13].Rows.Count > 0 && CharacterID == 0) //Dice Tray
+                {
+                    DiceRollModel.RulesetCommands = new List<RulesetCommand>();
+                    List<RulesetCommand> _rulesetCommands = new List<RulesetCommand>();
+                    foreach (DataRow __rulesetCommandRow in ds.Tables[13].Rows)
+                    {
+                        RulesetCommand rulesetCommand = new RulesetCommand()
+                        {
+                            RulesetCommandId = __rulesetCommandRow["RulesetCommandId"] == DBNull.Value ? 0 : Convert.ToInt32(__rulesetCommandRow["RulesetCommandId"]),
+                            RuleSetId = __rulesetCommandRow["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(__rulesetCommandRow["RuleSetId"]),
+                            Command = __rulesetCommandRow["Command"] == DBNull.Value ? null : __rulesetCommandRow["Command"].ToString(),
+                            CreatedOn = __rulesetCommandRow["CreatedOn"] == DBNull.Value ? new DateTime() : Convert.ToDateTime(__rulesetCommandRow["CreatedOn"]),
+                            IsDeleted = __rulesetCommandRow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(__rulesetCommandRow["IsDeleted"]),
+                            UpdatedOn = __rulesetCommandRow["UpdatedOn"] == DBNull.Value ? new DateTime() : Convert.ToDateTime(__rulesetCommandRow["UpdatedOn"]),
+                            Name = __rulesetCommandRow["Name"] == DBNull.Value ? null : __rulesetCommandRow["Name"].ToString()
+                        };
+                        _rulesetCommands.Add(rulesetCommand);
+                    }
+                    if (_rulesetCommands.Any())
+                    {
+                        DiceRollModel.RulesetCommands = _rulesetCommands;
+                    }
+                }
+
+
             }
 
 
@@ -2023,9 +2056,10 @@ namespace DAL.Services
             {
                 DiceRollModel.IsGmAccessingPlayerCharacter = false;
             }
-            else {
+            else
+            {
                 DiceRollModel.IsGmAccessingPlayerCharacter = await _campaign.isGmAccessingPlayerCharacterUrl(CharacterID, User);
-            }            
+            }
 
             return DiceRollModel;
         }
@@ -2036,16 +2070,97 @@ namespace DAL.Services
             {
                 case 1:
                     return CustomDicetypeEnum.Numeric;
-                    
+
                 case 2:
                     return CustomDicetypeEnum.Text;
-                    
+
                 default:
                     return CustomDicetypeEnum.Image;
-                    
+
             }
         }
         #endregion
+
+        public async Task<RuleSet> UpdateLastCommand(int rulesetId, string lastcommand, string lastcommandresult, string lastCommandValues, int lastCommandTotal)
+        {
+            var _ruleset = await _repo.Get(rulesetId);
+
+            if (_ruleset == null)
+                return _ruleset;
+
+            _ruleset.LastCommand = lastcommand;
+            _ruleset.LastCommandResult = lastcommandresult;
+            _ruleset.LastCommandValues = lastCommandValues;
+            _ruleset.LastCommandTotal = lastCommandTotal;
+
+            try
+            {
+                _context.SaveChanges();
+                return _ruleset;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        #region Ruleset Command
+        public async Task<bool> CheckDuplicateRulesetCommand(string value, int? rulesetId, int? rulesetCommandId = 0)
+        {
+            return _context.RulesetCommands.Where(x => x.Name.ToLower() == value.ToLower() && x.RuleSetId == rulesetId && x.RulesetCommandId != rulesetCommandId && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
+        }
+
+        public async Task<RulesetCommand> Create(RulesetCommand item)
+        {
+            _context.RulesetCommands.Add(item);
+            _context.SaveChanges();
+            return item;
+        }
+
+        public async Task<RuleSet> UpdateRulesetLastCommand(RuleSet _ruleSet)
+        {
+            var RuleSet = _context.RuleSets.Where(x => x.RuleSetId == _ruleSet.RuleSetId).FirstOrDefault();
+
+            if (RuleSet == null) return RuleSet;
+
+            RuleSet.LastCommand = _ruleSet.LastCommand;
+            RuleSet.LastCommandResult = _ruleSet.LastCommandResult;
+            RuleSet.LastCommandValues = _ruleSet.LastCommandValues;
+            RuleSet.LastCommandTotal = _ruleSet.LastCommandTotal;
+
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return RuleSet;
+        }
+
+        public async Task<RulesetCommand> Update(RulesetCommand item)
+        {
+            RulesetCommand rulesetCommand = _context.RulesetCommands.Where(x => x.RulesetCommandId == item.RulesetCommandId).FirstOrDefault();
+
+            if (rulesetCommand == null)
+                return rulesetCommand;
+            rulesetCommand.Name = item.Name;
+            rulesetCommand.UpdatedOn = item.UpdatedOn;
+            rulesetCommand.Command = item.Command;
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return rulesetCommand;
+        }
+        #endregion
+
     }
 
 }

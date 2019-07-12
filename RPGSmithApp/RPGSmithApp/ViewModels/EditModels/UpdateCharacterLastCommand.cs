@@ -13,4 +13,13 @@ namespace RPGSmithApp.ViewModels.EditModels
         public string LastCommandValues { get; set; }
         public int LastCommandTotal { get; set; }
     }
+
+    public class UpdateRulesetLastCommand
+    {
+        public int RuleSetId { get; set; }
+        public string LastCommand { get; set; }
+        public string LastCommandResult { get; set; }
+        public string LastCommandValues { get; set; }
+        public int LastCommandTotal { get; set; }
+    }
 }
