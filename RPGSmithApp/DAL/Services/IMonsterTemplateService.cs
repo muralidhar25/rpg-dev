@@ -59,6 +59,7 @@ namespace DAL.Services
         SP_AssociateForMonsterTemplate SP_GetMonsterAssociateRecords(int monsterID, int rulesetId);
         void AddMonsters(List<DeployMonsterTemplate> model);
         ItemMasterMonsterItem GetMonsterItemDetailByItemId(int itemId);
+        List<MonsterCommand> SP_GetMonsterCommands(int monsterId);
         // List<MonsterTemplate> GetByRuleSetId_add(int rulesetId);
 
     }

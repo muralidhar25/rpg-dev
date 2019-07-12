@@ -54,5 +54,6 @@ namespace DAL.Services
         bool IsRulesetAlreadyPurchased(int ruleSetId, string userID);
         Task updateUserPurchasedRuleset(int ruleSetId, string userID);
         Task<DiceRollModel> GetDiceRollModelAsync(int RulesetID, int CharacterID, ApplicationUser User);
+        bool IsCombatStarted(int RuleSetId);
     }
 }

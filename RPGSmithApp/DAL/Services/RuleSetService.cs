@@ -709,6 +709,9 @@ namespace DAL.Services
             });
             await _context.SaveChangesAsync();
         }
+        public bool IsCombatStarted(int RuleSetId) {
+            return _context.Combats.Where(x => x.CampaignId == RuleSetId && x.IsDeleted != true && x.IsStarted == true).Any();
+        }
         #region CustomDice
         public List<CustomDice> AddCustomDice(List<CustomDice> diceList, int rulesetID)
         {

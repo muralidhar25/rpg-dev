@@ -16,6 +16,11 @@ namespace DAL.Models.SPModels
 
         public bool IsDeleted { get; set; }
 
+        public bool isCharacterItemEnabled   { get; set; }
+        public bool isCharacterSpellEnabled  { get; set; }
+        public bool isCharacterAbilityEnabled{ get; set; }
+        public bool isCharacterBuffAndEffectEnabled { get; set; }
+
         public List<Combatant_ViewModel> CombatantList { get; set; }
         public CombatSetting CombatSettings { get; set; }
     }

@@ -65,11 +65,22 @@ export class CombatComponent implements OnInit {
     }
   }
 
-  @HostListener('document:click', ['$event.target'])  documentClick(target: any) {    try {      if (target.className.endsWith("setting-toggle-btn")) {
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
+      if (target.className.endsWith("setting-toggle-btn")) {
         this.isDropdownOpen = !this.isDropdownOpen;
-      }      else if (this.hasSomeParentTheClass(target, 'setting-toggle'))        this.isDropdownOpen = true;      else this.isDropdownOpen = false;    } catch (err) { this.isDropdownOpen = false; }  }
+      }
+      else if (this.hasSomeParentTheClass(target, 'setting-toggle'))
+        this.isDropdownOpen = true;
+      else this.isDropdownOpen = false;
+    } catch (err) { this.isDropdownOpen = false; }
+  }
 
-  hasSomeParentTheClass(element, classname) {    if (element.className.split(' ').indexOf(classname) >= 0) return true;    return element.parentNode && this.hasSomeParentTheClass(element.parentNode, classname);  }
+  hasSomeParentTheClass(element, classname) {
+    if (element.className.split(' ').indexOf(classname) >= 0) return true;
+    return element.parentNode && this.hasSomeParentTheClass(element.parentNode, classname);
+  }
   constructor(private modalService: BsModalService,
     private router: Router,
     private route: ActivatedRoute,
@@ -514,13 +525,13 @@ export class CombatComponent implements OnInit {
     });
     this.bsModalRef.content.title = "Change Visibility";
     this.bsModalRef.content.color = item.visibilityColor;
-    this.bsModalRef.content.visibility = item.visibility;
+    this.bsModalRef.content.visibility = item.visibleToPc;
     this.bsModalRef.content.event.subscribe(result => {
       //  console.log('resultEmiited', result);
       item.visibilityColor = result.bodyBgColor;
     });
     this.sharedService.shouldUpdateMonsterVisibility().subscribe(v => {
-      item.visibility = v;
+      item.visibleToPc = v;
     });
   }
   progressHealth(item) {

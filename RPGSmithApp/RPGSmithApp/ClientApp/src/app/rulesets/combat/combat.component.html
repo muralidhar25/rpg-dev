@@ -297,7 +297,7 @@
               <td>
                 <div class="white-section name-data text-ellipsis" (click)="nameClicked(item);$event.stopPropagation()"
                      popover="{{item.type == combatItemsType.CHARACTER ? item?.character?.characterName :item?.monster?.name}}" triggers="hover">
-                  {{item.type == combatItemsType.CHARACTER?item?.character?.characterName:item?.monster?.name}}
+                  {{item.type == combatItemsType.CHARACTER?item?.character?.characterId:item?.monster?.monsterId}} - {{item.type == combatItemsType.CHARACTER?item?.character?.characterName:item?.monster?.name}}
                 </div>
               </td>
               <td>
@@ -333,8 +333,8 @@
               </td>
               <td>
                 <div class="white-section">
-                  <span class="visible-icon" *ngIf="item.visibility" [style.background]="item.visibilityColor" (click)="changeColor(item);$event.stopPropagation()"></span>
-                  <span class="visible-icon unvisible-Circle" [style.border-color]="item.visibilityColor" *ngIf="!item.visibility" (click)="changeColor(item);$event.stopPropagation()"></span>
+                  <span class="visible-icon" *ngIf="item.visibleToPc" [style.background]="item.visibilityColor" (click)="changeColor(item);$event.stopPropagation()"></span>
+                  <span class="visible-icon unvisible-Circle" [style.border-color]="item.visibilityColor" *ngIf="!item.visibleToPc" (click)="changeColor(item);$event.stopPropagation()"></span>
                 </div>
               </td>
               <td>

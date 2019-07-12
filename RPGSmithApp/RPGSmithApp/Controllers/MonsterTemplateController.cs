@@ -987,6 +987,12 @@ namespace RPGSmithApp.Controllers
         {
             return Ok(_monsterTemplateService.SP_GetMonsterTemplateCommands(monsterTemplateID));
         }
+        [HttpGet("getMonsterCommands_sp")]
+        public async Task<IActionResult> getMonsterCommands_sp(int monsterId)
+        {
+            return Ok(_monsterTemplateService.SP_GetMonsterCommands(monsterId));
+        }
+        
         [HttpGet("SP_GetAssociateRecords")]
         public async Task<IActionResult> SP_GetAssociateRecords(int monsterTemplateId, int rulesetId, int MonsterID = 0)
         {
