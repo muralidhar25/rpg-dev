@@ -25,6 +25,7 @@ namespace DAL
 
         public virtual DbSet<RuleSetGenre> RuleSetGenres { get; set; }
         public virtual DbSet<RuleSet> RuleSets { get; set; }
+        public virtual DbSet<RulesetCommand> RulesetCommands { get; set; }
         public virtual DbSet<UserRuleSet> Users_RuleSets { get; set; }
         public virtual DbSet<Character> Characters { get; set; }
         public virtual DbSet<CharacterStat> CharacterStats { get; set; }

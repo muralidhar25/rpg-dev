@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace RPGSmithApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190712054657_AddRulesetCommandTable")]
+    partial class AddRulesetCommandTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3182,34 +3184,6 @@ namespace RPGSmithApp.Migrations
                     b.ToTable("RuleSets");
                 });
 
-            modelBuilder.Entity("DAL.Models.RulesetCommand", b =>
-                {
-                    b.Property<int>("RulesetCommandId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Command");
-
-                    b.Property<DateTime?>("CreatedOn");
-
-                    b.Property<bool?>("IsDeleted");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<int>("RuleSetId");
-
-                    b.Property<DateTime?>("UpdatedOn");
-
-                    b.HasKey("RulesetCommandId");
-
-                    b.HasIndex("RuleSetId");
-
-                    b.ToTable("RulesetCommands");
-                });
-
             modelBuilder.Entity("DAL.Models.RuleSetGenre", b =>
                 {
                     b.Property<short>("RuleSetGenreId")
@@ -5282,14 +5256,6 @@ namespace RPGSmithApp.Migrations
                     b.HasOne("DAL.Models.RuleSetGenre", "RuleSetGenre")
                         .WithMany("RuleSets")
                         .HasForeignKey("RuleSetGenreId");
-                });
-
-            modelBuilder.Entity("DAL.Models.RulesetCommand", b =>
-                {
-                    b.HasOne("DAL.Models.RuleSet", "ruleset")
-                        .WithMany()
-                        .HasForeignKey("RuleSetId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("DAL.Models.RulesetTileModels.RulesetBuffAndEffectTile", b =>
