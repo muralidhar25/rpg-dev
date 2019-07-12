@@ -19,7 +19,7 @@ import { RulesetService } from "../../../core/services/ruleset.service";
 import { DBkeys } from "../../../core/common/db-keys";
 import { User } from "../../../core/models/user.model";
 import { Utilities } from "../../../core/common/utilities";
-import { CharacterLastCommand } from "../../../core/models/view-models/character-last-command.model";
+import { CharacterLastCommand, RuleSetLastCommand } from "../../../core/models/view-models/character-last-command.model";
 import { DiceSaveComponent } from "../dice-save/dice-save.component";
 import { NumericCharacterStatComponent } from "../../numeric-character-stats/numeric-character-stat.component";
 import { PlatformLocation } from "@angular/common";
@@ -160,6 +160,7 @@ export class DiceRollComponent implements OnInit {
       //this.character = undefined;
       this.isLoading = true;
       this.isFromTile = this.bsModalRef.content.tile ? true : false;
+
       this.charactersService.getDiceRollModel<any>(this.rulesetId, this.characterId)
         .subscribe(data => {
           this.isLoading = false;
@@ -167,8 +168,12 @@ export class DiceRollComponent implements OnInit {
 
             debugger;
             this.character = data.character;
-
-            this.characterCommandData = data.characterCommands;
+            if (this.isFromCampaignDetail) {
+              this.characterCommandData = data.rulesetCommands;
+            }
+            else {
+              this.characterCommandData = data.characterCommands;
+            }
 
             if (data.isGmAccessingPlayerCharacter) {
               if (this.localStorage.localStorageGetItem(DBkeys.IsCharacterOpenedFromCampaign)) {
@@ -290,6 +295,24 @@ export class DiceRollComponent implements OnInit {
                 this.onClickRoll(this.characterCommandModel, command);
               }
             }
+
+            // for ruleset Last command
+            if (this.isFromCampaignDetail) {
+              this.rulesetService.getRulesetById<any>(this.rulesetId)
+                .subscribe(data => {
+                  this.character = data;                  
+                  this.showTotal = true;
+                  try {
+                    if (this.character.lastCommandResult)
+                      this.calculationStringArray = DiceService.getCalculationStringArray(this.character.lastCommandResult);
+                  } catch (err) { }
+                }, error => {
+                  this.isLoading = false;
+                  this.spinner = false;
+                  this.authService.logout();
+                }, () => { });
+            }
+
             setTimeout(() => {
               if (this.isLoading) this.isLoading = false;
             }, 200);
@@ -307,6 +330,7 @@ export class DiceRollComponent implements OnInit {
 
         });
 
+     
 
       //this.charactersService.getCharactersById<any>(this.characterId)
       //  .subscribe(data => {
@@ -926,23 +950,43 @@ export class DiceRollComponent implements OnInit {
   showLastResult(character: Characters) {
 
     this.spinner = true;
-    this.charactersService.getCharactersByIdDice<any>(this.characterId)
-      .subscribe(data => {
-        this.character = data;
-        this.isLoading = false;
-        this.spinner = false;
-        this.showLastResults(this.character);
-      }, error => {
-        this.isLoading = false;
-        this.spinner = false;
-        this.authService.logout();
-      }, () => { });
+    if (this.isFromCampaignDetail) {
+      this.rulesetService.getRulesetById<any>(this.rulesetId)
+        .subscribe(data => {
+          this.character = data;
+          this.isLoading = false;
+          this.spinner = false;
+          this.showLastResults(this.character);
+        }, error => {
+          this.isLoading = false;
+          this.spinner = false;
+          this.authService.logout();
+        }, () => { });
+    }
+    else {
+      this.charactersService.getCharactersByIdDice<any>(this.characterId)
+        .subscribe(data => {
+          this.character = data;
+          this.isLoading = false;
+          this.spinner = false;
+          this.showLastResults(this.character);
+        }, error => {
+          this.isLoading = false;
+          this.spinner = false;
+          this.authService.logout();
+        }, () => { });
+    }
   }
 
   showLastResults(character: Characters) {
 
     let characterCommand = new CharacterCommand();
-    characterCommand.characterId = character.characterId;
+    if (this.isFromCampaignDetail) {
+      characterCommand.characterId = character.ruleSetId;
+    }
+    else {
+      characterCommand.characterId = character.characterId;
+    }
     characterCommand.command = character.lastCommand;
 
     try {
@@ -1601,7 +1645,7 @@ export class DiceRollComponent implements OnInit {
         }
         else {
           this.characterMultipleCommands = DiceService.commandInterpretation(command, undefined, this.addModArray, this.customDices, this.mainCommandText.toUpperCase());
-          
+
           __characterMultipleCommands = this.characterMultipleCommands[0];
         }
 
@@ -1743,7 +1787,7 @@ export class DiceRollComponent implements OnInit {
 
           /*Update Last command if command is saved in charatcer command*/
           try {
-
+            debugger
             const characterLastCommand = new CharacterLastCommand();
             characterLastCommand.characterId = characterCommand.characterId;
             characterLastCommand.lastCommand = commandTxt;
@@ -1842,8 +1886,22 @@ export class DiceRollComponent implements OnInit {
             //////////////////////////////////////////////////////
 
             //if (!anyCommandIsCustomWithNonNumeric) {
-            this.updateLastCommand(characterLastCommand);
+
             // }
+
+            if (this.isFromCampaignDetail) {
+              const rulesetLastCommand = new RuleSetLastCommand();
+              rulesetLastCommand.rulesetId = this.rulesetId;
+              rulesetLastCommand.lastCommand = commandTxt;
+              rulesetLastCommand.lastCommandResult = __calculationString;
+              rulesetLastCommand.lastCommandTotal = characterLastCommand.lastCommandTotal;
+              rulesetLastCommand.lastCommandValues = lastCommandValues;
+              this.updateRuleSetLastCommand(rulesetLastCommand);
+            }
+            else {
+              this.updateLastCommand(characterLastCommand);
+            }
+
 
             this.HideResult = false;
 
@@ -1870,7 +1928,7 @@ export class DiceRollComponent implements OnInit {
 
 
             this.calculationStringArray = DiceService.getCalculationStringArray(__calculationString, this.diceRolledData);
-            
+
             this.characterMultipleCommands[0].calculationStringArray = this.calculationStringArray;
           } catch (err) { }
 
@@ -2166,6 +2224,33 @@ export class DiceRollComponent implements OnInit {
     this.characterCommandService.updateLastCommand<any>(characterLastCommand)
       .subscribe(
         data => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          this.character = data;
+          //this.alertService.showMessage("Last command has been saved.", "", MessageSeverity.success);
+          //this.bsModalRef.hide();
+          //this.destroyModalOnInit();
+          //this.sharedService.UpdateDice(true);
+        },
+        error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let Errors = Utilities.ErrorDetail("Unable to save last command.", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, 'Please check the command string and try again.', MessageSeverity.error, error);
+        },
+      );
+  }
+
+  updateRuleSetLastCommand(ruleSetLastCommand: RuleSetLastCommand) {
+    //this.isLoading = true;
+    this.rulesetService.updateLastCommand<any>(ruleSetLastCommand)
+      .subscribe(
+        data => {
+          debugger
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           this.character = data;
@@ -3058,7 +3143,18 @@ export class DiceRollComponent implements OnInit {
       }
       //////////////////////////////////////////////////////
       //if (!anyCommandIsCustomWithNonNumeric) {
-      this.updateLastCommand(characterLastCommand);
+      if (this.isFromCampaignDetail) {
+        const rulesetLastCommand = new RuleSetLastCommand();
+        rulesetLastCommand.rulesetId = this.rulesetId;
+        rulesetLastCommand.lastCommand = this.characterCommandModel.lastSavedCommand;
+        rulesetLastCommand.lastCommandResult = __calculationString;
+        rulesetLastCommand.lastCommandTotal = this.characterCommandModel.lastResult;
+        rulesetLastCommand.lastCommandValues = lastCommandValues;
+        this.updateRuleSetLastCommand(rulesetLastCommand);
+      }
+      else {
+        this.updateLastCommand(characterLastCommand);
+      }
       //}
       if (!this.character) {
         this.character = new Characters();
@@ -3490,8 +3586,14 @@ export class DiceRollComponent implements OnInit {
         ignoreBackdropClick: true,
         keyboard: false
       });
-      this.bsModalRef.content.title = characterCommandModel.characterCommandId ? "Edit New Saved Command" : "New Saved Command";
-      this.bsModalRef.content.view = characterCommandModel.characterCommandId ? 'EDIT' : 'SAVE';
+      if (this.isFromCampaignDetail) {
+        this.bsModalRef.content.title = characterCommandModel.rulesetCommandId ? "Edit New Saved Command" : "New Saved Command";
+        this.bsModalRef.content.view = characterCommandModel.rulesetCommandId ? 'EDIT' : 'SAVE';
+      }
+      else {
+        this.bsModalRef.content.title = characterCommandModel.characterCommandId ? "Edit New Saved Command" : "New Saved Command";
+        this.bsModalRef.content.view = characterCommandModel.characterCommandId ? 'EDIT' : 'SAVE';
+      }
       this.bsModalRef.content.characterId = this.characterId;
       this.bsModalRef.content.character = this.character;
       this.bsModalRef.content.command = command;
@@ -3501,6 +3603,8 @@ export class DiceRollComponent implements OnInit {
       this.bsModalRef.content.statDetails = this.statdetails;
       this.bsModalRef.content.charactersCharacterStats = this.charactersCharacterStats;
       this.bsModalRef.content.character = this.character;
+      this.bsModalRef.content.rulesetId = this.rulesetId;
+      this.bsModalRef.content.isFromCampaignDetail = this.isFromCampaignDetail;
     }
 
   }

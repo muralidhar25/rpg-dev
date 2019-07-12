@@ -706,6 +706,7 @@ namespace DAL.Models.SPModels
     {
         public Character Character { get; set; }
         public List<CharacterCommand> CharacterCommands { get; set; }
+        public List<RulesetCommand> RulesetCommands { get; set; }
         public bool IsGmAccessingPlayerCharacter { get; set; }
         public List<CharactersCharacterStat> CharactersCharacterStats { get; set; }
         public RuleSet RuleSet { get; set; }
@@ -717,6 +718,7 @@ namespace DAL.Models.SPModels
     {
         public Character Character { get; set; }
         public List<CharacterCommand> CharacterCommands { get; set; }
+        public List<RulesetCommand> RulesetCommands { get; set; }
         public bool IsGmAccessingPlayerCharacter { get; set; }
         public List<CharactersCharacterStat> CharactersCharacterStats { get; set; }
         public RuleSet RuleSet { get; set; }

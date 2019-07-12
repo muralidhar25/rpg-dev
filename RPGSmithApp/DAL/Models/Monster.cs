@@ -52,10 +52,11 @@ namespace DAL.Models
         public virtual MonsterTemplate MonsterTemplate { get; set; }
 
         public virtual ICollection<MonsterCommand> MonsterCommands { get; set; }
-        //public virtual ICollection<MonsterAbility> MonsterAbilitys { get; set; }
-        //public virtual ICollection<MonsterSpell> MonsterSpells { get; set; }
-        //public virtual ICollection<MonsterBuffAndEffect> MonsterBuffAndEffects { get; set; }
-        //public virtual ICollection<MonsterMonster> MonsterMonsters { get; set; }
+        public virtual ICollection<MonsterAbility> MonsterAbilitys { get; set; }
+        public virtual ICollection<MonsterSpell> MonsterSpells { get; set; }
+        public virtual ICollection<MonsterBuffAndEffect> MonsterBuffAndEffects { get; set; }
+        public virtual ICollection<MonsterMonster> MonsterMonsters { get; set; }
+        public virtual ICollection<ItemMasterMonsterItem> ItemMasterMonsterItems { get; set; }
     }
 
     public class MonsterCommand

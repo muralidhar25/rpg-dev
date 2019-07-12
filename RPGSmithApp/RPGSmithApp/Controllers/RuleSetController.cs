@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using RPGSmithApp.Helpers;
 using RPGSmithApp.Helpers.CoreRuleset;
 using RPGSmithApp.ViewModels;
+using RPGSmithApp.ViewModels.EditModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -108,7 +109,7 @@ namespace RPGSmithApp.Controllers
             _rulesetTileConfigService = rulesetTileConfigService;
             _emailer = emailer;
             _coreRulesetService = coreRulesetService;
-            _commonFuncsCoreRuleSet = commonFuncsCoreRuleSet;            
+            _commonFuncsCoreRuleSet = commonFuncsCoreRuleSet;
         }
 
         [HttpGet("GetRuleSetsCount")]
@@ -140,10 +141,11 @@ namespace RPGSmithApp.Controllers
                     TotalRuleSetSlotsAvailable = userSubscription.RulesetCount;
                 }
             }
-            else {
+            else
+            {
                 TotalRuleSetSlotsAvailable = 3;
             }
-            
+
         }
 
         [HttpGet("GetRuleSetAndCharacterCount")]
@@ -151,13 +153,13 @@ namespace RPGSmithApp.Controllers
         {
             int rCount = await _ruleSetService.GetRuleSetsCountByUserId(Id);
             int cCount = _characterService.GetCharacterCountUserId(Id);
-            return Ok(new { rulesetCount=rCount , characetrCount=cCount});
+            return Ok(new { rulesetCount = rCount, characetrCount = cCount });
         }
 
 
         [HttpGet("getRulesetRecordCountById")]
         public async Task<IActionResult> GetRulesetRecordCountById(int Id)
-        {           
+        {
             return Ok(_coreRulesetService.GetRulesetRecordCounts(Id));
         }
 
@@ -245,7 +247,7 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpGet("GetAllRuleSetByUserId")]
-        public async Task<IActionResult> GetRuleSetByUserId(string id,int page=1, int pageSize=10)
+        public async Task<IActionResult> GetRuleSetByUserId(string id, int page = 1, int pageSize = 10)
         {
             try
             {
@@ -281,7 +283,7 @@ namespace RPGSmithApp.Controllers
 
                 var ruleSetsVM = new List<RuleSetViewModel>();
                 foreach (var ruleSet in ruleSets)
-                    ruleSetsVM.Add(_commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet,GetUserId()));
+                    ruleSetsVM.Add(_commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet, GetUserId()));
 
                 return Ok(ruleSetsVM);
             }
@@ -317,7 +319,7 @@ namespace RPGSmithApp.Controllers
                     await TotalRuleSetSlotsAvailableForCurrentUser();
                     //Limit user to have max 3 ruleset & //purchase for more sets
                     if (await _ruleSetService.GetRuleSetsCountByUserId(_userId) >= TotalRuleSetSlotsAvailable && !IsAdminUser())
-                        return BadRequest("Only "+ TotalRuleSetSlotsAvailable + " slots of Rule Sets are allowed.");
+                        return BadRequest("Only " + TotalRuleSetSlotsAvailable + " slots of Rule Sets are allowed.");
 
                     if (IsAdminUser()) ruleSetDomain.IsCoreRuleset = true;
                     else ruleSetDomain.IsCoreRuleset = false;
@@ -359,13 +361,13 @@ namespace RPGSmithApp.Controllers
                 return BadRequest();
             }
         }
-        
-            [HttpPost("updateUserPurchasedRuleset")]
+
+        [HttpPost("updateUserPurchasedRuleset")]
         public async Task<IActionResult> updateUserPurchasedRuleset([FromBody] RuleSet model)
         {
             try
             {
-                await _ruleSetService.updateUserPurchasedRuleset(model.RuleSetId,GetUserId());
+                await _ruleSetService.updateUserPurchasedRuleset(model.RuleSetId, GetUserId());
                 return Ok();
             }
             catch (Exception ex)
@@ -383,7 +385,7 @@ namespace RPGSmithApp.Controllers
                 await TotalRuleSetSlotsAvailableForCurrentUser();
                 //Limit user to have max 3 ruleset & //purchase for more sets
                 if (await _ruleSetService.GetRuleSetsCountByUserId(_userId) >= TotalRuleSetSlotsAvailable && !IsAdminUser())
-                    return BadRequest("Only "+ TotalRuleSetSlotsAvailable + " slots of Rule Sets are allowed.");
+                    return BadRequest("Only " + TotalRuleSetSlotsAvailable + " slots of Rule Sets are allowed.");
 
                 foreach (var _id in rulesetIds)
                 {
@@ -811,7 +813,7 @@ namespace RPGSmithApp.Controllers
 
                 if (httpPostedFile != null)
                 {
-                    BlobService bs = new BlobService(_httpContextAccessor, _accountManager,_ruleSetService);
+                    BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _ruleSetService);
                     var container = bs.GetCloudBlobContainer().Result;
                     string imageName = Guid.NewGuid().ToString();
                     dynamic Response = new ExpandoObject();
@@ -851,9 +853,9 @@ namespace RPGSmithApp.Controllers
                 _ruleSetService.removeDiceTray(Id);
                 await _ruleSetService.DeleteRuleSet(Id);
                 BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _ruleSetService);
-               await bs.DeleteBlobContainer("user-" + GetUserId() + "-handout" + "-" + Id);
+                await bs.DeleteBlobContainer("user-" + GetUserId() + "-handout" + "-" + Id);
                 return Ok();
-              //  }
+                //  }
             }
             catch (Exception ex)
             {
@@ -901,7 +903,7 @@ namespace RPGSmithApp.Controllers
                     if (_ruleSetService.IsRuleSetExist(model.RuleSetName, userId, model.RuleSetId).Result)
                         return BadRequest("Duplicate RuleSet Name");
 
-                  var UpdatedRuleset=  await _ruleSetService.UdateRuleSet(ruleSetDomain);
+                    var UpdatedRuleset = await _ruleSetService.UdateRuleSet(ruleSetDomain);
                     //if (UpdatedRuleset != null)
                     //{
                     //    GroupChatHub.EditParticipant(UpdatedRuleset);
@@ -914,7 +916,7 @@ namespace RPGSmithApp.Controllers
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
-        
+
         [HttpPost("AddRuleSetToUser")]
         public async Task<IActionResult> UpdateRuleSet([FromBody] int RuleSetId)
         {
@@ -947,7 +949,7 @@ namespace RPGSmithApp.Controllers
                     var userId = GetUserId();
                     await TotalRuleSetSlotsAvailableForCurrentUser();
                     if (await _ruleSetService.GetRuleSetsCountByUserId(userId) >= TotalRuleSetSlotsAvailable && !IsAdminUser())
-                        return BadRequest("Only "+ TotalRuleSetSlotsAvailable + " slots of Rule Sets are allowed. For more slots, please contact administrator.");
+                        return BadRequest("Only " + TotalRuleSetSlotsAvailable + " slots of Rule Sets are allowed. For more slots, please contact administrator.");
 
 
                     if (_ruleSetService.IsRuleSetExist(model.RuleSetName, userId).Result)
@@ -1403,7 +1405,7 @@ namespace RPGSmithApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         [HttpPost("ShareRuleSetCode")]
         [AllowAnonymous]
         public async Task<IActionResult> ShareRuleSetCode(string email, string code)
@@ -1415,12 +1417,12 @@ namespace RPGSmithApp.Controllers
             var mailTemplatePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/mail-templates/ruleset-share.html");
             var EmailContent = System.IO.File.ReadAllText(mailTemplatePath);
             EmailContent = EmailContent.Replace("#RULESET-NAME#", ruleSet.RuleSetName);
-            EmailContent = EmailContent.Replace("#RULESET-IMAGE#", ruleSet.ImageUrl == null || ruleSet.ImageUrl == "" 
+            EmailContent = EmailContent.Replace("#RULESET-IMAGE#", ruleSet.ImageUrl == null || ruleSet.ImageUrl == ""
                 ? "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png" : ruleSet.ImageUrl);
             EmailContent = EmailContent.Replace("#RPGSMITH-USERNAME#", ruleSet.AspNetUser.UserName);
             EmailContent = EmailContent.Replace("#RULESET-SHARE-CODE#", code);
             EmailContent = EmailContent.Replace("#YEAR#", DateTime.Now.Year.ToString());
-            
+
             //var request = _httpContextAccessor.HttpContext.Request;
             //var host = request.Host.ToUriComponent();
             //var pathBase = request.PathBase.ToUriComponent();
@@ -1432,11 +1434,11 @@ namespace RPGSmithApp.Controllers
             if (response.success) return Ok();
             else return BadRequest(response.errorMsg + " Please try again.");
         }
-        
-        
-        
-        
-        
+
+
+
+
+
 
         private async void SaveColorsAsync(RulesetTile Tile)
         {
@@ -1518,10 +1520,11 @@ namespace RPGSmithApp.Controllers
         {
             try
             {
-                int result= await _coreRulesetService.GetCopiedRuleSetIdFromRulesetAndUser(rulesetID, UserID);
+                int result = await _coreRulesetService.GetCopiedRuleSetIdFromRulesetAndUser(rulesetID, UserID);
                 return Ok(result);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return BadRequest("Request: GetCopiedRulesetID, " + ex.Message);
             }
         }
@@ -1562,7 +1565,7 @@ namespace RPGSmithApp.Controllers
         //}
         #region CustomDice
         [HttpPost("addEditCustomDice")]
-        public async Task<IActionResult> addEditCustomDice([FromBody]  List<CustomDiceViewModel> model,int rulesetID)
+        public async Task<IActionResult> addEditCustomDice([FromBody]  List<CustomDiceViewModel> model, int rulesetID)
         {
             if (ModelState.IsValid)
             {
@@ -1572,7 +1575,8 @@ namespace RPGSmithApp.Controllers
                     result = _addEditCustomDice(model, rulesetID);
                     return Ok(Utilities.MapCustomDice(result));
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     return BadRequest(ex.Message);
                 }
             }
@@ -1593,7 +1597,7 @@ namespace RPGSmithApp.Controllers
                     Icon = dice.Icon,
                     IsNumeric = dice.IsNumeric,
                     Name = dice.Name,
-                    CustomDicetype=dice.CustomDicetype,
+                    CustomDicetype = dice.CustomDicetype,
                     RuleSetId = rulesetID
                 };
                 List<CustomDiceResult> diceResList = new List<CustomDiceResult>();
@@ -1604,7 +1608,7 @@ namespace RPGSmithApp.Controllers
                         //CustomDiceResultId=res.CustomDiceResultId,
                         //CustomDiceId=res.CustomDiceId,
                         Name = res.Name,
-                        DisplayContent =res.DisplayContent
+                        DisplayContent = res.DisplayContent
                     };
                     diceResList.Add(CDres);
                 }
@@ -1616,7 +1620,7 @@ namespace RPGSmithApp.Controllers
         }
         private List<DiceTray> _addEditDiceTray(List<CustomDice> customDices, List<DiceTray> diceTrays, int rulesetID)
         {
-          return  _ruleSetService.addEditDiceTray(customDices, diceTrays, rulesetID);
+            return _ruleSetService.addEditDiceTray(customDices, diceTrays, rulesetID);
         }
 
         [HttpGet("GetCustomDice")]
@@ -1624,7 +1628,7 @@ namespace RPGSmithApp.Controllers
         {
             try
             {
-                List<CustomDiceViewModel> result =Utilities.MapCustomDice(_ruleSetService.GetCustomDice(rulesetID));
+                List<CustomDiceViewModel> result = Utilities.MapCustomDice(_ruleSetService.GetCustomDice(rulesetID));
                 return Ok(result);
             }
             catch (Exception ex)
@@ -1638,12 +1642,12 @@ namespace RPGSmithApp.Controllers
             _ruleSetService.CopyCustomDiceToNewRuleSet(CopyFromRulesetID, CopyToRulesetID);
         }
 
-        
-             [HttpGet("GetDefaultDice")]
+
+        [HttpGet("GetDefaultDice")]
         public async Task<IActionResult> GetDefaultDice()
         {
             try
-            {                
+            {
                 return Ok(_ruleSetService.GetDefaultDices());
             }
             catch (Exception ex)
@@ -1663,7 +1667,7 @@ namespace RPGSmithApp.Controllers
                 searchModel.SearchString = addSingleQuoteforSPIfNeeded(searchModel.SearchString);
                 _ruleSetService.SaveLastSearchFilters(searchModel);
                 string searchText = searchModel.SearchString;
-                
+
                 if (!string.IsNullOrEmpty(searchText) && searchText.Length > 2)
                 {
                     if ((searchText.ElementAt(0) == '"' && searchText.ElementAt(searchText.Length - 1) == '"'))
@@ -1698,7 +1702,7 @@ namespace RPGSmithApp.Controllers
                         switch (searchModel.SearchType)
                         {
                             case SP_SearchType.CharacterAbilities:
-                                if (characterAbilities.Select(x => x.CharacterAbilityId).ToArray().Length==0 && !FlagIsInitailItemOfList)
+                                if (characterAbilities.Select(x => x.CharacterAbilityId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
                                 {
                                     skipGettingRecords = true;
                                 }
@@ -1764,12 +1768,12 @@ namespace RPGSmithApp.Controllers
                                 }
                                 break;
                             case SP_SearchType.Everything:
-                                characterAbilities=(_ruleSetService.SearchCharacterAbilities(searchModel, characterAbilities.Select(x => x.CharacterAbilityId).ToArray()));
-                                characterSpells=(_ruleSetService.SearchCharacterSpells(searchModel, characterSpells.Select(x => x.CharacterSpellId).ToArray()));
-                                items=(_ruleSetService.SearchCharacterItems(searchModel, items.Select(x => x.ItemId).ToArray()));
-                                itemMasters=(_ruleSetService.SearchRulesetItems(searchModel, itemMasters.Select(x => x.ItemMasterId).ToArray()));
-                                spells=(_ruleSetService.SearchRulesetSpells(searchModel, spells.Select(x => x.SpellId).ToArray()));
-                                abilities=(_ruleSetService.SearchRulesetAbilities(searchModel, abilities.Select(x => x.AbilityId).ToArray()));
+                                characterAbilities = (_ruleSetService.SearchCharacterAbilities(searchModel, characterAbilities.Select(x => x.CharacterAbilityId).ToArray()));
+                                characterSpells = (_ruleSetService.SearchCharacterSpells(searchModel, characterSpells.Select(x => x.CharacterSpellId).ToArray()));
+                                items = (_ruleSetService.SearchCharacterItems(searchModel, items.Select(x => x.ItemId).ToArray()));
+                                itemMasters = (_ruleSetService.SearchRulesetItems(searchModel, itemMasters.Select(x => x.ItemMasterId).ToArray()));
+                                spells = (_ruleSetService.SearchRulesetSpells(searchModel, spells.Select(x => x.SpellId).ToArray()));
+                                abilities = (_ruleSetService.SearchRulesetAbilities(searchModel, abilities.Select(x => x.AbilityId).ToArray()));
                                 break;
                             default:
                                 break;
@@ -1797,19 +1801,20 @@ namespace RPGSmithApp.Controllers
                     case SP_SearchType.RulesetItems:
                         return Ok(itemMasters.GroupBy(x => x.ItemMasterId).Select(x => x.First()));
                     case SP_SearchType.Everything:
-                        characterAbilities= characterAbilities.GroupBy(x => x.CharacterAbilityId).Select(x => x.First()).ToList();
-                        abilities= abilities.GroupBy(x => x.AbilityId).Select(x => x.First()).ToList();
-                        characterSpells= characterSpells.GroupBy(x => x.CharacterSpellId).Select(x => x.First()).ToList();
-                        spells= spells.GroupBy(x => x.SpellId).Select(x => x.First()).ToList();
-                        items= items.GroupBy(x => x.ItemId).Select(x => x.First()).ToList();
-                        itemMasters= itemMasters.GroupBy(x => x.ItemMasterId).Select(x => x.First()).ToList();
+                        characterAbilities = characterAbilities.GroupBy(x => x.CharacterAbilityId).Select(x => x.First()).ToList();
+                        abilities = abilities.GroupBy(x => x.AbilityId).Select(x => x.First()).ToList();
+                        characterSpells = characterSpells.GroupBy(x => x.CharacterSpellId).Select(x => x.First()).ToList();
+                        spells = spells.GroupBy(x => x.SpellId).Select(x => x.First()).ToList();
+                        items = items.GroupBy(x => x.ItemId).Select(x => x.First()).ToList();
+                        itemMasters = itemMasters.GroupBy(x => x.ItemMasterId).Select(x => x.First()).ToList();
                         return Ok(_ruleSetService.bindEveryThingModel(characterAbilities, abilities, characterSpells, spells, items, itemMasters));
                         break;
                     default:
                         return Ok();
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
@@ -1840,7 +1845,7 @@ namespace RPGSmithApp.Controllers
                 case SP_SearchType.RulesetItems:
                     return Ok(_ruleSetService.SearchRulesetItems(searchModel));
                 case SP_SearchType.Everything:
-                    return Ok(_ruleSetService.SearchEveryThing(searchModel));                                       
+                    return Ok(_ruleSetService.SearchEveryThing(searchModel));
                     break;
                 default:
                     return Ok();
@@ -1857,14 +1862,15 @@ namespace RPGSmithApp.Controllers
                 DiceRollModel diceRollModel = await _ruleSetService.GetDiceRollModelAsync(RuleSetID, CharacterID, GetUser());
                 DiceRollViewModel diceRollViewModel = new DiceRollViewModel()
                 {
-                    Character = diceRollModel.Character==null?new Character(): diceRollModel.Character,
+                    Character = diceRollModel.Character == null ? new Character() : diceRollModel.Character,
                     CharacterCommands = diceRollModel.CharacterCommands == null ? new List<CharacterCommand>() : diceRollModel.CharacterCommands,
+                    RulesetCommands = diceRollModel.RulesetCommands == null ? new List<RulesetCommand>() : diceRollModel.RulesetCommands,
                     CharactersCharacterStats = diceRollModel.CharactersCharacterStats == null ? new List<CharactersCharacterStat>() : diceRollModel.CharactersCharacterStats,// Utilities.GetCharCharStatViewModelList( diceRollModel.CharactersCharacterStats,_characterStatChoiceService),
-                    CustomDices= Utilities.MapCustomDice(diceRollModel.CustomDices),
-                    DefaultDices= diceRollModel.DefaultDices,
-                    DiceTrays= diceRollModel.DiceTrays,
-                    IsGmAccessingPlayerCharacter= diceRollModel.IsGmAccessingPlayerCharacter,
-                     RuleSet= diceRollModel.RuleSet,
+                    CustomDices = Utilities.MapCustomDice(diceRollModel.CustomDices),
+                    DefaultDices = diceRollModel.DefaultDices,
+                    DiceTrays = diceRollModel.DiceTrays,
+                    IsGmAccessingPlayerCharacter = diceRollModel.IsGmAccessingPlayerCharacter,
+                    RuleSet = diceRollModel.RuleSet,
                 };
 
 
@@ -1875,6 +1881,91 @@ namespace RPGSmithApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        #endregion
+
+        [HttpPost("updateLastCommand")]
+        public async Task<IActionResult> UpdateLastCommand([FromBody] UpdateRulesetLastCommand model)
+        {
+            if (ModelState.IsValid)
+            {
+                //var result = await _CharacterService.UpdateLastCommand(model.CharacterId, model.LastCommand, model.LastCommandResult, model.LastCommandValues);
+                return Ok(await _ruleSetService.UpdateLastCommand(model.RuleSetId, model.LastCommand, model.LastCommandResult, model.LastCommandValues, model.LastCommandTotal));
+            }
+
+            return BadRequest(Utilities.ModelStateError(ModelState));
+        }
+
+        #region RuleSet Command
+
+        [HttpPost("createCommand")]
+        [ProducesResponseType(200, Type = typeof(string))]
+        public async Task<IActionResult> CreateCommand([FromBody] RulesetCommandViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (_ruleSetService.CheckDuplicateRulesetCommand(model.Name.Trim(), model.RulesetId).Result)
+                    return BadRequest("'" + model.Name + "' Duplicate Ruleset Command");
+
+                var _characterCommand = Mapper.Map<RulesetCommand>(model);
+
+                _characterCommand.CreatedOn = DateTime.Now;
+                _characterCommand.UpdatedOn = DateTime.Now;
+                var result = await _ruleSetService.Create(_characterCommand);
+
+                try
+                {
+                    if (model.RulesetId > 0)
+                    {
+                        await _ruleSetService.UpdateRulesetLastCommand(new RuleSet
+                        {
+                            RuleSetId = model.RulesetId,
+                            LastCommand = model.Command,
+                            LastCommandResult = model.CommandResult,
+                            LastCommandValues = model.LastCommandValues
+                        });
+                    }
+                }
+                catch { }
+
+                return Ok();
+            }
+            return BadRequest(Utilities.ModelStateError(ModelState));
+        }
+
+        [HttpPost("updateCommand")]
+        [ProducesResponseType(200, Type = typeof(string))]
+        public async Task<IActionResult> UpdateCommand([FromBody] RulesetCommandViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (_ruleSetService.CheckDuplicateRulesetCommand(model.Name.Trim(), model.RulesetId, model.RulesetCommandId).Result)
+                    return BadRequest("Duplicate Ruleset Command");
+
+                var _rulesetCommand = Mapper.Map<RulesetCommand>(model);
+
+                _rulesetCommand.UpdatedOn = DateTime.Now;
+                var result = await _ruleSetService.Update(_rulesetCommand);
+
+                try
+                {
+                    if (model.RulesetId > 0)
+                    {
+                        await _ruleSetService.UpdateRulesetLastCommand(new RuleSet
+                        {
+                            RuleSetId = model.RulesetId,
+                            LastCommand = model.Command,
+                            LastCommandResult = model.CommandResult,
+                            LastCommandValues = model.LastCommandValues
+                        });
+                    }
+                }
+                catch { }
+
+                return Ok();
+            }
+            return BadRequest(Utilities.ModelStateError(ModelState));
+        }
+
         #endregion
     }
 }

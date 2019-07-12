@@ -174,6 +174,25 @@ namespace RPGSmithApp.Controllers
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
+        [HttpPost("SaveVisibilityDetails")]
+        public async Task<IActionResult> SaveVisibilityDetails([FromBody] Combatant_ViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _combatService.SaveVisibilityDetails(model);
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+
+            }
+            return BadRequest(Utilities.ModelStateError(ModelState));
+        }
+        
         private string GetUserId()
         {
             string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();

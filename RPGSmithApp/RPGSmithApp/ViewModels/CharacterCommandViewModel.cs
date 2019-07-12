@@ -25,4 +25,24 @@ namespace RPGSmithApp.ViewModels
         public DateTime? UpdatedOn { get; set; }
         public bool? IsDeleted { get; set; }
     }
+
+    public class RulesetCommandViewModel
+    {
+        public int RulesetCommandId { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Command { get; set; }
+        public string CommandResult { get; set; }
+        public string LastCommandValues { get; set; }
+
+
+        public int RulesetId { get; set; }
+
+        public DateTime? CreatedOn { get; set; }
+        public DateTime? UpdatedOn { get; set; }
+        public bool? IsDeleted { get; set; }
+    }
 }

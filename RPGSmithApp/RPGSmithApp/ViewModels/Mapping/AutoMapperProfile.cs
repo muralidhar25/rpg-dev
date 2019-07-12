@@ -123,7 +123,7 @@ namespace RPGSmithApp.ViewModels
 
             CreateMap<SpellViewModel, Spell>();
             CreateMap<CharacterCommandViewModel, CharacterCommand>();
-
+            CreateMap<RulesetCommandViewModel, RulesetCommand>();
 
             CreateMap<CharactersCharacterStat, CharactersCharacterStatViewModel>()
                  .ForMember(d => d.SelectedCharacterChoices, map => map.Ignore()

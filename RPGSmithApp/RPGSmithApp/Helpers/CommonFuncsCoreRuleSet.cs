@@ -212,7 +212,11 @@ namespace RPGSmithApp.Helpers
                 Price = ruleSet.Price,
                 IsAlreadyPurchased = _ruleSetService.IsRulesetAlreadyPurchased(ruleSet.RuleSetId, UserID),
                 IsDicePublicRoll = ruleSet.IsDicePublicRoll,
-                IsCombatStarted = _ruleSetService.IsCombatStarted(ruleSet.RuleSetId)
+                IsCombatStarted = _ruleSetService.IsCombatStarted(ruleSet.RuleSetId),
+                LastCommand=ruleSet.LastCommand,
+                LastCommandResult=ruleSet.LastCommandResult,
+                LastCommandTotal=ruleSet.LastCommandTotal,
+                LastCommandValues=ruleSet.LastCommandValues
             };
 
             return ruleSetViewModel;

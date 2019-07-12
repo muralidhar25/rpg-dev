@@ -120,6 +120,7 @@ export class CharacterCommandService extends EndpointFactory {
     if (_view === 'EDIT') {
       charactersFormModal = {
         characterCommandId: _modelVM.characterCommandId,
+        rulesetCommandId: _modelVM.rulesetCommandId,
         name: _modelVM.name,
         command: _modelVM.command,
         characterId: _modelVM.characterId,

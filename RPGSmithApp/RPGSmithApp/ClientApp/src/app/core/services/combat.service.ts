@@ -104,7 +104,7 @@ export class CombatService extends EndpointFactory {
 
   saveVisibilityDetails<T>(currentItem): Observable<T> {
     debugger
-    let saveInitiativeUrl = `${this.SaveCombatantList}`
+    let saveInitiativeUrl = `${this.SaveVisibilityDetails}`
     return this.http.post<T>(saveInitiativeUrl, JSON.stringify(currentItem),  this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.saveVisibilityDetails(currentItem));
