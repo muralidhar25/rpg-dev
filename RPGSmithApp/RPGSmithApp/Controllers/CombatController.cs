@@ -192,7 +192,25 @@ namespace RPGSmithApp.Controllers
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
-        
+        [HttpPost("SaveMonsterHealth")]
+        public async Task<IActionResult> SaveMonsterHealth([FromBody] Monster model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _combatService.SaveMonsterHealth(model);
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+
+            }
+            return BadRequest(Utilities.ModelStateError(ModelState));
+        }
+
         private string GetUserId()
         {
             string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();

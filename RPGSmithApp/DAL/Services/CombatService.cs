@@ -82,6 +82,7 @@ namespace DAL.Services
                             isCharacterSpellEnabled = Row["IsSpellEnabled"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsSpellEnabled"]),
                             isCharacterItemEnabled = Row["IsItemEnabled"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsItemEnabled"]),
                             isCharacterBuffAndEffectEnabled = Row["IsBuffAndEffectEnabled"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsBuffAndEffectEnabled"]),
+                            
 
                         };
 
@@ -180,6 +181,7 @@ namespace DAL.Services
                                             CharacterAbilities = new List<CharacterAbility>(),
                                             CharacterSpells = new List<CharacterSpell>(),
                                             CharacterBuffAndEffects = new List<CharacterBuffAndEffect>(),
+                                            CharacterDescription= CombatantRow["C_Description"] == DBNull.Value ? string.Empty : CombatantRow["C_Description"].ToString()
                                         };
                                         if (ds.Tables[4].Rows.Count > 0)
                                         {
@@ -273,6 +275,8 @@ namespace DAL.Services
                                             MonsterAbilitys = new List<MonsterAbility>(),
                                             MonsterSpells = new List<MonsterSpell>(),
                                             MonsterBuffAndEffects = new List<MonsterBuffAndEffect>(),
+                                            Description= CombatantRow["M_Description"] == DBNull.Value ? null : CombatantRow["M_Description"].ToString(),
+                                            Stats= CombatantRow["M_Stats"] == DBNull.Value ? null : CombatantRow["M_Stats"].ToString(),
                                         };
                                         if (ds.Tables[8].Rows.Count > 0)
                                         {
@@ -652,6 +656,15 @@ namespace DAL.Services
             {
                 combatant.VisibilityColor =model.VisibilityColor;
                 combatant.VisibleToPc = model.VisibleToPc;
+                _context.SaveChanges();
+            }
+        }
+        public void SaveMonsterHealth(Monster model) {
+            var monster = _context.Monsters.Where(x => x.MonsterId == model.MonsterId).FirstOrDefault();
+            if (monster!=null)
+            {
+                monster.HealthCurrent = model.HealthCurrent;
+                monster.HealthMax = model.HealthMax;
                 _context.SaveChanges();
             }
         }

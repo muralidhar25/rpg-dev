@@ -20,5 +20,6 @@ namespace DAL.Services
         void Combat_Start(int combatId, bool start);
         void SwitchCombatantTurn(Combatant_ViewModel model, int roundCount);
         void SaveVisibilityDetails(Combatant_ViewModel model);
+        void SaveMonsterHealth(Monster model);
     }
 }
