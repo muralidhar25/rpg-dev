@@ -1,5 +1,5 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
-import { Router,  ActivatedRoute } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import 'rxjs/add/operator/switchMap';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { PlatformLocation } from '@angular/common';
@@ -30,24 +30,24 @@ import { RulesetService } from '../../../core/services/ruleset.service';
 })
 export class EditMonsterComponent implements OnInit {
 
-    title: string;
-    showWebButtons: boolean = false;
-    isLoading = false;
+  title: string;
+  showWebButtons: boolean = false;
+  isLoading = false;
   _ruleSetId: number;
   monsterFormModal: MonsterTemplate = new MonsterTemplate();
-    fileToUpload: File = null;
-    commandList = [];
-    metatags = [];
-    level = [];
-    fromDetail: boolean = false;
-    numberRegex = "^(?:[0-9]+(?:\.[0-9]{0,8})?)?$";// "^((\\+91-?)|0)?[0-9]{0,2}$"; 
-    uploadFromBing: boolean = false;
-    bingImageUrl: string;
-    bingImageExt: string;
-    imageChangedEvent: any = '';
-    croppedImage: any = '';
-    imageErrorMessage: string = ImageError.MESSAGE;
-    defaultImageSelected: string = '';
+  fileToUpload: File = null;
+  commandList = [];
+  metatags = [];
+  level = [];
+  fromDetail: boolean = false;
+  numberRegex = "^(?:[0-9]+(?:\.[0-9]{0,8})?)?$";// "^((\\+91-?)|0)?[0-9]{0,2}$"; 
+  uploadFromBing: boolean = false;
+  bingImageUrl: string;
+  bingImageExt: string;
+  imageChangedEvent: any = '';
+  croppedImage: any = '';
+  imageErrorMessage: string = ImageError.MESSAGE;
+  defaultImageSelected: string = '';
   button: string
   buffAndEffectsList = [];
   selectedBuffAndEffects = [];
@@ -62,173 +62,202 @@ export class EditMonsterComponent implements OnInit {
 
   monsterItemsList = [];
   selectedMonsterItems = [];
+  monsterDetail: any;
 
-    options(placeholder?: string): Object {
-        return Utilities.optionsFloala(160, placeholder);
-    }
+  options(placeholder?: string): Object {
+    return Utilities.optionsFloala(160, placeholder);
+  }
 
-    constructor(
-        private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
-        public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
-      private sharedService: SharedService, private commonService: CommonService,
-      private monsterTemplateService: MonsterTemplateService, 
-      private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService, private rulesetService: RulesetService, 
-    
-     private location: PlatformLocation) {
-      location.onPopState(() => this.modalService.hide(1)); 
-        this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
+  constructor(
+    private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
+    public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
+    private sharedService: SharedService, private commonService: CommonService,
+    private monsterTemplateService: MonsterTemplateService,
+    private fileUploadService: FileUploadService, private imageSearchService: ImageSearchService, private rulesetService: RulesetService,
 
-        this.sharedService.getCommandData().subscribe(diceCommand => {
-            
-          if (diceCommand.parentIndex === -1) {
-            this.monsterFormModal.command = diceCommand.command;
-          }  else if (diceCommand.parentIndex === -2) {
-            this.monsterFormModal.initiativeCommand = diceCommand.command;
-          }else {
-            if (this.monsterFormModal.monsterTemplateCommandVM.length > 0) {
-              this.monsterFormModal.monsterTemplateCommandVM.forEach(item => {
-                var index = this.monsterFormModal.monsterTemplateCommandVM.indexOf(item);
-                        if (index === diceCommand.parentIndex) {
-                          this.monsterFormModal.monsterTemplateCommandVM[index].command = diceCommand.command;
-                        }
-                    });
-                }
+    private location: PlatformLocation) {
+    location.onPopState(() => this.modalService.hide(1));
+    this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
+
+    this.sharedService.getCommandData().subscribe(diceCommand => {
+
+      if (diceCommand.parentIndex === -1) {
+        this.monsterFormModal.command = diceCommand.command;
+      } else if (diceCommand.parentIndex === -2) {
+        this.monsterFormModal.initiativeCommand = diceCommand.command;
+      } else {
+        if (this.monsterFormModal.monsterTemplateCommandVM.length > 0) {
+          this.monsterFormModal.monsterTemplateCommandVM.forEach(item => {
+            var index = this.monsterFormModal.monsterTemplateCommandVM.indexOf(item);
+            if (index === diceCommand.parentIndex) {
+              this.monsterFormModal.monsterTemplateCommandVM[index].command = diceCommand.command;
             }
-        });
-    }
-
-    ngOnInit() {
-        setTimeout(() => {
-            
-            this.fromDetail = this.bsModalRef.content.fromDetail == undefined ? false : this.bsModalRef.content.fromDetail;
-            this.title = this.bsModalRef.content.title;
-            let _view = this.button = this.bsModalRef.content.button;
-          let _monsterVM = this.bsModalRef.content.monsterVM;
-         
-          this.monsterFormModal = this.monsterTemplateService.MonsterModelData(_monsterVM, _view);
-          this.selectedBuffAndEffects = this.monsterFormModal.monsterTemplateBuffAndEffects.map(x => { return x.buffAndEffect; });
-          this.selectedAbilities = this.monsterFormModal.monsterTemplateAbilities.map(x => { return x.buffAndEffect; });
-          this.selectedAssociateMonsterTemplates = this.monsterFormModal.monsterTemplateAssociateMonsterTemplates.map(x => { return x.buffAndEffect; });
-          this.selectedSpells = this.monsterFormModal.monsterTemplateSpells.map(x => { return x.buffAndEffect; });
-
-            try {
-                if (this.monsterFormModal.metatags !== '' && this.monsterFormModal.metatags !== undefined)
-                    this.metatags = this.monsterFormModal.metatags.split(",");
-                
-            } catch (err) { }
-            this.bingImageUrl = this.monsterFormModal.imageUrl;
-            if (!this.monsterFormModal.imageUrl) {
-              this.imageSearchService.getDefaultImage<any>('item')
-                    .subscribe(data => {
-                        this.defaultImageSelected = data.imageUrl.result
-                    }, error => {
-                    },
-                        () => { });
-            }
-            if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
-                this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.monsterFormModal.ruleSetId;
-            }
-            else {
-                this._ruleSetId = this.monsterFormModal.ruleSetId;
-            }
-          this.rulesetService.getCustomDice(this._ruleSetId)
-            .subscribe(data => {
-              
-              this.customDices = data
-
-            }, error => {
-              let Errors = Utilities.ErrorDetail("", error);
-              if (Errors.sessionExpire) {
-                this.authService.logout(true);
-              }
-            })
-            this.initialize();
-        }, 0);
-    }
-
-    private initialize() {
-        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-        if (user == null)
-            this.authService.logout();
-        else {
-          if (this.monsterFormModal.monsterTemplateId) {
-            this.isLoading = true;
-            this.monsterTemplateService.getMonsterAssociateRecords_sp<any>(this.monsterFormModal.monsterId, this._ruleSetId)
-              .subscribe(data => {
- 
-                this.monsterFormModal.monsterTemplateCommandVM = data.monsterTemplateCommands;
-                this.buffAndEffectsList = data.buffAndEffectsList;
-                this.selectedBuffAndEffects = data.selectedBuffAndEffects;
-                this.abilitiesList = data.abilityList;
-                this.selectedAbilities = data.selectedAbilityList;
-                this.spellsList = data.spellList;
-                this.selectedSpells = data.selectedSpellList;
-                this.associateMonsterTemplateList = data.monsterTemplatesList;
-                this.selectedAssociateMonsterTemplates = data.selectedMonsterTemplates;
-                this.monsterItemsList = data.itemMasterList;
-                this.selectedMonsterItems = data.selectedItemMasters;
-               
-                this.isLoading = false;
-              }, error => { }, () => { this.isLoading = false; });
-          }
-          else {
-            this.isLoading = true;
-            this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(0, this._ruleSetId)
-              .subscribe(data => {
-              //  this.monsterFormModal.abilityCommandVM = data;
-                this.buffAndEffectsList = data.buffAndEffectsList;
-                this.abilitiesList = data.abilityList;
-                this.spellsList = data.spellList;
-                this.associateMonsterTemplateList = data.monsterTemplatesList;
-               // this.selectedBuffAndEffects = data.selectedBuffAndEffects;
-                this.isLoading = false;
-              }, error => { }, () => { this.isLoading = false; });
-          }
+          });
         }
+      }
+    });
+  }
+
+  ngOnInit() {
+    setTimeout(() => {
+      let _view = this.button = this.bsModalRef.content.button;
+      let monsterId = this.bsModalRef.content.monsterVM
+      if (this.bsModalRef.content.isFromCombatScreen) {
+        this.isLoading = true;
+        this.monsterTemplateService.getMonsterById<any>(monsterId)
+          .subscribe(data => {
+            this.isLoading = false;
+            if (data) {
+              data.addToCombatTracker = true;
+              this.monsterFormModal = this.monsterTemplateService.MonsterModelData(data, _view);
+              this.preInitialize()
+            }
+          }, error => {
+            this.isLoading = false;
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
+            }
+          }, () => { });
+      } else {
+        this.preInitialize();
+      }
+
+    }, 0);
+  }
+
+  preInitialize() {
+    this.fromDetail = this.bsModalRef.content.fromDetail == undefined ? false : this.bsModalRef.content.fromDetail;
+    this.title = this.bsModalRef.content.title;
+    let _view = this.button = this.bsModalRef.content.button;
+    if (!this.bsModalRef.content.isFromCombatScreen) {
+      let _monsterVM = this.bsModalRef.content.monsterVM;
+      this.monsterFormModal = this.monsterTemplateService.MonsterModelData(_monsterVM, _view);
     }
 
-    addCommand(monsterTemplateCommand: any): void {
-      let _monsterTemplateCommand = monsterTemplateCommand == undefined ? [] : monsterTemplateCommand;
-      _monsterTemplateCommand.push({ monsterTemplateCommandId: 0, command: '', name: '' });
-      this.monsterFormModal.monsterTemplateCommandVM = _monsterTemplateCommand;
-    }
+    this.selectedBuffAndEffects = this.monsterFormModal.monsterTemplateBuffAndEffects.map(x => { return x.buffAndEffect; });
+    this.selectedAbilities = this.monsterFormModal.monsterTemplateAbilities.map(x => { return x.buffAndEffect; });
+    this.selectedAssociateMonsterTemplates = this.monsterFormModal.monsterTemplateAssociateMonsterTemplates.map(x => { return x.buffAndEffect; });
+    this.selectedSpells = this.monsterFormModal.monsterTemplateSpells.map(x => { return x.buffAndEffect; });
 
-    removeCommand(command: any): void {
-        this.monsterFormModal.monsterTemplateCommandVM
-            .splice(this.monsterFormModal.monsterTemplateCommandVM.indexOf(command), 1);
-    }
+    try {
+      if (this.monsterFormModal.metatags !== '' && this.monsterFormModal.metatags !== undefined)
+        this.metatags = this.monsterFormModal.metatags.split(",");
 
-    //setEnableDisable(checked: boolean) {
-    //    this.monsterFormModal.isEnabled = checked;
-    //}
-
-    //setCharacterEnableDisable(checked: boolean) {
-    //    this.isFromCharacterAbilityEnable = checked;
-    //}
-
-    fileInput(_files: FileList) {
-        this.fileToUpload = _files.item(0);
-        this.showWebButtons = false;
+    } catch (err) { }
+    this.bingImageUrl = this.monsterFormModal.imageUrl;
+    if (!this.monsterFormModal.imageUrl) {
+      this.imageSearchService.getDefaultImage<any>('item')
+        .subscribe(data => {
+          this.defaultImageSelected = data.imageUrl.result
+        }, error => {
+        },
+          () => { });
     }
-    removeTag(tagData: any, tag: any, index: number): void {
-        tagData.splice(index, 1);
+    if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
+      this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.monsterFormModal.ruleSetId;
     }
-    validateImageSize() {
-        if ((this.fileToUpload.size / 1024) <= 250) {
-            return true;
+    else {
+      this._ruleSetId = this.monsterFormModal.ruleSetId;
+    }
+    this.rulesetService.getCustomDice(this._ruleSetId)
+      .subscribe(data => {
+
+        this.customDices = data
+
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
         }
-        return false;
+      })
+    this.initialize();
+  }
+
+  private initialize() {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      if (this.monsterFormModal.monsterTemplateId) {
+        this.isLoading = true;
+        this.monsterTemplateService.getMonsterAssociateRecords_sp<any>(this.monsterFormModal.monsterId, this._ruleSetId)
+          .subscribe(data => {
+
+            this.monsterFormModal.monsterTemplateCommandVM = data.monsterTemplateCommands;
+            this.buffAndEffectsList = data.buffAndEffectsList;
+            this.selectedBuffAndEffects = data.selectedBuffAndEffects;
+            this.abilitiesList = data.abilityList;
+            this.selectedAbilities = data.selectedAbilityList;
+            this.spellsList = data.spellList;
+            this.selectedSpells = data.selectedSpellList;
+            this.associateMonsterTemplateList = data.monsterTemplatesList;
+            this.selectedAssociateMonsterTemplates = data.selectedMonsterTemplates;
+            this.monsterItemsList = data.itemMasterList;
+            this.selectedMonsterItems = data.selectedItemMasters;
+
+            this.isLoading = false;
+          }, error => { }, () => { this.isLoading = false; });
+      }
+      else {
+        this.isLoading = true;
+        this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(0, this._ruleSetId)
+          .subscribe(data => {
+            //  this.monsterFormModal.abilityCommandVM = data;
+            this.buffAndEffectsList = data.buffAndEffectsList;
+            this.abilitiesList = data.abilityList;
+            this.spellsList = data.spellList;
+            this.associateMonsterTemplateList = data.monsterTemplatesList;
+            // this.selectedBuffAndEffects = data.selectedBuffAndEffects;
+            this.isLoading = false;
+          }, error => { }, () => { this.isLoading = false; });
+      }
     }
+  }
+
+  addCommand(monsterTemplateCommand: any): void {
+    let _monsterTemplateCommand = monsterTemplateCommand == undefined ? [] : monsterTemplateCommand;
+    _monsterTemplateCommand.push({ monsterTemplateCommandId: 0, command: '', name: '' });
+    this.monsterFormModal.monsterTemplateCommandVM = _monsterTemplateCommand;
+  }
+
+  removeCommand(command: any): void {
+    this.monsterFormModal.monsterTemplateCommandVM
+      .splice(this.monsterFormModal.monsterTemplateCommandVM.indexOf(command), 1);
+  }
+
+  //setEnableDisable(checked: boolean) {
+  //    this.monsterFormModal.isEnabled = checked;
+  //}
+
+  //setCharacterEnableDisable(checked: boolean) {
+  //    this.isFromCharacterAbilityEnable = checked;
+  //}
+
+  fileInput(_files: FileList) {
+    this.fileToUpload = _files.item(0);
+    this.showWebButtons = false;
+  }
+  removeTag(tagData: any, tag: any, index: number): void {
+    tagData.splice(index, 1);
+  }
+  validateImageSize() {
+    if ((this.fileToUpload.size / 1024) <= 250) {
+      return true;
+    }
+    return false;
+  }
   validateSubmit(monsterTemplate: MonsterTemplate) {
-        //if (ability.maxNumberOfUses && ability.currentNumberOfUses) {
-        //    if (ability.currentNumberOfUses > ability.maxNumberOfUses) {
-        //        this.alertService.showMessage("", "Current number of uses cannot be greater than max number of uses.", MessageSeverity.error);
-        //        return false;
-        //    }
-        //}
+    //if (ability.maxNumberOfUses && ability.currentNumberOfUses) {
+    //    if (ability.currentNumberOfUses > ability.maxNumberOfUses) {
+    //        this.alertService.showMessage("", "Current number of uses cannot be greater than max number of uses.", MessageSeverity.error);
+    //        return false;
+    //    }
+    //}
 
     //monsterTemplate.isFromCharacterAbilityId = ability.isFromCharacterAbilityId;
-    
+
     if (monsterTemplate.ruleSetId === 0 || monsterTemplate.ruleSetId === undefined)
       monsterTemplate.ruleSetId = this._ruleSetId;
 
@@ -244,306 +273,306 @@ export class EditMonsterComponent implements OnInit {
     monsterTemplate.monsterTemplateAssociateMonsterTemplateVM = this.selectedAssociateMonsterTemplates.map(x => {
       return { associateMonsterTemplateId: x.monsterTemplateId, monsterTemplateId: monsterTemplate.monsterTemplateId };
     });
-    
+
     monsterTemplate.monsterTemplateItemVM = this.selectedMonsterItems.map(x => {
-      return { itemId: x.itemId ? x.itemId:0, itemMasterId: x.itemMasterId, monsterTemplateId: monsterTemplate.monsterTemplateId };
+      return { itemId: x.itemId ? x.itemId : 0, itemMasterId: x.itemMasterId, monsterTemplateId: monsterTemplate.monsterTemplateId };
     });
 
-        this.isLoading = true;
+    this.isLoading = true;
     let _msg = monsterTemplate.monsterTemplateId === 0 || monsterTemplate.monsterTemplateId === undefined ? "Creating Monster.." : "Updating Monster..";
     if (this.monsterFormModal.view === VIEW.DUPLICATE) _msg = "Duplicating Monster..";
-        this.alertService.startLoadingMessage("", _msg);
+    this.alertService.startLoadingMessage("", _msg);
 
-        let tagsValue = this.metatags.map(x => {
-            if (x.value == undefined) return x;
-            else return x.value;
-        });
+    let tagsValue = this.metatags.map(x => {
+      if (x.value == undefined) return x;
+      else return x.value;
+    });
     monsterTemplate.metatags = tagsValue.join(', ');
 
-        let levelValue = this.level.map(x => {
-            if (x.value == undefined) return x;
-            else return x.value;
-        });
-       
-
-        if (this.fileToUpload != null) {
-          this.fileUpload(monsterTemplate);
-        }
-        else if (this.bingImageUrl !== this.monsterFormModal.imageUrl) {
-            try {
-                var regex = /(?:\.([^.]+))?$/;
-                var extension = regex.exec(this.monsterFormModal.imageUrl)[1];
-                extension = extension ? extension : 'jpg';
-            } catch{ }
-          this.fileUploadFromBing(this.monsterFormModal.imageUrl, extension, monsterTemplate);
-        }
-        else {
-          this.submit(monsterTemplate);
-        }
+    let levelValue = this.level.map(x => {
+      if (x.value == undefined) return x;
+      else return x.value;
+    });
 
 
+    if (this.fileToUpload != null) {
+      this.fileUpload(monsterTemplate);
     }
+    else if (this.bingImageUrl !== this.monsterFormModal.imageUrl) {
+      try {
+        var regex = /(?:\.([^.]+))?$/;
+        var extension = regex.exec(this.monsterFormModal.imageUrl)[1];
+        extension = extension ? extension : 'jpg';
+      } catch{ }
+      this.fileUploadFromBing(this.monsterFormModal.imageUrl, extension, monsterTemplate);
+    }
+    else {
+      this.submit(monsterTemplate);
+    }
+
+
+  }
   submitForm(monsterTemplate: MonsterTemplate) {
     this.validateSubmit(monsterTemplate);
-    }
+  }
   private fileUploadFromBing(file: string, ext: string, monsterTemplate: any) {
-        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-        if (user == null)
-            this.authService.logout(true);
-        else {
-            this.fileUploadService.fileUploadFromURL<any>(user.id, file, ext)
-                .subscribe(
-                    data => {
-                        this.monsterFormModal.imageUrl = data.ImageUrl;
-                        //this.rulesetFormModal.thumbnailUrl = data.ThumbnailUrl;
-                      this.submit(monsterTemplate);
-                    },
-                    error => {
-                        let Errors = Utilities.ErrorDetail('Error', error);
-                        if (Errors.sessionExpire) {
-                            this.authService.logout(true);
-                        } else this.submit(monsterTemplate);
-                    });
-        }
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout(true);
+    else {
+      this.fileUploadService.fileUploadFromURL<any>(user.id, file, ext)
+        .subscribe(
+          data => {
+            this.monsterFormModal.imageUrl = data.ImageUrl;
+            //this.rulesetFormModal.thumbnailUrl = data.ThumbnailUrl;
+            this.submit(monsterTemplate);
+          },
+          error => {
+            let Errors = Utilities.ErrorDetail('Error', error);
+            if (Errors.sessionExpire) {
+              this.authService.logout(true);
+            } else this.submit(monsterTemplate);
+          });
     }
+  }
   private fileUpload(monsterTemplate: any) {
-        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-        if (user == null)
-            this.authService.logout(true);
-        else {
-            this.fileUploadService.fileUploadByUser<any>(user.id, this.fileToUpload)
-                .subscribe(
-                    data => {
-                        this.monsterFormModal.imageUrl = data.ImageUrl;
-                      this.submit(monsterTemplate);
-                    },
-                    error => {
-                        let Errors = Utilities.ErrorDetail('Error', error);
-                        if (Errors.sessionExpire) {
-                            this.authService.logout(true);
-                        } else this.submit(monsterTemplate);
-                    });
-        }
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout(true);
+    else {
+      this.fileUploadService.fileUploadByUser<any>(user.id, this.fileToUpload)
+        .subscribe(
+          data => {
+            this.monsterFormModal.imageUrl = data.ImageUrl;
+            this.submit(monsterTemplate);
+          },
+          error => {
+            let Errors = Utilities.ErrorDetail('Error', error);
+            if (Errors.sessionExpire) {
+              this.authService.logout(true);
+            } else this.submit(monsterTemplate);
+          });
     }
+  }
 
   private fileUploadOLD(monsterTemplate: any) {
-        //file upload
-        this.monsterTemplateService.fileUpload(this.fileToUpload)
-            .subscribe(
-                data => {
-                  monsterTemplate.imageUrl = data.ImageUrl;
-                  this.submit(monsterTemplate);
-                },
-                error => {
-                  this.submit(monsterTemplate);
-                });
-    }
+    //file upload
+    this.monsterTemplateService.fileUpload(this.fileToUpload)
+      .subscribe(
+        data => {
+          monsterTemplate.imageUrl = data.ImageUrl;
+          this.submit(monsterTemplate);
+        },
+        error => {
+          this.submit(monsterTemplate);
+        });
+  }
 
   private submit(monsterTemplate: any) {
     debugger
-        if (this.monsterFormModal.view === VIEW.DUPLICATE) {
-          this.duplicateMonster(monsterTemplate);
-        }
-        //else if (this.monsterFormModal.view === VIEW.EDIT && this.isFromCharacter) {
-        //this.enableAbility(this.isFromCharacterAbilityId, this.isFromCharacterAbilityEnable);
-        //}
-        else {
-            if (this.defaultImageSelected && !this.monsterFormModal.imageUrl) {
-              let model = Object.assign({}, monsterTemplate)
-                model.imageUrl = this.defaultImageSelected
-              this.addEditMonster(model);
-            } else {
-              this.addEditMonster(monsterTemplate);
-            }
-            
-        }
+    if (this.monsterFormModal.view === VIEW.DUPLICATE) {
+      this.duplicateMonster(monsterTemplate);
     }
+    //else if (this.monsterFormModal.view === VIEW.EDIT && this.isFromCharacter) {
+    //this.enableAbility(this.isFromCharacterAbilityId, this.isFromCharacterAbilityEnable);
+    //}
+    else {
+      if (this.defaultImageSelected && !this.monsterFormModal.imageUrl) {
+        let model = Object.assign({}, monsterTemplate)
+        model.imageUrl = this.defaultImageSelected
+        this.addEditMonster(model);
+      } else {
+        this.addEditMonster(monsterTemplate);
+      }
+
+    }
+  }
 
   private addEditMonster(modal: MonsterTemplate) {
-        modal.ruleSetId = this._ruleSetId;
+    modal.ruleSetId = this._ruleSetId;
     this.isLoading = true;
     this.monsterTemplateService.createMonster<any>(modal)
-            .subscribe(
-                data => {
-                    this.isLoading = false;
-                  this.alertService.stopLoadingMessage();
-                  let message = modal.monsterTemplateId == 0 || modal.monsterTemplateId === undefined ? "Monster has been created successfully." : modal.name + " has been updated.";
-                    if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
-                    this.alertService.showMessage(message, "", MessageSeverity.success);
-                    this.close();
-                    
-                    //if (this.fromDetail)
-                    // this.router.navigate(['/ruleset/ability-details', modal.abilityId]);
-                    if (this.fromDetail) {
-                      if (data) {
-                        debugger;
-                            let id = data;
-                            if (!isNaN(parseInt(id))) {
-                                this.router.navigate(['/ruleset/monster-details', id]);
-                              this.event.emit({ monsterTemplateId: id });
-                                //this.sharedService.updateItemMasterDetailList(true);
-                            }
-                            else {
-                                
-                                 this.sharedService.updateMonsterList(true);
-                            }
-                        }
-                        else {
-                          this.sharedService.updateMonsterList(true);
-                        }
-                    }
-                    else {
-                      this.sharedService.updateMonsterList(true);
-                    }
-                },
-                error => {
-                    this.isLoading = false;
-                    this.alertService.stopLoadingMessage();
-                  let _message = modal.monsterTemplateId == 0 || modal.monsterTemplateId === undefined ? "Unable to Create " : "Unable to Update ";
-                    let Errors = Utilities.ErrorDetail(_message, error);
-                    if (Errors.sessionExpire) {
-                        //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-                        this.authService.logout(true);
-                    }
-                    else
-                        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-                },
-        );
-    }
+      .subscribe(
+        data => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let message = modal.monsterTemplateId == 0 || modal.monsterTemplateId === undefined ? "Monster has been created successfully." : modal.name + " has been updated.";
+          if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
+          this.alertService.showMessage(message, "", MessageSeverity.success);
+          this.close();
+
+          //if (this.fromDetail)
+          // this.router.navigate(['/ruleset/ability-details', modal.abilityId]);
+          if (this.fromDetail) {
+            if (data) {
+              debugger;
+              let id = data;
+              if (!isNaN(parseInt(id))) {
+                this.router.navigate(['/ruleset/monster-details', id]);
+                this.event.emit({ monsterTemplateId: id });
+                //this.sharedService.updateItemMasterDetailList(true);
+              }
+              else {
+
+                this.sharedService.updateMonsterList(true);
+              }
+            }
+            else {
+              this.sharedService.updateMonsterList(true);
+            }
+          }
+          else {
+            this.sharedService.updateMonsterList(true);
+          }
+        },
+        error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let _message = modal.monsterTemplateId == 0 || modal.monsterTemplateId === undefined ? "Unable to Create " : "Unable to Update ";
+          let Errors = Utilities.ErrorDetail(_message, error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        },
+      );
+  }
 
   private duplicateMonster(modal: MonsterTemplate) {
-        modal.ruleSetId = this._ruleSetId;
-        this.isLoading = true;
-        //this.monsterTemplateService.duplicateMonster<any>(modal)
-        //    .subscribe(
-        //        data => {
-        //            this.isLoading = false;
-        //            this.alertService.stopLoadingMessage();
-        //          let message = "Monster has been duplicated successfully.";
-        //            if (data !== "" && data !== null && data !== undefined) message = data;
-        //            this.alertService.showMessage(message, "", MessageSeverity.success);
-        //            this.close();
-        //          this.sharedService.updateMonsterList(true);
-        //            //this.sharedService.UpdateCharacterAbilityList(true);
-        //            if (this.fromDetail)
-        //                this.router.navigate(['/ruleset/monster-template', this._ruleSetId]);
-                    
-        //        },
-        //        error => {
-        //            this.isLoading = false;
-        //            this.alertService.stopLoadingMessage();
-        //            let _message = "Unable to Duplicate ";
-        //            let Errors = Utilities.ErrorDetail(_message, error);
-        //            if (Errors.sessionExpire) {
-        //                this.authService.logout(true);
-        //            }
-        //            else
-        //                this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+    modal.ruleSetId = this._ruleSetId;
+    this.isLoading = true;
+    //this.monsterTemplateService.duplicateMonster<any>(modal)
+    //    .subscribe(
+    //        data => {
+    //            this.isLoading = false;
+    //            this.alertService.stopLoadingMessage();
+    //          let message = "Monster has been duplicated successfully.";
+    //            if (data !== "" && data !== null && data !== undefined) message = data;
+    //            this.alertService.showMessage(message, "", MessageSeverity.success);
+    //            this.close();
+    //          this.sharedService.updateMonsterList(true);
+    //            //this.sharedService.UpdateCharacterAbilityList(true);
+    //            if (this.fromDetail)
+    //                this.router.navigate(['/ruleset/monster-template', this._ruleSetId]);
 
-        //        });
-    }
+    //        },
+    //        error => {
+    //            this.isLoading = false;
+    //            this.alertService.stopLoadingMessage();
+    //            let _message = "Unable to Duplicate ";
+    //            let Errors = Utilities.ErrorDetail(_message, error);
+    //            if (Errors.sessionExpire) {
+    //                this.authService.logout(true);
+    //            }
+    //            else
+    //                this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
 
-    //private enableAbility(characterAbilityId: number, isEnabled: boolean) {
+    //        });
+  }
 
-    //    this.isLoading = true;
-    //    let enableTxt = isEnabled ? 'Enable' : 'Disable';
-    //    this.alertService.startLoadingMessage("", enableTxt + " an Ability");
+  //private enableAbility(characterAbilityId: number, isEnabled: boolean) {
 
-    //    this.charactermonsterTemplateService.toggleEnableCharacterAbility(characterAbilityId)
-    //        .subscribe(
-    //            data => {
-    //                this.isLoading = false;
-    //                this.alertService.stopLoadingMessage();
-    //                this.alertService.showMessage("Ability has been " + enableTxt + "d successfully.", "", MessageSeverity.success);
-    //                this.bsModalRef.hide();
-    //                this.sharedService.UpdateCharacterAbilityList(true);
-    //            },
-    //            error => {
-    //                this.isLoading = false;
-    //                this.alertService.stopLoadingMessage();
-    //                let Errors = Utilities.ErrorDetail("Unable to " + enableTxt, error);
-    //                if (Errors.sessionExpire) {
-    //                    this.authService.logout(true);
-    //                }
-    //                else
-    //                    this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-    //            });
-    //}
+  //    this.isLoading = true;
+  //    let enableTxt = isEnabled ? 'Enable' : 'Disable';
+  //    this.alertService.startLoadingMessage("", enableTxt + " an Ability");
 
-    showButtons() {
-        this.showWebButtons = true;
-    }
+  //    this.charactermonsterTemplateService.toggleEnableCharacterAbility(characterAbilityId)
+  //        .subscribe(
+  //            data => {
+  //                this.isLoading = false;
+  //                this.alertService.stopLoadingMessage();
+  //                this.alertService.showMessage("Ability has been " + enableTxt + "d successfully.", "", MessageSeverity.success);
+  //                this.bsModalRef.hide();
+  //                this.sharedService.UpdateCharacterAbilityList(true);
+  //            },
+  //            error => {
+  //                this.isLoading = false;
+  //                this.alertService.stopLoadingMessage();
+  //                let Errors = Utilities.ErrorDetail("Unable to " + enableTxt, error);
+  //                if (Errors.sessionExpire) {
+  //                    this.authService.logout(true);
+  //                }
+  //                else
+  //                    this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+  //            });
+  //}
 
-    hideButtons() {
-        this.showWebButtons = false;
-    }
+  showButtons() {
+    this.showWebButtons = true;
+  }
 
-    readTempUrl(event: any) {
-        if (event.target.files && event.target.files[0]) {
-            var reader = new FileReader();
+  hideButtons() {
+    this.showWebButtons = false;
+  }
 
-            reader.onload = (event: any) => {
-                this.monsterFormModal.imageUrl = event.target.result;
-            }
+  readTempUrl(event: any) {
+    if (event.target.files && event.target.files[0]) {
+      var reader = new FileReader();
 
-            reader.readAsDataURL(event.target.files[0]);
-            this.imageChangedEvent = event;
-        }
-    }
-    close() {
-        this.bsModalRef.hide();
-        this.destroyModalOnInit();
-    }
+      reader.onload = (event: any) => {
+        this.monsterFormModal.imageUrl = event.target.result;
+      }
 
-    openDiceModal(index, command) {
-        this.bsModalRef = this.modalService.show(DiceComponent, {
-            class: 'modal-primary modal-md dice-screen',
-            ignoreBackdropClick: true,
-            keyboard: false
-        });
-        this.bsModalRef.content.title = "Dice";
-        this.bsModalRef.content.parentCommand = command;
-        this.bsModalRef.content.inputIndex = index;
-        this.bsModalRef.content.characterId = 0;
-        this.bsModalRef.content.rulesetId = this._ruleSetId;
+      reader.readAsDataURL(event.target.files[0]);
+      this.imageChangedEvent = event;
     }
+  }
+  close() {
+    this.bsModalRef.hide();
+    this.destroyModalOnInit();
+  }
 
-    private destroyModalOnInit(): void {
-        try {
-            this.modalService.hide(1);
-            document.body.classList.remove('modal-open');
-            //$(".modal-backdrop").remove();
-        } catch (err) { }
-    }
-    cropImage(img: string, OpenDirectPopup: boolean, view: string) {
-        this.bsModalRef = this.modalService.show(ImageSelectorComponent, {
-            class: 'modal-primary modal-sm selectPopUpModal',
-            ignoreBackdropClick: true,
-            keyboard: false
-        });
-        this.bsModalRef.content.title = 'Monster';
-        this.bsModalRef.content.image = img;
-        this.bsModalRef.content.view = view;
-        this.bsModalRef.content.errorImage = '../assets/images/DefaultImages/Item.jpg';
-        //this.bsModalRef.content.imageChangedEvent = this.imageChangedEvent; //base 64 || URL
-        this.bsModalRef.content.event.subscribe(data => {
-            this.monsterFormModal.imageUrl = data.base64;
-            this.fileToUpload = data.file;
-            this.showWebButtons = false;
-        });
-    }
-    fileChangeEvent(event: any): void {
-        this.imageChangedEvent = event;
-    }
-    imageCropped(image: string) {
-        this.croppedImage = image;
-    }
-    imageLoaded() {
-        // show cropper
-    }
-    loadImageFailed() {
-        // show message
-    }
+  openDiceModal(index, command) {
+    this.bsModalRef = this.modalService.show(DiceComponent, {
+      class: 'modal-primary modal-md dice-screen',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.parentCommand = command;
+    this.bsModalRef.content.inputIndex = index;
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.rulesetId = this._ruleSetId;
+  }
+
+  private destroyModalOnInit(): void {
+    try {
+      this.modalService.hide(1);
+      document.body.classList.remove('modal-open');
+      //$(".modal-backdrop").remove();
+    } catch (err) { }
+  }
+  cropImage(img: string, OpenDirectPopup: boolean, view: string) {
+    this.bsModalRef = this.modalService.show(ImageSelectorComponent, {
+      class: 'modal-primary modal-sm selectPopUpModal',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Monster';
+    this.bsModalRef.content.image = img;
+    this.bsModalRef.content.view = view;
+    this.bsModalRef.content.errorImage = '../assets/images/DefaultImages/Item.jpg';
+    //this.bsModalRef.content.imageChangedEvent = this.imageChangedEvent; //base 64 || URL
+    this.bsModalRef.content.event.subscribe(data => {
+      this.monsterFormModal.imageUrl = data.base64;
+      this.fileToUpload = data.file;
+      this.showWebButtons = false;
+    });
+  }
+  fileChangeEvent(event: any): void {
+    this.imageChangedEvent = event;
+  }
+  imageCropped(image: string) {
+    this.croppedImage = image;
+  }
+  imageLoaded() {
+    // show cropper
+  }
+  loadImageFailed() {
+    // show message
+  }
   public event: EventEmitter<any> = new EventEmitter();
   get buffAndEffectsSettings() {
     return {
@@ -639,7 +668,7 @@ export class EditMonsterComponent implements OnInit {
   }
   isValidSingleNumberCommand(command) {
     if (command) {
-      if (command.indexOf(' and')>-1) {
+      if (command.indexOf(' and') > -1) {
         return false;
       }
       if (command.indexOf('"') > -1) {
@@ -647,7 +676,7 @@ export class EditMonsterComponent implements OnInit {
       }
     }
     try {
-      let number = DiceService.rollDiceExternally(this.alertService, command, this.customDices );
+      let number = DiceService.rollDiceExternally(this.alertService, command, this.customDices);
       if (isNaN(number)) {
         return false;
       }
@@ -662,7 +691,7 @@ export class EditMonsterComponent implements OnInit {
   selectedBuffAndEffectsListChanged(item) {
   }
   SelectBuffAndEffects() {
-   
+
     this.bsModalRef = this.modalService.show(AddItemMonsterComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -675,7 +704,7 @@ export class EditMonsterComponent implements OnInit {
 
     this.bsModalRef.content.rulesetID = this._ruleSetId;
     this.bsModalRef.content.SelectedItemsList = this.SelectedItemsList;
-   // this.bsModalRef.content.characterID = this.characterId;
+    // this.bsModalRef.content.characterID = this.characterId;
 
     this.bsModalRef.content.event.subscribe(data => {
       if (data) {
@@ -685,10 +714,10 @@ export class EditMonsterComponent implements OnInit {
 
   }
   ArmorClassReroll(monsterFormModal: MonsterTemplate) {
-    
+
     let command = monsterFormModal.armorClass;
     if (command) {
-      let res = DiceService.rollDiceExternally(this.alertService, command, this.customDices );
+      let res = DiceService.rollDiceExternally(this.alertService, command, this.customDices);
       if (isNaN(res)) {
         this.monsterFormModal.monsterArmorClass = 0;
       }
@@ -699,15 +728,15 @@ export class EditMonsterComponent implements OnInit {
     else {
       this.monsterFormModal.monsterArmorClass = 0;
     }
-    
+
   }
   ChallangeRatingReroll(monsterFormModal: MonsterTemplate) {
-    
+
     let command = monsterFormModal.challangeRating;
     if (command) {
-      let res = DiceService.rollDiceExternally(this.alertService, command, this.customDices );
+      let res = DiceService.rollDiceExternally(this.alertService, command, this.customDices);
       if (isNaN(res)) {
-        this.monsterFormModal.monsterChallangeRating= 0;
+        this.monsterFormModal.monsterChallangeRating = 0;
       }
       else {
         this.monsterFormModal.monsterChallangeRating = res;
@@ -718,10 +747,10 @@ export class EditMonsterComponent implements OnInit {
     }
   }
   XPReroll(monsterFormModal: MonsterTemplate) {
-    
+
     let command = monsterFormModal.xPValue;
     if (command) {
-      let res = DiceService.rollDiceExternally(this.alertService, command, this.customDices );
+      let res = DiceService.rollDiceExternally(this.alertService, command, this.customDices);
       if (isNaN(res)) {
         this.monsterFormModal.monsterXPValue = 0;
       }
@@ -759,9 +788,9 @@ export class EditMonsterComponent implements OnInit {
         return true;
       }
     }
-    
+
     return false;
-    
+
 
   }
 }

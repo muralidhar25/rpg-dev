@@ -14,7 +14,7 @@
             <label _ngcontent-c6="" for="newItemWeight">Health Current</label>
             <div class="input-group">
               <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDown(-1)" (mouseup)="mouseUp()" (click)="decrementhealthcurr()"></button>
-              <input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" (change)="changeHealthCurrent($event)" [(ngModel)]="combatInfo.healthCurrent" name="currentValue">
+              <input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" (change)="changeHealthCurrent($event)" [(ngModel)]="healthCurrent" name="currentValue">
               <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (mousedown)="mouseDown(1)" (mouseup)="mouseUp()" (click)="incrementhealthcurr()"></button>
             </div>
           </div>
@@ -26,7 +26,7 @@
             <label _ngcontent-c6="" for="newItemWeight">Health Max</label>
             <div class="input-group">
               <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDownHealthMax(-1)" (mouseup)="mouseUpHealthMax()" (click)="decrementHealthMax()"></button>
-              <input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" (change)="changeHealthMax($event)" [(ngModel)]="combatInfo.healthMax" name="currentValue">
+              <input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" (change)="changeHealthMax($event)" [(ngModel)]="healthMax" name="currentValue">
               <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (mousedown)="mouseDownHealthMax(1)" (mouseup)="mouseUpHealthMax()" (click)="incrementHealthMax()"></button>
             </div>
           </div>

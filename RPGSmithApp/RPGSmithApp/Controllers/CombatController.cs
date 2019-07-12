@@ -131,7 +131,7 @@ namespace RPGSmithApp.Controllers
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
         [HttpPost("RemoveMonsters")]
-        public async Task<IActionResult> RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster)
+        public async Task<IActionResult> RemoveMonsters([FromBody] List<MonsterIds> monsterIds, bool deleteMonster)
         {
             try
             {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { CounterTile } from '../../../core/models/tiles/counter-tile.model';
 import { CharacterTile } from '../../../core/models/tiles/character-tile.model';
@@ -23,8 +23,7 @@ import { RulesetService } from '../../../core/services/ruleset.service';
   styleUrls: ['./update-combat-health.component.scss']
 })
 export class CombatHealthComponent implements OnInit {
-
- 
+   
   value: number;
   isLoading: boolean = false;
   isMouseDown: boolean = false;
@@ -34,6 +33,10 @@ export class CombatHealthComponent implements OnInit {
   combatInfo: any;
   addToCombat: boolean = false;
   customDices: CustomDice[] = [];
+  healthCurrent: any;
+  healthMax: any;
+
+  public event: EventEmitter<any> = new EventEmitter();
 
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
     private colorService: ColorService, private localStorage: LocalStoreManager, private counterTileService: CounterTileService,
@@ -49,8 +52,10 @@ export class CombatHealthComponent implements OnInit {
 
       //combatInfo
       this.combatInfo = this.bsModalRef.content.combatInfo;
+      this.healthCurrent=this.combatInfo.monster.healthCurrent;
+      this.healthMax=this.combatInfo.monster.healthMax;
       
-      this.value = 1;
+      //this.value = 1;
       
       //this.rulesetService.getCustomDice(this.monsterInfo.ruleSetId)
       //  .subscribe(data => {
@@ -84,7 +89,11 @@ export class CombatHealthComponent implements OnInit {
 
  
 
-  saveCounter() {}
+  saveCounter() {
+    this.combatInfo.monster.healthCurrent = this.healthCurrent;
+    this.combatInfo.monster.healthMax = this.healthMax;
+    this.event.emit(this.combatInfo);
+  }
 
 
 

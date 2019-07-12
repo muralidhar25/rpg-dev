@@ -28,6 +28,8 @@ import { AppService1 } from '../../app.service';
 import { MonsterTemplateService } from '../../core/services/monster-template.service';
 import { CastComponent } from '../../shared/cast/cast.component';
 import { DropItemsMonsterComponent } from '../../records/monster/drop-items-monster/drop-items-monster.component';
+import { EditMonsterComponent } from '../../records/monster/edit-monster/edit-monster.component';
+import { CreateMonsterTemplateComponent } from '../../records/monster-template/create-monster-template/create-monster-template.component';
 
 @Component({
   selector: 'app-combat',
@@ -59,6 +61,8 @@ export class CombatComponent implements OnInit {
   isCharacterSpellEnabled: boolean = false;
   isCharacterAbilityEnabled: boolean = false;
   CombatId: number = 0;
+  delayResumeTurn: boolean = false;
+
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
   }
@@ -440,17 +444,31 @@ export class CombatComponent implements OnInit {
 
   }
 
-  //combatant Detail Pane Methods
-  command() { }
-  dropItems() { }
-  health() { }
+  // Detail Pane Methods
+  //command() {
+  //  if (this.currentCombatantDetail) {
+  //    this.monsterCommand(this.currentCombatantDetail);
+  //  }
+  //}
+
+  //dropItems() {
+  //  if (this.currentCombatantDetail) {
+  //    this.dropMonsterItems(this.currentCombatantDetail);
+  //  }
+  //}
+
+  DelayResumeTurn() {
+    this.delayResumeTurn = !this.delayResumeTurn;
+  }
 
   // Remove monster from Detail pane
-  remove() {
-    if (this.currentCombatantDetail) {
-      this.RemoveOrDeleteMonster(this.currentCombatantDetail, false);
-    }
-  }
+  //remove() {
+  //  if (this.currentCombatantDetail) {
+  //    let message = "Are you sure you want to remove this monster?";
+  //    this.alertService.showDialog(message,
+  //      DialogType.confirm, () => this.RemoveOrDeleteMonster(item, false), null, 'Yes', 'No');
+  //  }
+  //}
 
   monsterAdd() {
     console.log('monsterAdd');
@@ -552,7 +570,7 @@ export class CombatComponent implements OnInit {
     });
   }
   progressHealth(item) {
-    console.log('progressHealth', item);
+    //console.log('progressHealth', item);
     //CombatHealthComponent
     this.bsModalRef = this.modalService.show(CombatHealthComponent, {
       class: 'modal-primary modal-custom',
@@ -561,6 +579,10 @@ export class CombatComponent implements OnInit {
     });
     this.bsModalRef.content.title = "Health";
     this.bsModalRef.content.combatInfo = item;
+    this.bsModalRef.content.event.subscribe(result => {
+      item.monster.healthCurrent = result.monster.healthCurrent;
+      item.monster.healthMax = result.monster.healthMax;
+    });
   }
   buffclicked(buffs) {
     console.log('buffclicked', buffs);
@@ -607,7 +629,7 @@ export class CombatComponent implements OnInit {
   }
 
   //Monster Side
-  monsterCommand(item) {    let _monster = Object.assign({}, item.monster);    //if (_monster.monsterId) {    //  this.monsterTemplateService.getMonsterCommands_sp<any>(_monster.monsterId)    //    .subscribe(data => {    //      if (data.length > 0) {    //        this.bsModalRef = this.modalService.show(CastComponent, {    //          class: 'modal-primary modal-md',    //          ignoreBackdropClick: true,    //          keyboard: false    //        });    //        this.bsModalRef.content.title = "Monster Commands";    //        this.bsModalRef.content.ListCommands = data;    //        this.bsModalRef.content.Command = _monster;    //        this.bsModalRef.content.Character = new Characters();    //        this.bsModalRef.content.recordType = 'monster';    //        this.bsModalRef.content.recordId = _monster.monsterId;    //      } else {    //        this.useCommand(_monster);    //      }    //    }, error => { }, () => { });    //}
+  monsterCommand(item) {    let _monster = Object.assign({}, item.monster);    if (_monster.monsterId) {      this.monsterTemplateService.getMonsterCommands_sp<any>(_monster.monsterId)        .subscribe(data => {          if (data.length > 0) {            this.bsModalRef = this.modalService.show(CastComponent, {              class: 'modal-primary modal-md',              ignoreBackdropClick: true,              keyboard: false            });            this.bsModalRef.content.title = "Monster Commands";            this.bsModalRef.content.ListCommands = data;            this.bsModalRef.content.Command = _monster;            this.bsModalRef.content.Character = new Characters();            this.bsModalRef.content.recordType = 'monster';            this.bsModalRef.content.recordId = _monster.monsterId;          } else {            this.useCommand(_monster);          }        }, error => { }, () => { });    }
   }  useCommand(monster: any) {    let msg = "The command value for " + monster.name      + " Monster has not been provided. Edit this record to input one.";    if (monster.command == undefined || monster.command == null || monster.command == '') {      this.alertService.showDialog(msg, DialogType.alert, () => this.useMonsterHelper(monster));    } else {      //TODO      this.useMonsterHelper(monster);    }  }  private useMonsterHelper(monster: any) {    this.bsModalRef = this.modalService.show(DiceRollComponent, {      class: 'modal-primary modal-md',      ignoreBackdropClick: true,      keyboard: false    });    this.bsModalRef.content.title = "Dice";    this.bsModalRef.content.tile = -2;    this.bsModalRef.content.characterId = 0;    this.bsModalRef.content.character = new Characters();    this.bsModalRef.content.command = monster.command;    if (monster.hasOwnProperty("monsterId")) {      this.bsModalRef.content.recordName = monster.name;      this.bsModalRef.content.recordImage = monster.imageUrl;      this.bsModalRef.content.recordType = 'monster';      this.bsModalRef.content.recordId = monster.monsterId;    }    this.bsModalRef.content.event.subscribe(result => {    });  }
   dropMonsterItems(item) {
     let monster = item.monster;
@@ -635,16 +657,17 @@ export class CombatComponent implements OnInit {
     //this.bsModalRef.content.rulesetID = 0;
   }
   removeCurrentMonster(item) {
-    this.RemoveOrDeleteMonster(item, false);
+    let message = "Are you sure you want to remove this monster?";
+    this.alertService.showDialog(message,
+      DialogType.confirm, () => this.RemoveOrDeleteMonster(item, false), null, 'Yes', 'No');
   }
 
   RemoveOrDeleteMonster(item, del) {
     this.isLoading = true;
     let _msg = ' Removing Monster ....';
     this.alertService.startLoadingMessage("", _msg);
-    let monstersToRemove = item.map((m) => {
-      return { monsterId: m.monster.monsterId };
-    });
+    let monstersToRemove = [];
+    monstersToRemove.push({ monsterId: item.monster.monsterId });
     this.combatService.removeMonsters(monstersToRemove, del)
       .subscribe(data => {
         this.alertService.stopLoadingMessage();
@@ -663,13 +686,44 @@ export class CombatComponent implements OnInit {
   }
 
   editMonster(item) {
-    console.log('dropMonsterItems');
+    this.bsModalRef = this.modalService.show(EditMonsterComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Edit Monster';
+    this.bsModalRef.content.button = 'UPDATE';
+    this.bsModalRef.content.monsterVM = item.monster.monsterId;
+    this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.isFromCombatScreen = true;
   }
   duplicateMonster(item) {
-    console.log('duplicate');
+    this.monsterTemplateService.getMonsterTemplateCount(this.ruleSetId)
+      .subscribe(data => {
+        if (data < 2000) {
+          this.bsModalRef = this.modalService.show(CreateMonsterTemplateComponent, {
+            class: 'modal-primary modal-custom',
+            ignoreBackdropClick: true,
+            keyboard: false
+          });
+          this.bsModalRef.content.title = 'Duplicate New Monster';
+          this.bsModalRef.content.button = 'DUPLICATE';
+          this.bsModalRef.content.ruleSetId = this.ruleSetId;
+          this.bsModalRef.content.monsterTemplateVM = item.monster.monsterId;
+          this.bsModalRef.content.isCreatingFromMonsterScreen = true;
+          this.bsModalRef.content.isCreatingFromMonsterDetailScreen = true;
+          this.bsModalRef.content.isFromCombatScreen = true;
+        }
+        else {
+          this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
+        }
+      }, error => { }, () => { });
   }
   deleteMonster(item) {
-    this.RemoveOrDeleteMonster(item, true);
+    let message = "Are you sure you want to delete this monster?";
+    this.alertService.showDialog(message,
+      DialogType.confirm, () => this.RemoveOrDeleteMonster(item, true), null, 'Yes', 'No');
+    ;
   }
 
   //startcombat

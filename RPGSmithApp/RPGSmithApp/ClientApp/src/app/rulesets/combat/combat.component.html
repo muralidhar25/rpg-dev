@@ -346,14 +346,14 @@
                     <li class="action-button-icon-orange icon-Gen-CharStat crsr-pointer" (click)="redirectToChracterstat(item);$event.stopPropagation()"></li>
                   </ul>
                   <ul class="action-buttons-table" id="'item'+i" *ngIf="item.type == combatItemsType.MONSTER">
-                    <li class="action-button-icon-orange icon-CharStat-Command" *ngIf="!item.hidebtns" (click)="monsterCommand(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Rec-Drop" *ngIf="!item.hidebtns" (click)="dropMonsterItems(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-red icon-Rec-Remove" *ngIf="!item.hidebtns" (click)="removeCurrentMonster(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-black icon-Gen-LT" *ngIf="!item.hidebtns" (click)="Hidebtns(item)"></li>
-                    <li class="action-button-icon-black icon-Gen-GT" *ngIf="item.hidebtns" (click)="showbtns(item)"></li>
-                    <li class="action-button-icon-orange icon-Gen-Edit" *ngIf="item.hidebtns" (click)="editMonster(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Gen-Duplicate" *ngIf="item.hidebtns" (click)="duplicateMonster(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-red icon-Gen-Trash" *ngIf="item.hidebtns" (click)="deleteMonster(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-CharStat-Command crsr-pointer" *ngIf="!item.hidebtns" (click)="monsterCommand(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-Rec-Drop crsr-pointer" *ngIf="!item.hidebtns" (click)="dropMonsterItems(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-red icon-Rec-Remove crsr-pointer" *ngIf="!item.hidebtns" (click)="removeCurrentMonster(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-black icon-Gen-LT crsr-pointer" *ngIf="!item.hidebtns" (click)="Hidebtns(item)"></li>
+                    <li class="action-button-icon-black icon-Gen-GT crsr-pointer" *ngIf="item.hidebtns" (click)="showbtns(item)"></li>
+                    <li class="action-button-icon-orange icon-Gen-Edit crsr-pointer" *ngIf="item.hidebtns" (click)="editMonster(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-Gen-Duplicate crsr-pointer" *ngIf="item.hidebtns" (click)="duplicateMonster(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-red icon-Gen-Trash crsr-pointer" *ngIf="item.hidebtns" (click)="deleteMonster(item);$event.stopPropagation()"></li>
                   </ul>
                 </div>
               </td>
@@ -449,20 +449,39 @@
         <span *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">{{currentCombatantDetail?.character?.characterName}}</span>
         <span *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">{{currentCombatantDetail?.monster?.name}}</span>
       </div>
-      <div class="row mt-3 ">
+      <!--Monster-->
+      <div class="row mt-3" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
-          <button class="btn-orange btn-block icon-CharStat-Command" (click)="command()"> Command</button>
+          <button class="btn-orange btn-block icon-CharStat-Command crsr-pointer" (click)="monsterCommand(currentCombatantDetail)"> Command</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
-          <button class="btn-orange btn-block icon-Rec-Drop" (click)="dropItems()"> Drop Items</button>
+          <button class="btn-orange btn-block icon-Rec-Drop crsr-pointer" (click)="dropMonsterItems(currentCombatantDetail)"> Drop Items</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
-          <button class="btn-black btn-block  icon-Health" (click)="health()"> Health</button>
+          <button class="btn-black btn-block icon-Delay crsr-pointer" *ngIf="delayResumeTurn" (click)="DelayResumeTurn()"> Delay Turn</button>
+          <button class="btn-black btn-block icon-Delay crsr-pointer" *ngIf="!delayResumeTurn" (click)="DelayResumeTurn()"> Resume Turn</button>
         </div>
-        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
-          <button class="btn-red btn-block icon-Rec-Remove" (click)="remove()"> Remove</button>
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
+          <button class="btn-red btn-block icon-Rec-Remove crsr-pointer" (click)="removeCurrentMonster(currentCombatantDetail)"> Remove</button>
         </div>
       </div>
+      <!--Character-->
+      <div class="row mt-3" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
+          <button class="btn-orange btn-block icon-Gen-Items" [ngClass]="isCharacterItemEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToItem(currentCombatantDetail)"> Inventory</button>
+        </div>
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
+          <button class="btn-orange btn-block icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToSpell(currentCombatantDetail)"> Spells</button>
+        </div>
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
+          <button class="btn-black btn-block icon-Delay crsr-pointer" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" *ngIf="delayResumeTurn" (click)="DelayResumeTurn()"> Delay Turn</button>
+          <button class="btn-black btn-block icon-Delay crsr-pointer" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" *ngIf="!delayResumeTurn" (click)="DelayResumeTurn()"> Resume Turn</button>
+        </div>
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
+          <button class="btn-orange btn-block icon-Gen-Ability crsr-pointer" [ngClass]="isCharacterAbilityEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToAbility(currentCombatantDetail)"> Abilities</button>
+        </div>
+      </div>
+
       <div class="combat-accordian">
         <accordion>
           <accordion-group #p1 heading="STATS">
