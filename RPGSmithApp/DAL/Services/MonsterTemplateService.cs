@@ -981,7 +981,53 @@ namespace DAL.Services
 
             return _monsterTemplateCommand;
         }
+        public List<MonsterCommand> SP_GetMonsterCommands(int monsterId) {
+            List<MonsterCommand> _monsterCommand = new List<MonsterCommand>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
 
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("Monster_GetCommands", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@MonsterId", monsterId);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    MonsterCommand _cmd = new MonsterCommand();
+
+                    _cmd.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
+                    _cmd.MonsterId = row["MonsterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterId"].ToString());
+                    _cmd.MonsterCommandId = row["MonsterCommandId"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonsterCommandId"].ToString());
+                    _cmd.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
+                    _cmd.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+
+                    _monsterCommand.Add(_cmd);
+                }
+            }
+
+            return _monsterCommand;
+        }
         public SP_AssociateForMonsterTemplate SP_GetAssociateRecords(int monsterTemplateId, int rulesetId, int MonsterID)
         {
             SP_AssociateForMonsterTemplate res = new SP_AssociateForMonsterTemplate();
@@ -1884,6 +1930,8 @@ namespace DAL.Services
                         RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString()),
                         XPValue = row["XPValue"] == DBNull.Value ? 0 : Convert.ToInt32(row["XPValue"].ToString()),
                         ItemsCount = row["ItemsCount"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemsCount"].ToString()),
+                        Command= row["Command"] == DBNull.Value ? null : row["Command"].ToString(),
+                        CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString()
                     };
 
 

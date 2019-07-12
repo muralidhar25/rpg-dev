@@ -60,5 +60,6 @@ namespace DAL.Services
         Task<RulesetCommand> Create(RulesetCommand item);
         Task<RuleSet> UpdateRulesetLastCommand(RuleSet _ruleSet);
         Task<RulesetCommand> Update(RulesetCommand item);
+        bool IsCombatStarted(int RuleSetId);
     }
 }

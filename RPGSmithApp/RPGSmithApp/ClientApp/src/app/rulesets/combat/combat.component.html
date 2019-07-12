@@ -296,8 +296,8 @@
                 (click)="frameClick(item)">
               <td>
                 <div class="white-section name-data text-ellipsis" (click)="nameClicked(item);$event.stopPropagation()"
-                     popover="{{item.type == combatItemsType.CHARACTER ? item?.character?.characterName :item?.monster?.name}}" triggers="hover">
-                  {{item.type == combatItemsType.CHARACTER?item?.character?.characterName:item?.monster?.name}}
+                     popover="{{item?.type == combatItemsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}" triggers="hover">
+                  {{item?.type == combatItemsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}
                 </div>
               </td>
               <td>
@@ -333,22 +333,22 @@
               </td>
               <td>
                 <div class="white-section">
-                  <span class="visible-icon" *ngIf="item.visibility" [style.background]="item.visibilityColor" (click)="changeColor(item);$event.stopPropagation()"></span>
-                  <span class="visible-icon unvisible-Circle" [style.border-color]="item.visibilityColor" *ngIf="!item.visibility" (click)="changeColor(item);$event.stopPropagation()"></span>
+                  <span class="visible-icon" *ngIf="item.visibleToPc" [style.background]="item.visibilityColor" (click)="changeColor(item);$event.stopPropagation()"></span>
+                  <span class="visible-icon unvisible-Circle" [style.border-color]="item.visibilityColor" *ngIf="!item.visibleToPc" (click)="changeColor(item);$event.stopPropagation()"></span>
                 </div>
               </td>
               <td>
                 <div class="white-section">
-                  <ul class="action-buttons-table" *ngIf="item.type == 'character'">
-                    <li class="action-button-icon-orange icon-Gen-Items" (click)="redirectToItem(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Rec-Magical" (click)="redirectTospell(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Gen-Ability" (click)="redirectToAbility(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Gen-CharStat" (click)="redirectToChracterstat(item);$event.stopPropagation()"></li>
+                  <ul class="action-buttons-table" *ngIf="item.type == combatItemsType.CHARACTER">
+                    <li class="action-button-icon-orange icon-Gen-Items" [ngClass]="isCharacterItemEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && (redirectToItem(item));$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterSpellEnabled && (redirectTospell(item));$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-Gen-Ability" [ngClass]="isCharacterAbilityEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterAbilityEnabled && (redirectToAbility(item));$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-Gen-CharStat crsr-pointer" (click)="redirectToChracterstat(item);$event.stopPropagation()"></li>
                   </ul>
-                  <ul class="action-buttons-table" id="'item'+i" *ngIf="item.type == 'monster'">
+                  <ul class="action-buttons-table" id="'item'+i" *ngIf="item.type == combatItemsType.MONSTER">
                     <li class="action-button-icon-orange icon-CharStat-Command" *ngIf="!item.hidebtns" (click)="monsterCommand(item);$event.stopPropagation()"></li>
                     <li class="action-button-icon-orange icon-Rec-Drop" *ngIf="!item.hidebtns" (click)="dropMonsterItems(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-red icon-Rec-Remove" *ngIf="!item.hidebtns" (click)="removeMonster(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-red icon-Rec-Remove" *ngIf="!item.hidebtns" (click)="removeCurrentMonster(item);$event.stopPropagation()"></li>
                     <li class="action-button-icon-black icon-Gen-LT" *ngIf="!item.hidebtns" (click)="Hidebtns(item)"></li>
                     <li class="action-button-icon-black icon-Gen-GT" *ngIf="item.hidebtns" (click)="showbtns(item)"></li>
                     <li class="action-button-icon-orange icon-Gen-Edit" *ngIf="item.hidebtns" (click)="editMonster(item);$event.stopPropagation()"></li>
@@ -446,7 +446,8 @@
     <div class="col-12 col-md-4">
       <div class="image-section-combat">
         <img [src]="combatantDetails.image" />
-        <span>{{combatantName}}</span>
+        <span *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">{{currentCombatantDetail?.character?.characterName}}</span>
+        <span *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">{{currentCombatantDetail?.monster?.name}}</span>
       </div>
       <div class="row mt-3 ">
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
@@ -458,7 +459,7 @@
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
           <button class="btn-black btn-block  icon-Health" (click)="health()"> Health</button>
         </div>
-        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
           <button class="btn-red btn-block icon-Rec-Remove" (click)="remove()"> Remove</button>
         </div>
       </div>
