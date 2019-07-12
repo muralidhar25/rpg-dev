@@ -20,7 +20,7 @@ export class CombatService extends EndpointFactory {
   private readonly GetCombatMonstersList: string = this.configurations.baseUrl + "/api/Combat/GetCombat_MonstersList";
   private readonly Combat_RemoveMonsters: string = this.configurations.baseUrl + "/api/Combat/RemoveMonsters";
   private readonly SaveCombatantTurn: string = this.configurations.baseUrl + "/api/Combat/SaveCombatantTurn";
-  private readonly SaveVisibilityDetails: string = this.configurations.baseUrl + "api/Combat/SaveVisibilityDetails";
+  private readonly SaveVisibilityDetails: string = this.configurations.baseUrl + "/api/Combat/SaveVisibilityDetails";
 
   private readonly Combat_Start: string = this.configurations.baseUrl + "/api/Combat/Combat_Start";
   

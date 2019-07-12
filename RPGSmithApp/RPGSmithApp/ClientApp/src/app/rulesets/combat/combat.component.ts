@@ -629,7 +629,34 @@ export class CombatComponent implements OnInit {
   }
 
   //Monster Side
-  monsterCommand(item) {    let _monster = Object.assign({}, item.monster);    if (_monster.monsterId) {      this.monsterTemplateService.getMonsterCommands_sp<any>(_monster.monsterId)        .subscribe(data => {          if (data.length > 0) {            this.bsModalRef = this.modalService.show(CastComponent, {              class: 'modal-primary modal-md',              ignoreBackdropClick: true,              keyboard: false            });            this.bsModalRef.content.title = "Monster Commands";            this.bsModalRef.content.ListCommands = data;            this.bsModalRef.content.Command = _monster;            this.bsModalRef.content.Character = new Characters();            this.bsModalRef.content.recordType = 'monster';            this.bsModalRef.content.recordId = _monster.monsterId;          } else {            this.useCommand(_monster);          }        }, error => { }, () => { });    }
+  monsterCommand(item) {
+
+    let _monster = Object.assign({}, item.monster);
+
+    if (_monster.monsterId) {
+      this.monsterTemplateService.getMonsterCommands_sp<any>(_monster.monsterId)
+        .subscribe(data => {
+          if (data.length > 0) {
+            this.bsModalRef = this.modalService.show(CastComponent, {
+              class: 'modal-primary modal-md',
+              ignoreBackdropClick: true,
+              keyboard: false
+            });
+
+            this.bsModalRef.content.title = "Monster Commands";
+            this.bsModalRef.content.ListCommands = data;
+            this.bsModalRef.content.Command = _monster;
+            this.bsModalRef.content.Character = new Characters();
+            this.bsModalRef.content.recordType = 'monster';
+            this.bsModalRef.content.recordId = _monster.monsterId;
+          } else {
+
+            this.useCommand(_monster);
+          }
+        }, error => { }, () => { });
+    }
+
+
   }
   useCommand(monster: any) {
 
