@@ -607,8 +607,69 @@ export class CombatComponent implements OnInit {
   }
 
   //Monster Side
-  monsterCommand(item) {    let _monster = Object.assign({}, item.monster);    //if (_monster.monsterId) {    //  this.monsterTemplateService.getMonsterCommands_sp<any>(_monster.monsterId)    //    .subscribe(data => {    //      if (data.length > 0) {    //        this.bsModalRef = this.modalService.show(CastComponent, {    //          class: 'modal-primary modal-md',    //          ignoreBackdropClick: true,    //          keyboard: false    //        });    //        this.bsModalRef.content.title = "Monster Commands";    //        this.bsModalRef.content.ListCommands = data;    //        this.bsModalRef.content.Command = _monster;    //        this.bsModalRef.content.Character = new Characters();    //        this.bsModalRef.content.recordType = 'monster';    //        this.bsModalRef.content.recordId = _monster.monsterId;    //      } else {    //        this.useCommand(_monster);    //      }    //    }, error => { }, () => { });    //}
-  }  useCommand(monster: any) {    let msg = "The command value for " + monster.name      + " Monster has not been provided. Edit this record to input one.";    if (monster.command == undefined || monster.command == null || monster.command == '') {      this.alertService.showDialog(msg, DialogType.alert, () => this.useMonsterHelper(monster));    } else {      //TODO      this.useMonsterHelper(monster);    }  }  private useMonsterHelper(monster: any) {    this.bsModalRef = this.modalService.show(DiceRollComponent, {      class: 'modal-primary modal-md',      ignoreBackdropClick: true,      keyboard: false    });    this.bsModalRef.content.title = "Dice";    this.bsModalRef.content.tile = -2;    this.bsModalRef.content.characterId = 0;    this.bsModalRef.content.character = new Characters();    this.bsModalRef.content.command = monster.command;    if (monster.hasOwnProperty("monsterId")) {      this.bsModalRef.content.recordName = monster.name;      this.bsModalRef.content.recordImage = monster.imageUrl;      this.bsModalRef.content.recordType = 'monster';      this.bsModalRef.content.recordId = monster.monsterId;    }    this.bsModalRef.content.event.subscribe(result => {    });  }
+  monsterCommand(item) {
+
+    let _monster = Object.assign({}, item.monster);
+
+
+    if (_monster.monsterId) {
+      this.monsterTemplateService.getMonsterCommands_sp<any>(_monster.monsterId)
+        .subscribe(data => {
+          if (data.length > 0) {
+            this.bsModalRef = this.modalService.show(CastComponent, {
+              class: 'modal-primary modal-md',
+              ignoreBackdropClick: true,
+              keyboard: false
+            });
+
+            this.bsModalRef.content.title = "Monster Commands";
+            this.bsModalRef.content.ListCommands = data;
+            this.bsModalRef.content.Command = _monster;
+            this.bsModalRef.content.Character = new Characters();
+            this.bsModalRef.content.recordType = 'monster';
+            this.bsModalRef.content.recordId = _monster.monsterId;
+          } else {
+
+            this.useCommand(_monster);
+          }
+        }, error => { }, () => { });
+    }
+
+
+  }
+  useCommand(monster: any) {
+
+    let msg = "The command value for " + monster.name
+      + " Monster has not been provided. Edit this record to input one.";
+    if (monster.command == undefined || monster.command == null || monster.command == '') {
+      this.alertService.showDialog(msg, DialogType.alert, () => this.useMonsterHelper(monster));
+    } else {
+      //TODO
+      this.useMonsterHelper(monster);
+    }
+  }
+
+  private useMonsterHelper(monster: any) {
+
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.command = monster.command;
+    if (monster.hasOwnProperty("monsterId")) {
+      this.bsModalRef.content.recordName = monster.name;
+      this.bsModalRef.content.recordImage = monster.imageUrl;
+      this.bsModalRef.content.recordType = 'monster';
+      this.bsModalRef.content.recordId = monster.monsterId;
+    }
+    this.bsModalRef.content.event.subscribe(result => {
+    });
+  }
   dropMonsterItems(item) {
     let monster = item.monster;
     this.bsModalRef = this.modalService.show(DropItemsMonsterComponent, {

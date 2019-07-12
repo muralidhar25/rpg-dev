@@ -19,5 +19,6 @@ namespace DAL.Services
         List<Combatant_ViewModel> SaveCombatantList(List<Combatant_DTModel> model, int campaignId, string UserId);
         void Combat_Start(int combatId, bool start);
         void SwitchCombatantTurn(Combatant_ViewModel model, int roundCount);
+        void SaveVisibilityDetails(Combatant_ViewModel model);
     }
 }
