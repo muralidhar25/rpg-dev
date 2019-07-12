@@ -20,6 +20,7 @@ export class CombatService extends EndpointFactory {
   private readonly GetCombatMonstersList: string = this.configurations.baseUrl + "/api/Combat/GetCombat_MonstersList";
   private readonly Combat_RemoveMonsters: string = this.configurations.baseUrl + "/api/Combat/RemoveMonsters";
   private readonly SaveCombatantTurn: string = this.configurations.baseUrl + "/api/Combat/SaveCombatantTurn";
+  private readonly SaveVisibilityDetails: string = this.configurations.baseUrl + "api/Combat/SaveVisibilityDetails";
 
   private readonly Combat_Start: string = this.configurations.baseUrl + "/api/Combat/Combat_Start";
   
@@ -46,7 +47,6 @@ export class CombatService extends EndpointFactory {
   }
 
   saveCombatantList<T>(combatants: any[], CampaignID:number): Observable<T> {
-    debugger;
     let saveInitiativeUrl = `${this.SaveCombatantList}?CampaignID=${CampaignID}`
     return this.http.post<T>(saveInitiativeUrl, JSON.stringify(combatants), this.getRequestHeaders())
       .catch(error => {
@@ -55,7 +55,6 @@ export class CombatService extends EndpointFactory {
   }
 
   saveCombatantTurn<T>(curretnCombatant, roundCount: number): Observable<T> {
-    debugger;
     let saveCombatantTurn = `${this.SaveCombatantTurn}?roundCount=${roundCount}`
     return this.http.post<T>(saveCombatantTurn, JSON.stringify(curretnCombatant), this.getRequestHeaders())
       .catch(error => {
@@ -86,6 +85,7 @@ export class CombatService extends EndpointFactory {
         return this.handleError(error, () => this.AddMonstersOnly(SelectedDeployedMonsters));
       });
   }
+
   removeMonsters<T>(monsters: any[], shouldDeleteMonsters: boolean): Observable<T> {
     let url = `${this.Combat_RemoveMonsters}?deleteMonster=${shouldDeleteMonsters}`
     return this.http.post<T>(url, JSON.stringify(monsters), this.getRequestHeaders())
@@ -93,11 +93,21 @@ export class CombatService extends EndpointFactory {
         return this.handleError(error, () => this.removeMonsters(monsters, shouldDeleteMonsters));
       });
   }
+
   StartCombat<T>(CombatId: number, Start:boolean): Observable<T> {
     let url = `${this.Combat_Start}?CombatId=${CombatId}&Start=${Start}`
     return this.http.post<T>(url, JSON.stringify({}), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.StartCombat(CombatId, Start));
+      });
+  }
+
+  saveVisibilityDetails<T>(currentItem): Observable<T> {
+    debugger
+    let saveInitiativeUrl = `${this.SaveCombatantList}`
+    return this.http.post<T>(saveInitiativeUrl, JSON.stringify(currentItem),  this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.saveVisibilityDetails(currentItem));
       });
   }
 }

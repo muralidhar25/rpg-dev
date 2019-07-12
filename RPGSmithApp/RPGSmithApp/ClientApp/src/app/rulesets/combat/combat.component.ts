@@ -25,6 +25,9 @@ import { CombatService } from '../../core/services/combat.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { SharedService } from '../../core/services/shared.service';
 import { AppService1 } from '../../app.service';
+import { MonsterTemplateService } from '../../core/services/monster-template.service';
+import { CastComponent } from '../../shared/cast/cast.component';
+import { DropItemsMonsterComponent } from '../../records/monster/drop-items-monster/drop-items-monster.component';
 
 @Component({
   selector: 'app-combat',
@@ -50,10 +53,12 @@ export class CombatComponent implements OnInit {
   isLoading: boolean = false;
   combatItemsType = CombatItemsType;
   curretnCombatant: any;
-  combatantName: string;
+  currentCombatantDetail: any;
   isDropdownOpen: boolean = false;
-
-  CombatId:number =0;
+  isCharacterItemEnabled: boolean = false;
+  isCharacterSpellEnabled: boolean = false;
+  isCharacterAbilityEnabled: boolean = false;
+  CombatId: number = 0;
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
   }
@@ -77,7 +82,8 @@ export class CombatComponent implements OnInit {
     private combatService: CombatService,
     private authService: AuthService,
     private sharedService: SharedService,
-    private appService: AppService1) {
+    private appService: AppService1,
+    private monsterTemplateService: MonsterTemplateService) {
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
 
     this.sharedService.shouldUpdateCombatantList().subscribe(combatantListJson => {
@@ -311,10 +317,14 @@ export class CombatComponent implements OnInit {
               x.visibilityColor = "red";
             }
           }
-        });      
+        });
 
         // Game Time
         this.gametime = this.time_convert(this.settings.gameRoundLength);
+
+        this.isCharacterItemEnabled = combatModal.isCharacterItemEnabled;
+        this.isCharacterSpellEnabled = combatModal.isCharacterSpellEnabled;
+        this.isCharacterAbilityEnabled = combatModal.isCharacterAbilityEnabled;
       }
       this.isLoading = false;
     }, error => {
@@ -345,7 +355,7 @@ export class CombatComponent implements OnInit {
   //            item.visibilityColor = "red";
   //          }
   //        }
-          
+
   //      });
 
   //    }
@@ -381,7 +391,6 @@ export class CombatComponent implements OnInit {
 
   // Send message to chat
   SendSystemMessageToChat(message) {
-    debugger
     this.appService.updateChatFromCombat(message);
   }
 
@@ -419,10 +428,18 @@ export class CombatComponent implements OnInit {
     this.bsModalRef.content.isFromCampaignDetail = true;
 
   }
+
+  //combatant Detail Pane Methods
   command() { }
   dropItems() { }
   health() { }
-  remove() { }
+
+  // Remove monster from Detail pane
+  remove() {
+    if (this.currentCombatantDetail) {
+      this.RemoveOrDeleteMonster(this.currentCombatantDetail, false);
+    }
+  }
 
   monsterAdd() {
     console.log('monsterAdd');
@@ -514,7 +531,7 @@ export class CombatComponent implements OnInit {
     });
     this.bsModalRef.content.title = "Change Visibility";
     this.bsModalRef.content.color = item.visibilityColor;
-    this.bsModalRef.content.visibility = item.visibility;
+    this.bsModalRef.content.item = item;
     this.bsModalRef.content.event.subscribe(result => {
       //  console.log('resultEmiited', result);
       item.visibilityColor = result.bodyBgColor;
@@ -538,14 +555,7 @@ export class CombatComponent implements OnInit {
     console.log('buffclicked', buffs);
   }
   frameClick(item) {
-    debugger;
-    //console.log('frameClick', item.frameColor);
-    if (item.type == this.combatItemsType.CHARACTER) {
-      this.combatantName = item.character.characterName;
-    } else {
-      this.combatantName = item.monster.name;
-    }
-
+    this.currentCombatantDetail = item;
     this.combatants.map(function (itm) {
       if (itm.frameColor) {
         itm.frameColor = '';
@@ -557,15 +567,14 @@ export class CombatComponent implements OnInit {
   }
   nameClicked(item) {
     if (item.type == combatantType.MONSTER) {
-      console.log('nameclicked', 'monster');
+      this.router.navigate(['/ruleset/monster-details', item.monster.monsterId]);
     }
     if (item.type == combatantType.CHARACTER) {
-      console.log('nameclicked', 'chnaracter');
+      this.router.navigate(['/character/dashboard', item.character.characterId]);
     }
   }
 
   Hidebtns(item) {
-    console.log(item);
     item.hidebtns = true;
   }
   showbtns(item) {
@@ -574,37 +583,72 @@ export class CombatComponent implements OnInit {
 
   //redirections of character Side
   redirectToItem(item) {
-    //this.router.navigate(['/character/inventory', item.id]);
+    this.router.navigate(['/character/inventory', item.character.characterId]);
   }
   redirectTospell(item) {
-    // this.router.navigate(['/character/spell', item.id]);
+    this.router.navigate(['/character/spell', item.character.characterId]);
   }
   redirectToAbility(item) {
-    //this.router.navigate(['/character/ability', item.id]);
+    this.router.navigate(['/character/ability', item.character.characterId]);
   }
   redirectToChracterstat(item) {
-    //this.router.navigate(['/character/character-stats', item.id]);
+    this.router.navigate(['/character/character-stats', item.character.characterId]);
   }
 
   //Monster Side
-  monsterCommand(item) {
-    console.log('monsterCommand');
-  }
+  monsterCommand(item) {    let _monster = Object.assign({}, item.monster);    //if (_monster.monsterId) {    //  this.monsterTemplateService.getMonsterCommands_sp<any>(_monster.monsterId)    //    .subscribe(data => {    //      if (data.length > 0) {    //        this.bsModalRef = this.modalService.show(CastComponent, {    //          class: 'modal-primary modal-md',    //          ignoreBackdropClick: true,    //          keyboard: false    //        });    //        this.bsModalRef.content.title = "Monster Commands";    //        this.bsModalRef.content.ListCommands = data;    //        this.bsModalRef.content.Command = _monster;    //        this.bsModalRef.content.Character = new Characters();    //        this.bsModalRef.content.recordType = 'monster';    //        this.bsModalRef.content.recordId = _monster.monsterId;    //      } else {    //        this.useCommand(_monster);    //      }    //    }, error => { }, () => { });    //}
+  }  useCommand(monster: any) {    let msg = "The command value for " + monster.name      + " Monster has not been provided. Edit this record to input one.";    if (monster.command == undefined || monster.command == null || monster.command == '') {      this.alertService.showDialog(msg, DialogType.alert, () => this.useMonsterHelper(monster));    } else {      //TODO      this.useMonsterHelper(monster);    }  }  private useMonsterHelper(monster: any) {    this.bsModalRef = this.modalService.show(DiceRollComponent, {      class: 'modal-primary modal-md',      ignoreBackdropClick: true,      keyboard: false    });    this.bsModalRef.content.title = "Dice";    this.bsModalRef.content.tile = -2;    this.bsModalRef.content.characterId = 0;    this.bsModalRef.content.character = new Characters();    this.bsModalRef.content.command = monster.command;    if (monster.hasOwnProperty("monsterId")) {      this.bsModalRef.content.recordName = monster.name;      this.bsModalRef.content.recordImage = monster.imageUrl;      this.bsModalRef.content.recordType = 'monster';      this.bsModalRef.content.recordId = monster.monsterId;    }    this.bsModalRef.content.event.subscribe(result => {    });  }
   dropMonsterItems(item) {
-    console.log('dropMonsterItems');
-    //DropItemsCombatMonsterComponent
-    this.bsModalRef = this.modalService.show(DropItemsCombatMonsterComponent, {
-      class: 'modal-primary modal-custom',
+    let monster = item.monster;
+    this.bsModalRef = this.modalService.show(DropItemsMonsterComponent, {
+      class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
       keyboard: false
     });
     this.bsModalRef.content.title = 'Drop Items';
     this.bsModalRef.content.button = 'Drop';
-    this.bsModalRef.content.monsterId = 0;
-    this.bsModalRef.content.rulesetID = 0;
+    this.bsModalRef.content.monsterId = monster.monsterId;
+    this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.monsterName = monster.name;
+    this.bsModalRef.content.monsterImage = monster.imageUrl;
+    //console.log('dropMonsterItems');
+    ////DropItemsCombatMonsterComponent
+    //this.bsModalRef = this.modalService.show(DropItemsCombatMonsterComponent, {
+    //  class: 'modal-primary modal-custom',
+    //  ignoreBackdropClick: true,
+    //  keyboard: false
+    //});
+    //this.bsModalRef.content.title = 'Drop Items';
+    //this.bsModalRef.content.button = 'Drop';
+    //this.bsModalRef.content.monsterId = 0;
+    //this.bsModalRef.content.rulesetID = 0;
   }
-  removeMonster(item) {
-    console.log('removeMonster');
+  removeCurrentMonster(item) {
+    this.RemoveOrDeleteMonster(item, false);
+  }
+
+  RemoveOrDeleteMonster(item, del) {
+    this.isLoading = true;
+    let _msg = ' Removing Monster ....';
+    this.alertService.startLoadingMessage("", _msg);
+    let monstersToRemove = item.map((m) => {
+      return { monsterId: m.monster.monsterId };
+    });
+    this.combatService.removeMonsters(monstersToRemove, del)
+      .subscribe(data => {
+        this.alertService.stopLoadingMessage();
+        this.isLoading = false;
+      }, error => {
+        this.isLoading = false;
+        this.alertService.stopLoadingMessage();
+        this.alertService.showMessage(error, "", MessageSeverity.error);
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        } else {
+          this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        }
+      }, () => { });
   }
 
   editMonster(item) {
@@ -614,26 +658,26 @@ export class CombatComponent implements OnInit {
     console.log('duplicate');
   }
   deleteMonster(item) {
-    console.log('deleteMonster');
+    this.RemoveOrDeleteMonster(item, true);
   }
 
   //startcombat
   startCombat() {
     //this.roundCounter = 1;
-    let _msg = "Starting Combat..";    
+    let _msg = "Starting Combat..";
     this.alertService.startLoadingMessage("", _msg);
     this.combatService.StartCombat(this.CombatId, true).subscribe(res => {
-     
-        this.alertService.stopLoadingMessage();
 
-        let message = "Combat has been starter successfully.";       
-        this.alertService.showMessage(message, "", MessageSeverity.success);
+      this.alertService.stopLoadingMessage();
 
-        this.Init();
-        this.showCombatOptions = true;
-        let msg = "Combat Started";
-        this.SendSystemMessageToChat(msg);
-     
+      let message = "Combat has been starter successfully.";
+      this.alertService.showMessage(message, "", MessageSeverity.success);
+
+      this.Init();
+      this.showCombatOptions = true;
+      let msg = "Combat Started";
+      this.SendSystemMessageToChat(msg);
+
       this.isLoading = false;
     }, error => {
       this.alertService.stopLoadingMessage();
@@ -645,7 +689,7 @@ export class CombatComponent implements OnInit {
         this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
       }
     });
-    
+
   }
 
   endCombat() {
@@ -661,16 +705,16 @@ export class CombatComponent implements OnInit {
     this.alertService.startLoadingMessage("", _msg);
     //this.router.navigate(['/ruleset/combatplayer', this.ruleSetId]);
     this.combatService.StartCombat(this.CombatId, false).subscribe(res => {
-      
-        this.alertService.stopLoadingMessage();
 
-        let message = "Combat has been ended successfully.";
-        this.alertService.showMessage(message, "", MessageSeverity.success);
+      this.alertService.stopLoadingMessage();
 
-        this.showCombatOptions = false;
-        let msg = "Combat Ended";
-        this.SendSystemMessageToChat(msg);
-     
+      let message = "Combat has been ended successfully.";
+      this.alertService.showMessage(message, "", MessageSeverity.success);
+
+      this.showCombatOptions = false;
+      let msg = "Combat Ended";
+      this.SendSystemMessageToChat(msg);
+
       this.isLoading = false;
     }, error => {
       this.alertService.stopLoadingMessage();
@@ -682,7 +726,7 @@ export class CombatComponent implements OnInit {
         this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
       }
     });
-   
+
   }
 
   //change settings here
