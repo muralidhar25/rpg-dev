@@ -209,7 +209,7 @@ namespace DAL.Services
                                                     CharacterAbility i = new CharacterAbility();
                                                     i.CharacterAbilityId = CharItemRow["CharacterAbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["CharacterAbilityId"].ToString());
                                                     i.Ability = new Ability()
-                                                    {
+                                                    {AbilityId= CharItemRow["AbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["AbilityId"]),
                                                         Name = CharItemRow["Name"] == DBNull.Value ? null : CharItemRow["Name"].ToString(),
                                                         ImageUrl = CharItemRow["ImageUrl"] == DBNull.Value ? null : CharItemRow["ImageUrl"].ToString()
                                                     };
@@ -229,6 +229,7 @@ namespace DAL.Services
                                                     i.CharacterSpellId = CharItemRow["CharacterSpellId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["CharacterSpellId"].ToString());
                                                     i.Spell = new Spell()
                                                     {
+                                                        SpellId = CharItemRow["SpellId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["SpellId"]),
                                                         Name = CharItemRow["Name"] == DBNull.Value ? null : CharItemRow["Name"].ToString(),
                                                         ImageUrl = CharItemRow["ImageUrl"] == DBNull.Value ? null : CharItemRow["ImageUrl"].ToString()
                                                     };
@@ -248,6 +249,7 @@ namespace DAL.Services
                                                     i.CharacterBuffAandEffectId = CharItemRow["CharacterBuffAandEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["CharacterBuffAandEffectId"].ToString());
                                                     i.BuffAndEffect = new BuffAndEffect()
                                                     {
+                                                        BuffAndEffectId = CharItemRow["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["BuffAndEffectId"]),
                                                         Name = CharItemRow["Name"] == DBNull.Value ? null : CharItemRow["Name"].ToString(),
                                                         ImageUrl = CharItemRow["ImageUrl"] == DBNull.Value ? null : CharItemRow["ImageUrl"].ToString()
                                                     };
