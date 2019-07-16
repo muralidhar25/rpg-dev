@@ -34,9 +34,9 @@
       <div class="col-12 col-md-12 col-sm-12">
         <fieldset class="form-group input-list input-list-wrap items">
           <ul class="input-list-items">
-            <li class="form-check col-md-6 col-sm-12" *ngFor="let item of itemsList | filter : searchText : 'name';let i = index;" popover="{{item.name}}" triggers="hover">
+            <li class="form-check col-md-6 col-sm-12" *ngFor="let item of itemsList | filter : searchText : 'name';let i = index;" popover="{{item.name}}" triggers="hover" container="body">
               <label class="form-check-label">
-                <span>
+                <span (click)="goToDetail(item)">
                   <img [alt]="item.name" [src]="item.image"
                        onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
                   <em>{{item.name}}</em>
@@ -56,7 +56,7 @@
   <div class="modal-footer">
     <div class="row">
       <div class="col-md-6">
-        <button type="button" (click)="edit()" class="btn btn-accent">{{_view}}</button>
+        <button type="button" [disabled]="type==combatatntsType.MONSTER && !ListBuffAndEffects.length" (click)="edit()" class="btn btn-accent">{{_view}}</button>
       </div>
       <div class="col-md-6">
         <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>

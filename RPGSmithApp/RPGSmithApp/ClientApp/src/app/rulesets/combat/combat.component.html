@@ -154,7 +154,7 @@
             </li>
             <li>
               <div class="btn-group" [ngClass]="{'open': isDropdownOpen}">
-                <button class="setting-btn icon-Settings dropdown-toggle setting-toggle-btn" type="button" ></button>
+                <button class="setting-btn icon-Settings dropdown-toggle setting-toggle-btn" type="button"></button>
                 <div class="dropdown-menu setting-toggle">
                   <div class="row m-0">
                     <div class="col-12 col-sm-6 col-md-3">
@@ -312,26 +312,33 @@
                       <span class="progress-bar"></span>
                     </span>
                     <div class="progress-value" *ngIf="item.type==combatItemsType.CHARACTER">
-                    <!--{{item?.character?.healthCurrent}}/{{item?.character?.healthMax}}-->
+                      <!--{{item?.character?.healthCurrent}}/{{item?.character?.healthMax}}-->
                       c/c
                     </div>
-                    <div class="progress-value" *ngIf="item.type==combatItemsType.MONSTER">
-                    40%
+                    <div class="progress-value" *ngIf="item.type==combatItemsType.MONSTER && settings.showMonsterHealth">
+                      {{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}
                     </div>
                   </div>
                 </div>
               </td>
               <td>
-                <div class="white-section">
-                  <!--<ul class="visiblity-list">
-                    <li class="icon-Rec-Visible"> </li>
-                    <li class="icon-CharStat-Command"></li>
-                  </ul>-->
+                <div class="white-section" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatItemsType.CHARACTER">
                   <ul class="visiblity-list">
-                    <li class="icon-Rec-Visible" (click)="buffEffectclick();$event.stopPropagation()"> </li>
-                    <li class="icon-CharStat-Command" (click)="buffEffectclick();$event.stopPropagation()"></li>
+                    <li class="" *ngFor="let be of item?.character?.characterBuffAndEffects; let be_i = index">
+                      <img class="combat-be-image" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" />
+                    </li>
                   </ul>
+                  <span [ngClass]="item?.character?.characterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.character?.characterBuffAndEffects?.length > 3 ? (item?.character?.characterBuffAndEffects?.length - 3) :''}}</span>
                 </div>
+                <div class="white-section" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatItemsType.MONSTER">
+                  <ul class="visiblity-list">
+                    <li class="" *ngFor="let be of item?.monster?.monsterBuffAndEffects; let be_i = index">
+                      <img class="combat-be-image" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" />
+                    </li>
+                  </ul>
+                  <span [ngClass]="item?.monster?.monsterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.monster?.monsterBuffAndEffects?.length > 3 ? (item?.monster?.monsterBuffAndEffects?.length - 3) :''}}</span>
+                </div>
+
               </td>
               <td>
                 <div class="white-section">
@@ -343,7 +350,7 @@
                 <div class="white-section">
                   <ul class="action-buttons-table" *ngIf="item.type == combatItemsType.CHARACTER">
                     <li class="action-button-icon-orange icon-Gen-Items" [ngClass]="isCharacterItemEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && (redirectToItem(item));$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterSpellEnabled && (redirectTospell(item));$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterSpellEnabled && (redirectToSpell(item));$event.stopPropagation()"></li>
                     <li class="action-button-icon-orange icon-Gen-Ability" [ngClass]="isCharacterAbilityEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterAbilityEnabled && (redirectToAbility(item));$event.stopPropagation()"></li>
                     <li class="action-button-icon-orange icon-Gen-CharStat crsr-pointer" (click)="redirectToChracterstat(item);$event.stopPropagation()"></li>
                   </ul>
@@ -447,9 +454,12 @@
     </div>
     <div class="col-12 col-md-4">
       <div class="image-section-combat">
-        <img [src]="combatantDetails.image" />
-        <span *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">{{currentCombatantDetail?.character?.characterName}}</span>
+        <!--Image-->
+        <img *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER" [src]="currentCombatantDetail?.monster?.imageUrl" />
+        <img *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER" [src]="currentCombatantDetail?.character?.imageUrl" />
+        <!--Name-->
         <span *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">{{currentCombatantDetail?.monster?.name}}</span>
+        <span *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">{{currentCombatantDetail?.character?.characterName}}</span>
       </div>
       <!--Monster-->
       <div class="row mt-3" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
@@ -486,71 +496,139 @@
 
       <div class="combat-accordian">
         <accordion>
-          <accordion-group #p1 heading="STATS">
+          <accordion-group class="detailPaneItems" #p1 heading="STATS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
             <div class="row">
               <div class="col-12">
                 <!--<label for="Desc">Stats</label>-->
-                <div [froalaView]="combatantDetails.stats" name="stat"></div>
+                <div [froalaView]="currentCombatantDetail?.monster.stats" name="stat"></div>
               </div>
             </div>
           </accordion-group>
-          <accordion-group #p2 heading="BUFFS & EFFECTS">
+          <!--Monster-->
+          <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER && settings.seeMonsterBuffEffects">
             <div class="row">
-              <div class="text-center" *ngIf="combatantDetails.buffEffects?.length == 0">
+              <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterBuffAndEffects.length == 0">
                 <legend>No Buffs & Effects Available</legend>
               </div>
-              <div class="col-6 accordin-items" *ngFor="let item of  combatantDetails.buffEffects">
-                <div class="accordin-box">
-                  <img [src]="item.image" />
-                  <p>{{item.name}}</p>
+              <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.monsterBuffAndEffects">
+                <div class="accordin-box crsr-pointer" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)">
+                  <img [src]="item.buffAndEffect.imageUrl" />
+                  <p>{{item.buffAndEffect.name}}</p>
                 </div>
               </div>
             </div>
           </accordion-group>
-          <accordion-group #p3 heading="DESCRIPTION">
+          <!--Character-->
+          <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
+            <div class="row">
+              <div class="text-center" *ngIf="currentCombatantDetail?.character?.characterBuffAndEffects.length == 0">
+                <legend>No Buffs & Effects Available</legend>
+              </div>
+              <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterBuffAndEffects">
+                <div class="accordin-box crsr-pointer" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)">
+                  <img [src]="item.buffAndEffect.imageUrl" />
+                  <p>{{item.buffAndEffect.name}}</p>
+                </div>
+              </div>
+            </div>
+          </accordion-group>
+          <accordion-group class="detailPaneItems" #p3 heading="DESCRIPTION">
             <div class="row">
               <div class="col-12">
                 <!--<label for="Desc">Description</label>-->
 
-                <div [froalaView]="combatantDetails.desc" name="Desc"></div>
+                <div *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
+                  <div *ngIf="currentCombatantDetail?.monster?.description" [froalaView]="currentCombatantDetail?.monster?.description" name="Desc"></div>
+                  <div *ngIf="!currentCombatantDetail?.monster?.description" name="Desc">
+                    <legend>{{noDescripttionAvailable}}</legend>
+                  </div>
+                </div>
+                <div *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
+                  <div *ngIf="currentCombatantDetail?.character?.characterDescription" [froalaView]="currentCombatantDetail?.character?.characterDescription" name="Desc"></div>
+                  <div *ngIf="!currentCombatantDetail?.character?.characterDescription" name="Desc">
+                    <legend>{{noDescripttionAvailable}}</legend>
+                  </div>
+                </div>
               </div>
             </div>
           </accordion-group>
-          <accordion-group #p4 heading="ITEMS">
+          <!--Monster-->
+          <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER && settings.seeMonsterItems">
             <div class="row">
-              <div class="text-center" *ngIf="combatantDetails.items?.length == 0">
+              <div class="text-center" *ngIf="currentCombatantDetail?.monster?.itemMasterMonsterItems?.length == 0">
                 <legend>No Items  Available</legend>
               </div>
-              <div class="col-6 accordin-items" *ngFor="let item of  combatantDetails.items">
-                <div class="accordin-box ">
-                  <img [src]="item.image" />
+              <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.itemMasterMonsterItems">
+                <div class="accordin-box crsr-pointer" (click)="CombatantItemDetail(currentCombatantDetail, item)">
+                  <img [src]="item.itemImage" />
+                  <p>{{item.itemName}}</p>
+                </div>
+              </div>
+            </div>
+          </accordion-group>
+          <!--Character-->
+          <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
+            <div class="row">
+              <div class="text-center" *ngIf="currentCombatantDetail?.character.items?.length == 0">
+                <legend>No Items  Available</legend>
+              </div>
+              <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.items">
+                <div class="accordin-box crsr-pointer" (click)="CombatantItemDetail(currentCombatantDetail, item)">
+                  <img [src]="item.itemImage" />
                   <p>{{item.name}}</p>
                 </div>
               </div>
             </div>
           </accordion-group>
-          <accordion-group #p5 heading="SPELLS">
-            <div class="row">
-              <div class="text-center" *ngIf="combatantDetails.spells?.length == 0">
+          <accordion-group class="detailPaneItems" #p5 heading="SPELLS">
+            <!--Monster-->
+            <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
+              <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterSpells?.length == 0">
                 <legend>No Spells Available</legend>
               </div>
-              <div class="col-6 accordin-items" *ngFor="let item of  combatantDetails.spells">
-                <div class="accordin-box">
-                  <img [src]="item.image" />
-                  <p>{{item.name}}</p>
+              <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.monsterSpells">
+                <div class="accordin-box crsr-pointer" (click)="CombatantSpellDetail(currentCombatantDetail, item)">
+                  <img [src]="item.spell.imageUrl" />
+                  <p>{{item.spell.name}}</p>
                 </div>
               </div>
             </div>
+            <!--Character-->
+            <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
+              <div class="text-center" *ngIf="currentCombatantDetail?.charatcer?.characterSpells?.length == 0">
+                <legend>No Spells Available</legend>
+              </div>
+              <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterSpells">
+                <div class="accordin-box crsr-pointer" (click)="CombatantSpellDetail(currentCombatantDetail, item)">
+                  <img [src]="item.spell.imageUrl" />
+                  <p>{{item.spell.name}}</p>
+                </div>
+              </div>
+            </div>
+
           </accordion-group>
-          <accordion-group #p5 heading="ABILITIES">
-            <div class="row">
-              <div lass="text-center" *ngIf="combatantDetails.abilites?.length == 0">
+          <accordion-group class="detailPaneItems" #p5 heading="ABILITIES">
+            <!--Monster-->
+            <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
+              <div lass="text-center" *ngIf="currentCombatantDetail?.monster?.monsterAbilitys?.length == 0">
                 <legend>No Abilities Available</legend>
               </div>
-              <div class="col-6 accordin-items" *ngFor="let item of  combatantDetails.abilites">
-                <div class="accordin-box">
-                  <img [src]="item.image" />
-                  <p>{{item.name}}</p>
+              <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.monsterAbilitys">
+                <div class="accordin-box crsr-pointer" (click)="CombatantAbilityDetail(currentCombatantDetail, item)">
+                  <img [src]="item.ability.imageUrl" />
+                  <p>{{item.ability.name}}</p>
+                </div>
+              </div>
+            </div>
+            <!--Character-->
+            <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
+              <div lass="text-center" *ngIf="currentCombatantDetail?.character?.characterAbilities?.length == 0">
+                <legend>No Abilities Available</legend>
+              </div>
+              <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterAbilities">
+                <div class="accordin-box crsr-pointer" (click)="CombatantAbilityDetail(currentCombatantDetail, item)">
+                  <img [src]="item.ability.imageUrl" />
+                  <p>{{item.ability.name}}</p>
                 </div>
               </div>
             </div>

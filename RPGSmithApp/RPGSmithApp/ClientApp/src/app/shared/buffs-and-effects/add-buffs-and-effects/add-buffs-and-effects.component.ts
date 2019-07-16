@@ -8,6 +8,7 @@ import { BuffAndEffect } from '../../../core/models/view-models/buff-and-effect.
 import { Characters } from '../../../core/models/view-models/characters.model';
 import { CreateBuffAndEffectsComponent } from '../../create-buff-and-effects/create-buff-and-effects.component';
 import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
+import { SharedService } from '../../../core/services/shared.service';
 
 
 
@@ -26,7 +27,8 @@ export class AddBuffAndEffectComponent implements OnInit {
   selectedBuffAndEffectsList: any[] = [];
   pauseBuffAndEffectCreate: boolean = false;
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private location: PlatformLocation,
-    private buffAndEffectService: BuffAndEffectService, private authService: AuthService, private alertService: AlertService) {
+    private buffAndEffectService: BuffAndEffectService, private authService: AuthService, private alertService: AlertService,
+    private sharedService: SharedService) {
     location.onPopState(() => this.modalService.hide(1));
   }
 
@@ -35,7 +37,7 @@ export class AddBuffAndEffectComponent implements OnInit {
       this.pauseBuffAndEffectCreate = this.bsModalRef.content.pauseBuffAndEffectCreate ? this.bsModalRef.content.pauseBuffAndEffectCreate : false;
       this.ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : 0;
       this.characterID = this.bsModalRef.content.characterID ? this.bsModalRef.content.characterID : 0;
-      let SelectedBuffs:any[] = this.bsModalRef.content.selectedBuffAndEffectsList;
+      let SelectedBuffs: any[] = this.bsModalRef.content.selectedBuffAndEffectsList;
       if (SelectedBuffs) {
         if (SelectedBuffs.length) {
           this.selectedBuffAndEffectsList = SelectedBuffs;
@@ -51,9 +53,9 @@ export class AddBuffAndEffectComponent implements OnInit {
         this.buffsEffectsList = data;
         //console.log('aaaaaaa',data)
         this.isLoading = false;
-       
+
       }, error => {
-        this.isLoading = false;        
+        this.isLoading = false;
         let Errors = Utilities.ErrorDetail("", error);
         if (Errors.sessionExpire) {
           //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
@@ -64,7 +66,7 @@ export class AddBuffAndEffectComponent implements OnInit {
   close() {
     this.bsModalRef.hide();
   }
-  setItem(event: any, _buffAndEffect: BuffAndEffect) {   
+  setItem(event: any, _buffAndEffect: BuffAndEffect) {
     if (event.target.checked) {
       const _containsItems = Object.assign([], this.selectedBuffAndEffectsList);
 
@@ -104,6 +106,7 @@ export class AddBuffAndEffectComponent implements OnInit {
     this.buffAndEffectService.assignBuffAndEffectToCharacter<any>(this.selectedBuffAndEffectsList, characters, [], nonSelectedBuffAndEffectsList, this.characterID)
       .subscribe(data => {
         this.event.emit(this.selectedBuffAndEffectsList);
+        this.sharedService.updateCharacterBuffEffect({ characterId: this.characterID, characterBuffAndEffects: this.selectedBuffAndEffectsList });
         this.isLoading = false;
         this.close();
 
@@ -117,7 +120,7 @@ export class AddBuffAndEffectComponent implements OnInit {
       }, () => { });
   }
   CreateBuff() {
-    
+
     // this.alertService.startLoadingMessage("", "Checking records");      
     this.buffAndEffectService.getBuffAndEffectsCount(this.ruleSetId)
       .subscribe(data => {
@@ -143,5 +146,5 @@ export class AddBuffAndEffectComponent implements OnInit {
         }
       }, error => { }, () => { });
   }
-  
+
 }
