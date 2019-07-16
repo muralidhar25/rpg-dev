@@ -26,7 +26,7 @@
               </span>
               <input name="health" type="text" class="form-control" placeholder="Value"
                      [(ngModel)]="monsterTemplateFormModal.health" #health="ngModel" (change)="getHealthResult($event)" />
-              <span *ngIf="monsterTemplateFormModal.health && !isValidSingleNumberCommand(monsterTemplateFormModal.health)" class="errorMessage text-danger">The 'And' and Text optiopns are disallowed for this comand</span>
+              <span *ngIf="monsterTemplateFormModal.health && !isValidSingleNumberCommand(monsterTemplateFormModal.health)" class="errorMessage text-danger">The 'And' and Text options are disallowed for this comand</span>
             </div>
             <!--<app-input-single-result-command _placeholder="Value" [command]="monsterTemplateFormModal.health"
                                        labelText="Health" (getResult)="getHealthResult($event)"></app-input-single-result-command>-->
@@ -40,7 +40,7 @@
               </span>
               <input name="armorClass" type="text" class="form-control" placeholder="Value"
                      [(ngModel)]="monsterTemplateFormModal.armorClass" #armorClass="ngModel" (change)="getArmorClassResult($event)" />
-              <span *ngIf="monsterTemplateFormModal.armorClass && !isValidSingleNumberCommand(monsterTemplateFormModal.armorClass)" class="errorMessage text-danger">The 'And' and Text optiopns are disallowed for this comand</span>
+              <span *ngIf="monsterTemplateFormModal.armorClass && !isValidSingleNumberCommand(monsterTemplateFormModal.armorClass)" class="errorMessage text-danger">The 'And' and Text options are disallowed for this comand</span>
             </div>
             <!--<app-input-single-result-command _placeholder="Value" [command]="monsterTemplateFormModal.armorClass"
                                        labelText="Armor Class" (getResult)="getArmorClassResult($event)"></app-input-single-result-command>-->
@@ -54,7 +54,7 @@
               </span>
               <input name="challangeRating" type="text" class="form-control" placeholder="Value"
                      [(ngModel)]="monsterTemplateFormModal.challangeRating" #challangeRating="ngModel" (change)="getChallangeRatingResult($event)" />
-              <span *ngIf="monsterTemplateFormModal.challangeRating && !isValidSingleNumberCommand(monsterTemplateFormModal.challangeRating)" class="errorMessage text-danger">The 'And' and Text optiopns are disallowed for this comand</span>
+              <span *ngIf="monsterTemplateFormModal.challangeRating && !isValidSingleNumberCommand(monsterTemplateFormModal.challangeRating)" class="errorMessage text-danger">The 'And' and Text options are disallowed for this comand</span>
             </div>
             <!--<app-input-single-result-command _placeholder="Value" [command]="monsterTemplateFormModal.challangeRating"
                                        labelText="Challange Ratting" (getResult)="getChallangeRatingResult($event)"></app-input-single-result-command>-->
@@ -92,7 +92,7 @@
               </span>
               <input name="xPValue" type="text" class="form-control" placeholder="Value"
                      [(ngModel)]="monsterTemplateFormModal.xPValue" #xPValue="ngModel" (change)="getXPValueResult($event)" />
-              <span *ngIf="monsterTemplateFormModal.xPValue && !isValidSingleNumberCommand(monsterTemplateFormModal.xPValue)" class="errorMessage text-danger">The 'And' and Text optiopns are disallowed for this comand</span>
+              <span *ngIf="monsterTemplateFormModal.xPValue && !isValidSingleNumberCommand(monsterTemplateFormModal.xPValue)" class="errorMessage text-danger">The 'And' and Text options are disallowed for this comand</span>
             </div>
             <!--<app-input-single-result-command _placeholder="Value" [command]="monsterTemplateFormModal.xPValue"
                      labelText="XP Value" (getResult)="getXPValueResult($event)"
@@ -355,7 +355,7 @@
                     </h3>
                     <!--validation message-->
                     <span *ngIf="item.qty && !isValidSingleNumberCommand(item.qty?item.qty.toString():'', item)" class="errorMessage text-danger">
-                      The 'And' and Text optiopns are disallowed for this comand
+                      The 'And' and Text options are disallowed for this comand
                     </span>
                     <div class="search-field-randominzation">
                       <div (click)="SelectItem(item,i)">
@@ -385,7 +385,7 @@
                     </h3>
                     <!--validation message-->
                     <span *ngIf="item.qty && !isValidSingleNumberCommand(item.qty?item.qty.toString():'', item)" class="errorMessage text-danger">
-                      The 'And' and Text optiopns are disallowed for this comand
+                      The 'And' and Text options are disallowed for this comand
                     </span>
 
                     <div class="search-field-randominzation">
@@ -418,7 +418,7 @@
                     </h3>
                     <!-- Quantity Validation Message-->
                     <span *ngIf="item.qty && !isValidSingleNumberCommand(item.qty?item.qty.toString():'', item)" class="errorMessage text-danger">
-                      The 'And' and Text optiopns are disallowed for this comand
+                      The 'And' and Text options are disallowed for this comand
                     </span>
                     <div class="search-field-randominzation">
                       <div (click)="SelectItem(item,i)">

@@ -44,7 +44,7 @@ namespace RPGSmithApp.Controllers
         public async Task<IActionResult> GetCombatDetails(int CampaignId)
         {
             try {
-                Combat_ViewModel model =await _combatService.GetCombatDetails(CampaignId, GetUserId());
+                Combat_ViewModel model =await _combatService.GetCombatDetails(CampaignId, GetUserDetails());
                 return Ok(model);
             }
             catch (Exception ex) {
@@ -159,8 +159,7 @@ namespace RPGSmithApp.Controllers
         [HttpPost("SaveCombatantTurn")]
         public async Task<IActionResult> SwitchCombatantTurn([FromBody] Combatant_ViewModel model, int roundCount)
         {
-            if (ModelState.IsValid)
-            {
+           
                 try
                 {
                     _combatService.SwitchCombatantTurn(model, roundCount);
@@ -171,14 +170,12 @@ namespace RPGSmithApp.Controllers
                     return BadRequest(ex.Message);
                 }
 
-            }
-            return BadRequest(Utilities.ModelStateError(ModelState));
+            
         }
         [HttpPost("SaveVisibilityDetails")]
         public async Task<IActionResult> SaveVisibilityDetails([FromBody] Combatant_ViewModel model)
         {
-            if (ModelState.IsValid)
-            {
+            
                 try
                 {
                     _combatService.SaveVisibilityDetails(model);
@@ -189,14 +186,12 @@ namespace RPGSmithApp.Controllers
                     return BadRequest(ex.Message);
                 }
 
-            }
-            return BadRequest(Utilities.ModelStateError(ModelState));
+            
         }
         [HttpPost("SaveMonsterHealth")]
         public async Task<IActionResult> SaveMonsterHealth([FromBody] Monster model)
         {
-            if (ModelState.IsValid)
-            {
+           
                 try
                 {
                     _combatService.SaveMonsterHealth(model);
@@ -207,8 +202,7 @@ namespace RPGSmithApp.Controllers
                     return BadRequest(ex.Message);
                 }
 
-            }
-            return BadRequest(Utilities.ModelStateError(ModelState));
+            
         }
 
         private string GetUserId()

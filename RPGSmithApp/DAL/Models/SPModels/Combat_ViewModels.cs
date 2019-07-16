@@ -25,6 +25,9 @@ namespace DAL.Models.SPModels
         public List<Combatant_ViewModel> CombatantList { get; set; }
         public CombatSetting CombatSettings { get; set; }
     }
+    public class Character_Combat_VM_ForCharCharStats : Character {
+        public DiceRollViewModel DiceRollViewModel { get; set; }        
+    }
     public class Combatant_ViewModel
     {
         public int Id { get; set; }
@@ -35,7 +38,7 @@ namespace DAL.Models.SPModels
         public string Type { get; set; }
 
         public int? CharacterId { get; set; }
-        public Character Character { get; set; }
+        public Character_Combat_VM_ForCharCharStats Character { get; set; }
 
         public int? MonsterId { get; set; }
         public Monster Monster { get; set; }

@@ -1573,7 +1573,7 @@ namespace RPGSmithApp.Controllers
                 {
                     List<CustomDice> result = new List<CustomDice>();
                     result = _addEditCustomDice(model, rulesetID);
-                    return Ok(Utilities.MapCustomDice(result));
+                    return Ok(utility.MapCustomDice(result));
                 }
                 catch (Exception ex)
                 {
@@ -1628,7 +1628,7 @@ namespace RPGSmithApp.Controllers
         {
             try
             {
-                List<CustomDiceViewModel> result = Utilities.MapCustomDice(_ruleSetService.GetCustomDice(rulesetID));
+                List<CustomDiceViewModel> result = utility.MapCustomDice(_ruleSetService.GetCustomDice(rulesetID));
                 return Ok(result);
             }
             catch (Exception ex)
@@ -1866,7 +1866,7 @@ namespace RPGSmithApp.Controllers
                     CharacterCommands = diceRollModel.CharacterCommands == null ? new List<CharacterCommand>() : diceRollModel.CharacterCommands,
                     RulesetCommands = diceRollModel.RulesetCommands == null ? new List<RulesetCommand>() : diceRollModel.RulesetCommands,
                     CharactersCharacterStats = diceRollModel.CharactersCharacterStats == null ? new List<CharactersCharacterStat>() : diceRollModel.CharactersCharacterStats,// Utilities.GetCharCharStatViewModelList( diceRollModel.CharactersCharacterStats,_characterStatChoiceService),
-                    CustomDices = Utilities.MapCustomDice(diceRollModel.CustomDices),
+                    CustomDices = utility.MapCustomDice(diceRollModel.CustomDices),
                     DefaultDices = diceRollModel.DefaultDices,
                     DiceTrays = diceRollModel.DiceTrays,
                     IsGmAccessingPlayerCharacter = diceRollModel.IsGmAccessingPlayerCharacter,

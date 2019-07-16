@@ -17,7 +17,7 @@
         </div>
         <div class="col-12 col-sm-7 mb-2">
           <div class="initiative-options-field">
-            <input type="text" [name]="'value'+i" [(ngModel)]="item.initiativeValue" />
+            <input type="text" [name]="'value'+i" [(ngModel)]="item.initiativeValue" (change)="filterList()"/>
             <button class="btn-top icon-Gen-Down" (click)="upclick(i)"></button>
             <button class="btn-bottom icon-Gen-Down " (click)="downclick(i)"></button>
             <button class="btn-dices icon-CharStat-Command" (click)="ReRollDice(item)"></button>
@@ -158,7 +158,7 @@
   <!--Loader-->
   <app-loader [isLoading]="isLoading"></app-loader>
   <div class="modal-footer">
-    <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
+    <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">CLOSE</button>
   </div>
 </div>
 

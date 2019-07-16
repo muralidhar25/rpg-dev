@@ -30,6 +30,10 @@ import { CastComponent } from '../../shared/cast/cast.component';
 import { DropItemsMonsterComponent } from '../../records/monster/drop-items-monster/drop-items-monster.component';
 import { EditMonsterComponent } from '../../records/monster/edit-monster/edit-monster.component';
 import { CreateMonsterTemplateComponent } from '../../records/monster-template/create-monster-template/create-monster-template.component';
+import { ServiceUtil } from '../../core/services/service-util';
+import { RulesetService } from '../../core/services/ruleset.service';
+import { DBkeys } from '../../core/common/db-keys';
+import { LocalStoreManager } from '../../core/common/local-store-manager.service';
 
 @Component({
   selector: 'app-combat',
@@ -98,12 +102,33 @@ export class CombatComponent implements OnInit {
     private authService: AuthService,
     private sharedService: SharedService,
     private appService: AppService1,
-    private monsterTemplateService: MonsterTemplateService) {
+    private monsterTemplateService: MonsterTemplateService,
+    private rulesetService: RulesetService,
+    private localStorage: LocalStoreManager,) {
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
 
     this.sharedService.shouldUpdateCombatantList().subscribe(combatantListJson => {
       if (combatantListJson) {
-        this.combatants = combatantListJson;
+        //{ combatantList: this.initiativeInfo, isInitialForCombatStart:this.isInitialForCombatStart }
+        this.combatants = combatantListJson.combatantList;
+        if (combatantListJson.isInitialForCombatStart) {
+          this.nextTurn();
+          if (this.roundCounter>1) {
+            this.combatants.map((rec) => {
+              rec.isCurrentTurn = false;
+            })
+            this.combatants[0].isCurrentTurn = true;
+            this.curretnCombatant = this.combatants[0];
+            let valueofinitiative = this.combatants[0].initiativeValue;
+            this.CurrentInitiativeValue = valueofinitiative;
+
+            //this.roundCounter = this.roundCounter + 1;
+            ////convert time
+            //let roundTime = this.settings.gameRoundLength * this.roundCounter;
+            //this.gametime = this.time_convert(roundTime);
+            this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
+          }
+        }
       }
     });
 
@@ -303,6 +328,18 @@ export class CombatComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.setRulesetId(this.ruleSetId);
+    this.destroyModalOnInit();
+    this.rulesetService.getCustomDice(this.ruleSetId)
+      .subscribe(data => {
+        this.customDices = data
+
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      });
     this.GetCombatDetails();
     //this.GetCombatantList();
   }
@@ -316,11 +353,12 @@ export class CombatComponent implements OnInit {
         this.roundCounter = combatModal.round;
         this.showCombatOptions = combatModal.isStarted;
         this.CombatId = combatModal.id
-
+        this.rulesetModel = combatModal.campaign;
         this.settings = combatModal.combatSettings;
         this.combatants = combatModal.combatantList;
         debugger
         this.combatants.map((x) => {
+          x.initiativeValue = x.initiative;
           if (!x.combatId) {
             x.combatId = combatModal.id;
           }
@@ -419,13 +457,17 @@ export class CombatComponent implements OnInit {
   }
 
   //open Initiative popup
-  Init() {
+  Init(isInitialForCombatStart=false) {
     this.bsModalRef = this.modalService.show(CombatInitiativeComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
       keyboard: false
     });
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
+    this.bsModalRef.content.customDices = this.customDices;
+    this.bsModalRef.content.combatants = this.combatants;
+    this.bsModalRef.content.settings = this.settings;
+    this.bsModalRef.content.isInitialForCombatStart = isInitialForCombatStart;
   }
 
   openDiceRollModal() {
@@ -535,16 +577,21 @@ export class CombatComponent implements OnInit {
         return;
       }
       else if (!this.combatants[i + 1]) {
+        if (this.roundCounter != 0 && this.settings.rollInitiativeEveryRound) {
+          this.Init(true);
+        }
         this.combatants[i].isCurrentTurn = false;
         this.combatants[i - i].isCurrentTurn = true;
         this.curretnCombatant = this.combatants[i - 1];
         let valueofinitiative = this.combatants[i - i].initiativeValue;
         this.CurrentInitiativeValue = valueofinitiative;
+        
         this.roundCounter = this.roundCounter + 1;
         //convert time
         let roundTime = this.settings.gameRoundLength * this.roundCounter;
         this.gametime = this.time_convert(roundTime);
         this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
+        
         return;
       }
 
@@ -798,7 +845,7 @@ export class CombatComponent implements OnInit {
       let message = "Combat has been starter successfully.";
       this.alertService.showMessage(message, "", MessageSeverity.success);
 
-      this.Init();
+      this.Init(true);
       this.showCombatOptions = true;
       let msg = "Combat Started";
       this.SendSystemMessageToChat(msg);
@@ -858,7 +905,7 @@ export class CombatComponent implements OnInit {
   UpdateSettings(e, type) {
     switch (type) {
       case COMBAT_SETTINGS.PC_INITIATIVE_FORMULA:
-        this.settings.pcInitiativeFormula = e.target.value;
+        this.settings.pcInitiativeFormula = e.target.value;       
         break;
       case COMBAT_SETTINGS.ROLL_INITIATIVE_FOR_PLAYER_CHARACTERS:
         this.settings.rollInitiativeForPlayer = e.target.checked;
@@ -988,5 +1035,73 @@ export class CombatComponent implements OnInit {
     this.bsModalRef.content.recordName = this.rulesetModel.ruleSetName;
     this.bsModalRef.content.recordImage = this.rulesetModel.ruleSetImage;
 
+  }
+  getFinalCommandString(inputString: string, statDetails: any, charactersCharacterStats: any, character:any) {
+   return ServiceUtil.getFinalCalculationString(inputString, statDetails, charactersCharacterStats, character);
+  }
+
+  isValidSingleNumberCommand(inputString, includesCharacterStats) {
+    /////code to delete/////////////
+    //debugger
+    //if (item.type == combatantType.CHARACTER) {
+    //  let statdetails = { charactersCharacterStat: item.character.diceRollViewModel.charactersCharacterStats, character: item.character.diceRollViewModel.character };
+    //  var ressss = this.getFinalCommandString(command, statdetails, item.character.diceRollViewModel.charactersCharacterStats, item.character.diceRollViewModel.character)
+    //}
+
+    //////////////////
+    let command: string = inputString;
+    if (includesCharacterStats) {
+      command = command.replace(/\[(.*?)\]/g, "0");
+    }
+
+    if (command) {
+      if (command.toLowerCase().indexOf(' and') > -1) {        
+        return false;
+      }
+      if (command.indexOf('"') > -1) {        
+        return false;
+      }
+      if (command.indexOf("'") > -1) {        
+        return false;
+      }
+    }
+    try {
+      let number = DiceService.rollDiceExternally(this.alertService, command, this.customDices);
+      if (isNaN(number)) {        
+        return false;
+      }
+      else {        
+        return true;
+      }
+    }
+    catch (e) {      
+      return false;
+    }
+  }
+  private setHeaderValues(ruleset: Ruleset): any {
+    try {
+      let headerValues = {
+        headerName: ruleset.ruleSetName,
+        headerImage: ruleset.imageUrl ? ruleset.imageUrl : 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png',
+        headerId: ruleset.ruleSetId,
+        headerLink: 'ruleset',
+        hasHeader: true
+      };
+      this.appService.updateAccountSetting1(headerValues);
+      this.sharedService.updateAccountSetting(headerValues);
+      this.localStorage.deleteData(DBkeys.HEADER_VALUE);
+      this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+    } catch (err) { }
+  }
+  private setRulesetId(rulesetId: number) {
+    this.localStorage.deleteData(DBkeys.RULESET_ID);
+    this.localStorage.saveSyncedSessionData(rulesetId, DBkeys.RULESET_ID);
+  }
+  private destroyModalOnInit(): void {
+    try {
+      this.modalService.hide(1);
+      document.body.classList.remove('modal-open');
+      //$(".modal-backdrop").remove();
+    } catch (err) { }
   }
 }

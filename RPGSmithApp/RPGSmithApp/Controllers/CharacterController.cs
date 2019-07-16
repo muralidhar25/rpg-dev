@@ -123,7 +123,7 @@ namespace RPGSmithApp.Controllers
             {
                 var ruleSetdetail = await _ruleSetService.GetRuleSetById(RulesetId);
                 res = _commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSetdetail);
-                customdices = Utilities.MapCustomDice(_ruleSetService.GetCustomDice(RulesetId));
+                customdices = utility.MapCustomDice(_ruleSetService.GetCustomDice(RulesetId));
                 dicetray = _ruleSetService.GetDiceTray(RulesetId);
                 defaultdices = _ruleSetService.GetDefaultDices();
             }

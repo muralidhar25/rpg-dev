@@ -22,16 +22,24 @@ namespace DAL.Services
         private readonly IConfiguration _configuration;
         private readonly IRepository<RuleSet> _repo;
         private readonly IMonsterTemplateService _monsterTemplateService;
+        private readonly ICharactersCharacterStatService _charactersCharacterStatServic;
+        private readonly ICharacterStatChoiceService _characterStatChoiceService;
+        private readonly IRuleSetService _ruleSetService;
+
         public CombatService(IRepository<RuleSet> repo, ApplicationDbContext context, IConfiguration configuration,
-            IMonsterTemplateService monsterTemplateService)
+            IMonsterTemplateService monsterTemplateService, ICharactersCharacterStatService charactersCharacterStatServic,
+            ICharacterStatChoiceService characterStatChoiceService, IRuleSetService ruleSetService)
         {
             _repo = repo;
             _context = context;
             _configuration = configuration;
             _monsterTemplateService = monsterTemplateService;
-        }
+            _charactersCharacterStatServic= charactersCharacterStatServic;
+            _characterStatChoiceService = characterStatChoiceService;
+            _ruleSetService = ruleSetService;
+    }
 
-        public async Task<Combat_ViewModel> GetCombatDetails(int CampaignId, string UserID)
+        public async Task<Combat_ViewModel> GetCombatDetails(int CampaignId, ApplicationUser user)
         {
             Combat_ViewModel combat = new Combat_ViewModel();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -48,7 +56,7 @@ namespace DAL.Services
 
                 // Add the parameters for the SelectCommand.
                 command.Parameters.AddWithValue("@CampaignId", CampaignId);
-                command.Parameters.AddWithValue("@UserID", UserID);
+                command.Parameters.AddWithValue("@UserID", user.Id);
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;
@@ -150,6 +158,7 @@ namespace DAL.Services
                         if (ds.Tables[3].Rows.Count > 0)
                         {
                             int? nullInt = null;
+                            decimal? nulldecimal = null;
                             foreach (DataRow CombatantRow in ds.Tables[3].Rows)
                             {
                                 Combatant_ViewModel combatant = new Combatant_ViewModel()
@@ -158,21 +167,23 @@ namespace DAL.Services
                                     InitiativeCommand = CombatantRow["InitiativeCommand"] == DBNull.Value ? string.Empty : CombatantRow["InitiativeCommand"].ToString(),
                                     CombatId = CombatantRow["CombatId"] == DBNull.Value ? nullInt : Convert.ToInt32(CombatantRow["CombatId"]),
                                     MonsterId = CombatantRow["MonsterId"] == DBNull.Value ? nullInt : Convert.ToInt32(CombatantRow["MonsterId"]),
-                                    SortOrder = CombatantRow["Id"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["Id"]),
+                                    SortOrder = CombatantRow["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["SortOrder"]),
                                     Type = CombatantRow["Type"] == DBNull.Value ? string.Empty : CombatantRow["Type"].ToString(),
                                     Id = CombatantRow["Id"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["Id"]),
                                     IsCurrentTurn = CombatantRow["IsCurrentTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsCurrentTurn"]),
                                     VisibilityColor = CombatantRow["VisibilityColor"] == DBNull.Value ? string.Empty : CombatantRow["VisibilityColor"].ToString(),
-                                    VisibleToPc = CombatantRow["VisibleToPc"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["VisibleToPc"])
+                                    VisibleToPc = CombatantRow["VisibleToPc"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["VisibleToPc"]),
+                                    Initiative= CombatantRow["Initiative"] == DBNull.Value ? nulldecimal : Convert.ToDecimal(CombatantRow["Initiative"]),
                                     //Character = new Character(),
                                     //Monster=new Monster()
+
                                 };
                                 if (combatant.CharacterId != null && combatant.Type == CombatantTypeCharacter)
                                 {
                                     if (combatant.CharacterId > 0)
                                     {
 
-                                        combatant.Character = new Character()
+                                        combatant.Character = new Character_Combat_VM_ForCharCharStats()
                                         {
                                             CharacterId = CombatantRow["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["CharacterId"]),
                                             CharacterName = CombatantRow["C_CharacterName"] == DBNull.Value ? string.Empty : CombatantRow["C_CharacterName"].ToString(),
@@ -181,8 +192,40 @@ namespace DAL.Services
                                             CharacterAbilities = new List<CharacterAbility>(),
                                             CharacterSpells = new List<CharacterSpell>(),
                                             CharacterBuffAndEffects = new List<CharacterBuffAndEffect>(),
-                                            CharacterDescription= CombatantRow["C_Description"] == DBNull.Value ? string.Empty : CombatantRow["C_Description"].ToString()
+                                            CharacterDescription= CombatantRow["C_Description"] == DBNull.Value ? string.Empty : CombatantRow["C_Description"].ToString(),
+                                            DiceRollViewModel = new DiceRollViewModel(),
+                                            RuleSetId= CombatantRow["C_RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["C_RuleSetId"]),
+                                            InventoryWeight= CombatantRow["C_InventoryWeight"] == DBNull.Value ? 0 : Convert.ToDecimal(CombatantRow["C_InventoryWeight"])
+
                                         };
+                                        /////Getting CharacterCharacterStats Starts////////////////////////////////////////////////////////////////////////////
+                                        try
+                                        {
+                                            DiceRollModel diceRollModel = await _ruleSetService.GetDiceRollModelAsync((int)combatant.Character.RuleSetId, combatant.Character.CharacterId, user);
+                                            DiceRollViewModel diceRollViewModel = new DiceRollViewModel()
+                                            {
+                                                Character = diceRollModel.Character == null ? new Character() : diceRollModel.Character,
+                                                CharacterCommands = diceRollModel.CharacterCommands == null ? new List<CharacterCommand>() : diceRollModel.CharacterCommands,
+                                                RulesetCommands = diceRollModel.RulesetCommands == null ? new List<RulesetCommand>() : diceRollModel.RulesetCommands,
+                                                CharactersCharacterStats = diceRollModel.CharactersCharacterStats == null ? new List<CharactersCharacterStat>() : diceRollModel.CharactersCharacterStats,// Utilities.GetCharCharStatViewModelList( diceRollModel.CharactersCharacterStats,_characterStatChoiceService),
+                                                CustomDices = utility.MapCustomDice(diceRollModel.CustomDices),
+                                                DefaultDices = diceRollModel.DefaultDices,
+                                                DiceTrays = diceRollModel.DiceTrays,
+                                                IsGmAccessingPlayerCharacter = diceRollModel.IsGmAccessingPlayerCharacter,
+                                                RuleSet = diceRollModel.RuleSet,
+                                            };
+                                            combatant.Character.DiceRollViewModel = diceRollViewModel;
+
+
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            
+                                        }
+                                        /////Getting CharacterCharacterStats ends//////////////////////////////////////////////////////////////////////////////
+                                        
+
+
                                         if (ds.Tables[4].Rows.Count > 0)
                                         {
                                             foreach (DataRow CharItemRow in ds.Tables[4].Rows)
@@ -373,7 +416,7 @@ namespace DAL.Services
 
         }
         public async Task<CombatSetting> UpdateSettings(CombatSetting model) {
-            var combatsetting = _context.CombatSettings.Where(x => x.CampaignId == model.CampaignId).FirstOrDefault();
+            var combatsetting = _context.CombatSettings.Where(x => x.CampaignId == model.CampaignId && x.IsDeleted!=true).FirstOrDefault();
             if (combatsetting!=null)
             {
                 combatsetting.AccessMonsterDetails=model.AccessMonsterDetails;
@@ -568,7 +611,7 @@ namespace DAL.Services
                     {
                         if (combatant.CharacterId > 0)
                         {
-                            combatant.Character = new Character()
+                            combatant.Character = new Character_Combat_VM_ForCharCharStats()
                             {
                                 CharacterId = CombatantRow["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["CharacterId"]),
                                 CharacterName = CombatantRow["C_CharacterName"] == DBNull.Value ? string.Empty : CombatantRow["C_CharacterName"].ToString(),

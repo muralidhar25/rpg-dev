@@ -43,7 +43,7 @@ namespace RPGSmithApp.Controllers
 
             //var data = _charactersCharacterStatServic.GetByCharacterId(characterId, page, pageSize);
             var data = _charactersCharacterStatServic.GetByCharacterId_sp(characterId, page, pageSize);
-            List<CharactersCharacterStatViewModel> CharactersCharacterStatVievModels = Utilities.GetCharCharStatViewModelList(data,_characterStatChoiceService);
+            List<CharactersCharacterStatViewModel> CharactersCharacterStatVievModels = utility.GetCharCharStatViewModelList(data,_characterStatChoiceService);
             //foreach (var ccs in CharactersCharacterStatVievModels)
             //{
             //    ccs.Character.CharactersCharacterStats = null;

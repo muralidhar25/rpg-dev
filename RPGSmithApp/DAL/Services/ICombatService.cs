@@ -10,7 +10,7 @@ namespace DAL.Services
 {
     public interface ICombatService
     {
-      Task <Combat_ViewModel> GetCombatDetails(int CampaignId, string UserID);
+      Task <Combat_ViewModel> GetCombatDetails(int CampaignId, ApplicationUser user);
         Task<CombatSetting> UpdateSettings(CombatSetting model);
         List<CombatAllTypeMonsters> GetCombatAllTypeMonsters(int CampaignId);
         void AddDeployedMonstersToCombat(List<CombatAllTypeMonsters> model);

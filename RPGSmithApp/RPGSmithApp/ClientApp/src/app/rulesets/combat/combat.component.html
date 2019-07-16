@@ -163,7 +163,8 @@
                         <li>
                           PC Initiative Formula
                           <input type="text" class="cust-txtbox" name="PCInitiative" [(ngModel)]="settings.pcInitiativeFormula"
-                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.PC_INITIATIVE_FORMULA)" />
+                                 (change)="isValidSingleNumberCommand(settings.pcInitiativeFormula,true) && UpdateSettings($event, COMBAT_SETTINGS.PC_INITIATIVE_FORMULA)" />
+                          <span *ngIf="settings.pcInitiativeFormula && !isValidSingleNumberCommand(settings.pcInitiativeFormula,true)" class="errorMessage text-danger">The 'And' and Text options are disallowed for this comand.</span>
                         </li>
                         <li>
                           Roll Initiative for Player Characters
@@ -224,7 +225,8 @@
                         <li *ngIf="settings.groupInitiative">
                           Group Init Formula
                           <input type="text" class="cust-txtbox" name="GroupInitFormula" [(ngModel)]="settings.groupInitFormula"
-                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.GROUPINIT_FORMULA)" />
+                                 (change)="isValidSingleNumberCommand(settings.groupInitFormula) && UpdateSettings($event, COMBAT_SETTINGS.GROUPINIT_FORMULA)" />
+                          <em *ngIf="settings.groupInitFormula && !isValidSingleNumberCommand(settings.groupInitFormula)" class="errorMessage text-danger">The 'And' and Text options are disallowed for this comand.</em>
                         </li>
                         <li>
                           Auto-Drop Items for Deleted Monsters
@@ -314,7 +316,7 @@
                       c/c
                     </div>
                     <div class="progress-value" *ngIf="item.type==combatItemsType.MONSTER">
-                    {{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}
+                    40%
                     </div>
                   </div>
                 </div>
