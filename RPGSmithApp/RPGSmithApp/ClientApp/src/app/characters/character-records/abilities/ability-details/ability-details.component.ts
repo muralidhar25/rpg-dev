@@ -113,7 +113,7 @@ export class CharacterAbilityDetailsComponent implements OnInit {
         }
       }
       this.isLoading = true;
-      this.gameStatus(this.characterId);
+     
       this.characterAbilityService.getCharacterAbilityById<any>(this.abilityId)
         .subscribe(data => {
           debugger
@@ -123,6 +123,7 @@ export class CharacterAbilityDetailsComponent implements OnInit {
           //this.ruleSetId = this.AbilityDetail.ruleSetId;
           this.characterId = data.characterId;
           this.character = data.character;
+          this.gameStatus(this.character.characterId);
           this.rulesetService.GetCopiedRulesetID(this.AbilityDetail.ruleSetId, user.id).subscribe(data => {
             let id: any = data
             this.ruleSetId = id;

@@ -109,7 +109,7 @@ export class CharacterSpellDetailsComponent implements OnInit {
                 }
               }
           this.isLoading = true;
-          this.gameStatus(this.characterId);
+
             this.characterSpellService.getCharacterSpellById<any>(this.spellId)
               .subscribe(data => {
                   debugger
@@ -117,6 +117,7 @@ export class CharacterSpellDetailsComponent implements OnInit {
                    // this.ruleSetId = this.spellDetail.ruleSetId;
                     this.characterId = this.spellDetail.characterId;
                     this.character = data.character;
+                this.gameStatus(this.character.characterId);
                     this.rulesetService.GetCopiedRulesetID(this.spellDetail.ruleSetId, user.id).subscribe(data => {
                         let id: any = data
                         this.ruleSetId = id;

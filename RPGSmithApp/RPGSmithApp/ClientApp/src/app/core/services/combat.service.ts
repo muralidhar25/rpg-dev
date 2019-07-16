@@ -21,6 +21,8 @@ export class CombatService extends EndpointFactory {
   private readonly Combat_RemoveMonsters: string = this.configurations.baseUrl + "/api/Combat/RemoveMonsters";
   private readonly SaveCombatantTurn: string = this.configurations.baseUrl + "/api/Combat/SaveCombatantTurn";
   private readonly SaveVisibilityDetails: string = this.configurations.baseUrl + "/api/Combat/SaveVisibilityDetails";
+  private readonly SaveMonsterHealth: string = this.configurations.baseUrl + "/api/Combat/SaveMonsterHealth";
+  private readonly SP_GetMonsterAssociateBEs: string = this.configurations.baseUrl + "/api/Combat/SP_GetMonsterAssociateBEs";
 
   private readonly Combat_Start: string = this.configurations.baseUrl + "/api/Combat/Combat_Start";
   
@@ -103,11 +105,28 @@ export class CombatService extends EndpointFactory {
   }
 
   saveVisibilityDetails<T>(currentItem): Observable<T> {
-    debugger
     let saveInitiativeUrl = `${this.SaveVisibilityDetails}`
     return this.http.post<T>(saveInitiativeUrl, JSON.stringify(currentItem),  this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.saveVisibilityDetails(currentItem));
       });
   }
+
+  saveMonsterHealth<T>(mosnterHealth): Observable<T> {
+    debugger;
+    let saveMonsterHealthUrl = `${this.SaveMonsterHealth}`
+    return this.http.post<T>(saveMonsterHealthUrl, JSON.stringify(mosnterHealth), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.saveMonsterHealth(mosnterHealth));
+      });
+  }
+
+  getBuffAndEffctList<T>(monsterId: number, rulesetId:number): Observable<T> {
+    let url = `${this.SP_GetMonsterAssociateBEs}?monsterId=${monsterId}&rulesetId=${rulesetId}`
+    return this.http.get<T>(url, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getBuffAndEffctList(monsterId, rulesetId));
+      });
+  }
+
 }

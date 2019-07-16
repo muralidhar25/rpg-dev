@@ -30,6 +30,11 @@ import { CastComponent } from '../../shared/cast/cast.component';
 import { DropItemsMonsterComponent } from '../../records/monster/drop-items-monster/drop-items-monster.component';
 import { EditMonsterComponent } from '../../records/monster/edit-monster/edit-monster.component';
 import { CreateMonsterTemplateComponent } from '../../records/monster-template/create-monster-template/create-monster-template.component';
+import { settings } from 'cluster';
+import { Observable, Subscription } from 'rxjs';
+import { ItemsService } from '../../core/services/items.service';
+import { DBkeys } from '../../core/common/db-keys';
+import { LocalStoreManager } from '../../core/common/local-store-manager.service';
 
 @Component({
   selector: 'app-combat',
@@ -62,6 +67,9 @@ export class CombatComponent implements OnInit {
   isCharacterAbilityEnabled: boolean = false;
   CombatId: number = 0;
   delayResumeTurn: boolean = false;
+  sub: Subscription;
+  characterId: any;
+  noDescripttionAvailable: string = 'No Descripttion Available';
 
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
@@ -98,12 +106,50 @@ export class CombatComponent implements OnInit {
     private authService: AuthService,
     private sharedService: SharedService,
     private appService: AppService1,
-    private monsterTemplateService: MonsterTemplateService) {
+    private monsterTemplateService: MonsterTemplateService,
+    private itemsService: ItemsService,
+    private localStorage: LocalStoreManager, ) {
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
 
     this.sharedService.shouldUpdateCombatantList().subscribe(combatantListJson => {
       if (combatantListJson) {
         this.combatants = combatantListJson;
+      }
+    });
+
+    this.sharedService.shouldUpdateMonsterBuffEffect().subscribe(mbe => {
+      if (mbe) {
+        this.combatants.map(x => {
+          if (x.type == combatantType.MONSTER) {
+            if (mbe.monsterId == x.monster.monsterId) {
+              if (mbe.monsterBuffAndEffects.length) {
+                x.monster.monsterBuffAndEffects = mbe.monsterBuffAndEffects.map((m_rec) => {
+                  return { buffAndEffectId: m_rec.buffAndEffectId, monsterId: mbe.monsterId, id: 0, isDeleted: false, monster: null, buffAndEffect: m_rec }
+                });
+              }
+            }
+          }
+        });
+      }
+    });
+
+    this.sharedService.shouldUpdateCharacterBuffEffect().subscribe(cbe => {
+      if (cbe) {
+        debugger
+        this.combatants.map(x => {
+          if (x.type == combatantType.CHARACTER) {
+            if (cbe.characterId == x.character.characterId) {
+              if (cbe.characterBuffAndEffects.length) {
+                x.character.characterBuffAndEffects = cbe.characterBuffAndEffects.map((c_rec) => {
+                  return {
+                    buffAndEffectID: c_rec.buffAndEffectId, character: null, characterBuffAandEffectId: 0, characterId: cbe.characterId, isDeleted: null, buffAndEffect: { buffAndEffectId: c_rec.buffAndEffectId, name: c_rec.text, imageUrl: c_rec.image }
+                  }
+                });
+              }
+
+            }
+          }
+        });
       }
     });
 
@@ -307,6 +353,14 @@ export class CombatComponent implements OnInit {
     //this.GetCombatantList();
   }
 
+  //api call after every 10 seconds
+  ngAfterViewInit() {
+    //this.sub = Observable.interval(10000)
+    //  .subscribe((val) => {
+    //    this.GetCombatDetails();
+    //  });
+  }
+
   // Combat Settings
   GetCombatDetails() {
     this.isLoading = true;
@@ -316,10 +370,20 @@ export class CombatComponent implements OnInit {
         this.roundCounter = combatModal.round;
         this.showCombatOptions = combatModal.isStarted;
         this.CombatId = combatModal.id
-
-        this.settings = combatModal.combatSettings;
-        this.combatants = combatModal.combatantList;
         debugger
+        this.settings = combatModal.combatSettings;
+        if (this.settings.monsterVisibleByDefault) {
+          this.combatants = combatModal.combatantList;
+        } else {
+          this.combatants = [];
+          let combatantsWithoutMonster = combatModal.combatantList;;
+          combatantsWithoutMonster.map(x => {
+            if (x.type == this.combatItemsType.CHARACTER) {
+              this.combatants.push(x);
+            }
+          });
+        }
+
         this.combatants.map((x) => {
           if (!x.combatId) {
             x.combatId = combatModal.id;
@@ -336,6 +400,8 @@ export class CombatComponent implements OnInit {
 
         // Game Time
         this.gametime = this.time_convert(this.settings.gameRoundLength);
+
+        this.frameClick(this.combatants[0]);
 
         this.isCharacterItemEnabled = combatModal.isCharacterItemEnabled;
         this.isCharacterSpellEnabled = combatModal.isCharacterSpellEnabled;
@@ -388,7 +454,6 @@ export class CombatComponent implements OnInit {
 
   // Current Turn
   SaveCombatantTurn(curretnCombatant, roundCount) {
-    debugger;
     //this.isLoading = true;
     this.combatService.saveCombatantTurn(curretnCombatant, roundCount).subscribe(res => {
       let result = res;
@@ -572,17 +637,20 @@ export class CombatComponent implements OnInit {
   progressHealth(item) {
     //console.log('progressHealth', item);
     //CombatHealthComponent
-    this.bsModalRef = this.modalService.show(CombatHealthComponent, {
-      class: 'modal-primary modal-custom',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
-    this.bsModalRef.content.title = "Health";
-    this.bsModalRef.content.combatInfo = item;
-    this.bsModalRef.content.event.subscribe(result => {
-      item.monster.healthCurrent = result.monster.healthCurrent;
-      item.monster.healthMax = result.monster.healthMax;
-    });
+    if (item.type == this.combatItemsType.MONSTER) {
+      this.bsModalRef = this.modalService.show(CombatHealthComponent, {
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = "Health";
+      this.bsModalRef.content.combatInfo = item;
+      this.bsModalRef.content.event.subscribe(result => {
+        item.monster.healthCurrent = result.monster.healthCurrent;
+        item.monster.healthMax = result.monster.healthMax;
+      });
+    }
+
   }
   buffclicked(buffs) {
     console.log('buffclicked', buffs);
@@ -618,7 +686,7 @@ export class CombatComponent implements OnInit {
   redirectToItem(item) {
     this.router.navigate(['/character/inventory', item.character.characterId]);
   }
-  redirectTospell(item) {
+  redirectToSpell(item) {
     this.router.navigate(['/character/spell', item.character.characterId]);
   }
   redirectToAbility(item) {
@@ -630,9 +698,7 @@ export class CombatComponent implements OnInit {
 
   //Monster Side
   monsterCommand(item) {
-
     let _monster = Object.assign({}, item.monster);
-
     if (_monster.monsterId) {
       this.monsterTemplateService.getMonsterCommands_sp<any>(_monster.monsterId)
         .subscribe(data => {
@@ -682,6 +748,7 @@ export class CombatComponent implements OnInit {
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.character = new Characters();
     this.bsModalRef.content.command = monster.command;
+    this.bsModalRef.content.isFromCombat = true;
     if (monster.hasOwnProperty("monsterId")) {
       this.bsModalRef.content.recordName = monster.name;
       this.bsModalRef.content.recordImage = monster.imageUrl;
@@ -689,6 +756,10 @@ export class CombatComponent implements OnInit {
       this.bsModalRef.content.recordId = monster.monsterId;
     }
     this.bsModalRef.content.event.subscribe(result => {
+      let msg = "Monster rolled result = " + result;
+      if (this.settings.displayMonsterRollResultInChat) {
+        this.SendSystemMessageToChat(msg);
+      }
     });
   }
   dropMonsterItems(item) {
@@ -825,7 +896,6 @@ export class CombatComponent implements OnInit {
 
   //endCombat
   stopCombat() {
-    debugger;
     let _msg = "Ending Combat..";
     this.alertService.startLoadingMessage("", _msg);
     //this.router.navigate(['/ruleset/combatplayer', this.ruleSetId]);
@@ -841,6 +911,7 @@ export class CombatComponent implements OnInit {
       this.SendSystemMessageToChat(msg);
 
       this.isLoading = false;
+      this.GetCombatDetails();
     }, error => {
       this.alertService.stopLoadingMessage();
       this.isLoading = false;
@@ -975,18 +1046,137 @@ export class CombatComponent implements OnInit {
     }
   }
 
-  buffEffectclick() {
+  buffEffectclick(item) {
     console.log('cliked');
     this.bsModalRef = this.modalService.show(CombatBuffeffectDetailsComponent, {
-      class: 'modal-primary modal-custom',
+      class: 'modal-primary',
       ignoreBackdropClick: true,
       keyboard: false
     });
     this.bsModalRef.content.title = 'Buff & Effects';
     this.bsModalRef.content.button = 'Edit';
     this.bsModalRef.content.rulesetID = this.ruleSetId;
-    this.bsModalRef.content.recordName = this.rulesetModel.ruleSetName;
-    this.bsModalRef.content.recordImage = this.rulesetModel.ruleSetImage;
+    if (item.type == this.combatItemsType.CHARACTER) {
+      this.bsModalRef.content.recordName = item.character.characterName;
+      this.bsModalRef.content.recordImage = item.character.imageUrl;
+      this.bsModalRef.content.buffEffectList = item.character.characterBuffAndEffects;
+      this.bsModalRef.content.type = item.type;
+      debugger;
+      this.bsModalRef.content.characterId = item.character.characterId;
+    }
+    if (item.type == this.combatItemsType.MONSTER) {
+      this.bsModalRef.content.recordName = item.monster.name;
+      this.bsModalRef.content.recordImage = item.monster.imageUrl;
+      this.bsModalRef.content.buffEffectList = item.monster.monsterBuffAndEffects;
+      this.bsModalRef.content.type = item.type;
+      this.bsModalRef.content.monster = item;
+    }
+  }
+
+  CombatantBuff_EffectDetail(currentCombatantDetail, item) {
+    if (currentCombatantDetail.type == combatantType.MONSTER) {
+      this.router.navigate(['/ruleset/buff-effect-details', item.buffAndEffectId]);
+    }
+    if (currentCombatantDetail.type == combatantType.CHARACTER) {
+      //this.router.navigate(['/character/buff-effect-details', item.characterBuffAandEffectId]);
+      this.characterId = currentCombatantDetail.character.characterId;
+      this.GoToCharbuff(item.buffAndEffect.buffAndEffectId);
+    }
+  }
+  //Item Details
+  CombatantItemDetail(currentCombatantDetail, item) {
+    if (currentCombatantDetail.type == combatantType.MONSTER) {
+      this.router.navigate(['/ruleset/monster-item-details', item.itemId]);
+    }
+    if (currentCombatantDetail.type == combatantType.CHARACTER) {
+      this.router.navigate(['/character/inventory-details', item.itemId]);
+    }
 
   }
+  //Spell Details
+  CombatantSpellDetail(currentCombatantDetail, item) {
+    if (currentCombatantDetail.type == combatantType.MONSTER) {
+      this.router.navigate(['/ruleset/spell-details', item.spellId]);
+    }
+    if (currentCombatantDetail.type == combatantType.CHARACTER) {
+      //this.router.navigate(['/character/spell-details', item.characterSpellId]);
+      this.characterId = currentCombatantDetail.character.characterId;
+      this.GoToCharSpell(item.spell.spellId);
+    }
+  }
+  //Ability Details
+  CombatantAbilityDetail(currentCombatantDetail, item) {
+    if (currentCombatantDetail.type == combatantType.MONSTER) {
+      this.router.navigate(['/ruleset/ability-details', item.abilityId]);
+    }
+    if (currentCombatantDetail.type == combatantType.CHARACTER) {
+      //this.router.navigate(['/character/ability-details', item.characterAbilityId]);
+      this.characterId = currentCombatantDetail.character.characterId;
+      this.GoToCharAbility(item.ability.abilityId);
+    }
+  }
+
+
+  GoToCharSpell(RulesetSpellID: number) {
+
+    this.isLoading = true;
+    this.itemsService.GetCharSpellID(RulesetSpellID, this.characterId)
+      .subscribe(
+        data => {
+          this.setCharacterID(this.characterId);
+          this.isLoading = false;
+          if (data) {
+            let model: any = data;
+            this.router.navigate(['/character/spell-details', model.characterSpellId]);
+          }
+          else {
+            this.router.navigate(['/character/spell-detail', RulesetSpellID]);
+          }
+        },
+        error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let Errors = Utilities.ErrorDetail(error, error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        });
+  }
+  GoToCharbuff(RulesetBuffID: number) {
+    this.router.navigate(['/character/buff-effect-detail', RulesetBuffID]);
+  }
+  GoToCharAbility(RulesetAbilityId: number) {
+    this.isLoading = true;
+    this.itemsService.GetCharAbilityID(RulesetAbilityId, this.characterId)
+      .subscribe(
+        data => {
+          this.setCharacterID(this.characterId);
+          this.isLoading = false;
+          if (data) {
+            let model: any = data;
+            this.router.navigate(['/character/ability-details', model.characterAbilityId]);
+          }
+          else {
+            this.router.navigate(['/character/ability-detail', RulesetAbilityId]);
+          }
+        },
+        error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let Errors = Utilities.ErrorDetail(error, error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        });
+  }
+
+  private setCharacterID(CharacterID: number) {
+    this.localStorage.deleteData(DBkeys.CHARACTER_ID);
+    this.localStorage.saveSyncedSessionData(CharacterID, DBkeys.CHARACTER_ID);
+  }
+
 }

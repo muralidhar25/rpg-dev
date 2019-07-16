@@ -224,6 +224,10 @@ namespace RPGSmithApp.Controllers
             ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
             return appUser;
         }
+        [HttpGet("SP_GetMonsterAssociateBEs")]
+        public async Task<IActionResult> SP_GetMonsterAssociateBEs(int monsterID, int rulesetId) {
+            return Ok(_combatService.SP_GetMonsterAssociateBEs(monsterID, rulesetId));
+        }
     }
 }
 

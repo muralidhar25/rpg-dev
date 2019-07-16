@@ -88,7 +88,7 @@ import { AdsenseModule } from 'ng2-adsense';
   ],
   providers: [
     AppService1,
-    { provide: AccordionConfig, useValue: { closeOthers: true } },
+    { provide: AccordionConfig, useValue: { closeOthers: false } },
   ],
   exports: [
    // CampaignInviteComponent,

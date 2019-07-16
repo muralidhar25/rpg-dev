@@ -87,10 +87,9 @@ export class CharBuffAndEffectDetailsComponent implements OnInit {
         }
       }
       this.isLoading = true;
-      this.gameStatus(this.characterId);
+     
       this.buffAndEffectService.getCharacterBuffAndEffectById<any>(this.buffAndEffectId)
         .subscribe(data => {
-          debugger
           if (data)
             this.buffAndEffectDetail = this.buffAndEffectService.BuffAndEffectsModelData(data, "UPDATE");
           if (!this.buffAndEffectDetail.ruleset) {
@@ -99,6 +98,7 @@ export class CharBuffAndEffectDetailsComponent implements OnInit {
           this.character = data.character;
           if (this.character) {
             if (this.character.characterId) {
+              this.gameStatus(this.character.characterId);
               this.isAlreadyAssigned = true;
             }
           }

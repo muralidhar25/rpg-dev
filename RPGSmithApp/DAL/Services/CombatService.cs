@@ -675,5 +675,56 @@ namespace DAL.Services
             index = index + 1;
             return index;
         }
+        public List<BuffAndEffect> SP_GetMonsterAssociateBEs(int monsterID, int rulesetId)
+        {
+            List<BuffAndEffect> res  = new List<BuffAndEffect>();
+            
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("Monster_GetAssociateRecords", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@MonsterID", monsterID);
+                command.Parameters.AddWithValue("@RulesetID", rulesetId);
+
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+
+            if (ds.Tables[3].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[3].Rows)
+                {
+                    BuffAndEffect i = new BuffAndEffect();
+                    i.BuffAndEffectId = row["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["BuffAndEffectId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.Add(i);/////////
+                }
+
+            }
+            
+            return res;
+        }
     }
 }

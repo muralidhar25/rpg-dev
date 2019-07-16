@@ -34,8 +34,10 @@ export class SharedService {
   private AddMonsterTemplatesList = new Subject<any>();
   private CombatantList = new Subject<any>();
   private MonsterVisibility = new Subject<any>();
-  
-  
+  private MonsterBuffEffect = new Subject<any>();
+  private CharacterBuffEffect = new Subject<any>();
+
+
   updateManageOpen(accountSetting: any) {
     this.accountSetting.next(accountSetting);
   }
@@ -320,6 +322,22 @@ export class SharedService {
 
   shouldUpdateMonsterVisibility(): Observable<any> {
     return this.MonsterVisibility.asObservable();
+  }
+
+  updateMonsterBuffEffect(combatantList: any) {
+    this.MonsterBuffEffect.next(combatantList);
+  }
+
+  shouldUpdateMonsterBuffEffect(): Observable<any> {
+    return this.MonsterBuffEffect.asObservable();
+  }
+
+  updateCharacterBuffEffect(combatantList: any) {
+    this.CharacterBuffEffect.next(combatantList);
+  }
+
+  shouldUpdateCharacterBuffEffect(): Observable<any> {
+    return this.CharacterBuffEffect.asObservable();
   }
 }
 

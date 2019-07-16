@@ -87,10 +87,14 @@ export class CharBuffAndEffectRulesetDetailsComponent implements OnInit {
         }
       }
       this.isLoading = true;
-      this.gameStatus(this.characterId);
+      
       this.charactersService.getCharactersById<any>(this.characterId)
         .subscribe(data => {
           this.character = data;
+
+          if (this.character.characterId) {
+            this.gameStatus(this.character.characterId);
+          }
 
         }, error => {
           this.isLoading = false;

@@ -16,6 +16,7 @@ import { Utilities } from '../../../core/common/utilities';
 import { DiceService } from '../../../core/services/dice.service';
 import { CustomDice } from '../../../core/models/view-models/custome-dice.model';
 import { RulesetService } from '../../../core/services/ruleset.service';
+import { CombatService } from '../../../core/services/combat.service';
 
 @Component({
   selector: 'app-combat-health-monster',
@@ -41,7 +42,8 @@ export class CombatHealthComponent implements OnInit {
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
     private colorService: ColorService, private localStorage: LocalStoreManager, private counterTileService: CounterTileService,
     private alertService: AlertService, private authService: AuthService, private location: PlatformLocation,
-    private monsterTemplateService: MonsterTemplateService, private rulesetService: RulesetService, ) {
+    private monsterTemplateService: MonsterTemplateService, private rulesetService: RulesetService,
+    private combatService:CombatService) {
     location.onPopState(() => this.modalService.hide(1));
   }
 
@@ -93,46 +95,62 @@ export class CombatHealthComponent implements OnInit {
     this.combatInfo.monster.healthCurrent = this.healthCurrent;
     this.combatInfo.monster.healthMax = this.healthMax;
     this.event.emit(this.combatInfo);
+    this.SaveMonsterHealth(this.combatInfo.monster);
+    this.close();
   }
 
-
+  SaveMonsterHealth(monsterHealth) {
+    this.isLoading = true;
+    this.combatService.saveMonsterHealth(monsterHealth).subscribe(res => {
+      let result = res;
+      this.isLoading = false;
+    }, error => {
+      this.isLoading = false;
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      } else {
+        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+      }
+    });
+  }
 
   incrementhealthcurr() {
       let step: number =  1;
-    this.combatInfo.healthCurrent += step;
+    this.healthCurrent += step;
   }
 
   decrementhealthcurr() {
     let step: number = 1;
-    if (this.combatInfo.healthCurrent == 1) {
+    if (this.healthCurrent == 1) {
       return false;
     } else {
-      this.combatInfo.healthCurrent -= step;
+      this.healthCurrent -= step;
     }
   }
 
 
   incrementHealthMax() {
     let step: number = 1;
-    this.combatInfo.healthMax += step;
+    this.healthMax += step;
   }
 
   decrementHealthMax() {
     let step: number = 1;
-    if (this.combatInfo.healthMax == 1) {
+    if (this.healthMax == 1) {
       return false;
     } else {
-      this.combatInfo.healthMax -= step;
+      this.healthMax -= step;
     }
   }
 
   changeHealthMax(event: any) {
-    let value = +event.target.value;
+    this.healthCurrent = +event.target.value;
   }
 
 
   changeHealthCurrent(event: any) {
-    let value = +event.target.value;
+    this.healthMax = +event.target.value;
   }
 
 
