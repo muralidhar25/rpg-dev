@@ -1218,6 +1218,9 @@ export class CombatComponent implements OnInit {
         });
   }
 
+  private setCharacterID(CharacterID: number) {
+    this.localStorage.deleteData(DBkeys.CHARACTER_ID);
+    this.localStorage.saveSyncedSessionData(CharacterID, DBkeys.CHARACTER_ID);
   }
   getFinalCommandString(inputString: string, statDetails: any, charactersCharacterStats: any, character:any) {
    return ServiceUtil.getFinalCalculationString(inputString, statDetails, charactersCharacterStats, character);
