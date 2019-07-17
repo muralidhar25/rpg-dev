@@ -22,6 +22,7 @@ export class CombatService extends EndpointFactory {
   private readonly SaveCombatantTurn: string = this.configurations.baseUrl + "/api/Combat/SaveCombatantTurn";
   private readonly SaveVisibilityDetails: string = this.configurations.baseUrl + "/api/Combat/SaveVisibilityDetails";
   private readonly SaveMonsterHealth: string = this.configurations.baseUrl + "/api/Combat/SaveMonsterHealth";
+  private readonly SaveCharacterHealthUrl: string = this.configurations.baseUrl + "/api/Combat/SaveCharacterHealth";
   private readonly SP_GetMonsterAssociateBEs: string = this.configurations.baseUrl + "/api/Combat/SP_GetMonsterAssociateBEs";
 
   private readonly Combat_Start: string = this.configurations.baseUrl + "/api/Combat/Combat_Start";
@@ -118,6 +119,15 @@ export class CombatService extends EndpointFactory {
     return this.http.post<T>(saveMonsterHealthUrl, JSON.stringify(mosnterHealth), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.saveMonsterHealth(mosnterHealth));
+      });
+  }
+
+  saveCharacterHealth<T>(characterHealth): Observable<T> {
+    debugger;
+    let endpointUrl = `${this.SaveCharacterHealthUrl}`
+    return this.http.post<T>(endpointUrl, JSON.stringify(characterHealth), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.saveCharacterHealth(characterHealth));
       });
   }
 

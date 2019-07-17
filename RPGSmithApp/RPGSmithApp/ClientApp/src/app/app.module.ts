@@ -32,6 +32,7 @@ import { AppService1 } from './app.service';
 import { ContextMenuModule } from 'ngx-contextmenu';
 import { NgChatModule } from './ng-chat/ng-chat.module';
 import { AdsenseModule } from 'ng2-adsense';
+import { NgCircleProgressModule } from 'ng-circle-progress';
 
 @NgModule({
   declarations: [
@@ -84,7 +85,14 @@ import { AdsenseModule } from 'ng2-adsense';
     NgChatModule,
     AdsenseModule.forRoot({
       adClient: 'ca-pub-8705225834552505'
-    }),    
+    }),
+    NgCircleProgressModule.forRoot({
+      // set defaults here
+      radius: 100,
+      outerStrokeWidth: 8,
+      outerStrokeColor: "#78C000",
+      showInnerStroke :false
+    })
   ],
   providers: [
     AppService1,

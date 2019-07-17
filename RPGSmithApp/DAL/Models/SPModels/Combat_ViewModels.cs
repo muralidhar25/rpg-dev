@@ -56,7 +56,11 @@ namespace DAL.Models.SPModels
         public string VisibilityColor { get; set; }
 
         public bool IsCurrentTurn { get; set; }
-        
+
+        public int TargetId { get; set; }
+
+        public string TargetType { get; set; }
+
     }
     public class CombatAllTypeMonsters : MonsterTemplate
     {
@@ -112,7 +116,13 @@ namespace DAL.Models.SPModels
 
         public bool VisibleToPc { get; set; }
 
-        public bool IsCurrentTurn { get; set; }
+        public bool IsCurrentTurn { get; set; }        
 
+    }
+    public class CharacterHealthModel
+    {
+        public int healthCurrent { get; set; }
+        public int healthMax { get; set; }
+        public int healthStatId { get; set; }
     }
 }

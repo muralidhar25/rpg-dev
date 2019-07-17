@@ -39,6 +39,7 @@ import { RemoveCombatMonsterComponent } from "./combat/remove-combat-monster/rem
 import { SaveCombatMonsterComponent } from "./combat/save-combat-monster/save-combat-monster.component";
 import { CombatHealthComponent } from "./combat/update-combat-health/update-combat-health.component";
 import { AccordionModule } from "ngx-bootstrap";
+import { NgCircleProgressModule } from "ng-circle-progress";
 
 //import { CampaignInviteComponent } from './campaign-invite/campaign-invite.component';
 
@@ -81,7 +82,8 @@ import { AccordionModule } from "ngx-bootstrap";
     RecordsModule,
     TileModule,
     TileRulesetModule,
-    AccordionModule
+    AccordionModule,
+    NgCircleProgressModule
   ],
   providers: [
   ],

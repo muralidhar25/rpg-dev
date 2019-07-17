@@ -17,6 +17,7 @@ import { DiceService } from '../../../core/services/dice.service';
 import { CustomDice } from '../../../core/models/view-models/custome-dice.model';
 import { RulesetService } from '../../../core/services/ruleset.service';
 import { CombatService } from '../../../core/services/combat.service';
+import { combatantType } from '../../../core/models/enums';
 
 @Component({
   selector: 'app-combat-health-monster',
@@ -36,6 +37,7 @@ export class CombatHealthComponent implements OnInit {
   customDices: CustomDice[] = [];
   healthCurrent: any;
   healthMax: any;
+  DummyValueForCharHealthStat: number = -9999
 
   public event: EventEmitter<any> = new EventEmitter();
 
@@ -54,8 +56,17 @@ export class CombatHealthComponent implements OnInit {
 
       //combatInfo
       this.combatInfo = this.bsModalRef.content.combatInfo;
-      this.healthCurrent=this.combatInfo.monster.healthCurrent;
-      this.healthMax=this.combatInfo.monster.healthMax;
+      if (this.combatInfo.type == combatantType.CHARACTER) {
+        this.healthCurrent = this.combatInfo.character.healthCurrent;
+        this.healthMax = this.combatInfo.character.healthMax;
+      }
+      else if (this.combatInfo.type == combatantType.MONSTER) {
+        this.healthCurrent = this.combatInfo.monster.healthCurrent;
+        this.healthMax = this.combatInfo.monster.healthMax;
+      }
+      //this.healthCurrent=this.combatInfo.monster.healthCurrent;
+      //this.healthMax=this.combatInfo.monster.healthMax;
+      ///////////////////////////////////////////////////////
       
       //this.value = 1;
       
@@ -92,17 +103,44 @@ export class CombatHealthComponent implements OnInit {
  
 
   saveCounter() {
-    this.combatInfo.monster.healthCurrent = this.healthCurrent;
-    this.combatInfo.monster.healthMax = this.healthMax;
-    this.event.emit(this.combatInfo);
-    this.SaveMonsterHealth(this.combatInfo.monster);
+    if (this.combatInfo.type == combatantType.CHARACTER) {
+      this.combatInfo.character.healthCurrent = this.healthCurrent;
+      this.combatInfo.character.healthMax = this.healthMax;
+      this.event.emit(this.combatInfo);
+      this.SaveCharacterHealth(this.combatInfo.character);
+    }
+    else if (this.combatInfo.type == combatantType.MONSTER) {
+      this.combatInfo.monster.healthCurrent = this.healthCurrent;
+      this.combatInfo.monster.healthMax = this.healthMax;
+      this.event.emit(this.combatInfo);
+      this.SaveMonsterHealth(this.combatInfo.monster);
+    }
+
+    
     this.close();
+  }
+
+  SaveCharacterHealth(characterHealth) {
+    this.isLoading = true;
+   // let CCStatId = this.combatInfo.character.healthStatId;
+    this.combatService.saveCharacterHealth(characterHealth).subscribe(res => {
+     //let result = res;
+      this.isLoading = false;
+    }, error => {
+      this.isLoading = false;
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      } else {
+        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+      }
+    });
   }
 
   SaveMonsterHealth(monsterHealth) {
     this.isLoading = true;
     this.combatService.saveMonsterHealth(monsterHealth).subscribe(res => {
-      let result = res;
+      //let result = res;
       this.isLoading = false;
     }, error => {
       this.isLoading = false;

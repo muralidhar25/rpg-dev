@@ -22,5 +22,6 @@ namespace DAL.Services
         void SaveVisibilityDetails(Combatant_ViewModel model);
         void SaveMonsterHealth(Monster model);
         List<BuffAndEffect> SP_GetMonsterAssociateBEs(int monsterID, int rulesetId);
+        void SaveCharacterHealth(CharacterHealthModel model);
     }
 }

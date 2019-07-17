@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DAL.Core;
 using DAL.Models;
 using DAL.Models.SPModels;
 using DAL.Repositories.Interfaces;
@@ -174,6 +175,9 @@ namespace DAL.Services
                                     VisibilityColor = CombatantRow["VisibilityColor"] == DBNull.Value ? string.Empty : CombatantRow["VisibilityColor"].ToString(),
                                     VisibleToPc = CombatantRow["VisibleToPc"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["VisibleToPc"]),
                                     Initiative= CombatantRow["Initiative"] == DBNull.Value ? nulldecimal : Convert.ToDecimal(CombatantRow["Initiative"]),
+                                    TargetId = CombatantRow["TargetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["TargetId"]),
+                                    TargetType = CombatantRow["TargetType"] == DBNull.Value ? string.Empty : CombatantRow["TargetType"].ToString(),
+                                   
                                     //Character = new Character(),
                                     //Monster=new Monster()
 
@@ -603,7 +607,9 @@ namespace DAL.Services
                         Id = CombatantRow["Id"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["Id"]),
                         IsCurrentTurn = CombatantRow["IsCurrentTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsCurrentTurn"]),
                         VisibilityColor = CombatantRow["VisibilityColor"] == DBNull.Value ? string.Empty : CombatantRow["VisibilityColor"].ToString(),
-                        VisibleToPc = CombatantRow["VisibleToPc"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["VisibleToPc"])
+                        VisibleToPc = CombatantRow["VisibleToPc"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["VisibleToPc"]),
+                        TargetId = CombatantRow["TargetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["TargetId"]),
+                        TargetType = CombatantRow["TargetType"] == DBNull.Value ? string.Empty : CombatantRow["TargetType"].ToString(),
                         //Character = new Character(),
                         //Monster=new Monster()
                     };
@@ -710,6 +716,31 @@ namespace DAL.Services
             {
                 monster.HealthCurrent = model.HealthCurrent;
                 monster.HealthMax = model.HealthMax;
+                _context.SaveChanges();
+            }
+        }
+        public void SaveCharacterHealth(CharacterHealthModel model) {
+            var characterCharacterStat = _context.CharactersCharacterStats.Where(x => x.CharactersCharacterStatId == model.healthStatId && x.IsDeleted != true).Include(x=>x.CharacterStat).FirstOrDefault();
+            if (characterCharacterStat!=null)
+            {
+                if (characterCharacterStat.CharacterStat.CharacterStatTypeId== (int)STAT_TYPE.Combo)
+                {
+                    characterCharacterStat.DefaultValue = model.healthCurrent;
+                }
+                if (characterCharacterStat.CharacterStat.CharacterStatTypeId == (int)STAT_TYPE.Number)
+                {
+                    characterCharacterStat.Number = model.healthCurrent;
+                }
+                if (characterCharacterStat.CharacterStat.CharacterStatTypeId == (int)STAT_TYPE.ValueSubValue)
+                {
+                    characterCharacterStat.Value = model.healthCurrent;
+                    characterCharacterStat.SubValue = model.healthMax;
+                }
+                if (characterCharacterStat.CharacterStat.CharacterStatTypeId == (int)STAT_TYPE.CurrentMax)
+                {
+                    characterCharacterStat.Current = model.healthCurrent;
+                    characterCharacterStat.Maximum = model.healthMax;
+                }
                 _context.SaveChanges();
             }
         }

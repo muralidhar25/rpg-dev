@@ -204,6 +204,22 @@ namespace RPGSmithApp.Controllers
 
             
         }
+        [HttpPost("SaveCharacterHealth")]
+        public async Task<IActionResult> SaveCharacterHealth([FromBody] CharacterHealthModel model)
+        {
+
+            try
+            {
+                _combatService.SaveCharacterHealth(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
 
         private string GetUserId()
         {

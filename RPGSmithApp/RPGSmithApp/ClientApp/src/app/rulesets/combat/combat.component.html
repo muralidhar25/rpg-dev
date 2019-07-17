@@ -303,23 +303,83 @@
                 </div>
               </td>
               <td>
-                <div class="white-section">
-                  <div class="progress green" (click)="progressHealth(item);$event.stopPropagation()">
-                    <span class="progress-left">
-                      <span class="progress-bar"></span>
-                    </span>
-                    <span class="progress-right">
-                      <span class="progress-bar"></span>
-                    </span>
-                    <div class="progress-value" *ngIf="item.type==combatItemsType.CHARACTER">
-                      <!--{{item?.character?.healthCurrent}}/{{item?.character?.healthMax}}-->
-                      c/c
+                <ng-container *ngIf="item.type==combatItemsType.CHARACTER">
+
+                  <!--Number/Combo Type Stat-->
+                  <ng-container *ngIf="item?.character?.healthCurrent!=DummyValueForCharHealthStat && item?.character?.healthMax==DummyValueForCharHealthStat">
+                    <div class="white-section text-center" (click)="progressHealth(item);$event.stopPropagation()">
+                      <span>
+                        {{item?.character?.healthCurrent}}
+                      </span>
                     </div>
-                    <div class="progress-value" *ngIf="item.type==combatItemsType.MONSTER && settings.showMonsterHealth">
-                      {{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}
+                  </ng-container>
+
+                  <!--Current-Max/Val-SubVal Type Stat-->
+                  <ng-container *ngIf="item?.character?.healthCurrent!=DummyValueForCharHealthStat && item?.character?.healthMax!=DummyValueForCharHealthStat">
+                    <div class="white-section p-0" (click)="progressHealth(item);$event.stopPropagation()">
+                      <circle-progress [percent]="(item?.character?.healthCurrent/item?.character?.healthMax)*100"
+                                       [space]="-10"
+                                       [outerStrokeWidth]="10"
+                                       [innerStrokeWidth]="10"
+                                       [radius]="100"
+                                       [showInnerStroke]="true"
+                                       [innerStrokeColor]="'#9e9e9e'"
+                                       [outerStrokeColor]="(item?.character?.healthCurrent/item?.character?.healthMax)*100 <= 33? 'red' : (item?.character?.healthCurrent/item?.character?.healthMax)*100 <= 66? 'yellow': 'green'"
+                                       [animation]="false"
+                                       [renderOnClick]="false"
+                                       [responsive]="true"
+                                       [showUnits]="false"
+                                       [showSubtitle]="false"
+                                       title="{{item?.character?.healthCurrent}}/{{item?.character?.healthMax}}"
+                                       [titleFontSize]="'45'"
+                                       [clockwise]="false"></circle-progress>
                     </div>
-                  </div>
-                </div>
+                  </ng-container>
+
+                  <!--OtherStat or No Stat found-->
+                  <ng-container *ngIf="item?.character?.healthCurrent==DummyValueForCharHealthStat && item?.character?.healthMax==DummyValueForCharHealthStat">
+                    <div class="white-section">
+
+                    </div>
+                  </ng-container>
+
+                </ng-container>
+                <ng-container *ngIf="item.type==combatItemsType.MONSTER">
+                  <div class="white-section p-0"  (click)="progressHealth(item);$event.stopPropagation()">
+                    <circle-progress [percent]="(item?.monster?.healthCurrent/item?.monster?.healthMax)*100"
+                                     [space]="-10"
+                                     [outerStrokeWidth]="10"
+                                     [innerStrokeWidth]="10"
+                                     [radius]="100"
+                                     [showInnerStroke]="true"
+                                     [innerStrokeColor]="'#9e9e9e'"
+                                     [outerStrokeColor]="(item?.monster?.healthCurrent/item?.monster?.healthMax)*100 <= 33? 'red' : (item?.monster?.healthCurrent/item?.monster?.healthMax)*100 <= 66? 'yellow': 'green'"                                     
+                                     [animation]="false"
+                                     [renderOnClick]="false"
+                                     [responsive]="true"
+                                     [showUnits]="false"
+                                     [showSubtitle]="false"
+                                     title="{{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}"
+                                     [titleFontSize]="'45'"
+                                     [clockwise]="false"></circle-progress></div>
+                </ng-container>                
+                  
+                    <!--<div class="progress green" (click)="progressHealth(item);$event.stopPropagation()">
+        <span class="progress-left">
+          <span class="progress-bar"></span>
+        </span>
+        <span class="progress-right">
+          <span class="progress-bar"></span>
+        </span>
+        <div class="progress-value" *ngIf="item.type==combatItemsType.CHARACTER">
+          {{item?.character?.healthCurrent}}/{{item?.character?.healthMax}}
+
+        </div>
+        <div class="progress-value" *ngIf="item.type==combatItemsType.MONSTER && settings.showMonsterHealth">
+          {{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}
+        </div>
+      </div>-->
+                  
               </td>
               <td>
                 <div class="white-section" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatItemsType.CHARACTER">

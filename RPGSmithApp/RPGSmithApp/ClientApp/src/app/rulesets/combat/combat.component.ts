@@ -9,7 +9,7 @@ import { CombatDetails } from '../../core/models/view-models/combat-details.mode
 import { Utilities } from '../../core/common/utilities';
 import { AddCombatMonsterComponent } from './add-combat-monster/add-monster-combat.component';
 import { RemoveCombatMonsterComponent } from './remove-combat-monster/remove-monster-combat.component';
-import { combatantType, COMBAT_SETTINGS, CombatItemsType } from '../../core/models/enums';
+import { combatantType, COMBAT_SETTINGS, CombatItemsType, STAT_TYPE } from '../../core/models/enums';
 import { combatant } from '../../core/models/view-models/combatants.model';
 import { CombatHealthComponent } from './update-combat-health/update-combat-health.component';
 import { DropItemsCombatMonsterComponent } from './drop-monstercombat-items/drop-items-monstercombat.component';
@@ -36,6 +36,7 @@ import { DBkeys } from '../../core/common/db-keys';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
 import { ServiceUtil } from '../../core/services/service-util';
 import { RulesetService } from '../../core/services/ruleset.service';
+import { CharactersCharacterStat } from '../../core/models/view-models/characters-character-stats.model';
 
 @Component({
   selector: 'app-combat',
@@ -71,6 +72,7 @@ export class CombatComponent implements OnInit {
   sub: Subscription;
   characterId: any;
   noDescripttionAvailable: string = 'No Descripttion Available';
+  DummyValueForCharHealthStat:number=-9999
 
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
@@ -131,8 +133,8 @@ export class CombatComponent implements OnInit {
 
             //this.roundCounter = this.roundCounter + 1;
             ////convert time
-            //let roundTime = this.settings.gameRoundLength * this.roundCounter;
-            //this.gametime = this.time_convert(roundTime);
+            let roundTime = this.settings.gameRoundLength * this.roundCounter;
+            this.gametime = this.time_convert(roundTime);
             this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
           }
         }
@@ -157,7 +159,7 @@ export class CombatComponent implements OnInit {
 
     this.sharedService.shouldUpdateCharacterBuffEffect().subscribe(cbe => {
       if (cbe) {
-        debugger
+        
         this.combatants.map(x => {
           if (x.type == combatantType.CHARACTER) {
             if (cbe.characterId == x.character.characterId) {
@@ -176,173 +178,173 @@ export class CombatComponent implements OnInit {
     });
 
     //this.sharedService.shouldUpdateMonsterVisibility().subscribe(v => {
-    //    debugger
+    //    
     //  if (this.curretnCombatant) {
     //    this.curretnCombatant.visibility = v;
     //  }
     //});
 
-    //roundcounter
-    this.roundCounter = 1;
+    //////////roundcounter
+    ////////this.roundCounter = 1;
 
-    this.combatantDetails = {
-      id: 1,
-      name: 'ORC SHAMAN',
-      image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
-      stats: '<p>Hero Hitman ORC SHAMAN </p>',
-      buffEffects: [
-        {
-          id: 1,
-          name: 'Effect1',
-          image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg'
-        },
-        {
-          id: 2,
-          name: '1215',
-          image: 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png'
+    ////////this.combatantDetails = {
+    ////////  id: 1,
+    ////////  name: 'ORC SHAMAN',
+    ////////  image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
+    ////////  stats: '<p>Hero Hitman ORC SHAMAN </p>',
+    ////////  buffEffects: [
+    ////////    {
+    ////////      id: 1,
+    ////////      name: 'Effect1',
+    ////////      image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg'
+    ////////    },
+    ////////    {
+    ////////      id: 2,
+    ////////      name: '1215',
+    ////////      image: 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png'
 
-        }
-      ],
-      desc: '<p> this is Description</p>',
-      items: [
-        {
-          id: 1,
-          name: 'Arrow',
-          image: 'https://rpgsmithsa.blob.core.windows.net/core-dnd5e/arrow.jpg'
-        },
-        {
-          id: 2,
-          name: 'Almut of Proof',
-          image: 'https://rpgsmithsa.blob.core.windows.net/core-dnd5e/amuletdetectionlocation.jpg'
+    ////////    }
+    ////////  ],
+    ////////  desc: '<p> this is Description</p>',
+    ////////  items: [
+    ////////    {
+    ////////      id: 1,
+    ////////      name: 'Arrow',
+    ////////      image: 'https://rpgsmithsa.blob.core.windows.net/core-dnd5e/arrow.jpg'
+    ////////    },
+    ////////    {
+    ////////      id: 2,
+    ////////      name: 'Almut of Proof',
+    ////////      image: 'https://rpgsmithsa.blob.core.windows.net/core-dnd5e/amuletdetectionlocation.jpg'
 
-        }
-      ],
-      spells: [
-        {
-          id: 1,
-          name: 'AlterSelf',
-          image: 'https://rpgsmithsa.blob.core.windows.net/user-rpgshare-dnd5e/s20.jpg'
-        },
-        {
-          id: 2,
-          name: 'DeadSoul',
-          image: 'https://rpgsmithsa.blob.core.windows.net/user-rpgshare-dnd5e/s21.jpg'
+    ////////    }
+    ////////  ],
+    ////////  spells: [
+    ////////    {
+    ////////      id: 1,
+    ////////      name: 'AlterSelf',
+    ////////      image: 'https://rpgsmithsa.blob.core.windows.net/user-rpgshare-dnd5e/s20.jpg'
+    ////////    },
+    ////////    {
+    ////////      id: 2,
+    ////////      name: 'DeadSoul',
+    ////////      image: 'https://rpgsmithsa.blob.core.windows.net/user-rpgshare-dnd5e/s21.jpg'
 
-        }
-      ],
-      abilites: [
-        {
-          id: 1,
-          name: 'Spell1',
-          image: 'https://rpgsmithsa.blob.core.windows.net/core-dnd5e/arrow.jpg'
-        },
-        {
-          id: 2,
-          name: 'Spell_Boom',
-          image: 'https://rpgsmithsa.blob.core.windows.net/core-dnd5e/amuletdetectionlocation.jpg'
+    ////////    }
+    ////////  ],
+    ////////  abilites: [
+    ////////    {
+    ////////      id: 1,
+    ////////      name: 'Spell1',
+    ////////      image: 'https://rpgsmithsa.blob.core.windows.net/core-dnd5e/arrow.jpg'
+    ////////    },
+    ////////    {
+    ////////      id: 2,
+    ////////      name: 'Spell_Boom',
+    ////////      image: 'https://rpgsmithsa.blob.core.windows.net/core-dnd5e/amuletdetectionlocation.jpg'
 
-        }
-      ]
-    };
+    ////////    }
+    ////////  ]
+    ////////};
 
-    //Mock data
-    this.combatants = [
-      {
-        id: 1,
-        name: 'Orc #2',
-        type: combatantType.CHARACTER,
-        healthCurrent: 50,
-        healthMax: 100,
-        buffEffect:
-          [
-            {
-              id: 1,
-              name: 'Visible',
-              icon: 'icon-Rec-Visible'
-            },
-            {
-              id: 2,
-              name: 'CharStatcommand',
-              icon: 'icon-CharStat-Command'
-            },
-          ],
-        colorCode: 'green',
-        frameColor: 'black',
-        hidebtns: false,
-        isCurrentTurn: true,
-        initiativeValue: 'D4',
-        visiblity: true
-      },
-      {
-        id: 2,
-        name: 'monster2',
-        type: combatantType.MONSTER,
-        healthCurrent: 60,
-        healthMax: 100,
-        buffEffect:
-          [
-            {
-              id: 1,
-              name: 'CharStatcommand',
-              icon: 'icon-CharStat-Command'
-            },
+    //////////Mock data
+    ////////this.combatants = [
+    ////////  {
+    ////////    id: 1,
+    ////////    name: 'Orc #2',
+    ////////    type: combatantType.CHARACTER,
+    ////////    healthCurrent: 50,
+    ////////    healthMax: 100,
+    ////////    buffEffect:
+    ////////      [
+    ////////        {
+    ////////          id: 1,
+    ////////          name: 'Visible',
+    ////////          icon: 'icon-Rec-Visible'
+    ////////        },
+    ////////        {
+    ////////          id: 2,
+    ////////          name: 'CharStatcommand',
+    ////////          icon: 'icon-CharStat-Command'
+    ////////        },
+    ////////      ],
+    ////////    colorCode: 'green',
+    ////////    frameColor: 'black',
+    ////////    hidebtns: false,
+    ////////    isCurrentTurn: true,
+    ////////    initiativeValue: 'D4',
+    ////////    visiblity: true
+    ////////  },
+    ////////  {
+    ////////    id: 2,
+    ////////    name: 'monster2',
+    ////////    type: combatantType.MONSTER,
+    ////////    healthCurrent: 60,
+    ////////    healthMax: 100,
+    ////////    buffEffect:
+    ////////      [
+    ////////        {
+    ////////          id: 1,
+    ////////          name: 'CharStatcommand',
+    ////////          icon: 'icon-CharStat-Command'
+    ////////        },
 
-          ],
-        colorCode: 'red',
-        frameColor: 'red',
-        hidebtns: false,
-        isCurrentTurn: false,
-        initiativeValue: 'D2',
-        visiblity: false
-      },
-      {
-        id: 3,
-        name: 'Orc #3',
-        type: combatantType.MONSTER,
-        healthCurrent: 10,
-        healthMax: 100,
-        buffEffect:
-          [
-            {
-              id: 1,
-              name: 'Visible',
-              icon: 'icon-Rec-Visible'
-            },
-            {
-              id: 2,
-              name: 'CharStatcommand',
-              icon: 'icon-CharStat-Command'
-            },
-          ],
-        colorCode: 'green',
-        frameColor: 'Gray',
-        hidebtns: false,
-        isCurrentTurn: false,
-        initiativeValue: 'D1',
-        visiblity: true
-      }
-    ]
+    ////////      ],
+    ////////    colorCode: 'red',
+    ////////    frameColor: 'red',
+    ////////    hidebtns: false,
+    ////////    isCurrentTurn: false,
+    ////////    initiativeValue: 'D2',
+    ////////    visiblity: false
+    ////////  },
+    ////////  {
+    ////////    id: 3,
+    ////////    name: 'Orc #3',
+    ////////    type: combatantType.MONSTER,
+    ////////    healthCurrent: 10,
+    ////////    healthMax: 100,
+    ////////    buffEffect:
+    ////////      [
+    ////////        {
+    ////////          id: 1,
+    ////////          name: 'Visible',
+    ////////          icon: 'icon-Rec-Visible'
+    ////////        },
+    ////////        {
+    ////////          id: 2,
+    ////////          name: 'CharStatcommand',
+    ////////          icon: 'icon-CharStat-Command'
+    ////////        },
+    ////////      ],
+    ////////    colorCode: 'green',
+    ////////    frameColor: 'Gray',
+    ////////    hidebtns: false,
+    ////////    isCurrentTurn: false,
+    ////////    initiativeValue: 'D1',
+    ////////    visiblity: true
+    ////////  }
+    ////////]
 
-    //initiativeValue change
-    this.combatants.map((x) => {
-      if (x.initiativeValue) {
-        let res = DiceService.rollDiceExternally(this.alertService, x.initiativeValue, this.customDices);
-        if (isNaN(res)) {
-          x.initiativeValue = 0;
-        }
-        else {
-          x.initiativeValue = res;
-        }
+    //////////initiativeValue change
+    ////////this.combatants.map((x) => {
+    ////////  if (x.initiativeValue) {
+    ////////    let res = DiceService.rollDiceExternally(this.alertService, x.initiativeValue, this.customDices);
+    ////////    if (isNaN(res)) {
+    ////////      x.initiativeValue = 0;
+    ////////    }
+    ////////    else {
+    ////////      x.initiativeValue = res;
+    ////////    }
 
-      } else {
-        x.initiativeValue = 0;
-      }
-    })
+    ////////  } else {
+    ////////    x.initiativeValue = 0;
+    ////////  }
+    ////////})
 
-    //adding Image and name in ruleset
-    this.rulesetModel.ruleSetName = 'Orc Shaman';
-    this.rulesetModel.imageUrl = 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg';
-    this.CurrentInitiativeValue = this.combatants[0].initiativeValue;
+    //////////adding Image and name in ruleset
+    ////////this.rulesetModel.ruleSetName = 'Orc Shaman';
+    ////////this.rulesetModel.imageUrl = 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg';
+    ////////this.CurrentInitiativeValue = this.combatants[0].initiativeValue;
 
     //this.settings = {
     //  id: 0,
@@ -389,15 +391,18 @@ export class CombatComponent implements OnInit {
 
   //api call after every 10 seconds
   ngAfterViewInit() {
-    //this.sub = Observable.interval(10000)
+    //this.sub = Observable.interval(4000)
     //  .subscribe((val) => {
-    //    this.GetCombatDetails();
+    //    this.GetCombatDetails(false);
     //  });
   }
 
   // Combat Settings
-  GetCombatDetails() {
-    this.isLoading = true;
+  GetCombatDetails(ShowLoader = true) {
+    if (ShowLoader) {
+      this.isLoading = true;
+    }
+    
     this.combatService.getCombatDetails(this.ruleSetId).subscribe(res => {
       if (res) {
         let combatModal: any = res;
@@ -431,6 +436,44 @@ export class CombatComponent implements OnInit {
               x.visibilityColor = "red";
             }
           }
+
+
+          if (x.type == this.combatItemsType.CHARACTER) {
+            debugger
+            if (x.character.diceRollViewModel.charactersCharacterStats) {
+              let statFoundFlag: boolean = false;
+              let charStat: CharactersCharacterStat = null;
+              this.settings.charcterHealthStats.split(/\[(.*?)\]/g).map((rec) => {
+                if (rec && !statFoundFlag) {
+                  let charStatList = x.character.diceRollViewModel.charactersCharacterStats.filter(x => x.characterStat.statName == rec);
+                  if (charStatList.length) {
+                    charStat = charStatList[0];
+                  }
+                  statFoundFlag = true;
+                }
+              });
+
+              x.character.healthCurrent = this.DummyValueForCharHealthStat;
+              x.character.healthMax = this.DummyValueForCharHealthStat;
+              if (charStat) {
+                x.character.healthStatId = charStat.charactersCharacterStatId;
+                if (charStat.characterStat.characterStatTypeId == STAT_TYPE.CurrentMax) {
+                  x.character.healthCurrent = +charStat.current;
+                  x.character.healthMax = +charStat.maximum;
+                }
+                else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.ValueSubValue) {
+                  x.character.healthCurrent = +charStat.value;
+                  x.character.healthMax = +charStat.subValue;
+                }
+                else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.Number) {
+                  x.character.healthCurrent = +charStat.number;
+                }
+                else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.Combo) {
+                  x.character.healthCurrent = +charStat.defaultValue;
+                }
+              }
+            }
+          }
         });
 
         // Game Time
@@ -441,6 +484,17 @@ export class CombatComponent implements OnInit {
         this.isCharacterItemEnabled = combatModal.isCharacterItemEnabled;
         this.isCharacterSpellEnabled = combatModal.isCharacterSpellEnabled;
         this.isCharacterAbilityEnabled = combatModal.isCharacterAbilityEnabled;
+
+        if (this.roundCounter>1) {
+          this.curretnCombatant = this.combatants.filter(x => x.isCurrentTurn);
+          let valueofinitiative = this.curretnCombatant.initiativeValue;
+          this.CurrentInitiativeValue = valueofinitiative;
+
+          //this.roundCounter = this.roundCounter + 1;
+          ////convert time
+          let roundTime = this.settings.gameRoundLength * this.roundCounter;
+          this.gametime = this.time_convert(roundTime);
+        }
       }
       this.isLoading = false;
     }, error => {
@@ -459,7 +513,7 @@ export class CombatComponent implements OnInit {
   //  this.isLoading = true;
   //  this.combatService.getCombatDetails(this.ruleSetId).subscribe(res => {
   //    if (res) {
-  //      debugger;
+  //      
   //      let model: any = res;
   //      this.combatants = model.combatantList;
   //      this.combatants.forEach(item => {
@@ -626,6 +680,7 @@ export class CombatComponent implements OnInit {
         return;
       }
     }
+    //this.frameClick(this.curretnCombatant)
   }
   nextTurn() {
     for (let i = 0; i < this.combatants.length; i++) {
@@ -656,7 +711,7 @@ export class CombatComponent implements OnInit {
         
         return;
       }
-
+      //this.frameClick(this.curretnCombatant)
     }
   }
 
@@ -681,7 +736,7 @@ export class CombatComponent implements OnInit {
   progressHealth(item) {
     //console.log('progressHealth', item);
     //CombatHealthComponent
-    if (item.type == this.combatItemsType.MONSTER) {
+    //if (item.type == this.combatItemsType.MONSTER) {
       this.bsModalRef = this.modalService.show(CombatHealthComponent, {
         class: 'modal-primary modal-custom',
         ignoreBackdropClick: true,
@@ -690,16 +745,23 @@ export class CombatComponent implements OnInit {
       this.bsModalRef.content.title = "Health";
       this.bsModalRef.content.combatInfo = item;
       this.bsModalRef.content.event.subscribe(result => {
-        item.monster.healthCurrent = result.monster.healthCurrent;
-        item.monster.healthMax = result.monster.healthMax;
+        if (result.type == combatantType.CHARACTER) {
+          item.character.healthCurrent = result.character.healthCurrent;
+          item.character.healthMax = result.character.healthMax;
+        }
+        else if (result.type == combatantType.MONSTER) {
+          item.monster.healthCurrent = result.monster.healthCurrent;
+          item.monster.healthMax = result.monster.healthMax;
+        }
       });
-    }
+    //}
 
   }
   buffclicked(buffs) {
     console.log('buffclicked', buffs);
   }
   frameClick(item) {
+    debugger
     this.currentCombatantDetail = item;
     this.combatants.map(function (itm) {
       if (itm.frameColor) {
@@ -1023,13 +1085,16 @@ export class CombatComponent implements OnInit {
 
       default:
     }
-    this.UpdateCombatSettings(this.settings);
+    this.UpdateCombatSettings(this.settings,type);
   }
 
-  UpdateCombatSettings(settings: CombatSettings) {
+  UpdateCombatSettings(settings: CombatSettings,type) {
     //this.isLoading = true;
     this.combatService.updateCombatSettings(this.settings).subscribe(res => {
-      let result = res;
+      if (type == COMBAT_SETTINGS.CHARACTER_TARGET_HEALTH_STAT) {
+        this.GetCombatDetails();
+      }
+      //let result = res;
       //this.isLoading = false;
     }, error => {
       //this.isLoading = false;
@@ -1105,7 +1170,7 @@ export class CombatComponent implements OnInit {
       this.bsModalRef.content.recordImage = item.character.imageUrl;
       this.bsModalRef.content.buffEffectList = item.character.characterBuffAndEffects;
       this.bsModalRef.content.type = item.type;
-      debugger;
+      
       this.bsModalRef.content.characterId = item.character.characterId;
     }
     if (item.type == this.combatItemsType.MONSTER) {
@@ -1228,7 +1293,7 @@ export class CombatComponent implements OnInit {
 
   isValidSingleNumberCommand(inputString, includesCharacterStats) {
     /////code to delete/////////////
-    //debugger
+    //
     //if (item.type == combatantType.CHARACTER) {
     //  let statdetails = { charactersCharacterStat: item.character.diceRollViewModel.charactersCharacterStats, character: item.character.diceRollViewModel.character };
     //  var ressss = this.getFinalCommandString(command, statdetails, item.character.diceRollViewModel.charactersCharacterStats, item.character.diceRollViewModel.character)

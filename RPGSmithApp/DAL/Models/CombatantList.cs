@@ -36,5 +36,10 @@ namespace DAL.Models
         public string VisibilityColor { get; set; }
 
         public bool IsCurrentTurn { get; set; }
+
+        public int TargetId { get; set; }
+
+        [Column(TypeName = "nvarchar(100)")]
+        public string TargetType { get; set; }
     }
 }
