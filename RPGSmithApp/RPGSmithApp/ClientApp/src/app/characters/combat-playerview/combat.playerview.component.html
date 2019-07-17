@@ -1,0 +1,206 @@
+<ng-container *ngIf="!isLoading">
+  <div class="page-toolbar">
+    <div class="container">
+      <!--<div class="page-toolbar-wrapper">
+        <div class="page-toolbar-title">
+          <a [routerLink]="['/ruleset/combat', ruleSetId]" class="icon icon-back">
+            <h1 class="d-none d-md-inline-block"> Back</h1>
+          </a>
+        </div>
+          </div>-->
+    </div>
+    <div class="page-toolbar-wrapper initial show">
+      <ul class="page-toolbar-links">
+        <li class="hidden-tab">
+          <a class="btn btn-link-primary nav-redirection selected icon-Gen-Items"> <span>Inventory</span></a>
+        </li>
+        <li class="hidden-tab">
+          <a class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+        </li>
+        <li class="hidden-tab">
+          <a class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+        </li>
+        <li class="hidden-tab">
+          <a class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
+        </li>
+        <li>
+          <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary"><span class="text-hide-tab">Dice</span></button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-md-8">
+        <div class="table-responsive combat-table">
+          <table class="table">
+            <thead>
+              <tr>
+                <th><span>NAME</span></th>
+                <th><span>HEALTH</span></th>
+                <th><span>TEAM</span></th>
+                <th><span>BUFFS & EFFECTS</span></th>
+                <th><span>TARGET</span></th>
+                <th><span>ACTIONS</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of combatants; let i = index"
+                  [ngClass]="{'black-outer-filed': item.isCurrentTurn, 'red-outer-filed': item.frameColor =='red', '': item.frameColor =='grey', 'blue-outer-filed':item.frameColor == 'blue' }"
+                  (click)="frameClick(item)">
+                <td>
+                  <div class="white-section name-data text-ellipsis" popover="{{item?.type == combatantsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}" triggers="hover">
+                    {{item?.type == combatantsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <div class="progress green">
+                      <span class="progress-left">
+                        <span class="progress-bar"></span>
+                      </span>
+                      <span class="progress-right">
+                        <span class="progress-bar"></span>
+                      </span>
+                      <!--<div class="progress-value">90%</div>-->
+                      <div class="progress-value" *ngIf="item.type==combatantsType.CHARACTER">
+                        <!--{{item?.character?.healthCurrent}}/{{item?.character?.healthMax}}-->
+                        c/c
+                      </div>
+                      <div class="progress-value" *ngIf="item.type==combatantsType.MONSTER && settings.showMonsterHealth">
+                        {{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}
+                      </div>
+                    </div>
+                  </div>
+                </td>
+
+                <td>
+                  <div class="white-section">
+                    <span class="visible-icon" *ngIf="item.visibleToPc" [style.background]="item.visibilityColor"></span>
+                    <span class="visible-icon unvisible-Circle" [style.border-color]="item.visibilityColor" *ngIf="!item.visibleToPc"></span>
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatantsType.CHARACTER">
+                    <ul class="visiblity-list">
+                      <li class="" *ngFor="let be of item?.character?.characterBuffAndEffects; let be_i = index">
+                        <img class="combat-be-image" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" />
+                      </li>
+                    </ul>
+                    <span [ngClass]="item?.character?.characterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.character?.characterBuffAndEffects?.length > 3 ? (item?.character?.characterBuffAndEffects?.length - 3) :''}}</span>
+                  </div>
+                  <div class="white-section" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatantsType.MONSTER">
+                    <ul class="visiblity-list">
+                      <li class="" *ngFor="let be of item?.monster?.monsterBuffAndEffects; let be_i = index">
+                        <img class="combat-be-image" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" />
+                      </li>
+                    </ul>
+                    <span [ngClass]="item?.monster?.monsterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.monster?.monsterBuffAndEffects?.length > 3 ? (item?.monster?.monsterBuffAndEffects?.length - 3) :''}}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <div class="initiative-title-box monsters-title-box" *ngIf="item.isOwnPlayer">
+                      <img class="ng-tns-c1-0" [src]="item?.Target?.image">
+                      <p class="ng-tns-c1-0"><span class="ng-tns-c1-0">{{item?.Target?.name}}</span></p>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="white-section">
+                    <ul class="action-buttons-table">
+                      <li class="action-button-icon-orange icon-Gen-Chat crsr-pointer" *ngIf="!item.isOwnPlayer && item.type==combatantsType.CHARACTER" (click)="ChatBtn(item)"></li>
+                      <li *ngIf="!item.isOwnPlayer" class="action-button-icon-orange icon-MarkTarget crsr-pointer" (click)="TargetBtn(item)"></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="combat-round-count small-count-size mb-3">
+          <ul>
+            <li class="round-count-icon-purple">ROUND <span>{{roundCounter}}</span></li>
+            <li class="round-count-icon-purple">INIT COUNT <span>{{CurrentInitiativeValue}}</span></li>
+            <li class="round-count-icon-purple">GAME Time <span>{{gametime}}</span></li>
+          </ul>
+        </div>
+        <div class="image-section-combat">
+          <!--Image-->
+          <img *ngIf="currentCombatantDetail?.type==combatantsType.MONSTER" [src]="currentCombatantDetail?.monster?.imageUrl" />
+          <img *ngIf="currentCombatantDetail?.type==combatantsType.CHARACTER" [src]="currentCombatantDetail?.character?.imageUrl" />
+          <!--Name-->
+          <span *ngIf="currentCombatantDetail?.type==combatantsType.MONSTER">{{currentCombatantDetail?.monster?.name}}</span>
+          <span *ngIf="currentCombatantDetail?.type==combatantsType.CHARACTER">{{currentCombatantDetail?.character?.characterName}}</span>
+        </div>
+        <div class="combat-accordian">
+          <accordion>
+            <!--Monster-->
+            <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatantsType.MONSTER && settings.seeMonsterBuffEffects">
+              <div class="row">
+                <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterBuffAndEffects.length == 0">
+                  <legend>No Buffs & Effects Available</legend>
+                </div>
+                <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.monsterBuffAndEffects">
+                  <div class="accordin-box">
+                    <img [src]="item.buffAndEffect.imageUrl" />
+                    <p class="text-ellipsis">{{item.buffAndEffect.name}}</p>
+                  </div>
+                </div>
+              </div>
+            </accordion-group>
+            <!--Character-->
+            <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatantsType.CHARACTER">
+              <div class="row">
+                <div class="text-center" *ngIf="currentCombatantDetail?.character?.characterBuffAndEffects.length == 0">
+                  <legend>No Buffs & Effects Available</legend>
+                </div>
+                <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterBuffAndEffects">
+                  <div class="accordin-box">
+                    <img [src]="item.buffAndEffect.imageUrl" />
+                    <p class="text-ellipsis">{{item.buffAndEffect.name}}</p>
+                  </div>
+                </div>
+              </div>
+            </accordion-group>
+            <!--Monster-->
+            <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatantsType.MONSTER && settings.seeMonsterItems">
+              <div class="row">
+                <div class="text-center" *ngIf="currentCombatantDetail?.monster?.itemMasterMonsterItems?.length == 0">
+                  <legend>No Items  Available</legend>
+                </div>
+                <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.itemMasterMonsterItems">
+                  <div class="accordin-box">
+                    <img [src]="item.itemImage" />
+                    <p class="text-ellipsis">{{item.itemName}}</p>
+                  </div>
+                </div>
+              </div>
+            </accordion-group>
+            <!--Character-->
+            <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatantsType.CHARACTER">
+              <div class="row">
+                <div class="text-center" *ngIf="currentCombatantDetail?.character.items?.length == 0">
+                  <legend>No Items  Available</legend>
+                </div>
+                <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.items">
+                  <div class="accordin-box">
+                    <img [src]="item.itemImage" />
+                    <p class="text-ellipsis">{{item.name}}</p>
+                  </div>
+                </div>
+              </div>
+            </accordion-group>
+          </accordion>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+<ng-container>
+  <app-loader [isLoading]="isLoading"></app-loader>
+</ng-container>

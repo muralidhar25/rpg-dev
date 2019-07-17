@@ -50,6 +50,7 @@ export class CombatBuffeffectDetailsComponent implements OnInit {
   monster: any;
   monsterId: number;
   combatatntsType = combatantType
+  hideEditBtn: boolean = false;
   // combatMonster   =  new AddMonster();
 
   constructor(
@@ -78,9 +79,12 @@ export class CombatBuffeffectDetailsComponent implements OnInit {
           this.monsterId = this.monster.monsterId;
         }
       }
-      if (this.bsModalRef.content.characterId) {
-        this.characterId = this.bsModalRef.content.characterId;
+      if (this.bsModalRef.content.character) {
+        this.characterId = this.bsModalRef.content.character.characterId;
       }
+      debugger
+      this.hideEditBtn = this.bsModalRef.content.hideEditBtn  ? true : false;
+
       this.initialize();
       this.GetBuffsAndEffects();
     }, 0);

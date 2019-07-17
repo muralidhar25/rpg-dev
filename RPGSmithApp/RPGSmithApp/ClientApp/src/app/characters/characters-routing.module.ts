@@ -23,6 +23,7 @@ import { RulesetViewAbilityDetailComponent } from "./character-records/abilities
 import { RulesetViewBundleDetailComponent } from "./character-records/items/ruleset/ruleset-view-bundle-detail/ruleset-view-bundle-detail.component";
 import { CharBuffAndEffectDetailsComponent } from "./character-records/buff-and-effects/buff-and-effect-details/buff-and-effect-details.component";
 import { CharBuffAndEffectRulesetDetailsComponent } from "./character-records/buff-and-effects/buff-and-effect-ruleset-detail/buff-and-effect-ruleset-detail.component";
+import { CombatPlayerViewComponent } from "./combat-playerview/combat.playerview.component";
 
 
 const routes: Routes = [
@@ -50,6 +51,7 @@ const routes: Routes = [
   { path: "ruleset/item-detail/:id", component: RulesetViewBundleDetailComponent, canActivate: [AuthGuard], data: { title: "Items" } },
   { path: "ruleset/spell-details/:id", component: RulesetViewSpellDetailComponent, canActivate: [AuthGuard], data: { title: "Spells" } },
   { path: "ruleset/ability-details/:id", component: RulesetViewAbilityDetailComponent, canActivate: [AuthGuard], data: { title: "Abilities" } },
+  { path: "combatplayer/:id", component: CombatPlayerViewComponent, data: { title: "combatplayer" } },
 
 ];
 
