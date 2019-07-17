@@ -424,6 +424,9 @@ export class CombatComponent implements OnInit {
         }
 
         this.combatants.map((x) => {
+          //for character layer View
+          x.isOwnPlayer = true;
+
           x.initiativeValue = x.initiative;
           if (!x.combatId) {
             x.combatId = combatModal.id;
@@ -1165,13 +1168,14 @@ export class CombatComponent implements OnInit {
     this.bsModalRef.content.title = 'Buff & Effects';
     this.bsModalRef.content.button = 'Edit';
     this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.hideEditBtn = false;
     if (item.type == this.combatItemsType.CHARACTER) {
       this.bsModalRef.content.recordName = item.character.characterName;
       this.bsModalRef.content.recordImage = item.character.imageUrl;
       this.bsModalRef.content.buffEffectList = item.character.characterBuffAndEffects;
       this.bsModalRef.content.type = item.type;
-      
-      this.bsModalRef.content.characterId = item.character.characterId;
+      this.bsModalRef.content.character = item;
+      //this.bsModalRef.content.characterId = item.character.characterId;
     }
     if (item.type == this.combatItemsType.MONSTER) {
       this.bsModalRef.content.recordName = item.monster.name;
