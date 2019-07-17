@@ -24,10 +24,10 @@ export class CombatService extends EndpointFactory {
   private readonly SaveMonsterHealth: string = this.configurations.baseUrl + "/api/Combat/SaveMonsterHealth";
   private readonly SaveCharacterHealthUrl: string = this.configurations.baseUrl + "/api/Combat/SaveCharacterHealth";
   private readonly SP_GetMonsterAssociateBEs: string = this.configurations.baseUrl + "/api/Combat/SP_GetMonsterAssociateBEs";
-
+  private readonly SaveTarget: string = this.configurations.baseUrl + "/api/Combat/SaveTarget";
   private readonly Combat_Start: string = this.configurations.baseUrl + "/api/Combat/Combat_Start";
-  
-  
+
+
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
     super(http, configurations, injector);
   }
@@ -49,7 +49,7 @@ export class CombatService extends EndpointFactory {
       });
   }
 
-  saveCombatantList<T>(combatants: any[], CampaignID:number): Observable<T> {
+  saveCombatantList<T>(combatants: any[], CampaignID: number): Observable<T> {
     let saveInitiativeUrl = `${this.SaveCombatantList}?CampaignID=${CampaignID}`
     return this.http.post<T>(saveInitiativeUrl, JSON.stringify(combatants), this.getRequestHeaders())
       .catch(error => {
@@ -97,7 +97,7 @@ export class CombatService extends EndpointFactory {
       });
   }
 
-  StartCombat<T>(CombatId: number, Start:boolean): Observable<T> {
+  StartCombat<T>(CombatId: number, Start: boolean): Observable<T> {
     let url = `${this.Combat_Start}?CombatId=${CombatId}&Start=${Start}`
     return this.http.post<T>(url, JSON.stringify({}), this.getRequestHeaders())
       .catch(error => {
@@ -107,7 +107,7 @@ export class CombatService extends EndpointFactory {
 
   saveVisibilityDetails<T>(currentItem): Observable<T> {
     let saveInitiativeUrl = `${this.SaveVisibilityDetails}`
-    return this.http.post<T>(saveInitiativeUrl, JSON.stringify(currentItem),  this.getRequestHeaders())
+    return this.http.post<T>(saveInitiativeUrl, JSON.stringify(currentItem), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.saveVisibilityDetails(currentItem));
       });
@@ -123,7 +123,6 @@ export class CombatService extends EndpointFactory {
   }
 
   saveCharacterHealth<T>(characterHealth): Observable<T> {
-    debugger;
     let endpointUrl = `${this.SaveCharacterHealthUrl}`
     return this.http.post<T>(endpointUrl, JSON.stringify(characterHealth), this.getRequestHeaders())
       .catch(error => {
@@ -131,11 +130,19 @@ export class CombatService extends EndpointFactory {
       });
   }
 
-  getBuffAndEffctList<T>(monsterId: number, rulesetId:number): Observable<T> {
+  getBuffAndEffctList<T>(monsterId: number, rulesetId: number): Observable<T> {
     let url = `${this.SP_GetMonsterAssociateBEs}?monsterId=${monsterId}&rulesetId=${rulesetId}`
     return this.http.get<T>(url, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getBuffAndEffctList(monsterId, rulesetId));
+      });
+  }
+
+  saveTarget<T>(target): Observable<T> {
+    let endpointUrl = `${this.SaveTarget}`
+    return this.http.post<T>(endpointUrl, JSON.stringify(target), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.saveTarget(target));
       });
   }
 
