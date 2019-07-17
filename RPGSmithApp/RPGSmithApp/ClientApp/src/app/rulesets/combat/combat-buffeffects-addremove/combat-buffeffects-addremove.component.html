@@ -3,7 +3,7 @@
   <div class="modal-header">
     <h5 class="modal-title" id="dicePopupTitle">
       <span>{{title}}</span>
-      <span class="manage-ruleset-header crsr-pointer" *ngIf="recordName != '' || recordImage != ''" (click)="navigateDice(diceNav)">
+      <span class="manage-ruleset-header crsr-pointer" *ngIf="recordName != '' || recordImage != ''" >
         <span>
           <img [src]="recordImage" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
         </span>
@@ -11,7 +11,7 @@
       </span>
     </h5>
     <a href="https://rpgsmith.com/help/#Dice" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
-    <button type="button" (click)="close(true)" class="btn icon icon-cross btn-simple-primary close"></button>
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
     <!--<h5 class="modal-title" id="addItemPopupTitle">{{title}}</h5>
   <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>-->
   </div>

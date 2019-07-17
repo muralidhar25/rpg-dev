@@ -43,6 +43,8 @@ import { CharBuffAndEffectDetailsComponent } from "./character-records/buff-and-
 import { CharBuffAndEffectRulesetDetailsComponent } from "./character-records/buff-and-effects/buff-and-effect-ruleset-detail/buff-and-effect-ruleset-detail.component";
 import { CombatPlayerViewComponent } from "./combat-playerview/combat.playerview.component";
 import { AccordionModule } from "ngx-bootstrap";
+import { PlayerMonsterDetailsComponent } from "./character-records/player-monster-details/player-monster-details.component";
+import { NgCircleProgressModule } from "ng-circle-progress";
 
 @NgModule({
   declarations: [
@@ -77,7 +79,8 @@ import { AccordionModule } from "ngx-bootstrap";
     RulesetViewBundleDetailComponent,
     CharBuffAndEffectDetailsComponent,
     CharBuffAndEffectRulesetDetailsComponent,
-    CombatPlayerViewComponent
+    CombatPlayerViewComponent,
+    PlayerMonsterDetailsComponent
   ],
   imports: [
     SharedModule,
@@ -85,7 +88,8 @@ import { AccordionModule } from "ngx-bootstrap";
     RecordsModule,
     TileModule,
     TileRulesetModule,
-    AccordionModule
+    AccordionModule,
+    NgCircleProgressModule
   ],
   providers: [
   ],
@@ -120,7 +124,8 @@ import { AccordionModule } from "ngx-bootstrap";
     RulesetViewSpellDetailComponent,
     CharBuffAndEffectDetailsComponent,
     CharBuffAndEffectRulesetDetailsComponent,
-    CombatPlayerViewComponent
+    CombatPlayerViewComponent,
+    PlayerMonsterDetailsComponent
   ],
   entryComponents: [
   

@@ -50,7 +50,7 @@ export class CombatComponent implements OnInit {
   character: Characters = new Characters();
   details = new CombatDetails();
   combatantDetails: any;
-  combatants: any[];
+  combatants: any[] = [];
   roundCounter: number;
   customDices: CustomDice[] = [];
   CurrentInitiativeValue: number;
@@ -72,7 +72,7 @@ export class CombatComponent implements OnInit {
   sub: Subscription;
   characterId: any;
   noDescripttionAvailable: string = 'No Descripttion Available';
-  DummyValueForCharHealthStat:number=-9999
+  DummyValueForCharHealthStat: number = -9999
 
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
@@ -112,8 +112,8 @@ export class CombatComponent implements OnInit {
     private monsterTemplateService: MonsterTemplateService,
     private itemsService: ItemsService,
     private localStorage: LocalStoreManager,
-    
-    private rulesetService: RulesetService,) {
+
+    private rulesetService: RulesetService, ) {
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
 
     this.sharedService.shouldUpdateCombatantList().subscribe(combatantListJson => {
@@ -122,7 +122,7 @@ export class CombatComponent implements OnInit {
         this.combatants = combatantListJson.combatantList;
         if (combatantListJson.isInitialForCombatStart) {
           this.nextTurn();
-          if (this.roundCounter>1) {
+          if (this.roundCounter > 1) {
             this.combatants.map((rec) => {
               rec.isCurrentTurn = false;
             })
@@ -159,7 +159,7 @@ export class CombatComponent implements OnInit {
 
     this.sharedService.shouldUpdateCharacterBuffEffect().subscribe(cbe => {
       if (cbe) {
-        
+
         this.combatants.map(x => {
           if (x.type == combatantType.CHARACTER) {
             if (cbe.characterId == x.character.characterId) {
@@ -402,7 +402,7 @@ export class CombatComponent implements OnInit {
     if (ShowLoader) {
       this.isLoading = true;
     }
-    
+
     this.combatService.getCombatDetails(this.ruleSetId).subscribe(res => {
       if (res) {
         let combatModal: any = res;
@@ -488,7 +488,7 @@ export class CombatComponent implements OnInit {
         this.isCharacterSpellEnabled = combatModal.isCharacterSpellEnabled;
         this.isCharacterAbilityEnabled = combatModal.isCharacterAbilityEnabled;
 
-        if (this.roundCounter>1) {
+        if (this.roundCounter > 1) {
           this.curretnCombatant = this.combatants.filter(x => x.isCurrentTurn);
           let valueofinitiative = this.curretnCombatant.initiativeValue;
           this.CurrentInitiativeValue = valueofinitiative;
@@ -576,7 +576,7 @@ export class CombatComponent implements OnInit {
   }
 
   //open Initiative popup
-  Init(isInitialForCombatStart=false) {
+  Init(isInitialForCombatStart = false) {
     this.bsModalRef = this.modalService.show(CombatInitiativeComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -705,13 +705,13 @@ export class CombatComponent implements OnInit {
         this.curretnCombatant = this.combatants[i - 1];
         let valueofinitiative = this.combatants[i - i].initiativeValue;
         this.CurrentInitiativeValue = valueofinitiative;
-        
+
         this.roundCounter = this.roundCounter + 1;
         //convert time
         let roundTime = this.settings.gameRoundLength * this.roundCounter;
         this.gametime = this.time_convert(roundTime);
         this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
-        
+
         return;
       }
       //this.frameClick(this.curretnCombatant)
@@ -740,23 +740,23 @@ export class CombatComponent implements OnInit {
     //console.log('progressHealth', item);
     //CombatHealthComponent
     //if (item.type == this.combatItemsType.MONSTER) {
-      this.bsModalRef = this.modalService.show(CombatHealthComponent, {
-        class: 'modal-primary modal-custom',
-        ignoreBackdropClick: true,
-        keyboard: false
-      });
-      this.bsModalRef.content.title = "Health";
-      this.bsModalRef.content.combatInfo = item;
-      this.bsModalRef.content.event.subscribe(result => {
-        if (result.type == combatantType.CHARACTER) {
-          item.character.healthCurrent = result.character.healthCurrent;
-          item.character.healthMax = result.character.healthMax;
-        }
-        else if (result.type == combatantType.MONSTER) {
-          item.monster.healthCurrent = result.monster.healthCurrent;
-          item.monster.healthMax = result.monster.healthMax;
-        }
-      });
+    this.bsModalRef = this.modalService.show(CombatHealthComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Health";
+    this.bsModalRef.content.combatInfo = item;
+    this.bsModalRef.content.event.subscribe(result => {
+      if (result.type == combatantType.CHARACTER) {
+        item.character.healthCurrent = result.character.healthCurrent;
+        item.character.healthMax = result.character.healthMax;
+      }
+      else if (result.type == combatantType.MONSTER) {
+        item.monster.healthCurrent = result.monster.healthCurrent;
+        item.monster.healthMax = result.monster.healthMax;
+      }
+    });
     //}
 
   }
@@ -1038,7 +1038,7 @@ export class CombatComponent implements OnInit {
   UpdateSettings(e, type) {
     switch (type) {
       case COMBAT_SETTINGS.PC_INITIATIVE_FORMULA:
-        this.settings.pcInitiativeFormula = e.target.value;       
+        this.settings.pcInitiativeFormula = e.target.value;
         break;
       case COMBAT_SETTINGS.ROLL_INITIATIVE_FOR_PLAYER_CHARACTERS:
         this.settings.rollInitiativeForPlayer = e.target.checked;
@@ -1088,10 +1088,10 @@ export class CombatComponent implements OnInit {
 
       default:
     }
-    this.UpdateCombatSettings(this.settings,type);
+    this.UpdateCombatSettings(this.settings, type);
   }
 
-  UpdateCombatSettings(settings: CombatSettings,type) {
+  UpdateCombatSettings(settings: CombatSettings, type) {
     //this.isLoading = true;
     this.combatService.updateCombatSettings(this.settings).subscribe(res => {
       if (type == COMBAT_SETTINGS.CHARACTER_TARGET_HEALTH_STAT) {
@@ -1291,8 +1291,8 @@ export class CombatComponent implements OnInit {
     this.localStorage.deleteData(DBkeys.CHARACTER_ID);
     this.localStorage.saveSyncedSessionData(CharacterID, DBkeys.CHARACTER_ID);
   }
-  getFinalCommandString(inputString: string, statDetails: any, charactersCharacterStats: any, character:any) {
-   return ServiceUtil.getFinalCalculationString(inputString, statDetails, charactersCharacterStats, character);
+  getFinalCommandString(inputString: string, statDetails: any, charactersCharacterStats: any, character: any) {
+    return ServiceUtil.getFinalCalculationString(inputString, statDetails, charactersCharacterStats, character);
   }
 
   isValidSingleNumberCommand(inputString, includesCharacterStats) {
@@ -1310,26 +1310,26 @@ export class CombatComponent implements OnInit {
     }
 
     if (command) {
-      if (command.toLowerCase().indexOf(' and') > -1) {        
+      if (command.toLowerCase().indexOf(' and') > -1) {
         return false;
       }
-      if (command.indexOf('"') > -1) {        
+      if (command.indexOf('"') > -1) {
         return false;
       }
-      if (command.indexOf("'") > -1) {        
+      if (command.indexOf("'") > -1) {
         return false;
       }
     }
     try {
       let number = DiceService.rollDiceExternally(this.alertService, command, this.customDices);
-      if (isNaN(number)) {        
+      if (isNaN(number)) {
         return false;
       }
-      else {        
+      else {
         return true;
       }
     }
-    catch (e) {      
+    catch (e) {
       return false;
     }
   }
