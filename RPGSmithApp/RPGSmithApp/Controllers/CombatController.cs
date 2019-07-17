@@ -131,11 +131,11 @@ namespace RPGSmithApp.Controllers
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
         [HttpPost("RemoveMonsters")]
-        public async Task<IActionResult> RemoveMonsters([FromBody] List<MonsterIds> monsterIds, bool deleteMonster)
+        public async Task<IActionResult> RemoveMonsters([FromBody] List<MonsterIds> monsterIds, bool deleteMonster, int CampaignId, bool isFromCombatScreen=false)
         {
             try
             {
-                _combatService.RemoveMonsters(monsterIds, deleteMonster);
+                _combatService.RemoveMonsters(monsterIds, deleteMonster, isFromCombatScreen, CampaignId);
                 return Ok();
             }
             catch (Exception ex)
@@ -203,6 +203,22 @@ namespace RPGSmithApp.Controllers
                 }
 
             
+        }
+        [HttpPost("saveTarget")]
+        public async Task<IActionResult> saveTarget([FromBody] Combatant_ViewModel model)
+        {
+
+            try
+            {
+                _combatService.saveTarget(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
         }
         [HttpPost("SaveCharacterHealth")]
         public async Task<IActionResult> SaveCharacterHealth([FromBody] CharacterHealthModel model)

@@ -298,7 +298,10 @@ export class AppComponent implements OnInit, AfterViewInit {
               if (data) {
                 this.isPlayerCharacter = data.isPlayerCharacter;
                 if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
-                  this.showCombatBtn = true;
+                  if (this.router.url.toUpperCase().indexOf('/CHARACTER') > -1) {
+                    this.showCombatBtn = true;
+                  }
+                  
                   // Player CharacterView Url
                   this.combatUrl = ['/character/combatplayer', + this.headers.headerId];
 
@@ -838,7 +841,10 @@ export class AppComponent implements OnInit, AfterViewInit {
                   if (data) {
                     this.isPlayerCharacter = data.isPlayerCharacter
                     if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
-                      this.showCombatBtn = true;
+                      if (url.toUpperCase().indexOf('/CHARACTER')>-1) {
+                        this.showCombatBtn = true;
+                      }
+                      
                       // Player CharacterView Url
                       this.combatUrl = ['/character/combatplayer', + this.headers.headerId];
                       if (!this.signalRAdapter && user) {

@@ -36,6 +36,7 @@ export class SharedService {
   private MonsterVisibility = new Subject<any>();
   private MonsterBuffEffect = new Subject<any>();
   private CharacterBuffEffect = new Subject<any>();
+  private updateMonstersInCombat = new Subject<any>();  
 
 
   updateManageOpen(accountSetting: any) {
@@ -339,5 +340,14 @@ export class SharedService {
   shouldUpdateCharacterBuffEffect(): Observable<any> {
     return this.CharacterBuffEffect.asObservable();
   }
+
+  updateCombatantListForAddDeleteMonsters(combatantList: any) {
+    this.updateMonstersInCombat.next(combatantList);
+  }
+
+  shouldUpdateCombatantListForAddDeleteMonsters(): Observable<any> {
+    return this.updateMonstersInCombat.asObservable();
+  }
+  
 }
 

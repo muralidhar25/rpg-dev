@@ -15,7 +15,7 @@ namespace DAL.Services
         List<CombatAllTypeMonsters> GetCombatAllTypeMonsters(int CampaignId);
         void AddDeployedMonstersToCombat(List<CombatAllTypeMonsters> model);
         List<Monster> GetCombat_MonstersList(int campaignId);
-        void RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster);
+        void RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster, bool isFromCombatScreen, int CampaignId);
         List<Combatant_ViewModel> SaveCombatantList(List<Combatant_DTModel> model, int campaignId, string UserId);
         void Combat_Start(int combatId, bool start);
         void SwitchCombatantTurn(Combatant_ViewModel model, int roundCount);
@@ -23,5 +23,6 @@ namespace DAL.Services
         void SaveMonsterHealth(Monster model);
         List<BuffAndEffect> SP_GetMonsterAssociateBEs(int monsterID, int rulesetId);
         void SaveCharacterHealth(CharacterHealthModel model);
+        void saveTarget(Combatant_ViewModel model);
     }
 }

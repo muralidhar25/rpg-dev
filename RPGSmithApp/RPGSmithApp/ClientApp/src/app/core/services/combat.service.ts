@@ -89,11 +89,11 @@ export class CombatService extends EndpointFactory {
       });
   }
 
-  removeMonsters<T>(monsters: any[], shouldDeleteMonsters: boolean): Observable<T> {
-    let url = `${this.Combat_RemoveMonsters}?deleteMonster=${shouldDeleteMonsters}`
+  removeMonsters<T>(monsters: any[], shouldDeleteMonsters: boolean, isFromCombatScreen: boolean, CampaignId:number): Observable<T> {
+    let url = `${this.Combat_RemoveMonsters}?deleteMonster=${shouldDeleteMonsters}&CampaignId=${CampaignId}&isFromCombatScreen=${isFromCombatScreen}`
     return this.http.post<T>(url, JSON.stringify(monsters), this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.removeMonsters(monsters, shouldDeleteMonsters));
+        return this.handleError(error, () => this.removeMonsters(monsters, shouldDeleteMonsters, isFromCombatScreen, CampaignId));
       });
   }
 

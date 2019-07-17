@@ -509,7 +509,32 @@ namespace DAL.Services
         public List<Monster> GetCombat_MonstersList(int campaignId) {
             return _context.Monsters.Where(x => x.RuleSetId == campaignId && x.IsDeleted != true && x.AddToCombatTracker == true).ToList();
         }
-        public void RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster) {
+        public void RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster, bool isFromCombatScreen,int CampaignId)
+        {
+
+            if (isFromCombatScreen)
+            {
+                var CombatSettings = _context.CombatSettings.Where(x => x.CampaignId == CampaignId && x.IsDeleted != true).FirstOrDefault();
+                if (CombatSettings!=null)
+                {
+                    if (CombatSettings.DropItemsForDeletedMonsters)
+                    {
+                        foreach (var m in monsterIds)
+                        {
+                            var monsterItems = _context.ItemMasterMonsterItems.Where(x => x.MonsterId == m.MonsterId && x.IsDeleted != true)
+                                .Select(x=> new ItemMasterForMonsterTemplate() {
+                                    ItemId=x.ItemId,
+                                    ItemMasterId=x.ItemMasterId,
+                                })
+                                .ToList();
+                            _monsterTemplateService.DropItemsToLoot(monsterItems, m.MonsterId);
+                        }
+                    }
+                    
+                }
+                
+               
+            }
 
             List<CommonID> monsterIdList = monsterIds.Select(o => new CommonID()
             {               
@@ -741,6 +766,15 @@ namespace DAL.Services
                     characterCharacterStat.Current = model.healthCurrent;
                     characterCharacterStat.Maximum = model.healthMax;
                 }
+                _context.SaveChanges();
+            }
+        }
+        public void saveTarget(Combatant_ViewModel model) {
+            var combatant = _context.CombatantLists.Where(x => x.Id == model.Id).FirstOrDefault();
+            if (combatant != null)
+            {
+                combatant.TargetId = model.TargetId;
+                combatant.TargetType = model.TargetType;
                 _context.SaveChanges();
             }
         }

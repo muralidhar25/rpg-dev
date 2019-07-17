@@ -48,9 +48,17 @@
     <app-loader [isLoading]="isLoading"></app-loader>
 
 
-    <div class="modal-footer">
-      <input type="checkbox" name="checkbox" [(ngModel)]="isChecked" (change)="checkValue($event)" /> Make Monstters Visible to pc's
-      <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
-      <button [disabled]="isLoading" type="submit" class="btn btn-accent">{{_view}}</button>
-    </div>
+    <div class="modal-footer justify-content-between invite-footer-popup">
+      <!--<span class="custom-checkbox random-checkbox">
+    <input type="checkbox" name="checkbox" [(ngModel)]="isChecked" (change)="checkValue($event)" class="ng-pristine ng-valid ng-touched">
+    <span class="random-checkbox-span">Make Monsters Visible to pc's</span>
+  </span>-->
+      <div class="delte-checkbox">
+        <input type="checkbox" name="checkbox" [(ngModel)]="isChecked" (change)="checkValue($event)" /> Make Monsters Visible to pc's
+        </div>
+        <div class="d-flex">
+          <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+          <button [disabled]="isLoading" type="submit" class="btn btn-accent">{{_view}}</button>
+        </div>
+      </div>
 </form>

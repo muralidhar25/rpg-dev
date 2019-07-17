@@ -22,6 +22,7 @@ import { AppService1 } from '../../app.service';
 import { SharedService } from '../../core/services/shared.service';
 import { CharactersService } from '../../core/services/characters.service';
 import { CombatBuffeffectDetailsComponent } from '../../rulesets/combat/combat-buffeffects-details/combat-buffeffects-details.component';
+import { initiative } from '../../core/models/view-models/initiative.model';
 
 @Component({
   selector: 'app-combat-playerview',
@@ -367,6 +368,24 @@ export class CombatPlayerViewComponent implements OnInit {
             this.isCharacterItemEnabled = combatModal.isCharacterItemEnabled;
             this.isCharacterSpellEnabled = combatModal.isCharacterSpellEnabled;
             this.isCharacterAbilityEnabled = combatModal.isCharacterAbilityEnabled;
+
+            if (this.roundCounter > 1) {
+              debugger
+              let curretnCombatantList = this.combatants.filter(x => x.isCurrentTurn);
+              let curretnCombatant = new initiative();
+              if (curretnCombatantList.length) {
+                curretnCombatant = curretnCombatantList[0];
+              }
+
+              let valueofinitiative = curretnCombatant.initiativeValue;
+              this.CurrentInitiativeValue = valueofinitiative;
+
+              //this.roundCounter = this.roundCounter + 1;
+              ////convert time
+              let roundTime = this.settings.gameRoundLength * this.roundCounter;
+              this.gametime = this.time_convert(roundTime);
+              this.frameClick(curretnCombatant)
+            }
           }
           this.isLoading = false;
         }, error => {

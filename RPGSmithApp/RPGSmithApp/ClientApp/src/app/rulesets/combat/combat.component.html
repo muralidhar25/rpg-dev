@@ -286,7 +286,7 @@
           <thead>
             <tr>
               <th><span>NAME</span></th>
-              <th><span>HP</span></th>
+              <th class="health-circle-column"><span>HP</span></th>
               <th><span>BUFFS / EFFECTS</span></th>
               <th><span>VISIBLE</span></th>
               <th><span>ACTIONS</span></th>
@@ -302,7 +302,7 @@
                   {{item?.type == combatItemsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}
                 </div>
               </td>
-              <td>
+              <td class="health-circle-column">
                 <ng-container *ngIf="item.type==combatItemsType.CHARACTER">
 
                   <!--Number/Combo Type Stat-->
@@ -375,7 +375,7 @@
           {{item?.character?.healthCurrent}}/{{item?.character?.healthMax}}
 
         </div>
-        <div class="progress-value" *ngIf="item.type==combatItemsType.MONSTER && settings.showMonsterHealth">
+        <div class="progress-value" *ngIf="item.type==combatItemsType.MONSTER">
           {{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}
         </div>
       </div>-->
@@ -565,7 +565,7 @@
             </div>
           </accordion-group>
           <!--Monster-->
-          <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER && settings.seeMonsterBuffEffects">
+          <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
             <div class="row">
               <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterBuffAndEffects.length == 0">
                 <legend>No Buffs & Effects Available</legend>
@@ -613,7 +613,7 @@
             </div>
           </accordion-group>
           <!--Monster-->
-          <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER && settings.seeMonsterItems">
+          <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
             <div class="row">
               <div class="text-center" *ngIf="currentCombatantDetail?.monster?.itemMasterMonsterItems?.length == 0">
                 <legend>No Items  Available</legend>
