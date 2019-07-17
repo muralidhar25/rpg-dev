@@ -44,6 +44,7 @@
     "increase-memory-limit": "^1.0.3",
     "isomorphic-fetch": "^2.2.1",
     "jquery": "^3.3.1",
+    "ng-circle-progress": "^1.0.0",
     "ng2-adsense": "^5.4.3",
     "ng2-charts": "^1.6.0",
     "ng2-dragula": "^1.5.0",
