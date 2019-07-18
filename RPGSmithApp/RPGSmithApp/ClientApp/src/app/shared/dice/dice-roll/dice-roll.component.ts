@@ -102,6 +102,7 @@ export class DiceRollComponent implements OnInit {
   isShowSendtoChat: boolean;
   isFromRulesetSharedLayout: boolean = false;
   DiceImage: any;
+  displayRollResultInChat_AfterAllChecks: boolean = true;
   constructor(
     private router: Router, public modalService: BsModalService, private bsModalRef: BsModalRef, private alertService: AlertService,
     private charactersCharacterStatService: CharactersCharacterStatService, private charactersService: CharactersService,
@@ -150,6 +151,13 @@ export class DiceRollComponent implements OnInit {
       this.recordImage = this.bsModalRef.content.recordImage ? this.bsModalRef.content.recordImage : '';
       this.recordType = this.bsModalRef.content.recordType ? this.bsModalRef.content.recordType : '';
       this.recordId = this.bsModalRef.content.recordId ? this.bsModalRef.content.recordId : '';
+      if (this.bsModalRef.content.displayRollResultInChat_AfterAllChecks == false) {
+        this.displayRollResultInChat_AfterAllChecks = this.bsModalRef.content.displayRollResultInChat_AfterAllChecks
+      }
+      else {
+        this.displayRollResultInChat_AfterAllChecks = true;
+      }
+     
 
       this.diceRedirection();
 
@@ -166,7 +174,7 @@ export class DiceRollComponent implements OnInit {
           this.isLoading = false;
           if (data) {
 
-            debugger;
+            
             this.character = data.character;
             if (this.isFromCampaignDetail) {
               this.characterCommandData = data.rulesetCommands;
@@ -1307,7 +1315,7 @@ export class DiceRollComponent implements OnInit {
     } catch (err) { }
   }
   onClickRoll(characterCommand: CharacterCommand, _mainCommandText: string, lastResultArray?: any, IsRollCurrentAgain: boolean = false) {
-    debugger;
+    
     let OldCommandForRollCurrentAgain: any = undefined;
     if (IsRollCurrentAgain) {
       OldCommandForRollCurrentAgain = this.characterMultipleCommands;
@@ -1787,7 +1795,7 @@ export class DiceRollComponent implements OnInit {
 
           /*Update Last command if command is saved in charatcer command*/
           try {
-            debugger
+            
             const characterLastCommand = new CharacterLastCommand();
             characterLastCommand.characterId = characterCommand.characterId;
             characterLastCommand.lastCommand = commandTxt;
@@ -1949,7 +1957,10 @@ export class DiceRollComponent implements OnInit {
             //if (this.isDicePublicRoll || this.isSkipDicePublicRollcheck) {
             if (this.isDicePublicRoll) {
               //this.isSkipDicePublicRollcheck = false;
-              this.appService.updateChatWithDiceRoll({ characterCommandModel: this.characterCommandModel, characterMultipleCommands: this.characterMultipleCommands });
+              debugger
+              if (this.displayRollResultInChat_AfterAllChecks) {
+                this.appService.updateChatWithDiceRoll({ characterCommandModel: this.characterCommandModel, characterMultipleCommands: this.characterMultipleCommands });
+              }              
             }
           }
           this.loadingResult = true;
@@ -2250,7 +2261,7 @@ export class DiceRollComponent implements OnInit {
     this.rulesetService.updateLastCommand<any>(ruleSetLastCommand)
       .subscribe(
         data => {
-          debugger
+          
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           this.character = data;

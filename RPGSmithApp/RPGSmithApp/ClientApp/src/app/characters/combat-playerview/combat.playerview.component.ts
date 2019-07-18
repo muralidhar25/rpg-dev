@@ -25,6 +25,7 @@ import { CombatBuffeffectDetailsComponent } from '../../rulesets/combat/combat-b
 import { ImageViewerComponent } from '../../shared/image-interface/image-viewer/image-viewer.component';
 import { CharactersCharacterStat } from '../../core/models/view-models/characters-character-stats.model';
 import { initiative } from '../../core/models/view-models/initiative.model';
+import { setInterval } from 'timers';
 
 @Component({
   selector: 'app-combat-playerview',
@@ -93,8 +94,11 @@ export class CombatPlayerViewComponent implements OnInit {
       //$(".modal-backdrop").remove();
     } catch (err) { }
   }
-  GetCombatDetails() {
-    this.isLoading = true;
+  GetCombatDetails(ShowLoader = true) {
+    if (ShowLoader) {
+      this.isLoading = true;
+    }
+    
     //////////////
     this.charactersService.getCharactersById<any>(this.characterId)
       .subscribe(data => {
@@ -209,6 +213,8 @@ export class CombatPlayerViewComponent implements OnInit {
               let roundTime = this.settings.gameRoundLength * this.roundCounter;
               this.gametime = this.time_convert(roundTime);
               this.frameClick(curretnCombatant)
+
+              this.refreshPageData();
             }
           }
           this.isLoading = false;
@@ -431,5 +437,10 @@ export class CombatPlayerViewComponent implements OnInit {
     this.sharedService.updateAccountSetting(headerValues);
     this.localStorage.deleteData(DBkeys.HEADER_VALUE);
     this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+  }
+  refreshPageData() {
+    //let refreshPage = setInterval(() => {
+    //  this.GetCombatDetails(false);
+    //}, 5000);
   }
 }

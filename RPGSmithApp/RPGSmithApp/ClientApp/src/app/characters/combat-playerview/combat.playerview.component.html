@@ -21,7 +21,7 @@
               <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
             </li>
             <li class="hidden-tab" *ngIf="rulesetModel?.isAbilityEnabled">
-              <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> <span>Abilities</span></a>
+              <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
             </li>
             <li class="hidden-tab" *ngIf="rulesetModel">
               <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
@@ -39,7 +39,7 @@
                       <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
                     </li>
                     <li class="dropdown-menu-item" *ngIf="rulesetModel?.isAbilityEnabled">
-                      <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> Abilities</a>
+                      <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
                     </li>
 
                     <li class="dropdown-menu-item" *ngIf="rulesetModel">
