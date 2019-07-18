@@ -247,6 +247,7 @@ export class SaveCombatMonsterComponent implements OnInit {
                 this.alertService.showMessage("Monsters has been added successfully.", "", MessageSeverity.success);
                 this.isLoading = false;
                 this.close();
+                this.sharedService.updateCombatantListForAddDeleteMonsters(true);
               }, error => {
                 this.isLoading = false;
                 this.alertService.stopLoadingMessage();

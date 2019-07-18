@@ -68,49 +68,6 @@ export class AddCombatMonsterComponent implements OnInit {
 
   private initialize() {
 
-    //this.itemsList = [
-    //  {
-    //      recordId: 1,
-    //      name: 'Monster1',
-    //      image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
-    //    selected: false,
-    //    type: CombatMonsterTypeItems.MONSTER,
-    //      quantity: 0
-    //  },
-    //  {
-    //    recordId: 2,
-    //    name: 'Monster2',
-    //    image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
-    //    selected: false,
-    //    type: CombatMonsterTypeItems.MONSTERGROUP,
-    //    quantity: 0
-    //  },
-    //  {
-    //    recordId:3,
-    //    name: 'Monster3',
-    //    image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
-    //    selected: false,
-    //    type: CombatMonsterTypeItems.MONSTERTEMPLATE,
-    //    quantity: 0
-    //  },
-    //  {
-    //    recordId: 4,
-    //    name: 'Monster4',
-    //    image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
-    //    selected: false,
-    //    type: CombatMonsterTypeItems.MONSTER,
-    //    quantity: 0
-    //  },
-    //  {
-    //    recordId: 5,
-    //    name: 'Monster5',
-    //    image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
-    //    selected: false,
-    //    type: CombatMonsterTypeItems.MONSTERGROUP,
-    //    quantity: 0
-    //  }
-    //]
-
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
       this.authService.logout();
@@ -143,10 +100,7 @@ export class AddCombatMonsterComponent implements OnInit {
               }
             })
           }
-          //this.itemsList = data.ItemMaster;
-          //this.itemsList.map((item) => {
-          // item.quantity = 1;
-          //});
+
           this.isLoading = false;
         }, error => {
           this.isLoading = false;
@@ -184,9 +138,6 @@ export class AddCombatMonsterComponent implements OnInit {
     }
 
   submitForm() {
-    //debugger;
-   
-   
     if (this.selectedItemsList.length) {
       
       let monstertemplatelist = this.selectedItemsList.filter(function (itm) {
@@ -291,19 +242,17 @@ export class AddCombatMonsterComponent implements OnInit {
     });
 
     this.monsterTemplateService.addMonster(selectedMonsterGroups) /////Adding Groups To Monsters and Combat
-      .subscribe(data => {
-
-        
+      .subscribe(data => {        
           let selectedDeployedMonster = DeployedMonstersList.map((D_Monster) => {
             return D_Monster.record;
         })
-        debugger
           this.combatService.AddMonstersOnly(selectedDeployedMonster) /////Adding Deployed Monsters to Combat.
             .subscribe(data => {
               this.alertService.stopLoadingMessage();
               this.alertService.showMessage("Monsters has been added successfully.", "", MessageSeverity.success);
               this.isLoading = false;
               this.close();
+              this.sharedService.updateCombatantListForAddDeleteMonsters(true);
             }, error => {
               this.isLoading = false;
               this.alertService.stopLoadingMessage();

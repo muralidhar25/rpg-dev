@@ -154,7 +154,7 @@
             </li>
             <li>
               <div class="btn-group" [ngClass]="{'open': isDropdownOpen}">
-                <button class="setting-btn icon-Settings dropdown-toggle setting-toggle-btn" type="button" ></button>
+                <button class="setting-btn icon-Settings dropdown-toggle setting-toggle-btn" type="button"></button>
                 <div class="dropdown-menu setting-toggle">
                   <div class="row m-0">
                     <div class="col-12 col-sm-6 col-md-3">
@@ -163,7 +163,8 @@
                         <li>
                           PC Initiative Formula
                           <input type="text" class="cust-txtbox" name="PCInitiative" [(ngModel)]="settings.pcInitiativeFormula"
-                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.PC_INITIATIVE_FORMULA)" />
+                                 (change)="isValidSingleNumberCommand(settings.pcInitiativeFormula,true) && UpdateSettings($event, COMBAT_SETTINGS.PC_INITIATIVE_FORMULA)" />
+                          <span *ngIf="settings.pcInitiativeFormula && !isValidSingleNumberCommand(settings.pcInitiativeFormula,true)" class="errorMessage text-danger">The 'And' and Text options are disallowed for this comand.</span>
                         </li>
                         <li>
                           Roll Initiative for Player Characters
@@ -224,7 +225,8 @@
                         <li *ngIf="settings.groupInitiative">
                           Group Init Formula
                           <input type="text" class="cust-txtbox" name="GroupInitFormula" [(ngModel)]="settings.groupInitFormula"
-                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.GROUPINIT_FORMULA)" />
+                                 (change)="isValidSingleNumberCommand(settings.groupInitFormula) && UpdateSettings($event, COMBAT_SETTINGS.GROUPINIT_FORMULA)" />
+                          <em *ngIf="settings.groupInitFormula && !isValidSingleNumberCommand(settings.groupInitFormula)" class="errorMessage text-danger">The 'And' and Text options are disallowed for this comand.</em>
                         </li>
                         <li>
                           Auto-Drop Items for Deleted Monsters
@@ -284,7 +286,7 @@
           <thead>
             <tr>
               <th><span>NAME</span></th>
-              <th><span>HP</span></th>
+              <th class="health-circle-column"><span>HP</span></th>
               <th><span>BUFFS / EFFECTS</span></th>
               <th><span>VISIBLE</span></th>
               <th><span>ACTIONS</span></th>
@@ -292,7 +294,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let item of combatants; let i = index"
-                [ngClass]="{'black-outer-filed': item.isCurrentTurn, 'red-outer-filed': item.frameColor =='red', '': item.frameColor =='grey' }"
+                [ngClass]="{'black-outer-filed': item.isCurrentTurn, 'white-outer-filed': item.delayTurn, 'red-outer-filed': item.frameColor =='red', '': item.frameColor =='grey' }"
                 (click)="frameClick(item)">
               <td>
                 <div class="white-section name-data text-ellipsis" (click)="nameClicked(item);$event.stopPropagation()"
@@ -300,36 +302,103 @@
                   {{item?.type == combatItemsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}
                 </div>
               </td>
-              <td>
-                <div class="white-section">
-                  <div class="progress green" (click)="progressHealth(item);$event.stopPropagation()">
-                    <span class="progress-left">
-                      <span class="progress-bar"></span>
-                    </span>
-                    <span class="progress-right">
-                      <span class="progress-bar"></span>
-                    </span>
-                    <div class="progress-value" *ngIf="item.type==combatItemsType.CHARACTER">
-                    <!--{{item?.character?.healthCurrent}}/{{item?.character?.healthMax}}-->
-                      c/c
+              <td class="health-circle-column">
+                <ng-container *ngIf="item.type==combatItemsType.CHARACTER">
+
+                  <!--Number/Combo Type Stat-->
+                  <ng-container *ngIf="item?.character?.healthCurrent!=DummyValueForCharHealthStat && item?.character?.healthMax==DummyValueForCharHealthStat">
+                    <div class="white-section text-center" (click)="progressHealth(item);$event.stopPropagation()">
+                      <span>
+                        {{item?.character?.healthCurrent}}
+                      </span>
                     </div>
-                    <div class="progress-value" *ngIf="item.type==combatItemsType.MONSTER">
-                    {{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}
+                  </ng-container>
+
+                  <!--Current-Max/Val-SubVal Type Stat-->
+                  <ng-container *ngIf="item?.character?.healthCurrent!=DummyValueForCharHealthStat && item?.character?.healthMax!=DummyValueForCharHealthStat">
+                    <div class="white-section p-0" (click)="progressHealth(item);$event.stopPropagation()">
+                      <circle-progress [percent]="(item?.character?.healthCurrent/item?.character?.healthMax)*100"
+                                       [space]="-10"
+                                       [outerStrokeWidth]="10"
+                                       [innerStrokeWidth]="10"
+                                       [radius]="100"
+                                       [showInnerStroke]="true"
+                                       [innerStrokeColor]="'#9e9e9e'"
+                                       [outerStrokeColor]="(item?.character?.healthCurrent/item?.character?.healthMax)*100 <= 33? 'red' : (item?.character?.healthCurrent/item?.character?.healthMax)*100 <= 66? 'yellow': 'green'"
+                                       [animation]="false"
+                                       [renderOnClick]="false"
+                                       [responsive]="true"
+                                       [showUnits]="false"
+                                       [showSubtitle]="false"
+                                       title="{{item?.character?.healthCurrent}}/{{item?.character?.healthMax}}"
+                                       [titleFontSize]="'45'"
+                                       [clockwise]="false"></circle-progress>
                     </div>
-                  </div>
-                </div>
+                  </ng-container>
+
+                  <!--OtherStat or No Stat found-->
+                  <ng-container *ngIf="item?.character?.healthCurrent==DummyValueForCharHealthStat && item?.character?.healthMax==DummyValueForCharHealthStat">
+                    <div class="white-section">
+
+                    </div>
+                  </ng-container>
+
+                </ng-container>
+                <ng-container *ngIf="item.type==combatItemsType.MONSTER">
+                  <div class="white-section p-0"  (click)="progressHealth(item);$event.stopPropagation()">
+                    <circle-progress [percent]="(item?.monster?.healthCurrent/item?.monster?.healthMax)*100"
+                                     [space]="-10"
+                                     [outerStrokeWidth]="10"
+                                     [innerStrokeWidth]="10"
+                                     [radius]="100"
+                                     [showInnerStroke]="true"
+                                     [innerStrokeColor]="'#9e9e9e'"
+                                     [outerStrokeColor]="(item?.monster?.healthCurrent/item?.monster?.healthMax)*100 <= 33? 'red' : (item?.monster?.healthCurrent/item?.monster?.healthMax)*100 <= 66? 'yellow': 'green'"                                     
+                                     [animation]="false"
+                                     [renderOnClick]="false"
+                                     [responsive]="true"
+                                     [showUnits]="false"
+                                     [showSubtitle]="false"
+                                     title="{{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}"
+                                     [titleFontSize]="'45'"
+                                     [clockwise]="false"></circle-progress></div>
+                </ng-container>                
+                  
+                    <!--<div class="progress green" (click)="progressHealth(item);$event.stopPropagation()">
+        <span class="progress-left">
+          <span class="progress-bar"></span>
+        </span>
+        <span class="progress-right">
+          <span class="progress-bar"></span>
+        </span>
+        <div class="progress-value" *ngIf="item.type==combatItemsType.CHARACTER">
+          {{item?.character?.healthCurrent}}/{{item?.character?.healthMax}}
+
+        </div>
+        <div class="progress-value" *ngIf="item.type==combatItemsType.MONSTER">
+          {{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}
+        </div>
+      </div>-->
+                  
               </td>
               <td>
-                <div class="white-section">
-                  <!--<ul class="visiblity-list">
-                    <li class="icon-Rec-Visible"> </li>
-                    <li class="icon-CharStat-Command"></li>
-                  </ul>-->
+                <div class="white-section" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatItemsType.CHARACTER">
                   <ul class="visiblity-list">
-                    <li class="icon-Rec-Visible" (click)="buffEffectclick();$event.stopPropagation()"> </li>
-                    <li class="icon-CharStat-Command" (click)="buffEffectclick();$event.stopPropagation()"></li>
+                    <li class="" *ngFor="let be of item?.character?.characterBuffAndEffects; let be_i = index">
+                      <img class="combat-be-image" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" />
+                    </li>
                   </ul>
+                  <span [ngClass]="item?.character?.characterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.character?.characterBuffAndEffects?.length > 3 ? (item?.character?.characterBuffAndEffects?.length - 3) :''}}</span>
                 </div>
+                <div class="white-section" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatItemsType.MONSTER">
+                  <ul class="visiblity-list">
+                    <li class="" *ngFor="let be of item?.monster?.monsterBuffAndEffects; let be_i = index">
+                      <img class="combat-be-image" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" />
+                    </li>
+                  </ul>
+                  <span [ngClass]="item?.monster?.monsterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.monster?.monsterBuffAndEffects?.length > 3 ? (item?.monster?.monsterBuffAndEffects?.length - 3) :''}}</span>
+                </div>
+
               </td>
               <td>
                 <div class="white-section">
@@ -341,19 +410,19 @@
                 <div class="white-section">
                   <ul class="action-buttons-table" *ngIf="item.type == combatItemsType.CHARACTER">
                     <li class="action-button-icon-orange icon-Gen-Items" [ngClass]="isCharacterItemEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && (redirectToItem(item));$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterSpellEnabled && (redirectTospell(item));$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterSpellEnabled && (redirectToSpell(item));$event.stopPropagation()"></li>
                     <li class="action-button-icon-orange icon-Gen-Ability" [ngClass]="isCharacterAbilityEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterAbilityEnabled && (redirectToAbility(item));$event.stopPropagation()"></li>
                     <li class="action-button-icon-orange icon-Gen-CharStat crsr-pointer" (click)="redirectToChracterstat(item);$event.stopPropagation()"></li>
                   </ul>
                   <ul class="action-buttons-table" id="'item'+i" *ngIf="item.type == combatItemsType.MONSTER">
-                    <li class="action-button-icon-orange icon-CharStat-Command" *ngIf="!item.hidebtns" (click)="monsterCommand(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Rec-Drop" *ngIf="!item.hidebtns" (click)="dropMonsterItems(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-red icon-Rec-Remove" *ngIf="!item.hidebtns" (click)="removeCurrentMonster(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-black icon-Gen-LT" *ngIf="!item.hidebtns" (click)="Hidebtns(item)"></li>
-                    <li class="action-button-icon-black icon-Gen-GT" *ngIf="item.hidebtns" (click)="showbtns(item)"></li>
-                    <li class="action-button-icon-orange icon-Gen-Edit" *ngIf="item.hidebtns" (click)="editMonster(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Gen-Duplicate" *ngIf="item.hidebtns" (click)="duplicateMonster(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-red icon-Gen-Trash" *ngIf="item.hidebtns" (click)="deleteMonster(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-CharStat-Command crsr-pointer" *ngIf="!item.hidebtns" (click)="monsterCommand(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-Rec-Drop crsr-pointer" *ngIf="!item.hidebtns" (click)="dropMonsterItems(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-red icon-Rec-Remove crsr-pointer" *ngIf="!item.hidebtns" (click)="removeCurrentMonster(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-black icon-Gen-LT crsr-pointer" *ngIf="!item.hidebtns" (click)="Hidebtns(item)"></li>
+                    <li class="action-button-icon-black icon-Gen-GT crsr-pointer" *ngIf="item.hidebtns" (click)="showbtns(item)"></li>
+                    <li class="action-button-icon-orange icon-Gen-Edit crsr-pointer" *ngIf="item.hidebtns" (click)="editMonster(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-Gen-Duplicate crsr-pointer" *ngIf="item.hidebtns" (click)="duplicateMonster(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-red icon-Gen-Trash crsr-pointer" *ngIf="item.hidebtns" (click)="deleteMonster(item);$event.stopPropagation()"></li>
                   </ul>
                 </div>
               </td>
@@ -445,91 +514,181 @@
     </div>
     <div class="col-12 col-md-4">
       <div class="image-section-combat">
-        <img [src]="combatantDetails.image" />
-        <span *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">{{currentCombatantDetail?.character?.characterName}}</span>
+        <!--Image-->
+        <img *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER" [src]="currentCombatantDetail?.monster?.imageUrl" />
+        <img *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER" [src]="currentCombatantDetail?.character?.imageUrl" />
+        <!--Name-->
         <span *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">{{currentCombatantDetail?.monster?.name}}</span>
+        <span *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">{{currentCombatantDetail?.character?.characterName}}</span>
       </div>
-      <div class="row mt-3 ">
+      <!--Monster-->
+      <div class="row mt-3" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
-          <button class="btn-orange btn-block icon-CharStat-Command" (click)="command()"> Command</button>
+          <button class="btn-orange btn-block icon-CharStat-Command crsr-pointer" (click)="monsterCommand(currentCombatantDetail)"> Command</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
-          <button class="btn-orange btn-block icon-Rec-Drop" (click)="dropItems()"> Drop Items</button>
+          <button class="btn-orange btn-block icon-Rec-Drop crsr-pointer" (click)="dropMonsterItems(currentCombatantDetail)"> Drop Items</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
-          <button class="btn-black btn-block  icon-Health" (click)="health()"> Health</button>
+          <button class="btn-black btn-block icon-Delay crsr-pointer" *ngIf="delayResumeTurn" (click)="DelayTurn(currentCombatantDetail)"> Delay Turn</button>
+          <button class="btn-black btn-block icon-Delay crsr-pointer" *ngIf="!delayResumeTurn" (click)="ResumeTurn(currentCombatantDetail)"> Resume Turn</button>
         </div>
-        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
-          <button class="btn-red btn-block icon-Rec-Remove" (click)="remove()"> Remove</button>
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
+          <button class="btn-red btn-block icon-Rec-Remove crsr-pointer" (click)="removeCurrentMonster(currentCombatantDetail)"> Remove</button>
         </div>
       </div>
+      <!--Character-->
+      <div class="row mt-3" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
+          <button class="btn-orange btn-block icon-Gen-Items" [ngClass]="isCharacterItemEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToItem(currentCombatantDetail)"> Inventory</button>
+        </div>
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
+          <button class="btn-orange btn-block icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToSpell(currentCombatantDetail)"> Spells</button>
+        </div>
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
+          <button class="btn-black btn-block icon-Delay crsr-pointer" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" *ngIf="delayResumeTurn" (click)="DelayTurn(currentCombatantDetail)"> Delay Turn</button>
+          <button class="btn-black btn-block icon-Delay crsr-pointer" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" *ngIf="!delayResumeTurn" (click)="ResumeTurn(currentCombatantDetail)"> Resume Turn</button>
+        </div>
+        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
+          <button class="btn-orange btn-block icon-Gen-Ability crsr-pointer" [ngClass]="isCharacterAbilityEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToAbility(currentCombatantDetail)"> Abilities</button>
+        </div>
+      </div>
+
       <div class="combat-accordian">
         <accordion>
-          <accordion-group #p1 heading="STATS">
+          <accordion-group class="detailPaneItems" #p1 heading="STATS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
             <div class="row">
               <div class="col-12">
                 <!--<label for="Desc">Stats</label>-->
-                <div [froalaView]="combatantDetails.stats" name="stat"></div>
+                <div [froalaView]="currentCombatantDetail?.monster.stats" name="stat"></div>
               </div>
             </div>
           </accordion-group>
-          <accordion-group #p2 heading="BUFFS & EFFECTS">
+          <!--Monster-->
+          <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
             <div class="row">
-              <div class="text-center" *ngIf="combatantDetails.buffEffects?.length == 0">
+              <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterBuffAndEffects.length == 0">
                 <legend>No Buffs & Effects Available</legend>
               </div>
-              <div class="col-6 accordin-items" *ngFor="let item of  combatantDetails.buffEffects">
-                <div class="accordin-box">
-                  <img [src]="item.image" />
-                  <p>{{item.name}}</p>
+              <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.monsterBuffAndEffects">
+                <div class="accordin-box crsr-pointer" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)">
+                  <img [src]="item.buffAndEffect.imageUrl" onerror="this.src='../assets/images/BnE/Def_BnE.png';" />
+                  <p class="text-ellipsis" popover="{{item.buffAndEffect.name}}" triggers="hover">{{item.buffAndEffect.name}}</p>
                 </div>
               </div>
             </div>
           </accordion-group>
-          <accordion-group #p3 heading="DESCRIPTION">
+          <!--Character-->
+          <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
+            <div class="row">
+              <div class="text-center" *ngIf="currentCombatantDetail?.character?.characterBuffAndEffects.length == 0">
+                <legend>No Buffs & Effects Available</legend>
+              </div>
+              <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterBuffAndEffects">
+                <div class="accordin-box crsr-pointer" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)">
+                  <img [src]="item.buffAndEffect.imageUrl" onerror="this.src='../assets/images/BnE/Def_BnE.png';" />
+                  <p class="text-ellipsis" popover="{{item.buffAndEffect.name}}" triggers="hover">{{item.buffAndEffect.name}}</p>
+                </div>
+              </div>
+            </div>
+          </accordion-group>
+          <accordion-group class="detailPaneItems" #p3 heading="DESCRIPTION">
             <div class="row">
               <div class="col-12">
                 <!--<label for="Desc">Description</label>-->
 
-                <div [froalaView]="combatantDetails.desc" name="Desc"></div>
+                <div *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
+                  <div *ngIf="currentCombatantDetail?.monster?.description" [froalaView]="currentCombatantDetail?.monster?.description" name="Desc"></div>
+                  <div *ngIf="!currentCombatantDetail?.monster?.description" name="Desc">
+                    <legend>{{noDescripttionAvailable}}</legend>
+                  </div>
+                </div>
+                <div *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
+                  <div *ngIf="currentCombatantDetail?.character?.characterDescription" [froalaView]="currentCombatantDetail?.character?.characterDescription" name="Desc"></div>
+                  <div *ngIf="!currentCombatantDetail?.character?.characterDescription" name="Desc">
+                    <legend>{{noDescripttionAvailable}}</legend>
+                  </div>
+                </div>
               </div>
             </div>
           </accordion-group>
-          <accordion-group #p4 heading="ITEMS">
+          <!--Monster-->
+          <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
             <div class="row">
-              <div class="text-center" *ngIf="combatantDetails.items?.length == 0">
+              <div class="text-center" *ngIf="currentCombatantDetail?.monster?.itemMasterMonsterItems?.length == 0">
                 <legend>No Items  Available</legend>
               </div>
-              <div class="col-6 accordin-items" *ngFor="let item of  combatantDetails.items">
-                <div class="accordin-box ">
-                  <img [src]="item.image" />
-                  <p>{{item.name}}</p>
+              <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.itemMasterMonsterItems">
+                <div class="accordin-box crsr-pointer" (click)="CombatantItemDetail(currentCombatantDetail, item)">
+                  <img [src]="item.itemImage" onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                  <p class="text-ellipsis" popover="{{item.itemName}}" triggers="hover">{{item.itemName}}</p>
                 </div>
               </div>
             </div>
           </accordion-group>
-          <accordion-group #p5 heading="SPELLS">
+          <!--Character-->
+          <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
             <div class="row">
-              <div class="text-center" *ngIf="combatantDetails.spells?.length == 0">
+              <div class="text-center" *ngIf="currentCombatantDetail?.character.items?.length == 0">
+                <legend>No Items  Available</legend>
+              </div>
+              <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.items">
+                <div class="accordin-box crsr-pointer" (click)="CombatantItemDetail(currentCombatantDetail, item)">
+                  <img [src]="item.itemImage" onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                  <p class="text-ellipsis" popover="{{item.name}}" triggers="hover">{{item.name}}</p>
+                </div>
+              </div>
+            </div>
+          </accordion-group>
+          <accordion-group class="detailPaneItems" #p5 heading="SPELLS">
+            <!--Monster-->
+            <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
+              <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterSpells?.length == 0">
                 <legend>No Spells Available</legend>
               </div>
-              <div class="col-6 accordin-items" *ngFor="let item of  combatantDetails.spells">
-                <div class="accordin-box">
-                  <img [src]="item.image" />
-                  <p>{{item.name}}</p>
+              <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.monsterSpells">
+                <div class="accordin-box crsr-pointer" (click)="CombatantSpellDetail(currentCombatantDetail, item)">
+                  <img [src]="item.spell.imageUrl" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
+                  <p class="text-ellipsis" popover="{{item.spell.name}}" triggers="hover">{{item.spell.name}}</p>
                 </div>
               </div>
             </div>
+            <!--Character-->
+            <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
+              <div class="text-center" *ngIf="currentCombatantDetail?.charatcer?.characterSpells?.length == 0">
+                <legend>No Spells Available</legend>
+              </div>
+              <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterSpells">
+                <div class="accordin-box crsr-pointer" (click)="CombatantSpellDetail(currentCombatantDetail, item)">
+                  <img [src]="item.spell.imageUrl" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
+                  <p class="text-ellipsis" popover="{{item.spell.name}}" triggers="hover" >{{item.spell.name}}</p>
+                </div>
+              </div>
+            </div>
+
           </accordion-group>
-          <accordion-group #p5 heading="ABILITIES">
-            <div class="row">
-              <div lass="text-center" *ngIf="combatantDetails.abilites?.length == 0">
+          <accordion-group class="detailPaneItems" #p5 heading="ABILITIES">
+            <!--Monster-->
+            <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
+              <div lass="text-center" *ngIf="currentCombatantDetail?.monster?.monsterAbilitys?.length == 0">
                 <legend>No Abilities Available</legend>
               </div>
-              <div class="col-6 accordin-items" *ngFor="let item of  combatantDetails.abilites">
-                <div class="accordin-box">
-                  <img [src]="item.image" />
-                  <p>{{item.name}}</p>
+              <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.monsterAbilitys">
+                <div class="accordin-box crsr-pointer" (click)="CombatantAbilityDetail(currentCombatantDetail, item)">
+                  <img [src]="item.ability.imageUrl" onerror="this.src='../assets/images/DefaultImages/ability.png';" />
+                  <p class="text-ellipsis" popover="{{item.ability.name}}" triggers="hover">{{item.ability.name}}</p>
+                </div>
+              </div>
+            </div>
+            <!--Character-->
+            <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
+              <div lass="text-center" *ngIf="currentCombatantDetail?.character?.characterAbilities?.length == 0">
+                <legend>No Abilities Available</legend>
+              </div>
+              <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterAbilities">
+                <div class="accordin-box crsr-pointer" (click)="CombatantAbilityDetail(currentCombatantDetail, item)">
+                  <img [src]="item.ability.imageUrl" onerror="this.src='../assets/images/DefaultImages/ability.png';" />
+                  <p class="text-ellipsis" popover="{{item.ability.name}}" triggers="hover">{{item.ability.name}}</p>
                 </div>
               </div>
             </div>
@@ -539,447 +698,3 @@
     </div>
   </div>
 </div>
-
-
-<!-- Popup Html Start Here -->
-<!--<div class="initiative-popup">
-  <h2>ORDER</h2>
-  <div class="row m-0">
-    <div class="col-12 col-sm-5 mb-2">
-      <div class="initiative-title-box">
-        <img src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg" />
-        <p>BugBear</p>
-      </div>
-    </div>
-    <div class="col-12 col-sm-7 mb-2">
-      <div class="initiative-options-field">
-        <input type="text" />
-        <button class="btn-top icon-Gen-Down"></button>
-        <button class="btn-bottom icon-Gen-Down "></button>
-        <button class="btn-dices icon-CharStat-Command"></button>
-      </div>
-    </div>
-  </div>
-  <div class="row m-0">
-    <div class="col-12 col-sm-5 mb-2">
-      <div class="initiative-title-box monsters-title-box">
-        <img src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg" />
-        <p><span>BugBear</span></p>
-      </div>
-    </div>
-    <div class="col-12 col-sm-7 mb-2">
-      <div class="initiative-options-field">
-        <input type="text" />
-        <button class="btn-top icon-Gen-Down"></button>
-        <button class="btn-bottom icon-Gen-Down "></button>
-        <button class="btn-dices icon-CharStat-Command"></button>
-      </div>
-    </div>
-  </div>
-  <div class="row m-0">
-    <div class="col-12 col-sm-5 mb-2">
-      <div class="initiative-title-box">
-        <img src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg" />
-        <p><span>BugBear</span></p>
-      </div>
-    </div>
-    <div class="col-12 col-sm-7 mb-2">
-      <div class="initiative-options-field">
-        <input type="text" />
-        <button class="btn-top icon-Gen-Down"></button>
-        <button class="btn-bottom icon-Gen-Down "></button>
-        <button class="btn-dices icon-CharStat-Command"></button>
-      </div>
-    </div>
-  </div>
-  <div class="row m-0">
-    <div class="col-12 col-sm-5 mb-2">
-      <div class="initiative-title-box monsters-title-box">
-        <img src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg" />
-        <p><span>BugBear</span></p>
-      </div>
-    </div>
-    <div class="col-12 col-sm-7 mb-2">
-      <div class="initiative-options-field">
-        <input type="text" />
-        <button class="btn-top icon-Gen-Down"></button>
-        <button class="btn-bottom icon-Gen-Down "></button>
-        <button class="btn-dices icon-CharStat-Command"></button>
-      </div>
-    </div>
-  </div>
-  <div class="row m-0">
-    <div class="col-12 col-sm-5 mb-2">
-      <div class="initiative-title-box">
-        <img src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg" />
-        <p><span>BugBear</span></p>
-      </div>
-    </div>
-    <div class="col-12 col-sm-7 mb-2">
-      <div class="initiative-options-field">
-        <input type="text" />
-        <button class="btn-top icon-Gen-Down"></button>
-        <button class="btn-bottom icon-Gen-Down "></button>
-        <button class="btn-dices icon-CharStat-Command"></button>
-      </div>
-    </div>
-  </div>
-  <div class="row m-0">
-    <div class="col-12 col-sm-5 mb-2">
-      <div class="initiative-title-box">
-        <img src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg" />
-        <p><span>BugBear</span></p>
-      </div>
-    </div>
-    <div class="col-12 col-sm-7 mb-2">
-      <div class="initiative-options-field">
-        <input type="text" />
-        <button class="btn-top icon-Gen-Down"></button>
-        <button class="btn-bottom icon-Gen-Down "></button>
-        <button class="btn-dices icon-CharStat-Command"></button>
-      </div>
-    </div>
-  </div>
-  <div class="row m-0">
-    <div class="col-12 col-sm-5 mb-2">
-      <div class="initiative-title-box">
-        <img src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg" />
-        <p><span>BugBear</span></p>
-      </div>
-    </div>
-    <div class="col-12 col-sm-7 mb-2">
-      <div class="initiative-options-field">
-        <input type="text" />
-        <button class="btn-top icon-Gen-Down"></button>
-        <button class="btn-bottom icon-Gen-Down "></button>
-        <button class="btn-dices icon-CharStat-Command"></button>
-      </div>
-    </div>
-  </div>
-  <div class="row m-0">
-    <div class="col-12 col-sm-5 mb-2">
-      <div class="initiative-title-box">
-        <img src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg" />
-        <p><span>BugBear</span></p>
-      </div>
-    </div>
-    <div class="col-12 col-sm-7 mb-2">
-      <div class="initiative-options-field">
-        <input type="text" />
-        <button class="btn-top icon-Gen-Down"></button>
-        <button class="btn-bottom icon-Gen-Down "></button>
-        <button class="btn-dices icon-CharStat-Command"></button>
-      </div>
-    </div>
-  </div>
-  <div class="row"><div class="col-12 p-0"><hr /></div></div>
-  <h2>REROLL</h2>
-  <div class="row m-0">
-    <div class="col">
-      <button class="btn-block btn-accent btn">Characters</button>
-    </div>
-    <div class="col">
-      <button class="btn-block btn-accent btn">ALL</button>
-    </div>
-    <div class="col">
-      <button class="btn-block btn-accent btn">Monsters</button>
-    </div>
-  </div>
-  <div class="row"><div class="col-12 p-0"><hr /></div></div>
-</div>-->
-<!-- Popup Html End Here -->
-<!-- Expandable Section Html Start -->
-<!--<div class="container">
-  <div class="row">
-    <div class="col-12 col-md-8">
-      <div class="table-responsive combat-table">
-        <table class="table">
-          <thead>
-            <tr>
-              <th><span>NAME</span></th>
-              <th><span>HEALTH</span></th>
-              <th><span>TEAM</span></th>
-              <th><span>BUFFS & EFFECTS</span></th>
-              <th><span>TARGET</span></th>
-              <th><span>ACTIONS</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <div class="white-section name-data">Silven</div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <div class="progress green">
-                    <span class="progress-left">
-                      <span class="progress-bar"></span>
-                    </span>
-                    <span class="progress-right">
-                      <span class="progress-bar"></span>
-                    </span>
-                    <div class="progress-value">90%</div>
-                  </div>
-                </div>
-              </td>
-
-              <td>
-                <div class="white-section">
-                  <span class="visible-icon"></span>
-                </div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <ul class="visiblity-list">
-                    <li class="icon-Rec-Visible"></li> /
-                    <li class="icon-CharStat-Command"></li>
-                  </ul>
-                </div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <div _ngcontent-c1="" class="initiative-title-box monsters-title-box">
-                    <img _ngcontent-c1="" class="ng-tns-c1-0" src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg">
-                    <p _ngcontent-c1="" class="ng-tns-c1-0"><span _ngcontent-c1="" class="ng-tns-c1-0">BugBear</span></p>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <ul class="action-buttons-table">
-                    <li class="action-button-icon-orange icon-Gen-Chat"></li>
-                    <li class="action-button-icon-orange icon-MarkTarget"></li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-            <tr class="blue-outer-filed">
-              <td>
-                <div class="white-section name-data">Silven</div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <div class="progress green">
-                    <span class="progress-left">
-                      <span class="progress-bar"></span>
-                    </span>
-                    <span class="progress-right">
-                      <span class="progress-bar"></span>
-                    </span>
-                    <div class="progress-value">90%</div>
-                  </div>
-                </div>
-              </td>
-
-              <td>
-                <div class="white-section">
-                  <span class="visible-icon"></span>
-                </div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <ul class="visiblity-list">
-                    <li class="icon-Rec-Visible"></li> /
-                    <li class="icon-CharStat-Command"></li>
-                  </ul>
-                </div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <div _ngcontent-c1="" class="initiative-title-box monsters-title-box">
-                    <img _ngcontent-c1="" class="ng-tns-c1-0" src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg">
-                    <p _ngcontent-c1="" class="ng-tns-c1-0"><span _ngcontent-c1="" class="ng-tns-c1-0">BugBear</span></p>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <ul class="action-buttons-table">
-                    <li class="action-button-icon-orange icon-Gen-Chat"></li>
-                    <li class="action-button-icon-orange icon-MarkTarget"></li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div class="white-section name-data">Silven</div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <div class="progress green">
-                    <span class="progress-left">
-                      <span class="progress-bar"></span>
-                    </span>
-                    <span class="progress-right">
-                      <span class="progress-bar"></span>
-                    </span>
-                    <div class="progress-value">90%</div>
-                  </div>
-                </div>
-              </td>
-
-              <td>
-                <div class="white-section">
-                  <span class="visible-icon"></span>
-                </div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <ul class="visiblity-list">
-                    <li class="icon-Rec-Visible"></li> /
-                    <li class="icon-CharStat-Command"></li>
-                  </ul>
-                </div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <div _ngcontent-c1="" class="initiative-title-box monsters-title-box">
-                    <img _ngcontent-c1="" class="ng-tns-c1-0" src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg">
-                    <p _ngcontent-c1="" class="ng-tns-c1-0"><span _ngcontent-c1="" class="ng-tns-c1-0">BugBear</span></p>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <ul class="action-buttons-table">
-                    <li class="action-button-icon-orange icon-Gen-Chat"></li>
-                    <li class="action-button-icon-orange icon-MarkTarget"></li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-            <tr class="black-outer-filed">
-              <td>
-                <div class="white-section name-data">Silven</div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <div class="progress green">
-                    <span class="progress-left">
-                      <span class="progress-bar"></span>
-                    </span>
-                    <span class="progress-right">
-                      <span class="progress-bar"></span>
-                    </span>
-                    <div class="progress-value">65%</div>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="white-section">
-
-                </div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <span class="unvisible-icon"></span>
-                </div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <div _ngcontent-c1="" class="initiative-title-box monsters-title-box">
-                    <img _ngcontent-c1="" class="ng-tns-c1-0" src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg">
-                    <p _ngcontent-c1="" class="ng-tns-c1-0"><span _ngcontent-c1="" class="ng-tns-c1-0">BugBear</span></p>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <ul class="action-buttons-table">
-                    <li class="action-button-icon-orange icon-Gen-Chat"></li>
-                    <li class="action-button-icon-orange icon-MarkTarget"></li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-            <tr class="red-outer-filed">
-              <td>
-                <div class="white-section name-data">Silven</div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <div class="progress green">
-                    <span class="progress-left">
-                      <span class="progress-bar"></span>
-                    </span>
-                    <span class="progress-right">
-                      <span class="progress-bar"></span>
-                    </span>
-                    <div class="progress-value">65%</div>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="white-section">
-
-                </div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <span class="unvisible-icon"></span>
-                </div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <div _ngcontent-c1="" class="initiative-title-box monsters-title-box">
-                    <img _ngcontent-c1="" class="ng-tns-c1-0" src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg">
-                    <p _ngcontent-c1="" class="ng-tns-c1-0"><span _ngcontent-c1="" class="ng-tns-c1-0">BugBear</span></p>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="white-section">
-                  <ul class="action-buttons-table">
-                    <li class="action-button-icon-orange icon-Gen-Chat"></li>
-                    <li class="action-button-icon-orange icon-MarkTarget"></li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-    </div>
-    <div class="col-12 col-md-4">
-      <div class="combat-round-count small-count-size mb-3">
-        <ul>
-          <li class="round-count-icon-purple">ROUND <span>5</span></li>
-          <li class="round-count-icon-purple">INIT COUNT <span>15</span></li>
-          <li class="round-count-icon-purple">GAME Time <span>00:32</span></li>
-        </ul>
-      </div>
-      <div class="image-section-combat">
-        <img src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg" />
-        <span>ORC SHAMAN</span>
-      </div>
-      <div class="row mt-3 ">
-        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
-          <button class="btn-orange btn-block icon-CharStat-Command"> Command</button>
-        </div>
-        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
-          <button class="btn-orange btn-block icon-Rec-Drop"> Drop Items</button>
-        </div>
-        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
-          <button class="btn-black btn-block  icon-Health"> Health</button>
-        </div>
-        <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
-          <button class="btn-red btn-block icon-Rec-Remove"> Remove</button>
-        </div>
-      </div>
-      <div class="combat-accordian">
-        <accordion>
-          <accordion-group #p1 heading="STATS">Panel 1 </accordion-group>
-          <accordion-group #p2 heading="BUFFS & EFFECTS">Panel 2</accordion-group>
-          <accordion-group #p3 heading="DESCRIPTION">Panel 2</accordion-group>
-          <accordion-group #p4 heading="ITEMS">Panel 2</accordion-group>
-          <accordion-group #p5 heading="SPELLS">Panel 2</accordion-group>
-          <accordion-group #p5 heading="ABILITIES">Panel 2</accordion-group>
-        </accordion>
-      </div>
-    </div>
-  </div>
-</div>-->
-<!-- Expandable Section Html End-->
-<!--<button (click)="openpopup()">popup</button>-->

@@ -911,33 +911,37 @@ export class Utilities {
 
   public static setCharacterRedirection(routerUrl, characterID, rulesetID, characterNavigation) {
     
-    if (routerUrl.toUpperCase().indexOf('/CHARACTER/DASHBOARD') > -1 && (typeof (characterNavigation[characterID]) == 'undefined')) {
-      characterNavigation[characterID] = {
-        'items': '/character/inventory/' + characterID,
-        'spells': '/character/spell/' + characterID,
-        'abilities': '/character/ability/' + characterID
-      };
-    }
-    else if (routerUrl.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS') > -1) {
-      characterNavigation[characterID].items = '/character/ruleset/items/' + rulesetID;
-    }
-    else if (routerUrl.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS') > -1) {
-      characterNavigation[characterID].spells = '/character/ruleset/spells/' + rulesetID;
-    }
-    else if (routerUrl.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES') > -1) {
-      characterNavigation[characterID].abilities = '/character/ruleset/abilities/' + rulesetID;
-    }
-    else if (routerUrl.toUpperCase().indexOf('/CHARACTER/INVENTORY') > -1) {
-      characterNavigation[characterID].items = '/character/inventory/' + characterID;
-    }
-    else if (routerUrl.toUpperCase().indexOf('/CHARACTER/SPELL') > -1) {
-      characterNavigation[characterID].spells = '/character/spell/' + characterID;
-    }
-    else if (routerUrl.toUpperCase().indexOf('/CHARACTER/ABILITY') > -1) {
-      characterNavigation[characterID].abilities = '/character/ability/' + characterID;
-    }
+      if (routerUrl.toUpperCase().indexOf('/CHARACTER/DASHBOARD') > -1 && (typeof (characterNavigation[characterID]) == 'undefined')) {
+        characterNavigation[characterID] = {
+          'items': '/character/inventory/' + characterID,
+          'spells': '/character/spell/' + characterID,
+          'abilities': '/character/ability/' + characterID
+        };
+      }
+      else if (characterID && characterNavigation && characterNavigation[characterID]) { 
+        if (routerUrl.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS') > -1) {
+          characterNavigation[characterID].items = '/character/ruleset/items/' + rulesetID;
+        }
+        else if (routerUrl.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS') > -1) {
+          characterNavigation[characterID].spells = '/character/ruleset/spells/' + rulesetID;
+        }
+        else if (routerUrl.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES') > -1) {
+          characterNavigation[characterID].abilities = '/character/ruleset/abilities/' + rulesetID;
+        }
+        else if (routerUrl.toUpperCase().indexOf('/CHARACTER/INVENTORY') > -1) {
+          characterNavigation[characterID].items = '/character/inventory/' + characterID;
+        }
+        else if (routerUrl.toUpperCase().indexOf('/CHARACTER/SPELL') > -1) {
+          characterNavigation[characterID].spells = '/character/spell/' + characterID;
+        }
+        else if (routerUrl.toUpperCase().indexOf('/CHARACTER/ABILITY') > -1) {
+          characterNavigation[characterID].abilities = '/character/ability/' + characterID;
+        }
 
-    return characterNavigation;
+      }
+      
+      return characterNavigation;
+    
   }
   public static isGoingToAppNonLoginRoutes(url:string):boolean {
     if (

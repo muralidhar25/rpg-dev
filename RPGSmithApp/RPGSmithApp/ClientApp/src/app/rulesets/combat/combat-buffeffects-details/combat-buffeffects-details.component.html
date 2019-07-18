@@ -7,7 +7,7 @@
   <div class="modal-header" style="height:3rem">
     <h5 class="modal-title" id="dicePopupTitle">
       <span>{{title}}</span>
-      <span class="manage-ruleset-header crsr-pointer" *ngIf="recordName != '' || recordImage != ''" (click)="navigateDice(diceNav)">
+      <span class="manage-ruleset-header crsr-pointer" *ngIf="recordName != '' || recordImage != ''">
         <span>
           <img [src]="recordImage" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
         </span>
@@ -15,7 +15,7 @@
       </span>
     </h5>
     <a href="https://rpgsmith.com/help/#Dice" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
-    <button type="button" (click)="close(true)" class="btn icon icon-cross btn-simple-primary close"></button>
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
   </div>
   <div class="modal-body" *ngIf="!isLoading">
     <div class="form-row">
@@ -34,9 +34,9 @@
       <div class="col-12 col-md-12 col-sm-12">
         <fieldset class="form-group input-list input-list-wrap items">
           <ul class="input-list-items">
-            <li class="form-check col-md-6 col-sm-12" *ngFor="let item of itemsList | filter : searchText : 'name';let i = index;" popover="{{item.name}}" triggers="hover">
+            <li class="form-check col-md-6 col-sm-12" *ngFor="let item of itemsList | filter : searchText : 'name';let i = index;" popover="{{item.name}}" triggers="hover" container="body">
               <label class="form-check-label">
-                <span>
+                <span (click)="item.isOwnPlayer && goToDetail(item)">
                   <img [alt]="item.name" [src]="item.image"
                        onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
                   <em>{{item.name}}</em>
@@ -53,14 +53,31 @@
   <app-loader [isLoading]="isLoading"></app-loader>
 
 
-  <div class="modal-footer">
-    <div class="row">
-      <div class="col-md-6">
-        <button type="button" (click)="edit()" class="btn btn-accent">{{_view}}</button>
-      </div>
-      <div class="col-md-6">
-        <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
-      </div>
-    </div>
+  <div class="modal-footer justify-content-between invite-footer-popup">
+
+
+    <!--<div class="next-prev-btns" *ngIf="invitationList?.length > 1">
+    <span (click)="backward()"></span>
+    <span (click)="forward()"></span>
   </div>
+  <button type="button" [disabled]="isloading" class="btn btn-outline-accent small-btns" (click)="AnswerLater(invites.id)">Answer Later</button>
+  <div class="d-flex">
+    <button type="button" [disabled]="isloading" data-dismiss="modal" class="btn btn-simple-accent" (click)="Decline(index,invites.id)">Decline</button>
+    <button type="button" *ngIf="!NoCharacterSlotsAvailable" [disabled]="isloading" class="btn btn-accent" (click)="AcceptInvite(invites.id,invites)">Accept</button>
+    <button type="button" *ngIf="NoCharacterSlotsAvailable" [disabled]="isloading" class="btn btn-accent btn-buy-character " (click)="BuyCharacterSlot()">{{buyCharacterBtnText}}</button>
+  </div>-->
+
+    <button type="button" [disabled]="type==combatatntsType.MONSTER && !ListBuffAndEffects.length" (click)="edit()" class="btn btn-accent">{{_view}}</button>
+    <div class="d-flex">
+      <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+    </div>
+      <!--<div class="row">
+        <div class="col-md-6" *ngIf="!hideEditBtn">
+          <button type="button" [disabled]="type==combatatntsType.MONSTER && !ListBuffAndEffects.length" (click)="edit()" class="btn btn-accent">{{_view}}</button>
+        </div>
+        <div class="col-md-6">
+          <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+        </div>
+      </div>-->
+    </div>
 </form>

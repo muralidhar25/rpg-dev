@@ -1,5 +1,5 @@
 
-import { Component, Inject, ViewEncapsulation, OnInit, OnDestroy, ViewChildren, AfterViewInit, QueryList, ElementRef, HostListener  } from "@angular/core";
+import { Component, Inject, ViewEncapsulation, OnInit, OnDestroy, ViewChildren, AfterViewInit, QueryList, ElementRef, HostListener } from "@angular/core";
 import { Router, NavigationStart, NavigationEnd, ActivatedRoute } from '@angular/router';
 import * as $ from 'jquery';
 import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
@@ -51,11 +51,11 @@ import { ChatConnection } from "./core/models/chat.model";
 var alertify: any = require('./assets/scripts/alertify.js');
 
 @Component({
-    selector: "app-root",
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    encapsulation: ViewEncapsulation.None,
-    //host: { '(window:scroll)': 'track($event)' }
+  selector: "app-root",
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  //host: { '(window:scroll)': 'track($event)' }
 })
 
 export class AppComponent implements OnInit, AfterViewInit {
@@ -135,6 +135,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   ChatHalfScreen: boolean = false;
   ShowAds: boolean = true;
   isPlayerCharacter: boolean = false;
+  showCombatBtn: boolean = false;
+  combatUrl: any;
+  cId: number;
+
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
     if (window.pageYOffset > 0) {
@@ -162,7 +166,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     private appTitleService: AppTitleService, private authService: AuthService, private translationService: AppTranslationService, private sharedService: SharedService,
     public configurations: ConfigurationService, public router: Router, private modalService: BsModalService, private commonService: CommonService,
     private rulesetService: RulesetService, private userService: UserService, private charactersService: CharactersService, private localStorage: LocalStoreManager,
-    private app1Service: AppService1, private activatedroute: ActivatedRoute, public campaignService: CampaignService, private lootService: LootService ,
+    private app1Service: AppService1, private activatedroute: ActivatedRoute, public campaignService: CampaignService, private lootService: LootService,
     private http: HttpClient,
     //public googleAnalyticsEventsService: GoogleAnalyticsEventsService,
     @Inject(DOCUMENT) private document: Document
@@ -209,12 +213,12 @@ export class AppComponent implements OnInit, AfterViewInit {
             this.logoPath = '/rulesets/campaigns';
             //console.log("1.this.signalRAdapter = undefined")
             this.leaveChat();
-          //this.signalRAdapter = undefined;
+            //this.signalRAdapter = undefined;
           } else if (this.router.url.toUpperCase().indexOf('/CHARACTERS') > -1) {
             this.logoPath = '/rulesets/campaigns';
             //console.log("2.this.signalRAdapter = undefined")
             this.leaveChat();
-          //this.signalRAdapter = undefined;
+            //this.signalRAdapter = undefined;
           }
 
           if (this.router.url.toUpperCase().indexOf('/RULESET/') > -1 && this.router.url.toUpperCase().indexOf('CHARACTER/RULESET') == -1
@@ -233,46 +237,46 @@ export class AppComponent implements OnInit, AfterViewInit {
           //}
         }
         else {
-          
+
           if (this.router.url.toUpperCase() == ('/CHARACTER') || this.router.url.toUpperCase() == ('/CHARACTERS')
             || this.router.url.toUpperCase() == ('/RULESET') || this.router.url.toUpperCase() == ('/RULESETS')
           ) {
             //console.log("15.this.signalRAdapter = undefined")
             this.leaveChat();
-          //this.signalRAdapter = undefined;
+            //this.signalRAdapter = undefined;
           }
         }
-        
+
         //if (!this.haveCheckedNewInvitation) {
-          //console.log('check invite');
+        //console.log('check invite');
         this.invitationList = [];
         this.haveNewInvitation = false;
-          this.campaignService.CheckInvites<any>(user.id)
-            .subscribe(data => {
-              this.haveCheckedNewInvitation = true;
-              
-              if (data) {
-                if (data.length) {
-                  
-                  this.invitationList = data;
-                  this.haveNewInvitation = true;
-                  this.NotifyUserForPendingInvites();
-                }
-              }            
-            }, error => {
-              let Errors = Utilities.ErrorDetail("", error);
-              if (Errors.sessionExpire) {
-                this.authService.logout(true);
+        this.campaignService.CheckInvites<any>(user.id)
+          .subscribe(data => {
+            this.haveCheckedNewInvitation = true;
+
+            if (data) {
+              if (data.length) {
+
+                this.invitationList = data;
+                this.haveNewInvitation = true;
+                this.NotifyUserForPendingInvites();
               }
+            }
+          }, error => {
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              this.authService.logout(true);
+            }
           }, () => { });
         //}
-        
+
       }
       else { //is user!
         //console.log("4.this.signalRAdapter = undefined")
         this.leaveChat();
         this.ShowAds = false;
-          //this.signalRAdapter = undefined;
+        //this.signalRAdapter = undefined;
       }
 
       if (serviceData) {
@@ -285,30 +289,41 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
       this.haveLootItems = false;
       this.haveHandOutItems = false;
+      this.showCombatBtn = false;
+      this.combatUrl = '';
+      this.cId = 0;
       if (this.headers) {
         if (this.headers.headerLink == "character") {
+          this.cId = this.headers.headerId;
           this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
             .subscribe(data => {
               this.isPlayerCharacter = false;
               if (data) {
                 this.isPlayerCharacter = data.isPlayerCharacter;
                 if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
+                  if (this.router.url.toUpperCase().indexOf('/CHARACTER') > -1) {
+                    this.showCombatBtn = true;
+                  }
+
+                  // Player CharacterView Url
+                  this.combatUrl = ['/character/combatplayer', + this.cId];
+
                   if (!this.signalRAdapter && user) { //get player control 265
                     let model: any = user;
                     if (this.headers) {
-                      if (this.headers.headerId  && data.isPlayerCharacter) {
+                      if (this.headers.headerId && data.isPlayerCharacter) {
                         model.characterID = this.headers.headerId;
                         //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
                         //console.log("5.initializeSignalRAdapter")
                         this.initializeSignalRAdapter(user, this.http, this.storageManager, false);
                       }
                     }
-                  
+
                   }
                   else if (!data.isPlayerCharacter && !user.isGm) {
                     //console.log("6.this.signalRAdapter = undefined")
                     this.leaveChat();
-          //this.signalRAdapter = undefined;
+                    //this.signalRAdapter = undefined;
                   }
                   if (this.router.url.toUpperCase().indexOf('/CHARACTER') > -1) {
                     this.haveHandOutItems = true;
@@ -328,8 +343,8 @@ export class AppComponent implements OnInit, AfterViewInit {
                         }
                       }, () => { });
                   }
-                 
-                }                
+
+                }
               }
             }, error => {
               let Errors = Utilities.ErrorDetail("", error);
@@ -345,18 +360,18 @@ export class AppComponent implements OnInit, AfterViewInit {
         //console.log("rid", rid)
         this.rulesetService.getRulesetById<any>(rid)
           .subscribe(data => {
-            
+
             this.ruleset = data;
-          
+
             this.logoNavigation(this.router.url);
             this.setCharacterRedirection(this.router.url);
 
-           
+
             this.showCharacterSearch = ((this.router.url.toLowerCase() == '/character/dashboard'));
-            
+
             if (this.router.url.toUpperCase().indexOf('/CHARACTER/DASHBOARD/') > -1
-              || this.router.url.toUpperCase().indexOf('/CHARACTERS/DASHBOARD/') > -1             
-              ) {
+              || this.router.url.toUpperCase().indexOf('/CHARACTERS/DASHBOARD/') > -1
+            ) {
               this.showCharacterSearch = true;
               this.dashbaordUser = true;
             } else {
@@ -376,13 +391,13 @@ export class AppComponent implements OnInit, AfterViewInit {
               ||
               this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERABILITIES) > -1
             ) {
-              this.IsCharacterRecordScreen = this.headers.headerLink =='ruleset'?false:true;
+              this.IsCharacterRecordScreen = this.headers.headerLink == 'ruleset' ? false : true;
 
               this.IsCharacterRecordScreenActive = true;
               this.IsRulesetRecordScreenActive = false;
               //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
             }
-      
+
             else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/') > -1
               ||
               this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETITEMS) > -1
@@ -396,7 +411,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETSPELLS) > -1
               ||
               this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETABILITIES) > -1) {
-    
+
               this.IsCharacterRecordScreen = this.headers.headerLink == 'ruleset' ? false : true;
 
               this.IsCharacterRecordScreenActive = false;
@@ -404,7 +419,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
             }
             else {
-              
+
               this.IsCharacterRecordScreen = false;
 
               this.IsCharacterRecordScreenActive = false;
@@ -415,7 +430,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             this.SearchType = 0;
             this.SearchTypeText = '';
             this.isCharacterItem = 0;
-           
+
             if (this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1 ||
               this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY-DETAILS') > -1) {
               this.SearchType = SearchType.CHARACTERITEMS;
@@ -423,7 +438,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             }
             else if ((this.router.url.toUpperCase().indexOf('/RULESET/ITEM-MASTER/') > -1 ||
               this.router.url.toUpperCase().indexOf('/RULESET/ITEM-DETAILS') > -1 ||
-              this.router.url.toUpperCase().indexOf('/RULESET/BUNDLE-DETAILS') > -1)&& this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/') == -1) {
+              this.router.url.toUpperCase().indexOf('/RULESET/BUNDLE-DETAILS') > -1) && this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/') == -1) {
               this.SearchType = SearchType.RULESETITEMS;
               this.SearchTypeText = 'Items';
             }
@@ -435,7 +450,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             else if ((this.router.url.toUpperCase().indexOf('/RULESET/SPELL/') > -1 ||
               this.router.url.toUpperCase().indexOf('/RULESET/SPELL-DETAILS') > -1)
               && this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/') == -1) {
-  
+
               this.SearchType = SearchType.RULESETSPELLS;
               this.SearchTypeText = 'Spells';
             }
@@ -501,7 +516,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             });
       }
     });
-    
+
     this.app1Service.shouldUpdateLootMessageClicked().subscribe((serviceData) => {
       if (this.isPlayerCharacter) {
         this.playerLoot();
@@ -513,15 +528,15 @@ export class AppComponent implements OnInit, AfterViewInit {
             if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)) {
               this.router.navigate(['/ruleset/loot', this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)]);
             }
-            
-          } 
+
+          }
         }
       }
-      
+
       ////////this.searchCharRule = serviceData;
     });
     this.app1Service.shouldUpdateSearchText().subscribe((serviceData) => {
-      
+
       this.searchCharRule = serviceData;
     });
     this.app1Service.shouldupdateInvitationlist().subscribe((serviceData) => {
@@ -529,18 +544,18 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.invitationList = serviceData;
     });
     this.app1Service.shouldUpdateChatHalfScreen().subscribe((serviceData) => {
-      
-      this.ChatHalfScreen = serviceData?true:false;
+
+      this.ChatHalfScreen = serviceData ? true : false;
     });
     this.app1Service.shouldUpdateAddRemove().subscribe((serviceData) => {
-      
+
       if (serviceData) {
         this.ShowAds = false;
       }
       else {
         this.ShowAds = true;
       }
-      
+
     });
     this.storageManager.initialiseStorageSyncListener();
 
@@ -627,16 +642,16 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   private initialize() {
-   
+
     if (this.isUserLoggedIn) this.updateCount();
 
-    if (this.isUserLoggedIn) {      
+    if (this.isUserLoggedIn) {
       this.commonService.GetUserDetail();
       let _user = this.commonService.getUserDetails();
       if (_user != null) {
         this._username = _user.userName == undefined ? _user.fullName : _user.userName;
         this._profileImage = _user.profileImage;
-      }  
+      }
     }
 
   }
@@ -709,17 +724,17 @@ export class AppComponent implements OnInit, AfterViewInit {
     //    console.log('3333', e[0].urlAfterRedirects);
     //  });
     this.router.events.subscribe(event => {
-      
+
       if (event instanceof NavigationEnd) {
-        
-       this.previousUrl = this.currentUrl;
+
+        this.previousUrl = this.currentUrl;
         this.currentUrl = event.url;
-        
+
         //if (this.previousUrl == this.currentUrl) {
         // // console.log('here is tied');
         //  this.router.navigate(['/search/basic/' + this.search + '/' +this.searchCharRule])
         //}
-        
+
         if (this.previousUrl) {
           if (this.previousUrlList.length) {
             if (this.previousUrlList[this.previousUrlList.length - 1] != this.previousUrl) {
@@ -741,7 +756,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             if (this.authService.idToken) {
               this.authService.updateSocialLoginUserValuesFromToken(this.authService.idToken, user)
             }
-           
+
           }
           if (user.isGm) {
             //this.logoPath = '/rulesets/campaigns';
@@ -751,7 +766,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             //  }
             //}
             this.ShowAds = false;
-            if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)){
+            if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)) {
               this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
             }
             else {
@@ -761,14 +776,14 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.logoPath = '/rulesets/campaigns';
               //console.log("7.this.signalRAdapter = undefined")
               this.leaveChat();
-          //this.signalRAdapter = undefined;
+              //this.signalRAdapter = undefined;
             } else if ((<NavigationStart>event).url.toUpperCase().indexOf('/CHARACTERS') > -1) {
               this.logoPath = '/rulesets/campaigns';
               //console.log("8.this.signalRAdapter = undefined")
               this.leaveChat();
-          //this.signalRAdapter = undefined;
+              //this.signalRAdapter = undefined;
             }
-            
+
             if ((<NavigationStart>event).url.toUpperCase().indexOf('/RULESET/') > -1 && this.router.url.toUpperCase().indexOf('CHARACTER/RULESET') == -1
               && (<NavigationStart>event).url.toUpperCase().indexOf('/RULESET/ADD') == -1) {
               if (!this.signalRAdapter && user) {
@@ -785,48 +800,58 @@ export class AppComponent implements OnInit, AfterViewInit {
             //}
           }
           else {
-            
+
             if (
               (<NavigationStart>event).url.toUpperCase() == ('/CHARACTER') || (<NavigationStart>event).url.toUpperCase() == ('/CHARACTERS')
               || (<NavigationStart>event).url.toUpperCase() == ('/RULESET') || (<NavigationStart>event).url.toUpperCase() == ('/RULESETS')
             ) {
               //console.log("16.this.signalRAdapter = undefined")
               this.leaveChat();
-          //this.signalRAdapter = undefined;
+              //this.signalRAdapter = undefined;
             }
           }
           //if (!this.haveCheckedNewInvitation) {
-            //console.log('check invite');
+          //console.log('check invite');
           this.invitationList = [];
           this.haveNewInvitation = false;
-            this.campaignService.CheckInvites<any>(user.id)
-              .subscribe(data => {
-                this.haveCheckedNewInvitation = true;
-                
-                if (data) {
-                  if (data.length) {
-                    this.invitationList = data;
-                    this.haveNewInvitation = true;
-                    this.NotifyUserForPendingInvites();
-                  }
+          this.campaignService.CheckInvites<any>(user.id)
+            .subscribe(data => {
+              this.haveCheckedNewInvitation = true;
+
+              if (data) {
+                if (data.length) {
+                  this.invitationList = data;
+                  this.haveNewInvitation = true;
+                  this.NotifyUserForPendingInvites();
                 }
-              }, error => {
-                let Errors = Utilities.ErrorDetail("", error);
-                if (Errors.sessionExpire) {
-                  this.authService.logout(true);
-                }
-              }, () => { });
+              }
+            }, error => {
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
+            }, () => { });
           //}
           this.haveLootItems = false;
           this.haveHandOutItems = false;
+          this.showCombatBtn = false;
+          this.combatUrl = '';
+          this.cId = 0;
           if (this.headers) {
             if (this.headers.headerLink == "character") {
+              this.cId = this.headers.headerId;
               this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
                 .subscribe(data => {
                   this.isPlayerCharacter = false;
                   if (data) {
                     this.isPlayerCharacter = data.isPlayerCharacter
                     if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
+                      if (url.toUpperCase().indexOf('/CHARACTER') > -1) {
+                        this.showCombatBtn = true;
+                      }
+
+                      // Player CharacterView Url
+                      this.combatUrl = ['/character/combatplayer', + this.cId];
                       if (!this.signalRAdapter && user) {
                         let model: any = user;
                         if (this.headers) {
@@ -838,12 +863,12 @@ export class AppComponent implements OnInit, AfterViewInit {
                             this.initializeSignalRAdapter(user, this.http, this.storageManager, false);
                           }
                         }
-                        
+
                       }
                       else if (!data.isPlayerCharacter && !user.isGm) {
-                       //console.log("11.this.signalRAdapter = undefined")
+                        //console.log("11.this.signalRAdapter = undefined")
                         this.leaveChat();
-          //this.signalRAdapter = undefined;
+                        //this.signalRAdapter = undefined;
                       }
                       if ((<NavigationStart>event).url.toUpperCase().indexOf('/CHARACTER') > -1) {
                         this.haveHandOutItems = true;
@@ -864,7 +889,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                             }
                           }, () => { });
                       }
-                      
+
                     }
                   }
                 }, error => {
@@ -884,11 +909,11 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.ShowAds = false;
         }
         this.logoNavigation((<NavigationStart>event).url);
-        
+
         let url = (<NavigationStart>event).url;
-       
+
         this.setCharacterRedirection(url);
-        
+
 
         if (!Utilities.isGoingToAppNonLoginRoutes(url)) {
           if (!this.router.navigated) {
@@ -983,28 +1008,28 @@ export class AppComponent implements OnInit, AfterViewInit {
             }
           }
         }
-        
-        
+
+
         this.URLFlag = false;
-      
+
         this.showCharacterSearch = ((url.toLowerCase() == '/character/dashboard'));
-        
+
         if (url.toUpperCase().indexOf('/CHARACTER/DASHBOARD/') > -1
           || url.toUpperCase().indexOf('/CHARACTERS/DASHBOARD/') > -1
-          ) {
+        ) {
           this.showCharacterSearch = true;
           this.dashbaordUser = true;
         } else {
           this.showCharacterSearch = false;
         }
-           
-        
-       
+
+
+
         if (url !== url.toLowerCase()) {
-      
+
           this.router.navigateByUrl((<NavigationStart>event).url.toLowerCase());
         }
-        
+
         if (
           url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1
           ||
@@ -1023,7 +1048,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.IsCharacterRecordScreenActive = true;
           this.IsRulesetRecordScreenActive = false;
 
-          
+
           //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
         }
         else if (url.toUpperCase().indexOf('/CHARACTER/RULESET') > -1
@@ -1045,11 +1070,11 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.IsCharacterRecordScreenActive = false;
           this.IsRulesetRecordScreenActive = true;
 
-         
+
           //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
         }
         else {
-          
+
           this.IsCharacterRecordScreen = false;
 
           this.IsCharacterRecordScreenActive = false;
@@ -1057,10 +1082,10 @@ export class AppComponent implements OnInit, AfterViewInit {
           //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
         }
 
-        
+
         this.SearchType = 0;
         this.SearchTypeText = '';
-        
+
         if (url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1 ||
           url.toUpperCase().indexOf('/CHARACTER/INVENTORY-DETAILS') > -1) {
           this.SearchType = SearchType.CHARACTERITEMS;
@@ -1200,7 +1225,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   // navigating to search page
   navigateToSearch(searchType: number, searchTxt: string) {
 
-    
+
     if (!searchTxt) {
       searchTxt = '';
     }
@@ -1209,11 +1234,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   gotoDashboard() {
-    
+
     if (this.headers) {
-     
+
       if (this.IsCharacterRecordScreen && this.IsRulesetRecordScreenActive) {
-        
+
         if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEM') > -1) {
           this.router.navigate(['character/inventory', this.headers.headerId]);
         }
@@ -1230,9 +1255,9 @@ export class AppComponent implements OnInit, AfterViewInit {
           (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETITEMS) > -1)
         ) {
           //this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
-            this.router.navigate(['/search/basic/' + SearchType.CHARACTERITEMS + '/', this.searchCharRule])
+          this.router.navigate(['/search/basic/' + SearchType.CHARACTERITEMS + '/', this.searchCharRule])
           //);
-          
+
         }
         //else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS) > -1) {
         // this.router.navigate(['/character/ability', this.headers.headerId]);
@@ -1243,9 +1268,9 @@ export class AppComponent implements OnInit, AfterViewInit {
           (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETSPELLS) > -1)
         ) {
           //this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
-            this.router.navigate(['/search/basic/' + SearchType.CHARACTERSPELLS + '/', this.searchCharRule])
+          this.router.navigate(['/search/basic/' + SearchType.CHARACTERSPELLS + '/', this.searchCharRule])
           //);
-          
+
         }
         //else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERSPELLS) > -1) {
         //  this.router.navigate(['/character/ability', this.headers.headerId]);
@@ -1256,7 +1281,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETABILITIES) > -1)
         ) {
           //this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
-            this.router.navigate(['/search/basic/' + SearchType.CHARACTERABILITIES + '/', this.searchCharRule])
+          this.router.navigate(['/search/basic/' + SearchType.CHARACTERABILITIES + '/', this.searchCharRule])
           //);
         }
         //else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERABILITIES) > -1) {
@@ -1273,11 +1298,11 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   // changing search placeholder name dynamically
   setPlaceholderText(value: any) {
-    this.placeHolderText = value;    
+    this.placeHolderText = value;
   }
   setHeaderToNull(url) {
     this.headers = null;
-    
+
     this.router.navigate(url);
   }
   showDialog(dialog: AlertDialog) {
@@ -1430,9 +1455,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
   }
   gotoRulesetViewForCharacter() {
-    
+
     let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-    
+
     if (this.router.url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1) {
       this.router.navigate(['/character/ruleset/items', rid]);
     }
@@ -1445,32 +1470,32 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     else if (
       (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS) > -1)
-      
+
     ) {
       //this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
-        this.router.navigate(['/search/basic/' + SearchType.CHARACTERRULESETITEMS + '/', this.searchCharRule])
+      this.router.navigate(['/search/basic/' + SearchType.CHARACTERRULESETITEMS + '/', this.searchCharRule])
       //);
-      
+
     }
     else if (
       (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERSPELLS) > -1)
     ) {
       //this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
-        this.router.navigate(['/search/basic/' + SearchType.CHARACTERRULESETSPELLS + '/', this.searchCharRule])
+      this.router.navigate(['/search/basic/' + SearchType.CHARACTERRULESETSPELLS + '/', this.searchCharRule])
       //);
-      
+
     }
     else if (
       (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERABILITIES) > -1)
     ) {
       //this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
-        this.router.navigate(['/search/basic/' + SearchType.CHARACTERRULESETABILITIES + '/', this.searchCharRule])
+      this.router.navigate(['/search/basic/' + SearchType.CHARACTERRULESETABILITIES + '/', this.searchCharRule])
       //);
-      
+
     }
   }
   gotoRulesetView() {
-    
+
     let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
     if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS/') > -1) {
       this.router.navigate(['/ruleset/item-master', rid]);
@@ -1493,7 +1518,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user) {
       if (user.isGm) {
-        
+
         if (this.localStorage.getDataObject<User>(DBkeys.RULESET_ID)
         ) {
           this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
@@ -1514,7 +1539,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
     }
 
-  
+
   }
 
   setCharacterRedirection(url) {
@@ -1563,6 +1588,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.bsModalRef.content.invitationList = this.invitationList;
 
   }
+
   playerLoot() {
     this.bsModalRef = this.modalService.show(PlayerLootComponent, {
       class: 'modal-primary modal-md',
@@ -1580,7 +1606,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
     this.bsModalRef.content.rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
     //let _rulesetId = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
-   
+
     //this.router.navigate(['/character/handouts/', _rulesetId]);
   }
   onEventTriggered(event: string): void {
@@ -1597,22 +1623,22 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
       });
     }
-    
+
     //this.localStorage.localStorageSetItem(DBkeys.rulesetNameforChat, this.ruleset.ruleSetName);
     //if (ServiceUtil.IsCurrentlyRulesetOpen) {
     //  this.localStorage.localStorageSetItem(DBkeys.rulesetNameforChat, this.headers.headerName);
     //}
-    
+
   }
   leaveChat() {
     if (this.signalRAdapter) {
-      
+
       this.charactersService.leaveChat(this.signalRAdapter.userId)
         .subscribe(data => {
-       
-         
+
+
         }, error => {
-          
+
         });
       //this.signalRAdapter.LeaveChat();
       this.app1Service.updateChatRemoveIntervals(true);
@@ -1621,15 +1647,15 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.signalRAdapter = undefined;
   }
   NotifyUserForPendingInvites() {
-    
-      if (this.localStorage.getData(DBkeys.NotifyForPendingInvites)) {
-        if (this.localStorage.getData(DBkeys.NotifyForPendingInvites) == true) {
-          this.localStorage.saveSessionData(false, DBkeys.NotifyForPendingInvites)
-          this.alertService.showDialog(Utilities.notifyForPendingInvitesMessage,
-            DialogType.alert, () => {  });
-         
-        }
+
+    if (this.localStorage.getData(DBkeys.NotifyForPendingInvites)) {
+      if (this.localStorage.getData(DBkeys.NotifyForPendingInvites) == true) {
+        this.localStorage.saveSessionData(false, DBkeys.NotifyForPendingInvites)
+        this.alertService.showDialog(Utilities.notifyForPendingInvitesMessage,
+          DialogType.alert, () => { });
+
       }
-    
+    }
+
   }
 }

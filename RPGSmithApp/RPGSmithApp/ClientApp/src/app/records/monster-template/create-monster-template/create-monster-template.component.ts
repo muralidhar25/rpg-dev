@@ -119,83 +119,86 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      debugger
-      this.isCreatingFromMonsterScreen = this.bsModalRef.content.isCreatingFromMonsterScreen
-      this.fromDetail = this.bsModalRef.content.fromDetail == undefined ? false : this.bsModalRef.content.fromDetail;
-      this.title = this.bsModalRef.content.title;
       let _view = this.button = this.bsModalRef.content.button;
-      let _monsterTemplateVM = this.bsModalRef.content.monsterTemplateVM;
-      this.monsterTemplateFormModal = this.monsterTemplateService.MonsterTemplateModelData(_monsterTemplateVM, _view);
-      if (this.isCreatingFromMonsterScreen && this.monsterTemplateFormModal.view == VIEW.DUPLICATE && this.bsModalRef.content.isCreatingFromMonsterDetailScreen) {
-        this.monsterTemplateFormModal = this.monsterTemplateService.MonsterTemplateModelData(_monsterTemplateVM.monsterTemplate, _view);
-        //this.monsterTemplateFormModal.randomizationEngine = [];
-        //if (_monsterTemplateVM.monsterTemplate.monsterTemplateRandomizationEngine) {
-        //  this.monsterTemplateFormModal.randomizationEngine = _monsterTemplateVM.monsterTemplate.monsterTemplateRandomizationEngine.map((re) => {
-
-        //    var randomizationEngine: randomization = new randomization();
-        //    randomizationEngine.randomizationEngineId = re.randomizationEngine.randomizationEngineId;
-        //    randomizationEngine.percentage = re.randomizationEngine.percentage;
-        //    randomizationEngine.sortOrder = re.randomizationEngine.sortOrder;
-        //    randomizationEngine.itemMasterId = re.randomizationEngine.itemMasterId;
-        //    randomizationEngine.isOr = re.randomizationEngine.isOr;
-        //    randomizationEngine.isDeleted = re.randomizationEngine.isDeleted;
-        //    randomizationEngine.qty = re.randomizationEngine.qty;
-        //    randomizationEngine.selectedItem = [];
-            
-        //    randomizationEngine.selectedItem.push(
-        //      {
-        //        text: re.randomizationEngine.itemMaster?re.randomizationEngine.itemMaster.itemName:'',
-        //        itemId: re.itemMasterId,
-        //        image: re.randomizationEngine.itemMaster?re.randomizationEngine.itemMaster.itemImage:'',
-        //      }
-        //    );
-            
-
-        //    return randomizationEngine;
-
-            
-        //  });
-        //}
-        
-      }
-
-      this.selectedBuffAndEffects = this.monsterTemplateFormModal.monsterTemplateBuffAndEffects.map(x => { return x.buffAndEffect; });
-      this.selectedAbilities = this.monsterTemplateFormModal.monsterTemplateAbilities.map(x => { return x.buffAndEffect; });
-      this.selectedAssociateMonsterTemplates = this.monsterTemplateFormModal.monsterTemplateAssociateMonsterTemplates.map(x => { return x.buffAndEffect; });
-      this.selectedSpells = this.monsterTemplateFormModal.monsterTemplateSpells.map(x => { return x.buffAndEffect; });
-
-      try {
-        if (this.monsterTemplateFormModal.metatags !== '' && this.monsterTemplateFormModal.metatags !== undefined)
-          this.metatags = this.monsterTemplateFormModal.metatags.split(",");
-
-      } catch (err) { }
-      this.bingImageUrl = this.monsterTemplateFormModal.imageUrl;
-      if (!this.monsterTemplateFormModal.imageUrl) {
-        this.imageSearchService.getDefaultImage<any>('item')
+      let monsterId = this.bsModalRef.content.monsterVM
+      if (this.bsModalRef.content.isFromCombatScreen) {
+        this.isLoading = true;
+        this.monsterTemplateService.getMonsterById<any>(monsterId)
           .subscribe(data => {
-            this.defaultImageSelected = data.imageUrl.result
+            this.isLoading = false;
+            if (data) {
+              data.addToCombatTracker = true;
+              this.monsterTemplateFormModal = this.monsterTemplateService.MonsterTemplateModelData(data, _view);
+              if (this.isCreatingFromMonsterScreen && this.monsterTemplateFormModal.view == VIEW.DUPLICATE && this.bsModalRef.content.isCreatingFromMonsterDetailScreen) {
+                this.monsterTemplateFormModal = this.monsterTemplateService.MonsterTemplateModelData(data.monsterTemplate, _view);
+              }
+              this.preInitialize()
+            }
           }, error => {
-          },
-            () => { });
+            this.isLoading = false;
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
+            }
+          }, () => { });
+      } else {
+        this.preInitialize();
       }
-      if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
-        this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.monsterTemplateFormModal.ruleSetId;
-      }
-      else {
-        this._ruleSetId = this.monsterTemplateFormModal.ruleSetId;
-      }
-      this.rulesetService.getCustomDice(this._ruleSetId)
-        .subscribe(data => {
-          this.customDices = data
-
-        }, error => {
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        })
-      this.initialize();
     }, 0);
+  }
+
+  preInitialize() {
+    this.isCreatingFromMonsterScreen = this.bsModalRef.content.isCreatingFromMonsterScreen
+    this.fromDetail = this.bsModalRef.content.fromDetail == undefined ? false : this.bsModalRef.content.fromDetail;
+    this.title = this.bsModalRef.content.title;
+    let _view = this.button = this.bsModalRef.content.button;
+    if (!this.bsModalRef.content.isFromCombatScreen) {
+    let _monsterTemplateVM = this.bsModalRef.content.monsterTemplateVM;
+    this.monsterTemplateFormModal = this.monsterTemplateService.MonsterTemplateModelData(_monsterTemplateVM, _view);
+  
+    if (this.isCreatingFromMonsterScreen && this.monsterTemplateFormModal.view == VIEW.DUPLICATE && this.bsModalRef.content.isCreatingFromMonsterDetailScreen) {
+      this.monsterTemplateFormModal = this.monsterTemplateService.MonsterTemplateModelData(_monsterTemplateVM.monsterTemplate, _view);
+      
+
+    }
+    }
+    this.selectedBuffAndEffects = this.monsterTemplateFormModal.monsterTemplateBuffAndEffects.map(x => { return x.buffAndEffect; });
+    this.selectedAbilities = this.monsterTemplateFormModal.monsterTemplateAbilities.map(x => { return x.buffAndEffect; });
+    this.selectedAssociateMonsterTemplates = this.monsterTemplateFormModal.monsterTemplateAssociateMonsterTemplates.map(x => { return x.buffAndEffect; });
+    this.selectedSpells = this.monsterTemplateFormModal.monsterTemplateSpells.map(x => { return x.buffAndEffect; });
+
+    try {
+      if (this.monsterTemplateFormModal.metatags !== '' && this.monsterTemplateFormModal.metatags !== undefined)
+        this.metatags = this.monsterTemplateFormModal.metatags.split(",");
+
+    } catch (err) { }
+    this.bingImageUrl = this.monsterTemplateFormModal.imageUrl;
+    if (!this.monsterTemplateFormModal.imageUrl) {
+      this.imageSearchService.getDefaultImage<any>('item')
+        .subscribe(data => {
+          this.defaultImageSelected = data.imageUrl.result
+        }, error => {
+        },
+          () => { });
+    }
+    if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
+      this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.monsterTemplateFormModal.ruleSetId;
+    }
+    else {
+      this._ruleSetId = this.monsterTemplateFormModal.ruleSetId;
+    }
+    this.rulesetService.getCustomDice(this._ruleSetId)
+      .subscribe(data => {
+        this.customDices = data
+
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      })
+    this.initialize();
   }
 
   private initialize() {

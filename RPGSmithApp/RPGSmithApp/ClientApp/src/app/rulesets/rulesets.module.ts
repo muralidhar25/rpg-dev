@@ -31,14 +31,14 @@ import { CombatComponent } from "./combat/combat.component";
 import { AddCombatMonsterComponent } from "./combat/add-combat-monster/add-monster-combat.component";
 import { CombatVisibilityComponent } from "./combat/change-combat-visiblity/change-combat-visiblity.component";
 import { AddRemoveBuffEffectsComponent } from "./combat/combat-buffeffects-addremove/combat-buffeffects-addremove.component";
-import { CombatBuffeffectDetailsComponent } from "./combat/combat-buffeffects-details/combat-buffeffects-details.component";
 import { CombatInitiativeComponent } from "./combat/combat-initiative/combat-initiative.component";
-import { CombatPlayerViewComponent } from "./combat/combat-playerview/combat.playerview.component";
+
 import { DropItemsCombatMonsterComponent } from "./combat/drop-monstercombat-items/drop-items-monstercombat.component";
 import { RemoveCombatMonsterComponent } from "./combat/remove-combat-monster/remove-monster-combat.component";
 import { SaveCombatMonsterComponent } from "./combat/save-combat-monster/save-combat-monster.component";
 import { CombatHealthComponent } from "./combat/update-combat-health/update-combat-health.component";
 import { AccordionModule } from "ngx-bootstrap";
+import { NgCircleProgressModule } from "ng-circle-progress";
 
 //import { CampaignInviteComponent } from './campaign-invite/campaign-invite.component';
 
@@ -66,9 +66,7 @@ import { AccordionModule } from "ngx-bootstrap";
     AddCombatMonsterComponent,
     CombatVisibilityComponent,
     AddRemoveBuffEffectsComponent,
-    CombatBuffeffectDetailsComponent,
     CombatInitiativeComponent,
-    CombatPlayerViewComponent,
     DropItemsCombatMonsterComponent,
     RemoveCombatMonsterComponent,
     SaveCombatMonsterComponent,
@@ -81,7 +79,8 @@ import { AccordionModule } from "ngx-bootstrap";
     RecordsModule,
     TileModule,
     TileRulesetModule,
-    AccordionModule
+    AccordionModule,
+    NgCircleProgressModule
   ],
   providers: [
   ],
@@ -108,9 +107,7 @@ import { AccordionModule } from "ngx-bootstrap";
     AddCombatMonsterComponent,
     CombatVisibilityComponent,
     AddRemoveBuffEffectsComponent,
-    CombatBuffeffectDetailsComponent,
     CombatInitiativeComponent,
-    CombatPlayerViewComponent,
     DropItemsCombatMonsterComponent,
     RemoveCombatMonsterComponent,
     SaveCombatMonsterComponent,
@@ -135,7 +132,6 @@ import { AccordionModule } from "ngx-bootstrap";
     CombatHealthComponent,
     DropItemsCombatMonsterComponent,
     CombatVisibilityComponent,
-    CombatBuffeffectDetailsComponent,
     AddRemoveBuffEffectsComponent
     //CampaignInviteComponent
   ]

@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DAL.Core;
 using DAL.Models;
 using DAL.Models.SPModels;
 using DAL.Repositories.Interfaces;
@@ -22,16 +23,24 @@ namespace DAL.Services
         private readonly IConfiguration _configuration;
         private readonly IRepository<RuleSet> _repo;
         private readonly IMonsterTemplateService _monsterTemplateService;
+        private readonly ICharactersCharacterStatService _charactersCharacterStatServic;
+        private readonly ICharacterStatChoiceService _characterStatChoiceService;
+        private readonly IRuleSetService _ruleSetService;
+
         public CombatService(IRepository<RuleSet> repo, ApplicationDbContext context, IConfiguration configuration,
-            IMonsterTemplateService monsterTemplateService)
+            IMonsterTemplateService monsterTemplateService, ICharactersCharacterStatService charactersCharacterStatServic,
+            ICharacterStatChoiceService characterStatChoiceService, IRuleSetService ruleSetService)
         {
             _repo = repo;
             _context = context;
             _configuration = configuration;
             _monsterTemplateService = monsterTemplateService;
-        }
+            _charactersCharacterStatServic= charactersCharacterStatServic;
+            _characterStatChoiceService = characterStatChoiceService;
+            _ruleSetService = ruleSetService;
+    }
 
-        public async Task<Combat_ViewModel> GetCombatDetails(int CampaignId, string UserID)
+        public async Task<Combat_ViewModel> GetCombatDetails(int CampaignId, ApplicationUser user)
         {
             Combat_ViewModel combat = new Combat_ViewModel();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -48,7 +57,7 @@ namespace DAL.Services
 
                 // Add the parameters for the SelectCommand.
                 command.Parameters.AddWithValue("@CampaignId", CampaignId);
-                command.Parameters.AddWithValue("@UserID", UserID);
+                command.Parameters.AddWithValue("@UserID", user.Id);
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;
@@ -61,145 +70,357 @@ namespace DAL.Services
             {
                 command.Dispose();
                 connection.Close();
+                throw ex;
             }
-
-            if (ds.Tables[0].Rows.Count > 0)
+            try
             {
-                foreach (DataRow Row in ds.Tables[0].Rows)
+                if (ds.Tables[0].Rows.Count > 0)
                 {
-                    combat = new Combat_ViewModel()
+                    foreach (DataRow Row in ds.Tables[0].Rows)
                     {
-                        CampaignId = Row["CampaignId"] == DBNull.Value ? 0 : Convert.ToInt32(Row["CampaignId"]),
-                        Id = Row["Id"] == DBNull.Value ? 0 : Convert.ToInt32(Row["Id"]),
-                        IsStarted = Row["IsStarted"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsStarted"]),
-                        Round = Row["Round"] == DBNull.Value ? 0 : Convert.ToInt32(Row["Round"]),
-                        Campaign = new RuleSet(),
-                        CombatantList = new List<Combatant_ViewModel>(),
-                        CombatSettings = new CombatSetting(),     
-                        isCharacterAbilityEnabled= Row["IsAbilityEnabled"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsAbilityEnabled"]),
-                        isCharacterSpellEnabled= Row["IsSpellEnabled"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsSpellEnabled"]),
-                        isCharacterItemEnabled= Row["IsItemEnabled"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsItemEnabled"]),
-                        isCharacterBuffAndEffectEnabled = Row["IsBuffAndEffectEnabled"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsBuffAndEffectEnabled"]),
-
-                    };
-
-                    if (ds.Tables[1].Rows.Count > 0)
-                    {
-                        combat.Campaign = _repo.GetRuleset(ds.Tables[1]);
-                    }
-
-                    if (ds.Tables[2].Rows.Count > 0)
-                    {
-                        foreach (DataRow SettingRow in ds.Tables[2].Rows)
+                        combat = new Combat_ViewModel()
                         {
-                            combat.CombatSettings.AccessMonsterDetails =
-                                SettingRow["AccessMonsterDetails"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["AccessMonsterDetails"]);
+                            CampaignId = Row["CampaignId"] == DBNull.Value ? 0 : Convert.ToInt32(Row["CampaignId"]),
+                            Id = Row["Id"] == DBNull.Value ? 0 : Convert.ToInt32(Row["Id"]),
+                            IsStarted = Row["IsStarted"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsStarted"]),
+                            Round = Row["Round"] == DBNull.Value ? 0 : Convert.ToInt32(Row["Round"]),
+                            Campaign = new RuleSet(),
+                            CombatantList = new List<Combatant_ViewModel>(),
+                            CombatSettings = new CombatSetting(),
+                            isCharacterAbilityEnabled = Row["IsAbilityEnabled"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsAbilityEnabled"]),
+                            isCharacterSpellEnabled = Row["IsSpellEnabled"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsSpellEnabled"]),
+                            isCharacterItemEnabled = Row["IsItemEnabled"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsItemEnabled"]),
+                            isCharacterBuffAndEffectEnabled = Row["IsBuffAndEffectEnabled"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsBuffAndEffectEnabled"]),
+                            
 
-                            combat.CombatSettings.CharcterHealthStats =
-                                SettingRow["CharcterHealthStats"] == DBNull.Value ? string.Empty : SettingRow["CharcterHealthStats"].ToString();
+                        };
 
-                            combat.CombatSettings.CharcterXpStats =
-                                SettingRow["CharcterXpStats"] == DBNull.Value ? string.Empty : SettingRow["CharcterXpStats"].ToString();
-
-                            combat.CombatSettings.CampaignId = CampaignId;
-
-                            combat.CombatSettings.DisplayMonsterRollResultInChat =
-                                SettingRow["DisplayMonsterRollResultInChat"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["DisplayMonsterRollResultInChat"]);
-
-                            combat.CombatSettings.DropItemsForDeletedMonsters =
-                                SettingRow["DropItemsForDeletedMonsters"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["DropItemsForDeletedMonsters"]);
-
-                            combat.CombatSettings.GameRoundLength =
-                                SettingRow["GameRoundLength"] == DBNull.Value ? 0 : Convert.ToInt32(SettingRow["GameRoundLength"]);
-
-                            combat.CombatSettings.GroupInitFormula =
-                                SettingRow["GroupInitFormula"] == DBNull.Value ? string.Empty : SettingRow["GroupInitFormula"].ToString();
-
-                            combat.CombatSettings.GroupInitiative =
-                                SettingRow["GroupInitiative"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["GroupInitiative"]);
-
-                            combat.CombatSettings.MonsterVisibleByDefault =
-                                SettingRow["MonsterVisibleByDefault"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["MonsterVisibleByDefault"]);
-
-                            combat.CombatSettings.PcInitiativeFormula =
-                                SettingRow["PcInitiativeFormula"] == DBNull.Value ? string.Empty : SettingRow["PcInitiativeFormula"].ToString();
-
-                            combat.CombatSettings.RollInitiativeEveryRound =
-                                SettingRow["RollInitiativeEveryRound"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["RollInitiativeEveryRound"]);
-
-                            combat.CombatSettings.RollInitiativeForPlayer =
-                                SettingRow["RollInitiativeForPlayer"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["RollInitiativeForPlayer"]);
-
-                            combat.CombatSettings.SeeMonsterBuffEffects =
-                                SettingRow["SeeMonsterBuffEffects"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["SeeMonsterBuffEffects"]);
-
-                            combat.CombatSettings.SeeMonsterItems =
-                                SettingRow["SeeMonsterItems"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["SeeMonsterItems"]);
-
-                            combat.CombatSettings.ShowMonsterHealth =
-                               SettingRow["ShowMonsterHealth"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["ShowMonsterHealth"]);
-
-                            combat.CombatSettings.XPDistributionforDeletedMonster =
-                               SettingRow["XPDistributionforDeletedMonster"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["XPDistributionforDeletedMonster"]);
-
+                        if (ds.Tables[1].Rows.Count > 0)
+                        {
+                            combat.Campaign = _repo.GetRuleset(ds.Tables[1]);
                         }
-                    }
-                    if (ds.Tables[3].Rows.Count > 0)
-                    {
-                        int? nullInt = null;
-                        foreach (DataRow CombatantRow in ds.Tables[3].Rows)
+
+                        if (ds.Tables[2].Rows.Count > 0)
                         {
-                            Combatant_ViewModel combatant = new Combatant_ViewModel() {
-                                CharacterId= CombatantRow["CharacterId"] == DBNull.Value ? nullInt : Convert.ToInt32(CombatantRow["CharacterId"]),
-                                InitiativeCommand= CombatantRow["InitiativeCommand"] == DBNull.Value ? string.Empty : CombatantRow["InitiativeCommand"].ToString(),
-                                CombatId = CombatantRow["CombatId"] == DBNull.Value ? nullInt : Convert.ToInt32(CombatantRow["CombatId"]),
-                                MonsterId= CombatantRow["MonsterId"] == DBNull.Value ? nullInt : Convert.ToInt32(CombatantRow["MonsterId"]),
-                                SortOrder= CombatantRow["Id"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["Id"]),
-                                Type= CombatantRow["Type"] == DBNull.Value ? string.Empty : CombatantRow["Type"].ToString(),
-                                Id= CombatantRow["Id"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["Id"]),
-                                IsCurrentTurn= CombatantRow["IsCurrentTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsCurrentTurn"]),
-                                VisibilityColor= CombatantRow["VisibilityColor"] == DBNull.Value ? string.Empty : CombatantRow["VisibilityColor"].ToString(),
-                                VisibleToPc = CombatantRow["VisibleToPc"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["VisibleToPc"])
-                                //Character = new Character(),
-                                //Monster=new Monster()
-                            };
-                            if (combatant.CharacterId!=null && combatant.Type== CombatantTypeCharacter)
+                            foreach (DataRow SettingRow in ds.Tables[2].Rows)
                             {
-                                if (combatant.CharacterId>0)
-                                {
-                                    combatant.Character = new  Character() {
-                                        CharacterId= CombatantRow["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["CharacterId"]),
-                                        CharacterName= CombatantRow["C_CharacterName"] == DBNull.Value ? string.Empty : CombatantRow["C_CharacterName"].ToString(),
-                                        ImageUrl= CombatantRow["C_ImageUrl"] == DBNull.Value ? string.Empty : CombatantRow["C_ImageUrl"].ToString(),
-                                    };
-                                }
+                                combat.CombatSettings.AccessMonsterDetails =
+                                    SettingRow["AccessMonsterDetails"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["AccessMonsterDetails"]);
+
+                                combat.CombatSettings.CharcterHealthStats =
+                                    SettingRow["CharcterHealthStats"] == DBNull.Value ? string.Empty : SettingRow["CharcterHealthStats"].ToString();
+
+                                combat.CombatSettings.CharcterXpStats =
+                                    SettingRow["CharcterXpStats"] == DBNull.Value ? string.Empty : SettingRow["CharcterXpStats"].ToString();
+
+                                combat.CombatSettings.CampaignId = CampaignId;
+
+                                combat.CombatSettings.DisplayMonsterRollResultInChat =
+                                    SettingRow["DisplayMonsterRollResultInChat"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["DisplayMonsterRollResultInChat"]);
+
+                                combat.CombatSettings.DropItemsForDeletedMonsters =
+                                    SettingRow["DropItemsForDeletedMonsters"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["DropItemsForDeletedMonsters"]);
+
+                                combat.CombatSettings.GameRoundLength =
+                                    SettingRow["GameRoundLength"] == DBNull.Value ? 0 : Convert.ToInt32(SettingRow["GameRoundLength"]);
+
+                                combat.CombatSettings.GroupInitFormula =
+                                    SettingRow["GroupInitFormula"] == DBNull.Value ? string.Empty : SettingRow["GroupInitFormula"].ToString();
+
+                                combat.CombatSettings.GroupInitiative =
+                                    SettingRow["GroupInitiative"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["GroupInitiative"]);
+
+                                combat.CombatSettings.MonsterVisibleByDefault =
+                                    SettingRow["MonsterVisibleByDefault"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["MonsterVisibleByDefault"]);
+
+                                combat.CombatSettings.PcInitiativeFormula =
+                                    SettingRow["PcInitiativeFormula"] == DBNull.Value ? string.Empty : SettingRow["PcInitiativeFormula"].ToString();
+
+                                combat.CombatSettings.RollInitiativeEveryRound =
+                                    SettingRow["RollInitiativeEveryRound"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["RollInitiativeEveryRound"]);
+
+                                combat.CombatSettings.RollInitiativeForPlayer =
+                                    SettingRow["RollInitiativeForPlayer"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["RollInitiativeForPlayer"]);
+
+                                combat.CombatSettings.SeeMonsterBuffEffects =
+                                    SettingRow["SeeMonsterBuffEffects"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["SeeMonsterBuffEffects"]);
+
+                                combat.CombatSettings.SeeMonsterItems =
+                                    SettingRow["SeeMonsterItems"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["SeeMonsterItems"]);
+
+                                combat.CombatSettings.ShowMonsterHealth =
+                                   SettingRow["ShowMonsterHealth"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["ShowMonsterHealth"]);
+
+                                combat.CombatSettings.XPDistributionforDeletedMonster =
+                                   SettingRow["XPDistributionforDeletedMonster"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["XPDistributionforDeletedMonster"]);
+
                             }
-                            if (combatant.MonsterId != null && combatant.Type == CombatantTypeMonster)
+                        }
+                        if (ds.Tables[3].Rows.Count > 0)
+                        {
+                            int? nullInt = null;
+                            decimal? nulldecimal = null;
+                            foreach (DataRow CombatantRow in ds.Tables[3].Rows)
                             {
-                                if (combatant.MonsterId > 0)
+                                Combatant_ViewModel combatant = new Combatant_ViewModel()
                                 {
-                                    combatant.Monster = new Monster() {
-                                        MonsterId = CombatantRow["MonsterId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["MonsterId"]),
-                                        Name = CombatantRow["M_Name"] == DBNull.Value ? string.Empty : CombatantRow["M_Name"].ToString(),
-                                        ImageUrl = CombatantRow["M_ImageUrl"] == DBNull.Value ? string.Empty : CombatantRow["M_ImageUrl"].ToString(),
-                                        HealthCurrent= CombatantRow["M_HealthCurrent"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_HealthCurrent"]),
-                                        HealthMax= CombatantRow["M_HealthMax"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_HealthMax"]),
-                                        Command= CombatantRow["M_Command"] == DBNull.Value ? null : CombatantRow["M_Command"].ToString(),
-                                        CommandName= CombatantRow["M_CommandName"] == DBNull.Value ? null : CombatantRow["M_CommandName"].ToString()
-                                    };
+                                    CharacterId = CombatantRow["CharacterId"] == DBNull.Value ? nullInt : Convert.ToInt32(CombatantRow["CharacterId"]),
+                                    InitiativeCommand = CombatantRow["InitiativeCommand"] == DBNull.Value ? string.Empty : CombatantRow["InitiativeCommand"].ToString(),
+                                    CombatId = CombatantRow["CombatId"] == DBNull.Value ? nullInt : Convert.ToInt32(CombatantRow["CombatId"]),
+                                    MonsterId = CombatantRow["MonsterId"] == DBNull.Value ? nullInt : Convert.ToInt32(CombatantRow["MonsterId"]),
+                                    SortOrder = CombatantRow["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["SortOrder"]),
+                                    Type = CombatantRow["Type"] == DBNull.Value ? string.Empty : CombatantRow["Type"].ToString(),
+                                    Id = CombatantRow["Id"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["Id"]),
+                                    IsCurrentTurn = CombatantRow["IsCurrentTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsCurrentTurn"]),
+                                    VisibilityColor = CombatantRow["VisibilityColor"] == DBNull.Value ? string.Empty : CombatantRow["VisibilityColor"].ToString(),
+                                    VisibleToPc = CombatantRow["VisibleToPc"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["VisibleToPc"]),
+                                    Initiative= CombatantRow["Initiative"] == DBNull.Value ? nulldecimal : Convert.ToDecimal(CombatantRow["Initiative"]),
+                                    TargetId = CombatantRow["TargetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["TargetId"]),
+                                    TargetType = CombatantRow["TargetType"] == DBNull.Value ? string.Empty : CombatantRow["TargetType"].ToString(),
+                                    DelayTurn= CombatantRow["DelayTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["DelayTurn"])
+                                    //Character = new Character(),
+                                    //Monster=new Monster()
+
+                                };
+                                if (combatant.CharacterId != null && combatant.Type == CombatantTypeCharacter)
+                                {
+                                    if (combatant.CharacterId > 0)
+                                    {
+
+                                        combatant.Character = new Character_Combat_VM_ForCharCharStats()
+                                        {
+                                            CharacterId = CombatantRow["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["CharacterId"]),
+                                            CharacterName = CombatantRow["C_CharacterName"] == DBNull.Value ? string.Empty : CombatantRow["C_CharacterName"].ToString(),
+                                            ImageUrl = CombatantRow["C_ImageUrl"] == DBNull.Value ? string.Empty : CombatantRow["C_ImageUrl"].ToString(),
+                                            Items = new List<Item>(),
+                                            CharacterAbilities = new List<CharacterAbility>(),
+                                            CharacterSpells = new List<CharacterSpell>(),
+                                            CharacterBuffAndEffects = new List<CharacterBuffAndEffect>(),
+                                            CharacterDescription= CombatantRow["C_Description"] == DBNull.Value ? string.Empty : CombatantRow["C_Description"].ToString(),
+                                            DiceRollViewModel = new DiceRollViewModel(),
+                                            RuleSetId= CombatantRow["C_RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["C_RuleSetId"]),
+                                            InventoryWeight= CombatantRow["C_InventoryWeight"] == DBNull.Value ? 0 : Convert.ToDecimal(CombatantRow["C_InventoryWeight"])
+
+                                        };
+                                        /////Getting CharacterCharacterStats Starts////////////////////////////////////////////////////////////////////////////
+                                        try
+                                        {
+                                            DiceRollModel diceRollModel = await _ruleSetService.GetDiceRollModelAsync((int)combatant.Character.RuleSetId, combatant.Character.CharacterId, user);
+                                            DiceRollViewModel diceRollViewModel = new DiceRollViewModel()
+                                            {
+                                                Character = diceRollModel.Character == null ? new Character() : diceRollModel.Character,
+                                                CharacterCommands = diceRollModel.CharacterCommands == null ? new List<CharacterCommand>() : diceRollModel.CharacterCommands,
+                                                RulesetCommands = diceRollModel.RulesetCommands == null ? new List<RulesetCommand>() : diceRollModel.RulesetCommands,
+                                                CharactersCharacterStats = diceRollModel.CharactersCharacterStats == null ? new List<CharactersCharacterStat>() : diceRollModel.CharactersCharacterStats,// Utilities.GetCharCharStatViewModelList( diceRollModel.CharactersCharacterStats,_characterStatChoiceService),
+                                                CustomDices = utility.MapCustomDice(diceRollModel.CustomDices),
+                                                DefaultDices = diceRollModel.DefaultDices,
+                                                DiceTrays = diceRollModel.DiceTrays,
+                                                IsGmAccessingPlayerCharacter = diceRollModel.IsGmAccessingPlayerCharacter,
+                                                RuleSet = diceRollModel.RuleSet,
+                                            };
+                                            combatant.Character.DiceRollViewModel = diceRollViewModel;
+
+
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            
+                                        }
+                                        /////Getting CharacterCharacterStats ends//////////////////////////////////////////////////////////////////////////////
+                                        
+
+
+                                        if (ds.Tables[4].Rows.Count > 0)
+                                        {
+                                            foreach (DataRow CharItemRow in ds.Tables[4].Rows)
+                                            {
+                                                int CurrentRunningCharacterId = CharItemRow["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["CharacterId"]);
+                                                if (CurrentRunningCharacterId == combatant.Character.CharacterId)
+                                                {
+                                                    Item i = new Item();
+                                                    i.ItemId = CharItemRow["ItemId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["ItemId"].ToString());
+                                                    i.Name = CharItemRow["Name"] == DBNull.Value ? null : CharItemRow["Name"].ToString();
+                                                    i.ItemImage = CharItemRow["ItemImage"] == DBNull.Value ? null : CharItemRow["ItemImage"].ToString();
+                                                    i.CharacterId = CurrentRunningCharacterId;
+                                                    combatant.Character.Items.Add(i);
+                                                }
+                                            }
+                                        }
+                                        if (ds.Tables[5].Rows.Count > 0)
+                                        {
+                                            foreach (DataRow CharItemRow in ds.Tables[5].Rows)
+                                            {
+                                                int CurrentRunningCharacterId = CharItemRow["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["CharacterId"]);
+                                                if (CurrentRunningCharacterId == combatant.Character.CharacterId)
+                                                {
+                                                    CharacterAbility i = new CharacterAbility();
+                                                    i.CharacterAbilityId = CharItemRow["CharacterAbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["CharacterAbilityId"].ToString());
+                                                    i.Ability = new Ability()
+                                                    {AbilityId= CharItemRow["AbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["AbilityId"]),
+                                                        Name = CharItemRow["Name"] == DBNull.Value ? null : CharItemRow["Name"].ToString(),
+                                                        ImageUrl = CharItemRow["ImageUrl"] == DBNull.Value ? null : CharItemRow["ImageUrl"].ToString()
+                                                    };
+                                                    i.CharacterId = combatant.CharacterId;
+                                                    combatant.Character.CharacterAbilities.Add(i);
+                                                }
+                                            }
+                                        }
+                                        if (ds.Tables[6].Rows.Count > 0)
+                                        {
+                                            foreach (DataRow CharItemRow in ds.Tables[6].Rows)
+                                            {
+                                                int CurrentRunningCharacterId = CharItemRow["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["CharacterId"]);
+                                                if (CurrentRunningCharacterId == combatant.Character.CharacterId)
+                                                {
+                                                    CharacterSpell i = new CharacterSpell();
+                                                    i.CharacterSpellId = CharItemRow["CharacterSpellId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["CharacterSpellId"].ToString());
+                                                    i.Spell = new Spell()
+                                                    {
+                                                        SpellId = CharItemRow["SpellId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["SpellId"]),
+                                                        Name = CharItemRow["Name"] == DBNull.Value ? null : CharItemRow["Name"].ToString(),
+                                                        ImageUrl = CharItemRow["ImageUrl"] == DBNull.Value ? null : CharItemRow["ImageUrl"].ToString()
+                                                    };
+                                                    i.CharacterId = combatant.CharacterId;
+                                                    combatant.Character.CharacterSpells.Add(i);
+                                                }
+                                            }
+                                        }
+                                        if (ds.Tables[7].Rows.Count > 0)
+                                        {
+                                            foreach (DataRow CharItemRow in ds.Tables[7].Rows)
+                                            {
+                                                int CurrentRunningCharacterId = CharItemRow["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["CharacterId"]);
+                                                if (CurrentRunningCharacterId == combatant.Character.CharacterId)
+                                                {
+                                                    CharacterBuffAndEffect i = new CharacterBuffAndEffect();
+                                                    i.CharacterBuffAandEffectId = CharItemRow["CharacterBuffAandEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["CharacterBuffAandEffectId"].ToString());
+                                                    i.BuffAndEffect = new BuffAndEffect()
+                                                    {
+                                                        BuffAndEffectId = CharItemRow["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["BuffAndEffectId"]),
+                                                        Name = CharItemRow["Name"] == DBNull.Value ? null : CharItemRow["Name"].ToString(),
+                                                        ImageUrl = CharItemRow["ImageUrl"] == DBNull.Value ? null : CharItemRow["ImageUrl"].ToString()
+                                                    };
+                                                    i.CharacterId = combatant.CharacterId;
+                                                    combatant.Character.CharacterBuffAndEffects.Add(i);
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
+                                if (combatant.MonsterId != null && combatant.Type == CombatantTypeMonster)
+                                {
+                                    if (combatant.MonsterId > 0)
+                                    {
+                                        combatant.Monster = new Monster()
+                                        {
+                                            MonsterId = CombatantRow["MonsterId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["MonsterId"]),
+                                            Name = CombatantRow["M_Name"] == DBNull.Value ? string.Empty : CombatantRow["M_Name"].ToString(),
+                                            ImageUrl = CombatantRow["M_ImageUrl"] == DBNull.Value ? string.Empty : CombatantRow["M_ImageUrl"].ToString(),
+                                            HealthCurrent = CombatantRow["M_HealthCurrent"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_HealthCurrent"]),
+                                            HealthMax = CombatantRow["M_HealthMax"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_HealthMax"]),
+                                            Command = CombatantRow["M_Command"] == DBNull.Value ? null : CombatantRow["M_Command"].ToString(),
+                                            CommandName = CombatantRow["M_CommandName"] == DBNull.Value ? null : CombatantRow["M_CommandName"].ToString(),
+                                            ItemMasterMonsterItems = new List<ItemMasterMonsterItem>(),
+                                            MonsterAbilitys = new List<MonsterAbility>(),
+                                            MonsterSpells = new List<MonsterSpell>(),
+                                            MonsterBuffAndEffects = new List<MonsterBuffAndEffect>(),
+                                            Description= CombatantRow["M_Description"] == DBNull.Value ? null : CombatantRow["M_Description"].ToString(),
+                                            Stats= CombatantRow["M_Stats"] == DBNull.Value ? null : CombatantRow["M_Stats"].ToString(),
+                                        };
+                                        if (ds.Tables[8].Rows.Count > 0)
+                                        {
+                                            foreach (DataRow MonsItemRow in ds.Tables[8].Rows)
+                                            {
+                                                int CurrentRunningMonsterId = MonsItemRow["MonsterId"] == DBNull.Value ? 0 : Convert.ToInt32(MonsItemRow["MonsterId"]);
+                                                if (CurrentRunningMonsterId == combatant.Monster.MonsterId)
+                                                {
+                                                    ItemMasterMonsterItem i = new ItemMasterMonsterItem();
+                                                    i.ItemId = MonsItemRow["ItemId"] == DBNull.Value ? 0 : Convert.ToInt32(MonsItemRow["ItemId"].ToString());
+                                                    i.ItemName = MonsItemRow["ItemName"] == DBNull.Value ? null : MonsItemRow["ItemName"].ToString();
+                                                    i.ItemImage = MonsItemRow["ItemImage"] == DBNull.Value ? null : MonsItemRow["ItemImage"].ToString();
+                                                    i.MonsterId = CurrentRunningMonsterId;
+                                                    combatant.Monster.ItemMasterMonsterItems.Add(i);
+                                                }
+                                            }
+                                        }
+                                        if (ds.Tables[9].Rows.Count > 0)
+                                        {
+                                            foreach (DataRow MonsItemRow in ds.Tables[9].Rows)
+                                            {
+                                                int CurrentRunningMonsterId = MonsItemRow["MonsterId"] == DBNull.Value ? 0 : Convert.ToInt32(MonsItemRow["MonsterId"]);
+                                                if (CurrentRunningMonsterId == combatant.Monster.MonsterId)
+                                                {
+                                                    MonsterAbility i = new MonsterAbility();
+                                                    i.AbilityId = MonsItemRow["AbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(MonsItemRow["AbilityId"].ToString());
+                                                    i.Ability = new Ability()
+                                                    {
+                                                        Name = MonsItemRow["Name"] == DBNull.Value ? null : MonsItemRow["Name"].ToString(),
+                                                        ImageUrl = MonsItemRow["ImageUrl"] == DBNull.Value ? null : MonsItemRow["ImageUrl"].ToString()
+
+                                                    };
+                                                    i.MonsterId = CurrentRunningMonsterId;
+                                                    combatant.Monster.MonsterAbilitys.Add(i);
+                                                }
+                                            }
+                                        }
+                                        if (ds.Tables[10].Rows.Count > 0)
+                                        {
+                                            foreach (DataRow MonsItemRow in ds.Tables[10].Rows)
+                                            {
+                                                int CurrentRunningMonsterId = MonsItemRow["MonsterId"] == DBNull.Value ? 0 : Convert.ToInt32(MonsItemRow["MonsterId"]);
+                                                if (CurrentRunningMonsterId == combatant.Monster.MonsterId)
+                                                {
+                                                    MonsterSpell i = new MonsterSpell();
+                                                    i.SpellId = MonsItemRow["SpellId"] == DBNull.Value ? 0 : Convert.ToInt32(MonsItemRow["SpellId"].ToString());
+                                                    i.Spell = new Spell()
+                                                    {
+                                                        Name = MonsItemRow["Name"] == DBNull.Value ? null : MonsItemRow["Name"].ToString(),
+                                                        ImageUrl = MonsItemRow["ImageUrl"] == DBNull.Value ? null : MonsItemRow["ImageUrl"].ToString()
+
+                                                    };
+                                                    i.MonsterId = CurrentRunningMonsterId;
+                                                    combatant.Monster.MonsterSpells.Add(i);
+                                                }
+                                            }
+                                        }
+                                        if (ds.Tables[11].Rows.Count > 0)
+                                        {
+                                            foreach (DataRow MonsItemRow in ds.Tables[11].Rows)
+                                            {
+                                                int CurrentRunningMonsterId = MonsItemRow["MonsterId"] == DBNull.Value ? 0 : Convert.ToInt32(MonsItemRow["MonsterId"]);
+                                                if (CurrentRunningMonsterId == combatant.Monster.MonsterId)
+                                                {
+                                                    MonsterBuffAndEffect i = new MonsterBuffAndEffect();
+                                                    i.BuffAndEffectId = MonsItemRow["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(MonsItemRow["BuffAndEffectId"].ToString());
+                                                    i.BuffAndEffect = new BuffAndEffect()
+                                                    {
+                                                        Name = MonsItemRow["Name"] == DBNull.Value ? null : MonsItemRow["Name"].ToString(),
+                                                        ImageUrl = MonsItemRow["ImageUrl"] == DBNull.Value ? null : MonsItemRow["ImageUrl"].ToString()
+
+                                                    };
+                                                    i.MonsterId = CurrentRunningMonsterId;
+                                                    combatant.Monster.MonsterBuffAndEffects.Add(i);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                combat.CombatantList.Add(combatant);
                             }
-                            combat.CombatantList.Add(combatant);
                         }
                     }
                 }
+
             }
-            return combat;
+            catch (Exception ex)
+            {
+                throw ex;
+            } return combat;
 
 
         }
         public async Task<CombatSetting> UpdateSettings(CombatSetting model) {
-            var combatsetting = _context.CombatSettings.Where(x => x.CampaignId == model.CampaignId).FirstOrDefault();
+            var combatsetting = _context.CombatSettings.Where(x => x.CampaignId == model.CampaignId && x.IsDeleted!=true).FirstOrDefault();
             if (combatsetting!=null)
             {
                 combatsetting.AccessMonsterDetails=model.AccessMonsterDetails;
@@ -288,7 +509,63 @@ namespace DAL.Services
         public List<Monster> GetCombat_MonstersList(int campaignId) {
             return _context.Monsters.Where(x => x.RuleSetId == campaignId && x.IsDeleted != true && x.AddToCombatTracker == true).ToList();
         }
-        public void RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster) {
+        public void RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster, bool isFromCombatScreen,int CampaignId, int XP_Ruleset_CharacterStatID)
+        {
+
+            if (isFromCombatScreen)
+            {
+                var CombatSettings = _context.CombatSettings.Where(x => x.CampaignId == CampaignId && x.IsDeleted != true).FirstOrDefault();
+                if (CombatSettings!=null)
+                {
+                    if (CombatSettings.XPDistributionforDeletedMonster)
+                    {                                               
+                        var charactersCharacterStats = _context.CharactersCharacterStats.Where(x => x.CharacterStatId == XP_Ruleset_CharacterStatID && x.IsDeleted != true).Include(x => x.CharacterStat).ToList();
+
+                        var monsters = _context.Monsters.Where(x => monsterIds.Select(mi => mi.MonsterId).Contains(x.MonsterId)).ToList();
+                        foreach (var m in monsters)
+                        {
+                            if (m.XPValue>0 && charactersCharacterStats.Count>0)
+                            {
+                               // decimal decimalNumberToAdd = m.XPValue / charactersCharacterStats.Count;
+                                double decimalNumberToAdd = (double)m.XPValue / (double)charactersCharacterStats.Count;
+                                int NumberToAdd = Convert.ToInt32(decimalNumberToAdd);
+
+                                foreach (var CC_Stat in charactersCharacterStats)
+                                {
+                                    switch (CC_Stat.CharacterStat.CharacterStatTypeId)
+                                    {
+                                        case (int)STAT_TYPE.Number:
+                                            CC_Stat.Number = CC_Stat.Number == null ? 0 : CC_Stat.Number;
+                                            CC_Stat.Number = CC_Stat.Number + NumberToAdd;
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                                _context.SaveChanges();
+                            }
+                            
+                        }
+                    }
+
+                    if (CombatSettings.DropItemsForDeletedMonsters)
+                    {
+                        foreach (var m in monsterIds)
+                        {
+                            var monsterItems = _context.ItemMasterMonsterItems.Where(x => x.MonsterId == m.MonsterId && x.IsDeleted != true)
+                                .Select(x=> new ItemMasterForMonsterTemplate() {
+                                    ItemId=x.ItemId,
+                                    ItemMasterId=x.ItemMasterId,
+                                })
+                                .ToList();
+                            _monsterTemplateService.DropItemsToLoot(monsterItems, m.MonsterId);
+                        }
+                    }
+                    
+                }
+                
+               
+            }
 
             List<CommonID> monsterIdList = monsterIds.Select(o => new CommonID()
             {               
@@ -386,7 +663,10 @@ namespace DAL.Services
                         Id = CombatantRow["Id"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["Id"]),
                         IsCurrentTurn = CombatantRow["IsCurrentTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsCurrentTurn"]),
                         VisibilityColor = CombatantRow["VisibilityColor"] == DBNull.Value ? string.Empty : CombatantRow["VisibilityColor"].ToString(),
-                        VisibleToPc = CombatantRow["VisibleToPc"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["VisibleToPc"])
+                        VisibleToPc = CombatantRow["VisibleToPc"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["VisibleToPc"]),
+                        TargetId = CombatantRow["TargetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["TargetId"]),
+                        TargetType = CombatantRow["TargetType"] == DBNull.Value ? string.Empty : CombatantRow["TargetType"].ToString(),
+                        DelayTurn = CombatantRow["DelayTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["DelayTurn"])
                         //Character = new Character(),
                         //Monster=new Monster()
                     };
@@ -394,7 +674,7 @@ namespace DAL.Services
                     {
                         if (combatant.CharacterId > 0)
                         {
-                            combatant.Character = new Character()
+                            combatant.Character = new Character_Combat_VM_ForCharCharStats()
                             {
                                 CharacterId = CombatantRow["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["CharacterId"]),
                                 CharacterName = CombatantRow["C_CharacterName"] == DBNull.Value ? string.Empty : CombatantRow["C_CharacterName"].ToString(),
@@ -477,10 +757,114 @@ namespace DAL.Services
                 throw ex;
             }
         }
+        public void SaveVisibilityDetails(Combatant_ViewModel model)
+        {
+            var combatant = _context.CombatantLists.Where(x => x.Id == model.Id).FirstOrDefault();
+            if (combatant!=null)
+            {
+                combatant.VisibilityColor =model.VisibilityColor;
+                combatant.VisibleToPc = model.VisibleToPc;
+                _context.SaveChanges();
+            }
+        }
+        public void SaveMonsterHealth(Monster model) {
+            var monster = _context.Monsters.Where(x => x.MonsterId == model.MonsterId).FirstOrDefault();
+            if (monster!=null)
+            {
+                monster.HealthCurrent = model.HealthCurrent;
+                monster.HealthMax = model.HealthMax;
+                _context.SaveChanges();
+            }
+        }
+        public void SaveCharacterHealth(CharacterHealthModel model) {
+            var characterCharacterStat = _context.CharactersCharacterStats.Where(x => x.CharactersCharacterStatId == model.healthStatId && x.IsDeleted != true).Include(x=>x.CharacterStat).FirstOrDefault();
+            if (characterCharacterStat!=null)
+            {
+                if (characterCharacterStat.CharacterStat.CharacterStatTypeId== (int)STAT_TYPE.Combo)
+                {
+                    characterCharacterStat.DefaultValue = model.healthCurrent;
+                }
+                if (characterCharacterStat.CharacterStat.CharacterStatTypeId == (int)STAT_TYPE.Number)
+                {
+                    characterCharacterStat.Number = model.healthCurrent;
+                }
+                if (characterCharacterStat.CharacterStat.CharacterStatTypeId == (int)STAT_TYPE.ValueSubValue)
+                {
+                    characterCharacterStat.Value = model.healthCurrent;
+                    characterCharacterStat.SubValue = model.healthMax;
+                }
+                if (characterCharacterStat.CharacterStat.CharacterStatTypeId == (int)STAT_TYPE.CurrentMax)
+                {
+                    characterCharacterStat.Current = model.healthCurrent;
+                    characterCharacterStat.Maximum = model.healthMax;
+                }
+                _context.SaveChanges();
+            }
+        }
+        public void saveTarget(Combatant_ViewModel model) {
+            var combatant = _context.CombatantLists.Where(x => x.Id == model.Id).FirstOrDefault();
+            if (combatant != null)
+            {
+                combatant.TargetId = model.TargetId;
+                combatant.TargetType = model.TargetType;
+                _context.SaveChanges();
+            }
+        }
         private static int Getindex(int index)
         {
             index = index + 1;
             return index;
+        }
+        public List<BuffAndEffect> SP_GetMonsterAssociateBEs(int monsterID, int rulesetId)
+        {
+            List<BuffAndEffect> res  = new List<BuffAndEffect>();
+            
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("Monster_GetAssociateRecords", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@MonsterID", monsterID);
+                command.Parameters.AddWithValue("@RulesetID", rulesetId);
+
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+
+            if (ds.Tables[3].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[3].Rows)
+                {
+                    BuffAndEffect i = new BuffAndEffect();
+                    i.BuffAndEffectId = row["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["BuffAndEffectId"]);
+                    i.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"]);
+                    i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    i.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+
+                    res.Add(i);/////////
+                }
+
+            }
+            
+            return res;
         }
     }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter} from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import 'rxjs/add/operator/switchMap';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
@@ -25,57 +25,54 @@ import { MonsterTemplate } from '../../../core/models/view-models/monster-templa
 export class AddRemoveAssociateBuffAndEffectsComponent implements OnInit {
 
   public event: EventEmitter<any> = new EventEmitter();
-    isLoading = false;
-    title: string;
-    _view: string;
-    searchText: string;
+  isLoading = false;
+  title: string;
+  _view: string;
+  searchText: string;
   itemsList: any[] = [];
   selectedItems: any[] = [];
   monster: MonsterTemplate;
   recordName: string = '';
   recordImage: string = '';
   allSelected: boolean = false;
-    constructor(
-        private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
-        public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
-        private sharedService: SharedService, private commonService: CommonService,
-      private itemsService: ItemsService,
-      private monsterTemplateService: MonsterTemplateService
-    ) {
-        
-    }
+  constructor(
+    private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
+    public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
+    private sharedService: SharedService, private commonService: CommonService,
+    private itemsService: ItemsService,
+    private monsterTemplateService: MonsterTemplateService
+  ) {
 
-    ngOnInit() {
-        setTimeout(() => {
-            this.title = this.bsModalRef.content.title;
-            this._view = this.bsModalRef.content.button;
-          this.recordName = this.bsModalRef.content.recordName;
-          this.recordImage = this.bsModalRef.content.recordImage;            
-          this.monster = this.bsModalRef.content.monster;
+  }
 
-          
-         
-          this.selectedItems = this.bsModalRef.content.selectedItems;
-          this.itemsList = this.bsModalRef.content.itemsList;
-          
-           this.initialize();
-        }, 0);
-    }
+  ngOnInit() {
+    setTimeout(() => {
+      this.title = this.bsModalRef.content.title;
+      this._view = this.bsModalRef.content.button;
+      this.recordName = this.bsModalRef.content.recordName;
+      this.recordImage = this.bsModalRef.content.recordImage;
+      this.monster = this.bsModalRef.content.monster;
+      this.selectedItems = this.bsModalRef.content.selectedItems;
+      this.itemsList = this.bsModalRef.content.itemsList;
+
+      this.initialize();
+    }, 0);
+  }
 
   private initialize() {
     this.itemsList.map((x) => {
       x.selected = false;
-      
+
       if (this.selectedItems.filter(a => a.buffAndEffectId == x.buffAndEffectId).length) {
         x.selected = true;
-       
+
       }
     })
-        
-    }
+
+  }
 
   setItem(event: any, item: any) {
-    item.selected = event.target.checked;    
+    item.selected = event.target.checked;
 
     if (this.itemsList.filter(x => x.selected).length === this.itemsList.length) {
       this.allSelected = true;
@@ -86,50 +83,46 @@ export class AddRemoveAssociateBuffAndEffectsComponent implements OnInit {
   }
 
   submitForm() {
-    
-    debugger
-    
-      this.isLoading = true;
+    this.isLoading = true;
     let _msg = 'Updating associated Buffs & Effects ...';
     this.alertService.startLoadingMessage("", _msg);
-    debugger
-    this.monsterTemplateService.AddRemoveMonsterRecords(this.itemsList, this.monster.monsterId,'B')
-        .subscribe(data => {
-          //if (data) {
-            this.event.emit(data);
-          //}
-          this.alertService.stopLoadingMessage();
-          this.isLoading = false;
-          this.close();
-          this.sharedService.updateMonsterList(true);
-        }, error => {
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          this.alertService.showMessage(error, "", MessageSeverity.error);
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        }, () => { });
-   
-    
+    this.monsterTemplateService.AddRemoveMonsterRecords(this.itemsList, this.monster.monsterId, 'B')
+      .subscribe(data => {
+        //if (data) {
+        this.event.emit(data);
+        //}
+        this.sharedService.updateMonsterBuffEffect({ monsterId: this.monster.monsterId, monsterBuffAndEffects: this.itemsList.filter(x => x.selected) });
+        this.alertService.stopLoadingMessage();
+        this.isLoading = false;
+        this.close();
+        this.sharedService.updateMonsterList(true);
+      }, error => {
+        this.isLoading = false;
+        this.alertService.stopLoadingMessage();
+        this.alertService.showMessage(error, "", MessageSeverity.error);
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      }, () => { });
+
+
   }
 
-  
-    
 
 
-    close() {
-        this.bsModalRef.hide();
+
+
+  close() {
+    this.bsModalRef.hide();
   }
 
   selectDeselectFilters(isSelectAll) {
     this.allSelected = isSelectAll;
-    
-    debugger
+
     if (this.allSelected) {
       this.itemsList.map((item) => {
-        item.selected = true;       
+        item.selected = true;
       })
     }
     else {

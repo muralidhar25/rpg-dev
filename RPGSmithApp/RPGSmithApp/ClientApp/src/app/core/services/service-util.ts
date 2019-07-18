@@ -12,6 +12,7 @@ import { CharactersCharacterStat } from '../models/view-models/characters-charac
 import { HeaderValues } from '../models/headers.model';
 import { DBkeys } from '../common/db-keys';
 import { LocalStoreManager } from '../common/local-store-manager.service';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class ServiceUtil {
@@ -782,5 +783,348 @@ export class ServiceUtil {
 
     return Items;
 
+  }
+
+  public static commandStatTypeInCommand(cmd: string, statdetails:any): Observable<any> {
+    try {
+      let data = [];
+
+      cmd = DiceService.hideTextCommandSquareBraces(cmd);
+      cmd.split(/\[(.*?)\]/g).map((rec) => {
+        let id = ''; let flag = false; let type = 0; let statType = 0;
+        let isValue = false; let isSubValue = false; let isCurrent = false; let isMax = false;
+
+        if (rec.toUpperCase().split('(V)').length > 1) { isValue = true; }
+        if (rec.toUpperCase().split('(S)').length > 1) { isSubValue = true; }
+        if (rec.toUpperCase().split('(C)').length > 1) { isCurrent = true; }
+        if (rec.toUpperCase().split('(M)').length > 1) { isMax = true; }
+
+        if (isValue || isSubValue || isCurrent || isMax) {
+          if (isValue) {
+            id = rec.toUpperCase().split('(V)')[0].replace('[', '').replace(']', '');
+            type = 3
+          }
+          else if (isSubValue) {
+            id = rec.toUpperCase().split('(S)')[0].replace('[', '').replace(']', '');
+            type = 4
+          }
+          else if (isCurrent) {
+            id = rec.toUpperCase().split('(C)')[0].replace('[', '').replace(']', '');
+            type = 1
+          }
+          else if (isMax) {
+            id = rec.toUpperCase().split('(M)')[0].replace('[', '').replace(']', '');
+            type = 2
+          }
+
+        }
+        else {
+          id = rec.replace('[', '').replace(']', '');
+          type = 0
+        }
+        statdetails.charactersCharacterStat.map((q) => {
+          if (id == q.characterStat.statName.toUpperCase()) {
+            if (q.characterStat.characterStatTypeId == STAT_TYPE.Command) {
+              data.push(q);
+            }
+          }
+        })
+      });
+      cmd = DiceService.showTextCommandSquareBraces(cmd);
+      return Observable.of(data);
+
+    } catch (err) { }
+  }
+  public static commandStatInCommand(command: string, statdetails:any): Observable<string> {
+    try {
+      ////////////////////////////////
+      let calculationString: string = command.toUpperCase();
+      let inventoreyWeight = statdetails.character.inventoryWeight;
+      let finalCalcString: string = '';
+      calculationString.split("[INVENTORYWEIGHT]").map((item) => {
+        calculationString = calculationString.replace("[INVENTORYWEIGHT]", " " + inventoreyWeight + " ");
+      })
+      let IDs: any[] = [];
+      finalCalcString = calculationString;
+      if (calculationString) {
+
+        calculationString = DiceService.hideTextCommandSquareBraces(calculationString);
+        calculationString.split(/\[(.*?)\]/g).map((rec) => {
+
+          let id = ''; let flag = false; let type = 0; let statType = 0;
+          let isValue = false; let isSubValue = false; let isCurrent = false; let isMax = false;
+
+          if (rec.toUpperCase().split('(V)').length > 1) { isValue = true; }
+          if (rec.toUpperCase().split('(S)').length > 1) { isSubValue = true; }
+          if (rec.toUpperCase().split('(C)').length > 1) { isCurrent = true; }
+          if (rec.toUpperCase().split('(M)').length > 1) { isMax = true; }
+
+          if (isValue || isSubValue || isCurrent || isMax) {
+            if (isValue) {
+              id = rec.toUpperCase().split('(V)')[0].replace('[', '').replace(']', '');
+              type = 3
+            }
+            else if (isSubValue) {
+              id = rec.toUpperCase().split('(S)')[0].replace('[', '').replace(']', '');
+              type = 4
+            }
+            else if (isCurrent) {
+              id = rec.toUpperCase().split('(C)')[0].replace('[', '').replace(']', '');
+              type = 1
+            }
+            else if (isMax) {
+              id = rec.toUpperCase().split('(M)')[0].replace('[', '').replace(']', '');
+              type = 2
+            }
+
+          }
+          else {
+            id = rec.replace('[', '').replace(']', '');
+            type = 0
+          }
+          statdetails.charactersCharacterStat.map((q) => {
+            if (id == q.characterStat.statName.toUpperCase()) {
+              flag = (id == q.characterStat.statName.toUpperCase());
+              statType = q.characterStat.characterStatTypeId
+            }
+          })
+          if (flag) {
+            IDs.push({ id: id, type: isNaN(type) ? 0 : type, originaltext: "[" + rec + "]", statType: statType })
+          }
+          else if (+id == -1) {
+            IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
+          }
+        })
+
+        calculationString = DiceService.showTextCommandSquareBraces(calculationString);
+
+
+        IDs.map((rec) => {
+          statdetails.charactersCharacterStat.map((stat) => {
+            if (rec.id == stat.characterStat.statName.toUpperCase()) {
+              let num = 0; let isCMD = false;
+              let whileCMD = "";
+              switch (rec.statType) {
+                case STAT_TYPE.Command:
+                  num = -1;
+                  whileCMD = stat.command;
+
+                  do {
+                    isCMD = false;
+                    this.commandStatTypeInCommand(whileCMD, statdetails).subscribe((x) => {
+                      //this.cmd = x.originaltext
+                      x.map((val, i) => {
+                        statdetails.charactersCharacterStat.map((_stat, j) => {
+                          if (rec.id == val.characterStat.statName.toUpperCase()) { console.log('error referenced: ', rec.id) }
+                          else if (val.characterStat.statName.toUpperCase() == _stat.characterStat.statName.toUpperCase()) {
+                            switch (val.characterStat.characterStatTypeId) {
+                              case STAT_TYPE.Command:
+                                isCMD = true;
+                                whileCMD = whileCMD.replace('[' + val.characterStat.statName.toUpperCase() + ']', _stat.command);
+                                break;
+                              default:
+                                isCMD = false;
+                                //cmd = _preCMD.replace(val.originaltext, stat.command);
+                                break;
+                            }
+                          }
+                        })
+                      })
+                      //calculationString = calculationString.replace(x.originaltext, num.toString());
+                    });
+                  }
+                  while (isCMD);
+
+                  if (!isCMD) {
+                    num == -2; isCMD = true;
+                    whileCMD = whileCMD.replace(rec.originaltext, stat.command);
+                  }
+                  //while (temp != 0);
+                  break;
+                default:
+                  break;
+              }
+              if (num == -1 && isCMD) {
+                calculationString = calculationString.replace(rec.originaltext, whileCMD);
+              }
+              else if (num == -2 && isCMD) {
+                calculationString = calculationString.replace(rec.originaltext, whileCMD);
+              }
+              ////else if (num)
+              ////calculationString = calculationString.replace(rec.originaltext, num.toString());
+              //// else
+              //// calculationString = calculationString.replace(rec.originaltext, '0');
+              //CalcString = CalcString.replace(rec.originaltext, "(" + num + ")");
+            }
+
+          });
+          finalCalcString = calculationString;
+        });
+        return Observable.of(finalCalcString);
+      }
+      return Observable.of(finalCalcString);
+    } catch (err) { }
+  }
+  public static getFinalCalculationString(inputString: string, statdetails: any, charactersCharacterStats: any, character:any):string {
+        //////////////////////////////////////////////
+        try {
+          
+            ////////////////////////////////
+          let calculationString: string = inputString;
+            let inventoreyWeight = statdetails.character.inventoryWeight;
+            let finalCalcString: string = '';
+          try {
+            this.commandStatInCommand(calculationString, statdetails).subscribe(res => {
+                calculationString = res;
+              });
+            } catch (err) { }
+
+
+            calculationString.split("[INVENTORYWEIGHT]").map((item) => {
+              calculationString = calculationString.replace("[INVENTORYWEIGHT]", " " + inventoreyWeight + " ");
+            })
+            let IDs: any[] = [];
+            finalCalcString = calculationString;
+            if (calculationString) {
+              calculationString = DiceService.hideTextCommandSquareBraces(calculationString);
+              calculationString.split(/\[(.*?)\]/g).map((rec) => {
+
+                let id = ''; let flag = false; let type = 0; let statType = 0;
+                let isValue = false; let isSubValue = false; let isCurrent = false; let isMax = false;
+
+                if (rec.toUpperCase().split('(V)').length > 1) { isValue = true; }
+                if (rec.toUpperCase().split('(S)').length > 1) { isSubValue = true; }
+                if (rec.toUpperCase().split('(C)').length > 1) { isCurrent = true; }
+                if (rec.toUpperCase().split('(M)').length > 1) { isMax = true; }
+
+                if (isValue || isSubValue || isCurrent || isMax) {
+                  if (isValue) {
+                    id = rec.toUpperCase().split('(V)')[0].replace('[', '').replace(']', '');
+                    type = 3
+                  }
+                  else if (isSubValue) {
+                    id = rec.toUpperCase().split('(S)')[0].replace('[', '').replace(']', '');
+                    type = 4
+                  }
+                  else if (isCurrent) {
+                    id = rec.toUpperCase().split('(C)')[0].replace('[', '').replace(']', '');
+                    type = 1
+                  }
+                  else if (isMax) {
+                    id = rec.toUpperCase().split('(M)')[0].replace('[', '').replace(']', '');
+                    type = 2
+                  }
+
+                }
+                else {
+                  id = rec.replace('[', '').replace(']', '');
+                  type = 0
+                }
+                statdetails.charactersCharacterStat.map((q) => {
+                  if (!flag) {
+                    flag = (id == q.characterStat.statName.toUpperCase());
+                    statType = q.characterStat.characterStatTypeId
+                  }
+                })
+                if (flag) {
+                  IDs.push({ id: id, type: isNaN(type) ? 0 : type, originaltext: "[" + rec + "]", statType: statType })
+                }
+                else if (+id == -1) {
+                  IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
+                }
+              })
+
+
+              calculationString = DiceService.showTextCommandSquareBraces(calculationString);
+
+              IDs.map((rec) => {
+                statdetails.charactersCharacterStat.map((stat) => {
+                  if (rec.id == stat.characterStat.statName.toUpperCase()) {
+                    let num: string = '0';
+                    //let conditionResult = "";
+                    switch (rec.statType) {
+                      case 3: //Number
+                        num = stat.number
+                        break;
+                      case 5: //Current Max
+                        if (rec.type == 1)//current
+                        {
+                          num = stat.current
+                        }
+                        else if (rec.type == 2)//Max
+                        {
+                          num = stat.maximum
+                        }
+                        break;
+                      case 7: //Val Sub-Val
+                        if (rec.type == 3)//value
+                        {
+                          num = stat.value
+                        }
+                        else if (rec.type == 4)//sub-value
+                        {
+                          num = stat.subValue
+                        }
+                        break;
+                      case 12: //Calculation
+                        num = stat.calculationResult
+                        break;
+                      case STAT_TYPE.Combo: //Combo
+                        num = stat.defaultValue
+                        break;
+                      case STAT_TYPE.Choice: //Combo
+                        num = stat.defaultValue
+                        break;
+                      case STAT_TYPE.Condition:
+                        let characterStatConditionsfilter = charactersCharacterStats.filter((stat) => stat.characterStat.statName.toUpperCase() == rec.id);
+                        let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
+                        let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], character, charactersCharacterStats);
+                        //console.log(result);
+                        //let result = this.conditionStat(characterStatConditions);
+                        //console.log(result);
+                        //if (isNaN(+result)) {
+                        //  num = 0;
+                        //} else {
+                        //  num = +result;
+                        //}
+                        // num = result;
+                        num = ServiceUtil.GetCalcuationsResults(result, statdetails, charactersCharacterStats, character);
+
+                        break;
+                      default:
+                        break;
+                    }
+                    //calculationString = calculationString.replace(rec.originaltext, conditionResult);
+                    //console.log('calc',calculationString);
+                    if (num) {
+
+                      calculationString = calculationString.replace(rec.originaltext, num.toString());
+                    }
+
+                    else {
+                      calculationString = calculationString.replace(rec.originaltext, '0');
+                    }
+
+                    //CalcString = CalcString.replace(rec.originaltext, "(" + num + ")");
+                  }
+
+                });
+
+                finalCalcString = calculationString;
+
+              });
+            }
+            ////////////////////////////////                    
+            finalCalcString = finalCalcString.replace(/  +/g, ' ');
+            finalCalcString = finalCalcString.replace(/\+0/g, '').replace(/\-0/g, '').replace(/\*0/g, '').replace(/\/0/g, '');
+            finalCalcString = finalCalcString.replace(/\+ 0/g, '').replace(/\- 0/g, '').replace(/\* 0/g, '').replace(/\/ 0/g, '');
+            return finalCalcString;
+          
+        } catch (err) {
+
+          return '0';
+        }
+
+        //////////////////////////////////////////////
   }
 }

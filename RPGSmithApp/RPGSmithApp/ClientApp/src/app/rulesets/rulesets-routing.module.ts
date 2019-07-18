@@ -28,7 +28,6 @@ import { MonsterBundleDetailsComponent } from "../records/monster-template/monst
 import { LootDetailsComponent } from "../records/loot/loot-details/loot-details.component";
 import { MonsterItemDetailsComponent } from "../records/monster/monster-item-details/monster-item-details.component";
 import { CombatComponent } from "./combat/combat.component";
-import { CombatPlayerViewComponent } from "./combat/combat-playerview/combat.playerview.component";
 
 
 const routes: Routes = [
@@ -61,7 +60,6 @@ const routes: Routes = [
   { path: "ruleset-details/:id", component: RulesetDetailsComponent , data: { title: "RulesetDetails" } },
   { path: "loot/:id", component: LootComponent, data: { title: "Loot" } },
   { path: "combat/:id", component: CombatComponent, data: { title: "combat" } },
-  { path: "combatplayer/:id", component: CombatPlayerViewComponent, data: { title: "combatplayer" } },
 ];
 
 @NgModule({

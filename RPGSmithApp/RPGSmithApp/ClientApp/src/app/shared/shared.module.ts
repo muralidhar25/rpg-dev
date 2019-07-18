@@ -72,6 +72,7 @@ import { InputSingleResultCommandComponent } from "./input-single-result-command
 import { CreateBuffAndEffectsComponent } from "./create-buff-and-effects/create-buff-and-effects.component";
 import { AddBuffAndEffectComponent } from "./buffs-and-effects/add-buffs-and-effects/add-buffs-and-effects.component";
 import { AssignBuffAndEffectComponent } from "./buffs-and-effects/assign-buffs-and-effects/assign-buffs-and-effects.component";
+import { CombatBuffeffectDetailsComponent } from "../rulesets/combat/combat-buffeffects-details/combat-buffeffects-details.component";
   
 @NgModule({
   declarations: [
@@ -106,10 +107,13 @@ import { AssignBuffAndEffectComponent } from "./buffs-and-effects/assign-buffs-a
     HandoutFileViewComponent,
     HandoutuploadComponent,
     HandoutNewFolderComponent,
-    HandoutRenameComponent, CampaignInviteComponent,
+    HandoutRenameComponent,
+    CampaignInviteComponent,
     InputSingleResultCommandComponent,
     CreateBuffAndEffectsComponent,
-    AddBuffAndEffectComponent, AssignBuffAndEffectComponent
+    AddBuffAndEffectComponent,
+    AssignBuffAndEffectComponent,
+    CombatBuffeffectDetailsComponent
   ],
   imports: [
     CommonModule,
@@ -201,10 +205,13 @@ import { AssignBuffAndEffectComponent } from "./buffs-and-effects/assign-buffs-a
     HandoutFileViewComponent,
     HandoutuploadComponent,
     HandoutNewFolderComponent,
-    HandoutRenameComponent, CampaignInviteComponent,
+    HandoutRenameComponent,
+    CampaignInviteComponent,
     InputSingleResultCommandComponent,
     CreateBuffAndEffectsComponent,
-    AddBuffAndEffectComponent, AssignBuffAndEffectComponent
+    AddBuffAndEffectComponent,
+    AssignBuffAndEffectComponent,
+    CombatBuffeffectDetailsComponent
   ],
   entryComponents: [
     AccountSettingsComponent,
@@ -236,9 +243,12 @@ import { AssignBuffAndEffectComponent } from "./buffs-and-effects/assign-buffs-a
     HandoutuploadComponent,
     HandoutViewComponent,
     HandoutNewFolderComponent,
-    HandoutRenameComponent, CampaignInviteComponent,
+    HandoutRenameComponent,
+    CampaignInviteComponent,
     CreateBuffAndEffectsComponent,
-    AddBuffAndEffectComponent, AssignBuffAndEffectComponent
+    AddBuffAndEffectComponent,
+    AssignBuffAndEffectComponent,
+    CombatBuffeffectDetailsComponent
   ]
 })
 export class SharedModule {}

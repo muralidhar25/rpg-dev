@@ -37,6 +37,11 @@ export class SharedService {
   private diceSaveResult = new Subject<any>();
   
   
+  private MonsterBuffEffect = new Subject<any>();
+  private CharacterBuffEffect = new Subject<any>();
+  private updateMonstersInCombat = new Subject<any>();  
+
+
   updateManageOpen(accountSetting: any) {
     this.accountSetting.next(accountSetting);
   }
@@ -329,5 +334,30 @@ export class SharedService {
   shouldUpdateDiceSaveResults(): Observable<any> {
     return this.diceSaveResult.asObservable();
   }
+
+  updateMonsterBuffEffect(combatantList: any) {
+    this.MonsterBuffEffect.next(combatantList);
+  }
+
+  shouldUpdateMonsterBuffEffect(): Observable<any> {
+    return this.MonsterBuffEffect.asObservable();
+  }
+
+  updateCharacterBuffEffect(combatantList: any) {
+    this.CharacterBuffEffect.next(combatantList);
+  }
+
+  shouldUpdateCharacterBuffEffect(): Observable<any> {
+    return this.CharacterBuffEffect.asObservable();
+  }
+
+  updateCombatantListForAddDeleteMonsters(combatantList: any) {
+    this.updateMonstersInCombat.next(combatantList);
+  }
+
+  shouldUpdateCombatantListForAddDeleteMonsters(): Observable<any> {
+    return this.updateMonstersInCombat.asObservable();
+  }
+  
 }
 

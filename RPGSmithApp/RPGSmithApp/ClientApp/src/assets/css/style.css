@@ -1124,7 +1124,11 @@
   content: "\e96b";
 }
 
-.icon-BnE:before, .icon-Monster:before, .icon-MonsterTemp:before, .icon-Combat:before, .icon-MarkTarget:before, .icon-Health:before, .icon-Settings:before, .icon-Assign:before, .icon-DefLayouts:before {
+.icon-Delay:before {
+  content: "\e973";
+}
+
+.icon-BnE:before, .icon-Monster:before, .icon-MonsterTemp:before, .icon-Combat:before, .icon-MarkTarget:before, .icon-Health:before, .icon-Settings:before, .icon-Assign:before, .icon-DefLayouts:before, .icon-Delay:before {
   font-family: 'icomoon' !important;
   speak: none;
   font-style: normal;
@@ -9381,4 +9385,26 @@ input-type-number::-webkit-outer-spin-button {
 
 .smallPopup {
   max-width: 178px !important;
+}
+
+.card-header {
+  padding: 0.4rem 1.25rem;
+  background-color: #2d6893 !important;
+  color: #fff;
+}
+
+.accordion-toggle[aria-expanded="true"]:before {
+  content: "\f106";
+  font: normal normal normal 30px/1 FontAwesome;
+  float: right;
+}
+
+.accordion-toggle[aria-expanded="false"]:before {
+  content: '\f107';
+  font: normal normal normal 30px/1 FontAwesome;
+  float: right;
+}
+
+.accordion-toggle div {
+  padding-top: 5px !important;
 }

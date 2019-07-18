@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using DAL.Models.SPModels;
 using DAL.Services;
 using DAL.Services.RulesetTileServices;
 using RPGSmithApp.Helpers.CoreRuleset;
@@ -205,14 +206,14 @@ namespace RPGSmithApp.Helpers
                 // ImageFileName = FileStreamResult(new MemoryStream(ruleSet.RuleSetImage), "image/jpeg")
                 //RuleSetImage = ruleSet.RuleSetImage
                 RecordCount = _coreRulesetService.GetRulesetRecordCounts(ruleSet.RuleSetId),
-                customDices = Utilities.MapCustomDice(_ruleSetService.GetCustomDice(ruleSet.RuleSetId)),
+                customDices = utility.MapCustomDice(_ruleSetService.GetCustomDice(ruleSet.RuleSetId)),
                 diceTray = _ruleSetService.GetDiceTray(ruleSet.RuleSetId),
                 defaultDices = _ruleSetService.GetDefaultDices(),
                 CoreRulesetAdminImageUrl = _ruleSetService.GetUserImageFromRulesetID(ruleSet.RuleSetId),
                 Price = ruleSet.Price,
                 IsAlreadyPurchased = _ruleSetService.IsRulesetAlreadyPurchased(ruleSet.RuleSetId, UserID),
                 IsDicePublicRoll = ruleSet.IsDicePublicRoll,
-                IsCombatStarted = _ruleSetService.IsCombatStarted(ruleSet.RuleSetId)
+                IsCombatStarted = _ruleSetService.IsCombatStarted(ruleSet.RuleSetId),
                 LastCommand=ruleSet.LastCommand,
                 LastCommandResult=ruleSet.LastCommandResult,
                 LastCommandTotal=ruleSet.LastCommandTotal,

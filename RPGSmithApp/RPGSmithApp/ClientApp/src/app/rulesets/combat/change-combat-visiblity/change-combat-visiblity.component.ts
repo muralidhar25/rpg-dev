@@ -135,21 +135,23 @@ export class CombatVisibilityComponent implements OnInit {
     this.event.emit(color);
     this.sharedService.updateMonsterVisibility(this.visibility);
     this.currentItem.visibleToPc = this.visibility;
-    this.currentItem.visibilityColor = color;
+    this.currentItem.visibilityColor = color.bodyBgColor;
     this.saveVisibilityDetails(this.currentItem);
     this.close();
   }
 
   ShowVisibility() {
-    console.log("ShowVisibility");
     this.visibility = true;
+    this.close();
 
   }
   HideVisibility() {
-    console.log("HideVisibility");
     this.visibility = false;
+    this.close();
   }
   close() {
+    this.currentItem.visibleToPc = this.visibility;
+    this.saveVisibilityDetails(this.currentItem);
     this.bsModalRef.hide();
   }
 
