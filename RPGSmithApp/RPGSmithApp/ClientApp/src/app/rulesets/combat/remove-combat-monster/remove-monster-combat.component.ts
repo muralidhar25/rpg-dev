@@ -168,7 +168,7 @@ export class RemoveCombatMonsterComponent  implements OnInit {
       let monstersToRemove = this.selectedItemsList.map((m) => {
         return { monsterId: m.recordId };
       });
-      this.combatService.removeMonsters(monstersToRemove, this.isChecked, true, this.rulesetId)
+      this.combatService.removeMonsters(monstersToRemove, this.isChecked, true, this.rulesetId,0)
         .subscribe(data => {
           this.alertService.stopLoadingMessage();
           this.isLoading = false;

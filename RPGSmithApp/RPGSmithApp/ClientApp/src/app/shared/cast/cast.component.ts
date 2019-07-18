@@ -31,7 +31,8 @@ export class CastComponent implements OnInit {
   ruleset: Ruleset = new Ruleset();
     buttonText: string;
     recordType: string;
-    recordId: string;
+  recordId: string;
+  displayRollResultInChat_AfterAllChecks: boolean = true;
     constructor(
         public modalService: BsModalService, private bsModalRef: BsModalRef, private alertService: AlertService,
    
@@ -50,7 +51,14 @@ export class CastComponent implements OnInit {
           this.ruleset = this.bsModalRef.content.Ruleset ? this.bsModalRef.content.Ruleset : new Ruleset();
             this.buttonText = this.bsModalRef.content.ButtonText ? this.bsModalRef.content.ButtonText : undefined;
             this.recordType = this.bsModalRef.content.recordType;
-            this.recordId = this.bsModalRef.content.recordId;
+          this.recordId = this.bsModalRef.content.recordId;
+          debugger
+          if (this.bsModalRef.content.displayRollResultInChat_AfterAllChecks == false) {
+            this.displayRollResultInChat_AfterAllChecks = this.bsModalRef.content.displayRollResultInChat_AfterAllChecks;
+          } else {
+            this.displayRollResultInChat_AfterAllChecks = true;
+          }
+          
         }, 0);
     }
     useCommand(Command: any) {
@@ -89,7 +97,9 @@ export class CastComponent implements OnInit {
           this.bsModalRef.content.recordImage = this.CommandData.imageUrl;
           this.bsModalRef.content.recordType = this.recordType;
           this.bsModalRef.content.recordId = this.recordId;
+          
         }
+        this.bsModalRef.content.displayRollResultInChat_AfterAllChecks = this.displayRollResultInChat_AfterAllChecks;
         this.bsModalRef.content.isFromCampaignDetail = true;
       } else {
 

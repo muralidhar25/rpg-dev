@@ -177,7 +177,7 @@ namespace DAL.Services
                                     Initiative= CombatantRow["Initiative"] == DBNull.Value ? nulldecimal : Convert.ToDecimal(CombatantRow["Initiative"]),
                                     TargetId = CombatantRow["TargetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["TargetId"]),
                                     TargetType = CombatantRow["TargetType"] == DBNull.Value ? string.Empty : CombatantRow["TargetType"].ToString(),
-                                   
+                                    DelayTurn= CombatantRow["DelayTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["DelayTurn"])
                                     //Character = new Character(),
                                     //Monster=new Monster()
 
@@ -509,7 +509,7 @@ namespace DAL.Services
         public List<Monster> GetCombat_MonstersList(int campaignId) {
             return _context.Monsters.Where(x => x.RuleSetId == campaignId && x.IsDeleted != true && x.AddToCombatTracker == true).ToList();
         }
-        public void RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster, bool isFromCombatScreen,int CampaignId)
+        public void RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster, bool isFromCombatScreen,int CampaignId, int XP_Ruleset_CharacterStatID)
         {
 
             if (isFromCombatScreen)
@@ -517,6 +517,37 @@ namespace DAL.Services
                 var CombatSettings = _context.CombatSettings.Where(x => x.CampaignId == CampaignId && x.IsDeleted != true).FirstOrDefault();
                 if (CombatSettings!=null)
                 {
+                    if (CombatSettings.XPDistributionforDeletedMonster)
+                    {                                               
+                        var charactersCharacterStats = _context.CharactersCharacterStats.Where(x => x.CharacterStatId == XP_Ruleset_CharacterStatID && x.IsDeleted != true).Include(x => x.CharacterStat).ToList();
+
+                        var monsters = _context.Monsters.Where(x => monsterIds.Select(mi => mi.MonsterId).Contains(x.MonsterId)).ToList();
+                        foreach (var m in monsters)
+                        {
+                            if (m.XPValue>0 && charactersCharacterStats.Count>0)
+                            {
+                               // decimal decimalNumberToAdd = m.XPValue / charactersCharacterStats.Count;
+                                double decimalNumberToAdd = (double)m.XPValue / (double)charactersCharacterStats.Count;
+                                int NumberToAdd = Convert.ToInt32(decimalNumberToAdd);
+
+                                foreach (var CC_Stat in charactersCharacterStats)
+                                {
+                                    switch (CC_Stat.CharacterStat.CharacterStatTypeId)
+                                    {
+                                        case (int)STAT_TYPE.Number:
+                                            CC_Stat.Number = CC_Stat.Number == null ? 0 : CC_Stat.Number;
+                                            CC_Stat.Number = CC_Stat.Number + NumberToAdd;
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                                _context.SaveChanges();
+                            }
+                            
+                        }
+                    }
+
                     if (CombatSettings.DropItemsForDeletedMonsters)
                     {
                         foreach (var m in monsterIds)
@@ -635,6 +666,7 @@ namespace DAL.Services
                         VisibleToPc = CombatantRow["VisibleToPc"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["VisibleToPc"]),
                         TargetId = CombatantRow["TargetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["TargetId"]),
                         TargetType = CombatantRow["TargetType"] == DBNull.Value ? string.Empty : CombatantRow["TargetType"].ToString(),
+                        DelayTurn = CombatantRow["DelayTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["DelayTurn"])
                         //Character = new Character(),
                         //Monster=new Monster()
                     };

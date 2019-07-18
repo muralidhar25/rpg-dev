@@ -263,7 +263,7 @@ export class CombatComponent implements OnInit {
               let charStat: CharactersCharacterStat = null;
               this.settings.charcterHealthStats.split(/\[(.*?)\]/g).map((rec) => {
                 if (rec && !statFoundFlag) {
-                  let charStatList = x.character.diceRollViewModel.charactersCharacterStats.filter(x => x.characterStat.statName == rec);
+                  let charStatList = x.character.diceRollViewModel.charactersCharacterStats.filter(x => x.characterStat.statName.toUpperCase() == rec.toUpperCase());
                   if (charStatList.length) {
                     charStat = charStatList[0];
                   }
@@ -308,9 +308,10 @@ export class CombatComponent implements OnInit {
           let curretnCombatantList = this.combatants.filter(x => x.isCurrentTurn);
           if (curretnCombatantList.length) {
             this.curretnCombatant = curretnCombatantList[0];
+            let valueofinitiative = this.curretnCombatant.initiativeValue;
+            this.CurrentInitiativeValue = valueofinitiative;
           }
-          let valueofinitiative = this.curretnCombatant.initiativeValue;
-          this.CurrentInitiativeValue = valueofinitiative;
+          
 
           //this.roundCounter = this.roundCounter + 1;
           ////convert time
@@ -644,6 +645,8 @@ export class CombatComponent implements OnInit {
             this.bsModalRef.content.Character = new Characters();
             this.bsModalRef.content.recordType = 'monster';
             this.bsModalRef.content.recordId = _monster.monsterId;
+            this.bsModalRef.content.Ruleset = this.rulesetModel;
+            this.bsModalRef.content.displayRollResultInChat_AfterAllChecks = this.settings.displayMonsterRollResultInChat;
           } else {
 
             this.useCommand(_monster);
@@ -676,20 +679,21 @@ export class CombatComponent implements OnInit {
     this.bsModalRef.content.tile = -2;
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.character = new Characters();
-    this.bsModalRef.content.command = monster.command;
-    this.bsModalRef.content.isFromCombat = true;
+    this.bsModalRef.content.command = monster.command;    
+    this.bsModalRef.content.isFromCampaignDetail = true;
+    this.bsModalRef.content.displayRollResultInChat_AfterAllChecks = this.settings.displayMonsterRollResultInChat;
     if (monster.hasOwnProperty("monsterId")) {
       this.bsModalRef.content.recordName = monster.name;
       this.bsModalRef.content.recordImage = monster.imageUrl;
       this.bsModalRef.content.recordType = 'monster';
       this.bsModalRef.content.recordId = monster.monsterId;
     }
-    this.bsModalRef.content.event.subscribe(result => {
-      let msg = "Monster rolled result = " + result;
-      if (this.settings.displayMonsterRollResultInChat) {
-        this.SendSystemMessageToChat(msg);
-      }
-    });
+    //this.bsModalRef.content.event.subscribe(result => {
+    //  let msg = "Monster rolled result = " + result;
+    //  if (this.settings.displayMonsterRollResultInChat) {
+    //    this.SendSystemMessageToChat(msg);
+    //  }
+    //});
   }
   dropMonsterItems(item) {
     let monster = item.monster;
@@ -723,12 +727,13 @@ export class CombatComponent implements OnInit {
   }
 
   RemoveOrDeleteMonster(item, del) {
+    let ruleset_XP_CharacterStatId =  this.get_Ruleset_XP_CharacterStatID();
     this.isLoading = true;
     let _msg = ' Removing Monster ....';
     this.alertService.startLoadingMessage("", _msg);
     let monstersToRemove = [];
     monstersToRemove.push({ monsterId: item.monster.monsterId });
-    this.combatService.removeMonsters(monstersToRemove, del, true, this.ruleSetId)
+    this.combatService.removeMonsters(monstersToRemove, del, true, this.ruleSetId, ruleset_XP_CharacterStatId)
       .subscribe(data => {
         this.alertService.stopLoadingMessage();
         this.isLoading = false;
@@ -1180,5 +1185,29 @@ export class CombatComponent implements OnInit {
       //$(".modal-backdrop").remove();
     } catch (err) { }
   }
-
+  private get_Ruleset_XP_CharacterStatID(): number {
+    debugger
+    let Ruleset_XP_CharacterStatID:number = 0;
+    this.combatants.map((x) => {
+      if (x.type == this.combatItemsType.CHARACTER && Ruleset_XP_CharacterStatID == 0) {
+        if (x.character.diceRollViewModel.charactersCharacterStats) {
+          let statFoundFlag: boolean = false;
+          let charStat: CharactersCharacterStat = null;
+          this.settings.charcterXpStats.split(/\[(.*?)\]/g).map((rec) => {
+            if (rec && !statFoundFlag) {
+              let charStatList = x.character.diceRollViewModel.charactersCharacterStats.filter(x => x.characterStat.statName.toUpperCase() == rec.toUpperCase());
+              if (charStatList.length) {
+                charStat = charStatList[0];
+              }
+              statFoundFlag = true;
+            }
+          });         
+          if (charStat) {
+            Ruleset_XP_CharacterStatID = charStat.characterStatId;
+          }
+        }
+      }
+    })
+    return Ruleset_XP_CharacterStatID;
+  }
 }

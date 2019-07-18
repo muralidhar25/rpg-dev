@@ -131,11 +131,11 @@ namespace RPGSmithApp.Controllers
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
         [HttpPost("RemoveMonsters")]
-        public async Task<IActionResult> RemoveMonsters([FromBody] List<MonsterIds> monsterIds, bool deleteMonster, int CampaignId, bool isFromCombatScreen=false)
+        public async Task<IActionResult> RemoveMonsters([FromBody] List<MonsterIds> monsterIds, bool deleteMonster, int CampaignId, int XP_Ruleset_CharacterStatID, bool isFromCombatScreen=false)
         {
             try
             {
-                _combatService.RemoveMonsters(monsterIds, deleteMonster, isFromCombatScreen, CampaignId);
+                _combatService.RemoveMonsters(monsterIds, deleteMonster, isFromCombatScreen, CampaignId, XP_Ruleset_CharacterStatID);
                 return Ok();
             }
             catch (Exception ex)

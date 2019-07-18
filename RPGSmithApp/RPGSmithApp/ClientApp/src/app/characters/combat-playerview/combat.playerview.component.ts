@@ -151,7 +151,7 @@ export class CombatPlayerViewComponent implements OnInit {
                   let charStat: CharactersCharacterStat = null;
                   this.settings.charcterHealthStats.split(/\[(.*?)\]/g).map((rec) => {
                     if (rec && !statFoundFlag) {
-                      let charStatList = x.character.diceRollViewModel.charactersCharacterStats.filter(x => x.characterStat.statName == rec);
+                      let charStatList = x.character.diceRollViewModel.charactersCharacterStats.filter(x => x.characterStat.statName.toUpperCase() == rec.toUpperCase());
                       if (charStatList.length) {
                         charStat = charStatList[0];
                       }
@@ -198,10 +198,11 @@ export class CombatPlayerViewComponent implements OnInit {
               let curretnCombatant = new initiative();
               if (curretnCombatantList.length) {
                 curretnCombatant = curretnCombatantList[0];
+                let valueofinitiative = curretnCombatant.initiativeValue;
+                this.CurrentInitiativeValue = valueofinitiative;
               }
 
-              let valueofinitiative = curretnCombatant.initiativeValue;
-              this.CurrentInitiativeValue = valueofinitiative;
+             
 
               //this.roundCounter = this.roundCounter + 1;
               ////convert time

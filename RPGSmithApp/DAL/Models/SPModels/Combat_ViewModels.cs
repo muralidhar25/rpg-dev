@@ -61,6 +61,8 @@ namespace DAL.Models.SPModels
 
         public string TargetType { get; set; }
 
+        public bool DelayTurn { get; set; }
+
     }
     public class CombatAllTypeMonsters : MonsterTemplate
     {

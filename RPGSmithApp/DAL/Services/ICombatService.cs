@@ -15,7 +15,7 @@ namespace DAL.Services
         List<CombatAllTypeMonsters> GetCombatAllTypeMonsters(int CampaignId);
         void AddDeployedMonstersToCombat(List<CombatAllTypeMonsters> model);
         List<Monster> GetCombat_MonstersList(int campaignId);
-        void RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster, bool isFromCombatScreen, int CampaignId);
+        void RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster, bool isFromCombatScreen, int CampaignId, int XP_Ruleset_CharacterStatID);
         List<Combatant_ViewModel> SaveCombatantList(List<Combatant_DTModel> model, int campaignId, string UserId);
         void Combat_Start(int combatId, bool start);
         void SwitchCombatantTurn(Combatant_ViewModel model, int roundCount);

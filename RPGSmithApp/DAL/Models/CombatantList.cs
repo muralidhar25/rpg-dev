@@ -41,5 +41,7 @@ namespace DAL.Models
 
         [Column(TypeName = "nvarchar(100)")]
         public string TargetType { get; set; }
+
+        public bool DelayTurn { get; set; }
     }
 }
