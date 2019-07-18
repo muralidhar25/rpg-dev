@@ -124,6 +124,11 @@ body {
   background: #000 !important;
 }
 
+.combat-table table tr.white-outer-filed td {
+  background: #fff !important;
+  border:2px solid #000;
+}
+
 .combat-table table tr.blue-outer-filed td {
   background: #3d46cc !important;
 }
@@ -1110,7 +1115,7 @@ button.btn-top {
   margin-left: 5px;
 }
 
-div.text-ellipsis {
+.text-ellipsis {
   display: block !important;
   overflow: hidden;
   text-overflow: ellipsis;
