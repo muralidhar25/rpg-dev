@@ -34,6 +34,7 @@ export class SharedService {
   private AddMonsterTemplatesList = new Subject<any>();
   private CombatantList = new Subject<any>();
   private MonsterVisibility = new Subject<any>();
+  private diceSaveResult = new Subject<any>();
   
   
   updateManageOpen(accountSetting: any) {
@@ -320,6 +321,13 @@ export class SharedService {
 
   shouldUpdateMonsterVisibility(): Observable<any> {
     return this.MonsterVisibility.asObservable();
+  }
+  UpdateDiceSaveResults(dice: any) {
+    this.diceSaveResult.next(dice);
+  }
+
+  shouldUpdateDiceSaveResults(): Observable<any> {
+    return this.diceSaveResult.asObservable();
   }
 }
 

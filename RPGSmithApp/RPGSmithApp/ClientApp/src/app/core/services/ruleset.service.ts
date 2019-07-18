@@ -136,5 +136,9 @@ export class RulesetService {
     return this.rulesetEndpoint.addOrEdit(model);
   }
 
+  delete<T>(Id: number): Observable<T> {
+    return this.rulesetEndpoint.delete(Id);
+  }
+
   //
 }

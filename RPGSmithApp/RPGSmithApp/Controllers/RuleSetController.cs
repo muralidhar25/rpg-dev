@@ -1966,6 +1966,19 @@ namespace RPGSmithApp.Controllers
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
 
+        [HttpDelete("deleteCommand")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var result = await _ruleSetService.Delete(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         #endregion
     }
 }

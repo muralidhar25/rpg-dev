@@ -109,8 +109,7 @@ export class DiceSaveComponent implements OnInit {
     }
   }
 
-  submitForm(characterCommand: any) {
-    debugger
+  submitForm(characterCommand: any) {    
     let command = characterCommand.command;
 
     if (!command) {
@@ -170,6 +169,7 @@ export class DiceSaveComponent implements OnInit {
                 this.bsModalRef.hide();
                 //this.destroyModalOnInit();
                 this.sharedService.UpdateDice(true);
+                this.sharedService.UpdateDiceSaveResults(true);
               },
               error => {
                 this.isLoading = false;
@@ -195,6 +195,7 @@ export class DiceSaveComponent implements OnInit {
                 this.bsModalRef.hide();
                 //this.destroyModalOnInit();
                 this.sharedService.UpdateDice(true);
+                this.sharedService.UpdateDiceSaveResults(true);
               },
               error => {
                 this.isLoading = false;
@@ -224,30 +225,57 @@ export class DiceSaveComponent implements OnInit {
   }
 
   private deleteCommandHelper(characterCommand: CharacterCommand) {
-
     this.isLoading = true;
-    this.characterCommandService.delete<any>(characterCommand.characterCommandId)
-      .subscribe(
-        data => {
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          this.alertService.showMessage("Command has been deleted.", "", MessageSeverity.success);
-          this.bsModalRef.hide();
-          //this.destroyModalOnInit();
-          this.sharedService.UpdateDice(true);
-        },
-        error => {
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          let Errors = Utilities.ErrorDetail("Unable to delete", error);
-          if (Errors.sessionExpire) {
-            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-            this.authService.logout(true);
-          }
-          else
-            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-        },
-      );
+    if (this.isFromCampaignDetail) {
+      this.rulesetService.delete<any>(characterCommand.rulesetCommandId)
+        .subscribe(
+          data => {
+            this.isLoading = false;
+            this.alertService.stopLoadingMessage();
+            this.alertService.showMessage("Command has been deleted.", "", MessageSeverity.success);
+            this.bsModalRef.hide();
+            //this.destroyModalOnInit();
+            this.sharedService.UpdateDice(true);
+            this.sharedService.UpdateDiceSaveResults(true);
+          },
+          error => {
+            this.isLoading = false;
+            this.alertService.stopLoadingMessage();
+            let Errors = Utilities.ErrorDetail("Unable to delete", error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
+            }
+            else
+              this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+          },
+        );
+    }
+    else {
+      this.characterCommandService.delete<any>(characterCommand.characterCommandId)
+        .subscribe(
+          data => {
+            this.isLoading = false;
+            this.alertService.stopLoadingMessage();
+            this.alertService.showMessage("Command has been deleted.", "", MessageSeverity.success);
+            this.bsModalRef.hide();
+            //this.destroyModalOnInit();
+            this.sharedService.UpdateDice(true);
+            this.sharedService.UpdateDiceSaveResults(true);
+          },
+          error => {
+            this.isLoading = false;
+            this.alertService.stopLoadingMessage();
+            let Errors = Utilities.ErrorDetail("Unable to delete", error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
+            }
+            else
+              this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+          },
+        );
+    }
   }
 
   close() {

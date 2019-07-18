@@ -26,7 +26,7 @@ export class RulesetEndpoint extends EndpointFactory {
   private readonly _addEditCustomDiceUrl: string = "/api/RuleSet/addEditCustomDice";
   private readonly _getCustomDiceUrl: string = "/api/RuleSet/GetCustomDice";
   private readonly _getDefaultDiceUrl: string = "/api/RuleSet/GetDefaultDice";
-
+  
 
   
   
@@ -42,6 +42,7 @@ export class RulesetEndpoint extends EndpointFactory {
   private readonly updateLastCommandUrl: string = this.configurations.baseUrl + "/api/RuleSet/UpdateLastCommand";
   private readonly createCommandUrl: string = this.configurations.baseUrl + "/api/RuleSet/createCommand";
   private readonly updateCommandUrl: string = this.configurations.baseUrl + "/api/RuleSet/updateCommand";
+  private readonly deleteCommandUrl: string = this.configurations.baseUrl + "/api/RuleSet/deleteCommand";
 
   private readonly GetCopiedRulesetIDApi: string = this.configurations.baseUrl + "/api/RuleSet/GetCopiedRulesetID";
 
@@ -295,7 +296,7 @@ export class RulesetEndpoint extends EndpointFactory {
 
     let endpointUrl = this.createUrl;
 
-    if (model.characterCommandId == 0 || model.characterCommandId === undefined)
+    if (model.rulesetCommandId == 0 || model.rulesetCommandId === undefined)
       endpointUrl = this.createCommandUrl;
     else
       endpointUrl = this.updateCommandUrl;
@@ -303,6 +304,14 @@ export class RulesetEndpoint extends EndpointFactory {
     return this.http.post<T>(endpointUrl, JSON.stringify(model), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.addOrEdit(model));
+      });
+  }
+
+  delete<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.deleteCommandUrl}?id=${Id}`;
+    return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.delete(Id));
       });
   }
 }
