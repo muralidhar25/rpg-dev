@@ -17,125 +17,13 @@
         </div>
         <div class="col-12 col-sm-7 mb-2">
           <div class="initiative-options-field">
-            <input type="text" [name]="'value'+i" [(ngModel)]="item.initiativeValue" (change)="filterList()"/>
+            <input type="number" [name]="'value'+i" [(ngModel)]="item.initiativeValue" (change)="filterList()"/>
             <button class="btn-top icon-Gen-Down" (click)="upclick(i)"></button>
             <button class="btn-bottom icon-Gen-Down " (click)="downclick(i)"></button>
             <button class="btn-dices icon-CharStat-Command" (click)="ReRollDice(item)"></button>
           </div>
         </div>
       </div>
-      <!--<div class="row m-0">
-        <div class="col-12 col-sm-5 mb-2">
-          <div class="initiative-title-box monsters-title-box">
-            <img src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg" />
-            <p><span>BugBear</span></p>
-          </div>
-        </div>
-        <div class="col-12 col-sm-7 mb-2">
-          <div class="initiative-options-field">
-            <input type="text" />
-            <button class="btn-top icon-Gen-Down"></button>
-            <button class="btn-bottom icon-Gen-Down "></button>
-            <button class="btn-dices icon-CharStat-Command"></button>
-          </div>
-        </div>
-      </div>
-      <div class="row m-0">
-        <div class="col-12 col-sm-5 mb-2">
-          <div class="initiative-title-box">
-            <img src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg" />
-            <p><span>BugBear</span></p>
-          </div>
-        </div>
-        <div class="col-12 col-sm-7 mb-2">
-          <div class="initiative-options-field">
-            <input type="text" />
-            <button class="btn-top icon-Gen-Down"></button>
-            <button class="btn-bottom icon-Gen-Down "></button>
-            <button class="btn-dices icon-CharStat-Command"></button>
-          </div>
-        </div>
-      </div>
-      <div class="row m-0">
-        <div class="col-12 col-sm-5 mb-2">
-          <div class="initiative-title-box monsters-title-box">
-            <img src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg" />
-            <p><span>BugBear</span></p>
-          </div>
-        </div>
-        <div class="col-12 col-sm-7 mb-2">
-          <div class="initiative-options-field">
-            <input type="text" />
-            <button class="btn-top icon-Gen-Down"></button>
-            <button class="btn-bottom icon-Gen-Down "></button>
-            <button class="btn-dices icon-CharStat-Command"></button>
-          </div>
-        </div>
-      </div>
-      <div class="row m-0">
-        <div class="col-12 col-sm-5 mb-2">
-          <div class="initiative-title-box">
-            <img src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg" />
-            <p><span>BugBear</span></p>
-          </div>
-        </div>
-        <div class="col-12 col-sm-7 mb-2">
-          <div class="initiative-options-field">
-            <input type="text" />
-            <button class="btn-top icon-Gen-Down"></button>
-            <button class="btn-bottom icon-Gen-Down "></button>
-            <button class="btn-dices icon-CharStat-Command"></button>
-          </div>
-        </div>
-      </div>
-      <div class="row m-0">
-        <div class="col-12 col-sm-5 mb-2">
-          <div class="initiative-title-box">
-            <img src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg" />
-            <p><span>BugBear</span></p>
-          </div>
-        </div>
-        <div class="col-12 col-sm-7 mb-2">
-          <div class="initiative-options-field">
-            <input type="text" />
-            <button class="btn-top icon-Gen-Down"></button>
-            <button class="btn-bottom icon-Gen-Down "></button>
-            <button class="btn-dices icon-CharStat-Command"></button>
-          </div>
-        </div>
-      </div>
-      <div class="row m-0">
-        <div class="col-12 col-sm-5 mb-2">
-          <div class="initiative-title-box">
-            <img src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg" />
-            <p><span>BugBear</span></p>
-          </div>
-        </div>
-        <div class="col-12 col-sm-7 mb-2">
-          <div class="initiative-options-field">
-            <input type="text" />
-            <button class="btn-top icon-Gen-Down"></button>
-            <button class="btn-bottom icon-Gen-Down "></button>
-            <button class="btn-dices icon-CharStat-Command"></button>
-          </div>
-        </div>
-      </div>
-      <div class="row m-0">
-        <div class="col-12 col-sm-5 mb-2">
-          <div class="initiative-title-box">
-            <img src="https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg" />
-            <p><span>BugBear</span></p>
-          </div>
-        </div>
-        <div class="col-12 col-sm-7 mb-2">
-          <div class="initiative-options-field">
-            <input type="text" />
-            <button class="btn-top icon-Gen-Down"></button>
-            <button class="btn-bottom icon-Gen-Down "></button>
-            <button class="btn-dices icon-CharStat-Command"></button>
-          </div>
-        </div>
-      </div>-->
       <div class="row"><div class="col-12 p-0"><hr /></div></div>
       <h2>REROLL</h2>
       <div class="row m-0">

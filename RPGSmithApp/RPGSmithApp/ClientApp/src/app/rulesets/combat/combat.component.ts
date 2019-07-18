@@ -257,7 +257,7 @@ export class CombatComponent implements OnInit {
 
 
           if (x.type == this.combatItemsType.CHARACTER) {
-            
+
             if (x.character.diceRollViewModel.charactersCharacterStats) {
               let statFoundFlag: boolean = false;
               let charStat: CharactersCharacterStat = null;
@@ -424,31 +424,17 @@ export class CombatComponent implements OnInit {
 
   }
 
-  // Detail Pane Methods
-  //command() {
-  //  if (this.currentCombatantDetail) {
-  //    this.monsterCommand(this.currentCombatantDetail);
-  //  }
-  //}
 
-  //dropItems() {
-  //  if (this.currentCombatantDetail) {
-  //    this.dropMonsterItems(this.currentCombatantDetail);
-  //  }
-  //}
-
-  DelayResumeTurn() {
+  DelayTurn(currentCombatantDetail) {
     this.delayResumeTurn = !this.delayResumeTurn;
+    if (this.delayResumeTurn) {
+      this.nextTurn();
+    }
   }
 
-  // Remove monster from Detail pane
-  //remove() {
-  //  if (this.currentCombatantDetail) {
-  //    let message = "Are you sure you want to remove this monster?";
-  //    this.alertService.showDialog(message,
-  //      DialogType.confirm, () => this.RemoveOrDeleteMonster(item, false), null, 'Yes', 'No');
-  //  }
-  //}
+  ResumeTurn(currentCombatantDetail) {
+    this.delayResumeTurn = !this.delayResumeTurn;
+  }
 
   monsterAdd() {
     console.log('monsterAdd');
@@ -490,7 +476,7 @@ export class CombatComponent implements OnInit {
       }
 
       else if (!this.combatants[i - 1] && this.roundCounter > 1 && this.combatants[i].isCurrentTurn) {
-       
+
         let index = this.combatants.length - 1;
         this.combatants[i].isCurrentTurn = false;
         this.curretnCombatant = this.combatants[i + index];
@@ -502,7 +488,7 @@ export class CombatComponent implements OnInit {
         return;
       }
     }
-   
+
   }
   nextTurn() {
     for (let i = 0; i < this.combatants.length; i++) {
@@ -534,7 +520,7 @@ export class CombatComponent implements OnInit {
         this.frameClick(this.curretnCombatant)
         return;
       }
-     
+
     }
   }
 
@@ -584,7 +570,7 @@ export class CombatComponent implements OnInit {
     console.log('buffclicked', buffs);
   }
   frameClick(item) {
-    
+
     this.currentCombatantDetail = item;
     this.combatants.map(function (itm) {
       if (itm.frameColor) {
@@ -593,7 +579,9 @@ export class CombatComponent implements OnInit {
       if (itm.id == item.id) {
         itm.frameColor = 'red';
       }
-    })
+    });
+
+
   }
   nameClicked(item) {
     if (item.type == combatantType.MONSTER) {
