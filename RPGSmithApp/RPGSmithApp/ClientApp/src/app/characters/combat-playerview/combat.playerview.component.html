@@ -2,33 +2,66 @@
   <div class="page-toolbar">
     <div class="container">
       <!--<div class="page-toolbar-wrapper">
-        <div class="page-toolbar-title">
-          <a [routerLink]="['/ruleset/combat', ruleSetId]" class="icon icon-back">
-            <h1 class="d-none d-md-inline-block"> Back</h1>
-          </a>
-        </div>
-          </div>-->
-    </div>
-    <div class="page-toolbar-wrapper initial show">
-      <ul class="page-toolbar-links">
-        <li class="hidden-tab">
-          <a class="btn btn-link-primary nav-redirection selected icon-Gen-Items"> <span>Inventory</span></a>
-        </li>
-        <li class="hidden-tab">
-          <a class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
-        </li>
-        <li class="hidden-tab">
-          <a class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
-        </li>
-        <li class="hidden-tab">
-          <a class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
-        </li>
-        <li>
-          <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary"><span class="text-hide-tab">Dice</span></button>
-        </li>
-      </ul>
-    </div>
+  <div class="page-toolbar-title">
+    <a [routerLink]="['/rulesetModel/combat', ruleSetId]" class="icon icon-back">
+      <h1 class="d-none d-md-inline-block"> Back</h1>
+    </a>
   </div>
+    </div>-->
+      <div class="page-toolbar-wrapper">
+        <div class="page-toolbar-title"></div>
+        <div class="page-toolbar-wrapper initial show recordes-menu">
+
+          <!-- Toolbar links -->
+          <ul class="page-toolbar-links" *ngIf="!isLoading">
+            <li class="hidden-tab" *ngIf="rulesetModel?.isItemEnabled">
+              <a [routerLink]="['/character/inventory/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Inventory</span></a>
+            </li>
+            <li class="hidden-tab" *ngIf="rulesetModel?.isSpellEnabled">
+              <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+            </li>
+            <li class="hidden-tab" *ngIf="rulesetModel?.isAbilityEnabled">
+              <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> <span>Abilities</span></a>
+            </li>
+            <li class="hidden-tab" *ngIf="rulesetModel">
+              <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
+            </li>
+
+            <li class="visible-tab mt-0">
+              <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                  <ul class="dropdown-menu-list" *ngIf="!isLoading">
+                    <li class="dropdown-menu-item" *ngIf="rulesetModel?.isItemEnabled">
+                      <a [routerLink]="['/character/inventory/', characterId]" class="btn btn-link-primary nav-redirection  icon-Gen-Items"> Inventory</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="rulesetModel?.isSpellEnabled">
+                      <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="rulesetModel?.isAbilityEnabled">
+                      <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Ability"> Abilities</a>
+                    </li>
+
+                    <li class="dropdown-menu-item" *ngIf="rulesetModel">
+                      <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> Character Stats</a>
+                    </li>
+
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <!-- End of toolbar links -->
+        </div>
+
+        <ul class="page-toolbar-actions" *ngIf="!isLoading">
+          <li>
+            <button type="button" (click)="openDiceRollModal()" class="btn icon icon-with-text icon-dice icon-rsi btn-primary"><span class="text-hide-tab">Dice</span></button>
+          </li>
+        </ul>
+      </div>
+      </div>
+    </div>
 
   <div class="container">
     <div class="row">
@@ -152,10 +185,12 @@
                   </td>
                   <td>
                     <div class="white-section">
-                      <div class="initiative-title-box monsters-title-box target-column" *ngIf="item.targetId>0">
+                      <div class="initiative-title-box monsters-title-box target-column" *ngIf="item.targetId>0"  popover="{{getTargetName(item)}}" triggers="hover">
                         <ng-container>
                           <img class="ng-tns-c1-0" [src]="getTargetImage(item)">
-                          <p class="ng-tns-c1-0"><span class="ng-tns-c1-0">{{getTargetName(item)}}</span></p>
+                          <p class="ng-tns-c1-0 text-ellipsis">
+                          <span class="ng-tns-c1-0">{{getTargetName(item)}}</span>
+                          </p>
                         </ng-container>
                       </div>
                     </div>

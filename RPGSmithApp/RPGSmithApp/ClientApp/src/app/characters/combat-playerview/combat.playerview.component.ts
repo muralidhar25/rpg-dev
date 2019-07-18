@@ -56,7 +56,8 @@ export class CombatPlayerViewComponent implements OnInit {
   characterId: number = 0;
   currentCombatantDetail: any;
   ownPlayer: any[] = [];
-  DummyValueForCharHealthStat: number = -9999
+  DummyValueForCharHealthStat: number = -9999;
+
 
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
@@ -78,9 +79,6 @@ export class CombatPlayerViewComponent implements OnInit {
 
     this.rulesetModel.ruleSetName = 'Orc Shaman';
     this.rulesetModel.imageUrl = 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg';
-  }
-  openpopup() {
-    console.log('Open popup');
   }
 
   ngOnInit() {
@@ -105,6 +103,8 @@ export class CombatPlayerViewComponent implements OnInit {
         this.ruleSetId = this.rulesetModel.ruleSetId;
         //this.isLoading = false;
         this.setHeaderValues(this.character);
+        this.characterId = data.characterId;
+
       }, error => {
         this.isLoading = false;
         let Errors = Utilities.ErrorDetail("", error);
@@ -122,7 +122,7 @@ export class CombatPlayerViewComponent implements OnInit {
             this.rulesetModel = combatModal.campaign;
             this.settings = combatModal.combatSettings;
             this.combatants = combatModal.combatantList;
-            
+
             this.combatants.map((x) => {
               x.initiativeValue = x.initiative;
               if (!x.combatId) {
@@ -223,7 +223,7 @@ export class CombatPlayerViewComponent implements OnInit {
       });
     /////////////////   
   }
-
+  
   openDiceRollModal() {
     this.bsModalRef = this.modalService.show(DiceRollComponent, {
       class: 'modal-primary modal-md',
@@ -231,13 +231,10 @@ export class CombatPlayerViewComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.title = "Dice";
-    this.bsModalRef.content.characterId = 0;
-    this.bsModalRef.content.character = new Characters();
-    this.bsModalRef.content.recordName = this.rulesetModel.ruleSetName;
-    this.bsModalRef.content.recordImage = this.rulesetModel.imageUrl;
-    this.bsModalRef.content.recordType = 'ruleset';
-    this.bsModalRef.content.isFromCampaignDetail = true;
-
+    this.bsModalRef.content.characterId = this.characterId;
+    this.bsModalRef.content.character = this.character;
+    this.bsModalRef.content.recordName = this.character.characterName;
+    this.bsModalRef.content.recordImage = this.character.imageUrl;
   }
 
   buffEffectclick(item) {
@@ -319,13 +316,9 @@ export class CombatPlayerViewComponent implements OnInit {
   }
 
   SaveTarget(combatatnt) {
-    debugger
-    this.isLoading = true;
     this.combatService.saveTarget(combatatnt).subscribe(res => {
       //let result = res;
-      this.isLoading = false;
     }, error => {
-      this.isLoading = false;
       let Errors = Utilities.ErrorDetail("", error);
       if (Errors.sessionExpire) {
         this.authService.logout(true);
@@ -341,10 +334,10 @@ export class CombatPlayerViewComponent implements OnInit {
       this.combatants.map(x => {
         if (x.type == this.combatantsType.MONSTER) {
           if (x.monster.monsterId == item.targetId) {
-            imageUrl= x.monster.imageUrl;
+            imageUrl = x.monster.imageUrl;
           }
         }
-        
+
       });
     }
     else if (item.targetType == this.combatantsType.CHARACTER) {

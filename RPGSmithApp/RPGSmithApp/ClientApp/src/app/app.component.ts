@@ -137,6 +137,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   isPlayerCharacter: boolean = false;
   showCombatBtn: boolean = false;
   combatUrl: any;
+  cId: number;
 
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
@@ -290,8 +291,10 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.haveHandOutItems = false;
       this.showCombatBtn = false;
       this.combatUrl = '';
+      this.cId = 0;
       if (this.headers) {
         if (this.headers.headerLink == "character") {
+          this.cId = this.headers.headerId;
           this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
             .subscribe(data => {
               this.isPlayerCharacter = false;
@@ -301,9 +304,9 @@ export class AppComponent implements OnInit, AfterViewInit {
                   if (this.router.url.toUpperCase().indexOf('/CHARACTER') > -1) {
                     this.showCombatBtn = true;
                   }
-                  
+
                   // Player CharacterView Url
-                  this.combatUrl = ['/character/combatplayer', + this.headers.headerId];
+                  this.combatUrl = ['/character/combatplayer', + this.cId];
 
                   if (!this.signalRAdapter && user) { //get player control 265
                     let model: any = user;
@@ -833,20 +836,22 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.haveHandOutItems = false;
           this.showCombatBtn = false;
           this.combatUrl = '';
+          this.cId = 0;
           if (this.headers) {
             if (this.headers.headerLink == "character") {
+              this.cId = this.headers.headerId;
               this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
                 .subscribe(data => {
                   this.isPlayerCharacter = false;
                   if (data) {
                     this.isPlayerCharacter = data.isPlayerCharacter
                     if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
-                      if (url.toUpperCase().indexOf('/CHARACTER')>-1) {
+                      if (url.toUpperCase().indexOf('/CHARACTER') > -1) {
                         this.showCombatBtn = true;
                       }
-                      
+
                       // Player CharacterView Url
-                      this.combatUrl = ['/character/combatplayer', + this.headers.headerId];
+                      this.combatUrl = ['/character/combatplayer', + this.cId];
                       if (!this.signalRAdapter && user) {
                         let model: any = user;
                         if (this.headers) {
