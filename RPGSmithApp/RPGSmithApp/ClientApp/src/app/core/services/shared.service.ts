@@ -34,6 +34,9 @@ export class SharedService {
   private AddMonsterTemplatesList = new Subject<any>();
   private CombatantList = new Subject<any>();
   private MonsterVisibility = new Subject<any>();
+  private diceSaveResult = new Subject<any>();
+  
+  
   private MonsterBuffEffect = new Subject<any>();
   private CharacterBuffEffect = new Subject<any>();
   private updateMonstersInCombat = new Subject<any>();  
@@ -323,6 +326,13 @@ export class SharedService {
 
   shouldUpdateMonsterVisibility(): Observable<any> {
     return this.MonsterVisibility.asObservable();
+  }
+  UpdateDiceSaveResults(dice: any) {
+    this.diceSaveResult.next(dice);
+  }
+
+  shouldUpdateDiceSaveResults(): Observable<any> {
+    return this.diceSaveResult.asObservable();
   }
 
   updateMonsterBuffEffect(combatantList: any) {

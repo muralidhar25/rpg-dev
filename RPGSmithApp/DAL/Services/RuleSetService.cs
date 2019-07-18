@@ -2162,6 +2162,28 @@ namespace DAL.Services
             }
             return rulesetCommand;
         }
+
+        public async Task<bool> Delete(int id)
+        {
+            // Remove CharacterCommand
+           var cc = _context.RulesetCommands.Where(x => x.RulesetCommandId == id).FirstOrDefault();
+
+            if (cc == null)
+                return false;
+
+            cc.IsDeleted = true;
+
+            try
+            {
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
         #endregion
 
     }
