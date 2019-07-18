@@ -139,6 +139,7 @@ export class CombatPlayerViewComponent implements OnInit {
               // Own player
               if (x.type == this.combatantsType.CHARACTER && x.character.characterId == this.characterId) {
                 x.isOwnPlayer = true;
+                x.frameColor = 'blue';
                 ////this.ownPlayer.push(x);
               } else {
                 x.isOwnPlayer = false;
