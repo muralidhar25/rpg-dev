@@ -24,5 +24,7 @@ namespace DAL.Services
         List<BuffAndEffect> SP_GetMonsterAssociateBEs(int monsterID, int rulesetId);
         void SaveCharacterHealth(CharacterHealthModel model);
         void saveTarget(Combatant_ViewModel model);
+        void SaveSortorder(List<Combatant_DTModel> model);
+        void SaveDelayTurn(Combatant_ViewModel model);
     }
 }

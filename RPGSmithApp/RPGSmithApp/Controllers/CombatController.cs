@@ -31,10 +31,10 @@ namespace RPGSmithApp.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAccountManager _accountManager;
         private readonly ICombatService _combatService;
-       
+
         public CombatController(IHttpContextAccessor httpContextAccessor,
             IAccountManager accountManager, ICombatService combatService)
-        {            
+        {
             _httpContextAccessor = httpContextAccessor;
             _accountManager = accountManager;
             _combatService = combatService;
@@ -43,11 +43,13 @@ namespace RPGSmithApp.Controllers
         [HttpGet("GetCombatDetails")]
         public async Task<IActionResult> GetCombatDetails(int CampaignId)
         {
-            try {
-                Combat_ViewModel model =await _combatService.GetCombatDetails(CampaignId, GetUserDetails());
+            try
+            {
+                Combat_ViewModel model = await _combatService.GetCombatDetails(CampaignId, GetUserDetails());
                 return Ok(model);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
@@ -58,13 +60,15 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                try {
+                try
+                {
                     return Ok(_combatService.UpdateSettings(model));
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     return BadRequest(ex.Message);
                 }
-                
+
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
@@ -75,7 +79,7 @@ namespace RPGSmithApp.Controllers
             {
                 try
                 {
-                    List<Combatant_ViewModel> list = _combatService.SaveCombatantList(model, CampaignID,GetUserId());
+                    List<Combatant_ViewModel> list = _combatService.SaveCombatantList(model, CampaignID, GetUserId());
                     return Ok(list);
                 }
                 catch (Exception ex)
@@ -131,7 +135,7 @@ namespace RPGSmithApp.Controllers
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
         [HttpPost("RemoveMonsters")]
-        public async Task<IActionResult> RemoveMonsters([FromBody] List<MonsterIds> monsterIds, bool deleteMonster, int CampaignId, int XP_Ruleset_CharacterStatID, bool isFromCombatScreen=false)
+        public async Task<IActionResult> RemoveMonsters([FromBody] List<MonsterIds> monsterIds, bool deleteMonster, int CampaignId, int XP_Ruleset_CharacterStatID, bool isFromCombatScreen = false)
         {
             try
             {
@@ -144,7 +148,7 @@ namespace RPGSmithApp.Controllers
             }
         }
         [HttpPost("Combat_Start")]
-        public async Task<IActionResult> Combat_Start(int CombatId,bool Start)
+        public async Task<IActionResult> Combat_Start(int CombatId, bool Start)
         {
             try
             {
@@ -159,50 +163,50 @@ namespace RPGSmithApp.Controllers
         [HttpPost("SaveCombatantTurn")]
         public async Task<IActionResult> SwitchCombatantTurn([FromBody] Combatant_ViewModel model, int roundCount)
         {
-           
-                try
-                {
-                    _combatService.SwitchCombatantTurn(model, roundCount);
-                    return Ok();
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
 
-            
+            try
+            {
+                _combatService.SwitchCombatantTurn(model, roundCount);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
         }
         [HttpPost("SaveVisibilityDetails")]
         public async Task<IActionResult> SaveVisibilityDetails([FromBody] Combatant_ViewModel model)
         {
-            
-                try
-                {
-                    _combatService.SaveVisibilityDetails(model);
-                    return Ok();
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
 
-            
+            try
+            {
+                _combatService.SaveVisibilityDetails(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
         }
         [HttpPost("SaveMonsterHealth")]
         public async Task<IActionResult> SaveMonsterHealth([FromBody] Monster model)
         {
-           
-                try
-                {
-                    _combatService.SaveMonsterHealth(model);
-                    return Ok();
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
 
-            
+            try
+            {
+                _combatService.SaveMonsterHealth(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
         }
         [HttpPost("saveTarget")]
         public async Task<IActionResult> saveTarget([FromBody] Combatant_ViewModel model)
@@ -237,6 +241,40 @@ namespace RPGSmithApp.Controllers
 
         }
 
+        [HttpPost("SaveDelayTurn")]
+        public async Task<IActionResult> SaveDelayTurn([FromBody] Combatant_ViewModel model)
+        {
+
+            try
+            {
+                _combatService.SaveDelayTurn(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
+
+        [HttpPost("SaveSortorder")]
+        public async Task<IActionResult> SaveSortorder([FromBody] List<Combatant_DTModel> model)
+        {
+
+            try
+            {
+                _combatService.SaveSortorder(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
+
         private string GetUserId()
         {
             string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
@@ -251,7 +289,8 @@ namespace RPGSmithApp.Controllers
             return appUser;
         }
         [HttpGet("SP_GetMonsterAssociateBEs")]
-        public async Task<IActionResult> SP_GetMonsterAssociateBEs(int monsterID, int rulesetId) {
+        public async Task<IActionResult> SP_GetMonsterAssociateBEs(int monsterID, int rulesetId)
+        {
             return Ok(_combatService.SP_GetMonsterAssociateBEs(monsterID, rulesetId));
         }
     }

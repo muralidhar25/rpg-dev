@@ -3,11 +3,11 @@ import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
-import  { SharedModule } from '../shared/shared.module';
+import { SharedModule } from '../shared/shared.module';
 import { CharactersRoutingModule } from "./characters-routing.module";
 import { RecordsModule } from "../records/records.module";
-import  { TileModule } from '../tile/tile.module';
-import  { TileRulesetModule } from '../tile-ruleset/tile-ruleset.module';
+import { TileModule } from '../tile/tile.module';
+import { TileRulesetModule } from '../tile-ruleset/tile-ruleset.module';
 import { CharactersComponent } from './characters/characters.component';
 import { CharacterTilesComponent } from './characters/character-tiles/character-tiles.component';
 import { CharacterDashboardComponent } from './character-dashboard/character-dashboard.component';
@@ -48,7 +48,7 @@ import { NgCircleProgressModule } from "ng-circle-progress";
 
 @NgModule({
   declarations: [
-    CharactersComponent,  
+    CharactersComponent,
     CharacterTilesComponent,
     CharacterDashboardComponent,
     LayoutFormComponent,
@@ -94,7 +94,7 @@ import { NgCircleProgressModule } from "ng-circle-progress";
   providers: [
   ],
   exports: [
-    CharactersComponent,   
+    CharactersComponent,
     CharacterTilesComponent,
     CharacterDashboardComponent,
     LayoutFormComponent,
@@ -128,7 +128,7 @@ import { NgCircleProgressModule } from "ng-circle-progress";
     PlayerMonsterDetailsComponent
   ],
   entryComponents: [
-  
+
     LayoutFormComponent,
     PageFormComponent,
     AddContainerComponent,
@@ -142,4 +142,4 @@ import { NgCircleProgressModule } from "ng-circle-progress";
     CharBuffAndEffectDetailsComponent
   ]
 })
-export class CharactersModule {}
+export class CharactersModule { }

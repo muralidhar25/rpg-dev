@@ -35,10 +35,10 @@ namespace DAL.Services
             _context = context;
             _configuration = configuration;
             _monsterTemplateService = monsterTemplateService;
-            _charactersCharacterStatServic= charactersCharacterStatServic;
+            _charactersCharacterStatServic = charactersCharacterStatServic;
             _characterStatChoiceService = characterStatChoiceService;
             _ruleSetService = ruleSetService;
-    }
+        }
 
         public async Task<Combat_ViewModel> GetCombatDetails(int CampaignId, ApplicationUser user)
         {
@@ -91,7 +91,7 @@ namespace DAL.Services
                             isCharacterSpellEnabled = Row["IsSpellEnabled"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsSpellEnabled"]),
                             isCharacterItemEnabled = Row["IsItemEnabled"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsItemEnabled"]),
                             isCharacterBuffAndEffectEnabled = Row["IsBuffAndEffectEnabled"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsBuffAndEffectEnabled"]),
-                            
+
 
                         };
 
@@ -174,10 +174,10 @@ namespace DAL.Services
                                     IsCurrentTurn = CombatantRow["IsCurrentTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsCurrentTurn"]),
                                     VisibilityColor = CombatantRow["VisibilityColor"] == DBNull.Value ? string.Empty : CombatantRow["VisibilityColor"].ToString(),
                                     VisibleToPc = CombatantRow["VisibleToPc"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["VisibleToPc"]),
-                                    Initiative= CombatantRow["Initiative"] == DBNull.Value ? nulldecimal : Convert.ToDecimal(CombatantRow["Initiative"]),
+                                    Initiative = CombatantRow["Initiative"] == DBNull.Value ? nulldecimal : Convert.ToDecimal(CombatantRow["Initiative"]),
                                     TargetId = CombatantRow["TargetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["TargetId"]),
                                     TargetType = CombatantRow["TargetType"] == DBNull.Value ? string.Empty : CombatantRow["TargetType"].ToString(),
-                                    DelayTurn= CombatantRow["DelayTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["DelayTurn"])
+                                    DelayTurn = CombatantRow["DelayTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["DelayTurn"])
                                     //Character = new Character(),
                                     //Monster=new Monster()
 
@@ -196,10 +196,10 @@ namespace DAL.Services
                                             CharacterAbilities = new List<CharacterAbility>(),
                                             CharacterSpells = new List<CharacterSpell>(),
                                             CharacterBuffAndEffects = new List<CharacterBuffAndEffect>(),
-                                            CharacterDescription= CombatantRow["C_Description"] == DBNull.Value ? string.Empty : CombatantRow["C_Description"].ToString(),
+                                            CharacterDescription = CombatantRow["C_Description"] == DBNull.Value ? string.Empty : CombatantRow["C_Description"].ToString(),
                                             DiceRollViewModel = new DiceRollViewModel(),
-                                            RuleSetId= CombatantRow["C_RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["C_RuleSetId"]),
-                                            InventoryWeight= CombatantRow["C_InventoryWeight"] == DBNull.Value ? 0 : Convert.ToDecimal(CombatantRow["C_InventoryWeight"])
+                                            RuleSetId = CombatantRow["C_RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["C_RuleSetId"]),
+                                            InventoryWeight = CombatantRow["C_InventoryWeight"] == DBNull.Value ? 0 : Convert.ToDecimal(CombatantRow["C_InventoryWeight"])
 
                                         };
                                         /////Getting CharacterCharacterStats Starts////////////////////////////////////////////////////////////////////////////
@@ -224,10 +224,10 @@ namespace DAL.Services
                                         }
                                         catch (Exception ex)
                                         {
-                                            
+
                                         }
                                         /////Getting CharacterCharacterStats ends//////////////////////////////////////////////////////////////////////////////
-                                        
+
 
 
                                         if (ds.Tables[4].Rows.Count > 0)
@@ -256,7 +256,8 @@ namespace DAL.Services
                                                     CharacterAbility i = new CharacterAbility();
                                                     i.CharacterAbilityId = CharItemRow["CharacterAbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["CharacterAbilityId"].ToString());
                                                     i.Ability = new Ability()
-                                                    {AbilityId= CharItemRow["AbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["AbilityId"]),
+                                                    {
+                                                        AbilityId = CharItemRow["AbilityId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["AbilityId"]),
                                                         Name = CharItemRow["Name"] == DBNull.Value ? null : CharItemRow["Name"].ToString(),
                                                         ImageUrl = CharItemRow["ImageUrl"] == DBNull.Value ? null : CharItemRow["ImageUrl"].ToString()
                                                     };
@@ -324,8 +325,8 @@ namespace DAL.Services
                                             MonsterAbilitys = new List<MonsterAbility>(),
                                             MonsterSpells = new List<MonsterSpell>(),
                                             MonsterBuffAndEffects = new List<MonsterBuffAndEffect>(),
-                                            Description= CombatantRow["M_Description"] == DBNull.Value ? null : CombatantRow["M_Description"].ToString(),
-                                            Stats= CombatantRow["M_Stats"] == DBNull.Value ? null : CombatantRow["M_Stats"].ToString(),
+                                            Description = CombatantRow["M_Description"] == DBNull.Value ? null : CombatantRow["M_Description"].ToString(),
+                                            Stats = CombatantRow["M_Stats"] == DBNull.Value ? null : CombatantRow["M_Stats"].ToString(),
                                         };
                                         if (ds.Tables[8].Rows.Count > 0)
                                         {
@@ -415,35 +416,38 @@ namespace DAL.Services
             catch (Exception ex)
             {
                 throw ex;
-            } return combat;
+            }
+            return combat;
 
 
         }
-        public async Task<CombatSetting> UpdateSettings(CombatSetting model) {
-            var combatsetting = _context.CombatSettings.Where(x => x.CampaignId == model.CampaignId && x.IsDeleted!=true).FirstOrDefault();
-            if (combatsetting!=null)
+        public async Task<CombatSetting> UpdateSettings(CombatSetting model)
+        {
+            var combatsetting = _context.CombatSettings.Where(x => x.CampaignId == model.CampaignId && x.IsDeleted != true).FirstOrDefault();
+            if (combatsetting != null)
             {
-                combatsetting.AccessMonsterDetails=model.AccessMonsterDetails;
-                combatsetting.CharcterHealthStats=model.CharcterHealthStats;
-                combatsetting.CharcterXpStats=model.CharcterXpStats;
-                combatsetting.DisplayMonsterRollResultInChat=model.DisplayMonsterRollResultInChat;
-                combatsetting.DropItemsForDeletedMonsters=model.DropItemsForDeletedMonsters;
-                combatsetting.GameRoundLength=model.GameRoundLength;
-                combatsetting.GroupInitFormula=model.GroupInitFormula;
-                combatsetting.GroupInitiative=model.GroupInitiative;
-                combatsetting.MonsterVisibleByDefault=model.MonsterVisibleByDefault;
-                combatsetting.PcInitiativeFormula=model.PcInitiativeFormula;
-                combatsetting.RollInitiativeEveryRound=model.RollInitiativeEveryRound;
-                combatsetting.RollInitiativeForPlayer=model.RollInitiativeForPlayer;
-                combatsetting.SeeMonsterBuffEffects=model.SeeMonsterBuffEffects;
-                combatsetting.SeeMonsterItems=model.SeeMonsterItems;
-                combatsetting.ShowMonsterHealth=model.ShowMonsterHealth;
+                combatsetting.AccessMonsterDetails = model.AccessMonsterDetails;
+                combatsetting.CharcterHealthStats = model.CharcterHealthStats;
+                combatsetting.CharcterXpStats = model.CharcterXpStats;
+                combatsetting.DisplayMonsterRollResultInChat = model.DisplayMonsterRollResultInChat;
+                combatsetting.DropItemsForDeletedMonsters = model.DropItemsForDeletedMonsters;
+                combatsetting.GameRoundLength = model.GameRoundLength;
+                combatsetting.GroupInitFormula = model.GroupInitFormula;
+                combatsetting.GroupInitiative = model.GroupInitiative;
+                combatsetting.MonsterVisibleByDefault = model.MonsterVisibleByDefault;
+                combatsetting.PcInitiativeFormula = model.PcInitiativeFormula;
+                combatsetting.RollInitiativeEveryRound = model.RollInitiativeEveryRound;
+                combatsetting.RollInitiativeForPlayer = model.RollInitiativeForPlayer;
+                combatsetting.SeeMonsterBuffEffects = model.SeeMonsterBuffEffects;
+                combatsetting.SeeMonsterItems = model.SeeMonsterItems;
+                combatsetting.ShowMonsterHealth = model.ShowMonsterHealth;
                 combatsetting.XPDistributionforDeletedMonster = model.XPDistributionforDeletedMonster;
-                await _context.SaveChangesAsync();                
+                await _context.SaveChangesAsync();
             }
             return combatsetting;
         }
-        public List<CombatAllTypeMonsters> GetCombatAllTypeMonsters(int CampaignId) {
+        public List<CombatAllTypeMonsters> GetCombatAllTypeMonsters(int CampaignId)
+        {
             List<MonsterWithItemCount> Monsters = _monsterTemplateService.SP_GetMonstersByRuleSetId(CampaignId, 1, 9999);
             List<MonsterTemplate_Bundle> MonsterTemplates = _monsterTemplateService.SP_GetMonsterTemplateByRuleSetId(CampaignId, 1, 9999);
             List<CombatAllTypeMonsters> allTypeMonsters = new List<CombatAllTypeMonsters>();
@@ -462,37 +466,37 @@ namespace DAL.Services
             {
                 CombatAllTypeMonsters obj = new CombatAllTypeMonsters()
                 {
-                    IsBundle= monsterTemplate.IsBundle,
-                    BundleItems= monsterTemplate.BundleItems,
-                    RandomizationEngine= monsterTemplate.RandomizationEngine,
+                    IsBundle = monsterTemplate.IsBundle,
+                    BundleItems = monsterTemplate.BundleItems,
+                    RandomizationEngine = monsterTemplate.RandomizationEngine,
 
                     MonsterTemplateId = monsterTemplate.MonsterTemplateId,
                     ImageUrl = monsterTemplate.ImageUrl,
                     Name = monsterTemplate.Name,
-                    ArmorClass= monsterTemplate.ArmorClass,
-                    ChallangeRating= monsterTemplate.ChallangeRating,
-                    Command= monsterTemplate.Command,
-                    CommandName= monsterTemplate.CommandName,
-                    Description= monsterTemplate.Description,
-                    Health= monsterTemplate.Health,
-                    InitiativeCommand= monsterTemplate.InitiativeCommand,
-                    IsMonster=false,
-                    IsRandomizationEngine= monsterTemplate.IsRandomizationEngine,
-                    Metatags= monsterTemplate.Metatags,
-                    MonsterId=null,
-                    MonsterTemplateCommands= monsterTemplate.MonsterTemplateCommands,
-                    ParentMonsterTemplate= monsterTemplate.ParentMonsterTemplate,
-                    ParentMonsterTemplateId= monsterTemplate.ParentMonsterTemplateId,
-                    RuleSet= monsterTemplate.RuleSet,
-                    RuleSetId= monsterTemplate.RuleSetId,
-                   IsDeleted = monsterTemplate.IsDeleted,
-                   Stats = monsterTemplate.Stats,
-                    XPValue= monsterTemplate.XPValue,
+                    ArmorClass = monsterTemplate.ArmorClass,
+                    ChallangeRating = monsterTemplate.ChallangeRating,
+                    Command = monsterTemplate.Command,
+                    CommandName = monsterTemplate.CommandName,
+                    Description = monsterTemplate.Description,
+                    Health = monsterTemplate.Health,
+                    InitiativeCommand = monsterTemplate.InitiativeCommand,
+                    IsMonster = false,
+                    IsRandomizationEngine = monsterTemplate.IsRandomizationEngine,
+                    Metatags = monsterTemplate.Metatags,
+                    MonsterId = null,
+                    MonsterTemplateCommands = monsterTemplate.MonsterTemplateCommands,
+                    ParentMonsterTemplate = monsterTemplate.ParentMonsterTemplate,
+                    ParentMonsterTemplateId = monsterTemplate.ParentMonsterTemplateId,
+                    RuleSet = monsterTemplate.RuleSet,
+                    RuleSetId = monsterTemplate.RuleSetId,
+                    IsDeleted = monsterTemplate.IsDeleted,
+                    Stats = monsterTemplate.Stats,
+                    XPValue = monsterTemplate.XPValue,
 
                 };
                 allTypeMonsters.Add(obj);
             }
-            return allTypeMonsters.OrderBy(x=>x.Name).ToList();
+            return allTypeMonsters.OrderBy(x => x.Name).ToList();
         }
         public void AddDeployedMonstersToCombat(List<CombatAllTypeMonsters> model)
         {
@@ -506,27 +510,28 @@ namespace DAL.Services
                 _context.SaveChanges();
             }
         }
-        public List<Monster> GetCombat_MonstersList(int campaignId) {
+        public List<Monster> GetCombat_MonstersList(int campaignId)
+        {
             return _context.Monsters.Where(x => x.RuleSetId == campaignId && x.IsDeleted != true && x.AddToCombatTracker == true).ToList();
         }
-        public void RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster, bool isFromCombatScreen,int CampaignId, int XP_Ruleset_CharacterStatID)
+        public void RemoveMonsters(List<MonsterIds> monsterIds, bool deleteMonster, bool isFromCombatScreen, int CampaignId, int XP_Ruleset_CharacterStatID)
         {
 
             if (isFromCombatScreen)
             {
                 var CombatSettings = _context.CombatSettings.Where(x => x.CampaignId == CampaignId && x.IsDeleted != true).FirstOrDefault();
-                if (CombatSettings!=null)
+                if (CombatSettings != null)
                 {
                     if (CombatSettings.XPDistributionforDeletedMonster)
-                    {                                               
+                    {
                         var charactersCharacterStats = _context.CharactersCharacterStats.Where(x => x.CharacterStatId == XP_Ruleset_CharacterStatID && x.IsDeleted != true).Include(x => x.CharacterStat).ToList();
 
                         var monsters = _context.Monsters.Where(x => monsterIds.Select(mi => mi.MonsterId).Contains(x.MonsterId)).ToList();
                         foreach (var m in monsters)
                         {
-                            if (m.XPValue>0 && charactersCharacterStats.Count>0)
+                            if (m.XPValue > 0 && charactersCharacterStats.Count > 0)
                             {
-                               // decimal decimalNumberToAdd = m.XPValue / charactersCharacterStats.Count;
+                                // decimal decimalNumberToAdd = m.XPValue / charactersCharacterStats.Count;
                                 double decimalNumberToAdd = (double)m.XPValue / (double)charactersCharacterStats.Count;
                                 int NumberToAdd = Convert.ToInt32(decimalNumberToAdd);
 
@@ -544,7 +549,7 @@ namespace DAL.Services
                                 }
                                 _context.SaveChanges();
                             }
-                            
+
                         }
                     }
 
@@ -553,22 +558,23 @@ namespace DAL.Services
                         foreach (var m in monsterIds)
                         {
                             var monsterItems = _context.ItemMasterMonsterItems.Where(x => x.MonsterId == m.MonsterId && x.IsDeleted != true)
-                                .Select(x=> new ItemMasterForMonsterTemplate() {
-                                    ItemId=x.ItemId,
-                                    ItemMasterId=x.ItemMasterId,
+                                .Select(x => new ItemMasterForMonsterTemplate()
+                                {
+                                    ItemId = x.ItemId,
+                                    ItemMasterId = x.ItemMasterId,
                                 })
                                 .ToList();
                             _monsterTemplateService.DropItemsToLoot(monsterItems, m.MonsterId);
                         }
                     }
-                    
+
                 }
-                
-               
+
+
             }
 
             List<CommonID> monsterIdList = monsterIds.Select(o => new CommonID()
-            {               
+            {
                 ID = o.MonsterId
             }).ToList();
 
@@ -601,24 +607,24 @@ namespace DAL.Services
             int index = 0;
             List<Combatant_DTModel> CombatList = model.Select(o => new Combatant_DTModel()
             {
-                CharacterId=o.CharacterId,
-                CombatId= o.CombatId,
-                Id= o.Id,
-                Initiative= o.Initiative,
-                IsCurrentTurn= o.IsCurrentTurn,
-                IsDeleted= o.IsDeleted,
-                MonsterId= o.MonsterId,
+                CharacterId = o.CharacterId,
+                CombatId = o.CombatId,
+                Id = o.Id,
+                Initiative = o.Initiative,
+                IsCurrentTurn = o.IsCurrentTurn,
+                IsDeleted = o.IsDeleted,
+                MonsterId = o.MonsterId,
                 RowNum = index = Getindex(index),
                 SortOrder = o.SortOrder,
-                Type= o.Type,
-                VisibilityColor= o.VisibilityColor,
-                VisibleToPc= o.VisibleToPc,
+                Type = o.Type,
+                VisibilityColor = o.VisibilityColor,
+                VisibleToPc = o.VisibleToPc,
             }).ToList();
 
             DataTable DTCombatantList = utility.ToDataTable<Combatant_DTModel>(CombatList);
 
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
-            
+
             SqlConnection connection = new SqlConnection(connectionString);
             SqlCommand command = new SqlCommand();
             SqlDataAdapter adapter = new SqlDataAdapter();
@@ -704,7 +710,7 @@ namespace DAL.Services
         public void Combat_Start(int combatId, bool start)
         {
             var combat = _context.Combats.Where(x => x.Id == combatId).FirstOrDefault();
-            if (combat!=null)
+            if (combat != null)
             {
                 combat.IsStarted = start;
                 if (start)
@@ -712,10 +718,11 @@ namespace DAL.Services
                     combat.Round = 1;
                     _context.SaveChanges();
                 }
-                else {
+                else
+                {
                     EndCombat(combatId);
                 }
-                
+
             }
         }
 
@@ -729,11 +736,12 @@ namespace DAL.Services
             var combat = _context.Combats.Where(x => x.Id == combatId).FirstOrDefault();
             if (combat != null)
             {
-                combat.IsDeleted = true;                
+                combat.IsDeleted = true;
             }
             _context.SaveChanges();
         }
-        public void SwitchCombatantTurn(Combatant_ViewModel model, int roundCount) {
+        public void SwitchCombatantTurn(Combatant_ViewModel model, int roundCount)
+        {
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             try
             {
@@ -760,27 +768,29 @@ namespace DAL.Services
         public void SaveVisibilityDetails(Combatant_ViewModel model)
         {
             var combatant = _context.CombatantLists.Where(x => x.Id == model.Id).FirstOrDefault();
-            if (combatant!=null)
+            if (combatant != null)
             {
-                combatant.VisibilityColor =model.VisibilityColor;
+                combatant.VisibilityColor = model.VisibilityColor;
                 combatant.VisibleToPc = model.VisibleToPc;
                 _context.SaveChanges();
             }
         }
-        public void SaveMonsterHealth(Monster model) {
+        public void SaveMonsterHealth(Monster model)
+        {
             var monster = _context.Monsters.Where(x => x.MonsterId == model.MonsterId).FirstOrDefault();
-            if (monster!=null)
+            if (monster != null)
             {
                 monster.HealthCurrent = model.HealthCurrent;
                 monster.HealthMax = model.HealthMax;
                 _context.SaveChanges();
             }
         }
-        public void SaveCharacterHealth(CharacterHealthModel model) {
-            var characterCharacterStat = _context.CharactersCharacterStats.Where(x => x.CharactersCharacterStatId == model.healthStatId && x.IsDeleted != true).Include(x=>x.CharacterStat).FirstOrDefault();
-            if (characterCharacterStat!=null)
+        public void SaveCharacterHealth(CharacterHealthModel model)
+        {
+            var characterCharacterStat = _context.CharactersCharacterStats.Where(x => x.CharactersCharacterStatId == model.healthStatId && x.IsDeleted != true).Include(x => x.CharacterStat).FirstOrDefault();
+            if (characterCharacterStat != null)
             {
-                if (characterCharacterStat.CharacterStat.CharacterStatTypeId== (int)STAT_TYPE.Combo)
+                if (characterCharacterStat.CharacterStat.CharacterStatTypeId == (int)STAT_TYPE.Combo)
                 {
                     characterCharacterStat.DefaultValue = model.healthCurrent;
                 }
@@ -801,7 +811,8 @@ namespace DAL.Services
                 _context.SaveChanges();
             }
         }
-        public void saveTarget(Combatant_ViewModel model) {
+        public void saveTarget(Combatant_ViewModel model)
+        {
             var combatant = _context.CombatantLists.Where(x => x.Id == model.Id).FirstOrDefault();
             if (combatant != null)
             {
@@ -817,8 +828,8 @@ namespace DAL.Services
         }
         public List<BuffAndEffect> SP_GetMonsterAssociateBEs(int monsterID, int rulesetId)
         {
-            List<BuffAndEffect> res  = new List<BuffAndEffect>();
-            
+            List<BuffAndEffect> res = new List<BuffAndEffect>();
+
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
 
 
@@ -863,8 +874,30 @@ namespace DAL.Services
                 }
 
             }
-            
+
             return res;
+        }
+        public void SaveSortorder(List<Combatant_DTModel> model)
+        {
+
+            var oldCombatantList = _context.CombatantLists.Where(x => model.Select(y => y.Id).Contains(x.Id)).ToList();
+            foreach (var oldCombatant in oldCombatantList)
+            {
+                if (model.Where(x => x.Id == oldCombatant.Id).Select(x => x.SortOrder).Any())
+                {
+                    oldCombatant.SortOrder = model.Where(x => x.Id == oldCombatant.Id).Select(x => x.SortOrder).FirstOrDefault();
+                }
+            }
+            _context.SaveChanges();
+        }
+
+        public void SaveDelayTurn(Combatant_ViewModel model) {
+            var combatant = _context.CombatantLists.Where(x => x.Id == model.Id).FirstOrDefault();
+            if (combatant != null)
+            {
+                combatant.DelayTurn = model.DelayTurn;
+                _context.SaveChanges();
+            }
         }
     }
 }

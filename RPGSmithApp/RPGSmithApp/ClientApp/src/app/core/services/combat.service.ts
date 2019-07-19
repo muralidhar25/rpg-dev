@@ -26,6 +26,8 @@ export class CombatService extends EndpointFactory {
   private readonly SP_GetMonsterAssociateBEs: string = this.configurations.baseUrl + "/api/Combat/SP_GetMonsterAssociateBEs";
   private readonly SaveTarget: string = this.configurations.baseUrl + "/api/Combat/SaveTarget";
   private readonly Combat_Start: string = this.configurations.baseUrl + "/api/Combat/Combat_Start";
+  private readonly SaveSortOrder: string = this.configurations.baseUrl + "/api/Combat/SaveSortOrder";
+  private readonly SaveDelayTurn: string = this.configurations.baseUrl + "/api/Combat/SaveDelayTurn";
 
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
@@ -89,7 +91,7 @@ export class CombatService extends EndpointFactory {
       });
   }
 
-  removeMonsters<T>(monsters: any[], shouldDeleteMonsters: boolean, isFromCombatScreen: boolean, CampaignId: number, XP_Ruleset_CharacterStatID:number): Observable<T> {
+  removeMonsters<T>(monsters: any[], shouldDeleteMonsters: boolean, isFromCombatScreen: boolean, CampaignId: number, XP_Ruleset_CharacterStatID: number): Observable<T> {
     let url = `${this.Combat_RemoveMonsters}?deleteMonster=${shouldDeleteMonsters}&CampaignId=${CampaignId}&XP_Ruleset_CharacterStatID=${XP_Ruleset_CharacterStatID}&isFromCombatScreen=${isFromCombatScreen}`
     return this.http.post<T>(url, JSON.stringify(monsters), this.getRequestHeaders())
       .catch(error => {
@@ -143,6 +145,22 @@ export class CombatService extends EndpointFactory {
     return this.http.post<T>(endpointUrl, JSON.stringify(target), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.saveTarget(target));
+      });
+  }
+
+  saveSortOrder<T>(sortOrder): Observable<T> {
+    let url = `${this.SaveSortOrder}`
+    return this.http.post<T>(url, JSON.stringify(sortOrder), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.saveSortOrder(sortOrder));
+      });
+  }
+
+  saveDelayTurn<T>(delayTurn): Observable<T> {
+    let url = `${this.SaveDelayTurn}`
+    return this.http.post<T>(url, JSON.stringify(delayTurn), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.saveDelayTurn(delayTurn));
       });
   }
 

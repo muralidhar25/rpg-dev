@@ -311,7 +311,7 @@ export class CombatComponent implements OnInit {
             let valueofinitiative = this.curretnCombatant.initiativeValue;
             this.CurrentInitiativeValue = valueofinitiative;
           }
-          
+
 
           //this.roundCounter = this.roundCounter + 1;
           ////convert time
@@ -426,15 +426,73 @@ export class CombatComponent implements OnInit {
   }
 
 
-  DelayTurn(currentCombatantDetail) {
-    this.delayResumeTurn = !this.delayResumeTurn;
-    if (this.delayResumeTurn) {
-      this.nextTurn();
-    }
+  DelayTurn(currentCombat) {
+    currentCombat.delayTurn = true;
+    this.SaveDelayTurn(currentCombat);
   }
 
-  ResumeTurn(currentCombatantDetail) {
-    this.delayResumeTurn = !this.delayResumeTurn;
+  ResumeTurn(currentCombat) {
+    let message = "Place Before/After current combatant";
+    this.alertService.showDialog(message,
+      DialogType.confirm, () => this.PlaceBefore(currentCombat), () => this.PlaceAfter(currentCombat), 'Before', 'After');
+    currentCombat.delayTurn = false;
+    this.SaveDelayTurn(currentCombat);
+  }
+
+  PlaceBefore(currentCombat) {
+    this.combatants = this.combatants.filter(x => x.id != currentCombat.id);
+    let combats = Object.assign([], this.combatants);
+    combats.map((x, index) => {
+      if (x.isCurrentTurn) {
+        this.combatants.map(y => {
+          x.isCurrentTurn = false;
+        });
+        currentCombat.isCurrentTurn = true;
+        this.combatants.splice(index, 0, currentCombat);
+      }
+    });
+    this.SaveCombatantTurn(currentCombat, this.roundCounter);
+    this.SaveSortOrder(this.combatants);
+  }
+
+  PlaceAfter(currentCombat) {
+    this.combatants = this.combatants.filter(x => x.id != currentCombat.id);
+    let combats = Object.assign([], this.combatants);
+    combats.map((x, index) => {
+      if (x.isCurrentTurn) {
+        this.combatants.splice(index + 1, 0, currentCombat);
+      }
+    });
+    this.SaveSortOrder(this.combatants);
+  }
+
+  SaveDelayTurn(delayTurn) {
+    this.combatService.saveDelayTurn(delayTurn).subscribe(res => {
+      let result = res;
+    }, error => {
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      } else {
+        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+      }
+    });
+  }
+
+  SaveSortOrder(combatants) {
+    this.combatants.map((x, index) => {
+      x.sortOrder = index + 1;
+    });
+    this.combatService.saveSortOrder(combatants).subscribe(res => {
+      let result = res;
+    }, error => {
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      } else {
+        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+      }
+    });
   }
 
   monsterAdd() {
@@ -463,38 +521,61 @@ export class CombatComponent implements OnInit {
   }
 
   prevTurn() {
-    //console.log('prev');
+    let skipIsCurrentTurnCheck: boolean = false;
+    let skipIsCurrentTurnCheck_Count: number = 0;
     for (let i = 0; i < this.combatants.length; i++) {
-      if (this.combatants[i].isCurrentTurn && this.combatants[i - 1]) {
+      if ((this.combatants[i].isCurrentTurn && this.combatants[i - 1]) || skipIsCurrentTurnCheck) {
         this.combatants[i].isCurrentTurn = false;
-        this.combatants[i - 1].isCurrentTurn = true;
-        this.curretnCombatant = this.combatants[i - 1];
-        let valueofinitiative = this.combatants[i - 1].initiativeValue;
+
+        let indexToSetCurrentTurn = i - 1;
+
+        this.combatants[indexToSetCurrentTurn].isCurrentTurn = true;
+        this.curretnCombatant = this.combatants[indexToSetCurrentTurn];
+        let valueofinitiative = this.combatants[indexToSetCurrentTurn].initiativeValue;
         this.CurrentInitiativeValue = valueofinitiative;
+
+        if (this.combatants[indexToSetCurrentTurn].delayTurn) {
+          this.prevTurn();
+          break;
+        }
+
+
         this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
         this.frameClick(this.curretnCombatant)
+
+      
         return;
       }
 
-      else if (!this.combatants[i - 1] && this.roundCounter > 1 && this.combatants[i].isCurrentTurn) {
+      //else if (!this.combatants[i - 1] && this.roundCounter > 1 && this.combatants[i].isCurrentTurn) {
 
-        let index = this.combatants.length - 1;
-        this.combatants[i].isCurrentTurn = false;
-        this.curretnCombatant = this.combatants[i + index];
-        this.combatants[i + index].isCurrentTurn = true;
-        let valueofinitiative = this.combatants[i + index].initiativeValue;
-        this.CurrentInitiativeValue = valueofinitiative;
-        this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
-        this.frameClick(this.curretnCombatant)
-        return;
-      }
+      //  let index = this.combatants.length - 1;
+      //  this.combatants[i].isCurrentTurn = false;
+      //  if (this.combatants[i + index].delayTurn) {
+      //    //skipIsCurrentTurnCheck = true;
+      //    continue;
+      //  }
+      //  this.curretnCombatant = this.combatants[i + index];
+      //  this.combatants[i + index].isCurrentTurn = true;
+      //  let valueofinitiative = this.combatants[i + index].initiativeValue;
+      //  this.CurrentInitiativeValue = valueofinitiative;
+      //  this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
+      //  this.frameClick(this.curretnCombatant)
+      //  return;
+      //}
     }
 
   }
   nextTurn() {
+    debugger;
+    let skipIsCurrentTurnCheck: boolean = false;
     for (let i = 0; i < this.combatants.length; i++) {
-      if (this.combatants[i].isCurrentTurn == true && this.combatants[i + 1]) {
+      if ((this.combatants[i].isCurrentTurn == true && this.combatants[i + 1]) || skipIsCurrentTurnCheck) {
         this.combatants[i].isCurrentTurn = false;
+        if (this.combatants[i + 1].delayTurn) {
+          skipIsCurrentTurnCheck = true;
+          continue;
+        }
         this.combatants[i + 1].isCurrentTurn = true;
         this.curretnCombatant = this.combatants[i + 1];
         let valueofinitiative = this.combatants[i + 1].initiativeValue;
@@ -508,6 +589,10 @@ export class CombatComponent implements OnInit {
           this.Init(true);
         }
         this.combatants[i].isCurrentTurn = false;
+        if (this.combatants[i - i].delayTurn) {
+          //skipIsCurrentTurnCheck = true;
+          continue;
+        }
         this.combatants[i - i].isCurrentTurn = true;
         this.curretnCombatant = this.combatants[i - 1];
         let valueofinitiative = this.combatants[i - i].initiativeValue;
@@ -667,7 +752,7 @@ export class CombatComponent implements OnInit {
     this.bsModalRef.content.tile = -2;
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.character = new Characters();
-    this.bsModalRef.content.command = monster.command;    
+    this.bsModalRef.content.command = monster.command;
     this.bsModalRef.content.isFromCampaignDetail = true;
     this.bsModalRef.content.displayRollResultInChat_AfterAllChecks = this.settings.displayMonsterRollResultInChat;
     if (monster.hasOwnProperty("monsterId")) {
@@ -715,7 +800,7 @@ export class CombatComponent implements OnInit {
   }
 
   RemoveOrDeleteMonster(item, del) {
-    let ruleset_XP_CharacterStatId =  this.get_Ruleset_XP_CharacterStatID();
+    let ruleset_XP_CharacterStatId = this.get_Ruleset_XP_CharacterStatID();
     this.isLoading = true;
     let _msg = ' Removing Monster ....';
     this.alertService.startLoadingMessage("", _msg);
@@ -1175,7 +1260,7 @@ export class CombatComponent implements OnInit {
   }
   private get_Ruleset_XP_CharacterStatID(): number {
     debugger
-    let Ruleset_XP_CharacterStatID:number = 0;
+    let Ruleset_XP_CharacterStatID: number = 0;
     this.combatants.map((x) => {
       if (x.type == this.combatItemsType.CHARACTER && Ruleset_XP_CharacterStatID == 0) {
         if (x.character.diceRollViewModel.charactersCharacterStats) {
@@ -1189,7 +1274,7 @@ export class CombatComponent implements OnInit {
               }
               statFoundFlag = true;
             }
-          });         
+          });
           if (charStat) {
             Ruleset_XP_CharacterStatID = charStat.characterStatId;
           }

@@ -93,7 +93,7 @@
 
                       <!--Number/Combo Type Stat-->
                       <ng-container *ngIf="item?.character?.healthCurrent!=DummyValueForCharHealthStat && item?.character?.healthMax==DummyValueForCharHealthStat">
-                        <div class="white-section text-center" (click)="progressHealth(item);$event.stopPropagation()">
+                        <div class="white-section text-center" (click)="item.isOwnPlayer && progressHealth(item);$event.stopPropagation()">
                           <span>
                             {{item?.character?.healthCurrent}}
                           </span>
@@ -102,7 +102,7 @@
 
                       <!--Current-Max/Val-SubVal Type Stat-->
                       <ng-container *ngIf="item?.character?.healthCurrent!=DummyValueForCharHealthStat && item?.character?.healthMax!=DummyValueForCharHealthStat">
-                        <div class="white-section p-0" (click)="progressHealth(item);$event.stopPropagation()">
+                        <div class="white-section p-0" (click)="item.isOwnPlayer && progressHealth(item);$event.stopPropagation()">
                           <circle-progress [percent]="(item?.character?.healthCurrent/item?.character?.healthMax)*100"
                                            [space]="-10"
                                            [outerStrokeWidth]="10"
@@ -130,7 +130,7 @@
 
                     </ng-container>
                     <ng-container *ngIf="item.type==combatantsType.MONSTER && settings.showMonsterHealth">
-                      <div class="white-section p-0" (click)="progressHealth(item);$event.stopPropagation()">
+                      <div class="white-section p-0" (click)="item.isOwnPlayer && progressHealth(item);$event.stopPropagation()">
                         <circle-progress [percent]="(item?.monster?.healthCurrent/item?.monster?.healthMax)*100"
                                          [space]="-10"
                                          [outerStrokeWidth]="10"

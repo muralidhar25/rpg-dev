@@ -3,11 +3,11 @@ import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
-import  { SharedModule } from '../shared/shared.module';
+import { SharedModule } from '../shared/shared.module';
 import { RulesetsRoutingModule } from "./rulesets-routing.module";
 import { RecordsModule } from "../records/records.module";
-import  { TileModule } from '../tile/tile.module';
-import  { TileRulesetModule } from '../tile-ruleset/tile-ruleset.module';
+import { TileModule } from '../tile/tile.module';
+import { TileRulesetModule } from '../tile-ruleset/tile-ruleset.module';
 
 import { RulesetComponent } from './ruleset/ruleset.component';
 import { RulesetFormComponent } from './ruleset-form/ruleset-form.component';
@@ -36,7 +36,7 @@ import { CombatInitiativeComponent } from "./combat/combat-initiative/combat-ini
 import { DropItemsCombatMonsterComponent } from "./combat/drop-monstercombat-items/drop-items-monstercombat.component";
 import { RemoveCombatMonsterComponent } from "./combat/remove-combat-monster/remove-monster-combat.component";
 import { SaveCombatMonsterComponent } from "./combat/save-combat-monster/save-combat-monster.component";
-import { CombatHealthComponent } from "./combat/update-combat-health/update-combat-health.component";
+//import { CombatHealthComponent } from "./combat/update-combat-health/update-combat-health.component";
 import { AccordionModule } from "ngx-bootstrap";
 import { NgCircleProgressModule } from "ng-circle-progress";
 
@@ -70,7 +70,7 @@ import { NgCircleProgressModule } from "ng-circle-progress";
     DropItemsCombatMonsterComponent,
     RemoveCombatMonsterComponent,
     SaveCombatMonsterComponent,
-    CombatHealthComponent
+
     //CampaignInviteComponent
   ],
   imports: [
@@ -110,8 +110,7 @@ import { NgCircleProgressModule } from "ng-circle-progress";
     CombatInitiativeComponent,
     DropItemsCombatMonsterComponent,
     RemoveCombatMonsterComponent,
-    SaveCombatMonsterComponent,
-    CombatHealthComponent
+    SaveCombatMonsterComponent
     //CampaignInviteComponent
   ],
   entryComponents: [
@@ -129,11 +128,10 @@ import { NgCircleProgressModule } from "ng-circle-progress";
     AddCombatMonsterComponent,
     RemoveCombatMonsterComponent,
     SaveCombatMonsterComponent,
-    CombatHealthComponent,
     DropItemsCombatMonsterComponent,
     CombatVisibilityComponent,
     AddRemoveBuffEffectsComponent
     //CampaignInviteComponent
   ]
 })
-export class RulesetsModule {}
+export class RulesetsModule { }

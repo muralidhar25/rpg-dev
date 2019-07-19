@@ -1127,8 +1127,11 @@
 .icon-Delay:before {
   content: "\e973";
 }
+.icon-Resume:before {
+  content: "\e974";
+}
 
-.icon-BnE:before, .icon-Monster:before, .icon-MonsterTemp:before, .icon-Combat:before, .icon-MarkTarget:before, .icon-Health:before, .icon-Settings:before, .icon-Assign:before, .icon-DefLayouts:before, .icon-Delay:before {
+.icon-BnE:before, .icon-Monster:before, .icon-MonsterTemp:before, .icon-Combat:before, .icon-MarkTarget:before, .icon-Health:before, .icon-Settings:before, .icon-Assign:before, .icon-DefLayouts:before, .icon-Delay:before, .icon-Resume:before {
   font-family: 'icomoon' !important;
   speak: none;
   font-style: normal;

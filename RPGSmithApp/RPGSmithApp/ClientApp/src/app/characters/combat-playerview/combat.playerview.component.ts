@@ -25,6 +25,7 @@ import { CombatBuffeffectDetailsComponent } from '../../rulesets/combat/combat-b
 import { ImageViewerComponent } from '../../shared/image-interface/image-viewer/image-viewer.component';
 import { CharactersCharacterStat } from '../../core/models/view-models/characters-character-stats.model';
 import { initiative } from '../../core/models/view-models/initiative.model';
+import { CombatHealthComponent } from '../../rulesets/combat/update-combat-health/update-combat-health.component';
 
 @Component({
   selector: 'app-combat-playerview',
@@ -236,6 +237,28 @@ export class CombatPlayerViewComponent implements OnInit {
     this.bsModalRef.content.character = this.character;
     this.bsModalRef.content.recordName = this.character.characterName;
     this.bsModalRef.content.recordImage = this.character.imageUrl;
+  }
+
+  progressHealth(item) {
+    this.bsModalRef = this.modalService.show(CombatHealthComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Health";
+    this.bsModalRef.content.combatInfo = item;
+    this.bsModalRef.content.event.subscribe(result => {
+      if (result.type == combatantType.CHARACTER) {
+        item.character.healthCurrent = result.character.healthCurrent;
+        item.character.healthMax = result.character.healthMax;
+      }
+      else if (result.type == combatantType.MONSTER) {
+        item.monster.healthCurrent = result.monster.healthCurrent;
+        item.monster.healthMax = result.monster.healthMax;
+      }
+    });
+    //}
+
   }
 
   buffEffectclick(item) {

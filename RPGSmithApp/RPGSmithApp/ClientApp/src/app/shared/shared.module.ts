@@ -27,7 +27,7 @@ import { AppTranslationService, TranslateLanguageLoader } from '../core/common/a
 
 import { NotFoundComponent } from "./not-found/not-found.component";
 import { AccountSettingsComponent } from './accounts/account-settings/account-settings.component';
-import { ChangePasswordComponent } from'./accounts/change-password/change-password.component';
+import { ChangePasswordComponent } from './accounts/change-password/change-password.component';
 import { AboutHelpComponent } from './accounts/about-help/about-help.component';
 import { DeleteAccountComponent } from './accounts/delete-account/delete-account.component';
 
@@ -41,10 +41,10 @@ import { CastComponent } from './cast/cast.component';
 import { froalaEditorComponent } from './froalaEditor/froalaEditor.component';
 import { LoaderComponent } from '../shared/loader/loader.component';
 
-import  { CustomDiceComponent } from './custom-dice/custom-dice.component';
-import  { DiceTrayComponent } from './dice-tray/dice-tray.component';
-import  { AddCustomDiceComponent } from './add-custom-dice/add-custom-dice.component';
-import  { SelectCustomDiceIconComponent } from './select-custom-dice-icon/select-custom-dice-icon.component';
+import { CustomDiceComponent } from './custom-dice/custom-dice.component';
+import { DiceTrayComponent } from './dice-tray/dice-tray.component';
+import { AddCustomDiceComponent } from './add-custom-dice/add-custom-dice.component';
+import { SelectCustomDiceIconComponent } from './select-custom-dice-icon/select-custom-dice-icon.component';
 
 import { DiceRollComponent } from './dice/dice-roll/dice-roll.component';
 import { DiceComponent } from './dice/dice/dice.component';
@@ -73,7 +73,8 @@ import { CreateBuffAndEffectsComponent } from "./create-buff-and-effects/create-
 import { AddBuffAndEffectComponent } from "./buffs-and-effects/add-buffs-and-effects/add-buffs-and-effects.component";
 import { AssignBuffAndEffectComponent } from "./buffs-and-effects/assign-buffs-and-effects/assign-buffs-and-effects.component";
 import { CombatBuffeffectDetailsComponent } from "../rulesets/combat/combat-buffeffects-details/combat-buffeffects-details.component";
-  
+import { CombatHealthComponent } from "../rulesets/combat/update-combat-health/update-combat-health.component";
+
 @NgModule({
   declarations: [
     NotFoundComponent,
@@ -101,7 +102,7 @@ import { CombatBuffeffectDetailsComponent } from "../rulesets/combat/combat-buff
     CreateSpellsComponent,
     InviteAddCharctersFormComponent,
     PaymentComponent,
-   PlayerLootComponent,
+    PlayerLootComponent,
     CharactersFormComponent,
     HandoutViewComponent,
     HandoutFileViewComponent,
@@ -113,7 +114,8 @@ import { CombatBuffeffectDetailsComponent } from "../rulesets/combat/combat-buff
     CreateBuffAndEffectsComponent,
     AddBuffAndEffectComponent,
     AssignBuffAndEffectComponent,
-    CombatBuffeffectDetailsComponent
+    CombatBuffeffectDetailsComponent,
+    CombatHealthComponent
   ],
   imports: [
     CommonModule,
@@ -135,10 +137,10 @@ import { CombatBuffeffectDetailsComponent } from "../rulesets/combat/combat-buff
     ImageCropperModule,
     NgGridModule,
     TranslateModule.forRoot({
-        loader: {
-            provide: TranslateLoader,
-            useClass: TranslateLanguageLoader
-        }
+      loader: {
+        provide: TranslateLoader,
+        useClass: TranslateLanguageLoader
+      }
     }),
     TagInputModule,
     CoreModule,
@@ -211,7 +213,8 @@ import { CombatBuffeffectDetailsComponent } from "../rulesets/combat/combat-buff
     CreateBuffAndEffectsComponent,
     AddBuffAndEffectComponent,
     AssignBuffAndEffectComponent,
-    CombatBuffeffectDetailsComponent
+    CombatBuffeffectDetailsComponent,
+    CombatHealthComponent
   ],
   entryComponents: [
     AccountSettingsComponent,
@@ -232,7 +235,7 @@ import { CombatBuffeffectDetailsComponent } from "../rulesets/combat/combat-buff
     DiceRollComponent,
     DiceComponent,
     DiceSaveComponent,
-    NumericCharacterStatComponent, 
+    NumericCharacterStatComponent,
     CreateAbilitiesComponent,
     CreateSpellsComponent,
     InviteAddCharctersFormComponent,
@@ -248,13 +251,14 @@ import { CombatBuffeffectDetailsComponent } from "../rulesets/combat/combat-buff
     CreateBuffAndEffectsComponent,
     AddBuffAndEffectComponent,
     AssignBuffAndEffectComponent,
-    CombatBuffeffectDetailsComponent
+    CombatBuffeffectDetailsComponent,
+    CombatHealthComponent
   ]
 })
-export class SharedModule {}
+export class SharedModule { }
 
 
 
 export function getBaseUrl() {
-    return document.getElementsByTagName('base')[0].href;
+  return document.getElementsByTagName('base')[0].href;
 }
