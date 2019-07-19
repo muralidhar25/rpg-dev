@@ -33,8 +33,9 @@
                 </div>
             </div>
         </div>
-        <div class="modal-footer btn-justify-custom">
-            <button *ngIf="characterCommand.characterCommandId>0" type="button" (click)="delete(characterCommand)" class="btn float-left btn-outline-primary">Delete</button>
+        <div class="modal-footer btn-justify-custom">         
+            <button *ngIf="isFromCampaignDetail && characterCommand.rulesetCommandId>0" type="button" (click)="delete(characterCommand)" class="btn float-left btn-outline-primary">Delete</button>
+            <button *ngIf="!isFromCampaignDetail && characterCommand.characterCommandId>0" type="button" (click)="delete(characterCommand)" class="btn float-left btn-outline-primary">Delete</button>
             <button type="submit" class="float-right btn btn-accent save">SAVE</button>
             <button type="button" (click)="close()" class="float-right btn btn-simple-accent">Cancel</button>
         </div>

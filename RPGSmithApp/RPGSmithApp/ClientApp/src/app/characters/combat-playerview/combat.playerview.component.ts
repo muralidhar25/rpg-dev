@@ -25,6 +25,7 @@ import { CombatBuffeffectDetailsComponent } from '../../rulesets/combat/combat-b
 import { ImageViewerComponent } from '../../shared/image-interface/image-viewer/image-viewer.component';
 import { CharactersCharacterStat } from '../../core/models/view-models/characters-character-stats.model';
 import { initiative } from '../../core/models/view-models/initiative.model';
+import { setInterval } from 'timers';
 import { CombatHealthComponent } from '../../rulesets/combat/update-combat-health/update-combat-health.component';
 
 @Component({
@@ -94,8 +95,11 @@ export class CombatPlayerViewComponent implements OnInit {
       //$(".modal-backdrop").remove();
     } catch (err) { }
   }
-  GetCombatDetails() {
-    this.isLoading = true;
+  GetCombatDetails(ShowLoader = true) {
+    if (ShowLoader) {
+      this.isLoading = true;
+    }
+    
     //////////////
     this.charactersService.getCharactersById<any>(this.characterId)
       .subscribe(data => {
@@ -210,6 +214,8 @@ export class CombatPlayerViewComponent implements OnInit {
               let roundTime = this.settings.gameRoundLength * this.roundCounter;
               this.gametime = this.time_convert(roundTime);
               this.frameClick(curretnCombatant)
+
+              this.refreshPageData();
             }
           }
           this.isLoading = false;
@@ -317,7 +323,11 @@ export class CombatPlayerViewComponent implements OnInit {
 
   //opens one to one chat
   ChatBtn(item) {
-    console.log('target', item);
+    if (item.type == combatantType.CHARACTER) {
+      let characterId = item.character.characterId;
+      this.appService.updateOpenChatForCharacter(characterId);
+    }
+    
   }
 
   TargetBtn(item) {
@@ -454,5 +464,10 @@ export class CombatPlayerViewComponent implements OnInit {
     this.sharedService.updateAccountSetting(headerValues);
     this.localStorage.deleteData(DBkeys.HEADER_VALUE);
     this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+  }
+  refreshPageData() {
+    //let refreshPage = setInterval(() => {
+    //  this.GetCombatDetails(false);
+    //}, 5000);
   }
 }

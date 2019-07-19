@@ -80,6 +80,12 @@ export class NgChat implements OnInit, IChatController {
         this.sendCombatMessageToChatGroup(serviceData);
       }
     });
+    this.appService.shouldUpdateOpenChatForCharacter().subscribe((characterId) => {
+      debugger;
+      if (characterId) {
+        this.openChatForCharacter(characterId);
+      }
+    });
   }
 
   // Exposes enums for the ng-template
@@ -1308,5 +1314,33 @@ export class NgChat implements OnInit, IChatController {
   }
   onMessageClick() {
     this.appService.updateLootMessageClicked(true);
+  }
+  openChatForCharacter(characterId) {
+    //if (this.participants.filter(x => x. == "Everyone")) { //check if character is online
+
+    //}
+    try {
+      debugger
+      if (this.participants.filter((x: any) => x.characterID == characterId && !x.chattingTo).length) {
+        if (this.participants.filter((x: any) => x.characterID == characterId && !x.chattingTo && x.status == ChatParticipantStatus.Online).length) {
+          this.openChatWindow(this.participants.filter((x: any) => x.characterID == characterId && !x.chattingTo && x.status == ChatParticipantStatus.Online)[0], true, true);
+        }
+        else {
+          //character is offline.
+        }
+      }
+      else {
+        //character not found in chat window.
+      }
+
+      let message = new Message();
+      message.fromId = this.userId;
+      message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;
+      debugger
+
+    }
+    catch (e) {
+      //some error occured.
+    }
   }
 }

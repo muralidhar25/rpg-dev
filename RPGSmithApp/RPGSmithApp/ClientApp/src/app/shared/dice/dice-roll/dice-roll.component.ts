@@ -102,6 +102,7 @@ export class DiceRollComponent implements OnInit {
   isShowSendtoChat: boolean;
   isFromRulesetSharedLayout: boolean = false;
   DiceImage: any;
+  displayRollResultInChat_AfterAllChecks: boolean = true;
   constructor(
     private router: Router, public modalService: BsModalService, private bsModalRef: BsModalRef, private alertService: AlertService,
     private charactersCharacterStatService: CharactersCharacterStatService, private charactersService: CharactersService,
@@ -114,7 +115,10 @@ export class DiceRollComponent implements OnInit {
     this.diceSection = true;
     this.rollSection = false;
     this.sharedService.shouldUpdateDice().subscribe(serviceJson => {
-      if (serviceJson) { this.Initialize(); }
+      if (serviceJson) { this.Initialize();  }
+    });
+    this.sharedService.shouldUpdateDiceSaveResults().subscribe(serviceJson => {
+      if (serviceJson) { this.Initialize(); this.getData() }
     });
     this.sharedService.shouldUpdateCharactersCharacterStats().subscribe(sharedServiceJson => {
       if (sharedServiceJson) this.Initialize();
@@ -150,6 +154,13 @@ export class DiceRollComponent implements OnInit {
       this.recordImage = this.bsModalRef.content.recordImage ? this.bsModalRef.content.recordImage : '';
       this.recordType = this.bsModalRef.content.recordType ? this.bsModalRef.content.recordType : '';
       this.recordId = this.bsModalRef.content.recordId ? this.bsModalRef.content.recordId : '';
+      if (this.bsModalRef.content.displayRollResultInChat_AfterAllChecks == false) {
+        this.displayRollResultInChat_AfterAllChecks = this.bsModalRef.content.displayRollResultInChat_AfterAllChecks
+      }
+      else {
+        this.displayRollResultInChat_AfterAllChecks = true;
+      }
+     
 
       this.diceRedirection();
 
@@ -161,174 +172,7 @@ export class DiceRollComponent implements OnInit {
       this.isLoading = true;
       this.isFromTile = this.bsModalRef.content.tile ? true : false;
 
-      this.charactersService.getDiceRollModel<any>(this.rulesetId, this.characterId)
-        .subscribe(data => {
-          this.isLoading = false;
-          if (data) {
-
-            debugger;
-            this.character = data.character;
-            if (this.isFromCampaignDetail) {
-              this.characterCommandData = data.rulesetCommands;
-            }
-            else {
-              this.characterCommandData = data.characterCommands;
-            }
-
-            if (data.isGmAccessingPlayerCharacter) {
-              if (this.localStorage.localStorageGetItem(DBkeys.IsCharacterOpenedFromCampaign)) {
-                this.isShowSendtoChat = true;
-              }
-            }
-
-            this.charactersCharacterStats = data.charactersCharacterStats;
-
-
-            if (!this.characterId) {
-              this.character = new Characters();
-            }
-            this.isDicePublicRoll = this.character.isDicePublicRoll;
-            this.showTotal = true;
-            try {
-              if (this.character.lastCommandResult)
-                this.calculationStringArray = DiceService.getCalculationStringArray(this.character.lastCommandResult);
-            } catch (err) { }
-
-            this.charactersCharacterStats.forEach(item => {
-              item.number = item.number == 0 ? "" : item.number;
-              item.current = item.current == 0 ? "" : item.current;
-              item.maximum = item.maximum == 0 ? "" : item.maximum;
-              item.value = item.value == 0 ? "" : item.value;
-              item.subValue = item.subValue == 0 ? "" : item.subValue;
-            });
-
-            this.diceRollModel = this.characterCommandService.DiceRollData(this.characterId);
-            this.characterCommandModel = this.characterCommandService.commandModelData({ characterId: this.characterId, character: this.character }, "ADD");
-            this.diceRolledData = this.characterCommandService.DiceRollData(this.characterId);
-
-
-
-            if (this.isFromTile) {
-              this.rollSection = true;
-              this.isLoading = true;
-            }
-
-
-            if (this.isFromCampaignDetail) {
-              this.isDicePublicRoll = data.ruleSet.isDicePublicRoll;
-            }
-
-            let model: any = data;
-            this.statdetails = { charactersCharacterStat: model.charactersCharacterStats, character: data.character };
-
-            this.customDices = model.customDices;
-
-            this.customDices = DiceService.BindDeckCustomDices(this.customDices);
-            this.diceTray = model.diceTrays;
-            this.defaultDices = model.defaultDices;
-            let ruleset = model.ruleSet;
-            if (this.diceTray)
-              if (this.diceTray.length > 0) {
-                this.diceRollModel = this.characterCommandService.DiceRollDataFromDiceTray(this.characterId, this.customDices, this.diceTray, this.defaultDices);
-                this.diceRolledData = this.characterCommandService.DiceRollDataFromDiceTray(this.characterId, this.customDices, this.diceTray, this.defaultDices);
-              }
-
-            //for character tile & records
-            if (this.isFromTile) {
-              //this.isSkipDicePublicRollcheck = true;
-              if (+this.bsModalRef.content.tile == TILES.EXECUTE) {
-                let executeFormModel = this.bsModalRef.content.executeTile;
-                let executeTile = executeFormModel.linkType == 'Spell' ? executeFormModel.spell.spell : executeFormModel.linkType == 'Ability' ? executeFormModel.ability.ability : executeFormModel.linkType == 'Item' ? executeFormModel.item : {};
-
-                this.characterCommandModel.command = executeTile.command;
-                this.onClickRoll(this.characterCommandModel, executeTile.command);
-              }
-              else if (+this.bsModalRef.content.tile == TILES.COMMAND) {
-                let commandTile = this.bsModalRef.content.commandTile;
-
-                this.characterCommandModel.command = commandTile.command;
-                this.onClickRoll(this.characterCommandModel, commandTile.command);
-              }
-              else if (+this.bsModalRef.content.tile == TILES.CHARACTERSTAT) {
-                let characterStatTile = this.bsModalRef.content.characterStatTile;
-                //for ruleset shared layout
-                if (this.bsModalRef.content.isFromRulesetSharedLayout) {
-                  if (characterStatTile.characterStat.characterStatDefaultValues) {
-                    if (characterStatTile.characterStat.characterStatDefaultValues.length) {
-                      this.characterCommandModel.command = characterStatTile.characterStat.characterStatDefaultValues[0].defaultValue;
-                    }
-                  }
-                }
-                else {
-                  this.characterCommandModel.command = characterStatTile.charactersCharacterStat.command;
-                }
-                //for ruleset shared layout end
-                //this.characterCommandModel.command = characterStatTile.charactersCharacterStat.command; //Commented for ruleset shared
-                this.onClickRoll(this.characterCommandModel, this.characterCommandModel.command);
-              }
-              else if (+this.bsModalRef.content.tile == -1) {
-                this.numberToAdd = undefined;// this.bsModalRef.content.numberToAdd
-                this.showShowDiceBtn = this.showDetailsByDefault = true;
-              }
-              else if (+this.bsModalRef.content.tile == -2) {
-                let command = this.bsModalRef.content.command;
-                this.characterCommandModel.command = command;
-                this.onClickRoll(this.characterCommandModel, command);
-              }
-              else if (+this.bsModalRef.content.tile == -3) {
-                //this.numberToAdd = this.bsModalRef.content.numberToAdd
-                this.showShowDiceBtn = true;
-                this.showDetailsByDefault = false;
-                let old = ruleset.defaultDice; //this.character.lastCommand;
-                this.oldCommandSaved = old;
-                let command = '';
-                if (!this.numberToAdd)
-                  command = ruleset.defaultDice; //+ " + 0"; //this.character.lastCommand + " + 0"
-                else if (this.numberToAdd.toString() === '0')
-                  command = ruleset.defaultDice; //this.character.lastCommand
-                else if (this.numberToAdd ? this.numberToAdd.toString().charAt(0) === '-' : false)
-                  command = ruleset.defaultDice ? ruleset.defaultDice + " " + this.numberToAdd.toString() : this.numberToAdd.toString();
-                else
-                  command = ruleset.defaultDice ? ruleset.defaultDice + " + " + this.numberToAdd.toString() : this.numberToAdd.toString();
-
-                this.characterCommandModel.command = command;
-                this.onClickRoll(this.characterCommandModel, command);
-              }
-            }
-
-            // for ruleset Last command
-            if (this.isFromCampaignDetail) {
-              this.rulesetService.getRulesetById<any>(this.rulesetId)
-                .subscribe(data => {
-                  this.character = data;                  
-                  this.showTotal = true;
-                  try {
-                    if (this.character.lastCommandResult)
-                      this.calculationStringArray = DiceService.getCalculationStringArray(this.character.lastCommandResult);
-                  } catch (err) { }
-                }, error => {
-                  this.isLoading = false;
-                  this.spinner = false;
-                  this.authService.logout();
-                }, () => { });
-            }
-
-            setTimeout(() => {
-              if (this.isLoading) this.isLoading = false;
-            }, 200);
-          }
-
-        }, error => {
-          this.isLoading = false;
-          this.character = new Characters();
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        }, () => {
-
-
-        });
+      this.getData();
 
      
 
@@ -560,6 +404,177 @@ export class DiceRollComponent implements OnInit {
       }
 
     }
+  }
+
+  private getData() {
+    this.charactersService.getDiceRollModel<any>(this.rulesetId, this.characterId)
+      .subscribe(data => {
+        this.isLoading = false;
+        if (data) {
+
+          debugger;
+          this.character = data.character;
+          if (this.isFromCampaignDetail) {
+            this.characterCommandData = data.rulesetCommands;
+          }
+          else {
+            this.characterCommandData = data.characterCommands;
+          }
+
+          if (data.isGmAccessingPlayerCharacter) {
+            if (this.localStorage.localStorageGetItem(DBkeys.IsCharacterOpenedFromCampaign)) {
+              this.isShowSendtoChat = true;
+            }
+          }
+
+          this.charactersCharacterStats = data.charactersCharacterStats;
+
+
+          if (!this.characterId) {
+            this.character = new Characters();
+          }
+          this.isDicePublicRoll = this.character.isDicePublicRoll;
+          this.showTotal = true;
+          try {
+            if (this.character.lastCommandResult)
+              this.calculationStringArray = DiceService.getCalculationStringArray(this.character.lastCommandResult);
+          } catch (err) { }
+
+          this.charactersCharacterStats.forEach(item => {
+            item.number = item.number == 0 ? "" : item.number;
+            item.current = item.current == 0 ? "" : item.current;
+            item.maximum = item.maximum == 0 ? "" : item.maximum;
+            item.value = item.value == 0 ? "" : item.value;
+            item.subValue = item.subValue == 0 ? "" : item.subValue;
+          });
+
+          this.diceRollModel = this.characterCommandService.DiceRollData(this.characterId);
+          this.characterCommandModel = this.characterCommandService.commandModelData({ characterId: this.characterId, character: this.character }, "ADD");
+          this.diceRolledData = this.characterCommandService.DiceRollData(this.characterId);
+
+
+
+          if (this.isFromTile) {
+            this.rollSection = true;
+            this.isLoading = true;
+          }
+
+
+          if (this.isFromCampaignDetail) {
+            this.isDicePublicRoll = data.ruleSet.isDicePublicRoll;
+          }
+
+          let model: any = data;
+          this.statdetails = { charactersCharacterStat: model.charactersCharacterStats, character: data.character };
+
+          this.customDices = model.customDices;
+
+          this.customDices = DiceService.BindDeckCustomDices(this.customDices);
+          this.diceTray = model.diceTrays;
+          this.defaultDices = model.defaultDices;
+          let ruleset = model.ruleSet;
+          if (this.diceTray)
+            if (this.diceTray.length > 0) {
+              this.diceRollModel = this.characterCommandService.DiceRollDataFromDiceTray(this.characterId, this.customDices, this.diceTray, this.defaultDices);
+              this.diceRolledData = this.characterCommandService.DiceRollDataFromDiceTray(this.characterId, this.customDices, this.diceTray, this.defaultDices);
+            }
+
+          //for character tile & records
+          if (this.isFromTile) {
+            //this.isSkipDicePublicRollcheck = true;
+            if (+this.bsModalRef.content.tile == TILES.EXECUTE) {
+              let executeFormModel = this.bsModalRef.content.executeTile;
+              let executeTile = executeFormModel.linkType == 'Spell' ? executeFormModel.spell.spell : executeFormModel.linkType == 'Ability' ? executeFormModel.ability.ability : executeFormModel.linkType == 'Item' ? executeFormModel.item : {};
+
+              this.characterCommandModel.command = executeTile.command;
+              this.onClickRoll(this.characterCommandModel, executeTile.command);
+            }
+            else if (+this.bsModalRef.content.tile == TILES.COMMAND) {
+              let commandTile = this.bsModalRef.content.commandTile;
+
+              this.characterCommandModel.command = commandTile.command;
+              this.onClickRoll(this.characterCommandModel, commandTile.command);
+            }
+            else if (+this.bsModalRef.content.tile == TILES.CHARACTERSTAT) {
+              let characterStatTile = this.bsModalRef.content.characterStatTile;
+              //for ruleset shared layout
+              if (this.bsModalRef.content.isFromRulesetSharedLayout) {
+                if (characterStatTile.characterStat.characterStatDefaultValues) {
+                  if (characterStatTile.characterStat.characterStatDefaultValues.length) {
+                    this.characterCommandModel.command = characterStatTile.characterStat.characterStatDefaultValues[0].defaultValue;
+                  }
+                }
+              }
+              else {
+                this.characterCommandModel.command = characterStatTile.charactersCharacterStat.command;
+              }
+              //for ruleset shared layout end
+              //this.characterCommandModel.command = characterStatTile.charactersCharacterStat.command; //Commented for ruleset shared
+              this.onClickRoll(this.characterCommandModel, this.characterCommandModel.command);
+            }
+            else if (+this.bsModalRef.content.tile == -1) {
+              this.numberToAdd = undefined;// this.bsModalRef.content.numberToAdd
+              this.showShowDiceBtn = this.showDetailsByDefault = true;
+            }
+            else if (+this.bsModalRef.content.tile == -2) {
+              let command = this.bsModalRef.content.command;
+              this.characterCommandModel.command = command;
+              this.onClickRoll(this.characterCommandModel, command);
+            }
+            else if (+this.bsModalRef.content.tile == -3) {
+              //this.numberToAdd = this.bsModalRef.content.numberToAdd
+              this.showShowDiceBtn = true;
+              this.showDetailsByDefault = false;
+              let old = ruleset.defaultDice; //this.character.lastCommand;
+              this.oldCommandSaved = old;
+              let command = '';
+              if (!this.numberToAdd)
+                command = ruleset.defaultDice; //+ " + 0"; //this.character.lastCommand + " + 0"
+              else if (this.numberToAdd.toString() === '0')
+                command = ruleset.defaultDice; //this.character.lastCommand
+              else if (this.numberToAdd ? this.numberToAdd.toString().charAt(0) === '-' : false)
+                command = ruleset.defaultDice ? ruleset.defaultDice + " " + this.numberToAdd.toString() : this.numberToAdd.toString();
+              else
+                command = ruleset.defaultDice ? ruleset.defaultDice + " + " + this.numberToAdd.toString() : this.numberToAdd.toString();
+
+              this.characterCommandModel.command = command;
+              this.onClickRoll(this.characterCommandModel, command);
+            }
+          }
+
+          // for ruleset Last command
+          if (this.isFromCampaignDetail) {
+            this.rulesetService.getRulesetById<any>(this.rulesetId)
+              .subscribe(data => {
+                this.character = data;
+                this.showTotal = true;
+                try {
+                  if (this.character.lastCommandResult)
+                    this.calculationStringArray = DiceService.getCalculationStringArray(this.character.lastCommandResult);
+                } catch (err) { }
+              }, error => {
+                this.isLoading = false;
+                this.spinner = false;
+                this.authService.logout();
+              }, () => { });
+          }
+
+          setTimeout(() => {
+            if (this.isLoading) this.isLoading = false;
+          }, 200);
+        }
+
+      }, error => {
+        this.isLoading = false;
+        this.character = new Characters();
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      }, () => {
+
+
+      });
   }
 
   generateDiceCommand(dice: DiceRoll, characterCommandModel: CharacterCommand) {
@@ -1307,7 +1322,7 @@ export class DiceRollComponent implements OnInit {
     } catch (err) { }
   }
   onClickRoll(characterCommand: CharacterCommand, _mainCommandText: string, lastResultArray?: any, IsRollCurrentAgain: boolean = false) {
-    debugger;
+    
     let OldCommandForRollCurrentAgain: any = undefined;
     if (IsRollCurrentAgain) {
       OldCommandForRollCurrentAgain = this.characterMultipleCommands;
@@ -1787,7 +1802,7 @@ export class DiceRollComponent implements OnInit {
 
           /*Update Last command if command is saved in charatcer command*/
           try {
-            debugger
+            
             const characterLastCommand = new CharacterLastCommand();
             characterLastCommand.characterId = characterCommand.characterId;
             characterLastCommand.lastCommand = commandTxt;
@@ -1949,7 +1964,10 @@ export class DiceRollComponent implements OnInit {
             //if (this.isDicePublicRoll || this.isSkipDicePublicRollcheck) {
             if (this.isDicePublicRoll) {
               //this.isSkipDicePublicRollcheck = false;
-              this.appService.updateChatWithDiceRoll({ characterCommandModel: this.characterCommandModel, characterMultipleCommands: this.characterMultipleCommands });
+              debugger
+              if (this.displayRollResultInChat_AfterAllChecks) {
+                this.appService.updateChatWithDiceRoll({ characterCommandModel: this.characterCommandModel, characterMultipleCommands: this.characterMultipleCommands });
+              }              
             }
           }
           this.loadingResult = true;
@@ -2250,7 +2268,7 @@ export class DiceRollComponent implements OnInit {
     this.rulesetService.updateLastCommand<any>(ruleSetLastCommand)
       .subscribe(
         data => {
-          debugger
+          
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           this.character = data;
@@ -3616,12 +3634,15 @@ export class DiceRollComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
+    debugger
     this.bsModalRef.content.title = "Edit Saved Command";
     this.bsModalRef.content.view = 'EDIT';
     this.bsModalRef.content.characterId = this.characterId;
     this.bsModalRef.content.character = this.character;
     this.bsModalRef.content.command = command.command;
     this.bsModalRef.content.characterCommand = command;
+    this.bsModalRef.content.rulesetId = this.rulesetId;
+    this.bsModalRef.content.isFromCampaignDetail = this.isFromCampaignDetail;
   }
 
 
