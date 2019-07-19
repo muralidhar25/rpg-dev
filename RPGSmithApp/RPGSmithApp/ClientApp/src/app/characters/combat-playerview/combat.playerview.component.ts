@@ -300,7 +300,11 @@ export class CombatPlayerViewComponent implements OnInit {
 
   //opens one to one chat
   ChatBtn(item) {
-    console.log('target', item);
+    if (item.type == combatantType.CHARACTER) {
+      let characterId = item.character.characterId;
+      this.appService.updateOpenChatForCharacter(characterId);
+    }
+    
   }
 
   TargetBtn(item) {
