@@ -103,6 +103,7 @@ export class DiceRollComponent implements OnInit {
   isFromRulesetSharedLayout: boolean = false;
   DiceImage: any;
   displayRollResultInChat_AfterAllChecks: boolean = true;
+  lastCommandLoading: boolean = false;
   constructor(
     private router: Router, public modalService: BsModalService, private bsModalRef: BsModalRef, private alertService: AlertService,
     private charactersCharacterStatService: CharactersCharacterStatService, private charactersService: CharactersService,
@@ -407,6 +408,7 @@ export class DiceRollComponent implements OnInit {
   }
 
   private getData() {
+    this.lastCommandLoading = true;
     this.charactersService.getDiceRollModel<any>(this.rulesetId, this.characterId)
       .subscribe(data => {
         this.isLoading = false;
@@ -548,6 +550,7 @@ export class DiceRollComponent implements OnInit {
               .subscribe(data => {
                 this.character = data;
                 this.showTotal = true;
+                this.lastCommandLoading = false;
                 try {
                   if (this.character.lastCommandResult)
                     this.calculationStringArray = DiceService.getCalculationStringArray(this.character.lastCommandResult);
@@ -556,8 +559,10 @@ export class DiceRollComponent implements OnInit {
                 this.isLoading = false;
                 this.spinner = false;
                 this.authService.logout();
+                this.lastCommandLoading = false;
               }, () => { });
           }
+          else { this.lastCommandLoading = false;}
 
           setTimeout(() => {
             if (this.isLoading) this.isLoading = false;

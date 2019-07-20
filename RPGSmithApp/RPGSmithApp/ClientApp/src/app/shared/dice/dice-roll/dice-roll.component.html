@@ -125,10 +125,10 @@
           </div>
         </div>
         <!--<div class="command-actions form-row" *ngIf="isFromCampaignDetail">
-      <div class="d-flex col-12 col-md-12">
-        <button type="submit" id="diceRollTrigger" class="btn btn-accent btn-block">Roll</button>
-      </div>
-    </div>-->
+          <div class="d-flex col-12 col-md-12">
+            <button type="submit" id="diceRollTrigger" class="btn btn-accent btn-block">Roll</button>
+          </div>
+        </div>-->
       </div>
 
 
@@ -147,7 +147,7 @@
                [(ngModel)]="characterCommandModel.command" name="command" #command="ngModel" required />
 
         <!--<input type="text" id="cmdNew" class="form-control"
-       [(ngModel)]="characterCommandModel.command" name="cmdNew" />-->
+        [(ngModel)]="characterCommandModel.command" name="cmdNew" />-->
 
         <div class="command-canvas">
           <ul class="web-view">
@@ -274,11 +274,11 @@
                    [ngStyle]="{'border': activeAndCommand===i ? '1px solid #b74b24' : '1px solid grey'}">
 
                 <!--<ng-container *ngFor="let cmd of command.calculationStringArray;let i = index;">
-                <span [style.color]="cmd.isMax ? 'green' : (cmd.isMin ? 'red' : 'white')"
-                      [style.font-weight]="cmd.isMax ? 'bold' : (cmd.isMin ? 'bold' : 'normal')">
-                    {{cmd.text}}
-                </span>
-            </ng-container>-->
+                    <span [style.color]="cmd.isMax ? 'green' : (cmd.isMin ? 'red' : 'white')"
+                          [style.font-weight]="cmd.isMax ? 'bold' : (cmd.isMin ? 'bold' : 'normal')">
+                        {{cmd.text}}
+                    </span>
+                </ng-container>-->
                 <span *ngIf="command.isResultWithCustomDice">{{command.calculationString}}</span>
                 <span *ngIf="!command.isResultWithCustomDice">{{command.calculationString}} <span *ngIf="command?.calculationString"> = </span> <b>{{command?.beforeResult}} <span *ngIf="command?.calculationResult"> {{command.calculationResult}} </span> {{command?.afterResult}}</b></span>
 
@@ -310,20 +310,24 @@
       <div class="command-last-result form-group" [ngClass]="{'d-none' : rollSection}">
         <label>Last Result</label> &nbsp;<i *ngIf="!showTotal" class="fa fa-spinner fa-spin"></i>
         <p *ngIf="showTotal">
-          <span *ngIf="character?.lastCommandTotal">
-            <strong *ngIf="character?.lastCommandResult.indexOf(' AND ')==-1">{{character?.lastCommandTotal}}</strong>
-          </span>
-          <!--<span *ngIf="calculationStringArray.length>0">
-          (<ng-container *ngFor="let cmd of calculationStringArray;let i = index;">
-              <span [style.color]="cmd.isMax ? 'green' : (cmd.isMin ? 'red' : 'black')"
-                    [style.font-weight]="cmd.isMax ? 'bold' : (cmd.isMin ? 'bold' : 'normal')"
-                    [style.letter-spacing]="(cmd.text==')' || cmd.text=='(') && i>0 ? '-1px' : '0px'">
-                  {{cmd.text}}
-              </span>
-          </ng-container>)
-      </span>-->
-          <span *ngIf="character?.lastCommandResult">({{character?.lastCommandResult}})</span>
-          <strong *ngIf="!character?.lastCommandResult">No result found.</strong>
+          <ng-container *ngIf="!lastCommandLoading">
+            <span *ngIf="character?.lastCommandTotal">
+              <strong *ngIf="character?.lastCommandResult.indexOf(' AND ')==-1">{{character?.lastCommandTotal}}</strong>
+            </span>
+            <!--<span *ngIf="calculationStringArray.length>0">
+                (<ng-container *ngFor="let cmd of calculationStringArray;let i = index;">
+                    <span [style.color]="cmd.isMax ? 'green' : (cmd.isMin ? 'red' : 'black')"
+                          [style.font-weight]="cmd.isMax ? 'bold' : (cmd.isMin ? 'bold' : 'normal')"
+                          [style.letter-spacing]="(cmd.text==')' || cmd.text=='(') && i>0 ? '-1px' : '0px'">
+                        {{cmd.text}}
+                    </span>
+                </ng-container>)
+            </span>-->
+            <span *ngIf="character?.lastCommandResult">({{character?.lastCommandResult}})</span>
+            <strong *ngIf="!character?.lastCommandResult">No result found.</strong>
+          </ng-container>
+
+          <ng-container *ngIf="lastCommandLoading">&nbsp;<i class="fa fa-spinner fa-spin"></i>&nbsp;Loading last result...</ng-container>
         </p>
         <div class="input-extend" *ngIf="character?.lastCommandResult">
           <button type="button" class="btn icon icon-with-text icon-arrow-down btn-link-primary" (click)="showLastResult(character)">

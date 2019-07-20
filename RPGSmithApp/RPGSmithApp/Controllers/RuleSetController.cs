@@ -1912,20 +1912,20 @@ namespace RPGSmithApp.Controllers
                 _characterCommand.UpdatedOn = DateTime.Now;
                 var result = await _ruleSetService.Create(_characterCommand);
 
-                try
-                {
-                    if (model.RulesetId > 0)
-                    {
-                        await _ruleSetService.UpdateRulesetLastCommand(new RuleSet
-                        {
-                            RuleSetId = model.RulesetId,
-                            LastCommand = model.Command,
-                            LastCommandResult = model.CommandResult,
-                            LastCommandValues = model.LastCommandValues
-                        });
-                    }
-                }
-                catch { }
+                //try
+                //{
+                //    if (model.RulesetId > 0)
+                //    {
+                //        await _ruleSetService.UpdateRulesetLastCommand(new RuleSet
+                //        {
+                //            RuleSetId = model.RulesetId,
+                //            LastCommand = model.Command,
+                //            LastCommandResult = model.CommandResult,
+                //            LastCommandValues = model.LastCommandValues
+                //        });
+                //    }
+                //}
+                //catch { }
 
                 return Ok();
             }
@@ -1946,20 +1946,20 @@ namespace RPGSmithApp.Controllers
                 _rulesetCommand.UpdatedOn = DateTime.Now;
                 var result = await _ruleSetService.Update(_rulesetCommand);
 
-                try
-                {
-                    if (model.RulesetId > 0)
-                    {
-                        await _ruleSetService.UpdateRulesetLastCommand(new RuleSet
-                        {
-                            RuleSetId = model.RulesetId,
-                            LastCommand = model.Command,
-                            LastCommandResult = model.CommandResult,
-                            LastCommandValues = model.LastCommandValues
-                        });
-                    }
-                }
-                catch { }
+                //try
+                //{
+                //    if (model.RulesetId > 0)
+                //    {
+                //        await _ruleSetService.UpdateRulesetLastCommand(new RuleSet
+                //        {
+                //            RuleSetId = model.RulesetId,
+                //            LastCommand = model.Command,
+                //            LastCommandResult = model.CommandResult,
+                //            LastCommandValues = model.LastCommandValues
+                //        });
+                //    }
+                //}
+                //catch { }
 
                 return Ok();
             }

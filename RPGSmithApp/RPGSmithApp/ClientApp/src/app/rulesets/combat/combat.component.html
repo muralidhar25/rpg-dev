@@ -197,13 +197,25 @@
                         </li>
                         <li *ngIf="settings.xpDistributionforDeletedMonster">
                           Character XP Stat
-                          <input type="text" class="cust-txtbox" name="CharcterXPStats" [(ngModel)]="settings.charcterXpStats"
-                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_XP_STAT)" />
+                          <!--<input type="text" class="cust-txtbox" name="CharcterXPStats" [(ngModel)]="settings.charcterXpStats"
+                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_XP_STAT)" />-->
+                          <div class="input-core-stat">
+                            <select class='form-control' (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_XP_STAT)">
+                              <option value="">Select</option>
+                              <option *ngFor='let xp of charXPStatNames' [selected]="xp==settings.charcterXpStats"  [value]="xp">{{xp}}</option>
+                            </select>
+                          </div>
                         </li>
                         <li>
                           Character Health Stat
-                          <input type="text" class="cust-txtbox" name="CharcterHealthStats" [(ngModel)]="settings.charcterHealthStats"
-                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_HEALTH_STAT)" />
+                          <!--<input type="text" class="cust-txtbox" name="CharcterHealthStats" [(ngModel)]="settings.charcterHealthStats"
+                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_HEALTH_STAT)" />-->
+                          <div class="input-core-stat">
+                            <select class='form-control' (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_HEALTH_STAT)" >
+                              <option value="">Select</option>
+                              <option *ngFor='let health of charHealthStatNames' [selected]="xp==settings.charcterHealthStats" [value]="health">{{health}}</option>
+                            </select>
+                          </div>
                         </li>
                         <li>
                           Access Monster Details
@@ -366,20 +378,20 @@
                 </ng-container>
 
                 <!--<div class="progress green" (click)="progressHealth(item);$event.stopPropagation()">
-            <span class="progress-left">
-              <span class="progress-bar"></span>
-            </span>
-            <span class="progress-right">
-              <span class="progress-bar"></span>
-            </span>
-            <div class="progress-value" *ngIf="item.type==combatItemsType.CHARACTER">
-              {{item?.character?.healthCurrent}}/{{item?.character?.healthMax}}
+                  <span class="progress-left">
+                    <span class="progress-bar"></span>
+                  </span>
+                  <span class="progress-right">
+                    <span class="progress-bar"></span>
+                  </span>
+                  <div class="progress-value" *ngIf="item.type==combatItemsType.CHARACTER">
+                    {{item?.character?.healthCurrent}}/{{item?.character?.healthMax}}
 
-            </div>
-            <div class="progress-value" *ngIf="item.type==combatItemsType.MONSTER">
-              {{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}
-            </div>
-          </div>-->
+                  </div>
+                  <div class="progress-value" *ngIf="item.type==combatItemsType.MONSTER">
+                    {{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}
+                  </div>
+                </div>-->
 
               </td>
               <td>
@@ -404,13 +416,11 @@
               <td>
                 <div class="white-section">
                   <span class="visible-icon crsr-pointer" *ngIf="item.visibleToPc" [style.background]="item.visibilityColor"
-                        
                         (click)="onContextMenu($event, item)"
                         [contextMenu]="basicMenu" [contextMenuSubject]="item">
 
                   </span>
                   <span class="visible-icon unvisible-Circle crsr-pointer fa fa-circle-o" [style.color]="item.visibilityColor" *ngIf="!item.visibleToPc"
-                        
                         (click)="onContextMenu($event, item)"
                         [contextMenu]="basicMenu" [contextMenuSubject]="item">
 
@@ -424,7 +434,7 @@
                         (click)="isCharacterItemEnabled && (redirectToItem(item));$event.stopPropagation()"></li>
                     <li class="action-button-icon-orange icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" popover="Spells" triggers="hover"
                         (click)="isCharacterSpellEnabled && (redirectToSpell(item));$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Gen-Ability" [ngClass]="isCharacterAbilityEnabled ? 'crsr-pointer': 'disabled' "popover="Abilities" triggers="hover"
+                    <li class="action-button-icon-orange icon-Gen-Ability" [ngClass]="isCharacterAbilityEnabled ? 'crsr-pointer': 'disabled' " popover="Abilities" triggers="hover"
                         (click)="isCharacterAbilityEnabled && (redirectToAbility(item));$event.stopPropagation()"></li>
                     <li class="action-button-icon-orange icon-Gen-CharStat crsr-pointer" popover="Stat" triggers="hover"
                         (click)="redirectToChracterstat(item);$event.stopPropagation()"></li>
@@ -454,63 +464,63 @@
         </table>
         <context-menu>
           <!--<ng-template contextMenuItem let-item (execute)="CopyFile($event.item) " [visible]="isFileSelected">-->
-          
-            <ng-template contextMenuItem let-item passive="true" >              
-              <div class="">
-                <fieldset class=" input-switch input-switch-dual">
-                  <ul class="input-switch-items">
-                    <li class="form-check p-0">
-                      <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="pausegame1"
-                               [checked]="item?.visibleToPc"
-                               (click)="ShowVisibility(item)">
-                        <span class="visibility-btn"><i class="icon-Rec-Visible"> </i></span>
-                      </label>
-                    </li>
-                    <li class="form-check p-0">
-                      <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="pausegame2"
-                               [checked]="!item?.visibleToPc"
-                               (click)="HideVisibility(item)">
-                        <span  class="visibility-btn"><i class="icon-Gen-Hide"> </i></span>
-                      </label>
-                    </li>
-                  </ul>
-                </fieldset>
 
+          <ng-template contextMenuItem let-item passive="true">
+            <div class="">
+              <fieldset class=" input-switch input-switch-dual">
+                <ul class="input-switch-items">
+                  <li class="form-check p-0">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="pausegame1"
+                             [checked]="item?.visibleToPc"
+                             (click)="ShowVisibility(item)">
+                      <span class="visibility-btn"><i class="icon-Rec-Visible"> </i></span>
+                    </label>
+                  </li>
+                  <li class="form-check p-0">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="pausegame2"
+                             [checked]="!item?.visibleToPc"
+                             (click)="HideVisibility(item)">
+                      <span class="visibility-btn"><i class="icon-Gen-Hide"> </i></span>
+                    </label>
+                  </li>
+                </ul>
+              </fieldset>
+
+
+            </div>
+            <div class="">
+              <div class="">
+                <ul class="input-color-items">
+                  <ng-container *ngFor="let color of defaultColorList;let i = index">
+                    <li class="custom-margin" *ngIf="i<5">
+                      <label class="form-check-label">
+                        <input class="form-check-input" [checked]="color.bodyBgColor==item?.visibilityColor" (click)="setdefaultColor(color,item)" id="color" name="color" type="radio">
+                        <i class="icon " [ngStyle]="{'background-color': color.bodyBgColor}"
+                           [ngClass]="(color.bodyBgColor == 'white') ?'black-check':''"></i>
+                      </label>
+
+                    </li>
+                  </ng-container>
+                </ul>
+                <ul class="input-color-items">
+                  <ng-container *ngFor="let color of defaultColorList;let i = index">
+                    <li class="custom-margin" *ngIf="i>4">
+                      <label class="form-check-label">
+                        <input class="form-check-input" [checked]="color.bodyBgColor==item?.visibilityColor" (click)="setdefaultColor(color,item)" id="color" name="color" type="radio">
+                        <i class="icon " [ngStyle]="{'background-color': color.bodyBgColor}"
+                           [ngClass]="(color.bodyBgColor == 'white') ?'black-check':''"></i>
+                      </label>
+
+                    </li>
+                  </ng-container>
+                </ul>
 
               </div>
-              <div class="">
-                <div class="">
-                  <ul class="input-color-items">
-                    <ng-container *ngFor="let color of defaultColorList;let i = index">
-                      <li class="custom-margin" *ngIf="i<5">
-                        <label class="form-check-label">
-                          <input class="form-check-input" [checked]="color.bodyBgColor==item?.visibilityColor" (click)="setdefaultColor(color,item)" id="color" name="color" type="radio">
-                          <i class="icon " [ngStyle]="{'background-color': color.bodyBgColor}"
-                             [ngClass]="(color.bodyBgColor == 'white') ?'black-check':''"></i>
-                        </label>
+            </div>
+          </ng-template>
 
-                      </li>
-                    </ng-container>
-                  </ul>
-                  <ul class="input-color-items">
-                    <ng-container *ngFor="let color of defaultColorList;let i = index">
-                      <li class="custom-margin"  *ngIf="i>4">
-                        <label class="form-check-label">
-                          <input class="form-check-input" [checked]="color.bodyBgColor==item?.visibilityColor" (click)="setdefaultColor(color,item)" id="color" name="color" type="radio">
-                          <i class="icon " [ngStyle]="{'background-color': color.bodyBgColor}"
-                             [ngClass]="(color.bodyBgColor == 'white') ?'black-check':''"></i>
-                        </label>
-
-                      </li>
-                    </ng-container>
-                  </ul>
-
-                </div>
-              </div>
-            </ng-template>
-          
         </context-menu>
       </div>
       <div class="combat-round-count" *ngIf="showCombatOptions">
