@@ -84,7 +84,7 @@
                   (click)="frameClick(item)">
                 <ng-container *ngIf="(item.type==combatantsType.CHARACTER || (item.type==combatantsType.MONSTER && settings.monsterVisibleByDefault))">
                   <td>
-                    <div class="white-section name-data text-ellipsis" popover="{{item?.type == combatantsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}" triggers="hover">
+                    <div class="white-section name-data text-ellipsis crsr-pointer" popover="{{item?.type == combatantsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}" triggers="hover">
                       {{item?.type == combatantsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}
                     </div>
                   </td>
@@ -93,7 +93,7 @@
 
                       <!--Number/Combo Type Stat-->
                       <ng-container *ngIf="item?.character?.healthCurrent!=DummyValueForCharHealthStat && item?.character?.healthMax==DummyValueForCharHealthStat">
-                        <div class="white-section text-center" (click)="item.isOwnPlayer && progressHealth(item);$event.stopPropagation()">
+                        <div class="white-section text-center crsr-pointer" (click)="item.isOwnPlayer && progressHealth(item);$event.stopPropagation()">
                           <span>
                             {{item?.character?.healthCurrent}}
                           </span>
@@ -102,7 +102,7 @@
 
                       <!--Current-Max/Val-SubVal Type Stat-->
                       <ng-container *ngIf="item?.character?.healthCurrent!=DummyValueForCharHealthStat && item?.character?.healthMax!=DummyValueForCharHealthStat">
-                        <div class="white-section p-0" (click)="item.isOwnPlayer && progressHealth(item);$event.stopPropagation()">
+                        <div class="white-section p-0 crsr-pointer"  (click)="item.isOwnPlayer && progressHealth(item);$event.stopPropagation()">
                           <circle-progress [percent]="(item?.character?.healthCurrent/item?.character?.healthMax)*100"
                                            [space]="-10"
                                            [outerStrokeWidth]="10"
@@ -130,7 +130,7 @@
 
                     </ng-container>
                     <ng-container *ngIf="item.type==combatantsType.MONSTER && settings.showMonsterHealth">
-                      <div class="white-section p-0" (click)="item.isOwnPlayer && progressHealth(item);$event.stopPropagation()">
+                      <div class="white-section p-0 crsr-pointer" (click)="item.isOwnPlayer && progressHealth(item);$event.stopPropagation()">
                         <circle-progress [percent]="(item?.monster?.healthCurrent/item?.monster?.healthMax)*100"
                                          [space]="-10"
                                          [outerStrokeWidth]="10"
@@ -157,12 +157,12 @@
 
                   <td>
                     <div class="white-section">
-                      <span class="visible-icon" *ngIf="item.visibleToPc" [style.background]="item.visibilityColor"></span>
-                      <span class="visible-icon unvisible-Circle" [style.border-color]="item.visibilityColor" *ngIf="!item.visibleToPc"></span>
+                      <span class="visible-icon crsr-pointer" *ngIf="item.visibleToPc" [style.background]="item.visibilityColor"></span>
+                      <span class="visible-icon unvisible-Circle crsr-pointer" [style.border-color]="item.visibilityColor" *ngIf="!item.visibleToPc"></span>
                     </div>
                   </td>
                   <td>
-                    <div class="white-section" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatantsType.CHARACTER">
+                    <div class="white-section crsr-pointer" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatantsType.CHARACTER">
                       <ul class="visiblity-list">
                         <li class="" *ngFor="let be of item?.character?.characterBuffAndEffects; let be_i = index">
                           <img class="combat-be-image" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" />
@@ -170,7 +170,7 @@
                       </ul>
                       <span [ngClass]="item?.character?.characterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.character?.characterBuffAndEffects?.length > 3 ? (item?.character?.characterBuffAndEffects?.length - 3) :''}}</span>
                     </div>
-                    <div class="white-section" (click)="settings.seeMonsterBuffEffects && buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatantsType.MONSTER && settings.seeMonsterBuffEffects">
+                    <div class="white-section crsr-pointer" (click)="settings.seeMonsterBuffEffects && buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatantsType.MONSTER && settings.seeMonsterBuffEffects">
                       <ul class="visiblity-list">
                         <li class="" *ngFor="let be of item?.monster?.monsterBuffAndEffects; let be_i = index">
                           <img class="combat-be-image" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" />
@@ -184,7 +184,7 @@
                     </ng-container>
                   </td>
                   <td>
-                    <div class="white-section">
+                    <div class="white-section ">
                       <div class="initiative-title-box monsters-title-box target-column" *ngIf="item.targetId>0"  popover="{{getTargetName(item)}}" triggers="hover">
                         <ng-container>
                           <img class="ng-tns-c1-0" [src]="getTargetImage(item)">
