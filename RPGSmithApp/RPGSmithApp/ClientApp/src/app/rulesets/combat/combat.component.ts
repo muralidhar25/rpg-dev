@@ -89,7 +89,7 @@ export class CombatComponent implements OnInit {
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
     //console.log(event);
-    if (event.keyCode === 32 && event.target == document.body) {
+    if (event.keyCode === 32 && event.target == document.body && this.showCombatOptions) {
       this.nextTurn();
       event.preventDefault();
     }
@@ -133,6 +133,7 @@ export class CombatComponent implements OnInit {
     });
 
     this.sharedService.shouldUpdateCombatantList().subscribe(combatantListJson => {
+      debugger
       if (combatantListJson) {
         //{ combatantList: this.initiativeInfo, isInitialForCombatStart:this.isInitialForCombatStart }
         this.combatants = combatantListJson.combatantList;
@@ -248,6 +249,8 @@ export class CombatComponent implements OnInit {
         //  });
         //}
 
+        this.isFrameSelected_Flag = false;
+
         this.combatants.map((x) => {
           //for character layer View
           x.isOwnPlayer = true;
@@ -264,7 +267,6 @@ export class CombatComponent implements OnInit {
               x.visibilityColor = "red";
             }
           }
-
 
           if (x.type == this.combatItemsType.CHARACTER) {
 
@@ -308,6 +310,7 @@ export class CombatComponent implements OnInit {
             this.isFrameSelected_Flag = true
           }
         });
+        debugger
 
         // Game Time
         this.gametime = this.time_convert(this.settings.gameRoundLength);
@@ -866,6 +869,7 @@ export class CombatComponent implements OnInit {
     this.bsModalRef.content.isFromCombatScreen = true;
   }
   duplicateMonster(item) {
+    debugger;
     this.monsterTemplateService.getMonsterTemplateCount(this.ruleSetId)
       .subscribe(data => {
         if (data < 2000) {
@@ -877,7 +881,7 @@ export class CombatComponent implements OnInit {
           this.bsModalRef.content.title = 'Duplicate New Monster';
           this.bsModalRef.content.button = 'DUPLICATE';
           this.bsModalRef.content.ruleSetId = this.ruleSetId;
-          this.bsModalRef.content.monsterTemplateVM = item.monster.monsterId;
+          this.bsModalRef.content.monsterIdToDuplicate = item.monster.monsterId;
           this.bsModalRef.content.isCreatingFromMonsterScreen = true;
           this.bsModalRef.content.isCreatingFromMonsterDetailScreen = true;
           this.bsModalRef.content.isFromCombatScreen = true;
@@ -932,7 +936,7 @@ export class CombatComponent implements OnInit {
   }
 
   //endCombat
-  stopCombat() {
+  stopCombat() {    
     let _msg = "Ending Combat..";
     this.alertService.startLoadingMessage("", _msg);
     //this.router.navigate(['/ruleset/combatplayer', this.ruleSetId]);
