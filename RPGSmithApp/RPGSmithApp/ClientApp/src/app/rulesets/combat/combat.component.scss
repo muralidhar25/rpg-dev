@@ -193,11 +193,12 @@ body {
   list-style: none;
   justify-content: center;
   margin: 0px;
+  display:flex;
 }
 
 .action-buttons-table li {
   margin: 2px;
-  display: inline-block
+  /*display: inline-block*/
 }
 
 .action-button-icon-orange {
@@ -818,7 +819,7 @@ button.btn-top {
 
 @media(max-width:991px) {
   .action-buttons-table li {
-    margin: 0px;
+    /*margin: 0px;*/
     font-size: 8px;
     padding: 0 2px;
     border: 1px solid #bf693b;

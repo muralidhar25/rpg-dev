@@ -60,20 +60,20 @@ namespace RPGSmithApp.Controllers
                 _characterCommand.UpdatedOn = DateTime.Now;
                 var result = await _characterCommandService.Create(_characterCommand);
 
-                try
-                {
-                    if (model.CharacterId > 0)
-                    {
-                        await _characterService.UpdateCharacterLastCommand(new Character
-                        {
-                            CharacterId = model.CharacterId,
-                            LastCommand = model.Command,
-                            LastCommandResult = model.CommandResult,
-                            LastCommandValues = model.LastCommandValues
-                        });
-                    }
-                }
-                catch { }
+                //try
+                //{
+                //    if (model.CharacterId > 0)
+                //    {
+                //        await _characterService.UpdateCharacterLastCommand(new Character
+                //        {
+                //            CharacterId = model.CharacterId,
+                //            LastCommand = model.Command,
+                //            LastCommandResult = model.CommandResult,
+                //            LastCommandValues = model.LastCommandValues
+                //        });
+                //    }
+                //}
+                //catch { }
 
                 return Ok();
             }
@@ -94,20 +94,20 @@ namespace RPGSmithApp.Controllers
                 _characterCommand.UpdatedOn = DateTime.Now;
                 var result = await _characterCommandService.Update(_characterCommand);
 
-                try
-                {
-                    if (model.CharacterId > 0)
-                    {
-                        await _characterService.UpdateCharacterLastCommand(new Character
-                        {
-                            CharacterId = model.CharacterId,
-                            LastCommand = model.Command,
-                            LastCommandResult = model.CommandResult,
-                            LastCommandValues = model.LastCommandValues
-                        });
-                    }
-                }
-                catch { }
+                //try
+                //{
+                //    if (model.CharacterId > 0)
+                //    {
+                //        await _characterService.UpdateCharacterLastCommand(new Character
+                //        {
+                //            CharacterId = model.CharacterId,
+                //            LastCommand = model.Command,
+                //            LastCommandResult = model.CommandResult,
+                //            LastCommandValues = model.LastCommandValues
+                //        });
+                //    }
+                //}
+                //catch { }
 
                 return Ok();
             }

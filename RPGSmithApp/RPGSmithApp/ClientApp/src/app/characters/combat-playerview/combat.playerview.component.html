@@ -80,7 +80,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let item of combatants; let i = index"
-                  [ngClass]="{'black-outer-filed': item.isCurrentTurn, 'red-outer-filed': item.frameColor =='red', '': item.frameColor =='grey', 'blue-outer-filed':item.frameColor == 'blue' }"
+                  [ngClass]="{'black-outer-filed': item.isCurrentTurn, 'red-outer-filed': item.frameColor =='red', '': item.frameColor =='grey', 'blue-outer-filed':item.isOwnPlayer }"
                   (click)="frameClick(item)">
                 <ng-container *ngIf="(item.type==combatantsType.CHARACTER || (item.type==combatantsType.MONSTER && settings.monsterVisibleByDefault))">
                   <td>

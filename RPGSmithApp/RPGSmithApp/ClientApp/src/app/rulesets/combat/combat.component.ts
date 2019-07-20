@@ -75,7 +75,9 @@ export class CombatComponent implements OnInit {
   sub: Subscription;
   characterId: any;
   noDescripttionAvailable: string = 'No Descripttion Available';
-  DummyValueForCharHealthStat: number = -9999
+  DummyValueForCharHealthStat: number = -9999;
+  charXPStatNames: string[] = [];
+  charHealthStatNames: string[] = [];
   defaultColorList = [
     {
       rpgCoreColorId: 1,
@@ -90,7 +92,7 @@ export class CombatComponent implements OnInit {
       titleBgColor: "#D58917",
       bodyTextColor: "#000000",
       bodyBgColor: "red",
- 
+
 
     },
     {
@@ -107,7 +109,7 @@ export class CombatComponent implements OnInit {
       titleBgColor: "#E1B500",
       bodyTextColor: "#000000",
       bodyBgColor: "yellow",
-    },    
+    },
     {
       rpgCoreColorId: 5,
       titleTextColor: "#FFFFFF",
@@ -129,7 +131,7 @@ export class CombatComponent implements OnInit {
       titleBgColor: "#004229",
       bodyTextColor: "#FFFFFF",
       bodyBgColor: "blue",
-    },    
+    },
     {
       rpgCoreColorId: 7,
       titleTextColor: "#FFFFFF",
@@ -142,7 +144,7 @@ export class CombatComponent implements OnInit {
       titleTextColor: "#FFFFFF",
       titleBgColor: "#04466D",
       bodyTextColor: "#FFFFFF",
-      bodyBgColor: "grey", 
+      bodyBgColor: "grey",
     },
     {
       rpgCoreColorId: 9,
@@ -152,20 +154,20 @@ export class CombatComponent implements OnInit {
       bodyBgColor: "lightcyan",
 
     }
-    ]
-    noBuffs_EffectsAvailable: string = 'No Buffs & Effects Available';
-    noItemsAvailable: string = 'No Items Available';
-    noSpellsAvailable: string = 'No Spells Available';
-    noAbilitiesAvailable: string = 'No Abilities Available';
-    monsterDetailType = MonsterDetailType;
-    isFrameSelected_Flag: boolean = false;
+  ]
+  noBuffs_EffectsAvailable: string = 'No Buffs & Effects Available';
+  noItemsAvailable: string = 'No Items Available';
+  noSpellsAvailable: string = 'No Spells Available';
+  noAbilitiesAvailable: string = 'No Abilities Available';
+  monsterDetailType = MonsterDetailType;
+  isFrameSelected_Flag: boolean = false;
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
   }
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
     //console.log(event);
-    if (event.keyCode === 32 && event.target == document.body) {
+    if (event.keyCode === 32 && event.target == document.body && this.showCombatOptions) {
       this.nextTurn();
       event.preventDefault();
     }
@@ -188,7 +190,7 @@ export class CombatComponent implements OnInit {
     return element.parentNode && this.hasSomeParentTheClass(element.parentNode, classname);
   }
 
-  @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;  
+  @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
   @Input() contextMenu: ContextMenuComponent;
 
   constructor(private modalService: BsModalService,
@@ -214,6 +216,7 @@ export class CombatComponent implements OnInit {
     });
 
     this.sharedService.shouldUpdateCombatantList().subscribe(combatantListJson => {
+      debugger
       if (combatantListJson) {
         //{ combatantList: this.initiativeInfo, isInitialForCombatStart:this.isInitialForCombatStart }
         this.combatants = combatantListJson.combatantList;
@@ -334,7 +337,37 @@ export class CombatComponent implements OnInit {
         this.rulesetModel = combatModal.campaign;
         this.setHeaderValues(this.rulesetModel);
         this.settings = combatModal.combatSettings;
+        debugger
         this.combatants = combatModal.combatantList;
+
+        let characterFlag = false;
+        this.charXPStatNames = [];
+        this.charHealthStatNames = [];
+        this.combatants.map(x => {
+          if (x.type == combatantType.CHARACTER && !characterFlag) {
+            characterFlag = true;
+            if (x.character.diceRollViewModel && x.character.diceRollViewModel.charactersCharacterStats && x.character.diceRollViewModel.charactersCharacterStats.length) {
+              x.character.diceRollViewModel.charactersCharacterStats.map(ccs => {
+                if (ccs.characterStat && ccs.characterStat.statName) {
+                  if (ccs.characterStat.characterStatTypeId == STAT_TYPE.Number) {
+                    this.charXPStatNames.push('[' + ccs.characterStat.statName + ']');
+                    this.charHealthStatNames.push('[' + ccs.characterStat.statName + ']');
+                  }
+                  else if (ccs.characterStat.characterStatTypeId == STAT_TYPE.CurrentMax) {
+                    this.charHealthStatNames.push('[' + ccs.characterStat.statName + ']');
+                  }
+                  else if (ccs.characterStat.characterStatTypeId == STAT_TYPE.ValueSubValue) {
+                    this.charHealthStatNames.push('[' + ccs.characterStat.statName + ']');
+                  }
+                  else if (ccs.characterStat.characterStatTypeId == STAT_TYPE.Combo) {
+                    this.charHealthStatNames.push('[' + ccs.characterStat.statName + ']');
+                  }
+                }
+              });
+            }
+
+          }
+        });
 
         //if (this.settings.monsterVisibleByDefault) {
         //  this.combatants = combatModal.combatantList;
@@ -347,6 +380,8 @@ export class CombatComponent implements OnInit {
         //    }
         //  });
         //}
+
+        this.isFrameSelected_Flag = false;
 
         this.combatants.map((x) => {
           //for character layer View
@@ -364,7 +399,6 @@ export class CombatComponent implements OnInit {
               x.visibilityColor = "red";
             }
           }
-
 
           if (x.type == this.combatItemsType.CHARACTER) {
 
@@ -705,7 +739,7 @@ export class CombatComponent implements OnInit {
         }
         this.combatants[i].isCurrentTurn = false;
         if (this.combatants[i - i].delayTurn) {
-          i =-1;
+          i = -1;
           skipIsCurrentTurnCheck = true;
           continue;
         }
@@ -801,7 +835,7 @@ export class CombatComponent implements OnInit {
   }
 
   nameClicked(item) {
-    this.frameClick(item);    
+    this.frameClick(item);
     //if (item.type == combatantType.MONSTER) {
     //  this.router.navigate(['/ruleset/monster-details', item.monster.monsterId]);
     //}
@@ -969,6 +1003,7 @@ export class CombatComponent implements OnInit {
     this.bsModalRef.content.isFromCombatScreen = true;
   }
   duplicateMonster(item) {
+    debugger;
     this.monsterTemplateService.getMonsterTemplateCount(this.ruleSetId)
       .subscribe(data => {
         if (data < 2000) {
@@ -980,7 +1015,7 @@ export class CombatComponent implements OnInit {
           this.bsModalRef.content.title = 'Duplicate New Monster';
           this.bsModalRef.content.button = 'DUPLICATE';
           this.bsModalRef.content.ruleSetId = this.ruleSetId;
-          this.bsModalRef.content.monsterTemplateVM = item.monster.monsterId;
+          this.bsModalRef.content.monsterIdToDuplicate = item.monster.monsterId;
           this.bsModalRef.content.isCreatingFromMonsterScreen = true;
           this.bsModalRef.content.isCreatingFromMonsterDetailScreen = true;
           this.bsModalRef.content.isFromCombatScreen = true;
@@ -1068,6 +1103,7 @@ export class CombatComponent implements OnInit {
 
   //change settings here
   UpdateSettings(e, type) {
+    debugger
     switch (type) {
       case COMBAT_SETTINGS.PC_INITIATIVE_FORMULA:
         this.settings.pcInitiativeFormula = e.target.value;
@@ -1489,7 +1525,7 @@ export class CombatComponent implements OnInit {
     debugger
     item.visibilityColor = color.bodyBgColor;
     this.saveVisibilityDetails(item);
-    
+
   }
 
   ShowVisibility(item) {
@@ -1504,11 +1540,11 @@ export class CombatComponent implements OnInit {
   }
   saveVisibilityDetails(currentItem) {
     debugger
-    
+
     this.combatService.saveVisibilityDetails(currentItem).subscribe(res => {
-      
+
     }, error => {
-     
+
       let Errors = Utilities.ErrorDetail("", error);
       if (Errors.sessionExpire) {
         this.authService.logout(true);

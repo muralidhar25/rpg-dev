@@ -120,10 +120,10 @@ export class CreateMonsterTemplateComponent implements OnInit {
   ngOnInit() {
     setTimeout(() => {
       let _view = this.button = this.bsModalRef.content.button;
-      let monsterId = this.bsModalRef.content.monsterVM
+      let monsterIdToDuplicate = this.bsModalRef.content.monsterIdToDuplicate ? this.bsModalRef.content.monsterIdToDuplicate : 0;
       if (this.bsModalRef.content.isFromCombatScreen) {
         this.isLoading = true;
-        this.monsterTemplateService.getMonsterById<any>(monsterId)
+        this.monsterTemplateService.getMonsterById<any>(monsterIdToDuplicate)
           .subscribe(data => {
             this.isLoading = false;
             if (data) {
@@ -602,6 +602,8 @@ export class CreateMonsterTemplateComponent implements OnInit {
           this.sharedService.updateMonsterTemplateList(true);
 
           this.sharedService.updateMonsterList(true);
+
+          this.sharedService.shouldUpdateCombatantListForAddDeleteMonsters();
           //this.sharedService.UpdateCharacterAbilityList(true);
           if (this.fromDetail)
             this.router.navigate(['/ruleset/monster-template', this._ruleSetId]);
