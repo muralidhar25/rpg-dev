@@ -456,6 +456,7 @@ namespace DAL.Services
             List<MonsterTemplate_Bundle> MonsterTemplates = _monsterTemplateService.SP_GetMonsterTemplateByRuleSetId(CampaignId, 1, 9999);
             List<CombatAllTypeMonsters> allTypeMonsters = new List<CombatAllTypeMonsters>();
 
+            Monsters = Monsters.Where(x => x.AddToCombatTracker != true).ToList();
             foreach (var monster in Monsters)
             {
                 CombatAllTypeMonsters obj = new CombatAllTypeMonsters()

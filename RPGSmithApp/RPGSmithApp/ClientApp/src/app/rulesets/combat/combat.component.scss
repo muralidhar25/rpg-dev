@@ -1124,7 +1124,8 @@ button.btn-top {
 
 .unvisible-Circle {
   background: white;
-  border: 1px solid;
+  font-size:1rem;
+  /*border: 1px solid;*/
 }
 
 .combat-be-image {
@@ -1185,3 +1186,46 @@ ul.item-info-props {
   padding-left: 15px;
   list-style: none;
 }
+
+input.input-color-custom {
+  opacity: 0;
+  width: 0px;
+  opacity: 0;
+  width: 100%;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  height: 100%;
+  cursor: pointer;
+}
+
+.input-color-items {
+  list-style: none
+}
+
+.input-color-items .form-check-label {
+  margin-top: 10px;
+}
+
+.input-color-items li .tile {
+  margin-top: 0px;
+}
+
+.input-color-items .icon {
+  border-radius: 5px !important;
+}
+
+li.custom-margin {
+  margin-right: 0.175rem !important;
+  margin-left: 0.175rem !important;
+}
+
+.selectedVisible-unvisivble {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 2px 4px;
+}
+.visibility-btn { 
+  font-size: 1.4rem !important
+}
+

@@ -297,7 +297,7 @@
                 [ngClass]="{'black-outer-filed': item.isCurrentTurn, 'white-outer-filed': item.delayTurn, 'red-outer-filed': item.frameColor =='red', '': item.frameColor =='grey' }"
                 (click)="frameClick(item)">
               <td>
-                <div class="white-section name-data text-ellipsis" (click)="nameClicked(item);$event.stopPropagation()"
+                <div class="white-section name-data text-ellipsis crsr-pointer" (click)="nameClicked(item);$event.stopPropagation()"
                      popover="{{item?.type == combatItemsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}" triggers="hover">
                   {{item?.type == combatItemsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}
                 </div>
@@ -307,7 +307,7 @@
 
                   <!--Number/Combo Type Stat-->
                   <ng-container *ngIf="item?.character?.healthCurrent!=DummyValueForCharHealthStat && item?.character?.healthMax==DummyValueForCharHealthStat">
-                    <div class="white-section text-center" (click)="progressHealth(item);$event.stopPropagation()">
+                    <div class="white-section text-center crsr-pointer" (click)="progressHealth(item);$event.stopPropagation()">
                       <span>
                         {{item?.character?.healthCurrent}}
                       </span>
@@ -316,7 +316,7 @@
 
                   <!--Current-Max/Val-SubVal Type Stat-->
                   <ng-container *ngIf="item?.character?.healthCurrent!=DummyValueForCharHealthStat && item?.character?.healthMax!=DummyValueForCharHealthStat">
-                    <div class="white-section p-0" (click)="progressHealth(item);$event.stopPropagation()">
+                    <div class="white-section p-0 crsr-pointer" (click)="progressHealth(item);$event.stopPropagation()">
                       <circle-progress [percent]="(item?.character?.healthCurrent/item?.character?.healthMax)*100"
                                        [space]="-10"
                                        [outerStrokeWidth]="10"
@@ -345,7 +345,7 @@
 
                 </ng-container>
                 <ng-container *ngIf="item.type==combatItemsType.MONSTER">
-                  <div class="white-section p-0" (click)="progressHealth(item);$event.stopPropagation()">
+                  <div class="white-section p-0 crsr-pointer" (click)="progressHealth(item);$event.stopPropagation()">
                     <circle-progress [percent]="(item?.monster?.healthCurrent/item?.monster?.healthMax)*100"
                                      [space]="-10"
                                      [outerStrokeWidth]="10"
@@ -366,24 +366,24 @@
                 </ng-container>
 
                 <!--<div class="progress green" (click)="progressHealth(item);$event.stopPropagation()">
-      <span class="progress-left">
-        <span class="progress-bar"></span>
-      </span>
-      <span class="progress-right">
-        <span class="progress-bar"></span>
-      </span>
-      <div class="progress-value" *ngIf="item.type==combatItemsType.CHARACTER">
-        {{item?.character?.healthCurrent}}/{{item?.character?.healthMax}}
+            <span class="progress-left">
+              <span class="progress-bar"></span>
+            </span>
+            <span class="progress-right">
+              <span class="progress-bar"></span>
+            </span>
+            <div class="progress-value" *ngIf="item.type==combatItemsType.CHARACTER">
+              {{item?.character?.healthCurrent}}/{{item?.character?.healthMax}}
 
-      </div>
-      <div class="progress-value" *ngIf="item.type==combatItemsType.MONSTER">
-        {{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}
-      </div>
-    </div>-->
+            </div>
+            <div class="progress-value" *ngIf="item.type==combatItemsType.MONSTER">
+              {{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}
+            </div>
+          </div>-->
 
               </td>
               <td>
-                <div class="white-section" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatItemsType.CHARACTER">
+                <div class="white-section crsr-pointer" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatItemsType.CHARACTER">
                   <ul class="visiblity-list">
                     <li class="" *ngFor="let be of item?.character?.characterBuffAndEffects; let be_i = index">
                       <img class="combat-be-image crsr-pointer" (click)="CombatantBuff_EffectDetail(item, be)" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" />
@@ -391,7 +391,7 @@
                   </ul>
                   <span [ngClass]="item?.character?.characterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.character?.characterBuffAndEffects?.length > 3 ? (item?.character?.characterBuffAndEffects?.length - 3) :''}}</span>
                 </div>
-                <div class="white-section" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatItemsType.MONSTER">
+                <div class="white-section crsr-pointer" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatItemsType.MONSTER">
                   <ul class="visiblity-list">
                     <li class="" *ngFor="let be of item?.monster?.monsterBuffAndEffects; let be_i = index">
                       <img class="combat-be-image crsr-pointer" (click)="CombatantBuff_EffectDetail(item, be)" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" />
@@ -403,8 +403,18 @@
               </td>
               <td>
                 <div class="white-section">
-                  <span class="visible-icon" *ngIf="item.visibleToPc" [style.background]="item.visibilityColor" (click)="changeColor(item);$event.stopPropagation()"></span>
-                  <span class="visible-icon unvisible-Circle" [style.border-color]="item.visibilityColor" *ngIf="!item.visibleToPc" (click)="changeColor(item);$event.stopPropagation()"></span>
+                  <span class="visible-icon crsr-pointer" *ngIf="item.visibleToPc" [style.background]="item.visibilityColor"
+                        
+                        (click)="onContextMenu($event, item)"
+                        [contextMenu]="basicMenu" [contextMenuSubject]="item">
+
+                  </span>
+                  <span class="visible-icon unvisible-Circle crsr-pointer fa fa-circle-o" [style.color]="item.visibilityColor" *ngIf="!item.visibleToPc"
+                        
+                        (click)="onContextMenu($event, item)"
+                        [contextMenu]="basicMenu" [contextMenuSubject]="item">
+
+                  </span>
                 </div>
               </td>
               <td>
@@ -442,6 +452,66 @@
             </tr>
           </tbody>
         </table>
+        <context-menu>
+          <!--<ng-template contextMenuItem let-item (execute)="CopyFile($event.item) " [visible]="isFileSelected">-->
+          
+            <ng-template contextMenuItem let-item passive="true" >              
+              <div class="">
+                <fieldset class=" input-switch input-switch-dual">
+                  <ul class="input-switch-items">
+                    <li class="form-check p-0">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="pausegame1"
+                               [checked]="item?.visibleToPc"
+                               (click)="ShowVisibility(item)">
+                        <span class="visibility-btn"><i class="icon-Rec-Visible"> </i></span>
+                      </label>
+                    </li>
+                    <li class="form-check p-0">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="pausegame2"
+                               [checked]="!item?.visibleToPc"
+                               (click)="HideVisibility(item)">
+                        <span  class="visibility-btn"><i class="icon-Gen-Hide"> </i></span>
+                      </label>
+                    </li>
+                  </ul>
+                </fieldset>
+
+
+              </div>
+              <div class="">
+                <div class="">
+                  <ul class="input-color-items">
+                    <ng-container *ngFor="let color of defaultColorList;let i = index">
+                      <li class="custom-margin" *ngIf="i<5">
+                        <label class="form-check-label">
+                          <input class="form-check-input" [checked]="color.bodyBgColor==item?.visibilityColor" (click)="setdefaultColor(color,item)" id="color" name="color" type="radio">
+                          <i class="icon " [ngStyle]="{'background-color': color.bodyBgColor}"
+                             [ngClass]="(color.bodyBgColor == 'white') ?'black-check':''"></i>
+                        </label>
+
+                      </li>
+                    </ng-container>
+                  </ul>
+                  <ul class="input-color-items">
+                    <ng-container *ngFor="let color of defaultColorList;let i = index">
+                      <li class="custom-margin"  *ngIf="i>4">
+                        <label class="form-check-label">
+                          <input class="form-check-input" [checked]="color.bodyBgColor==item?.visibilityColor" (click)="setdefaultColor(color,item)" id="color" name="color" type="radio">
+                          <i class="icon " [ngStyle]="{'background-color': color.bodyBgColor}"
+                             [ngClass]="(color.bodyBgColor == 'white') ?'black-check':''"></i>
+                        </label>
+
+                      </li>
+                    </ng-container>
+                  </ul>
+
+                </div>
+              </div>
+            </ng-template>
+          
+        </context-menu>
       </div>
       <div class="combat-round-count" *ngIf="showCombatOptions">
         <ul>
