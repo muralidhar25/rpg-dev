@@ -27,6 +27,7 @@ export class CombatInitiativeComponent implements OnInit {
   customDices: CustomDice[] = [];
   combatSettings: any;
   isInitialForCombatStart: boolean = false;
+  isStartCombatClick: boolean = false;
   constructor(
     public modalService: BsModalService,
     public bsModalRef: BsModalRef,
@@ -39,11 +40,12 @@ export class CombatInitiativeComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      
+      debugger
       this.customDices = Object.assign([], this.bsModalRef.content.customDices);
       this.initiativeInfo = Object.assign([], this.bsModalRef.content.combatants);
       this.combatSettings = Object.assign({}, this.bsModalRef.content.settings);
-      this.isInitialForCombatStart =this.bsModalRef.content.isInitialForCombatStart
+      this.isInitialForCombatStart = this.bsModalRef.content.isInitialForCombatStart;
+      this.isStartCombatClick=this.bsModalRef.content.isStartCombatClick;
       this.GetCombatantList();
     }, 0);
   }
@@ -129,7 +131,13 @@ export class CombatInitiativeComponent implements OnInit {
     });
     this.combatService.saveCombatantList(this.initiativeInfo, this.ruleSetId).subscribe(res => {
       
-      this.sharedService.updateCombatantList({ combatantList: this.initiativeInfo, isInitialForCombatStart:this.isInitialForCombatStart });
+      this.sharedService.updateCombatantList(
+        {
+          combatantList: this.initiativeInfo,
+          isInitialForCombatStart: this.isInitialForCombatStart,
+          isStartCombatClick: this.isStartCombatClick
+        }
+      );
       this.bsModalRef.hide();
       this.isLoading = false;
     }, error => {

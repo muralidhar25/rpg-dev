@@ -14,6 +14,7 @@ import { CommonService } from '../../../core/services/shared/common.service';
 import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { MonsterTemplateService } from '../../../core/services/monster-template.service';
+import { AppService1 } from '../../../app.service';
 
 
 @Component({
@@ -40,8 +41,8 @@ export class DropItemsMonsterComponent implements OnInit {
     constructor(
         private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
         public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
-        private sharedService: SharedService, private commonService: CommonService,
-      private itemsService: ItemsService,
+      private sharedService: SharedService, private commonService: CommonService,
+      private itemsService: ItemsService, private appService: AppService1,
       private monsterTemplateService: MonsterTemplateService
     ) {
         this.route.params.subscribe(params => { this.characterId = params['id']; });
@@ -128,6 +129,7 @@ export class DropItemsMonsterComponent implements OnInit {
           this.alertService.stopLoadingMessage();
           this.isLoading = false;
           this.close();
+          this.appService.updateChatWithLootMessage(true);
           this.sharedService.updateDropMonsterList(true);
         }, error => {
           this.isLoading = false;

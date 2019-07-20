@@ -217,6 +217,25 @@ export class CombatComponent implements OnInit {
       if (combatantListJson) {
         //{ combatantList: this.initiativeInfo, isInitialForCombatStart:this.isInitialForCombatStart }
         this.combatants = combatantListJson.combatantList;
+        if (combatantListJson.isStartCombatClick) { //start combat
+          this.isLoading = true;
+          this.combatService.StartCombat(this.CombatId, true).subscribe(res => {            
+            this.showCombatOptions = true;
+            let msg = "Combat Started";
+            this.SendSystemMessageToChat(msg);
+
+            this.isLoading = false;
+          }, error => {
+            this.alertService.stopLoadingMessage();
+            this.isLoading = false;
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              this.authService.logout(true);
+            } else {
+              this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+            }
+          });
+        }
         if (combatantListJson.isInitialForCombatStart) {
           this.nextTurn();
           if (this.roundCounter > 1) {
@@ -492,7 +511,7 @@ export class CombatComponent implements OnInit {
   }
 
   //open Initiative popup
-  Init(isInitialForCombatStart = false) {
+  Init(isInitialForCombatStart = false,isStartCombatClick=false) {
     this.bsModalRef = this.modalService.show(CombatInitiativeComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -502,7 +521,8 @@ export class CombatComponent implements OnInit {
     this.bsModalRef.content.customDices = this.customDices;
     this.bsModalRef.content.combatants = this.combatants;
     this.bsModalRef.content.settings = this.settings;
-    this.bsModalRef.content.isInitialForCombatStart = isInitialForCombatStart;
+    this.bsModalRef.content.isInitialForCombatStart = isInitialForCombatStart; //do re-roll the initiatives.
+    this.bsModalRef.content.isStartCombatClick = isStartCombatClick; //start the combat from popup.
   }
 
   openDiceRollModal() {
@@ -979,32 +999,33 @@ export class CombatComponent implements OnInit {
 
   //startcombat
   startCombat() {
-    //this.roundCounter = 1;
-    let _msg = "Starting Combat..";
-    this.alertService.startLoadingMessage("", _msg);
-    this.combatService.StartCombat(this.CombatId, true).subscribe(res => {
+    this.Init(true,true); 
+    
+    //let _msg = "Starting Combat..";
+    //this.alertService.startLoadingMessage("", _msg);
+    //this.combatService.StartCombat(this.CombatId, true).subscribe(res => {
 
-      this.alertService.stopLoadingMessage();
+    //  //this.alertService.stopLoadingMessage();
 
-      //let message = "Combat has been starter successfully.";
-      //this.alertService.showMessage(message, "", MessageSeverity.success);
+    //  //let message = "Combat has been starter successfully.";
+    //  //this.alertService.showMessage(message, "", MessageSeverity.success);
 
-      this.Init(true);
-      this.showCombatOptions = true;
-      let msg = "Combat Started";
-      this.SendSystemMessageToChat(msg);
+    //  this.Init(true);
+    //  this.showCombatOptions = true;
+    //  let msg = "Combat Started";
+    //  this.SendSystemMessageToChat(msg);
 
-      this.isLoading = false;
-    }, error => {
-      this.alertService.stopLoadingMessage();
-      this.isLoading = false;
-      let Errors = Utilities.ErrorDetail("", error);
-      if (Errors.sessionExpire) {
-        this.authService.logout(true);
-      } else {
-        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-      }
-    });
+    //  this.isLoading = false;
+    //}, error => {
+    //  this.alertService.stopLoadingMessage();
+    //  this.isLoading = false;
+    //  let Errors = Utilities.ErrorDetail("", error);
+    //  if (Errors.sessionExpire) {
+    //    this.authService.logout(true);
+    //  } else {
+    //    this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+    //  }
+    //});
 
   }
 

@@ -46,8 +46,9 @@
   <!--Loader-->
   <app-loader [isLoading]="isLoading"></app-loader>
   <div class="modal-footer">
-    <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">CLOSE</button>
-    <button type="button" data-dismiss="modal" class="btn btn-accent btn-primary" (click)="saveInitiativeDetails()">Start Combat</button>
+    <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">CANCEL</button>
+    <button type="button" [disabled]="isLoading" *ngIf="!isStartCombatClick" data-dismiss="modal" class="btn btn-outline-accent" (click)="saveInitiativeDetails()">APPLY</button>
+    <button type="button" [disabled]="isLoading" *ngIf="isStartCombatClick" data-dismiss="modal" class="btn btn-success" (click)="saveInitiativeDetails()">START COMBAT</button>
   </div>
 </div>
 

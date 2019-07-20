@@ -1114,10 +1114,12 @@ export class ServiceUtil {
 
               });
             }
-            ////////////////////////////////                    
+            ////////////////////////////////
+          finalCalcString = finalCalcString.replace(/\[(.*?)\]/g, "0");
             finalCalcString = finalCalcString.replace(/  +/g, ' ');
             finalCalcString = finalCalcString.replace(/\+0/g, '').replace(/\-0/g, '').replace(/\*0/g, '').replace(/\/0/g, '');
-            finalCalcString = finalCalcString.replace(/\+ 0/g, '').replace(/\- 0/g, '').replace(/\* 0/g, '').replace(/\/ 0/g, '');
+          finalCalcString = finalCalcString.replace(/\+ 0/g, '').replace(/\- 0/g, '').replace(/\* 0/g, '').replace(/\/ 0/g, '');
+          
             return finalCalcString;
           
         } catch (err) {

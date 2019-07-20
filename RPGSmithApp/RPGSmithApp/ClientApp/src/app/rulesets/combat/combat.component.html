@@ -135,22 +135,22 @@
         <li>
           <ul>
             <li>
-              <button class="btn-orange-icons" (click)="Init()" *ngIf="showCombatOptions"><span class="icon icon-CharStat-Command mr-2"></span> INIT</button>
+              <button class="btn-orange-icons crsr-pointer" (click)="Init()" *ngIf="showCombatOptions"><span class="icon icon-CharStat-Command mr-2"></span> INIT</button>
             </li>
             <li>
-              <button class="btn-orange-icons" (click)="prevTurn()" *ngIf="showCombatOptions"><span class="icon icon-Gen-LT mr-2"></span> PREV TURN</button>
+              <button class="btn-orange-icons  crsr-pointer" (click)="prevTurn()" *ngIf="showCombatOptions"><span class="icon icon-Gen-LT mr-2"></span> PREV TURN</button>
             </li>
             <li>
-              <button class="btn-orange-icons" (click)="nextTurn()" *ngIf="showCombatOptions">NEXT TURN <span class="icon icon-Gen-GT ml-2"></span></button>
+              <button class="btn-orange-icons crsr-pointer" (click)="nextTurn()" *ngIf="showCombatOptions">NEXT TURN <span class="icon icon-Gen-GT ml-2"></span></button>
             </li>
             <li>
-              <button class="btn-orange-icons" (click)="monsterAdd()"><span class="icon icon-Rec-Add mr-2"></span> MONSTERS</button>
+              <button class="btn-orange-icons crsr-pointer" (click)="monsterAdd()"><span class="icon icon-Rec-Add mr-2"></span> MONSTERS</button>
             </li>
             <li>
-              <button class="btn-red-icons" (click)="monsterRemove()"><span class="icon icon-Rec-Remove mr-2"></span> MONSTERS</button>
+              <button class="btn-red-icons crsr-pointer" (click)="monsterRemove()"><span class="icon icon-Rec-Remove mr-2"></span> MONSTERS</button>
             </li>
             <li>
-              <button class="btn-orange-icons" (click)="openDiceRollModal()"><span class="icon icon-CharStat-Command mr-2"></span> DICE</button>
+              <button class="btn-orange-icons crsr-pointer" (click)="openDiceRollModal()"><span class="icon icon-CharStat-Command mr-2"></span> DICE</button>
             </li>
             <li>
               <div class="btn-group" [ngClass]="{'open': isDropdownOpen}">
@@ -518,9 +518,9 @@
           <li class="round-count-icon-purple">ROUND <span>{{roundCounter}}</span></li>
           <li class="round-count-icon-purple">INIT COUNT <span>{{CurrentInitiativeValue}}</span></li>
           <li class="round-count-icon-purple">GAME Time <span>{{gametime}}</span></li>
-          <li class="round-count-icon-red icon icon-Gen-LT" (click)="prevTurn()"></li>
-          <li class="round-count-icon-red icon icon-Gen-GT" (click)="nextTurn()"></li>
-          <li class="round-count-icon-orange icon icon-CharStat-OnOff" (click)="endCombat()"> END COMBAT</li>
+          <li class="round-count-icon-red icon icon-Gen-LT  crsr-pointer" (click)="prevTurn()"></li>
+          <li class="round-count-icon-red icon icon-Gen-GT crsr-pointer" (click)="nextTurn()"></li>
+          <li class="round-count-icon-orange icon icon-CharStat-OnOff crsr-pointer" (click)="endCombat()"> END COMBAT</li>
         </ul>
       </div>
     </div>
