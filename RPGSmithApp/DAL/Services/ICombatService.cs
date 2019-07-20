@@ -26,5 +26,7 @@ namespace DAL.Services
         void saveTarget(Combatant_ViewModel model);
         void SaveSortorder(List<Combatant_DTModel> model);
         void SaveDelayTurn(Combatant_ViewModel model);
+        void saveSelectedCombatant(Combatant_ViewModel model);
+        void updateMonsterDetails(Combatant_ViewModel model, string type);
     }
 }

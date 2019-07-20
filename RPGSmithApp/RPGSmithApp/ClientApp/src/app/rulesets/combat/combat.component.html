@@ -295,7 +295,7 @@
           <tbody>
             <tr *ngFor="let item of combatants; let i = index"
                 [ngClass]="{'black-outer-filed': item.isCurrentTurn, 'white-outer-filed': item.delayTurn, 'red-outer-filed': item.frameColor =='red', '': item.frameColor =='grey' }"
-                (click)="frameClick(item)"> 
+                (click)="frameClick(item)">
               <td>
                 <div class="white-section name-data text-ellipsis" (click)="nameClicked(item);$event.stopPropagation()"
                      popover="{{item?.type == combatItemsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}" triggers="hover">
@@ -345,7 +345,7 @@
 
                 </ng-container>
                 <ng-container *ngIf="item.type==combatItemsType.MONSTER">
-                  <div class="white-section p-0"  (click)="progressHealth(item);$event.stopPropagation()">
+                  <div class="white-section p-0" (click)="progressHealth(item);$event.stopPropagation()">
                     <circle-progress [percent]="(item?.monster?.healthCurrent/item?.monster?.healthMax)*100"
                                      [space]="-10"
                                      [outerStrokeWidth]="10"
@@ -353,7 +353,7 @@
                                      [radius]="100"
                                      [showInnerStroke]="true"
                                      [innerStrokeColor]="'#9e9e9e'"
-                                     [outerStrokeColor]="(item?.monster?.healthCurrent/item?.monster?.healthMax)*100 <= 33? 'red' : (item?.monster?.healthCurrent/item?.monster?.healthMax)*100 <= 66? 'yellow': 'green'"                                     
+                                     [outerStrokeColor]="(item?.monster?.healthCurrent/item?.monster?.healthMax)*100 <= 33? 'red' : (item?.monster?.healthCurrent/item?.monster?.healthMax)*100 <= 66? 'yellow': 'green'"
                                      [animation]="false"
                                      [renderOnClick]="false"
                                      [responsive]="true"
@@ -361,31 +361,32 @@
                                      [showSubtitle]="false"
                                      title="{{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}"
                                      [titleFontSize]="'45'"
-                                     [clockwise]="false"></circle-progress></div>
-                </ng-container>                
-                  
-                    <!--<div class="progress green" (click)="progressHealth(item);$event.stopPropagation()">
-        <span class="progress-left">
-          <span class="progress-bar"></span>
-        </span>
-        <span class="progress-right">
-          <span class="progress-bar"></span>
-        </span>
-        <div class="progress-value" *ngIf="item.type==combatItemsType.CHARACTER">
-          {{item?.character?.healthCurrent}}/{{item?.character?.healthMax}}
+                                     [clockwise]="false"></circle-progress>
+                  </div>
+                </ng-container>
 
-        </div>
-        <div class="progress-value" *ngIf="item.type==combatItemsType.MONSTER">
-          {{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}
-        </div>
-      </div>-->
-                  
+                <!--<div class="progress green" (click)="progressHealth(item);$event.stopPropagation()">
+      <span class="progress-left">
+        <span class="progress-bar"></span>
+      </span>
+      <span class="progress-right">
+        <span class="progress-bar"></span>
+      </span>
+      <div class="progress-value" *ngIf="item.type==combatItemsType.CHARACTER">
+        {{item?.character?.healthCurrent}}/{{item?.character?.healthMax}}
+
+      </div>
+      <div class="progress-value" *ngIf="item.type==combatItemsType.MONSTER">
+        {{item?.monster?.healthCurrent}}/{{item?.monster?.healthMax}}
+      </div>
+    </div>-->
+
               </td>
               <td>
                 <div class="white-section" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatItemsType.CHARACTER">
                   <ul class="visiblity-list">
                     <li class="" *ngFor="let be of item?.character?.characterBuffAndEffects; let be_i = index">
-                      <img class="combat-be-image" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" />
+                      <img class="combat-be-image crsr-pointer" (click)="CombatantBuff_EffectDetail(item, be)" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" />
                     </li>
                   </ul>
                   <span [ngClass]="item?.character?.characterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.character?.characterBuffAndEffects?.length > 3 ? (item?.character?.characterBuffAndEffects?.length - 3) :''}}</span>
@@ -393,7 +394,7 @@
                 <div class="white-section" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatItemsType.MONSTER">
                   <ul class="visiblity-list">
                     <li class="" *ngFor="let be of item?.monster?.monsterBuffAndEffects; let be_i = index">
-                      <img class="combat-be-image" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" />
+                      <img class="combat-be-image crsr-pointer" (click)="CombatantBuff_EffectDetail(item, be)" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" />
                     </li>
                   </ul>
                   <span [ngClass]="item?.monster?.monsterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.monster?.monsterBuffAndEffects?.length > 3 ? (item?.monster?.monsterBuffAndEffects?.length - 3) :''}}</span>
@@ -409,20 +410,32 @@
               <td>
                 <div class="white-section">
                   <ul class="action-buttons-table" *ngIf="item.type == combatItemsType.CHARACTER">
-                    <li class="action-button-icon-orange icon-Gen-Items" [ngClass]="isCharacterItemEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && (redirectToItem(item));$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterSpellEnabled && (redirectToSpell(item));$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Gen-Ability" [ngClass]="isCharacterAbilityEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterAbilityEnabled && (redirectToAbility(item));$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Gen-CharStat crsr-pointer" (click)="redirectToChracterstat(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-Gen-Items" [ngClass]="isCharacterItemEnabled ? 'crsr-pointer': 'disabled'" popover="Items" triggers="hover"
+                        (click)="isCharacterItemEnabled && (redirectToItem(item));$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" popover="Spells" triggers="hover"
+                        (click)="isCharacterSpellEnabled && (redirectToSpell(item));$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-Gen-Ability" [ngClass]="isCharacterAbilityEnabled ? 'crsr-pointer': 'disabled' "popover="Abilities" triggers="hover"
+                        (click)="isCharacterAbilityEnabled && (redirectToAbility(item));$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-Gen-CharStat crsr-pointer" popover="Stat" triggers="hover"
+                        (click)="redirectToChracterstat(item);$event.stopPropagation()"></li>
                   </ul>
                   <ul class="action-buttons-table" id="'item'+i" *ngIf="item.type == combatItemsType.MONSTER">
-                    <li class="action-button-icon-orange icon-CharStat-Command crsr-pointer" *ngIf="!item.hidebtns" (click)="monsterCommand(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Rec-Drop crsr-pointer" *ngIf="!item.hidebtns" (click)="dropMonsterItems(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-red icon-Rec-Remove crsr-pointer" *ngIf="!item.hidebtns" (click)="removeCurrentMonster(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-black icon-Gen-LT crsr-pointer" *ngIf="!item.hidebtns" (click)="Hidebtns(item)"></li>
-                    <li class="action-button-icon-black icon-Gen-GT crsr-pointer" *ngIf="item.hidebtns" (click)="showbtns(item)"></li>
-                    <li class="action-button-icon-orange icon-Gen-Edit crsr-pointer" *ngIf="item.hidebtns" (click)="editMonster(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Gen-Duplicate crsr-pointer" *ngIf="item.hidebtns" (click)="duplicateMonster(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-red icon-Gen-Trash crsr-pointer" *ngIf="item.hidebtns" (click)="deleteMonster(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-CharStat-Command crsr-pointer" *ngIf="!item.hidebtns" popover="Dice" triggers="hover"
+                        (click)="monsterCommand(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-Rec-Drop crsr-pointer" *ngIf="!item.hidebtns" popover="Drop" triggers="hover"
+                        (click)="dropMonsterItems(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-red icon-Rec-Remove crsr-pointer" *ngIf="!item.hidebtns" popover="Remove" triggers="hover"
+                        (click)="removeCurrentMonster(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-black icon-Gen-LT crsr-pointer" *ngIf="!item.hidebtns" popover="Next" triggers="hover"
+                        (click)="Hidebtns(item)"></li>
+                    <li class="action-button-icon-black icon-Gen-GT crsr-pointer" *ngIf="item.hidebtns" popover="Previous" triggers="hover"
+                        (click)="showbtns(item)"></li>
+                    <li class="action-button-icon-orange icon-Gen-Edit crsr-pointer" *ngIf="item.hidebtns" popover="Edit" triggers="hover"
+                        (click)="editMonster(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-orange icon-Gen-Duplicate crsr-pointer" *ngIf="item.hidebtns" popover="Duplicate" triggers="hover"
+                        (click)="duplicateMonster(item);$event.stopPropagation()"></li>
+                    <li class="action-button-icon-red icon-Gen-Trash crsr-pointer" *ngIf="item.hidebtns" popover="Delete" triggers="hover"
+                        (click)="deleteMonster(item);$event.stopPropagation()"></li>
                   </ul>
                 </div>
               </td>
@@ -444,8 +457,8 @@
     <div class="col-12 col-md-4">
       <div class="image-section-combat">
         <!--Image-->
-        <img *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER" [src]="currentCombatantDetail?.monster?.imageUrl" />
-        <img *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER" [src]="currentCombatantDetail?.character?.imageUrl" />
+        <img *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER" [src]="currentCombatantDetail?.monster?.imageUrl" #imgref (click)="ImageDeatil(currentCombatantDetail, imgref)" />
+        <img *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER" [src]="currentCombatantDetail?.character?.imageUrl" #imgref (click)="ImageDeatil(currentCombatantDetail, imgref)" />
         <!--Name-->
         <span *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">{{currentCombatantDetail?.monster?.name}}</span>
         <span *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">{{currentCombatantDetail?.character?.characterName}}</span>
@@ -475,12 +488,24 @@
           <button class="btn-orange btn-block icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToSpell(currentCombatantDetail)"> Spells</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
-          <button class="btn-black btn-block icon-Delay crsr-pointer" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" *ngIf="!currentCombatantDetail.delayTurn" [disabled]="currentCombatantDetail.isCurrentTurn"  (click)="DelayTurn(currentCombatantDetail)"> Delay Turn</button>
+          <button class="btn-black btn-block icon-Delay crsr-pointer" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" *ngIf="!currentCombatantDetail.delayTurn" [disabled]="currentCombatantDetail.isCurrentTurn" (click)="DelayTurn(currentCombatantDetail)"> Delay Turn</button>
           <button class="btn-black btn-block icon-Resume crsr-pointer" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" *ngIf="currentCombatantDetail.delayTurn" (click)="ResumeTurn(currentCombatantDetail)"> Resume Turn</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
           <button class="btn-orange btn-block icon-Gen-Ability crsr-pointer" [ngClass]="isCharacterAbilityEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToAbility(currentCombatantDetail)"> Abilities</button>
         </div>
+      </div>
+
+      <div class="row mt-3 item-info-props-indics" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
+        <ul class="item-info-props">
+          <li popover="{{currentCombatantDetail?.monster?.healthCurrent}} / {{currentCombatantDetail?.monster?.healthMax}}" triggers="hover" popoverTitle="Health" class="crsr-pointer"
+              (click)="updateMonster(currentCombatantDetail, monsterDetailType.HEALTH)">{{currentCombatantDetail?.monster?.healthCurrent}}/{{currentCombatantDetail?.monster?.healthMax}}</li>
+          <li popover="CR: {{currentCombatantDetail?.monster?.challangeRating}}" triggers="hover" popoverTitle="Challenge Rating" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.RATING)">Cr: {{currentCombatantDetail?.monster?.challangeRating}}</li>
+          <li popover="AC: {{currentCombatantDetail?.monster?.armorClass}}" triggers="hover" popoverTitle="Armor Class" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.ARMOR)">AC : {{currentCombatantDetail?.monster?.armorClass}}</li>
+          <li popover="AC: {{currentCombatantDetail?.initiative}}" triggers="hover" popoverTitle="Initiative" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.INITIATIVE)">{{currentCombatantDetail?.initiative}}</li>
+          <li popover="AC: {{currentCombatantDetail?.monster?.xpValue}}" triggers="hover" popoverTitle="XP Value" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.XPVALUE)">XP : {{currentCombatantDetail?.monster?.xpValue}}</li>
+
+        </ul>
       </div>
 
       <div class="combat-accordian">
@@ -497,7 +522,7 @@
           <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
             <div class="row">
               <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterBuffAndEffects.length == 0">
-                <legend>No Buffs & Effects Available</legend>
+                <span>{{noBuffs_EffectsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.monsterBuffAndEffects">
                 <div class="accordin-box crsr-pointer" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)">
@@ -511,7 +536,7 @@
           <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
             <div class="row">
               <div class="text-center" *ngIf="currentCombatantDetail?.character?.characterBuffAndEffects.length == 0">
-                <legend>No Buffs & Effects Available</legend>
+                <span>{{noBuffs_EffectsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterBuffAndEffects">
                 <div class="accordin-box crsr-pointer" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)">
@@ -529,13 +554,13 @@
                 <div *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
                   <div *ngIf="currentCombatantDetail?.monster?.description" [froalaView]="currentCombatantDetail?.monster?.description" name="Desc"></div>
                   <div *ngIf="!currentCombatantDetail?.monster?.description" name="Desc">
-                    <legend>{{noDescripttionAvailable}}</legend>
+                    <span>{{noDescripttionAvailable}}</span>
                   </div>
                 </div>
                 <div *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
                   <div *ngIf="currentCombatantDetail?.character?.characterDescription" [froalaView]="currentCombatantDetail?.character?.characterDescription" name="Desc"></div>
                   <div *ngIf="!currentCombatantDetail?.character?.characterDescription" name="Desc">
-                    <legend>{{noDescripttionAvailable}}</legend>
+                    <span>{{noDescripttionAvailable}}</span>
                   </div>
                 </div>
               </div>
@@ -545,7 +570,7 @@
           <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
             <div class="row">
               <div class="text-center" *ngIf="currentCombatantDetail?.monster?.itemMasterMonsterItems?.length == 0">
-                <legend>No Items  Available</legend>
+                <span>{{noItemsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.itemMasterMonsterItems">
                 <div class="accordin-box crsr-pointer" (click)="CombatantItemDetail(currentCombatantDetail, item)">
@@ -559,7 +584,7 @@
           <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
             <div class="row">
               <div class="text-center" *ngIf="currentCombatantDetail?.character.items?.length == 0">
-                <legend>No Items  Available</legend>
+                <span>{{noItemsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.items">
                 <div class="accordin-box crsr-pointer" (click)="CombatantItemDetail(currentCombatantDetail, item)">
@@ -573,7 +598,7 @@
             <!--Monster-->
             <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
               <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterSpells?.length == 0">
-                <legend>No Spells Available</legend>
+                <span>{{noSpellsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.monsterSpells">
                 <div class="accordin-box crsr-pointer" (click)="CombatantSpellDetail(currentCombatantDetail, item)">
@@ -585,12 +610,12 @@
             <!--Character-->
             <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
               <div class="text-center" *ngIf="currentCombatantDetail?.charatcer?.characterSpells?.length == 0">
-                <legend>No Spells Available</legend>
+                <span>{{noSpellsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterSpells">
                 <div class="accordin-box crsr-pointer" (click)="CombatantSpellDetail(currentCombatantDetail, item)">
                   <img [src]="item.spell.imageUrl" onerror="this.src='../assets/images/DefaultImages/Spell.jpg';" />
-                  <p class="text-ellipsis" popover="{{item.spell.name}}" triggers="hover" >{{item.spell.name}}</p>
+                  <p class="text-ellipsis" popover="{{item.spell.name}}" triggers="hover">{{item.spell.name}}</p>
                 </div>
               </div>
             </div>
@@ -600,7 +625,7 @@
             <!--Monster-->
             <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
               <div lass="text-center" *ngIf="currentCombatantDetail?.monster?.monsterAbilitys?.length == 0">
-                <legend>No Abilities Available</legend>
+                <span>{{noAbilitiesAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.monsterAbilitys">
                 <div class="accordin-box crsr-pointer" (click)="CombatantAbilityDetail(currentCombatantDetail, item)">
@@ -612,7 +637,7 @@
             <!--Character-->
             <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
               <div lass="text-center" *ngIf="currentCombatantDetail?.character?.characterAbilities?.length == 0">
-                <legend>No Abilities Available</legend>
+                <span>{{noAbilitiesAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterAbilities">
                 <div class="accordin-box crsr-pointer" (click)="CombatantAbilityDetail(currentCombatantDetail, item)">

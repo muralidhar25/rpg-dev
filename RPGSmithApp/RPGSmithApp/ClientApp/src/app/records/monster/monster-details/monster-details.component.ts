@@ -26,6 +26,8 @@ import { AddRemoveAssociateMonstersComponent } from "../add-remove-associate-ite
 import { AddRemoveAssociateAbilitiesComponent } from "../add-remove-associate-abilities/add-remove-associate-abilities.component";
 import { AddRemoveAssociateBuffAndEffectsComponent } from "../add-remove-associate-buff-effects/add-remove-associate-buff-effects.component";
 import { AddRemoveAssociateSpellsComponent } from "../add-remove-associate-items-spells/add-remove-associate-items-spells.component";
+import { UpdateMonsterHealthComponent } from "../../../shared/update-monster-health/update-monster-health.component";
+import { combatantType, MonsterDetailType } from "../../../core/models/enums";
 //import { CreateMonsterTemplateComponent } from "../create-monster-template/create-monster-template.component";
 //import { DeployMonsterComponent } from "../deploy-monster/deploy-monster.component";
 //import { DropItemsMonsterComponent } from "../drop-items-monster/drop-items-monster.component";
@@ -62,6 +64,7 @@ export class MonsterDetailsComponent implements OnInit {
   ListSpells = [];
   ListAssociateMonsterTemplates = [];
   ListItemMasters = [];
+  monsterDetailType = MonsterDetailType;
 
   _editMonster: any;
 
@@ -523,4 +526,44 @@ export class MonsterDetailsComponent implements OnInit {
     this.bsModalRef.content.recordType = 'ruleset'
     this.bsModalRef.content.isFromCampaignDetail = true;
   }
+
+  updateMonsterInfoProp(monster, type) {
+    let monsterModel: any =new MonsterTemplate();
+    monsterModel.armorClass = monster.monsterArmorClass;
+    monsterModel.challangeRating = monster.monsterChallangeRating;
+    monsterModel.healthCurrent = monster.monsterHealthCurrent;
+    monsterModel.healthMax = monster.monsterHealthMax;
+    monsterModel.monsterId = monster.monsterId;
+    monsterModel.name = monster.name;
+    monsterModel.imageUrl = monster.imageUrl;
+
+    this.bsModalRef = this.modalService.show(UpdateMonsterHealthComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = type;
+    this.bsModalRef.content.combatInfo = { monster: monsterModel, monsterId: monster.monsterId, type : combatantType.MONSTER};
+    this.bsModalRef.content.event.subscribe(result => {
+      debugger
+
+      if (result.type == MonsterDetailType.HEALTH && result.record.type == combatantType.MONSTER) {
+        this.monsterDetail.monsterHealthCurrent = result.record.monster.healthCurrent;
+        this.monsterDetail.monsterHealthMax = result.record.monster.healthMax;
+      }
+      else if (result.type == MonsterDetailType.RATING && result.record.type == combatantType.MONSTER) {
+        this.monsterDetail.monsterChallangeRating = result.record.monster.challangeRating;
+      }
+      else if (result.type == MonsterDetailType.ARMOR && result.record.type == combatantType.MONSTER) {
+        this.monsterDetail.monsterArmorClass = result.record.monster.armorClass;
+      }
+      //else if (result.type == MonsterDetailType.INITIATIVE && result.record.type == combatantType.MONSTER) {
+      //  item.monster.healthCurrent = result.record.initiative;
+      //}
+      //else if (result.type == MonsterDetailType.XPVALUE && result.record.type == combatantType.MONSTER) {
+      //  item.monster.healthCurrent = result.record.monster.xpValue;
+      //}
+    });
+  }
+
 }

@@ -74,6 +74,7 @@ import { AddBuffAndEffectComponent } from "./buffs-and-effects/add-buffs-and-eff
 import { AssignBuffAndEffectComponent } from "./buffs-and-effects/assign-buffs-and-effects/assign-buffs-and-effects.component";
 import { CombatBuffeffectDetailsComponent } from "../rulesets/combat/combat-buffeffects-details/combat-buffeffects-details.component";
 import { CombatHealthComponent } from "../rulesets/combat/update-combat-health/update-combat-health.component";
+import { UpdateMonsterHealthComponent } from "./update-monster-health/update-monster-health.component";
 
 @NgModule({
   declarations: [
@@ -115,7 +116,8 @@ import { CombatHealthComponent } from "../rulesets/combat/update-combat-health/u
     AddBuffAndEffectComponent,
     AssignBuffAndEffectComponent,
     CombatBuffeffectDetailsComponent,
-    CombatHealthComponent
+    CombatHealthComponent,
+    UpdateMonsterHealthComponent
   ],
   imports: [
     CommonModule,
@@ -214,7 +216,8 @@ import { CombatHealthComponent } from "../rulesets/combat/update-combat-health/u
     AddBuffAndEffectComponent,
     AssignBuffAndEffectComponent,
     CombatBuffeffectDetailsComponent,
-    CombatHealthComponent
+    CombatHealthComponent,
+    UpdateMonsterHealthComponent
   ],
   entryComponents: [
     AccountSettingsComponent,
@@ -252,7 +255,8 @@ import { CombatHealthComponent } from "../rulesets/combat/update-combat-health/u
     AddBuffAndEffectComponent,
     AssignBuffAndEffectComponent,
     CombatBuffeffectDetailsComponent,
-    CombatHealthComponent
+    CombatHealthComponent,
+    UpdateMonsterHealthComponent
   ]
 })
 export class SharedModule { }

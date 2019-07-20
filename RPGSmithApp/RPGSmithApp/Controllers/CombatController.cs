@@ -258,6 +258,33 @@ namespace RPGSmithApp.Controllers
 
         }
 
+        [HttpPost("SaveSelectedCombatant")]
+        public async Task<IActionResult> SaveSelectedCombatant([FromBody] Combatant_ViewModel model)
+        {
+            try
+            {
+                _combatService.saveSelectedCombatant(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("UpdateMonsterDetails")]
+        public async Task<IActionResult> UpdateMonsterDetails([FromBody] Combatant_ViewModel model, string type)
+        {
+            try
+            {
+                _combatService.updateMonsterDetails(model, type);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpPost("SaveSortorder")]
         public async Task<IActionResult> SaveSortorder([FromBody] List<Combatant_DTModel> model)
         {

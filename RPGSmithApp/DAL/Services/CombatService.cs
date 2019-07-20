@@ -177,7 +177,8 @@ namespace DAL.Services
                                     Initiative = CombatantRow["Initiative"] == DBNull.Value ? nulldecimal : Convert.ToDecimal(CombatantRow["Initiative"]),
                                     TargetId = CombatantRow["TargetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["TargetId"]),
                                     TargetType = CombatantRow["TargetType"] == DBNull.Value ? string.Empty : CombatantRow["TargetType"].ToString(),
-                                    DelayTurn = CombatantRow["DelayTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["DelayTurn"])
+                                    DelayTurn = CombatantRow["DelayTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["DelayTurn"]),
+                                    IsCurrentSelected = CombatantRow["IsCurrentSelected"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsCurrentSelected"])
                                     //Character = new Character(),
                                     //Monster=new Monster()
 
@@ -327,6 +328,9 @@ namespace DAL.Services
                                             MonsterBuffAndEffects = new List<MonsterBuffAndEffect>(),
                                             Description = CombatantRow["M_Description"] == DBNull.Value ? null : CombatantRow["M_Description"].ToString(),
                                             Stats = CombatantRow["M_Stats"] == DBNull.Value ? null : CombatantRow["M_Stats"].ToString(),
+                                            XPValue = CombatantRow["M_XPValue"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_XPValue"]),
+                                            ChallangeRating = CombatantRow["M_ChallangeRating"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_ChallangeRating"]),
+                                            ArmorClass = CombatantRow["M_ArmorClass"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_ArmorClass"]),
                                         };
                                         if (ds.Tables[8].Rows.Count > 0)
                                         {
@@ -672,7 +676,8 @@ namespace DAL.Services
                         VisibleToPc = CombatantRow["VisibleToPc"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["VisibleToPc"]),
                         TargetId = CombatantRow["TargetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["TargetId"]),
                         TargetType = CombatantRow["TargetType"] == DBNull.Value ? string.Empty : CombatantRow["TargetType"].ToString(),
-                        DelayTurn = CombatantRow["DelayTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["DelayTurn"])
+                        DelayTurn = CombatantRow["DelayTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["DelayTurn"]),
+                        IsCurrentSelected = CombatantRow["IsCurrentSelected"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsCurrentSelected"])
                         //Character = new Character(),
                         //Monster=new Monster()
                     };
@@ -698,7 +703,10 @@ namespace DAL.Services
                                 Name = CombatantRow["M_Name"] == DBNull.Value ? string.Empty : CombatantRow["M_Name"].ToString(),
                                 ImageUrl = CombatantRow["M_ImageUrl"] == DBNull.Value ? string.Empty : CombatantRow["M_ImageUrl"].ToString(),
                                 HealthCurrent = CombatantRow["M_HealthCurrent"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_HealthCurrent"]),
-                                HealthMax = CombatantRow["M_HealthMax"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_HealthMax"])
+                                HealthMax = CombatantRow["M_HealthMax"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_HealthMax"]),
+                                XPValue = CombatantRow["M_XPValue"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_XPValue"]),
+                                ChallangeRating = CombatantRow["M_ChallangeRating"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_ChallangeRating"]),
+                                ArmorClass = CombatantRow["M_ArmorClass"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["M_ArmorClass"]),
                             };
                         }
                     }
@@ -891,13 +899,70 @@ namespace DAL.Services
             _context.SaveChanges();
         }
 
-        public void SaveDelayTurn(Combatant_ViewModel model) {
+        public void SaveDelayTurn(Combatant_ViewModel model)
+        {
             var combatant = _context.CombatantLists.Where(x => x.Id == model.Id).FirstOrDefault();
             if (combatant != null)
             {
                 combatant.DelayTurn = model.DelayTurn;
                 _context.SaveChanges();
             }
+        }
+
+        public void saveSelectedCombatant(Combatant_ViewModel model)
+        {
+            var combatants = _context.CombatantLists.Where(x => x.CombatId == model.CombatId).ToList();
+            foreach (var c in combatants)
+            {               
+                    c.IsCurrentSelected = false;
+                    if (c.Id==model.Id)
+                    {
+                        c.IsCurrentSelected = model.IsCurrentSelected;
+                    }
+
+                    _context.SaveChanges();               
+            }            
+        }
+
+        public void updateMonsterDetails(Combatant_ViewModel model, string type) {
+            if (type== "Initiative")
+            {
+                var combatant = _context.CombatantLists.Where(x => x.Id == model.Id).FirstOrDefault();
+                if (combatant != null)
+                {
+                    combatant.Initiative = model.Initiative;
+                    _context.SaveChanges();
+                }
+            }
+            else if (type == "Armor Class")
+            {
+                var monster = _context.Monsters.Where(x => x.MonsterId == model.MonsterId).FirstOrDefault();
+                if (monster != null)
+                {
+                    monster.ArmorClass = model.Monster.ArmorClass;
+                    _context.SaveChanges();
+                }
+
+            }
+            else if (type == "Challenge Rating")
+            {
+                var monster = _context.Monsters.Where(x => x.MonsterId == model.MonsterId).FirstOrDefault();
+                if (monster != null)
+                {
+                    monster.ChallangeRating = model.Monster.ChallangeRating;
+                    _context.SaveChanges();
+                }
+            }
+            else if (type == "Xp Value")
+            {
+                var monster = _context.Monsters.Where(x => x.MonsterId == model.MonsterId).FirstOrDefault();
+                if (monster != null)
+                {
+                    monster.XPValue = model.Monster.XPValue;
+                    _context.SaveChanges();
+                }
+            }
+
         }
     }
 }

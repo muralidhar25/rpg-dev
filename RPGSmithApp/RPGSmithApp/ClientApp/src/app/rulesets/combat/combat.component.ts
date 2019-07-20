@@ -9,7 +9,7 @@ import { CombatDetails } from '../../core/models/view-models/combat-details.mode
 import { Utilities } from '../../core/common/utilities';
 import { AddCombatMonsterComponent } from './add-combat-monster/add-monster-combat.component';
 import { RemoveCombatMonsterComponent } from './remove-combat-monster/remove-monster-combat.component';
-import { combatantType, COMBAT_SETTINGS, CombatItemsType, STAT_TYPE } from '../../core/models/enums';
+import { combatantType, COMBAT_SETTINGS, CombatItemsType, STAT_TYPE, MonsterDetailType } from '../../core/models/enums';
 import { combatant } from '../../core/models/view-models/combatants.model';
 import { CombatHealthComponent } from './update-combat-health/update-combat-health.component';
 import { DropItemsCombatMonsterComponent } from './drop-monstercombat-items/drop-items-monstercombat.component';
@@ -37,6 +37,8 @@ import { LocalStoreManager } from '../../core/common/local-store-manager.service
 import { ServiceUtil } from '../../core/services/service-util';
 import { RulesetService } from '../../core/services/ruleset.service';
 import { CharactersCharacterStat } from '../../core/models/view-models/characters-character-stats.model';
+import { ImageViewerComponent } from '../../shared/image-interface/image-viewer/image-viewer.component';
+import { UpdateMonsterHealthComponent } from '../../shared/update-monster-health/update-monster-health.component';
 
 @Component({
   selector: 'app-combat',
@@ -72,16 +74,24 @@ export class CombatComponent implements OnInit {
   sub: Subscription;
   characterId: any;
   noDescripttionAvailable: string = 'No Descripttion Available';
-  DummyValueForCharHealthStat: number = -9999
+  noBuffs_EffectsAvailable: string = 'No Buffs & Effects Available';
+  noItemsAvailable: string = 'No Items Available';
+  noSpellsAvailable: string = 'No Spells Available';
+  noAbilitiesAvailable: string = 'No Abilities Available';
+  DummyValueForCharHealthStat: number = -9999;
+  isFrameSelected_Flag: boolean = false;
+
+  monsterDetailType = MonsterDetailType;
 
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
   }
-  @HostListener('window:keyup', ['$event'])
+  @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
     //console.log(event);
-    if (event.keyCode === 32) {
+    if (event.keyCode === 32 && event.target == document.body) {
       this.nextTurn();
+      event.preventDefault();
     }
   }
 
@@ -292,19 +302,24 @@ export class CombatComponent implements OnInit {
               }
             }
           }
+
+          if (x.isCurrentSelected) {
+            this.frameClick(x);
+            this.isFrameSelected_Flag = true
+          }
         });
 
         // Game Time
         this.gametime = this.time_convert(this.settings.gameRoundLength);
-
-        this.frameClick(this.combatants[0]);
+        if (!this.isFrameSelected_Flag) {
+          this.frameClick(this.combatants[0]);
+        }
 
         this.isCharacterItemEnabled = combatModal.isCharacterItemEnabled;
         this.isCharacterSpellEnabled = combatModal.isCharacterSpellEnabled;
         this.isCharacterAbilityEnabled = combatModal.isCharacterAbilityEnabled;
 
         if (this.roundCounter > 1) {
-          debugger
           let curretnCombatantList = this.combatants.filter(x => x.isCurrentTurn);
           if (curretnCombatantList.length) {
             this.curretnCombatant = curretnCombatantList[0];
@@ -543,7 +558,7 @@ export class CombatComponent implements OnInit {
         this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
         this.frameClick(this.curretnCombatant)
 
-      
+
         return;
       }
 
@@ -567,7 +582,6 @@ export class CombatComponent implements OnInit {
 
   }
   nextTurn() {
-    debugger;
     let skipIsCurrentTurnCheck: boolean = false;
     for (let i = 0; i < this.combatants.length; i++) {
       if ((this.combatants[i].isCurrentTurn == true && this.combatants[i + 1]) || skipIsCurrentTurnCheck) {
@@ -667,10 +681,25 @@ export class CombatComponent implements OnInit {
       }
     });
 
-
+    this.SaveSelectedCombatant(item);
   }
+
+  SaveSelectedCombatant(selectedCombatant) {
+    selectedCombatant.isCurrentSelected = true;
+    this.combatService.saveSelectedCombatant(selectedCombatant).subscribe(res => {
+      let result = res;
+    }, error => {
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      } else {
+        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+      }
+    });
+  }
+
   nameClicked(item) {
-    if (item.type == combatantType.MONSTER) {
+    if (item.type == combatantType.MONSTER && this.settings.accessMonsterDetails) {
       this.router.navigate(['/ruleset/monster-details', item.monster.monsterId]);
     }
     if (item.type == combatantType.CHARACTER) {
@@ -1259,7 +1288,6 @@ export class CombatComponent implements OnInit {
     } catch (err) { }
   }
   private get_Ruleset_XP_CharacterStatID(): number {
-    debugger
     let Ruleset_XP_CharacterStatID: number = 0;
     this.combatants.map((x) => {
       if (x.type == this.combatItemsType.CHARACTER && Ruleset_XP_CharacterStatID == 0) {
@@ -1282,5 +1310,63 @@ export class CombatComponent implements OnInit {
       }
     })
     return Ruleset_XP_CharacterStatID;
+  }
+
+  ImageDeatil(itemDetail, imgref) {
+    if (itemDetail.type == combatantType.MONSTER) {
+      if (this.settings.accessMonsterDetails) {
+        this.router.navigate(['/ruleset/monster-details', itemDetail.monster.monsterId]);
+      } else {
+        this.ViewImage(imgref);
+      }
+    }
+    if (itemDetail.type == combatantType.CHARACTER) {
+      this.router.navigate(['/character/dashboard', itemDetail.character.characterId]);
+    }
+
+  }
+
+  ViewImage(img) {
+    if (img) {
+      this.bsModalRef = this.modalService.show(ImageViewerComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.ViewImageUrl = img.src;
+      this.bsModalRef.content.ViewImageAlt = img.alt;
+    }
+  }
+
+  updateMonster(item, type) {
+    this.bsModalRef = this.modalService.show(UpdateMonsterHealthComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = type;
+    this.bsModalRef.content.combatInfo = item;
+    this.bsModalRef.content.event.subscribe(result => {
+      //if (result.type == combatantType.CHARACTER) {
+      //  item.character.healthCurrent = result.character.healthCurrent;
+      //  item.character.healthMax = result.character.healthMax;
+      //}
+      if (result.type == MonsterDetailType.HEALTH && result.record.type == combatantType.MONSTER) {
+        item.monster.healthCurrent = result.record.monster.healthCurrent;
+        item.monster.healthMax = result.record.monster.healthMax;
+      }
+      else if (result.type == MonsterDetailType.RATING && result.record.type == combatantType.MONSTER) {
+        item.monster.challangeRating = result.record.monster.challangeRating;
+      }
+      else if (result.type == MonsterDetailType.ARMOR && result.record.type == combatantType.MONSTER) {
+        item.monster.armorClass = result.record.monster.armorClass;
+      }
+      else if (result.type == MonsterDetailType.INITIATIVE && result.record.type == combatantType.MONSTER) {
+        item.initiative = result.record.initiative;
+      }
+      else if (result.type == MonsterDetailType.XPVALUE && result.record.type == combatantType.MONSTER) {
+        item.monster.xpValue = result.record.monster.xpValue;
+      }
+    });
   }
 }

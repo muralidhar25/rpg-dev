@@ -274,3 +274,12 @@ export enum COMBAT_SETTINGS {
   SEE_MONSTER_BUFFS_EFFECTS = 15,
   SEE_MONSTER_ITEMS = 16
 }
+
+export enum MonsterDetailType {
+  HEALTH = "Health",
+  RATING = "Challenge Rating",
+  ARMOR = "Armor Class",
+  INITIATIVE = "Initiative",
+  XPVALUE="Xp Value"
+
+}

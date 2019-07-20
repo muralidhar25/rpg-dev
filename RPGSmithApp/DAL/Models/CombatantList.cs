@@ -43,5 +43,7 @@ namespace DAL.Models
         public string TargetType { get; set; }
 
         public bool DelayTurn { get; set; }
+        public bool IsCurrentSelected { get; set; }
+
     }
 }

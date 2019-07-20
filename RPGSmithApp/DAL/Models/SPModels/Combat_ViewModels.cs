@@ -17,16 +17,17 @@ namespace DAL.Models.SPModels
         public bool IsDeleted { get; set; }
 
 
-        public bool isCharacterItemEnabled   { get; set; }
-        public bool isCharacterSpellEnabled  { get; set; }
-        public bool isCharacterAbilityEnabled{ get; set; }
+        public bool isCharacterItemEnabled { get; set; }
+        public bool isCharacterSpellEnabled { get; set; }
+        public bool isCharacterAbilityEnabled { get; set; }
         public bool isCharacterBuffAndEffectEnabled { get; set; }
 
         public List<Combatant_ViewModel> CombatantList { get; set; }
         public CombatSetting CombatSettings { get; set; }
     }
-    public class Character_Combat_VM_ForCharCharStats : Character {
-        public DiceRollViewModel DiceRollViewModel { get; set; }        
+    public class Character_Combat_VM_ForCharCharStats : Character
+    {
+        public DiceRollViewModel DiceRollViewModel { get; set; }
     }
     public class Combatant_ViewModel
     {
@@ -63,6 +64,8 @@ namespace DAL.Models.SPModels
 
         public bool DelayTurn { get; set; }
 
+        public bool IsCurrentSelected { get; set; }
+
     }
     public class CombatAllTypeMonsters : MonsterTemplate
     {
@@ -73,7 +76,8 @@ namespace DAL.Models.SPModels
         public List<MonsterTemplate_BundleItemsWithRandomItems> BundleItems { get; set; }
         public List<RandomizationEngine> RandomizationEngine { get; set; }
     }
-    public class MonsterIds {
+    public class MonsterIds
+    {
         public int MonsterId { get; set; }
     }
     //public class CombatantList_ViewModel
@@ -109,7 +113,7 @@ namespace DAL.Models.SPModels
         public int? MonsterId { get; set; }
 
         public int SortOrder { get; set; }
-        
+
         public decimal? Initiative { get; set; }
 
         public bool IsDeleted { get; set; }
@@ -118,7 +122,7 @@ namespace DAL.Models.SPModels
 
         public bool VisibleToPc { get; set; }
 
-        public bool IsCurrentTurn { get; set; }        
+        public bool IsCurrentTurn { get; set; }
 
     }
     public class CharacterHealthModel

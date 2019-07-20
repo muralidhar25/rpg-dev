@@ -238,7 +238,7 @@ body {
 }
 
 .combat-table table td:last-child {
-  width: 200px;
+  width: 202px;
 }
 
 .name-data {
@@ -1132,9 +1132,10 @@ button.btn-top {
 
 .moreBuffEffect {
   background: yellow;
-  min-width: 13px;
+  min-width: 20px;
   width: auto;
-  height: 20px;
+  min-height: 20px;
+  height: auto;
   display: inline-block;
   border-radius: 100%;
   position: absolute;
@@ -1146,4 +1147,40 @@ button.btn-top {
   border: solid 1px #000;
   font-size: 12px;
   font-weight: bold;
+  left: 93%;
+}
+
+.white-outer-filed .white-section {
+  border: 1px solid black !important;
+}
+
+.border-cls {
+  height: 5px;
+}
+
+.white-outer-filed td {
+  border-top: 1px solid black !important;
+  border-bottom: 1px solid black !important;
+}
+
+/*.combat-table table .white-outer-filed td:first-child {
+  border-left: 1px solid black !important;
+}
+
+.combat-table table .white-outer-filed td:last-child {
+  border-right: 1px solid black !important;
+}*/
+ul.item-info-props li {
+  display: inline-block;
+  background-color: #58514c;
+  color: #fff;
+  text-align: center;
+  width: 64px;
+  margin-bottom: 4px;
+  padding: 8px 0px;
+}
+
+ul.item-info-props {
+  padding-left: 15px;
+  list-style: none;
 }

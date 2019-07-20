@@ -28,6 +28,8 @@ export class CombatService extends EndpointFactory {
   private readonly Combat_Start: string = this.configurations.baseUrl + "/api/Combat/Combat_Start";
   private readonly SaveSortOrder: string = this.configurations.baseUrl + "/api/Combat/SaveSortOrder";
   private readonly SaveDelayTurn: string = this.configurations.baseUrl + "/api/Combat/SaveDelayTurn";
+  private readonly SaveSelectedCombatant: string = this.configurations.baseUrl + "/api/Combat/SaveSelectedCombatant";
+  private readonly UpdateMonsterDetails: string = this.configurations.baseUrl + "/api/Combat/UpdateMonsterDetails";
 
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
@@ -161,6 +163,22 @@ export class CombatService extends EndpointFactory {
     return this.http.post<T>(url, JSON.stringify(delayTurn), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.saveDelayTurn(delayTurn));
+      });
+  }
+
+  saveSelectedCombatant<T>(isCurrentSelected): Observable<T> {
+    let url = `${this.SaveSelectedCombatant}`
+    return this.http.post<T>(url, JSON.stringify(isCurrentSelected), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.saveSelectedCombatant(isCurrentSelected));
+      });
+  }
+
+  updateMonsterDetails<T>(combat, type): Observable<T> {
+    let url = `${this.UpdateMonsterDetails}?type=${type}`
+    return this.http.post<T>(url, JSON.stringify(combat), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.updateMonsterDetails(combat, type));
       });
   }
 
