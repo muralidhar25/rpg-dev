@@ -34,55 +34,7 @@ export class CombatInitiativeComponent implements OnInit {
     private combatService: CombatService,
     private authService: AuthService,
     private sharedService: SharedService) {
-    //this.initiativeInfo = [
-    //  {
-    //    name: 'Aron',
-    //    initiativeCommand: 'D4',
-    //    image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
-    //    initiativeValue: '20',
-    //    type: CombatItemsType.MONSTER,
-
-    //  },
-    //  {
-    //    name: 'Newton',
-    //    initiativeCommand: 'D4',
-    //    image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
-    //    initiativeValue: '1',
-    //    type: CombatItemsType.MONSTER
-    //  },
-    //  {
-    //    name: 'Trelo',
-    //    initiativeCommand: 'D4',
-    //    image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
-    //    initiativeValue: '2',
-    //    type: CombatItemsType.CHARACTER
-    //  },
-    //  {
-    //    name: 'Doc',
-    //    initiativeCommand: 'D4',
-    //    image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
-    //    initiativeValue: '3',
-    //    type: CombatItemsType.MONSTER
-    //  },
-    //  {
-    //    name: 'Ram',
-    //    initiativeCommand: 'D4',
-    //    image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
-    //    initiativeValue: '4',
-    //    type: CombatItemsType.CHARACTER
-    //  },
-    //  {
-    //    name: 'Clark',
-    //    initiativeCommand: 'D4',
-    //    image: 'https://rpgsmithsa.blob.core.windows.net/user-248c6bae-fab3-4e1f-b91b-f674de70a65d/e21b5355-9824-4aa0-b3c0-274cf9255e45.jpg',
-    //    initiativeValue: '5',
-    //    type: CombatItemsType.MONSTER
-    //  }
-
-    //];
-
-    //this.getCommandresults();
-
+    
   }
 
   ngOnInit() {
@@ -97,21 +49,22 @@ export class CombatInitiativeComponent implements OnInit {
   }
 
   GetCombatantList() {
-    debugger
+    
     if (this.isInitialForCombatStart) {
       this.initiativeInfo.map(pc => {
         if (pc.type == this.combatItemsType.CHARACTER) {
-          
+          debugger
           if (this.combatSettings && this.combatSettings.rollInitiativeForPlayer) {
             pc.initiativeCommand = this.combatSettings.pcInitiativeFormula;
-              
-    
+
+
             //if (pc.type == combatantType.CHARACTER) {
-              let statdetails = { charactersCharacterStat: pc.character.diceRollViewModel.charactersCharacterStats, character: pc.character.diceRollViewModel.character };
-              pc.initiativeCommand = ServiceUtil.getFinalCalculationString(this.combatSettings.pcInitiativeFormula, statdetails, pc.character.diceRollViewModel.charactersCharacterStats, pc.character.diceRollViewModel.character)
+            let initiativecommand = pc.initiativeCommand
+            let statdetails = { charactersCharacterStat: pc.character.diceRollViewModel.charactersCharacterStats, character: pc.character.diceRollViewModel.character };
+            initiativecommand = ServiceUtil.getFinalCalculationString(this.combatSettings.pcInitiativeFormula, statdetails, pc.character.diceRollViewModel.charactersCharacterStats, pc.character.diceRollViewModel.character)
             //}
 
-            let res = DiceService.rollDiceExternally(this.alertService, pc.initiativeCommand, this.customDices);
+            let res = DiceService.rollDiceExternally(this.alertService, initiativecommand, this.customDices);
             if (isNaN(res)) {
               pc.initiativeValue = '';
             } else {
@@ -138,14 +91,22 @@ export class CombatInitiativeComponent implements OnInit {
       });
       this.SortInitiativeInfo();
     }
+    else {
+      this.initiativeInfo.map(pc => {
+        if (pc.type == this.combatItemsType.CHARACTER) {
+          pc.initiativeCommand = this.combatSettings.pcInitiativeFormula;
+        }
+      });
+    }
     
   }
 
 
   close() {
-    this.saveInitiativeDetails();
-    //this.sharedService.updateCombatantList(this.initiativeInfo);
-    //this.bsModalRef.hide();
+    //this.saveInitiativeDetails();
+    ////this.sharedService.updateCombatantList(this.initiativeInfo);
+    ////this.bsModalRef.hide();
+    this.bsModalRef.hide();
   }
 
   //Save Initiative Details
@@ -184,8 +145,16 @@ export class CombatInitiativeComponent implements OnInit {
 
   //Re-Roll Dice on click
   ReRollDice(item) {
+    debugger
     if (item.initiativeCommand) {
-      let res = DiceService.rollDiceExternally(this.alertService, item.initiativeCommand, this.customDices);
+      let initiativecommand = item.initiativeCommand;
+      if (item.type == combatantType.CHARACTER) {
+        
+        let statdetails = { charactersCharacterStat: item.character.diceRollViewModel.charactersCharacterStats, character: item.character.diceRollViewModel.character };
+        initiativecommand = ServiceUtil.getFinalCalculationString(this.combatSettings.pcInitiativeFormula, statdetails, item.character.diceRollViewModel.charactersCharacterStats, item.character.diceRollViewModel.character)
+
+      }
+      let res = DiceService.rollDiceExternally(this.alertService, initiativecommand, this.customDices);
       if (isNaN(res)) {
         item.initiativeValue = 0;
       } else {
@@ -221,10 +190,18 @@ export class CombatInitiativeComponent implements OnInit {
   }
 
   //Re-Roll All Characters & Monsters
-  getCommandresults(all = false) {
+  getCommandresults() {
     this.initiativeInfo.map((x) => {
       if (x.initiativeCommand) {
-        let res = DiceService.rollDiceExternally(this.alertService, x.initiativeCommand, this.customDices);
+        debugger
+        let initiativecommand = x.initiativeCommand;
+        if (x.type == combatantType.CHARACTER) {
+         
+          let statdetails = { charactersCharacterStat: x.character.diceRollViewModel.charactersCharacterStats, character: x.character.diceRollViewModel.character };
+          initiativecommand = ServiceUtil.getFinalCalculationString(this.combatSettings.pcInitiativeFormula, statdetails, x.character.diceRollViewModel.charactersCharacterStats, x.character.diceRollViewModel.character)
+
+        }
+        let res = DiceService.rollDiceExternally(this.alertService, initiativecommand, this.customDices);
         if (isNaN(res)) {
           x.initiativeValue = 0;
         } else {
@@ -232,9 +209,9 @@ export class CombatInitiativeComponent implements OnInit {
         }
       }
     });
-    if (all == false) {
+    
       this.SortInitiativeInfo();
-    }
+   
   }
 
   //used to reroll  on basis of type
@@ -244,7 +221,12 @@ export class CombatInitiativeComponent implements OnInit {
     if (type == CombatItemsType.CHARACTER) {
       this.initiativeInfo.map((x) => {
         if (x.initiativeCommand && x.type == type) {
-          let res = DiceService.rollDiceExternally(this.alertService, x.initiativeCommand, this.customDices);
+          debugger
+          let initiativecommand = x.initiativeCommand;
+          let statdetails = { charactersCharacterStat: x.character.diceRollViewModel.charactersCharacterStats, character: x.character.diceRollViewModel.character };
+          initiativecommand= ServiceUtil.getFinalCalculationString(this.combatSettings.pcInitiativeFormula, statdetails, x.character.diceRollViewModel.charactersCharacterStats, x.character.diceRollViewModel.character)
+
+          let res = DiceService.rollDiceExternally(this.alertService, initiativecommand, this.customDices);
           if (isNaN(res)) {
             x.initiativeValue = 0;
           } else {
@@ -270,7 +252,7 @@ export class CombatInitiativeComponent implements OnInit {
     }
     //Re-Roll All Characters & Monsters
     if (type == CombatItemsType.ALL) {
-      this.getCommandresults(true);
+      this.getCommandresults();
     }
   }
 

@@ -39,6 +39,7 @@ import { SaveCombatMonsterComponent } from "./combat/save-combat-monster/save-co
 //import { CombatHealthComponent } from "./combat/update-combat-health/update-combat-health.component";
 import { AccordionModule } from "ngx-bootstrap";
 import { NgCircleProgressModule } from "ng-circle-progress";
+import { ContextMenuModule } from "ngx-contextmenu";
 
 //import { CampaignInviteComponent } from './campaign-invite/campaign-invite.component';
 
@@ -80,7 +81,8 @@ import { NgCircleProgressModule } from "ng-circle-progress";
     TileModule,
     TileRulesetModule,
     AccordionModule,
-    NgCircleProgressModule
+    NgCircleProgressModule,
+    ContextMenuModule
   ],
   providers: [
   ],

@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChild, Input } from '@angular/core';
 import { fadeInOut } from '../../core/services/animations';
 //import { CharacterStatClusterTileComponent } from './character-stat-cluster-tile/character-stat-cluster-tile.component';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
@@ -37,6 +37,7 @@ import { LocalStoreManager } from '../../core/common/local-store-manager.service
 import { ServiceUtil } from '../../core/services/service-util';
 import { RulesetService } from '../../core/services/ruleset.service';
 import { CharactersCharacterStat } from '../../core/models/view-models/characters-character-stats.model';
+import { ContextMenuComponent, ContextMenuService } from 'ngx-contextmenu';
 
 @Component({
   selector: 'app-combat',
@@ -73,7 +74,82 @@ export class CombatComponent implements OnInit {
   characterId: any;
   noDescripttionAvailable: string = 'No Descripttion Available';
   DummyValueForCharHealthStat: number = -9999
+  defaultColorList = [
+    {
+      rpgCoreColorId: 1,
+      titleTextColor: "#FFFFFF",
+      titleBgColor: "#000000",
+      bodyTextColor: "#FFFFFF",
+      bodyBgColor: "black",
+    },
+    {
+      rpgCoreColorId: 2,
+      titleTextColor: "#000000",
+      titleBgColor: "#D58917",
+      bodyTextColor: "#000000",
+      bodyBgColor: "red",
 
+    },
+    {
+      rpgCoreColorId: 3,
+      titleTextColor: "#FFFFFF",
+      titleBgColor: "#069774",
+      bodyTextColor: "#FFFFFF",
+      bodyBgColor: "orange",
+
+    },
+    {
+      rpgCoreColorId: 4,
+      titleTextColor: "#000000",
+      titleBgColor: "#E1B500",
+      bodyTextColor: "#000000",
+      bodyBgColor: "yellow",
+    },    
+    {
+      rpgCoreColorId: 5,
+      titleTextColor: "#FFFFFF",
+      titleBgColor: "#265256",
+      bodyTextColor: "#FFFFFF",
+      bodyBgColor: "green",
+
+    },
+    {
+      rpgCoreColorId: 10,
+      titleTextColor: "#FFFFFF",
+      titleBgColor: "#800080",
+      bodyTextColor: "#FFFFFF",
+      bodyBgColor: "purple",
+    },
+    {
+      rpgCoreColorId: 6,
+      titleTextColor: "#FFFFFF",
+      titleBgColor: "#004229",
+      bodyTextColor: "#FFFFFF",
+      bodyBgColor: "blue",
+    },    
+    {
+      rpgCoreColorId: 7,
+      titleTextColor: "#FFFFFF",
+      titleBgColor: "#2973A8",
+      bodyTextColor: "#FFFFFF",
+      bodyBgColor: "brown",
+    },
+    {
+      rpgCoreColorId: 8,
+      titleTextColor: "#FFFFFF",
+      titleBgColor: "#04466D",
+      bodyTextColor: "#FFFFFF",
+      bodyBgColor: "grey", 
+    },
+    {
+      rpgCoreColorId: 9,
+      titleTextColor: "#000000",
+      titleBgColor: "#663796",
+      bodyTextColor: "#000000",
+      bodyBgColor: "lightcyan",
+
+    }
+  ]
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
   }
@@ -101,6 +177,10 @@ export class CombatComponent implements OnInit {
     if (element.className.split(' ').indexOf(classname) >= 0) return true;
     return element.parentNode && this.hasSomeParentTheClass(element.parentNode, classname);
   }
+
+  @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;  
+  @Input() contextMenu: ContextMenuComponent;
+
   constructor(private modalService: BsModalService,
     private router: Router,
     private route: ActivatedRoute,
@@ -113,7 +193,8 @@ export class CombatComponent implements OnInit {
     private itemsService: ItemsService,
     private localStorage: LocalStoreManager,
 
-    private rulesetService: RulesetService, ) {
+    private rulesetService: RulesetService,
+    private contextMenuService: ContextMenuService) {
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
 
     this.sharedService.shouldUpdateCombatantListForAddDeleteMonsters().subscribe(combatantListJson => {
@@ -496,7 +577,6 @@ export class CombatComponent implements OnInit {
   }
 
   monsterAdd() {
-    console.log('monsterAdd');
     this.bsModalRef = this.modalService.show(AddCombatMonsterComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -535,10 +615,10 @@ export class CombatComponent implements OnInit {
         this.CurrentInitiativeValue = valueofinitiative;
 
         if (this.combatants[indexToSetCurrentTurn].delayTurn) {
+          // this.combatants[i].isCurrentTurn = true;
           this.prevTurn();
           break;
         }
-
 
         this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
         this.frameClick(this.curretnCombatant)
@@ -570,7 +650,7 @@ export class CombatComponent implements OnInit {
     debugger;
     let skipIsCurrentTurnCheck: boolean = false;
     for (let i = 0; i < this.combatants.length; i++) {
-      if ((this.combatants[i].isCurrentTurn == true && this.combatants[i + 1]) || skipIsCurrentTurnCheck) {
+      if ((this.combatants[i].isCurrentTurn == true && this.combatants[i + 1]) || (skipIsCurrentTurnCheck && this.combatants[i + 1])) {
         this.combatants[i].isCurrentTurn = false;
         if (this.combatants[i + 1].delayTurn) {
           skipIsCurrentTurnCheck = true;
@@ -585,16 +665,18 @@ export class CombatComponent implements OnInit {
         return;
       }
       else if (!this.combatants[i + 1]) {
+        debugger
         if (this.roundCounter != 0 && this.settings.rollInitiativeEveryRound) {
           this.Init(true);
         }
         this.combatants[i].isCurrentTurn = false;
         if (this.combatants[i - i].delayTurn) {
-          //skipIsCurrentTurnCheck = true;
+          i =-1;
+          skipIsCurrentTurnCheck = true;
           continue;
         }
         this.combatants[i - i].isCurrentTurn = true;
-        this.curretnCombatant = this.combatants[i - 1];
+        this.curretnCombatant = this.combatants[i - i];
         let valueofinitiative = this.combatants[i - i].initiativeValue;
         this.CurrentInitiativeValue = valueofinitiative;
 
@@ -670,12 +752,13 @@ export class CombatComponent implements OnInit {
 
   }
   nameClicked(item) {
-    if (item.type == combatantType.MONSTER) {
-      this.router.navigate(['/ruleset/monster-details', item.monster.monsterId]);
-    }
-    if (item.type == combatantType.CHARACTER) {
-      this.router.navigate(['/character/dashboard', item.character.characterId]);
-    }
+    this.frameClick(item);    
+    //if (item.type == combatantType.MONSTER) {
+    //  this.router.navigate(['/ruleset/monster-details', item.monster.monsterId]);
+    //}
+    //if (item.type == combatantType.CHARACTER) {
+    //  this.router.navigate(['/character/dashboard', item.character.characterId]);
+    //}
   }
 
   Hidebtns(item) {
@@ -874,8 +957,8 @@ export class CombatComponent implements OnInit {
 
       this.alertService.stopLoadingMessage();
 
-      let message = "Combat has been starter successfully.";
-      this.alertService.showMessage(message, "", MessageSeverity.success);
+      //let message = "Combat has been starter successfully.";
+      //this.alertService.showMessage(message, "", MessageSeverity.success);
 
       this.Init(true);
       this.showCombatOptions = true;
@@ -911,8 +994,8 @@ export class CombatComponent implements OnInit {
 
       this.alertService.stopLoadingMessage();
 
-      let message = "Combat has been ended successfully.";
-      this.alertService.showMessage(message, "", MessageSeverity.success);
+      //let message = "Combat has been ended successfully.";
+      //this.alertService.showMessage(message, "", MessageSeverity.success);
 
       this.showCombatOptions = false;
       let msg = "Combat Ended";
@@ -1282,5 +1365,49 @@ export class CombatComponent implements OnInit {
       }
     })
     return Ruleset_XP_CharacterStatID;
+  }
+  public onContextMenu($event: MouseEvent, item: any): void {
+    debugger
+    this.contextMenuService.show.next({
+      anchorElement: $event.target,
+      // Optional - if unspecified, all context menu components will open
+      contextMenu: this.contextMenu,
+      event: <any>$event,
+      item: item,
+    });
+    $event.preventDefault();
+    $event.stopPropagation();
+  }
+  setdefaultColor(color, item) {
+    debugger
+    item.visibilityColor = color.bodyBgColor;
+    this.saveVisibilityDetails(item);
+    
+  }
+
+  ShowVisibility(item) {
+    debugger
+    item.visibleToPc = true;
+    this.saveVisibilityDetails(item);
+  }
+  HideVisibility(item) {
+    debugger
+    item.visibleToPc = false;
+    this.saveVisibilityDetails(item);
+  }
+  saveVisibilityDetails(currentItem) {
+    debugger
+    
+    this.combatService.saveVisibilityDetails(currentItem).subscribe(res => {
+      
+    }, error => {
+     
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      } else {
+        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+      }
+    });
   }
 }
