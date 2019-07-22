@@ -47,16 +47,17 @@ span.input-box {
   line-height: 2.5;
 }
 .modal-title .manage-ruleset-header {
-  float: none;
+  /*-webkit-transform: translate(-50%,0);*/
+  font-size: 12px;
+  /*float: none;*/
   position: relative;
   display: inline-block;
-  left: 29%;
+  /*left: 40%;*/
   background: #fff;
   padding: 4px;
   border: 1px solid #999;
-  -webkit-transform: translate(-50%,0);
-  transform: translate(-50%,0);
-  font-size: 12px;
+  /*transform: translate(-50%, 0);*/
+  margin-right: 10px;
 }
 
 .manage-ruleset-header img {

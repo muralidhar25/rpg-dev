@@ -9,17 +9,18 @@
           <button class="btn-red-icons" (click)="endCombat()" *ngIf="showCombatOptions"><span class=" icon icon-CharStat-OnOff mr-2"></span> END COMBAT</button>
           <button class="btn-green-icons" (click)="startCombat()" *ngIf="!showCombatOptions"><span class=" icon icon-CharStat-OnOff mr-2"></span> START COMBAT</button>
           <!-- Mobile View-->
-          <div class="btn-group d-lg-none">
-            <button class="setting-btn icon-Settings dropdown-toggle" type="button" data-toggle="dropdown"></button>
-            <div class="dropdown-menu">
+          <div class="btn-group d-lg-none" [ngClass]="{'open': isDropdownOpen}">
+            <button class="setting-btn icon-Settings dropdown-toggle setting-toggle-btn" type="button" data-toggle="dropdown"></button>
+            <div class="dropdown-menu setting-toggle">
               <div class="row m-0">
                 <div class="col-12 col-sm-6 col-md-3">
                   <h3>INITIATIVE</h3>
                   <ul>
-                    <li>
+                    <li class="ipad-screen">
                       PC Initiative Formula
                       <input type="text" class="cust-txtbox" name="PCInitiative" [(ngModel)]="settings.pcInitiativeFormula"
-                             (change)="UpdateSettings($event, COMBAT_SETTINGS.PC_INITIATIVE_FORMULA)" />
+                             (change)="isValidSingleNumberCommand(settings.pcInitiativeFormula,true) && UpdateSettings($event, COMBAT_SETTINGS.PC_INITIATIVE_FORMULA)" />
+                      <span *ngIf="settings.pcInitiativeFormula && !isValidSingleNumberCommand(settings.pcInitiativeFormula,true)" class="errorMessage text-danger">The 'And' and Text options are disallowed for this comand.</span>
                     </li>
                     <li>
                       Roll Initiative for Player Characters
@@ -33,12 +34,11 @@
                              (change)="UpdateSettings($event, COMBAT_SETTINGS.ROLL_INITIATIVE_EVERY_ROUND)" />
                       <span></span>
                     </li>
-                    <li>
+                    <li class="ipad-screen">
                       In-Game Round Length
                       <input type="text" class="sec-txtbox" name="GameRoundLength" [(ngModel)]="settings.gameRoundLength"
                              (change)="UpdateSettings($event, COMBAT_SETTINGS.IN_GAME_ROUND_LENGTH)" />
                       <label class="sec-label">Seconds</label>
-
                     </li>
                   </ul>
                 </div>
@@ -51,15 +51,25 @@
                              (change)="UpdateSettings($event, COMBAT_SETTINGS.AUTO_XP_DISTRIBUTION_FOR_DELETED_MONSTERS)" />
                       <span></span>
                     </li>
-                    <li>
+                    <li class="ipad-screen" *ngIf="settings.xpDistributionforDeletedMonster">
                       Character XP Stat
-                      <input type="text" class="cust-txtbox" name="CharcterXPStats" [(ngModel)]="settings.charcterXpStats"
-                             (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_XP_STAT)" />
+                      <!--<input type="text" class="cust-txtbox" name="CharcterXPStats" [(ngModel)]="settings.charcterXpStats"
+                             (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_XP_STAT)" />-->
+                      <div class="input-core-stat">
+                        <select class='form-control' (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_XP_STAT);$event.stopPropagation()">
+                          <option value="">Select</option>
+                          <option *ngFor='let xp of charXPStatNames' [selected]="xp==settings.charcterXpStats" [value]="xp">{{xp}}</option>
+                        </select>
+                      </div>
                     </li>
-                    <li>
+                    <li class="ipad-screen">
                       Character Health Stat
-                      <input type="text" class="cust-txtbox" name="CharcterHealthStats" [(ngModel)]="settings.charcterHealthStats"
-                             (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_HEALTH_STAT)" />
+                      <div class="input-core-stat">
+                        <select class='form-control' (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_HEALTH_STAT);$event.stopPropagation()">
+                          <option value="">Select</option>
+                          <option *ngFor='let health of charHealthStatNames' [selected]="xp==settings.charcterHealthStats" [value]="health">{{health}}</option>
+                        </select>
+                      </div>
                     </li>
                     <li>
                       Access Monster Details
@@ -78,10 +88,11 @@
                              (change)="UpdateSettings($event, COMBAT_SETTINGS.GROUP_INITIATIVE)" />
                       <span></span>
                     </li>
-                    <li>
+                    <li class="ipad-screen" *ngIf="settings.groupInitiative">
                       Group Init Formula
                       <input type="text" class="cust-txtbox" name="GroupInitFormula" [(ngModel)]="settings.groupInitFormula"
-                             (change)="UpdateSettings($event, COMBAT_SETTINGS.GROUPINIT_FORMULA)" />
+                             (change)="isValidSingleNumberCommand(settings.groupInitFormula) && UpdateSettings($event, COMBAT_SETTINGS.GROUPINIT_FORMULA)" />
+                      <em *ngIf="settings.groupInitFormula && !isValidSingleNumberCommand(settings.groupInitFormula)" class="errorMessage text-danger">The 'And' and Text options are disallowed for this comand.</em>
                     </li>
                     <li>
                       Auto-Drop Items for Deleted Monsters
@@ -202,7 +213,7 @@
                           <div class="input-core-stat">
                             <select class='form-control' (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_XP_STAT)">
                               <option value="">Select</option>
-                              <option *ngFor='let xp of charXPStatNames' [selected]="xp==settings.charcterXpStats"  [value]="xp">{{xp}}</option>
+                              <option *ngFor='let xp of charXPStatNames' [selected]="xp==settings.charcterXpStats" [value]="xp">{{xp}}</option>
                             </select>
                           </div>
                         </li>
@@ -211,9 +222,9 @@
                           <!--<input type="text" class="cust-txtbox" name="CharcterHealthStats" [(ngModel)]="settings.charcterHealthStats"
                                  (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_HEALTH_STAT)" />-->
                           <div class="input-core-stat">
-                            <select class='form-control' (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_HEALTH_STAT)" >
+                            <select class='form-control' (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_HEALTH_STAT)">
                               <option value="">Select</option>
-                              <option *ngFor='let health of charHealthStatNames' [selected]="xp==settings.charcterHealthStats" [value]="health">{{health}}</option>
+                              <option *ngFor='let health of charHealthStatNames' [selected]="health==settings.charcterHealthStats" [value]="health">{{health}}</option>
                             </select>
                           </div>
                         </li>
@@ -398,7 +409,7 @@
                 <div class="white-section crsr-pointer" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatItemsType.CHARACTER">
                   <ul class="visiblity-list">
                     <li class="" *ngFor="let be of item?.character?.characterBuffAndEffects; let be_i = index">
-                      <img class="combat-be-image crsr-pointer" (click)="CombatantBuff_EffectDetail(item, be)" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" />
+                      <img class="combat-be-image crsr-pointer" (click)="CombatantBuff_EffectDetail(item, be)" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" popover="Desc: {{description(be.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{be.buffAndEffect.name}}" container="body" />
                     </li>
                   </ul>
                   <span [ngClass]="item?.character?.characterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.character?.characterBuffAndEffects?.length > 3 ? (item?.character?.characterBuffAndEffects?.length - 3) :''}}</span>
@@ -406,7 +417,7 @@
                 <div class="white-section crsr-pointer" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatItemsType.MONSTER">
                   <ul class="visiblity-list">
                     <li class="" *ngFor="let be of item?.monster?.monsterBuffAndEffects; let be_i = index">
-                      <img class="combat-be-image crsr-pointer" (click)="CombatantBuff_EffectDetail(item, be)" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" />
+                      <img class="combat-be-image crsr-pointer" (click)="CombatantBuff_EffectDetail(item, be)" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" popover="Desc: {{description(be.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{be.buffAndEffect.name}}" container="body" />
                     </li>
                   </ul>
                   <span [ngClass]="item?.monster?.monsterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.monster?.monsterBuffAndEffects?.length > 3 ? (item?.monster?.monsterBuffAndEffects?.length - 3) :''}}</span>
@@ -469,7 +480,7 @@
             <div class="">
               <fieldset class=" input-switch input-switch-dual">
                 <ul class="input-switch-items">
-                  <li class="form-check p-0">
+                  <li class="form-check p-0" popover="Make Visible to Players" triggers="hover" container="body">
                     <label class="form-check-label">
                       <input class="form-check-input" type="radio" name="pausegame1"
                              [checked]="item?.visibleToPc"
@@ -477,8 +488,8 @@
                       <span class="visibility-btn"><i class="icon-Rec-Visible"> </i></span>
                     </label>
                   </li>
-                  <li class="form-check p-0">
-                    <label class="form-check-label">
+                  <li class="form-check p-0" popover="Hide from Players" triggers="hover" container="body">
+                    <label class="form-check-label" >
                       <input class="form-check-input" type="radio" name="pausegame2"
                              [checked]="!item?.visibleToPc"
                              (click)="HideVisibility(item)">
@@ -537,7 +548,8 @@
     <div class="col-12 col-md-4">
       <div class="image-section-combat">
         <!--Image-->
-        <img *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER" [src]="currentCombatantDetail?.monster?.imageUrl" #imgref (click)="ImageDeatil(currentCombatantDetail, imgref)" />
+        <img *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER" [src]="currentCombatantDetail?.monster?.imageUrl" #imgref
+             (click)="ImageDeatil(currentCombatantDetail, imgref)" (mousedown)="editRecord(currentCombatantDetail)" (mouseup)="clickAndHold(currentCombatantDetail)" (mouseleave)="clickAndHold(currentCombatantDetail)" />
         <img *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER" [src]="currentCombatantDetail?.character?.imageUrl" #imgref (click)="ImageDeatil(currentCombatantDetail, imgref)" />
         <!--Name-->
         <span *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">{{currentCombatantDetail?.monster?.name}}</span>
@@ -582,8 +594,8 @@
               (click)="updateMonster(currentCombatantDetail, monsterDetailType.HEALTH)">{{currentCombatantDetail?.monster?.healthCurrent}}/{{currentCombatantDetail?.monster?.healthMax}}</li>
           <li popover="CR: {{currentCombatantDetail?.monster?.challangeRating}}" triggers="hover" popoverTitle="Challenge Rating" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.RATING)">Cr: {{currentCombatantDetail?.monster?.challangeRating}}</li>
           <li popover="AC: {{currentCombatantDetail?.monster?.armorClass}}" triggers="hover" popoverTitle="Armor Class" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.ARMOR)">AC : {{currentCombatantDetail?.monster?.armorClass}}</li>
-          <li popover="AC: {{currentCombatantDetail?.initiative}}" triggers="hover" popoverTitle="Initiative" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.INITIATIVE)">{{currentCombatantDetail?.initiative}}</li>
-          <li popover="AC: {{currentCombatantDetail?.monster?.xpValue}}" triggers="hover" popoverTitle="XP Value" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.XPVALUE)">XP : {{currentCombatantDetail?.monster?.xpValue}}</li>
+          <li popover="INIT: {{currentCombatantDetail?.initiative}}" triggers="hover" popoverTitle="Initiative" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.INITIATIVE)">{{currentCombatantDetail?.initiative}}</li>
+          <li popover="XP: {{currentCombatantDetail?.monster?.xpValue}}" triggers="hover" popoverTitle="XP Value" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.XPVALUE)">XP : {{currentCombatantDetail?.monster?.xpValue}}</li>
 
         </ul>
       </div>
@@ -600,28 +612,28 @@
           </accordion-group>
           <!--Monster-->
           <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
-            <div class="row">
+            <div class="row crsr-pointer" (click)="buffEffectclick(currentCombatantDetail)">
               <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterBuffAndEffects.length == 0">
-                <span>{{noBuffs_EffectsAvailable}}</span>
+                <span class="col-12">{{noBuffs_EffectsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.monsterBuffAndEffects">
-                <div class="accordin-box crsr-pointer" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)">
+                <div class="accordin-box crsr-pointer" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)" popover="Desc: {{description(item.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{item.buffAndEffect.name}}" container="body">
                   <img [src]="item.buffAndEffect.imageUrl" onerror="this.src='../assets/images/BnE/Def_BnE.png';" />
-                  <p class="text-ellipsis" popover="{{item.buffAndEffect.name}}" triggers="hover">{{item.buffAndEffect.name}}</p>
+                  <p class="text-ellipsis">{{item.buffAndEffect.name}}</p>
                 </div>
               </div>
             </div>
           </accordion-group>
           <!--Character-->
           <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
-            <div class="row">
+            <div class="row crsr-pointer" (click)="buffEffectclick(currentCombatantDetail)"> 
               <div class="text-center" *ngIf="currentCombatantDetail?.character?.characterBuffAndEffects.length == 0">
-                <span>{{noBuffs_EffectsAvailable}}</span>
+                <span class="col-12">{{noBuffs_EffectsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterBuffAndEffects">
-                <div class="accordin-box crsr-pointer" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)">
+                <div class="accordin-box crsr-pointer" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item)" popover="Desc: {{description(item.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{item.buffAndEffect.name}}" container="body">
                   <img [src]="item.buffAndEffect.imageUrl" onerror="this.src='../assets/images/BnE/Def_BnE.png';" />
-                  <p class="text-ellipsis" popover="{{item.buffAndEffect.name}}" triggers="hover">{{item.buffAndEffect.name}}</p>
+                  <p class="text-ellipsis">{{item.buffAndEffect.name}}</p>
                 </div>
               </div>
             </div>
@@ -650,7 +662,7 @@
           <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
             <div class="row">
               <div class="text-center" *ngIf="currentCombatantDetail?.monster?.itemMasterMonsterItems?.length == 0">
-                <span>{{noItemsAvailable}}</span>
+                <span class="col-12">{{noItemsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.itemMasterMonsterItems">
                 <div class="accordin-box crsr-pointer" (click)="CombatantItemDetail(currentCombatantDetail, item)">
@@ -664,7 +676,7 @@
           <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
             <div class="row">
               <div class="text-center" *ngIf="currentCombatantDetail?.character.items?.length == 0">
-                <span>{{noItemsAvailable}}</span>
+                <span class="col-12">{{noItemsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.items">
                 <div class="accordin-box crsr-pointer" (click)="CombatantItemDetail(currentCombatantDetail, item)">
@@ -678,7 +690,7 @@
             <!--Monster-->
             <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
               <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterSpells?.length == 0">
-                <span>{{noSpellsAvailable}}</span>
+                <span class="col-12">{{noSpellsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.monsterSpells">
                 <div class="accordin-box crsr-pointer" (click)="CombatantSpellDetail(currentCombatantDetail, item)">
@@ -690,7 +702,7 @@
             <!--Character-->
             <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
               <div class="text-center" *ngIf="currentCombatantDetail?.charatcer?.characterSpells?.length == 0">
-                <span>{{noSpellsAvailable}}</span>
+                <span class="col-12">{{noSpellsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterSpells">
                 <div class="accordin-box crsr-pointer" (click)="CombatantSpellDetail(currentCombatantDetail, item)">
@@ -705,7 +717,7 @@
             <!--Monster-->
             <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
               <div lass="text-center" *ngIf="currentCombatantDetail?.monster?.monsterAbilitys?.length == 0">
-                <span>{{noAbilitiesAvailable}}</span>
+                <span class="col-12">{{noAbilitiesAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.monsterAbilitys">
                 <div class="accordin-box crsr-pointer" (click)="CombatantAbilityDetail(currentCombatantDetail, item)">
@@ -717,7 +729,7 @@
             <!--Character-->
             <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
               <div lass="text-center" *ngIf="currentCombatantDetail?.character?.characterAbilities?.length == 0">
-                <span>{{noAbilitiesAvailable}}</span>
+                <span class="col-12">{{noAbilitiesAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterAbilities">
                 <div class="accordin-box crsr-pointer" (click)="CombatantAbilityDetail(currentCombatantDetail, item)">

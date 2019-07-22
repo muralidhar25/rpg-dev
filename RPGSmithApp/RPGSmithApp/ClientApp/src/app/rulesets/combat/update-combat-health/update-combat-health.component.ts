@@ -31,6 +31,7 @@ export class CombatHealthComponent implements OnInit {
   isMouseDown: boolean = false;
   interval: any;
   monsterImage: any;
+  monsterName: string;
   title: string;
   combatInfo: any;
   addToCombat: boolean = false;
@@ -53,6 +54,8 @@ export class CombatHealthComponent implements OnInit {
     setTimeout(() => {
       debugger
       this.title = this.bsModalRef.content.title;
+      this.monsterImage = this.combatInfo.monster.imageUrl;
+      this.monsterName = this.combatInfo.monster.name;
 
       //combatInfo
       this.combatInfo = this.bsModalRef.content.combatInfo;

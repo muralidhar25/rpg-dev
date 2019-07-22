@@ -193,7 +193,7 @@ body {
   list-style: none;
   justify-content: center;
   margin: 0px;
-  display:flex;
+  display: flex;
 }
 
 .action-buttons-table li {
@@ -1124,7 +1124,7 @@ button.btn-top {
 
 .unvisible-Circle {
   background: white;
-  font-size:1rem;
+  font-size: 1rem;
   /*border: 1px solid;*/
 }
 
@@ -1225,7 +1225,40 @@ li.custom-margin {
   border: 1px solid #ccc;
   padding: 2px 4px;
 }
-.visibility-btn { 
+
+.visibility-btn {
   font-size: 1.4rem !important
 }
 
+@media screen and (min-width: 768px) and (max-width:1023px) {
+  
+  .btns-combat-actions .btn-group.open .dropdown-menu ul li.ipad-screen {
+    display: block !important;
+  }
+
+  .cust-txtbox {
+    width: 100% !important;
+    margin-left: 0px !important;
+  }
+
+  li.ipad-screen {
+    position: relative;
+  }
+
+  label.sec-label {
+    position: absolute;
+    top: 58px;
+    margin-left: 0px !important;
+  }
+
+  .sec-txtbox[_ngcontent-c2] {
+    width: 58% !important;
+    margin-left: 0px !important;
+  }
+}
+
+@media (max-width:1023px) {
+  .dropdown-menu li {
+    width: 100% !important;
+  }
+}

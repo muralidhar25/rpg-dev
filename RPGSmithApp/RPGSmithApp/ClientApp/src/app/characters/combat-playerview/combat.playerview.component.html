@@ -80,9 +80,10 @@
             </thead>
             <tbody>
               <tr *ngFor="let item of combatants; let i = index"
-                  [ngClass]="{'black-outer-filed': item.isCurrentTurn, 'red-outer-filed': item.frameColor =='red', '': item.frameColor =='grey', 'blue-outer-filed':item.isOwnPlayer }"
+                  [ngClass]="{'black-outer-filed': item.isCurrentTurn, 'white-outer-filed': item.delayTurn, 'red-outer-filed': item.frameColor =='red', '': item.frameColor =='grey', 'blue-outer-filed':item.isOwnPlayer }"
                   (click)="frameClick(item)">
-                <ng-container *ngIf="(item.type==combatantsType.CHARACTER || (item.type==combatantsType.MONSTER && settings.monsterVisibleByDefault))">
+                <!--<ng-container *ngIf="(item.type==combatantsType.CHARACTER || (item.type==combatantsType.MONSTER && settings.monsterVisibleByDefault))">-->
+                <ng-container *ngIf="item.visibleToPc">
                   <td>
                     <div class="white-section name-data text-ellipsis crsr-pointer" popover="{{item?.type == combatantsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}" triggers="hover">
                       {{item?.type == combatantsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}
@@ -232,7 +233,7 @@
             <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatantsType.MONSTER && settings.seeMonsterBuffEffects">
               <div class="row">
                 <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterBuffAndEffects.length == 0">
-                  <legend>No Buffs & Effects Available</legend>
+                   <span class="col-12">{{noBuffs_EffectsAvailable}}</span>
                 </div>
                 <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.monsterBuffAndEffects">
                   <div class="accordin-box">
@@ -246,7 +247,7 @@
             <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatantsType.CHARACTER">
               <div class="row">
                 <div class="text-center" *ngIf="currentCombatantDetail?.character?.characterBuffAndEffects.length == 0">
-                  <legend>No Buffs & Effects Available</legend>
+                   <span class="col-12">{{noBuffs_EffectsAvailable}}</span>
                 </div>
                 <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterBuffAndEffects">
                   <div class="accordin-box">
@@ -260,7 +261,7 @@
             <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatantsType.MONSTER && settings.seeMonsterItems">
               <div class="row">
                 <div class="text-center" *ngIf="currentCombatantDetail?.monster?.itemMasterMonsterItems?.length == 0">
-                  <legend>No Items  Available</legend>
+                  <span class="col-12">{{noItemsAvailable}}</span>
                 </div>
                 <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.itemMasterMonsterItems">
                   <div class="accordin-box">
@@ -274,7 +275,7 @@
             <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatantsType.CHARACTER">
               <div class="row">
                 <div class="text-center" *ngIf="currentCombatantDetail?.character.items?.length == 0">
-                  <legend>No Items  Available</legend>
+                   <span class="col-12">{{noItemsAvailable}}</span>
                 </div>
                 <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.items">
                   <div class="accordin-box">

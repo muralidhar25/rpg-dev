@@ -20,7 +20,7 @@
           </div>
         </div>
         <div class="refresh-btn">
-          <button type="button" (click)="openCombatTracker()" class="btn icon icon-with-text icon-Combat icon-rsi btn-primary"></button>
+          <button type="button" (click)="openCombatTracker()" class="btn icon icon-with-text icon-Combat icon-rsi btn-primary" [ngClass]="{'btn-combat-started':ruleset?.isCombatStarted}"></button>
         </div>
         <div class="refresh-btn">
           <button type="button" (click)="refreshCampaign()" title="Refresh" class="btn btn-outline-primary icon icon-Gen-Refresh"></button>

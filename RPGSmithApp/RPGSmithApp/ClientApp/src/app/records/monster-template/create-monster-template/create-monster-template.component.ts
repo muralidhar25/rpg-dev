@@ -603,7 +603,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
           this.sharedService.updateMonsterList(true);
 
-          this.sharedService.shouldUpdateCombatantListForAddDeleteMonsters();
+          this.sharedService.updateCombatantListForAddDeleteMonsters(true);
           //this.sharedService.UpdateCharacterAbilityList(true);
           if (this.fromDetail)
             this.router.navigate(['/ruleset/monster-template', this._ruleSetId]);

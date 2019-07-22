@@ -43,14 +43,17 @@ span.input-box {
   border-right: 0px !important;
 }
 .modal-title span.manage-ruleset-header {
-  float: none;
+  /* float: none; */
   position: relative;
   display: inline-block;
-  left: 40%;
+  /* left: 40%; */
   background: #fff;
   padding: 4px;
   border: 1px solid #999;
-  transform: translate(-50%, 0);
+  /* -webkit-transform: translate(-50%,0); */
+  /* transform: translate(-50%,0); */
+  font-size: 12px;
+  margin-right: 10px;
 }
 
 .modal-title span.manage-ruleset-header img {

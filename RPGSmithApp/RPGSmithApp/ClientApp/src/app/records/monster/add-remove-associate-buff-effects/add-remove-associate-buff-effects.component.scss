@@ -46,3 +46,35 @@ span.input-box {
   
   line-height: 2.5;
 }
+
+.manage-ruleset-header span:first-child {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.modal-title span.manage-ruleset-header {
+  float: right;
+  position: relative;
+  display: inline-block;
+  /*background: #fff;*/
+  padding: 4px;
+  /*border: 1px solid #999;*/
+  font-size: 12px;
+  margin-right: 10px;
+  max-width: 220px !important;
+  overflow: hidden;
+  display: inline-block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  position: relative;
+}
+
+.modal-title span.manage-ruleset-header img {
+  width: 27px;
+  height: 27px;
+}
+
+.modal-title span.manage-ruleset-header {
+  font-size: 12px;
+}
+

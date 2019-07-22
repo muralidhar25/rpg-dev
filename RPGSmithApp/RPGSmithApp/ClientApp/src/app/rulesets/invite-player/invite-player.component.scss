@@ -8,13 +8,23 @@
   float: right;
 }
 .manage-ruleset-header {
-  float: none;
+  /*float: none;
   position: relative;
   display: inline-block;
   left: 40%;
   -webkit-transform: translate(-50%, 0);
   transform: translate(-50%, 0);
-  margin-left:0;
+  margin-left:0;*/
+
+   /*float: none;*/
+  position: relative;
+  display: inline-block;
+  /*left: 40%;*/
+  /*background: #fff;*/
+  padding: 4px;
+  /*border: 1px solid #999;*/
+  /*transform: translate(-50%, 0);*/
+  margin-right: 10px;
 }
 @media (max-width:767px) {
   .manage-ruleset-header span:last-child {

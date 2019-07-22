@@ -59,6 +59,10 @@ export class CombatPlayerViewComponent implements OnInit {
   currentCombatantDetail: any;
   ownPlayer: any[] = [];
   DummyValueForCharHealthStat: number = -9999;
+  noBuffs_EffectsAvailable: string = 'No Buffs & Effects Available';
+  noItemsAvailable: string = 'No Items Available';
+  //noSpellsAvailable: string = 'No Spells Available';
+  //noAbilitiesAvailable: string = 'No Abilities Available';
 
 
   options(placeholder?: string, initOnClick?: boolean): Object {
@@ -99,7 +103,7 @@ export class CombatPlayerViewComponent implements OnInit {
     if (ShowLoader) {
       this.isLoading = true;
     }
-    
+
     //////////////
     this.charactersService.getCharactersById<any>(this.characterId)
       .subscribe(data => {
@@ -196,19 +200,15 @@ export class CombatPlayerViewComponent implements OnInit {
             this.isCharacterItemEnabled = combatModal.isCharacterItemEnabled;
             this.isCharacterSpellEnabled = combatModal.isCharacterSpellEnabled;
             this.isCharacterAbilityEnabled = combatModal.isCharacterAbilityEnabled;
+            let curretnCombatantList = this.combatants.filter(x => x.isCurrentTurn);
+            let curretnCombatant = new initiative();
+            if (curretnCombatantList.length) {
+              curretnCombatant = curretnCombatantList[0];
+              let valueofinitiative = curretnCombatant.initiativeValue;
+              this.CurrentInitiativeValue = valueofinitiative;
+            }
 
             if (this.roundCounter > 1) {
-              debugger
-              let curretnCombatantList = this.combatants.filter(x => x.isCurrentTurn);
-              let curretnCombatant = new initiative();
-              if (curretnCombatantList.length) {
-                curretnCombatant = curretnCombatantList[0];
-                let valueofinitiative = curretnCombatant.initiativeValue;
-                this.CurrentInitiativeValue = valueofinitiative;
-              }
-
-             
-
               //this.roundCounter = this.roundCounter + 1;
               ////convert time
               let roundTime = this.settings.gameRoundLength * this.roundCounter;
@@ -231,7 +231,7 @@ export class CombatPlayerViewComponent implements OnInit {
       });
     /////////////////   
   }
-  
+
   openDiceRollModal() {
     this.bsModalRef = this.modalService.show(DiceRollComponent, {
       class: 'modal-primary modal-md',
@@ -327,7 +327,7 @@ export class CombatPlayerViewComponent implements OnInit {
       let characterId = item.character.characterId;
       this.appService.updateOpenChatForCharacter(characterId);
     }
-    
+
   }
 
   TargetBtn(item) {
