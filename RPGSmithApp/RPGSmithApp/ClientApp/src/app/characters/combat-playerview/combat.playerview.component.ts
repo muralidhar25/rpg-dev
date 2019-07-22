@@ -122,115 +122,7 @@ export class CombatPlayerViewComponent implements OnInit {
           this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
         }
       }, () => {
-        this.combatService.getCombatDetails(this.ruleSetId).subscribe(res => {
-          if (res) {
-            let combatModal: any = res;
-            this.roundCounter = combatModal.round;
-            this.CombatId = combatModal.id
-            this.rulesetModel = combatModal.campaign;
-            this.settings = combatModal.combatSettings;
-            this.combatants = combatModal.combatantList;
-
-            this.combatants.map((x) => {
-              x.initiativeValue = x.initiative;
-              if (!x.combatId) {
-                x.combatId = combatModal.id;
-              }
-              if (!x.visibilityColor) {
-                if (x.type == this.combatantsType.CHARACTER) {
-                  x.visibilityColor = "green";
-                }
-                else if (x.type == this.combatantsType.MONSTER) {
-                  x.visibilityColor = "red";
-                }
-              }
-              // Own player
-              if (x.type == this.combatantsType.CHARACTER && x.character.characterId == this.characterId) {
-                x.isOwnPlayer = true;
-                x.frameColor = 'blue';
-                ////this.ownPlayer.push(x);
-              } else {
-                x.isOwnPlayer = false;
-              }
-
-              if (x.type == this.combatantsType.CHARACTER) {
-                if (x.character.diceRollViewModel.charactersCharacterStats) {
-                  let statFoundFlag: boolean = false;
-                  let charStat: CharactersCharacterStat = null;
-                  this.settings.charcterHealthStats.split(/\[(.*?)\]/g).map((rec) => {
-                    if (rec && !statFoundFlag) {
-                      let charStatList = x.character.diceRollViewModel.charactersCharacterStats.filter(x => x.characterStat.statName.toUpperCase() == rec.toUpperCase());
-                      if (charStatList.length) {
-                        charStat = charStatList[0];
-                      }
-                      statFoundFlag = true;
-                    }
-                  });
-
-                  x.character.healthCurrent = this.DummyValueForCharHealthStat;
-                  x.character.healthMax = this.DummyValueForCharHealthStat;
-                  if (charStat) {
-                    x.character.healthStatId = charStat.charactersCharacterStatId;
-                    if (charStat.characterStat.characterStatTypeId == STAT_TYPE.CurrentMax) {
-                      x.character.healthCurrent = +charStat.current;
-                      x.character.healthMax = +charStat.maximum;
-                    }
-                    else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.ValueSubValue) {
-                      x.character.healthCurrent = +charStat.value;
-                      x.character.healthMax = +charStat.subValue;
-                    }
-                    else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.Number) {
-                      x.character.healthCurrent = +charStat.number;
-                    }
-                    else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.Combo) {
-                      x.character.healthCurrent = +charStat.defaultValue;
-                    }
-                  }
-                }
-              }
-
-            });
-
-            // Game Time
-            this.gametime = this.time_convert(this.settings.gameRoundLength);
-
-            if (this.combatants.length) {
-              this.frameClick(this.combatants[0]);
-            }
-            
-
-            this.isCharacterItemEnabled = combatModal.isCharacterItemEnabled;
-            this.isCharacterSpellEnabled = combatModal.isCharacterSpellEnabled;
-            this.isCharacterAbilityEnabled = combatModal.isCharacterAbilityEnabled;
-            let curretnCombatantList = this.combatants.filter(x => x.isCurrentTurn);
-            let curretnCombatant = new initiative();
-            if (curretnCombatantList.length) {
-              curretnCombatant = curretnCombatantList[0];
-              let valueofinitiative = curretnCombatant.initiativeValue;
-              this.CurrentInitiativeValue = valueofinitiative;
-            }
-
-            if (this.roundCounter > 1) {
-              //this.roundCounter = this.roundCounter + 1;
-              ////convert time
-              let roundTime = this.settings.gameRoundLength * this.roundCounter;
-              this.gametime = this.time_convert(roundTime);
-              this.frameClick(curretnCombatant)
-
-             
-            }
-            this.refreshPageData();
-          }
-          this.isLoading = false;
-        }, error => {
-          this.isLoading = false;
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          } else {
-            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-          }
-        });
+        this.bindCombatantInitiatives();
       });
     /////////////////   
   }
@@ -478,9 +370,7 @@ export class CombatPlayerViewComponent implements OnInit {
           if (this.refreshPage) {
             clearInterval(this.refreshPage)
           }
-          /////////////////////make this a function
-          
-          //////////////////////////////////////////
+          this.bindCombatantInitiatives();
         }
      
       }, error => {
@@ -493,5 +383,116 @@ export class CombatPlayerViewComponent implements OnInit {
         }
       });
     }, 5000);
+  }
+  bindCombatantInitiatives() {
+    this.combatService.getCombatDetails(this.ruleSetId).subscribe(res => {
+      if (res) {
+        let combatModal: any = res;
+        this.roundCounter = combatModal.round;
+        this.CombatId = combatModal.id
+        this.rulesetModel = combatModal.campaign;
+        this.settings = combatModal.combatSettings;
+        this.combatants = combatModal.combatantList;
+
+        this.combatants.map((x) => {
+          x.initiativeValue = x.initiative;
+          if (!x.combatId) {
+            x.combatId = combatModal.id;
+          }
+          if (!x.visibilityColor) {
+            if (x.type == this.combatantsType.CHARACTER) {
+              x.visibilityColor = "green";
+            }
+            else if (x.type == this.combatantsType.MONSTER) {
+              x.visibilityColor = "red";
+            }
+          }
+          // Own player
+          if (x.type == this.combatantsType.CHARACTER && x.character.characterId == this.characterId) {
+            x.isOwnPlayer = true;
+            x.frameColor = 'blue';
+            ////this.ownPlayer.push(x);
+          } else {
+            x.isOwnPlayer = false;
+          }
+
+          if (x.type == this.combatantsType.CHARACTER) {
+            if (x.character.diceRollViewModel.charactersCharacterStats) {
+              let statFoundFlag: boolean = false;
+              let charStat: CharactersCharacterStat = null;
+              this.settings.charcterHealthStats.split(/\[(.*?)\]/g).map((rec) => {
+                if (rec && !statFoundFlag) {
+                  let charStatList = x.character.diceRollViewModel.charactersCharacterStats.filter(x => x.characterStat.statName.toUpperCase() == rec.toUpperCase());
+                  if (charStatList.length) {
+                    charStat = charStatList[0];
+                  }
+                  statFoundFlag = true;
+                }
+              });
+
+              x.character.healthCurrent = this.DummyValueForCharHealthStat;
+              x.character.healthMax = this.DummyValueForCharHealthStat;
+              if (charStat) {
+                x.character.healthStatId = charStat.charactersCharacterStatId;
+                if (charStat.characterStat.characterStatTypeId == STAT_TYPE.CurrentMax) {
+                  x.character.healthCurrent = +charStat.current;
+                  x.character.healthMax = +charStat.maximum;
+                }
+                else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.ValueSubValue) {
+                  x.character.healthCurrent = +charStat.value;
+                  x.character.healthMax = +charStat.subValue;
+                }
+                else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.Number) {
+                  x.character.healthCurrent = +charStat.number;
+                }
+                else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.Combo) {
+                  x.character.healthCurrent = +charStat.defaultValue;
+                }
+              }
+            }
+          }
+
+        });
+
+        // Game Time
+        this.gametime = this.time_convert(this.settings.gameRoundLength);
+
+        if (this.combatants.length) {
+          this.frameClick(this.combatants[0]);
+        }
+
+
+        this.isCharacterItemEnabled = combatModal.isCharacterItemEnabled;
+        this.isCharacterSpellEnabled = combatModal.isCharacterSpellEnabled;
+        this.isCharacterAbilityEnabled = combatModal.isCharacterAbilityEnabled;
+        let curretnCombatantList = this.combatants.filter(x => x.isCurrentTurn);
+        let curretnCombatant = new initiative();
+        if (curretnCombatantList.length) {
+          curretnCombatant = curretnCombatantList[0];
+          let valueofinitiative = curretnCombatant.initiativeValue;
+          this.CurrentInitiativeValue = valueofinitiative;
+        }
+
+        if (this.roundCounter > 1) {
+          //this.roundCounter = this.roundCounter + 1;
+          ////convert time
+          let roundTime = this.settings.gameRoundLength * this.roundCounter;
+          this.gametime = this.time_convert(roundTime);
+          this.frameClick(curretnCombatant)
+
+
+        }
+        this.refreshPageData();
+      }
+      this.isLoading = false;
+    }, error => {
+      this.isLoading = false;
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      } else {
+        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+      }
+    });
   }
 }
