@@ -28,5 +28,7 @@ namespace DAL.Services
         void SaveDelayTurn(Combatant_ViewModel model);
         void saveSelectedCombatant(Combatant_ViewModel model);
         void updateMonsterDetails(Combatant_ViewModel model, string type);
+        bool IsCombatUpdated(int combatId);
+        void MarkCombatAsUpdated(int combatId);
     }
 }

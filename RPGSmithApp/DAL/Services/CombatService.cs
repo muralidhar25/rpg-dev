@@ -178,7 +178,8 @@ namespace DAL.Services
                                     TargetId = CombatantRow["TargetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["TargetId"]),
                                     TargetType = CombatantRow["TargetType"] == DBNull.Value ? string.Empty : CombatantRow["TargetType"].ToString(),
                                     DelayTurn = CombatantRow["DelayTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["DelayTurn"]),
-                                    IsCurrentSelected = CombatantRow["IsCurrentSelected"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsCurrentSelected"])
+                                    IsCurrentSelected = CombatantRow["IsCurrentSelected"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsCurrentSelected"]),
+                                    IsPlayerCharacter = CombatantRow["IsPlayerCharacter"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsPlayerCharacter"])
                                     //Character = new Character(),
                                     //Monster=new Monster()
 
@@ -447,6 +448,12 @@ namespace DAL.Services
                 combatsetting.ShowMonsterHealth = model.ShowMonsterHealth;
                 combatsetting.XPDistributionforDeletedMonster = model.XPDistributionforDeletedMonster;
                 await _context.SaveChangesAsync();
+                var combats = _context.Combats.Where(x => x.CampaignId == model.CampaignId && x.IsDeleted != true).ToList();
+                foreach (var c in combats)
+                {
+                    MarkCombatAsUpdated(c.Id);
+                }
+
             }
             return combatsetting;
         }
@@ -509,6 +516,11 @@ namespace DAL.Services
             {
                 var monster = _context.Monsters.Where(x => x.MonsterId == item.MonsterId && item.IsDeleted != true).FirstOrDefault();
                 monster.AddToCombatTracker = true;
+                var combats = _context.Combats.Where(x => x.CampaignId == item.RuleSetId && x.IsDeleted != true).ToList();
+                foreach (var c in combats)
+                {
+                    MarkCombatAsUpdated(c.Id);
+                }
             }
             if (model.Count > 0)
             {
@@ -606,6 +618,12 @@ namespace DAL.Services
             {
                 throw ex;
             }
+
+            var combats = _context.Combats.Where(x => x.CampaignId == CampaignId && x.IsDeleted != true).ToList();
+            foreach (var c in combats)
+            {
+                MarkCombatAsUpdated(c.Id);
+            }
         }
         public List<Combatant_ViewModel> SaveCombatantList(List<Combatant_DTModel> model, int campaignId, string UserId)
         {
@@ -678,7 +696,8 @@ namespace DAL.Services
                         TargetId = CombatantRow["TargetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["TargetId"]),
                         TargetType = CombatantRow["TargetType"] == DBNull.Value ? string.Empty : CombatantRow["TargetType"].ToString(),
                         DelayTurn = CombatantRow["DelayTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["DelayTurn"]),
-                        IsCurrentSelected = CombatantRow["IsCurrentSelected"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsCurrentSelected"])
+                        IsCurrentSelected = CombatantRow["IsCurrentSelected"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsCurrentSelected"]),
+                        IsPlayerCharacter = CombatantRow["IsPlayerCharacter"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsPlayerCharacter"])
                         //Character = new Character(),
                         //Monster=new Monster()
                     };
@@ -714,6 +733,14 @@ namespace DAL.Services
                     combatant_s.Add(combatant);
                 }
             }
+
+            if (model.Any())
+            {
+                if (model.FirstOrDefault().CombatId != null)
+                {
+                    MarkCombatAsUpdated((int)model.FirstOrDefault().CombatId);
+                }
+            }
             return combatant_s;
         }
         public void Combat_Start(int combatId, bool start)
@@ -731,7 +758,7 @@ namespace DAL.Services
                 {
                     EndCombat(combatId);
                 }
-
+                MarkCombatAsUpdated(combatId);
             }
         }
 
@@ -773,6 +800,8 @@ namespace DAL.Services
             {
                 throw ex;
             }
+            int combatId = model.CombatId == null ? 0 : (int)model.CombatId;
+            MarkCombatAsUpdated(combatId);
         }
         public void SaveVisibilityDetails(Combatant_ViewModel model)
         {
@@ -782,6 +811,8 @@ namespace DAL.Services
                 combatant.VisibilityColor = model.VisibilityColor;
                 combatant.VisibleToPc = model.VisibleToPc;
                 _context.SaveChanges();
+
+                MarkCombatAsUpdated(model.Id);
             }
         }
         public void SaveMonsterHealth(Monster model)
@@ -792,6 +823,13 @@ namespace DAL.Services
                 monster.HealthCurrent = model.HealthCurrent;
                 monster.HealthMax = model.HealthMax;
                 _context.SaveChanges();
+
+
+                var combats = _context.Combats.Where(x => x.CampaignId == monster.RuleSetId && x.IsDeleted != true).ToList();
+                foreach (var c in combats)
+                {
+                    MarkCombatAsUpdated(c.Id);
+                }
             }
         }
         public void SaveCharacterHealth(CharacterHealthModel model)
@@ -818,6 +856,11 @@ namespace DAL.Services
                     characterCharacterStat.Maximum = model.healthMax;
                 }
                 _context.SaveChanges();
+                var combats = _context.Combats.Where(x => x.CampaignId == characterCharacterStat.CharacterStat.RuleSetId && x.IsDeleted != true).ToList();
+                foreach (var c in combats)
+                {
+                    MarkCombatAsUpdated(c.Id);
+                }
             }
         }
         public void saveTarget(Combatant_ViewModel model)
@@ -898,6 +941,13 @@ namespace DAL.Services
                 }
             }
             _context.SaveChanges();
+
+            if (model.Any())
+            {
+                int combatId = model.FirstOrDefault().Id;
+                MarkCombatAsUpdated(combatId);
+            }
+
         }
 
         public void SaveDelayTurn(Combatant_ViewModel model)
@@ -907,6 +957,9 @@ namespace DAL.Services
             {
                 combatant.DelayTurn = model.DelayTurn;
                 _context.SaveChanges();
+
+                int combatid = model.CombatId == null ? 0 : (int)model.CombatId;
+                MarkCombatAsUpdated(combatid);
             }
         }
 
@@ -914,19 +967,20 @@ namespace DAL.Services
         {
             var combatants = _context.CombatantLists.Where(x => x.CombatId == model.CombatId).ToList();
             foreach (var c in combatants)
-            {               
-                    c.IsCurrentSelected = false;
-                    if (c.Id==model.Id)
-                    {
-                        c.IsCurrentSelected = model.IsCurrentSelected;
-                    }
+            {
+                c.IsCurrentSelected = false;
+                if (c.Id == model.Id)
+                {
+                    c.IsCurrentSelected = model.IsCurrentSelected;
+                }
 
-                    _context.SaveChanges();               
-            }            
+                _context.SaveChanges();
+            }
         }
 
-        public void updateMonsterDetails(Combatant_ViewModel model, string type) {
-            if (type== "Initiative")
+        public void updateMonsterDetails(Combatant_ViewModel model, string type)
+        {
+            if (type == "Initiative")
             {
                 var combatant = _context.CombatantLists.Where(x => x.Id == model.Id).FirstOrDefault();
                 if (combatant != null)
@@ -963,7 +1017,50 @@ namespace DAL.Services
                     _context.SaveChanges();
                 }
             }
+            int combatid = model.CombatId == null ? 0 : (int)model.CombatId;
+            MarkCombatAsUpdated(combatid);
+        }
 
+        public bool IsCombatUpdated(int combatId)
+        {
+            try
+            {
+                var updateCombatFlagRec = _context.CombatUpdates.Where(x => x.CombatId == combatId).FirstOrDefault();
+                if (updateCombatFlagRec != null)
+                {
+                    var flag = updateCombatFlagRec.IsUpdated;
+                    if (flag)
+                    {
+                        updateCombatFlagRec.IsUpdated = false;
+                        _context.SaveChanges();
+                    }
+                    return flag;
+                }
+                return false;
+            }
+            catch (Exception ex) { return false; }
+        }
+
+        public void MarkCombatAsUpdated(int combatId)
+        {   //same code also written on monsterTemplateService.cs
+            try
+            {
+                var updateCombatFlagRec = _context.CombatUpdates.Where(x => x.CombatId == combatId).FirstOrDefault();
+                if (updateCombatFlagRec != null)
+                {
+                    if (!updateCombatFlagRec.IsUpdated)
+                    {
+                        updateCombatFlagRec.IsUpdated = true;
+                        _context.SaveChanges();
+                    }
+                }
+                else
+                {
+                    _context.CombatUpdates.Add(new CombatUpdate { CombatId = combatId, IsUpdated = true });
+                    _context.SaveChanges();
+                }
+            }
+            catch (Exception ex) { }
         }
     }
 }

@@ -45,6 +45,7 @@ import { SignalRGroupAdapter } from "./core/common/signalr-group-adapter";
 import { SignalRAdapter } from "./core/common/signalr-adapter";
 import { HttpClient } from '@angular/common/http';
 import { ChatConnection } from "./core/models/chat.model";
+import { HandoutuploadComponent } from "./shared/handouts/handout-upload/handoutupload.component";
 
 //declare let ga: Function;
 
@@ -138,7 +139,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   showCombatBtn: boolean = false;
   combatUrl: any;
   cId: number;
-
+  showCampaignBtn: boolean = false;
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
     if (window.pageYOffset > 0) {
@@ -190,6 +191,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           }
         }
         if (user.isGm) {
+          this.isGmUser = true;
           //this.logoPath = '/rulesets/campaigns';
           //if (this.headers) {
           //  if (this.headers.headerLink == 'ruleset') {
@@ -237,7 +239,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           //}
         }
         else {
-
+          this.isGmUser = false;
           if (this.router.url.toUpperCase() == ('/CHARACTER') || this.router.url.toUpperCase() == ('/CHARACTERS')
             || this.router.url.toUpperCase() == ('/RULESET') || this.router.url.toUpperCase() == ('/RULESETS')
           ) {
@@ -343,7 +345,6 @@ export class AppComponent implements OnInit, AfterViewInit {
                         }
                       }, () => { });
                   }
-
                 }
               }
             }, error => {
@@ -759,6 +760,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
           }
           if (user.isGm) {
+            this.isGmUser = true;
             //this.logoPath = '/rulesets/campaigns';
             //if (this.headers) {
             //  if (this.headers.headerLink == 'ruleset') {
@@ -800,7 +802,7 @@ export class AppComponent implements OnInit, AfterViewInit {
             //}
           }
           else {
-
+            this.isGmUser = false;
             if (
               (<NavigationStart>event).url.toUpperCase() == ('/CHARACTER') || (<NavigationStart>event).url.toUpperCase() == ('/CHARACTERS')
               || (<NavigationStart>event).url.toUpperCase() == ('/RULESET') || (<NavigationStart>event).url.toUpperCase() == ('/RULESETS')
@@ -1657,5 +1659,46 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
     }
 
+  }
+  GoToCombat() {
+    let ruleSetId = this.localStorage.getDataObject<any>(DBkeys.RULESET_ID);
+    if (ruleSetId) {
+      this.router.navigate(['/ruleset/combat', ruleSetId]);
+    }
+  }
+  GoToLoot() {
+    let ruleSetId = this.localStorage.getDataObject<any>(DBkeys.RULESET_ID);
+    if (ruleSetId) {
+      this.router.navigate(['/ruleset/loot', ruleSetId]);
+    }
+  }
+  GoToHandOuts() {
+    let ruleSetId = this.localStorage.getDataObject<any>(DBkeys.RULESET_ID);
+    let ruleset = this.ruleset ? Object.assign({}, this.ruleset) : new Ruleset();
+    if (ruleSetId) {
+      if (!ruleset.ruleSetId) {
+        ruleset.ruleSetId = ruleSetId;
+      }
+      this.bsModalRef = this.modalService.show(HandoutuploadComponent, {
+        class: 'modal-primary modal-lg',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'HandOuts';
+      this.bsModalRef.content.ruleset = ruleset;
+    }
+  }
+  isRulesetRoute(): boolean {
+    //debugger
+    if (
+      this.isGmUser
+      && this.router.url.toUpperCase().indexOf('/RULESET/') > -1
+      && this.router.url.toUpperCase().indexOf('CHARACTER/RULESET/') == -1
+    ) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 }

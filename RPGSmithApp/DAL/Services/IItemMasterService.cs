@@ -52,5 +52,6 @@ namespace DAL.Services
         Task<List<ItemMasterLoot>> getMultipleLootDetails(List<int> LootId);
         SP_AbilitySpellForItemMaster AbilitySpellForLootsByRuleset_sp(int rulesetId, int lootID);
         Task DeleteMonsterItem(int id);
+        bool isLootAvailable(int rulesetId);
     }
 }

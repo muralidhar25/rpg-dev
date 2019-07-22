@@ -1939,6 +1939,9 @@ namespace DAL.Services
 
             return loot;
         }
+        public bool isLootAvailable(int rulesetId) {
+            return _context.ItemMasterLoots.Where(x => x.RuleSetId == rulesetId && x.IsShow == true && x.IsDeleted != true).Any();
+        }
         #endregion
     }
 }

@@ -28,6 +28,7 @@ import { Ruleset } from '../core/models/view-models/ruleset.model';
 import { AppService1 } from '../app.service';
 import { CharacterCommand } from '../core/models/view-models/character-command.model';
 import { Router } from '@angular/router';
+import { AlertService, MessageSeverity } from '../core/common/alert.service';
 
 
 
@@ -45,7 +46,8 @@ import { Router } from '@angular/router';
 })
 
 export class NgChat implements OnInit, IChatController {
-  constructor(public sanitizer: DomSanitizer, private _httpClient: HttpClient, private localStorage: LocalStoreManager, private appService: AppService1, private router: Router) {
+  constructor(public sanitizer: DomSanitizer, private _httpClient: HttpClient, private localStorage: LocalStoreManager, private appService: AppService1, private router: Router,
+    private alertService: AlertService) {
     this.appService.shouldUpdateChatWithDiceRoll().subscribe((serviceData) => {
       if (serviceData) {
         this.sendDiceRolledToChatGroup(serviceData);
@@ -1327,6 +1329,7 @@ export class NgChat implements OnInit, IChatController {
         }
         else {
           //character is offline.
+          this.alertService.showMessage("Selected character is offine.", '', MessageSeverity.error)
         }
       }
       else {

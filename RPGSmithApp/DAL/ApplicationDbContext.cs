@@ -163,7 +163,8 @@ namespace DAL
         public virtual DbSet<Combat> Combats { get; set; }
         public virtual DbSet<CombatantList> CombatantLists { get; set; }
         public virtual DbSet<CombatSetting> CombatSettings { get; set; }
-
+        public virtual DbSet<CombatUpdate> CombatUpdates { get; set; }
+        
 
 
         public ApplicationDbContext(DbContextOptions options) : base(options)

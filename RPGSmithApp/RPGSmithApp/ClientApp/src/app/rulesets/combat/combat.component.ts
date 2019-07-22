@@ -446,7 +446,9 @@ export class CombatComponent implements OnInit {
         // Game Time
         this.gametime = this.time_convert(this.settings.gameRoundLength);
         if (!this.isFrameSelected_Flag) {
-          this.frameClick(this.combatants[0]);
+          if (this.combatants.length) {
+            this.frameClick(this.combatants[0]);
+          }          
         }
 
         this.isCharacterItemEnabled = combatModal.isCharacterItemEnabled;

@@ -19,12 +19,17 @@ namespace DAL.Services
         protected readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly IItemMasterService _itemMasterService;
-        public MonsterTemplateService(ApplicationDbContext context, IRepository<MonsterTemplate> repo, IConfiguration configuration, IItemMasterService itemMasterService)
+        public MonsterTemplateService(
+            ApplicationDbContext context, 
+            IRepository<MonsterTemplate> repo, 
+            IConfiguration configuration, 
+            IItemMasterService itemMasterService
+            )
         {
             _repo = repo;
             _context = context;
             this._configuration = configuration;
-            this._itemMasterService = itemMasterService;
+            this._itemMasterService = itemMasterService;           
         }
 
         public async Task<MonsterTemplate> Create(MonsterTemplate item)
@@ -1618,6 +1623,13 @@ namespace DAL.Services
                 }
                 _context.MonsterBuffAndEffects.AddRange(Blist);
                 _context.SaveChanges();
+
+                var monster = _context.Monsters.Where(x => x.MonsterId == monsterId && x.IsDeleted != true).FirstOrDefault();
+                var combats = _context.Combats.Where(x => x.CampaignId == monster.RuleSetId && x.IsDeleted != true).ToList();
+                foreach (var c in combats)
+                {
+                    MarkCombatAsUpdated(c.Id);
+                }
             }
             if (type == "M")
             {
@@ -1640,7 +1652,27 @@ namespace DAL.Services
                 _context.SaveChanges();
             }
         }
-
+        public void MarkCombatAsUpdated(int combatId)
+        {   //same code also written on combatService.cs
+            try
+            {
+                var updateCombatFlagRec = _context.CombatUpdates.Where(x => x.CombatId == combatId).FirstOrDefault();
+                if (updateCombatFlagRec != null)
+                {
+                    if (!updateCombatFlagRec.IsUpdated)
+                    {
+                        updateCombatFlagRec.IsUpdated = true;
+                        _context.SaveChanges();
+                    }
+                }
+                else
+                {
+                    _context.CombatUpdates.Add(new CombatUpdate { CombatId = combatId, IsUpdated = true });
+                    _context.SaveChanges();
+                }
+            }
+            catch (Exception ex) { }
+        }
         public List<MonsterTemplateAbility> insertAssociateAbilities(List<MonsterTemplateAbility> MonsterTemplateAbilityVM)
         {
             try

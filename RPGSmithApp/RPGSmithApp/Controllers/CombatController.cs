@@ -320,6 +320,17 @@ namespace RPGSmithApp.Controllers
         {
             return Ok(_combatService.SP_GetMonsterAssociateBEs(monsterID, rulesetId));
         }
+
+        [HttpGet("IsCombatUpdated")]
+        public bool IsCombatUpdated(int combatId) {
+            return _combatService.IsCombatUpdated(combatId);
+        }
+
+        [HttpPost("MarkCombatAsUpdatedFlag")]
+        public void MarkCombatAsUpdatedFlag(int combatId)
+        {
+            _combatService.MarkCombatAsUpdated(combatId);
+        }
     }
 }
 

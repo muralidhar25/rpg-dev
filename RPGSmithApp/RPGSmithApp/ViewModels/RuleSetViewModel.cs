@@ -46,6 +46,8 @@ namespace RPGSmithApp.ViewModels
         public int LastCommandTotal { get; set; }
         public string LastCommandValues { get; set; }
         public bool IsCombatStarted { get; set; }
+        public bool haveLootItems { get; set; }
+        public bool haveHandOutItems { get; set; }
         public virtual ICollection<ItemMaster> ItemMasters { get; set; }
         public virtual ICollection<Spell> Spells { get; set; }
         public virtual ICollection<Ability> Abilities { get; set; }

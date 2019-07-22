@@ -30,6 +30,9 @@ export class CombatService extends EndpointFactory {
   private readonly SaveDelayTurn: string = this.configurations.baseUrl + "/api/Combat/SaveDelayTurn";
   private readonly SaveSelectedCombatant: string = this.configurations.baseUrl + "/api/Combat/SaveSelectedCombatant";
   private readonly UpdateMonsterDetails: string = this.configurations.baseUrl + "/api/Combat/UpdateMonsterDetails";
+  private readonly isCombatUpdatedUrl: string = this.configurations.baseUrl + "/api/Combat/IsCombatUpdated";
+  private readonly markCombatAsUpdatedFlagUrl: string = this.configurations.baseUrl + "/api/Combat/MarkCombatAsUpdatedFlag";
+  
 
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
@@ -179,6 +182,23 @@ export class CombatService extends EndpointFactory {
     return this.http.post<T>(url, JSON.stringify(combat), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.updateMonsterDetails(combat, type));
+      });
+  }
+
+
+  isCombatUpdated<T>(combatId: number): Observable<T> {
+    let url = `${this.isCombatUpdatedUrl}?combatId=${combatId}`
+    return this.http.get<T>(url, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.isCombatUpdated(combatId));
+      });
+  }
+
+  markCombatAsUpdatedFlag<T>(combatId: number): Observable<T> {
+    let url = `${this.markCombatAsUpdatedFlagUrl}?combatId=${combatId}`
+    return this.http.post<T>(url, JSON.stringify({}), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.markCombatAsUpdatedFlag(combatId));
       });
   }
 

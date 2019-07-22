@@ -33,7 +33,8 @@
 
       <div class="col-12 col-md-12 col-sm-12">
         <fieldset class="form-group input-list input-list-wrap items">
-          <ul class="input-list-items">
+          <span *ngIf="!itemsList?.length">No Buffs / Effects currently assigned. Select 'EDIT' to add some.</span>
+          <ul class="input-list-items" *ngIf="itemsList && itemsList?.length">
             <li class="form-check col-md-6 col-sm-12" *ngFor="let item of itemsList | filter : searchText : 'name';let i = index;" popover="{{item.name}}" triggers="hover" container="body">
               <label class="form-check-label">
                 <span (click)="item.isOwnPlayer && goToDetail(item)">

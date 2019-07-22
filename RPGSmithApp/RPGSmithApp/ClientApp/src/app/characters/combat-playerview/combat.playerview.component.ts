@@ -25,7 +25,6 @@ import { CombatBuffeffectDetailsComponent } from '../../rulesets/combat/combat-b
 import { ImageViewerComponent } from '../../shared/image-interface/image-viewer/image-viewer.component';
 import { CharactersCharacterStat } from '../../core/models/view-models/characters-character-stats.model';
 import { initiative } from '../../core/models/view-models/initiative.model';
-import { setInterval } from 'timers';
 import { CombatHealthComponent } from '../../rulesets/combat/update-combat-health/update-combat-health.component';
 
 @Component({
@@ -59,7 +58,7 @@ export class CombatPlayerViewComponent implements OnInit {
   currentCombatantDetail: any;
   ownPlayer: any[] = [];
   DummyValueForCharHealthStat: number = -9999;
-
+  refreshPage: any;
 
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
@@ -191,7 +190,10 @@ export class CombatPlayerViewComponent implements OnInit {
             // Game Time
             this.gametime = this.time_convert(this.settings.gameRoundLength);
 
-            this.frameClick(this.combatants[0]);
+            if (this.combatants.length) {
+              this.frameClick(this.combatants[0]);
+            }
+            
 
             this.isCharacterItemEnabled = combatModal.isCharacterItemEnabled;
             this.isCharacterSpellEnabled = combatModal.isCharacterSpellEnabled;
@@ -215,8 +217,9 @@ export class CombatPlayerViewComponent implements OnInit {
               this.gametime = this.time_convert(roundTime);
               this.frameClick(curretnCombatant)
 
-              this.refreshPageData();
+             
             }
+            this.refreshPageData();
           }
           this.isLoading = false;
         }, error => {
@@ -268,7 +271,6 @@ export class CombatPlayerViewComponent implements OnInit {
   }
 
   buffEffectclick(item) {
-    console.log('cliked');
     this.bsModalRef = this.modalService.show(CombatBuffeffectDetailsComponent, {
       class: 'modal-primary',
       ignoreBackdropClick: true,
@@ -467,8 +469,29 @@ export class CombatPlayerViewComponent implements OnInit {
     this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
   }
   refreshPageData() {
-    //let refreshPage = setInterval(() => {
-    //  this.GetCombatDetails(false);
-    //}, 5000);
+    debugger
+    this.refreshPage = setInterval(() => {
+     
+      debugger
+      this.combatService.isCombatUpdated(this.CombatId).subscribe(res => {
+        if (res) {
+          if (this.refreshPage) {
+            clearInterval(this.refreshPage)
+          }
+          /////////////////////make this a function
+          
+          //////////////////////////////////////////
+        }
+     
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        } else {
+          this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        }
+      });
+    }, 5000);
   }
 }

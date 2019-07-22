@@ -65,6 +65,7 @@ namespace DAL.Models.SPModels
         public bool DelayTurn { get; set; }
 
         public bool IsCurrentSelected { get; set; }
+        public bool IsPlayerCharacter { get; set; }
 
     }
     public class CombatAllTypeMonsters : MonsterTemplate

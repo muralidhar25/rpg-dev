@@ -217,7 +217,9 @@ namespace RPGSmithApp.Helpers
                 LastCommand=ruleSet.LastCommand,
                 LastCommandResult=ruleSet.LastCommandResult,
                 LastCommandTotal=ruleSet.LastCommandTotal,
-                LastCommandValues=ruleSet.LastCommandValues
+                LastCommandValues=ruleSet.LastCommandValues,
+                haveHandOutItems=true,
+                haveLootItems= _itemMasterService.isLootAvailable(ruleSet.RuleSetId),
             };
 
             return ruleSetViewModel;
