@@ -20,6 +20,7 @@ import { Characters } from "../../../core/models/view-models/characters.model";
 import { CreateItemMsterComponent } from "../../item-master/create-item/create-item.component";
 import { EditMonsterItemComponent } from "../edit-item/edit-item.component";
 import { CastComponent } from "../../../shared/cast/cast.component";
+import { ServiceUtil } from "../../../core/services/service-util";
 
 @Component({
   selector: 'app-monster-item-details',
@@ -39,6 +40,7 @@ export class MonsterItemDetailsComponent implements OnInit {
   ItemDetail: any = new ItemMaster();
   RuleSet: any;
   monsterId: number = 0;
+  IsComingFromCombatTracker_GM: boolean = false;
 
   IsGm: boolean = false;
     constructor(
@@ -62,7 +64,8 @@ export class MonsterItemDetailsComponent implements OnInit {
     } catch (err) { this.isDropdownOpen = false; }
   }
 
-    ngOnInit() {
+  ngOnInit() {
+    this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);
         this.initialize();
         this.showActionButtons(this.showActions);
     }
@@ -264,9 +267,13 @@ export class MonsterItemDetailsComponent implements OnInit {
   }
 
   RedirectBack() {
-   // this.router.navigate(['/ruleset/item-master', this.ruleSetId]);
-        window.history.back();
+    if (this.IsComingFromCombatTracker_GM) {
+      this.router.navigate(['/ruleset/combat', this.ruleSetId]);
     }
+    else {
+      window.history.back();
+    }
+  }
     Redirect(path) {
         this.router.navigate([path, this.ruleSetId]);
     }

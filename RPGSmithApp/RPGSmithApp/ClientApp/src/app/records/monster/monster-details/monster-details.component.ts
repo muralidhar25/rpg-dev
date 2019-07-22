@@ -28,6 +28,7 @@ import { AddRemoveAssociateBuffAndEffectsComponent } from "../add-remove-associa
 import { AddRemoveAssociateSpellsComponent } from "../add-remove-associate-items-spells/add-remove-associate-items-spells.component";
 import { UpdateMonsterHealthComponent } from "../../../shared/update-monster-health/update-monster-health.component";
 import { combatantType, MonsterDetailType } from "../../../core/models/enums";
+import { ServiceUtil } from "../../../core/services/service-util";
 //import { CreateMonsterTemplateComponent } from "../create-monster-template/create-monster-template.component";
 //import { DeployMonsterComponent } from "../deploy-monster/deploy-monster.component";
 //import { DropItemsMonsterComponent } from "../drop-items-monster/drop-items-monster.component";
@@ -69,6 +70,7 @@ export class MonsterDetailsComponent implements OnInit {
   _editMonster: any;
 
   IsGm: boolean = false;
+  IsComingFromCombatTracker_GM: boolean = false;
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -95,7 +97,8 @@ export class MonsterDetailsComponent implements OnInit {
   //  } catch (err) { this.isDropdownOpen = false; }
   //}
 
-    ngOnInit() {
+  ngOnInit() {
+    this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);    
         this.initialize();
         this.showActionButtons(this.showActions);
     }
@@ -396,8 +399,14 @@ export class MonsterDetailsComponent implements OnInit {
    
 
    
-    RedirectBack() {
+  RedirectBack() {
+    if (this.IsComingFromCombatTracker_GM) {
+      this.router.navigate(['/ruleset/combat', this.ruleSetId]);
+    }    
+    else {
       this.router.navigate(['/ruleset/monster', this.ruleSetId]);
+    }
+      
         //window.history.back();
     }
     Redirect(path) {

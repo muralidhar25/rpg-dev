@@ -75,6 +75,8 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
   showBuffEffects: boolean = false;
   pauseBuffAndEffectAdd: boolean = false
   pauseBuffAndEffectCreate: boolean = false
+  IsComingFromCombatTracker_GM: boolean = false;
+  IsComingFromCombatTracker_PC: boolean = false;
 
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -124,7 +126,10 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
 
     ngOnInit() {
         if (this.rulesetId == undefined)
-            this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+        this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+      this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);
+      this.IsComingFromCombatTracker_PC = ServiceUtil.setIsComingFromCombatTracker_PC_Variable(this.localStorage);
 
         this.destroyModalOnInit();
         this.initialize();
@@ -196,8 +201,16 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
             this.router.navigate([this.charNav.abilities]);
         }
         else if (redirectto == 4) {
-
-            this.router.navigate(['/character/dashboard/', this.characterId]);
+          if (this.IsComingFromCombatTracker_GM) {
+            this.router.navigate(['/ruleset/combat', this.rulesetId]);
+          }
+          else if (this.IsComingFromCombatTracker_PC) {
+            this.router.navigate(['/character/combatplayer', + this.characterId]);
+          }
+          else {
+            this.router.navigate(['/character/dashboard', this.characterId]);
+          }
+            //this.router.navigate(['/character/dashboard/', this.characterId]);
         }
         else if (redirectto == 5) {
             
@@ -1190,7 +1203,16 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                       this.router.navigate([this.charNav.items]);
                     }
                     else if (redirectto == 4) {
-                        this.router.navigate(['/character/dashboard/', this.characterId]);
+                      if (this.IsComingFromCombatTracker_GM) {
+                        this.router.navigate(['/ruleset/combat', this.rulesetId]);
+                      }
+                      else if (this.IsComingFromCombatTracker_PC) {
+                        this.router.navigate(['/character/combatplayer', + this.characterId]);
+                      }
+                      else {
+                        this.router.navigate(['/character/dashboard', this.characterId]);
+                      }
+                        //this.router.navigate(['/character/dashboard/', this.characterId]);
                     }
                     else if (redirectto == 5) {
                       this.router.navigate(['/ruleset/character-stats', this.rulesetId]);

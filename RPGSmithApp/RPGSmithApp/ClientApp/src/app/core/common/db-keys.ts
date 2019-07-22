@@ -36,6 +36,6 @@ export class DBkeys {
   public static readonly IsCharacterOpenedFromCampaign = "IsCharacterOpenedFromCampaign";
   public static readonly ChatHttpFailure = "ChatHttpFailure";
   public static readonly NotifyForPendingInvites = "NotifyForPendingInvites";
-    
-  
+  public static readonly IsComingFromCombatTracker_GM = "IsComingFromCombatTracker_GM";
+  public static readonly IsComingFromCombatTracker_PC = "IsComingFromCombatTracker_PC";
 }

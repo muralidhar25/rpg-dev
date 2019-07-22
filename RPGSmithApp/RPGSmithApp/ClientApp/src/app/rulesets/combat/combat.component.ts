@@ -859,15 +859,23 @@ export class CombatComponent implements OnInit {
 
   //redirections of character Side
   redirectToItem(item) {
+    this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
+    this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
     this.router.navigate(['/character/inventory', item.character.characterId]);
   }
   redirectToSpell(item) {
+    this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
+    this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
     this.router.navigate(['/character/spell', item.character.characterId]);
   }
   redirectToAbility(item) {
+    this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
+    this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
     this.router.navigate(['/character/ability', item.character.characterId]);
   }
   redirectToChracterstat(item) {
+    this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
+    this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
     this.router.navigate(['/character/character-stats', item.character.characterId]);
   }
 
@@ -1269,6 +1277,8 @@ export class CombatComponent implements OnInit {
 
   CombatantBuff_EffectDetail(currentCombatantDetail, item) {
     if (currentCombatantDetail.type == combatantType.MONSTER) {
+      this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
+      this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
       this.router.navigate(['/ruleset/buff-effect-details', item.buffAndEffectId]);
     }
     if (currentCombatantDetail.type == combatantType.CHARACTER) {
@@ -1280,9 +1290,13 @@ export class CombatComponent implements OnInit {
   //Item Details
   CombatantItemDetail(currentCombatantDetail, item) {
     if (currentCombatantDetail.type == combatantType.MONSTER) {
+      this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
+      this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
       this.router.navigate(['/ruleset/monster-item-details', item.itemId]);
     }
     if (currentCombatantDetail.type == combatantType.CHARACTER) {
+      this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
+      this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
       this.router.navigate(['/character/inventory-details', item.itemId]);
     }
 
@@ -1290,6 +1304,8 @@ export class CombatComponent implements OnInit {
   //Spell Details
   CombatantSpellDetail(currentCombatantDetail, item) {
     if (currentCombatantDetail.type == combatantType.MONSTER) {
+      this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
+      this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
       this.router.navigate(['/ruleset/spell-details', item.spellId]);
     }
     if (currentCombatantDetail.type == combatantType.CHARACTER) {
@@ -1301,6 +1317,8 @@ export class CombatComponent implements OnInit {
   //Ability Details
   CombatantAbilityDetail(currentCombatantDetail, item) {
     if (currentCombatantDetail.type == combatantType.MONSTER) {
+      this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
+      this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
       this.router.navigate(['/ruleset/ability-details', item.abilityId]);
     }
     if (currentCombatantDetail.type == combatantType.CHARACTER) {
@@ -1321,9 +1339,13 @@ export class CombatComponent implements OnInit {
           this.isLoading = false;
           if (data) {
             let model: any = data;
+            this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
+            this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
             this.router.navigate(['/character/spell-details', model.characterSpellId]);
           }
           else {
+            this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
+            this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
             this.router.navigate(['/character/spell-detail', RulesetSpellID]);
           }
         },
@@ -1339,6 +1361,8 @@ export class CombatComponent implements OnInit {
         });
   }
   GoToCharbuff(RulesetBuffID: number) {
+    this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
+    this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
     this.router.navigate(['/character/buff-effect-detail', RulesetBuffID]);
   }
   GoToCharAbility(RulesetAbilityId: number) {
@@ -1350,9 +1374,13 @@ export class CombatComponent implements OnInit {
           this.isLoading = false;
           if (data) {
             let model: any = data;
+            this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
+            this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
             this.router.navigate(['/character/ability-details', model.characterAbilityId]);
           }
           else {
+            this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
+            this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
             this.router.navigate(['/character/ability-detail', RulesetAbilityId]);
           }
         },
@@ -1487,12 +1515,16 @@ export class CombatComponent implements OnInit {
   ImageDeatil(itemDetail, imgref) {
     if (itemDetail.type == combatantType.MONSTER) {
       if (this.settings.accessMonsterDetails) {
+        this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
+        this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
         this.router.navigate(['/ruleset/monster-details', itemDetail.monster.monsterId]);
       } else {
         this.ViewImage(imgref);
       }
     }
     if (itemDetail.type == combatantType.CHARACTER) {
+      this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
+      this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
       this.router.navigate(['/character/dashboard', itemDetail.character.characterId]);
     }
 

@@ -218,6 +218,8 @@ export class CombatBuffeffectDetailsComponent implements OnInit {
 
   goToDetail(item) {
     if (this.type == combatantType.MONSTER) {
+      this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
+      this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
       this.router.navigate(['/ruleset/buff-effect-details', item.recordId]);
     }
     if (this.type == combatantType.CHARACTER) {
@@ -227,6 +229,8 @@ export class CombatBuffeffectDetailsComponent implements OnInit {
   }
 
   GoToCharbuff(RulesetBuffID: number) {
+    this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
+    this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
     this.router.navigate(['/character/buff-effect-detail', RulesetBuffID]);
   }
 

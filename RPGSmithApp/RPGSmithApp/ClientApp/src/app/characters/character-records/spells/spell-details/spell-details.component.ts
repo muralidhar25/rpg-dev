@@ -21,6 +21,7 @@ import { ImageViewerComponent } from "../../../../shared/image-interface/image-v
 import { CreateSpellsComponent } from "../../../../shared/create-spells/create-spells.component";
 import { HeaderValues } from "../../../../core/models/headers.model";
 import { CharactersService } from "../../../../core/services/characters.service";
+import { ServiceUtil } from "../../../../core/services/service-util";
 
 @Component({
     selector: 'app-spell-details',
@@ -45,6 +46,9 @@ export class CharacterSpellDetailsComponent implements OnInit {
   pageRefresh: boolean;
   pauseSpellAdd: boolean;
   pauseSpellCreate: boolean;
+  IsComingFromCombatTracker_GM: boolean = false;
+  IsComingFromCombatTracker_PC: boolean = false;
+
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -68,7 +72,9 @@ export class CharacterSpellDetailsComponent implements OnInit {
       else this.isDropdownOpen = false;
     } catch (err) { this.isDropdownOpen = false; }
   }
-    ngOnInit() {
+  ngOnInit() {
+    this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);
+    this.IsComingFromCombatTracker_PC = ServiceUtil.setIsComingFromCombatTracker_PC_Variable(this.localStorage);
         this.initialize();
         this.showActionButtons(this.showActions);
 
@@ -308,9 +314,18 @@ export class CharacterSpellDetailsComponent implements OnInit {
         });
     }
 
-    RedirectBack() {
+  RedirectBack() {
+    if (this.IsComingFromCombatTracker_GM) {
+      this.router.navigate(['/ruleset/combat', this.ruleSetId]);
+    }
+    else if (this.IsComingFromCombatTracker_PC) {
+      this.router.navigate(['/character/combatplayer', this.characterId]);
+    }
+    else {
       //this.router.navigate(['/character/spell', this.characterId]);
-        window.history.back();
+      window.history.back();
+    }
+      
     }
 
     Redirect(path) {

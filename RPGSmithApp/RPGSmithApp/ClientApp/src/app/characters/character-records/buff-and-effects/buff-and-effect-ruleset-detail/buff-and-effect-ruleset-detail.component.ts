@@ -22,6 +22,7 @@ import { CharactersService } from "../../../../core/services/characters.service"
 import { Characters } from "../../../../core/models/view-models/characters.model";
 import { CastComponent } from "../../../../shared/cast/cast.component";
 import { DiceRollComponent } from "../../../../shared/dice/dice-roll/dice-roll.component";
+import { ServiceUtil } from "../../../../core/services/service-util";
 
 
 
@@ -48,6 +49,8 @@ export class CharBuffAndEffectRulesetDetailsComponent implements OnInit {
   pageRefresh: boolean;
   character: Characters = new Characters();
   isAlreadyAssigned: boolean = false;
+  IsComingFromCombatTracker_GM: boolean = false;
+
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -76,6 +79,7 @@ export class CharBuffAndEffectRulesetDetailsComponent implements OnInit {
   }
 
   private initialize() {
+    this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
       this.authService.logout();
@@ -341,7 +345,13 @@ export class CharBuffAndEffectRulesetDetailsComponent implements OnInit {
   }
 
   RedirectBack() {
-    window.history.back();
+    if (this.IsComingFromCombatTracker_GM) {
+      this.router.navigate(['/ruleset/combat', this.ruleSetId]);
+    }   
+    else {
+      window.history.back();
+    }
+    
   }
   Redirect(path) {
     this.router.navigate([path, this.ruleSetId]);

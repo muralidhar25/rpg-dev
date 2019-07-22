@@ -22,6 +22,7 @@ import { AddContainerComponent } from "../add-container/add-container.component"
 import { AddContainerItemComponent } from "../add-container-item/add-container-item.component";
 import { HeaderValues } from "../../../../core/models/headers.model";
 import { CharactersService } from "../../../../core/services/characters.service";
+import { ServiceUtil } from "../../../../core/services/service-util";
 
 @Component({
   selector: 'app-item-details',
@@ -48,6 +49,9 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
   //itemWillGetDropped: boolean = false;
   pauseItemAdd: boolean;
   pauseItemCreate: boolean;
+  IsComingFromCombatTracker_GM: boolean = false;
+  IsComingFromCombatTracker_PC: boolean = false;
+
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -79,6 +83,8 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);
+    this.IsComingFromCombatTracker_PC = ServiceUtil.setIsComingFromCombatTracker_PC_Variable(this.localStorage);
     this.showActionButtons(this.showActions);
     this.initialize();
 
@@ -389,8 +395,16 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
   }
 
   RedirectBack() {
-    //this.router.navigate(['/character/inventory', this.characterId]);
-    window.history.back();
+    if (this.IsComingFromCombatTracker_GM) {
+      this.router.navigate(['/ruleset/combat', this.ruleSetId]);
+    }
+    else if (this.IsComingFromCombatTracker_PC) {
+      this.router.navigate(['/character/combatplayer', + this.characterId]);
+    }
+    else {
+      window.history.back();
+    }    
+    //window.history.back();
   }
 
   Redirect(path) {

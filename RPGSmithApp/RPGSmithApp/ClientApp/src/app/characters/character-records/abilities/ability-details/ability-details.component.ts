@@ -21,6 +21,7 @@ import { ImageViewerComponent } from "../../../../shared/image-interface/image-v
 import { CreateAbilitiesComponent } from "../../../../shared/create-abilities/create-abilities.component";
 import { HeaderValues } from "../../../../core/models/headers.model";
 import { CharactersService } from "../../../../core/services/characters.service";
+import { ServiceUtil } from "../../../../core/services/service-util";
 
 
 @Component({
@@ -46,6 +47,9 @@ export class CharacterAbilityDetailsComponent implements OnInit {
   pageRefresh: boolean;
   pauseAbilityAdd: boolean;
   pauseAbilityCreate: boolean;
+  IsComingFromCombatTracker_GM: boolean = false;
+  IsComingFromCombatTracker_PC: boolean = false;
+
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -73,6 +77,8 @@ export class CharacterAbilityDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);
+    this.IsComingFromCombatTracker_PC = ServiceUtil.setIsComingFromCombatTracker_PC_Variable(this.localStorage);
     this.initialize();
     this.showActionButtons(this.showActions);
 
@@ -330,8 +336,16 @@ export class CharacterAbilityDetailsComponent implements OnInit {
     });
   }
   RedirectBack() {
-    //this.router.navigate(['/character/ability', this.characterId]);
-    window.history.back();
+    if (this.IsComingFromCombatTracker_GM) {
+      this.router.navigate(['/ruleset/combat', this.ruleSetId]);
+    }
+    else if (this.IsComingFromCombatTracker_PC) {
+      this.router.navigate(['/character/combatplayer', + this.characterId]);
+    }
+    else {
+      window.history.back();
+    }
+   
   }
 
   Redirect(path) {

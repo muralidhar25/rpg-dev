@@ -18,6 +18,7 @@ import { ImageViewerComponent } from "../../../shared/image-interface/image-view
 import { PlatformLocation } from "@angular/common";
 import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
 import { Characters } from "../../../core/models/view-models/characters.model";
+import { ServiceUtil } from "../../../core/services/service-util";
 
 @Component({
     selector: 'app-ability-details',
@@ -36,6 +37,7 @@ export class AbilityDetailsComponent implements OnInit {
     bsModalRef: BsModalRef;
     AbilityDetail: any = new Ability();
   IsGm: boolean = false;
+  IsComingFromCombatTracker_GM: boolean = false;
     constructor(
         private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
         private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -63,7 +65,8 @@ export class AbilityDetailsComponent implements OnInit {
         this.showActionButtons(this.showActions);
     }
     
-    private initialize() {
+  private initialize() {
+    this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)
             this.authService.logout();
@@ -273,8 +276,13 @@ export class AbilityDetailsComponent implements OnInit {
         }, 200);
     }
     RedirectBack() {
-      //this.router.navigate(['/ruleset/ability', this.ruleSetId]);
+      if (this.IsComingFromCombatTracker_GM) {
+        this.router.navigate(['/ruleset/combat', this.ruleSetId]);
+      }     
+      else {
         window.history.back();
+      }
+       
     }
     Redirect(path) {
         this.router.navigate([path, this.ruleSetId]);

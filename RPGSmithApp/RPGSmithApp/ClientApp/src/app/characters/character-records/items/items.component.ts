@@ -23,6 +23,7 @@ import { CastComponent } from "../../../shared/cast/cast.component";
 import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
 import { AppService1 } from "../../../app.service";
 import { HeaderValues } from "../../../core/models/headers.model";
+import { ServiceUtil } from "../../../core/services/service-util";
 
 
 @Component({
@@ -72,6 +73,8 @@ export class CharacterItemsComponent implements OnInit {
   pageRefresh: boolean;
   //itemWillGetDropped: boolean = false;
   isPlayerCharacter: boolean = false;
+  IsComingFromCombatTracker_GM: boolean = false;
+  IsComingFromCombatTracker_PC: boolean = false;
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private pageLastViewsService: PageLastViewsService,
@@ -119,7 +122,10 @@ export class CharacterItemsComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.characterId = params['id'];
 
- });
+    });
+    this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);
+    this.IsComingFromCombatTracker_PC = ServiceUtil.setIsComingFromCombatTracker_PC_Variable(this.localStorage);
+
     this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
     this.destroyModalOnInit();
     this.initialize();
@@ -988,4 +994,17 @@ export class CharacterItemsComponent implements OnInit {
         }
       });
   }
+  RedirectBack() {
+    if (this.IsComingFromCombatTracker_GM) {
+      this.router.navigate(['/ruleset/combat', this.ruleSetId]);
+    }
+    else if (this.IsComingFromCombatTracker_PC) {
+      this.router.navigate(['/character/combatplayer', + this.characterId]);
+    }
+    else {
+      this.router.navigate(['/character/dashboard', this.characterId]);
+    }
+    //window.history.back();
+  }
+  
 }

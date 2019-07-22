@@ -4,7 +4,7 @@
     <div class="container">
       <div class="page-toolbar-wrapper">
         <div class="page-toolbar-title">
-          <a [routerLink]="['/character/dashboard', characterId]" class="icon icon-back">
+          <a (click)="RedirectBack()" class="icon icon-back">
             <h1 class="d-none d-md-inline-block"> Back</h1>
           </a>
           <h1 class="d-md-none">Abilities</h1>

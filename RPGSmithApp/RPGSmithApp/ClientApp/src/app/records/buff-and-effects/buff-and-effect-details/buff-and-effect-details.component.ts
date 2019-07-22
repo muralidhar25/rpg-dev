@@ -21,6 +21,7 @@ import { Characters } from "../../../core/models/view-models/characters.model";
 import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
 import { CastComponent } from "../../../shared/cast/cast.component";
 import { STAT_TYPE } from "../../../core/models/enums";
+import { ServiceUtil } from "../../../core/services/service-util";
 
 
 @Component({
@@ -40,6 +41,9 @@ export class BuffAndEffectDetailsComponent implements OnInit {
   bsModalRef: BsModalRef;
   buffAndEffectDetail: any = new BuffAndEffect();
   IsGm: boolean = false;
+  IsComingFromCombatTracker_GM: boolean = false;
+  
+
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -68,6 +72,9 @@ export class BuffAndEffectDetailsComponent implements OnInit {
   }
 
   private initialize() {
+    this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);
+    
+
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
       this.authService.logout();
@@ -265,9 +272,7 @@ export class BuffAndEffectDetailsComponent implements OnInit {
     });
   }
 
-  RedirectBack() {
-    window.history.back();
-  }
+  
   Redirect(path) {
     this.router.navigate([path, this.ruleSetId]);
   }
@@ -331,5 +336,14 @@ export class BuffAndEffectDetailsComponent implements OnInit {
     this.bsModalRef.content.recordImage = this.buffAndEffectDetail.ruleset.imageUrl;
     this.bsModalRef.content.recordType = 'ruleset'
     this.bsModalRef.content.isFromCampaignDetail = true;
+  }
+  RedirectBack() {
+    if (this.IsComingFromCombatTracker_GM) {
+      this.router.navigate(['/ruleset/combat', this.ruleSetId]);
+    }    
+    else {
+      window.history.back();
+    }
+    
   }
 }

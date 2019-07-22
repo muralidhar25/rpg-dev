@@ -22,6 +22,7 @@ import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.comp
 import { CreateSpellsComponent } from "../../../shared/create-spells/create-spells.component";
 import { AppService1 } from "../../../app.service";
 import { HeaderValues } from "../../../core/models/headers.model";
+import { ServiceUtil } from "../../../core/services/service-util";
 
 @Component({
     selector: 'app-spells',
@@ -66,6 +67,9 @@ export class CharacterSpellsComponent implements OnInit {
   pauseSpellAdd : boolean ;
   pauseSpellCreate: boolean;
   pageRefresh: boolean;
+  IsComingFromCombatTracker_GM: boolean = false;
+  IsComingFromCombatTracker_PC: boolean = false;
+
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -96,6 +100,10 @@ export class CharacterSpellsComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => { this.characterId = params['id']; });
+
+    this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);
+    this.IsComingFromCombatTracker_PC = ServiceUtil.setIsComingFromCombatTracker_PC_Variable(this.localStorage);
+
     if (this.rulesetId == undefined)
       this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
 
@@ -795,5 +803,17 @@ export class CharacterSpellsComponent implements OnInit {
           this.authService.logout(true);
         }
       });
+  }
+  RedirectBack() {
+    if (this.IsComingFromCombatTracker_GM) {
+      this.router.navigate(['/ruleset/combat', this.rulesetId]);
+    }
+    else if (this.IsComingFromCombatTracker_PC) {
+      this.router.navigate(['/character/combatplayer', + this.characterId]);
+    }
+    else {
+      this.router.navigate(['/character/dashboard', this.characterId]);
+    }
+    //window.history.back();
   }
 }

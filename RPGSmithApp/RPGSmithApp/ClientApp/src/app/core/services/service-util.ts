@@ -1129,4 +1129,14 @@ export class ServiceUtil {
 
         //////////////////////////////////////////////
   }
+  public static setIsComingFromCombatTracker_GM_Variable(localStorage): boolean {
+    let IsComingFromCombatTracker = localStorage.localStorageGetItem(DBkeys.IsComingFromCombatTracker_GM) ? true : false;
+    localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, false);
+    return IsComingFromCombatTracker;
+  }
+  public static setIsComingFromCombatTracker_PC_Variable(localStorage): boolean {
+    let IsComingFromCombatTracker = localStorage.localStorageGetItem(DBkeys.IsComingFromCombatTracker_PC) ? true : false;
+    localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
+    return IsComingFromCombatTracker;
+  }
 }

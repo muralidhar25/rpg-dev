@@ -19,6 +19,7 @@ import { ImageViewerComponent } from "../../../../shared/image-interface/image-v
 import { CastComponent } from "../../../../shared/cast/cast.component";
 import { DiceRollComponent } from "../../../../shared/dice/dice-roll/dice-roll.component";
 import { CreateAbilitiesComponent } from "../../../../shared/create-abilities/create-abilities.component";
+import { ServiceUtil } from "../../../../core/services/service-util";
 
 
 @Component({
@@ -42,6 +43,8 @@ export class AbilityRulesetDetailComponent implements OnInit {
   pauseAbilityAdd: boolean;
   pauseAbilityCreate: boolean;
   pageRefresh: boolean;
+  IsComingFromCombatTracker_GM: boolean = false;
+  IsComingFromCombatTracker_PC: boolean = false;
 
   constructor(
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
@@ -56,6 +59,8 @@ export class AbilityRulesetDetailComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.IsComingFromCombatTracker_GM = ServiceUtil.setIsComingFromCombatTracker_GM_Variable(this.localStorage);
+    this.IsComingFromCombatTracker_PC = ServiceUtil.setIsComingFromCombatTracker_PC_Variable(this.localStorage);
     this.initialize();
     this.showActionButtons(this.showActions);
 
@@ -305,8 +310,17 @@ export class AbilityRulesetDetailComponent implements OnInit {
   //    }, 200);
   //}
   RedirectBack() {
-    this.router.navigate(['/character/ability', this.character.characterId]);
-    //window.history.back();
+    if (this.IsComingFromCombatTracker_GM) {
+      this.router.navigate(['/ruleset/combat', this.ruleSetId]);
+    }
+    else if (this.IsComingFromCombatTracker_PC) {
+      this.router.navigate(['/character/combatplayer', + this.character.characterId]);
+    }
+    else {
+      this.router.navigate(['/character/ability', this.character.characterId]);
+    }
+   
+    
   }
   ViewImage(img) {
     if (img) {
