@@ -702,22 +702,36 @@ export class CombatComponent implements OnInit {
         return;
       }
 
-      //else if (!this.combatants[i - 1] && this.roundCounter > 1 && this.combatants[i].isCurrentTurn) {
+      else if (!this.combatants[i - 1] && this.roundCounter > 1 && this.combatants[i].isCurrentTurn) {
+        let index = this.combatants.length - 1;
+        this.combatants[i].isCurrentTurn = false;
+        //if (this.combatants[i + index].delayTurn) {
+        //  goToPreviousTurn = true;
+        //  continue;
+        //}
+        this.curretnCombatant = this.combatants[i + index];
+        this.combatants[i + index].isCurrentTurn = true;
+        let valueofinitiative = this.combatants[i + index].initiativeValue;
+        this.CurrentInitiativeValue = valueofinitiative;
 
-      //  let index = this.combatants.length - 1;
-      //  this.combatants[i].isCurrentTurn = false;
-      //  if (this.combatants[i + index].delayTurn) {
-      //    //skipIsCurrentTurnCheck = true;
-      //    continue;
-      //  }
-      //  this.curretnCombatant = this.combatants[i + index];
-      //  this.combatants[i + index].isCurrentTurn = true;
-      //  let valueofinitiative = this.combatants[i + index].initiativeValue;
-      //  this.CurrentInitiativeValue = valueofinitiative;
-      //  this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
-      //  this.frameClick(this.curretnCombatant)
-      //  return;
-      //}
+        if (this.combatants[i + index].delayTurn) {
+          // this.combatants[i].isCurrentTurn = true;
+          this.roundCounter = this.roundCounter - 1;
+          //convert time
+          let roundTime = this.settings.gameRoundLength * this.roundCounter;
+          this.gametime = this.time_convert(roundTime);
+          this.prevTurn();
+          break;
+        }
+
+        this.roundCounter = this.roundCounter - 1;
+        //convert time
+        let roundTime = this.settings.gameRoundLength * this.roundCounter;
+        this.gametime = this.time_convert(roundTime);
+        this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
+        this.frameClick(this.curretnCombatant)
+        return;
+      }
     }
 
   }
@@ -739,7 +753,6 @@ export class CombatComponent implements OnInit {
         return;
       }
       else if (!this.combatants[i + 1]) {
-        debugger
         if (this.roundCounter != 0 && this.settings.rollInitiativeEveryRound) {
           this.Init(true);
         }
@@ -747,6 +760,10 @@ export class CombatComponent implements OnInit {
         if (this.combatants[i - i].delayTurn) {
           i = -1;
           skipIsCurrentTurnCheck = true;
+          this.roundCounter = this.roundCounter + 1;
+          //convert time
+          let roundTime = this.settings.gameRoundLength * this.roundCounter;
+          this.gametime = this.time_convert(roundTime);
           continue;
         }
         this.combatants[i - i].isCurrentTurn = true;
