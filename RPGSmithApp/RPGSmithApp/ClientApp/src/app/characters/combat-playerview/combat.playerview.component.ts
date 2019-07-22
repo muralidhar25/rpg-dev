@@ -141,6 +141,7 @@ export class CombatPlayerViewComponent implements OnInit {
   }
 
   progressHealth(item) {
+    debugger
     this.bsModalRef = this.modalService.show(CombatHealthComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -307,17 +308,17 @@ export class CombatPlayerViewComponent implements OnInit {
   }
 
   ImageDeatil(itemDetail, imgref) {
-    //if (itemDetail.type == this.combatantsType.MONSTER) {
-    //  if (this.settings.accessMonsterDetails) {
-    //    this.router.navigate(['/character/player-monster-details', itemDetail.monster.monsterId]);
-    //  } else {
-    //    this.ViewImage(imgref);
-    //  }
-    //}
-    //if (itemDetail.type == this.combatantsType.CHARACTER) {
-    //  this.ViewImage(imgref)
-    //}
-    this.ViewImage(imgref)
+    if (itemDetail.type == this.combatantsType.MONSTER) {
+      if (this.settings.accessMonsterDetails) {
+        this.router.navigate(['/character/player-monster-details', itemDetail.monster.monsterId]);
+      } else {
+        this.ViewImage(imgref);
+      }
+    }
+    if (itemDetail.type == this.combatantsType.CHARACTER) {
+      this.ViewImage(imgref)
+    }
+    //this.ViewImage(imgref)
 
   }
 

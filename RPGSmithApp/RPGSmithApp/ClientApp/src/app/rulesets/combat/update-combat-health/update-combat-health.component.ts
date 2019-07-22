@@ -54,16 +54,18 @@ export class CombatHealthComponent implements OnInit {
     setTimeout(() => {
       debugger
       this.title = this.bsModalRef.content.title;
-      this.monsterImage = this.combatInfo.monster.imageUrl;
-      this.monsterName = this.combatInfo.monster.name;
 
       //combatInfo
       this.combatInfo = this.bsModalRef.content.combatInfo;
       if (this.combatInfo.type == combatantType.CHARACTER) {
+        this.monsterImage = this.combatInfo.character.imageUrl;
+        this.monsterName = this.combatInfo.character.characterName;
         this.healthCurrent = this.combatInfo.character.healthCurrent;
         this.healthMax = this.combatInfo.character.healthMax;
       }
       else if (this.combatInfo.type == combatantType.MONSTER) {
+      this.monsterImage = this.combatInfo.monster.imageUrl;
+      this.monsterName = this.combatInfo.monster.name;
         this.healthCurrent = this.combatInfo.monster.healthCurrent;
         this.healthMax = this.combatInfo.monster.healthMax;
       }

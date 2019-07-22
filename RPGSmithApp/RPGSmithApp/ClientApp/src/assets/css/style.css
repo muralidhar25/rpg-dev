@@ -1127,6 +1127,7 @@
 .icon-Delay:before {
   content: "\e973";
 }
+
 .icon-Resume:before {
   content: "\e974";
 }
@@ -9411,7 +9412,16 @@ input-type-number::-webkit-outer-spin-button {
 .accordion-toggle div {
   padding-top: 5px !important;
 }
+
 .ngx-contextmenu .passive, .ngx-contextmenu .passive ul li {
   padding: 0px !important;
-  border-bottom:0 !important
+  border-bottom: 0 !important
 }
+
+.detailPaneItems .panel-body {
+  padding: 0 !important;
+}
+
+  .detailPaneItems .panel-body div.be-section {
+    padding: 1.25rem;
+  }

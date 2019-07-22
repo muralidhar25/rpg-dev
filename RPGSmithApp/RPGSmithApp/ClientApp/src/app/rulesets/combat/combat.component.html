@@ -10,7 +10,7 @@
           <button class="btn-green-icons" (click)="startCombat()" *ngIf="!showCombatOptions"><span class=" icon icon-CharStat-OnOff mr-2"></span> START COMBAT</button>
           <!-- Mobile View-->
           <div class="btn-group d-lg-none" [ngClass]="{'open': isDropdownOpen}">
-            <button class="setting-btn icon-Settings dropdown-toggle setting-toggle-btn" type="button" data-toggle="dropdown"></button>
+            <button class="setting-btn icon-Settings dropdown-toggle setting-toggle-btn" type="button"></button>
             <div class="dropdown-menu setting-toggle">
               <div class="row m-0">
                 <div class="col-12 col-sm-6 col-md-3">
@@ -612,7 +612,7 @@
           </accordion-group>
           <!--Monster-->
           <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
-            <div class="row crsr-pointer" (click)="buffEffectclick(currentCombatantDetail)">
+            <div class="row crsr-pointer be-section" (click)="buffEffectclick(currentCombatantDetail)">
               <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterBuffAndEffects.length == 0">
                 <span class="col-12">{{noBuffs_EffectsAvailable}}</span>
               </div>
@@ -626,7 +626,7 @@
           </accordion-group>
           <!--Character-->
           <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
-            <div class="row crsr-pointer" (click)="buffEffectclick(currentCombatantDetail)"> 
+            <div class="row crsr-pointer be-section" (click)="buffEffectclick(currentCombatantDetail)"> 
               <div class="text-center" *ngIf="currentCombatantDetail?.character?.characterBuffAndEffects.length == 0">
                 <span class="col-12">{{noBuffs_EffectsAvailable}}</span>
               </div>
