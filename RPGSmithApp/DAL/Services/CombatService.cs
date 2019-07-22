@@ -301,7 +301,8 @@ namespace DAL.Services
                                                     {
                                                         BuffAndEffectId = CharItemRow["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["BuffAndEffectId"]),
                                                         Name = CharItemRow["Name"] == DBNull.Value ? null : CharItemRow["Name"].ToString(),
-                                                        ImageUrl = CharItemRow["ImageUrl"] == DBNull.Value ? null : CharItemRow["ImageUrl"].ToString()
+                                                        ImageUrl = CharItemRow["ImageUrl"] == DBNull.Value ? null : CharItemRow["ImageUrl"].ToString(),
+                                                        Description = CharItemRow["Description"] == DBNull.Value ? null : CharItemRow["Description"].ToString()
                                                     };
                                                     i.CharacterId = combatant.CharacterId;
                                                     combatant.Character.CharacterBuffAndEffects.Add(i);
@@ -401,7 +402,8 @@ namespace DAL.Services
                                                     i.BuffAndEffect = new BuffAndEffect()
                                                     {
                                                         Name = MonsItemRow["Name"] == DBNull.Value ? null : MonsItemRow["Name"].ToString(),
-                                                        ImageUrl = MonsItemRow["ImageUrl"] == DBNull.Value ? null : MonsItemRow["ImageUrl"].ToString()
+                                                        ImageUrl = MonsItemRow["ImageUrl"] == DBNull.Value ? null : MonsItemRow["ImageUrl"].ToString(),
+                                                        Description = MonsItemRow["Description"] == DBNull.Value ? null : MonsItemRow["Description"].ToString()
 
                                                     };
                                                     i.MonsterId = CurrentRunningMonsterId;

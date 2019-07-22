@@ -128,6 +128,14 @@ body {
   background: #3d46cc !important;
 }
 
+.combat-table table tr.white-outer-filed td {
+  background: #fff !important;
+}
+
+.white-outer-filed .white-section {
+  border: 1px solid black !important;
+}
+
 .combat-table table td .white-section {
   background: #fff;
   border-radius: 4px;
@@ -1011,14 +1019,14 @@ page-toolbar-links li:last-child:before {
 
 .moreBuffEffect {
   background: yellow;
-  min-width: 13px;
+  min-width: 20px;
   width: auto;
   height: 20px;
   display: inline-block;
   border-radius: 100%;
   position: absolute;
   top: 72%;
-  right: 0%;
+  right: -6%;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   text-align: center;

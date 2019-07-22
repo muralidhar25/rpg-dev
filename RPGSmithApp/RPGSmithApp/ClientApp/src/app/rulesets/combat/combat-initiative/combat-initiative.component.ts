@@ -53,9 +53,9 @@ export class CombatInitiativeComponent implements OnInit {
   GetCombatantList() {
     
     if (this.isInitialForCombatStart) {
+      debugger
       this.initiativeInfo.map(pc => {
         if (pc.type == this.combatItemsType.CHARACTER) {
-          debugger
           if (this.combatSettings && this.combatSettings.rollInitiativeForPlayer) {
             pc.initiativeCommand = this.combatSettings.pcInitiativeFormula;
 
@@ -68,23 +68,24 @@ export class CombatInitiativeComponent implements OnInit {
 
             let res = DiceService.rollDiceExternally(this.alertService, initiativecommand, this.customDices);
             if (isNaN(res)) {
-              pc.initiativeValue = '';
+              pc.initiativeValue = 0;
             } else {
               pc.initiativeValue = res;
             }
           }
           else {
             pc.initiativeCommand = '';
-            pc.initiativeValue = '';
+            pc.initiativeValue = 0;
           }
         }
         else {
           if (this.combatSettings && this.combatSettings.groupInitiative) {
+            debugger
             pc.initiativeCommand = this.combatSettings.groupInitFormula;
           }
           let res = DiceService.rollDiceExternally(this.alertService, pc.initiativeCommand, this.customDices);
           if (isNaN(res)) {
-            pc.initiativeValue = '';
+            pc.initiativeValue = 0;
           } else {
             pc.initiativeValue = res;
           }
@@ -246,6 +247,7 @@ export class CombatInitiativeComponent implements OnInit {
     }
     //Re-Roll All Monsters
     if (type == CombatItemsType.MONSTER) {
+      debugger;
       this.initiativeInfo.map((x) => {
         if (x.initiativeCommand && x.type == type) {
           let res = DiceService.rollDiceExternally(this.alertService, x.initiativeCommand, this.customDices);

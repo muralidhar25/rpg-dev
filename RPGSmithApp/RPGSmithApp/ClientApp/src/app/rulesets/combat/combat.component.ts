@@ -161,6 +161,9 @@ export class CombatComponent implements OnInit {
   noAbilitiesAvailable: string = 'No Abilities Available';
   monsterDetailType = MonsterDetailType;
   isFrameSelected_Flag: boolean = false;
+  timeoutHandler: any;
+  refreshFlag: boolean = false;
+
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
   }
@@ -176,6 +179,7 @@ export class CombatComponent implements OnInit {
   @HostListener('document:click', ['$event.target'])
   documentClick(target: any) {
     try {
+      debugger
       if (target.className.endsWith("setting-toggle-btn")) {
         this.isDropdownOpen = !this.isDropdownOpen;
       }
@@ -210,6 +214,7 @@ export class CombatComponent implements OnInit {
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
 
     this.sharedService.shouldUpdateCombatantListForAddDeleteMonsters().subscribe(combatantListJson => {
+      debugger;
       if (combatantListJson) {
         this.GetCombatDetails();
       }
@@ -222,7 +227,7 @@ export class CombatComponent implements OnInit {
         this.combatants = combatantListJson.combatantList;
         if (combatantListJson.isStartCombatClick) { //start combat
           this.isLoading = true;
-          this.combatService.StartCombat(this.CombatId, true).subscribe(res => {            
+          this.combatService.StartCombat(this.CombatId, true).subscribe(res => {
             this.showCombatOptions = true;
             let msg = "Combat Started";
             this.SendSystemMessageToChat(msg);
@@ -455,15 +460,14 @@ export class CombatComponent implements OnInit {
         this.isCharacterSpellEnabled = combatModal.isCharacterSpellEnabled;
         this.isCharacterAbilityEnabled = combatModal.isCharacterAbilityEnabled;
 
+        let curretnCombatantList = this.combatants.filter(x => x.isCurrentTurn);
+        if (curretnCombatantList.length) {
+          this.curretnCombatant = curretnCombatantList[0];
+          let valueofinitiative = this.curretnCombatant.initiativeValue;
+          this.CurrentInitiativeValue = valueofinitiative;
+        }
+
         if (this.roundCounter > 1) {
-          let curretnCombatantList = this.combatants.filter(x => x.isCurrentTurn);
-          if (curretnCombatantList.length) {
-            this.curretnCombatant = curretnCombatantList[0];
-            let valueofinitiative = this.curretnCombatant.initiativeValue;
-            this.CurrentInitiativeValue = valueofinitiative;
-          }
-
-
           //this.roundCounter = this.roundCounter + 1;
           ////convert time
           let roundTime = this.settings.gameRoundLength * this.roundCounter;
@@ -547,7 +551,7 @@ export class CombatComponent implements OnInit {
   }
 
   //open Initiative popup
-  Init(isInitialForCombatStart = false,isStartCombatClick=false) {
+  Init(isInitialForCombatStart = false, isStartCombatClick = false) {
     this.bsModalRef = this.modalService.show(CombatInitiativeComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -978,7 +982,7 @@ export class CombatComponent implements OnInit {
       .subscribe(data => {
         this.alertService.stopLoadingMessage();
         this.isLoading = false;
-        this.combatants = this.combatants.filter(x => x.type == combatantType.MONSTER && x.monster.monsterId != item.monster.monsterId);
+        this.combatants = this.combatants.filter(x => (x.type == combatantType.CHARACTER) || (x.type == combatantType.MONSTER && x.monster.monsterId != item.monster.monsterId));
       }, error => {
         this.isLoading = false;
         this.alertService.stopLoadingMessage();
@@ -1005,7 +1009,6 @@ export class CombatComponent implements OnInit {
     this.bsModalRef.content.isFromCombatScreen = true;
   }
   duplicateMonster(item) {
-    debugger;
     this.monsterTemplateService.getMonsterTemplateCount(this.ruleSetId)
       .subscribe(data => {
         if (data < 2000) {
@@ -1036,8 +1039,8 @@ export class CombatComponent implements OnInit {
 
   //startcombat
   startCombat() {
-    this.Init(true,true); 
-    
+    this.Init(true, true);
+
     //let _msg = "Starting Combat..";
     //this.alertService.startLoadingMessage("", _msg);
     //this.combatService.StartCombat(this.CombatId, true).subscribe(res => {
@@ -1164,7 +1167,7 @@ export class CombatComponent implements OnInit {
   UpdateCombatSettings(settings: CombatSettings, type) {
     //this.isLoading = true;
     this.combatService.updateCombatSettings(this.settings).subscribe(res => {
-      if (type == COMBAT_SETTINGS.CHARACTER_TARGET_HEALTH_STAT) {
+      if (type == COMBAT_SETTINGS.CHARACTER_TARGET_HEALTH_STAT || type == COMBAT_SETTINGS.PC_INITIATIVE_FORMULA || type == COMBAT_SETTINGS.ROLL_INITIATIVE_FOR_PLAYER_CHARACTERS || type == COMBAT_SETTINGS.GROUP_INITIATIVE || type == COMBAT_SETTINGS.GROUPINIT_FORMULA) {
         this.GetCombatDetails();
       }
       //let result = res;
@@ -1178,6 +1181,14 @@ export class CombatComponent implements OnInit {
         this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
       }
     });
+  }
+
+  updateInitiativeCommandforMonster() {
+    this.combatants
+  }
+
+  updateInitiativeCommandforCharacter() {
+
   }
 
   //change Settings Functions
@@ -1454,6 +1465,25 @@ export class CombatComponent implements OnInit {
     return Ruleset_XP_CharacterStatID;
   }
 
+  //clickAndHold(monster) {
+  //  if (monster.type == combatantType.MONSTER) {
+  //    this.editMonster(monster);  
+  //  }    
+  //}
+
+  clickAndHold(monster) {
+    if (this.timeoutHandler) {
+      clearInterval(this.timeoutHandler);
+      this.timeoutHandler = null;
+    }
+  }
+
+  editRecord(monster) {
+    this.timeoutHandler = setInterval(() => {
+      this.editMonster(monster);
+    }, 1000);
+  }
+
   ImageDeatil(itemDetail, imgref) {
     if (itemDetail.type == combatantType.MONSTER) {
       if (this.settings.accessMonsterDetails) {
@@ -1554,5 +1584,18 @@ export class CombatComponent implements OnInit {
         this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
       }
     });
+  }
+
+  description(text) {
+    if (text) {
+      var encodedStr = text;
+      var parser = new DOMParser;
+      var dom = parser.parseFromString(
+        '<!doctype html><body>' + encodedStr,
+        'text/html');
+      var decodedString = dom.body.textContent;
+      return decodedString;
+    }
+    return '';
   }
 }
