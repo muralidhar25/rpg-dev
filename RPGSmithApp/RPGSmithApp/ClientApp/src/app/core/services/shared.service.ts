@@ -351,7 +351,7 @@ export class SharedService {
     return this.CharacterBuffEffect.asObservable();
   }
 
-  updateCombatantListForAddDeleteMonsters(combatantListFlag: any, selectedDeployedMonsters: any) {
+  updateCombatantListForAddDeleteMonsters(combatantListFlag: any, selectedDeployedMonsters: any=undefined) {
     let result = { flag: combatantListFlag, selectedDeployedMonsters: selectedDeployedMonsters}
     this.updateMonstersInCombat.next(result);
   }

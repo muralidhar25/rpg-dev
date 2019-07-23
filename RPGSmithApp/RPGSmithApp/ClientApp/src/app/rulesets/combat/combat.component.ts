@@ -224,7 +224,22 @@ export class CombatComponent implements OnInit {
           } else {
             this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
           }
-        });
+          });
+
+        ///////////////////////////////////////////////////////////////////////////////////////////
+        debugger;
+        //{ flag: combatantListFlag, selectedDeployedMonsters: selectedDeployedMonsters}
+        
+          if (combatantListJson.flag) {
+            if (combatantListJson.selectedDeployedMonsters && combatantListJson.selectedDeployedMonsters.length) {
+              this.GetCombatDetails(true, combatantListJson.selectedDeployedMonsters);
+            }
+            else {
+              this.GetCombatDetails(true);
+            }
+          }
+        
+      ///////////////////////////////////////////////////////////////////////////////////////////////
         this.GetCombatDetails();
       }
     });
