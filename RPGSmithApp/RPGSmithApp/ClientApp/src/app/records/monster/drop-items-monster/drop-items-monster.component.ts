@@ -131,6 +131,7 @@ export class DropItemsMonsterComponent implements OnInit {
           this.close();
           this.appService.updateChatWithLootMessage(true);
           this.sharedService.updateDropMonsterList(true);
+          this.sharedService.updateCombatantListForAddDeleteMonsters(true);
         }, error => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();

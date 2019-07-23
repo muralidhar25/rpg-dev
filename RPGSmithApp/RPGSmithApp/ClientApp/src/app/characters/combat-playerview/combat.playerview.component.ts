@@ -63,6 +63,7 @@ export class CombatPlayerViewComponent implements OnInit {
   //noSpellsAvailable: string = 'No Spells Available';
   //noAbilitiesAvailable: string = 'No Abilities Available';
   refreshPage: any;
+  initialLoad: boolean = false;
 
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
@@ -122,7 +123,10 @@ export class CombatPlayerViewComponent implements OnInit {
           this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
         }
       }, () => {
+        //init=true;
+        this.initialLoad = true;
         this.bindCombatantInitiatives();
+
       });
     /////////////////   
   }
@@ -196,6 +200,7 @@ export class CombatPlayerViewComponent implements OnInit {
   }
 
   frameClick(item) {
+    debugger
     this.currentCombatantDetail = item;
     this.combatants.map(function (itm) {
       if (itm.frameColor == 'red') {
@@ -362,18 +367,18 @@ export class CombatPlayerViewComponent implements OnInit {
     this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
   }
   refreshPageData() {
-    debugger
     this.refreshPage = setInterval(() => {
-     
-      debugger
       this.combatService.isCombatUpdated(this.CombatId).subscribe(res => {
+        console.log("res ", res);
         if (res) {
           if (this.refreshPage) {
             clearInterval(this.refreshPage)
           }
+          //init=false;
+          this.initialLoad = false;
           this.bindCombatantInitiatives();
         }
-     
+
       }, error => {
         this.isLoading = false;
         let Errors = Utilities.ErrorDetail("", error);
@@ -388,6 +393,7 @@ export class CombatPlayerViewComponent implements OnInit {
   bindCombatantInitiatives() {
     this.combatService.getCombatDetails(this.ruleSetId).subscribe(res => {
       if (res) {
+        debugger;
         let combatModal: any = res;
         this.roundCounter = combatModal.round;
         this.CombatId = combatModal.id
@@ -458,9 +464,9 @@ export class CombatPlayerViewComponent implements OnInit {
         // Game Time
         this.gametime = this.time_convert(this.settings.gameRoundLength);
 
-        if (this.combatants.length) {
-          this.frameClick(this.combatants[0]);
-        }
+        //if (this.combatants.length) {
+        //  this.frameClick(this.combatants[0]);
+        //}
 
 
         this.isCharacterItemEnabled = combatModal.isCharacterItemEnabled;
@@ -473,16 +479,23 @@ export class CombatPlayerViewComponent implements OnInit {
           let valueofinitiative = curretnCombatant.initiativeValue;
           this.CurrentInitiativeValue = valueofinitiative;
         }
+        if (this.initialLoad) {
+          this.frameClick(curretnCombatant);
+        } else {
+          this.frameClick(this.currentCombatantDetail);
+        }
+
 
         if (this.roundCounter > 1) {
           //this.roundCounter = this.roundCounter + 1;
           ////convert time
           let roundTime = this.settings.gameRoundLength * this.roundCounter;
           this.gametime = this.time_convert(roundTime);
-          this.frameClick(curretnCombatant)
+          //this.frameClick(curretnCombatant)
 
 
         }
+        //////////
         this.refreshPageData();
       }
       this.isLoading = false;

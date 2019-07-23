@@ -424,6 +424,7 @@ export class EditMonsterComponent implements OnInit {
           else {
             this.sharedService.updateMonsterList(true);
           }
+          this.sharedService.updateCombatantListForAddDeleteMonsters(true);
         },
         error => {
           this.isLoading = false;

@@ -149,7 +149,7 @@
                       <ul class="item-info-props">
                         <li *ngIf="monsterDetail?.level" popover="{{monsterDetail?.level}} Level" triggers="hover" popoverTitle="LEVEL">{{monsterDetail?.level}} Level</li>
                         <li *ngIf="monsterDetail?.monsterChallangeRating" popover="CR: {{monsterDetail?.monsterChallangeRating}}" triggers="hover" popoverTitle="Challenge Rating" class="crsr-pointer"
-                            (click)="updateMonsterInfoProp(monsterDetail, monsterDetailType.RATING)" >Cr: {{monsterDetail?.monsterChallangeRating}}</li>
+                            (click)="updateMonsterInfoProp(monsterDetail, monsterDetailType.RATING)" >CR: {{monsterDetail?.monsterChallangeRating}}</li>
                         <li *ngIf="monsterDetail?.monsterArmorClass" popover="AC: {{monsterDetail?.monsterArmorClass}}" triggers="hover" popoverTitle="Armor Class" class="crsr-pointer"
                             (click)="updateMonsterInfoProp(monsterDetail, monsterDetailType.ARMOR)">AC : {{monsterDetail?.monsterArmorClass}}</li>
                         <li *ngIf="monsterDetail?.monsterHealthCurrent" popover="{{monsterDetail?.monsterHealthCurrent}} / {{monsterDetail?.monsterHealthMax}}" triggers="hover" popoverTitle="Health" class="crsr-pointer"

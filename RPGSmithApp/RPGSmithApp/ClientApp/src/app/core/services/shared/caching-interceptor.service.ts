@@ -149,6 +149,7 @@ export class CachingInterceptor implements HttpInterceptor {
               req.url.toUpperCase().indexOf("GETLOOTITEMSFORPLAYERS") > -1
               || req.url.toUpperCase().indexOf("GETITEMMASTERLOOTS") > -1
               || req.url.toUpperCase().indexOf("ISCOMBATUPDATED") > -1
+              || req.url.toUpperCase().indexOf("GETCOMBATDETAILS") > -1
             ) {
 
             }
