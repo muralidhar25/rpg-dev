@@ -155,12 +155,11 @@ export class CombatComponent implements OnInit {
 
     }
   ]
-  noBuffs_EffectsAvailable: string = 'No Buffs & Effects Available';
+  noBuffs_EffectsAvailable: string = 'No Buffs & Effects Assigned';
   noItemsAvailable: string = 'No Items Available';
   noSpellsAvailable: string = 'No Spells Available';
   noAbilitiesAvailable: string = 'No Abilities Available';
   monsterDetailType = MonsterDetailType;
-  isFrameSelected_Flag: boolean = false;
   timeoutHandler: any;
   refreshFlag: boolean = false;
 
@@ -216,6 +215,16 @@ export class CombatComponent implements OnInit {
     this.sharedService.shouldUpdateCombatantListForAddDeleteMonsters().subscribe(combatantListJson => {
       debugger;
       if (combatantListJson) {
+        this.combatService.markCombatAsUpdatedFlag(this.CombatId).subscribe(res => {
+          let result = res;
+        }, error => {
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          } else {
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+          }
+        });
         this.GetCombatDetails();
       }
     });
@@ -386,7 +395,7 @@ export class CombatComponent implements OnInit {
         //  });
         //}
 
-        this.isFrameSelected_Flag = false;
+        let isFrameSelected_Flag = false;
 
         this.combatants.map((x) => {
           //for character layer View
@@ -444,16 +453,16 @@ export class CombatComponent implements OnInit {
 
           if (x.isCurrentSelected) {
             this.frameClick(x);
-            this.isFrameSelected_Flag = true
+            isFrameSelected_Flag = true
           }
         });
 
         // Game Time
         this.gametime = this.time_convert(this.settings.gameRoundLength);
-        if (!this.isFrameSelected_Flag) {
+        if (!isFrameSelected_Flag) {
           if (this.combatants.length) {
             this.frameClick(this.combatants[0]);
-          }          
+          }
         }
 
         this.isCharacterItemEnabled = combatModal.isCharacterItemEnabled;
@@ -1070,6 +1079,18 @@ export class CombatComponent implements OnInit {
         this.alertService.stopLoadingMessage();
         this.isLoading = false;
         this.combatants = this.combatants.filter(x => (x.type == combatantType.CHARACTER) || (x.type == combatantType.MONSTER && x.monster.monsterId != item.monster.monsterId));
+        let remove_Selected_Monster_Flag = false;
+        this.combatants.map(c => {
+          if (c.isCurrentTurn) {
+            this.frameClick(c);
+            remove_Selected_Monster_Flag = true;
+          }
+        });
+        if (!remove_Selected_Monster_Flag) {
+          if (this.combatants.length) {
+            this.frameClick(this.combatants[0]);
+          }
+        }
       }, error => {
         this.isLoading = false;
         this.alertService.stopLoadingMessage();
@@ -1594,9 +1615,9 @@ export class CombatComponent implements OnInit {
   ImageDeatil(itemDetail, imgref) {
     if (itemDetail.type == combatantType.MONSTER) {
       //if (this.settings.accessMonsterDetails) {
-        this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
-        this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
-        this.router.navigate(['/ruleset/monster-details', itemDetail.monster.monsterId]);
+      this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
+      this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
+      this.router.navigate(['/ruleset/monster-details', itemDetail.monster.monsterId]);
       //} else {
       //  this.ViewImage(imgref);
       //}
