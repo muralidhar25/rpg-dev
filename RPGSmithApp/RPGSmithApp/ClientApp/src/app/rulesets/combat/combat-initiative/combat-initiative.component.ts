@@ -54,10 +54,13 @@ export class CombatInitiativeComponent implements OnInit {
     
     if (this.isInitialForCombatStart) {
       debugger
+      let resultOfGroupInitiative = 0;
+      let resultOfGroupInitiativeFilled_Flag = false;
       this.initiativeInfo.map(pc => {
         if (pc.type == this.combatItemsType.CHARACTER) {
+          
           if (this.combatSettings && this.combatSettings.rollInitiativeForPlayer) {
-            pc.initiativeCommand = this.combatSettings.pcInitiativeFormula;
+            
 
 
             //if (pc.type == combatantType.CHARACTER) {
@@ -74,20 +77,34 @@ export class CombatInitiativeComponent implements OnInit {
             }
           }
           else {
-            pc.initiativeCommand = '';
+            pc.initiativeCommand = this.combatSettings.pcInitiativeFormula;
             pc.initiativeValue = 0;
           }
         }
         else {
+          debugger
           if (this.combatSettings && this.combatSettings.groupInitiative) {
-            debugger
+            
             pc.initiativeCommand = this.combatSettings.groupInitFormula;
           }
           let res = DiceService.rollDiceExternally(this.alertService, pc.initiativeCommand, this.customDices);
-          if (isNaN(res)) {
-            pc.initiativeValue = 0;
-          } else {
-            pc.initiativeValue = res;
+          if (this.combatSettings && this.combatSettings.groupInitiative && !resultOfGroupInitiativeFilled_Flag) {
+            if (isNaN(res)) {
+              resultOfGroupInitiative = 0;
+            } else {
+              resultOfGroupInitiative = res;
+            }           
+            resultOfGroupInitiativeFilled_Flag = true;
+          }
+          if (this.combatSettings && this.combatSettings.groupInitiative && resultOfGroupInitiativeFilled_Flag) {
+            pc.initiativeValue = resultOfGroupInitiative;
+          }
+          else {
+            if (isNaN(res)) {
+              pc.initiativeValue = 0;
+            } else {
+              pc.initiativeValue = res;
+            }
           }
         }
 

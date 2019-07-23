@@ -499,19 +499,39 @@ export class CombatComponent implements OnInit {
         }
 
         if (selectedDeployedMonsters && selectedDeployedMonsters.length) {
+          let resultOfGroupInitiative = 0;
+          let resultOfGroupInitiativeFilled_Flag = false;
           selectedDeployedMonsters.map((rec_deployedMonster) => {
+           
             this.combatants.map((rec_C) => {
+
               if (rec_C.type == combatantType.MONSTER && rec_C.monsterId == rec_deployedMonster.monsterId) {
+                debugger
                 if (this.settings && this.settings.groupInitiative) {
-                  debugger
+                  
                   rec_C.initiativeCommand = this.settings.groupInitFormula;
                 }
+
                 let res = DiceService.rollDiceExternally(this.alertService, rec_C.initiativeCommand, this.customDices);
-                if (isNaN(res)) {
-                  rec_C.initiativeValue = 0;
-                } else {
-                  rec_C.initiativeValue = res;
+
+                if (this.settings && this.settings.groupInitiative && !resultOfGroupInitiativeFilled_Flag) {
+                  if (isNaN(res)) {
+                    resultOfGroupInitiative = 0;
+                  } else {
+                    resultOfGroupInitiative = res;
+                  }
+                  resultOfGroupInitiativeFilled_Flag = true;
                 }
+                if (this.settings && this.settings.groupInitiative && resultOfGroupInitiativeFilled_Flag) {
+                  rec_C.initiativeValue = resultOfGroupInitiative;
+                } else {
+                  if (isNaN(res)) {
+                    rec_C.initiativeValue = 0;
+                  } else {
+                    rec_C.initiativeValue = res;
+                  }
+                }
+
                 rec_C.initiative = rec_C.initiativeValue;
                 rec_deployedMonster.initiativeValue = rec_C.initiativeValue;
                 
@@ -530,7 +550,30 @@ export class CombatComponent implements OnInit {
             let NewItemToAdd = combatant_List.find(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId);
 
             this.combatants.splice(OldIndexToRemove,1);
-            this.combatants.splice((NewIndexToAdd +1), 0, NewItemToAdd);            
+            this.combatants.splice((NewIndexToAdd), 0, NewItemToAdd);            
+
+            //this.combatants.sort((a, b) => b.initiativeValue - a.initiativeValue || a.type.localeCompare(b.type));
+            this.combatants.map((rec, rec_index) => {
+              rec.sortOrder = rec_index + 1;
+            })
+            debugger
+          })
+          selectedDeployedMonsters.sort((a, b) => b.initiativeValue - a.initiativeValue);
+          selectedDeployedMonsters.map((rec_deployedMonster) => {          
+
+            debugger
+
+
+            let OldIndexToRemove = this.combatants.findIndex(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId)
+
+            let combatant_List = Object.assign([], this.combatants);
+            combatant_List.sort((a, b) => b.initiativeValue - a.initiativeValue || a.type.localeCompare(b.type));
+
+            let NewIndexToAdd = combatant_List.findIndex(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId);
+            let NewItemToAdd = combatant_List.find(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId);
+
+            this.combatants.splice(OldIndexToRemove, 1);
+            this.combatants.splice((NewIndexToAdd), 0, NewItemToAdd);
 
             //this.combatants.sort((a, b) => b.initiativeValue - a.initiativeValue || a.type.localeCompare(b.type));
             this.combatants.map((rec, rec_index) => {
@@ -541,7 +584,7 @@ export class CombatComponent implements OnInit {
           if (this.showCombatOptions) {
             this.combatService.saveCombatantList(this.combatants, this.ruleSetId).subscribe(res => {
 
-              this.SaveSortOrder(this.combatants);
+              this.SaveSortOrder(this.combatants,true);
             }, error => {
               this.isLoading = false;
               let Errors = Utilities.ErrorDetail("", error);
@@ -721,12 +764,14 @@ export class CombatComponent implements OnInit {
     });
   }
 
-  SaveSortOrder(combatants) {
+  SaveSortOrder(combatants, refreshList=false) {
     this.combatants.map((x, index) => {
       x.sortOrder = index + 1;
     });
     this.combatService.saveSortOrder(combatants).subscribe(res => {
-      let result = res;
+      if (refreshList) {
+        this.GetCombatDetails();
+      }
     }, error => {
       let Errors = Utilities.ErrorDetail("", error);
       if (Errors.sessionExpire) {
