@@ -514,19 +514,48 @@ namespace DAL.Services
         }
         public void AddDeployedMonstersToCombat(List<CombatAllTypeMonsters> model)
         {
+            bool MonsterVisibleToPC = false;
+            //if (model.Any())
+            //{
+            //    var mon = model.FirstOrDefault();
+            //    if (mon != null)
+            //    {
+            //        var settings = _context.CombatSettings.Where(x => x.CampaignId == mon.RuleSetId && x.IsDeleted != true).FirstOrDefault();
+            //        if(settings!=null)
+            //        {
+            //            MonsterVisibleToPC = settings.MonsterVisibleByDefault;
+            //        }
+            //    }
+
+            //}
+
             foreach (var item in model)
             {
-                var monster = _context.Monsters.Where(x => x.MonsterId == item.MonsterId && item.IsDeleted != true).FirstOrDefault();
+                var monster = _context.Monsters.Where(x => x.MonsterId == item.MonsterId && x.IsDeleted != true).FirstOrDefault();
                 monster.AddToCombatTracker = true;
-                var combats = _context.Combats.Where(x => x.CampaignId == item.RuleSetId && x.IsDeleted != true).ToList();
-                foreach (var c in combats)
-                {
-                    MarkCombatAsUpdated(c.Id);
-                }
+                //var combatant=_context.CombatantLists.Where(x=>x.MonsterId== item.MonsterId)
             }
             if (model.Count > 0)
             {
                 _context.SaveChanges();
+            }
+            if (model.Any())
+            {
+                var mon = model.FirstOrDefault();
+                if (mon!=null)
+                {
+                    var monsterDetail = _context.Monsters.Where(x => x.MonsterId == mon.MonsterId && x.IsDeleted != true).FirstOrDefault();
+                    if (monsterDetail != null)
+                    {
+                        var combats = _context.Combats.Where(x => x.CampaignId == monsterDetail.RuleSetId && x.IsDeleted != true).ToList();
+                        foreach (var c in combats)
+                        {
+                            MarkCombatAsUpdated(c.Id);
+                        }
+                    }
+                    
+                }
+               
             }
         }
         public List<Monster> GetCombat_MonstersList(int campaignId)
@@ -814,7 +843,8 @@ namespace DAL.Services
                 combatant.VisibleToPc = model.VisibleToPc;
                 _context.SaveChanges();
 
-                MarkCombatAsUpdated(model.Id);
+                int combatId = model.CombatId == null ? 0 : (int)model.CombatId;
+                MarkCombatAsUpdated(combatId);
             }
         }
         public void SaveMonsterHealth(Monster model)
@@ -1050,11 +1080,11 @@ namespace DAL.Services
                 var updateCombatFlagRec = _context.CombatUpdates.Where(x => x.CombatId == combatId).FirstOrDefault();
                 if (updateCombatFlagRec != null)
                 {
-                    if (!updateCombatFlagRec.IsUpdated)
-                    {
+                    //if (!updateCombatFlagRec.IsUpdated)
+                    //{
                         updateCombatFlagRec.IsUpdated = true;
                         _context.SaveChanges();
-                    }
+                    //}
                 }
                 else
                 {
