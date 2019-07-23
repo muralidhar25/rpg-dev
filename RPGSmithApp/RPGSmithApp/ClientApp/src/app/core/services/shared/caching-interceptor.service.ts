@@ -145,7 +145,11 @@ export class CachingInterceptor implements HttpInterceptor {
       tap(event => {
         if (event instanceof HttpResponse) {
           try {
-            if (req.url.toUpperCase().indexOf("GETLOOTITEMSFORPLAYERS") > -1 || req.url.toUpperCase().indexOf("GETITEMMASTERLOOTS") > -1) {
+            if (
+              req.url.toUpperCase().indexOf("GETLOOTITEMSFORPLAYERS") > -1
+              || req.url.toUpperCase().indexOf("GETITEMMASTERLOOTS") > -1
+              || req.url.toUpperCase().indexOf("ISCOMBATUPDATED") > -1
+            ) {
 
             }
             else {

@@ -1531,13 +1531,13 @@ export class CombatComponent implements OnInit {
 
   ImageDeatil(itemDetail, imgref) {
     if (itemDetail.type == combatantType.MONSTER) {
-      if (this.settings.accessMonsterDetails) {
+      //if (this.settings.accessMonsterDetails) {
         this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
         this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
         this.router.navigate(['/ruleset/monster-details', itemDetail.monster.monsterId]);
-      } else {
-        this.ViewImage(imgref);
-      }
+      //} else {
+      //  this.ViewImage(imgref);
+      //}
     }
     if (itemDetail.type == combatantType.CHARACTER) {
       this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, true);
