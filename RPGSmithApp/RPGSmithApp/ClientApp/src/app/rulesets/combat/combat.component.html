@@ -564,7 +564,7 @@
           <button class="btn-orange btn-block icon-Rec-Drop crsr-pointer" (click)="dropMonsterItems(currentCombatantDetail)"> Drop Items</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
-          <button class="btn-black btn-block icon-Delay crsr-pointer" *ngIf="!currentCombatantDetail.delayTurn" [disabled]="currentCombatantDetail.isCurrentTurn" (click)="DelayTurn(currentCombatantDetail)"> Delay Turn</button>
+          <button class="btn-black btn-block icon-Delay crsr-pointer" *ngIf="!currentCombatantDetail.delayTurn" (click)="DelayTurn(currentCombatantDetail)"> Delay Turn</button>
           <button class="btn-black btn-block icon-Resume crsr-pointer" *ngIf="currentCombatantDetail.delayTurn" (click)="ResumeTurn(currentCombatantDetail)"> Resume Turn</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
@@ -580,7 +580,7 @@
           <button class="btn-orange btn-block icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToSpell(currentCombatantDetail)"> Spells</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
-          <button class="btn-black btn-block icon-Delay crsr-pointer" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" *ngIf="!currentCombatantDetail.delayTurn" [disabled]="currentCombatantDetail.isCurrentTurn" (click)="DelayTurn(currentCombatantDetail)"> Delay Turn</button>
+          <button class="btn-black btn-block icon-Delay crsr-pointer" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" *ngIf="!currentCombatantDetail.delayTurn" (click)="DelayTurn(currentCombatantDetail)"> Delay Turn</button>
           <button class="btn-black btn-block icon-Resume crsr-pointer" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" *ngIf="currentCombatantDetail.delayTurn" (click)="ResumeTurn(currentCombatantDetail)"> Resume Turn</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">

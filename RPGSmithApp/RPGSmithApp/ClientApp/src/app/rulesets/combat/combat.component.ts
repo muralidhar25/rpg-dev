@@ -712,7 +712,16 @@ export class CombatComponent implements OnInit {
 
 
   DelayTurn(currentCombat) {
+    debugger
     currentCombat.delayTurn = true;
+    this.combatants.map(x => {
+      if (x.type == combatantType.MONSTER && x.monsterId == currentCombat.monsterId && currentCombat.isCurrentTurn ) {
+        this.nextTurn();
+      }
+      if (x.type == combatantType.CHARACTER && x.characterId == currentCombat.characterId && currentCombat.isCurrentTurn) {
+        this.nextTurn();
+      }
+    });
     this.SaveDelayTurn(currentCombat);
   }
 
@@ -1138,7 +1147,12 @@ export class CombatComponent implements OnInit {
       .subscribe(data => {
         this.alertService.stopLoadingMessage();
         this.isLoading = false;
-        this.combatants = this.combatants.filter(x => (x.type == combatantType.CHARACTER) || (x.type == combatantType.MONSTER && x.monster.monsterId != item.monster.monsterId));
+        this.combatants.map(x => {
+          if (x.type == combatantType.MONSTER && x.monsterId == item.monsterId && item.isCurrentTurn) {
+            this.nextTurn();
+          }
+        });
+        this.combatants = this.combatants.filter(x => (x.type == combatantType.CHARACTER) || (x.type == combatantType.MONSTER && x.monsterId != item.monsterId));
         let remove_Selected_Monster_Flag = false;
         this.combatants.map(c => {
           if (c.isCurrentTurn) {
