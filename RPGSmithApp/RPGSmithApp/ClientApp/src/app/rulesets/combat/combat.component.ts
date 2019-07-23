@@ -328,7 +328,7 @@ export class CombatComponent implements OnInit {
   }
 
   // Combat Settings
-  GetCombatDetails(ShowLoader = true) {
+  GetCombatDetails(ShowLoader = true, selectedDeployedMonsters:any=[]) {
     if (ShowLoader) {
       this.isLoading = true;
     }
@@ -472,6 +472,68 @@ export class CombatComponent implements OnInit {
           ////convert time
           let roundTime = this.settings.gameRoundLength * this.roundCounter;
           this.gametime = this.time_convert(roundTime);
+        }
+
+        if (selectedDeployedMonsters && selectedDeployedMonsters.length) {
+          selectedDeployedMonsters.map((rec_deployedMonster) => {
+            this.combatants.map((rec_C) => {
+              if (rec_C.type == combatantType.MONSTER && rec_C.monsterId == rec_deployedMonster.monsterId) {
+                if (this.settings && this.settings.groupInitiative) {
+                  debugger
+                  rec_C.initiativeCommand = this.settings.groupInitFormula;
+                }
+                let res = DiceService.rollDiceExternally(this.alertService, rec_C.initiativeCommand, this.customDices);
+                if (isNaN(res)) {
+                  rec_C.initiativeValue = 0;
+                } else {
+                  rec_C.initiativeValue = res;
+                }
+                rec_C.initiative = rec_C.initiativeValue;
+                rec_deployedMonster.initiativeValue = rec_C.initiativeValue;
+                
+              }
+            })
+
+            debugger
+
+
+            let OldIndexToRemove = this.combatants.findIndex(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId)
+            
+            let combatant_List = Object.assign([], this.combatants);
+            combatant_List.sort((a, b) => b.initiativeValue - a.initiativeValue || a.type.localeCompare(b.type));
+             
+            let NewIndexToAdd = combatant_List.findIndex(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId);
+            let NewItemToAdd = combatant_List.find(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId);
+
+            this.combatants.splice(OldIndexToRemove,1);
+            this.combatants.splice((NewIndexToAdd +1), 0, NewItemToAdd);            
+
+            //this.combatants.sort((a, b) => b.initiativeValue - a.initiativeValue || a.type.localeCompare(b.type));
+            this.combatants.map((rec, rec_index) => {
+              rec.sortOrder = rec_index + 1;
+            })
+            debugger
+          })
+          if (this.showCombatOptions) {
+            this.combatService.saveCombatantList(this.combatants, this.ruleSetId).subscribe(res => {
+
+              this.SaveSortOrder(this.combatants);
+            }, error => {
+              this.isLoading = false;
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              } else {
+                this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+              }
+            });
+          }
+          
+          
+          //update initiative of added monster using selectedDeployedMonsters
+
+          
+          
         }
       }
       this.isLoading = false;

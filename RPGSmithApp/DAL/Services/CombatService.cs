@@ -513,22 +513,7 @@ namespace DAL.Services
             return allTypeMonsters.OrderBy(x => x.Name).ToList();
         }
         public void AddDeployedMonstersToCombat(List<CombatAllTypeMonsters> model)
-        {
-            bool MonsterVisibleToPC = false;
-            //if (model.Any())
-            //{
-            //    var mon = model.FirstOrDefault();
-            //    if (mon != null)
-            //    {
-            //        var settings = _context.CombatSettings.Where(x => x.CampaignId == mon.RuleSetId && x.IsDeleted != true).FirstOrDefault();
-            //        if(settings!=null)
-            //        {
-            //            MonsterVisibleToPC = settings.MonsterVisibleByDefault;
-            //        }
-            //    }
-
-            //}
-
+        {         
             foreach (var item in model)
             {
                 var monster = _context.Monsters.Where(x => x.MonsterId == item.MonsterId && x.IsDeleted != true).FirstOrDefault();
