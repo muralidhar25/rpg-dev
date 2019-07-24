@@ -11,6 +11,7 @@ namespace DAL.Services
     public interface ICombatService
     {
       Task <Combat_ViewModel> GetCombatDetails(int CampaignId, ApplicationUser user, bool isPCView);
+        Task<Combat_ViewModel> GetCombatDetailsForPCUpdates(int CampaignId, ApplicationUser user);
         Task<CombatSetting> UpdateSettings(CombatSetting model);
         List<CombatAllTypeMonsters> GetCombatAllTypeMonsters(int CampaignId);
         void AddDeployedMonstersToCombat(List<CombatAllTypeMonsters> model);

@@ -53,6 +53,19 @@ namespace RPGSmithApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("GetCombatDetailsForPCUpdates")]
+        public async Task<IActionResult> GetCombatDetailsForPCUpdates(int CampaignId, bool isPCView)
+        {
+            try
+            {
+                Combat_ViewModel model = await _combatService.GetCombatDetailsForPCUpdates(CampaignId, GetUserDetails());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
         [HttpPost("UpdateCombatSettings")]

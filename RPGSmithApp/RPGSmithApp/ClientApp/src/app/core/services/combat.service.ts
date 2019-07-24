@@ -12,6 +12,7 @@ import { initiative } from '../models/view-models/initiative.model';
 @Injectable()
 export class CombatService extends EndpointFactory {
   private readonly GetCombatDetails: string = this.configurations.baseUrl + "/api/Combat/GetCombatDetails";
+  private readonly GetCombatDetails_PcModelData: string = this.configurations.baseUrl + "/api/Combat/GetCombatDetailsForPCUpdates";
   private readonly UpdateCombatSettings: string = this.configurations.baseUrl + "/api/Combat/UpdateCombatSettings";
   private readonly SaveCombatantList: string = this.configurations.baseUrl + "/api/Combat/SaveCombatantList";
 
@@ -47,6 +48,15 @@ export class CombatService extends EndpointFactory {
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getCombatDetails(CampaignID, isPCView));
+      });
+  }
+
+  getCombatDetails_PCModelData<T>(CampaignID: number): Observable<T> {
+    let endpointUrl = `${this.GetCombatDetails_PcModelData}?CampaignId=${CampaignID}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getCombatDetails_PCModelData(CampaignID));
       });
   }
 

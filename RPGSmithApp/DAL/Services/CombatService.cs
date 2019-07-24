@@ -1172,5 +1172,139 @@ namespace DAL.Services
             }
             catch (Exception ex) { }
         }
+        public async Task<Combat_ViewModel> GetCombatDetailsForPCUpdates(int CampaignId, ApplicationUser user)
+        {
+            Combat_ViewModel combat = new Combat_ViewModel();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            // string qry = "EXEC ItemMasterGetAllDetailsByRulesetID_add @RulesetID = '" + rulesetId + "'";
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("Combat_GetDetails_PC_Updates", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@CampaignId", CampaignId);
+                command.Parameters.AddWithValue("@UserID", user.Id);
+
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+                throw ex;
+            }
+            try
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow Row in ds.Tables[0].Rows)
+                    {                        
+                        combat = new Combat_ViewModel()
+                        {
+                            CampaignId = Row["CampaignId"] == DBNull.Value ? 0 : Convert.ToInt32(Row["CampaignId"]),
+                            Id = Row["Id"] == DBNull.Value ? 0 : Convert.ToInt32(Row["Id"]),
+                            IsStarted = Row["IsStarted"] == DBNull.Value ? false : Convert.ToBoolean(Row["IsStarted"]),
+                            Round = Row["Round"] == DBNull.Value ? 0 : Convert.ToInt32(Row["Round"]),
+                            CombatantList = new List<Combatant_ViewModel>(),
+                        };
+                        if (ds.Tables[1].Rows.Count > 0)
+                        {
+                            int? nullInt = null;
+                            decimal? nulldecimal = null;
+                            foreach (DataRow CombatantRow in ds.Tables[1].Rows)
+                            {
+                                Combatant_ViewModel combatant = new Combatant_ViewModel()
+                                {
+                                    CombatId = CombatantRow["CombatId"] == DBNull.Value ? nullInt : Convert.ToInt32(CombatantRow["CombatId"]),
+                                    Id = CombatantRow["Id"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["Id"]),
+                                    TargetId = CombatantRow["TargetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["TargetId"]),
+                                    TargetType = CombatantRow["TargetType"] == DBNull.Value ? string.Empty : CombatantRow["TargetType"].ToString(),
+
+                                    CharacterId = CombatantRow["CharacterId"] == DBNull.Value ? nullInt : Convert.ToInt32(CombatantRow["CharacterId"]),
+                                    Type = CombatantRow["Type"] == DBNull.Value ? string.Empty : CombatantRow["Type"].ToString(),
+                                    
+                                };
+                                if (combatant.CharacterId != null && combatant.Type == CombatantTypeCharacter)
+                                {
+                                    if (combatant.CharacterId > 0)
+                                    {
+
+                                        combatant.Character = new Character_Combat_VM_ForCharCharStats()
+                                        {
+                                            CharacterId = CombatantRow["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["CharacterId"]),
+                                            CharacterName = CombatantRow["C_CharacterName"] == DBNull.Value ? string.Empty : CombatantRow["C_CharacterName"].ToString(),
+                                            ImageUrl = CombatantRow["C_ImageUrl"] == DBNull.Value ? string.Empty : CombatantRow["C_ImageUrl"].ToString(),
+                                            
+                                            CharacterBuffAndEffects = new List<CharacterBuffAndEffect>(),
+                                            CharacterDescription = CombatantRow["C_Description"] == DBNull.Value ? string.Empty : CombatantRow["C_Description"].ToString(),
+                                            DiceRollViewModel = new DiceRollViewModel_Combat(),
+                                            RuleSetId = CombatantRow["C_RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["C_RuleSetId"]),
+                                            InventoryWeight = CombatantRow["C_InventoryWeight"] == DBNull.Value ? 0 : Convert.ToDecimal(CombatantRow["C_InventoryWeight"])
+
+                                        };
+                                        /////Getting CharacterCharacterStats Starts////////////////////////////////////////////////////////////////////////////
+                                        try
+                                        {                                            
+                                            DiceRollViewModel_Combat diceRollModel = GetDiceRollModel_combatAsync((int)combatant.Character.RuleSetId, combatant.Character.CharacterId, user);
+                                            combatant.Character.DiceRollViewModel = diceRollModel;
+                                        }
+                                        catch (Exception ex)
+                                        {
+
+                                        }
+                                        /////Getting CharacterCharacterStats ends//////////////////////////////////////////////////////////////////////////////
+
+                                        
+                                        if (ds.Tables[2].Rows.Count > 0)
+                                        {
+                                            foreach (DataRow CharItemRow in ds.Tables[2].Rows)
+                                            {
+                                                int CurrentRunningCharacterId = CharItemRow["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["CharacterId"]);
+                                                if (CurrentRunningCharacterId == combatant.Character.CharacterId)
+                                                {
+                                                    CharacterBuffAndEffect i = new CharacterBuffAndEffect();
+                                                    i.CharacterBuffAandEffectId = CharItemRow["CharacterBuffAandEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["CharacterBuffAandEffectId"].ToString());
+                                                    i.BuffAndEffect = new BuffAndEffect()
+                                                    {
+                                                        BuffAndEffectId = CharItemRow["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["BuffAndEffectId"]),
+                                                        Name = CharItemRow["Name"] == DBNull.Value ? null : CharItemRow["Name"].ToString(),
+                                                        ImageUrl = CharItemRow["ImageUrl"] == DBNull.Value ? null : CharItemRow["ImageUrl"].ToString(),
+                                                        Description = CharItemRow["Description"] == DBNull.Value ? null : CharItemRow["Description"].ToString()
+                                                    };
+                                                    i.CharacterId = combatant.CharacterId;
+                                                    combatant.Character.CharacterBuffAndEffects.Add(i);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    combat.CombatantList.Add(combatant);
+                                }                                
+                                
+                            }
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return combat;
+
+
+        }
     }
 }
