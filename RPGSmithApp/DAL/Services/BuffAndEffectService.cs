@@ -446,6 +446,37 @@ namespace DAL.Services
             {
                 throw ex;
             }
+            var character = _context.Characters.Where(x => x.CharacterId == CharacterID && x.IsDeleted != true).FirstOrDefault();
+            if (character!=null)
+            {
+                var combats = _context.Combats.Where(x => x.CampaignId == character.RuleSetId && x.IsDeleted != true).ToList();
+                foreach (var c in combats)
+                {
+                    MarkCombatAsUpdated(c.Id);
+                }
+            }
+            
+        }
+        public void MarkCombatAsUpdated(int combatId)
+        {   //same code also written on combatService.cs
+            try
+            {
+                var updateCombatFlagRec = _context.CombatUpdates.Where(x => x.CombatId == combatId).FirstOrDefault();
+                if (updateCombatFlagRec != null)
+                {
+                    if (!updateCombatFlagRec.IsUpdated)
+                    {
+                        updateCombatFlagRec.IsUpdated = true;
+                        _context.SaveChanges();
+                    }
+                }
+                else
+                {
+                    _context.CombatUpdates.Add(new CombatUpdate { CombatId = combatId, IsUpdated = true });
+                    _context.SaveChanges();
+                }
+            }
+            catch (Exception ex) { }
         }
         public async Task<List<CharBuffAndEffect>> getBuffAndEffectAssignedToCharacter(int characterID)
         {

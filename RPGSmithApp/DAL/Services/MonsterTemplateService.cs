@@ -1653,7 +1653,7 @@ namespace DAL.Services
             }
         }
         public void MarkCombatAsUpdated(int combatId)
-        {   //same code also written on combatService.cs
+        {   //same code also written on combatService.cs and buffandeffectervice.cs
             try
             {
                 var updateCombatFlagRec = _context.CombatUpdates.Where(x => x.CombatId == combatId).FirstOrDefault();

@@ -1533,6 +1533,15 @@ export class AppComponent implements OnInit, AfterViewInit {
         } else if (url.toUpperCase().indexOf('/CHARACTERS') > -1) {
           this.logoPath = '/rulesets/campaigns';
         }
+
+        if (url.toUpperCase().indexOf('/CHARACTER/') > -1) {
+
+          if (this.headers) {
+            if (this.headers.headerLink == 'character') {
+              this.logoPath = '/character/dashboard/' + this.headers.headerId;
+            }           
+          }
+        }
         //if (this.headers) {
         //  if (this.headers.headerLink == 'ruleset') {
         //    this.logoPath = '/ruleset/campaign-details/' + this.headers.headerId;

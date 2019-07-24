@@ -10,7 +10,7 @@ namespace DAL.Services
 {
     public interface ICombatService
     {
-      Task <Combat_ViewModel> GetCombatDetails(int CampaignId, ApplicationUser user);
+      Task <Combat_ViewModel> GetCombatDetails(int CampaignId, ApplicationUser user, bool isPCView);
         Task<CombatSetting> UpdateSettings(CombatSetting model);
         List<CombatAllTypeMonsters> GetCombatAllTypeMonsters(int CampaignId);
         void AddDeployedMonstersToCombat(List<CombatAllTypeMonsters> model);
@@ -28,7 +28,8 @@ namespace DAL.Services
         void SaveDelayTurn(Combatant_ViewModel model);
         void saveSelectedCombatant(Combatant_ViewModel model);
         void updateMonsterDetails(Combatant_ViewModel model, string type);
-        bool IsCombatUpdated(int combatId);
+        PCViewUpdates IsCombatUpdatedAndCurrentTurn(int combatId);
         void MarkCombatAsUpdated(int combatId);
+        void MarkCombatAsUpdatedFalse(int combatId);
     }
 }

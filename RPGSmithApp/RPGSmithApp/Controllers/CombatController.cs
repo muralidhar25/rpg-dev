@@ -41,11 +41,11 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpGet("GetCombatDetails")]
-        public async Task<IActionResult> GetCombatDetails(int CampaignId)
+        public async Task<IActionResult> GetCombatDetails(int CampaignId,bool isPCView)
         {
             try
             {
-                Combat_ViewModel model = await _combatService.GetCombatDetails(CampaignId, GetUserDetails());
+                Combat_ViewModel model = await _combatService.GetCombatDetails(CampaignId, GetUserDetails(), isPCView);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -322,14 +322,19 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpGet("IsCombatUpdated")]
-        public bool IsCombatUpdated(int combatId) {
-            return _combatService.IsCombatUpdated(combatId);
+        public PCViewUpdates IsCombatUpdatedAndCurrentTurn(int combatId) {
+            return _combatService.IsCombatUpdatedAndCurrentTurn(combatId);
         }
 
         [HttpPost("MarkCombatAsUpdatedFlag")]
         public void MarkCombatAsUpdatedFlag(int combatId)
         {
             _combatService.MarkCombatAsUpdated(combatId);
+        }
+        [HttpPost("MarkCombatAsUpdatedFlagFalse")]
+        public void MarkCombatAsUpdatedFlagFalse(int combatId)
+        {
+            _combatService.MarkCombatAsUpdatedFalse(combatId);
         }
     }
 }

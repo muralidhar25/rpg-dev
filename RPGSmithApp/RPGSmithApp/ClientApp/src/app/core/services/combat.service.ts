@@ -32,6 +32,8 @@ export class CombatService extends EndpointFactory {
   private readonly UpdateMonsterDetails: string = this.configurations.baseUrl + "/api/Combat/UpdateMonsterDetails";
   private readonly isCombatUpdatedUrl: string = this.configurations.baseUrl + "/api/Combat/IsCombatUpdated";
   private readonly markCombatAsUpdatedFlagUrl: string = this.configurations.baseUrl + "/api/Combat/MarkCombatAsUpdatedFlag";
+  private readonly markCombatAsUpdatedFlagFalseUrl: string = this.configurations.baseUrl + "/api/Combat/MarkCombatAsUpdatedFlagFalse";
+  
   
 
 
@@ -39,12 +41,12 @@ export class CombatService extends EndpointFactory {
     super(http, configurations, injector);
   }
 
-  getCombatDetails<T>(CampaignID: number): Observable<T> {
-    let endpointUrl = `${this.GetCombatDetails}?CampaignId=${CampaignID}`;
+  getCombatDetails<T>(CampaignID: number, isPCView: boolean): Observable<T> {
+    let endpointUrl = `${this.GetCombatDetails}?CampaignId=${CampaignID}&isPCView=${isPCView}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.getCombatDetails(CampaignID));
+        return this.handleError(error, () => this.getCombatDetails(CampaignID, isPCView));
       });
   }
 
@@ -186,11 +188,11 @@ export class CombatService extends EndpointFactory {
   }
 
 
-  isCombatUpdated<T>(combatId: number): Observable<T> {
+  isCombatUpdatedAndCurrentTurn<T>(combatId: number): Observable<T> {
     let url = `${this.isCombatUpdatedUrl}?combatId=${combatId}`
     return this.http.get<T>(url, this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.isCombatUpdated(combatId));
+        return this.handleError(error, () => this.isCombatUpdatedAndCurrentTurn(combatId));
       });
   }
 
@@ -199,6 +201,13 @@ export class CombatService extends EndpointFactory {
     return this.http.post<T>(url, JSON.stringify({}), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.markCombatAsUpdatedFlag(combatId));
+      });
+  }
+  markCombatAsUpdatedFlagFalse<T>(combatId: number): Observable<T> {
+    let url = `${this.markCombatAsUpdatedFlagFalseUrl}?combatId=${combatId}`
+    return this.http.post<T>(url, JSON.stringify({}), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.markCombatAsUpdatedFlagFalse(combatId));
       });
   }
 

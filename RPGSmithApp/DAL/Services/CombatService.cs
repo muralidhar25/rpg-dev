@@ -40,7 +40,7 @@ namespace DAL.Services
             _ruleSetService = ruleSetService;
         }
 
-        public async Task<Combat_ViewModel> GetCombatDetails(int CampaignId, ApplicationUser user)
+        public async Task<Combat_ViewModel> GetCombatDetails(int CampaignId, ApplicationUser user, bool isPCView)
         {
             Combat_ViewModel combat = new Combat_ViewModel();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -58,6 +58,8 @@ namespace DAL.Services
                 // Add the parameters for the SelectCommand.
                 command.Parameters.AddWithValue("@CampaignId", CampaignId);
                 command.Parameters.AddWithValue("@UserID", user.Id);
+                command.Parameters.AddWithValue("@isPCView", isPCView);
+                
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;
@@ -199,7 +201,7 @@ namespace DAL.Services
                                             CharacterSpells = new List<CharacterSpell>(),
                                             CharacterBuffAndEffects = new List<CharacterBuffAndEffect>(),
                                             CharacterDescription = CombatantRow["C_Description"] == DBNull.Value ? string.Empty : CombatantRow["C_Description"].ToString(),
-                                            DiceRollViewModel = new DiceRollViewModel(),
+                                            DiceRollViewModel = new DiceRollViewModel_Combat(),
                                             RuleSetId = CombatantRow["C_RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["C_RuleSetId"]),
                                             InventoryWeight = CombatantRow["C_InventoryWeight"] == DBNull.Value ? 0 : Convert.ToDecimal(CombatantRow["C_InventoryWeight"])
 
@@ -207,21 +209,23 @@ namespace DAL.Services
                                         /////Getting CharacterCharacterStats Starts////////////////////////////////////////////////////////////////////////////
                                         try
                                         {
-                                            DiceRollModel diceRollModel = await _ruleSetService.GetDiceRollModelAsync((int)combatant.Character.RuleSetId, combatant.Character.CharacterId, user);
-                                            DiceRollViewModel diceRollViewModel = new DiceRollViewModel()
-                                            {
-                                                Character = diceRollModel.Character == null ? new Character() : diceRollModel.Character,
-                                                CharacterCommands = diceRollModel.CharacterCommands == null ? new List<CharacterCommand>() : diceRollModel.CharacterCommands,
-                                                RulesetCommands = diceRollModel.RulesetCommands == null ? new List<RulesetCommand>() : diceRollModel.RulesetCommands,
-                                                CharactersCharacterStats = diceRollModel.CharactersCharacterStats == null ? new List<CharactersCharacterStat>() : diceRollModel.CharactersCharacterStats,// Utilities.GetCharCharStatViewModelList( diceRollModel.CharactersCharacterStats,_characterStatChoiceService),
-                                                CustomDices = utility.MapCustomDice(diceRollModel.CustomDices),
-                                                DefaultDices = diceRollModel.DefaultDices,
-                                                DiceTrays = diceRollModel.DiceTrays,
-                                                IsGmAccessingPlayerCharacter = diceRollModel.IsGmAccessingPlayerCharacter,
-                                                RuleSet = diceRollModel.RuleSet,
-                                            };
-                                            combatant.Character.DiceRollViewModel = diceRollViewModel;
+                                            //DiceRollModel diceRollModel = await _ruleSetService.GetDiceRollModelAsync((int)combatant.Character.RuleSetId, combatant.Character.CharacterId, user);
+                                            //DiceRollViewModel diceRollViewModel = new DiceRollViewModel()
+                                            //{
+                                            //    Character = diceRollModel.Character == null ? new Character() : diceRollModel.Character,
+                                            //    CharacterCommands = diceRollModel.CharacterCommands == null ? new List<CharacterCommand>() : diceRollModel.CharacterCommands,
+                                            //    RulesetCommands = diceRollModel.RulesetCommands == null ? new List<RulesetCommand>() : diceRollModel.RulesetCommands,
+                                            //    CharactersCharacterStats = diceRollModel.CharactersCharacterStats == null ? new List<CharactersCharacterStat>() : diceRollModel.CharactersCharacterStats,// Utilities.GetCharCharStatViewModelList( diceRollModel.CharactersCharacterStats,_characterStatChoiceService),
+                                            //    CustomDices = utility.MapCustomDice(diceRollModel.CustomDices),
+                                            //    DefaultDices = diceRollModel.DefaultDices,
+                                            //    DiceTrays = diceRollModel.DiceTrays,
+                                            //    IsGmAccessingPlayerCharacter = diceRollModel.IsGmAccessingPlayerCharacter,
+                                            //    RuleSet = diceRollModel.RuleSet,
+                                            //};
+                                            //combatant.Character.DiceRollViewModel = diceRollViewModel;
 
+                                            DiceRollViewModel_Combat diceRollModel =GetDiceRollModel_combatAsync((int)combatant.Character.RuleSetId, combatant.Character.CharacterId, user);
+                                            combatant.Character.DiceRollViewModel = diceRollModel;
 
                                         }
                                         catch (Exception ex)
@@ -428,6 +432,59 @@ namespace DAL.Services
 
 
         }
+
+        private DiceRollViewModel_Combat GetDiceRollModel_combatAsync(int RulesetID, int CharacterID, ApplicationUser User)
+        {
+
+            DiceRollViewModel_Combat DiceRollModel = new DiceRollViewModel_Combat();
+
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            //string qry = "EXEC Character_GetTilesByPageID @CharacterID = '" + characterId + "' ,@PageID='" + pageId + "'";
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("CharCharStatReferenced_GetByCharacterID", connection);
+                //@CharacterID=@CharacterID,@page =1,@size =99999,@getResultForAddModScreen=0
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@CharacterID", CharacterID);
+                command.Parameters.AddWithValue("@page", 1);
+                command.Parameters.AddWithValue("@size", 99999);
+                command.Parameters.AddWithValue("@getResultForAddModScreen", false);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+
+            if (ds.Tables[0].Rows.Count > 0) //Check Character Exists
+            {
+                DiceRollModel.Character = _repo.GetCharacter(ds.Tables[0]);
+                DiceRollModel.Character.IsDicePublicRoll = ds.Tables[0].Rows[0]["IsDicePublicRoll"] == DBNull.Value ? false : Convert.ToBoolean(ds.Tables[0].Rows[0]["IsDicePublicRoll"]);
+
+                DiceRollModel.CharactersCharacterStats = new List<CharactersCharacterStat>();
+                if (ds.Tables[1].Rows.Count > 0)
+                {
+                    utility.FillCharacterCharacterStats(DiceRollModel.CharactersCharacterStats, ds);
+                }
+
+            }
+            return DiceRollModel;
+
+        }
+
         public async Task<CombatSetting> UpdateSettings(CombatSetting model)
         {
             var combatsetting = _context.CombatSettings.Where(x => x.CampaignId == model.CampaignId && x.IsDeleted != true).FirstOrDefault();
@@ -816,8 +873,8 @@ namespace DAL.Services
             {
                 throw ex;
             }
-            int combatId = model.CombatId == null ? 0 : (int)model.CombatId;
-            MarkCombatAsUpdated(combatId);
+            //int combatId = model.CombatId == null ? 0 : (int)model.CombatId;
+            //MarkCombatAsUpdated(combatId);
         }
         public void SaveVisibilityDetails(Combatant_ViewModel model)
         {
@@ -1038,24 +1095,39 @@ namespace DAL.Services
             MarkCombatAsUpdated(combatid);
         }
 
-        public bool IsCombatUpdated(int combatId)
+        public PCViewUpdates IsCombatUpdatedAndCurrentTurn(int combatId)
         {
             try
             {
+                bool isCombatUdated = false;
+                int CurrentTurnCombatantId = 0;
+                int CurrentRound = 0;
                 var updateCombatFlagRec = _context.CombatUpdates.Where(x => x.CombatId == combatId).FirstOrDefault();
                 if (updateCombatFlagRec != null)
                 {
-                    var flag = updateCombatFlagRec.IsUpdated;
-                    if (flag)
-                    {
-                        updateCombatFlagRec.IsUpdated = false;
-                        _context.SaveChanges();
-                    }
-                    return flag;
+                    isCombatUdated = updateCombatFlagRec.IsUpdated;
+                    //if (flag)
+                    //{
+                    //    updateCombatFlagRec.IsUpdated = false;
+                    //    _context.SaveChanges();
+                    //}                    
                 }
-                return false;
+                var combat = _context.Combats.Where(x => x.Id == combatId && x.IsDeleted != true).FirstOrDefault();
+                if (combat!=null)
+                {
+                    CurrentRound = combat.Round;
+                }
+
+                var combatant = _context.CombatantLists.Where(x => x.CombatId == combatId && x.IsDeleted != true && x.IsCurrentTurn).FirstOrDefault();
+                if (combatant!=null)
+                {
+                    CurrentTurnCombatantId = combatant.Id;                    
+                }
+                return new PCViewUpdates() { CurrentTurnCombatantId=CurrentTurnCombatantId , isCombatUdated= isCombatUdated, CurrentRound=CurrentRound };
             }
-            catch (Exception ex) { return false; }
+            catch (Exception ex) {
+                return new PCViewUpdates() { CurrentTurnCombatantId = 0, isCombatUdated = false, CurrentRound=0 };
+            }
         }
 
         public void MarkCombatAsUpdated(int combatId)
@@ -1076,6 +1148,27 @@ namespace DAL.Services
                     _context.CombatUpdates.Add(new CombatUpdate { CombatId = combatId, IsUpdated = true });
                     _context.SaveChanges();
                 }
+            }
+            catch (Exception ex) { }
+        }
+        public void MarkCombatAsUpdatedFalse(int combatId)
+        {   //same code also written on monsterTemplateService.cs
+            try
+            {
+                var updateCombatFlagRec = _context.CombatUpdates.Where(x => x.CombatId == combatId).FirstOrDefault();
+                if (updateCombatFlagRec != null)
+                {
+                    //if (!updateCombatFlagRec.IsUpdated)
+                    //{
+                    updateCombatFlagRec.IsUpdated = false;
+                    _context.SaveChanges();
+                    //}
+                }
+                //else
+                //{
+                //    _context.CombatUpdates.Add(new CombatUpdate { CombatId = combatId, IsUpdated = false });
+                //    _context.SaveChanges();
+                //}
             }
             catch (Exception ex) { }
         }

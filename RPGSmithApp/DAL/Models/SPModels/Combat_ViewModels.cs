@@ -27,7 +27,7 @@ namespace DAL.Models.SPModels
     }
     public class Character_Combat_VM_ForCharCharStats : Character
     {
-        public DiceRollViewModel DiceRollViewModel { get; set; }
+        public DiceRollViewModel_Combat DiceRollViewModel { get; set; }
     }
     public class Combatant_ViewModel
     {
@@ -131,5 +131,11 @@ namespace DAL.Models.SPModels
         public int healthCurrent { get; set; }
         public int healthMax { get; set; }
         public int healthStatId { get; set; }
+    }
+    public class PCViewUpdates
+    {
+        public bool isCombatUdated { get; set; }
+        public int CurrentTurnCombatantId { get; set; }
+        public int CurrentRound { get; set; }
     }
 }

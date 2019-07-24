@@ -230,17 +230,20 @@ export class CombatComponent implements OnInit {
         debugger;
         //{ flag: combatantListFlag, selectedDeployedMonsters: selectedDeployedMonsters}
         
-          if (combatantListJson.flag) {
-            if (combatantListJson.selectedDeployedMonsters && combatantListJson.selectedDeployedMonsters.length) {
-              this.GetCombatDetails(true, combatantListJson.selectedDeployedMonsters);
-            }
-            else {
-              this.GetCombatDetails(true);
-            }
+        if (combatantListJson.flag) {
+          if (combatantListJson.selectedDeployedMonsters && combatantListJson.selectedDeployedMonsters.length) {
+            this.GetCombatDetails(true, combatantListJson.selectedDeployedMonsters);
           }
+          else {
+            this.GetCombatDetails(true);
+          }
+        }
+        else {
+          this.GetCombatDetails();
+        }
         
       ///////////////////////////////////////////////////////////////////////////////////////////////
-        this.GetCombatDetails();
+        //this.GetCombatDetails();
       }
     });
 
@@ -357,7 +360,7 @@ export class CombatComponent implements OnInit {
       this.isLoading = true;
     }
 
-    this.combatService.getCombatDetails(this.ruleSetId).subscribe(res => {
+    this.combatService.getCombatDetails(this.ruleSetId, false).subscribe(res => {
       if (res) {
         let combatModal: any = res;
         this.roundCounter = combatModal.round;
@@ -538,55 +541,101 @@ export class CombatComponent implements OnInit {
               }
             })
 
-            debugger
+            //debugger
 
 
-            let OldIndexToRemove = this.combatants.findIndex(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId)
+            //let OldIndexToRemove = this.combatants.findIndex(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId)
             
-            let combatant_List = Object.assign([], this.combatants);
-            combatant_List.sort((a, b) => b.initiativeValue - a.initiativeValue || a.type.localeCompare(b.type));
+            //let combatant_List = Object.assign([], this.combatants);
+            //combatant_List.sort((a, b) => b.initiativeValue - a.initiativeValue || a.type.localeCompare(b.type));
              
-            let NewIndexToAdd = combatant_List.findIndex(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId);
-            let NewItemToAdd = combatant_List.find(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId);
+            //let NewIndexToAdd = combatant_List.findIndex(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId);
+            //let NewItemToAdd = combatant_List.find(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId);
 
-            this.combatants.splice(OldIndexToRemove,1);
-            this.combatants.splice((NewIndexToAdd), 0, NewItemToAdd);            
+            //this.combatants.splice(OldIndexToRemove,1);
+            //this.combatants.splice((NewIndexToAdd), 0, NewItemToAdd);            
 
-            //this.combatants.sort((a, b) => b.initiativeValue - a.initiativeValue || a.type.localeCompare(b.type));
-            this.combatants.map((rec, rec_index) => {
-              rec.sortOrder = rec_index + 1;
-            })
-            debugger
+            ////this.combatants.sort((a, b) => b.initiativeValue - a.initiativeValue || a.type.localeCompare(b.type));
+            //this.combatants.map((rec, rec_index) => {
+            //  rec.sortOrder = rec_index + 1;
+            //})
+            //debugger
           })
+          debugger
           selectedDeployedMonsters.sort((a, b) => b.initiativeValue - a.initiativeValue);
-          selectedDeployedMonsters.map((rec_deployedMonster) => {          
 
-            debugger
+          let Oldcombatants = Object.assign([], this.combatants); 
+          let newcombatants = [];
+          selectedDeployedMonsters.map((rec_deployedMonster) => {
+            if (Oldcombatants.find(x => x.type == combatantType.MONSTER && x.monsterId != rec_deployedMonster.monsterId)) {
+              newcombatants.push(Oldcombatants.find(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId));
+              
+            }
+            Oldcombatants = Oldcombatants.filter(x => x.monsterId != rec_deployedMonster.monsterId);
+            
+      
+          })
+          newcombatants.map((rec_deployedMonster) => {
+            var insertedIndex=Oldcombatants.push(rec_deployedMonster);
+            insertedIndex = insertedIndex - 1;
 
-
-            let OldIndexToRemove = this.combatants.findIndex(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId)
-
-            let combatant_List = Object.assign([], this.combatants);
+            let combatant_List = Object.assign([], Oldcombatants);
             combatant_List.sort((a, b) => b.initiativeValue - a.initiativeValue || a.type.localeCompare(b.type));
 
             let NewIndexToAdd = combatant_List.findIndex(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId);
-            let NewItemToAdd = combatant_List.find(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId);
-
-            this.combatants.splice(OldIndexToRemove, 1);
-            this.combatants.splice((NewIndexToAdd), 0, NewItemToAdd);
-
-            //this.combatants.sort((a, b) => b.initiativeValue - a.initiativeValue || a.type.localeCompare(b.type));
-            this.combatants.map((rec, rec_index) => {
-              rec.sortOrder = rec_index + 1;
-            })
-            debugger
+            
+            Oldcombatants.splice(insertedIndex, 1);
+            Oldcombatants.splice((NewIndexToAdd), 0, rec_deployedMonster);
           })
-          if (this.showCombatOptions) {
-            this.combatService.saveCombatantList(this.combatants, this.ruleSetId).subscribe(res => {
+          Oldcombatants.map((rec, rec_index) => {
+            rec.sortOrder = rec_index + 1;
+          });
+          this.combatants = Oldcombatants;
 
-              this.SaveSortOrder(this.combatants,true);
+          //selectedDeployedMonsters.map((rec_deployedMonster) => {          
+
+          //  debugger
+
+
+            
+          //  let combatant_List = Object.assign([], Oldcombatants);
+          //  combatant_List.sort((a, b) => b.initiativeValue - a.initiativeValue || a.type.localeCompare(b.type));
+
+          //  let NewIndexToAdd = combatant_List.findIndex(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId);
+          //  let NewItemToAdd = combatant_List.find(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId);
+
+          //  this.combatants.splice(OldIndexToRemove, 1);
+          //  this.combatants.splice((NewIndexToAdd), 0, NewItemToAdd);
+
+          //  //this.combatants.sort((a, b) => b.initiativeValue - a.initiativeValue || a.type.localeCompare(b.type));
+          //  this.combatants.map((rec, rec_index) => {
+          //    rec.sortOrder = rec_index + 1;
+          //  })
+          //  debugger
+          //})
+
+          console.log('save', this.combatants)
+          if (this.showCombatOptions) {
+            this.combatService.saveSortOrder(this.combatants).subscribe(res => {
+
+              this.combatService.saveCombatantList(this.combatants, this.ruleSetId).subscribe(res => {
+                this.combatService.markCombatAsUpdatedFlag(this.CombatId).subscribe(res => {
+                  
+                }, error => {
+                  
+                });
+                
+              }, error => {
+                this.isLoading = false;
+                let Errors = Utilities.ErrorDetail("", error);
+                if (Errors.sessionExpire) {
+                  this.authService.logout(true);
+                } else {
+                  this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+                }
+              });
+
             }, error => {
-              this.isLoading = false;
               let Errors = Utilities.ErrorDetail("", error);
               if (Errors.sessionExpire) {
                 this.authService.logout(true);
@@ -594,6 +643,7 @@ export class CombatComponent implements OnInit {
                 this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
               }
             });
+            
           }
           
           

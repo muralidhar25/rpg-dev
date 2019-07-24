@@ -67,6 +67,7 @@ export class CombatInitiativeComponent implements OnInit {
             let initiativecommand = pc.initiativeCommand
             let statdetails = { charactersCharacterStat: pc.character.diceRollViewModel.charactersCharacterStats, character: pc.character.diceRollViewModel.character };
             initiativecommand = ServiceUtil.getFinalCalculationString(this.combatSettings.pcInitiativeFormula, statdetails, pc.character.diceRollViewModel.charactersCharacterStats, pc.character.diceRollViewModel.character)
+            pc.initiativeCommand = this.combatSettings.pcInitiativeFormula;
             //}
 
             let res = DiceService.rollDiceExternally(this.alertService, initiativecommand, this.customDices);

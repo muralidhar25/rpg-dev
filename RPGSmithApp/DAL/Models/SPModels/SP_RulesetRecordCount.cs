@@ -911,4 +911,9 @@ namespace DAL.Models.SPModels
         public List<DiceTray> DiceTrays { get; set; }
         public List<DefaultDice> DefaultDices { get; set; }
     }
+    public class DiceRollViewModel_Combat
+    {
+        public List<CharactersCharacterStat> CharactersCharacterStats { get; set; }
+        public Character Character { get; set; }
+    }
 }

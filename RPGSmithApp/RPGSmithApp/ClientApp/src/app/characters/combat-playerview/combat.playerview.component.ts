@@ -26,6 +26,7 @@ import { ImageViewerComponent } from '../../shared/image-interface/image-viewer/
 import { CharactersCharacterStat } from '../../core/models/view-models/characters-character-stats.model';
 import { initiative } from '../../core/models/view-models/initiative.model';
 import { CombatHealthComponent } from '../../rulesets/combat/update-combat-health/update-combat-health.component';
+import { setTimeout } from 'timers';
 
 @Component({
   selector: 'app-combat-playerview',
@@ -89,8 +90,13 @@ export class CombatPlayerViewComponent implements OnInit {
 
   ngOnInit() {
     this.GetCombatDetails();
-    this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+  
     this.destroyModalOnInit();
+  }
+  ngOnDestroy() {
+    if (this.refreshPage) {
+      clearInterval(this.refreshPage)
+    }
   }
   private destroyModalOnInit(): void {
     try {
@@ -368,15 +374,52 @@ export class CombatPlayerViewComponent implements OnInit {
   }
   refreshPageData() {
     this.refreshPage = setInterval(() => {
-      this.combatService.isCombatUpdated(this.CombatId).subscribe(res => {
-        console.log("res ", res);
+      console.log("update");
+      this.combatService.isCombatUpdatedAndCurrentTurn(this.CombatId).subscribe(data => {
+        console.log("res ", data);
+        let res: any = data;
         if (res) {
-          if (this.refreshPage) {
-            clearInterval(this.refreshPage)
+          if (res.isCombatUdated) {
+            if (this.refreshPage) {
+              clearInterval(this.refreshPage)
+            }
+            //init=false;
+            this.initialLoad = false;
+            setTimeout(() => {
+              this.combatService.markCombatAsUpdatedFlagFalse(this.CombatId).subscribe(res => {
+                this.bindCombatantInitiatives();
+              }, error => {
+                this.bindCombatantInitiatives();
+              });
+            }, 1000)
+           
           }
-          //init=false;
-          this.initialLoad = false;
-          this.bindCombatantInitiatives();
+          if (res.currentTurnCombatantId) {
+
+            let curretnCombatant = this.combatants.find(x => x.id == res.currentTurnCombatantId);
+            if (curretnCombatant) {              
+              let valueofinitiative = curretnCombatant.initiativeValue;
+              this.CurrentInitiativeValue = valueofinitiative;
+              //this.currentCombatantDetail = curretnCombatant;
+              this.roundCounter = res.currentRound;
+              if (this.roundCounter > 1) {
+               
+                let roundTime = this.settings.gameRoundLength * this.roundCounter;
+                this.gametime = this.time_convert(roundTime);
+               
+              }
+              this.combatants.map((x) => {
+                x.isCurrentTurn = false;
+                if (x.id == res.currentTurnCombatantId) {
+                  x.isCurrentTurn = true;
+                }
+              })
+            }
+            
+          }
+          
+          
+          
         }
 
       }, error => {
@@ -388,10 +431,11 @@ export class CombatPlayerViewComponent implements OnInit {
           this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
         }
       });
-    }, 5000);
+      //this.bindCombatantInitiatives();
+    }, 1500);
   }
   bindCombatantInitiatives() {
-    this.combatService.getCombatDetails(this.ruleSetId).subscribe(res => {
+    this.combatService.getCombatDetails(this.ruleSetId,true).subscribe(res => {
       if (res) {
         debugger;
         let combatModal: any = res;
