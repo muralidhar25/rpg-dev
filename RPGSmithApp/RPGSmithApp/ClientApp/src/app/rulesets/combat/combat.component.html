@@ -409,7 +409,7 @@
                 <div class="white-section crsr-pointer" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatItemsType.CHARACTER">
                   <ul class="visiblity-list">
                     <li class="" *ngFor="let be of item?.character?.characterBuffAndEffects; let be_i = index">
-                      <img class="combat-be-image crsr-pointer" (click)="CombatantBuff_EffectDetail(item, be)" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" popover="Desc: {{description(be.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{be.buffAndEffect.name}}" container="body" />
+                      <img class="combat-be-image crsr-pointer" (click)="CombatantBuff_EffectDetail(item, be);$event.stopPropagation()" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" popover="Desc: {{description(be.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{be.buffAndEffect.name}}" container="body" />
                     </li>
                   </ul>
                   <span [ngClass]="item?.character?.characterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.character?.characterBuffAndEffects?.length > 3 ? (item?.character?.characterBuffAndEffects?.length - 3) :''}}</span>
@@ -417,7 +417,7 @@
                 <div class="white-section crsr-pointer" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatItemsType.MONSTER">
                   <ul class="visiblity-list">
                     <li class="" *ngFor="let be of item?.monster?.monsterBuffAndEffects; let be_i = index">
-                      <img class="combat-be-image crsr-pointer" (click)="CombatantBuff_EffectDetail(item, be)" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" popover="Desc: {{description(be.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{be.buffAndEffect.name}}" container="body" />
+                      <img class="combat-be-image crsr-pointer" (click)="CombatantBuff_EffectDetail(item, be);$event.stopPropagation()" *ngIf="be_i < 3" [src]="be?.buffAndEffect?.imageUrl" popover="Desc: {{description(be.buffAndEffect.description)}}" triggers="hover" popoverTitle="{{be.buffAndEffect.name}}" container="body" />
                     </li>
                   </ul>
                   <span [ngClass]="item?.monster?.monsterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.monster?.monsterBuffAndEffects?.length > 3 ? (item?.monster?.monsterBuffAndEffects?.length - 3) :''}}</span>
@@ -489,7 +489,7 @@
                     </label>
                   </li>
                   <li class="form-check p-0" popover="Hide from Players" triggers="hover" container="body">
-                    <label class="form-check-label" >
+                    <label class="form-check-label">
                       <input class="form-check-input" type="radio" name="pausegame2"
                              [checked]="!item?.visibleToPc"
                              (click)="HideVisibility(item)">
@@ -600,6 +600,18 @@
         </ul>
       </div>
 
+      <div class="row detail-pane-target" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER && currentCombatantDetail?.targetId > 0">
+        <div class="col-4 text-white align-self-center">Target:</div>
+        <div class="col-8">
+          <div class="initiative-title-box monsters-title-box crsr-pointer" popover="{{getTargetName(currentCombatantDetail)}}" triggers="hover" (click)="TargetClick(currentCombatantDetail)">
+            <img class="ng-tns-c1-0" [src]="getTargetImage(currentCombatantDetail)">
+            <p class="ng-tns-c1-0 text-ellipsis">
+              <span class="ng-tns-c1-0">{{getTargetName(currentCombatantDetail)}}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div class="combat-accordian">
         <accordion>
           <accordion-group class="detailPaneItems" #p1 heading="STATS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
@@ -626,7 +638,7 @@
           </accordion-group>
           <!--Character-->
           <accordion-group class="detailPaneItems be-items" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
-            <div class="row crsr-pointer be-section" (click)="buffEffectclick(currentCombatantDetail)"> 
+            <div class="row crsr-pointer be-section" (click)="buffEffectclick(currentCombatantDetail)">
               <div class="text-center" *ngIf="currentCombatantDetail?.character?.characterBuffAndEffects.length == 0">
                 <span class="col-12">{{noBuffs_EffectsAvailable}}</span>
               </div>

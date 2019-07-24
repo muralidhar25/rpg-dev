@@ -224,7 +224,7 @@ export class CombatComponent implements OnInit {
           } else {
             this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
           }
-          });
+        });
 
         ///////////////////////////////////////////////////////////////////////////////////////////
         debugger;
@@ -355,7 +355,7 @@ export class CombatComponent implements OnInit {
   }
 
   // Combat Settings
-  GetCombatDetails(ShowLoader = true, selectedDeployedMonsters:any=[]) {
+  GetCombatDetails(ShowLoader = true, selectedDeployedMonsters: any = []) {
     if (ShowLoader) {
       this.isLoading = true;
     }
@@ -505,13 +505,13 @@ export class CombatComponent implements OnInit {
           let resultOfGroupInitiative = 0;
           let resultOfGroupInitiativeFilled_Flag = false;
           selectedDeployedMonsters.map((rec_deployedMonster) => {
-           
+
             this.combatants.map((rec_C) => {
 
               if (rec_C.type == combatantType.MONSTER && rec_C.monsterId == rec_deployedMonster.monsterId) {
                 debugger
                 if (this.settings && this.settings.groupInitiative) {
-                  
+
                   rec_C.initiativeCommand = this.settings.groupInitFormula;
                 }
 
@@ -537,7 +537,7 @@ export class CombatComponent implements OnInit {
 
                 rec_C.initiative = rec_C.initiativeValue;
                 rec_deployedMonster.initiativeValue = rec_C.initiativeValue;
-                
+
               }
             })
 
@@ -645,12 +645,12 @@ export class CombatComponent implements OnInit {
             });
             
           }
-          
-          
+
+
           //update initiative of added monster using selectedDeployedMonsters
 
-          
-          
+
+
         }
       }
       this.isLoading = false;
@@ -765,7 +765,7 @@ export class CombatComponent implements OnInit {
     debugger
     currentCombat.delayTurn = true;
     this.combatants.map(x => {
-      if (x.type == combatantType.MONSTER && x.monsterId == currentCombat.monsterId && currentCombat.isCurrentTurn ) {
+      if (x.type == combatantType.MONSTER && x.monsterId == currentCombat.monsterId && currentCombat.isCurrentTurn) {
         this.nextTurn();
       }
       if (x.type == combatantType.CHARACTER && x.characterId == currentCombat.characterId && currentCombat.isCurrentTurn) {
@@ -823,7 +823,7 @@ export class CombatComponent implements OnInit {
     });
   }
 
-  SaveSortOrder(combatants, refreshList=false) {
+  SaveSortOrder(combatants, refreshList = false) {
     this.combatants.map((x, index) => {
       x.sortOrder = index + 1;
     });
@@ -1853,5 +1853,66 @@ export class CombatComponent implements OnInit {
       return decodedString;
     }
     return '';
+  }
+
+  getTargetImage(item) {
+    let imageUrl = '';
+    if (item.targetType == combatantType.MONSTER) {
+      this.combatants.map(x => {
+        if (x.type == combatantType.MONSTER) {
+          if (x.monster.monsterId == item.targetId) {
+            imageUrl = x.monster.imageUrl;
+          }
+        }
+
+      });
+    }
+    else if (item.targetType == combatantType.CHARACTER) {
+      this.combatants.map(x => {
+        if (x.type == combatantType.CHARACTER) {
+          if (x.character.characterId == item.targetId) {
+            imageUrl = x.character.imageUrl;
+          }
+        }
+
+      });
+    }
+    return imageUrl;
+  }
+
+  getTargetName(item) {
+    let name = '';
+    if (item.targetType == combatantType.MONSTER) {
+      this.combatants.map(x => {
+        if (x.type == combatantType.MONSTER) {
+          if (x.monster.monsterId == item.targetId) {
+            name = x.monster.name;
+          }
+        }
+
+      });
+    }
+    else if (item.targetType == combatantType.CHARACTER) {
+      this.combatants.map(x => {
+        if (x.type == combatantType.CHARACTER) {
+          if (x.character.characterId == item.targetId) {
+            name = x.character.characterName;
+          }
+        }
+
+      });
+    }
+    return name;
+  }
+
+  TargetClick(item) {
+    this.combatants.map(x => {
+      if (x.type == combatantType.MONSTER && x.monsterId == item.targetId && item.targetType == combatantType.MONSTER) {
+        this.frameClick(x);
+      }
+      else if (x.type == combatantType.CHARACTER && x.characterId == item.targetId && item.targetType == combatantType.CHARACTER) {
+        this.frameClick(x);
+      }
+    });
   }
 }

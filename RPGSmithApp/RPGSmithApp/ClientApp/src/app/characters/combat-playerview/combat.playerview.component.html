@@ -2,12 +2,12 @@
   <div class="page-toolbar">
     <div class="container">
       <!--<div class="page-toolbar-wrapper">
-  <div class="page-toolbar-title">
-    <a [routerLink]="['/rulesetModel/combat', ruleSetId]" class="icon icon-back">
-      <h1 class="d-none d-md-inline-block"> Back</h1>
-    </a>
-  </div>
-    </div>-->
+      <div class="page-toolbar-title">
+        <a [routerLink]="['/rulesetModel/combat', ruleSetId]" class="icon icon-back">
+          <h1 class="d-none d-md-inline-block"> Back</h1>
+        </a>
+      </div>
+        </div>-->
       <div class="page-toolbar-wrapper">
         <div class="page-toolbar-title"></div>
         <div class="page-toolbar-wrapper initial show recordes-menu">
@@ -60,8 +60,8 @@
           </li>
         </ul>
       </div>
-      </div>
     </div>
+  </div>
 
   <div class="container">
     <div class="row">
@@ -103,7 +103,7 @@
 
                       <!--Current-Max/Val-SubVal Type Stat-->
                       <ng-container *ngIf="item?.character?.healthCurrent!=DummyValueForCharHealthStat && item?.character?.healthMax!=DummyValueForCharHealthStat">
-                        <div class="white-section p-0 crsr-pointer"  (click)="item.isOwnPlayer && progressHealth(item);$event.stopPropagation()">
+                        <div class="white-section p-0 crsr-pointer" (click)="item.isOwnPlayer && progressHealth(item);$event.stopPropagation()">
                           <circle-progress [percent]="(item?.character?.healthCurrent/item?.character?.healthMax)*100"
                                            [space]="-10"
                                            [outerStrokeWidth]="10"
@@ -179,18 +179,18 @@
                       </ul>
                       <span [ngClass]="item?.monster?.monsterBuffAndEffects?.length > 3 ? 'moreBuffEffect':''">{{item?.monster?.monsterBuffAndEffects?.length > 3 ? (item?.monster?.monsterBuffAndEffects?.length - 3) :''}}</span>
                     </div>
-                    <ng-container  *ngIf="item.type == combatantsType.MONSTER && !settings.seeMonsterBuffEffects">
+                    <ng-container *ngIf="item.type == combatantsType.MONSTER && !settings.seeMonsterBuffEffects">
                       <div class="white-section">
                       </div>
                     </ng-container>
                   </td>
                   <td>
                     <div class="white-section ">
-                      <div class="initiative-title-box monsters-title-box target-column" *ngIf="item.targetId>0"  popover="{{getTargetName(item)}}" triggers="hover">
+                      <div class="initiative-title-box monsters-title-box target-column" *ngIf="item.targetId>0" popover="{{getTargetName(item)}}" triggers="hover">
                         <ng-container>
                           <img class="ng-tns-c1-0" [src]="getTargetImage(item)">
                           <p class="ng-tns-c1-0 text-ellipsis">
-                          <span class="ng-tns-c1-0">{{getTargetName(item)}}</span>
+                            <span class="ng-tns-c1-0">{{getTargetName(item)}}</span>
                           </p>
                         </ng-container>
                       </div>
@@ -228,16 +228,27 @@
           <span *ngIf="currentCombatantDetail?.type==combatantsType.CHARACTER">{{currentCombatantDetail?.character?.characterName}}</span>
         </div>
         <div class="combat-accordian">
+          <div class="row detail-pane-target" *ngIf="currentCombatantDetail.isOwnPlayer">
+            <div class="col-4 text-white align-self-center">Target:</div>
+            <div class="col-8">
+              <div class="initiative-title-box monsters-title-box crsr-pointer" popover="{{getTargetName(currentCombatantDetail)}}" triggers="hover" (click)="TargetClick(currentCombatantDetail)">
+                  <img class="ng-tns-c1-0" [src]="getTargetImage(currentCombatantDetail)">
+                  <p class="ng-tns-c1-0 text-ellipsis">
+                    <span class="ng-tns-c1-0">{{getTargetName(currentCombatantDetail)}}</span>
+                  </p>
+              </div>
+            </div>
+          </div>
           <accordion>
             <!--Monster-->
             <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatantsType.MONSTER && settings.seeMonsterBuffEffects">
               <div class="row">
                 <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterBuffAndEffects.length == 0">
-                   <span class="col-12">{{noBuffs_EffectsAvailable}}</span>
+                  <span class="col-12">{{noBuffs_EffectsAvailable}}</span>
                 </div>
                 <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.monsterBuffAndEffects">
                   <div class="accordin-box">
-                    <img [src]="item.buffAndEffect.imageUrl" />
+                    <img [src]="item.buffAndEffect.imageUrl" onerror="this.src='../assets/images/DefaultImages/ability.png';" />
                     <p class="text-ellipsis">{{item.buffAndEffect.name}}</p>
                   </div>
                 </div>
@@ -247,11 +258,11 @@
             <accordion-group class="detailPaneItems" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatantsType.CHARACTER">
               <div class="row">
                 <div class="text-center" *ngIf="currentCombatantDetail?.character?.characterBuffAndEffects.length == 0">
-                   <span class="col-12">{{noBuffs_EffectsAvailable}}</span>
+                  <span class="col-12">{{noBuffs_EffectsAvailable}}</span>
                 </div>
                 <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterBuffAndEffects">
                   <div class="accordin-box">
-                    <img [src]="item.buffAndEffect.imageUrl" />
+                    <img [src]="item.buffAndEffect.imageUrl" onerror="this.src='../assets/images/DefaultImages/ability.png';" />
                     <p class="text-ellipsis">{{item.buffAndEffect.name}}</p>
                   </div>
                 </div>
@@ -265,7 +276,7 @@
                 </div>
                 <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.monster?.itemMasterMonsterItems">
                   <div class="accordin-box">
-                    <img [src]="item.itemImage" />
+                    <img [src]="item.itemImage" onerror="this.src='../assets/images/DefaultImages/ability.png';" />
                     <p class="text-ellipsis">{{item.itemName}}</p>
                   </div>
                 </div>
@@ -275,11 +286,11 @@
             <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatantsType.CHARACTER">
               <div class="row">
                 <div class="text-center" *ngIf="currentCombatantDetail?.character.items?.length == 0">
-                   <span class="col-12">{{noItemsAvailable}}</span>
+                  <span class="col-12">{{noItemsAvailable}}</span>
                 </div>
                 <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.items">
                   <div class="accordin-box">
-                    <img [src]="item.itemImage" />
+                    <img [src]="item.itemImage" onerror="this.src='../assets/images/DefaultImages/ability.png';" />
                     <p class="text-ellipsis">{{item.name}}</p>
                   </div>
                 </div>
