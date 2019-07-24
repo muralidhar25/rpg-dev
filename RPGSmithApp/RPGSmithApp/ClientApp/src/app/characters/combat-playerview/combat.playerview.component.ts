@@ -312,6 +312,17 @@ export class CombatPlayerViewComponent implements OnInit {
     return name;
   }
 
+  TargetClick(item) {
+    this.combatants.map(x => {
+      if (x.type == combatantType.MONSTER && x.monsterId == item.targetId && item.targetType == combatantType.MONSTER) {
+        this.frameClick(x);
+      }
+      else if (x.type == combatantType.CHARACTER && x.characterId == item.targetId && item.targetType == combatantType.CHARACTER) {
+        this.frameClick(x);
+      }
+    });
+  }
+
   ImageDeatil(itemDetail, imgref) {
     if (itemDetail.type == this.combatantsType.MONSTER) {
       if (this.settings.accessMonsterDetails) {

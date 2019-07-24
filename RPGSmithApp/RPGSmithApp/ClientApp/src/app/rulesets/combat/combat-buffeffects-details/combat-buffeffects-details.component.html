@@ -68,17 +68,22 @@
     <button type="button" *ngIf="NoCharacterSlotsAvailable" [disabled]="isloading" class="btn btn-accent btn-buy-character " (click)="BuyCharacterSlot()">{{buyCharacterBtnText}}</button>
   </div>-->
 
-    <button type="button" [disabled]="type==combatatntsType.MONSTER && !ListBuffAndEffects.length" (click)="edit()" class="btn btn-accent">{{_view}}</button>
+    <ng-container *ngIf="!hideEditBtn" >
+      <button type="button" [disabled]="type==combatatntsType.MONSTER && !ListBuffAndEffects.length" (click)="edit()" class="btn btn-accent">{{_view}}</button>
+    </ng-container>
+    <ng-container *ngIf="hideEditBtn">
+      <button type="button"[disabled]="type==combatatntsType.MONSTER && !ListBuffAndEffects.length" (click)="edit()" class="visibility-hidden btn btn-accent">{{_view}}</button>
+    </ng-container>    
     <div class="d-flex">
       <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
     </div>
-      <!--<div class="row">
-        <div class="col-md-6" *ngIf="!hideEditBtn">
-          <button type="button" [disabled]="type==combatatntsType.MONSTER && !ListBuffAndEffects.length" (click)="edit()" class="btn btn-accent">{{_view}}</button>
-        </div>
-        <div class="col-md-6">
-          <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
-        </div>
-      </div>-->
+    <!--<div class="row">
+    <div class="col-md-6" *ngIf="!hideEditBtn">
+      <button type="button" [disabled]="type==combatatntsType.MONSTER && !ListBuffAndEffects.length" (click)="edit()" class="btn btn-accent">{{_view}}</button>
     </div>
+    <div class="col-md-6">
+      <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+    </div>
+  </div>-->
+  </div>
 </form>

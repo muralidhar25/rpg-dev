@@ -224,22 +224,22 @@ export class CombatComponent implements OnInit {
           } else {
             this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
           }
-          });
+        });
 
         ///////////////////////////////////////////////////////////////////////////////////////////
         debugger;
         //{ flag: combatantListFlag, selectedDeployedMonsters: selectedDeployedMonsters}
-        
-          if (combatantListJson.flag) {
-            if (combatantListJson.selectedDeployedMonsters && combatantListJson.selectedDeployedMonsters.length) {
-              this.GetCombatDetails(true, combatantListJson.selectedDeployedMonsters);
-            }
-            else {
-              this.GetCombatDetails(true);
-            }
+
+        if (combatantListJson.flag) {
+          if (combatantListJson.selectedDeployedMonsters && combatantListJson.selectedDeployedMonsters.length) {
+            this.GetCombatDetails(true, combatantListJson.selectedDeployedMonsters);
           }
-        
-      ///////////////////////////////////////////////////////////////////////////////////////////////
+          else {
+            this.GetCombatDetails(true);
+          }
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////
         this.GetCombatDetails();
       }
     });
@@ -352,7 +352,7 @@ export class CombatComponent implements OnInit {
   }
 
   // Combat Settings
-  GetCombatDetails(ShowLoader = true, selectedDeployedMonsters:any=[]) {
+  GetCombatDetails(ShowLoader = true, selectedDeployedMonsters: any = []) {
     if (ShowLoader) {
       this.isLoading = true;
     }
@@ -502,13 +502,13 @@ export class CombatComponent implements OnInit {
           let resultOfGroupInitiative = 0;
           let resultOfGroupInitiativeFilled_Flag = false;
           selectedDeployedMonsters.map((rec_deployedMonster) => {
-           
+
             this.combatants.map((rec_C) => {
 
               if (rec_C.type == combatantType.MONSTER && rec_C.monsterId == rec_deployedMonster.monsterId) {
                 debugger
                 if (this.settings && this.settings.groupInitiative) {
-                  
+
                   rec_C.initiativeCommand = this.settings.groupInitFormula;
                 }
 
@@ -534,7 +534,7 @@ export class CombatComponent implements OnInit {
 
                 rec_C.initiative = rec_C.initiativeValue;
                 rec_deployedMonster.initiativeValue = rec_C.initiativeValue;
-                
+
               }
             })
 
@@ -542,15 +542,15 @@ export class CombatComponent implements OnInit {
 
 
             let OldIndexToRemove = this.combatants.findIndex(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId)
-            
+
             let combatant_List = Object.assign([], this.combatants);
             combatant_List.sort((a, b) => b.initiativeValue - a.initiativeValue || a.type.localeCompare(b.type));
-             
+
             let NewIndexToAdd = combatant_List.findIndex(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId);
             let NewItemToAdd = combatant_List.find(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId);
 
-            this.combatants.splice(OldIndexToRemove,1);
-            this.combatants.splice((NewIndexToAdd), 0, NewItemToAdd);            
+            this.combatants.splice(OldIndexToRemove, 1);
+            this.combatants.splice((NewIndexToAdd), 0, NewItemToAdd);
 
             //this.combatants.sort((a, b) => b.initiativeValue - a.initiativeValue || a.type.localeCompare(b.type));
             this.combatants.map((rec, rec_index) => {
@@ -559,7 +559,7 @@ export class CombatComponent implements OnInit {
             debugger
           })
           selectedDeployedMonsters.sort((a, b) => b.initiativeValue - a.initiativeValue);
-          selectedDeployedMonsters.map((rec_deployedMonster) => {          
+          selectedDeployedMonsters.map((rec_deployedMonster) => {
 
             debugger
 
@@ -584,7 +584,7 @@ export class CombatComponent implements OnInit {
           if (this.showCombatOptions) {
             this.combatService.saveCombatantList(this.combatants, this.ruleSetId).subscribe(res => {
 
-              this.SaveSortOrder(this.combatants,true);
+              this.SaveSortOrder(this.combatants, true);
             }, error => {
               this.isLoading = false;
               let Errors = Utilities.ErrorDetail("", error);
@@ -595,12 +595,12 @@ export class CombatComponent implements OnInit {
               }
             });
           }
-          
-          
+
+
           //update initiative of added monster using selectedDeployedMonsters
 
-          
-          
+
+
         }
       }
       this.isLoading = false;
@@ -715,7 +715,7 @@ export class CombatComponent implements OnInit {
     debugger
     currentCombat.delayTurn = true;
     this.combatants.map(x => {
-      if (x.type == combatantType.MONSTER && x.monsterId == currentCombat.monsterId && currentCombat.isCurrentTurn ) {
+      if (x.type == combatantType.MONSTER && x.monsterId == currentCombat.monsterId && currentCombat.isCurrentTurn) {
         this.nextTurn();
       }
       if (x.type == combatantType.CHARACTER && x.characterId == currentCombat.characterId && currentCombat.isCurrentTurn) {
@@ -773,7 +773,7 @@ export class CombatComponent implements OnInit {
     });
   }
 
-  SaveSortOrder(combatants, refreshList=false) {
+  SaveSortOrder(combatants, refreshList = false) {
     this.combatants.map((x, index) => {
       x.sortOrder = index + 1;
     });
@@ -1803,5 +1803,66 @@ export class CombatComponent implements OnInit {
       return decodedString;
     }
     return '';
+  }
+
+  getTargetImage(item) {
+    let imageUrl = '';
+    if (item.targetType == combatantType.MONSTER) {
+      this.combatants.map(x => {
+        if (x.type == combatantType.MONSTER) {
+          if (x.monster.monsterId == item.targetId) {
+            imageUrl = x.monster.imageUrl;
+          }
+        }
+
+      });
+    }
+    else if (item.targetType == combatantType.CHARACTER) {
+      this.combatants.map(x => {
+        if (x.type == combatantType.CHARACTER) {
+          if (x.character.characterId == item.targetId) {
+            imageUrl = x.character.imageUrl;
+          }
+        }
+
+      });
+    }
+    return imageUrl;
+  }
+
+  getTargetName(item) {
+    let name = '';
+    if (item.targetType == combatantType.MONSTER) {
+      this.combatants.map(x => {
+        if (x.type == combatantType.MONSTER) {
+          if (x.monster.monsterId == item.targetId) {
+            name = x.monster.name;
+          }
+        }
+
+      });
+    }
+    else if (item.targetType == combatantType.CHARACTER) {
+      this.combatants.map(x => {
+        if (x.type == combatantType.CHARACTER) {
+          if (x.character.characterId == item.targetId) {
+            name = x.character.characterName;
+          }
+        }
+
+      });
+    }
+    return name;
+  }
+
+  TargetClick(item) {
+    this.combatants.map(x => {
+      if (x.type == combatantType.MONSTER && x.monsterId == item.targetId && item.targetType == combatantType.MONSTER) {
+        this.frameClick(x);
+      }
+      else if (x.type == combatantType.CHARACTER && x.characterId == item.targetId && item.targetType == combatantType.CHARACTER) {
+        this.frameClick(x);
+      }
+    });
   }
 }
