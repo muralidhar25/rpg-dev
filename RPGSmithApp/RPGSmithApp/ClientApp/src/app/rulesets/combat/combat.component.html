@@ -447,13 +447,13 @@
                         (click)="isCharacterSpellEnabled && (redirectToSpell(item));$event.stopPropagation()"></li>
                     <li class="action-button-icon-orange icon-Gen-Ability" [ngClass]="isCharacterAbilityEnabled ? 'crsr-pointer': 'disabled' " popover="Abilities" triggers="hover"
                         (click)="isCharacterAbilityEnabled && (redirectToAbility(item));$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Gen-CharStat crsr-pointer" popover="Stat" triggers="hover"
+                    <li class="action-button-icon-orange icon-Gen-CharStat crsr-pointer" popover="Character Stats" triggers="hover"
                         (click)="redirectToChracterstat(item);$event.stopPropagation()"></li>
                   </ul>
                   <ul class="action-buttons-table" id="'item'+i" *ngIf="item.type == combatItemsType.MONSTER">
-                    <li class="action-button-icon-orange icon-CharStat-Command crsr-pointer" *ngIf="!item.hidebtns" popover="Dice" triggers="hover"
+                    <li class="action-button-icon-orange icon-CharStat-Command crsr-pointer" *ngIf="!item.hidebtns" popover="Command" triggers="hover"
                         (click)="monsterCommand(item);$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Rec-Drop crsr-pointer" *ngIf="!item.hidebtns" popover="Drop" triggers="hover"
+                    <li class="action-button-icon-orange icon-Rec-Drop crsr-pointer" *ngIf="!item.hidebtns" popover="Drop Items" triggers="hover"
                         (click)="dropMonsterItems(item);$event.stopPropagation()"></li>
                     <li class="action-button-icon-red icon-Rec-Remove crsr-pointer" *ngIf="!item.hidebtns" popover="Remove" triggers="hover"
                         (click)="removeCurrentMonster(item);$event.stopPropagation()"></li>
@@ -602,7 +602,7 @@
 
       <div class="row detail-pane-target" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER && currentCombatantDetail?.targetId > 0">
         <div class="col-4 text-white align-self-center">Target:</div>
-        <div class="col-8">
+        <div class="col-8 r-padding">
           <div class="initiative-title-box monsters-title-box crsr-pointer" popover="{{getTargetName(currentCombatantDetail)}}" triggers="hover" (click)="TargetClick(currentCombatantDetail)">
             <img class="ng-tns-c1-0" [src]="getTargetImage(currentCombatantDetail)">
             <p class="ng-tns-c1-0 text-ellipsis">
@@ -618,7 +618,7 @@
             <div class="row">
               <div class="col-12">
                 <!--<label for="Desc">Stats</label>-->
-                <div [froalaView]="currentCombatantDetail?.monster.stats" name="stat"></div>
+                <div [froalaView]="noStatProvided" name="stat"></div>
               </div>
             </div>
           </accordion-group>
@@ -658,13 +658,13 @@
                 <div *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
                   <div *ngIf="currentCombatantDetail?.monster?.description" [froalaView]="currentCombatantDetail?.monster?.description" name="Desc"></div>
                   <div *ngIf="!currentCombatantDetail?.monster?.description" name="Desc">
-                    <span>{{noDescripttionAvailable}}</span>
+                    <span>{{noMonsterDescriptionProvided}}</span>
                   </div>
                 </div>
                 <div *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
                   <div *ngIf="currentCombatantDetail?.character?.characterDescription" [froalaView]="currentCombatantDetail?.character?.characterDescription" name="Desc"></div>
                   <div *ngIf="!currentCombatantDetail?.character?.characterDescription" name="Desc">
-                    <span>{{noDescripttionAvailable}}</span>
+                    <span>{{noCharacterDescriptionProvided}}</span>
                   </div>
                 </div>
               </div>

@@ -28,6 +28,8 @@ import { MonsterBundleDetailsComponent } from "../records/monster-template/monst
 import { LootDetailsComponent } from "../records/loot/loot-details/loot-details.component";
 import { MonsterItemDetailsComponent } from "../records/monster/monster-item-details/monster-item-details.component";
 import { CombatComponent } from "./combat/combat.component";
+import { LootPileDetailsComponent } from "../records/loot-pile/loot-pile-details/loot-pile-details.component";
+import { LootPileComponent } from "../records/loot-pile/loot-pile.component";
 
 
 const routes: Routes = [
@@ -48,6 +50,7 @@ const routes: Routes = [
   { path: "monster-bundle-details/:id", component: MonsterBundleDetailsComponent, data: { title: "Monster Bundle Details" } },
   { path: "loot-details/:id", component: LootDetailsComponent, data: { title: "Loot Details" } },
   { path: "monster-item-details/:id", component: MonsterItemDetailsComponent, data: { title: "Monster Item Details" } },
+  { path: "loot-pile-details/:id", component: LootPileDetailsComponent, data: { title: "Loot Pile Details" } },
   
   ///ruleset/monster-details
   { path: "monster-details/:id", component: MonsterDetailsComponent, data: { title: "Monster Details" } },
@@ -60,6 +63,7 @@ const routes: Routes = [
   { path: "ruleset-details/:id", component: RulesetDetailsComponent , data: { title: "RulesetDetails" } },
   { path: "loot/:id", component: LootComponent, data: { title: "Loot" } },
   { path: "combat/:id", component: CombatComponent, data: { title: "combat" } },
+  { path: "loot-pile/:id", component: LootPileComponent, data: { title: "Loot Pile" } },
 ];
 
 @NgModule({

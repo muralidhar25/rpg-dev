@@ -32,6 +32,7 @@ export class AbilityService extends EndpointFactory {
 
   private readonly getByRuleSetId_sp: string = this.configurations.baseUrl + "/api/Ability/getByRuleSetId_sp";
   private readonly getAbilityCommands_api: string = this.configurations.baseUrl + "/api/Ability/getAbilityCommands_sp";
+  private readonly DeleteAbilities: string = this.configurations.baseUrl + "/api/Ability/DeleteAbilities";
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
@@ -248,5 +249,12 @@ export class AbilityService extends EndpointFactory {
     return abilityFormModal;
   }
 
-
+  deleteAbilities<T>(AbilitiesList: any): Observable<T> {
+    debugger
+    let deleteAbilitiesURL = `${this.DeleteAbilities}`;
+    return this.http.post<T>(deleteAbilitiesURL, JSON.stringify(AbilitiesList), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deleteAbilities(AbilitiesList));
+      });
+  } 
 }

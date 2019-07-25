@@ -37,6 +37,7 @@ export class BuffAndEffectService extends EndpointFactory {
   private readonly _getBuffAndEffectAssignedToCharacterURL: string = "/api/BuffAndEffect/getBuffAndEffectAssignedToCharacter";
   private readonly _getOnlyByRulesetUrl: string = "/api/BuffAndEffect/GetOnlyCharactersByRuleSetId";
   private readonly _getCharacterBuffAndEffectByIdUrl: string = "/api/BuffAndEffect/getCharacterBuffAndEffectById";
+  private readonly DeleteRecords: string = "/api/BuffAndEffect/DeleteRecords";
   
 
   //get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
@@ -276,5 +277,13 @@ export class BuffAndEffectService extends EndpointFactory {
     return buffAndEffectFormModal;
   }
   
+  deleteRecords<T>(BuffEffectList: any): Observable<T> {
+    debugger
+    let endpointURL = `${this.DeleteRecords}`;
+    return this.http.post<T>(endpointURL, JSON.stringify(BuffEffectList), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deleteRecords(BuffEffectList));
+      });
+  }
 
 }

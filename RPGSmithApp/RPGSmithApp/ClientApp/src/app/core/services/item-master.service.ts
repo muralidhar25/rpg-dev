@@ -33,7 +33,7 @@ export class ItemMasterService extends EndpointFactory {
   private readonly deleteUrl_up: string = this.configurations.baseUrl + "/api/ItemMaster/delete_up";
   private readonly getByIdUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getById";
   private readonly getMonsterItemByIdUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getMonsterItemById";
-
+  private readonly DeleteTemplates: string = this.configurations.baseUrl + "/api/ItemMaster/DeleteTemplates";
   
   private readonly getLootByIdUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getLootById";
   
@@ -455,5 +455,15 @@ export class ItemMasterService extends EndpointFactory {
     }
     return bundleFormModal;
   }
+
+  deleteTemplates<T>(TemplatesList: any): Observable<T> {
+    debugger
+    let endpointURL = `${this.DeleteTemplates}`;
+    return this.http.post<T>(endpointURL, JSON.stringify(TemplatesList), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deleteTemplates(TemplatesList));
+      });
+  }
+
 }
 

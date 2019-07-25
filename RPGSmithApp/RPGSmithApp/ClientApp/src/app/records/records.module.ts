@@ -49,6 +49,16 @@ import { AddRemoveAssociateBuffAndEffectsComponent } from "./monster/add-remove-
 import { AddRemoveAssociateMonstersComponent } from "./monster/add-remove-associate-items-monsters/add-remove-associate-items-monsters.component";
 import { AddRemoveAssociateSpellsComponent } from "./monster/add-remove-associate-items-spells/add-remove-associate-items-spells.component";
 import { SingleItemMonsterComponent } from "./monster-template/single-item/single-item-monster.component";
+import { DeleteTemplatesComponent } from "./item-master/delete-templates/delete-templates.component";
+import { DeleteSpellsComponent } from "./spells/delete-spells/delete-spells.component";
+import { DeleteAbilitiesComponent } from "./abilities/delete-abilities/delete-abilities.component";
+import { DeleteRecordsComponent } from "./buff-and-effects/delete-records/delete-records.component";
+import { DeleteMonsterTempltesComponent } from "./monster-template/delete-monster-templates/delete-monster-templates.component";
+import { DeleteMonstersComponent } from "./monster/delete-monsters/delete-monsters.component";
+import { LootPileComponent } from "./loot-pile/loot-pile.component";
+import { CreateLootPileComponent } from "./loot-pile/create-loot-pile/create-loot-pile.component";
+import { LootPileDetailsComponent } from "./loot-pile/loot-pile-details/loot-pile-details.component";
+import { AddLootPileComponent } from "./loot-pile/add-loot-pile/add-loot-pile.component";
 
 
 
@@ -96,9 +106,18 @@ import { SingleItemMonsterComponent } from "./monster-template/single-item/singl
     AddRemoveAssociateAbilitiesComponent,
     AddRemoveAssociateBuffAndEffectsComponent,
     AddRemoveAssociateMonstersComponent,
-    AddRemoveAssociateSpellsComponent,
-    
-    SingleItemMonsterComponent
+    AddRemoveAssociateSpellsComponent,    
+    SingleItemMonsterComponent,
+    DeleteTemplatesComponent,
+    DeleteSpellsComponent,
+    DeleteAbilitiesComponent,
+    DeleteRecordsComponent,
+    DeleteMonsterTempltesComponent,
+    DeleteMonstersComponent,
+    LootPileComponent,
+    CreateLootPileComponent,
+    LootPileDetailsComponent,
+    AddLootPileComponent
   ],
   imports: [
     SharedModule
@@ -150,7 +169,17 @@ import { SingleItemMonsterComponent } from "./monster-template/single-item/singl
     AddRemoveAssociateAbilitiesComponent,
     AddRemoveAssociateBuffAndEffectsComponent,
     AddRemoveAssociateMonstersComponent,
-    AddRemoveAssociateSpellsComponent
+    AddRemoveAssociateSpellsComponent,
+    DeleteTemplatesComponent,
+    DeleteSpellsComponent,
+    DeleteAbilitiesComponent,
+    DeleteRecordsComponent,
+    DeleteMonsterTempltesComponent,
+    DeleteMonstersComponent,
+    LootPileComponent,
+    CreateLootPileComponent,
+    LootPileDetailsComponent,
+    AddLootPileComponent
   ],
   entryComponents: [
     AddItemMasterComponent,
@@ -181,8 +210,15 @@ import { SingleItemMonsterComponent } from "./monster-template/single-item/singl
     AddRemoveAssociateAbilitiesComponent,
     AddRemoveAssociateBuffAndEffectsComponent,
     AddRemoveAssociateMonstersComponent,
-    AddRemoveAssociateSpellsComponent
-  
+    AddRemoveAssociateSpellsComponent,
+    DeleteTemplatesComponent,
+    DeleteSpellsComponent,
+    DeleteAbilitiesComponent,
+    DeleteRecordsComponent,
+    DeleteMonsterTempltesComponent,
+    DeleteMonstersComponent,
+    CreateLootPileComponent,
+    AddLootPileComponent
   ]
 })
 export class RecordsModule {}

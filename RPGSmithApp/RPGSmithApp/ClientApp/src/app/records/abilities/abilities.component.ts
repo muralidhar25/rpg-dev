@@ -20,6 +20,7 @@ import { Ruleset } from "../../core/models/view-models/ruleset.model";
 import { AppService1 } from "../../app.service";
 import { DiceRollComponent } from "../../shared/dice/dice-roll/dice-roll.component";
 import { Characters } from "../../core/models/view-models/characters.model";
+import { DeleteAbilitiesComponent } from "./delete-abilities/delete-abilities.component";
 
 @Component({
     selector: 'app-abilities',
@@ -468,4 +469,15 @@ export class AbilitiesComponent implements OnInit {
     this.bsModalRef.content.recordType = 'ruleset'
     this.bsModalRef.content.isFromCampaignDetail = true;
   }
+
+  DeleteAbility() {
+    this.bsModalRef = this.modalService.show(DeleteAbilitiesComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.ruleSetId = this.ruleSetId;
+    //this.bsModalRef.content.characterId = this.characterId;
+  }
+
 }

@@ -24,6 +24,7 @@ import { CreateMonsterGroupComponent } from "./moster-group/monster-group.compon
 import { Bundle } from "../../core/models/view-models/bundle.model";
 import { VIEW } from "../../core/models/enums";
 import { CustomDice } from "../../core/models/view-models/custome-dice.model";
+import { DeleteMonsterTempltesComponent } from "./delete-monster-templates/delete-monster-templates.component";
 
 
 @Component({
@@ -770,6 +771,16 @@ export class MonsterTemplateComponent implements OnInit {
     else {
       this.router.navigate(['/ruleset/monster-template-details', monsterTemplate.monsterTemplateId]);
     }
+  }
+
+  DeleteTemplates() {
+     this.bsModalRef = this.modalService.show(DeleteMonsterTempltesComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.ruleSetId = this.ruleSetId;
+    //this.bsModalRef.content.characterId = this.characterId;
   }
 
 }

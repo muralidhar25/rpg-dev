@@ -28,6 +28,7 @@ export class CharacterAbilityService extends EndpointFactory {
   private readonly _deleteUrl_up: string = "/api/CharacterAbility/delete_up";
   private readonly _toggleEnableCharacterAbilityUrl: string = "/api/CharacterAbility/toggleEnableCharacterAbility";
   private readonly _duplicateUrl: string = "/api/CharacterAbility/DuplicateItem";
+  private readonly RemoveAbilities: string = "/api/CharacterAbility/RemoveAbilities";
 
   private readonly getByCharacterId_api: string = this.configurations.baseUrl + "/api/CharacterAbility/getByCharacterId_sp";
 
@@ -260,6 +261,14 @@ export class CharacterAbilityService extends EndpointFactory {
     }
 
     return abilityFormModal;
+  }
+
+  removeAbilities<T>(AbilitiesList: any): Observable<T> {
+    let removeAbilitiesURL = `${this.RemoveAbilities}`;
+    return this.http.post<T>(removeAbilitiesURL, JSON.stringify(AbilitiesList), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.removeAbilities(AbilitiesList));
+      });
   }
 
 }

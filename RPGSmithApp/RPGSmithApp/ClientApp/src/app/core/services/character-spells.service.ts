@@ -29,6 +29,7 @@ export class CharacterSpellService extends EndpointFactory {
   private readonly _deleteUrl_up: string = "/api/CharacterSpell/delete_up";
   private readonly _toggleMemorizedCharacterSpellUrl: string = "/api/CharacterSpell/toggleMemorizedCharacterSpell";
   private readonly _duplicateUrl: string = "/api/CharacterSpell/DuplicateItem";
+  private readonly RemoveSpells: string = "/api/CharacterSpell/removeSpells";
 
   private readonly getByCharacterId_api: string = this.configurations.baseUrl + "/api/CharacterSpell/getByCharacterId_sp";
 
@@ -276,6 +277,15 @@ export class CharacterSpellService extends EndpointFactory {
     }
 
     return spellFormModal;
+  }
+
+  removeSpells<T>(spellsList: any): Observable<T> {
+    debugger
+    let removeSpellsURL = `${this.RemoveSpells}`;
+    return this.http.post<T>(removeSpellsURL, JSON.stringify(spellsList), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.removeSpells(spellsList));
+      });
   }
 
 

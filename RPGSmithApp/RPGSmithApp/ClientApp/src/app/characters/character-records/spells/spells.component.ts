@@ -23,6 +23,7 @@ import { CreateSpellsComponent } from "../../../shared/create-spells/create-spel
 import { AppService1 } from "../../../app.service";
 import { HeaderValues } from "../../../core/models/headers.model";
 import { ServiceUtil } from "../../../core/services/service-util";
+import { RemoveSpellsComponent } from "./remove-spells/remove-spells.component";
 
 @Component({
     selector: 'app-spells',
@@ -815,5 +816,15 @@ export class CharacterSpellsComponent implements OnInit {
       this.router.navigate(['/character/dashboard', this.characterId]);
     }
     //window.history.back();
+  }
+
+  RemoveSpell() {
+    this.bsModalRef = this.modalService.show(RemoveSpellsComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.ruleSetId = this.rulesetId;
+    this.bsModalRef.content.characterId = this.characterId;
   }
 }

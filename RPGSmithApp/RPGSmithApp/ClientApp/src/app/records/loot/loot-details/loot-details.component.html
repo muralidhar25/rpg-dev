@@ -80,6 +80,8 @@
                             </li>
                             <li class="dropdown-menu-item">
                               <button type="button" (click)="duplicateItemTemplate(ItemMasterDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent">Duplicate</button>
+                              <!--<button type="button" *ngIf="ItemMasterDetail.isShow" (click)="Show(ItemMasterDetail)" class="btn btn-accent icon icon-Gen-Hide icon-with-text">Hide</button>
+                              <button type="button" *ngIf="!ItemMasterDetail.isShow" (click)="Show(ItemMasterDetail)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>-->
                             </li>
                             <li class="dropdown-menu-item">
                               <button type="button" (click)="deleteItemTemplate(ItemMasterDetail)" class="btn icon icon-with-text icon-trash btn-accent">Delete</button>
@@ -111,6 +113,8 @@
                           </li>
                           <li class="dropdown-menu-item">
                             <button type="button" (click)="duplicateItemTemplate(ItemMasterDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent"> Duplicate</button>
+                            <!--<button type="button" *ngIf="ItemMasterDetail.isShow" (click)="Show(ItemMasterDetail)" class="btn btn-accent icon icon-Gen-Hide icon-with-text">Hide</button>
+                            <button type="button" *ngIf="!ItemMasterDetail.isShow" (click)="Show(ItemMasterDetail)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>-->
                           </li>
                           <li class="dropdown-menu-item">
                             <button type="button" (click)="deleteItemTemplate(ItemMasterDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
@@ -147,10 +151,10 @@
 
                                 <div class="item-info-props-indics">
                                     <ul class="item-info-props">
-                                        <li *ngIf="ItemMasterDetail.rarity">{{ItemMasterDetail.rarity}}</li>
+                                        <li *ngIf="ItemMasterDetail.rarity" popover="{{ItemMasterDetail.rarity}}" triggers="hover" popoverTitle="RARITY">{{ItemMasterDetail.rarity}}</li>
                                         <li *ngIf="ItemMasterDetail.value" popover="{{ItemMasterDetail.value}} {{ItemMasterDetail.currencyLabel}}" triggers="hover" popoverTitle="VALUE">{{ItemMasterDetail.value}} {{ItemMasterDetail.currencyLabel}}</li>
                                         <li *ngIf="ItemMasterDetail.weight" popover="{{ItemMasterDetail.weight}} {{ItemMasterDetail.weightLabel}}" triggers="hover" popoverTitle="WEIGHT">{{ItemMasterDetail.weight}} {{ItemMasterDetail.weightLabel}}</li>
-                                        <li *ngIf="ItemMasterDetail.volume">{{ItemMasterDetail.volume}} {{ItemMasterDetail.volumeLabel}}</li>
+                                        <li *ngIf="ItemMasterDetail.volume"  popover="{{ItemMasterDetail.volume}} {{ItemMasterDetail.volumeLabel}}" triggers="hover" popoverTitle="VOLUME">{{ItemMasterDetail.volume}} {{ItemMasterDetail.volumeLabel}}</li>
                                     </ul>
                                     <ul class="item-info-indics">
                                         <li *ngIf="ItemMasterDetail.isConsumable" title="Consumable" data-toggle="tooltip">
@@ -173,7 +177,9 @@
                                     <button type="button" (click)="deleteItemTemplate(ItemMasterDetail)" class="btn btn-accent icon-with-text icon icon-trash"> Delete</button>
                                 </li>
                                 <li>
-                                    <button type="button" (click)="duplicateItemTemplate(ItemMasterDetail)" class="btn btn-accent icon icon-with-text icon-copy icon-rsi "> Duplicate</button>
+                                  <!--<button type="button" (click)="duplicateItemTemplate(ItemMasterDetail)" class="btn btn-accent icon icon-with-text icon-copy icon-rsi "> Duplicate</button>-->
+                                  <button type="button" *ngIf="ItemMasterDetail?.isShow" (click)="Show(ItemMasterDetail)" class="btn btn-accent icon icon-Gen-Hide icon-with-text">Hide</button>
+                                  <button type="button" *ngIf="!ItemMasterDetail?.isShow" (click)="Show(ItemMasterDetail)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>
                                 </li>
                             </ul>
                         </div>

@@ -9429,3 +9429,7 @@ input-type-number::-webkit-outer-spin-button {
 .visibility-hidden {
   visibility: hidden;
 }
+.action-btn-font-size {
+  font-size: 1.4rem !important;
+  font-weight:bold !important;
+}
