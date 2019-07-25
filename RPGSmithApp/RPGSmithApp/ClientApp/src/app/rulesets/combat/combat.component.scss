@@ -1173,18 +1173,23 @@ button.btn-top {
   border-right: 1px solid black !important;
 }*/
 ul.item-info-props li {
-  display: inline-block;
+  /*display: inline-block;*/
   background-color: #58514c;
   color: #fff;
   text-align: center;
   width: 64px;
   margin-bottom: 4px;
-  padding: 8px 0px;
+  padding: 8px 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 4px;
+  white-space: nowrap;
 }
 
 ul.item-info-props {
   padding-left: 15px;
   list-style: none;
+  display: flex;
 }
 
 input.input-color-custom {
@@ -1231,7 +1236,7 @@ li.custom-margin {
 }
 
 @media screen and (min-width: 768px) and (max-width:1023px) {
-  
+
   .btns-combat-actions .btn-group.open .dropdown-menu ul li.ipad-screen {
     display: block !important;
   }
@@ -1262,8 +1267,14 @@ li.custom-margin {
     width: 100% !important;
   }
 }
+
 .detail-pane-target {
   background: #2d6893;
   margin: 10px 0px;
   padding: 4px;
+  border-radius: 4px 4px 0px 0px;
+}
+
+.r-padding {
+  padding-right: 0;
 }

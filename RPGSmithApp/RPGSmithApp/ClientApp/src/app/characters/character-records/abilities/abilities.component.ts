@@ -23,6 +23,7 @@ import { AppService1 } from "../../../app.service";
 import { HeaderValues } from "../../../core/models/headers.model";
 import { fadeInOut } from "../../../core/services/animations";
 import { ServiceUtil } from "../../../core/services/service-util";
+import { RemoveAbilitiesComponent } from "./remove-abilities/remove-abilities.component";
 
 @Component({
   selector: 'app-abilities',
@@ -854,4 +855,15 @@ export class CharacterAbilitiesComponent implements OnInit {
     }
     //window.history.back();
   }
+
+  RemoveAbility() {
+    this.bsModalRef = this.modalService.show(RemoveAbilitiesComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.ruleSetId = this.rulesetId;
+    this.bsModalRef.content.characterId = this.characterId;
+  }
+
 }

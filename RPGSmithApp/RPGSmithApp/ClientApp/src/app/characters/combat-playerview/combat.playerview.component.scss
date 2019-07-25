@@ -1038,11 +1038,18 @@ page-toolbar-links li:last-child:before {
 .health-circle-column {
   width: 80px;
 }
+
 .target-column {
   width: 132px;
 }
+
 .detail-pane-target {
   background: #2d6893;
   margin: 10px 0px;
   padding: 4px;
+  border-radius: 4px 4px 0px 0px;
+}
+
+.r-padding {
+  padding-right: 0;
 }

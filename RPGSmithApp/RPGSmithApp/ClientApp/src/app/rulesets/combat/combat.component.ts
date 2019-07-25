@@ -74,7 +74,6 @@ export class CombatComponent implements OnInit {
   delayResumeTurn: boolean = false;
   sub: Subscription;
   characterId: any;
-  noDescripttionAvailable: string = 'No Descripttion Available';
   DummyValueForCharHealthStat: number = -9999;
   charXPStatNames: string[] = [];
   charHealthStatNames: string[] = [];
@@ -155,10 +154,13 @@ export class CombatComponent implements OnInit {
 
     }
   ]
+  noStatProvided: string = "No Stat Provided"
+  noCharacterDescriptionProvided: string = 'No Character Description Provided';
+  noMonsterDescriptionProvided: string ="No Monster Description Provided"
   noBuffs_EffectsAvailable: string = 'No Buffs & Effects Assigned';
-  noItemsAvailable: string = 'No Items Available';
-  noSpellsAvailable: string = 'No Spells Available';
-  noAbilitiesAvailable: string = 'No Abilities Available';
+  noItemsAvailable: string = 'No Items Added';
+  noSpellsAvailable: string = 'No Spells Assigned';
+  noAbilitiesAvailable: string = 'No Abilities Assigned';
   monsterDetailType = MonsterDetailType;
   timeoutHandler: any;
   refreshFlag: boolean = false;

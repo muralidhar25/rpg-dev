@@ -56,7 +56,7 @@
                   <button type="button" (click)="addSpell()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Add Spell</button>
               </div>-->
               <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
-                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle is-show"><span class="text-hide-tab  is-show">New Spell</span></button>
+                <button type="button" data-toggle="dropdown" aria-expanded="false" class="action-btn-font-size btn icon icon-with-text btn-primary dropdown-toggle is-show">A<span class="text-hide-tab  is-show">ACTIONS</span></button>
                 <!--<button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle is-show"><span class="text-hide-tab  is-show">New Spell</span></button>-->
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                   <ul class="dropdown-menu-list">
@@ -65,6 +65,9 @@
                     </li>
                     <li class="dropdown-menu-item">
                       <button type="button" (click)="createSpell()" class="btn btn-accent icon-Gen-Edit" [disabled]="pauseSpellCreate"> Create Spell</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="RemoveSpell()" class="btn btn-accent icon icon-with-text icon-Rec-Remove"> Remove Spell(s)</button>
                     </li>
                   </ul>
                 </div>
@@ -119,8 +122,8 @@
         <button type="button" (click)="addSpell()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Add Spell</button>
     </div>-->
             <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
-              <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle is-show">
-                <span class="text-hide-tab  is-show">New Spell</span>
+              <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text btn-primary dropdown-toggle is-show">
+                <span class="text-hide-tab  is-show">ACTIONS</span>
               </button>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                 <ul class="dropdown-menu-list">
@@ -129,6 +132,9 @@
                   </li>
                   <li class="dropdown-menu-item">
                     <button type="button" (click)="createSpell()" class="btn btn-accent icon-Gen-Edit" [disabled]="pauseSpellCreate"> Create Spell</button>
+                  </li>
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="RemoveSpell()" class="btn btn-accent icon icon-with-text icon-Rec-Remove"> Remove Spell(s)</button>
                   </li>
                 </ul>
               </div>
@@ -150,7 +156,7 @@
        [infiniteScrollThrottle]="300" [scrollWindow]="true">
     <div class="container">
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
-        <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Spells have been added to this character. Click "+New Spell" to add some.</p>
+        <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Spells have been added to this character. Click "+ACTIONS" to add some.</p>
         <ng-container *ngFor="let spell of spellsList">
           <div class="card-wrapper" (mousedown)="editRecord(spell)" (mouseup)="clickAndHold(spell)" (mouseleave)="clickAndHold(spell)">
             <div class="card" [ngClass]="{'card-equip':spell.isMemorized}">

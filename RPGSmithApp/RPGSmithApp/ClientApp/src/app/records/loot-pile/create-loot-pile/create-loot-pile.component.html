@@ -1,0 +1,106 @@
+<form name="itemMasterForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm(itemMasterFormModal)">
+  <div class="modal-header">
+    <h5 class="modal-title" id="createItemPopupTitle">{{title}}</h5>
+    <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
+  </div>
+  <div class="modal-body" *ngIf="!isLoading">
+
+    <div class="form-row">
+      <div class="col-12 col-md-6">
+        <div class="form-group">
+          <label for="newItemName">Name</label>
+          <input *ngIf="itemMasterFormModal.view != 'edit'" type="text" id="newItemName" name="newItemName" class="form-control" placeholder="Item Template Name" [ngStyle]="{'border-color': f.submitted && !newItemName.valid ? 'red' : '#d3cfce'}" [autofocus] [(ngModel)]="itemMasterFormModal.itemName" #newItemName="ngModel" required>
+          <input *ngIf="itemMasterFormModal.view == 'edit'" type="text" id="newItemName" name="newItemName" class="form-control" placeholder="Item Template Name" [ngStyle]="{'border-color': f.submitted && !newItemName.valid ? 'red' : '#d3cfce'}" [(ngModel)]="itemMasterFormModal.itemName" #newItemName="ngModel" required>
+        </div>
+        <div class="form-group">
+          <label for="newItemTags">Tags</label>
+          <tag-input name="metatags" [(ngModel)]='metatags' separatorKeyCodes="[9]" editable="true" placeholder="Input Tags, Separate with [Tab]" secondaryPlaceholder="Input Tags, Separate with [Tab]"
+                     inputId="metatags" inputClass="form-control metatags-field" class="form-control">
+            <ng-template let-item="item" let-index="index">
+              <delete-icon class="tagdeleteicon" (click)="removeTag(metatags,item,index)"></delete-icon>
+              <span *ngIf="item.value;else other"> {{item.value}} </span>
+              <ng-template #other> {{item}} </ng-template>
+            </ng-template>
+          </tag-input>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <!-- Image file -->
+        <div class="form-group input-image input-image-alt">
+          <label for="newItemImageFile">Image (optional)</label>
+          <div class="input-image-control input-image-note input-image-trigger" (click)="cropImage(null,true,'VIEW.ADD')"
+               *ngIf="((itemMasterFormModal.itemMasterId === undefined || itemMasterFormModal.itemMasterId === 0)
+                        && !showWebButtons && itemMasterFormModal.itemImage === undefined)
+                        || (!showWebButtons && (itemMasterFormModal.itemImage === undefined || itemMasterFormModal.itemImage === null))">
+            <div class="icon icon-upload"><span>Click here to upload.</span><small>(320 x 320 px)</small></div>
+          </div>
+          <div class="form-group input-image-note input-image-trigger" (click)="cropImage(itemMasterFormModal.itemImage,true,'VIEW.EDIT')"
+               *ngIf="(!showWebButtons && itemMasterFormModal.itemImage !== undefined && itemMasterFormModal.itemImage !== null)">
+            <img class="item-master-img" [src]="itemMasterFormModal.itemImage"
+                 onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+          </div>
+          <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
+            <img [src]="itemMasterFormModal.itemImage" class="bg-image" />
+          </div>
+          <input type="file" id="newItemImagePortrait" class="form-control-file">
+        </div>
+        <!-- End of image file -->
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="newItemDescription">Description</label>
+          <div [froalaEditor]="options('Description')" [(ngModel)]="itemMasterFormModal.itemVisibleDesc" name="itemVisibleDesc"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-12">
+        <span class="custom-checkbox random-checkbox">
+          <input type="checkbox" name="visible" id="visible" />
+          <span class="random-checkbox-span">Visible</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group form-row">
+      <div class="col-md-6">
+        <label for="newItemSpells" class="">Items</label>
+      </div>
+    </div>
+
+    <div class="form-group form-group-unlabelled" (click)="addContainerItem(itemMasterFormModal)">
+      <!---THIS TAG INPUT IS USED FOR CONTAINS ITEMS SELECTED FROM POPUP-->
+      <!--<tag-input name="contains"
+               [(ngModel)]='itemMasterFormModal.contains'
+               theme='dark'
+               inputId="contains"
+               inputClass="form-control metatags-field"
+               class="form-control"
+               [identifyBy]="'value'"
+               [displayBy]="'text'"
+               [placeholder]="''"
+               [secondaryPlaceholder]="'Select Item'">
+
+    </tag-input>-->
+    </div>
+
+    <div class="form-group form-group-unlabelled" (click)="addContainerItem(itemMasterFormModal)">
+      <span class="input-group-btn">
+        <button type="button" title="Select Item" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
+      </span>
+      <!---THIS TAG INPUT IS USED FOR CONTAINS ITEMS SELECTED FROM POPUP-->
+      <tag-input name="contains" [(ngModel)]='itemMasterFormModal.contains' theme='dark' inputId="contains" inputClass="form-control metatags-field" class="form-control"
+                 [identifyBy]="'Id'" [displayBy]="'itemName'" placeholder="" secondaryPlaceholder="Select Item"></tag-input>
+    </div>
+
+  </div>
+  <app-loader [isLoading]="isLoading"></app-loader>
+  <div class="modal-footer pt-1">
+    <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+    <button type="submit" [disabled]="isLoading" class="btn btn-accent">{{button}}</button>
+  </div>
+</form>

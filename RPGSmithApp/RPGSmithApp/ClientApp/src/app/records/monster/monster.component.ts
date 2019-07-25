@@ -25,6 +25,7 @@ import { AddMonsterComponent } from "./Add-monster/add-monster.component";
 import { ItemsService } from "../../core/services/items.service";
 import { CastComponent } from "../../shared/cast/cast.component";
 import { CustomDice } from "../../core/models/view-models/custome-dice.model";
+import { DeleteMonstersComponent } from "./delete-monsters/delete-monsters.component";
 
 @Component({
   selector: 'app-monster',
@@ -773,6 +774,16 @@ export class MonsterComponent implements OnInit {
         }, () => { });
 
     }
+  }
+
+  DeleteMonsters() {
+    this.bsModalRef = this.modalService.show(DeleteMonstersComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.ruleSetId = this.ruleSetId;
+    //this.bsModalRef.content.characterId = this.characterId;
   }
 
 }

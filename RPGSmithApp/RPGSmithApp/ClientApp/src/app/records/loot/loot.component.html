@@ -62,7 +62,7 @@
             </li>
             <li>
               <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
-                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle is-show"><span class="text-hide-tab is-show">New Loot</span></button>
+                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text btn-primary dropdown-toggle is-show">A<span class="text-hide-tab is-show">ACTIONS</span></button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                   <ul class="dropdown-menu-list">
                     <li class="dropdown-menu-item">
@@ -70,6 +70,9 @@
                     </li>
                     <li class="dropdown-menu-item">
                       <button type="button" (click)="createItem()" class="btn btn-accent icon-Gen-Edit" [disabled]="pauseItemCreate"> Create Loot</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="deleteAll()" class="btn btn-accent icon-with-text icon-Gen-Trash"> Delete Loot</button>
                     </li>
                   </ul>
                 </div>
@@ -120,12 +123,12 @@
           <li class="refresh-btn">
             <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
           </li>
-          <li class="refresh-btn">
+          <!--<li class="refresh-btn">
             <button type="button" class="btn btn-outline-primary icon icon-Gen-Trash" (click)="deleteAll()"></button>
-          </li>
+          </li>-->
           <li>
             <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
-              <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle is-show"><span class="text-hide-tab is-show">New Loot</span></button>
+              <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text btn-primary dropdown-toggle is-show"><span class="text-hide-tab is-show">ACTIONS</span></button>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                 <ul class="dropdown-menu-list">
                   <li class="dropdown-menu-item">
@@ -133,6 +136,9 @@
                   </li>
                   <li class="dropdown-menu-item">
                     <button type="button" (click)="createItem()" class="btn btn-accent icon-Gen-Edit" [disabled]="pauseItemCreate"> Create Loot</button>
+                  </li>
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="deleteAll()" class="btn btn-accent icon-with-text icon-Gen-Trash"> Delete Loot</button>
                   </li>
                 </ul>
               </div>
@@ -151,7 +157,7 @@
        [infiniteScrollThrottle]="300" [scrollWindow]="true">
     <div class="container">
       <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
-        <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Loots have been added to this ruleset. Click "+NEW LOOT" to add some.</p>
+        <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Loots have been added to this ruleset. Click "+ACTIONS" to add some.</p>
         <ng-container *ngFor="let ItemMaster of ItemMasterList">
           <div class="card-wrapper" (mousedown)="editRecord(ItemMaster)" (mouseup)="clickAndHold(ItemMaster)" (mouseleave)="clickAndHold(ItemMaster)">
             <div class="card" [ngClass]="{'card-equip':ItemMaster?.isShow}">

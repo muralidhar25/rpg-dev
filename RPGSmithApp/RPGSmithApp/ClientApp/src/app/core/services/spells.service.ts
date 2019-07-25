@@ -32,6 +32,7 @@ export class SpellsService extends EndpointFactory {
 
   private readonly getByRuleSetId_sp: string = this.configurations.baseUrl + "/api/Spell/getByRuleSetId_sp";
   private readonly getSpellCommands_api: string = this.configurations.baseUrl + "/api/Spell/getSpellCommands_sp";
+  private readonly DeleteSpells: string = this.configurations.baseUrl + "/api/Spell/DeleteSpells";
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
@@ -255,6 +256,16 @@ export class SpellsService extends EndpointFactory {
     }
 
     return spellFormModal;
+  }
+
+
+  deleteSpells<T>(SpellsList: any): Observable<T> {
+    debugger
+    let endpointURL = `${this.DeleteSpells}`;
+    return this.http.post<T>(endpointURL, JSON.stringify(SpellsList), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deleteSpells(SpellsList));
+      });
   }
 
 

@@ -65,8 +65,8 @@
         <button type="button" (click)="createItem()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block "> <span>Create Item</span></button>
     </div>-->
                       <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
-                        <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle is-show">
-                          <span class="text-hide-tab  is-show">Create</span>
+                        <button type="button" data-toggle="dropdown" aria-expanded="false" class="action-btn-font-size btn icon icon-with-text btn-primary dropdown-toggle is-show">A
+                          <span class="text-hide-tab  is-show">ACTIONS</span>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                           <ul class="dropdown-menu-list">
@@ -75,6 +75,9 @@
                             </li>
                             <li class="dropdown-menu-item">
                               <button type="button" (click)="createBundle()" class="btn btn-accent icon-Gen-Edit"> Bundle</button>
+                            </li>
+                            <li class="dropdown-menu-item">
+                              <button type="button" (click)="DeleteTemplate()" class="btn btn-accent icon icon-with-text icon-Gen-Trash"> Delete Templates</button>
                             </li>
                           </ul>
                         </div>
@@ -107,8 +110,8 @@
         <button type="button" (click)="createItem()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Create Item</button>
     </div>-->
                     <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
-                      <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle is-show">
-                        <span class="text-hide-tab  is-show">Create</span>
+                      <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text btn-primary dropdown-toggle is-show">
+                        <span class="text-hide-tab  is-show">ACTIONS</span>
                       </button>
                       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                         <ul class="dropdown-menu-list">
@@ -117,6 +120,9 @@
                           </li>
                           <li class="dropdown-menu-item">
                             <button type="button" (click)="createBundle()" class="btn btn-accent icon-Gen-Edit"> Bundle</button>
+                          </li>
+                          <li class="dropdown-menu-item">
+                            <button type="button" (click)="DeleteTemplate()" class="btn btn-accent icon icon-with-text icon-Gen-Trash"> Delete Templates</button>
                           </li>
                         </ul>
                       </div>
@@ -135,7 +141,7 @@
          [infiniteScrollThrottle]="300" [scrollWindow]="true">
         <div class="container">
             <div class="card-list justify-content-center justify-content-lg-start" [ngClass]="{'view-list':isListView, 'dense-list': isDenseView}">
-                <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Items have been added to this ruleset. Click "+NEW ITEM" to add some.</p>
+              <p class="text-center py-5 w-100 d-block" *ngIf="noRecordFound">No Items have been added to this ruleset. Click "+ACTIONS" to add some.</p>
                 <ng-container *ngFor="let ItemMaster of ItemMasterList">
                     <div class="card-wrapper" (mousedown)="editRecord(ItemMaster)" (mouseup)="clickAndHold(ItemMaster)" (mouseleave)="clickAndHold(ItemMaster)">
                         <div class="card">

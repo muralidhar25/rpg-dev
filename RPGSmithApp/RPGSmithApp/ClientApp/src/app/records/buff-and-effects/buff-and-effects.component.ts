@@ -21,6 +21,7 @@ import { BuffAndEffect } from "../../core/models/view-models/buff-and-effect.mod
 import { BuffAndEffectService } from "../../core/services/buff-and-effect.service";
 import { ServiceUtil } from "../../core/services/service-util";
 import { AssignBuffAndEffectComponent } from "../../shared/buffs-and-effects/assign-buffs-and-effects/assign-buffs-and-effects.component";
+import { DeleteRecordsComponent } from "./delete-records/delete-records.component";
 
 @Component({
   selector: 'app-buff-and-effects',
@@ -434,4 +435,15 @@ export class BuffAndEffectComponent implements OnInit {
     
     this.router.navigate(['/ruleset/buff-effect-details', buffAndEffectId]);
   }
+
+  DeleteRecords() {
+    this.bsModalRef = this.modalService.show(DeleteRecordsComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.ruleSetId = this.ruleSetId;
+    //this.bsModalRef.content.characterId = this.characterId;
+  }
+
 }

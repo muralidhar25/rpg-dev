@@ -31,6 +31,8 @@ export class MonsterTemplateService extends EndpointFactory {
   private readonly _getByRulesetUrl_add: string = "/api/MonsterTemplate/getByRuleSetId_add";
   private readonly _uploadUrl: string = "/api/MonsterTemplate/upLoadMonsterTemplateImageBlob";
   private readonly _duplicateUrl: string = "/api/MonsterTemplate/duplicate";
+  private readonly DeleteMonsterTemplates: string = "/api/MonsterTemplate/DeleteMonsterTemplates";
+  private readonly DeleteMonsters: string = "/api/MonsterTemplate/DeleteMonsters";
  
   
 
@@ -614,6 +616,23 @@ export class MonsterTemplateService extends EndpointFactory {
       }
     }
     return bundleFormModal;
+  }
+
+  deleteMonsterTemplates<T>(TemplatesList: any): Observable<T> {
+    debugger
+    let endpointURL = `${this.DeleteMonsterTemplates}`;
+    return this.http.post<T>(endpointURL, JSON.stringify(TemplatesList), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deleteMonsterTemplates(TemplatesList));
+      });
+  }
+  deleteMonsters<T>(monstersList: any): Observable<T> {
+    debugger
+    let endpointURL = `${this.DeleteMonsters}`;
+    return this.http.post<T>(endpointURL, JSON.stringify(monstersList), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deleteMonsters(monstersList));
+      });
   }
 
 }

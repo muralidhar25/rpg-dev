@@ -52,6 +52,8 @@ export class ItemsService extends EndpointFactory {
 
   private readonly GetCharSpellIDUrl: string = this.configurations.baseUrl + "/api/Item/GetCharSpellIDUrl";
   private readonly GetCharAbilityIDUrl: string = this.configurations.baseUrl + "/api/Item/GetCharAbilityIDUrl";
+  private readonly DropMultipleItems: string = this.configurations.baseUrl + "/api/Item/DropMultipleItems";
+
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
     private fileUploadService: FileUploadService) {
@@ -608,5 +610,13 @@ export class ItemsService extends EndpointFactory {
       }
     }
     return itemFormModal;
+  }
+
+  dropMultipleItems<T>(itemList: any): Observable<T> {
+    let dropMultipleItemsURL = `${this.DropMultipleItems}`;
+    return this.http.post<T>(dropMultipleItemsURL, JSON.stringify(itemList), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.dropMultipleItems(itemList));
+      });
   }
 }

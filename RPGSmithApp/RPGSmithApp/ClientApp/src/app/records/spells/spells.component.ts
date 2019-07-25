@@ -21,6 +21,7 @@ import { Ruleset } from "../../core/models/view-models/ruleset.model";
 import { AppService1 } from "../../app.service";
 import { DiceRollComponent } from "../../shared/dice/dice-roll/dice-roll.component";
 import { Characters } from "../../core/models/view-models/characters.model";
+import { DeleteSpellsComponent } from "./delete-spells/delete-spells.component";
 
 @Component({
     selector: 'app-spells',
@@ -472,4 +473,15 @@ export class SpellsComponent implements OnInit {
     this.bsModalRef.content.recordType = 'ruleset'
     this.bsModalRef.content.isFromCampaignDetail = true;
   }
+
+  DeleteSpell() {
+    this.bsModalRef = this.modalService.show(DeleteSpellsComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.ruleSetId = this.ruleSetId;
+    //this.bsModalRef.content.characterId = this.characterId;
+  }
+
 }

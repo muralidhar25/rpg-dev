@@ -633,7 +633,16 @@ export class CampaignDetailsComponent implements OnInit {
   openCombatTracker() {
     this.router.navigate(['/ruleset/combat', this.ruleSetId]);
   }
-  lootPiletemplate() {
-    //console.log('lootpiletemplate');
+  lootPiletemplate(ruleset: Ruleset) {
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null) {
+      this.authService.logout();
+    }
+    else {
+      if (user.isGm) {
+        this.rulesetService.ruleset = ruleset;
+        this.router.navigate(['/ruleset/loot-pile', ruleset.ruleSetId]);
+      }
+    }
   }
 }

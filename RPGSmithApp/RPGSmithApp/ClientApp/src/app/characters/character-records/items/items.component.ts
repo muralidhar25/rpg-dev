@@ -24,6 +24,7 @@ import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.comp
 import { AppService1 } from "../../../app.service";
 import { HeaderValues } from "../../../core/models/headers.model";
 import { ServiceUtil } from "../../../core/services/service-util";
+import { DropItemsComponent } from "./drop-items/drop-items.component";
 
 
 @Component({
@@ -1005,6 +1006,16 @@ export class CharacterItemsComponent implements OnInit {
       this.router.navigate(['/character/dashboard', this.characterId]);
     }
     //window.history.back();
+  }
+
+  DropItem() {
+    this.bsModalRef = this.modalService.show(DropItemsComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.ruleSetId = this.ruleSetId;
+    this.bsModalRef.content.characterId = this.characterId;
   }
   
 }

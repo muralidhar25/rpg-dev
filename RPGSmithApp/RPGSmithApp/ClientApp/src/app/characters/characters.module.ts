@@ -45,6 +45,9 @@ import { CombatPlayerViewComponent } from "./combat-playerview/combat.playerview
 import { AccordionModule } from "ngx-bootstrap";
 import { PlayerMonsterDetailsComponent } from "./character-records/player-monster-details/player-monster-details.component";
 import { NgCircleProgressModule } from "ng-circle-progress";
+import { DropItemsComponent } from "./character-records/items/drop-items/drop-items.component";
+import { RemoveSpellsComponent } from "./character-records/spells/remove-spells/remove-spells.component";
+import { RemoveAbilitiesComponent } from "./character-records/abilities/remove-abilities/remove-abilities.component";
 
 @NgModule({
   declarations: [
@@ -80,7 +83,10 @@ import { NgCircleProgressModule } from "ng-circle-progress";
     CharBuffAndEffectDetailsComponent,
     CharBuffAndEffectRulesetDetailsComponent,
     CombatPlayerViewComponent,
-    PlayerMonsterDetailsComponent
+    PlayerMonsterDetailsComponent,
+    DropItemsComponent,
+    RemoveSpellsComponent,
+    RemoveAbilitiesComponent
   ],
   imports: [
     SharedModule,
@@ -125,7 +131,10 @@ import { NgCircleProgressModule } from "ng-circle-progress";
     CharBuffAndEffectDetailsComponent,
     CharBuffAndEffectRulesetDetailsComponent,
     CombatPlayerViewComponent,
-    PlayerMonsterDetailsComponent
+    PlayerMonsterDetailsComponent,
+    DropItemsComponent,
+    RemoveSpellsComponent,
+    RemoveAbilitiesComponent
   ],
   entryComponents: [
 
@@ -139,7 +148,10 @@ import { NgCircleProgressModule } from "ng-circle-progress";
     AddCharacterSpellComponent,
     AddCharaterAbilityComponent,
     LinkRecordComponent,
-    CharBuffAndEffectDetailsComponent
+    CharBuffAndEffectDetailsComponent,
+    DropItemsComponent,
+    RemoveSpellsComponent,
+    RemoveAbilitiesComponent
   ]
 })
 export class CharactersModule { }

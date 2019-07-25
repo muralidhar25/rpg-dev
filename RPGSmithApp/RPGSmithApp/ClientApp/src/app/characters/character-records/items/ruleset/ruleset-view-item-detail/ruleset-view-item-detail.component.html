@@ -149,10 +149,10 @@
 
                                 <div class="item-info-props-indics">
                                     <ul class="item-info-props">
-                                        <li *ngIf="ItemMasterDetail.rarity">{{ItemMasterDetail.rarity}}</li>
+                                        <li *ngIf="ItemMasterDetail.rarity" popover="{{ItemMasterDetail.rarity}}" triggers="hover" popoverTitle="RARITY">{{ItemMasterDetail.rarity}}</li>
                                         <li *ngIf="ItemMasterDetail.value" popover="{{ItemMasterDetail.value}} {{ItemMasterDetail.currencyLabel}}" triggers="hover" popoverTitle="VALUE">{{ItemMasterDetail.value}} {{ItemMasterDetail.currencyLabel}}</li>
                                         <li *ngIf="ItemMasterDetail.weight" popover="{{ItemMasterDetail.weight}} {{ItemMasterDetail.weightLabel}}" triggers="hover" popoverTitle="WEIGHT">{{ItemMasterDetail.weight}} {{ItemMasterDetail.weightLabel}}</li>
-                                        <li *ngIf="ItemMasterDetail.volume">{{ItemMasterDetail.volume}} {{ItemMasterDetail.volumeLabel}}</li>
+                                        <li *ngIf="ItemMasterDetail.volume" popover="{{ItemMasterDetail.volume}} {{ItemMasterDetail.volumeLabel}}" triggers="hover" popoverTitle="VOLUME">{{ItemMasterDetail.volume}} {{ItemMasterDetail.volumeLabel}}</li>
                                     </ul>
                                     <ul class="item-info-indics">
                                         <li *ngIf="ItemMasterDetail.isConsumable" title="Consumable" data-toggle="tooltip">

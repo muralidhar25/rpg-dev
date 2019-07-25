@@ -268,4 +268,28 @@ export class LootDetailsComponent implements OnInit {
   GoToRuleBuff(RulesetBuffID: number) {
     this.router.navigate(['/ruleset/buff-effect-details', RulesetBuffID]);
   }
+
+  Show(item) {
+    debugger
+
+    let show = item.isShow ? 'Hide' : 'Show';
+
+    this.lootService.showLoot<any>(item.lootId, !item.isShow)
+      .subscribe(data => {
+        this.isLoading = false;
+        this.alertService.stopLoadingMessage();
+        item.isShow = !item.isShow;
+      },
+        error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let Errors = Utilities.ErrorDetail("Unable to " + show, error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        });
+  }
+
 }

@@ -229,8 +229,8 @@
         </div>
         <div class="combat-accordian">
           <div class="row detail-pane-target" *ngIf="currentCombatantDetail.isOwnPlayer">
-            <div class="col-4 text-white align-self-center">Target:</div>
-            <div class="col-8">
+            <div class="col-4 text-white align-self-center">TARGET</div>
+            <div class="col-8 r-padding">
               <div class="initiative-title-box monsters-title-box crsr-pointer" popover="{{getTargetName(currentCombatantDetail)}}" triggers="hover" (click)="TargetClick(currentCombatantDetail)">
                   <img class="ng-tns-c1-0" [src]="getTargetImage(currentCombatantDetail)">
                   <p class="ng-tns-c1-0 text-ellipsis">
