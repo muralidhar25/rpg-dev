@@ -754,6 +754,15 @@ namespace RPGSmithApp.Controllers
                 {
                     await DeleteItemCommon(model.ItemId, (int)model.CharacterId);
                 }
+                var currentUser = GetUser();
+                if (currentUser.IsGm || currentUser.IsGmPermanent)
+                {
+                    _itemService.AddItemToLoot(model.ItemId);
+                }
+                else if (await _campaignService.isInvitedPlayerCharacter((int)model.CharacterId))
+                {
+                    _itemService.AddItemToLoot(model.ItemId);
+                }
                 foreach (var item in data.ContainedItemsList)
                 {
                     var modelF = item;
@@ -767,17 +776,18 @@ namespace RPGSmithApp.Controllers
                     else
                     {
                         await DeleteItemCommon(modelF.ItemId, (int)modelF.CharacterId);
-                    }                   
+                    }
+                    //var currentUser = GetUser();
+                    if (currentUser.IsGm || currentUser.IsGmPermanent)
+                    {
+                        _itemService.AddItemToLoot(modelF.ItemId);
+                    }
+                    else if (await _campaignService.isInvitedPlayerCharacter((int)modelF.CharacterId))
+                    {
+                        _itemService.AddItemToLoot(modelF.ItemId);
+                    }
                 }
-                var currentUser = GetUser();
-                if (currentUser.IsGm || currentUser.IsGmPermanent ) 
-                {
-                    _itemService.AddItemToLoot(model.ItemId);
-                }   
-                else if (await _campaignService.isInvitedPlayerCharacter((int)model.CharacterId))
-                {
-                    _itemService.AddItemToLoot(model.ItemId);
-                }
+               
                 return Ok();
             }
             catch (Exception ex)

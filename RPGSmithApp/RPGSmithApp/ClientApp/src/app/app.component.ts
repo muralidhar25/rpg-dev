@@ -136,6 +136,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   ChatHalfScreen: boolean = false;
   ShowAds: boolean = true;
   isPlayerCharacter: boolean = false;
+  isCurrentCampaignPlayerCharacter: boolean = false;
   showCombatBtn: boolean = false;
   combatUrl: any;
   cId: number;
@@ -302,6 +303,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.isPlayerCharacter = false;
               if (data) {
                 this.isPlayerCharacter = data.isPlayerCharacter;
+                this.isCurrentCampaignPlayerCharacter = data.isCurrentCampaignPlayerCharacter;
                 if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
                   if (this.router.url.toUpperCase().indexOf('/CHARACTER') > -1) {
                     this.showCombatBtn = true;
@@ -846,7 +848,8 @@ export class AppComponent implements OnInit, AfterViewInit {
                 .subscribe(data => {
                   this.isPlayerCharacter = false;
                   if (data) {
-                    this.isPlayerCharacter = data.isPlayerCharacter
+                    this.isPlayerCharacter = data.isPlayerCharacter;
+                    this.isCurrentCampaignPlayerCharacter = data.isCurrentCampaignPlayerCharacter;
                     if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
                       if (url.toUpperCase().indexOf('/CHARACTER') > -1) {
                         this.showCombatBtn = true;
@@ -1534,14 +1537,29 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.logoPath = '/rulesets/campaigns';
         }
 
-        if (url.toUpperCase().indexOf('/CHARACTER/') > -1) {
-
-          if (this.headers) {
-            if (this.headers.headerLink == 'character') {
-              this.logoPath = '/character/dashboard/' + this.headers.headerId;
-            }           
+        if (this.isPlayerCharacter) {
+          debugger
+          if (this.isCurrentCampaignPlayerCharacter) {
+            this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
           }
+          else {
+            this.logoPath = '/rulesets/campaigns';
+          }
+          
         }
+
+        
+
+        //if (url.toUpperCase().indexOf('/CHARACTER/') > -1) {
+
+        //  if (this.headers) {
+        //    if (this.headers.headerLink == 'character') {
+        //      this.logoPath = '/character/dashboard/' + this.headers.headerId;
+        //    }           
+        //  }
+        //}
+
+
         //if (this.headers) {
         //  if (this.headers.headerLink == 'ruleset') {
         //    this.logoPath = '/ruleset/campaign-details/' + this.headers.headerId;

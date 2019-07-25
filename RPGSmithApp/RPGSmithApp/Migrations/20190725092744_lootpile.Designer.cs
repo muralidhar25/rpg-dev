@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace RPGSmithApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190725092744_lootpile")]
+    partial class lootpile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2499,68 +2501,6 @@ namespace RPGSmithApp.Migrations
                     b.HasIndex("ItemId");
 
                     b.ToTable("ItemSpells");
-                });
-
-            modelBuilder.Entity("DAL.Models.LootPile", b =>
-                {
-                    b.Property<int>("LootPileId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("CharacterID");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(2048)")
-                        .HasMaxLength(2048);
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<string>("Metatags")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("MonsterID");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<int>("RuleSetId");
-
-                    b.Property<bool>("Visible");
-
-                    b.HasKey("LootPileId");
-
-                    b.HasIndex("CharacterID");
-
-                    b.HasIndex("MonsterID");
-
-                    b.HasIndex("RuleSetId");
-
-                    b.ToTable("LootPiles");
-                });
-
-            modelBuilder.Entity("DAL.Models.LootPileLootItem", b =>
-                {
-                    b.Property<int>("LootPileLootItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<int>("LootId");
-
-                    b.Property<int>("LootPileId");
-
-                    b.HasKey("LootPileLootItemId");
-
-                    b.HasIndex("LootId");
-
-                    b.HasIndex("LootPileId");
-
-                    b.ToTable("LootPileLootItems");
                 });
 
             modelBuilder.Entity("DAL.Models.Monster", b =>
@@ -5092,35 +5032,6 @@ namespace RPGSmithApp.Migrations
                     b.HasOne("DAL.Models.Spell", "Spell")
                         .WithMany()
                         .HasForeignKey("SpellId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("DAL.Models.LootPile", b =>
-                {
-                    b.HasOne("DAL.Models.Character", "Character")
-                        .WithMany()
-                        .HasForeignKey("CharacterID");
-
-                    b.HasOne("DAL.Models.Monster", "Monster")
-                        .WithMany()
-                        .HasForeignKey("MonsterID");
-
-                    b.HasOne("DAL.Models.RuleSet", "RuleSet")
-                        .WithMany()
-                        .HasForeignKey("RuleSetId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("DAL.Models.LootPileLootItem", b =>
-                {
-                    b.HasOne("DAL.Models.ItemMasterLoot", "Loot")
-                        .WithMany()
-                        .HasForeignKey("LootId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("DAL.Models.LootPile", "LootPile")
-                        .WithMany("LootPileLootItems")
-                        .HasForeignKey("LootPileId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

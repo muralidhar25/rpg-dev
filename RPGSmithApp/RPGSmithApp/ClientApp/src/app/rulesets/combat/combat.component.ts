@@ -659,7 +659,15 @@ export class CombatComponent implements OnInit {
         }
         if (!this.refreshPCDataModel) {
           this.refreshPCDataModelPageData();
-        } 
+        }
+        //if (!this.refreshPCDataModel && this.showCombatOptions) {
+        //  this.refreshPCDataModelPageData();
+        //}
+        //else if (!this.showCombatOptions) {
+        //  if (this.refreshPCDataModel) {
+        //    clearInterval(this.refreshPCDataModel)
+        //  }
+        //}
       }
       this.isLoading = false;
     }, error => {
