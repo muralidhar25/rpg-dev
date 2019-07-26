@@ -1278,3 +1278,48 @@ li.custom-margin {
 .r-padding {
   padding-right: 0;
 }
+
+table.montser-Items {
+  width: 99%;
+  margin-bottom: 12px;
+  margin-top: 6px;
+  margin-left: 2px;
+}
+
+.montser-Items td {
+  background-color: #58514c;
+  color: #fff;
+  text-align: center;
+  vertical-align: middle;
+  border-right: 5px solid #f3f2f2;
+  padding: 8px 5px 5px 5px;
+}
+.montser-Items td:last-child {
+  border-right: 0 !important;
+}
+.montser-Items div {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/*@media screen and (min-width: 1024px) and (max-width: 1199px)
+{
+  .montser-Items div{
+    width: 41px;
+  }
+  }
+@media screen and (min-width:768px) and (max-width: 1023px) {
+  .montser-Items div {
+    width: 25px;
+  }
+}
+@media screen and (min-width:480px) and (max-width: 767px) {
+  .montser-Items div {
+    width: 69px;
+  }
+}
+@media screen and (min-width:320px) and (max-width: 479px) {
+  .montser-Items div {
+    width: 37px;
+  }
+}*/

@@ -588,16 +588,29 @@
         </div>
       </div>
 
-      <div class="row mt-3 item-info-props-indics" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
-        <ul class="item-info-props">
-          <li popover="{{currentCombatantDetail?.monster?.healthCurrent}} / {{currentCombatantDetail?.monster?.healthMax}}" triggers="hover" popoverTitle="Health" class="crsr-pointer"
-              (click)="updateMonster(currentCombatantDetail, monsterDetailType.HEALTH)">{{currentCombatantDetail?.monster?.healthCurrent}}/{{currentCombatantDetail?.monster?.healthMax}}</li>
-          <li popover="CR: {{currentCombatantDetail?.monster?.challangeRating}}" triggers="hover" popoverTitle="Challenge Rating" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.RATING)">CR: {{currentCombatantDetail?.monster?.challangeRating}}</li>
-          <li popover="AC: {{currentCombatantDetail?.monster?.armorClass}}" triggers="hover" popoverTitle="Armor Class" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.ARMOR)">AC : {{currentCombatantDetail?.monster?.armorClass}}</li>
-          <li popover="INIT: {{currentCombatantDetail?.initiative}}" triggers="hover" popoverTitle="Initiative" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.INITIATIVE)">INIT: {{currentCombatantDetail?.initiative}}</li>
-          <li popover="XP: {{currentCombatantDetail?.monster?.xpValue}}" triggers="hover" popoverTitle="XP Value" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.XPVALUE)">XP : {{currentCombatantDetail?.monster?.xpValue}}</li>
+      <!--<div class="row mt-3 item-info-props-indics" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
+    <ul class="item-info-props">
+      <li popover="{{currentCombatantDetail?.monster?.healthCurrent}} / {{currentCombatantDetail?.monster?.healthMax}}" triggers="hover" popoverTitle="Health" class="crsr-pointer"
+          (click)="updateMonster(currentCombatantDetail, monsterDetailType.HEALTH)">{{currentCombatantDetail?.monster?.healthCurrent}}/{{currentCombatantDetail?.monster?.healthMax}}</li>
+      <li popover="CR: {{currentCombatantDetail?.monster?.challangeRating}}" triggers="hover" popoverTitle="Challenge Rating" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.RATING)">CR: {{currentCombatantDetail?.monster?.challangeRating}}</li>
+      <li popover="AC: {{currentCombatantDetail?.monster?.armorClass}}" triggers="hover" popoverTitle="Armor Class" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.ARMOR)">AC : {{currentCombatantDetail?.monster?.armorClass}}</li>
+      <li popover="INIT: {{currentCombatantDetail?.initiative}}" triggers="hover" popoverTitle="Initiative" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.INITIATIVE)">INIT: {{currentCombatantDetail?.initiative}}</li>
+      <li popover="XP: {{currentCombatantDetail?.monster?.xpValue}}" triggers="hover" popoverTitle="XP Value" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.XPVALUE)">XP : {{currentCombatantDetail?.monster?.xpValue}}</li>
 
-        </ul>
+    </ul>
+  </div>-->
+
+      <div *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
+        <table class="montser-Items">
+          <tr>
+            <td><div popover="{{currentCombatantDetail?.monster?.healthCurrent}} / {{currentCombatantDetail?.monster?.healthMax}}" triggers="hover" popoverTitle="Health" class="crsr-pointer"
+          (click)="updateMonster(currentCombatantDetail, monsterDetailType.HEALTH)">{{currentCombatantDetail?.monster?.healthCurrent}}/{{currentCombatantDetail?.monster?.healthMax}}</div></td>
+            <td><div popover="CR: {{currentCombatantDetail?.monster?.challangeRating}}" triggers="hover" popoverTitle="Challenge Rating" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.RATING)">CR: {{currentCombatantDetail?.monster?.challangeRating}}</div></td>
+            <td><div popover="AC: {{currentCombatantDetail?.monster?.armorClass}}" triggers="hover" popoverTitle="Armor Class" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.ARMOR)">AC : {{currentCombatantDetail?.monster?.armorClass}}</div></td>
+            <td><div popover="INIT: {{currentCombatantDetail?.initiative}}" triggers="hover" popoverTitle="Initiative" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.INITIATIVE)">INIT: {{currentCombatantDetail?.initiative}}</div></td>
+            <td><div popover="XP: {{currentCombatantDetail?.monster?.xpValue}}" triggers="hover" popoverTitle="XP Value" class="crsr-pointer" (click)="updateMonster(currentCombatantDetail, monsterDetailType.XPVALUE)">XP : {{currentCombatantDetail?.monster?.xpValue}}</div></td>
+          </tr>
+        </table>
       </div>
 
       <div class="row detail-pane-target" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER && currentCombatantDetail?.targetId > 0">
