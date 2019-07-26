@@ -1280,7 +1280,7 @@ li.custom-margin {
 }
 
 table.montser-Items {
-  width: 99%;
+  width: 85px;
   margin-bottom: 12px;
   margin-top: 6px;
   margin-left: 2px;
@@ -1298,11 +1298,11 @@ table.montser-Items {
   border-right: 0 !important;
 }
 .montser-Items div {
-  width: 100%;
+  width: 53px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/*@media screen and (min-width: 1024px) and (max-width: 1199px)
+@media screen and (min-width: 1024px) and (max-width: 1199px)
 {
   .montser-Items div{
     width: 41px;
@@ -1322,4 +1322,45 @@ table.montser-Items {
   .montser-Items div {
     width: 37px;
   }
-}*/
+}
+@media screen and (min-width:360px) and (max-width: 374px) {
+  .montser-Items div {
+    width: 45px;
+  }
+}
+@media screen and (min-width:375px) and (max-width: 380px) {
+  .montser-Items div {
+    width: 48px;
+  }
+}
+@media screen and (min-width:409px) and (max-width: 411px) {
+  .montser-Items div {
+    width: 55px;
+  }
+}
+@media screen and (min-width:412px) and (max-width: 414px) {
+  .montser-Items div {
+    width: 56px;
+  }
+}
+@media screen and (min-width:639px) and (max-width: 640px) {
+  .montser-Items div {
+    width: 81px;
+  }
+}
+@media screen and (min-width:640px) and (max-width: 736px) {
+  .montser-Items div {
+    width: 81px;
+  }
+}
+@media screen and (min-width:567px) and (max-width: 568px) {
+  .montser-Items div {
+    width: 87px;
+  }
+}
+@media screen and (min-width:822px) and (max-width: 823px) {
+  .montser-Items div {
+    width: 25px;
+  }
+}
+
