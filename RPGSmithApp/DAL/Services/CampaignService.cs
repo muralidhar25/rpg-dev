@@ -351,11 +351,17 @@ namespace DAL.Services
             var currentCharacter = _context.Characters.Where(x => x.CharacterId == characterID);
             var userId = currentCharacter.Select(x => x.UserId).FirstOrDefault();
             var rulesetOfCurrentCharacter = _context.RuleSets.Where(x => x.RuleSetId == currentCharacter.Select(q => q.RuleSetId).FirstOrDefault()).FirstOrDefault();
+
+            bool IsPlayerLinkedToCurrentCampaign = false;
+            if (currentUser.IsGm && currentUser.Id == rulesetOfCurrentCharacter.OwnerId) {
+                IsPlayerLinkedToCurrentCampaign = true;
+            }
             if (currentUser.Id == userId && currentUser.IsGm && currentUser.Id== rulesetOfCurrentCharacter.OwnerId)
             {
                 return new PlayerControlModel()
                 {
                     IsCurrentCampaignPlayerCharacter = true,
+                    IsPlayerLinkedToCurrentCampaign= IsPlayerLinkedToCurrentCampaign,
                 };
             }
         return await _context.PlayerControls.Where(x => x.PlayerCharacterID == characterID)
@@ -375,6 +381,7 @@ namespace DAL.Services
                     PauseSpellAdd = model.PauseSpellAdd,
                     PauseSpellCreate = model.PauseSpellCreate,
                     IsPlayerCharacter = userId == model.PlayerCharacter.UserId ? true : false,
+                    IsPlayerLinkedToCurrentCampaign= IsPlayerLinkedToCurrentCampaign
                 }).FirstOrDefaultAsync();
         }
         public async Task<PlayerControl> updatePlayerControls(PlayerControl model) {

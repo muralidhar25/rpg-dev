@@ -136,7 +136,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   ChatHalfScreen: boolean = false;
   ShowAds: boolean = true;
   isPlayerCharacter: boolean = false;
-  isCurrentCampaignPlayerCharacter: boolean = false;
+  isPlayerLinkedToCurrentCampaign: boolean = false;
   showCombatBtn: boolean = false;
   combatUrl: any;
   cId: number;
@@ -303,7 +303,8 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.isPlayerCharacter = false;
               if (data) {
                 this.isPlayerCharacter = data.isPlayerCharacter;
-                this.isCurrentCampaignPlayerCharacter = data.isCurrentCampaignPlayerCharacter;
+                this.isPlayerLinkedToCurrentCampaign = data.isPlayerLinkedToCurrentCampaign;
+                console.log('data.isCurrentCampaignPlayerCharacter', data.isCurrentCampaignPlayerCharacter)
                 if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
                   if (this.router.url.toUpperCase().indexOf('/CHARACTER') > -1) {
                     this.showCombatBtn = true;
@@ -849,7 +850,8 @@ export class AppComponent implements OnInit, AfterViewInit {
                   this.isPlayerCharacter = false;
                   if (data) {
                     this.isPlayerCharacter = data.isPlayerCharacter;
-                    this.isCurrentCampaignPlayerCharacter = data.isCurrentCampaignPlayerCharacter;
+                    this.isPlayerLinkedToCurrentCampaign = data.isPlayerLinkedToCurrentCampaign;
+                    console.log('data.isCurrentCampaignPlayerCharacter', data.isCurrentCampaignPlayerCharacter)
                     if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
                       if (url.toUpperCase().indexOf('/CHARACTER') > -1) {
                         this.showCombatBtn = true;
@@ -1539,11 +1541,16 @@ export class AppComponent implements OnInit, AfterViewInit {
 
         if (this.isPlayerCharacter) {
           debugger
-          if (this.isCurrentCampaignPlayerCharacter) {
+          if (this.isPlayerLinkedToCurrentCampaign) {
             this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
           }
           else {
-            this.logoPath = '/rulesets/campaigns';
+            if (this.headers) {
+              if (this.headers.headerLink == 'character') {
+                this.logoPath = '/character/dashboard/' + this.headers.headerId;
+              }
+            }
+            //this.logoPath = '/rulesets/campaigns';
           }
           
         }
@@ -1726,6 +1733,26 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
     else {
       return false;
+    }
+  }
+  GoToPCCombat() {
+    debugger
+    if (this.isPlayerCharacter) {
+      if (this.isPlayerLinkedToCurrentCampaign) {
+        let ruleSetId = this.localStorage.getDataObject<any>(DBkeys.RULESET_ID);
+        if (ruleSetId) {
+          this.router.navigate(['/ruleset/combat', ruleSetId]);
+        }
+      }
+      else {
+        this.router.navigate(this.combatUrl);
+      }
+
+    } else {
+      let ruleSetId = this.localStorage.getDataObject<any>(DBkeys.RULESET_ID);
+      if (ruleSetId) {
+        this.router.navigate(['/ruleset/combat', ruleSetId]);
+      }
     }
   }
 }

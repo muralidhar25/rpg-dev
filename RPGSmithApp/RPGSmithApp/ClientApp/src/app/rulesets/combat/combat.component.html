@@ -447,7 +447,7 @@
                         (click)="isCharacterSpellEnabled && (redirectToSpell(item));$event.stopPropagation()"></li>
                     <li class="action-button-icon-orange icon-Gen-Ability" [ngClass]="isCharacterAbilityEnabled ? 'crsr-pointer': 'disabled' " popover="Abilities" triggers="hover"
                         (click)="isCharacterAbilityEnabled && (redirectToAbility(item));$event.stopPropagation()"></li>
-                    <li class="action-button-icon-orange icon-Gen-CharStat crsr-pointer" popover="Character Stats" triggers="hover"
+                    <li class="action-button-icon-orange icon-Gen-CharStat crsr-pointer" popover="Character Stats" triggers="hover" container="body"
                         (click)="redirectToChracterstat(item);$event.stopPropagation()"></li>
                   </ul>
                   <ul class="action-buttons-table" id="'item'+i" *ngIf="item.type == combatItemsType.MONSTER">

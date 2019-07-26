@@ -29,5 +29,6 @@ namespace DAL.Models
     public class PlayerControlModel : PlayerControl {
         public bool IsPlayerCharacter { get; set; }
         public bool IsCurrentCampaignPlayerCharacter { get; set; }
+        public bool IsPlayerLinkedToCurrentCampaign { get; set; }
     }
 }

@@ -75,7 +75,7 @@ export class DeleteSpellsComponent implements OnInit {
     })
   }
 
-  submitForm(itemMaster: any) {
+  submitForm() {
     this.selectedItems = [];
     this.itemsList.map((item) => {
       if (item.selected) {
@@ -91,11 +91,11 @@ export class DeleteSpellsComponent implements OnInit {
       this.alertService.showMessage("Please select Spell(s) to Delete.", "", MessageSeverity.error);
     }
     else {
-      this.RemoveSelectedItems(itemMaster);
+      this.RemoveSelectedItems();
     }
 
   }
-  RemoveSelectedItems(itemMaster) {
+  RemoveSelectedItems() {
     this.isLoading = true;
     this.spellsService.deleteSpells<any>(this.selectedItems)
       .subscribe(data => {

@@ -74,7 +74,7 @@ export class DropItemsComponent implements OnInit {
     })
   }
 
-  submitForm(itemMaster: any) {
+  submitForm() {
     this.selectedItems = [];
     this.itemsList.map((item) => {
       if (item.selected) {
@@ -90,11 +90,11 @@ export class DropItemsComponent implements OnInit {
       this.alertService.showMessage("Please select Item(s) to Drop.", "", MessageSeverity.error);
     }
     else {
-      this.DropSelectedItems(itemMaster);
+      this.DropSelectedItems();
     }
 
   }
-  DropSelectedItems(itemMaster) {
+  DropSelectedItems() {
     this.isLoading = true;
     this.itemsService.dropMultipleItems<any>(this.selectedItems)
       .subscribe(data => {
