@@ -80,7 +80,7 @@ export class RemoveAbilitiesComponent implements OnInit {
     })
   }
 
-  submitForm(itemMaster: any) {
+  submitForm() {
     this.selectedItems = [];
     this.itemsList.map((item) => {
       if (item.selected) {
@@ -96,11 +96,11 @@ export class RemoveAbilitiesComponent implements OnInit {
       this.alertService.showMessage("Please select Abilities to Remove.", "", MessageSeverity.error);
     }
     else {
-      this.RemoveSelectedItems(itemMaster);
+      this.RemoveSelectedItems();
     }
 
   }
-  RemoveSelectedItems(itemMaster) {
+  RemoveSelectedItems() {
     this.isLoading = true;
     this.characterAbilityService.removeAbilities<any>(this.selectedItems)
       .subscribe(data => {

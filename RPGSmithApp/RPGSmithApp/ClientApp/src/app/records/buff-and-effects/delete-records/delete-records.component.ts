@@ -79,7 +79,7 @@ export class DeleteRecordsComponent implements OnInit {
     })
   }
 
-  submitForm(itemMaster: any) {
+  submitForm() {
     this.selectedItems = [];
     this.itemsList.map((item) => {
       if (item.selected) {
@@ -95,11 +95,11 @@ export class DeleteRecordsComponent implements OnInit {
       this.alertService.showMessage("Please select Records to Delete.", "", MessageSeverity.error);
     }
     else {
-      this.RemoveSelectedItems(itemMaster);
+      this.RemoveSelectedItems();
     }
 
   }
-  RemoveSelectedItems(itemMaster) {
+  RemoveSelectedItems() {
     this.isLoading = true;
     this.buffAndEffectService.deleteRecords<any>(this.selectedItems)
       .subscribe(data => {

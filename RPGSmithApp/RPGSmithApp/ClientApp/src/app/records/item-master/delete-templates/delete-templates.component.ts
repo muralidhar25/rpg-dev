@@ -74,7 +74,7 @@ export class DeleteTemplatesComponent implements OnInit {
     })
   }
 
-  submitForm(itemMaster: any) {
+  submitForm() {
     this.selectedItems = [];
     this.itemsList.map((item) => {
       if (item.selected) {
@@ -90,11 +90,11 @@ export class DeleteTemplatesComponent implements OnInit {
       this.alertService.showMessage("Please select Templates to Delete.", "", MessageSeverity.error);
     }
     else {
-      this.RemoveSelectedItems(itemMaster);
+      this.RemoveSelectedItems();
     }
 
   }
-  RemoveSelectedItems(itemMaster) {
+  RemoveSelectedItems() {
     this.isLoading = true;
     this.itemMasterService.deleteTemplates<any>(this.selectedItems)
       .subscribe(data => {

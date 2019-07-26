@@ -80,7 +80,7 @@ export class DeleteMonsterTempltesComponent implements OnInit {
     })
   }
 
-  submitForm(itemMaster: any) {
+  submitForm() {
     this.selectedItems = [];
     this.itemsList.map((item) => {
       if (item.selected) {
@@ -96,11 +96,11 @@ export class DeleteMonsterTempltesComponent implements OnInit {
       this.alertService.showMessage("Please select Records to Delete.", "", MessageSeverity.error);
     }
     else {
-      this.RemoveSelectedItems(itemMaster);
+      this.RemoveSelectedItems();
     }
 
   }
-  RemoveSelectedItems(itemMaster) {
+  RemoveSelectedItems() {
     this.isLoading = true;
     this.monsterTemplateService.deleteMonsterTemplates<any>(this.selectedItems)
       .subscribe(data => {

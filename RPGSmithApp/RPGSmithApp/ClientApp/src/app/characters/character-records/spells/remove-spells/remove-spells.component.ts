@@ -79,7 +79,7 @@ export class RemoveSpellsComponent implements OnInit {
     })
   }
 
-  submitForm(itemMaster: any) {
+  submitForm() {
     this.selectedItems = [];
     this.itemsList.map((item) => {
       if (item.selected) {
@@ -95,11 +95,11 @@ export class RemoveSpellsComponent implements OnInit {
       this.alertService.showMessage("Please select Spell(s) to Remove.", "", MessageSeverity.error);
     }
     else {
-      this.RemoveSelectedItems(itemMaster);
+      this.RemoveSelectedItems();
     }
 
   }
-  RemoveSelectedItems(itemMaster) {
+  RemoveSelectedItems() {
     this.isLoading = true;
     this.characterSpellService.removeSpells<any>(this.selectedItems)
       .subscribe(data => {
