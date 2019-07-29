@@ -7,23 +7,18 @@ import { LocalStoreManager } from '../../../core/common/local-store-manager.serv
 import { PlatformLocation } from '@angular/common';
 import { ImageSearchService } from '../../../core/services/shared/image-search.service';
 import { FileUploadService } from '../../../core/common/file-upload.service';
-import { SpellsService } from '../../../core/services/spells.service';
 import { ItemMasterService } from '../../../core/services/item-master.service';
-import { AbilityService } from '../../../core/services/ability.service';
-import { CommonService } from '../../../core/services/shared/common.service';
 import { SharedService } from '../../../core/services/shared.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
-import { ItemMaster } from '../../../core/models/view-models/item-master.model';
 import { User } from '../../../core/models/user.model';
 import { DBkeys } from '../../../core/common/db-keys';
 import { DiceComponent } from '../../../shared/dice/dice/dice.component';
 import { ImageSelectorComponent } from '../../../shared/image-interface/image-selector/image-selector.component';
 import { LootService } from '../../../core/services/loot.service';
 import { AppService1 } from '../../../app.service';
-import { LootAddContainerComponent } from '../../loot/loot-add-container/loot-add-container.component';
-import { LootAddContainerItemComponent } from '../../loot/loot-add-container-item/loot-add-container-item.component';
 import { AddLootPileComponent } from '../add-loot-pile/add-loot-pile.component';
+import { CreateLootPile } from '../../../core/models/view-models/loot-pile-create.model';
 
 @Component({
   selector: 'app-create-loot-pile',
@@ -34,21 +29,14 @@ export class CreateLootPileComponent implements OnInit {
 
   isLoading = false;
   title: string;
-  _ruleSetId: number;
+  ruleSetId: number;
   showWebButtons: boolean = false;
-  itemMasterFormModal: any = new ItemMaster();
+  createLootPileModal: any = new CreateLootPile();
   fileToUpload: File = null;
-  numberRegex = "^(?:[0-9]+(?:\.[0-9]{0,8})?)?$";// "^((\\+91-?)|0)?[0-9]{0,2}$"; 
   fromDetail: boolean = false;
   percentReduced: boolean = false;
   weightWithContent: boolean = false;
 
-  abilitiesList = [];
-  selectedAbilities = [];
-  spellsList = [];
-  selectedSpells = [];
-  buffAndEffectsList = [];
-  selectedBuffAndEffects = [];
   metatags = [];
   uploadFromBing: boolean = false;
   bingImageUrl: string;
@@ -58,6 +46,13 @@ export class CreateLootPileComponent implements OnInit {
   imageErrorMessage: string = ImageError.MESSAGE
   defaultImageSelected: string = '';
   button: string
+  itemList: any[] = [];
+  lootPileItems: any[] = [];
+  selectedItems: any[] = [];
+  itemQty: number[] = [];
+
+  public event: EventEmitter<any> = new EventEmitter();
+
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
   }
@@ -69,80 +64,35 @@ export class CreateLootPileComponent implements OnInit {
     private localStorage: LocalStoreManager,
     private route: ActivatedRoute,
     private sharedService: SharedService,
-    private commonService: CommonService,
-    private abilityService: AbilityService,
     private itemMasterService: ItemMasterService,
-    private spellsService: SpellsService,
     private fileUploadService: FileUploadService,
     private imageSearchService: ImageSearchService,
     private lootService: LootService, private appService: AppService1,
     private location: PlatformLocation) {
 
     location.onPopState(() => this.modalService.hide(1));
-    this.route.params.subscribe(params => { this._ruleSetId = params['id']; });
+    this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
 
-    this.sharedService.getCommandData().subscribe(diceCommand => {
-      if (diceCommand.parentIndex === -1) {
-        this.itemMasterFormModal.command = diceCommand.command;
-      } else {
-        if (this.itemMasterFormModal.itemMasterCommandVM.length > 0) {
-          this.itemMasterFormModal.itemMasterCommandVM.forEach(item => {
-            var index = this.itemMasterFormModal.itemMasterCommandVM.indexOf(item);
-            if (index === diceCommand.parentIndex) {
-              this.itemMasterFormModal.itemMasterCommandVM[index].command = diceCommand.command;
-            }
-          });
-        }
-      }
-    });
-    this.sharedService.shouldUpdateContainerItem().subscribe(sharedData => {
-      this.itemMasterFormModal.containerItemId = sharedData.containerItemId;
-      this.itemMasterFormModal.containedIn = sharedData.containerItemId;
-      this.itemMasterFormModal.containerName = sharedData.itemName;
-      try {
-        this.itemMasterFormModal.selected = sharedData.selected;
-        if (this.itemMasterFormModal.selected) this.itemMasterFormModal.contains = sharedData.Contains;
-        this.itemMasterFormModal.contains = this.itemMasterFormModal.contains.filter(item => item.itemId !== sharedData.containerItemId);
-      } catch (err) { }
-    });
-    this.sharedService.shouldUpdateContainsItem().subscribe(sharedData => {
-      this.itemMasterFormModal.selected = sharedData.selected;
-      this.itemMasterFormModal.contains = sharedData.Contains;
-    });
   }
 
   ngOnInit() {
+
     setTimeout(() => {
       this.fromDetail = this.bsModalRef.content.fromDetail == undefined ? false : this.bsModalRef.content.fromDetail;
       this.title = this.bsModalRef.content.title;
       let _view = this.button = this.bsModalRef.content.button;
-      let _itemTemplateVM = this.bsModalRef.content.itemMasterVM;
-      this.itemMasterFormModal = this.itemMasterService.itemMasterModelData(_itemTemplateVM, _view);
-      this.itemMasterFormModal.itemMasterCommandVM = this.itemMasterFormModal.itemMasterCommand
+      let _lootPileVM = this.bsModalRef.content.lootPileVM;
+      //this.itemMasterFormModal = this.itemMasterService.itemMasterModelData(_itemTemplateVM, _view);
       debugger
-      if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
-        this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.itemMasterFormModal.ruleSetId;
+      //this._ruleSetId = this.itemMasterFormModal.ruleSetId;
 
+      this.ruleSetId = this.bsModalRef.content.ruleSetId;
 
-        let _contains = this.itemMasterFormModal.containerItems.map(item => {
-          return { text: item.itemName, value: item.lootId, itemId: item.lootId };
-        });
-        this.itemMasterFormModal.contains = _contains;
-      }
-      else {
-        this._ruleSetId = this.itemMasterFormModal.ruleSetId;
-      }
-      this.percentReduced = this.itemMasterFormModal.containerWeightModifier == 'Percent of Contents' ? true : false;
-      this.weightWithContent = this.itemMasterFormModal.containerWeightModifier == 'Maximum Weight of' ? true : false;
-      this.selectedAbilities = this.itemMasterFormModal.itemMasterAbilities.map(x => { return x.abilitiy; });
-      this.selectedSpells = this.itemMasterFormModal.itemMasterSpell.map(x => { return x.spell; });
+      if (this.createLootPileModal.metatags !== '' && this.createLootPileModal.metatags !== undefined)
+        this.metatags = this.createLootPileModal.metatags.split(",");
+      this.bingImageUrl = this.createLootPileModal.imageUrl;
 
-      if (this.itemMasterFormModal.metatags !== '' && this.itemMasterFormModal.metatags !== undefined)
-        this.metatags = this.itemMasterFormModal.metatags.split(",");
-      this.bingImageUrl = this.itemMasterFormModal.itemImage;
-
-
-
+      this.GetLootPileItemsToAdd();
       this.initialize();
     }, 0);
   }
@@ -153,21 +103,8 @@ export class CreateLootPileComponent implements OnInit {
       this.authService.logout();
     else {
       this.isLoading = true;
-      this.itemMasterService.getAbilitySpellForLootsByRuleset_sp<any[]>(this.itemMasterFormModal.ruleSetId, this.itemMasterFormModal.lootId)
-        .subscribe(data => {
-          debugger
-          let dataobj: any = data
-          this.abilitiesList = dataobj.abilityList;
-          this.spellsList = dataobj.spellList;
-          this.buffAndEffectsList = dataobj.buffAndEffectsList;
-          this.selectedAbilities = dataobj.selectedAbilityList.map(x => { return x; });
-          this.selectedSpells = dataobj.selectedSpellList.map(x => { return x; });
-          this.selectedBuffAndEffects = dataobj.selectedBuffAndEffects.map(x => { return x; });
-          this.itemMasterFormModal.itemMasterCommandVM = dataobj.selectedItemMasterCommand;
-          this.isLoading = false;
-        }, error => { }, () => { });
 
-      if (!this.itemMasterFormModal.itemImage) {
+      if (!this.createLootPileModal.imageUrl) {
         this.imageSearchService.getDefaultImage<any>('item')
           .subscribe(data => {
             this.defaultImageSelected = data.imageUrl.result
@@ -178,79 +115,29 @@ export class CreateLootPileComponent implements OnInit {
       }
     }
   }
-  itemRarity(_rarity: string) {
-    this.itemMasterFormModal.rarity = _rarity;
-  }
 
-  IsContainer(_isContainer: boolean) {
 
-    this.itemMasterFormModal.isContainer = _isContainer;
-    if (!_isContainer) {
-      //this.itemMasterFormModal.containerWeightMax = null;
-      //this.itemMasterFormModal.containerWeightModifier = null;
-      //this.itemMasterFormModal.containerVolumeMax = null;
-    }
+  GetLootPileItemsToAdd() {
+    this.isLoading = true;
+    this.lootService.getLootPileItemsToAdd<any>(this.ruleSetId)
+      .subscribe(data => {
+        this.lootPileItems = data;
+        this.lootPileItems.map(x => {
+          x.qty = '';
+        });
+        this.isLoading = false;
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          this.authService.logout(true);
+        }
+      }, () => { })
   }
 
   removeTag(tagData: any, tag: any, index: number): void {
     tagData.splice(index, 1);
-  }
-
-  onSelectWeightReduction(event) {
-
-    if (event.currentTarget.value == 'Percent of Contents') {
-      this.percentReduced = true;
-      this.weightWithContent = false;
-      this.itemMasterFormModal.totalWeightWithContents = 0;
-    }
-    else if (event.currentTarget.value == 'Maximum Weight of') {
-      this.weightWithContent = true;
-      this.percentReduced = false;
-      this.itemMasterFormModal.percentReduced = 0;
-    } else {
-      this.weightWithContent = false;
-      this.percentReduced = false;
-      this.itemMasterFormModal.percentReduced = 0;
-      this.itemMasterFormModal.totalWeightWithContents = 0;
-    }
-
-    this.itemMasterFormModal.containerWeightModifier = event.currentTarget.value;
-  }
-
-  setAssociatedSpell(event, itemMasterId) {
-    if (event.currentTarget.value == 'Select Spell') {
-      this.itemMasterFormModal.itemMasterSpellVM = [];
-    }
-    else {
-      let _itemMasterSpellVM = [];
-      let _spellId: number = event.currentTarget.value;
-      _itemMasterSpellVM.push({ itemMasterId: itemMasterId, spellId: +_spellId });
-      this.itemMasterFormModal.itemMasterSpellVM = _itemMasterSpellVM;
-    }
-  }
-
-  setAssociatedAbility(event, itemMasterId) {
-    if (event.currentTarget.value == 'Select Ability') {
-      this.itemMasterFormModal.itemMasterAbilityVM = [];
-    }
-    else {
-      let _itemMasterAbilityVM = [];
-      let _abilityId: number = event.currentTarget.value;
-      _itemMasterAbilityVM.push({ itemMasterId: itemMasterId, abilityId: +_abilityId });
-      this.itemMasterFormModal.itemMasterAbilityVM = _itemMasterAbilityVM;
-    }
-  }
-
-
-  addCommand(itemCommand: any): void {
-    let _itemCommand = itemCommand == undefined ? [] : itemCommand;
-    _itemCommand.push({ itemMasterCommandId: 0, command: '', name: '' });
-    this.itemMasterFormModal.itemMasterCommandVM = _itemCommand;
-  }
-
-  removeCommand(command: any): void {
-    this.itemMasterFormModal.itemMasterCommandVM
-      .splice(this.itemMasterFormModal.itemMasterCommandVM.indexOf(command), 1);
   }
 
   fileInput(_files: FileList) {
@@ -264,59 +151,48 @@ export class CreateLootPileComponent implements OnInit {
     return false;
   }
 
-  submitForm(itemMaster: any) {
-    //this.validateSubmit(itemMaster);
+  submitForm(lootPile: any) {
+    debugger
+    this.validateSubmit(lootPile);
   }
-  validateSubmit(itemMaster: any) {
-    itemMaster.itemMasterAbilityVM = this.selectedAbilities.map(x => {
-      return { abilityId: x.abilityId, itemMasterId: itemMaster.itemMasterId };
-    });
-    itemMaster.itemMasterSpellVM = this.selectedSpells.map(x => {
-      return { spellId: x.spellId, itemMasterId: itemMaster.itemMasterId };
-    });
-    itemMaster.itemMasterBuffAndEffectVM = this.selectedBuffAndEffects.map(x => {
-      return { buffAndEffectId: x.buffAndEffectId, itemMasterId: itemMaster.itemMasterId };
-    });
+  validateSubmit(lootPile: any) {
+    debugger;
     let tagsValue = this.metatags.map(x => {
       if (x.value == undefined) return x;
       else return x.value;
     });
-    itemMaster.metatags = tagsValue.join(', ');
+    lootPile.metatags = tagsValue.join(', ');
 
-    if (itemMaster.ruleSetId == 0 || itemMaster.ruleSetId === undefined)
-      itemMaster.ruleSetId = this._ruleSetId;
+    if (lootPile.ruleSetId == 0 || lootPile.ruleSetId === undefined)
+      lootPile.ruleSetId = this.ruleSetId;
 
-    if (!itemMaster.isContainer) {
-      itemMaster.containerWeightMax = 0;
-      itemMaster.containerVolumeMax = 0;
-      itemMaster.containerWeightModifier = 'None';
-      itemMaster.containerItems = [];
-    }
-    else {
-      itemMaster.containerItems = itemMaster.contains;
-    }
-    itemMaster.itemMasterAbilities = itemMaster.itemMasterAbilityVM;
-    itemMaster.itemMasterSpell = itemMaster.itemMasterSpellVM;
-    itemMaster.itemMasterBuffAndEffects = itemMaster.itemMasterBuffAndEffectVM;
+    //if (!itemMaster.isContainer) {
+    //  itemMaster.containerWeightMax = 0;
+    //  itemMaster.containerVolumeMax = 0;
+    //  itemMaster.containerWeightModifier = 'None';
+    //  itemMaster.containerItems = [];
+    //}
+    //else {
+    //  itemMaster.containerItems = itemMaster.contains;
+    //}
 
     this.isLoading = true;
-    let _msg = itemMaster.itemMasterId == 0 || itemMaster.itemMasterId === undefined ? "Creating Loot Item Template.." : "Updating Loot Item Template..";
-    if (this.itemMasterFormModal.view === VIEW.DUPLICATE) _msg = "Duplicating loot Item Template..";
+    let _msg = lootPile.lootPileId == 0 || lootPile.lootPileId === undefined ? "Creating Loot Item Template.." : "Updating Loot Item Template..";
     this.alertService.startLoadingMessage("", _msg);
 
     if (this.fileToUpload != null) {
-      this.fileUpload(itemMaster);
+      this.fileUpload(lootPile);
     }
-    else if (this.bingImageUrl !== this.itemMasterFormModal.itemImage) {
+    else if (this.bingImageUrl !== this.createLootPileModal.imageUrl) {
       try {
         var regex = /(?:\.([^.]+))?$/;
-        var extension = regex.exec(this.itemMasterFormModal.itemImage)[1];
+        var extension = regex.exec(this.createLootPileModal.imageUrl)[1];
         extension = extension ? extension : 'jpg';
       } catch{ }
-      this.fileUploadFromBing(this.itemMasterFormModal.itemImage, extension, itemMaster);
+      this.fileUploadFromBing(this.createLootPileModal.imageUrl, extension, lootPile);
     }
     else {
-      //this.submit(itemMaster);
+      this.submit(lootPile);
     }
   }
   private fileUploadFromBing(file: string, ext: string, itemMaster: any) {
@@ -327,15 +203,15 @@ export class CreateLootPileComponent implements OnInit {
       this.fileUploadService.fileUploadFromURL<any>(user.id, file, ext)
         .subscribe(
           data => {
-            this.itemMasterFormModal.itemImage = data.ImageUrl;
-            //this.submit(itemMaster);
+            this.createLootPileModal.imageUrl = data.ImageUrl;
+            this.submit(itemMaster);
           },
           error => {
             let Errors = Utilities.ErrorDetail('Error', error);
             if (Errors.sessionExpire) {
               this.authService.logout(true);
             }
-            //else this.submit(itemMaster);
+            else this.submit(itemMaster);
           });
     }
   }
@@ -348,15 +224,15 @@ export class CreateLootPileComponent implements OnInit {
       this.fileUploadService.fileUploadByUser<any>(user.id, this.fileToUpload)
         .subscribe(
           data => {
-            this.itemMasterFormModal.itemImage = data.ImageUrl;
-            //this.submit(itemMaster);
+            this.createLootPileModal.imageUrl = data.ImageUrl;
+            this.submit(itemMaster);
           },
           error => {
             let Errors = Utilities.ErrorDetail('Error', error);
             if (Errors.sessionExpire) {
               this.authService.logout(true);
             }
-            //else this.submit(itemMaster);
+            else this.submit(itemMaster);
           });
     }
   }
@@ -367,34 +243,38 @@ export class CreateLootPileComponent implements OnInit {
       .subscribe(
         data => {
           itemMaster.itemImage = data.ImageUrl;
-          //this.submit(itemMaster);
+          this.submit(itemMaster);
         },
         error => {
-          //this.submit(itemMaster);
+          this.submit(itemMaster);
         });
   }
 
-  private submit(itemMaster: any) {
-    if (this.itemMasterFormModal.view === VIEW.DUPLICATE) {
-      this.duplicateItemMaster(itemMaster);
-    }
-    else {
-      if (this.defaultImageSelected && !this.itemMasterFormModal.itemImage) {
-        let model = Object.assign({}, itemMaster)
-        model.itemImage = this.defaultImageSelected
-        this.addEditItemMaster(model);
-      } else {
-        this.addEditItemMaster(itemMaster);
-      }
-
+  private submit(lootPile: any) {
+    let lootItems = [];
+    if (this.selectedItems) {
+      this.selectedItems.map(x => {
+        //lootItems.push({ itemMasterId: x.itemMasterId, name: x.itemName, ImageUrl: x.itemImage, IsBundle: x.isBundle });
+        lootItems.push({ itemMasterId: x.itemMasterId, qty: x.qty });
+      });
+    } 
+    lootPile.itemList = lootItems;
+    debugger
+    let lootPileVM = { ruleSetId: lootPile.ruleSetId, itemName: lootPile.name, itemImage: lootPile.imageUrl, itemVisibleDesc: lootPile.description, metatags: lootPile.metatags, isVisible: lootPile.visible, lootPileItems: lootPile.itemList }
+    if (this.defaultImageSelected && !this.createLootPileModal.imageUrl) {
+      let model = Object.assign({}, lootPileVM)
+      model.itemImage = this.defaultImageSelected
+      this.addEditLootPile(model);
+    } else {
+      this.addEditLootPile(lootPileVM);
     }
   }
 
-  addEditItemMaster(modal: any) {
-    modal.RuleSetId = this._ruleSetId;
+  addEditLootPile(modal: any) {
+    modal.ruleSetId = this.ruleSetId;
     // modal.userID = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER).id
     this.isLoading = true;
-    this.lootService.createLootItem<any>(modal)
+    this.lootService.createLootPile<any>(modal)
       .subscribe(
         data => {
           debugger
@@ -412,18 +292,18 @@ export class CreateLootPileComponent implements OnInit {
             if (data) {
               let id = data;
               if (!isNaN(parseInt(id))) {
-                this.router.navigate(['/ruleset/loot-details', id]);
-                this.event.emit({ itemMasterId: id });
+                this.router.navigate(['/ruleset/loot-pile-details', id]);
+                this.event.emit({ lootPileId: id });
                 //this.sharedService.updateItemMasterDetailList(true);                
               }
-              else
-                this.sharedService.updateItemMasterDetailList(true);
+              //else
+              //this.sharedService.updateItemMasterDetailList(true);
             }
             else {
-              this.sharedService.updateItemMasterDetailList(true);
+              //this.sharedService.updateItemMasterDetailList(true);
             }
           }
-          else this.sharedService.updateItemsList(true);
+          //else this.sharedService.updateItemsList(true);
         },
         error => {
           this.isLoading = false;
@@ -440,60 +320,12 @@ export class CreateLootPileComponent implements OnInit {
       );
   }
 
-  duplicateItemMaster(modal: any) {
-    modal.RuleSetId = this._ruleSetId;
-    this.isLoading = true;
-    this.lootService.duplicateLootItem<any>(modal)
-      .subscribe(
-        data => {
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          let message = " Loot Item Template has been duplicated successfully.";
-          if (data !== "" && data !== null && data !== undefined)
-            message = data;
-          this.alertService.showMessage(message, "", MessageSeverity.success);
-          this.close();
-          //if (this.fromDetail)
-          //  this.router.navigate(['/ruleset/item-master', this._ruleSetId]);
-          //else
-          this.sharedService.updateItemsList(true);
-          this.appService.updateChatWithLootMessage(true);
-        },
-        error => {
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          let _message = "Unable to Duplicate ";
-          let Errors = Utilities.ErrorDetail(_message, error);
-          if (Errors.sessionExpire) {
-            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-            this.authService.logout(true);
-          }
-          else
-            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-
-        });
-  }
-
-  showButtons() {
-    this.showWebButtons = true;
-  }
-
-  hideButtons() {
-    this.showWebButtons = false;
-  }
-
   readTempUrl(event: any) {
-
-    //var type = event.target.files[0].type;
-    //var size = event.target.files[0].size;
-
     if (event.target.files && event.target.files[0]) {
       var reader = new FileReader();
-
       reader.onload = (event: any) => {
-        this.itemMasterFormModal.itemImage = event.target.result;
+        this.createLootPileModal.imageUrl = event.target.result;
       }
-
       reader.readAsDataURL(event.target.files[0]);
       this.imageChangedEvent = event;
     }
@@ -505,54 +337,6 @@ export class CreateLootPileComponent implements OnInit {
 
   }
 
-  get abilitiesSettings() {
-    return {
-      primaryKey: "abilityId",
-      labelKey: "name",
-      text: "Search abiliti(es)",
-      enableCheckAll: true,
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      singleSelection: false,
-      limitSelection: false,
-      enableSearchFilter: true,
-      classes: "myclass custom-class",
-      showCheckbox: true,
-      position: "top"
-    };
-  }
-
-  get spellsSettings() {
-    return {
-      primaryKey: "spellId",
-      labelKey: "name",
-      text: "Search Spell(s)",
-      enableCheckAll: true,
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      singleSelection: false,
-      limitSelection: false,
-      enableSearchFilter: true,
-      classes: "myclass custom-class ",
-      showCheckbox: true,
-      position: "top"
-    };
-  }
-
-  //Here the multiselect methods
-  onItemSelect(item: any) {
-    // console.log(item);
-  }
-  OnItemDeSelect(item: any) {
-    //  console.log(item);
-  }
-  onSelectAll(items: any) {
-    //console.log(items);
-  }
-  onDeSelectAll(items: any) {
-    //  console.log(items);
-  }
-
   openDiceModal(index, command) {
     this.bsModalRef = this.modalService.show(DiceComponent, {
       class: 'modal-primary modal-md dice-screen',
@@ -562,7 +346,7 @@ export class CreateLootPileComponent implements OnInit {
     this.bsModalRef.content.title = "Dice";
     this.bsModalRef.content.parentCommand = command;
     this.bsModalRef.content.inputIndex = index;
-    this.bsModalRef.content.rulesetId = this._ruleSetId;
+    this.bsModalRef.content.rulesetId = this.ruleSetId;
   }
 
   private destroyModalOnInit(): void {
@@ -584,7 +368,7 @@ export class CreateLootPileComponent implements OnInit {
     this.bsModalRef.content.errorImage = '../assets/images/DefaultImages/Item.jpg';
     //this.bsModalRef.content.imageChangedEvent = this.imageChangedEvent; //base 64 || URL
     this.bsModalRef.content.event.subscribe(data => {
-      this.itemMasterFormModal.itemImage = data.base64;
+      this.createLootPileModal.imageUrl = data.base64;
       this.fileToUpload = data.file;
       this.showWebButtons = false;
     });
@@ -595,32 +379,8 @@ export class CreateLootPileComponent implements OnInit {
   imageCropped(image: string) {
     this.croppedImage = image;
   }
-  imageLoaded() {
-    // show cropper
-  }
-  loadImageFailed() {
-    // show message
-  }
-  removeContainer() {
-    this.itemMasterFormModal.containerName = '';
-    this.itemMasterFormModal.containerItemId = 0;
-  }
-  addContainer(itemMasterId: number) {
-    this.bsModalRef = this.modalService.show(LootAddContainerComponent, {
-      class: 'modal-primary modal-md',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
 
-    this.bsModalRef.content.title = 'Select Container';
-    this.bsModalRef.content.button = 'SELECT';
-    // this.bsModalRef.content.characterId = this.isFromCharacterId;
-    this.bsModalRef.content.rulesetId = this._ruleSetId;
-    this.bsModalRef.content.itemId = itemMasterId;
-    this.bsModalRef.content.containerItemId = this.itemMasterFormModal.containerItemId;
-  }
-  addContainerItem(itemMaster: any) {
-    debugger
+  addItems(itemMaster: any) {
     this.bsModalRef = this.modalService.show(AddLootPileComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -637,33 +397,27 @@ export class CreateLootPileComponent implements OnInit {
 
     this.bsModalRef.content.event.subscribe(data => {
       debugger
-      this.itemMasterFormModal.contains = data.multiItemMasters;
+      this.createLootPileModal.itemList = data.multiItemMasters;
     });
   }
-  setTotalWeight(weight, quantity) {
-    try {
-      weight = weight == undefined || weight == '' || weight == null ? 0 : +weight;
-      quantity = quantity == undefined || quantity == '' || quantity == null || quantity < 1 ? 1 : +quantity;
-      this.itemMasterFormModal.weight = weight;
-      this.itemMasterFormModal.quantity = quantity;
-      this.itemMasterFormModal.totalWeight = (weight * quantity).toFixed(3);
-    } catch (err) { }
-  }
-  get buffAndEffectsSettings() {
+
+  get itemSettings() {
     return {
-      primaryKey: "buffAndEffectId",
-      labelKey: "name",
-      text: "Search Buff & Effect(s)",
+      primaryKey: "itemMasterId",
+      labelKey: "itemName",
+      text: "Search item(s)",
       enableCheckAll: true,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',
       singleSelection: false,
       limitSelection: false,
-      enableSearchFilter: true,
+      enableSearchFilter: false,
       classes: "myclass custom-class ",
       showCheckbox: true,
-      position: "top"
+      position: "bottom"
     };
   }
-  public event: EventEmitter<any> = new EventEmitter();
+
+
+
 }

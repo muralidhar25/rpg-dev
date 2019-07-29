@@ -2095,6 +2095,11 @@ namespace RPGSmithApp.Controllers
         }
 
 
+        [HttpGet("GetLootPileItemsToAdd")]        public async Task<IActionResult> GetLootPileItemsToAdd(int RulesetId)        {            List<ItemMasterForLootPile> list = new List<ItemMasterForLootPile>();            var ItemList = _itemMasterService.GetItemMastersByRuleSetId_add(RulesetId, true);            //foreach (var item in ItemList)            //{            //    ItemMasterForLootPile obj = new ItemMasterForLootPile()
+            //    {            //        ImageUrl = item.ItemImage,            //        ItemMasterId = item.ItemMasterId,            //        Name = item.ItemName            //    };            //    list.Add(obj);            //}            return Ok(ItemList);
+        }
+
+
         [HttpGet("GetLootPile")]
         public async Task<IActionResult> GetLootPile(int lootPileId)
         {

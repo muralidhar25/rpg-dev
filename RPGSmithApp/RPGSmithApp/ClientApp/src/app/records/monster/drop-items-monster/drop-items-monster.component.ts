@@ -38,6 +38,7 @@ export class DropItemsMonsterComponent implements OnInit {
   monsterName: string = '';
   monsterImage: string = '';
   allSelected: boolean = false;
+  selectedLootPileItem: any;
     constructor(
         private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
         public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
@@ -115,7 +116,7 @@ export class DropItemsMonsterComponent implements OnInit {
   }
 
   submitForm() {
-    
+    console.log('selectedLottPileItem', this.selectedLootPileItem);
     
     if (this.selectedItemsList.length) {
       this.isLoading = true;
@@ -148,10 +149,6 @@ export class DropItemsMonsterComponent implements OnInit {
     
   }
 
-  
-    
-
-
     close() {
         this.bsModalRef.hide();
     }
@@ -170,5 +167,23 @@ export class DropItemsMonsterComponent implements OnInit {
         item.selected = false;
       })
     }
+  }
+
+
+  get lootItemsSettings() {
+    return {
+      primaryKey: "lootItemId",
+      labelKey: "name",
+      text: "Search item(s)",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: true,
+      classes: "myclass custom-class ",
+      showCheckbox: false,
+      position: "bottom"
+    };
   }
 }

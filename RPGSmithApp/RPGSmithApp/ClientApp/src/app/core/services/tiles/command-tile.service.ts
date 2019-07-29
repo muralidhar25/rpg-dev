@@ -85,6 +85,7 @@ export class CommandTileService extends EndpointFactory
         linkTile: model.linkTiles,
         executeTile: model.executeTile,
         commandTile: model.commandTiles,
+        toggleTile: model.toggleTiles,
         multiCharacterStats: [],
         buffAndEffectTile: model.buffAndEffectTiles
       };
@@ -132,6 +133,7 @@ export class CommandTileService extends EndpointFactory
         linkTile: null,
         executeTile: null,
         counterTile: null,
+        toggleTile: null,
         multiCharacterStats: [],
         buffAndEffectTile:null
       };

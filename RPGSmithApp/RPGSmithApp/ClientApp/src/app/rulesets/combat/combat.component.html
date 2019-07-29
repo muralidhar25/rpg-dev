@@ -726,7 +726,7 @@
             </div>
             <!--Character-->
             <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
-              <div class="text-center" *ngIf="currentCombatantDetail?.charatcer?.characterSpells?.length == 0">
+              <div class="text-center" *ngIf="currentCombatantDetail?.character?.characterSpells?.length == 0">
                 <span class="col-12">{{noSpellsAvailable}}</span>
               </div>
               <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterSpells">

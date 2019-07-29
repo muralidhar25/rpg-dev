@@ -59,6 +59,12 @@ import { LootPileComponent } from "./loot-pile/loot-pile.component";
 import { CreateLootPileComponent } from "./loot-pile/create-loot-pile/create-loot-pile.component";
 import { LootPileDetailsComponent } from "./loot-pile/loot-pile-details/loot-pile-details.component";
 import { AddLootPileComponent } from "./loot-pile/add-loot-pile/add-loot-pile.component";
+import { MoveLootComponent } from "./loot/move-loot/move-loot.component";
+import { MoveLootSecondaryComponent } from "./loot/move-loot/move-loot-secondary/move-loot-secondary.component";
+import { DeleteLootSecondaryComponent } from "./loot/delete-all-loot-items/delete-loot-secondary/delete-loot-secondary.component";
+import { CreateLootPileTemplateComponent } from "./loot-pile-template/create-loot-pile-template/create-loot-pile-template.component";
+import { LootPileTemplateComponent } from "./loot-pile-template/loot-pile-template.component";
+import { LootPileTemplateDetailsComponent } from "./loot-pile-template/loot-pile-template-details/loot-pile-template-details.component";
 
 
 
@@ -117,7 +123,13 @@ import { AddLootPileComponent } from "./loot-pile/add-loot-pile/add-loot-pile.co
     LootPileComponent,
     CreateLootPileComponent,
     LootPileDetailsComponent,
-    AddLootPileComponent
+    AddLootPileComponent,
+    MoveLootComponent,
+    MoveLootSecondaryComponent,
+    DeleteLootSecondaryComponent,
+    LootPileTemplateComponent,
+    CreateLootPileTemplateComponent,
+    LootPileTemplateDetailsComponent
   ],
   imports: [
     SharedModule
@@ -179,7 +191,13 @@ import { AddLootPileComponent } from "./loot-pile/add-loot-pile/add-loot-pile.co
     LootPileComponent,
     CreateLootPileComponent,
     LootPileDetailsComponent,
-    AddLootPileComponent
+    AddLootPileComponent,
+    MoveLootComponent,
+    MoveLootSecondaryComponent,
+    DeleteLootSecondaryComponent,
+    LootPileTemplateComponent,
+    CreateLootPileTemplateComponent,
+    LootPileTemplateDetailsComponent
   ],
   entryComponents: [
     AddItemMasterComponent,
@@ -218,7 +236,13 @@ import { AddLootPileComponent } from "./loot-pile/add-loot-pile/add-loot-pile.co
     DeleteMonsterTempltesComponent,
     DeleteMonstersComponent,
     CreateLootPileComponent,
-    AddLootPileComponent
+    AddLootPileComponent,
+    MoveLootComponent,
+    MoveLootSecondaryComponent,
+    DeleteLootSecondaryComponent,
+    LootPileTemplateComponent,
+    CreateLootPileTemplateComponent,
+    LootPileTemplateDetailsComponent
   ]
 })
 export class RecordsModule {}

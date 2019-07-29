@@ -19,10 +19,11 @@ export class DropItemsComponent implements OnInit {
   isLoading = false;
   characterId: number;
   rulesetId: number;
-  itemsList: any;
+  itemsList: any[] = [];
   searchText: string;
   allSelected: boolean = false;
   selectedItems = [];
+  selectedLootPileItem: any;
   page: number = 1;
   pageSize: number = 99999;
 
@@ -49,7 +50,7 @@ export class DropItemsComponent implements OnInit {
       this.authService.logout();
     else {
       this.isLoading = true;
-
+      debugger
       this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 3) // 3 for Alphabetical Sort
         .subscribe(data => {
           this.itemsList = data.ItemsList;
@@ -75,6 +76,7 @@ export class DropItemsComponent implements OnInit {
   }
 
   submitForm() {
+    console.log('selectedLottPileItem', this.selectedLootPileItem);
     this.selectedItems = [];
     this.itemsList.map((item) => {
       if (item.selected) {
@@ -128,4 +130,22 @@ export class DropItemsComponent implements OnInit {
   close() {
     this.bsModalRef.hide();
   }
+
+  get lootItemsSettings() {
+    return {
+      primaryKey: "lootItemId",
+      labelKey: "name",
+      text: "Search item(s)",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: true,
+      classes: "myclass custom-class ",
+      showCheckbox: false,
+      position: "bottom"
+    };
+  }
+
 }

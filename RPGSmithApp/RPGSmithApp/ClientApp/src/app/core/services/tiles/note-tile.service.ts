@@ -79,6 +79,7 @@ export class NoteTileService extends EndpointFactory {
         linkTile: model.linkTiles,
         executeTile: model.executeTile,
         commandTile: model.commandTiles,
+        toggleTile: model.toggleTiles,
         multiCharacterStats: [],
         buffAndEffectTile: model.buffAndEffectTiles
       };
@@ -124,6 +125,7 @@ export class NoteTileService extends EndpointFactory {
         linkTile: null,
         executeTile: null,
         commandTile: null,
+        toggleTile: null,
         multiCharacterStats: [],
         buffAndEffectTile: null
       };

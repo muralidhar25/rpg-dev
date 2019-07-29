@@ -32,6 +32,12 @@ export class LootService extends EndpointFactory {
   private readonly _getItemMasterLootsForDeleteUrl: string = this.configurations.baseUrl + "/api/ItemMaster/GetItemMasterLootsForDelete";
 
   private readonly _getDuplicateLootItemUrl: string = this.configurations.baseUrl + "/api/ItemMaster/DuplicateLoot";
+  private readonly CreateLootPile: string = this.configurations.baseUrl + "/api/LootPile/CreateLootPile";
+
+
+  private readonly GetLootPileItemsToAdd: string = this.configurations.baseUrl + "/api/ItemMaster/GetLootPileItemsToAdd";
+
+
 
 
   get getLootUrl() { return this.configurations.baseUrl + this._getLootUrl; }
@@ -153,6 +159,22 @@ export class LootService extends EndpointFactory {
     return this.http.post<T>(endpointUrl, JSON.stringify(item), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.deleteLootItem(item));
+      });
+  }
+
+  createLootPile<T>(lootPile): Observable<T> {
+    let endpointUrl = `${this.CreateLootPile}`;
+    return this.http.post<T>(endpointUrl, JSON.stringify(lootPile), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.createLootPile(lootPile));
+      })
+  }
+
+  getLootPileItemsToAdd<T>(ruleSetId: number): Observable<T> {
+    let endpointUrl = `${this.GetLootPileItemsToAdd}?rulesetID=${ruleSetId}`;
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getLootPileItemsToAdd(ruleSetId));
       });
   }
 

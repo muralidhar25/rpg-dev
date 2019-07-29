@@ -10,6 +10,7 @@ import { AppService1 } from '../../../app.service';
 import { User } from '../../../core/models/user.model';
 import { DBkeys } from '../../../core/common/db-keys';
 import { Utilities } from '../../../core/common/utilities';
+import { DeleteLootSecondaryComponent } from './delete-loot-secondary/delete-loot-secondary.component';
 
 @Component({
   selector: 'app-delete-all-loot-items',
@@ -141,4 +142,21 @@ export class DeleteAllLootItemsComponent implements OnInit {
   close() {
     this.bsModalRef.hide();
   }
+
+  SecondaryDelete(item) {
+    this.close();
+    this.bsModalRef = this.modalService.show(DeleteLootSecondaryComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.ruleSetId = this.rulesetId;
+    this.bsModalRef.content.Name = item.itemName;
+    this.bsModalRef.content.Image = item.itemImage;
+  }
+
+  Refresh() {
+    this.initialize();
+  }
+
 }

@@ -84,11 +84,12 @@
   border: 1px solid #efefef;
 }
 
-.associate-label-name {
+/*.associate-label-name {
   text-overflow: ellipsis;
-  max-width: 120px;
+  width: 125px;
   overflow: hidden;
-}
+  white-space: nowrap;
+}*/
 
 .indicators .form-check {
   padding-right: 0px !important;
@@ -124,14 +125,14 @@
   margin-top: -5px;
 }
 
-.associate-label-name {
+/*.associate-label-name {
   display: inline-block;
   text-overflow: ellipsis;
   max-width: 120px;
   overflow: hidden;
   color: #be8917;
   font-weight: 500;
-}
+}*/
 
 .btn-primary {
   position: relative
@@ -239,4 +240,36 @@ tag-input {
   position: relative;
   /*top: 7px;*/
   color: #be8917 !important;
+}
+
+
+.associate-label-name {
+  display: inline-block;
+  text-overflow: ellipsis;
+  width: 125px;
+  overflow: hidden;
+  color: #be8917;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  max-width: 120px;
+  overflow: hidden;
+}
+
+.associate-img {
+  width: 30px;
+  border: 1px solid #efefef;
+}
+
+.associate-img {
+  width: 30px;
+  border: 1px solid #efefef;
+  margin-top: -5px;
+}
+
+.cust-textbox {
+  width: 30px;
+  text-align: center;
+  position: relative;
+  right: -20px;
+  top: -6px;
 }

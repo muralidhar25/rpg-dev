@@ -976,4 +976,8 @@ namespace DAL.Models.SPModels
         public List<CharactersCharacterStat> CharactersCharacterStats { get; set; }
         public Character Character { get; set; }
     }
+
+    public class ItemMasterForLootPile    {
+        public int ItemMasterId { get; set; }
+        public string Name { get; set; }        public string ImageUrl { get; set; }        public bool IsBundle { get; set; }    }
 }

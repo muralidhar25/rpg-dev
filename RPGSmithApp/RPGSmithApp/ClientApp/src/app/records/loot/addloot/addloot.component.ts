@@ -31,6 +31,7 @@ export class AddlootComponent implements OnInit {
   characterItems: any;
   characterItemModal: any = new Items();
   searchText: string;
+  showLootTemplates: boolean = false;
 
   constructor(private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
@@ -181,5 +182,9 @@ export class AddlootComponent implements OnInit {
   }
   close() {
     this.bsModalRef.hide();
+  }
+
+  ShowLootItems() {
+    this.showLootTemplates = !this.showLootTemplates;
   }
 }

@@ -76,6 +76,7 @@ import { BuffAndEffectService } from "./services/buff-and-effect.service";
 import { BuffAandEffectTileService } from "./services/tiles/buff-and-effect-tile.service";
 import { MonsterTemplateService } from "./services/monster-template.service";
 import { CombatService } from "./services/combat.service";
+import { ToggleTileService } from "./services/tiles/toggle-tile.service";
 
 @NgModule({
   declarations: [
@@ -145,7 +146,8 @@ import { CombatService } from "./services/combat.service";
     LootService, BuffAndEffectService,
     BuffAandEffectTileService,
     MonsterTemplateService,
-    CombatService
+    CombatService,
+    ToggleTileService
     ],
   exports: [
     EqualValidator,
