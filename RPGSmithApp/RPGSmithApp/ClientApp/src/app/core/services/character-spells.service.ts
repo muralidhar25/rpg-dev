@@ -279,12 +279,12 @@ export class CharacterSpellService extends EndpointFactory {
     return spellFormModal;
   }
 
-  removeSpells<T>(spellsList: any): Observable<T> {
+  removeSpells<T>(spellsList: any, rulesetId:number): Observable<T> {
     debugger
-    let removeSpellsURL = `${this.RemoveSpells}`;
+    let removeSpellsURL = `${this.RemoveSpells}?rulesetId=${rulesetId}`;
     return this.http.post<T>(removeSpellsURL, JSON.stringify(spellsList), this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.removeSpells(spellsList));
+        return this.handleError(error, () => this.removeSpells(spellsList, rulesetId));
       });
   }
 

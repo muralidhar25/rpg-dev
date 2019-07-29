@@ -10,6 +10,7 @@ import { Utilities } from '../../../core/common/utilities';
 import { User } from '../../../ng-chat/core/user';
 import { ItemMasterService } from '../../../core/services/item-master.service';
 import { SpellsService } from '../../../core/services/spells.service';
+import { SharedService } from '../../../core/services/shared.service';
 
 @Component({
   selector: 'app-delete-spells',
@@ -35,6 +36,7 @@ export class DeleteSpellsComponent implements OnInit {
     public modalService: BsModalService,
     private localStorage: LocalStoreManager,
     private appService: AppService1,
+    private sharedService: SharedService,
     private spellsService: SpellsService) { }
 
   ngOnInit() {
@@ -97,11 +99,11 @@ export class DeleteSpellsComponent implements OnInit {
   }
   RemoveSelectedItems() {
     this.isLoading = true;
-    this.spellsService.deleteSpells<any>(this.selectedItems)
+    this.spellsService.deleteSpells<any>(this.selectedItems, this.rulesetId)
       .subscribe(data => {
               this.alertService.showMessage("Deleting Spell(s)", "", MessageSeverity.success);
               this.close();
-              this.appService.updateItemsList(true);
+        this.sharedService.updateSpellList(true);
             this.isLoading = false;
         }, error => {
         this.isLoading = false;

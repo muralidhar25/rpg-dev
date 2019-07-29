@@ -277,6 +277,19 @@ namespace RPGSmithApp.Controllers
                     return BadRequest(ex.Message);
             }
         }
+        [HttpPost("DeleteSpells")]
+        public async Task<IActionResult> DeleteMultiSpells([FromBody] List<Spell> model, int rulesetId)
+        {
+            try
+            {
+                _spellService.DeleteMultiSpells(model, rulesetId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpGet("getCountByRuleSetId")]
         public async Task<IActionResult> getCountByRuleSetId(int rulesetId)

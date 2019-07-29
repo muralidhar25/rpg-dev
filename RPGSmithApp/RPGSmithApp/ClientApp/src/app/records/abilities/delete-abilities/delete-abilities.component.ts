@@ -11,6 +11,7 @@ import { User } from '../../../ng-chat/core/user';
 import { ItemMasterService } from '../../../core/services/item-master.service';
 import { SpellsService } from '../../../core/services/spells.service';
 import { AbilityService } from '../../../core/services/ability.service';
+import { SharedService } from '../../../core/services/shared.service';
 
 @Component({
   selector: 'app-delete-abilities',
@@ -36,6 +37,7 @@ export class DeleteAbilitiesComponent implements OnInit {
     public modalService: BsModalService,
     private localStorage: LocalStoreManager,
     private appService: AppService1,
+    private sharedService: SharedService,
     private abilityService: AbilityService) { }
 
   ngOnInit() {
@@ -98,11 +100,11 @@ export class DeleteAbilitiesComponent implements OnInit {
   }
   RemoveSelectedItems() {
     this.isLoading = true;
-    this.abilityService.deleteAbilities<any>(this.selectedItems)
+    this.abilityService.deleteAbilities<any>(this.selectedItems, this.rulesetId)
       .subscribe(data => {
         this.alertService.showMessage("Deleting Abilities", "", MessageSeverity.success);
               this.close();
-              this.appService.updateItemsList(true);
+        this.sharedService.updateAbilityList(true);
             this.isLoading = false;
         }, error => {
         this.isLoading = false;

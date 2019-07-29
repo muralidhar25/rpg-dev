@@ -90,4 +90,6 @@ namespace RPGSmithApp.ViewModels.CreateModels
         public bool? IsIdentified { get; set; }
         public bool? IsVisible { get; set; }
     }
+
+    
 }

@@ -22,5 +22,6 @@ namespace DAL.Services
         CharacterSpell GetBySpellId(int spellId);
         (List<CharacterSpell>, Character, RuleSet) SP_CharacterSpell_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize, int sortType = 1);
         List<CharacterSpell> GetSpellByCharacterId(int characterId);
+        void removeMultiSpells(List<CharacterSpell> model, int rulesetId);
     }
 }

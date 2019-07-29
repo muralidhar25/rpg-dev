@@ -161,6 +161,19 @@ namespace RPGSmithApp.Controllers
 
             return Ok();
         }
+        [HttpPost("removeSpells")]
+        public async Task<IActionResult> removeSpells([FromBody] List<CharacterSpell> model, int rulesetId)
+        {
+            try
+            {
+                _characterSpellService.removeMultiSpells(model, rulesetId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpDelete("delete_up")]
         public async Task<IActionResult> Delete(int Id, int RulesetID)
         {

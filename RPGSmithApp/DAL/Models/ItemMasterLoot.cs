@@ -95,8 +95,11 @@ namespace DAL.Models
 
         public int? RuleSetId { get; set; }
 
+        public bool? IsLootPile { get; set; }
+        public int? LootPileId { get; set; }
 
-        
+
+
         public virtual RuleSet RuleSet { get; set; }
 
         

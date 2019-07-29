@@ -87,7 +87,7 @@ namespace RPGSmithApp.Controllers
             listobj = new ItemMasterLoot_ViewModel()
             {
                 LootId = loot.LootId,
-                ItemMasterId = loot.ItemMasterId,
+                ItemMasterId = (int)loot.ItemMasterId,
                 IsShow = loot.IsShow,
                 ContainedIn = loot.ContainedIn,
                 Quantity = loot.Quantity,
@@ -742,6 +742,19 @@ namespace RPGSmithApp.Controllers
             }
             await _itemMasterService.DeleteItemMaster((int)model.ItemMasterId);
             return Ok();
+        }
+        [HttpPost("DeleteTemplates")]
+        public async Task<IActionResult> DeleteMultiItemTemplates([FromBody] List<ItemMaster_Bundle> model, int rulesetId)
+        {
+            try
+            {
+                _itemMasterService.DeleteMultiItemTemplates(model, rulesetId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpPost("uploadItemTemplateImage")]
         public async Task<IActionResult> uploadItemTemplateImage()
@@ -1414,7 +1427,7 @@ namespace RPGSmithApp.Controllers
                     PercentReduced = model.PercentReduced,
                     TotalWeightWithContents = model.TotalWeightWithContents,
                 });
-                await _itemMasterService.UpdateWeight(OldLoot.ItemMasterId, TotalWeight);
+                await _itemMasterService.UpdateWeight((int)OldLoot.ItemMasterId, TotalWeight);
             }
             
 
@@ -1505,7 +1518,7 @@ namespace RPGSmithApp.Controllers
                 //model.cont = Loot.Quantity; ContainedIn is pending
 
                 var _ItemName = Loot.ItemName;
-                var existingNameItems = _itemService.getDuplicateItems(model.CharacterId, Loot.ItemMasterId);
+                var existingNameItems = _itemService.getDuplicateItems(model.CharacterId, (int)Loot.ItemMasterId);
                 //if (await _itemService.CheckDuplicateItem(ItemTemplate.ItemName, model.CharacterId))
                 //    _ItemName = ItemTemplate.ItemName + "_" + count;
 
@@ -2002,8 +2015,56 @@ namespace RPGSmithApp.Controllers
             }
 
             return BadRequest(Utilities.ModelStateError(ModelState));
+        }        
+
+        [HttpPost("CreateLootPile")]
+        public async Task<IActionResult> CreateLootPile([FromBody] CreateLootPileModel itemDomain)
+        {
+            if (ModelState.IsValid)
+            {                
+                var LootPile = _itemMasterService.GetDuplicateLootPile(itemDomain.ItemName, itemDomain.RuleSetId).Result;
+                var result = new ItemMaster();
+                var itemMaster = Mapper.Map<ItemMaster>(itemDomain);
+                if (LootPile != null)
+                {                    
+                    return BadRequest("The Loot Pile Name " + itemDomain.ItemName + " had already been used in this Rule Set. Please select another name.");
+                }
+                //else
+                //{
+                //    result = await _itemMasterService.CreateItemMaster(itemMaster, itemDomain.itemMasterSpellVM, itemDomain.itemMasterAbilityVM, itemDomain.itemMasterBuffAndEffectVM);
+                //}
+               
+               _itemMasterService.CreateLootPile(itemDomain);
+
+                return Ok();
+            }
+            return BadRequest(Utilities.ModelStateError(ModelState));
         }
 
+        [HttpPost("EditLootPile")]
+        public async Task<IActionResult> EditLootPile([FromBody] CreateLootPileModel itemDomain)
+        {
+            if (ModelState.IsValid)
+            {
+                var LootPile = _itemMasterService.getLootPileDetails(itemDomain.LootId);
+                if (LootPile == null) return BadRequest("Loot Pile not found");
+
+                _itemMasterService.UpdateLootPile(itemDomain);
+
+
+
+                return Ok();
+            }
+            return BadRequest(Utilities.ModelStateError(ModelState));
+        }
+
+        [HttpGet("GetLootPile")]
+        public async Task<IActionResult> GetLootPile(int lootPileId)
+        {
+            LootPileViewModel model =_itemMasterService.getLootPileDetails(lootPileId);
+            return Ok(model);
+
+        }
         #endregion
     }
 }

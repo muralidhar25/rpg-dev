@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace DAL.Services
 {
-    public interface ILootPileService
+    public interface ILootPileTemplateService
     {
-        Task<LootPile> GetDuplicateLootPile(string value, int? ruleSetId, int? lootPileId = 0);
-        Task Create(LootPile lootPile, List<LootsToAdd> itemList);
+        //Task<LootPile> GetDuplicateLootPile(string value, int? ruleSetId, int? lootPileId = 0);
+        //Task Create(LootPile lootPile, List<LootsToAdd> itemList);
     }
 }

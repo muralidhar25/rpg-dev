@@ -21,50 +21,54 @@ using RPGSmithApp.ViewModels.EditModels;
 namespace RPGSmithApp.Controllers
 {
     [Route("api/[controller]")]
-    public class LootPileController : Controller
+    public class LootPileTemplateController : Controller
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAccountManager _accountManager;        
         private readonly IRuleSetService _ruleSetService;
-        private readonly ILootPileService _lootPileService;
+        private readonly ILootPileTemplateService _lootPileTemplateService;
 
-        public LootPileController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager, IRuleSetService ruleSetService,
-            ILootPileService lootPileService)
+        public LootPileTemplateController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager, IRuleSetService ruleSetService,
+            ILootPileTemplateService lootPileTemplateService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._accountManager = accountManager;
             this._ruleSetService = ruleSetService;
-            this._lootPileService = lootPileService;
+            this._lootPileTemplateService = lootPileTemplateService;
         }
 
-        [HttpPost("CreateLootPile")]
-        public async Task<IActionResult> CreateLootPile([FromBody] CreateLootPileModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var ItemMasterModel = _lootPileService.GetDuplicateLootPile(model.Name, model.RuleSetId).Result;
-                    var result = new LootPile();
-                    var lootPile = Mapper.Map<LootPile>(model);
-                    if (ItemMasterModel != null)
-                    {
-                        //result = lootPile;
-                        return BadRequest("The Loot Pile Name " + model.Name + " had already been used in this Campaign. Please select another name.");
-                    }
-                    else
-                    {
-                        await _lootPileService.Create(lootPile, model.ItemList);
-                    }
-                    return Ok();
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-            }
-            return BadRequest(Utilities.ModelStateError(ModelState));
-        }
+        //[HttpPost("CreateLootPile")]
+        //public async Task<IActionResult> CreateLootPile([FromBody] CreateLootPileModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            var ItemMasterModel = _lootPileService.GetDuplicateLootPile(model.Name, model.RuleSetId).Result;
+        //            var result = new LootPile();
+        //            var lootPile = Mapper.Map<LootPile>(model);
+        //            if (ItemMasterModel != null)
+        //            {
+        //                //result = lootPile;
+        //                return BadRequest("The Loot Pile Name " + model.Name + " had already been used in this Campaign. Please select another name.");
+        //            }
+        //            else
+        //            {
+        //                await _lootPileService.Create(lootPile, model.ItemList);
+        //            }
+        //            return Ok();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            return BadRequest(ex.Message);
+        //        }
+        //    }
+        //    return BadRequest(Utilities.ModelStateError(ModelState));
+        //}
+
+
+
+
         //[HttpPost("UpdateItemMasterLoot")]
         //public async Task<IActionResult> UpdateItemMasterLoot([FromBody] EditItemMasterLootModel model)
         //{

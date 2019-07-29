@@ -9,6 +9,7 @@ import { DBkeys } from '../../../core/common/db-keys';
 import { Utilities } from '../../../core/common/utilities';
 import { User } from '../../../ng-chat/core/user';
 import { ItemMasterService } from '../../../core/services/item-master.service';
+import { SharedService } from '../../../core/services/shared.service';
 
 @Component({
   selector: 'app-delete-templates',
@@ -34,6 +35,7 @@ export class DeleteTemplatesComponent implements OnInit {
     public modalService: BsModalService,
     private localStorage: LocalStoreManager,
     private appService: AppService1,
+    private sharedService: SharedService,
     private itemMasterService: ItemMasterService) { }
 
   ngOnInit() {
@@ -78,7 +80,7 @@ export class DeleteTemplatesComponent implements OnInit {
     this.selectedItems = [];
     this.itemsList.map((item) => {
       if (item.selected) {
-        this.selectedItems.push({ itemMasterId: item.itemMasterId});
+        this.selectedItems.push({ itemMasterId: item.itemMasterId, isBundle: item.isBundle});
       }
       return item;
 
@@ -96,11 +98,11 @@ export class DeleteTemplatesComponent implements OnInit {
   }
   RemoveSelectedItems() {
     this.isLoading = true;
-    this.itemMasterService.deleteTemplates<any>(this.selectedItems)
+    this.itemMasterService.deleteTemplates<any>(this.selectedItems, this.rulesetId)
       .subscribe(data => {
               this.alertService.showMessage("Deleting Templates", "", MessageSeverity.success);
               this.close();
-              this.appService.updateItemsList(true);
+        this.sharedService.updateItemMasterList(true);
             this.isLoading = false;
         }, error => {
         this.isLoading = false;

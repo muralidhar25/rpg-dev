@@ -828,6 +828,66 @@ namespace DAL.Models.SPModels
     {
         public bool IsBundle { get; set; }
     }
+    public class CreateLootPileModel
+    {
+        public int LootId { get; set; }
+
+        [Required]
+        public int? RuleSetId { get; set; }
+
+        [Required]
+        [MaxLength(255, ErrorMessage = "The field Name must be string with maximum length of 255 characters")]
+        public string ItemName { get; set; }
+
+        public string ItemImage { get; set; }
+
+        //        [MaxLength(4000, ErrorMessage = "The field Visible Description must be string with maximum length of 1024 characters")]
+        public string ItemVisibleDesc { get; set; }
+
+
+
+
+        public string Metatags { get; set; }
+
+        public bool IsVisible { get; set; }
+
+        public List<LootPileItem> LootPileItems { get; set; }
+    }
+    public class LootPileItem
+    {
+        public int RowNum { get; set; }
+        public int ItemMasterId { get; set; }
+        public int Qty { get; set; }
+        public bool IsBundle { get; set; }
+    }
+    public class LootPileViewModel
+    {
+        public int LootId { get; set; }
+
+        
+        public int? RuleSetId { get; set; }
+        
+        public string ItemName { get; set; }
+
+        public string ItemImage { get; set; }
+        
+        public string ItemVisibleDesc { get; set; }
+
+        public string Metatags { get; set; }
+
+        public bool? IsVisible { get; set; }
+
+        public List<LootPileItems_ViewModel> LootPileItems { get; set; }
+    }
+    public class LootPileItems_ViewModel
+    {
+        
+        public int LootId { get; set; }
+        public int ItemMasterId { get; set; }
+        public int Qty { get; set; }
+        public string ItemName { get; set; }
+        public string ItemImage { get; set; }
+    }
     public class MonsterTemplate_Bundle : MonsterTemplate
     {
         public bool IsBundle { get; set; }
