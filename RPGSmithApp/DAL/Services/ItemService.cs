@@ -997,7 +997,7 @@ namespace DAL.Services
         }
 
         #endregion
-        public void AddItemToLoot(int? itemId)
+        public void AddItemToLoot(int? itemId, int Char_LootPileId)
         {
             if (itemId != null)
             {
@@ -1053,7 +1053,8 @@ namespace DAL.Services
                     }
                     _itemMasterService.CreateItemMasterLoot(objItemMaster, new ItemMasterLoot()
                     {
-                        IsShow = true
+                        IsShow = true,
+                        LootPileId= Char_LootPileId
                     },
                     ItemMasterSpell, ItemMasterAbilities, itemMasterBuffAndEffects, ItemMasterCommand, rulesetId, obj
                     );

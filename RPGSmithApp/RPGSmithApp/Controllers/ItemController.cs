@@ -743,6 +743,8 @@ namespace RPGSmithApp.Controllers
         {
             try
             {
+                
+
                 // data.ContainedItemsList.Add(data.item);
                 var model = data.item;
                 int rulesetID = model.Character.RuleSetId == null ? 0 : (int)model.Character.RuleSetId;
@@ -754,14 +756,17 @@ namespace RPGSmithApp.Controllers
                 {
                     await DeleteItemCommon(model.ItemId, (int)model.CharacterId);
                 }
+
+                LootPileViewModel characterLootPile = _itemMasterService.getCharacterLootPile(model.CharacterId==null?0:(int)model.CharacterId);
+
                 var currentUser = GetUser();
                 if (currentUser.IsGm || currentUser.IsGmPermanent)
                 {
-                    _itemService.AddItemToLoot(model.ItemId);
+                    _itemService.AddItemToLoot(model.ItemId, characterLootPile.LootId);
                 }
                 else if (await _campaignService.isInvitedPlayerCharacter((int)model.CharacterId))
                 {
-                    _itemService.AddItemToLoot(model.ItemId);
+                    _itemService.AddItemToLoot(model.ItemId, characterLootPile.LootId);
                 }
                 foreach (var item in data.ContainedItemsList)
                 {
@@ -780,11 +785,11 @@ namespace RPGSmithApp.Controllers
                     //var currentUser = GetUser();
                     if (currentUser.IsGm || currentUser.IsGmPermanent)
                     {
-                        _itemService.AddItemToLoot(modelF.ItemId);
+                        _itemService.AddItemToLoot(modelF.ItemId, characterLootPile.LootId);
                     }
                     else if (await _campaignService.isInvitedPlayerCharacter((int)modelF.CharacterId))
                     {
-                        _itemService.AddItemToLoot(modelF.ItemId);
+                        _itemService.AddItemToLoot(modelF.ItemId, characterLootPile.LootId);
                     }
                 }
                
