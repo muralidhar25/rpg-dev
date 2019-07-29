@@ -898,16 +898,16 @@ namespace DAL.Services
                 return _context.ItemMasters.Where(x => x.ItemName.ToLower() == value.ToLower() && x.IsDeleted != true).FirstOrDefault();
 
         }
-        public async Task<ItemMasterLoot> GetDuplicateLootPile(string value, int? ruleSetId)
+        public async Task<ItemMasterLoot> GetDuplicateLootPile(string value, int? ruleSetId, int? lootId = 0)
         {
             
             if (ruleSetId > 0)
-                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.RuleSetId == ruleSetId && x.IsDeleted != true && x.IsLootPile==true).FirstOrDefault();
+                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.RuleSetId == ruleSetId && x.LootId != lootId && x.IsDeleted != true).FirstOrDefault();
             else
-                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.IsDeleted != true && x.IsLootPile == true).FirstOrDefault();
+                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.IsDeleted != true).FirstOrDefault();
 
         }
-        
+
         public bool Core_ItemMasterWithParentIDExists(int itemMasterID, int RulesetID)
         {
             if (_context.ItemMasters.Where(x => x.ItemMasterId == itemMasterID && x.ParentItemMasterId != null && x.IsDeleted != true).Any())
