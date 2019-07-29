@@ -1771,6 +1771,23 @@ namespace RPGSmithApp.Controllers
                 return BadRequest(ex.Message);
             }            
         }
+
+        [HttpPost("ShowLootPile")]
+        public async Task<IActionResult> ShowLootPile(int LootPileID, bool IsVisible)
+        {
+            try
+            {
+
+                await _itemMasterService.ShowLootPile(LootPileID, IsVisible);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("GetAvailableContainerItemLoots")]
         public async Task<IEnumerable<ItemMaster>> GetAvailableContainerItemLoots(int rulesetId, int itemMasterId)
         {
@@ -2025,7 +2042,7 @@ namespace RPGSmithApp.Controllers
                 try {
                     var LootPile =_itemMasterService.CheckDuplicateItemMasterLootPile(itemDomain.ItemName, itemDomain.RuleSetId).Result;
                     
-                    if (LootPile != null)
+                    if (LootPile)
                     {
                         return BadRequest("The Loot Pile Name " + itemDomain.ItemName + " had already been used in this Rule Set. Please select another name.");
                     }
@@ -2075,7 +2092,7 @@ namespace RPGSmithApp.Controllers
                 {
                     var LootPile = _itemMasterService.CheckDuplicateItemMasterLootPile(model.ItemName, model.RuleSetId).Result;
 
-                    if (LootPile != null)
+                    if (LootPile)
                     {
                         return BadRequest("The Loot Pile Name " + model.ItemName + " had already been used in this Rule Set. Please select another name.");
                     }

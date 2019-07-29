@@ -1448,6 +1448,8 @@ namespace DAL.Services
                     i.IsIdentified = row["IsIdentified"] == DBNull.Value ? false : Convert.ToBoolean(row["IsIdentified"]);
                     i.IsVisible = row["IsVisible"] == DBNull.Value ? false : Convert.ToBoolean(row["IsVisible"]);
                     i.TotalWeight = row["TotalWeight"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalWeight"]);
+                    i.IsLootPile = row["IsLootPile"] == DBNull.Value ? false : Convert.ToBoolean(row["IsLootPile"]);
+                    i.LootPileId = row["LootPileId"] == DBNull.Value ? 0 : Convert.ToInt32(row["LootPileId"].ToString());
                     itemlist.Add(i);
                 }
             }
@@ -2147,6 +2149,15 @@ namespace DAL.Services
                     
                 }
                 _context.SaveChanges();
+            }
+        }
+
+        public async Task ShowLootPile(int lootPileID, bool isVisible) {
+            var loot = _context.ItemMasterLoots.Where(x => x.LootId == lootPileID).FirstOrDefault();
+            if (loot != null)
+            {
+                loot.IsVisible = isVisible;
+                await _context.SaveChangesAsync();
             }
         }
         #endregion

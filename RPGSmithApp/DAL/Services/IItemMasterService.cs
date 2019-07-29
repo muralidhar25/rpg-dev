@@ -59,5 +59,6 @@ namespace DAL.Services
         void CreateLootPile(CreateLootPileModel model);
         LootPileViewModel getLootPileDetails(int lootPileId);
         void UpdateLootPile(CreateLootPileModel itemDomain);
+        Task ShowLootPile(int lootPileID, bool isVisible);
     }
 }
