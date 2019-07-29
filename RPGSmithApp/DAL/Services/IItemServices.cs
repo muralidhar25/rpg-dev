@@ -42,7 +42,7 @@ namespace DAL.Services
         List<Item> GetNestedContainerItems(int itemid);
         List<Item> GetItemsByCharacterId(int characterId);
         List<Item> GetAvailableItems(int characterId);
-        void AddItemToLoot(int? itemId);
+        void AddItemToLoot(int? itemId,int Char_LootPileId);
         Task AddItemsSP(List<ItemMasterIds> multiItemMasters, List<ItemMasterBundleIds> multiItemMasterBundles, int characterId,bool IsLootItems);
         List<ItemMasterMonsterItem> getAvailableMonsterContainerItems(int rulesetId, int itemId);
         ItemMasterMonsterItem UpdateMonsterItem(ItemMasterMonsterItem item, List<ItemSpell> ItemSpells, List<ItemAbility> ItemAbilities, List<ItemBuffAndEffect> ItemBuffAndEffects, List<ItemCommand> itemCommandVM);

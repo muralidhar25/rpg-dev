@@ -1504,7 +1504,8 @@ namespace DAL.Services
                     TotalWeightWithContents = item.TotalWeightWithContents,
                     Volume = item.Volume,
                     Weight = item.Weight,
-                     TotalWeight = item.TotalWeight
+                     TotalWeight = item.TotalWeight,
+                     LootPileId= loot.LootPileId
                  };
             }
             else {
@@ -1539,7 +1540,8 @@ namespace DAL.Services
                     TotalWeightWithContents = loot.TotalWeightWithContents,
                     Volume = loot.Volume,
                     Weight = loot.Weight,
-                   TotalWeight= loot.Quantity * (loot.Weight)
+                   TotalWeight= loot.Quantity * (loot.Weight),
+                   LootPileId = loot.LootPileId
                  };
             }
             
@@ -2116,7 +2118,7 @@ namespace DAL.Services
 
                 //List<int> LootPileItemsLootIdsToDelete = new List<int>();
                 //List<int> LootPileItemsLootIdsToUpdate = new List<int>();
-                List<LootPileItems_ViewModel> ItemMasterIdsToAdd = new List<LootPileItems_ViewModel>();
+                List<LootPileItem> ItemMasterIdsToAdd = new List<LootPileItem>();
 
                 var LootPileItems = _context.ItemMasterLoots.Where(x => x.LootPileId == lootPile.LootId && x.IsDeleted != true && x.IsLootPile != true).ToList();
 
@@ -2136,20 +2138,112 @@ namespace DAL.Services
 
                 foreach (var model_item in itemDomain.LootPileItems)
                 {
-                    if (! LootPileItems.Where(x => x.ItemMasterId == model_item.ItemMasterId).Any())
+                    if (!LootPileItems.Where(x => x.ItemMasterId == model_item.ItemMasterId).Any())
                     {
-                        ItemMasterIdsToAdd.Add(new LootPileItems_ViewModel()
+                        ItemMasterIdsToAdd.Add(model_item);
+                    }
+                    else
+                    { var rec = LootPileItems.Where(x => x.ItemMasterId == model_item.ItemMasterId).FirstOrDefault();
+                        if (model_item.Qty != rec.Quantity)
                         {
-                            ItemMasterId = model_item.ItemMasterId,
-                            Qty = model_item.Qty,
-
-                        });
+                            rec.Quantity = model_item.Qty;
+                        }
                     }
                     
                     
                 }
                 _context.SaveChanges();
+                if (ItemMasterIdsToAdd.Any())
+                {
+                    int index = 0;
+                    List<LootPileItem> dtList = ItemMasterIdsToAdd.Select(x => new LootPileItem()
+                    {
+                        RowNum = index = Getindex(index),
+                        ItemMasterId = x.ItemMasterId,
+                        Qty = x.Qty
+                    }).ToList();
+
+                    DataTable DT_List = new DataTable();
+
+                    if (dtList.Count > 0)
+                    {
+                        DT_List = utility.ToDataTable<LootPileItem>(dtList);
+                    }
+
+                    string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+                    using (SqlConnection con = new SqlConnection(consString))
+                    {
+
+                        using (SqlCommand cmd = new SqlCommand("LootPile_UpdateItems"))
+                        {
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Connection = con;
+                            cmd.Parameters.AddWithValue("@LootPileId", itemDomain.LootId);
+                            cmd.Parameters.AddWithValue("@ItemMasterIdsToAdd", DT_List);
+                            cmd.Parameters.AddWithValue("@RulesetID", itemDomain.RuleSetId);
+                            con.Open();
+                            try
+                            {
+                                var a = cmd.ExecuteNonQuery();
+                            }
+                            catch (Exception ex)
+                            {
+                                con.Close();
+                                throw ex;
+                            }
+                            con.Close();
+                        }
+                    }
+                }
             }
+        }
+
+        public LootPileViewModel getCharacterLootPile(int characterId) {
+            LootPileViewModel obj = new LootPileViewModel();
+            var character = _context.Characters.Where(x => x.CharacterId == characterId && x.IsDeleted != true).FirstOrDefault();
+            if (character!=null)
+            {
+                var characterLootPile = _context.ItemMasterLoots.Where(x => x.LootPileCharacterId == characterId && x.IsLootPile == true && x.IsDeleted != true).FirstOrDefault();
+                
+                if (characterLootPile == null)
+                {
+                    _context.ItemMasterLoots.Add(new ItemMasterLoot()
+                    {
+                        ItemName = character.CharacterName + "’s Drops",
+                        ItemImage = character.ImageUrl,
+                        ItemVisibleDesc = "Items dropped by " + character.CharacterName,
+                        IsVisible = true,
+                        LootPileCharacterId = characterId,
+                        IsLootPile = true
+                    });
+                    obj = _context.ItemMasterLoots.Where(x => x.LootPileCharacterId == characterId && x.IsLootPile == true && x.IsDeleted != true)
+                        .Select(x=>new LootPileViewModel() {
+                            IsVisible=x.IsVisible,
+                            ItemImage= x.ItemImage,
+                           ItemName = x.ItemName,
+                            ItemVisibleDesc=x.ItemVisibleDesc,
+                            LootId=x.LootId,
+                            Metatags=x.Metatags,
+                            RuleSetId=x.RuleSetId,
+                        } ).FirstOrDefault();
+
+                }
+                else {
+                    
+                           obj.IsVisible = characterLootPile.IsVisible;
+                           obj.ItemImage = characterLootPile.ItemImage;
+                           obj.ItemName = characterLootPile.ItemName;
+                           obj.ItemVisibleDesc = characterLootPile.ItemVisibleDesc;
+                           obj.LootId = characterLootPile.LootId;
+                           obj.Metatags = characterLootPile.Metatags;
+                           obj.RuleSetId = characterLootPile.RuleSetId;
+                       
+                }
+            }
+
+            
+            return obj;
         }
 
         public async Task ShowLootPile(int lootPileID, bool isVisible) {
