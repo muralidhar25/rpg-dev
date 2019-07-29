@@ -2114,31 +2114,38 @@ namespace DAL.Services
 
                 //List<int> LootPileItemsLootIdsToDelete = new List<int>();
                 //List<int> LootPileItemsLootIdsToUpdate = new List<int>();
-                //List<int> LootPileItemsLootIdsToAdd = new List<int>();
+                List<LootPileItems_ViewModel> ItemMasterIdsToAdd = new List<LootPileItems_ViewModel>();
 
-                //var LootPileItems = _context.ItemMasterLoots.Where(x => x.LootPileId == lootPile.LootId && x.IsDeleted != true && x.IsLootPile != true).ToList();
+                var LootPileItems = _context.ItemMasterLoots.Where(x => x.LootPileId == lootPile.LootId && x.IsDeleted != true && x.IsLootPile != true).ToList();
 
-                //foreach (var db_item in LootPileItems)
-                //{
+                foreach (var db_item in LootPileItems)
+                {
 
-                //    if (! itemDomain.LootPileItems.Where(x => x.ItemMasterId == db_item.ItemMasterId).Any())
-                //    {
-                //        //LootPileItemsLootIdsToDelete.Add(db_item.LootId);
-                //        db_item.IsDeleted
-                //    }
-                //}
+                    if (!itemDomain.LootPileItems.Where(x => x.ItemMasterId == db_item.ItemMasterId).Any())
+                    {
+                        //LootPileItemsLootIdsToDelete.Add(db_item.LootId);
+                        db_item.IsDeleted = true;
+                    }
+                    //else {
+
+                    //}
+                }
 
 
-                //foreach (var model_item in itemDomain.LootPileItems)
-                //{
-                //    foreach (var db_item in LootPileItems)
-                //    {
-                //        if (model_item.LootId == db_item.LootId && model_item.Qty != db_item.Quantity)
-                //        {
+                foreach (var model_item in itemDomain.LootPileItems)
+                {
+                    if (! LootPileItems.Where(x => x.ItemMasterId == model_item.ItemMasterId).Any())
+                    {
+                        ItemMasterIdsToAdd.Add(new LootPileItems_ViewModel()
+                        {
+                            ItemMasterId = model_item.ItemMasterId,
+                            Qty = model_item.Qty,
 
-                //        }                        
-                //    }
-                //}
+                        });
+                    }
+                    
+                    
+                }
                 _context.SaveChanges();
             }
         }
