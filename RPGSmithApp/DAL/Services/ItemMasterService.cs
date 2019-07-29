@@ -877,9 +877,16 @@ namespace DAL.Services
         public async Task<bool> CheckDuplicateItemMasterLoot(string value, int? ruleSetId, int? lootID = 0)
         {
             if (ruleSetId > 0)
-                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.RuleSetId == ruleSetId && x.LootId != lootID && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
+                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.RuleSetId == ruleSetId && x.LootId != lootID && x.IsDeleted != true && x.IsLootPile != true).FirstOrDefault() == null ? false : true;
             else
-                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
+                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.IsDeleted != true && x.IsLootPile != true).FirstOrDefault() == null ? false : true;
+        }
+        public async Task<bool> CheckDuplicateItemMasterLootPile(string value, int? ruleSetId, int? lootID = 0)
+        {
+            if (ruleSetId > 0)
+                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.RuleSetId == ruleSetId && x.LootId != lootID && x.IsDeleted != true && x.IsLootPile==true).FirstOrDefault() == null ? false : true;
+            else
+                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.IsDeleted != true && x.IsLootPile == true).FirstOrDefault() == null ? false : true;
         }
         public async Task<ItemMaster> GetDuplicateItemMaster(string value, int? ruleSetId, int? itemMasterId = 0)
         {
@@ -898,15 +905,15 @@ namespace DAL.Services
                 return _context.ItemMasters.Where(x => x.ItemName.ToLower() == value.ToLower() && x.IsDeleted != true).FirstOrDefault();
 
         }
-        public async Task<ItemMasterLoot> GetDuplicateLootPile(string value, int? ruleSetId, int? lootId = 0)
-        {
+        //public async Task<ItemMasterLoot> GetDuplicateLootPile(string value, int? ruleSetId, int? lootId = 0)
+        //{
             
-            if (ruleSetId > 0)
-                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.RuleSetId == ruleSetId && x.LootId != lootId && x.IsDeleted != true).FirstOrDefault();
-            else
-                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.IsDeleted != true).FirstOrDefault();
+        //    if (ruleSetId > 0)
+        //        return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.RuleSetId == ruleSetId && x.LootId != lootId && x.IsDeleted != true).FirstOrDefault();
+        //    else
+        //        return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.IsDeleted != true).FirstOrDefault();
 
-        }
+        //}
 
         public bool Core_ItemMasterWithParentIDExists(int itemMasterID, int RulesetID)
         {
@@ -2105,26 +2112,34 @@ namespace DAL.Services
                
                 lootPile.Metatags = itemDomain.Metatags;
 
-                List<int> LootPileItemsLootIdsToDelete = new List<int>();
-                List<int> LootPileItemsLootIdsToUpdate = new List<int>();
-                List<int> LootPileItemsLootIdsToAdd = new List<int>();
+                //List<int> LootPileItemsLootIdsToDelete = new List<int>();
+                //List<int> LootPileItemsLootIdsToUpdate = new List<int>();
+                //List<int> LootPileItemsLootIdsToAdd = new List<int>();
 
-                var LootPileItems = _context.ItemMasterLoots.Where(x => x.LootPileId == lootPile.LootId && x.IsDeleted != true && x.IsLootPile != true).ToList();
-                foreach (var model_item in itemDomain.LootPileItems)
-                {
+                //var LootPileItems = _context.ItemMasterLoots.Where(x => x.LootPileId == lootPile.LootId && x.IsDeleted != true && x.IsLootPile != true).ToList();
 
-                    //if (LootPileItems.Where(x=>x.ItemMasterId==))
-                    //{
+                //foreach (var db_item in LootPileItems)
+                //{
 
-                    //}
-                foreach (var db_item in LootPileItems)
-                {
-                    if (true)
-                    {
+                //    if (! itemDomain.LootPileItems.Where(x => x.ItemMasterId == db_item.ItemMasterId).Any())
+                //    {
+                //        //LootPileItemsLootIdsToDelete.Add(db_item.LootId);
+                //        db_item.IsDeleted
+                //    }
+                //}
 
-                    }
-                }
-                }
+
+                //foreach (var model_item in itemDomain.LootPileItems)
+                //{
+                //    foreach (var db_item in LootPileItems)
+                //    {
+                //        if (model_item.LootId == db_item.LootId && model_item.Qty != db_item.Quantity)
+                //        {
+
+                //        }                        
+                //    }
+                //}
+                _context.SaveChanges();
             }
         }
         #endregion

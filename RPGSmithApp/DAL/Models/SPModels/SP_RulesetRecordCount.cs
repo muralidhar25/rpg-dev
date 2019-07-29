@@ -856,6 +856,7 @@ namespace DAL.Models.SPModels
     public class LootPileItem
     {
         public int RowNum { get; set; }
+        public int LootId { get; set; }
         public int ItemMasterId { get; set; }
         public int Qty { get; set; }
         public bool IsBundle { get; set; }

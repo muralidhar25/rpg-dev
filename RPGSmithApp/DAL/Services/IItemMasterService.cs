@@ -20,8 +20,9 @@ namespace DAL.Services
         int Core_GetCountByRuleSetId(int ruleSetId, int parentID);
         Task<bool> CheckDuplicateItemMaster(string value, int? ruleSetId,int? itemMasterId = 0);
         Task<bool> CheckDuplicateItemMasterLoot(string value, int? ruleSetId, int? lootID = 0);
+        Task<bool> CheckDuplicateItemMasterLootPile(string value, int? ruleSetId, int? lootID = 0);
         Task<ItemMaster> GetDuplicateItemMaster(string value, int? ruleSetId, int? itemMasterId = 0);
-        Task<ItemMasterLoot> GetDuplicateLootPile(string value, int? ruleSetId, int? lootId=0);
+       // Task<ItemMasterLoot> GetDuplicateLootPile(string value, int? ruleSetId, int? lootId=0);
         List<ItemMaster> Core_GetItemMastersByRuleSetId(int ruleSetId, int ParentID);
         Task<ItemMaster> Core_CreateItemMaster(ItemMaster item, List<ItemMasterSpell> AssociatedSpells, List<ItemMasterAbility> AssociatedAbilities,List<ItemMasterBuffAndEffect> AssociatedBuffAndEffects);
         bool Core_ItemMasterWithParentIDExists(int itemMasterID, int RulesetID);

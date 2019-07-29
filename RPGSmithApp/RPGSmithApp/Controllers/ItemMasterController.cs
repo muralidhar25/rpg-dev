@@ -2021,22 +2021,23 @@ namespace RPGSmithApp.Controllers
         public async Task<IActionResult> CreateLootPile([FromBody] CreateLootPileModel itemDomain)
         {
             if (ModelState.IsValid)
-            {                
-                var LootPile = _itemMasterService.GetDuplicateLootPile(itemDomain.ItemName, itemDomain.RuleSetId).Result;
-                var result = new ItemMaster();
-                var itemMaster = Mapper.Map<ItemMaster>(itemDomain);
-                if (LootPile != null)
-                {                    
-                    return BadRequest("The Loot Pile Name " + itemDomain.ItemName + " had already been used in this Rule Set. Please select another name.");
-                }
-                //else
-                //{
-                //    result = await _itemMasterService.CreateItemMaster(itemMaster, itemDomain.itemMasterSpellVM, itemDomain.itemMasterAbilityVM, itemDomain.itemMasterBuffAndEffectVM);
-                //}
-               
-               _itemMasterService.CreateLootPile(itemDomain);
+            {
+                try {
+                    var LootPile =_itemMasterService.CheckDuplicateItemMasterLootPile(itemDomain.ItemName, itemDomain.RuleSetId).Result;
+                    
+                    if (LootPile != null)
+                    {
+                        return BadRequest("The Loot Pile Name " + itemDomain.ItemName + " had already been used in this Rule Set. Please select another name.");
+                    }
+                    
 
-                return Ok();
+                    _itemMasterService.CreateLootPile(itemDomain);
+
+                    return Ok();
+                } catch (Exception ex) {
+                    return Ok(ex.Message);
+                }
+               
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
@@ -2046,7 +2047,9 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var LootPile = _itemMasterService.getLootPileDetails(itemDomain.LootId);
+                try
+                {
+                    var LootPile = _itemMasterService.getLootPileDetails(itemDomain.LootId);
                 if (LootPile == null) return BadRequest("Loot Pile not found");
 
                 _itemMasterService.UpdateLootPile(itemDomain);
@@ -2054,9 +2057,43 @@ namespace RPGSmithApp.Controllers
 
 
                 return Ok();
+                }
+                catch (Exception ex)
+                {
+                    return Ok(ex.Message);
+                }
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
+
+        [HttpPost("DuplicateLootPile")]
+        public async Task<IActionResult> DuplicateLootPile([FromBody] CreateLootPileModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var LootPile = _itemMasterService.CheckDuplicateItemMasterLootPile(model.ItemName, model.RuleSetId).Result;
+
+                    if (LootPile != null)
+                    {
+                        return BadRequest("The Loot Pile Name " + model.ItemName + " had already been used in this Rule Set. Please select another name.");
+                    }
+                    _itemMasterService.CreateLootPile(model);
+                }
+
+
+
+                catch (Exception ex)
+                { return BadRequest(ex.Message); }
+
+
+                return Ok();
+            }
+
+            return BadRequest(Utilities.ModelStateError(ModelState));
+        }
+
 
         [HttpGet("GetLootPile")]
         public async Task<IActionResult> GetLootPile(int lootPileId)
