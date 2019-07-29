@@ -264,7 +264,7 @@ export class LootPileComponent implements OnInit {
     this.bsModalRef.content.title = 'Create Loot';
     this.bsModalRef.content.button = 'CREATE';
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
-    this.bsModalRef.content.itemMasterVM = {
+    this.bsModalRef.content.lootPileVM = {
       ruleSetId: this.ruleSetId,
       ruleSet: this.RuleSet
     };

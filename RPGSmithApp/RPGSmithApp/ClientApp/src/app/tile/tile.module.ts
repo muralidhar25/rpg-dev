@@ -18,6 +18,7 @@ import { UseExecuteComponent } from './execute/use-execute/use-execute.component
 import { TextTileComponent } from './text/text.component';
 import { EditTextComponent } from './text/edit-text/edit-text.component';
 import { BuffAndEffectTileComponent } from './buff-and-effect/buff-and-effect.component';
+import { ToggleTileComponent } from './toggle/toggle.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { BuffAndEffectTileComponent } from './buff-and-effect/buff-and-effect.co
     UseExecuteComponent,
     TextTileComponent,
     EditTextComponent,
-    BuffAndEffectTileComponent
+    BuffAndEffectTileComponent,
+    ToggleTileComponent
   ],
   imports: [
     SharedModule
@@ -63,7 +65,8 @@ import { BuffAndEffectTileComponent } from './buff-and-effect/buff-and-effect.co
     UseExecuteComponent,
     TextTileComponent,
     EditTextComponent,
-    BuffAndEffectTileComponent
+    BuffAndEffectTileComponent,
+    ToggleTileComponent
   ],
   entryComponents: [
     TileComponent,
@@ -83,7 +86,8 @@ import { BuffAndEffectTileComponent } from './buff-and-effect/buff-and-effect.co
     UseExecuteComponent,
     TextTileComponent,
     EditTextComponent,
-    BuffAndEffectTileComponent
+    BuffAndEffectTileComponent,
+    ToggleTileComponent
   ]
 })
 export class TileModule {}

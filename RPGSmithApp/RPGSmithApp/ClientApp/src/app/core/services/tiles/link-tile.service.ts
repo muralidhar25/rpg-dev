@@ -71,6 +71,7 @@ export class LinkTileService extends EndpointFactory {
         linkTile: model.linkTiles,
         executeTile: model.executeTiles,
         commandTile: model.commandTiles,
+        toggleTile: model.toggleTiles,
         multiCharacterStats: [],
         buffAndEffectTile: model.buffAndEffectTiles
       };
@@ -125,6 +126,7 @@ export class LinkTileService extends EndpointFactory {
         characterStatTile: null,
         executeTile: null,
         commandTile: null,
+        toggleTile: null,
         multiCharacterStats: [],
         buffAndEffectTile:null
       };

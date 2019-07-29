@@ -23,6 +23,8 @@ import { error } from "util";
 import { DeleteAllLootItemsComponent } from "./delete-all-loot-items/delete-all-loot-items.component";
 import { DiceRollComponent } from "../../shared/dice/dice-roll/dice-roll.component";
 import { Characters } from "../../core/models/view-models/characters.model";
+import { CreateLootPileComponent } from "../loot-pile/create-loot-pile/create-loot-pile.component";
+import { MoveLootComponent } from "./move-loot/move-loot.component";
 
 @Component({
   selector: 'app-loot',
@@ -499,5 +501,29 @@ export class LootComponent implements OnInit {
     this.bsModalRef.content.recordImage = this.RuleSet.imageUrl;
     this.bsModalRef.content.recordType = 'ruleset'
     this.bsModalRef.content.isFromCampaignDetail = true;
+  }
+
+  createPile() {
+    this.bsModalRef = this.modalService.show(CreateLootPileComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Create Loot';
+    this.bsModalRef.content.button = 'CREATE';
+    this.bsModalRef.content.ruleSetId = this.ruleSetId;
+    this.bsModalRef.content.lootPileVM = {
+      ruleSetId: this.ruleSetId,
+      ruleSet: this.RuleSet
+    };
+  }
+
+  moveLoot() {
+    this.bsModalRef = this.modalService.show(MoveLootComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.ruleSetId = this.ruleSetId;
   }
 }

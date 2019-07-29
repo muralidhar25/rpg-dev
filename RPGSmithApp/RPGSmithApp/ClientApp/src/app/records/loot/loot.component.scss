@@ -546,3 +546,13 @@ filter-toggle-btn-light {
   padding-left: 1px;
   padding-right: 1px;
 }
+
+.input-switch-items .form-check-label span {
+  background: #fff;
+  color: #d15727;
+}
+
+.input-switch-items .form-check-input:checked ~ span {
+  color: #ffffff;
+  background-color: #d15727;
+}

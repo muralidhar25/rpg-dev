@@ -641,7 +641,7 @@ export class CampaignDetailsComponent implements OnInit {
     else {
       if (user.isGm) {
         this.rulesetService.ruleset = ruleset;
-        this.router.navigate(['/ruleset/loot-pile', ruleset.ruleSetId]);
+        this.router.navigate(['/ruleset/loot-pile-template', ruleset.ruleSetId]);
       }
     }
   }

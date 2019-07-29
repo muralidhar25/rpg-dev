@@ -4,7 +4,7 @@
     <h5 class="modal-title" id="addItemPopupTitle">{{title}}</h5>
     <button type="button" (click)="close()" class="btn icon icon-cross btn-simple-primary close"></button>
   </div>-->
-  <div class="modal-header" style="height:3rem">   
+  <div class="modal-header" style="height:3rem">
     <h5 class="modal-title" id="dicePopupTitle">
       <span>{{title}}</span>
       <span class="manage-ruleset-header">
@@ -36,7 +36,7 @@
           <legend *ngIf="itemsList?.length == 0">No Items Available</legend>
           <div class="row" *ngIf="itemsList?.length > 0">
             <div class="col-6">
-              <legend >Select Item(s)</legend>
+              <legend>Select Item(s)</legend>
             </div>
             <div class="col-6  text-right">
               <legend>
@@ -46,8 +46,8 @@
             </div>
           </div>
 
-          
-          
+
+
           <ul class="input-list-items">
             <li class="form-check col-md-6 col-sm-12" *ngFor="let item of itemsList | filter : searchText : 'itemName';let i = index;" popover="{{item.name}}" triggers="hover">
               <label class="form-check-label">
@@ -65,13 +65,39 @@
       </div>
 
     </div>
+
   </div>
 
   <app-loader [isLoading]="isLoading"></app-loader>
 
 
   <div class="modal-footer">
-    <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
-    <button [disabled]="isLoading" type="submit" class="btn btn-accent">{{_view}}</button>
+    <div class="form-row">
+      <div class="col-12">
+        <div class="form-group d-flex align-items-center">
+          <div class="col-4">
+            <label for="newItems">Drop to Loot Pile</label>
+          </div>
+          <div class="col-8">
+            <angular2-multiselect id="dropLoot" [data]="itemsList" [(ngModel)]="selectedLootPileItem" name="newItems" [settings]="lootItemsSettings">
+              <c-item id="item">
+                <ng-template let-item="item">
+                  <span class="associate-label-name">{{item.name}}</span>
+                  <img [src]="item.imageUrl" class="pull-right associate-img"
+                       onerror="this.src = '../assets/images/DefaultImages/Item.jpg'" />
+                </ng-template>
+              </c-item>
+            </angular2-multiselect>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-7 ml-auto d-flex">
+        <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+        <button [disabled]="isLoading" type="submit" class="btn btn-accent">{{_view}}</button>
+      </div>
+    </div>
+
   </div>
 </form>

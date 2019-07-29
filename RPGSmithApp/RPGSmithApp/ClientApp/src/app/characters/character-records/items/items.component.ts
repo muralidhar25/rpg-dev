@@ -1009,6 +1009,7 @@ export class CharacterItemsComponent implements OnInit {
   }
 
   DropItem() {
+    debugger
     this.bsModalRef = this.modalService.show(DropItemsComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,

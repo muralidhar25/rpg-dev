@@ -15,6 +15,7 @@ import { CommandTileComponent } from './command/command.component';
 import { TextTileComponent } from './text/text.component';
 import { PlatformLocation } from '@angular/common';
 import { BuffAndEffectTileComponent } from './buff-and-effect/buff-and-effect.component';
+import { ToggleTileComponent } from './toggle/toggle.component';
 
 @Component({
   selector: 'app-tile',
@@ -65,6 +66,7 @@ export class TileComponent implements OnInit {
       { tileName: 'IMAGE', tileTypeId: TILES.IMAGE, icon: TILE_ICON.IMAGE },
       { tileName: 'COUNTER', tileTypeId: TILES.COUNTER, icon: TILE_ICON.COUNTER },
       { tileName: 'CHARACTER STAT', tileTypeId: TILES.CHARACTERSTAT, icon: TILE_ICON.CHARACTERSTAT },
+      { tileName: 'TOGGLE', tileTypeId: TILES.TOGGLE, icon: TILE_ICON.TOGGLE },
     ];
     if (this.ruleSet.isBuffAndEffectEnabled) {
       this.tiles.push({ tileName: 'BUFFS & EFFECTS', tileTypeId: TILES.BUFFANDEFFECT, icon: TILE_ICON.BUFFANDEFFECT });
@@ -253,6 +255,25 @@ export class TileComponent implements OnInit {
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.ADD;
         this.bsModalRef.content.ruleSet = this.ruleSet;
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            this.event.emit(data);
+          }
+        })
+        break;
+      }
+      case TILES.TOGGLE: {
+        this.bsModalRef = this.modalService.show(ToggleTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = 'Add Toggle Tile';
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.ADD;
         this.bsModalRef.content.event.subscribe(data => {
           if (data) {
             this.event.emit(data);
