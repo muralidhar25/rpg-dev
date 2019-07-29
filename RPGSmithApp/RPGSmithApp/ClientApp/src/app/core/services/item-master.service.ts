@@ -456,12 +456,12 @@ export class ItemMasterService extends EndpointFactory {
     return bundleFormModal;
   }
 
-  deleteTemplates<T>(TemplatesList: any): Observable<T> {
+  deleteTemplates<T>(TemplatesList: any, rulesetId :number): Observable<T> {
     debugger
-    let endpointURL = `${this.DeleteTemplates}`;
+    let endpointURL = `${this.DeleteTemplates}?rulesetId=${rulesetId}`;
     return this.http.post<T>(endpointURL, JSON.stringify(TemplatesList), this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.deleteTemplates(TemplatesList));
+        return this.handleError(error, () => this.deleteTemplates(TemplatesList, rulesetId));
       });
   }
 

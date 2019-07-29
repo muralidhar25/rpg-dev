@@ -249,12 +249,12 @@ export class AbilityService extends EndpointFactory {
     return abilityFormModal;
   }
 
-  deleteAbilities<T>(AbilitiesList: any): Observable<T> {
+  deleteAbilities<T>(AbilitiesList: any, rulesetId:number): Observable<T> {
     debugger
-    let deleteAbilitiesURL = `${this.DeleteAbilities}`;
+    let deleteAbilitiesURL = `${this.DeleteAbilities}?rulesetId=${rulesetId}`;
     return this.http.post<T>(deleteAbilitiesURL, JSON.stringify(AbilitiesList), this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.deleteAbilities(AbilitiesList));
+        return this.handleError(error, () => this.deleteAbilities(AbilitiesList, rulesetId));
       });
   } 
 }

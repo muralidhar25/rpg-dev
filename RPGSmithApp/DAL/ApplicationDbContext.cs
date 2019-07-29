@@ -164,8 +164,8 @@ namespace DAL
         public virtual DbSet<CombatantList> CombatantLists { get; set; }
         public virtual DbSet<CombatSetting> CombatSettings { get; set; }
         public virtual DbSet<CombatUpdate> CombatUpdates { get; set; }
-        public virtual DbSet<LootPile> LootPiles { get; set; }
-        public virtual DbSet<LootPileLootItem> LootPileLootItems { get; set; }
+        //public virtual DbSet<LootPile> LootPiles { get; set; }
+        //public virtual DbSet<LootPileLootItem> LootPileLootItems { get; set; }
         
 
 

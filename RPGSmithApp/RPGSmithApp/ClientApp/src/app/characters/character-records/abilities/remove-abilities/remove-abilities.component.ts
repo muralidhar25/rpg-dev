@@ -10,6 +10,7 @@ import { Utilities } from '../../../../core/common/utilities';
 import { CharacterSpellService } from '../../../../core/services/character-spells.service';
 import { AbilityService } from '../../../../core/services/ability.service';
 import { CharacterAbilityService } from '../../../../core/services/character-abilities.service';
+import { SharedService } from '../../../../core/services/shared.service';
 
 @Component({
   selector: 'app-remove-abilities',
@@ -35,6 +36,7 @@ export class RemoveAbilitiesComponent implements OnInit {
     public modalService: BsModalService,
     private localStorage: LocalStoreManager,
     private appService: AppService1,
+    private sharedService: SharedService,
     private characterAbilityService: CharacterAbilityService) { }
 
   ngOnInit() {
@@ -102,11 +104,11 @@ export class RemoveAbilitiesComponent implements OnInit {
   }
   RemoveSelectedItems() {
     this.isLoading = true;
-    this.characterAbilityService.removeAbilities<any>(this.selectedItems)
+    this.characterAbilityService.removeAbilities<any>(this.selectedItems, this.rulesetId)
       .subscribe(data => {
               this.alertService.showMessage("Removing Abilities", "", MessageSeverity.success);
               this.close();
-              this.appService.updateItemsList(true);
+        this.sharedService.UpdateCharacterAbilityList(true);
             this.isLoading = false;
         }, error => {
         this.isLoading = false;

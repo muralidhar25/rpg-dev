@@ -877,9 +877,16 @@ namespace DAL.Services
         public async Task<bool> CheckDuplicateItemMasterLoot(string value, int? ruleSetId, int? lootID = 0)
         {
             if (ruleSetId > 0)
-                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.RuleSetId == ruleSetId && x.LootId != lootID && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
+                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.RuleSetId == ruleSetId && x.LootId != lootID && x.IsDeleted != true && x.IsLootPile != true).FirstOrDefault() == null ? false : true;
             else
-                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
+                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.IsDeleted != true && x.IsLootPile != true).FirstOrDefault() == null ? false : true;
+        }
+        public async Task<bool> CheckDuplicateItemMasterLootPile(string value, int? ruleSetId, int? lootID = 0)
+        {
+            if (ruleSetId > 0)
+                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.RuleSetId == ruleSetId && x.LootId != lootID && x.IsDeleted != true && x.IsLootPile==true).FirstOrDefault() == null ? false : true;
+            else
+                return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.IsDeleted != true && x.IsLootPile == true).FirstOrDefault() == null ? false : true;
         }
         public async Task<ItemMaster> GetDuplicateItemMaster(string value, int? ruleSetId, int? itemMasterId = 0)
         {
@@ -898,6 +905,16 @@ namespace DAL.Services
                 return _context.ItemMasters.Where(x => x.ItemName.ToLower() == value.ToLower() && x.IsDeleted != true).FirstOrDefault();
 
         }
+        //public async Task<ItemMasterLoot> GetDuplicateLootPile(string value, int? ruleSetId, int? lootId = 0)
+        //{
+            
+        //    if (ruleSetId > 0)
+        //        return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.RuleSetId == ruleSetId && x.LootId != lootId && x.IsDeleted != true).FirstOrDefault();
+        //    else
+        //        return _context.ItemMasterLoots.Where(x => x.ItemName.ToLower() == value.ToLower() && x.IsDeleted != true).FirstOrDefault();
+
+        //}
+
         public bool Core_ItemMasterWithParentIDExists(int itemMasterID, int RulesetID)
         {
             if (_context.ItemMasters.Where(x => x.ItemMasterId == itemMasterID && x.ParentItemMasterId != null && x.IsDeleted != true).Any())
@@ -1941,6 +1958,196 @@ namespace DAL.Services
         }
         public bool isLootAvailable(int rulesetId) {
             return _context.ItemMasterLoots.Where(x => x.RuleSetId == rulesetId && x.IsShow == true && x.IsDeleted != true).Any();
+        }
+        public void DeleteMultiItemTemplates(List<ItemMaster_Bundle> model, int rulesetId) {
+            int index = 0;
+            List<numbersList> dtList = model.Where(x => x.IsBundle).Select(x => new numbersList()
+            {
+                RowNum = index = Getindex(index),
+                Number = x.ItemMasterId
+            }).ToList();
+
+
+            DataTable DT_List = new DataTable();
+
+            if (dtList.Count > 0)
+            {
+                DT_List = utility.ToDataTable<numbersList>(dtList);
+            }
+
+            index = 0;
+            List<numbersList> dtList1 = model.Where(x => !x.IsBundle).Select(x => new numbersList()
+            {
+                RowNum = index = Getindex(index),
+                Number = x.ItemMasterId
+            }).ToList();
+
+
+            DataTable DT_List1 = new DataTable();
+
+            if (dtList1.Count > 0)
+            {
+                DT_List1 = utility.ToDataTable<numbersList>(dtList1);
+            }
+
+
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            int rowseffectesd = 0;
+            SqlConnection con1 = new SqlConnection(connectionString);
+            con1.Open();
+            SqlCommand cmd1 = new SqlCommand("Ruleset_DeleteMultiItemMasters", con1);
+            cmd1.CommandType = CommandType.StoredProcedure;
+
+            cmd1.Parameters.AddWithValue("@RecordIdsList", DT_List1);
+            cmd1.Parameters.AddWithValue("@RulesetID", rulesetId);
+
+            rowseffectesd = cmd1.ExecuteNonQuery();
+            con1.Close();
+
+            
+            SqlConnection con = new SqlConnection(connectionString);
+            con.Open();
+            SqlCommand cmd = new SqlCommand("Ruleset_DeleteMultiItemMasterBundles", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@RecordIdsList", DT_List);
+            cmd.Parameters.AddWithValue("@RulesetID", rulesetId);
+
+            rowseffectesd = cmd.ExecuteNonQuery();
+            con.Close();
+
+
+        }
+        private static int Getindex(int index)
+        {
+            index = index + 1;
+            return index;
+        }
+
+        public void CreateLootPile(CreateLootPileModel model) {
+
+            int index = 0;
+            List<LootPileItem> dtList = model.LootPileItems.Select(x => new LootPileItem()
+            {
+                RowNum = index = Getindex(index),
+                ItemMasterId = x.ItemMasterId,
+                Qty=x.Qty
+            }).ToList();
+
+            DataTable DT_List = new DataTable();
+
+            if (dtList.Count > 0)
+            {
+                DT_List = utility.ToDataTable<LootPileItem>(dtList);
+            }
+
+            string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            
+            using (SqlConnection con = new SqlConnection(consString))
+            {
+
+                using (SqlCommand cmd = new SqlCommand("LootPile_Create"))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = con;
+                    cmd.Parameters.AddWithValue("@Name", model.ItemName);
+                    cmd.Parameters.AddWithValue("@Image", model.ItemImage);
+                    cmd.Parameters.AddWithValue("@Description", model.ItemVisibleDesc);
+                    cmd.Parameters.AddWithValue("@Visible", model.IsVisible);
+                    cmd.Parameters.AddWithValue("@Metatags", model.Metatags);
+                    cmd.Parameters.AddWithValue("@ItemMasterIdsToAdd", DT_List);                    
+                    cmd.Parameters.AddWithValue("@RulesetID", model.RuleSetId);
+                    con.Open();
+                    try
+                    {
+                        var a = cmd.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        con.Close();
+                        throw ex;
+                    }
+                    con.Close();
+                }
+            }
+        }
+        public LootPileViewModel getLootPileDetails(int lootPileId) {
+            LootPileViewModel obj = new LootPileViewModel();
+            var lootPile = _context.ItemMasterLoots.Where(x => x.LootId == lootPileId && x.IsDeleted != true && x.IsLootPile == true).FirstOrDefault();
+            if (lootPile!=null)
+            {
+                obj.IsVisible = lootPile.IsVisible;
+                obj.ItemImage = lootPile.ItemImage;
+                obj.ItemName = lootPile.ItemName;
+                obj.ItemVisibleDesc = lootPile.ItemVisibleDesc;
+                obj.LootId = lootPile.LootId;
+                obj.Metatags = lootPile.Metatags;
+                obj.RuleSetId = lootPile.RuleSetId;
+                obj.LootPileItems = new List<LootPileItems_ViewModel>();
+
+                var LootPileItems = _context.ItemMasterLoots.Where(x => x.LootPileId == lootPile.LootId && x.IsDeleted != true && x.IsLootPile != true).ToList();
+                foreach (var item in LootPileItems)
+                {
+                    obj.LootPileItems.Add(new LootPileItems_ViewModel()
+                    {
+                        ItemImage = item.ItemImage,
+                        ItemName = item.ItemName,
+                        LootId = item.LootId,
+                        ItemMasterId = item.ItemMasterId,
+                        Qty=Convert.ToInt32(item.Quantity)
+                    }
+                    );
+                }
+            }
+            return obj;
+        }
+        public void UpdateLootPile(CreateLootPileModel itemDomain) {
+            var lootPile = _context.ItemMasterLoots.Where(x => x.LootId == itemDomain.LootId && x.IsDeleted != true && x.IsLootPile == true).FirstOrDefault();
+            if (lootPile != null)
+            {
+                lootPile.IsVisible = itemDomain.IsVisible;
+                lootPile.ItemImage = itemDomain.ItemImage;
+                lootPile.ItemName = itemDomain.ItemName;
+                lootPile.ItemVisibleDesc = itemDomain.ItemVisibleDesc;
+               
+                lootPile.Metatags = itemDomain.Metatags;
+
+                //List<int> LootPileItemsLootIdsToDelete = new List<int>();
+                //List<int> LootPileItemsLootIdsToUpdate = new List<int>();
+                List<LootPileItems_ViewModel> ItemMasterIdsToAdd = new List<LootPileItems_ViewModel>();
+
+                var LootPileItems = _context.ItemMasterLoots.Where(x => x.LootPileId == lootPile.LootId && x.IsDeleted != true && x.IsLootPile != true).ToList();
+
+                foreach (var db_item in LootPileItems)
+                {
+
+                    if (!itemDomain.LootPileItems.Where(x => x.ItemMasterId == db_item.ItemMasterId).Any())
+                    {
+                        //LootPileItemsLootIdsToDelete.Add(db_item.LootId);
+                        db_item.IsDeleted = true;
+                    }
+                    //else {
+
+                    //}
+                }
+
+
+                foreach (var model_item in itemDomain.LootPileItems)
+                {
+                    if (! LootPileItems.Where(x => x.ItemMasterId == model_item.ItemMasterId).Any())
+                    {
+                        ItemMasterIdsToAdd.Add(new LootPileItems_ViewModel()
+                        {
+                            ItemMasterId = model_item.ItemMasterId,
+                            Qty = model_item.Qty,
+
+                        });
+                    }
+                    
+                    
+                }
+                _context.SaveChanges();
+            }
         }
         #endregion
     }

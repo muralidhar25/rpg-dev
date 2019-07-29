@@ -263,11 +263,11 @@ export class CharacterAbilityService extends EndpointFactory {
     return abilityFormModal;
   }
 
-  removeAbilities<T>(AbilitiesList: any): Observable<T> {
-    let removeAbilitiesURL = `${this.RemoveAbilities}`;
+  removeAbilities<T>(AbilitiesList: any, rulesetId:number): Observable<T> {
+    let removeAbilitiesURL = `${this.RemoveAbilities}?rulesetId=${rulesetId}`;
     return this.http.post<T>(removeAbilitiesURL, JSON.stringify(AbilitiesList), this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.removeAbilities(AbilitiesList));
+        return this.handleError(error, () => this.removeAbilities(AbilitiesList, rulesetId));
       });
   }
 

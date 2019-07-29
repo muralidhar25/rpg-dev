@@ -9,6 +9,7 @@ import { DBkeys } from '../../../../core/common/db-keys';
 import { Utilities } from '../../../../core/common/utilities';
 import { ItemsService } from '../../../../core/services/items.service';
 import { CharacterSpellService } from '../../../../core/services/character-spells.service';
+import { SharedService } from '../../../../core/services/shared.service';
 
 @Component({
   selector: 'app-remove-spells',
@@ -34,6 +35,7 @@ export class RemoveSpellsComponent implements OnInit {
     public modalService: BsModalService,
     private localStorage: LocalStoreManager,
     private appService: AppService1,
+    private sharedService: SharedService,
     private characterSpellService: CharacterSpellService) { }
 
   ngOnInit() {
@@ -101,11 +103,11 @@ export class RemoveSpellsComponent implements OnInit {
   }
   RemoveSelectedItems() {
     this.isLoading = true;
-    this.characterSpellService.removeSpells<any>(this.selectedItems)
+    this.characterSpellService.removeSpells<any>(this.selectedItems, this.rulesetId)
       .subscribe(data => {
               this.alertService.showMessage("Removing Spells(s)", "", MessageSeverity.success);
               this.close();
-              this.appService.updateItemsList(true);
+              this.sharedService.UpdateCharacterSpellList(true);
             this.isLoading = false;
         }, error => {
         this.isLoading = false;

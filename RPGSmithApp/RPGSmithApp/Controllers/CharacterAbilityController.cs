@@ -199,7 +199,19 @@ namespace RPGSmithApp.Controllers
            
             
         }
-
+        [HttpPost("RemoveAbilities")]
+        public async Task<IActionResult> removeMultiAbilities([FromBody] List<CharacterAbility> model, int rulesetId)
+        {
+            try
+            {
+                _characterAbilityService.removeMultiAbilities(model, rulesetId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         private async Task<IActionResult> Core_DeleteCharacterAbility(CharacterAbility model, int rulesetID)
         {
            

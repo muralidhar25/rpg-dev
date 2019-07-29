@@ -259,12 +259,12 @@ export class SpellsService extends EndpointFactory {
   }
 
 
-  deleteSpells<T>(SpellsList: any): Observable<T> {
+  deleteSpells<T>(SpellsList: any, rulesetId:number): Observable<T> {
     debugger
-    let endpointURL = `${this.DeleteSpells}`;
+    let endpointURL = `${this.DeleteSpells}?rulesetId=${rulesetId}`;
     return this.http.post<T>(endpointURL, JSON.stringify(SpellsList), this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.deleteSpells(SpellsList));
+        return this.handleError(error, () => this.deleteSpells(SpellsList, rulesetId));
       });
   }
 

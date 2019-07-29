@@ -25,5 +25,6 @@ namespace DAL.Services
         List<Spell> SP_GetSpellsByRuleSetId(int rulesetId, int page, int pageSize);
         SpellAssociatedRecords SP_GetSpellCommands(int spellId, int RuleSetID);
         List<Spell> GetSpellsByRuleSetId_add(int rulesetId);
+        void DeleteMultiSpells(List<Spell> model, int rulesetId);
     }
 }
