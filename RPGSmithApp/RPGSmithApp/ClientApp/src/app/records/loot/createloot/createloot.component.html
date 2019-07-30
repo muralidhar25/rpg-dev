@@ -214,7 +214,7 @@
         </div>
       </div>
       <div class="col-12 col-md-6">
-        <div class="form-group" >
+        <!--<div class="form-group" >
           <label for="ContainerItem">Contained In</label>
 
           <div class="form-group form-group-unlabelled">
@@ -228,7 +228,7 @@
                    [(ngModel)]="itemMasterFormModal.containerName" #ContainerItem="ngModel" readonly />
           </div>
           <input type="hidden" [(ngModel)]="itemMasterFormModal.containerItemId" name="containerItemId" #containerItemId="ngModel" />
-        </div>
+        </div>-->
       </div>
       <div class="col-12 col-md-6">
         <div class="form-group">
@@ -270,7 +270,7 @@
                 </span>
               </label>
             </li>
-            <li class="form-check col-md-4 col-sm-12">
+            <!--<li class="form-check col-md-4 col-sm-12">
               <label class="form-check-label">
                 <input class="form-check-input" type="checkbox" [checked]="itemMasterFormModal.isContainer" [value]="itemMasterFormModal.isContainer"
                        name="isContainer" [(ngModel)]="itemMasterFormModal.isContainer" #isConsumable="ngModel" />
@@ -279,7 +279,7 @@
                   <i class="icon"></i>
                 </span>
               </label>
-            </li>
+            </li>-->
             <li class="form-check col-md-4 col-sm-12">
               <label class="form-check-label">
                 <input class="form-check-input" type="checkbox" [checked]="itemMasterFormModal.isMagical" [value]="itemMasterFormModal.isMagical"
@@ -326,8 +326,8 @@
         <!-- End of item indicators -->
       </div>
     </div>
-    <div class="form-row">
-      <!--<span class="col-12 col-md-12">Container Attribute</span>-->
+    <!--<div class="form-row">
+     
       <div class="col-12 col-md-6" *ngIf="itemMasterFormModal.isContainer">
         <div class="form-group">
           <label for="maxVolume">Max Volume Capacity {{itemMasterFormModal.volumeLabel}}</label>
@@ -371,9 +371,9 @@
         </div>
       </div>
 
-    </div>
+    </div>-->
     <div class="form-separator"></div>
-    <div class="form-row">
+    <!--<div class="form-row">
 
       <div class="col-12 col-md-12" *ngIf="itemMasterFormModal.isContainer">
         <div class="form-group">
@@ -384,7 +384,7 @@
               <button type="button" title="Select Item" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"
                        ></button>
             </span>
-            <!---THIS TAG INPUT IS USED FOR CONTAINS ITEMS SELECTED FROM POPUP-->
+            
             <tag-input name="contains" [(ngModel)]='itemMasterFormModal.contains' theme='dark' inputId="contains" inputClass="form-control metatags-field" class="form-control"
                         [identifyBy]="'value'" [displayBy]="'text'" placeholder="" secondaryPlaceholder="Select Item"></tag-input>
           </div>
@@ -392,7 +392,7 @@
         </div>
       </div>
 
-    </div>
+    </div>-->
 
     <div class="form-row">
       <div class="col-12 col-md-6">

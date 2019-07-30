@@ -1359,6 +1359,7 @@ export class CharacterDashboardComponent implements OnInit {
               this.updateStatService(_tile.characterStatTiles.charactersCharacterStat);
             }
             else if (_tile.characterStatTiles.charactersCharacterStat.isCustom) {
+              debugger
               let initialIndex: number = -1;
               _tile.characterStatTiles.charactersCharacterStat.characterCustomToggles.map((togg, index) => {
                 if (togg.initial) {
@@ -1370,14 +1371,18 @@ export class CharacterDashboardComponent implements OnInit {
                 if ((initialIndex + 1) == _tile.characterStatTiles.charactersCharacterStat.characterCustomToggles.length) {
                   if (index == 0) {
                     togg.initial = true;
+                    _tile.characterStatTiles.charactersCharacterStat.defaultValue = togg.customToggleId;
                   }
                 }
                 else {
                   if ((initialIndex + 1) == index) {
                     togg.initial = true;
+                    _tile.characterStatTiles.charactersCharacterStat.defaultValue = togg.customToggleId;
                   }
                 }
               })
+              
+              this.updateStatService(_tile.characterStatTiles.charactersCharacterStat);
             }
 
             break;
@@ -2094,14 +2099,29 @@ export class CharacterDashboardComponent implements OnInit {
         }
         if (item.characterStatTiles.charactersCharacterStat.characterStat.characterStatTypeId == STAT_TYPE.Toggle) {
           if (item.characterStatTiles.charactersCharacterStat.isCustom) {
+            let isCustomToggleInitialSet = false;
             item.characterStatTiles.charactersCharacterStat.characterCustomToggles.map((togg, index) => {
-              if (index == 0) {
+              debugger
+              if (togg.customToggleId == item.characterStatTiles.charactersCharacterStat.defaultValue) {
                 togg.initial = true;
+                isCustomToggleInitialSet = true;
               }
               else {
                 togg.initial = false;
               }
             })
+            if (!isCustomToggleInitialSet) {
+              item.characterStatTiles.charactersCharacterStat.characterCustomToggles.map((togg, index) => {
+                debugger
+                if (index == 0) {
+                  togg.initial = true;
+                }
+                else {
+                  togg.initial = false;
+                }
+              })
+            }
+            
           }
         }
 

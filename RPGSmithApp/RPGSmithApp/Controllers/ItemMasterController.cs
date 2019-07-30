@@ -2112,8 +2112,22 @@ namespace RPGSmithApp.Controllers
         }
 
 
-        [HttpGet("GetLootPileItemsToAdd")]        public async Task<IActionResult> GetLootPileItemsToAdd(int RulesetId)        {            List<ItemMasterForLootPile> list = new List<ItemMasterForLootPile>();            var ItemList = _itemMasterService.GetItemMastersByRuleSetId_add(RulesetId, true);            //foreach (var item in ItemList)            //{            //    ItemMasterForLootPile obj = new ItemMasterForLootPile()
-            //    {            //        ImageUrl = item.ItemImage,            //        ItemMasterId = item.ItemMasterId,            //        Name = item.ItemName            //    };            //    list.Add(obj);            //}            return Ok(ItemList);
+        [HttpGet("GetLootPileItemsToAdd")]
+        public async Task<IActionResult> GetLootPileItemsToAdd(int RulesetId)
+        {
+            List<ItemMasterForLootPile> list = new List<ItemMasterForLootPile>();
+            var ItemList = _itemMasterService.GetItemMastersByRuleSetId_add(RulesetId, true);
+            //foreach (var item in ItemList)
+            //{
+            //    ItemMasterForLootPile obj = new ItemMasterForLootPile()
+            //    {
+            //        ImageUrl = item.ItemImage,
+            //        ItemMasterId = item.ItemMasterId,
+            //        Name = item.ItemName
+            //    };
+            //    list.Add(obj);
+            //}
+            return Ok(ItemList);
         }
 
 
@@ -2124,8 +2138,11 @@ namespace RPGSmithApp.Controllers
             return Ok(model);
 
         }
-
-        [HttpGet("GetLootPilesListByCharacterId")]        public async Task<IActionResult> GetLootPilesListByCharacterId(int CharacterId, int RulesetId)        {               List<LootPileViewModel> ItemList = _itemMasterService.GetLootPilesListByCharacterId(CharacterId, RulesetId);
+                
+        [HttpGet("GetLootPilesListByCharacterId")]
+        public async Task<IActionResult> GetLootPilesListByCharacterId(int CharacterId, int RulesetId)
+        {   
+            List<LootPileViewModel> ItemList = _itemMasterService.GetLootPilesListByCharacterId(CharacterId, RulesetId);
             return Ok(ItemList);
         }
 
@@ -2135,6 +2152,26 @@ namespace RPGSmithApp.Controllers
         }
 
 
+        [HttpGet("GetItemsFromLootPile")]
+        public async Task<IActionResult> GetItemsFromLootPile(int lootPileId)
+        {
+            List<ItemMasterLoot_ViewModel> ItemList = await _itemMasterService.GetItemsFromLootPile(lootPileId);
+            return Ok(ItemList);
+        }
+
+        [HttpPost("MoveLoot")]
+        public async Task<IActionResult> MoveLoot([FromBody] List<ItemMasterLoot> model, int LootPileID)
+        {
+            try
+            {
+                _itemMasterService.MoveLoot(model, LootPileID);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+        }
         #endregion
     }
 }
