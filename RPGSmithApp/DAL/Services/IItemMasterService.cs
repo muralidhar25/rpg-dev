@@ -68,8 +68,10 @@ namespace DAL.Services
         LootPileViewModel getLootPileDetails(int lootPileId);
         void UpdateLootPile(CreateLootPileModel itemDomain);
         LootPileViewModel getCharacterLootPile(int characterId);
-        LootPileViewModel getMonsterLootPile(int monsterId);
+        LootPileViewModel getMonsterLootPile(int monsterId,int rulesetId);
         Task ShowLootPile(int lootPileID, bool isVisible);
         List<LootPileViewModel> GetLootPilesListByCharacterId(int characterId, int rulesetId);
+        Task<List<ItemMasterLoot_ViewModel>> GetItemsFromLootPile(int lootPileId);
+        void MoveLoot(List<ItemMasterLoot> model, int lootPileID);
     }
 }

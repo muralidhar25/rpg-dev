@@ -266,18 +266,11 @@
                       </div>
                     </div>
                   </div>
+                  
                   <!--<div class="row">
-        <div class="col-md-12 col-md-6">
-          <div class="item-info-command">
-              <h3>Command</h3>
-              <p>{{ItemMasterDetail.command}}</p>
-          </div>
-      </div>
-  </div>-->
-                  <div class="row">
                     <div class="col-12 col-md-4">
                       <div class="item-info-abils">
-                        <!--<h3 class="crsr-pointer" (click)="addContainer(ItemMasterDetail)">Contained In</h3>-->
+                        
                         <h3 class="crsr-pointer">Contained In</h3>
                         <ul class="output-list-items">
                           <li class="output-list-item" *ngIf="ItemMasterDetail?.container != undefined && ItemMasterDetail?.container != null">
@@ -292,7 +285,7 @@
                     </div>
                     <div class="col-12 col-md-4" *ngIf="ItemMasterDetail?.isContainer">
                       <div class="item-info-spells">
-                        <!--<h3 class="crsr-pointer" (click)="addContainerItem(ItemMasterDetail)">Contains</h3>-->
+                        
                         <h3 class="crsr-pointer" >Contains</h3>
                         <div class="form-group output-list output-list-wrap">
                           <ul class="output-list-items" *ngIf="ItemMasterDetail?.containerItems !== undefined && ItemMasterDetail?.containerItems !== null">
@@ -313,7 +306,7 @@
                         <p>{{ItemMasterDetail.totalWeight}}</p>
                       </div>
                     </div>
-                  </div>
+                  </div>-->
                 </div>
             </div>
         </div>

@@ -2204,7 +2204,7 @@ namespace DAL.Services
                         rulesetId = monster.RuleSetId;
                     }
 
-                    LootPileViewModel monsterLootPile = _itemMasterService.getMonsterLootPile(monsterId);
+                    LootPileViewModel monsterLootPile = _itemMasterService.getMonsterLootPile(monsterId, rulesetId);
 
 
                     _itemMasterService.CreateItemMasterLoot(obj, new ItemMasterLoot()

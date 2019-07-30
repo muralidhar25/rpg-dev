@@ -2219,7 +2219,8 @@ namespace DAL.Services
                         IsVisible = true,
                         LootPileCharacterId = characterId,
                         IsLootPile = true,
-                        ItemMasterId = itemMasterId
+                        ItemMasterId = itemMasterId,
+                        RuleSetId= character.RuleSetId
                     });
                     _context.SaveChanges();
                 }
@@ -2254,7 +2255,7 @@ namespace DAL.Services
             return obj;
         }
 
-        public LootPileViewModel getMonsterLootPile(int monsterId) {
+        public LootPileViewModel getMonsterLootPile(int monsterId, int rulesetId) {
             LootPileViewModel obj = new LootPileViewModel();
             
                 var monsterLootPile = _context.ItemMasterLoots.Where(x => x.LootPileMonsterId == monsterId && x.IsLootPile == true && x.IsDeleted != true).FirstOrDefault();
@@ -2273,7 +2274,8 @@ namespace DAL.Services
                         IsVisible = true,
                         LootPileMonsterId = monsterId,
                         IsLootPile = true,
-                        ItemMasterId= itemMasterId
+                        ItemMasterId= itemMasterId,
+                        RuleSetId= rulesetId
                     });
                     _context.SaveChanges();
                 }
@@ -2343,7 +2345,67 @@ namespace DAL.Services
             return result;
         }
 
+        public async Task<List<ItemMasterLoot_ViewModel>> GetItemsFromLootPile(int lootPileId) {
+            List<ItemMasterLoot_ViewModel> res = new List<ItemMasterLoot_ViewModel>();
+            res =await _context.ItemMasterLoots.Where(x => x.LootPileId == lootPileId && x.IsDeleted != true)
+                .Select(x=>new ItemMasterLoot_ViewModel() {
+                    IsLootPile=x.IsLootPile==null?false: (bool)x.IsLootPile,
+                    ItemImage= x.ItemImage,
+                    ItemName= x.ItemName,
+                    ItemMasterId= x.ItemMasterId,
+                    LootId= x.LootId,
+                    RuleSetId= x.RuleSetId == null ? 0 : (int)x.RuleSetId,
+                })
+                .ToListAsync();
+            return res;
+        }
 
+        public void MoveLoot(List<ItemMasterLoot> model, int lootPileID) {
+            try
+            {
+                int index = 0;
+                List<CommonID> dtList = model.Select(x => new CommonID()
+                {                   
+                    ID = x.LootId,                    
+                }).ToList();
+
+                DataTable DT_List = new DataTable();
+
+                if (dtList.Count > 0)
+                {
+                    DT_List = utility.ToDataTable<CommonID>(dtList);
+                }
+
+                string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+                using (SqlConnection con = new SqlConnection(consString))
+                {
+
+                    using (SqlCommand cmd = new SqlCommand("Loot_Move"))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@LootIdsToMove", DT_List);
+                        cmd.Parameters.AddWithValue("@LootPileID", lootPileID);                        
+                        con.Open();
+                        try
+                        {
+                            var a = cmd.ExecuteNonQuery();
+                        }
+                        catch (Exception ex)
+                        {
+                            con.Close();
+                            throw ex;
+                        }
+                        con.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         #endregion
     }
 }
