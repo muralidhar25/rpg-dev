@@ -2221,6 +2221,7 @@ namespace DAL.Services
                         IsLootPile = true,
                         ItemMasterId = itemMasterId
                     });
+                    _context.SaveChanges();
                 }
                 obj = _context.ItemMasterLoots.Where(x => x.LootPileCharacterId == characterId && x.IsLootPile == true && x.IsDeleted != true)
                     .Select(x => new LootPileViewModel()
