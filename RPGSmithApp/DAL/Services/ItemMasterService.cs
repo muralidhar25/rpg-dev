@@ -2199,14 +2199,17 @@ namespace DAL.Services
             }
         }
 
-        public LootPileViewModel getCharacterLootPile(int characterId) {
+        public LootPileViewModel getCharacterLootPile(int characterId)
+        {
             LootPileViewModel obj = new LootPileViewModel();
-            var character = _context.Characters.Where(x => x.CharacterId == characterId && x.IsDeleted != true).FirstOrDefault();
-            if (character!=null)
+
+            var characterLootPile = _context.ItemMasterLoots.Where(x => x.LootPileCharacterId == characterId && x.IsLootPile == true && x.IsDeleted != true).FirstOrDefault();
+
+            if (characterLootPile == null)
             {
-                var characterLootPile = _context.ItemMasterLoots.Where(x => x.LootPileCharacterId == characterId && x.IsLootPile == true && x.IsDeleted != true).FirstOrDefault();
-                
-                if (characterLootPile == null)
+                int itemMasterId = _context.ItemMasters.First().ItemMasterId;
+                var character = _context.Characters.Where(x => x.CharacterId == characterId && x.IsDeleted != true).FirstOrDefault();
+                if (character != null)
                 {
                     _context.ItemMasterLoots.Add(new ItemMasterLoot()
                     {
@@ -2215,46 +2218,52 @@ namespace DAL.Services
                         ItemVisibleDesc = "Items dropped by " + character.CharacterName,
                         IsVisible = true,
                         LootPileCharacterId = characterId,
-                        IsLootPile = true
+                        IsLootPile = true,
+                        ItemMasterId = itemMasterId
                     });
-                    obj = _context.ItemMasterLoots.Where(x => x.LootPileCharacterId == characterId && x.IsLootPile == true && x.IsDeleted != true)
-                        .Select(x=>new LootPileViewModel() {
-                            IsVisible=x.IsVisible,
-                            ItemImage= x.ItemImage,
-                           ItemName = x.ItemName,
-                            ItemVisibleDesc=x.ItemVisibleDesc,
-                            LootId=x.LootId,
-                            Metatags=x.Metatags,
-                            RuleSetId=x.RuleSetId,
-                        } ).FirstOrDefault();
+                }
+                obj = _context.ItemMasterLoots.Where(x => x.LootPileCharacterId == characterId && x.IsLootPile == true && x.IsDeleted != true)
+                    .Select(x => new LootPileViewModel()
+                    {
+                        IsVisible = x.IsVisible,
+                        ItemImage = x.ItemImage,
+                        ItemName = x.ItemName,
+                        ItemVisibleDesc = x.ItemVisibleDesc,
+                        LootId = x.LootId,
+                        Metatags = x.Metatags,
+                        RuleSetId = x.RuleSetId,
+                    }).FirstOrDefault();
 
-                }
-                else {
-                    
-                           obj.IsVisible = characterLootPile.IsVisible;
-                           obj.ItemImage = characterLootPile.ItemImage;
-                           obj.ItemName = characterLootPile.ItemName;
-                           obj.ItemVisibleDesc = characterLootPile.ItemVisibleDesc;
-                           obj.LootId = characterLootPile.LootId;
-                           obj.Metatags = characterLootPile.Metatags;
-                           obj.RuleSetId = characterLootPile.RuleSetId;
-                       
-                }
+            }
+            else
+            {
+
+                obj.IsVisible = characterLootPile.IsVisible;
+                obj.ItemImage = characterLootPile.ItemImage;
+                obj.ItemName = characterLootPile.ItemName;
+                obj.ItemVisibleDesc = characterLootPile.ItemVisibleDesc;
+                obj.LootId = characterLootPile.LootId;
+                obj.Metatags = characterLootPile.Metatags;
+                obj.RuleSetId = characterLootPile.RuleSetId;
+
             }
 
-            
+
+
             return obj;
         }
 
         public LootPileViewModel getMonsterLootPile(int monsterId) {
             LootPileViewModel obj = new LootPileViewModel();
-            var monster = _context.Monsters.Where(x => x.MonsterId == monsterId && x.IsDeleted != true).FirstOrDefault();
-            if (monster != null)
-            {
+            
                 var monsterLootPile = _context.ItemMasterLoots.Where(x => x.LootPileMonsterId == monsterId && x.IsLootPile == true && x.IsDeleted != true).FirstOrDefault();
 
                 if (monsterLootPile == null)
                 {
+                var monster = _context.Monsters.Where(x => x.MonsterId == monsterId && x.IsDeleted != true).FirstOrDefault();
+                if (monster != null)
+                {
+                    int itemMasterId = _context.ItemMasters.First().ItemMasterId;
                     _context.ItemMasterLoots.Add(new ItemMasterLoot()
                     {
                         ItemName = monster.Name + "’s Drops",
@@ -2262,8 +2271,11 @@ namespace DAL.Services
                         ItemVisibleDesc = "Items dropped by " + monster.Name,
                         IsVisible = true,
                         LootPileMonsterId = monsterId,
-                        IsLootPile = true
+                        IsLootPile = true,
+                        ItemMasterId= itemMasterId
                     });
+                    _context.SaveChanges();
+                }
                     obj = _context.ItemMasterLoots.Where(x => x.LootPileMonsterId == monsterId && x.IsLootPile == true && x.IsDeleted != true)
                         .Select(x => new LootPileViewModel()
                         {
@@ -2289,7 +2301,7 @@ namespace DAL.Services
                     obj.RuleSetId = monsterLootPile.RuleSetId;
 
                 }
-            }
+            
 
 
             return obj;
