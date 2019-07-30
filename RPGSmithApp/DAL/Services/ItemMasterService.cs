@@ -2303,6 +2303,34 @@ namespace DAL.Services
                 await _context.SaveChangesAsync();
             }
         }
+
+
+        public List<LootPileViewModel> GetLootPilesListByCharacterId(int characterId, int rulesetId)
+        {
+            List<LootPileViewModel> result = new List<LootPileViewModel>();
+            LootPileViewModel characterLootPile = getCharacterLootPile(characterId);
+            List<LootPileViewModel> list = _context.ItemMasterLoots.Where(x => x.IsLootPile == true && x.RuleSetId == rulesetId && x.IsVisible == true 
+            && x.LootPileCharacterId!=characterId && x.IsDeleted!=true)
+                .Select(x=> new LootPileViewModel() {
+                    IsVisible=x.IsVisible,
+                    ItemImage=x.ItemImage,
+                    ItemName=x.ItemName,
+                    ItemVisibleDesc=x.ItemVisibleDesc,
+                    LootId=x.LootId,
+                    Metatags=x.Metatags,
+                    RuleSetId=x.RuleSetId,
+                })
+                .ToList();
+
+            result.Add(characterLootPile);
+            foreach (var item in list)
+            {
+                result.Add(item);
+            }
+            return result;
+        }
+
+
         #endregion
     }
 }

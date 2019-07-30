@@ -2124,6 +2124,12 @@ namespace RPGSmithApp.Controllers
             return Ok(model);
 
         }
+
+        [HttpGet("GetLootPilesListByCharacterId")]        public async Task<IActionResult> GetLootPilesListByCharacterId(int CharacterId, int RulesetId)        {               List<LootPileViewModel> ItemList = _itemMasterService.GetLootPilesListByCharacterId(CharacterId, RulesetId);
+            return Ok(ItemList);
+        }
+
+
         #endregion
     }
 }

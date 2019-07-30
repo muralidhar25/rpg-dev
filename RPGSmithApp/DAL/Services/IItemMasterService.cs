@@ -70,5 +70,6 @@ namespace DAL.Services
         LootPileViewModel getCharacterLootPile(int characterId);
         LootPileViewModel getMonsterLootPile(int monsterId);
         Task ShowLootPile(int lootPileID, bool isVisible);
+        List<LootPileViewModel> GetLootPilesListByCharacterId(int characterId, int rulesetId);
     }
 }
