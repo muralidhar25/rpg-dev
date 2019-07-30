@@ -286,7 +286,9 @@ namespace RPGSmithApp
             services.AddScoped<IMonsterTemplateCommandService, MonsterTemplateCommandService>();
             services.AddScoped<IMonsterTemplateBundleService, MonsterTemplateBundleService>();
             services.AddScoped<ICombatService, CombatService>();
+            services.AddScoped<ILootPileTemplateService, LootPileTemplateService>();
             
+
             // Register Hosted Services
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, BackgroundProcesses>();
 

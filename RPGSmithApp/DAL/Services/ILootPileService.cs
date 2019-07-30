@@ -9,7 +9,10 @@ namespace DAL.Services
 {
     public interface ILootPileTemplateService
     {
-        //Task<LootPile> GetDuplicateLootPile(string value, int? ruleSetId, int? lootPileId = 0);
-        //Task Create(LootPile lootPile, List<LootsToAdd> itemList);
+        LootTemplate GetById(int? id);
+        Task<bool> CheckDuplicateLootTemplate(string value, int? ruleSetId, int? lootTemplateId = 0);
+        Task<LootTemplate> Create(LootTemplate lootPile);
+        List<LootTemplateRandomizationEngine> insertRandomizationEngines(List<LootTemplateRandomizationEngine> lootTemplateRandomizationEngines, int lootTemplateId);
+        Task<LootTemplate> Update(LootTemplate lootTemplate, ICollection<LootTemplateRandomizationEngine> lootTemplateRandomizationEngines);
     }
 }

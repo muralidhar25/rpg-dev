@@ -167,7 +167,8 @@ namespace DAL
         //public virtual DbSet<LootPile> LootPiles { get; set; }
         //public virtual DbSet<LootPileLootItem> LootPileLootItems { get; set; }
         
-
+        public virtual DbSet<LootTemplate> LootTemplates { get; set; }
+        public virtual DbSet<LootTemplateRandomizationEngine> LootTemplateRandomizationEngines { get; set; }
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
