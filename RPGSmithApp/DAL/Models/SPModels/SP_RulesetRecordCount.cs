@@ -828,6 +828,11 @@ namespace DAL.Models.SPModels
     {
         public bool IsBundle { get; set; }
     }
+
+    public class ItemsAndLootTemplates {
+        public List<ItemMaster_Bundle> itemMaster_Bundle { get; set; }
+        public List<LootTemplate> lootTemplate { get; set; }
+    }
     public class CreateLootPileModel
     {
         public int LootId { get; set; }

@@ -12,6 +12,7 @@ import { ItemMasterService } from '../../../core/services/item-master.service';
 import { SpellsService } from '../../../core/services/spells.service';
 import { AbilityService } from '../../../core/services/ability.service';
 import { BuffAndEffectService } from '../../../core/services/buff-and-effect.service';
+import { SharedService } from '../../../core/services/shared.service';
 
 @Component({
   selector: 'app-delete-records',
@@ -37,6 +38,7 @@ export class DeleteRecordsComponent implements OnInit {
     public modalService: BsModalService,
     private localStorage: LocalStoreManager,
     private appService: AppService1,
+    private sharedService: SharedService,
     private buffAndEffectService: BuffAndEffectService) { }
 
   ngOnInit() {
@@ -101,11 +103,11 @@ export class DeleteRecordsComponent implements OnInit {
   }
   RemoveSelectedItems() {
     this.isLoading = true;
-    this.buffAndEffectService.deleteRecords<any>(this.selectedItems)
+    this.buffAndEffectService.deleteRecords<any>(this.selectedItems, this.rulesetId)
       .subscribe(data => {
         this.alertService.showMessage("Deleting Records", "", MessageSeverity.success);
               this.close();
-              this.appService.updateItemsList(true);
+        this.sharedService.updateBuffAndEffectList(true);
             this.isLoading = false;
         }, error => {
         this.isLoading = false;

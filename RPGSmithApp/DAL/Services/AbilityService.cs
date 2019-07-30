@@ -626,5 +626,41 @@ namespace DAL.Services
             return result;
            // return _abilityCommand;
         }
+        public void DeleteMultiAbilities(List<Ability> model, int rulesetId) {
+            int index = 0;
+            List<numbersList> dtList = model.Select(x => new numbersList()
+            {
+                RowNum = index = Getindex(index),
+                Number = x.AbilityId
+            }).ToList();
+
+
+            DataTable DT_List = new DataTable();
+
+            if (dtList.Count > 0)
+            {
+                DT_List = utility.ToDataTable<numbersList>(dtList);
+            }
+
+
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            int rowseffectesd = 0;
+            SqlConnection con = new SqlConnection(connectionString);
+            con.Open();
+            SqlCommand cmd = new SqlCommand("Ruleset_DeleteMultiAbilities", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@RecordIdsList", DT_List);
+            cmd.Parameters.AddWithValue("@RulesetID", rulesetId);
+
+            rowseffectesd = cmd.ExecuteNonQuery();
+            con.Close();
+        }
+        private static int Getindex(int index)
+        {
+            index = index + 1;
+            return index;
+        }
+    
     }
 }

@@ -24,6 +24,7 @@ namespace DAL.Services
         Task SP_AssignBuffAndEffectToCharacter(List<BuffAndEffect> buffsList, List<Character> characters, List<Character> nonSelectedCharacters, List<BuffAndEffect> nonSelectedBuffAndEffectsList, int CharacterID);
         Task<List<CharBuffAndEffect>> getBuffAndEffectAssignedToCharacter(int characterID);
         Task<CharacterBuffAndEffect> GetCharacterBuffAndEffectById(int CharacterBuffAndEffectID);
+        void DeleteMultiBuffsAndEffects(List<BuffAndEffect> model, int rulesetId);
 
         //List<BuffAndEffect> GetBuffAndEffectsByRuleSetId(int ruleSetId);
 

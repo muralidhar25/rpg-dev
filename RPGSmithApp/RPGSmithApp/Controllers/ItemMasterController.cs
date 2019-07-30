@@ -252,13 +252,17 @@ namespace RPGSmithApp.Controllers
             }
         }
         [HttpGet("getByRuleSetId_add")]
-        public async Task<IActionResult> getByRuleSetId_add(int rulesetId, bool includeBundles = false)
+        public async Task<IActionResult> getByRuleSetId_add(int rulesetId, bool includeBundles = false,bool includeLootTemplates=false)
         {
 
             dynamic Response = new ExpandoObject();
-            var ItemList = _coreRulesetService.GetItemMastersByRuleSetId_add(rulesetId, includeBundles);
+            var ItemList = _coreRulesetService.GetItemMastersByRuleSetId_add(rulesetId, includeBundles, includeLootTemplates);
 
-            Response.ItemMaster = Utilities.CleanModel<ItemMaster_Bundle>(ItemList);
+            Response.ItemMaster = Utilities.CleanModel<ItemMaster_Bundle>(ItemList.itemMaster_Bundle);
+            if (includeLootTemplates)
+            {
+                Response.LootTemplate = Utilities.CleanModel<LootTemplate>(ItemList.lootTemplate);
+            }            
             Response.RuleSet = Utilities.CleanModel<RuleSet>(_ruleSetService.GetRuleSetById(rulesetId).Result);
             return Ok(Response);
 
@@ -2127,7 +2131,7 @@ namespace RPGSmithApp.Controllers
             //    };
             //    list.Add(obj);
             //}
-            return Ok(ItemList);
+            return Ok(ItemList.itemMaster_Bundle);
         }
 
 

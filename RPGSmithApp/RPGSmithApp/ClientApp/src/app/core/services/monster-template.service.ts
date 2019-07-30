@@ -618,12 +618,12 @@ export class MonsterTemplateService extends EndpointFactory {
     return bundleFormModal;
   }
 
-  deleteMonsterTemplates<T>(TemplatesList: any): Observable<T> {
+  deleteMonsterTemplates<T>(TemplatesList: any, rulesetId:number): Observable<T> {
     debugger
-    let endpointURL = `${this.DeleteMonsterTemplates}`;
+    let endpointURL = `${this.DeleteMonsterTemplates}?rulesetId=${rulesetId}`;
     return this.http.post<T>(endpointURL, JSON.stringify(TemplatesList), this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.deleteMonsterTemplates(TemplatesList));
+        return this.handleError(error, () => this.deleteMonsterTemplates(TemplatesList, rulesetId));
       });
   }
   deleteMonsters<T>(monstersList: any): Observable<T> {

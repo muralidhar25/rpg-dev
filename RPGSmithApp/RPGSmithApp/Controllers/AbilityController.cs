@@ -529,7 +529,19 @@ namespace RPGSmithApp.Controllers
             }
             return Ok(result.AbilityId);
         }
-
+        [HttpPost("DeleteAbilities")]
+        public async Task<IActionResult> DeleteMultiAbilities([FromBody] List<Ability> model, int rulesetId)
+        {
+            try
+            {
+                _abilityService.DeleteMultiAbilities(model, rulesetId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         #region API Using SP
         [HttpGet("getByRuleSetId_sp")]
         public async Task<IActionResult> getByRuleSetId_sp(int rulesetId, int page = 1, int pageSize = 30)

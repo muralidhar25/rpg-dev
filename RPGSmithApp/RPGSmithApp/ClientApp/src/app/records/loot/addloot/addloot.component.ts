@@ -64,7 +64,7 @@ export class AddlootComponent implements OnInit {
       this.authService.logout();
     else {
       this.isLoading = true;
-      this.itemMasterService.getItemMasterByRuleset_add<any>(this.rulesetId, true)//true
+      this.itemMasterService.getItemMasterByRuleset_add<any>(this.rulesetId, true,true)//true
         .subscribe(data => {
           this.itemsList = data.ItemMaster;
 

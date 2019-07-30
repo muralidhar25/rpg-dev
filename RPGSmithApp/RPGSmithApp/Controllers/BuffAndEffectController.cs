@@ -500,6 +500,19 @@ namespace RPGSmithApp.Controllers
 
             return Ok(characters);
         }
+        [HttpPost("DeleteRecords")]
+        public async Task<IActionResult> DeleteMultiBuffsAndEffects([FromBody] List<BuffAndEffect> model, int rulesetId)
+        {
+            try
+            {
+                _buffAndEffectService.DeleteMultiBuffsAndEffects(model, rulesetId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         #endregion
     }
 }

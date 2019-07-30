@@ -29,7 +29,7 @@ namespace DAL.Services
         bool Core_ItemMasterLootWithParentIDExists(int LootID, int RulesetID);
         List<ItemMaster_Bundle> SP_GetItemMastersByRuleSetId(int rulesetId, int page, int pageSize);
         SP_AbilitySpellForItemMaster AbilitySpellForItemsByRuleset_sp(int rulesetId, int itemMasterId);
-        List<ItemMaster_Bundle> GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false);
+        ItemsAndLootTemplates GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false, bool includeLootTemplates = false);
         bool Core_BundleWithParentIDExists(int bundleId, int rulesetID);
         Task _AddItemsToLoot(List<LootsToAdd> itemList, int rulesetID);
         Task<List<ItemMasterLoot_ViewModel>> GetItemMasterLoots(int rulesetID, int page = 1, int pageSize = 30);

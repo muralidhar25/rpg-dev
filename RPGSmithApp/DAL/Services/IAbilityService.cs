@@ -25,5 +25,6 @@ namespace DAL.Services
         List<Ability> SP_GetAbilityByRuleSetId(int rulesetId, int page, int pageSize);
         AbilityAssociatedRecords SP_GetAbilityCommands(int abilityId, int RuleSetID);
         List<Ability> GetAbilitiesByRuleSetId_add(int rulesetId);
+        void DeleteMultiAbilities(List<Ability> model, int rulesetId);
     }
 }

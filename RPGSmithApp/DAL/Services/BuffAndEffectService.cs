@@ -30,12 +30,12 @@ namespace DAL.Services
             return await _repo.Add(item);
         }
 
-        public async  Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             // Remove associated Commands
-            var BEC = _context.BuffAndEffectCommands.Where(x => x.BuffAndEffectId == id && x.IsDeleted !=true).ToList();
+            var BEC = _context.BuffAndEffectCommands.Where(x => x.BuffAndEffectId == id && x.IsDeleted != true).ToList();
 
-            foreach(BuffAndEffectCommand item in BEC)
+            foreach (BuffAndEffectCommand item in BEC)
             {
                 item.IsDeleted = true;
             }
@@ -55,51 +55,51 @@ namespace DAL.Services
             }
 
             // Remove Ability
-            var buffAndEffect =await  _repo.Get(id);
+            var buffAndEffect = await _repo.Get(id);
 
             if (buffAndEffect == null)
-            return false;
+                return false;
 
             buffAndEffect.IsDeleted = true;
-               
+
             try
             {
                 _context.SaveChanges();
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
-           
+
 
             //  return await _repo.Remove(id);
 
-         }
+        }
 
-       
+
 
         public BuffAndEffectVM GetById(int? id)
         {
             BuffAndEffectVM buffAndEffect = _context.BuffAndEffects
-                .Include(d=>d.RuleSet)
-                .Include(d=>d.BuffAndEffectCommand)
-                .Where(x => x.BuffAndEffectId  == id && x.IsDeleted != true)
-                .Select(x=> new BuffAndEffectVM (){
-                    BuffAndEffectCommand=x.BuffAndEffectCommand,
-                    BuffAndEffectId=x.BuffAndEffectId,
-                    Command=x.Command,
-                    CommandName=x.CommandName,
-                    Description=x.Description,
-                    ImageUrl=x.ImageUrl,
-                    IsAssignedToAnyCharacter=_context.CharacterBuffAndEffects.Where(q=>q.BuffAndEffectID==x.BuffAndEffectId && x.IsDeleted != true).Any(),
-                    IsDeleted=x.IsDeleted,
-                    Metatags=x.Metatags,
-                    Name=x.Name,
-                    ParentBuffAndEffectId=x.ParentBuffAndEffectId,
-                    RuleSet=x.RuleSet,
-                    RuleSetId=x.RuleSetId,
-                    Stats=x.Stats,
+                .Include(d => d.RuleSet)
+                .Include(d => d.BuffAndEffectCommand)
+                .Where(x => x.BuffAndEffectId == id && x.IsDeleted != true)
+                .Select(x => new BuffAndEffectVM() {
+                    BuffAndEffectCommand = x.BuffAndEffectCommand,
+                    BuffAndEffectId = x.BuffAndEffectId,
+                    Command = x.Command,
+                    CommandName = x.CommandName,
+                    Description = x.Description,
+                    ImageUrl = x.ImageUrl,
+                    IsAssignedToAnyCharacter = _context.CharacterBuffAndEffects.Where(q => q.BuffAndEffectID == x.BuffAndEffectId && x.IsDeleted != true).Any(),
+                    IsDeleted = x.IsDeleted,
+                    Metatags = x.Metatags,
+                    Name = x.Name,
+                    ParentBuffAndEffectId = x.ParentBuffAndEffectId,
+                    RuleSet = x.RuleSet,
+                    RuleSetId = x.RuleSetId,
+                    Stats = x.Stats,
                 })
                 .FirstOrDefault();
 
@@ -109,9 +109,9 @@ namespace DAL.Services
 
             return buffAndEffect;
         }
-      
-       
-        
+
+
+
         public async Task<BuffAndEffect> Update(BuffAndEffect item)
         {
             var buffAndEffect = _context.BuffAndEffects.FirstOrDefault(x => x.BuffAndEffectId == item.BuffAndEffectId);
@@ -129,7 +129,7 @@ namespace DAL.Services
 
             buffAndEffect.Metatags = item.Metatags;
 
-           
+
             try
             {
                 _context.SaveChanges();
@@ -144,9 +144,9 @@ namespace DAL.Services
 
         public int GetCountByRuleSetId(int ruleSetId)
         {
-            return _context.BuffAndEffects.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted!=true).Count();
+            return _context.BuffAndEffects.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted != true).Count();
         }
-        public int Core_GetCountByRuleSetId(int ruleSetId,int parentID)
+        public int Core_GetCountByRuleSetId(int ruleSetId, int parentID)
         {
             //var idsToRemove = _context.Abilities.Where(p => (p.RuleSetId == ruleSetId) && p.ParentAbilityId != null).Select(p => p.ParentAbilityId).ToArray();
 
@@ -182,17 +182,17 @@ namespace DAL.Services
                 command.Dispose();
                 connection.Close();
             }
-            
-            
+
+
             SP_RulesetRecordCount res = new SP_RulesetRecordCount();
             if (dt.Rows.Count > 0)
             {
-                res.BuffAndEffectCount = Convert.ToInt32(dt.Rows[0]["BuffAndEffectCount"]);                
+                res.BuffAndEffectCount = Convert.ToInt32(dt.Rows[0]["BuffAndEffectCount"]);
             }
             return res.BuffAndEffectCount;
         }
 
-        public async Task<bool> CheckDuplicateBuffAndEffect(string value, int? ruleSetId,int? buffAndEffectId = 0)
+        public async Task<bool> CheckDuplicateBuffAndEffect(string value, int? ruleSetId, int? buffAndEffectId = 0)
         {
             //var items = _repo.GetAll();
             //if (items.Result == null || items.Result.Count == 0) return false;
@@ -202,7 +202,7 @@ namespace DAL.Services
             //}
             //else
             //    return items.Result.Where(x => x.Name.ToLower() == value.ToLower()).FirstOrDefault() == null ? false : true;
-           
+
             if (ruleSetId > 0)
             {
                 return _context.BuffAndEffects.Where(x => x.Name.ToLower() == value.ToLower() && x.RuleSetId == ruleSetId && x.BuffAndEffectId != buffAndEffectId && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
@@ -211,7 +211,7 @@ namespace DAL.Services
                 return _context.BuffAndEffects.Where(x => x.Name.ToLower() == value.ToLower()).FirstOrDefault() == null ? false : true;
         }
 
-       
+
         public bool Core_BuffAndEffectWithParentIDExists(int buffAndEffectId, int RulesetID) {
             if (_context.BuffAndEffects.Where(x => x.BuffAndEffectId == buffAndEffectId && x.ParentBuffAndEffectId != null && x.IsDeleted != true).Any())
             {
@@ -240,7 +240,7 @@ namespace DAL.Services
 
             short num = 0;
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
-            
+
             SqlConnection connection = new SqlConnection(connectionString);
             SqlCommand command = new SqlCommand();
             SqlDataAdapter adapter = new SqlDataAdapter();
@@ -267,15 +267,15 @@ namespace DAL.Services
                 command.Dispose();
                 connection.Close();
             }
-           
-            
+
+
 
             if (ds.Tables[1].Rows.Count > 0)
                 ruleset = _repo.GetRuleset(ds.Tables[1], num);
 
             if (ds.Tables[0].Rows.Count > 0)
             {
-               
+
                 foreach (DataRow row in ds.Tables[0].Rows)
                 {
                     BuffAndEffectVM _buffAndEffect = new BuffAndEffectVM();
@@ -289,12 +289,12 @@ namespace DAL.Services
                     //_buffAndEffect.Level = row["Level"] == DBNull.Value ? null : row["Level"].ToString();
                     _buffAndEffect.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
                     //_buffAndEffect.IsEnabled = row["IsEnabled"] == DBNull.Value ? false : Convert.ToBoolean(row["IsEnabled"]);
-                   
+
                     _buffAndEffect.BuffAndEffectId = row["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["BuffAndEffectId"].ToString());
                     _buffAndEffect.ParentBuffAndEffectId = row["ParentBuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentBuffAndEffectId"].ToString());
                     _buffAndEffect.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
                     _buffAndEffect.IsAssignedToAnyCharacter = row["IsAssignedToAnyCharacter"] == DBNull.Value ? false : true;
-                   
+
                     _buffAndEffect.RuleSet = ruleset;
                     _buffAndEffectList.Add(_buffAndEffect);
                 }
@@ -306,7 +306,7 @@ namespace DAL.Services
         {
             List<BuffAndEffectCommand> _buffAndEffectCommand = new List<BuffAndEffectCommand>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
-          
+
 
             SqlConnection connection = new SqlConnection(connectionString);
             SqlCommand command = new SqlCommand();
@@ -331,7 +331,7 @@ namespace DAL.Services
             {
                 command.Dispose();
                 connection.Close();
-            }    
+            }
             if (ds.Tables[0].Rows.Count > 0)
             {
                 foreach (DataRow row in ds.Tables[0].Rows)
@@ -386,17 +386,17 @@ namespace DAL.Services
                 foreach (DataRow row in ds.Tables[0].Rows)
                 {
                     BuffAndEffect _buffAndEffect = new BuffAndEffect();
-                    _buffAndEffect.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();                   
+                    _buffAndEffect.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
                     _buffAndEffect.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
                     _buffAndEffect.BuffAndEffectId = row["BuffAndEffectId"] == DBNull.Value ? 0 : Convert.ToInt32(row["BuffAndEffectId"].ToString());
                     _buffAndEffect.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
-                   
+
                     buffAndEffectList.Add(_buffAndEffect);
                 }
             }
             return buffAndEffectList;
         }
-        public async Task SP_AssignBuffAndEffectToCharacter(List<BuffAndEffect> buffsList, List<Character> characters, List<Character> nonSelectedCharacters, List<BuffAndEffect> nonSelectedBuffAndEffectsList,int CharacterID)
+        public async Task SP_AssignBuffAndEffectToCharacter(List<BuffAndEffect> buffsList, List<Character> characters, List<Character> nonSelectedCharacters, List<BuffAndEffect> nonSelectedBuffAndEffectsList, int CharacterID)
         {
             List<CommonID> ids = new List<CommonID>();
             if (buffsList.Any())
@@ -447,7 +447,7 @@ namespace DAL.Services
                 throw ex;
             }
             var character = _context.Characters.Where(x => x.CharacterId == CharacterID && x.IsDeleted != true).FirstOrDefault();
-            if (character!=null)
+            if (character != null)
             {
                 var combats = _context.Combats.Where(x => x.CampaignId == character.RuleSetId && x.IsDeleted != true).ToList();
                 foreach (var c in combats)
@@ -455,7 +455,7 @@ namespace DAL.Services
                     MarkCombatAsUpdated(c.Id);
                 }
             }
-            
+
         }
         public void MarkCombatAsUpdated(int combatId)
         {   //same code also written on combatService.cs
@@ -480,11 +480,11 @@ namespace DAL.Services
         }
         public async Task<List<CharBuffAndEffect>> getBuffAndEffectAssignedToCharacter(int characterID)
         {
-            return await _context.CharacterBuffAndEffects.Where(x => x.CharacterId == characterID && x.IsDeleted != true).Include(x=>x.BuffAndEffect).Select(x=>new CharBuffAndEffect() { Command=x.BuffAndEffect.Command, CharacterBuffAndEffectId = x.CharacterBuffAandEffectId, BuffAndEffectId =x.BuffAndEffect.BuffAndEffectId,Name=x.BuffAndEffect.Name,ImageUrl=x.BuffAndEffect.ImageUrl}).ToListAsync();
+            return await _context.CharacterBuffAndEffects.Where(x => x.CharacterId == characterID && x.IsDeleted != true).Include(x => x.BuffAndEffect).Select(x => new CharBuffAndEffect() { Command = x.BuffAndEffect.Command, CharacterBuffAndEffectId = x.CharacterBuffAandEffectId, BuffAndEffectId = x.BuffAndEffect.BuffAndEffectId, Name = x.BuffAndEffect.Name, ImageUrl = x.BuffAndEffect.ImageUrl }).ToListAsync();
         }
         public async Task<CharacterBuffAndEffect> GetCharacterBuffAndEffectById(int CharacterBuffAndEffectID) {
-            CharacterBuffAndEffect characterBuffAndEffect =await _context.CharacterBuffAndEffects
-                .Where(x => x.CharacterBuffAandEffectId == CharacterBuffAndEffectID && x.IsDeleted!=true)
+            CharacterBuffAndEffect characterBuffAndEffect = await _context.CharacterBuffAndEffects
+                .Where(x => x.CharacterBuffAandEffectId == CharacterBuffAndEffectID && x.IsDeleted != true)
                 .Include(x => x.Character)
                 .Include(x => x.BuffAndEffect)
                 .Include(d => d.BuffAndEffect.RuleSet)
@@ -495,6 +495,42 @@ namespace DAL.Services
             characterBuffAndEffect.BuffAndEffect.BuffAndEffectCommand = characterBuffAndEffect.BuffAndEffect.BuffAndEffectCommand.Where(p => p.IsDeleted != true).ToList();
 
             return characterBuffAndEffect;
+        }
+        public void DeleteMultiBuffsAndEffects(List<BuffAndEffect> model, int rulesetId)
+        {
+            int index = 0;
+            List<numbersList> dtList = model.Select(x => new numbersList()
+            {
+                RowNum = index = Getindex(index),
+                Number = x.BuffAndEffectId
+            }).ToList();
+
+
+            DataTable DT_List = new DataTable();
+
+            if (dtList.Count > 0)
+            {
+                DT_List = utility.ToDataTable<numbersList>(dtList);
+            }
+
+
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            int rowseffectesd = 0;
+            SqlConnection con = new SqlConnection(connectionString);
+            con.Open();
+            SqlCommand cmd = new SqlCommand("Ruleset_DeleteMultiBuffsAndEffects", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@RecordIdsList", DT_List);
+            cmd.Parameters.AddWithValue("@RulesetID", rulesetId);
+
+            rowseffectesd = cmd.ExecuteNonQuery();
+            con.Close();
+        }
+        private static int Getindex(int index)
+        {
+            index = index + 1;
+            return index;
         }
     }
 }

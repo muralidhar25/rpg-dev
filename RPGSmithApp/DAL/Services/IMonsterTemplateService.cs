@@ -60,6 +60,7 @@ namespace DAL.Services
         void AddMonsters(List<DeployMonsterTemplate> model);
         ItemMasterMonsterItem GetMonsterItemDetailByItemId(int itemId);
         List<MonsterCommand> SP_GetMonsterCommands(int monsterId);
+        void DeleteMultiMonsterTemplates(List<MonsterTemplate_Bundle> model, int rulesetId);
         // List<MonsterTemplate> GetByRuleSetId_add(int rulesetId);
 
     }

@@ -2443,5 +2443,66 @@ namespace DAL.Services
             }
 
         }
+
+        public void DeleteMultiMonsterTemplates(List<MonsterTemplate_Bundle> model, int rulesetId) {
+            int index = 0;
+            List<numbersList> dtList = model.Where(x => x.IsBundle).Select(x => new numbersList()
+            {
+                RowNum = index = Getindex(index),
+                Number = x.MonsterTemplateId
+            }).ToList();
+
+
+            DataTable DT_List = new DataTable();
+
+            if (dtList.Count > 0)
+            {
+                DT_List = utility.ToDataTable<numbersList>(dtList);
+            }
+
+            index = 0;
+            List<numbersList> dtList1 = model.Where(x => !x.IsBundle).Select(x => new numbersList()
+            {
+                RowNum = index = Getindex(index),
+                Number = x.MonsterTemplateId
+            }).ToList();
+
+
+            DataTable DT_List1 = new DataTable();
+
+            if (dtList1.Count > 0)
+            {
+                DT_List1 = utility.ToDataTable<numbersList>(dtList1);
+            }
+
+
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            int rowseffectesd = 0;
+            SqlConnection con1 = new SqlConnection(connectionString);
+            con1.Open();
+            SqlCommand cmd1 = new SqlCommand("Ruleset_DeleteMultiMonsterTemplates", con1);
+            cmd1.CommandType = CommandType.StoredProcedure;
+
+            cmd1.Parameters.AddWithValue("@RecordIdsList", DT_List1);
+            cmd1.Parameters.AddWithValue("@RulesetID", rulesetId);
+
+            rowseffectesd = cmd1.ExecuteNonQuery();
+            con1.Close();
+
+
+            SqlConnection con = new SqlConnection(connectionString);
+            con.Open();
+            SqlCommand cmd = new SqlCommand("Ruleset_DeleteMultiMonsterTemplateBundles", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@RecordIdsList", DT_List);
+            cmd.Parameters.AddWithValue("@RulesetID", rulesetId);
+
+            rowseffectesd = cmd.ExecuteNonQuery();
+            con.Close();
+
+
+        }
+
     }
 }

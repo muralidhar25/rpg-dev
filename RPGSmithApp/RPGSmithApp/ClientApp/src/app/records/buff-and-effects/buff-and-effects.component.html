@@ -142,10 +142,14 @@
                   <button type="button" (click)="manageIcon(false)" title="Close" data-toggle="tooltip" data-action="close" class="btn icon icon-cross btn-simple-primary"></button>
                 </div>
               </div>
-              <div class="card-body" (click)="!isDenseView && openBuffDetail(buffAndEffect.buffAndEffectId)" >
+              <div class="card-body" (click)="!isDenseView && openBuffDetail(buffAndEffect.buffAndEffectId)">
                 <h4 class="card-title" popover="{{buffAndEffect.name}}" triggers="hover" (click)="isDenseView && openBuffDetail(buffAndEffect.buffAndEffectId)">{{buffAndEffect.name}}</h4>
 
 
+                <ul class="item-properties" *ngIf="!buffAndEffect?.description">
+                  <li class="item-property item-property-text value" title="Value" style="visibility:hidden"><small>12</small></li>
+                </ul>
+               
                 <div class="item-stats pl-0" *ngIf="buffAndEffect?.description" [froalaView]="buffAndEffect?.description"></div>
                 <div class="item-actions" *ngIf="isDenseView">
                   <button type="button" (click)="Assign(buffAndEffect)" class="btn btn-accent icon-Assign icon-with-text assign-button">

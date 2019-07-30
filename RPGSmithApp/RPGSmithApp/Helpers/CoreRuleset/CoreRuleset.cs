@@ -44,7 +44,7 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         Task<int> _updateParentIDForAllRelatedItems(int characterId, int oldParentItemMasterID, int itemMasterIDInserted, char Type);
         Task<List<Character>> GetCharactersByRulesetID(int ruleSetId);
         int GetItemCountByRuleSetId(int rulesetId);
-        List<ItemMaster_Bundle> GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false);
+        ItemsAndLootTemplates GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false, bool includeLootTemplates = false);
         List<Spell> GetSpellsByRuleSetId_add(int rulesetId);
         List<Ability> GetAbilitiesByRuleSetId_add(int rulesetId);
         Task<ItemMasterBundle> CreateItemMasterBundle(ItemMasterBundle bundle, List<ItemMasterBundleItem> bundleItems);
@@ -317,9 +317,9 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         {
             return await _CharacterService.GetOnlyCharactersByRulesetID(ruleSetId);
         }
-        public List<ItemMaster_Bundle> GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false)
+        public ItemsAndLootTemplates GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false, bool includeLootTemplates = false)
         {
-            return _itemMasterService.GetItemMastersByRuleSetId_add(rulesetId,includeBundles);
+            return _itemMasterService.GetItemMastersByRuleSetId_add(rulesetId,includeBundles, includeLootTemplates);
         }
         public List<Spell> GetSpellsByRuleSetId_add(int rulesetId)
         {

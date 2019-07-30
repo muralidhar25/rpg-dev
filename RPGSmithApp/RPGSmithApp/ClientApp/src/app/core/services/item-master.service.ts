@@ -114,8 +114,8 @@ export class ItemMasterService extends EndpointFactory {
         return this.handleError(error, () => this.getItemMasterByRuleset(Id));
       });
   }
-  getItemMasterByRuleset_add<T>(Id: number,includeBundles:boolean =false): Observable<T> {
-    let endpointUrl = `${this.getByRulesetUrl_add}?rulesetId=${Id}&includeBundles=${includeBundles}`;
+  getItemMasterByRuleset_add<T>(Id: number, includeBundles: boolean = false, includeLootTemplates: boolean = false): Observable<T> {
+    let endpointUrl = `${this.getByRulesetUrl_add}?rulesetId=${Id}&includeBundles=${includeBundles}&includeLootTemplates=${includeLootTemplates}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {

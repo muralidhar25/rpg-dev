@@ -277,12 +277,12 @@ export class BuffAndEffectService extends EndpointFactory {
     return buffAndEffectFormModal;
   }
   
-  deleteRecords<T>(BuffEffectList: any): Observable<T> {
+  deleteRecords<T>(BuffEffectList: any, rulesetId: number): Observable<T> {
     debugger
-    let endpointURL = `${this.DeleteRecords}`;
+    let endpointURL = `${this.DeleteRecords}?rulesetId=${rulesetId}`;
     return this.http.post<T>(endpointURL, JSON.stringify(BuffEffectList), this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.deleteRecords(BuffEffectList));
+        return this.handleError(error, () => this.deleteRecords(BuffEffectList, rulesetId));
       });
   }
 
