@@ -31,11 +31,21 @@ namespace DAL.Services
 
         public LootTemplate GetById(int? id) {
             LootTemplate lootTemplate = _context.LootTemplates
-                    .Include(d => d.RuleSet).Include(d=>d.LootTemplateRandomizationEngines)                
+                    .Include(d => d.RuleSet).Include(d=>d.LootTemplateRandomizationEngines)            
                     .Where(x => x.LootTemplateId == id && x.IsDeleted != true)
                     .FirstOrDefault();
 
-                if (lootTemplate == null) return lootTemplate;
+            if (lootTemplate == null) return lootTemplate;
+            else
+            {
+                if (lootTemplate.LootTemplateRandomizationEngines.Count>0)
+                {
+                    foreach (var item in lootTemplate.LootTemplateRandomizationEngines)
+                    {
+                        item.ItemMaster = _context.ItemMasters.Where(x=>x.ItemMasterId== item.ItemMasterId).FirstOrDefault();
+                    }
+                }
+            }
                
                 return lootTemplate;
             

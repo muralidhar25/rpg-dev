@@ -43,6 +43,12 @@ export class LootService extends EndpointFactory {
   private readonly DuplicateLootPile: string = this.configurations.baseUrl + "/api/ItemMaster/DuplicateLootPile";
   private readonly MoveLoot: string = this.configurations.baseUrl + "/api/ItemMaster/MoveLoot";
   private readonly GetItemsFromLootPile: string = this.configurations.baseUrl + "/api/ItemMaster/GetItemsFromLootPile";
+  private readonly CreateLootPileTemplate: string = this.configurations.baseUrl + "/api/LootPileTemplate/CreateLootTemplate";
+  private readonly UpdateLootPileTemplate: string = this.configurations.baseUrl + "/api/LootPileTemplate/update";
+  private readonly GetByRuleSetId_sp: string = this.configurations.baseUrl + "/api/LootPileTemplate/GetByRuleSetId_sp";
+  private readonly DuplicateLootPileTemplate: string = this.configurations.baseUrl + "/api/LootPileTemplate/duplicate";
+  private readonly GetById: string = this.configurations.baseUrl + "/api/LootPileTemplate/getById";
+  private readonly DeleteLootPileTemplate: string = this.configurations.baseUrl + "/api/LootPileTemplate/DeleteLootPileTemplate";
 
 
 
@@ -170,6 +176,7 @@ export class LootService extends EndpointFactory {
   }
 
   createLootPile<T>(lootPile): Observable<T> {
+    debugger
     let endpointUrl = this.CreateLootPile;
     if (lootPile.lootId == 0 || lootPile.lootId === undefined)
       endpointUrl = this.CreateLootPile;
@@ -226,6 +233,55 @@ export class LootService extends EndpointFactory {
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getItemsFromLootPile(lootPileId));
+      });
+  }
+
+  createLootPileTemplate<T>(lootPile): Observable<T> {
+    debugger
+    let endpointUrl = this.CreateLootPileTemplate;
+    if (lootPile.lootTemplateId == 0 || lootPile.lootTemplateId === undefined)
+      endpointUrl = this.CreateLootPileTemplate;
+    else
+      endpointUrl = this.UpdateLootPileTemplate;
+
+
+    //let endpointUrl = `${this.CreateLootPile}`;
+    return this.http.post<T>(endpointUrl, JSON.stringify(lootPile), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.createLootPileTemplate(lootPile));
+      })
+  }
+
+  getByRuleSetId_sp<T>(Id: number, page: number, pageSize: number): Observable<T> {
+    let endpointUrl = `${this.GetByRuleSetId_sp}?rulesetId=${Id}&page=${page}&pageSize=${pageSize}`;
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getByRuleSetId_sp(Id, page, pageSize));
+      });
+  }
+
+  duplicateLootPileTemplate<T>(item): Observable<T> {
+    let endpointUrl = this.DuplicateLootPileTemplate;
+
+    return this.http.post<T>(endpointUrl, JSON.stringify(item), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.duplicateLootPileTemplate(item));
+      })
+  }
+
+  deleteLootPileTemplate<T>(item): Observable<T> {
+    let endpointUrl = this.DeleteLootPileTemplate;
+    return this.http.post<T>(endpointUrl, JSON.stringify(item), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deleteLootPileTemplate(item));
+      });
+  }
+
+  getTemplateDetailById<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.GetById}?LootTemplateId=${Id}`;
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getTemplateDetailById(Id));
       });
   }
 

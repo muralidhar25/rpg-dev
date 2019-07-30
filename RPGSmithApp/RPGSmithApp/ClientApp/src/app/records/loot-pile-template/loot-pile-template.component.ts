@@ -104,10 +104,33 @@ export class LootPileTemplateComponent implements OnInit {
       }
       this.isLoading = true;
 
-      this.lootService.getLootItemsById<any>(this.ruleSetId, this.page, this.pageSize)
+      //this.lootService.getLootItemsById<any>(this.ruleSetId, this.page, this.pageSize)
+      //  .subscribe(data => {
+      //    //console.log(data);
+      //    this.ItemMasterList = Utilities.responseData(data.ItemMaster, this.pageSize);
+      //    this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
+      //    this.RuleSet = data.RuleSet;
+      //    this.setHeaderValues(this.RuleSet);
+      //    try {
+      //      this.noRecordFound = !data.ItemMaster.length;
+      //    } catch (err) { }
+      //    this.isLoading = false;
+      //  }, error => {
+      //    this.isLoading = false;
+      //    let Errors = Utilities.ErrorDetail("", error);
+      //    if (Errors.sessionExpire) {
+      //      //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+      //      this.authService.logout(true);
+      //    }
+      //  }, () => { })
+
+
+      this.lootService.getByRuleSetId_sp<any>(this.ruleSetId, this.page, this.pageSize)
         .subscribe(data => {
+          debugger
+
           //console.log(data);
-          this.ItemMasterList = Utilities.responseData(data.ItemMaster, this.pageSize);
+          this.ItemMasterList = Utilities.responseData(data.lootTemplates, this.pageSize);
           this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
           this.RuleSet = data.RuleSet;
           this.setHeaderValues(this.RuleSet);
@@ -123,8 +146,6 @@ export class LootPileTemplateComponent implements OnInit {
             this.authService.logout(true);
           }
         }, () => { })
-
-
 
 
       this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'ItemMaster')
@@ -246,8 +267,9 @@ export class LootPileTemplateComponent implements OnInit {
   }
 
   manageIcon(id: number) {
+    debugger
     this.ItemMasterList.forEach(function (val) {
-      if (id === val.lootId) {
+      if (id === val.lootTemplateId) {
         val.showIcon = true;
       } else {
         val.showIcon = false;
@@ -272,7 +294,7 @@ export class LootPileTemplateComponent implements OnInit {
 
   }
 
-  editItemTemplate(itemMaster: ItemMaster) {
+  editItemTemplate(itemMaster: any) {
     this.bsModalRef = this.modalService.show(CreateLootPileTemplateComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -280,11 +302,11 @@ export class LootPileTemplateComponent implements OnInit {
     });
     this.bsModalRef.content.title = 'Edit Loot Template';
     this.bsModalRef.content.button = 'UPDATE';
-    this.bsModalRef.content.itemMasterVM = itemMaster;
-    this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.lootPileVM = itemMaster;
+    this.bsModalRef.content.ruleSetId = this.ruleSetId;
   }
 
-  duplicateItemTemplate(itemMaster: ItemMaster) {
+  duplicateItemTemplate(itemMaster: any) {
     this.bsModalRef = this.modalService.show(CreateLootPileTemplateComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -292,12 +314,12 @@ export class LootPileTemplateComponent implements OnInit {
     });
     this.bsModalRef.content.title = 'Duplicate Loot Template';
     this.bsModalRef.content.button = 'DUPLICATE';
-    this.bsModalRef.content.itemMasterVM = itemMaster;
-    this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.lootPileVM = itemMaster;
+    this.bsModalRef.content.ruleSetId = this.ruleSetId;
   }
 
   GoToDetails(item: any) {
-    this.router.navigate(['/ruleset/loot-pile-template-details', item.lootId]);
+    this.router.navigate(['/ruleset/loot-pile-template-details', item.lootTemplateId]);
   }
 
   private destroyModalOnInit(): void {
@@ -354,7 +376,7 @@ export class LootPileTemplateComponent implements OnInit {
 
     let show = item.isShow ? 'Hide' : 'Show';
 
-    this.lootService.showLoot<any>(item.lootId, !item.isShow)
+    this.lootService.showLoot<any>(item.lootTemplateId, !item.isShow)
       .subscribe(data => {
         this.isLoading = false;
         this.alertService.stopLoadingMessage();
@@ -377,15 +399,15 @@ export class LootPileTemplateComponent implements OnInit {
     this.initialize();
   }
 
-  deleteItemTemplate(itemMaster: ItemMaster) {
+  deleteItemTemplate(itemMaster: any) {
 
-    let message = "Are you sure you want to delete this " + itemMaster.itemName + " Loot Item?";
+    let message = "Are you sure you want to delete this " + itemMaster.name + " Loot Pile Template?";
     this.alertService.showDialog(message,
       DialogType.confirm, () => this.deleteLootItem(itemMaster), null, 'Yes', 'No');
   }
 
   deleteLootItem(itemMaster: any) {
-    this.alertService.startLoadingMessage("", "Deleting Item");
+    this.alertService.startLoadingMessage("", "Deleting Loot Pile Template");
 
     //this.isLoading = true;
     this.lootService.deleteLootItem<any>(itemMaster)
@@ -394,8 +416,8 @@ export class LootPileTemplateComponent implements OnInit {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
         }, 200);
-        this.alertService.showMessage("loot Item Template has been deleted successfully.", "", MessageSeverity.success);
-        this.ItemMasterList = this.ItemMasterList.filter((val) => val.lootId != itemMaster.lootId);
+        this.alertService.showMessage("loot Pile Template Item has been deleted successfully.", "", MessageSeverity.success);
+        this.ItemMasterList = this.ItemMasterList.filter((val) => val.lootTemplateId != itemMaster.lootTemplateId);
         try {
           this.noRecordFound = !this.ItemMasterList.length;
         } catch (err) { }

@@ -31,7 +31,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
   isLoading = false;
   showActions: boolean = true;
   actionText: string;
-  LootId: number;
+  lootTemplateId: number;
   isDropdownOpen: boolean = false;
   ruleSetId: number;
   bsModalRef: BsModalRef;
@@ -46,7 +46,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
     private itemMasterService: ItemMasterService, private rulesetService: RulesetService, public lootService: LootService,
     private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
-    this.route.params.subscribe(params => { this.LootId = params['id']; this.initialize(); });
+    this.route.params.subscribe(params => { this.lootTemplateId = params['id']; this.initialize(); });
 
     this.sharedService.shouldUpdateItemMasterDetailList().subscribe(sharedServiceJson => {
       debugger
@@ -76,12 +76,13 @@ export class LootPileTemplateDetailsComponent implements OnInit {
         this.IsGm = user.isGm;
       }
       this.isLoading = true;
-      this.itemMasterService.getlootById<any>(this.LootId)
+      this.lootService.getTemplateDetailById<any>(this.lootTemplateId)
         .subscribe(data => {
           if (data) {
             debugger;
             this.RuleSet = data.ruleSet;
-            this.ItemMasterDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");
+            this.ItemMasterDetail = data;
+            //this.ItemMasterDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");
           }
           this.rulesetService.GetCopiedRulesetID(this.ItemMasterDetail.ruleSetId, user.id)
             .subscribe(data => {
@@ -130,7 +131,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
     this.bsModalRef.content.rulesetID = this.ruleSetId;
     this.bsModalRef.content.fromDetail = true;
     this.bsModalRef.content.event.subscribe(data => {
-      this.LootId = data.itemMasterId;
+      this.lootTemplateId = data.itemMasterId;
       this.initialize();
     });
 
@@ -271,7 +272,7 @@ export class LootPileTemplateDetailsComponent implements OnInit {
 
     let show = item.isShow ? 'Hide' : 'Show';
 
-    this.lootService.showLoot<any>(item.lootId, !item.isShow)
+    this.lootService.showLoot<any>(item.lootTemplateId, !item.isShow)
       .subscribe(data => {
         this.isLoading = false;
         this.alertService.stopLoadingMessage();

@@ -23,6 +23,7 @@ import { randomization } from '../../../core/models/view-models/randomization.mo
 import { DiceService } from '../../../core/services/dice.service';
 import { CustomDice } from '../../../core/models/view-models/custome-dice.model';
 import { RulesetService } from '../../../core/services/ruleset.service';
+import { SingleItemMonsterComponent } from '../../monster-template/single-item/single-item-monster.component';
 
 @Component({
   selector: 'app-create-loot-pile-template',
@@ -86,11 +87,13 @@ export class CreateLootPileTemplateComponent implements OnInit {
       this.title = this.bsModalRef.content.title;
       let _view = this.button = this.bsModalRef.content.button;
       let _lootPileVM = this.bsModalRef.content.lootPileVM;
+      this.createLootPileTemplateModal = _lootPileVM;
       //this.itemMasterFormModal = this.itemMasterService.itemMasterModelData(_itemTemplateVM, _view);
       debugger
       //this._ruleSetId = this.itemMasterFormModal.ruleSetId;
 
       this.ruleSetId = this.bsModalRef.content.ruleSetId;
+      this.createLootPileTemplateModal.ruleSetId = this.ruleSetId;
 
       if (this.createLootPileTemplateModal.metatags !== '' && this.createLootPileTemplateModal.metatags !== undefined)
         this.metatags = this.createLootPileTemplateModal.metatags.split(",");
@@ -105,53 +108,40 @@ export class CreateLootPileTemplateComponent implements OnInit {
           if (Errors.sessionExpire) {
             this.authService.logout(true);
           }
-        })
+        });
 
       this.initialize();
     }, 0);
   }
 
   private initialize() {
+    debugger
     let _randomization = new randomization();
     _randomization.percentage = null;
     _randomization.qty = null;
     this.randomizationInfo.push(_randomization);
-    this.randomizationInfo = [
-      {
-        isDeleted: undefined,
-        isOr: null,
-        itemMasterId: undefined,
-        percentage: "30",
-        qty: "7",
-        randomizationEngineId: undefined,
-        selectedItem: [
-          { text: "1 loot", itemId: 8880, image: "https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg" }
-        ]
-      },
 
-      {
-        isDeleted: undefined,
-        isOr: true,
-        itemMasterId: undefined,
-        percentage: "1",
-        qty: "7",
-        randomizationEngineId: undefined,
-        selectedItem: [
-          { text: "1111 dup be", itemId: 8967, image: "https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Potion.jpg"}
-        ]
-      },
-      {
-        isDeleted: undefined,
-        isOr: false,
-        itemMasterId: undefined,
-        percentage: "4",
-        qty: "9",
-        randomizationEngineId: undefined,
-        selectedItem: [
-          { text: "1111", itemId: 9005, image: "https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Armor.jpg" }
-        ]
+    if (this.button == "UPDATE" || this.button == VIEW.DUPLICATE.toUpperCase()) {
+      this.randomizationInfo = this.createLootPileTemplateModal.lootTemplateRandomizationEngines;
+      if (!this.randomizationInfo.length) {
+        let _randomization = new randomization();
+        _randomization.percentage = null;
+        _randomization.qty = null;
+        this.randomizationInfo.push(_randomization);
+      } else {
+        debugger
+        this.randomizationInfo.map((x) => {
+          x.selectedItem = [];
+        });
+        this.randomizationInfo.map((x, index) => {
+          if (index == 0) {
+            x.isOr = undefined;
+          }
+          x.selectedItem.push({ image: x.itemMaster.itemImage, itemId: x.itemMaster.itemMasterId, text: x.itemMaster.itemName })
+        });
       }
-    ];
+    }
+
 
 
 
@@ -159,14 +149,14 @@ export class CreateLootPileTemplateComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
-      this.isLoading = true;
-
+      //this.isLoading = true;
       if (!this.createLootPileTemplateModal.imageUrl) {
         this.imageSearchService.getDefaultImage<any>('item')
           .subscribe(data => {
             this.defaultImageSelected = data.imageUrl.result
-            this.isLoading = false;
+            //this.isLoading = false;
           }, error => {
+            //this.isLoading = false;
           },
             () => { });
       }
@@ -189,8 +179,19 @@ export class CreateLootPileTemplateComponent implements OnInit {
   }
 
   submitForm(lootPile: any) {
-    debugger
-    this.validateSubmit(lootPile);
+
+    lootPile.lootTemplateRandomizationEngines = [];    this.randomizationInfo.map((x: randomization, index) => {      let _randomization1 = new randomization();      _randomization1.percentage = +x.percentage;      _randomization1.qty = x.qty;      _randomization1.isOr = x.isOr ? true : false;      if (x.selectedItem) {
+        if (x.selectedItem.length) {
+          _randomization1.itemMasterId = +x.selectedItem[0].itemId;
+        }
+
+      }      _randomization1.sortOrder = index;      lootPile.lootTemplateRandomizationEngines.push(_randomization1);    })    this.randomizationInfo;    //for validation of randomization    let validate = this.validateRandomization(lootPile);
+
+    if (validate) {
+      debugger
+      this.validateSubmit(lootPile);
+    }
+
   }
   validateSubmit(lootPile: any) {
     let tagsValue = this.metatags.map(x => {
@@ -202,9 +203,8 @@ export class CreateLootPileTemplateComponent implements OnInit {
     if (lootPile.ruleSetId == 0 || lootPile.ruleSetId === undefined)
       lootPile.ruleSetId = this.ruleSetId;
 
-
-    this.isLoading = true;
     let _msg = lootPile.lootPileId == 0 || lootPile.lootPileId === undefined ? "Creating Loot Item Template.." : "Updating Loot Item Template..";
+    if (this.button === VIEW.DUPLICATE.toUpperCase()) _msg = "Duplicating Loot Pile Template..";
     this.alertService.startLoadingMessage("", _msg);
 
     if (this.fileToUpload != null) {
@@ -279,6 +279,9 @@ export class CreateLootPileTemplateComponent implements OnInit {
 
   private submit(lootPile: any) {
     debugger
+    if (this.button == VIEW.DUPLICATE.toUpperCase()) {
+      this.duplicateLootPileTemplate(lootPile);
+    } else {
     if (this.defaultImageSelected && !this.createLootPileTemplateModal.imageUrl) {
       let model = Object.assign({}, lootPile)
       model.imageUrl = this.defaultImageSelected
@@ -286,13 +289,15 @@ export class CreateLootPileTemplateComponent implements OnInit {
     } else {
       this.addEditLootPile(lootPile);
     }
+    }
   }
 
   addEditLootPile(modal: any) {
+    debugger
     modal.ruleSetId = this.ruleSetId;
     // modal.userID = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER).id
     this.isLoading = true;
-    this.lootService.createLootPile<any>(modal)
+    this.lootService.createLootPileTemplate<any>(modal)
       .subscribe(
         data => {
           debugger
@@ -302,7 +307,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
           if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
           this.close();
-          if (modal.lootId == 0 || modal.lootId === undefined) {
+          if (modal.lootTemplateId == 0 || modal.lootTemplateId === undefined) {
             this.appService.updateChatWithLootMessage(true); //loot created...
           }
 
@@ -315,7 +320,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
                 //this.sharedService.updateItemMasterDetailList(true);                
               }
               //else
-                //this.sharedService.updateItemMasterDetailList(true);
+              //this.sharedService.updateItemMasterDetailList(true);
             }
             else {
               //this.sharedService.updateItemMasterDetailList(true);
@@ -336,6 +341,37 @@ export class CreateLootPileTemplateComponent implements OnInit {
             this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
         },
       );
+  }
+
+  duplicateLootPileTemplate(modal: any) {
+    modal.RuleSetId = this.ruleSetId;
+    this.isLoading = true;
+    this.lootService.duplicateLootPileTemplate<any>(modal)
+      .subscribe(
+        data => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let message = " Loot Pile Template has been duplicated successfully.";
+          if (data !== "" && data !== null && data !== undefined)
+            message = data;
+          this.alertService.showMessage(message, "", MessageSeverity.success);
+          this.close();
+          this.sharedService.updateItemsList(true);
+          this.appService.updateChatWithLootMessage(true);
+        },
+        error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let _message = "Unable to Duplicate ";
+          let Errors = Utilities.ErrorDetail(_message, error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+
+        });
   }
 
   readTempUrl(event: any) {
@@ -398,29 +434,34 @@ export class CreateLootPileTemplateComponent implements OnInit {
     this.croppedImage = image;
   }
 
-  addItems(itemMaster: any) {
-    debugger
-    this.bsModalRef = this.modalService.show(AddLootPileComponent, {
-      class: 'modal-primary modal-md',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
+  //addItems(itemMaster: any) {
+  //  debugger
+  //  this.bsModalRef = this.modalService.show(AddLootPileComponent, {
+  //    class: 'modal-primary modal-md',
+  //    ignoreBackdropClick: true,
+  //    keyboard: false
+  //  });
 
-    this.bsModalRef.content.title = 'Select Item';
-    this.bsModalRef.content.button = 'SELECT';
-    //this.bsModalRef.content.rulesetId = this._ruleSetId;
-    //this.bsModalRef.content.itemId = itemMaster.lootId;
-    //this.bsModalRef.content.itemName = itemMaster.containerName;
-    //this.bsModalRef.content.contains = itemMaster.contains;
-    //this.bsModalRef.content.containerItemId = itemMaster.containerItemId;
+  //  this.bsModalRef.content.title = 'Select Item';
+  //  this.bsModalRef.content.button = 'SELECT';
+  //  //this.bsModalRef.content.rulesetId = this._ruleSetId;
+  //  //this.bsModalRef.content.itemId = itemMaster.lootId;
+  //  //this.bsModalRef.content.itemName = itemMaster.containerName;
+  //  //this.bsModalRef.content.contains = itemMaster.contains;
+  //  //this.bsModalRef.content.containerItemId = itemMaster.containerItemId;
 
-    //this.bsModalRef.content.event.subscribe(data => {
-    //  debugger
-    //  this.createLootPileTemplateModal.itemList = data.multiItemMasters;
-    //});
+  //  //this.bsModalRef.content.event.subscribe(data => {
+  //  //  debugger
+  //  //  this.createLootPileTemplateModal.itemList = data.multiItemMasters;
+  //  //});
+  //}
+
+  percentage(e, item) {
+    item.percentage = e.target.value;
   }
-
-
+  quantity(e, item) {
+    item.qty = e.target.value;
+  }
 
   commonOR(i) {
     let _randomization = new randomization();    _randomization.percentage = null;    _randomization.qty = null;    _randomization.isOr = true;    _randomization.selectedItem = [];    let indexToInsert = i + 1;    _randomization.sortOrder = indexToInsert;    this.randomizationInfo.splice(indexToInsert, 0, _randomization);    // add remaining percentage out of 100    let AndArray = [];
@@ -466,10 +507,9 @@ export class CreateLootPileTemplateComponent implements OnInit {
         }
       }
     }  }
-
-  validateRandomization(mt) {    if (!mt.isRandomizationEngine) {
-      return true;
-    }    let isValidPrecentage = true;    let isValidItem = true;    let isPercentageFieldsAreValid = true;    let isQtyFieldsAreValid = true;    let AndArray = [];
+  SelectItem(item, i) {    this.bsModalRef = this.modalService.show(SingleItemMonsterComponent, {      class: 'modal-primary modal-md',      ignoreBackdropClick: true,      keyboard: false    });    this.bsModalRef.content.title = 'Add Item';    this.bsModalRef.content.button = 'ADD';    this.bsModalRef.content.rulesetID = this.ruleSetId;    this.bsModalRef.content.SelectedItems = item.selectedItem;    this.bsModalRef.content.event.subscribe(data => {      if (data) {        item.selectedItem = data;      }    });  }  validateRandomization(mt) {    //if (!mt.isRandomizationEngine) {
+    //  return true;
+    //}    let isValidPrecentage = true;    let isValidItem = true;    let isPercentageFieldsAreValid = true;    let isQtyFieldsAreValid = true;    let AndArray = [];
     let OrArray = [];
     this.randomizationInfo.map((item, index) => {
 

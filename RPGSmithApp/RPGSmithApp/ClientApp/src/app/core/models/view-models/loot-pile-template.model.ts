@@ -11,7 +11,7 @@ export class CreateLootPileTemplate {
       characterID?: number,
       monsterID?: number,
       isDeleted?: boolean,
-      randomizationEngine?: randomization[],
+      lootTemplateRandomizationEngines?: randomization[],
       REitems?: any[]
     ) {
       this.lootPileTemplateId = lootPileTemplateId;
@@ -23,7 +23,7 @@ export class CreateLootPileTemplate {
       this.characterID = characterID;
       this.monsterID = monsterID;
       this.isDeleted = isDeleted;
-      this.randomizationEngine = randomizationEngine;
+      this.lootTemplateRandomizationEngines = lootTemplateRandomizationEngines;
       this.REitems = REitems;
     }
 
@@ -36,6 +36,6 @@ export class CreateLootPileTemplate {
   public characterID: number;
   public monsterID: number;
   public isDeleted: boolean;
-  public randomizationEngine: randomization[];
+  public lootTemplateRandomizationEngines: randomization[];
   public REitems: any[];
 }

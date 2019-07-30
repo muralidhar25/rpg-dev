@@ -36,7 +36,11 @@ namespace RPGSmithApp.Controllers
             this._ruleSetService = ruleSetService;
             this._lootPileTemplateService = lootPileTemplateService;
         }
-
+        [HttpGet("getById")]
+        public async Task<IActionResult> getByRuleSetId_sp(int LootTemplateId)
+        {            
+            return Ok(_lootPileTemplateService.GetById(LootTemplateId));
+        }
         [HttpPost("CreateLootTemplate")]
         public async Task<IActionResult> CreateLootTemplate([FromBody] Create_LootTemplate_ViewModel model)
         {
