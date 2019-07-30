@@ -69,5 +69,6 @@ namespace DAL.Services
         void UpdateLootPile(CreateLootPileModel itemDomain);
         LootPileViewModel getCharacterLootPile(int characterId);
         LootPileViewModel getMonsterLootPile(int monsterId);
+        Task ShowLootPile(int lootPileID, bool isVisible);
     }
 }
