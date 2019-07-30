@@ -32,10 +32,17 @@ export class LootService extends EndpointFactory {
   private readonly _getItemMasterLootsForDeleteUrl: string = this.configurations.baseUrl + "/api/ItemMaster/GetItemMasterLootsForDelete";
 
   private readonly _getDuplicateLootItemUrl: string = this.configurations.baseUrl + "/api/ItemMaster/DuplicateLoot";
-  private readonly CreateLootPile: string = this.configurations.baseUrl + "/api/LootPile/CreateLootPile";
+  private readonly CreateLootPile: string = this.configurations.baseUrl + "/api/ItemMaster/CreateLootPile";
+
+  private readonly UpdateLootPile: string = this.configurations.baseUrl + "/api/ItemMaster/EditLootPile";
 
 
   private readonly GetLootPileItemsToAdd: string = this.configurations.baseUrl + "/api/ItemMaster/GetLootPileItemsToAdd";
+
+  private readonly ShowLootPile: string = this.configurations.baseUrl + "/api/ItemMaster/ShowLootPile";
+  private readonly DuplicateLootPile: string = this.configurations.baseUrl + "/api/ItemMaster/DuplicateLootPile";
+  private readonly MoveLoot: string = this.configurations.baseUrl + "/api/ItemMaster/MoveLoot";
+  private readonly GetItemsFromLootPile: string = this.configurations.baseUrl + "/api/ItemMaster/GetItemsFromLootPile";
 
 
 
@@ -163,7 +170,14 @@ export class LootService extends EndpointFactory {
   }
 
   createLootPile<T>(lootPile): Observable<T> {
-    let endpointUrl = `${this.CreateLootPile}`;
+    let endpointUrl = this.CreateLootPile;
+    if (lootPile.lootId == 0 || lootPile.lootId === undefined)
+      endpointUrl = this.CreateLootPile;
+    else
+      endpointUrl = this.UpdateLootPile;
+
+
+    //let endpointUrl = `${this.CreateLootPile}`;
     return this.http.post<T>(endpointUrl, JSON.stringify(lootPile), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.createLootPile(lootPile));
@@ -175,6 +189,43 @@ export class LootService extends EndpointFactory {
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getLootPileItemsToAdd(ruleSetId));
+      });
+  }
+
+  showLootPile<T>(LootPileID, IsVisible): Observable<T> {
+
+    let endpointUrl = `${this.ShowLootPile}?LootPileID=${LootPileID}&IsVisible=${IsVisible}`;
+    return this.http.post<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.showLootPile(LootPileID, IsVisible));
+      });
+  }
+
+  duplicateLootPile<T>(item): Observable<T> {
+    let endpointUrl = this.DuplicateLootPile;
+
+    return this.http.post<T>(endpointUrl, JSON.stringify(item), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.duplicateLootPile(item));
+      })
+  }
+
+  moveLoot<T>(items, lootPileId): Observable<T> {
+    debugger
+    let endpointUrl = `${this.MoveLoot}?LootPileID=${lootPileId}`;
+    return this.http.post<T>(endpointUrl, JSON.stringify(items), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.moveLoot(items, lootPileId));
+      });
+  }
+
+  getItemsFromLootPile<T>(lootPileId: number): Observable<T> {
+    debugger
+
+    let endpointUrl = `${this.GetItemsFromLootPile}?lootPileId=${lootPileId}`;
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getItemsFromLootPile(lootPileId));
       });
   }
 

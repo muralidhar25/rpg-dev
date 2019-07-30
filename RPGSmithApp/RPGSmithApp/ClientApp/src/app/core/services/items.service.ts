@@ -53,6 +53,8 @@ export class ItemsService extends EndpointFactory {
   private readonly GetCharSpellIDUrl: string = this.configurations.baseUrl + "/api/Item/GetCharSpellIDUrl";
   private readonly GetCharAbilityIDUrl: string = this.configurations.baseUrl + "/api/Item/GetCharAbilityIDUrl";
   private readonly DropMultipleItems: string = this.configurations.baseUrl + "/api/Item/DropMultipleItems";
+  private readonly GetLootPilesListByCharacterId: string = this.configurations.baseUrl + "/api/ItemMaster/GetLootPilesListByCharacterId";
+  private readonly GetLootPilesListByRuleSetId: string = this.configurations.baseUrl + "/api/ItemMaster/GetLootPilesListByRuleSetId";
 
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector,
@@ -612,11 +614,28 @@ export class ItemsService extends EndpointFactory {
     return itemFormModal;
   }
 
-  dropMultipleItems<T>(itemList: any): Observable<T> {
-    let dropMultipleItemsURL = `${this.DropMultipleItems}`;
+  dropMultipleItems<T>(itemList: any, lootPileId: number): Observable<T> {
+    debugger
+    let dropMultipleItemsURL = `${this.DropMultipleItems}?LootPileId=${lootPileId}`;
     return this.http.post<T>(dropMultipleItemsURL, JSON.stringify(itemList), this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.dropMultipleItems(itemList));
+        return this.handleError(error, () => this.dropMultipleItems(itemList, lootPileId));
+      });
+  }
+
+  getLootPilesListByCharacterId<T>(characterId: number, rulesetId: number): Observable<T> {
+    let endpointUrl = `${this.GetLootPilesListByCharacterId}?CharacterId=${characterId}&RulesetId=${rulesetId}`;
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getLootPilesListByCharacterId(characterId, rulesetId));
+      });
+  }
+
+  getLootPilesListByRuleSetId<T>(rulesetId: number): Observable<T> {
+    let endpointUrl = `${this.GetLootPilesListByRuleSetId}?RulesetId=${rulesetId}`;
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getLootPilesListByRuleSetId(rulesetId));
       });
   }
 }

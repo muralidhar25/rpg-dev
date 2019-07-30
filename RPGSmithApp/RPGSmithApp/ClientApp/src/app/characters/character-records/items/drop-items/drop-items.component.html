@@ -87,11 +87,11 @@
             <label for="newItems">Drop to Loot Pile</label>
           </div>
           <div class="col-8">
-            <angular2-multiselect id="dropLoot" [data]="itemsList" [(ngModel)]="selectedLootPileItem" name="newItems" [settings]="lootItemsSettings">
+            <angular2-multiselect id="dropLoot" [data]="lootPileList" [(ngModel)]="selectedLootPileItem" name="newItems" [settings]="lootItemsSettings">
               <c-item id="item">
                 <ng-template let-item="item">
-                  <span class="associate-label-name">{{item.name}}</span>
-                  <img [src]="item.itemImage" class="pull-right associate-img"
+                  <span class="associate-label-name">{{item?.itemName}}</span>
+                  <img [src]="item?.itemImage" class="pull-right associate-img"
                        onerror="this.src = '../assets/images/DefaultImages/Item.jpg'" />
                 </ng-template>
               </c-item>

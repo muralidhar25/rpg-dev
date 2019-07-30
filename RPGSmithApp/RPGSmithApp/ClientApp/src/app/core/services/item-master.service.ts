@@ -36,6 +36,7 @@ export class ItemMasterService extends EndpointFactory {
   private readonly DeleteTemplates: string = this.configurations.baseUrl + "/api/ItemMaster/DeleteTemplates";
   
   private readonly getLootByIdUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getLootById";
+  private readonly GetLootPile: string = this.configurations.baseUrl + "/api/ItemMaster/GetLootPile";
   
   private readonly getDetailByIdUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/getDetailById";  
   private readonly getByRulesetUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getByRuleSetId";
@@ -462,6 +463,14 @@ export class ItemMasterService extends EndpointFactory {
     return this.http.post<T>(endpointURL, JSON.stringify(TemplatesList), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.deleteTemplates(TemplatesList, rulesetId));
+      });
+  }
+
+  getLootPile<T>(lootPileId: number): Observable<T> {
+    let endpointUrl = `${this.GetLootPile}?lootPileId=${lootPileId}`;
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getLootPile(lootPileId));
       });
   }
 

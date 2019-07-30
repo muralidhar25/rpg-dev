@@ -23,9 +23,10 @@ export class DropItemsComponent implements OnInit {
   searchText: string;
   allSelected: boolean = false;
   selectedItems = [];
-  selectedLootPileItem: any;
+  selectedLootPileItem: any[];
   page: number = 1;
   pageSize: number = 99999;
+  lootPileList: any[] = [];
 
   constructor(
     private bsModalRef: BsModalRef,
@@ -50,11 +51,11 @@ export class DropItemsComponent implements OnInit {
       this.authService.logout();
     else {
       this.isLoading = true;
-      debugger
-      this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 3) // 3 for Alphabetical Sort
+      this.itemsService.getLootPilesListByCharacterId<any>(this.characterId, this.rulesetId)
         .subscribe(data => {
-          this.itemsList = data.ItemsList;
-          this.isLoading = false;
+          this.lootPileList = data;
+          this.selectedLootPileItem = [];
+          this.selectedLootPileItem.push(this.lootPileList[0]);
         }, error => {
           this.isLoading = false;
           let Errors = Utilities.ErrorDetail("", error);
@@ -62,7 +63,21 @@ export class DropItemsComponent implements OnInit {
             //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
             this.authService.logout(true);
           }
-        }, () => { })
+        }, () => {
+          this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 3) // 3 for Alphabetical Sort
+            .subscribe(data => {
+              this.itemsList = data.ItemsList;
+
+              this.isLoading = false;
+            }, error => {
+              this.isLoading = false;
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                this.authService.logout(true);
+              }
+            }, () => { })
+        });     
     }
   }
 
@@ -98,7 +113,12 @@ export class DropItemsComponent implements OnInit {
   }
   DropSelectedItems() {
     this.isLoading = true;
-    this.itemsService.dropMultipleItems<any>(this.selectedItems)
+    let lootId: number;
+    if (this.selectedLootPileItem) {
+      this.selectedLootPileItem.map(x => { lootId = x.lootId });
+    }
+    
+    this.itemsService.dropMultipleItems<any>(this.selectedItems, lootId)
       .subscribe(data => {
               this.alertService.showMessage("Dropping Item(s)", "", MessageSeverity.success);
               this.close();
@@ -133,15 +153,15 @@ export class DropItemsComponent implements OnInit {
 
   get lootItemsSettings() {
     return {
-      primaryKey: "lootItemId",
-      labelKey: "name",
+      primaryKey: "lootId",
+      labelKey: "itemName",
       text: "Search item(s)",
       enableCheckAll: false,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',
       singleSelection: true,
       limitSelection: false,
-      enableSearchFilter: true,
+      enableSearchFilter: false,
       classes: "myclass custom-class ",
       showCheckbox: false,
       position: "bottom"
