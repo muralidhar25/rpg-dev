@@ -142,11 +142,11 @@ namespace RPGSmithApp.Controllers
         }
         #region API Using SP
         [HttpGet("getByRuleSetId_sp")]
-        public async Task<IActionResult> getByRuleSetId_sp(int rulesetId, int page = 1, int pageSize = 30, int sortType = 1)
+        public async Task<IActionResult> getByRuleSetId_sp(int rulesetId, int page = 1, int pageSize = 30)
         {
             dynamic Response = new ExpandoObject();
-            var lootTemplatesList = _lootPileTemplateService.SP_GetLootTemplateByRuleSetId(rulesetId, page, pageSize, sortType);
-            Response.monsterTemplates = lootTemplatesList; // Utilities.CleanModel<Ability>(abilityList);
+            var lootTemplatesList = _lootPileTemplateService.SP_GetLootTemplateByRuleSetId(rulesetId, page, pageSize);
+            Response.lootTemplates = lootTemplatesList; // Utilities.CleanModel<Ability>(abilityList);
             if (lootTemplatesList.Any())
             {
                 Response.RuleSet = lootTemplatesList.FirstOrDefault().RuleSet;

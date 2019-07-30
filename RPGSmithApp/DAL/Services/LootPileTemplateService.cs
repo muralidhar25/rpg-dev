@@ -31,9 +31,8 @@ namespace DAL.Services
 
         public LootTemplate GetById(int? id) {
             LootTemplate lootTemplate = _context.LootTemplates
-                    .Include(d => d.RuleSet)                    
+                    .Include(d => d.RuleSet).Include(d=>d.LootTemplateRandomizationEngines)                
                     .Where(x => x.LootTemplateId == id && x.IsDeleted != true)
-
                     .FirstOrDefault();
 
                 if (lootTemplate == null) return lootTemplate;
