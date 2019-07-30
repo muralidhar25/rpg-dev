@@ -24,7 +24,7 @@ namespace RPGSmithApp.Controllers
     public class LootPileTemplateController : Controller
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IAccountManager _accountManager;        
+        private readonly IAccountManager _accountManager;
         private readonly IRuleSetService _ruleSetService;
         private readonly ILootPileTemplateService _lootPileTemplateService;
 
@@ -73,23 +73,90 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                try
+                {
+                    if (_lootPileTemplateService.CheckDuplicateLootTemplate(model.Name.Trim(), model.RuleSetId, model.LootTemplateId).Result)
+                        return BadRequest("The Loot Template Name " + model.Name + " had already been used. Please select another name.");
 
-                if (_lootPileTemplateService.CheckDuplicateLootTemplate(model.Name.Trim(), model.RuleSetId, model.LootTemplateId).Result)
-                    return BadRequest("The Loot Template Name " + model.Name + " had already been used. Please select another name.");
+                    var lootTemplateobj = _lootPileTemplateService.GetById(model.LootTemplateId);
+                    var becIds = new List<int>();
 
-                var lootTemplateobj = _lootPileTemplateService.GetById(model.LootTemplateId);
-                var becIds = new List<int>();
+                    if (lootTemplateobj == null)
+                        return Ok("Loot Template not found");
 
-                if (lootTemplateobj == null)
-                    return Ok("Loot Template not found");                
+                    var lootTemplate = Mapper.Map<LootTemplate>(model);
 
-                var lootTemplate = Mapper.Map<LootTemplate>(model);
+                    LootTemplate result = await _lootPileTemplateService.Update(lootTemplate, model.LootTemplateRandomizationEngines);
 
-                LootTemplate result = await _lootPileTemplateService.Update(lootTemplate, model.LootTemplateRandomizationEngines);
-
-                return Ok();
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
+
+        [HttpPost("duplicate")]
+        public async Task<IActionResult> Duplicate([FromBody] Create_LootTemplate_ViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if (_lootPileTemplateService.CheckDuplicateLootTemplate(model.Name.Trim(), model.RuleSetId).Result)
+                        return BadRequest("The Loot Template Name " + model.Name + " had already been used. Please select another name.");
+
+                    var monsterTemplate = _lootPileTemplateService.GetById(model.LootTemplateId);
+
+                    model.LootTemplateId = 0;
+                    var lootTemplateModel = Mapper.Map<LootTemplate>(model);
+                    var result = await _lootPileTemplateService.Create(lootTemplateModel);
+
+                    if (model.LootTemplateRandomizationEngines != null && model.LootTemplateRandomizationEngines.Count > 0)
+                    {
+                        _lootPileTemplateService.insertRandomizationEngines(model.LootTemplateRandomizationEngines.ToList(), result.LootTemplateId);
+                    }
+
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+
+            return BadRequest(Utilities.ModelStateError(ModelState));
+        }
+
+
+
+        //get user id methods
+        private string GetUserId()
+        {
+            string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
+            ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
+            return appUser.Id;
+            //return "ec34768b-c2ff-43b2-9bf3-d0946d416482";
+        }
+        #region API Using SP
+        [HttpGet("getByRuleSetId_sp")]
+        public async Task<IActionResult> getByRuleSetId_sp(int rulesetId, int page = 1, int pageSize = 30, int sortType = 1)
+        {
+            dynamic Response = new ExpandoObject();
+            var lootTemplatesList = _lootPileTemplateService.SP_GetLootTemplateByRuleSetId(rulesetId, page, pageSize, sortType);
+            Response.monsterTemplates = lootTemplatesList; // Utilities.CleanModel<Ability>(abilityList);
+            if (lootTemplatesList.Any())
+            {
+                Response.RuleSet = lootTemplatesList.FirstOrDefault().RuleSet;
+            }
+            else
+            {
+                Response.RuleSet = _ruleSetService.GetRuleSetById(rulesetId).Result;
+            }
+            return Ok(Response);
+        }
+        #endregion
     }
 }

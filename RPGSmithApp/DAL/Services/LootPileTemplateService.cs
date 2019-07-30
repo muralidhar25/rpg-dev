@@ -121,5 +121,95 @@ namespace DAL.Services
                 throw ex;
             }
         }
+        public List<LootTemplate> SP_GetLootTemplateByRuleSetId(int rulesetId, int page, int pageSize)
+        {
+
+            List<LootTemplate> _lootTemplateList = new List<LootTemplate>();
+            RuleSet ruleset = new RuleSet();
+
+            short num = 0;
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("LootTemplate_GetByRulesetID", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@RulesetID", rulesetId);
+                command.Parameters.AddWithValue("@page", page);
+                command.Parameters.AddWithValue("@size", pageSize);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+
+
+
+            if (ds.Tables[1].Rows.Count > 0)
+                ruleset = _repo.GetRuleset(ds.Tables[1], num);
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    LootTemplate _LootTemplate = new LootTemplate();
+                    _LootTemplate.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                    _LootTemplate.Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString();
+                    _LootTemplate.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                    _LootTemplate.ImageUrl = row["ImageUrl"] == DBNull.Value ? null : row["ImageUrl"].ToString();
+                    _LootTemplate.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
+                    _LootTemplate.LootTemplateId = row["LootTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(row["LootTemplateId"].ToString());
+                    _LootTemplate.RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString());
+                    _LootTemplate.RuleSet = ruleset;
+
+                    _LootTemplate.LootTemplateRandomizationEngines = new List<LootTemplateRandomizationEngine>();
+                    if (ds.Tables[2].Rows.Count > 0)
+                    {
+                        foreach (DataRow RErow in ds.Tables[2].Rows)
+                        {
+                            int LT_ID = RErow["LootTemplateId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["LootTemplateId"]);
+                            if (LT_ID == _LootTemplate.LootTemplateId)
+                            {
+                                LootTemplateRandomizationEngine RE = new LootTemplateRandomizationEngine();
+                                RE.RandomizationEngineId = RErow["RandomizationEngineId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["RandomizationEngineId"]);
+                                RE.Qty = RErow["Qty"] == DBNull.Value ? string.Empty : RErow["Qty"].ToString();
+                                RE.Percentage = RErow["Percentage"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["Percentage"]);
+                                RE.SortOrder = RErow["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["SortOrder"]);
+                                RE.ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]);
+                                RE.IsOr = RErow["IsOr"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsOr"]);
+                                RE.IsDeleted = RErow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(RErow["IsDeleted"]);
+                                RE.LootTemplateId = LT_ID;
+                                RE.ItemMaster = new ItemMaster()
+                                {
+                                    ItemMasterId = RErow["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(RErow["ItemMasterId"]),
+                                    ItemName = RErow["ItemName"] == DBNull.Value ? null : RErow["ItemName"].ToString(),
+                                    ItemImage = RErow["ItemImage"] == DBNull.Value ? null : RErow["ItemImage"].ToString()
+                                };
+                                _LootTemplate.LootTemplateRandomizationEngines.Add(RE);
+                            }
+                        }
+                    }
+
+                    _lootTemplateList.Add(_LootTemplate);
+                }
+            }
+            return _lootTemplateList;
+
+        }
     }
 }
