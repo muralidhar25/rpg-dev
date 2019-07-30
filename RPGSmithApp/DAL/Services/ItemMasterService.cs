@@ -2406,6 +2406,52 @@ namespace DAL.Services
                 throw ex;
             }
         }
+        public List<LootPileViewModel> GetLootPilesListByRuleSetId(int rulesetId)
+        {
+            List<LootPileViewModel> result = new List<LootPileViewModel>();
+            string rulesetimage = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png";
+            var ruleset = _context.RuleSets.Where(x => x.RuleSetId == rulesetId && x.IsDeleted != true).FirstOrDefault();
+            if (ruleset != null)
+            {
+                if (!string.IsNullOrEmpty(ruleset.ImageUrl))
+                {
+                    rulesetimage = ruleset.ImageUrl;
+                }
+                
+            }
+
+
+            LootPileViewModel rootLoot = new LootPileViewModel() {
+                ItemName = "Root (No Pile)",
+                IsVisible=true,
+                ItemImage= rulesetimage,
+                LootId=-1,
+                RuleSetId=rulesetId,
+                
+            };
+            result.Add(rootLoot);
+
+            List<LootPileViewModel> list = _context.ItemMasterLoots.Where(x => x.IsLootPile == true && x.RuleSetId == rulesetId && x.IsDeleted != true)
+                .Select(x => new LootPileViewModel()
+                {
+                    IsVisible = x.IsVisible,
+                    ItemImage = x.ItemImage,
+                    ItemName = x.ItemName,
+                    ItemVisibleDesc = x.ItemVisibleDesc,
+                    LootId = x.LootId,
+                    Metatags = x.Metatags,
+                    RuleSetId = x.RuleSetId,
+                })
+                .ToList();
+
+            foreach (var item in list)
+            {
+                result.Add(item);
+            }
+            return result;
+        }
+
+
         #endregion
     }
 }

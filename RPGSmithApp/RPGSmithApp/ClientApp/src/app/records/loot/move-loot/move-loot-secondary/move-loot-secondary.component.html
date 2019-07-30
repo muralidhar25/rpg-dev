@@ -78,7 +78,7 @@
             <label for="newItems">Move to Loot Pile</label>
           </div>
           <div class="col-8">
-            <angular2-multiselect id="moveLoot" [data]="itemsList" [(ngModel)]="selectedLootItem" name="newItems" [settings]="lootItemsSettings">
+            <angular2-multiselect id="moveLoot" [data]="lootPileList" [(ngModel)]="selectedLootPileItem" name="newItems" [settings]="lootItemsSettings">
               <c-item id="item">
                 <ng-template let-item="item">
                   <span class="associate-label-name">{{item.itemName}}</span>

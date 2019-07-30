@@ -2146,6 +2146,11 @@ namespace RPGSmithApp.Controllers
             return Ok(ItemList);
         }
 
+        [HttpGet("GetLootPilesListByRuleSetId")]        public async Task<IActionResult> GetLootPilesListByRuleSetId(int RulesetId)        {
+            List<LootPileViewModel> ItemList = _itemMasterService.GetLootPilesListByRuleSetId(RulesetId);
+            return Ok(ItemList);
+        }
+
 
         [HttpGet("GetItemsFromLootPile")]
         public async Task<IActionResult> GetItemsFromLootPile(int lootPileId)

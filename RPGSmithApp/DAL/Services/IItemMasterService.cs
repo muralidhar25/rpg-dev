@@ -73,5 +73,6 @@ namespace DAL.Services
         List<LootPileViewModel> GetLootPilesListByCharacterId(int characterId, int rulesetId);
         Task<List<ItemMasterLoot_ViewModel>> GetItemsFromLootPile(int lootPileId);
         void MoveLoot(List<ItemMasterLoot> model, int lootPileID);
+        List<LootPileViewModel> GetLootPilesListByRuleSetId(int rulesetId);
     }
 }

@@ -30,6 +30,7 @@ export class DeleteLootSecondaryComponent implements OnInit {
   selectedLootItem: any;
   Name: string;
   Image: string;
+  lootPileId: number;
 
   constructor(
     private bsModalRef: BsModalRef,
@@ -47,6 +48,7 @@ export class DeleteLootSecondaryComponent implements OnInit {
       this.rulesetId = this.bsModalRef.content.ruleSetId;
       this.Name = this.bsModalRef.content.Name;
       this.Image = this.bsModalRef.content.Image;
+      this.lootPileId = this.bsModalRef.content.LootPileId;
       this.initialize();
     }, 0);
   }
@@ -58,7 +60,20 @@ export class DeleteLootSecondaryComponent implements OnInit {
     else {
       this.isLoading = true;
 
-      this.lootService.getItemMasterLootsForDelete<any>(this.rulesetId)
+      //this.lootService.getItemMasterLootsForDelete<any>(this.rulesetId)
+      //  .subscribe(data => {
+      //    this.itemsList = data;
+      //    this.isLoading = false;
+      //  }, error => {
+      //    this.isLoading = false;
+      //    let Errors = Utilities.ErrorDetail("", error);
+      //    if (Errors.sessionExpire) {
+      //      //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+      //      this.authService.logout(true);
+      //    }
+      //  }, () => { })
+
+      this.lootService.getItemsFromLootPile<any>(this.lootPileId)
         .subscribe(data => {
           this.itemsList = data;
           this.isLoading = false;
@@ -136,22 +151,22 @@ export class DeleteLootSecondaryComponent implements OnInit {
     this.bsModalRef.hide();
   }
 
-  get lootItemsSettings() {
-    return {
-      primaryKey: "lootItemId",
-      labelKey: "name",
-      text: "Search item(s)",
-      enableCheckAll: false,
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      singleSelection: true,
-      limitSelection: false,
-      enableSearchFilter: true,
-      classes: "myclass custom-class ",
-      showCheckbox: false,
-      position: "bottom"
-    };
-  }
+  //get lootItemsSettings() {
+  //  return {
+  //    primaryKey: "lootItemId",
+  //    labelKey: "name",
+  //    text: "Search item(s)",
+  //    enableCheckAll: false,
+  //    selectAllText: 'Select All',
+  //    unSelectAllText: 'UnSelect All',
+  //    singleSelection: true,
+  //    limitSelection: false,
+  //    enableSearchFilter: false,
+  //    classes: "myclass custom-class ",
+  //    showCheckbox: false,
+  //    position: "top"
+  //  };
+  //}
 
   MoveLoot() {
     this.close();

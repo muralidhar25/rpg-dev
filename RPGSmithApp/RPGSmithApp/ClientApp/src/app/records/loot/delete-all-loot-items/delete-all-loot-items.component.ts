@@ -11,6 +11,7 @@ import { User } from '../../../core/models/user.model';
 import { DBkeys } from '../../../core/common/db-keys';
 import { Utilities } from '../../../core/common/utilities';
 import { DeleteLootSecondaryComponent } from './delete-loot-secondary/delete-loot-secondary.component';
+import { ItemsService } from '../../../core/services/items.service';
 
 @Component({
   selector: 'app-delete-all-loot-items',
@@ -22,12 +23,15 @@ export class DeleteAllLootItemsComponent implements OnInit {
   isLoading = false;
   characterId: number;
   rulesetId: number;
-  itemsList: any;
+  itemsList: any[] = [];
+  itemsListLootPile: any[] = [];
   characterItemModal: any = new Items();
   searchText: string;
   //isloading: boolean = false;
   allSelected: boolean = false;
   multiLootIds = [];
+  lootPileList: any[] = [];
+
   constructor(
     private bsModalRef: BsModalRef,
     private alertService: AlertService,
@@ -36,8 +40,8 @@ export class DeleteAllLootItemsComponent implements OnInit {
     private localStorage: LocalStoreManager,
     private lootService: LootService,
     private sharedService: SharedService,
-    private appService: AppService1
-  ) { }
+    private appService: AppService1,
+    private itemsService: ItemsService) { }
 
   ngOnInit() {
     setTimeout(() => {
@@ -54,11 +58,9 @@ export class DeleteAllLootItemsComponent implements OnInit {
     else {
       this.isLoading = true;
 
-      this.lootService.getItemMasterLootsForDelete<any>(this.rulesetId)
+      this.itemsService.getLootPilesListByRuleSetId<any>(this.rulesetId)
         .subscribe(data => {
-          //console.log(data);
-          this.itemsList = data;
-          this.isLoading = false;
+          this.lootPileList = data;
         }, error => {
           this.isLoading = false;
           let Errors = Utilities.ErrorDetail("", error);
@@ -66,7 +68,32 @@ export class DeleteAllLootItemsComponent implements OnInit {
             //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
             this.authService.logout(true);
           }
-        }, () => { })
+        }, () => {
+          this.lootService.getItemMasterLootsForDelete<any>(this.rulesetId)
+            .subscribe(data => {
+              let list = data;
+              debugger;
+              this.itemsList = [];
+              this.itemsListLootPile = [];
+
+              list.map(x => {
+                if (x.isLootPile) {
+                  this.itemsListLootPile.push(x);
+                } else {
+                  this.itemsList.push(x);
+                }
+              });
+
+              this.isLoading = false;
+            }, error => {
+              this.isLoading = false;
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                this.authService.logout(true);
+              }
+            }, () => { })
+        });
     }
   }
 
@@ -76,18 +103,30 @@ export class DeleteAllLootItemsComponent implements OnInit {
         item.selected = event.target.checked;
       }
       return item;
-    })
+    });
+
+    this.itemsListLootPile.map(x => {
+      if (x.lootId == itemMaster.lootId) {
+        x.selected = event.target.checked;
+      }
+    });
   }
 
   submitForm() {
+    debugger
     this.multiLootIds = [];
     this.itemsList.map((item) => {
       if (item.selected) {
-        this.multiLootIds.push({ lootId: item.lootId});
+        this.multiLootIds.push({ lootId: item.lootId });
       }
-      return item;
+    }); 
 
-    })
+    this.itemsListLootPile.map(x => {
+      if (x.selected) {
+        this.multiLootIds.push({ lootId: x.lootId });
+      }
+    });
+
     if (this.multiLootIds == undefined) {
       this.alertService.showMessage("Please select new Loot to Delete.", "", MessageSeverity.error);
     }
@@ -100,23 +139,15 @@ export class DeleteAllLootItemsComponent implements OnInit {
 
   }
   deleteAllLootItems() {
-    //console.log(itemMaster);
+    debugger
     this.isLoading = true;
-    //console.log(this.multiLootIds);
     this.lootService.deleteAllLootItems<any>(this.multiLootIds)
       .subscribe(data => {
-             // console.log('data',data);
-             //if (data) {
-             //       if (data.message) {
-             //         this.alertService.showMessage(data.message, "", MessageSeverity.error);
-             //       } else {
-                
-             //       }
-              this.alertService.showMessage("Deleting Loot Item", "", MessageSeverity.success);
-              this.close();
-              this.appService.updateItemsList(true);
-            this.isLoading = false;
-        }, error => {
+        this.alertService.showMessage("Deleting Loot Item", "", MessageSeverity.success);
+        this.close();
+        this.appService.updateItemsList(true);
+        this.isLoading = false;
+      }, error => {
         this.isLoading = false;
         let Errors = Utilities.ErrorDetail("", error);
         if (Errors.sessionExpire) {
@@ -131,7 +162,7 @@ export class DeleteAllLootItemsComponent implements OnInit {
     if (this.allSelected) {
       this.itemsList.map((item) => {
         item.selected = true;
-      })
+      });
     }
     else {
       this.itemsList.map((item) => {
@@ -153,6 +184,7 @@ export class DeleteAllLootItemsComponent implements OnInit {
     this.bsModalRef.content.ruleSetId = this.rulesetId;
     this.bsModalRef.content.Name = item.itemName;
     this.bsModalRef.content.Image = item.itemImage;
+    this.bsModalRef.content.LootPileId = item.lootId;
   }
 
   Refresh() {

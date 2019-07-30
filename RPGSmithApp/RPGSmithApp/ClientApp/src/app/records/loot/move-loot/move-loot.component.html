@@ -24,16 +24,16 @@
       <!--Start Loot Pile-->
       <div class="col-12 col-md-12 col-sm-12">
         <fieldset class="form-group input-list input-list-wrap items">
-          <legend *ngIf="itemsList?.length == 0">No Item Available</legend>
+          <legend *ngIf="itemsListLootPile?.length == 0">No Item Available</legend>
           <div class="row">
             <div class="col-6">
-              <legend *ngIf="itemsList?.length > 0">Explore Loot Piles</legend>
+              <legend *ngIf="itemsListLootPile?.length > 0">Explore Loot Piles</legend>
             </div>
           </div>
 
           <ul class="input-list-items">
-            <li class="form-check col-md-6 col-sm-12" *ngFor="let item of itemsList | filter : searchText : 'itemName';let i = index;" popover="{{item.itemName}}" triggers="hover">
-              <label class="form-check-label" *ngIf="i < 4">
+            <li class="form-check col-md-6 col-sm-12" *ngFor="let item of itemsListLootPile | filter : searchText : 'itemName';let i = index;" popover="{{item.itemName}}" triggers="hover">
+              <label class="form-check-label">
                 <span (click)="SecondaryLoot(item)">
                   <img [alt]="item.itemName" [src]="item.itemImage"
                        onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
@@ -93,7 +93,7 @@
             <label for="newItems">Move to Loot Pile</label>
           </div>
           <div class="col-8">
-            <angular2-multiselect id="moveLoot" [data]="itemsList" [(ngModel)]="selectedLootItem" name="newItems" [settings]="lootItemsSettings">
+            <angular2-multiselect id="moveLoot" [data]="lootPileList" [(ngModel)]="selectedLootPileItem" name="newItems" [settings]="lootItemsSettings">
               <c-item id="item">
                 <ng-template let-item="item">
                   <span class="associate-label-name">{{item.itemName}}</span>

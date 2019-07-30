@@ -52,6 +52,7 @@ export class LootComponent implements OnInit {
   offset = (this.page - 1) * this.pageSize;
   backURL: string = '/rulesets';
   IsGm: boolean = false;
+  lootPileItems: any[] = [];
 
   constructor(
     private router: Router,
@@ -66,9 +67,9 @@ export class LootComponent implements OnInit {
     public appService: AppService1,
     public lootService: LootService
   ) {
-   
+
     this.sharedService.shouldUpdateItemsList().subscribe(sharedServiceJson => {
-      
+
       if (sharedServiceJson) {
         this.page = 1;
         this.pageSize = 28;
@@ -110,11 +111,11 @@ export class LootComponent implements OnInit {
         this.backURL = '/ruleset/campaign-details/' + this.ruleSetId;
       }
       this.isLoading = true;
-    
-      this.lootService.getLootItemsById<any>(this.ruleSetId,this.page, this.pageSize)
+
+      this.lootService.getLootItemsById<any>(this.ruleSetId, this.page, this.pageSize)
         .subscribe(data => {
           //console.log(data);
-         this.ItemMasterList = Utilities.responseData(data.ItemMaster, this.pageSize);
+          this.ItemMasterList = Utilities.responseData(data.ItemMaster, this.pageSize);
           this.ItemMasterList.forEach(function (val) { val.showIcon = false; });
           this.RuleSet = data.RuleSet;
           this.setHeaderValues(this.RuleSet);
@@ -131,8 +132,8 @@ export class LootComponent implements OnInit {
           }
         }, () => { })
 
-      
-     
+
+
 
       this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'ItemMaster')
         .subscribe(data => {
@@ -164,24 +165,24 @@ export class LootComponent implements OnInit {
 
     ++this.page;
     this.scrollLoading = true;
-     this.lootService.getLootItemsById<any>(this.ruleSetId,this.page, this.pageSize)
-        .subscribe(data => {
-         // console.log(data);
-          var _ItemMaster = data.ItemMaster;
-          for (var i = 0; i < _ItemMaster.length; i++) {
-            _ItemMaster[i].showIcon = false;
-            this.ItemMasterList.push(_ItemMaster[i]);
-          }
-          this.scrollLoading = false;
-        }, error => {
-          this.isLoading = false;
-          this.scrollLoading = false;
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-            this.authService.logout(true);
-          }
-        }, () => { })
+    this.lootService.getLootItemsById<any>(this.ruleSetId, this.page, this.pageSize)
+      .subscribe(data => {
+        // console.log(data);
+        var _ItemMaster = data.ItemMaster;
+        for (var i = 0; i < _ItemMaster.length; i++) {
+          _ItemMaster[i].showIcon = false;
+          this.ItemMasterList.push(_ItemMaster[i]);
+        }
+        this.scrollLoading = false;
+      }, error => {
+        this.isLoading = false;
+        this.scrollLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          this.authService.logout(true);
+        }
+      }, () => { })
 
   }
   showActionButtons(showActions) {
@@ -264,29 +265,83 @@ export class LootComponent implements OnInit {
     //  .subscribe(data => {
     //    //this.alertService.stopLoadingMessage();
     //    if (data < 2000) {
-          this.bsModalRef = this.modalService.show(CreatelootComponent, {
-            class: 'modal-primary modal-custom',
-            ignoreBackdropClick: true,
-            keyboard: false
-          });
-          this.bsModalRef.content.title = 'Create Loot';
-          this.bsModalRef.content.button = 'CREATE';
-          this.bsModalRef.content.ruleSetId = this.ruleSetId;
-          this.bsModalRef.content.itemMasterVM = {
-            ruleSetId: this.ruleSetId,
-            ruleSet: this.RuleSet
-          };
-        //}
-        //else {
-        //  //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
-        //  this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
-        //}
-        // }, error => { }, () => { });
+    this.bsModalRef = this.modalService.show(CreatelootComponent, {
+      class: 'modal-primary modal-custom',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Create Loot';
+    this.bsModalRef.content.button = 'CREATE';
+    this.bsModalRef.content.ruleSetId = this.ruleSetId;
+    this.bsModalRef.content.itemMasterVM = {
+      ruleSetId: this.ruleSetId,
+      ruleSet: this.RuleSet
+    };
+    //}
+    //else {
+    //  //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
+    //  this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
+    //}
+    // }, error => { }, () => { });
 
 
   }
 
-  editItemTemplate(itemMaster: ItemMaster) {
+  getLootPileItems(lootPileId) {
+    this.itemMasterService.getLootPile<any>(lootPileId)
+      .subscribe(data => {
+        if (data) {
+          this.lootPileItems = data.lootPileItems;
+        }
+      }, error => {
+        this.isLoading = false;
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          this.authService.logout(true);
+        }
+      }, () => { });
+  }
+
+  editItemTemplate(itemMaster: any) {
+    if (itemMaster.isLootPile) {
+      console.log("LootPileId", itemMaster.isLootPile);
+      this.itemMasterService.getLootPile<any>(itemMaster.lootId)
+        .subscribe(data => {
+          if (data) {
+            data.lootPileItems;
+
+            ////////////////////////////////////////////////////
+            itemMaster.lootPileItems = data.lootPileItems//this.lootPileItems;
+            let lootPileVM = { lootId: itemMaster.lootId, ruleSetId: itemMaster.ruleSetId, name: itemMaster.itemName, imageUrl: itemMaster.itemImage, description: itemMaster.itemVisibleDesc, metatags: itemMaster.metatags, visible: itemMaster.isVisible, itemList: itemMaster.lootPileItems }
+
+            this.bsModalRef = this.modalService.show(CreateLootPileComponent, {
+              class: 'modal-primary modal-custom',
+              ignoreBackdropClick: true,
+              keyboard: false
+            });
+            this.bsModalRef.content.title = 'Edit Loot Pile';
+            this.bsModalRef.content.button = 'UPDATE';
+            this.bsModalRef.content.lootPileVM = lootPileVM;
+            this.bsModalRef.content.ruleSetId = this.ruleSetId;
+            this.bsModalRef.content.fromDetail = true;
+            //this.bsModalRef.content.event.subscribe(data => {
+            //  this.lootPileId = data.itemMasterId;
+            //  this.initialize();
+            //});
+
+            ////////////////////////////////////////////////////
+          }
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => { });
+
+    } else {
       this.bsModalRef = this.modalService.show(CreatelootComponent, {
         class: 'modal-primary modal-custom',
         ignoreBackdropClick: true,
@@ -296,41 +351,68 @@ export class LootComponent implements OnInit {
       this.bsModalRef.content.button = 'UPDATE';
       this.bsModalRef.content.itemMasterVM = itemMaster;
       this.bsModalRef.content.rulesetID = this.ruleSetId;
+    }
+
+
+
   }
 
-  duplicateItemTemplate(itemMaster: ItemMaster) {
-
-    // this.alertService.startLoadingMessage("", "Checking records");      
-    //this.itemMasterService.getItemMasterCount(this.ruleSetId)
-    //  .subscribe(data => {
-    //    //this.alertService.stopLoadingMessage();
-    //    if (data < 2000) {
-            this.bsModalRef = this.modalService.show(CreatelootComponent, {
+  duplicateItemTemplate(itemMaster: any) {
+    if (itemMaster.isLootPile) {
+      this.itemMasterService.getLootPile<any>(itemMaster.lootId)
+        .subscribe(data => {
+          if (data) {
+            data.lootPileItems;
+            //////////////////////////////////////
+            itemMaster.lootPileItems = data.lootPileItems //this.lootPileItems;
+            let lootPileVM = { ruleSetId: itemMaster.ruleSetId, name: itemMaster.itemName, imageUrl: itemMaster.itemImage, description: itemMaster.itemVisibleDesc, metatags: itemMaster.metatags, visible: itemMaster.isVisible, itemList: itemMaster.lootPileItems }
+            this.bsModalRef = this.modalService.show(CreateLootPileComponent, {
               class: 'modal-primary modal-custom',
               ignoreBackdropClick: true,
               keyboard: false
             });
-            this.bsModalRef.content.title = 'Duplicate Loot';
+            this.bsModalRef.content.title = 'Duplicate Loot Pile';
             this.bsModalRef.content.button = 'DUPLICATE';
-            this.bsModalRef.content.itemMasterVM = itemMaster;
-            this.bsModalRef.content.rulesetID = this.ruleSetId;
-          
-        //}
-        //else {
-        //  //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
-        //  this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
-        //}
-        //}, error => { }, () => { });
+            this.bsModalRef.content.lootPileVM = lootPileVM;
+            this.bsModalRef.content.ruleSetId = this.ruleSetId;
+            this.bsModalRef.content.fromDetail = true;
+            /////////////////////////////////////
+          }
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => { });
+
+
+    } else {
+      this.bsModalRef = this.modalService.show(CreatelootComponent, {
+        class: 'modal-primary modal-custom',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Duplicate Loot';
+      this.bsModalRef.content.button = 'DUPLICATE';
+      this.bsModalRef.content.itemMasterVM = itemMaster;
+      this.bsModalRef.content.rulesetID = this.ruleSetId;
+    }
 
   }
 
 
-  
 
-   GoToDetails(item: any) {
-    
+
+  GoToDetails(item: any) {
+    if (item.isLootPile) {
+      this.router.navigate(['/ruleset/loot-pile-details', item.lootId]);
+    } else {
       this.router.navigate(['/ruleset/loot-details', item.lootId]);
-    
+    }
+
+
   }
 
   //useItemTemplate(itemMaster: any) {
@@ -366,7 +448,7 @@ export class LootComponent implements OnInit {
       //$(".modal-backdrop").remove();
     } catch (err) { }
   }
-  
+
 
   private setRulesetId(rulesetId: number) {
     this.localStorage.deleteData(DBkeys.RULESET_ID);
@@ -400,7 +482,7 @@ export class LootComponent implements OnInit {
       this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
     } catch (err) { }
   }
-  
+
 
   Give(item) {
     this.bsModalRef = this.modalService.show(GiveawayComponent, {
@@ -411,19 +493,19 @@ export class LootComponent implements OnInit {
     this.bsModalRef.content.giveAwayItem = item;
   }
   Show(item) {
-    
-    let show = item.isShow ?  'Hide' : 'Show';
-  
-    this.lootService.showLoot<any>(item.lootId,!item.isShow)
+
+    let show = item.isShow ? 'Hide' : 'Show';
+
+    this.lootService.showLoot<any>(item.lootId, !item.isShow)
       .subscribe(data => {
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
+        this.isLoading = false;
+        this.alertService.stopLoadingMessage();
         item.isShow = !item.isShow;
-        },
+      },
         error => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          let Errors = Utilities.ErrorDetail("Unable to " + show , error);
+          let Errors = Utilities.ErrorDetail("Unable to " + show, error);
           if (Errors.sessionExpire) {
             this.authService.logout(true);
           }
@@ -431,6 +513,29 @@ export class LootComponent implements OnInit {
             this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
         });
   }
+
+  Visible(item) {
+
+    let visible = item.isVisible ? 'Hide' : 'Show';
+
+    this.lootService.showLootPile<any>(item.lootId, !item.isVisible)
+      .subscribe(data => {
+        this.isLoading = false;
+        this.alertService.stopLoadingMessage();
+        item.isVisible = !item.isVisible;
+      },
+        error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let Errors = Utilities.ErrorDetail("Unable to " + visible, error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        });
+  }
+
   refresh() {
     this.page = 1;
     this.pageSize = 28;
@@ -446,7 +551,7 @@ export class LootComponent implements OnInit {
 
   deleteLootItem(itemMaster: any) {
     this.alertService.startLoadingMessage("", "Deleting Item");
- 
+
     //this.isLoading = true;
     this.lootService.deleteLootItem<any>(itemMaster)
       .subscribe(data => {
@@ -485,7 +590,7 @@ export class LootComponent implements OnInit {
       keyboard: false
     });
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
-    
+
   }
 
   openDiceRollModal() {

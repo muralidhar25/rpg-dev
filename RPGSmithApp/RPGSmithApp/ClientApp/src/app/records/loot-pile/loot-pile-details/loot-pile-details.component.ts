@@ -31,12 +31,13 @@ export class LootPileDetailsComponent implements OnInit {
   isLoading = false;
   showActions: boolean = true;
   actionText: string;
-  LootId: number;
+  lootPileId: number;
   isDropdownOpen: boolean = false;
   ruleSetId: number;
   bsModalRef: BsModalRef;
   ItemMasterDetail: any = new ItemMaster();
   RuleSet: any;
+  lootPileItems: any[] = [];
 
   IsGm: boolean = false;
   constructor(
@@ -46,12 +47,13 @@ export class LootPileDetailsComponent implements OnInit {
     private itemMasterService: ItemMasterService, private rulesetService: RulesetService, public lootService: LootService,
     private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
-    this.route.params.subscribe(params => { this.LootId = params['id']; this.initialize(); });
+    this.route.params.subscribe(params => { this.lootPileId = params['id']; this.initialize(); });
+    debugger
 
-    this.sharedService.shouldUpdateItemMasterDetailList().subscribe(sharedServiceJson => {
-      debugger
-      if (sharedServiceJson) this.initialize();
-    });
+    //this.sharedService.shouldUpdateItemMasterDetailList().subscribe(sharedServiceJson => {
+    //  debugger
+    //  if (sharedServiceJson) this.initialize();
+    //});
   }
   @HostListener('document:click', ['$event.target'])
   documentClick(target: any) {
@@ -76,18 +78,19 @@ export class LootPileDetailsComponent implements OnInit {
         this.IsGm = user.isGm;
       }
       this.isLoading = true;
-      this.itemMasterService.getlootById<any>(this.LootId)
+      debugger
+      this.itemMasterService.getLootPile<any>(this.lootPileId)
         .subscribe(data => {
           if (data) {
             debugger;
             this.RuleSet = data.ruleSet;
+            this.lootPileItems = data.lootPileItems;
             this.ItemMasterDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");
           }
           this.rulesetService.GetCopiedRulesetID(this.ItemMasterDetail.ruleSetId, user.id)
             .subscribe(data => {
               let id: any = data
               this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-              debugger
               this.isLoading = false;
             }, error => {
               this.isLoading = false;
@@ -119,35 +122,43 @@ export class LootPileDetailsComponent implements OnInit {
   }
 
   editItemTemplate(itemMaster: any) {
+    debugger;
+    itemMaster.lootPileItems = this.lootPileItems;
+
+    let lootPileVM = { lootId: itemMaster.lootId, ruleSetId: itemMaster.ruleSetId, name: itemMaster.itemName, imageUrl: itemMaster.itemImage, description: itemMaster.itemVisibleDesc, metatags: itemMaster.metatags, visible: itemMaster.isVisible, itemList: itemMaster.lootPileItems }
+
     this.bsModalRef = this.modalService.show(CreateLootPileComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Edit Loot';
+    this.bsModalRef.content.title = 'Edit Loot Pile';
     this.bsModalRef.content.button = 'UPDATE';
-    this.bsModalRef.content.itemMasterVM = itemMaster;
-    this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.lootPileVM = lootPileVM;
+    this.bsModalRef.content.ruleSetId = this.ruleSetId;
     this.bsModalRef.content.fromDetail = true;
     this.bsModalRef.content.event.subscribe(data => {
-      this.LootId = data.itemMasterId;
+      this.lootPileId = data.itemMasterId;
       this.initialize();
     });
 
 
   }
 
-  duplicateItemTemplate(itemMaster: ItemMaster) {
-    // this.alertService.startLoadingMessage("", "Checking records");      
+  duplicateItemTemplate(itemMaster: any) {
+    // this.alertService.startLoadingMessage("", "Checking records");
+    itemMaster.lootPileItems = this.lootPileItems;
+
+    let lootPileVM = { ruleSetId: itemMaster.ruleSetId, name: itemMaster.itemName, imageUrl: itemMaster.itemImage, description: itemMaster.itemVisibleDesc, metatags: itemMaster.metatags, visible: itemMaster.isVisible, itemList: itemMaster.lootPileItems }
     this.bsModalRef = this.modalService.show(CreateLootPileComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Duplicate Loot';
+    this.bsModalRef.content.title = 'Duplicate Loot Pile';
     this.bsModalRef.content.button = 'DUPLICATE';
-    this.bsModalRef.content.itemMasterVM = itemMaster;
-    this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.bsModalRef.content.lootPileVM = lootPileVM;
+    this.bsModalRef.content.ruleSetId = this.ruleSetId;
     this.bsModalRef.content.fromDetail = true;
 
   }
@@ -266,21 +277,20 @@ export class LootPileDetailsComponent implements OnInit {
     this.router.navigate(['/ruleset/buff-effect-details', RulesetBuffID]);
   }
 
-  Show(item) {
-    debugger
+  Visible(item) {
 
-    let show = item.isShow ? 'Hide' : 'Show';
+    let visible = item.isVisible ? 'Hide' : 'Show';
 
-    this.lootService.showLoot<any>(item.lootId, !item.isShow)
+    this.lootService.showLootPile<any>(item.lootId, !item.isVisible)
       .subscribe(data => {
         this.isLoading = false;
         this.alertService.stopLoadingMessage();
-        item.isShow = !item.isShow;
+        item.isVisible = !item.isVisible;
       },
         error => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          let Errors = Utilities.ErrorDetail("Unable to " + show, error);
+          let Errors = Utilities.ErrorDetail("Unable to " + visible, error);
           if (Errors.sessionExpire) {
             this.authService.logout(true);
           }

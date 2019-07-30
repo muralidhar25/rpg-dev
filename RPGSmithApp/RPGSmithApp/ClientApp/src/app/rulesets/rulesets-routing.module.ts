@@ -30,6 +30,7 @@ import { MonsterItemDetailsComponent } from "../records/monster/monster-item-det
 import { CombatComponent } from "./combat/combat.component";
 import { LootPileTemplateDetailsComponent } from "../records/loot-pile-template/loot-pile-template-details/loot-pile-template-details.component";
 import { LootPileTemplateComponent } from "../records/loot-pile-template/loot-pile-template.component";
+import { LootPileDetailsComponent } from "../records/loot-pile/loot-pile-details/loot-pile-details.component";
 
 
 const routes: Routes = [
@@ -50,7 +51,8 @@ const routes: Routes = [
   { path: "monster-bundle-details/:id", component: MonsterBundleDetailsComponent, data: { title: "Monster Bundle Details" } },
   { path: "loot-details/:id", component: LootDetailsComponent, data: { title: "Loot Details" } },
   { path: "monster-item-details/:id", component: MonsterItemDetailsComponent, data: { title: "Monster Item Details" } },
-  { path: "loot-pile-template-details/:id", component: LootPileTemplateDetailsComponent, data: { title: "Loot Pile Details" } },
+  { path: "loot-pile-template-details/:id", component: LootPileTemplateDetailsComponent, data: { title: "Loot Pile Template Details" } },
+  { path: "loot-pile-details/:id", component: LootPileDetailsComponent, data: { title: "Loot Pile Details" } },
   
   ///ruleset/monster-details
   { path: "monster-details/:id", component: MonsterDetailsComponent, data: { title: "Monster Details" } },

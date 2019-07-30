@@ -50,6 +50,7 @@ export class CreateLootPileComponent implements OnInit {
   lootPileItems: any[] = [];
   selectedItems: any[] = [];
   itemQty: number[] = [];
+  _view: any;
 
   public event: EventEmitter<any> = new EventEmitter();
 
@@ -80,11 +81,16 @@ export class CreateLootPileComponent implements OnInit {
     setTimeout(() => {
       this.fromDetail = this.bsModalRef.content.fromDetail == undefined ? false : this.bsModalRef.content.fromDetail;
       this.title = this.bsModalRef.content.title;
-      let _view = this.button = this.bsModalRef.content.button;
+      this._view = this.button = this.bsModalRef.content.button;
       let _lootPileVM = this.bsModalRef.content.lootPileVM;
       //this.itemMasterFormModal = this.itemMasterService.itemMasterModelData(_itemTemplateVM, _view);
+      this.createLootPileModal = _lootPileVM;
       debugger
       //this._ruleSetId = this.itemMasterFormModal.ruleSetId;
+      if (_lootPileVM.itemList) {
+        this.selectedItems = _lootPileVM.itemList;
+      }
+      
 
       this.ruleSetId = this.bsModalRef.content.ruleSetId;
 
@@ -123,7 +129,9 @@ export class CreateLootPileComponent implements OnInit {
       .subscribe(data => {
         this.lootPileItems = data;
         this.lootPileItems.map(x => {
-          x.qty = '';
+          if (!x.qty) {
+            x.qty = 1;
+          }          
         });
         this.isLoading = false;
       }, error => {
@@ -166,18 +174,9 @@ export class CreateLootPileComponent implements OnInit {
     if (lootPile.ruleSetId == 0 || lootPile.ruleSetId === undefined)
       lootPile.ruleSetId = this.ruleSetId;
 
-    //if (!itemMaster.isContainer) {
-    //  itemMaster.containerWeightMax = 0;
-    //  itemMaster.containerVolumeMax = 0;
-    //  itemMaster.containerWeightModifier = 'None';
-    //  itemMaster.containerItems = [];
-    //}
-    //else {
-    //  itemMaster.containerItems = itemMaster.contains;
-    //}
-
     this.isLoading = true;
-    let _msg = lootPile.lootPileId == 0 || lootPile.lootPileId === undefined ? "Creating Loot Item Template.." : "Updating Loot Item Template..";
+    let _msg = lootPile.lootPileId == 0 || lootPile.lootPileId === undefined ? "Creating Loot Pile.." : "Updating Loot Pile..";
+    if (this.button == VIEW.DUPLICATE.toUpperCase()) _msg = "Duplicating loot Pile Template..";
     this.alertService.startLoadingMessage("", _msg);
 
     if (this.fileToUpload != null) {
@@ -255,19 +254,24 @@ export class CreateLootPileComponent implements OnInit {
     if (this.selectedItems) {
       this.selectedItems.map(x => {
         //lootItems.push({ itemMasterId: x.itemMasterId, name: x.itemName, ImageUrl: x.itemImage, IsBundle: x.isBundle });
-        lootItems.push({ itemMasterId: x.itemMasterId, qty: x.qty });
+        lootItems.push({ itemMasterId: x.itemMasterId, qty: x.qty, isBundle: x.isBundle });
       });
     } 
     lootPile.itemList = lootItems;
-    debugger
-    let lootPileVM = { ruleSetId: lootPile.ruleSetId, itemName: lootPile.name, itemImage: lootPile.imageUrl, itemVisibleDesc: lootPile.description, metatags: lootPile.metatags, isVisible: lootPile.visible, lootPileItems: lootPile.itemList }
-    if (this.defaultImageSelected && !this.createLootPileModal.imageUrl) {
-      let model = Object.assign({}, lootPileVM)
-      model.itemImage = this.defaultImageSelected
-      this.addEditLootPile(model);
+    let lootPileVM = { lootId: lootPile.lootId, ruleSetId: lootPile.ruleSetId, itemName: lootPile.name, itemImage: lootPile.imageUrl, itemVisibleDesc: lootPile.description, metatags: lootPile.metatags, isVisible: lootPile.visible, lootPileItems: lootPile.itemList }
+
+    if (this.button == VIEW.DUPLICATE.toUpperCase()) {
+      this.duplicateItemMaster(lootPileVM);
     } else {
-      this.addEditLootPile(lootPileVM);
+      if (this.defaultImageSelected && !this.createLootPileModal.imageUrl) {
+        let model = Object.assign({}, lootPileVM)
+        model.itemImage = this.defaultImageSelected
+        this.addEditLootPile(model);
+      } else {
+        this.addEditLootPile(lootPileVM);
+      }
     }
+    
   }
 
   addEditLootPile(modal: any) {
@@ -294,13 +298,13 @@ export class CreateLootPileComponent implements OnInit {
               if (!isNaN(parseInt(id))) {
                 this.router.navigate(['/ruleset/loot-pile-details', id]);
                 this.event.emit({ lootPileId: id });
-                //this.sharedService.updateItemMasterDetailList(true);                
+                this.sharedService.updateItemMasterDetailList(true);                
               }
               //else
-              //this.sharedService.updateItemMasterDetailList(true);
+              this.sharedService.updateItemMasterDetailList(true);
             }
             else {
-              //this.sharedService.updateItemMasterDetailList(true);
+              this.sharedService.updateItemMasterDetailList(true);
             }
           }
           //else this.sharedService.updateItemsList(true);
@@ -318,6 +322,40 @@ export class CreateLootPileComponent implements OnInit {
             this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
         },
       );
+  }
+
+  duplicateItemMaster(modal: any) {
+    modal.RuleSetId = this.ruleSetId;
+    this.isLoading = true;
+    this.lootService.duplicateLootPile<any>(modal)
+      .subscribe(
+        data => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let message = " Loot Pile has been duplicated successfully.";
+          if (data !== "" && data !== null && data !== undefined)
+            message = data;
+          this.alertService.showMessage(message, "", MessageSeverity.success);
+          this.close();
+          //if (this.fromDetail)
+          //  this.router.navigate(['/ruleset/item-master', this._ruleSetId]);
+          //else
+          this.sharedService.updateItemsList(true);
+          this.appService.updateChatWithLootMessage(true);
+        },
+        error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let _message = "Unable to Duplicate ";
+          let Errors = Utilities.ErrorDetail(_message, error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+
+        });
   }
 
   readTempUrl(event: any) {
@@ -414,7 +452,7 @@ export class CreateLootPileComponent implements OnInit {
       enableSearchFilter: false,
       classes: "myclass custom-class ",
       showCheckbox: true,
-      position: "bottom"
+      position: "top"
     };
   }
 
