@@ -33,7 +33,15 @@ namespace DAL.Services
         bool Core_BundleWithParentIDExists(int bundleId, int rulesetID);
         Task _AddItemsToLoot(List<LootsToAdd> itemList, int rulesetID);
         Task<List<ItemMasterLoot_ViewModel>> GetItemMasterLoots(int rulesetID, int page = 1, int pageSize = 30);
-        ItemMasterLoot CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot, List<ItemMasterLootSpell> AssociateSpellVM, List<ItemMasterLootAbility> AssociateAbilityVM, List<ItemMasterLootBuffAndEffect> AssociateBuffAndEffectVM, List<ItemMasterLootCommand> AssociateCommandVM, int rulesetId, Item item = null);
+        ItemMasterLoot CreateItemMasterLoot(
+            ItemMaster result, 
+            ItemMasterLoot loot, 
+            List<ItemMasterLootSpell> AssociateSpellVM, 
+            List<ItemMasterLootAbility> AssociateAbilityVM, 
+            List<ItemMasterLootBuffAndEffect> AssociateBuffAndEffectVM, 
+            List<ItemMasterLootCommand> AssociateCommandVM, 
+            int rulesetId, 
+            Item item = null);
         Task<ItemMasterLoot> UpdateItemMasterLoot(ItemMasterLoot loot, List<ItemMasterLootSpell> itemMasterSpell, List<ItemMasterLootAbility> itemMasterAbilities, List<ItemMasterLootBuffAndEffect> itemMasterBuffAndEffects, List<ItemMasterLootCommand> itemMasterCommand);
         Task<List<ItemMasterLoot_ViewModel>> GetLootItemsForPlayers(int rulesetID);
         Task<ItemMasterLoot> getLootDetails(int LootId);
@@ -60,5 +68,6 @@ namespace DAL.Services
         LootPileViewModel getLootPileDetails(int lootPileId);
         void UpdateLootPile(CreateLootPileModel itemDomain);
         LootPileViewModel getCharacterLootPile(int characterId);
+        LootPileViewModel getMonsterLootPile(int monsterId);
     }
 }

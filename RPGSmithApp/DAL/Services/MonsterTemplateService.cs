@@ -2203,6 +2203,10 @@ namespace DAL.Services
                     {
                         rulesetId = monster.RuleSetId;
                     }
+
+                    LootPileViewModel monsterLootPile = _itemMasterService.getMonsterLootPile(monsterId);
+
+
                     _itemMasterService.CreateItemMasterLoot(obj, new ItemMasterLoot()
                     {
                         IsShow = true,
@@ -2231,6 +2235,8 @@ namespace DAL.Services
                         Value = ItemMasterMonsterItem.Value,
                         Volume = ItemMasterMonsterItem.Volume,
                         Weight = ItemMasterMonsterItem.Weight,
+                        LootPileId= monsterLootPile.LootId,
+
                     },
                     ItemMasterLootSpells,
                    ItemMasterLootAbilitys,

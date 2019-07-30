@@ -2243,6 +2243,55 @@ namespace DAL.Services
             
             return obj;
         }
+
+        public LootPileViewModel getMonsterLootPile(int monsterId) {
+            LootPileViewModel obj = new LootPileViewModel();
+            var monster = _context.Monsters.Where(x => x.MonsterId == monsterId && x.IsDeleted != true).FirstOrDefault();
+            if (monster != null)
+            {
+                var monsterLootPile = _context.ItemMasterLoots.Where(x => x.LootPileMonsterId == monsterId && x.IsLootPile == true && x.IsDeleted != true).FirstOrDefault();
+
+                if (monsterLootPile == null)
+                {
+                    _context.ItemMasterLoots.Add(new ItemMasterLoot()
+                    {
+                        ItemName = monster.Name + "’s Drops",
+                        ItemImage = monster.ImageUrl,
+                        ItemVisibleDesc = "Items dropped by " + monster.Name,
+                        IsVisible = true,
+                        LootPileMonsterId = monsterId,
+                        IsLootPile = true
+                    });
+                    obj = _context.ItemMasterLoots.Where(x => x.LootPileMonsterId == monsterId && x.IsLootPile == true && x.IsDeleted != true)
+                        .Select(x => new LootPileViewModel()
+                        {
+                            IsVisible = x.IsVisible,
+                            ItemImage = x.ItemImage,
+                            ItemName = x.ItemName,
+                            ItemVisibleDesc = x.ItemVisibleDesc,
+                            LootId = x.LootId,
+                            Metatags = x.Metatags,
+                            RuleSetId = x.RuleSetId,
+                        }).FirstOrDefault();
+
+                }
+                else
+                {
+
+                    obj.IsVisible = monsterLootPile.IsVisible;
+                    obj.ItemImage = monsterLootPile.ItemImage;
+                    obj.ItemName = monsterLootPile.ItemName;
+                    obj.ItemVisibleDesc = monsterLootPile.ItemVisibleDesc;
+                    obj.LootId = monsterLootPile.LootId;
+                    obj.Metatags = monsterLootPile.Metatags;
+                    obj.RuleSetId = monsterLootPile.RuleSetId;
+
+                }
+            }
+
+
+            return obj;
+        }
         #endregion
     }
 }

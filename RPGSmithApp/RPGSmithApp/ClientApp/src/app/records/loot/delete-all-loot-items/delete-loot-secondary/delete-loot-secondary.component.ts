@@ -82,7 +82,7 @@ export class DeleteLootSecondaryComponent implements OnInit {
     })
   }
 
-  submitForm(itemMaster: any) {
+  submitForm() {
     this.multiLootIds = [];
     this.itemsList.map((item) => {
       if (item.selected) {
@@ -98,11 +98,11 @@ export class DeleteLootSecondaryComponent implements OnInit {
       this.alertService.showMessage("Please select new Loot to Delete.", "", MessageSeverity.error);
     }
     else {
-      this.deleteAllLootItems(itemMaster);
+      this.deleteAllLootItems();
     }
 
   }
-  deleteAllLootItems(itemMaster) {
+  deleteAllLootItems() {
     this.isLoading = true;
     this.lootService.deleteAllLootItems<any>(this.multiLootIds)
       .subscribe(data => {
