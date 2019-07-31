@@ -10,6 +10,7 @@ import { Utilities } from '../../core/common/utilities';
 import { LootService } from '../../core/services/loot.service';
 import { SharedService } from '../../core/services/shared.service';
 import { AppService1 } from '../../app.service';
+import { PlayerLootSecondaryComponent } from './player-loot-secondary/player-loot-secondary.component';
 
 @Component({
   selector: 'app-player-loot',
@@ -27,6 +28,9 @@ export class PlayerLootComponent implements OnInit {
   searchText: string;
   //isloading: boolean = false;
   allSelected: boolean = false;
+  lootPileList: any[] = [];
+  headers: any[] = [];
+
   constructor(
 
     private bsModalRef: BsModalRef,
@@ -46,6 +50,7 @@ export class PlayerLootComponent implements OnInit {
     if (this.rulesetId == undefined)
       this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
     setTimeout(() => {
+      this.headers = this.bsModalRef.content.headers;
       this.characterId = this.bsModalRef.content.headers.headerId
       this.characterItemModal.characterId = this.bsModalRef.content.headers.headerId;
       this.characterName = this.bsModalRef.content.headers.headerName
@@ -63,9 +68,22 @@ export class PlayerLootComponent implements OnInit {
       this.lootService.getLootItemsForPlayers<any>(this.rulesetId)
         .subscribe(data => {
           if (data) {
+
+            let list = data;
+            debugger;
+            this.itemsList = [];
+            this.lootPileList = [];
+
+            list.map(x => {
+              if (x.isLootPile) {
+                this.lootPileList.push(x);
+              } else {
+                this.itemsList.push(x);
+              }
+            });
             
             this.characterItemModal.itemMasterId = -1;
-            this.itemsList = data;
+            //this.itemsList = data;
             if (this.itemsList.filter(x => x.selected == true).length === data.length)
               this.allSelected = true;
             //else this.allSelected = false;
@@ -176,4 +194,17 @@ export class PlayerLootComponent implements OnInit {
   refresh() {
     this.initialize();
   }
+
+  SecondaryLoot(item) {
+    this.close();
+    this.bsModalRef = this.modalService.show(PlayerLootSecondaryComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.LootPileId = item.lootId;
+    this.bsModalRef.content.ruleSetId = this.rulesetId;
+    this.bsModalRef.content.headers = this.headers;
+  }
+
 }

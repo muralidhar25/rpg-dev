@@ -75,6 +75,7 @@ import { AssignBuffAndEffectComponent } from "./buffs-and-effects/assign-buffs-a
 import { CombatBuffeffectDetailsComponent } from "../rulesets/combat/combat-buffeffects-details/combat-buffeffects-details.component";
 import { CombatHealthComponent } from "../rulesets/combat/update-combat-health/update-combat-health.component";
 import { UpdateMonsterHealthComponent } from "./update-monster-health/update-monster-health.component";
+import { PlayerLootSecondaryComponent } from "./player-loot/player-loot-secondary/player-loot-secondary.component";
 
 @NgModule({
   declarations: [
@@ -117,7 +118,8 @@ import { UpdateMonsterHealthComponent } from "./update-monster-health/update-mon
     AssignBuffAndEffectComponent,
     CombatBuffeffectDetailsComponent,
     CombatHealthComponent,
-    UpdateMonsterHealthComponent
+    UpdateMonsterHealthComponent,
+    PlayerLootSecondaryComponent
   ],
   imports: [
     CommonModule,
@@ -217,7 +219,8 @@ import { UpdateMonsterHealthComponent } from "./update-monster-health/update-mon
     AssignBuffAndEffectComponent,
     CombatBuffeffectDetailsComponent,
     CombatHealthComponent,
-    UpdateMonsterHealthComponent
+    UpdateMonsterHealthComponent,
+    PlayerLootSecondaryComponent
   ],
   entryComponents: [
     AccountSettingsComponent,
@@ -256,7 +259,8 @@ import { UpdateMonsterHealthComponent } from "./update-monster-health/update-mon
     AssignBuffAndEffectComponent,
     CombatBuffeffectDetailsComponent,
     CombatHealthComponent,
-    UpdateMonsterHealthComponent
+    UpdateMonsterHealthComponent,
+    PlayerLootSecondaryComponent
   ]
 })
 export class SharedModule { }

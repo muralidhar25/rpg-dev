@@ -99,6 +99,7 @@
                     <button type="button" (click)="editItemTemplate(ItemMasterDetail)" class="btn icon icon-with-text icon-pencil btn-accent"> Edit</button>
                   </li>
                   <li class="dropdown-menu-item">
+                    <button type="button" (click)="duplicateItemTemplate(ItemMasterDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent">Duplicate</button>
                     <!--<button type="button" *ngIf="ItemMasterDetail.isShow" (click)="Show(ItemMasterDetail)" class="btn btn-accent icon icon-Gen-Hide icon-with-text">Hide</button>
                     <button type="button" *ngIf="!ItemMasterDetail.isShow" (click)="Show(ItemMasterDetail)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>-->
                   </li>
@@ -134,18 +135,21 @@
                 <h2 class="item-info-name"> {{ItemMasterDetail.name}} </h2>
                 <div class="item-info-props-indics">
                   <ul class="item-info-indics">
-                    <li *ngIf="ItemMasterDetail.isShow" title="Hide" data-toggle="tooltip">
+                    <!--<li *ngIf="ItemMasterDetail.isShow" title="Hide" data-toggle="tooltip">
                       <i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i>
                     </li>
                     <li *ngIf="!ItemMasterDetail.isShow" title="Hide" data-toggle="tooltip">
                       <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
-                    </li>
+                    </li>-->
                   </ul>
                 </div>
               </div>
               <ul class="item-info-actions d-none d-md-flex">
                 <li>
                   <button type="button" (click)="editItemTemplate(ItemMasterDetail)" class="btn btn-accent icon-with-text icon icon-pencil "> Edit</button>
+                </li>
+                <li>
+                  <button type="button" (click)="duplicateItemTemplate(ItemMasterDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent">Duplicate</button>
                 </li>
                 <li>
                   <button type="button" (click)="deleteItemTemplate(ItemMasterDetail)" class="btn btn-accent icon-with-text icon icon-trash"> Delete</button>
@@ -182,10 +186,10 @@
                 <div class="form-group output-list output-list-wrap">
                   <ul class="output-list-items">
                     <li class="output-list-item" *ngFor="let item of ItemMasterDetail.lootTemplateRandomizationEngines">
-                      <div [routerLink]="['/ruleset/item-details', item.itemMasterId]" style="cursor:pointer;" popover="{{item.itemMaster.itemName}}" triggers="hover">
-                        <img class="card-img-top" [src]="item.itemMaster.itemImage" [alt]="item.itemMaster.itemName"
+                      <div [routerLink]="['/ruleset/item-details', item.itemMasterId]" style="cursor:pointer;" popover="{{item?.itemMaster?.itemName}}" triggers="hover">
+                        <img class="card-img-top" [src]="item?.itemMaster?.itemImage" [alt]="item?.itemMaster?.itemName"
                              onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
-                        <span>{{item.itemMaster.itemName}}</span>
+                        <span>{{item?.itemMaster?.itemName}}</span>
                       </div>
                     </li>
                   </ul>

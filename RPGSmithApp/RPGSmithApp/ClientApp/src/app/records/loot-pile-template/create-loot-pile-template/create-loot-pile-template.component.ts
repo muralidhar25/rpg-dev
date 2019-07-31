@@ -38,7 +38,6 @@ export class CreateLootPileTemplateComponent implements OnInit {
   showWebButtons: boolean = false;
   createLootPileTemplateModal: any = new CreateLootPileTemplate();
   fileToUpload: File = null;
-  fromDetail: boolean = false;
   percentReduced: boolean = false;
   weightWithContent: boolean = false;
 
@@ -83,7 +82,6 @@ export class CreateLootPileTemplateComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      this.fromDetail = this.bsModalRef.content.fromDetail == undefined ? false : this.bsModalRef.content.fromDetail;
       this.title = this.bsModalRef.content.title;
       let _view = this.button = this.bsModalRef.content.button;
       let _lootPileVM = this.bsModalRef.content.lootPileVM;
@@ -188,12 +186,12 @@ export class CreateLootPileTemplateComponent implements OnInit {
       }      _randomization1.sortOrder = index;      lootPile.lootTemplateRandomizationEngines.push(_randomization1);    })    this.randomizationInfo;    //for validation of randomization    let validate = this.validateRandomization(lootPile);
 
     if (validate) {
-      debugger
       this.validateSubmit(lootPile);
     }
 
   }
   validateSubmit(lootPile: any) {
+    debugger
     let tagsValue = this.metatags.map(x => {
       if (x.value == undefined) return x;
       else return x.value;
@@ -203,7 +201,7 @@ export class CreateLootPileTemplateComponent implements OnInit {
     if (lootPile.ruleSetId == 0 || lootPile.ruleSetId === undefined)
       lootPile.ruleSetId = this.ruleSetId;
 
-    let _msg = lootPile.lootPileId == 0 || lootPile.lootPileId === undefined ? "Creating Loot Item Template.." : "Updating Loot Item Template..";
+    let _msg = lootPile.lootTemplateId == 0 || lootPile.lootTemplateId === undefined ? "Creating Loot Item Template.." : "Updating Loot Item Template..";
     if (this.button === VIEW.DUPLICATE.toUpperCase()) _msg = "Duplicating Loot Pile Template..";
     this.alertService.startLoadingMessage("", _msg);
 
@@ -303,30 +301,30 @@ export class CreateLootPileTemplateComponent implements OnInit {
           debugger
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          let message = modal.itemMasterId == 0 || modal.itemMasterId === undefined ? "Loot Item Template has been created successfully." : " Loot Item Template has been updated successfully.";
+          let message = modal.lootTemplateId == 0 || modal.lootTemplateId === undefined ? "Loot Item Template has been created successfully." : " Loot Item Template has been updated successfully.";
           if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
-          this.close();
-          if (modal.lootTemplateId == 0 || modal.lootTemplateId === undefined) {
-            this.appService.updateChatWithLootMessage(true); //loot created...
-          }
-
-          if (this.fromDetail) {
-            if (data) {
+          //if (modal.lootTemplateId == 0 || modal.lootTemplateId === undefined) {
+          //  this.appService.updateChatWithLootMessage(true); //loot created...
+          //}
+          debugger
+            //if (data) {
               let id = data;
               if (!isNaN(parseInt(id))) {
                 this.router.navigate(['/ruleset/loot-pile-details', id]);
-                this.event.emit({ lootPileId: id });
-                //this.sharedService.updateItemMasterDetailList(true);                
+                //this.event.emit({ lootTemplateId: id });
+                debugger
+                this.sharedService.updateItemMasterDetailList(true);                
               }
               //else
               //this.sharedService.updateItemMasterDetailList(true);
-            }
-            else {
-              //this.sharedService.updateItemMasterDetailList(true);
-            }
-          }
-          //else this.sharedService.updateItemsList(true);
+            //}
+            //else {
+              this.sharedService.updateItemMasterDetailList(true);
+            //}
+          this.sharedService.updateItemsList(true);
+
+          this.close();
         },
         error => {
           this.isLoading = false;
@@ -355,9 +353,10 @@ export class CreateLootPileTemplateComponent implements OnInit {
           if (data !== "" && data !== null && data !== undefined)
             message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
-          this.close();
           this.sharedService.updateItemsList(true);
-          this.appService.updateChatWithLootMessage(true);
+          //this.appService.updateChatWithLootMessage(true);
+          this.sharedService.updateItemMasterDetailList(true);
+          this.close();
         },
         error => {
           this.isLoading = false;

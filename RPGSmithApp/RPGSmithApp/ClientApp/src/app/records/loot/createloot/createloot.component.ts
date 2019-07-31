@@ -406,7 +406,7 @@ export class CreatelootComponent implements OnInit {
         debugger
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          let message = modal.itemMasterId == 0 || modal.itemMasterId === undefined ? "Loot Item Template has been created successfully." : " Loot Item Template has been updated successfully.";
+          let message = modal.itemMasterId == 0 || modal.itemMasterId === undefined ? "Loot Item has been created successfully." : " Loot Item has been updated successfully.";
           if (data !== "" && data !== null && data !== undefined && isNaN(parseInt(data))) message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);
         this.close();
@@ -420,7 +420,7 @@ export class CreatelootComponent implements OnInit {
               if (!isNaN(parseInt(id))) {
                 this.router.navigate(['/ruleset/loot-details', id]);
                 this.event.emit({ itemMasterId: id });
-                //this.sharedService.updateItemMasterDetailList(true);                
+                this.sharedService.updateItemMasterDetailList(true);                
               }
               else
                 this.sharedService.updateItemMasterDetailList(true);
@@ -454,7 +454,7 @@ export class CreatelootComponent implements OnInit {
         data => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
-          let message = " Loot Item Template has been duplicated successfully.";
+          let message = " Loot Item has been duplicated successfully.";
           if (data !== "" && data !== null && data !== undefined)
             message = data;
           this.alertService.showMessage(message, "", MessageSeverity.success);

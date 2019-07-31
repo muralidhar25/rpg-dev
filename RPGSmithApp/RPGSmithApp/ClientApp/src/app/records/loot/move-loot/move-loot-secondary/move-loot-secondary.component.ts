@@ -117,6 +117,9 @@ export class MoveLootSecondaryComponent implements OnInit {
     else if (this.multiLootIds.length == 0) {
       this.alertService.showMessage("Please select new Loot to Move.", "", MessageSeverity.error);
     }
+    else if (this.selectedLootPileItem == undefined || this.selectedLootPileItem.length == 0) {
+      this.alertService.showMessage("Please select Drop to Loot Pile", "", MessageSeverity.error);
+    }
     else {
       this.MoveLootItems();
     }

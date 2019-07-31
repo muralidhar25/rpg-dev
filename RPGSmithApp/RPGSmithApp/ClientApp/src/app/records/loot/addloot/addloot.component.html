@@ -63,13 +63,13 @@
 
           <ng-container *ngIf="showLootTemplates">
             <ul class="input-list-items">
-              <li class="form-check col-md-6 col-sm-12" *ngFor="let item of itemsList | filter : searchText : 'itemName';let i = index;" popover="{{item.itemName}}" triggers="hover">
-                <label class="form-check-label" *ngIf="i < 6">
+              <li class="form-check col-md-6 col-sm-12" *ngFor="let item of lootTemplateList | filter : searchText : 'name';let i = index;" popover="{{item.name}}" triggers="hover">
+                <label class="form-check-label">
                   <input class="form-check-input" type="checkbox" name="newItem" [checked]="item.selected" (change)="setItemMaster($event,item)" />
                   <span>
-                    <img [alt]="item.itemName" [src]="item.itemImage"
+                    <img [alt]="item.name" [src]="item.imageUrl"
                          onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
-                    <em>{{item.itemName}}</em>
+                    <em>{{item.name}}</em>
                     <i class="icon"></i>
                   </span>
                 </label>

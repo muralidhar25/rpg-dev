@@ -1588,7 +1588,7 @@ namespace DAL.Services
         }
         public async Task<List<ItemMasterLoot_ViewModel>> GetLootItemsForPlayers(int rulesetID) {
             var res =await GetItemMasterLoots(rulesetID, 1, 999999);
-            return res.Where(x => x.IsShow == true && x.IsDeleted != true).OrderBy(x=>x.ItemName).ToList();
+            return res.Where(x => (x.IsShow == true || x.IsLootPile==true) && x.IsDeleted != true).OrderByDescending(x=>x.IsLootPile).ThenBy(x=>x.ItemName).ToList();
         }
         public ItemMasterLoot CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot, 
             List<ItemMasterLootSpell> AssociateSpellVM, 
@@ -2182,7 +2182,7 @@ namespace DAL.Services
                     cmd.Connection = con;
                     cmd.Parameters.AddWithValue("@Name", model.ItemName);
                     cmd.Parameters.AddWithValue("@Image", model.ItemImage);
-                    cmd.Parameters.AddWithValue("@Description", model.ItemVisibleDesc);
+                    cmd.Parameters.AddWithValue("@Description", model.ItemVisibleDesc==null?"": model.ItemVisibleDesc);
                     cmd.Parameters.AddWithValue("@Visible", model.IsVisible);
                     cmd.Parameters.AddWithValue("@Metatags", model.Metatags);
                     cmd.Parameters.AddWithValue("@ItemMasterIdsToAdd", DT_List);                    

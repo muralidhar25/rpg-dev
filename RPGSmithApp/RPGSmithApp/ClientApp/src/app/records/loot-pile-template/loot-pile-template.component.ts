@@ -19,6 +19,7 @@ import { GiveawayComponent } from "../loot/giveaway/giveaway.component";
 import { DeleteAllLootItemsComponent } from "../loot/delete-all-loot-items/delete-all-loot-items.component";
 import { AddLootPileComponent } from "../loot-pile/add-loot-pile/add-loot-pile.component";
 import { CreateLootPileTemplateComponent } from "./create-loot-pile-template/create-loot-pile-template.component";
+import { DeleteLootPileTemplateComponent } from "./delete-loot-pile-template/delete-loot-pile-template.component";
 
 @Component({
   selector: 'app-loot-pile-template',
@@ -178,10 +179,10 @@ export class LootPileTemplateComponent implements OnInit {
 
     ++this.page;
     this.scrollLoading = true;
-    this.lootService.getLootItemsById<any>(this.ruleSetId, this.page, this.pageSize)
+    this.lootService.getByRuleSetId_sp<any>(this.ruleSetId, this.page, this.pageSize)
       .subscribe(data => {
         // console.log(data);
-        var _ItemMaster = data.ItemMaster;
+        var _ItemMaster = data.lootTemplates;
         for (var i = 0; i < _ItemMaster.length; i++) {
           _ItemMaster[i].showIcon = false;
           this.ItemMasterList.push(_ItemMaster[i]);
@@ -283,7 +284,7 @@ export class LootPileTemplateComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Create Loot Template';
+    this.bsModalRef.content.title = 'Create Loot Pile Template';
     this.bsModalRef.content.button = 'CREATE';
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
     this.bsModalRef.content.lootPileVM = {
@@ -300,7 +301,7 @@ export class LootPileTemplateComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Edit Loot Template';
+    this.bsModalRef.content.title = 'Edit Loot Pile Template';
     this.bsModalRef.content.button = 'UPDATE';
     this.bsModalRef.content.lootPileVM = itemMaster;
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
@@ -312,7 +313,7 @@ export class LootPileTemplateComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Duplicate Loot Template';
+    this.bsModalRef.content.title = 'Duplicate Loot Pile Template';
     this.bsModalRef.content.button = 'DUPLICATE';
     this.bsModalRef.content.lootPileVM = itemMaster;
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
@@ -364,35 +365,35 @@ export class LootPileTemplateComponent implements OnInit {
   }
 
 
-  Give(item) {
-    this.bsModalRef = this.modalService.show(GiveawayComponent, {
-      class: 'modal-primary modal-md',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
-    this.bsModalRef.content.giveAwayItem = item;
-  }
-  Show(item) {
+  //Give(item) {
+  //  this.bsModalRef = this.modalService.show(GiveawayComponent, {
+  //    class: 'modal-primary modal-md',
+  //    ignoreBackdropClick: true,
+  //    keyboard: false
+  //  });
+  //  this.bsModalRef.content.giveAwayItem = item;
+  //}
+  //Show(item) {
 
-    let show = item.isShow ? 'Hide' : 'Show';
+  //  let show = item.isShow ? 'Hide' : 'Show';
 
-    this.lootService.showLoot<any>(item.lootTemplateId, !item.isShow)
-      .subscribe(data => {
-        this.isLoading = false;
-        this.alertService.stopLoadingMessage();
-        item.isShow = !item.isShow;
-      },
-        error => {
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          let Errors = Utilities.ErrorDetail("Unable to " + show, error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-          else
-            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-        });
-  }
+  //  this.lootService.showLoot<any>(item.lootTemplateId, !item.isShow)
+  //    .subscribe(data => {
+  //      this.isLoading = false;
+  //      this.alertService.stopLoadingMessage();
+  //      item.isShow = !item.isShow;
+  //    },
+  //      error => {
+  //        this.isLoading = false;
+  //        this.alertService.stopLoadingMessage();
+  //        let Errors = Utilities.ErrorDetail("Unable to " + show, error);
+  //        if (Errors.sessionExpire) {
+  //          this.authService.logout(true);
+  //        }
+  //        else
+  //          this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+  //      });
+  //}
   refresh() {
     this.page = 1;
     this.pageSize = 28;
@@ -410,7 +411,7 @@ export class LootPileTemplateComponent implements OnInit {
     this.alertService.startLoadingMessage("", "Deleting Loot Pile Template");
 
     //this.isLoading = true;
-    this.lootService.deleteLootItem<any>(itemMaster)
+    this.lootService.deleteLootPileTemplate<any>(itemMaster.lootTemplateId)
       .subscribe(data => {
         setTimeout(() => {
           this.isLoading = false;
@@ -439,9 +440,9 @@ export class LootPileTemplateComponent implements OnInit {
       })
   }
 
-  deleteAll() {
+  DeleteLootTemplate() {
     //console.log('delete All');
-    this.bsModalRef = this.modalService.show(DeleteAllLootItemsComponent, {
+    this.bsModalRef = this.modalService.show(DeleteLootPileTemplateComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
       keyboard: false
