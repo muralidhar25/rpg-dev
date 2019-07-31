@@ -1028,6 +1028,20 @@ namespace RPGSmithApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPost("DeleteMonsters")]
+        public async Task<IActionResult> DeleteMultiMonsters([FromBody] List<Monster> model, int rulesetId)
+        {
+            try
+            {
+                _monsterTemplateService.DeleteMultiMonsters(model, rulesetId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        
         #endregion
     }
 }

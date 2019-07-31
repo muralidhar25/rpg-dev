@@ -13,6 +13,7 @@ import { SpellsService } from '../../../core/services/spells.service';
 import { AbilityService } from '../../../core/services/ability.service';
 import { BuffAndEffectService } from '../../../core/services/buff-and-effect.service';
 import { MonsterTemplateService } from '../../../core/services/monster-template.service';
+import { SharedService } from '../../../core/services/shared.service';
 
 @Component({
   selector: 'app-delete-monsters',
@@ -38,6 +39,7 @@ export class DeleteMonstersComponent implements OnInit {
     public modalService: BsModalService,
     private localStorage: LocalStoreManager,
     private appService: AppService1,
+    private sharedService: SharedService,
     private monsterTemplateService: MonsterTemplateService) { }
 
   ngOnInit() {
@@ -102,11 +104,11 @@ export class DeleteMonstersComponent implements OnInit {
   }
   RemoveSelectedItems() {
     this.isLoading = true;
-    this.monsterTemplateService.deleteMonsters<any>(this.selectedItems)
+    this.monsterTemplateService.deleteMonsters<any>(this.selectedItems, this.rulesetId)
       .subscribe(data => {
         this.alertService.showMessage("Deleting Monsters", "", MessageSeverity.success);
               this.close();
-              this.appService.updateItemsList(true);
+        this.sharedService.updateMonsterList(true);
             this.isLoading = false;
         }, error => {
         this.isLoading = false;

@@ -626,12 +626,12 @@ export class MonsterTemplateService extends EndpointFactory {
         return this.handleError(error, () => this.deleteMonsterTemplates(TemplatesList, rulesetId));
       });
   }
-  deleteMonsters<T>(monstersList: any): Observable<T> {
+  deleteMonsters<T>(monstersList: any, rulesetId: number): Observable<T> {
     debugger
-    let endpointURL = `${this.DeleteMonsters}`;
+    let endpointURL = `${this.DeleteMonsters}?rulesetId=${rulesetId}`;
     return this.http.post<T>(endpointURL, JSON.stringify(monstersList), this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.deleteMonsters(monstersList));
+        return this.handleError(error, () => this.deleteMonsters(monstersList, rulesetId));
       });
   }
 

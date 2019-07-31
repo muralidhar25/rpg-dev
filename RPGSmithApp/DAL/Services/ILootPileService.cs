@@ -15,5 +15,6 @@ namespace DAL.Services
         List<LootTemplateRandomizationEngine> insertRandomizationEngines(List<LootTemplateRandomizationEngine> lootTemplateRandomizationEngines, int lootTemplateId);
         Task<LootTemplate> Update(LootTemplate lootTemplate, ICollection<LootTemplateRandomizationEngine> lootTemplateRandomizationEngines);
         List<LootTemplate> SP_GetLootTemplateByRuleSetId(int rulesetId, int page, int pageSize);
+        Task<bool> Delete(int lootTemplateId);
     }
 }

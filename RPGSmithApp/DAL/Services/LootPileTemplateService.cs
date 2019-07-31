@@ -120,6 +120,9 @@ namespace DAL.Services
 
                 if (lootTemplateRandomizationEngines != null && lootTemplateRandomizationEngines.Count > 0)
                 {
+                    var resToDelete = _context.LootTemplateRandomizationEngines.Where(x => x.LootTemplateId== item.LootTemplateId);
+                    _context.LootTemplateRandomizationEngines.RemoveRange(resToDelete);
+                    _context.SaveChanges();
                     insertRandomizationEngines(lootTemplateRandomizationEngines.ToList(), item.LootTemplateId);
                 }
 
@@ -219,6 +222,36 @@ namespace DAL.Services
             }
             return _lootTemplateList;
 
+        }
+        public async Task<bool> Delete(int lootTemplateId) {            
+
+            // Remove deployed Monsters
+            var m = _context.LootTemplateRandomizationEngines.Where(x => x.LootTemplateId == lootTemplateId && x.IsDeleted != true).ToList();
+
+            foreach (LootTemplateRandomizationEngine item in m)
+            {
+                item.IsDeleted = true;
+            }
+
+            
+
+            // Remove Monster Template
+            var lootTemplate = _context.LootTemplates.Where(x => x.LootTemplateId == lootTemplateId && x.IsDeleted != true).FirstOrDefault();
+
+            if (lootTemplate == null)
+                return false;
+
+            lootTemplate.IsDeleted = true;
+
+            try
+            {
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

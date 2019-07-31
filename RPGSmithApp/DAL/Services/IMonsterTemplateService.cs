@@ -61,6 +61,7 @@ namespace DAL.Services
         ItemMasterMonsterItem GetMonsterItemDetailByItemId(int itemId);
         List<MonsterCommand> SP_GetMonsterCommands(int monsterId);
         void DeleteMultiMonsterTemplates(List<MonsterTemplate_Bundle> model, int rulesetId);
+        void DeleteMultiMonsters(List<Monster> model, int rulesetId);
         // List<MonsterTemplate> GetByRuleSetId_add(int rulesetId);
 
     }
