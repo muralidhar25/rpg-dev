@@ -15,6 +15,7 @@ import { Utilities } from '../../../core/common/utilities';
 import { VIEW } from '../../../core/models/enums';
 import { LootService } from '../../../core/services/loot.service';
 import { AppService1 } from '../../../app.service';
+import { ServiceUtil } from '../../../core/services/service-util';
 
 @Component({
   selector: 'app-addloot',
@@ -28,10 +29,12 @@ export class AddlootComponent implements OnInit {
   characterId: number;
   rulesetId: number;
   itemsList: any;
+  lootTemplateList:any
   characterItems: any;
   characterItemModal: any = new Items();
   searchText: string;
   showLootTemplates: boolean = false;
+  selectedLootTemplates:any[]=[]
 
   constructor(private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
@@ -67,8 +70,10 @@ export class AddlootComponent implements OnInit {
       this.itemMasterService.getItemMasterByRuleset_add<any>(this.rulesetId, true,true)//true
         .subscribe(data => {
           this.itemsList = data.ItemMaster;
+          this.lootTemplateList = data.LootTemplate
 
           this.itemsList.forEach(function (val) { val.showIcon = false; val.selected = false; });
+          this.lootTemplateList.forEach(function (val) { val.showIcon = false; val.selected = false; });
           this.isLoading = false;
         }, error => {
           this.isLoading = false;
@@ -94,12 +99,51 @@ export class AddlootComponent implements OnInit {
         item.selected = event.target.checked;
       }
       return item;
-    })
+    });
+    this.lootTemplateList.map((item) => {
+      if (item.lootTemplateId == itemMaster.lootTemplateId) {
+        item.selected = event.target.checked;
+      }
+    });
     this.characterItemModal.itemMasterId = itemMaster.itemMasterId;
   }
 
   submitForm(itemMaster: any) {
- 
+    ////////////////////////////////////////////////////////////////////////
+    this.selectedLootTemplates = [];
+
+    let SelectedLootTemp = this.lootTemplateList.filter(x => x.selected == true);
+    debugger
+
+    SelectedLootTemp.map((x) => {
+      x.quantity = 1;    
+        
+        var reItems = [];
+        if (+x.quantity) {
+          for (var i = 0; i < x.quantity; i++) {
+
+              let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine(x.lootTemplateRandomizationEngines, this.alertService);
+              if (currentItemsToDeploy && currentItemsToDeploy.length) {
+                currentItemsToDeploy.map((re) => {
+                  re.deployCount = i + 1;
+                  reItems.push(re);
+                });
+              }
+          }
+        }
+        this.selectedLootTemplates.push({
+          qty: x.quantity,
+          lootTemplateId: x.lootTemplateId,
+          rulesetId: x.ruleSetId,         
+          reitems: reItems
+        });
+      
+
+    });
+    //////////////////////////////////////////////////////////////////////////
+
+
+
     this.characterItemModal.multiItemMasterBundles = [];
     this.characterItemModal.multiItemMasters = [];
     this.itemsList.map((item) => {
@@ -113,10 +157,10 @@ export class AddlootComponent implements OnInit {
       }
       return item;
     })
-    if (this.characterItemModal.multiItemMasters == undefined && this.characterItemModal.multiItemMasterBundles.length == 0) {
+    if ((this.characterItemModal.multiItemMasters == undefined && this.characterItemModal.multiItemMasterBundles.length == 0) && (this.selectedLootTemplates == undefined || this.selectedLootTemplates.length==0)) {
       this.alertService.showMessage("Please select new Item Template to Add.", "", MessageSeverity.error);
     }
-    else if (this.characterItemModal.multiItemMasters.length == 0 && this.characterItemModal.multiItemMasterBundles.length == 0) {
+    else if ((this.characterItemModal.multiItemMasters.length == 0 && this.characterItemModal.multiItemMasterBundles.length == 0) && (this.selectedLootTemplates.length == 0)) {
       this.alertService.showMessage("Please select new Item Template to Add.", "", MessageSeverity.error);
     }
     else {
@@ -124,15 +168,15 @@ export class AddlootComponent implements OnInit {
         //this.duplicateAbility(ability);
       }
       else {
-        this.addEditItem(itemMaster);
+        this.addEditItem(itemMaster, this.selectedLootTemplates);
       }
     }
   }
 
-  addEditItem(modal: any) {
+  addEditItem(modal: any, lootTemplate) {
     //console.log('modal data', modal.multiItemMasters);
     this.isLoading = true;
-    this.lootService.addLootItem(modal.multiItemMasters, this.rulesetId)
+    this.lootService.addLootItem(modal.multiItemMasters, lootTemplate, this.rulesetId)
       .subscribe(
       data => {
         //console.log(data);

@@ -262,8 +262,8 @@ namespace RPGSmithApp.Controllers
         [HttpPost("addLootItems")]
         public async Task<IActionResult> AddLootItems([FromBody] ItemViewModel model)
         {
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 List<ItemMasterIds> itemMasterIds = new List<ItemMasterIds>();
                 string itemNames = string.Empty;
                 List<ItemMasterLoot> loots = await _itemMasterService.getMultipleLootDetails(model.MultiLootIds.Select(x=>x.LootId).ToList());
@@ -318,9 +318,9 @@ namespace RPGSmithApp.Controllers
                 }
                 
                 return Ok(new { success = true, message = string.Empty});
-            }
+            //}
 
-            return BadRequest(Utilities.ModelStateError(ModelState));
+            //return BadRequest(Utilities.ModelStateError(ModelState));
 
         }
 

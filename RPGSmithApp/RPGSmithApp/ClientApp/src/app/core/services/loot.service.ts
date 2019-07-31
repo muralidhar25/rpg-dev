@@ -48,7 +48,8 @@ export class LootService extends EndpointFactory {
   private readonly GetByRuleSetId_sp: string = this.configurations.baseUrl + "/api/LootPileTemplate/GetByRuleSetId_sp";
   private readonly DuplicateLootPileTemplate: string = this.configurations.baseUrl + "/api/LootPileTemplate/duplicate";
   private readonly GetById: string = this.configurations.baseUrl + "/api/LootPileTemplate/getById";
-  private readonly DeleteLootPileTemplate: string = this.configurations.baseUrl + "/api/LootPileTemplate/DeleteLootPileTemplate";
+  private readonly DeleteLootPileTemplate: string = this.configurations.baseUrl + "/api/LootPileTemplate/delete_up";
+  private readonly DeleteLootTemplates: string = this.configurations.baseUrl + "/api/LootPileTemplate/DeleteLootTemplates";
 
 
 
@@ -76,13 +77,13 @@ export class LootService extends EndpointFactory {
         return this.handleError(error, () => this.getLootItemsById(Id,page,pageSize));
       });
   }
-  addLootItem<T>(item,rulesetId:number): Observable<T> {
-
+  addLootItem<T>(item, lootTemplate, rulesetId:number): Observable<T> {
+    debugger
     let endpointUrl = `${this._getAddLootItemUrl}?rulesetID=${rulesetId}`;
     
-    return this.http.post<T>(endpointUrl, JSON.stringify(item), this.getRequestHeaders())
+    return this.http.post<T>(endpointUrl, JSON.stringify({ lootItemsToAdd: item, lootTemplatesToAdd: lootTemplate }), this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.addLootItem(item, rulesetId));
+        return this.handleError(error, () => this.addLootItem(item, lootTemplate, rulesetId));
       });
   }
 
@@ -269,11 +270,11 @@ export class LootService extends EndpointFactory {
       })
   }
 
-  deleteLootPileTemplate<T>(item): Observable<T> {
-    let endpointUrl = this.DeleteLootPileTemplate;
-    return this.http.post<T>(endpointUrl, JSON.stringify(item), this.getRequestHeaders())
+  deleteLootPileTemplate<T>(Id): Observable<T> {
+    let endpointUrl = `${this.DeleteLootPileTemplate}?LootTemplateId=${Id}`;
+    return this.http.post<T>(endpointUrl, JSON.stringify(Id), this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.deleteLootPileTemplate(item));
+        return this.handleError(error, () => this.deleteLootPileTemplate(Id));
       });
   }
 
@@ -282,6 +283,14 @@ export class LootService extends EndpointFactory {
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getTemplateDetailById(Id));
+      });
+  }
+
+  deleteLootTemplates<T>(TemplateList, Id): Observable<T> {
+    let endpointUrl = `${this.DeleteLootTemplates}?LootTemplateId=${Id}`;
+    return this.http.post<T>(endpointUrl, JSON.stringify(TemplateList), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deleteLootTemplates(TemplateList, Id));
       });
   }
 

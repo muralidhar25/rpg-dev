@@ -65,6 +65,7 @@ import { DeleteLootSecondaryComponent } from "./loot/delete-all-loot-items/delet
 import { CreateLootPileTemplateComponent } from "./loot-pile-template/create-loot-pile-template/create-loot-pile-template.component";
 import { LootPileTemplateComponent } from "./loot-pile-template/loot-pile-template.component";
 import { LootPileTemplateDetailsComponent } from "./loot-pile-template/loot-pile-template-details/loot-pile-template-details.component";
+import { DeleteLootPileTemplateComponent } from "./loot-pile-template/delete-loot-pile-template/delete-loot-pile-template.component";
 
 
 
@@ -129,7 +130,8 @@ import { LootPileTemplateDetailsComponent } from "./loot-pile-template/loot-pile
     DeleteLootSecondaryComponent,
     LootPileTemplateComponent,
     CreateLootPileTemplateComponent,
-    LootPileTemplateDetailsComponent
+    LootPileTemplateDetailsComponent,
+    DeleteLootPileTemplateComponent
   ],
   imports: [
     SharedModule
@@ -197,7 +199,8 @@ import { LootPileTemplateDetailsComponent } from "./loot-pile-template/loot-pile
     DeleteLootSecondaryComponent,
     LootPileTemplateComponent,
     CreateLootPileTemplateComponent,
-    LootPileTemplateDetailsComponent
+    LootPileTemplateDetailsComponent,
+    DeleteLootPileTemplateComponent
   ],
   entryComponents: [
     AddItemMasterComponent,
@@ -242,7 +245,8 @@ import { LootPileTemplateDetailsComponent } from "./loot-pile-template/loot-pile
     DeleteLootSecondaryComponent,
     LootPileTemplateComponent,
     CreateLootPileTemplateComponent,
-    LootPileTemplateDetailsComponent
+    LootPileTemplateDetailsComponent,
+    DeleteLootPileTemplateComponent
   ]
 })
 export class RecordsModule {}

@@ -125,49 +125,47 @@ export class LootPileTemplateDetailsComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Edit Loot Template';
+    this.bsModalRef.content.title = 'Edit Loot Pile Template';
     this.bsModalRef.content.button = 'UPDATE';
-    this.bsModalRef.content.itemMasterVM = itemMaster;
-    this.bsModalRef.content.rulesetID = this.ruleSetId;
-    this.bsModalRef.content.fromDetail = true;
-    this.bsModalRef.content.event.subscribe(data => {
-      this.lootTemplateId = data.itemMasterId;
-      this.initialize();
-    });
+    this.bsModalRef.content.lootPileVM = itemMaster;
+    this.bsModalRef.content.ruleSetId = this.ruleSetId;
+    //this.bsModalRef.content.event.subscribe(data => {
+    //  this.lootTemplateId = data.itemMasterId;
+    //  this.initialize();
+    //});
 
 
   }
 
-  duplicateItemTemplate(itemMaster: ItemMaster) {
+  duplicateItemTemplate(itemMaster: any) {
     // this.alertService.startLoadingMessage("", "Checking records");      
     this.bsModalRef = this.modalService.show(CreateLootPileTemplateComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Duplicate Loot Template';
+    this.bsModalRef.content.title = 'Duplicate Loot Pile Template';
     this.bsModalRef.content.button = 'DUPLICATE';
-    this.bsModalRef.content.itemMasterVM = itemMaster;
-    this.bsModalRef.content.rulesetID = this.ruleSetId;
-    this.bsModalRef.content.fromDetail = true;
+    this.bsModalRef.content.lootPileVM = itemMaster;
+    this.bsModalRef.content.ruleSetId = this.ruleSetId;
 
   }
 
-  deleteItemTemplate(itemMaster: ItemMaster) {
-    let message = "Are you sure you want to delete this " + itemMaster.itemName
+  deleteItemTemplate(itemMaster: any) {
+    let message = "Are you sure you want to delete this " + itemMaster.name
       + " item template?";
 
     this.alertService.showDialog(message,
       DialogType.confirm, () => this.deleteItemTemplateHelper(itemMaster), null, 'Yes', 'No');
   }
 
-  private deleteItemTemplateHelper(itemMaster: ItemMaster) {
+  private deleteItemTemplateHelper(itemMaster: any) {
     itemMaster.ruleSetId = this.ruleSetId;
     this.isLoading = true;
     this.alertService.startLoadingMessage("", "Deleting Loot");
 
 
-    this.lootService.deleteLootItem<any>(itemMaster)
+    this.lootService.deleteLootPileTemplate<any>(itemMaster.lootTemplateId)
       .subscribe(data => {
         setTimeout(() => {
           this.isLoading = false;
@@ -175,7 +173,8 @@ export class LootPileTemplateDetailsComponent implements OnInit {
         }, 200);
         this.alertService.showMessage("Loot has been deleted successfully.", "", MessageSeverity.success);
         //this.initialize();
-        this.router.navigate(['/ruleset/loot', this.ruleSetId]);
+        debugger
+        this.router.navigate(['/ruleset/loot-pile-template', itemMaster.ruleSetId]);
       }, error => {
         setTimeout(() => {
           this.isLoading = false;
@@ -262,9 +261,6 @@ export class LootPileTemplateDetailsComponent implements OnInit {
       this.router.navigate(['/ruleset/loot-details', itemId]);
       //this.sharedService.updateItemsList({ onPage: false });
     }
-  }
-  GoToRuleBuff(RulesetBuffID: number) {
-    this.router.navigate(['/ruleset/buff-effect-details', RulesetBuffID]);
   }
 
   Show(item) {

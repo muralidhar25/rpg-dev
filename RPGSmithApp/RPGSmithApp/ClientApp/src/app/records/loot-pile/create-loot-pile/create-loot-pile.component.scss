@@ -245,14 +245,14 @@ tag-input {
 
 .associate-label-name {
   display: inline-block;
-  text-overflow: ellipsis;
   width: 125px;
   overflow: hidden;
   color: #be8917;
   font-weight: 500;
-  text-overflow: ellipsis;
-  max-width: 120px;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 120px;
 }
 
 .associate-img {

@@ -106,6 +106,9 @@ export class DropItemsComponent implements OnInit {
     else if (this.selectedItems.length == 0) {
       this.alertService.showMessage("Please select Item(s) to Drop.", "", MessageSeverity.error);
     }
+    else if (this.selectedLootPileItem == undefined || this.selectedLootPileItem.length == 0) {
+      this.alertService.showMessage("Please select Drop to Loot Pile", "", MessageSeverity.error);
+    }
     else {
       this.DropSelectedItems();
     }
@@ -164,7 +167,7 @@ export class DropItemsComponent implements OnInit {
       enableSearchFilter: false,
       classes: "myclass custom-class ",
       showCheckbox: false,
-      position: "bottom"
+      position: "top"
     };
   }
 

@@ -2,7 +2,19 @@
 
   <div class="modal-content">
     <div class="modal-header">
-      <h5 class="modal-title" id="colorSelectionPopupTitle">Loot</h5>
+      <!--<h5 class="modal-title" id="colorSelectionPopupTitle">Move Loot</h5>-->
+      <h5 class="modal-title" id="colorSelectionPopupTitle">
+        <!--<span>Move Loot</span>-->
+        <a (click)="Loot()" class="icon icon-back">
+          <span class="d-none d-md-inline-block">Loot</span>
+        </a>
+        <!--<span class="manage-ruleset-header" *ngIf="Name != '' ||Image != ''">
+          <span>
+            <img [src]="Image" onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';">
+          </span>
+          <span>{{Name}}</span>
+        </span>-->
+      </h5>
       <!--<a href="https://rpgsmith.com/help/#CampaignInvite" class="help-icon icon icon-Gen-Help" target="_blank"></a>-->
       <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
     </div>
@@ -21,33 +33,6 @@
 
         </div>
       </div>
-
-      <!--Start Loot Pile-->
-      <div class="col-12 col-md-12 col-sm-12">
-        <fieldset class="form-group input-list input-list-wrap items">
-          <legend *ngIf="lootPileList?.length == 0">No Item Available</legend>
-          <div class="row">
-            <div class="col-6">
-              <legend *ngIf="lootPileList?.length > 0">Explore Loot Piles</legend>
-            </div>
-          </div>
-
-          <ul class="input-list-items">
-            <li class="form-check col-md-6 col-sm-12" *ngFor="let item of lootPileList | filter : searchText : 'itemName';let i = index;" popover="{{item.itemName}}" triggers="hover">
-              <label class="form-check-label">
-                <span (click)="SecondaryLoot(item)">
-                  <img [alt]="item.itemName" [src]="item.itemImage"
-                       onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
-                  <em>{{item.itemName}}</em>
-                </span>
-              </label>
-            </li>
-          </ul>
-        </fieldset>
-      </div>
-      <!--End Loot Pile-->
-
-      <!--Loot Items-->
       <div class="col-12 col-md-12 col-sm-12">
         <fieldset class="form-group input-list input-list-wrap items">
           <legend *ngIf="itemsList?.length == 0">No Item Available</legend>
@@ -57,8 +42,8 @@
             </div>
             <div class="col-6  text-right">
               <legend>
-                <a class="filter-select-deselect" (click)="selectDeselectFilters(true)" *ngIf="!allSelected ">Select All</a>
-                <a class="filter-select-deselect" (click)="selectDeselectFilters(false)" *ngIf="allSelected && itemsList?.length > 0">Deselect All</a>
+                <a class="filter-select-deselect" (click)="selectDeselectFilters(true)" *ngIf="!allSelected">Select All</a>
+                <a class="filter-select-deselect" (click)="selectDeselectFilters(false)" *ngIf="allSelected">Deselect All</a>
               </legend>
             </div>
           </div>
@@ -67,14 +52,10 @@
             <li class="form-check col-md-6 col-sm-12" *ngFor="let item of itemsList | filter : searchText : 'itemName';let i = index;" popover="{{item.itemName}}" triggers="hover">
               <label class="form-check-label">
                 <input class="form-check-input" type="checkbox" name="newItem" [checked]="item.selected" (change)="setItemMaster($event,item)" />
-                <!--[checked]="characterItems | contains : item.itemMasterId : 'itemMasterId'" />
-            [disabled]="characterItems | contains : item.itemMasterId : 'itemMasterId'" />-->
                 <span>
                   <img [alt]="item.itemName" [src]="item.itemImage"
                        onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
                   <em>{{item.itemName}}</em>
-                  <!--<i *ngIf="characterItems | contains : item.itemMasterId : 'itemMasterId'" class="icon" title="Already Added"
-              style="background-color:#aaa39e!important;cursor:not-allowed;"></i>-->
                   <i class="icon"></i>
                 </span>
               </label>
@@ -82,7 +63,6 @@
           </ul>
         </fieldset>
       </div>
-      <!--Loot Items-->
 
     </div>
 
@@ -97,4 +77,5 @@
       <button class="btn btn-accent" [disabled]="isLoading" type="submit">take</button>
     </span>
   </div>
+
 </form>

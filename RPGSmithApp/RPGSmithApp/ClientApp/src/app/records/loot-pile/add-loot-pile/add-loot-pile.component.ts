@@ -119,30 +119,30 @@ export class AddLootPileComponent implements OnInit {
     }
   }
 
-  addEditItem(modal: any) {
-    this.isLoading = true;
-    this.lootService.addLootItem(modal.multiItemMasters, this.rulesetId)
-      .subscribe(data => {
-        this.isLoading = false;
-        this.alertService.stopLoadingMessage();
-        let message = "Loot(s) added successfully.";
-        this.alertService.showMessage(message, "", MessageSeverity.success);
-        this.bsModalRef.hide();
-        this.sharedService.updateItemsList(true);
-        this.appService.updateChatWithLootMessage(true);
-      },
-        error => {
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          let Errors = Utilities.ErrorDetail("Unable to Add", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-          else
-            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-        },
-      );
-  }
+  //addEditItem(modal: any) {
+  //  this.isLoading = true;
+  //  this.lootService.addLootItem(modal.multiItemMasters, this.rulesetId)
+  //    .subscribe(data => {
+  //      this.isLoading = false;
+  //      this.alertService.stopLoadingMessage();
+  //      let message = "Loot(s) added successfully.";
+  //      this.alertService.showMessage(message, "", MessageSeverity.success);
+  //      this.bsModalRef.hide();
+  //      this.sharedService.updateItemsList(true);
+  //      this.appService.updateChatWithLootMessage(true);
+  //    },
+  //      error => {
+  //        this.isLoading = false;
+  //        this.alertService.stopLoadingMessage();
+  //        let Errors = Utilities.ErrorDetail("Unable to Add", error);
+  //        if (Errors.sessionExpire) {
+  //          this.authService.logout(true);
+  //        }
+  //        else
+  //          this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+  //      },
+  //    );
+  //}
 
   duplicateItem(modal: any) {
     this.isLoading = true;

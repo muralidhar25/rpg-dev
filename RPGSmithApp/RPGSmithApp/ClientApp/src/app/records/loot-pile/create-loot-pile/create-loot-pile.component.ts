@@ -292,8 +292,8 @@ export class CreateLootPileComponent implements OnInit {
             this.appService.updateChatWithLootMessage(true); //loot created...
           }
 
-          if (this.fromDetail) {
-            if (data) {
+          //if (this.fromDetail) {
+            //if (data) {
               let id = data;
               if (!isNaN(parseInt(id))) {
                 this.router.navigate(['/ruleset/loot-pile-details', id]);
@@ -302,12 +302,12 @@ export class CreateLootPileComponent implements OnInit {
               }
               //else
               this.sharedService.updateItemMasterDetailList(true);
-            }
-            else {
+            //}
+            //else {
               this.sharedService.updateItemMasterDetailList(true);
-            }
-          }
-          //else this.sharedService.updateItemsList(true);
+            //}
+          //}
+          this.sharedService.updateItemsList(true);
         },
         error => {
           this.isLoading = false;
