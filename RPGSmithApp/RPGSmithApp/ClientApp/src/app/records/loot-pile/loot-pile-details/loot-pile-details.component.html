@@ -136,10 +136,10 @@
                 <h2 class="item-info-name"> {{ItemMasterDetail.itemName}} </h2>
                 <div class="item-info-props-indics">
                   <ul class="item-info-indics">
-                    <li *ngIf="ItemMasterDetail.isVisible" title="Hide" data-toggle="tooltip">
+                    <li *ngIf="!ItemMasterDetail.isVisible" title="Hide" data-toggle="tooltip">
                       <i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i>
                     </li>
-                    <li *ngIf="!ItemMasterDetail.isVisible" title="Hide" data-toggle="tooltip">
+                    <li *ngIf="ItemMasterDetail.isVisible" title="Hide" data-toggle="tooltip">
                       <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
                     </li>
                   </ul>

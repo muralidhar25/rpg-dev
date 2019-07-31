@@ -1051,10 +1051,11 @@ namespace DAL.Services
                     {
                         rulesetId = character.RuleSetId!=null? (int)character.RuleSetId : objItemMaster.RuleSetId;
                     }
+                    int? nullnumber = null;
                     _itemMasterService.CreateItemMasterLoot(objItemMaster, new ItemMasterLoot()
                     {
                         IsShow = true,
-                        LootPileId= Char_LootPileId
+                        LootPileId= Char_LootPileId==-1? nullnumber : Char_LootPileId,
                     },
                     ItemMasterSpell, ItemMasterAbilities, itemMasterBuffAndEffects, ItemMasterCommand, rulesetId, obj
                     );
@@ -1062,7 +1063,7 @@ namespace DAL.Services
             }
 
         }
-        public void DropMultiItems(List<Item> model, int dropToLootPileId, int rulesetId)
+        public void DropMultiItems(List<Item> model, int dropToLootPileId, int rulesetId,int characterId, ApplicationUser user)
         {
             int index = 0;
             List<numbersList> dtList = model.Select(x => new numbersList()
@@ -1079,20 +1080,78 @@ namespace DAL.Services
                 DT_List = utility.ToDataTable<numbersList>(dtList);
             }
 
-
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
-            int rowseffectesd = 0;
-            SqlConnection con = new SqlConnection(connectionString);
-            con.Open();
-            SqlCommand cmd = new SqlCommand("Character_DeleteMultiItems", con);
-            cmd.CommandType = CommandType.StoredProcedure;
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("Character_DeleteMultiItems", connection);
 
-            cmd.Parameters.AddWithValue("@RecordIdsList", DT_List);
-            cmd.Parameters.AddWithValue("@RulesetID", rulesetId);
-            cmd.Parameters.AddWithValue("@DropToLootPileId", dropToLootPileId);
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@RecordIdsList", DT_List);
+                command.Parameters.AddWithValue("@RulesetID", rulesetId);
+                command.CommandType = CommandType.StoredProcedure;
 
-            rowseffectesd = cmd.ExecuteNonQuery();
-            con.Close();
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            List<int> itemIDsDeleted = new List<int>();
+            if (ds.Tables.Count>0)
+            {
+                foreach (DataTable table in ds.Tables)
+                {
+                    if (table.Rows.Count>0)
+                    {
+                        int itemId = table.Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(table.Rows[0][0]) ;
+                        itemIDsDeleted.Add(itemId);
+                    }
+                }
+            }
+            if (itemIDsDeleted.Any())
+            {
+                itemIDsDeleted = itemIDsDeleted.Distinct().ToList();
+                foreach (var _item in itemIDsDeleted)
+                {
+                    var currentUser = user;
+                    if (currentUser.IsGm || currentUser.IsGmPermanent)
+                    {
+                        AddItemToLoot(_item, dropToLootPileId);
+                    }
+                    else if (isInvitedPlayerCharacter(characterId).Result)
+                    {
+                        AddItemToLoot(_item, dropToLootPileId);
+                    }
+                }
+                
+            }
+            //string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            //int rowseffectesd = 0;
+            //SqlConnection con = new SqlConnection(connectionString);
+            //con.Open();
+            //SqlCommand cmd = new SqlCommand("Character_DeleteMultiItems", con);
+            //cmd.CommandType = CommandType.StoredProcedure;
+
+            //cmd.Parameters.AddWithValue("@RecordIdsList", DT_List);
+            //cmd.Parameters.AddWithValue("@RulesetID", rulesetId);
+            //cmd.Parameters.AddWithValue("@DropToLootPileId", dropToLootPileId);
+
+            //rowseffectesd = cmd.ExecuteNonQuery();
+            //con.Close();
+        }
+        public async Task<bool> isInvitedPlayerCharacter(int characterId)
+        {
+            return await _context.PlayerInvites.Where(x => x.PlayerCharacterID == characterId && (x.IsDeleted == false || x.IsDeleted == null)).AnyAsync();
         }
         private static int Getindex(int index)
         {

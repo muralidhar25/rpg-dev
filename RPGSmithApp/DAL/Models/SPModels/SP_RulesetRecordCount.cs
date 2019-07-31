@@ -20,6 +20,7 @@ namespace DAL.Models.SPModels
         public int BuffAndEffectCount { get; set; }
         public int MonsterTemplateCount { get; set; }
         public int MonsterCount { get; set; }
+        public int LootTemplateCount { get; set; }
 
     }
     public class SP_AbilitySpellForItemMaster
@@ -885,7 +886,8 @@ namespace DAL.Models.SPModels
 
         
         public int? RuleSetId { get; set; }
-        
+        public RuleSet lootPileRuleSet { get; set; }
+
         public string ItemName { get; set; }
 
         public string ItemImage { get; set; }

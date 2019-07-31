@@ -614,12 +614,12 @@ export class ItemsService extends EndpointFactory {
     return itemFormModal;
   }
 
-  dropMultipleItems<T>(itemList: any, lootPileId: number): Observable<T> {
+  dropMultipleItems<T>(itemList: any, lootPileId: number, rulesetId: number, characterId: number): Observable<T> {
     debugger
-    let dropMultipleItemsURL = `${this.DropMultipleItems}?LootPileId=${lootPileId}`;
+    let dropMultipleItemsURL = `${this.DropMultipleItems}?DropToLootPileId=${lootPileId}&rulesetId=${rulesetId}&CharacterId=${characterId}`;
     return this.http.post<T>(dropMultipleItemsURL, JSON.stringify(itemList), this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.dropMultipleItems(itemList, lootPileId));
+        return this.handleError(error, () => this.dropMultipleItems(itemList, lootPileId,rulesetId, characterId));
       });
   }
 

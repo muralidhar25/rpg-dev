@@ -161,7 +161,8 @@ namespace RPGSmithApp.Helpers.CoreRuleset
                     LootCount = res.LootCount,
                     BuffAndEffectCount=res.BuffAndEffectCount,
                     MonsterCount=res.MonsterCount,
-                    MonsterTemplateCount=res.MonsterTemplateCount
+                    MonsterTemplateCount=res.MonsterTemplateCount,
+                    LootTemplateCount=res.LootTemplateCount
                 };
             }
             catch (Exception ex)

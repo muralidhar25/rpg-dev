@@ -83,9 +83,10 @@ export class LootPileDetailsComponent implements OnInit {
         .subscribe(data => {
           if (data) {
             debugger;
-            this.RuleSet = data.ruleSet;
+            this.RuleSet = data.lootPileRuleSet;
             this.lootPileItems = data.lootPileItems;
             this.ItemMasterDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");
+            this.ItemMasterDetail.ruleSet = this.RuleSet
           }
           this.rulesetService.GetCopiedRulesetID(this.ItemMasterDetail.ruleSetId, user.id)
             .subscribe(data => {

@@ -113,12 +113,12 @@ export class DropItemsComponent implements OnInit {
   }
   DropSelectedItems() {
     this.isLoading = true;
-    let lootId: number;
+    let lootId: number=-1;
     if (this.selectedLootPileItem) {
       this.selectedLootPileItem.map(x => { lootId = x.lootId });
     }
-    
-    this.itemsService.dropMultipleItems<any>(this.selectedItems, lootId)
+
+    this.itemsService.dropMultipleItems<any>(this.selectedItems, lootId, this.rulesetId, this.characterId )
       .subscribe(data => {
               this.alertService.showMessage("Dropping Item(s)", "", MessageSeverity.success);
               this.close();

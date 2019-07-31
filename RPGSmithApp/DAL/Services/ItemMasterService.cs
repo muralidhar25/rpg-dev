@@ -2201,9 +2201,10 @@ namespace DAL.Services
                 }
             }
         }
-        public LootPileViewModel getLootPileDetails(int lootPileId) {
+        public LootPileViewModel getLootPileDetails(int lootPileId)
+        {
             LootPileViewModel obj = new LootPileViewModel();
-            var lootPile = _context.ItemMasterLoots.Where(x => x.LootId == lootPileId && x.IsDeleted != true && x.IsLootPile == true).FirstOrDefault();
+            var lootPile = _context.ItemMasterLoots.Where(x => x.LootId == lootPileId && x.IsDeleted != true && x.IsLootPile == true).Include(x=>x.RuleSet).FirstOrDefault();
             if (lootPile!=null)
             {
                 obj.IsVisible = lootPile.IsVisible;
@@ -2214,6 +2215,7 @@ namespace DAL.Services
                 obj.Metatags = lootPile.Metatags;
                 obj.RuleSetId = lootPile.RuleSetId;
                 obj.LootPileItems = new List<LootPileItems_ViewModel>();
+                obj.lootPileRuleSet = lootPile.RuleSet;
 
                 var LootPileItems = _context.ItemMasterLoots.Where(x => x.LootPileId == lootPile.LootId && x.IsDeleted != true && x.IsLootPile != true).ToList();
                 foreach (var item in LootPileItems)
@@ -2468,6 +2470,30 @@ namespace DAL.Services
             {
                 result.Add(item);
             }
+
+            string rulesetimage = "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png";
+            var ruleset = _context.RuleSets.Where(x => x.RuleSetId == rulesetId && x.IsDeleted != true).FirstOrDefault();
+            if (ruleset != null)
+            {
+                if (!string.IsNullOrEmpty(ruleset.ImageUrl))
+                {
+                    rulesetimage = ruleset.ImageUrl;
+                }
+
+            }
+
+
+            LootPileViewModel rootLoot = new LootPileViewModel()
+            {
+                ItemName = "Root (No Pile)",
+                IsVisible = true,
+                ItemImage = rulesetimage,
+                LootId = -1,
+                RuleSetId = rulesetId,
+
+            };
+            result.Add(rootLoot);
+
             return result;
         }
 
