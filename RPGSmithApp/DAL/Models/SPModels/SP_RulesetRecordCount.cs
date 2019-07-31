@@ -154,6 +154,20 @@ namespace DAL.Models.SPModels
         public int ID { get; set; }
         public bool IsBundle { get; set; }
     }
+    public class DeployLootTemplateListToAdd
+    {
+       
+            public int qty { get; set; }
+            public int lootTemplateId { get; set; }
+            public int rulesetId { get; set; }           
+            public List<REItems> REItems { get; set; }
+        
+    }
+    public class AddLoot
+    {
+        public List<LootsToAdd> lootItemsToAdd { get; set; }
+        public List<DeployLootTemplateListToAdd> lootTemplatesToAdd { get; set; }
+    }
     public class AssignBuffAndEffect
     {
         public List<BuffAndEffect> buffAndEffectList { get; set; }

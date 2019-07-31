@@ -1405,9 +1405,11 @@ namespace DAL.Services
             }
         }
         #region Loot
-        public async Task _AddItemsToLoot(List<LootsToAdd> itemList, int rulesetID) {
+        public async Task _AddItemsToLoot(List<LootsToAdd> itemList, List<DeployLootTemplateListToAdd> lootTemplateList, int rulesetID) {
+
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             DataTable Datatable_Ids = utility.ToDataTable<LootsToAdd>(itemList);
+           // DataTable Datatable_LootTemplateIds = utility.ToDataTable<DeployLootTemplateListToAdd>(lootTemplateList);
             using (SqlConnection con = new SqlConnection(consString))
             {
 
@@ -1430,7 +1432,67 @@ namespace DAL.Services
                     con.Close();                    
                 }
             }
+
+            DeployLootTemplateList(lootTemplateList);
         }
+
+        private void DeployLootTemplateList(List<DeployLootTemplateListToAdd> lootTemplateList)
+        {
+            foreach (var model in lootTemplateList)
+            {
+                string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+                //assign datatable for list records of dice results.
+                int index = 0;
+
+                DataTable DT_reItems = new DataTable();
+                if (model.REItems != null)
+                {
+                    if (model.REItems.Count > 0)
+                    {
+                        DT_reItems = utility.ToDataTable<REItems>(model.REItems);
+                    }
+                    else
+                    {
+                        model.REItems.Add(new REItems() { itemMasterId = 0, qty = 0 });
+                        DT_reItems = utility.ToDataTable<REItems>(model.REItems);
+                    }
+                }
+                else
+                {
+                    model.REItems.Add(new REItems() { itemMasterId = 0, qty = 0 });
+                    DT_reItems = utility.ToDataTable<REItems>(model.REItems);
+                }
+
+                using (SqlConnection con = new SqlConnection(consString))
+                {
+
+                    using (SqlCommand cmd = new SqlCommand("LootTemplate_DeployToLoot"))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;                        
+                        cmd.Parameters.AddWithValue("@RulesetID", model.rulesetId);
+                        cmd.Parameters.AddWithValue("@LootTemplateId", model.lootTemplateId);
+                        cmd.Parameters.AddWithValue("@Qty", 1);                        
+                        cmd.Parameters.AddWithValue("@REItems", DT_reItems);
+                        //cmd.Parameters.AddWithValue("@IsBundle", model.isBundle);
+
+                        con.Open();
+                        try
+                        {
+                            var a = cmd.ExecuteNonQuery();
+                        }
+                        catch (Exception ex)
+                        {
+                            con.Close();
+                            throw ex;
+                        }
+                        con.Close();
+
+                    }
+                }
+            }
+        }
+
         public async Task<List<ItemMasterLoot_ViewModel>> GetItemMasterLoots(int rulesetID, int page = 1, int pageSize = 30)
         {
             List<ItemMasterLoot_ViewModel> itemlist = new List<ItemMasterLoot_ViewModel>();

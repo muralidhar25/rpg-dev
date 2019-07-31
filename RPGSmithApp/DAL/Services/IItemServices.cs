@@ -46,5 +46,6 @@ namespace DAL.Services
         Task AddItemsSP(List<ItemMasterIds> multiItemMasters, List<ItemMasterBundleIds> multiItemMasterBundles, int characterId,bool IsLootItems);
         List<ItemMasterMonsterItem> getAvailableMonsterContainerItems(int rulesetId, int itemId);
         ItemMasterMonsterItem UpdateMonsterItem(ItemMasterMonsterItem item, List<ItemSpell> ItemSpells, List<ItemAbility> ItemAbilities, List<ItemBuffAndEffect> ItemBuffAndEffects, List<ItemCommand> itemCommandVM);
+        void DropMultiItems(List<Item> model, int dropToLootPileId, int rulesetId);
     }
 }

@@ -1111,7 +1111,19 @@ namespace RPGSmithApp.Controllers
         {
             return Ok(_itemService.SP_GetItemCommands(itemId));
         }
-
+        [HttpPost("DropItems")]
+        public async Task<IActionResult> DropMultiItems([FromBody] List<Item> model, int DropToLootPileId, int rulesetId)
+        {
+            try
+            {
+                _itemService.DropMultiItems(model, DropToLootPileId, rulesetId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         #endregion
     }
 }

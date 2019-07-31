@@ -1009,14 +1009,16 @@ namespace RPGSmithApp.Controllers
         #endregion
         #region Loot
         [HttpPost("AddItemMastersToLoot")]
-        public async Task<IActionResult> AddItemMastersToLoot([FromBody] List<LootsToAdd> ItemList, int rulesetID)
+        public async Task<IActionResult> AddItemMastersToLoot([FromBody] AddLoot addLoot, int rulesetID)
         {
             //ItemList = new List<CommonID>();
             //ItemList.Add(new CommonID() { ID = 8499 });
             //ItemList.Add(new CommonID() { ID = 8500 });
             try
             {
-                await _itemMasterService._AddItemsToLoot(ItemList,rulesetID);
+                var ItemList = addLoot.lootItemsToAdd;
+                var LootTemplatesList = addLoot.lootTemplatesToAdd;
+                await _itemMasterService._AddItemsToLoot(ItemList, LootTemplatesList, rulesetID);
             }
             catch (Exception ex)
             {

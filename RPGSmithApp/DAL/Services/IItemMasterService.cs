@@ -31,7 +31,7 @@ namespace DAL.Services
         SP_AbilitySpellForItemMaster AbilitySpellForItemsByRuleset_sp(int rulesetId, int itemMasterId);
         ItemsAndLootTemplates GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false, bool includeLootTemplates = false);
         bool Core_BundleWithParentIDExists(int bundleId, int rulesetID);
-        Task _AddItemsToLoot(List<LootsToAdd> itemList, int rulesetID);
+        Task _AddItemsToLoot(List<LootsToAdd> itemList, List<DeployLootTemplateListToAdd> lootTemplateList, int rulesetID);
         Task<List<ItemMasterLoot_ViewModel>> GetItemMasterLoots(int rulesetID, int page = 1, int pageSize = 30);
         ItemMasterLoot CreateItemMasterLoot(
             ItemMaster result, 

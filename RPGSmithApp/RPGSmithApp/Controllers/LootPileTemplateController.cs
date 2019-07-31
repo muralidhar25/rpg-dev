@@ -179,6 +179,19 @@ namespace RPGSmithApp.Controllers
             }
             return Ok(Response);
         }
+        [HttpPost("DeleteLootTemplates")]
+        public async Task<IActionResult> DeleteMultiLootTemplates([FromBody] List<LootTemplate> model, int rulesetId)
+        {
+            try
+            {
+                _lootPileTemplateService.DeleteMultiLootTemplates(model, rulesetId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         #endregion
     }
 }
