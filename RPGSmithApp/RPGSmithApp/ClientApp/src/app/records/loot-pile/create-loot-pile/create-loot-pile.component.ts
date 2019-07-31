@@ -93,9 +93,11 @@ export class CreateLootPileComponent implements OnInit {
       
 
       this.ruleSetId = this.bsModalRef.content.ruleSetId;
-
-      if (this.createLootPileModal.metatags !== '' && this.createLootPileModal.metatags !== undefined)
-        this.metatags = this.createLootPileModal.metatags.split(",");
+      if (this.createLootPileModal.metatags) {
+        if (this.createLootPileModal.metatags !== '' && this.createLootPileModal.metatags !== undefined)
+          this.metatags = this.createLootPileModal.metatags.split(",");
+      }
+      
       this.bingImageUrl = this.createLootPileModal.imageUrl;
 
       this.GetLootPileItemsToAdd();
