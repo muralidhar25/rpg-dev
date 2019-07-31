@@ -53,7 +53,7 @@ export class RemoveSpellsComponent implements OnInit {
     else {
       this.isLoading = true;
 
-      this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 3) // 3 for Alphabetical Sort
+      this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize,1) // 3 for Alphabetical Sort
         .subscribe(data => {
           this.itemsList = data.CharacterSpellList;
           this.itemsList.map(x => {

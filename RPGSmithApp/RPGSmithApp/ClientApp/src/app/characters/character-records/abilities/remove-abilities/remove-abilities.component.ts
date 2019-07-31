@@ -54,7 +54,7 @@ export class RemoveAbilitiesComponent implements OnInit {
     else {
       this.isLoading = true;
 
-      this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 3) // 3 for Alphabetical Sort
+      this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 1) // 3 for Alphabetical Sort
         .subscribe(data => {
           this.itemsList = data.characterAbilityList;
           this.itemsList.map(x => {
