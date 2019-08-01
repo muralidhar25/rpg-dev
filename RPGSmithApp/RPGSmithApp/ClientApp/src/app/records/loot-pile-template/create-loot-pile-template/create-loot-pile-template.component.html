@@ -68,7 +68,7 @@
           <div *ngFor="let item of randomizationInfo;let i = index">
             <div *ngIf="item.isOr == undefined">
               <h3>
-                This Monster has a
+                This Loot Pile has a
                 <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)"
                        [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />
                 % chance of having
@@ -131,7 +131,7 @@
             <div *ngIf="item.isOr == false">
               <div class="adn-seprater"><span>and</span></div>
               <h3>
-                This Monster has a
+                This Loot Pile has a
                 <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)"
                        [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />
                 % chance of having

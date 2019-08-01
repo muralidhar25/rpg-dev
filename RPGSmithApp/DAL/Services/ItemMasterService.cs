@@ -2170,6 +2170,10 @@ namespace DAL.Services
             {
                 DT_List = utility.ToDataTable<LootPileItem>(dtList);
             }
+            else {
+                dtList.Add(new LootPileItem { ItemMasterId = 0, Qty = 0, RowNum = 1 });
+                DT_List = utility.ToDataTable<LootPileItem>(dtList);
+            }
 
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             
