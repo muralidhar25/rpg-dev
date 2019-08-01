@@ -50,6 +50,7 @@ export class LootService extends EndpointFactory {
   private readonly GetById: string = this.configurations.baseUrl + "/api/LootPileTemplate/getById";
   private readonly DeleteLootPileTemplate: string = this.configurations.baseUrl + "/api/LootPileTemplate/delete_up";
   private readonly DeleteLootTemplates: string = this.configurations.baseUrl + "/api/LootPileTemplate/DeleteLootTemplates";
+  private readonly DeployToLoot: string = this.configurations.baseUrl + "/api/ItemMaster/DeployLootTemplate";
 
 
 
@@ -291,6 +292,15 @@ export class LootService extends EndpointFactory {
     return this.http.post<T>(endpointUrl, JSON.stringify(TemplateList), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.deleteLootTemplates(TemplateList, Id));
+      });
+  }
+
+  deployToLoot<T>(itemList): Observable<T> {
+    debugger;
+    let endpointUrl = `${this.DeployToLoot}`;
+    return this.http.post<T>(endpointUrl, JSON.stringify(itemList), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deployToLoot(itemList));
       });
   }
 

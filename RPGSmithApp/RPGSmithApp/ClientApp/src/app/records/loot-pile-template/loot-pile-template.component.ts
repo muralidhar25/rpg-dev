@@ -20,6 +20,7 @@ import { DeleteAllLootItemsComponent } from "../loot/delete-all-loot-items/delet
 import { AddLootPileComponent } from "../loot-pile/add-loot-pile/add-loot-pile.component";
 import { CreateLootPileTemplateComponent } from "./create-loot-pile-template/create-loot-pile-template.component";
 import { DeleteLootPileTemplateComponent } from "./delete-loot-pile-template/delete-loot-pile-template.component";
+import { ServiceUtil } from "../../core/services/service-util";
 
 @Component({
   selector: 'app-loot-pile-template',
@@ -464,5 +465,50 @@ export class LootPileTemplateComponent implements OnInit {
     this.bsModalRef.content.recordImage = this.RuleSet.imageUrl;
     this.bsModalRef.content.recordType = 'ruleset'
     this.bsModalRef.content.isFromCampaignDetail = true;
+  }
+
+  DeployLootPile(item) {
+    let lootToDeploy = [];
+    var reItems = [];
+    let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine(item.lootTemplateRandomizationEngines, this.alertService);
+    if (currentItemsToDeploy && currentItemsToDeploy.length) {
+      currentItemsToDeploy.map((re) => {
+        re.deployCount = 1;
+        reItems.push(re);
+      });
+    }
+
+    lootToDeploy.push({
+      qty: 1,
+      lootTemplateId: item.lootTemplateId,
+      rulesetId: item.ruleSetId,
+      reitems: reItems
+    });
+
+
+    this.alertService.startLoadingMessage("", "Deploying Loot Pile Template");
+
+    this.lootService.deployToLoot<any>(lootToDeploy)
+      .subscribe(data => {
+        setTimeout(() => {
+          this.alertService.stopLoadingMessage();
+        }, 200);
+        this.alertService.showMessage("Loot Pile " + item.name + " Has Been Deployed", "", MessageSeverity.success);
+
+      }, error => {
+        setTimeout(() => {
+          this.alertService.stopLoadingMessage();
+        }, 200);
+        let _message = "Unable to Deploy";
+        let Errors = Utilities.ErrorDetail(_message, error);
+        if (Errors.sessionExpire) {
+          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          this.authService.logout(true);
+        }
+        else {
+          this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        }
+      });
+
   }
 }

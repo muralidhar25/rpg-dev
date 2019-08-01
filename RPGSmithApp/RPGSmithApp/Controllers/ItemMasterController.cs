@@ -2178,6 +2178,20 @@ namespace RPGSmithApp.Controllers
                 return Ok(ex.Message);
             }
         }
+        [HttpPost("DeployLootTemplate")]
+        public async Task<IActionResult> DeployLootTemplate([FromBody] List<DeployLootTemplateListToAdd> model)
+        {            
+            try
+            {                
+                _itemMasterService.DeployLootTemplateList(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            return Ok();
+        }
         #endregion
     }
 }

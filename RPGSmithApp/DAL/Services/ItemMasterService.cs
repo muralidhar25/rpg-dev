@@ -1436,7 +1436,7 @@ namespace DAL.Services
             DeployLootTemplateList(lootTemplateList);
         }
 
-        private void DeployLootTemplateList(List<DeployLootTemplateListToAdd> lootTemplateList)
+        public void DeployLootTemplateList(List<DeployLootTemplateListToAdd> lootTemplateList)
         {
             foreach (var model in lootTemplateList)
             {
