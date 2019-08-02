@@ -1405,7 +1405,7 @@ namespace DAL.Services
             }
         }
         #region Loot
-        public async Task _AddItemsToLoot(List<LootsToAdd> itemList, List<DeployLootTemplateListToAdd> lootTemplateList, int rulesetID) {
+        public async Task _AddItemsToLoot(List<LootsToAdd> itemList, List<DeployLootTemplateListToAdd> lootTemplateList, int rulesetID, int selectedLootPileId) {
 
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             DataTable Datatable_Ids = utility.ToDataTable<LootsToAdd>(itemList);
@@ -1419,6 +1419,8 @@ namespace DAL.Services
                     cmd.Connection = con;
                     cmd.Parameters.AddWithValue("@IdsToInsert", Datatable_Ids);
                     cmd.Parameters.AddWithValue("@RulesetID", rulesetID);
+                    cmd.Parameters.AddWithValue("@selectedLootPileId", selectedLootPileId);
+                    
                     con.Open();
                     try
                     {
@@ -2157,22 +2159,20 @@ namespace DAL.Services
         public void CreateLootPile(CreateLootPileModel model) {
 
             int index = 0;
-            List<LootPileItem> dtList = model.LootPileItems.Select(x => new LootPileItem()
+            List<CommonID> dtList = model.LootPileItems.Select(x => new CommonID()
             {
-                RowNum = index = Getindex(index),
-                ItemMasterId = x.ItemMasterId,
-                Qty=x.Qty
+                ID = x.LootId,                
             }).ToList();
 
             DataTable DT_List = new DataTable();
 
             if (dtList.Count > 0)
             {
-                DT_List = utility.ToDataTable<LootPileItem>(dtList);
+                DT_List = utility.ToDataTable<CommonID>(dtList);
             }
             else {
-                dtList.Add(new LootPileItem { ItemMasterId = 0, Qty = 0, RowNum = 1 });
-                DT_List = utility.ToDataTable<LootPileItem>(dtList);
+                dtList.Add(new CommonID { ID = 0});
+                DT_List = utility.ToDataTable<CommonID>(dtList);
             }
 
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -2189,7 +2189,7 @@ namespace DAL.Services
                     cmd.Parameters.AddWithValue("@Description", model.ItemVisibleDesc==null?"": model.ItemVisibleDesc);
                     cmd.Parameters.AddWithValue("@Visible", model.IsVisible);
                     cmd.Parameters.AddWithValue("@Metatags", model.Metatags);
-                    cmd.Parameters.AddWithValue("@ItemMasterIdsToAdd", DT_List);                    
+                    cmd.Parameters.AddWithValue("@LootItemIdsToAdd", DT_List);                    
                     cmd.Parameters.AddWithValue("@RulesetID", model.RuleSetId);
                     con.Open();
                     try
@@ -2245,19 +2245,25 @@ namespace DAL.Services
                 lootPile.ItemImage = itemDomain.ItemImage;
                 lootPile.ItemName = itemDomain.ItemName;
                 lootPile.ItemVisibleDesc = itemDomain.ItemVisibleDesc;
-               
+
                 lootPile.Metatags = itemDomain.Metatags;
+
+
+
+                //var lootPileItemsToUpdate = itemDomain.LootPileItems;
+                //var OldLootPileItems = _context.ItemMasterLoots.Where(x => x.LootPileId == lootPile.LootId && x.IsDeleted != true && x.IsLootPile != true).ToList();
+
 
                 //List<int> LootPileItemsLootIdsToDelete = new List<int>();
                 //List<int> LootPileItemsLootIdsToUpdate = new List<int>();
-                List<LootPileItem> ItemMasterIdsToAdd = new List<LootPileItem>();
+                List<LootPileLootItem> LootItemIdsToAdd = new List<LootPileLootItem>();
 
                 var LootPileItems = _context.ItemMasterLoots.Where(x => x.LootPileId == lootPile.LootId && x.IsDeleted != true && x.IsLootPile != true).ToList();
 
                 foreach (var db_item in LootPileItems)
                 {
 
-                    if (!itemDomain.LootPileItems.Where(x => x.ItemMasterId == db_item.ItemMasterId).Any())
+                    if (!itemDomain.LootPileItems.Where(x => x.LootId == db_item.LootId).Any())
                     {
                         //LootPileItemsLootIdsToDelete.Add(db_item.LootId);
                         db_item.IsDeleted = true;
@@ -2270,63 +2276,70 @@ namespace DAL.Services
 
                 foreach (var model_item in itemDomain.LootPileItems)
                 {
-                    if (!LootPileItems.Where(x => x.ItemMasterId == model_item.ItemMasterId).Any())
+                    if (!LootPileItems.Where(x => x.LootId == model_item.LootId).Any())
                     {
-                        ItemMasterIdsToAdd.Add(model_item);
+                        LootItemIdsToAdd.Add(model_item);
                     }
-                    else
-                    { var rec = LootPileItems.Where(x => x.ItemMasterId == model_item.ItemMasterId).FirstOrDefault();
-                        if (model_item.Qty != rec.Quantity)
-                        {
-                            rec.Quantity = model_item.Qty;
-                        }
-                    }
-                    
-                    
+                    //else
+                    //{
+                    //    var rec = LootPileItems.Where(x => x.ItemMasterId == model_item.ItemMasterId).FirstOrDefault();
+                    //    if (model_item.Qty != rec.Quantity)
+                    //    {
+                    //        rec.Quantity = model_item.Qty;
+                    //    }
+                    //}
+
+
                 }
                 _context.SaveChanges();
-                if (ItemMasterIdsToAdd.Any())
+                if (LootItemIdsToAdd.Any())
                 {
-                    int index = 0;
-                    List<LootPileItem> dtList = ItemMasterIdsToAdd.Select(x => new LootPileItem()
+                    List<ItemMasterLoot> itemMasterLoots = new List<ItemMasterLoot>();
+                    foreach (var item in LootItemIdsToAdd)
                     {
-                        RowNum = index = Getindex(index),
-                        ItemMasterId = x.ItemMasterId,
-                        Qty = x.Qty
-                    }).ToList();
-
-                    DataTable DT_List = new DataTable();
-
-                    if (dtList.Count > 0)
-                    {
-                        DT_List = utility.ToDataTable<LootPileItem>(dtList);
+                        itemMasterLoots.Add(new ItemMasterLoot() { LootId = item.LootId });
                     }
+                    MoveLoot(itemMasterLoots, itemDomain.LootId);
+                    //int index = 0;
+                    //List<LootPileItem> dtList = ItemMasterIdsToAdd.Select(x => new LootPileItem()
+                    //{
+                    //    RowNum = index = Getindex(index),
+                    //    ItemMasterId = x.ItemMasterId,
+                    //    Qty = x.Qty
+                    //}).ToList();
 
-                    string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+                    //DataTable DT_List = new DataTable();
 
-                    using (SqlConnection con = new SqlConnection(consString))
-                    {
+                    //if (dtList.Count > 0)
+                    //{
+                    //    DT_List = utility.ToDataTable<LootPileItem>(dtList);
+                    //}
 
-                        using (SqlCommand cmd = new SqlCommand("LootPile_UpdateItems"))
-                        {
-                            cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.Connection = con;
-                            cmd.Parameters.AddWithValue("@LootPileId", itemDomain.LootId);
-                            cmd.Parameters.AddWithValue("@ItemMasterIdsToAdd", DT_List);
-                            cmd.Parameters.AddWithValue("@RulesetID", itemDomain.RuleSetId);
-                            con.Open();
-                            try
-                            {
-                                var a = cmd.ExecuteNonQuery();
-                            }
-                            catch (Exception ex)
-                            {
-                                con.Close();
-                                throw ex;
-                            }
-                            con.Close();
-                        }
-                    }
+                    //string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+                    //using (SqlConnection con = new SqlConnection(consString))
+                    //{
+
+                    //    using (SqlCommand cmd = new SqlCommand("LootPile_UpdateItems"))
+                    //    {
+                    //        cmd.CommandType = CommandType.StoredProcedure;
+                    //        cmd.Connection = con;
+                    //        cmd.Parameters.AddWithValue("@LootPileId", itemDomain.LootId);
+                    //        cmd.Parameters.AddWithValue("@ItemMasterIdsToAdd", DT_List);
+                    //        cmd.Parameters.AddWithValue("@RulesetID", itemDomain.RuleSetId);
+                    //        con.Open();
+                    //        try
+                    //        {
+                    //            var a = cmd.ExecuteNonQuery();
+                    //        }
+                    //        catch (Exception ex)
+                    //        {
+                    //            con.Close();
+                    //            throw ex;
+                    //        }
+                    //        con.Close();
+                    //    }
+                    //}
                 }
             }
         }
@@ -2529,6 +2542,11 @@ namespace DAL.Services
 
                 if (dtList.Count > 0)
                 {
+                    DT_List = utility.ToDataTable<CommonID>(dtList);
+                }
+                else
+                {
+                    dtList.Add(new CommonID { ID = 0 });
                     DT_List = utility.ToDataTable<CommonID>(dtList);
                 }
 

@@ -177,7 +177,12 @@
     display: none
   }
 }
-
+@media(max-width:1200.5px) and (min-width:1199.5px)
+{
+  .visible-tab .dropdown-buttons {
+    display:none;
+  }
+}
 @media(max-width:1024px) and (min-width:768px) {
   .hidden-tab {
     display: none;
@@ -262,7 +267,7 @@
   white-space: nowrap;
 }
 
-@media (max-width:1199px) and (min-width:992px) {
+@media (max-width:1199.5px) and (min-width:992px) {
   .thumbnail {
     width: 100%
   }

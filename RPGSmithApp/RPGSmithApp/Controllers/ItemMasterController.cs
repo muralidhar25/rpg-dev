@@ -1009,7 +1009,7 @@ namespace RPGSmithApp.Controllers
         #endregion
         #region Loot
         [HttpPost("AddItemMastersToLoot")]
-        public async Task<IActionResult> AddItemMastersToLoot([FromBody] AddLoot addLoot, int rulesetID)
+        public async Task<IActionResult> AddItemMastersToLoot([FromBody] AddLoot addLoot, int rulesetID, int selectedLootPileId=-1)
         {
             //ItemList = new List<CommonID>();
             //ItemList.Add(new CommonID() { ID = 8499 });
@@ -1018,7 +1018,7 @@ namespace RPGSmithApp.Controllers
             {
                 var ItemList = addLoot.lootItemsToAdd;
                 var LootTemplatesList = addLoot.lootTemplatesToAdd;
-                await _itemMasterService._AddItemsToLoot(ItemList, LootTemplatesList, rulesetID);
+                await _itemMasterService._AddItemsToLoot(ItemList, LootTemplatesList, rulesetID, selectedLootPileId);
             }
             catch (Exception ex)
             {
@@ -2121,19 +2121,23 @@ namespace RPGSmithApp.Controllers
         [HttpGet("GetLootPileItemsToAdd")]
         public async Task<IActionResult> GetLootPileItemsToAdd(int RulesetId)
         {
-            List<ItemMasterForLootPile> list = new List<ItemMasterForLootPile>();
-            var ItemList = _itemMasterService.GetItemMastersByRuleSetId_add(RulesetId, true);
-            //foreach (var item in ItemList)
-            //{
-            //    ItemMasterForLootPile obj = new ItemMasterForLootPile()
-            //    {
-            //        ImageUrl = item.ItemImage,
-            //        ItemMasterId = item.ItemMasterId,
-            //        Name = item.ItemName
-            //    };
-            //    list.Add(obj);
-            //}
-            return Ok(ItemList.itemMaster_Bundle);
+            //List<ItemMasterForLootPile> list = new List<ItemMasterForLootPile>();
+            //var ItemList = _itemMasterService.GetItemMastersByRuleSetId_add(RulesetId, true);
+            ////foreach (var item in ItemList)
+            ////{
+            ////    ItemMasterForLootPile obj = new ItemMasterForLootPile()
+            ////    {
+            ////        ImageUrl = item.ItemImage,
+            ////        ItemMasterId = item.ItemMasterId,
+            ////        Name = item.ItemName
+            ////    };
+            ////    list.Add(obj);
+            ////}
+            //return Ok(ItemList.itemMaster_Bundle);
+            List<ItemMasterLoot> list = new List<ItemMasterLoot>();
+            var lootItemsList = await _itemMasterService.GetItemMasterLoots(RulesetId, 1, 9999);
+            lootItemsList = lootItemsList.Where(x => x.IsLootPile == false).ToList();
+            return Ok(lootItemsList);
         }
 
 

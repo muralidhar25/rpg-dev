@@ -2,7 +2,7 @@
 
   <div class="modal-content">
     <div class="modal-header">
-      <h5 class="modal-title" id="colorSelectionPopupTitle">Delete Records</h5>
+      <h5 class="modal-title" id="colorSelectionPopupTitle">Delete Buffs & Effects</h5>
       <!--<a href="https://rpgsmith.com/help/#CampaignInvite" class="help-icon icon icon-Gen-Help" target="_blank"></a>-->
       <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
     </div>
@@ -14,17 +14,17 @@
             <span class="input-group-btn">
               <button type="button" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
             </span>
-            <input type="text" id="addItemSearchQuery" name="addItemSearchQuery" class="form-control" placeholder="Search item"
+            <input type="text" id="addItemSearchQuery" name="addItemSearchQuery" class="form-control" placeholder="Search Buffs & Effects"
                    [(ngModel)]="searchText" />
 
           </div>
         </div>
         <div class="col-12 col-md-12 col-sm-12">
           <fieldset class="form-group input-list input-list-wrap items">
-            <legend *ngIf="itemsList?.length == 0">No Records Available</legend>
+            <legend *ngIf="itemsList?.length == 0">No Buffs & Effects Available</legend>
             <div class="row">
               <div class="col-6">
-                <legend *ngIf="itemsList?.length > 0">Select Records</legend>
+                <legend *ngIf="itemsList?.length > 0">Select Buffs & Effects</legend>
               </div>
               <div class="col-6  text-right">
                 <legend>

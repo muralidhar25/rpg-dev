@@ -34,7 +34,9 @@ export class AddlootComponent implements OnInit {
   characterItemModal: any = new Items();
   searchText: string;
   showLootTemplates: boolean = false;
-  selectedLootTemplates:any[]=[]
+  selectedLootTemplates: any[] = []
+  lootPileList: any[] = [];
+  selectedLootPileItem: any[];
 
   constructor(private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
@@ -67,14 +69,13 @@ export class AddlootComponent implements OnInit {
       this.authService.logout();
     else {
       this.isLoading = true;
-      this.itemMasterService.getItemMasterByRuleset_add<any>(this.rulesetId, true,true)//true
+      ////////////////////////////////////////////////////////
+      this.itemsService.getLootPilesListByRuleSetId<any>(this.rulesetId)
         .subscribe(data => {
-          this.itemsList = data.ItemMaster;
-          this.lootTemplateList = data.LootTemplate
-
-          this.itemsList.forEach(function (val) { val.showIcon = false; val.selected = false; });
-          this.lootTemplateList.forEach(function (val) { val.showIcon = false; val.selected = false; });
-          this.isLoading = false;
+          this.lootPileList = data;
+          debugger
+          this.selectedLootPileItem = [];
+          this.selectedLootPileItem.push(this.lootPileList[0]);
         }, error => {
           this.isLoading = false;
           let Errors = Utilities.ErrorDetail("", error);
@@ -82,7 +83,26 @@ export class AddlootComponent implements OnInit {
             //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
             this.authService.logout(true);
           }
-        }, () => { });
+        }, () => {
+          this.itemMasterService.getItemMasterByRuleset_add<any>(this.rulesetId, true, true)//true
+            .subscribe(data => {
+              this.itemsList = data.ItemMaster;
+              this.lootTemplateList = data.LootTemplate
+
+              this.itemsList.forEach(function (val) { val.showIcon = false; val.selected = false; });
+              this.lootTemplateList.forEach(function (val) { val.showIcon = false; val.selected = false; });
+              this.isLoading = false;
+            }, error => {
+              this.isLoading = false;
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                this.authService.logout(true);
+              }
+            }, () => { });
+        });
+      ///////////////////////////////////////////////////////////
+
     }
   }
   setItemMaster(event: any, itemMaster: any) {
@@ -158,25 +178,33 @@ export class AddlootComponent implements OnInit {
       return item;
     })
     if ((this.characterItemModal.multiItemMasters == undefined && this.characterItemModal.multiItemMasterBundles.length == 0) && (this.selectedLootTemplates == undefined || this.selectedLootTemplates.length==0)) {
-      this.alertService.showMessage("Please select new Item Template to Add.", "", MessageSeverity.error);
+      this.alertService.showMessage("Please select new Item Template or Loot Template to Add.", "", MessageSeverity.error);
     }
     else if ((this.characterItemModal.multiItemMasters.length == 0 && this.characterItemModal.multiItemMasterBundles.length == 0) && (this.selectedLootTemplates.length == 0)) {
-      this.alertService.showMessage("Please select new Item Template to Add.", "", MessageSeverity.error);
+      this.alertService.showMessage("Please select new Item Template or Loot Template to Add.", "", MessageSeverity.error);
+    }
+    else if (this.characterItemModal.multiItemMasters && this.characterItemModal.multiItemMasters.length != 0 && (this.selectedLootPileItem == undefined || this.selectedLootPileItem.length == 0)) {
+      debugger
+      this.alertService.showMessage("Please select Drop to Loot Pile for selected Item Templates.", "", MessageSeverity.error);
     }
     else {
       if (this.characterItemModal.view === VIEW.DUPLICATE) {
         //this.duplicateAbility(ability);
       }
       else {
-        this.addEditItem(itemMaster, this.selectedLootTemplates);
+        let selectedLootPileID = -1;
+        if (this.selectedLootPileItem && this.selectedLootPileItem.length) {
+          selectedLootPileID = this.selectedLootPileItem[0].lootId
+        }
+        this.addEditItem(itemMaster, this.selectedLootTemplates, selectedLootPileID);
       }
     }
   }
 
-  addEditItem(modal: any, lootTemplate) {
+  addEditItem(modal: any, lootTemplate, selectedLootPileId: number) {
     //console.log('modal data', modal.multiItemMasters);
     this.isLoading = true;
-    this.lootService.addLootItem(modal.multiItemMasters, lootTemplate, this.rulesetId)
+    this.lootService.addLootItem(modal.multiItemMasters, lootTemplate, this.rulesetId, selectedLootPileId)
       .subscribe(
       data => {
         //console.log(data);
@@ -230,5 +258,21 @@ export class AddlootComponent implements OnInit {
 
   ShowLootItems() {
     this.showLootTemplates = !this.showLootTemplates;
+  }
+  get lootItemsSettings() {
+    return {
+      primaryKey: "lootId",
+      labelKey: "itemName",
+      text: "Search Loot Pile",
+      enableCheckAll: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      singleSelection: true,
+      limitSelection: false,
+      enableSearchFilter: false,
+      classes: "myclass custom-class ",
+      showCheckbox: false,
+      position: "top"
+    };
   }
 }

@@ -25,7 +25,7 @@
           <span class="input-group-btn">
             <button type="button" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
           </span>
-          <input type="text" id="addItemSearchQuery" name="addItemSearchQuery" class="form-control" placeholder="Search item"
+          <input type="text" id="addItemSearchQuery" name="addItemSearchQuery" class="form-control" placeholder="Search Monster"
                  [(ngModel)]="searchText" />
 
         </div>
@@ -33,10 +33,10 @@
 
       <div class="col-12 col-md-12 col-sm-12">
         <fieldset class="form-group input-list input-list-wrap items">
-          <legend *ngIf="itemsList?.length == 0">No Items Available</legend>
+          <legend *ngIf="itemsList?.length == 0">No Monsters Available</legend>
           <div class="row" *ngIf="itemsList?.length > 0">
             <div class="col-6">
-              <legend>Select Item(s)</legend>
+              <legend>Select Monster(s)</legend>
             </div>
             <div class="col-6  text-right">
               <legend>

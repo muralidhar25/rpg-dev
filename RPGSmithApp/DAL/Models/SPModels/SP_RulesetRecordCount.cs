@@ -871,15 +871,19 @@ namespace DAL.Models.SPModels
 
         public bool IsVisible { get; set; }
 
-        public List<LootPileItem> LootPileItems { get; set; }
+        public List<LootPileLootItem> LootPileItems { get; set; }
     }
-    public class LootPileItem
-    {
-        public int RowNum { get; set; }        
-        public int ItemMasterId { get; set; }
-        public int Qty { get; set; }
-        public bool IsBundle { get; set; }
+    public class LootPileLootItem
+    {       
+        public int LootId { get; set; }
     }
+    //public class LootPileItem
+    //{
+    //    public int RowNum { get; set; }        
+    //    public int ItemMasterId { get; set; }
+    //    public int Qty { get; set; }
+    //    public bool IsBundle { get; set; }
+    //}
     public class LootPileViewModel
     {
         public int LootId { get; set; }

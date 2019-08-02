@@ -614,7 +614,7 @@ export class LootComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-    this.bsModalRef.content.title = 'Create Loot';
+    this.bsModalRef.content.title = 'Create Loot Pile';
     this.bsModalRef.content.button = 'CREATE';
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
     this.bsModalRef.content.lootPileVM = {

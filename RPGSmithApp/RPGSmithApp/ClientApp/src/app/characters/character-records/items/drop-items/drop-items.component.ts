@@ -158,7 +158,7 @@ export class DropItemsComponent implements OnInit {
     return {
       primaryKey: "lootId",
       labelKey: "itemName",
-      text: "Search item(s)",
+      text: "Search Loot Pile",
       enableCheckAll: false,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',

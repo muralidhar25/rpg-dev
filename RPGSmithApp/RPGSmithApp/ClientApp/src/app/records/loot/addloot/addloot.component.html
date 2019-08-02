@@ -87,7 +87,32 @@
 
 
   <div class="modal-footer">
-    <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
-    <button [disabled]="isLoading" type="submit" class="btn btn-accent">{{_view}}</button>
-  </div>
+    <div class="form-row" *ngIf="!showLootTemplates">
+      <div class="col-12">
+        <div class="form-group d-flex align-items-center">
+          <div class="col-4">
+            <label for="newItems">Add to Loot Pile</label>
+          </div>
+          <div class="col-8">
+            <angular2-multiselect id="moveLoot" [data]="lootPileList" [(ngModel)]="selectedLootPileItem" name="newItems" [settings]="lootItemsSettings">
+              <c-item id="item">
+                <ng-template let-item="item">
+                  <span class="associate-label-name">{{item.itemName}}</span>
+                  <img [src]="item.itemImage" class="pull-right associate-img"
+                       onerror="this.src = '../assets/images/DefaultImages/Item.jpg'" />
+                </ng-template>
+              </c-item>
+            </angular2-multiselect>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--<div class="form-separator"></div>-->
+    <div class="form-row">
+      <div class="col-12 d-flex justify-flex-end">        
+        <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
+        <button [disabled]="isLoading" type="submit" class="btn btn-accent">{{_view}}</button>
+      </div>
+      </div>
+    </div>
 </form>

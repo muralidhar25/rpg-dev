@@ -10,7 +10,7 @@ import { FileUploadService } from '../../../core/common/file-upload.service';
 import { ItemMasterService } from '../../../core/services/item-master.service';
 import { SharedService } from '../../../core/services/shared.service';
 import { AuthService } from '../../../core/auth/auth.service';
-import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
+import { AlertService, MessageSeverity, DialogType } from '../../../core/common/alert.service';
 import { User } from '../../../core/models/user.model';
 import { DBkeys } from '../../../core/common/db-keys';
 import { DiceComponent } from '../../../shared/dice/dice/dice.component';
@@ -49,6 +49,7 @@ export class CreateLootPileComponent implements OnInit {
   itemList: any[] = [];
   lootPileItems: any[] = [];
   selectedItems: any[] = [];
+  OldSelectedItems: any[] = [];
   itemQty: number[] = [];
   _view: any;
 
@@ -89,6 +90,20 @@ export class CreateLootPileComponent implements OnInit {
       //this._ruleSetId = this.itemMasterFormModal.ruleSetId;
       if (_lootPileVM.itemList) {
         this.selectedItems = _lootPileVM.itemList;
+        
+        if (this.selectedItems && this.selectedItems.length) {
+          this.OldSelectedItems = Object.assign([], this.selectedItems);
+          this.selectedItems.map((x) => {
+            this.lootPileItems.push(x);            
+          })
+          debugger
+          this.lootPileItems.sort(function (a, b) {
+            if (a.itemName < b.itemName) { return -1; }
+            if (a.itemName > b.itemName) { return 1; }
+            return 0;
+          });
+        
+        }
       }
       
 
@@ -129,12 +144,21 @@ export class CreateLootPileComponent implements OnInit {
     this.isLoading = true;
     this.lootService.getLootPileItemsToAdd<any>(this.ruleSetId)
       .subscribe(data => {
-        this.lootPileItems = data;
-        this.lootPileItems.map(x => {
-          if (!x.qty) {
-            x.qty = 1;
-          }          
-        });
+        if (data) {
+          if (data.length) {
+            data.map((x) => {
+              this.lootPileItems.push(x);
+            });
+            debugger
+            this.lootPileItems.sort(function (a, b) {
+              if (a.itemName < b.itemName) { return -1; }
+              if (a.itemName > b.itemName) { return 1; }
+              return 0;
+            });
+          } 
+        }
+        
+        
         this.isLoading = false;
       }, error => {
         this.isLoading = false;
@@ -162,8 +186,24 @@ export class CreateLootPileComponent implements OnInit {
   }
 
   submitForm(lootPile: any) {
-    debugger
-    this.validateSubmit(lootPile);
+    let removeItemFlag = false;
+    if (this.button == "UPDATE" && this.OldSelectedItems && this.OldSelectedItems.length && this.selectedItems && this.selectedItems.length) {
+      this.OldSelectedItems.map((x) => {
+        if (!this.selectedItems.find(item=> item.lootId==x.lootId)) {
+          removeItemFlag = true;
+        }
+      })
+
+    }
+    if (removeItemFlag) {
+      let message = 'Removing this Loot Item from the Pile will delete the item, If you want to move the item elsewhere use the "Move Loot" function. Would you like to proceed and delete this loot item?';
+      this.alertService.showDialog(message,
+        DialogType.confirm, () => this.validateSubmit(lootPile), null, 'Yes', 'No');
+    }
+    else {
+      this.validateSubmit(lootPile);
+    }
+    
   }
   validateSubmit(lootPile: any) {
     debugger;
@@ -254,9 +294,9 @@ export class CreateLootPileComponent implements OnInit {
   private submit(lootPile: any) {
     let lootItems = [];
     if (this.selectedItems) {
-      this.selectedItems.map(x => {
-        //lootItems.push({ itemMasterId: x.itemMasterId, name: x.itemName, ImageUrl: x.itemImage, IsBundle: x.isBundle });
-        lootItems.push({ itemMasterId: x.itemMasterId, qty: x.qty, isBundle: x.isBundle });
+      this.selectedItems.map(x => {        
+        //lootItems.push({ itemMasterId: x.itemMasterId, qty: x.qty, isBundle: x.isBundle });
+        lootItems.push({ lootId: x.lootId});
       });
     } 
     lootPile.itemList = lootItems;
@@ -443,15 +483,15 @@ export class CreateLootPileComponent implements OnInit {
 
   get itemSettings() {
     return {
-      primaryKey: "itemMasterId",
+      primaryKey: "lootId",
       labelKey: "itemName",
-      text: "Search item(s)",
+      text: "Search Loot",
       enableCheckAll: true,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',
       singleSelection: false,
       limitSelection: false,
-      enableSearchFilter: false,
+      enableSearchFilter: true,
       classes: "myclass custom-class ",
       showCheckbox: true,
       position: "top"
