@@ -1,4 +1,5 @@
-﻿using DAL.Services;
+﻿using DAL.Models.APIModels;
+using DAL.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -772,7 +773,16 @@ namespace DAL.Models.SPModels
         RulesetSpells = 3,
         CharacterSpells = 4,
         RulesetAbilities = 5,
-        CharacterAbilities = 6
+        CharacterAbilities = 6,
+
+        RulesetLoot = 10,
+        RulesetLootTemplate = 11,
+        RulesetBuffAndEffect =12,
+        CharacterBuffAndEffect=13,
+        RulesetMonster = 14,
+        RulesetMonsterTemplate = 15,
+        CharacterHandout = 16,
+        RulesetHandout = 17,
     }
     public class SearchModel
     {
@@ -783,7 +793,17 @@ namespace DAL.Models.SPModels
         public ItemFilter ItemFilters { get; set; }
         public SpellFilter SpellFilters { get; set; }
         public AbilityFilter AbilityFilters { get; set; }
+        public BuffAndEffectFilter BuffAndEffectFilters { get; set; }
+        public LootFilter LootFilters { get; set; }
+        public MonsterFilter MonsterFilters { get; set; }
         public EveryThingFilter EverythingFilters { get; set; }
+        public HandoutFilter HandoutFilters { get; set; }
+    }
+    public class HandoutFilter
+    {
+
+        public bool IsHandoutName { get; set; }
+        public bool IsHandoutFileType { get; set; }
     }
     public class ItemFilter
     {
@@ -818,6 +838,50 @@ namespace DAL.Models.SPModels
         public bool IsAbilityDesc { get; set; }
         public bool IsAbilityLevel { get; set; }
     }
+    public class BuffAndEffectFilter
+    {
+
+        public bool IsBuffAndEffectName { get; set; }
+        public bool IsBuffAndEffectTags { get; set; }
+        public bool IsBuffAndEffectStats { get; set; }
+        public bool IsBuffAndEffectDesc { get; set; }
+    }
+    public class LootFilter
+    {
+        //Name
+        //Tags
+        //Description
+        //Items
+        //Stats(Loot only)
+        //Rarity(Loot only)
+        //Spells(Loot only)
+        //Abilites(Loot only)
+        public bool IsLootName { get; set; }
+        public bool IsLootTags { get; set; }
+        public bool IsLootStats { get; set; }
+        public bool IsLootDesc { get; set; }
+        public bool IsLootRarity { get; set; }
+        public bool IsLootItemAssociated { get; set; }
+        public bool IsLootSpellAssociated { get; set; }
+        public bool IsLootAbilityAssociated { get; set; }
+        
+
+    }
+    public class MonsterFilter
+    {     
+        public bool IsMonsterName { get; set; }
+        public bool IsMonsterTags { get; set; }
+        public bool IsMonsterStats { get; set; }
+        public bool IsMonsterDesc { get; set; }
+        public bool IsMonsterHealth { get; set; }
+        public bool IsMonsterAC { get; set; }
+        public bool IsMonsterChallengeRating { get; set; }
+        public bool IsMonsterXPValue { get; set; }
+        public bool IsMonsterItemAssociated { get; set; }
+        public bool IsMonsterSpellAssociated { get; set; }
+        public bool IsMonsterAbilityAssociated { get; set; }
+        public bool IsMonsterBEAssociated { get; set; }
+    }
     public class EveryThingFilter
     {
         public bool IsEverythingName { get; set; }
@@ -830,6 +894,7 @@ namespace DAL.Models.SPModels
         public int id { get; set; }
         public string image { get; set; }
         public string name { get; set; }
+        public string extension { get; set; }
         public SP_SearchType RecordType { get; set; }
 
         public CharacterAbility CharacterAbility { get; set; }
@@ -838,6 +903,13 @@ namespace DAL.Models.SPModels
         public ItemMaster RulesetItem { get; set; }
         public Ability RulesetAbility { get; set; }
         public Spell RulesetSpell { get; set; }
+
+        public CharacterBuffAndEffect CharacterBuffAndEffect { get; set; }
+        public BuffAndEffect RulesetBuffAndEffect { get; set; }
+        public ItemMasterLoot RulesetLoot { get; set; }
+        public LootTemplate RulesetLootTemplate { get; set; }
+        public Monster RulesetMonster { get; set; }
+        public MonsterTemplate_Bundle RulesetMonsterTemplate { get; set; }
     }
     public class ItemMaster_Bundle : ItemMaster
     {
@@ -1009,4 +1081,14 @@ public bool IsLootPile { get; set; }
     public class ItemMasterForLootPile    {
         public int ItemMasterId { get; set; }
         public string Name { get; set; }        public string ImageUrl { get; set; }        public bool IsBundle { get; set; }    }
+    public class HandoutViewModel {
+        public string Name { get; set; }
+        public string url { get; set; }
+        public string type { get; set; }
+        public string extension { get; set; }
+    }
+    public class BlobsSearch {
+        public BlobResponse blobResponse { get; set; }
+        //count = Count, blobResponse = objBlobResponse, previousContainerImageNumber = previousContainerImageNumber
+    }
 }

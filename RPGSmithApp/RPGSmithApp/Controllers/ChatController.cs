@@ -31,6 +31,7 @@ namespace RPGSmithApp.Controllers
         [HttpPost("ListFriends")]
         public IActionResult ListFriends([FromBody] dynamic payload)
         {
+            
             GroupChatHub hub = new GroupChatHub(_campaignService);
                var res = hub.ConnectedParticipants((string)payload.currentUserId);
             return Json(res);

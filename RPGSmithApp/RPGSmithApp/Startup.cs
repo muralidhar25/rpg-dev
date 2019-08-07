@@ -90,6 +90,7 @@ namespace RPGSmithApp
                 options.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
                 options.ClaimsIdentity.UserIdClaimType = OpenIdConnectConstants.Claims.Subject;
                 options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
+
             });
 
             // Register the OpenIddict services.
@@ -100,6 +101,8 @@ namespace RPGSmithApp
                 options.EnableTokenEndpoint("/connect/token");
                 options.AllowPasswordFlow();
                 options.AllowRefreshTokenFlow();
+                options.SetAccessTokenLifetime(new TimeSpan(4, 00, 00));
+                options.SetIdentityTokenLifetime(new TimeSpan(4, 00, 00));
                 options.AllowCustomFlow("urn:ietf:params:oauth:grant-type:facebook_identity_token");
                 options.AllowCustomFlow("urn:ietf:params:oauth:grant-type:google_identity_token");
                 //if (_hostingEnvironment.IsDevelopment()) //Uncomment to only disable Https during development

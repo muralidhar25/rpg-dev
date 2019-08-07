@@ -31,13 +31,13 @@ export class SearchService extends EndpointFactory {
             .catch(error => {
                 return this.handleError(error, () => this.searchCharacters(query, userId));
             });
-    }
-  searchRecords<T>(searchModel: BasicSearch): Observable<T> {
-    let endpointUrl = `${this.searchRecordsApi}`;
+  }
+  searchRecords<T>(searchModel: BasicSearch, isCampaignSearch: boolean, includeHandout: boolean): Observable<T> {
+    let endpointUrl = `${this.searchRecordsApi}?isCampaignSearch=${isCampaignSearch}?includeHandout=${includeHandout}`;
 
     return this.http.post<T>(endpointUrl, JSON.stringify(searchModel), this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.searchRecords(searchModel));
+        return this.handleError(error, () => this.searchRecords(searchModel, isCampaignSearch, includeHandout));
       });
   }
   getFilters<T>(searchModel: BasicSearch): Observable<T> {
@@ -45,7 +45,7 @@ export class SearchService extends EndpointFactory {
 
     return this.http.post<T>(endpointUrl, JSON.stringify(searchModel), this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.searchRecords(searchModel));
+        return this.handleError(error, () => this.getFilters(searchModel));
       });
   }
 }

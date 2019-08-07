@@ -157,7 +157,7 @@ namespace DAL.Services
              x.PlayerCampaignID == model.CampaignId
              && x.SendByUserID == model.SendByUserId
              && x.PlayerUserID == playerUserId
-             && x.PlayerEmail == model.UserName
+             && x.PlayerEmail == model.UserName && x.IsAccepted!=true
              && (x.IsDeleted != true)
              ).Any();
         }

@@ -57,6 +57,7 @@ namespace RPGSmithApp.Controllers
         private readonly IEmailer _emailer;
         private readonly ICoreRuleset _coreRulesetService;
         private readonly ICommonFuncsCoreRuleSet _commonFuncsCoreRuleSet;
+        private readonly BlobService bs = new BlobService(null, null, null);
 
         public RuleSetController(IRuleSetService ruleSetService,
             ICharacterService characterService,
@@ -1659,7 +1660,7 @@ namespace RPGSmithApp.Controllers
 
         #region SearchResults        
         [HttpPost("GetSearchResults")]
-        public IActionResult GetSearchResults([FromBody] SearchModel searchModel)
+        public IActionResult GetSearchResults([FromBody] SearchModel searchModel, bool isCampaignSearch =false ,bool includeHandout=false)
         {
             var results = new int[] { };
             try
@@ -1690,6 +1691,15 @@ namespace RPGSmithApp.Controllers
                 List<ItemMaster_Bundle> itemMasters = new List<ItemMaster_Bundle>();
                 List<Spell> spells = new List<Spell>();
                 List<Ability> abilities = new List<Ability>();
+
+                List<BuffAndEffectVM> buffAndEffects = new List<BuffAndEffectVM>();
+                List<CharacterBuffAndEffect> characterBuffAndEffects = new List<CharacterBuffAndEffect>();
+                List<ItemMasterLoot> loots = new List<ItemMasterLoot>();
+                List<LootTemplate> lootTemplates = new List<LootTemplate>();
+                List<Monster> monsters = new List<Monster>();
+                List<MonsterTemplate_Bundle> monsterTemplates = new List<MonsterTemplate_Bundle>();
+                List<HandoutViewModel> handouts = new List<HandoutViewModel>();
+
                 bool skipGettingRecords = false;
                 bool FlagIsInitailItemOfList = true;
                 foreach (string item in searchText.Split(' '))
@@ -1702,36 +1712,47 @@ namespace RPGSmithApp.Controllers
                         switch (searchModel.SearchType)
                         {
                             case SP_SearchType.CharacterAbilities:
-                                if (characterAbilities.Select(x => x.CharacterAbilityId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                if (!isCampaignSearch)
                                 {
-                                    skipGettingRecords = true;
-                                }
-                                if (!skipGettingRecords)
-                                {
-                                    characterAbilities = (_ruleSetService.SearchCharacterAbilities(searchModel, characterAbilities.Select(x => x.CharacterAbilityId).ToArray()));
+                                    if (characterAbilities.Select(x => x.CharacterAbilityId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                    {
+                                        skipGettingRecords = true;
+                                    }
+                                    if (!skipGettingRecords)
+                                    {
+                                        characterAbilities = (_ruleSetService.SearchCharacterAbilities(searchModel, characterAbilities.Select(x => x.CharacterAbilityId).ToArray()));
+
+                                    }
 
                                 }
+                                
                                 break;
                             case SP_SearchType.CharacterSpells:
-                                if (characterSpells.Select(x => x.CharacterSpellId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                if (!isCampaignSearch)
                                 {
-                                    skipGettingRecords = true;
-                                }
-                                if (!skipGettingRecords)
-                                {
-                                    characterSpells = (_ruleSetService.SearchCharacterSpells(searchModel, characterSpells.Select(x => x.CharacterSpellId).ToArray()));
+                                    if (characterSpells.Select(x => x.CharacterSpellId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                    {
+                                        skipGettingRecords = true;
+                                    }
+                                    if (!skipGettingRecords)
+                                    {
+                                        characterSpells = (_ruleSetService.SearchCharacterSpells(searchModel, characterSpells.Select(x => x.CharacterSpellId).ToArray()));
 
+                                    }
                                 }
                                 break;
                             case SP_SearchType.CharacterItems:
-                                if (items.Select(x => x.ItemId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                if (!isCampaignSearch)
                                 {
-                                    skipGettingRecords = true;
-                                }
-                                if (!skipGettingRecords)
-                                {
-                                    items = (_ruleSetService.SearchCharacterItems(searchModel, items.Select(x => x.ItemId).ToArray()));
+                                    if (items.Select(x => x.ItemId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                    {
+                                        skipGettingRecords = true;
+                                    }
+                                    if (!skipGettingRecords)
+                                    {
+                                        items = (_ruleSetService.SearchCharacterItems(searchModel, items.Select(x => x.ItemId).ToArray()));
 
+                                    }
                                 }
                                 break;
                             case SP_SearchType.RulesetItems:
@@ -1767,13 +1788,155 @@ namespace RPGSmithApp.Controllers
 
                                 }
                                 break;
+                                ///////////////////////////////////////////////////////////////////////
+                            case SP_SearchType.RulesetLoot:
+                                if (loots.Select(x => x.LootId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                {
+                                    skipGettingRecords = true;
+                                }
+                                if (!skipGettingRecords)
+                                {
+                                    loots = (_ruleSetService.SearchRulesetLoots(searchModel, loots.Select(x => x.LootId).ToArray(), GetUserId()));
+
+                                }
+                                break;
+                            case SP_SearchType.RulesetLootTemplate:
+                                if (lootTemplates.Select(x => x.LootTemplateId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                {
+                                    skipGettingRecords = true;
+                                }
+                                if (!skipGettingRecords)
+                                {
+                                    lootTemplates = (_ruleSetService.SearchRulesetLootTemplates(searchModel, lootTemplates.Select(x => x.LootTemplateId).ToArray(), GetUserId()));
+
+                                }
+                                break;
+                            case SP_SearchType.CharacterBuffAndEffect:
+                                if (!isCampaignSearch)
+                                {
+                                    if (characterBuffAndEffects.Select(x => x.CharacterBuffAandEffectId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                    {
+                                        skipGettingRecords = true;
+                                    }
+                                    if (!skipGettingRecords)
+                                    {
+                                        characterBuffAndEffects = (_ruleSetService.SearchCharacterBuffAandEffects(searchModel, characterBuffAndEffects.Select(x => x.CharacterBuffAandEffectId).ToArray(), GetUserId()));
+
+                                    }
+                                }
+                                break;
+                            case SP_SearchType.RulesetBuffAndEffect:
+                                if (buffAndEffects.Select(x => x.BuffAndEffectId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                {
+                                    skipGettingRecords = true;
+                                }
+                                if (!skipGettingRecords)
+                                {
+                                    buffAndEffects = (_ruleSetService.SearchRulesetBuffAndEffects(searchModel, buffAndEffects.Select(x => x.BuffAndEffectId).ToArray(), GetUserId()));
+
+                                }
+                                break;
+                            case SP_SearchType.RulesetMonster:
+                                if (monsters.Select(x => x.MonsterId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                {
+                                    skipGettingRecords = true;
+                                }
+                                if (!skipGettingRecords)
+                                {
+                                    monsters = (_ruleSetService.SearchRulesetMonsters(searchModel, monsters.Select(x => x.MonsterId).ToArray(), GetUserId()));
+
+                                }
+                                break;
+                            case SP_SearchType.RulesetMonsterTemplate:
+                                if (monsterTemplates.Select(x => x.MonsterTemplateId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                {
+                                    skipGettingRecords = true;
+                                }
+                                if (!skipGettingRecords)
+                                {
+                                    monsterTemplates = (_ruleSetService.SearchRulesetMonsterTemplates(searchModel, monsterTemplates.Select(x => x.MonsterTemplateId).ToArray(), GetUserId()));
+
+                                }
+                                break;
+                            case SP_SearchType.CharacterHandout:
+                                if (!isCampaignSearch)
+                                {
+                                    GetFilteredHandouts(searchModel, searchText, handouts);
+                                    //var handoutLists_2 = bs.All_BlobMyHandoutsForSearchAsync("user-" + GetUserId() + "-handout" + "-" + searchModel.RulesetID).Result;
+                                    //handoutLists_2 = handoutLists_2.Where(x => x.name.Contains(searchText)).ToList();
+                                    //foreach (var _blobItem in handoutLists_2)
+                                    //{
+                                    //    HandoutViewModel obj = new HandoutViewModel()
+                                    //    {
+                                    //        Name = System.IO.Path.GetFileName(_blobItem.name),
+                                    //        type = _blobItem.ContentType,
+                                    //        url = _blobItem.AbsoluteUri,
+                                    //        extension = System.IO.Path.GetExtension(_blobItem.name)
+                                    //    };
+                                    //    handouts.Add(obj);
+                                    //}
+                                    //if (handouts.Select(x => x.AbilityId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                    //{
+                                    //    skipGettingRecords = true;
+                                    //}
+                                    //if (!skipGettingRecords)
+                                    //{
+                                    //    handouts = (_ruleSetService.SearchRulesetAbilities(searchModel, abilities.Select(x => x.AbilityId).ToArray()));
+
+                                    //}
+                                }
+
+                                    break;
+                            case SP_SearchType.RulesetHandout:
+                                GetFilteredHandouts(searchModel, searchText, handouts);
+                                //var handoutLists_1 = bs.All_BlobMyHandoutsForSearchAsync("user-" + GetUserId() + "-handout" + "-" + searchModel.RulesetID).Result;
+                                //handoutLists_1 = handoutLists_1.Where(x => x.name.Contains(searchText)).ToList();
+                                //foreach (var _blobItem in handoutLists_1)
+                                //{
+                                //    HandoutViewModel obj = new HandoutViewModel()
+                                //    {
+                                //        Name = System.IO.Path.GetFileName(_blobItem.name),
+                                //        type = _blobItem.ContentType,
+                                //        url = _blobItem.AbsoluteUri,
+                                //        extension=System.IO.Path.GetExtension(_blobItem.name)
+
+                                //    };
+                                //    handouts.Add(obj);
+                                //}
+                                //if (handouts.Select(x => x.AbilityId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                //{
+                                //    skipGettingRecords = true;
+                                //}
+                                //if (!skipGettingRecords)
+                                //{
+                                //    handouts = (_ruleSetService.SearchRulesetAbilities(searchModel, abilities.Select(x => x.AbilityId).ToArray()));
+
+                                //}
+                                break;
+                            ///////////////////////////////////////////////////////////////////////////////////
                             case SP_SearchType.Everything:
-                                characterAbilities = (_ruleSetService.SearchCharacterAbilities(searchModel, characterAbilities.Select(x => x.CharacterAbilityId).ToArray()));
-                                characterSpells = (_ruleSetService.SearchCharacterSpells(searchModel, characterSpells.Select(x => x.CharacterSpellId).ToArray()));
-                                items = (_ruleSetService.SearchCharacterItems(searchModel, items.Select(x => x.ItemId).ToArray()));
+                                if (!isCampaignSearch)
+                                {
+                                    characterAbilities = (_ruleSetService.SearchCharacterAbilities(searchModel, characterAbilities.Select(x => x.CharacterAbilityId).ToArray()));
+                                    characterSpells = (_ruleSetService.SearchCharacterSpells(searchModel, characterSpells.Select(x => x.CharacterSpellId).ToArray()));
+                                    items = (_ruleSetService.SearchCharacterItems(searchModel, items.Select(x => x.ItemId).ToArray()));
+                                    characterBuffAndEffects = (_ruleSetService.SearchCharacterBuffAandEffects(searchModel, characterBuffAndEffects.Select(x => x.CharacterBuffAandEffectId).ToArray(), GetUserId()));
+                                }
                                 itemMasters = (_ruleSetService.SearchRulesetItems(searchModel, itemMasters.Select(x => x.ItemMasterId).ToArray()));
                                 spells = (_ruleSetService.SearchRulesetSpells(searchModel, spells.Select(x => x.SpellId).ToArray()));
                                 abilities = (_ruleSetService.SearchRulesetAbilities(searchModel, abilities.Select(x => x.AbilityId).ToArray()));
+
+                                loots = (_ruleSetService.SearchRulesetLoots(searchModel, loots.Select(x => x.LootId).ToArray(), GetUserId()));
+                                lootTemplates = (_ruleSetService.SearchRulesetLootTemplates(searchModel, lootTemplates.Select(x => x.LootTemplateId).ToArray(), GetUserId()));
+                                buffAndEffects = (_ruleSetService.SearchRulesetBuffAndEffects(searchModel, buffAndEffects.Select(x => x.BuffAndEffectId).ToArray(), GetUserId()));
+                                monsters = (_ruleSetService.SearchRulesetMonsters(searchModel, monsters.Select(x => x.MonsterId).ToArray(), GetUserId()));
+                                monsterTemplates = (_ruleSetService.SearchRulesetMonsterTemplates(searchModel, monsterTemplates.Select(x => x.MonsterTemplateId).ToArray(), GetUserId()));
+                                if (includeHandout)
+                                {
+                                    GetFilteredHandouts(searchModel, searchText, handouts);
+                                }
+                               
+                                //handouts = (_ruleSetService.SearchRulesetAbilities(searchModel, abilities.Select(x => x.AbilityId).ToArray()));
                                 break;
                             default:
                                 break;
@@ -1800,6 +1963,26 @@ namespace RPGSmithApp.Controllers
 
                     case SP_SearchType.RulesetItems:
                         return Ok(itemMasters.GroupBy(x => x.ItemMasterId).Select(x => x.First()));
+                        //////////////////////////////////////////
+                    case SP_SearchType.RulesetLoot:
+                        return Ok(loots.GroupBy(x => x.LootId).Select(x => x.First()));
+                    case SP_SearchType.RulesetLootTemplate:
+                        return Ok(lootTemplates.GroupBy(x => x.LootTemplateId).Select(x => x.First()));
+                    case SP_SearchType.CharacterBuffAndEffect:
+                        return Ok(characterBuffAndEffects.GroupBy(x => x.CharacterBuffAandEffectId).Select(x => x.First()));
+                    case SP_SearchType.RulesetBuffAndEffect:
+                        return Ok(buffAndEffects.GroupBy(x => x.BuffAndEffectId).Select(x => x.First()));
+                    case SP_SearchType.RulesetMonster:
+                        return Ok(monsters.GroupBy(x => x.MonsterId).Select(x => x.First()));
+                    case SP_SearchType.RulesetMonsterTemplate:
+                        return Ok(monsterTemplates.GroupBy(x => x.MonsterTemplateId).Select(x => x.First()));
+                    case SP_SearchType.CharacterHandout:
+                        return Ok(handouts);
+                    case SP_SearchType.RulesetHandout:
+                        return Ok(handouts);
+                        // return Ok(handouts.GroupBy(x => x.ItemMasterId).Select(x => x.First()));
+                        break;
+                        ////////////////////////////////////////////////////////
                     case SP_SearchType.Everything:
                         characterAbilities = characterAbilities.GroupBy(x => x.CharacterAbilityId).Select(x => x.First()).ToList();
                         abilities = abilities.GroupBy(x => x.AbilityId).Select(x => x.First()).ToList();
@@ -1807,7 +1990,18 @@ namespace RPGSmithApp.Controllers
                         spells = spells.GroupBy(x => x.SpellId).Select(x => x.First()).ToList();
                         items = items.GroupBy(x => x.ItemId).Select(x => x.First()).ToList();
                         itemMasters = itemMasters.GroupBy(x => x.ItemMasterId).Select(x => x.First()).ToList();
-                        return Ok(_ruleSetService.bindEveryThingModel(characterAbilities, abilities, characterSpells, spells, items, itemMasters));
+                        /////////////////////////////////////////////////
+                        loots = loots.GroupBy(x => x.LootId).Select(x => x.First()).ToList();
+                        lootTemplates = lootTemplates.GroupBy(x => x.LootTemplateId).Select(x => x.First()).ToList();
+                        characterBuffAndEffects = characterBuffAndEffects.GroupBy(x => x.CharacterBuffAandEffectId).Select(x => x.First()).ToList();
+                        buffAndEffects = buffAndEffects.GroupBy(x => x.BuffAndEffectId).Select(x => x.First()).ToList();
+                        monsters = monsters.GroupBy(x => x.MonsterId).Select(x => x.First()).ToList();
+                        monsterTemplates = monsterTemplates.GroupBy(x => x.MonsterTemplateId).Select(x => x.First()).ToList();
+                        handouts = handouts;
+
+                        /////////////////////////////////////////////////
+                        return Ok(_ruleSetService.bindEveryThingModel(characterAbilities, abilities, characterSpells, spells, items, itemMasters,
+                            buffAndEffects, characterBuffAndEffects, loots, lootTemplates, monsters, monsterTemplates,handouts, searchModel.CharacterID));
                         break;
                     default:
                         return Ok();
@@ -1817,6 +2011,51 @@ namespace RPGSmithApp.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        private void GetFilteredHandouts(SearchModel searchModel, string searchText, List<HandoutViewModel> handouts)
+        {
+            bool isRecordFilterFlag = (searchModel.SearchType == SP_SearchType.Everything && searchModel.EverythingFilters.IsEverythingName) || (searchModel.HandoutFilters.IsHandoutName || searchModel.HandoutFilters.IsHandoutFileType);
+            if (isRecordFilterFlag)
+            {
+                var handoutLists = bs.All_BlobMyHandoutsForSearchAsync("user-" + GetUserId() + "-handout" + "-" + searchModel.RulesetID).Result;
+
+                if (searchModel.SearchType == SP_SearchType.Everything)
+                {
+                    if (searchModel.EverythingFilters.IsEverythingName)
+                    {
+                        handoutLists = handoutLists.Where(x => x.name.Contains(searchText)).ToList();
+                    }
+                }
+                else
+                {
+                    if (searchModel.HandoutFilters.IsHandoutName && searchModel.HandoutFilters.IsHandoutFileType)
+                    {
+                        handoutLists = handoutLists.Where(x => x.name.Contains(searchText) || System.IO.Path.GetExtension(x.name).Contains(searchText)).ToList();
+                    }
+                    else if (searchModel.HandoutFilters.IsHandoutName)
+                    {
+                        handoutLists = handoutLists.Where(x => x.name.Contains(searchText)).ToList();
+                    }
+                    else if (searchModel.HandoutFilters.IsHandoutFileType)
+                    {
+                        handoutLists = handoutLists.Where(x => System.IO.Path.GetExtension(x.name).Contains(searchText)).ToList();                        
+                    }
+                }
+                    foreach (var _blobItem in handoutLists)
+                    {
+                        HandoutViewModel obj = new HandoutViewModel()
+                        {
+                            Name = System.IO.Path.GetFileName(_blobItem.name),
+                            type = _blobItem.ContentType,
+                            url = _blobItem.AbsoluteUri,
+                            extension = System.IO.Path.GetExtension(_blobItem.name)
+
+                        };
+                        handouts.Add(obj);
+                    }                
+            }
+                       
         }
 
         private string addSingleQuoteforSPIfNeeded(string searchString)
@@ -1844,8 +2083,20 @@ namespace RPGSmithApp.Controllers
                     return Ok(_ruleSetService.SearchCharacterItems(searchModel));
                 case SP_SearchType.RulesetItems:
                     return Ok(_ruleSetService.SearchRulesetItems(searchModel));
+                case SP_SearchType.CharacterBuffAndEffect:
+                    return Ok(_ruleSetService.SearchCharacterBuffAandEffects(searchModel));
+                case SP_SearchType.RulesetBuffAndEffect:
+                    return Ok(_ruleSetService.SearchRulesetBuffAndEffects(searchModel));
+                case SP_SearchType.RulesetLoot:
+                    return Ok(_ruleSetService.SearchRulesetLoots(searchModel));
+                case SP_SearchType.RulesetLootTemplate:
+                    return Ok(_ruleSetService.SearchRulesetLootTemplates(searchModel));
+                case SP_SearchType.RulesetMonster:
+                    return Ok(_ruleSetService.SearchRulesetMonsters(searchModel));
+                case SP_SearchType.RulesetMonsterTemplate:
+                    return Ok(_ruleSetService.SearchRulesetMonsterTemplates(searchModel));
                 case SP_SearchType.Everything:
-                    return Ok(_ruleSetService.SearchEveryThing(searchModel));
+                    return Ok(_ruleSetService.SearchEveryThing(searchModel,searchModel.CharacterID));
                     break;
                 default:
                     return Ok();

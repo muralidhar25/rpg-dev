@@ -32,7 +32,9 @@ export class BasicSearchComponent implements OnInit {
   searchModal: BasicSearch = new BasicSearch();
   headers: HeaderValues = new HeaderValues();
   SEARCHTYPE = SearchType;
-  searchTypeParam : any;
+  searchTypeParam: any;
+  isCampaignSearch: boolean = false;
+
   constructor(private searchService: SearchService, private router: Router, private alertService: AlertService, private sharedService: SharedService,
     private configurations: ConfigurationService, private route: ActivatedRoute, private modalService: BsModalService,
     private localStorage: LocalStoreManager, private authService: AuthService, public appService: AppService1) {
@@ -75,6 +77,23 @@ export class BasicSearchComponent implements OnInit {
       }
       
       this.searchModal.searchString = params['searchText'];
+      let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+      if (user) {
+        if (user.isGm) {
+          if (
+            params['searchType'] == SearchType.RULESETABILITIES ||
+            params['searchType'] == SearchType.RULESETITEMS ||
+            params['searchType'] == SearchType.RULESETSPELLS ||
+            params['searchType'] == SearchType.RULESETLOOT ||
+            params['searchType'] == SearchType.RULESETLOOTTEMPLATE ||
+            params['searchType'] == SearchType.RULESETMONSTER ||
+            params['searchType'] == SearchType.RULESETMONSTERTEMPLATE ||
+            params['searchType'] == SearchType.RULESETBUFFANDEFFECT) {
+            this.isCampaignSearch = true;
+          }
+        }
+      }
+      
     });
 
     this.dropDownText = [
@@ -116,6 +135,41 @@ export class BasicSearchComponent implements OnInit {
       this.searchModal.abilityFilters.isAbilityName = true;
       this.searchModal.abilityFilters.isAbilityStats = true;
       this.searchModal.abilityFilters.isAbilityTags = true;
+    }
+    else if (this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
+      this.searchModal.buffAndEffectFilters.isBuffAndEffectName = true;
+      this.searchModal.buffAndEffectFilters.isBuffAndEffectDesc = true;
+      this.searchModal.buffAndEffectFilters.isBuffAndEffectStats = true;
+      this.searchModal.buffAndEffectFilters.isBuffAndEffectTags = true;
+    }
+    else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
+      this.searchModal.lootFilters.isLootAbilityAssociated = true;
+      this.searchModal.lootFilters.isLootDesc = true;
+      this.searchModal.lootFilters.isLootItemAssociated = true;
+      this.searchModal.lootFilters.isLootName = true;
+      this.searchModal.lootFilters.isLootRarity = true;
+      this.searchModal.lootFilters.isLootSpellAssociated = true;
+      this.searchModal.lootFilters.isLootStats = true;
+      this.searchModal.lootFilters.isLootTags = true;
+    }
+
+    else if (this.searchModal.searchType == SearchType.RULESETMONSTER || this.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE) {
+      this.searchModal.monsterFilters.isMonsterAbilityAssociated = true;
+      this.searchModal.monsterFilters.isMonsterAC = true;
+      this.searchModal.monsterFilters.isMonsterBEAssociated = true;
+      this.searchModal.monsterFilters.isMonsterChallengeRating = true;
+      this.searchModal.monsterFilters.isMonsterDesc = true;
+      this.searchModal.monsterFilters.isMonsterHealth = true;
+      this.searchModal.monsterFilters.isMonsterItemAssociated = true;
+      this.searchModal.monsterFilters.isMonsterName = true;
+      this.searchModal.monsterFilters.isMonsterSpellAssociated = true;
+      this.searchModal.monsterFilters.isMonsterStats = true;
+      this.searchModal.monsterFilters.isMonsterTags = true;
+      this.searchModal.monsterFilters.isMonsterXPValue = true;
+    }
+    else if (this.searchModal.searchType == SearchType.RULESETHANDOUT) {
+      this.searchModal.handoutFilters.isHandoutName = true;
+      this.searchModal.handoutFilters.isHandoutFileType = true;
     }
 
     if (this.headers) {
@@ -165,6 +219,31 @@ export class BasicSearchComponent implements OnInit {
             this.searchModal.spellFilters.isSpellStats = data.isStats;
             this.searchModal.spellFilters.isSpellTags = data.isTags;
           }
+          else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
+            this.searchModal.lootFilters.isLootAbilityAssociated = data.isAssociatedAbility;
+            this.searchModal.lootFilters.isLootDesc = data.isDesc;
+            this.searchModal.lootFilters.isLootItemAssociated = data.isAssociatedItem;
+            this.searchModal.lootFilters.isLootName = data.isName;
+            this.searchModal.lootFilters.isLootRarity = data.isRarity;
+            this.searchModal.lootFilters.isLootSpellAssociated = data.isAssociatedSpell;
+            this.searchModal.lootFilters.isLootStats = data.isStats;
+            this.searchModal.lootFilters.isLootTags = data.isTags;
+          }
+
+          else if (this.searchModal.searchType == SearchType.RULESETMONSTER || this.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE) {
+            this.searchModal.monsterFilters.isMonsterAbilityAssociated = data.isAssociatedAbility;
+            this.searchModal.monsterFilters.isMonsterAC = data.isAC;
+            this.searchModal.monsterFilters.isMonsterBEAssociated = data.isAssociatedBE;
+            this.searchModal.monsterFilters.isMonsterChallengeRating = data.isChallengeRating;
+            this.searchModal.monsterFilters.isMonsterDesc = data.isDesc;
+            this.searchModal.monsterFilters.isMonsterHealth = data.isHealth;
+            this.searchModal.monsterFilters.isMonsterItemAssociated = data.isAssociatedItem;
+            this.searchModal.monsterFilters.isMonsterName = data.isName;
+            this.searchModal.monsterFilters.isMonsterSpellAssociated = data.isAssociatedSpell;
+            this.searchModal.monsterFilters.isMonsterStats = data.isStats;
+            this.searchModal.monsterFilters.isMonsterTags = data.isTags;
+            this.searchModal.monsterFilters.isMonsterXPValue = data.isXPValue;
+          }
           else if (this.searchModal.searchType == SearchType.CHARACTERABILITIES || this.searchModal.searchType == SearchType.RULESETABILITIES) {
             this.searchModal.abilityFilters.isAbilityDesc = data.isDesc;
             this.searchModal.abilityFilters.isAbilityLevel = data.isLevel;
@@ -208,7 +287,7 @@ export class BasicSearchComponent implements OnInit {
     //used to enable (check) the 'Name' checkbox
       this.checkFilters();
 
-      this.searchService.searchRecords<any>(this.searchModal)
+      this.searchService.searchRecords<any>(this.searchModal, false, false)
         .subscribe(data => {
           if (data.length > 0) {
             this.showMoreLessToggle = true;
@@ -280,6 +359,72 @@ export class BasicSearchComponent implements OnInit {
                   name: x.name,
                   searchType: this.searchModal.searchType,
                   recordId: x.abilityId,
+                  record: x
+                };
+              });
+            }
+            
+            else if (this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
+              this.searchModal.searchHeadingText = 'Buffs and Effects';
+              this.searchList = data.map(x => {
+
+                return {
+                  searchimage: x.imageUrl,
+                  name: x.name,
+                  searchType: this.searchModal.searchType,
+                  recordId: x.buffAndEffectId,
+                  record: x
+                };
+              });
+            }
+            else if (this.searchModal.searchType == SearchType.RULESETLOOT) {
+              this.searchModal.searchHeadingText = 'Loots';
+              this.searchList = data.map(x => {
+
+                return {
+                  searchimage: x.itemImage,
+                  name: x.itemName,
+                  searchType: this.searchModal.searchType,
+                  recordId: x.lootId,
+                  record: x
+                };
+              });
+            }
+            else if (this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
+              this.searchModal.searchHeadingText = 'Loot Templates';
+              this.searchList = data.map(x => {
+
+                return {
+                  searchimage: x.imageUrl,
+                  name: x.name,
+                  searchType: this.searchModal.searchType,
+                  recordId: x.lootTemplateId,
+                  record: x
+                };
+              });
+            }
+            else if (this.searchModal.searchType == SearchType.RULESETMONSTER) {
+              this.searchModal.searchHeadingText = 'Monsters';
+              this.searchList = data.map(x => {
+
+                return {
+                  searchimage: x.imageUrl,
+                  name: x.name,
+                  searchType: this.searchModal.searchType,
+                  recordId: x.monsterId,
+                  record: x
+                };
+              });
+            }
+            else if (this.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE) {
+              this.searchModal.searchHeadingText = 'Monster Templates';
+              this.searchList = data.map(x => {
+
+                return {
+                  searchimage: x.imageUrl,
+                  name: x.name,
+                  searchType: this.searchModal.searchType,
+                  recordId: x.monsterTemplateId,
                   record: x
                 };
               });
@@ -369,6 +514,32 @@ export class BasicSearchComponent implements OnInit {
         this.router.navigate(['/ruleset/ability-details', input.recordId]);
       }
     }
+    else if (input.searchType == SearchType.RULESETBUFFANDEFFECT) {
+      this.router.navigate(['/ruleset/buff-effect-details', input.recordId]);
+    }
+    else if (input.searchType == SearchType.RULESETLOOT) {
+      if (input.record && input.record.isLootPile) {
+        this.router.navigate(['/ruleset/loot-pile-details', input.recordId]);
+      } else {
+        this.router.navigate(['/ruleset/loot-details', input.recordId]);
+      }
+      
+      //loot-pile-details
+    }
+    else if (input.searchType == SearchType.RULESETLOOTTEMPLATE) {
+      this.router.navigate(['/ruleset/loot-pile-template-details', input.recordId]);
+    }
+    else if (input.searchType == SearchType.RULESETMONSTER) {
+      this.router.navigate(['/ruleset/monster-details', input.recordId]);
+    }
+    else if (input.searchType == SearchType.RULESETMONSTERTEMPLATE) {
+      if (!input.record.isBundle) {
+        this.router.navigate(['/ruleset/monster-template-details', input.recordId]);
+      }
+      else {
+        this.router.navigate(['/ruleset/monster-bundle-details', input.recordId]);
+      }
+    }
   }
 
   //private setRulesetId(rulesetId: number) {
@@ -395,7 +566,22 @@ export class BasicSearchComponent implements OnInit {
         return 'Item';
       case SearchType.RULESETSPELLS:
         return 'Spell';
-
+      case SearchType.RULESETBUFFANDEFFECT:
+        return 'Buff & Effect';
+      case SearchType.CHARACTERBUFFANDEFFECT:
+        return 'Buff & Effect';
+      case SearchType.RULESETMONSTER:
+        return 'Monster';
+      case SearchType.RULESETMONSTERTEMPLATE:
+        return 'Monster Template';
+      case SearchType.RULESETLOOT:
+        return 'Loot';
+      case SearchType.RULESETLOOTTEMPLATE:
+        return 'Loot Template';
+      case SearchType.CHARACTERHANDOUT:
+        return 'Handout';
+      case SearchType.RULESETHANDOUT:
+        return 'Handout';
       default:
         return '';
     }
@@ -433,6 +619,42 @@ export class BasicSearchComponent implements OnInit {
         this.searchModal.abilityFilters.isAbilityStats = false;
         this.searchModal.abilityFilters.isAbilityTags = false;
       }
+      else if ( this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
+        this.searchModal.buffAndEffectFilters.isBuffAndEffectDesc = false;
+        this.searchModal.buffAndEffectFilters.isBuffAndEffectTags = false;
+        this.searchModal.buffAndEffectFilters.isBuffAndEffectName = false;
+        this.searchModal.buffAndEffectFilters.isBuffAndEffectStats = false;
+
+      }
+      else if (this.searchModal.searchType == SearchType.RULESETMONSTER || this.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE) {
+        this.searchModal.monsterFilters.isMonsterDesc = false;
+        this.searchModal.monsterFilters.isMonsterTags = false;
+        this.searchModal.monsterFilters.isMonsterName = false;
+        this.searchModal.monsterFilters.isMonsterStats = false;
+
+        this.searchModal.monsterFilters.isMonsterAbilityAssociated = false;
+        this.searchModal.monsterFilters.isMonsterAC = false;
+        this.searchModal.monsterFilters.isMonsterBEAssociated = false;
+        this.searchModal.monsterFilters.isMonsterChallengeRating = false;
+        this.searchModal.monsterFilters.isMonsterHealth = false;
+        this.searchModal.monsterFilters.isMonsterItemAssociated = false;
+        this.searchModal.monsterFilters.isMonsterSpellAssociated = false;
+        this.searchModal.monsterFilters.isMonsterXPValue = false;
+
+
+      }
+      else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
+        this.searchModal.lootFilters.isLootDesc = false;
+        this.searchModal.lootFilters.isLootTags = false;
+        this.searchModal.lootFilters.isLootName = false;
+        this.searchModal.lootFilters.isLootStats = false;
+
+        this.searchModal.lootFilters.isLootAbilityAssociated = false;
+        this.searchModal.lootFilters.isLootItemAssociated = false;
+        this.searchModal.lootFilters.isLootRarity = false;
+        this.searchModal.lootFilters.isLootSpellAssociated = false;
+      }
+      
     }
     else {
       this.allFiltersSelected = true;
@@ -464,6 +686,41 @@ export class BasicSearchComponent implements OnInit {
         this.searchModal.abilityFilters.isAbilityName = true;
         this.searchModal.abilityFilters.isAbilityStats = true;
         this.searchModal.abilityFilters.isAbilityTags = true;
+      }
+      else if ( this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
+        this.searchModal.buffAndEffectFilters.isBuffAndEffectDesc = true;
+        this.searchModal.buffAndEffectFilters.isBuffAndEffectTags = true;
+        this.searchModal.buffAndEffectFilters.isBuffAndEffectName = true;
+        this.searchModal.buffAndEffectFilters.isBuffAndEffectStats = true;
+
+      }
+      else if (this.searchModal.searchType == SearchType.RULESETMONSTER || this.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE) {
+        this.searchModal.monsterFilters.isMonsterDesc = true;
+        this.searchModal.monsterFilters.isMonsterTags = true;
+        this.searchModal.monsterFilters.isMonsterName = true;
+        this.searchModal.monsterFilters.isMonsterStats = true;
+
+        this.searchModal.monsterFilters.isMonsterAbilityAssociated = true;
+        this.searchModal.monsterFilters.isMonsterAC = true;
+        this.searchModal.monsterFilters.isMonsterBEAssociated = true;
+        this.searchModal.monsterFilters.isMonsterChallengeRating = true;
+        this.searchModal.monsterFilters.isMonsterHealth = true;
+        this.searchModal.monsterFilters.isMonsterItemAssociated = true;
+        this.searchModal.monsterFilters.isMonsterSpellAssociated = true;
+        this.searchModal.monsterFilters.isMonsterXPValue = true;
+
+
+      }
+      else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
+        this.searchModal.lootFilters.isLootDesc = true;
+        this.searchModal.lootFilters.isLootTags = true;
+        this.searchModal.lootFilters.isLootName = true;
+        this.searchModal.lootFilters.isLootStats = true;
+
+        this.searchModal.lootFilters.isLootAbilityAssociated = true;
+        this.searchModal.lootFilters.isLootItemAssociated = true;
+        this.searchModal.lootFilters.isLootRarity = true;
+        this.searchModal.lootFilters.isLootSpellAssociated = true;
       }
     }
   }
@@ -508,6 +765,36 @@ export class BasicSearchComponent implements OnInit {
         this.searchModal.abilityFilters.isAbilityName = true;
       }
 
+    }
+    else if (this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
+      let values = Object.values(this.searchModal.buffAndEffectFilters);
+      var found = values.find(function (element) {
+        return element == true;
+      });
+      if (!found) {
+        // console.log('founded spells', found);
+        this.searchModal.buffAndEffectFilters.isBuffAndEffectName = true;
+      }
+    }
+    else if (this.searchModal.searchType == SearchType.RULESETMONSTER || this.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE) {
+      let values = Object.values(this.searchModal.monsterFilters);
+      var found = values.find(function (element) {
+        return element == true;
+      });
+      if (!found) {
+        // console.log('founded spells', found);
+        this.searchModal.monsterFilters.isMonsterName = true;
+      }
+    }
+    else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
+      let values = Object.values(this.searchModal.lootFilters);
+      var found = values.find(function (element) {
+        return element == true;
+      });
+      if (!found) {
+        // console.log('founded spells', found);
+        this.searchModal.lootFilters.isLootName = true;
+      }
     }
 
   }

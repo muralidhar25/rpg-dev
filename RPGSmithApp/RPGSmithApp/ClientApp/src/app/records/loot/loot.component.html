@@ -195,7 +195,7 @@
                     <li *ngIf="ItemMaster.volume>=0" class="item-property item-property-text volume" title="Volume" data-toggle="Volume">{{ItemMaster.volume}} <small *ngIf="ItemMaster.ruleSet?.volumeLabel">({{ItemMaster.ruleSet?.volumeLabel}})</small></li>
                   </ng-container>
                   <ng-container *ngIf="ItemMaster.isLootPile">
-                    <li class="item-property item-property-text value" title="Value" style="visibility:hidden"><small>12</small></li>
+                    <li class="item-property item-property-icon icon icon-Loot_Pile icon-ico" title="Loot Pile" data-toggle="tooltip"></li>
                   </ng-container>
                 </ul>
 
@@ -206,6 +206,10 @@
                     <li *ngIf="ItemMaster.isContainer" class="item-property item-property-icon icon icon-Rec-Container icon-ico" title="Container" data-toggle="tooltip"></li>
 
                   </ng-container>
+                  
+                  <!--<ng-container *ngIf="ItemMaster.isLootPile">
+                    <li class="item-property item-property-icon icon icon-Loot_Pile icon-ico" title="Loot Pile" data-toggle="tooltip"></li>                    
+                  </ng-container>-->
                 </ul>
                 <!-- <div class="item-stats" [froalaView]="ItemMaster?.itemStats"></div> -->
               </div>

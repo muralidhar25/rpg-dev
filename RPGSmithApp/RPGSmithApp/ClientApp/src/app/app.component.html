@@ -48,7 +48,7 @@
 
           <ng-container *ngIf="ruleset && isGmUser && isRulesetRoute()">
             <!--For GM Screens to link with GM interfaces-->
-           
+
             <div class="site-header-user mr-1 mr-sm-3 crsr-pointer" *ngIf="ruleset?.isCombatStarted">
               <a href="javascript:void(0);" class="icon text-success f-3 icon-Combat" (click)="GoToCombat()"></a>
             </div>
@@ -73,6 +73,11 @@
             <a class="d-flex ml-2 align-items-center help-icon icon icon-Gen-Email crsr-pointer icon-green icon-notifications" (click)="checkInvites()" href="javascript:void(0)"></a>
           </div>
           <form class="site-header-search" *ngIf="showCharacterSearch">
+            <i class="icon icon-search"></i>
+            <input type="search" name="searchText" [(ngModel)]="searchText" placeholder="Search records" (keyup.enter)="goToSearch(searchText)">
+          </form>
+          
+          <form class="site-header-search" *ngIf="showCampaignSearch">
             <i class="icon icon-search"></i>
             <input type="search" name="searchText" [(ngModel)]="searchText" placeholder="Search records" (keyup.enter)="goToSearch(searchText)">
           </form>

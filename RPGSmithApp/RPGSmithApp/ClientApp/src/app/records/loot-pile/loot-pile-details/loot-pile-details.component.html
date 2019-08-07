@@ -136,10 +136,13 @@
                 <h2 class="item-info-name"> {{ItemMasterDetail.itemName}} </h2>
                 <div class="item-info-props-indics">
                   <ul class="item-info-indics">
+                    <li title="Loot Pile" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Loot_Pile icon-ico"></i>
+                    </li>
                     <li *ngIf="!ItemMasterDetail.isVisible" title="Hide" data-toggle="tooltip">
                       <i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i>
                     </li>
-                    <li *ngIf="ItemMasterDetail.isVisible" title="Hide" data-toggle="tooltip">
+                    <li *ngIf="ItemMasterDetail.isVisible" title="Show" data-toggle="tooltip">
                       <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
                     </li>
                   </ul>
@@ -187,9 +190,10 @@
                       <div [routerLink]="['/ruleset/loot-details', item.lootId]" style="cursor:pointer;" popover="{{item.itemName}}" triggers="hover">
                         <img class="card-img-top" [src]="item.itemImage" [alt]="item.name"
                              onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
-                        <span>{{item.itemName}}</span>
+                        <span class="w-50">{{item.itemName}}</span>
+                        <span class="itemQty">{{item?.qty}}</span>
                       </div>
-                    </li>
+                    </li>                    
                   </ul>
                 </div>
               </div>

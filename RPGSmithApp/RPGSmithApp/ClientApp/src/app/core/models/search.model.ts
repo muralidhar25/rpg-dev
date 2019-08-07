@@ -17,7 +17,8 @@ export class Search {
 
 export class BasicSearch {
   constructor(searchHeadingText?: string, searchType?: number, searchString?: string, characterID?: number, rulesetID?: number,
-    itemFilters?: ItemFilter, spellFilters?: SpellFilter, abilityFilters?: AbilityFilter, everything?: EverythingFilter) {
+    itemFilters?: ItemFilter, spellFilters?: SpellFilter, abilityFilters?: AbilityFilter, everything?: EverythingFilter,
+    buffAndEffectFilters?: BuffAndEffectFilter, monsterFilters?: MonsterFilter, lootFilters?: LootFilter, handoutFilters?: HandoutFilter) {
     this.searchHeadingText = searchHeadingText ? searchHeadingText : '';
     this.searchType = searchType ? searchType : 0;
     this.searchString = searchString ? searchString : '';
@@ -26,6 +27,10 @@ export class BasicSearch {
     this.itemFilters = itemFilters ? itemFilters : new ItemFilter();
     this.spellFilters = spellFilters ? spellFilters : new SpellFilter();
     this.abilityFilters = abilityFilters ? abilityFilters : new AbilityFilter();
+    this.buffAndEffectFilters = buffAndEffectFilters ? buffAndEffectFilters : new BuffAndEffectFilter();
+    this.monsterFilters = monsterFilters ? monsterFilters : new MonsterFilter();
+    this.lootFilters = lootFilters ? lootFilters : new LootFilter();
+    this.handoutFilters = handoutFilters ? handoutFilters : new HandoutFilter();
     this.everythingFilters = everything ? everything : new EverythingFilter();
   }
   public searchHeadingText: string;
@@ -37,6 +42,10 @@ export class BasicSearch {
   public spellFilters: SpellFilter;
   public abilityFilters: AbilityFilter;
   public everythingFilters: EverythingFilter;
+  public buffAndEffectFilters :BuffAndEffectFilter;
+  public monsterFilters:MonsterFilter;
+  public lootFilters :LootFilter;
+  public handoutFilters: HandoutFilter;
 }
 export class ItemFilter {
   constructor(isItemName?: boolean, isItemTags?: boolean, isItemStats?: boolean, isItemDesc?: boolean, isItemRarity?: boolean,
@@ -105,6 +114,93 @@ export class AbilityFilter {
   public isAbilityStats: boolean;
   public isAbilityDesc: boolean;
   public isAbilityLevel: boolean;
+}
+export class BuffAndEffectFilter {
+  constructor(isBuffAndEffectName?: boolean, isBuffAndEffectTags?: boolean, isBuffAndEffectStats?: boolean, isBuffAndEffectDesc?: boolean) {
+
+    this.isBuffAndEffectName = isBuffAndEffectName ? isBuffAndEffectName : false;
+    this.isBuffAndEffectTags = isBuffAndEffectTags ? isBuffAndEffectTags : false;
+    this.isBuffAndEffectStats = isBuffAndEffectStats ? isBuffAndEffectStats : false;
+    this.isBuffAndEffectDesc = isBuffAndEffectDesc ? isBuffAndEffectDesc : false;
+  }
+
+  public isBuffAndEffectName: boolean;
+  public isBuffAndEffectTags: boolean;
+  public isBuffAndEffectStats: boolean;
+  public isBuffAndEffectDesc: boolean;
+}
+export class LootFilter {
+  constructor(isLootName?: boolean, isLootTags?: boolean, isLootStats?: boolean, isLootDesc?: boolean,
+    isLootRarity?: boolean, isLootItemAssociated?: boolean, isLootSpellAssociated?: boolean, isLootAbilityAssociated?: boolean) {
+
+    this.isLootName = isLootName ? isLootName : false;
+    this.isLootTags = isLootTags ? isLootTags : false;
+    this.isLootStats = isLootStats ? isLootStats : false;
+    this.isLootDesc = isLootDesc ? isLootDesc : false;
+
+    this.isLootRarity = isLootRarity ? isLootRarity : false;
+    this.isLootItemAssociated = isLootItemAssociated ? isLootItemAssociated : false;
+    this.isLootSpellAssociated = isLootSpellAssociated ? isLootSpellAssociated : false;
+    this.isLootAbilityAssociated = isLootAbilityAssociated ? isLootAbilityAssociated : false;    
+
+  }
+
+  public isLootName: boolean;
+  public isLootTags: boolean;
+  public isLootStats: boolean;
+  public isLootDesc: boolean;
+
+  public isLootRarity: boolean;
+  public isLootItemAssociated: boolean;
+  public isLootSpellAssociated: boolean;
+  public isLootAbilityAssociated: boolean;
+  
+}
+export class MonsterFilter {
+  constructor(isMonsterName?: boolean, isMonsterTags?: boolean, isMonsterStats?: boolean, isMonsterDesc?: boolean,
+    isMonsterHealth?: boolean, isMonsterAC?: boolean, isMonsterChallengeRating?: boolean, isMonsterXPValue?: boolean,
+    isMonsterItemAssociated?: boolean, isMonsterSpellAssociated?: boolean, isMonsterBEAssociated?: boolean, isMonsterAbilityAssociated?: boolean) {
+
+    this.isMonsterName = isMonsterName ? isMonsterName : false;
+    this.isMonsterTags = isMonsterTags ? isMonsterTags : false;
+    this.isMonsterStats = isMonsterStats ? isMonsterStats : false;
+    this.isMonsterDesc = isMonsterDesc ? isMonsterDesc : false;
+
+    this.isMonsterHealth = isMonsterHealth ? isMonsterHealth : false;
+    this.isMonsterAC = isMonsterAC ? isMonsterAC : false;
+    this.isMonsterChallengeRating = isMonsterChallengeRating ? isMonsterChallengeRating : false;
+    this.isMonsterXPValue = isMonsterXPValue ? isMonsterXPValue : false;
+    this.isMonsterItemAssociated = isMonsterItemAssociated ? isMonsterItemAssociated : false;
+    this.isMonsterSpellAssociated = isMonsterSpellAssociated ? isMonsterSpellAssociated : false;
+    this.isMonsterBEAssociated = isMonsterBEAssociated ? isMonsterBEAssociated : false;
+    this.isMonsterAbilityAssociated = isMonsterAbilityAssociated ? isMonsterAbilityAssociated : false;
+
+
+  }
+
+  public isMonsterName: boolean;
+  public isMonsterTags: boolean;
+  public isMonsterStats: boolean;
+  public isMonsterDesc: boolean;
+
+  public isMonsterHealth: boolean;
+  public isMonsterAC: boolean;
+  public isMonsterChallengeRating: boolean;
+  public isMonsterXPValue: boolean;
+  public isMonsterItemAssociated: boolean;
+  public isMonsterSpellAssociated: boolean;
+  public isMonsterBEAssociated: boolean;
+  public isMonsterAbilityAssociated: boolean;
+
+}
+export class HandoutFilter {
+  constructor(isHandoutName?: boolean, isHandoutFileType?: boolean) {
+
+    this.isHandoutName = isHandoutName ? isHandoutName : false;
+    this.isHandoutFileType = isHandoutFileType ? isHandoutFileType : false;
+  }
+  public isHandoutName: boolean;
+  public isHandoutFileType: boolean;
 }
 
 export class EverythingFilter {

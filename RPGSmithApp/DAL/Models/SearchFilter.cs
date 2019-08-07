@@ -24,6 +24,12 @@ namespace DAL.Models
         public bool IsItem { get; set; }
         public bool IsSpell { get; set; }
         public bool IsAbility { get; set; }
+        public bool IsBuffEffect { get; set; }
+        public bool IsMonster { get; set; }
+        public bool IsMonsterTemplate { get; set; }
+        public bool IsLoot { get; set; }
+        public bool IsLootTemplate { get; set; }
+        public bool IsHandout { get; set; }
 
         public bool IsName { get; set; }
         public bool IsTags { get; set; }
@@ -39,6 +45,17 @@ namespace DAL.Models
         public bool IsEffectDesc { get; set; }
         public bool IsHitEffect { get; set; }
         public bool IsMissEffect { get; set; }
+
+        public bool IsChallengeRating { get; set; }
+        public bool IsXPValue { get; set; }
+        public bool IsAssociatedBE { get; set; }
+        public bool IsAssociatedItem { get; set; }
+        public bool IsHealth { get; set; }
+        public bool IsAC { get; set; }
+        public bool IsFileType { get; set; }
+
+
+        
 
 
 

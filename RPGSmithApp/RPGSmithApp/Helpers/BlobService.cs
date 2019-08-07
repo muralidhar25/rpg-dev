@@ -1199,6 +1199,119 @@ namespace RPGSmithApp.Helpers
                 throw ex;
             }
         }
+        public async Task<List<Items>> All_BlobMyHandoutsForSearchAsync(string container, int Count = 99999999, int previousContainerImageNumber = 0, string prefixToGetFolderContent = "")
+        {
+            //int Count = 99999999; int previousContainerImageNumber = 0; string prefixToGetFolderContent = "";
+            List<Items> result = new List<Items>();
+               int start = previousContainerImageNumber;
+            BlobResponse objBlobResponse = new BlobResponse();
+            List<Items> _items = new List<Items>();
+            List<Items> _Tempitems = new List<Items>();
+            try
+            {
+                BlobContinuationToken blobContinuationToken = null;
+                var cloudBlobContainer = GetCloudBlobContainer(container).Result;
+                do
+                {
+                    if (string.IsNullOrEmpty(prefixToGetFolderContent))
+                    {
+                        prefixToGetFolderContent = null;
+                    }
+                    var results = cloudBlobContainer.ListBlobsSegmentedAsync(prefixToGetFolderContent, blobContinuationToken);
+                    blobContinuationToken = results.Result.ContinuationToken;
+
+                    foreach (IListBlobItem _blobItem in results.Result.Results)
+                    {
+                        CloudBlockBlob item = _blobItem as CloudBlockBlob;
+                        if (item != null)
+                        {
+                            Items _item = new Items();
+                            _item.AbsolutePath = item.Uri.AbsolutePath;
+                            _item.AbsoluteUri = item.Uri.AbsoluteUri;
+                            _item.IsAbsoluteUri = item.Uri.IsAbsoluteUri;
+                            _item.OriginalString = item.Uri.OriginalString;
+                            _item.Container = item.Container.Name;
+                            _item.Size = item.Properties.Length / 1024;
+                            _item.LastModifiedDate = item.Properties.LastModified;
+                            _item.ContentType = item.Properties.ContentType;
+                            
+                            if (string.IsNullOrEmpty(prefixToGetFolderContent))
+                            {
+                                _item.name = item.Name;
+                            }
+                            else {                                
+                                _item.name = item.Name.Replace(prefixToGetFolderContent, "");
+                            }
+                            
+                            if (!_item.name.Contains("default_folder_file.txt"))
+                            {
+                                _items.Add(_item);
+                            }
+
+                        }
+                        else
+                        {
+                            CloudBlobDirectory dir = _blobItem as CloudBlobDirectory;
+                            if (dir != null)
+                            {
+                                Items _item = new Items();
+                                _item.AbsolutePath = string.Empty;
+                                _item.AbsoluteUri = string.Empty;
+                                _item.IsAbsoluteUri = false;
+                                _item.OriginalString = string.Empty;
+                                _item.Container = dir.Container.Name;
+                                _item.Size = 0;
+                                _item.LastModifiedDate = new DateTimeOffset();
+                                _item.ContentType = string.Empty;
+                                _item.IsFolder = true;
+                                _item.name = dir.Prefix;
+                                //_items.Add(_item);
+
+                                var folderFiles = await All_BlobMyHandoutsForSearchAsync(container,99999999,0, dir.Prefix);
+                                foreach (var file in folderFiles)
+                                {
+                                    _items.Add(file);
+                                }
+                            }
+                        }
+                    }
+                } while (blobContinuationToken != null);
+                _items = _items.OrderByDescending(q => q.LastModifiedDate).ToList();
+                _items = _items.OrderByDescending(q => q.IsFolder).ToList();
+                bool flag = false;
+                if (start + Count <= _items.Count())
+                {
+                    flag = true;
+                }
+
+                _items = _items.Skip(start).Take(Count).ToList();
+
+                previousContainerImageNumber = flag ? (start + Count) : _items.Count();
+
+
+                objBlobResponse.items = _items;
+            }
+            catch (Exception ex)
+            {
+            }
+            /////////////////////////////////////////////////////////////
+            //bool flag1111 = false;
+            //if (flag1111)
+            //{
+            //    //await CopyMoveFile(GetCloudBlobContainer(container).Result, "sample123.pdf","new2/", "new/");
+            //    //await DeleteFolder(GetCloudBlobContainer(container).Result, "test/");
+            //}
+
+            /////////////////////////////////////////////////////////////
+            //  return objBlobResponse;
+            foreach (var item in objBlobResponse.items)
+            {
+                result.Add(item);
+            }
+            return result;
+
+        }
+
     }
 }
 

@@ -144,3 +144,22 @@
 .disabled {
   cursor: no-drop;
 }
+.record-type-text {
+  /*bottom: -11px;
+  right: 1px;
+  position: absolute;*/
+  position: absolute;
+  bottom: 0px;
+  right: 6px;
+  font-size: 12px;
+}
+h4.card-title {
+  margin-bottom: 0px !important;
+}
+/*.card-body {
+  min-height: 78px;
+  justify-content: center !important;
+}*/
+.dropdown-menu li > span {
+  padding: 0.9rem;
+}

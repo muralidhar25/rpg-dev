@@ -269,7 +269,7 @@ export class AddlootComponent implements OnInit {
       unSelectAllText: 'UnSelect All',
       singleSelection: true,
       limitSelection: false,
-      enableSearchFilter: false,
+      enableSearchFilter: true,
       classes: "myclass custom-class ",
       showCheckbox: false,
       position: "top"

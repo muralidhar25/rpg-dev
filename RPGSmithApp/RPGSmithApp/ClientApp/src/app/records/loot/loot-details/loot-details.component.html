@@ -147,7 +147,10 @@
                                          onerror="this.src='../assets/images/DefaultImages/Item.jpg';" #imgref (click)="ViewImage(imgref)" />
                                 </div>
 
-                                <h2 class="item-info-name"> {{ItemMasterDetail.itemName}} </h2>
+                                <h2 class="item-info-name" *ngIf="ItemMasterDetail?.quantity==1">{{ItemMasterDetail?.itemName}}</h2>
+                                <h2 class="item-info-name" *ngIf="ItemMasterDetail?.quantity!=1">({{ItemMasterDetail?.quantity}}) {{ItemMasterDetail?.itemName}}</h2>
+                                
+                                <!--<h2 class="item-info-name"> {{ItemMasterDetail.itemName}} </h2>-->
 
                                 <div class="item-info-props-indics">
                                     <ul class="item-info-props">

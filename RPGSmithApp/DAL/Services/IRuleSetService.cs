@@ -49,8 +49,22 @@ namespace DAL.Services
         List<ItemMaster_Bundle> SearchRulesetItems(SearchModel searchModel, int[] idsToSearch = null);
 
         void SaveLastSearchFilters(SearchModel searchModel);
-        List<SearchEverything> bindEveryThingModel(List<CharacterAbility> characterAbilities, List<Ability> abilities, List<CharacterSpell> characterSpells, List<Spell> spells, List<Item> items, List<ItemMaster_Bundle> itemMasters);
-        List<SearchEverything> SearchEveryThing(SearchModel searchModel);
+        List<SearchEverything> bindEveryThingModel(
+            List<CharacterAbility> characterAbilities,
+            List<Ability> abilities,
+            List<CharacterSpell> characterSpells,
+            List<Spell> spells,
+            List<Item> items,
+            List<ItemMaster_Bundle> itemMasters,
+
+            List<BuffAndEffectVM> buffAndEffects,
+            List<CharacterBuffAndEffect> characterBuffAndEffects,
+            List<ItemMasterLoot> loots,
+            List<LootTemplate> lootTemplates,
+            List<Monster> monsters,
+            List<MonsterTemplate_Bundle> monsterTemplates,
+            List<HandoutViewModel> handouts, int CharacterID);
+        List<SearchEverything> SearchEveryThing(SearchModel searchModel,int CharacterID);
         bool IsRulesetAlreadyPurchased(int ruleSetId, string userID);
         Task updateUserPurchasedRuleset(int ruleSetId, string userID);
         Task<DiceRollModel> GetDiceRollModelAsync(int RulesetID, int CharacterID, ApplicationUser User);
@@ -62,5 +76,12 @@ namespace DAL.Services
         Task<RulesetCommand> Update(RulesetCommand item);
         Task<bool> Delete(int id);
         bool IsCombatStarted(int RuleSetId);
+
+        List<ItemMasterLoot> SearchRulesetLoots(SearchModel searchModel, int[] idsToSearch = null, string UserID = "");
+        List<LootTemplate> SearchRulesetLootTemplates(SearchModel searchModel, int[]idsToSearch = null, string UserID = "");
+        List<MonsterTemplate_Bundle> SearchRulesetMonsterTemplates(SearchModel searchModel, int[]idsToSearch = null, string UserID = "");
+        List<Monster> SearchRulesetMonsters(SearchModel searchModel, int[]idsToSearch = null, string UserID = "");
+        List<BuffAndEffectVM> SearchRulesetBuffAndEffects(SearchModel searchModel, int[]idsToSearch = null, string UserID = "");
+        List<CharacterBuffAndEffect> SearchCharacterBuffAandEffects(SearchModel searchModel, int[]idsToSearch = null, string UserID = "");
     }
 }

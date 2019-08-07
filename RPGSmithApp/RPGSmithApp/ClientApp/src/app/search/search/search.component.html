@@ -2,7 +2,7 @@
   <div class="container">
     <div class="page-toolbar-wrapper">
       <div class="page-toolbar-title">
-        <a class="icon icon-back" [routerLink]="['/characters']"></a>
+        <a class="icon icon-back" (click)="GoBack()" [routerLink]="['/characters']"></a>
         <h1>Search {{defaultText}}</h1>
       </div>
 
@@ -14,12 +14,15 @@
           </div>
           <div class="dropdown-menu dropdown-menu-right w-200p" aria-labelledby="pageLayoutNavigationToggle">
             <ul class="dropdown-menu-list dropdown-menu-item-contain-actions">
-              <li class="dropdown-menu-item" *ngFor="let text of dropDownText" (click)="setText(text,searchModal.searchString)" [ngClass]="{'active': text.selected }">
-                <span class="dropdown-menu-item-title">{{text.text}}</span>
-                <span class="w-95p" *ngIf="text?.imageurl !== '' ">
-                  <img [src]="text?.imageurl" [alt]="text?.imageurl" class="img-fluid">
-                </span>
-              </li>
+              <ng-container *ngFor="let text of dropDownText">
+                <li class="dropdown-menu-item" *ngIf="(text?.isForPC && isPlayerCharacterSearch) || (!text?.isForPC)" (click)="setText(text,searchModal.searchString)" [ngClass]="{'active': text.selected }">
+                  <span class="dropdown-menu-item-title">{{text.text}}</span>
+                  <span class="w-95p" *ngIf="text?.imageurl !== '' ">
+                    <img [src]="text?.imageurl" [alt]="text?.imageurl" class="img-fluid">
+                  </span>
+                </li>               
+              </ng-container>
+        
             </ul>
           </div>
         </div>
@@ -242,6 +245,295 @@
             </span>
           </div>
         </div>
+
+        <div *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETBUFFANDEFFECT || searchModal?.searchType == SEARCHTYPE.CHARACTERBUFFANDEFFECT" class="row m-0 w-100 justify-content-between">
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="name" [(ngModel)]="searchModal.buffAndEffectFilters.isBuffAndEffectName" />
+              <span>Name</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="tags" [(ngModel)]="searchModal.buffAndEffectFilters.isBuffAndEffectTags" />
+              <span>Tags</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="tags" [(ngModel)]="searchModal.buffAndEffectFilters.isBuffAndEffectStats" />
+              <span>Stats</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="tags" [(ngModel)]="searchModal.buffAndEffectFilters.isBuffAndEffectDesc" />
+              <span>Description</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2 text-right">
+            <span class="less-btn icon-arrow-up icon" (click)="showMorelessFields();">
+              &nbsp; Show Less
+            </span>
+          </div>
+        </div>
+
+        <div *ngIf="searchModal?.searchType == SEARCHTYPE.CHARACTERHANDOUT || searchModal?.searchType == SEARCHTYPE.RULESETHANDOUT" class="row m-0 w-100 justify-content-between">
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="name" [(ngModel)]="searchModal.handoutFilters.isHandoutName" />
+              <span>Name</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="tags" [(ngModel)]="searchModal.handoutFilters.isHandoutFileType" />
+              <span>File type</span>
+            </span>
+
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2 text-right">
+            <span class="less-btn icon-arrow-up icon" (click)="showMorelessFields();">
+              &nbsp; Show Less
+            </span>
+          </div>
+        </div>
+        <!------------------------------------------------------------------------------------------------------------------------>
+        <div *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETLOOT" class="row m-0 w-100 ">
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="name" [(ngModel)]="searchModal.lootFilters.isLootName" />
+              <span>Name</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="tags" [(ngModel)]="searchModal.lootFilters.isLootTags" />
+              <span>Tags</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="stats" [(ngModel)]="searchModal.lootFilters.isLootStats" />
+              <span>Stats</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="description" [(ngModel)]="searchModal.lootFilters.isLootDesc" />
+              <span>Description</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="rarity" [(ngModel)]="searchModal.lootFilters.isLootRarity" />
+              <span>Rarity</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="associatedSpells" [(ngModel)]="searchModal.lootFilters.isLootItemAssociated" />
+              <span>Items</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="associatedSpells" [(ngModel)]="searchModal.lootFilters.isLootSpellAssociated" />
+              <span>Spells</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="associatedAbilities" [(ngModel)]="searchModal.lootFilters.isLootAbilityAssociated" />
+              <span>Abilities</span>
+            </span>
+          </div>
+          <div class="col-12 text-right">
+            <span class="less-btn icon-arrow-up icon" (click)="showMorelessFields();">
+              &nbsp; Show Less
+            </span>
+          </div>
+        </div>
+        <div *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETLOOTTEMPLATE" class="row m-0 w-100 justify-content-between">
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="name" [(ngModel)]="searchModal.lootFilters.isLootName" />
+              <span>Name</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="tags" [(ngModel)]="searchModal.lootFilters.isLootTags" />
+              <span>Tags</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="description" [(ngModel)]="searchModal.lootFilters.isLootDesc" />
+              <span>Description</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="associatedSpells" [(ngModel)]="searchModal.lootFilters.isLootItemAssociated" />
+              <span>Items</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2 text-right">
+            <span class="less-btn icon-arrow-up icon" (click)="showMorelessFields();">
+              &nbsp; Show Less
+            </span>
+          </div>
+        </div>
+        <div *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETMONSTER" class="row m-0 w-100 justify-content-between">
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="name" [(ngModel)]="searchModal.monsterFilters.isMonsterName" />
+              <span>Name</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="tags" [(ngModel)]="searchModal.monsterFilters.isMonsterTags" />
+              <span>Tags</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="stats" [(ngModel)]="searchModal.monsterFilters.isMonsterStats" />
+              <span>Stats</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="description" [(ngModel)]="searchModal.monsterFilters.isMonsterDesc" />
+              <span>Description</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="rarity" [(ngModel)]="searchModal.monsterFilters.isMonsterHealth" />
+              <span>Health</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="associatedSpells" [(ngModel)]="searchModal.monsterFilters.isMonsterAC" />
+              <span>AC</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="associatedAbilities" [(ngModel)]="searchModal.monsterFilters.isMonsterChallengeRating" />
+              <span>Challenge Rating</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="associatedAbilities" [(ngModel)]="searchModal.monsterFilters.isMonsterXPValue" />
+              <span>XP Value</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="associatedAbilities" [(ngModel)]="searchModal.monsterFilters.isMonsterItemAssociated" />
+              <span>Items</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="associatedAbilities" [(ngModel)]="searchModal.monsterFilters.isMonsterSpellAssociated" />
+              <span>Spells</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="associatedAbilities" [(ngModel)]="searchModal.monsterFilters.isMonsterBEAssociated" />
+              <span>Buffs and Effects</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="associatedAbilities" [(ngModel)]="searchModal.monsterFilters.isMonsterAbilityAssociated" />
+              <span>Abilities</span>
+            </span>
+          </div>
+          <div class="col-12 text-right">
+            <span class="less-btn icon-arrow-up icon" (click)="showMorelessFields();">
+              &nbsp; Show Less
+            </span>
+          </div>
+        </div>
+        <div *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETMONSTERTEMPLATE" class="row m-0 w-100">
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="name" [(ngModel)]="searchModal.monsterFilters.isMonsterName" />
+              <span>Name</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="tags" [(ngModel)]="searchModal.monsterFilters.isMonsterTags" />
+              <span>Tags</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="stats" [(ngModel)]="searchModal.monsterFilters.isMonsterStats" />
+              <span>Stats</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="description" [(ngModel)]="searchModal.monsterFilters.isMonsterDesc" />
+              <span>Description</span>
+            </span>
+          </div>
+          
+         
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="associatedAbilities" [(ngModel)]="searchModal.monsterFilters.isMonsterChallengeRating" />
+              <span>Challenge Rating</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="associatedAbilities" [(ngModel)]="searchModal.monsterFilters.isMonsterXPValue" />
+              <span>XP Value</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="associatedAbilities" [(ngModel)]="searchModal.monsterFilters.isMonsterItemAssociated" />
+              <span>Items</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="associatedAbilities" [(ngModel)]="searchModal.monsterFilters.isMonsterSpellAssociated" />
+              <span>Spells</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="associatedAbilities" [(ngModel)]="searchModal.monsterFilters.isMonsterBEAssociated" />
+              <span>Buffs and Effects</span>
+            </span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-lg-2">
+            <span class="checkbox">
+              <input type="checkbox" name="associatedAbilities" [(ngModel)]="searchModal.monsterFilters.isMonsterAbilityAssociated" />
+              <span>Abilities</span>
+            </span>
+          </div>
+          <div class="col-12  text-right">
+            <span class="less-btn icon-arrow-up icon" (click)="showMorelessFields();">
+              &nbsp; Show Less
+            </span>
+          </div>
+        </div>
+        <!------------------------------------------------------------------------------------------------------------------->
       </div>
     </div>
   </div>
@@ -255,7 +547,7 @@
       <div class="row">
         <div class="col-12 col-md-6 col-lg-4 col-xl-3" *ngFor="let search of searchList">
           <div class="card-wrapper">
-            <div class="card" (click)="gotoPage(search)" [ngClass]="{'card-equip':search?.record?.isEquipped || search?.record?.isMemorized || search?.record?.isEnabled }">
+            <div class="card" (click)="gotoPage(search)" [ngClass]="{'card-equip':search?.record?.isEquipped || search?.record?.isMemorized || search?.record?.isEnabled || search?.record?.isShow || search?.record?.isAssignedToAnyCharacter || search?.record?.addToCombatTracker}">
               <div class="card-image">
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETITEMS || searchModal?.searchType == SEARCHTYPE.CHARACTERITEMS"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
@@ -268,6 +560,21 @@
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETABILITIES || searchModal?.searchType == SEARCHTYPE.CHARACTERABILITIES"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
                      onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-abilities/Attack.jpg';">
+
+                <!---------------------------------------------------------------------------------------->
+                <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETBUFFANDEFFECT || searchModal?.searchType == SEARCHTYPE.CHARACTERBUFFANDEFFECT"
+                     class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
+                     onerror="this.src = '../assets/images/BnE/Def_BnE.png';">
+                <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETMONSTERTEMPLATE || searchModal?.searchType == SEARCHTYPE.RULESETMONSTER"
+                     class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
+                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
+                <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETLOOTTEMPLATE || searchModal?.searchType == SEARCHTYPE.RULESETLOOT"
+                     class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
+                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
+                <img *ngIf="searchModal?.searchType == SEARCHTYPE.CHARACTERHANDOUT || searchModal?.searchType == SEARCHTYPE.RULESETHANDOUT"
+                     class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
+                     onerror="this.src = '../assets/images/handouticons/file-icon.png';">
+                <!------------------------------------------------------------------------------------------->
 
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETITEMS"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
@@ -287,6 +594,35 @@
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.CHARACTERSPELLS"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
                      onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-spells/Fire.jpg';">
+
+                <!---------------------------------------------------------------------------------------->
+                <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETBUFFANDEFFECT"
+                     class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
+                     onerror="this.src = '../assets/images/BnE/Def_BnE.png';">
+                <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.CHARACTERBUFFANDEFFECT"
+                     class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
+                     onerror="this.src = '../assets/images/BnE/Def_BnE.png';">
+                <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETMONSTER"
+                     class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
+                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
+                <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETMONSTERTEMPLATE"
+                     class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
+                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
+                <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETLOOT"
+                     class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
+                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
+                <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETLOOTTEMPLATE"
+                     class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
+                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
+                <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType == SEARCHTYPE.CHARACTERHANDOUT"
+                     class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
+                     onerror="this.src = '../assets/images/handouticons/file-icon.png';">
+                <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType == SEARCHTYPE.RULESETHANDOUT"
+                     class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
+                     onerror="this.src = '../assets/images/handouticons/file-icon.png';">
+                <!---------------------------------------------------------------------------------------->
+
+
               </div>
               <div class="card-body">
                 <h4 class="card-title">{{search.name}}</h4>
@@ -377,7 +713,42 @@
                   <li *ngIf="search?.record?.containedIn" class="item-property item-property-icon icon icon-Rec-Contained icon-ico">
                   </li>
                 </ul>
+
+                <ul *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETLOOT" class="search-item-icons item-properties">
+                  <ng-container *ngIf="search?.record?.isLootPile">
+                    <li class="item-property item-property-icon icon-Loot_Pile icon-ico">
+                    </li>
+                  </ng-container>
+                  <ng-container *ngIf="!search?.record?.isLootPile">
+                    <li *ngIf="search?.record?.isConsumable" class="item-property item-property-icon icon-Rec-consumable icon-ico">
+                    </li>
+                    <li *ngIf="search?.record?.isContainer" class="item-property item-property-icon icon icon-Rec-Container icon-ico">
+                    </li>
+                    <li *ngIf="search?.record?.isMagical" class="item-property item-property-icon icon icon-Rec-Magical icon-ico">
+                    </li>
+                  </ng-container>
+                </ul>
+                <ul *ngIf="search?.searchType== SEARCHTYPE.RULESETMONSTER" class="search-item-icons item-properties">
+                  <li *ngIf="search?.record?.addToCombatTracker" class="item-property item-property-icon icon-Combat icon-ico">
+                  </li>
+                </ul>
               </div>
+              <ng-container *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING">
+                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETITEMS"><em>Item Template</em></span>
+                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETSPELLS"><em>Spell</em></span>
+                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETABILITIES"><em>Ability</em></span>
+                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.CHARACTERITEMS"><em>Item</em></span>
+                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.CHARACTERABILITIES"><em>Ability</em></span>
+                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.CHARACTERSPELLS"><em>Spell</em></span>
+                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETBUFFANDEFFECT"><em>Buff & Effect</em></span>
+                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.CHARACTERBUFFANDEFFECT"><em>Buff & Effect</em></span>
+                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETMONSTER"><em>Monster</em></span>
+                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETMONSTERTEMPLATE"><em>Monster Template</em></span>
+                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETLOOT"><em>Loot</em></span>
+                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.RULESETLOOTTEMPLATE"><em>Loot Template</em></span>
+                <span class="record-type-text" *ngIf="search?.searchType== SEARCHTYPE.CHARACTERHANDOUT || search?.searchType== SEARCHTYPE.RULESETHANDOUT">
+                <em>Handout</em></span>
+              </ng-container>
             </div>
           </div>
         </div>

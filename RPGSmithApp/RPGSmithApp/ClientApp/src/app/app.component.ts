@@ -61,6 +61,7 @@ var alertify: any = require('./assets/scripts/alertify.js');
 
 export class AppComponent implements OnInit, AfterViewInit {
   showCharacterSearch: boolean = false;
+  showCampaignSearch: boolean = false;
   bsModalRef: BsModalRef;
   isAppLoaded: boolean;
   placeHolderText: string = '';
@@ -378,8 +379,15 @@ export class AppComponent implements OnInit, AfterViewInit {
             ) {
               this.showCharacterSearch = true;
               this.dashbaordUser = true;
-            } else {
+              this.showCampaignSearch = false;
+            } else if (this.router.url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DETAILS') > -1) {
               this.showCharacterSearch = false;
+
+              this.showCampaignSearch = true;
+            }
+            else {
+              this.showCharacterSearch = false;
+              this.showCampaignSearch = false;
             }
 
             if (
@@ -389,11 +397,11 @@ export class AppComponent implements OnInit, AfterViewInit {
               ||
               this.router.url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1
               ||
-              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS) > -1
+              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS +'/') > -1
               ||
-              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERSPELLS) > -1
+              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERSPELLS + '/') > -1
               ||
-              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERABILITIES) > -1
+              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERABILITIES + '/') > -1
             ) {
               this.IsCharacterRecordScreen = this.headers.headerLink == 'ruleset' ? false : true;
 
@@ -404,17 +412,17 @@ export class AppComponent implements OnInit, AfterViewInit {
 
             else if (this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/') > -1
               ||
-              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETITEMS) > -1
+              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETITEMS + '/') > -1
               ||
-              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETSPELLS) > -1
+              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETSPELLS + '/') > -1
               ||
-              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETABILITIES) > -1
+              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETABILITIES + '/') > -1
               ||
-              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETITEMS) > -1
+              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETITEMS + '/') > -1
               ||
-              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETSPELLS) > -1
+              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETSPELLS + '/') > -1
               ||
-              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETABILITIES) > -1) {
+              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETABILITIES + '/') > -1) {
 
               this.IsCharacterRecordScreen = this.headers.headerLink == 'ruleset' ? false : true;
 
@@ -430,7 +438,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.IsRulesetRecordScreenActive = false;
               //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
             }
-
+            debugger
             this.SearchType = 0;
             this.SearchTypeText = '';
             this.isCharacterItem = 0;
@@ -486,34 +494,80 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.SearchTypeText = 'Abilities';
             }
 
-            else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETITEMS) > -1) {
+            else if (this.router.url.toUpperCase().indexOf('/RULESET/LOOT/') > -1 ||
+              this.router.url.toUpperCase().indexOf('/RULESET/LOOT-DETAILS') > -1 ||
+              this.router.url.toUpperCase().indexOf('/RULESET/LOOT-PILE-DETAILS') > -1
+              ) {
+              this.SearchType = SearchType.RULESETLOOT;
+              this.SearchTypeText = 'Loots';
+            }
+            else if (this.router.url.toUpperCase().indexOf('/RULESET/LOOT-PILE-TEMPLATE/') > -1 ||
+              this.router.url.toUpperCase().indexOf('/RULESET/LOOT-PILE-TEMPLATE-DETAILS') > -1 )
+            {
+              this.SearchType = SearchType.RULESETLOOTTEMPLATE;
+              this.SearchTypeText = 'Loot Templates';
+            }
+            else if (this.router.url.toUpperCase().indexOf('/RULESET/MONSTER/') > -1 ||
+              this.router.url.toUpperCase().indexOf('/RULESET/MONSTER-DETAILS') > -1) {
+              this.SearchType = SearchType.RULESETMONSTER;
+              this.SearchTypeText = 'Monsters';
+            }
+            else if (this.router.url.toUpperCase().indexOf('/RULESET/MONSTER-TEMPLATE/') > -1 ||
+              this.router.url.toUpperCase().indexOf('/RULESET/MONSTER-TEMPLATE-DETAILS') > -1 ||
+              this.router.url.toUpperCase().indexOf('/RULESET/MONSTER-BUNDLE-DETAILS') > -1) {
+              this.SearchType = SearchType.RULESETMONSTERTEMPLATE;
+              this.SearchTypeText = 'Monster Templates';
+            }
+            else if (this.router.url.toUpperCase().indexOf('/RULESET/BUFF-EFFECT/') > -1 ||
+              this.router.url.toUpperCase().indexOf('/RULESET/BUFF-EFFECT-DETAILS') > -1) {
+              this.SearchType = SearchType.RULESETBUFFANDEFFECT;
+              this.SearchTypeText = 'Buffs & Effects';
+            }
+
+            else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETITEMS + '/') > -1) {
               this.SearchType = SearchType.RULESETITEMS;
               this.SearchTypeText = 'Items';
-            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS) > -1) {
+            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS + '/') > -1) {
               this.SearchType = SearchType.CHARACTERITEMS;
               this.SearchTypeText = 'Items';
-            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETSPELLS) > -1) {
+            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETSPELLS + '/') > -1) {
               this.SearchType = SearchType.RULESETSPELLS;
               this.SearchTypeText = 'Spells';
-            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERSPELLS) > -1) {
+            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERSPELLS + '/') > -1) {
               this.SearchType = SearchType.CHARACTERSPELLS;
               this.SearchTypeText = 'Spells';
-            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETABILITIES) > -1) {
+            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETABILITIES + '/') > -1) {
               this.SearchType = SearchType.RULESETABILITIES;
               this.SearchTypeText = 'Abilities';
-            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERABILITIES) > -1) {
+            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERABILITIES + '/') > -1) {
               this.SearchType = SearchType.CHARACTERABILITIES;
               this.SearchTypeText = 'Abilities';
-            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETITEMS) > -1) {
+            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETITEMS + '/') > -1) {
               this.SearchType = SearchType.RULESETITEMS;
               this.SearchTypeText = 'Items';
-            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETSPELLS) > -1) {
+            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETSPELLS + '/') > -1) {
               this.SearchType = SearchType.RULESETSPELLS;
               this.SearchTypeText = 'Spells';
-            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETABILITIES) > -1) {
+            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETABILITIES + '/') > -1) {
               this.SearchType = SearchType.RULESETABILITIES;
               this.SearchTypeText = 'Abilities';
             }
+            else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETLOOT + '/') > -1) {
+              this.SearchType = SearchType.RULESETLOOT;
+              this.SearchTypeText = 'Loots';
+            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETLOOTTEMPLATE + '/') > -1) {
+              this.SearchType = SearchType.RULESETLOOTTEMPLATE;
+              this.SearchTypeText = 'Loot Templates';
+            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETMONSTER + '/') > -1) {
+              this.SearchType = SearchType.RULESETMONSTER;
+              this.SearchTypeText = 'Monsters';
+            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETMONSTERTEMPLATE + '/') > -1) {
+              this.SearchType = SearchType.RULESETMONSTERTEMPLATE;
+              this.SearchTypeText = 'Monster Templates';
+            } else if (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETBUFFANDEFFECT + '/') > -1) {
+              this.SearchType = SearchType.RULESETBUFFANDEFFECT;
+              this.SearchTypeText = 'Buffs & Effects';
+            } 
           },
             error => {
 
@@ -1026,8 +1080,16 @@ export class AppComponent implements OnInit, AfterViewInit {
         ) {
           this.showCharacterSearch = true;
           this.dashbaordUser = true;
-        } else {
+          this.showCampaignSearch = false;
+        }
+        else if (url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DETAILS') > -1) {
           this.showCharacterSearch = false;
+
+          this.showCampaignSearch = true;
+        }
+        else {
+          this.showCharacterSearch = false;
+          this.showCampaignSearch = false;
         }
 
 
@@ -1044,11 +1106,11 @@ export class AppComponent implements OnInit, AfterViewInit {
           ||
           url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1
           ||
-          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS) > -1
+          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS + '/') > -1
           ||
-          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERSPELLS) > -1
+          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERSPELLS + '/') > -1
           ||
-          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERABILITIES) > -1
+          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERABILITIES + '/') > -1
         ) {
           this.IsCharacterRecordScreen = this.headers.headerLink == 'ruleset' ? false : true;
 
@@ -1060,17 +1122,17 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
         else if (url.toUpperCase().indexOf('/CHARACTER/RULESET') > -1
           ||
-          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETITEMS) > -1
+          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETITEMS + '/') > -1
           ||
-          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETSPELLS) > -1
+          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETSPELLS + '/') > -1
           ||
-          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETABILITIES) > -1
+          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETABILITIES + '/') > -1
           ||
-          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETITEMS) > -1
+          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETITEMS + '/') > -1
           ||
-          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETSPELLS) > -1
+          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETSPELLS + '/') > -1
           ||
-          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETABILITIES) > -1
+          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETABILITIES + '/') > -1
         ) {
 
           this.IsCharacterRecordScreen = this.headers.headerLink == 'ruleset' ? false : true;
@@ -1089,7 +1151,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
         }
 
-
+        debugger
         this.SearchType = 0;
         this.SearchTypeText = '';
 
@@ -1142,34 +1204,79 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.SearchType = SearchType.RULESETABILITIES;
           this.SearchTypeText = 'Abilities';
         }
+        else if (url.toUpperCase().indexOf('/RULESET/LOOT/') > -1 ||
+          url.toUpperCase().indexOf('/RULESET/LOOT-DETAILS') > -1 ||
+          url.toUpperCase().indexOf('/RULESET/LOOT-PILE-DETAILS') > -1
+        ) {
+          this.SearchType = SearchType.RULESETLOOT;
+          this.SearchTypeText = 'Loots';
+        }
+        else if (url.toUpperCase().indexOf('/RULESET/LOOT-PILE-TEMPLATE/') > -1 ||
+          url.toUpperCase().indexOf('/RULESET/LOOT-PILE-TEMPLATE-DETAILS') > -1) {
+          this.SearchType = SearchType.RULESETLOOTTEMPLATE;
+          this.SearchTypeText = 'Loot Templates';
+        }
+        else if (url.toUpperCase().indexOf('/RULESET/MONSTER/') > -1 ||
+          url.toUpperCase().indexOf('/RULESET/MONSTER-DETAILS') > -1) {
+          this.SearchType = SearchType.RULESETMONSTER;
+          this.SearchTypeText = 'Monsters';
+        }
+        else if (url.toUpperCase().indexOf('/RULESET/MONSTER-TEMPLATE/') > -1 ||
+          url.toUpperCase().indexOf('/RULESET/MONSTER-TEMPLATE-DETAILS') > -1 ||
+          url.toUpperCase().indexOf('/RULESET/MONSTER-BUNDLE-DETAILS') > -1) {
+          this.SearchType = SearchType.RULESETMONSTERTEMPLATE;
+          this.SearchTypeText = 'Monster Templates';
+        }
+        else if (url.toUpperCase().indexOf('/RULESET/BUFF-EFFECT/') > -1 ||
+          url.toUpperCase().indexOf('/RULESET/BUFF-EFFECT-DETAILS') > -1) {
+          this.SearchType = SearchType.RULESETBUFFANDEFFECT;
+          this.SearchTypeText = 'Buffs & Effects';
+        }
 
-        else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETITEMS) > -1) {
+
+        else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETITEMS + '/') > -1) {
           this.SearchType = SearchType.RULESETITEMS;
           this.SearchTypeText = 'Items';
-        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS) > -1) {
+        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS + '/') > -1) {
           this.SearchType = SearchType.CHARACTERITEMS;
           this.SearchTypeText = 'Items';
-        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETSPELLS) > -1) {
+        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETSPELLS + '/') > -1) {
           this.SearchType = SearchType.RULESETSPELLS;
           this.SearchTypeText = 'Spells';
-        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERSPELLS) > -1) {
+        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERSPELLS + '/') > -1) {
           this.SearchType = SearchType.CHARACTERSPELLS;
           this.SearchTypeText = 'Spells';
-        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETABILITIES) > -1) {
+        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETABILITIES + '/') > -1) {
           this.SearchType = SearchType.RULESETABILITIES;
           this.SearchTypeText = 'Abilities';
-        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERABILITIES) > -1) {
+        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERABILITIES + '/') > -1) {
           this.SearchType = SearchType.CHARACTERABILITIES;
           this.SearchTypeText = 'Abilities';
-        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETITEMS) > -1) {
+        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETITEMS + '/') > -1) {
           this.SearchType = SearchType.RULESETITEMS;
           this.SearchTypeText = 'Items';
-        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETSPELLS) > -1) {
+        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETSPELLS + '/') > -1) {
           this.SearchType = SearchType.RULESETSPELLS;
           this.SearchTypeText = 'Spells';
-        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETABILITIES) > -1) {
+        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETABILITIES + '/') > -1) {
           this.SearchType = SearchType.RULESETABILITIES;
           this.SearchTypeText = 'Abilities';
+        }
+        else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETLOOT + '/') > -1) {
+          this.SearchType = SearchType.RULESETLOOT;
+          this.SearchTypeText = 'Loots';
+        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETLOOTTEMPLATE + '/') > -1) {
+          this.SearchType = SearchType.RULESETLOOTTEMPLATE;
+          this.SearchTypeText = 'Loot Templates';
+        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETMONSTER + '/') > -1) {
+          this.SearchType = SearchType.RULESETMONSTER;
+          this.SearchTypeText = 'Monsters';
+        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETMONSTERTEMPLATE + '/') > -1) {
+          this.SearchType = SearchType.RULESETMONSTERTEMPLATE;
+          this.SearchTypeText = 'Monster Templates';
+        } else if (url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETBUFFANDEFFECT + '/') > -1) {
+          this.SearchType = SearchType.RULESETBUFFANDEFFECT;
+          this.SearchTypeText = 'Buffs & Effects';
         }
       }
     });
@@ -1270,9 +1377,9 @@ export class AppComponent implements OnInit, AfterViewInit {
         // this.router.navigate(['/character/ability', this.headers.headerId]);
         //}
         else if (
-          (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETSPELLS) > -1)
+          (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETSPELLS + '/') > -1)
           ||
-          (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETSPELLS) > -1)
+          (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETSPELLS + '/') > -1)
         ) {
           //this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
           this.router.navigate(['/search/basic/' + SearchType.CHARACTERSPELLS + '/', this.searchCharRule])
@@ -1283,9 +1390,9 @@ export class AppComponent implements OnInit, AfterViewInit {
         //  this.router.navigate(['/character/ability', this.headers.headerId]);
         //}
         else if (
-          (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETABILITIES) > -1)
+          (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.RULESETABILITIES + '/') > -1)
           ||
-          (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETABILITIES) > -1)
+          (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETABILITIES + '/') > -1)
         ) {
           //this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
           this.router.navigate(['/search/basic/' + SearchType.CHARACTERABILITIES + '/', this.searchCharRule])
@@ -1476,7 +1583,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     else if (
-      (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS) > -1)
+      (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS + '/') > -1)
 
     ) {
       //this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
@@ -1485,7 +1592,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     }
     else if (
-      (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERSPELLS) > -1)
+      (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERSPELLS + '/') > -1)
     ) {
       //this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
       this.router.navigate(['/search/basic/' + SearchType.CHARACTERRULESETSPELLS + '/', this.searchCharRule])
@@ -1493,7 +1600,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     }
     else if (
-      (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERABILITIES) > -1)
+      (this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERABILITIES + '/') > -1)
     ) {
       //this.router.navigateByUrl('/characters', { skipLocationChange: true }).then(() =>
       this.router.navigate(['/search/basic/' + SearchType.CHARACTERRULESETABILITIES + '/', this.searchCharRule])

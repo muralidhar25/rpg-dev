@@ -21,7 +21,10 @@ export class CachingInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     let cachedResponse = (req.method == "POST" || req.method == "DELETE" || req.method == "PUT") ? undefined : this.cache.get(req);
     //const cachedResponse = this.cache.get(req);
-    this.refreshToken();
+    
+    if (req.url.toLowerCase().indexOf("api/chat/listfriends") == -1) {
+      this.refreshToken();
+    }    
     try {
       if (req.method == "POST" || req.method == "DELETE" || req.method == "PUT") {
 

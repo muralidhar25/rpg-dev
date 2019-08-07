@@ -89,7 +89,7 @@ export class CreateLootPileComponent implements OnInit {
       debugger
       //this._ruleSetId = this.itemMasterFormModal.ruleSetId;
       if (_lootPileVM.itemList) {
-        this.selectedItems = _lootPileVM.itemList;
+        this.selectedItems = Object.assign([], _lootPileVM.itemList) ;
         
         if (this.selectedItems && this.selectedItems.length) {
           this.OldSelectedItems = Object.assign([], this.selectedItems);
@@ -186,17 +186,29 @@ export class CreateLootPileComponent implements OnInit {
   }
 
   submitForm(lootPile: any) {
+    debugger
     let removeItemFlag = false;
+    let lootNames = '';
     if (this.button == "UPDATE" && this.OldSelectedItems && this.OldSelectedItems.length && this.selectedItems && this.selectedItems.length) {
       this.OldSelectedItems.map((x) => {
         if (!this.selectedItems.find(item=> item.lootId==x.lootId)) {
           removeItemFlag = true;
+          lootNames += x.itemName + '</br>';
         }
       })
 
     }
+    else if (this.button == "UPDATE" && this.OldSelectedItems && this.OldSelectedItems.length && this.selectedItems && this.selectedItems.length==0) {
+      this.OldSelectedItems.map((x) => {       
+          lootNames += x.itemName + '</br>';       
+      })
+      removeItemFlag = true;
+    }
     if (removeItemFlag) {
-      let message = 'Removing this Loot Item from the Pile will delete the item, If you want to move the item elsewhere use the "Move Loot" function. Would you like to proceed and delete this loot item?';
+      //let message = 'Removing this Loot Item from the Pile will delete the item, If you want to move the item elsewhere use the "Move Loot" function. Would you like to proceed and delete this loot item?';
+      let message = "Removing Loot Item(s) from this Pile will delete the item. If you would like to move the loot item(s) elsewhere use the 'Move Loot' function. Would you like to proceed and delete the loot item(s) listed below?</br></br>"
+
+        + lootNames;
       this.alertService.showDialog(message,
         DialogType.confirm, () => this.validateSubmit(lootPile), null, 'Yes', 'No');
     }
