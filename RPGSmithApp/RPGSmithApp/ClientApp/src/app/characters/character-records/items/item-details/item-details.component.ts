@@ -23,6 +23,7 @@ import { AddContainerItemComponent } from "../add-container-item/add-container-i
 import { HeaderValues } from "../../../../core/models/headers.model";
 import { CharactersService } from "../../../../core/services/characters.service";
 import { ServiceUtil } from "../../../../core/services/service-util";
+import { AppService1 } from "../../../../app.service";
 
 @Component({
   selector: 'app-item-details',
@@ -56,7 +57,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
     private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService, private commonService: CommonService,
-    private itemsService: ItemsService, private itemMasterService: ItemMasterService,
+    private itemsService: ItemsService, private itemMasterService: ItemMasterService, public appService: AppService1,
     private charactersService: CharactersService
   ) {
     this.route.params.subscribe(params => { this.itemId = params['id']; });
@@ -139,6 +140,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
           this.characterId = this.ItemDetail.characterId;
           this.character = data.character;
           this.gameStatus(this.character.characterId);
+          this.setHeaderValues(data.character);
           //this.ItemDetail.forEach(function (val) { val.showIcon = false; });
           this.isLoading = false;
         }, error => {
@@ -583,6 +585,20 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
     this.bsModalRef.content.recordImage = this.character.imageUrl;
   }
   GoToBuffEffect() {
+
+  }
+  private setHeaderValues(character: Characters): any {
+    let headerValues = {
+      headerName: character.characterName,
+      headerImage: character.imageUrl,
+      headerId: character.characterId,
+      headerLink: 'character',
+      hasHeader: true
+    };
+    this.appService.updateAccountSetting1(headerValues);
+    this.sharedService.updateAccountSetting(headerValues);
+    this.localStorage.deleteData(DBkeys.HEADER_VALUE);
+    this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
 
   }
 }

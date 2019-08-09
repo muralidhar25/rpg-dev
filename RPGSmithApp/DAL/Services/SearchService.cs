@@ -49,6 +49,8 @@ namespace DAL.Services
                 searchModel.SearchType == SP_SearchType.CharacterBuffAndEffect
                 ||
                 searchModel.SearchType == SP_SearchType.CharacterHandout
+                 ||
+                searchModel.SearchType == SP_SearchType.CharacterLoot
                 )
             {
                 bool isItem = (searchModel.SearchType == SP_SearchType.CharacterItems);
@@ -56,9 +58,10 @@ namespace DAL.Services
                 bool isAbility = (searchModel.SearchType == SP_SearchType.CharacterAbilities);
                 bool isBuffEffect = (searchModel.SearchType == SP_SearchType.CharacterBuffAndEffect);
                 bool ishandout = (searchModel.SearchType == SP_SearchType.CharacterHandout);
-                var res = _context.SearchFilter.Where(x => x.CharacterId == searchModel.CharacterID && x.IsCharacter == true && x.IsRuleSet == false && 
-                        x.IsItem == isItem && x.IsSpell == isSpell && x.IsAbility == isAbility && x.IsBuffEffect== isBuffEffect && 
-                        x.IsHandout == ishandout
+                bool isloot = (searchModel.SearchType == SP_SearchType.CharacterLoot);
+                var res = _context.SearchFilter.Where(x => x.CharacterId == searchModel.CharacterID && x.IsCharacter == true && x.IsRuleSet == false &&
+                        x.IsItem == isItem && x.IsSpell == isSpell && x.IsAbility == isAbility && x.IsBuffEffect == isBuffEffect &&
+                        x.IsHandout == ishandout && x.IsLoot == isloot
                         ).FirstOrDefault();
                 return res;
             }
@@ -78,10 +81,11 @@ namespace DAL.Services
                 bool isLoot= (searchModel.SearchType == SP_SearchType.RulesetLoot);
                 bool isLootTemplate = (searchModel.SearchType == SP_SearchType.RulesetLootTemplate);
                 bool ishandout = (searchModel.SearchType == SP_SearchType.RulesetHandout);
+                bool isRulesetCharacterItem = (searchModel.SearchType == SP_SearchType.RulesetCharacterItems);
                 var res= _context.SearchFilter.Where(x => x.RulesetId == searchModel.RulesetID && x.IsRuleSet == true && x.IsCharacter == false &&
                         x.IsItem == isItem && x.IsSpell == isSpell && x.IsAbility == isAbility && 
                         x.IsBuffEffect == isBuffEffect && x.IsMonster == isMonster && x.IsMonsterTemplate == isMonsterTemplate &&
-                        x.IsLoot == isLoot && x.IsLootTemplate == isLootTemplate && x.IsHandout == ishandout
+                        x.IsLoot == isLoot && x.IsLootTemplate == isLootTemplate && x.IsHandout == ishandout &&x.IsCharacterItem== isRulesetCharacterItem
                         ).FirstOrDefault();
                 return res;
             }

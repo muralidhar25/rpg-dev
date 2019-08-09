@@ -30,7 +30,7 @@
           <p class="filter-select-deselect" (click)="selectDeselectFilters('select')" *ngIf="!allFiltersSelected">Select All</p>
           <p class="filter-select-deselect" (click)="selectDeselectFilters('deselect')" *ngIf="allFiltersSelected">Deselect All</p>
         </div>
-        <div *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETITEMS || searchModal?.searchType == SEARCHTYPE.CHARACTERITEMS" class="row m-0 w-100 justify-content-between">
+        <div *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETITEMS || searchModal?.searchType == SEARCHTYPE.CHARACTERITEMS || searchModal?.searchType == SEARCHTYPE.RULESETCHARACTERITEMS" class="row m-0 w-100 justify-content-between">
           <div class="col-12 col-sm-6 col-md-3 col-lg-2">
             <span class="checkbox">
               <input type="checkbox" name="name" [(ngModel)]="searchModal.itemFilters.isItemName" />
@@ -192,7 +192,7 @@
           </div>
         </div>
 
-        <div *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETBUFFANDEFFECT" class="row m-0 w-100 justify-content-between">
+        <div *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETBUFFANDEFFECT || searchModal?.searchType == SEARCHTYPE.CHARACTERBUFFANDEFFECT " class="row m-0 w-100 justify-content-between">
           <div class="col-12 col-sm-6 col-md-3 col-lg-2">
             <span class="checkbox">
               <input type="checkbox" name="name" [(ngModel)]="searchModal.buffAndEffectFilters.isBuffAndEffectName" />
@@ -224,7 +224,7 @@
           </div>
         </div>        
        
-        <div *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETLOOT" class="row m-0 w-100 ">
+        <div *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETLOOT || searchModal?.searchType == SEARCHTYPE.CHARACTERLOOT" class="row m-0 w-100 ">
           <div class="col-12 col-sm-6 col-md-3 col-lg-2">
             <span class="checkbox">
               <input type="checkbox" name="name" [(ngModel)]="searchModal.lootFilters.isLootName" />
@@ -477,7 +477,7 @@
           <div class="card-wrapper">
             <div class="card" (click)="gotoPage(search)" [ngClass]="{'card-equip':search?.record?.isEquipped || search?.record?.isMemorized || search?.record?.isEnabled || search?.record?.isShow || search?.record?.isAssignedToAnyCharacter || search?.record?.addToCombatTracker}">
               <div class="card-image">
-                <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETITEMS || searchModal?.searchType == SEARCHTYPE.CHARACTERITEMS"
+                <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETITEMS || searchModal?.searchType == SEARCHTYPE.CHARACTERITEMS || searchModal?.searchType == SEARCHTYPE.RULESETCHARACTERITEMS"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
                      onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
 
@@ -495,7 +495,7 @@
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETMONSTERTEMPLATE || searchModal?.searchType == SEARCHTYPE.RULESETMONSTER"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
                      onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
-                <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETLOOTTEMPLATE || searchModal?.searchType == SEARCHTYPE.RULESETLOOT"
+                <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETLOOTTEMPLATE || searchModal?.searchType == SEARCHTYPE.RULESETLOOT || searchModal?.searchType == SEARCHTYPE.CHARACTERLOOT"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
                      onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
 
@@ -516,7 +516,7 @@
                   <li *ngIf="search?.record?.isVerbalComponent" class="item-property item-property-icon icon-ico icon-Rec-Verbal" title="Verbal Component" data-toggle="tooltip"></li>
                   <li *ngIf="search?.record?.isMaterialComponent" class="item-property item-property-icon icon-ico icon-Rec-Material" title="Material Component" data-toggle="tooltip"></li>
                 </ul>
-                <ul *ngIf="searchModal?.searchType == SEARCHTYPE.CHARACTERITEMS" class="search-item-icons item-properties">
+                <ul *ngIf="searchModal?.searchType == SEARCHTYPE.CHARACTERITEMS || search?.searchType== SEARCHTYPE.RULESETCHARACTERITEMS" class="search-item-icons item-properties">
                   <li *ngIf="search?.record?.isConsumable" class="item-property item-property-icon icon icon-Rec-consumable icon-ico">
                   </li>
                   <li *ngIf="search?.record?.isContainer" class="item-property item-property-icon icon icon-Rec-Container icon-ico">
@@ -539,7 +539,7 @@
                   <li *ngIf="search?.record?.spell?.isMaterialComponent" class="item-property item-property-icon icon-ico icon-Rec-Material icon-rsi"></li>
                   <li *ngIf="search?.record?.isMemorized" class="item-property item-property-icon icon-ico icon-Rec-Memorized"></li>
                 </ul>
-                <ul *ngIf="search?.searchType== SEARCHTYPE.RULESETLOOT" class="search-item-icons item-properties">
+                <ul *ngIf="search?.searchType== SEARCHTYPE.RULESETLOOT || search?.searchType== SEARCHTYPE.CHARACTERLOOT" class="search-item-icons item-properties">
                   <ng-container *ngIf="search?.record?.isLootPile">
                     <li class="item-property item-property-icon icon-Loot_Pile icon-ico">
                     </li>

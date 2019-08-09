@@ -55,7 +55,8 @@ export class SearchComponent implements OnInit {
    
     this.route.params.subscribe(params => {
       debugger
-      this.searchModal.searchString = params['searchText'];
+      this.searchModal.searchString = params['searchText'] ? params['searchText'] : '__empty__';
+      this.searchModal.searchString = this.searchModal.searchString == '__empty__' ? '' : this.searchModal.searchString;
       this.searchModal.searchType = params.searchType;
       this.defaultText = this.setDefaulttext(this.searchModal.searchType);
       if (this.searchModal.searchString) {
@@ -103,21 +104,21 @@ export class SearchComponent implements OnInit {
                 { value: 2, text: 'Inventory', type: SearchType.CHARACTERITEMS, selected: searchType == SearchType.CHARACTERITEMS ? true : false, imageurl: this.character.imageUrl },
                 { value: 3, text: 'Spells', type: SearchType.CHARACTERSPELLS, selected: searchType == SearchType.CHARACTERSPELLS ? true : false, imageurl: this.character.imageUrl },
                 { value: 4, text: 'Abilities', type: SearchType.CHARACTERABILITIES, selected: searchType == SearchType.CHARACTERABILITIES ? true : false, imageurl: this.character.imageUrl },
-                { value: 10, text: 'Buff & Effects', type: SearchType.CHARACTERBUFFANDEFFECT, selected: searchType == SearchType.CHARACTERBUFFANDEFFECT ? true : false, imageurl: this.character.imageUrl,isForPC:true },
-                { value: 5, text: 'Items', type: SearchType.RULESETITEMS, selected: searchType == SearchType.RULESETITEMS ? true : false, imageurl: this.character.ruleSet.imageUrl },
+                { value: 10, text: 'Buffs & Effects', type: SearchType.CHARACTERBUFFANDEFFECT, selected: searchType == SearchType.CHARACTERBUFFANDEFFECT ? true : false, imageurl: this.character.imageUrl,isForPC:true },
+                { value: 5, text: 'Item Templates', type: SearchType.RULESETITEMS, selected: searchType == SearchType.RULESETITEMS ? true : false, imageurl: this.character.ruleSet.imageUrl },
                 { value: 6, text: 'Spells', type: SearchType.RULESETSPELLS, selected: searchType == SearchType.RULESETSPELLS ? true : false, imageurl: this.character.ruleSet.imageUrl },
                 { value: 7, text: 'Abilities', type: SearchType.RULESETABILITIES, selected: searchType == SearchType.RULESETABILITIES ? true : false, imageurl: this.character.ruleSet.imageUrl },
 
                 
-                //{ value: 11, text: 'Buff & Effects', type: SearchType.RULESETBUFFANDEFFECT, selected: searchType == SearchType.RULESETBUFFANDEFFECT ? true : false, imageurl: '' },
+                { value: 12, text: 'Buffs & Effects', type: SearchType.RULESETBUFFANDEFFECT, selected: searchType == SearchType.RULESETBUFFANDEFFECT ? true : false, imageurl: this.character.ruleSet.imageUrl, isForPC: true  },
                 //{ value: 12, text: 'Monsters', type: SearchType.RULESETMONSTER, selected: searchType == SearchType.RULESETMONSTER ? true : false, imageurl: '' },
                 //{ value: 13, text: 'Monster Templates', type: SearchType.RULESETMONSTERTEMPLATE, selected: searchType == SearchType.RULESETMONSTERTEMPLATE ? true : false, imageurl: '' },
-                //{ value:14, text: 'Loots', type: SearchType.RULESETLOOT, selected: searchType == SearchType.RULESETLOOT ? true : false, imageurl: '' },
+                { value: 19, text: 'Loot', type: SearchType.CHARACTERLOOT, selected: searchType == SearchType.CHARACTERLOOT ? true : false, imageurl: this.character.ruleSet.imageUrl , isForPC: true },
                 //{ value: 15, text: 'Loot Templates', type: SearchType.RULESETLOOTTEMPLATE, selected: searchType == SearchType.RULESETLOOTTEMPLATE ? true : false, imageurl: '' },
-                { value: 16, text: 'Handout', type: SearchType.CHARACTERHANDOUT, selected: searchType == SearchType.CHARACTERHANDOUT ? true : false, imageurl: '', isForPC:true }
+                { value: 16, text: 'Handouts', type: SearchType.CHARACTERHANDOUT, selected: searchType == SearchType.CHARACTERHANDOUT ? true : false, imageurl: this.character.ruleSet.imageUrl, isForPC:true }
               ];
               
-              if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS) {
+            if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS) {
                 this.searchModal.itemFilters.isItemAbilityAssociated = true;
                 this.searchModal.itemFilters.isItemDesc = true;
                 this.searchModal.itemFilters.isItemName = true;
@@ -146,7 +147,7 @@ export class SearchComponent implements OnInit {
                 this.searchModal.abilityFilters.isAbilityStats = true;
                 this.searchModal.abilityFilters.isAbilityTags = true;
               }
-              else if (this.searchModal.searchType == SearchType.CHARACTERBUFFANDEFFECT) {
+            else if (this.searchModal.searchType == SearchType.CHARACTERBUFFANDEFFECT || this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
                 this.searchModal.buffAndEffectFilters.isBuffAndEffectName = true;
                 this.searchModal.buffAndEffectFilters.isBuffAndEffectDesc = true;
                 this.searchModal.buffAndEffectFilters.isBuffAndEffectStats = true;
@@ -155,7 +156,17 @@ export class SearchComponent implements OnInit {
               else if (this.searchModal.searchType == SearchType.CHARACTERHANDOUT) {
                 this.searchModal.handoutFilters.isHandoutName = true;
                 this.searchModal.handoutFilters.isHandoutFileType = true;
-              }
+            }
+            else if (this.searchModal.searchType == SearchType.CHARACTERLOOT) {
+              this.searchModal.lootFilters.isLootAbilityAssociated = true;
+              this.searchModal.lootFilters.isLootDesc = true;
+              this.searchModal.lootFilters.isLootItemAssociated = true;
+              this.searchModal.lootFilters.isLootName = true;
+              this.searchModal.lootFilters.isLootRarity = true;
+              this.searchModal.lootFilters.isLootSpellAssociated = true;
+              this.searchModal.lootFilters.isLootStats = true;
+              this.searchModal.lootFilters.isLootTags = true;
+            }
                this.isLoading = true;
               if (this.headers) {
                 if (this.headers.headerLink == 'ruleset') {
@@ -230,6 +241,16 @@ export class SearchComponent implements OnInit {
                     this.searchModal.handoutFilters.isHandoutFileType = data.isHandoutFileType;
                     this.searchModal.handoutFilters.isHandoutName = data.isName;
                   }
+                  else if (this.searchModal.searchType == SearchType.CHARACTERLOOT) {
+                    this.searchModal.lootFilters.isLootAbilityAssociated = data.isAssociatedAbility;
+                    this.searchModal.lootFilters.isLootDesc = data.isDesc;
+                    this.searchModal.lootFilters.isLootItemAssociated = data.isAssociatedItem;
+                    this.searchModal.lootFilters.isLootName = data.isName;
+                    this.searchModal.lootFilters.isLootRarity = data.isRarity;
+                    this.searchModal.lootFilters.isLootSpellAssociated = data.isAssociatedSpell;
+                    this.searchModal.lootFilters.isLootStats = data.isStats;
+                    this.searchModal.lootFilters.isLootTags = data.isTags;
+                  }
                 }
                 //this.isLoading = false;
                 
@@ -264,16 +285,17 @@ export class SearchComponent implements OnInit {
               { value: 1, text: 'Everything', type: SearchType.EVERYTHING, selected: searchType == SearchType.EVERYTHING ? true : false, imageurl: '' },
               { value: 12, text: 'Monsters', type: SearchType.RULESETMONSTER, selected: searchType == SearchType.RULESETMONSTER ? true : false, imageurl: '' },
               { value: 13, text: 'Monster Templates', type: SearchType.RULESETMONSTERTEMPLATE, selected: searchType == SearchType.RULESETMONSTERTEMPLATE ? true : false, imageurl: '' },
-              { value: 5, text: 'Items', type: SearchType.RULESETITEMS, selected: searchType == SearchType.RULESETITEMS ? true : false, imageurl: '' },
+              { value: 18, text: 'Items', type: SearchType.RULESETCHARACTERITEMS, selected: searchType == SearchType.RULESETCHARACTERITEMS ? true : false, imageurl: '' },
+              { value: 5, text: 'Item Templates', type: SearchType.RULESETITEMS, selected: searchType == SearchType.RULESETITEMS ? true : false, imageurl: '' },
+              { value: 14, text: 'Loot', type: SearchType.RULESETLOOT, selected: searchType == SearchType.RULESETLOOT ? true : false, imageurl: '' },
+              { value: 15, text: 'Loot Templates', type: SearchType.RULESETLOOTTEMPLATE, selected: searchType == SearchType.RULESETLOOTTEMPLATE ? true : false, imageurl: '' },
               { value: 6, text: 'Spells', type: SearchType.RULESETSPELLS, selected: searchType == SearchType.RULESETSPELLS ? true : false, imageurl: '' },
               { value: 7, text: 'Abilities', type: SearchType.RULESETABILITIES, selected: searchType == SearchType.RULESETABILITIES ? true : false, imageurl: '' },
-              { value: 11, text: 'Buff & Effects', type: SearchType.RULESETBUFFANDEFFECT, selected: searchType == SearchType.RULESETBUFFANDEFFECT ? true : false, imageurl: '' },
-              { value: 15, text: 'Loot Templates', type: SearchType.RULESETLOOTTEMPLATE, selected: searchType == SearchType.RULESETLOOTTEMPLATE ? true : false, imageurl: '' },
-              { value: 14, text: 'Loots', type: SearchType.RULESETLOOT, selected: searchType == SearchType.RULESETLOOT ? true : false, imageurl: '' },
-              { value: 16, text: 'Handout', type: SearchType.RULESETHANDOUT, selected: searchType == SearchType.RULESETHANDOUT ? true : false, imageurl: '' }
+              { value: 11, text: 'Buffs & Effects', type: SearchType.RULESETBUFFANDEFFECT, selected: searchType == SearchType.RULESETBUFFANDEFFECT ? true : false, imageurl: '' },
+              { value: 16, text: 'Handouts', type: SearchType.RULESETHANDOUT, selected: searchType == SearchType.RULESETHANDOUT ? true : false, imageurl: '' }
             ];
 
-            if (this.searchModal.searchType == SearchType.RULESETITEMS) {
+            if (this.searchModal.searchType == SearchType.RULESETITEMS || this.searchModal.searchType == SearchType.RULESETCHARACTERITEMS ) {
               this.searchModal.itemFilters.isItemAbilityAssociated = true;
               this.searchModal.itemFilters.isItemDesc = true;
               this.searchModal.itemFilters.isItemName = true;
@@ -350,7 +372,7 @@ export class SearchComponent implements OnInit {
               .subscribe(data => {
 
                 if (data) {
-                  if (this.searchModal.searchType == SearchType.RULESETITEMS) {
+                  if (this.searchModal.searchType == SearchType.RULESETITEMS || this.searchModal.searchType == SearchType.RULESETCHARACTERITEMS) {
                     this.searchModal.itemFilters.isItemAbilityAssociated = data.isAssociatedAbility;
                     this.searchModal.itemFilters.isItemDesc = data.isDesc;
                     this.searchModal.itemFilters.isItemName = data.isName;
@@ -573,7 +595,12 @@ export class SearchComponent implements OnInit {
  
   
 
-  search(query: any, isSearched :boolean = false) {
+  search(query: any, isSearched: boolean = false) {
+    if (isSearched && !query) {
+      let errMessage = 'A Search String is required to perform a Search. Please input one and try again.';
+      this.alertService.showMessage("", errMessage, MessageSeverity.error);
+      return false;
+    }
     
     if (this.searchModal) {
       
@@ -644,6 +671,12 @@ export class SearchComponent implements OnInit {
                   case SearchType.RULESETMONSTERTEMPLATE:
                     records = x.rulesetMonsterTemplate;
                     break;
+                  case SearchType.RULESETCHARACTERITEMS:
+                    records = x.rulesetCharacterItem;
+                    break;
+                  case SearchType.CHARACTERLOOT:
+                    records = x.characterLoot;
+                    break;
                   default:
                     records =  x ;
                     break;
@@ -658,7 +691,7 @@ export class SearchComponent implements OnInit {
                 };
               });
             }
-            else if (this.searchModal.searchType == SearchType.CHARACTERITEMS) {
+            else if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETCHARACTERITEMS) {
               this.searchModal.searchHeadingText = 'Items';
               this.searchList = data.map(x => {
                 
@@ -762,7 +795,7 @@ export class SearchComponent implements OnInit {
                 };
               });
             }
-            else if (this.searchModal.searchType == SearchType.RULESETLOOT) {
+            else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.CHARACTERLOOT) {
               this.searchModal.searchHeadingText = 'Loots';
               this.searchList = data.map(x => {
 
@@ -926,6 +959,16 @@ export class SearchComponent implements OnInit {
       this.searchModal.searchType = SearchType.RULESETHANDOUT;
 
     }
+    else if (text.type == SearchType.RULESETCHARACTERITEMS) {
+      this.isCharacterRulesetEntity = true;
+      this.searchModal.searchType = SearchType.RULESETCHARACTERITEMS;
+
+    }
+    else if (text.type == SearchType.CHARACTERLOOT) {
+      this.isCharacterRulesetEntity = true;
+      this.searchModal.searchType = SearchType.CHARACTERLOOT;
+
+    }
     else {
       this.searchModal.searchType = text.type;
     }
@@ -937,7 +980,7 @@ export class SearchComponent implements OnInit {
 
   gotoPage(input: any) {
     if (this.searchModal.searchType == SearchType.EVERYTHING) {
-      if (input.searchType == SearchType.CHARACTERITEMS) {
+      if (input.searchType == SearchType.CHARACTERITEMS || input.searchType == SearchType.RULESETCHARACTERITEMS) {
         this.router.navigate(['/character/inventory-details', input.recordId]);
       }
       else if (input.searchType == SearchType.RULESETITEMS) {
@@ -985,7 +1028,12 @@ export class SearchComponent implements OnInit {
         this.router.navigate(['/character/buff-effect-details', input.recordId]);
       }
       else if (input.searchType == SearchType.RULESETBUFFANDEFFECT) {
-        this.router.navigate(['/ruleset/buff-effect-details', input.recordId]);
+        if (this.isCampaignSearch) {
+          this.router.navigate(['/ruleset/buff-effect-details', input.recordId]);
+        } else {
+          this.router.navigate(['/character/buff-effect-detail', input.recordId]);
+        }
+        
       }
       else if (input.searchType == SearchType.RULESETLOOT) {
         if (input.record && input.record.isLootPile) {
@@ -1015,9 +1063,17 @@ export class SearchComponent implements OnInit {
       else if (input.searchType == SearchType.RULESETHANDOUT) {
         window.open(input.searchimage); //this.router.navigate(['/character/buff-effect-details', input.recordId]);
       }
+      else if (input.searchType == SearchType.CHARACTERLOOT) {
+        if (input.record && input.record.isLootPile) {
+          this.router.navigate(['/character/ruleset/loot-pile-details', input.recordId]);
+        } else {
+          this.router.navigate(['/character/ruleset/loot-details', input.recordId]);
+        }
+        //loot-pile-details
+      }
 
     } else {
-      if (this.searchModal.searchType == SearchType.CHARACTERITEMS) {
+      if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETCHARACTERITEMS) {
         //console.log(this.searchModal.searchType);
         this.router.navigate(['/character/inventory-details', input.recordId]);
       }
@@ -1084,7 +1140,12 @@ export class SearchComponent implements OnInit {
         this.router.navigate(['/character/buff-effect-details', input.recordId]);
       }
       else if (this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
-        this.router.navigate(['/ruleset/buff-effect-details', input.recordId]);
+        if (this.isCampaignSearch) {
+          this.router.navigate(['/ruleset/buff-effect-details', input.recordId]);
+        } else {
+          this.router.navigate(['/character/buff-effect-detail', input.recordId]);
+        }
+        
       }
       else if (this.searchModal.searchType == SearchType.RULESETLOOT) {
         if (input.record && input.record.isLootPile) {
@@ -1115,6 +1176,13 @@ export class SearchComponent implements OnInit {
       else if (this.searchModal.searchType == SearchType.RULESETHANDOUT) {
         window.open(input.searchimage); //this.router.navigate(['/character/buff-effect-details', input.recordId]);
       }
+      else if (this.searchModal.searchType == SearchType.CHARACTERLOOT) {
+        if (input.record && input.record.isLootPile) {
+          this.router.navigate(['/character/ruleset/loot-pile-details', input.recordId]);
+        } else {
+          this.router.navigate(['/character/ruleset/loot-details', input.recordId]);
+        }
+      }
     }
 
   }
@@ -1129,7 +1197,7 @@ export class SearchComponent implements OnInit {
   selectDeselectFilters() {
     if (this.allFiltersSelected) {
       this.allFiltersSelected = false;
-      if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS) {
+      if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS || this.searchModal.searchType == SearchType.RULESETCHARACTERITEMS) {
         this.searchModal.itemFilters.isItemAbilityAssociated = false;
         this.searchModal.itemFilters.isItemDesc = false;
         this.searchModal.itemFilters.isItemName = false;
@@ -1189,7 +1257,7 @@ export class SearchComponent implements OnInit {
 
 
       }
-      else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
+      else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE || this.searchModal.searchType == SearchType.CHARACTERLOOT) {
         this.searchModal.lootFilters.isLootDesc = false;
         this.searchModal.lootFilters.isLootTags = false;
         this.searchModal.lootFilters.isLootName = false;
@@ -1208,7 +1276,7 @@ export class SearchComponent implements OnInit {
     }
     else {
       this.allFiltersSelected = true;
-      if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS) {
+      if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS || this.searchModal.searchType == SearchType.RULESETCHARACTERITEMS) {
         this.searchModal.itemFilters.isItemAbilityAssociated = true;
         this.searchModal.itemFilters.isItemDesc = true;
         this.searchModal.itemFilters.isItemName = true;
@@ -1268,7 +1336,7 @@ export class SearchComponent implements OnInit {
 
 
       }
-      else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
+      else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE || this.searchModal.searchType == SearchType.CHARACTERLOOT) {
         this.searchModal.lootFilters.isLootDesc = true;
         this.searchModal.lootFilters.isLootTags = true;
         this.searchModal.lootFilters.isLootName = true;
@@ -1287,6 +1355,7 @@ export class SearchComponent implements OnInit {
     }
   }
   setDefaulttext(type) {
+    debugger
     switch (+type) {
       case SearchType.CHARACTERABILITIES:
         return 'Ability';
@@ -1297,13 +1366,13 @@ export class SearchComponent implements OnInit {
       case SearchType.RULESETABILITIES:
         return 'Ability';
       case SearchType.RULESETITEMS:
-        return 'Items';
+        return 'Item Templates';
       case SearchType.RULESETSPELLS:
         return 'Spells';
       case SearchType.RULESETBUFFANDEFFECT:
-        return 'Buff & Effect';
+        return 'Buffs & Effects';
       case SearchType.CHARACTERBUFFANDEFFECT:
-        return 'Buff & Effect';
+        return 'Buffs & Effects';
       case SearchType.RULESETMONSTER:
         return 'Monster';
       case SearchType.RULESETMONSTERTEMPLATE:
@@ -1313,18 +1382,21 @@ export class SearchComponent implements OnInit {
       case SearchType.RULESETLOOTTEMPLATE:
         return 'Loot Template';
       case SearchType.CHARACTERHANDOUT:
-        return 'Handout';
+        return 'Handouts';
       case SearchType.RULESETHANDOUT:
-        return 'Handout';
-
-
+        return 'Handouts';
+      case SearchType.RULESETCHARACTERITEMS:
+        return 'Items';
+      case SearchType.CHARACTERLOOT:
+        return 'Loot';
       default:
         return 'Everything';
     }
   }
 
   checkFilters() {
-    if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS) {
+    debugger
+    if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS || this.searchModal.searchType == SearchType.RULESETCHARACTERITEMS) {
       let values = Object.values(this.searchModal.itemFilters);
       var found = values.find(function (element) {
         return element == true;
@@ -1377,7 +1449,7 @@ export class SearchComponent implements OnInit {
         this.searchModal.monsterFilters.isMonsterName = true;
       }
     }
-    else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
+    else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE || this.searchModal.searchType == SearchType.CHARACTERLOOT) {
       let values = Object.values(this.searchModal.lootFilters);
       var found = values.find(function (element) {
         return element == true;

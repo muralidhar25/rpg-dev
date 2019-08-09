@@ -783,6 +783,9 @@ namespace DAL.Models.SPModels
         RulesetMonsterTemplate = 15,
         CharacterHandout = 16,
         RulesetHandout = 17,
+        RulesetCharacterItems = 18,
+        CharacterLoot = 19,
+
     }
     public class SearchModel
     {
@@ -910,6 +913,8 @@ namespace DAL.Models.SPModels
         public LootTemplate RulesetLootTemplate { get; set; }
         public Monster RulesetMonster { get; set; }
         public MonsterTemplate_Bundle RulesetMonsterTemplate { get; set; }
+        public Item RulesetCharacterItem  { get; set; }
+        public ItemMasterLoot CharacterLoot { get; set; }
     }
     public class ItemMaster_Bundle : ItemMaster
     {

@@ -58,6 +58,7 @@ export class BasicSearchComponent implements OnInit {
   }
 
   private Initialize() {
+    debugger
     this.isCharacterRulesetEntity = false;
     this.route.params.subscribe(params => {
       if (params['searchType'] == SearchType.CHARACTERRULESETITEMS) {
@@ -71,6 +72,15 @@ export class BasicSearchComponent implements OnInit {
       else if (params['searchType'] == SearchType.CHARACTERRULESETABILITIES) {
         this.isCharacterRulesetEntity = true;
         this.searchModal.searchType = SearchType.RULESETABILITIES;
+      }
+
+      else if (params['searchType'] == SearchType.CHARACTERRULESETBUFFEFFECT) {
+        this.isCharacterRulesetEntity = true;
+        this.searchModal.searchType = SearchType.RULESETBUFFANDEFFECT;
+      }
+      else if (params['searchType'] == SearchType.CHARACTERLOOT) {
+        this.isCharacterRulesetEntity = true;
+        this.searchModal.searchType = SearchType.CHARACTERLOOT;
       }
       else {
         this.searchModal.searchType = params['searchType'];
@@ -93,7 +103,9 @@ export class BasicSearchComponent implements OnInit {
           }
         }
       }
-      
+
+      //this.searchModal.searchString = params['searchText'] ? params['searchText'] : '__empty__';
+      this.searchModal.searchString = this.searchModal.searchString == '__empty__' ? '' : this.searchModal.searchString;
     });
 
     this.dropDownText = [
@@ -136,13 +148,13 @@ export class BasicSearchComponent implements OnInit {
       this.searchModal.abilityFilters.isAbilityStats = true;
       this.searchModal.abilityFilters.isAbilityTags = true;
     }
-    else if (this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
+    else if (this.searchModal.searchType == SearchType.CHARACTERBUFFANDEFFECT || this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
       this.searchModal.buffAndEffectFilters.isBuffAndEffectName = true;
       this.searchModal.buffAndEffectFilters.isBuffAndEffectDesc = true;
       this.searchModal.buffAndEffectFilters.isBuffAndEffectStats = true;
       this.searchModal.buffAndEffectFilters.isBuffAndEffectTags = true;
     }
-    else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
+    else if (this.searchModal.searchType == SearchType.CHARACTERLOOT || this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
       this.searchModal.lootFilters.isLootAbilityAssociated = true;
       this.searchModal.lootFilters.isLootDesc = true;
       this.searchModal.lootFilters.isLootItemAssociated = true;
@@ -173,6 +185,7 @@ export class BasicSearchComponent implements OnInit {
     }
 
     if (this.headers) {
+      
       if (this.headers.headerLink == 'ruleset') {
         this.searchModal.rulesetID = this.headers.headerId
       }
@@ -183,12 +196,19 @@ export class BasicSearchComponent implements OnInit {
           this.searchModal.searchType == SearchType.RULESETSPELLS
           ||
           this.searchModal.searchType == SearchType.RULESETABILITIES
+          ||
+          this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT         
 
         ) {
           let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
           this.searchModal.rulesetID = rid;
         }
         else {
+          this.searchModal.characterID = this.headers.headerId
+        }
+        if (this.searchModal.searchType == SearchType.CHARACTERLOOT) {
+          let rid = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+          this.searchModal.rulesetID = rid;
           this.searchModal.characterID = this.headers.headerId
         }
       }
@@ -219,7 +239,7 @@ export class BasicSearchComponent implements OnInit {
             this.searchModal.spellFilters.isSpellStats = data.isStats;
             this.searchModal.spellFilters.isSpellTags = data.isTags;
           }
-          else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
+          else if (this.searchModal.searchType == SearchType.CHARACTERLOOT ||this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
             this.searchModal.lootFilters.isLootAbilityAssociated = data.isAssociatedAbility;
             this.searchModal.lootFilters.isLootDesc = data.isDesc;
             this.searchModal.lootFilters.isLootItemAssociated = data.isAssociatedItem;
@@ -251,6 +271,12 @@ export class BasicSearchComponent implements OnInit {
             this.searchModal.abilityFilters.isAbilityStats = data.isStats;
             this.searchModal.abilityFilters.isAbilityTags = data.isTags;
           }
+          else if (this.searchModal.searchType == SearchType.CHARACTERBUFFANDEFFECT || this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
+            this.searchModal.buffAndEffectFilters.isBuffAndEffectName = true;
+            this.searchModal.buffAndEffectFilters.isBuffAndEffectDesc = true;
+            this.searchModal.buffAndEffectFilters.isBuffAndEffectStats = true;
+            this.searchModal.buffAndEffectFilters.isBuffAndEffectTags = true;
+          }
         }
         
         
@@ -264,7 +290,11 @@ export class BasicSearchComponent implements OnInit {
   }
   
   search(query: string, isSearched: boolean = false) {
-   
+    if (isSearched && !query) {
+      let errMessage = 'A Search String is required to perform a Search. Please input one and try again.';
+      this.alertService.showMessage("", errMessage, MessageSeverity.error);
+      return false;
+    }
     if (this.searchModal) {
       if (!this.searchModal.searchString) {
         this.searchModal.searchString = '';        
@@ -291,7 +321,7 @@ export class BasicSearchComponent implements OnInit {
         .subscribe(data => {
           if (data.length > 0) {
             this.showMoreLessToggle = true;
-            if (this.searchModal.searchType == SearchType.CHARACTERITEMS) {
+            if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETCHARACTERITEMS) {
               this.searchModal.searchHeadingText = 'Items';
               this.searchList = data.map(x => {
                 return {
@@ -363,7 +393,19 @@ export class BasicSearchComponent implements OnInit {
                 };
               });
             }
-            
+            else if (this.searchModal.searchType == SearchType.CHARACTERBUFFANDEFFECT) {
+              this.searchModal.searchHeadingText = 'Buffs and Effects';
+              this.searchList = data.map(x => {
+
+                return {
+                  searchimage: x.buffAndEffect.imageUrl,
+                  name: x.buffAndEffect.name,
+                  searchType: this.searchModal.searchType,
+                  recordId: x.characterBuffAandEffectId,
+                  record: x
+                };
+              });
+            }
             else if (this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
               this.searchModal.searchHeadingText = 'Buffs and Effects';
               this.searchList = data.map(x => {
@@ -377,7 +419,7 @@ export class BasicSearchComponent implements OnInit {
                 };
               });
             }
-            else if (this.searchModal.searchType == SearchType.RULESETLOOT) {
+            else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.CHARACTERLOOT) {
               this.searchModal.searchHeadingText = 'Loots';
               this.searchList = data.map(x => {
 
@@ -469,7 +511,7 @@ export class BasicSearchComponent implements OnInit {
   }
 
   gotoPage(input: any) {
-    if (this.searchModal.searchType == SearchType.CHARACTERITEMS) {
+    if (this.searchModal.searchType == SearchType.CHARACTERITEMS || input.searchType == SearchType.RULESETCHARACTERITEMS) {
       this.router.navigate(['/character/inventory-details', input.recordId]);
     }
     else if (this.searchModal.searchType == SearchType.RULESETITEMS) {
@@ -514,10 +556,15 @@ export class BasicSearchComponent implements OnInit {
         this.router.navigate(['/ruleset/ability-details', input.recordId]);
       }
     }
-    else if (input.searchType == SearchType.RULESETBUFFANDEFFECT) {
-      this.router.navigate(['/ruleset/buff-effect-details', input.recordId]);
+    else if (this.searchModal.searchType == SearchType.RULESETBUFFANDEFFECT) {
+      if (this.isCharacterRulesetEntity) {
+        this.router.navigate(['/character/buff-effect-detail', input.recordId]);        
+      } else {
+        this.router.navigate(['/ruleset/buff-effect-details', input.recordId]);
+      }
+
     }
-    else if (input.searchType == SearchType.RULESETLOOT) {
+    else if (this.searchModal.searchType == SearchType.RULESETLOOT) {
       if (input.record && input.record.isLootPile) {
         this.router.navigate(['/ruleset/loot-pile-details', input.recordId]);
       } else {
@@ -526,19 +573,27 @@ export class BasicSearchComponent implements OnInit {
       
       //loot-pile-details
     }
-    else if (input.searchType == SearchType.RULESETLOOTTEMPLATE) {
+    else if (this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
       this.router.navigate(['/ruleset/loot-pile-template-details', input.recordId]);
     }
-    else if (input.searchType == SearchType.RULESETMONSTER) {
+    else if (this.searchModal.searchType == SearchType.RULESETMONSTER) {
       this.router.navigate(['/ruleset/monster-details', input.recordId]);
     }
-    else if (input.searchType == SearchType.RULESETMONSTERTEMPLATE) {
+    else if (this.searchModal.searchType == SearchType.RULESETMONSTERTEMPLATE) {
       if (!input.record.isBundle) {
         this.router.navigate(['/ruleset/monster-template-details', input.recordId]);
       }
       else {
         this.router.navigate(['/ruleset/monster-bundle-details', input.recordId]);
       }
+    }
+    else if (this.searchModal.searchType == SearchType.CHARACTERLOOT) {
+      if (input.record && input.record.isLootPile) {
+        this.router.navigate(['/character/ruleset/loot-pile-details', input.recordId]);
+      } else {
+        this.router.navigate(['/character/ruleset/loot-details', input.recordId]);
+      }
+      //loot-pile-details
     }
   }
 
@@ -563,13 +618,13 @@ export class BasicSearchComponent implements OnInit {
       case SearchType.RULESETABILITIES:
         return 'Ability';
       case SearchType.RULESETITEMS:
-        return 'Item';
+        return 'Item Templates';
       case SearchType.RULESETSPELLS:
         return 'Spell';
       case SearchType.RULESETBUFFANDEFFECT:
-        return 'Buff & Effect';
+        return 'Buffs & Effects';
       case SearchType.CHARACTERBUFFANDEFFECT:
-        return 'Buff & Effect';
+        return 'Buffs & Effects';
       case SearchType.RULESETMONSTER:
         return 'Monster';
       case SearchType.RULESETMONSTERTEMPLATE:
@@ -579,9 +634,13 @@ export class BasicSearchComponent implements OnInit {
       case SearchType.RULESETLOOTTEMPLATE:
         return 'Loot Template';
       case SearchType.CHARACTERHANDOUT:
-        return 'Handout';
+        return 'Handouts';
       case SearchType.RULESETHANDOUT:
-        return 'Handout';
+        return 'Handouts';
+      case SearchType.RULESETCHARACTERITEMS:
+        return 'Items';
+      case SearchType.CHARACTERLOOT:
+        return 'Loot';
       default:
         return '';
     }
@@ -590,7 +649,7 @@ export class BasicSearchComponent implements OnInit {
   selectDeselectFilters() {
     if (this.allFiltersSelected) {
       this.allFiltersSelected = false;
-      if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS) {
+      if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS || this.searchModal.searchType == SearchType.RULESETCHARACTERITEMS) {
         this.searchModal.itemFilters.isItemAbilityAssociated = false;
         this.searchModal.itemFilters.isItemDesc = false;
         this.searchModal.itemFilters.isItemName = false;
@@ -643,7 +702,7 @@ export class BasicSearchComponent implements OnInit {
 
 
       }
-      else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
+      else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE || this.searchModal.searchType == SearchType.CHARACTERLOOT) {
         this.searchModal.lootFilters.isLootDesc = false;
         this.searchModal.lootFilters.isLootTags = false;
         this.searchModal.lootFilters.isLootName = false;
@@ -658,7 +717,7 @@ export class BasicSearchComponent implements OnInit {
     }
     else {
       this.allFiltersSelected = true;
-      if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS) {
+      if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS || this.searchModal.searchType == SearchType.RULESETCHARACTERITEMS) {
         this.searchModal.itemFilters.isItemAbilityAssociated = true;
         this.searchModal.itemFilters.isItemDesc = true;
         this.searchModal.itemFilters.isItemName = true;
@@ -711,7 +770,7 @@ export class BasicSearchComponent implements OnInit {
 
 
       }
-      else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
+      else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE || this.searchModal.searchType == SearchType.CHARACTERLOOT) {
         this.searchModal.lootFilters.isLootDesc = true;
         this.searchModal.lootFilters.isLootTags = true;
         this.searchModal.lootFilters.isLootName = true;
@@ -732,7 +791,7 @@ export class BasicSearchComponent implements OnInit {
     this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
   }
   checkFilters() {
-    if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS) {
+    if (this.searchModal.searchType == SearchType.CHARACTERITEMS || this.searchModal.searchType == SearchType.RULESETITEMS || this.searchModal.searchType == SearchType.RULESETCHARACTERITEMS) {
       let values = Object.values(this.searchModal.itemFilters);
       var found = values.find(function (element) {
         return element == true;
@@ -786,7 +845,7 @@ export class BasicSearchComponent implements OnInit {
         this.searchModal.monsterFilters.isMonsterName = true;
       }
     }
-    else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE) {
+    else if (this.searchModal.searchType == SearchType.RULESETLOOT || this.searchModal.searchType == SearchType.RULESETLOOTTEMPLATE || this.searchModal.searchType == SearchType.CHARACTERLOOT) {
       let values = Object.values(this.searchModal.lootFilters);
       var found = values.find(function (element) {
         return element == true;

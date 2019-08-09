@@ -22,6 +22,7 @@ namespace DAL.Models
         public bool IsCharacter { get; set; }
 
         public bool IsItem { get; set; }
+        public bool IsCharacterItem { get; set; }
         public bool IsSpell { get; set; }
         public bool IsAbility { get; set; }
         public bool IsBuffEffect { get; set; }

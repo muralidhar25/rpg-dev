@@ -1590,7 +1590,7 @@ namespace DAL.Services
         }
         public async Task<List<ItemMasterLoot_ViewModel>> GetLootItemsForPlayers(int rulesetID) {
             var res =await GetItemMasterLoots(rulesetID, 1, 999999);
-            return res.Where(x => (x.IsShow == true || x.IsLootPile==true) && x.IsDeleted != true).OrderByDescending(x=>x.IsLootPile).ThenBy(x=>x.ItemName).ToList();
+            return res.Where(x => (x.IsShow == true || (x.IsLootPile==true && x.IsVisible == true)) && x.IsDeleted != true).OrderByDescending(x=>x.IsLootPile).ThenBy(x=>x.ItemName).ToList();
         }
         public ItemMasterLoot CreateItemMasterLoot(ItemMaster result, ItemMasterLoot loot, 
             List<ItemMasterLootSpell> AssociateSpellVM, 

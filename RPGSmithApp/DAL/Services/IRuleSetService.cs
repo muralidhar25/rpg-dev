@@ -63,7 +63,9 @@ namespace DAL.Services
             List<LootTemplate> lootTemplates,
             List<Monster> monsters,
             List<MonsterTemplate_Bundle> monsterTemplates,
-            List<HandoutViewModel> handouts, int CharacterID);
+            List<HandoutViewModel> handouts, int CharacterID, 
+            List<ItemMasterLoot> characterLoots, 
+            List<Item> rulesetCharacteritems);
         List<SearchEverything> SearchEveryThing(SearchModel searchModel,int CharacterID);
         bool IsRulesetAlreadyPurchased(int ruleSetId, string userID);
         Task updateUserPurchasedRuleset(int ruleSetId, string userID);
@@ -83,5 +85,7 @@ namespace DAL.Services
         List<Monster> SearchRulesetMonsters(SearchModel searchModel, int[]idsToSearch = null, string UserID = "");
         List<BuffAndEffectVM> SearchRulesetBuffAndEffects(SearchModel searchModel, int[]idsToSearch = null, string UserID = "");
         List<CharacterBuffAndEffect> SearchCharacterBuffAandEffects(SearchModel searchModel, int[]idsToSearch = null, string UserID = "");
+        List<ItemMasterLoot> SearchCharacterLoots(SearchModel searchModel, int[] idsToSearch = null, string UserID = "");
+        List<Item> SearchRulesetCharacteritems(SearchModel searchModel, int[] idsToSearch = null, string UserID = "");
     }
 }

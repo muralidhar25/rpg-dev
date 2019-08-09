@@ -2207,6 +2207,246 @@ namespace DAL.Services
             }
             return _CharacterBuffAndEffectList;
         }
+
+        public List<ItemMasterLoot> SearchCharacterLoots(SearchModel searchModel, int[] idsToSearch = null, string UserID = "")
+        {
+            DataTable dt_ids = new DataTable();
+            if (idsToSearch != null)
+            {
+                if (idsToSearch.Length > 0)
+                {
+                    dt_ids = ConvertIntArrayToDataTable(idsToSearch);
+                    //dt_ids = utility.ToDataTable<int>(idsToSearch.ToList());
+                }
+            }
+            List<ItemMasterLoot> lootlist = new List<ItemMasterLoot>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("SearchRecords", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@SearchText", searchModel.SearchString);
+                command.Parameters.AddWithValue("@RecordType", SP_SearchType.CharacterLoot);
+                command.Parameters.AddWithValue("@CharacterID", searchModel.CharacterID);
+                command.Parameters.AddWithValue("@RulesetID", searchModel.RulesetID);
+                command.Parameters.AddWithValue("@CurrentUser_Id", UserID);
+
+
+                if (searchModel.SearchType == SP_SearchType.Everything)
+                {
+                    command.Parameters.AddWithValue("@IsEverything", true);
+                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName);
+                    command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
+                    command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
+                    command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                }
+                else
+                {
+                    command.Parameters.AddWithValue("@IsLootName", searchModel.LootFilters.IsLootName);
+                    command.Parameters.AddWithValue("@IsLootTags", searchModel.LootFilters.IsLootTags);
+                    command.Parameters.AddWithValue("@IsLootStats", searchModel.LootFilters.IsLootStats);
+                    command.Parameters.AddWithValue("@IsLootDesc", searchModel.LootFilters.IsLootDesc);
+                    command.Parameters.AddWithValue("@IsLootRarity", searchModel.LootFilters.IsLootRarity);
+                    command.Parameters.AddWithValue("@IsLootAbilityAssociated", searchModel.LootFilters.IsLootAbilityAssociated);
+                    command.Parameters.AddWithValue("@IsLootSpellAssociated", searchModel.LootFilters.IsLootSpellAssociated);
+                    command.Parameters.AddWithValue("@IsLootItemAssociated", searchModel.LootFilters.IsLootItemAssociated);
+                }
+
+                if (idsToSearch != null)
+                {
+                    if (idsToSearch.Length > 0 && dt_ids.Rows.Count > 0)
+                    {
+                        command.Parameters.AddWithValue("@OldSearchIds", dt_ids);
+                    }
+                }
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            if (ds.Tables.Count > 0)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        ItemMasterLoot i = new ItemMasterLoot()
+                        {
+                            Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString(),
+                            CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString(),
+                            ContainerVolumeMax = row["ContainerVolumeMax"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ContainerVolumeMax"]),
+                            ContainerWeightMax = row["ContainerWeightMax"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ContainerWeightMax"]),
+                            ContainerWeightModifier = row["ContainerWeightModifier"] == DBNull.Value ? null : row["ContainerWeightModifier"].ToString(),
+                            IsConsumable = row["IsConsumable"] == DBNull.Value ? false : Convert.ToBoolean(row["IsConsumable"]),
+                            IsContainer = row["IsContainer"] == DBNull.Value ? false : Convert.ToBoolean(row["IsContainer"]),
+                            IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]),
+                            IsIdentified = row["IsIdentified"] == DBNull.Value ? false : Convert.ToBoolean(row["IsIdentified"]),
+                            IsLootPile = row["IsLootPile"] == DBNull.Value ? false : Convert.ToBoolean(row["IsLootPile"]),
+                            IsShow = row["IsShow"] == DBNull.Value ? false : Convert.ToBoolean(row["IsShow"]),
+                            IsVisible = row["IsVisible"] == DBNull.Value ? false : Convert.ToBoolean(row["IsVisible"]),
+                            LootId = row["LootId"] == DBNull.Value ? 0 : Convert.ToInt32(row["LootId"].ToString()),
+                            LootPileCharacterId = row["LootPileCharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["LootPileCharacterId"].ToString()),
+                            LootPileMonsterId = row["LootPileMonsterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["LootPileMonsterId"].ToString()),
+                            LootPileId = row["LootPileId"] == DBNull.Value ? 0 : Convert.ToInt32(row["LootPileId"].ToString()),
+                            ParentLootId = row["ParentLootId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentLootId"].ToString()),
+                            Quantity = row["Quantity"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Quantity"]),
+                            TotalWeight = row["TotalWeight"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalWeight"]),
+                            IsMagical = row["IsMagical"] == DBNull.Value ? false : Convert.ToBoolean(row["IsMagical"]),
+                            ItemCalculation = row["ItemCalculation"] == DBNull.Value ? null : row["ItemCalculation"].ToString(),
+                            ItemImage = row["ItemImage"] == DBNull.Value ? null : row["ItemImage"].ToString(),
+                            ItemMasterId = row["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemMasterId"].ToString()),
+                            ItemName = row["ItemName"] == DBNull.Value ? null : row["ItemName"].ToString(),
+                            ItemStats = row["ItemStats"] == DBNull.Value ? null : row["ItemStats"].ToString(),
+                            ItemVisibleDesc = row["ItemVisibleDesc"] == DBNull.Value ? null : row["ItemVisibleDesc"].ToString(),
+                            Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString(),
+                            PercentReduced = row["PercentReduced"] == DBNull.Value ? 0 : Convert.ToDecimal(row["PercentReduced"]),
+                            Rarity = row["Rarity"] == DBNull.Value ? null : row["Rarity"].ToString(),
+                            RuleSetId = row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(row["RuleSetId"].ToString()),
+                            TotalWeightWithContents = row["TotalWeightWithContents"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalWeightWithContents"]),
+                            Value = row["Value"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Value"]),
+                            Volume = row["Volume"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Volume"]),
+                            Weight = row["Weight"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Weight"]),
+                        };
+
+                        lootlist.Add(i);
+                    }
+                }
+            }
+
+            return lootlist;
+        }
+        public List<Item> SearchRulesetCharacteritems(SearchModel searchModel, int[] idsToSearch = null, string UserID = "")
+        {
+            DataTable dt_ids = new DataTable();
+            if (idsToSearch != null)
+            {
+                if (idsToSearch.Length > 0)
+                {
+                    dt_ids = ConvertIntArrayToDataTable(idsToSearch);
+                    //dt_ids = utility.ToDataTable<int>(idsToSearch.ToList());
+                }
+            }
+            List<Item> _ItemList = new List<Item>();
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataSet ds = new DataSet();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("SearchRecords", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@SearchText", searchModel.SearchString);
+                command.Parameters.AddWithValue("@RecordType", SP_SearchType.RulesetCharacterItems);
+                command.Parameters.AddWithValue("@CharacterID", searchModel.CharacterID);
+                command.Parameters.AddWithValue("@RulesetID", searchModel.RulesetID);
+                command.Parameters.AddWithValue("@CurrentUser_Id", UserID);
+
+                if (searchModel.SearchType == SP_SearchType.Everything)
+                {
+                    command.Parameters.AddWithValue("@IsEverything", true);
+                    command.Parameters.AddWithValue("@IsEverythingName", searchModel.EverythingFilters.IsEverythingName);
+                    command.Parameters.AddWithValue("@IsEverythingTag", searchModel.EverythingFilters.IsEverythingTags);
+                    command.Parameters.AddWithValue("@IsEverythingStat", searchModel.EverythingFilters.IsEverythingStats);
+                    command.Parameters.AddWithValue("@IsEverythingDesc", searchModel.EverythingFilters.IsEverythingDesc);
+                }
+                else
+                {
+                    command.Parameters.AddWithValue("@IsItemName", searchModel.ItemFilters.IsItemName);
+                    command.Parameters.AddWithValue("@IsItemTags", searchModel.ItemFilters.IsItemTags);
+                    command.Parameters.AddWithValue("@IsItemStats", searchModel.ItemFilters.IsItemStats);
+                    command.Parameters.AddWithValue("@IsItemDesc", searchModel.ItemFilters.IsItemDesc);
+                    command.Parameters.AddWithValue("@IsItemRarity", searchModel.ItemFilters.IsItemRarity);
+                    command.Parameters.AddWithValue("@IsItemAbilityAssociated", searchModel.ItemFilters.IsItemAbilityAssociated);
+                    command.Parameters.AddWithValue("@IsItemSpellAssociated", searchModel.ItemFilters.IsItemSpellAssociated);
+                }
+                if (idsToSearch != null)
+                {
+                    if (idsToSearch.Length > 0 && dt_ids.Rows.Count > 0)
+                    {
+                        command.Parameters.AddWithValue("@OldSearchIds", dt_ids);
+                    }
+                }
+
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(ds);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            if (ds.Tables.Count > 0)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+
+                        Item i = new Item();
+                        i.ItemId = row["ItemId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemId"].ToString());
+                        i.Name = row["Name"] == DBNull.Value ? null : row["Name"].ToString();
+                        i.Description = row["Description"] == DBNull.Value ? null : row["Description"].ToString();
+                        i.ItemImage = row["ItemImage"] == DBNull.Value ? null : row["ItemImage"].ToString();
+                        i.CharacterId = row["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["CharacterId"].ToString());
+                        i.ItemMasterId = row["ItemMasterId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ItemMasterId"].ToString());
+                        i.Quantity = row["Quantity"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Quantity"]);
+                        i.TotalWeight = row["TotalWeight"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalWeight"]);
+                        i.IsIdentified = row["IsIdentified"] == DBNull.Value ? false : Convert.ToBoolean(row["IsIdentified"]);
+                        i.IsVisible = row["IsVisible"] == DBNull.Value ? false : Convert.ToBoolean(row["IsVisible"]);
+                        i.IsEquipped = row["IsEquipped"] == DBNull.Value ? false : Convert.ToBoolean(row["IsEquipped"]);
+                        i.ParentItemId = row["ParentItemId"] == DBNull.Value ? 0 : Convert.ToInt32(row["ParentItemId"].ToString());
+                        i.IsDeleted = row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(row["IsDeleted"]);
+                        i.ContainedIn = row["ContainedIn"] == DBNull.Value ? 0 : Convert.ToInt32(row["ContainedIn"].ToString());
+                        i.IsConsumable = row["IsConsumable"] == DBNull.Value ? false : Convert.ToBoolean(row["IsConsumable"]);
+                        i.IsContainer = row["IsContainer"] == DBNull.Value ? false : Convert.ToBoolean(row["IsContainer"]);
+                        i.IsMagical = row["IsMagical"] == DBNull.Value ? false : Convert.ToBoolean(row["IsMagical"]);
+                        i.ItemCalculation = row["ItemCalculation"] == DBNull.Value ? null : row["ItemCalculation"].ToString();
+                        i.Metatags = row["Metatags"] == DBNull.Value ? null : row["Metatags"].ToString();
+                        i.Rarity = row["Rarity"] == DBNull.Value ? null : row["Rarity"].ToString();
+                        i.Value = row["Value"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Value"]);
+                        i.Volume = row["Volume"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Volume"]);
+                        i.Weight = row["Weight"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Weight"]);
+                        i.Command = row["Command"] == DBNull.Value ? null : row["Command"].ToString();
+                        i.ContainerVolumeMax = row["ContainerVolumeMax"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ContainerVolumeMax"]);
+                        i.ContainerWeightMax = row["ContainerWeightMax"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ContainerWeightMax"]);
+                        i.ContainerWeightModifier = row["ContainerWeightModifier"] == DBNull.Value ? null : row["ContainerWeightModifier"].ToString();
+                        i.ItemStats = row["ItemStats"] == DBNull.Value ? null : row["ItemStats"].ToString();
+                        i.PercentReduced = row["PercentReduced"] == DBNull.Value ? 0 : Convert.ToDecimal(row["PercentReduced"]);
+                        i.TotalWeightWithContents = row["TotalWeightWithContents"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalWeightWithContents"]);
+                        i.CommandName = row["CommandName"] == DBNull.Value ? null : row["CommandName"].ToString();
+                        _ItemList.Add(i);
+                    }
+                }
+            }
+
+            return _ItemList;
+        }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         public void SaveLastSearchFilters(SearchModel searchModel)
@@ -2222,6 +2462,8 @@ namespace DAL.Services
                 searchModel.SearchType == SP_SearchType.CharacterBuffAndEffect
                 ||
                 searchModel.SearchType == SP_SearchType.CharacterHandout
+                 ||
+                searchModel.SearchType == SP_SearchType.CharacterLoot
                 )
             {
                 if (searchModel.CharacterID != 0)
@@ -2231,13 +2473,15 @@ namespace DAL.Services
                     bool isAbility = (searchModel.SearchType == SP_SearchType.CharacterAbilities);
                     bool isBuffEffect = (searchModel.SearchType == SP_SearchType.CharacterBuffAndEffect);
                     bool ishandout = (searchModel.SearchType == SP_SearchType.CharacterHandout);
+                    bool isloot = (searchModel.SearchType == SP_SearchType.CharacterLoot);
                     if (_context.SearchFilter.Any(x => x.CharacterId == searchModel.CharacterID && x.IsCharacter == true && x.IsRuleSet == false &&
                         x.IsItem == isItem && x.IsSpell == isSpell && x.IsAbility == isAbility && x.IsBuffEffect== isBuffEffect && 
-                        x.IsHandout == ishandout))
+                        x.IsHandout == ishandout && x.IsLoot== isloot))
                     {
 
                         filter = _context.SearchFilter.Where(x => x.CharacterId == searchModel.CharacterID && x.IsCharacter == true && x.IsRuleSet == false &&
                         x.IsItem == isItem && x.IsSpell == isSpell && x.IsAbility == isAbility && x.IsBuffEffect == isBuffEffect && x.IsHandout == ishandout
+                        &&x.IsLoot==isloot
                         ).FirstOrDefault();
                         if (filter != null)
                         {
@@ -2293,16 +2537,18 @@ namespace DAL.Services
                     bool isLoot = (searchModel.SearchType == SP_SearchType.RulesetLoot);
                     bool isLootTemplate = (searchModel.SearchType == SP_SearchType.RulesetLootTemplate);
                     bool ishandout = (searchModel.SearchType == SP_SearchType.RulesetHandout);
-
+                    bool isRulesetCharacterItem = (searchModel.SearchType == SP_SearchType.RulesetCharacterItems);
                     if (_context.SearchFilter.Any(x => x.RulesetId == searchModel.RulesetID && x.IsRuleSet == true && x.IsCharacter == false &&
                         x.IsItem == isItem && x.IsSpell == isSpell && x.IsAbility == isAbility &&
                         x.IsBuffEffect == isBuffEffect && x.IsMonster == isMonster && x.IsMonsterTemplate == isMonsterTemplate &&
-                        x.IsLoot == isLoot && x.IsLootTemplate == isLootTemplate && x.IsHandout == ishandout))
+                        x.IsLoot == isLoot && x.IsLootTemplate == isLootTemplate && x.IsHandout == ishandout
+                        && x.IsCharacterItem== isRulesetCharacterItem))
                     {
                         filter = _context.SearchFilter.Where(x => x.RulesetId == searchModel.RulesetID && x.IsRuleSet == true && x.IsCharacter == false &&
                         x.IsItem == isItem && x.IsSpell == isSpell && x.IsAbility == isAbility &&
                         x.IsBuffEffect == isBuffEffect && x.IsMonster == isMonster && x.IsMonsterTemplate == isMonsterTemplate &&
-                        x.IsLoot == isLoot && x.IsLootTemplate == isLootTemplate && x.IsHandout == ishandout).FirstOrDefault();
+                        x.IsLoot == isLoot && x.IsLootTemplate == isLootTemplate && x.IsHandout == ishandout
+                        && x.IsCharacterItem == isRulesetCharacterItem).FirstOrDefault();
                         if (filter != null)
                         {
                             filter = setFilterValues(filter, searchModel);
@@ -2335,7 +2581,9 @@ namespace DAL.Services
                 ||
                 searchModel.SearchType == SP_SearchType.CharacterBuffAndEffect
 ||
-                searchModel.SearchType == SP_SearchType.CharacterHandout)
+                searchModel.SearchType == SP_SearchType.CharacterHandout
+                ||
+                searchModel.SearchType == SP_SearchType.CharacterLoot)
             {
                 filter.IsCharacter = true;
                 filter.CharacterId = searchModel.CharacterID;
@@ -2348,6 +2596,7 @@ namespace DAL.Services
                 filter.IsAbility = searchModel.SearchType == SP_SearchType.CharacterAbilities ? true : false;
                 filter.IsBuffEffect = searchModel.SearchType == SP_SearchType.CharacterBuffAndEffect ? true : false;
                 filter.IsHandout = searchModel.SearchType == SP_SearchType.CharacterHandout ? true : false;
+                filter.IsLoot = searchModel.SearchType == SP_SearchType.CharacterLoot ? true : false;
 
                 switch (searchModel.SearchType)
                 {
@@ -2389,6 +2638,16 @@ namespace DAL.Services
                     case SP_SearchType.CharacterHandout:
                         filter.IsName = searchModel.HandoutFilters.IsHandoutName;
                         filter.IsFileType = searchModel.HandoutFilters.IsHandoutFileType;
+                        break;
+                    case SP_SearchType.CharacterLoot:
+                        filter.IsAssociatedAbility = searchModel.LootFilters.IsLootAbilityAssociated;
+                        filter.IsDesc = searchModel.LootFilters.IsLootDesc;
+                        filter.IsAssociatedItem = searchModel.LootFilters.IsLootItemAssociated;
+                        filter.IsName = searchModel.LootFilters.IsLootName;
+                        filter.IsRarity = searchModel.LootFilters.IsLootRarity;
+                        filter.IsAssociatedSpell = searchModel.LootFilters.IsLootSpellAssociated;
+                        filter.IsStats = searchModel.LootFilters.IsLootStats;
+                        filter.IsTags = searchModel.LootFilters.IsLootTags;
                         break;
                     default:
                         break;
@@ -2432,6 +2691,7 @@ namespace DAL.Services
                 filter.IsLoot = searchModel.SearchType == SP_SearchType.RulesetLoot ? true : false;
                 filter.IsLootTemplate = searchModel.SearchType == SP_SearchType.RulesetLootTemplate ? true : false;
                 filter.IsHandout = searchModel.SearchType == SP_SearchType.RulesetHandout ? true : false;
+                filter.IsCharacterItem = searchModel.SearchType == SP_SearchType.RulesetCharacterItems ? true : false;
 
                 switch (searchModel.SearchType)
                 {
@@ -2516,6 +2776,15 @@ namespace DAL.Services
                         filter.IsName = searchModel.HandoutFilters.IsHandoutName;
                         filter.IsFileType = searchModel.HandoutFilters.IsHandoutFileType;
                         break;
+                    case SP_SearchType.RulesetCharacterItems:
+                        filter.IsName = searchModel.ItemFilters.IsItemName;
+                        filter.IsTags = searchModel.ItemFilters.IsItemTags;
+                        filter.IsStats = searchModel.ItemFilters.IsItemStats;
+                        filter.IsDesc = searchModel.ItemFilters.IsItemDesc;
+                        filter.IsRarity = searchModel.ItemFilters.IsItemRarity;
+                        filter.IsAssociatedSpell = searchModel.ItemFilters.IsItemSpellAssociated;
+                        filter.IsAssociatedAbility = searchModel.ItemFilters.IsItemAbilityAssociated;
+                        break;
                     default:
                         break;
                 }
@@ -2531,7 +2800,9 @@ namespace DAL.Services
             List<LootTemplate> lootTemplates,
             List<Monster> monsters,
             List<MonsterTemplate_Bundle> monsterTemplates,
-            List<HandoutViewModel> handouts, int CharacterID)
+            List<HandoutViewModel> handouts, int CharacterID,
+             List<ItemMasterLoot> characterLoots,
+            List<Item> rulesetCharacteritems)
         {
             List<SearchEverything> results = new List<SearchEverything>();
             foreach (var item in characterAbilities)
@@ -2725,6 +2996,29 @@ namespace DAL.Services
                     results.Add(obj);
                 }
             }
+            foreach (var item in rulesetCharacteritems)
+            {
+                SearchEverything obj = new SearchEverything()
+                {
+                    id = item.ItemId,
+                    image = item.ItemImage,
+                    name = item.Name,
+                    RecordType = SP_SearchType.RulesetCharacterItems,
+                    RulesetCharacterItem = item
+                }; results.Add(obj);
+            }
+            foreach (var item in characterLoots)
+            {
+                SearchEverything obj = new SearchEverything()
+                {
+                    id = item.LootId,
+                    image = item.ItemImage,
+                    name = item.ItemName,
+                    RecordType = SP_SearchType.CharacterLoot,
+                    CharacterLoot = item
+                };
+                results.Add(obj);
+            }
             return results.OrderBy(x => x.name).ToList();
         }
         public List<SearchEverything> SearchEveryThing(SearchModel searchModel, int CharacterID)
@@ -2743,8 +3037,11 @@ namespace DAL.Services
             List<Monster> monsters = SearchRulesetMonsters(searchModel);
             List<MonsterTemplate_Bundle> monsterTemplates = SearchRulesetMonsterTemplates(searchModel);
             List<HandoutViewModel> handouts = new List<HandoutViewModel>();
+            List<Item> rulesetCharacteritems = SearchRulesetCharacteritems(searchModel);
+            List<ItemMasterLoot> CharacterLoots = SearchCharacterLoots(searchModel);
             List<SearchEverything> results = bindEveryThingModel(characterAbilities, abilities, characterSpells, spells, items, itemMasters,
-               buffAndEffects, characterBuffAndEffects, loots, lootTemplates, monsters, monsterTemplates, handouts,CharacterID);
+               buffAndEffects, characterBuffAndEffects, loots, lootTemplates, monsters, monsterTemplates, handouts,CharacterID,
+               CharacterLoots,rulesetCharacteritems);
             return results;
         }
         #endregion

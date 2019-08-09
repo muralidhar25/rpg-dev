@@ -48,6 +48,8 @@ import { NgCircleProgressModule } from "ng-circle-progress";
 import { DropItemsComponent } from "./character-records/items/drop-items/drop-items.component";
 import { RemoveSpellsComponent } from "./character-records/spells/remove-spells/remove-spells.component";
 import { RemoveAbilitiesComponent } from "./character-records/abilities/remove-abilities/remove-abilities.component";
+import { lootDetailsForCharComponent } from "./character-records/loot/loot-details/loot-details.component";
+import { lootPileDetailsForCharComponent } from "./character-records/loot/loot-pile-details/loot-pile-details.component";
 
 @NgModule({
   declarations: [
@@ -86,7 +88,8 @@ import { RemoveAbilitiesComponent } from "./character-records/abilities/remove-a
     PlayerMonsterDetailsComponent,
     DropItemsComponent,
     RemoveSpellsComponent,
-    RemoveAbilitiesComponent
+    RemoveAbilitiesComponent,
+    lootDetailsForCharComponent, lootPileDetailsForCharComponent
   ],
   imports: [
     SharedModule,
@@ -134,7 +137,8 @@ import { RemoveAbilitiesComponent } from "./character-records/abilities/remove-a
     PlayerMonsterDetailsComponent,
     DropItemsComponent,
     RemoveSpellsComponent,
-    RemoveAbilitiesComponent
+    RemoveAbilitiesComponent,
+    lootDetailsForCharComponent, lootPileDetailsForCharComponent
   ],
   entryComponents: [
 

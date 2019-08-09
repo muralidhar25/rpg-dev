@@ -1700,6 +1700,9 @@ namespace RPGSmithApp.Controllers
                 List<MonsterTemplate_Bundle> monsterTemplates = new List<MonsterTemplate_Bundle>();
                 List<HandoutViewModel> handouts = new List<HandoutViewModel>();
 
+                List<ItemMasterLoot> characterLoots = new List<ItemMasterLoot>();
+                List<Item> RulesetCharacteritems = new List<Item>();
+
                 bool skipGettingRecords = false;
                 bool FlagIsInitailItemOfList = true;
                 foreach (string item in searchText.Split(' '))
@@ -1914,6 +1917,33 @@ namespace RPGSmithApp.Controllers
                                 //}
                                 break;
                             ///////////////////////////////////////////////////////////////////////////////////
+                            case SP_SearchType.CharacterLoot:
+                                if (!isCampaignSearch)
+                                {
+                                    if (characterLoots.Select(x => x.LootId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                    {
+                                        skipGettingRecords = true;
+                                    }
+                                    if (!skipGettingRecords)
+                                    {
+                                        characterLoots = (_ruleSetService.SearchCharacterLoots(searchModel, characterLoots.Select(x => x.LootId).ToArray(), GetUserId()));
+
+                                    }
+                                }
+                                break;
+                            case SP_SearchType.RulesetCharacterItems:
+                                
+                                    if (RulesetCharacteritems.Select(x => x.ItemId).ToArray().Length == 0 && !FlagIsInitailItemOfList)
+                                    {
+                                        skipGettingRecords = true;
+                                    }
+                                    if (!skipGettingRecords)
+                                    {
+                                        RulesetCharacteritems = (_ruleSetService.SearchRulesetCharacteritems(searchModel, RulesetCharacteritems.Select(x => x.ItemId).ToArray(), GetUserId()));
+
+                                    }
+                                
+                                break;
                             case SP_SearchType.Everything:
                                 if (!isCampaignSearch)
                                 {
@@ -1921,6 +1951,7 @@ namespace RPGSmithApp.Controllers
                                     characterSpells = (_ruleSetService.SearchCharacterSpells(searchModel, characterSpells.Select(x => x.CharacterSpellId).ToArray()));
                                     items = (_ruleSetService.SearchCharacterItems(searchModel, items.Select(x => x.ItemId).ToArray()));
                                     characterBuffAndEffects = (_ruleSetService.SearchCharacterBuffAandEffects(searchModel, characterBuffAndEffects.Select(x => x.CharacterBuffAandEffectId).ToArray(), GetUserId()));
+                                    characterLoots = (_ruleSetService.SearchCharacterLoots(searchModel, characterLoots.Select(x => x.LootId).ToArray(), GetUserId()));
                                 }
                                 itemMasters = (_ruleSetService.SearchRulesetItems(searchModel, itemMasters.Select(x => x.ItemMasterId).ToArray()));
                                 spells = (_ruleSetService.SearchRulesetSpells(searchModel, spells.Select(x => x.SpellId).ToArray()));
@@ -1935,7 +1966,8 @@ namespace RPGSmithApp.Controllers
                                 {
                                     GetFilteredHandouts(searchModel, searchText, handouts);
                                 }
-                               
+                                RulesetCharacteritems = (_ruleSetService.SearchRulesetCharacteritems(searchModel, RulesetCharacteritems.Select(x => x.ItemId).ToArray(), GetUserId()));
+
                                 //handouts = (_ruleSetService.SearchRulesetAbilities(searchModel, abilities.Select(x => x.AbilityId).ToArray()));
                                 break;
                             default:
@@ -1980,7 +2012,10 @@ namespace RPGSmithApp.Controllers
                         return Ok(handouts);
                     case SP_SearchType.RulesetHandout:
                         return Ok(handouts);
-                        // return Ok(handouts.GroupBy(x => x.ItemMasterId).Select(x => x.First()));
+                    case SP_SearchType.CharacterLoot:
+                        return Ok(characterLoots.GroupBy(x => x.LootId).Select(x => x.First()));
+                    case SP_SearchType.RulesetCharacterItems:
+                        return Ok(RulesetCharacteritems.GroupBy(x => x.ItemId).Select(x => x.First()));                        
                         break;
                         ////////////////////////////////////////////////////////
                     case SP_SearchType.Everything:
@@ -1998,10 +2033,13 @@ namespace RPGSmithApp.Controllers
                         monsters = monsters.GroupBy(x => x.MonsterId).Select(x => x.First()).ToList();
                         monsterTemplates = monsterTemplates.GroupBy(x => x.MonsterTemplateId).Select(x => x.First()).ToList();
                         handouts = handouts;
+                        characterLoots = characterLoots.GroupBy(x => x.LootId).Select(x => x.First()).ToList();
+                        RulesetCharacteritems = RulesetCharacteritems.GroupBy(x => x.ItemId).Select(x => x.First()).ToList();
 
                         /////////////////////////////////////////////////
                         return Ok(_ruleSetService.bindEveryThingModel(characterAbilities, abilities, characterSpells, spells, items, itemMasters,
-                            buffAndEffects, characterBuffAndEffects, loots, lootTemplates, monsters, monsterTemplates,handouts, searchModel.CharacterID));
+                            buffAndEffects, characterBuffAndEffects, loots, lootTemplates, monsters, monsterTemplates,handouts, searchModel.CharacterID,
+                            characterLoots, RulesetCharacteritems));
                         break;
                     default:
                         return Ok();
@@ -2095,6 +2133,10 @@ namespace RPGSmithApp.Controllers
                     return Ok(_ruleSetService.SearchRulesetMonsters(searchModel));
                 case SP_SearchType.RulesetMonsterTemplate:
                     return Ok(_ruleSetService.SearchRulesetMonsterTemplates(searchModel));
+                case SP_SearchType.CharacterLoot:
+                    return Ok(_ruleSetService.SearchCharacterLoots(searchModel));
+                case SP_SearchType.RulesetCharacterItems:
+                    return Ok(_ruleSetService.SearchRulesetCharacteritems(searchModel));
                 case SP_SearchType.Everything:
                     return Ok(_ruleSetService.SearchEveryThing(searchModel,searchModel.CharacterID));
                     break;
