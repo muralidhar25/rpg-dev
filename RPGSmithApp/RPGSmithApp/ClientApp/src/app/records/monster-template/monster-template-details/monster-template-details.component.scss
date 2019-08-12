@@ -162,3 +162,8 @@ p {
     display: none;
   }
 }
+.btn-simple-primary:hover, .btn-simple-primary:focus, .btn-simple-primary:active, .btn-link-primary:hover, .btn-link-primary:focus, .btn-link-primary:active {
+  color: #78706b !important;
+  background-color: #fff !important;
+  cursor: pointer !important;
+}
