@@ -189,7 +189,9 @@ export class CharacterStatTileService extends EndpointFactory{
         linkTile: model.linkTiles,
         executeTile: model.executeTile,
         commandTile: model.commandTiles,
-        multiCharacterStats: [], buffAndEffectTile: model.buffAndEffectTiles
+        multiCharacterStats: [],
+        buffAndEffectTile: model.buffAndEffectTiles,
+        toggleTile: model.toggleTiles
       };
     }
     else {
@@ -241,7 +243,8 @@ export class CharacterStatTileService extends EndpointFactory{
         executeTile: null,
         counterTile: null,
         multiCharacterStats: [],
-        buffAndEffectTile:null
+        buffAndEffectTile: null,
+        toggleTile:null
       };
     }
 

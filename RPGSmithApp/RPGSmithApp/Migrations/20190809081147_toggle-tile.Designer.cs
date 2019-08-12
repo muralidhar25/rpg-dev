@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace RPGSmithApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190809081147_toggle-tile")]
+    partial class toggletile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1415,13 +1417,7 @@ namespace RPGSmithApp.Migrations
 
                     b.Property<int?>("CharacterTileId");
 
-                    b.Property<bool>("CheckBox");
-
-                    b.Property<int>("CustomValue");
-
                     b.Property<bool>("IsDeleted");
-
-                    b.Property<bool>("OnOff");
 
                     b.Property<int>("Shape");
 
@@ -1441,13 +1437,9 @@ namespace RPGSmithApp.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
-                    b.Property<bool>("YesNo");
-
                     b.HasKey("ToggleTileId");
 
-                    b.HasIndex("CharacterTileId")
-                        .IsUnique()
-                        .HasFilter("[CharacterTileId] IS NOT NULL");
+                    b.HasIndex("CharacterTileId");
 
                     b.HasIndex("TileToggleId");
 
@@ -3921,13 +3913,7 @@ namespace RPGSmithApp.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
-                    b.Property<bool>("CheckBox");
-
-                    b.Property<int>("CustomValue");
-
                     b.Property<bool>("IsDeleted");
-
-                    b.Property<bool>("OnOff");
 
                     b.Property<int?>("RulesetTileId");
 
@@ -3949,13 +3935,9 @@ namespace RPGSmithApp.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
-                    b.Property<bool>("YesNo");
-
                     b.HasKey("ToggleTileId");
 
-                    b.HasIndex("RulesetTileId")
-                        .IsUnique()
-                        .HasFilter("[RulesetTileId] IS NOT NULL");
+                    b.HasIndex("RulesetTileId");
 
                     b.HasIndex("TileToggleId");
 
@@ -4931,8 +4913,8 @@ namespace RPGSmithApp.Migrations
             modelBuilder.Entity("DAL.Models.CharacterTileModels.CharacterToggleTile", b =>
                 {
                     b.HasOne("DAL.Models.CharacterTileModels.CharacterTile", "CharacterTile")
-                        .WithOne("ToggleTiles")
-                        .HasForeignKey("DAL.Models.CharacterTileModels.CharacterToggleTile", "CharacterTileId");
+                        .WithMany()
+                        .HasForeignKey("CharacterTileId");
 
                     b.HasOne("DAL.Models.TileToggle", "TileToggle")
                         .WithMany()
@@ -5700,8 +5682,8 @@ namespace RPGSmithApp.Migrations
             modelBuilder.Entity("DAL.Models.RulesetTileModels.RulesetToggleTile", b =>
                 {
                     b.HasOne("DAL.Models.RulesetTileModels.RulesetTile", "RulesetTile")
-                        .WithOne("ToggleTiles")
-                        .HasForeignKey("DAL.Models.RulesetTileModels.RulesetToggleTile", "RulesetTileId");
+                        .WithMany()
+                        .HasForeignKey("RulesetTileId");
 
                     b.HasOne("DAL.Models.TileToggle", "TileToggle")
                         .WithMany()

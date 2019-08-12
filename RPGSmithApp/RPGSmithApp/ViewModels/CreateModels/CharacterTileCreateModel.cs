@@ -43,6 +43,7 @@ namespace RPGSmithApp.ViewModels.CreateModels
         public CharacterLinkTile LinkTile { get; set; }
         public CharacterCommandTile CommandTile { get; set; }
         public CharacterBuffAndEffectTile BuffAndEffectTile { get; set; }
+        public CharacterToggleTile ToggleTile { get; set; }
 
         public List<CharacterStatIds> MultiCharacterStats { get; set; }
         public int[] spellIDS { get; set; }

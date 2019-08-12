@@ -25,7 +25,8 @@ namespace RPGSmithApp.Helpers
             EXECUTE = 6,
             COMMAND = 7,
             TEXT=8,
-            BUFFANDEFFECT=9
+            BUFFANDEFFECT=9,
+            Toggle=10
         }
 
         public enum STAT_TYPE

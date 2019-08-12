@@ -9,6 +9,7 @@ import { CharacterStatTile } from './character-stat-tile.model';
 import { characterStatIds } from './character-tile.model';
 import { TextTile } from './text-tile.model';
 import { BuffAndEffectTile } from './buff-and-effect-tile.model';
+import { ToggleTile } from '../view-models/toggle-tile.model';
 
 export class RulesetTile {
     constructor(rulesetTileId?: number,
@@ -35,7 +36,8 @@ export class RulesetTile {
         executeTile?: ExecuteTile,
         commandTile?: CommandTile,
       multiCharacterStats?: characterStatIds[],
-      buffAndEffectTile?: BuffAndEffectTile
+      buffAndEffectTile?: BuffAndEffectTile,
+      toggleTile?: ToggleTile
 
     ) {
         this.rulesetTileId = rulesetTileId,
@@ -63,7 +65,7 @@ export class RulesetTile {
             this.commandTile = commandTile,
         this.multiCharacterStats = multiCharacterStats,
           this.buffAndEffectTile = buffAndEffectTile
-
+      this.toggleTile = toggleTile;
     }
 
     public rulesetTileId: number;
@@ -91,6 +93,6 @@ export class RulesetTile {
     public commandTile: CommandTile;
   public multiCharacterStats: characterStatIds[];
   public buffAndEffectTile: BuffAndEffectTile;
-
+  public toggleTile: ToggleTile;
 }
 

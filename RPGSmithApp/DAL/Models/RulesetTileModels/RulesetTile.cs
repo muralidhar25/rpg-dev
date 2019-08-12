@@ -39,6 +39,7 @@ namespace DAL.Models.RulesetTileModels
         //public virtual RulesetExecuteTile ExecuteTiles { get; set; }
         //public virtual RulesetLinkTile LinkTiles { get; set; }
         public virtual RulesetCommandTile CommandTiles { get; set; }
+        public virtual RulesetToggleTile ToggleTiles { get; set; }
         public virtual RulesetTileConfig Config { get; set; }
     }
 }

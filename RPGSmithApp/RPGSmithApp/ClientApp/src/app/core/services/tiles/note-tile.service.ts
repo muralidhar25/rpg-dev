@@ -192,7 +192,8 @@ export class NoteTileService extends EndpointFactory {
         executeTile: model.executeTile,
         commandTile: model.commandTiles,
         multiCharacterStats: [],
-        buffAndEffectTile: model.buffAndEffectTiles
+        buffAndEffectTile: model.buffAndEffectTiles,
+        toggleTile: model.toggleTiles
       };
     }
     else {
@@ -237,7 +238,8 @@ export class NoteTileService extends EndpointFactory {
         executeTile: null,
         commandTile: null,
         multiCharacterStats: [],
-        buffAndEffectTile: null
+        buffAndEffectTile: null,
+        toggleTile:null
       };
     }
 

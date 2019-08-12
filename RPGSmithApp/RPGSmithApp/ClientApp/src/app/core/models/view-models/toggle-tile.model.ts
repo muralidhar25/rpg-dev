@@ -15,7 +15,8 @@ export class ToggleTile {
     shape?: number,
     sortOrder?: number,
     view?: VIEW,
-    tileToggleViewModel?: TileToggle
+    tileToggle?: TileToggle,
+    tileToggleId?:number
   ) {
     this.toggleTileId = toggleTileId;
     this.characterTileId = characterTileId;
@@ -30,7 +31,8 @@ export class ToggleTile {
     this.shape = shape;
     this.sortOrder = sortOrder;
     this.view = view;
-    this.tileToggleViewModel = tileToggleViewModel;
+    this.tileToggleId = tileToggleId;
+    this.tileToggle = tileToggle;
   }
 
   public toggleTileId: number;
@@ -46,37 +48,39 @@ export class ToggleTile {
   public shape: number;
   public sortOrder: number;
   public view: VIEW;
-  public tileToggleViewModel: TileToggle;
+  public tileToggleId: number;
+  public tileToggle: TileToggle;
 }
 
 
 export class TileToggle {
-  constructor(characterStatToggleId?: number, yesNo?: boolean, onOff?: boolean, showCheckbox?: boolean,
-    display?: boolean, isCustom?: boolean, customToggles?: CustomTileToggle[]) {
-    this.characterStatToggleId = characterStatToggleId;
+  constructor(tileToggleId?: number, yesNo?: boolean, onOff?: boolean, showCheckbox?: boolean,
+    display?: boolean, isCustom?: boolean, tileCustomToggles?: TileCustomToggle[]) {
+    this.tileToggleId = tileToggleId;
     this.yesNo = yesNo;
     this.onOff = onOff;
     this.display = display;
     this.showCheckbox = showCheckbox;
     this.isCustom = isCustom;
-    this.customTileToggles = customToggles;
+    this.tileCustomToggles = tileCustomToggles;
   }
-  public characterStatToggleId: number;
+  public tileToggleId: number;
+  //public characterStatToggleId: number;
   public yesNo: boolean;
   public onOff: boolean;
   public display: boolean;
   public showCheckbox: boolean;
   public isCustom: boolean;
-  public customTileToggles: CustomTileToggle[];
+  public tileCustomToggles: TileCustomToggle[];
 }
 
-export class CustomTileToggle {
-  constructor(customToggleId?: number, toggleText?: string, image?: string) {
-    this.customToggleId = customToggleId;
+export class TileCustomToggle {
+  constructor(tileCustomToggleId?: number, toggleText?: string, image?: string) {
+    this.tileCustomToggleId = tileCustomToggleId;
     this.toggleText = toggleText;
     this.image = image;
   }
-  public customToggleId: number;
+  public tileCustomToggleId: number;
   public toggleText: string;
   public image: string;
 }

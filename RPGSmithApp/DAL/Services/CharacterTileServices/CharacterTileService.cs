@@ -950,6 +950,82 @@ namespace DAL.Services.CharacterTileServices
                             }
                             tile.BuffAndEffectTiles = CBET;
                             break;
+                        case 10://TextTiles
+                            CharacterToggleTile TGT = null;
+                            if (ds.Tables[29].Rows.Count > 0)
+                            {
+                                foreach (DataRow TGT_Row in ds.Tables[29].Rows)
+                                {
+                                    int CharacterTileId = TGT_Row["CharacterTileId"] == DBNull.Value ? 0 : Convert.ToInt32(TGT_Row["CharacterTileId"]);
+                                    if (CharacterTileId == tile.CharacterTileId)
+                                    {
+                                        TGT = new CharacterToggleTile();
+                                        TGT.BodyBgColor = TGT_Row["BodyBgColor"] == DBNull.Value ? null : TGT_Row["BodyBgColor"].ToString();
+                                        TGT.BodyTextColor = TGT_Row["BodyTextColor"] == DBNull.Value ? null : TGT_Row["BodyTextColor"].ToString();
+                                        TGT.IsDeleted = TGT_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(TGT_Row["IsDeleted"]);
+                                        TGT.ToggleTileId = TGT_Row["ToggleTileId"] == DBNull.Value ? 0 : Convert.ToInt32(TGT_Row["ToggleTileId"]);
+                                        TGT.TileToggleId = TGT_Row["TileToggleId"] == DBNull.Value ? 0 : Convert.ToInt32(TGT_Row["TileToggleId"]);
+                                        TGT.CharacterTileId = CharacterTileId;
+                                        TGT.Shape = TGT_Row["Shape"] == DBNull.Value ? 0 : Convert.ToInt32(TGT_Row["Shape"]);
+                                        TGT.SortOrder = TGT_Row["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(TGT_Row["SortOrder"]);
+                                        TGT.Title = TGT_Row["Title"] == DBNull.Value ? null : TGT_Row["Title"].ToString();
+                                        TGT.TitleBgColor = TGT_Row["TitleBgColor"] == DBNull.Value ? null : TGT_Row["TitleBgColor"].ToString();
+                                        TGT.TitleTextColor = TGT_Row["TitleTextColor"] == DBNull.Value ? null : TGT_Row["TitleTextColor"].ToString();
+
+                                        TGT.OnOff = TGT_Row["OnOff"] == DBNull.Value ? false : Convert.ToBoolean(TGT_Row["OnOff"]);
+                                        TGT.YesNo = TGT_Row["YesNo"] == DBNull.Value ? false : Convert.ToBoolean(TGT_Row["YesNo"]);
+                                        TGT.CheckBox = TGT_Row["CheckBox"] == DBNull.Value ? false : Convert.ToBoolean(TGT_Row["CheckBox"]);
+                                        TGT.CustomValue = TGT_Row["CustomValue"] == DBNull.Value ? 0 : Convert.ToInt32(TGT_Row["CustomValue"]);
+                                        if (ds.Tables[30].Rows.Count > 0)
+                                        {                                            
+                                            foreach (DataRow Toggle_Row in ds.Tables[30].Rows)
+                                            {
+                                                int TileToggleId= Toggle_Row["TileToggleId"] == DBNull.Value ? 0 : Convert.ToInt32(Toggle_Row["TileToggleId"]);
+                                                if (TileToggleId== TGT.TileToggleId)
+                                                {
+                                                    TileToggle toggle = new TileToggle()
+                                                    {
+                                                        Display = Toggle_Row["Display"] == DBNull.Value ? false : Convert.ToBoolean(Toggle_Row["Display"]),
+                                                        IsCustom = Toggle_Row["IsCustom"] == DBNull.Value ? false : Convert.ToBoolean(Toggle_Row["IsCustom"]),
+                                                        IsDeleted = Toggle_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(Toggle_Row["IsDeleted"]),
+                                                        OnOff = Toggle_Row["OnOff"] == DBNull.Value ? false : Convert.ToBoolean(Toggle_Row["OnOff"]),
+                                                        ShowCheckbox = Toggle_Row["ShowCheckbox"] == DBNull.Value ? false : Convert.ToBoolean(Toggle_Row["ShowCheckbox"]),                                                        
+                                                        TileToggleId = Toggle_Row["TileToggleId"] == DBNull.Value ? 0 : Convert.ToInt32(Toggle_Row["TileToggleId"]),
+                                                        YesNo = Toggle_Row["YesNo"] == DBNull.Value ? false : Convert.ToBoolean(Toggle_Row["YesNo"]),
+                                                        TileCustomToggles =new List<TileCustomToggle>(),
+                                                    };
+
+                                                    if (ds.Tables[31].Rows.Count > 0)
+                                                    {
+                                                        foreach (DataRow CustomToggle_Row in ds.Tables[31].Rows)
+                                                        {
+                                                            int CTileToggleId = CustomToggle_Row["TileToggleId"] == DBNull.Value ? 0 : Convert.ToInt32(CustomToggle_Row["TileToggleId"]);
+                                                            if (CTileToggleId == toggle.TileToggleId)
+                                                            {
+                                                                TileCustomToggle Cust_toggle = new TileCustomToggle()
+                                                                {
+                                                                    Image = CustomToggle_Row["Image"] == DBNull.Value ? null : CustomToggle_Row["Image"].ToString(),
+                                                                    TileCustomToggleId = CustomToggle_Row["TileCustomToggleId"] == DBNull.Value ? 0 : Convert.ToInt32(CustomToggle_Row["TileCustomToggleId"]),                                                                    
+                                                                    IsDeleted = CustomToggle_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CustomToggle_Row["IsDeleted"]),
+                                                                    ToggleText = CustomToggle_Row["ToggleText"] == DBNull.Value ? null : CustomToggle_Row["ToggleText"].ToString(),
+                                                                    TileToggleId = CustomToggle_Row["TileToggleId"] == DBNull.Value ? 0 : Convert.ToInt32(CustomToggle_Row["TileToggleId"]),
+                                                                    
+                                                                };
+                                                                toggle.TileCustomToggles.Add(Cust_toggle); 
+                                                            }
+                                                        }
+                                                    }
+
+
+                                                    TGT.TileToggle = toggle;
+                                                }                                                
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            tile.ToggleTiles = TGT;
+                            break;
                         default:
                             break;
                     }

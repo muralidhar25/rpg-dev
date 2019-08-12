@@ -30,7 +30,7 @@ export class ToggleTileService extends EndpointFactory
   createToggleTile<T>(model: CharacterTile): Observable<T> {
 
     let endpoint = this.createApi;
-    if (model.commandTile.commandTileId > 0)
+    if (model.toggleTile.toggleTileId > 0)
       endpoint = this.updateApi;
 
     return this.http.post<T>(endpoint, JSON.stringify(model), this.getRequestHeaders())
@@ -120,7 +120,8 @@ export class ToggleTileService extends EndpointFactory
 
           sortOrder: model.sortOrder ? model.sortOrder : 0,
           view: view == 'add' ? VIEW.ADD : VIEW.EDIT,
-          tileToggleViewModel: new TileToggle()
+          tileToggle: new TileToggle(),
+          tileToggleId: model.tileToggleId ? model.tileToggleId : 0
         },
         noteTile: null,
         imageTile: null,
@@ -138,26 +139,114 @@ export class ToggleTileService extends EndpointFactory
   }
 
 
-  //createRulesetToggleTile<T>(model: RulesetTile): Observable<T> {
+  createRulesetToggleTile<T>(model: RulesetTile): Observable<T> {
 
-  //  let endpoint = this.rulesetCreateApi;
-  //  if (model.commandTile.commandTileId > 0)
-  //    endpoint = this.rulesetUpdateApi;
+    let endpoint = this.rulesetCreateApi;
+    if (model.toggleTile.toggleTileId > 0)
+      endpoint = this.rulesetUpdateApi;
 
-  //  return this.http.post<T>(endpoint, JSON.stringify(model), this.getRequestHeaders())
-  //    .catch(error => {
-  //      return this.handleError(error, () => this.createRulesetToggleTile(model));
-  //    });
-  //}
+    return this.http.post<T>(endpoint, JSON.stringify(model), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.createRulesetToggleTile(model));
+      });
+  }
 
-  //deleteRulesetToggleTile<T>(Id: number): Observable<T> {
-  //  let endpointUrl = `${this.rulesetDeleteApi}?id=${Id}`;
+  deleteRulesetToggleTile<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.rulesetDeleteApi}?id=${Id}`;
 
-  //  return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
-  //    .catch(error => {
-  //      return this.handleError(error, () => this.deleteRulesetToggleTile(Id));
-  //    });
-  //}
+    return this.http.delete<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.deleteRulesetToggleTile(Id));
+      });
+  }
+
+  public ToggleTileRulesetModelData(model: any, rulesetId: number, pageId: number, view: string, pageDefaultData: RulesetDashboardPage): any {
+
+    view = view.toLowerCase() == 'add' ? VIEW.ADD : VIEW.EDIT;
+    let modelData = new RulesetTile();
+
+    if (view == VIEW.EDIT) {
+      modelData = {
+        rulesetTileId: model.rulesetTileId ,
+        tileTypeId: model.tileTypeId,
+        rulesetDashboardPageId: pageId,
+        rulesetId: rulesetId,
+        color: model.color ? model.color : '',
+        bgColor: model.bgColor ? model.bgColor : '',
+        shape: model.shape ? model.shape : 0,
+        sortOrder: model.sortOrder ? model.sortOrder : 0,
+        LocationX: model.LocationX ? model.LocationX : 0,
+        LocationY: model.LocationY ? model.LocationY : 0,
+        Height: model.Height ? model.Height : 144,
+        Width: model.Width ? model.Width : 144,
+        view: VIEW.EDIT,
+        
+        noteTile: model.noteTiles,
+        counterTile: model.counterTiles,
+        imageTile: model.imageTiles,
+        textTile: model.textTiles,
+        characterStatTile: model.characterStatTiles,
+        linkTile: model.linkTiles,
+        executeTile: model.executeTile,
+        commandTile: model.commandTiles,
+        toggleTile: model.toggleTiles,
+        multiCharacterStats: [],
+        buffAndEffectTile: model.buffAndEffectTiles,
+      };
+    }
+    else {
+      modelData = {
+        rulesetTileId: model.rulesetTileId ? model.rulesetTileId : 0,
+        tileTypeId: model.tileTypeId ? model.tileTypeId : 0,
+        rulesetDashboardPageId: pageId,
+        rulesetId: rulesetId,
+        color: model.color ? model.color : '',
+        bgColor: model.bgColor ? model.bgColor : '',
+        shape: model.shape ? model.shape : 0,
+        sortOrder: model.sortOrder ? model.sortOrder : 0,
+
+        LocationX: model.LocationX ? model.LocationX : 0,
+        LocationY: model.LocationY ? model.LocationY : 0,
+        Height: model.Height ? model.Height : 144,
+        Width: model.Width ? model.Width : 144,
+        view: view == 'add' ? VIEW.ADD : VIEW.EDIT,
+
+        toggleTile: {
+          toggleTileId: model.toggleTileId ? model.toggleTileId : 0,
+          characterTileId: model.characterTileId ? model.characterTileId : 0,
+          rulesetTileId: model.rulesetTileId ? model.rulesetTileId : 0,
+          //command: '',
+          //imageUrl: model.imageUrl ? model.imageUrl : '',
+          title: '',
+          color: '',
+          bgColor: '',
+          shape: 0,
+
+          bodyBgColor: pageDefaultData.bodyBgColor,
+          bodyTextColor: pageDefaultData.bodyTextColor,
+          titleBgColor: pageDefaultData.titleBgColor,
+          titleTextColor: pageDefaultData.titleTextColor,
+
+          sortOrder: model.sortOrder ? model.sortOrder : 0,
+          view: view == 'add' ? VIEW.ADD : VIEW.EDIT,
+          tileToggle: new TileToggle(),
+          tileToggleId: model.tileToggleId ? model.tileToggleId : 0
+        },
+        noteTile: null,
+        imageTile: null,
+        textTile: null,
+        characterStatTile: null,
+        linkTile: null,
+        executeTile: null,
+        counterTile: null,
+        commandTile: null,
+        multiCharacterStats: [],
+        buffAndEffectTile: null
+      };
+    }
+    return modelData;
+  }
+
 
   //public ToggleTileRulesetModelData(model: any, rulesetId: number, pageId: number, view: string, pageDefaultData: RulesetDashboardPage): any {
 

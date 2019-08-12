@@ -12,6 +12,7 @@ import { RulesetCommandTileComponent } from './command/command.component';
 import { RulesetTextTileComponent } from './text/text.component';
 import { PlatformLocation } from '@angular/common';
 import { RulesetBuffAndEffectTileComponent } from './buff-and-effect/buff-and-effect.component';
+import { RulesetToggleTileComponent } from './toggle/toggle.component';
 
 @Component({
   selector: 'app-tile',
@@ -58,8 +59,10 @@ export class RulesetTileComponent implements OnInit {
             { tileName: 'TEXT', tileTypeId: TILES.TEXT, icon: TILE_ICON.TEXT },
             { tileName: 'NOTE', tileTypeId: TILES.NOTE, icon: TILE_ICON.NOTE },
             { tileName: 'IMAGE', tileTypeId: TILES.IMAGE, icon: TILE_ICON.IMAGE },
-            { tileName: 'COUNTER', tileTypeId: TILES.COUNTER, icon: TILE_ICON.COUNTER },
+          { tileName: 'COUNTER', tileTypeId: TILES.COUNTER, icon: TILE_ICON.COUNTER },
+          { tileName: 'TOGGLE', tileTypeId: TILES.TOGGLE, icon: TILE_ICON.TOGGLE },
           { tileName: 'CHARACTER STAT', tileTypeId: TILES.CHARACTERSTAT, icon: TILE_ICON.CHARACTERSTAT },
+          
             
       ];
       if (this.ruleSet.isBuffAndEffectEnabled) {
@@ -203,6 +206,25 @@ export class RulesetTileComponent implements OnInit {
               keyboard: false
             });
             this.bsModalRef.content.title = 'Add Buffs & Effects Tile';
+            this.bsModalRef.content.rulesetId = this.rulesetId;
+            this.bsModalRef.content.pageId = this.pageId;
+            this.bsModalRef.content.tile = tile;
+            this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+            this.bsModalRef.content.view = VIEW.ADD;
+            this.bsModalRef.content.event.subscribe(data => {
+              if (data) {
+                this.event.emit(data);
+              }
+            })
+            break;
+          }
+          case TILES.TOGGLE: {
+            this.bsModalRef = this.modalService.show(RulesetToggleTileComponent, {
+              class: 'modal-primary modal-md',
+              ignoreBackdropClick: true,
+              keyboard: false
+            });
+            this.bsModalRef.content.title = 'Add Toggle Tile';
             this.bsModalRef.content.rulesetId = this.rulesetId;
             this.bsModalRef.content.pageId = this.pageId;
             this.bsModalRef.content.tile = tile;

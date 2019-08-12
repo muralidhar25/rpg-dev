@@ -36,6 +36,7 @@ namespace RPGSmithApp.ViewModels.CreateModels
         public RulesetNoteTile NoteTile { get; set; }
         public RulesetImageTile ImageTile { get; set; }
         public RulesetTextTile TextTile { get; set; }
+        public RulesetToggleTile ToggleTile { get; set; }
         public RulesetCounterTile CounterTile { get; set; }
         public RulesetCharacterStatTile CharacterStatTile { get; set; }
         public RulesetCommandTile CommandTile { get; set; }

@@ -16,5 +16,5 @@ namespace DAL.Models
         
         public int CharacterStatToggleId { get; set; }
         public virtual CharacterStatToggle CharacterStatToggle { get; set; }
-    }
+    }    
 }

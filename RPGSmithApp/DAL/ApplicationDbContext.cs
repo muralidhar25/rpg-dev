@@ -170,6 +170,12 @@ namespace DAL
         public virtual DbSet<LootTemplate> LootTemplates { get; set; }
         public virtual DbSet<LootTemplateRandomizationEngine> LootTemplateRandomizationEngines { get; set; }
 
+        public virtual DbSet<TileToggle> TileToggles { get; set; }
+        public virtual DbSet<TileCustomToggle> TileCustomToggles { get; set; }
+        public virtual DbSet<CharacterToggleTile> CharacterToggleTiles { get; set; }
+        public virtual DbSet<RulesetToggleTile> RulesetToggleTiles { get; set; }
+        
+
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
             Database.SetCommandTimeout(3600);

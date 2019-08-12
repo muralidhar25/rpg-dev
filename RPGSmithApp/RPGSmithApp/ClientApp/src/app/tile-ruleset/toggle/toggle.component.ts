@@ -2,8 +2,6 @@ import { Component, OnInit,EventEmitter } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { FormArray, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Color } from '../../core/models/tiles/color.model';
-import { CharacterTile } from '../../core/models/tiles/character-tile.model';
-import { CharacterDashboardPage } from '../../core/models/view-models/character-dashboard-page.model';
 import { ImageError, SHAPE, SHAPE_CLASS, VIEW, TOGGLE_TYPE } from '../../core/models/enums';
 import { SharedService } from '../../core/services/shared.service';
 import { ColorService } from '../../core/services/tiles/color.service';
@@ -14,19 +12,22 @@ import { LocalStoreManager } from '../../core/common/local-store-manager.service
 import { DBkeys } from '../../core/common/db-keys';
 import { User } from '../../core/models/user.model';
 import { Utilities } from '../../core/common/utilities';
-import { ColorsComponent } from '../colors/colors.component';
 import { DiceComponent } from '../../shared/dice/dice/dice.component';
 import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
 import { PlatformLocation } from '@angular/common';
 import { ToggleTile, TileToggle, TileCustomToggle } from '../../core/models/view-models/toggle-tile.model';
 import { ToggleTileService } from '../../core/services/tiles/toggle-tile.service';
+import { RulesetTile } from '../../core/models/tiles/ruleset-tile.model';
+import { RulesetDashboardPage } from '../../core/models/view-models/ruleset-dashboard-page.model';
+import { ColorsComponent } from '../../tile/colors/colors.component';
+import { CharacterTile } from '../../core/models/tiles/character-tile.model';
 
 @Component({
     selector: 'app-toggle',
     templateUrl: './toggle.component.html',
     styleUrls: ['./toggle.component.scss']
 })
-export class ToggleTileComponent implements OnInit {
+export class RulesetToggleTileComponent implements OnInit {
 
   public event: EventEmitter<any> = new EventEmitter();
 
@@ -41,14 +42,14 @@ export class ToggleTileComponent implements OnInit {
 
     title: string;
     imageUrl: string;
-    characterTileModel = new CharacterTile();
+    rulesetTileModel = new RulesetTile();
     toggleTileFormModal = new ToggleTile();
     tileToggleViewModel = new TileToggle();
-    customToggleViewModel = new TileCustomToggle();
+  customToggleViewModel = new TileCustomToggle();
 
     pageId: number;
-    characterId: number;
-    pageDefaultData = new CharacterDashboardPage();
+  rulesetId: number;
+  pageDefaultData = new RulesetDashboardPage();
     uploadFromBing: boolean = false;
     bingImageUrl: string;
     bingImageExt: string;
@@ -65,17 +66,17 @@ export class ToggleTileComponent implements OnInit {
   imageErrorMessage: string = ImageError.MESSAGE;
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService, private colorService: ColorService,
-       private alertService: AlertService, private authService: AuthService,
+      private alertService: AlertService, private authService: AuthService,
       private toggleTileService: ToggleTileService,
         private fileUploadService: FileUploadService, private localStorage: LocalStoreManager, private location: PlatformLocation) {
       location.onPopState(() => this.modalService.hide(1));
-        
+     
     }
 
     ngOnInit() {
         setTimeout(() => {
           debugger;
-            this.characterId = this.bsModalRef.content.characterId;
+            this.rulesetId = this.bsModalRef.content.rulesetId;
             this.title = this.bsModalRef.content.title;
             this.pageId = this.bsModalRef.content.pageId;
             let model = this.bsModalRef.content.tile;
@@ -83,10 +84,10 @@ export class ToggleTileComponent implements OnInit {
             this.pageDefaultData = this.bsModalRef.content.pageDefaultData;
 
          
-          this.characterTileModel = this.toggleTileService.ToggleTileModelData(model, this.characterId, this.pageId, view, this.pageDefaultData);
-          console.log(this.characterTileModel);
+          this.rulesetTileModel = this.toggleTileService.ToggleTileRulesetModelData(model, this.rulesetId, this.pageId, view, this.pageDefaultData);
+          console.log(this.rulesetTileModel);
           
-          this.toggleTileFormModal = Object.assign({}, this.characterTileModel.toggleTile);
+          this.toggleTileFormModal = Object.assign({}, this.rulesetTileModel.toggleTile);
           console.log(this.toggleTileFormModal);
 
           this.toggleTileFormModal.color = this.toggleTileFormModal.color;
@@ -332,26 +333,26 @@ export class ToggleTileComponent implements OnInit {
     this.toggleTileFormModal.tileToggle = this.tileToggleViewModel;
           console.log(this.toggleTileFormModal);
         
-        if (this.characterTileModel.characterId == 0 || this.characterTileModel.characterId == undefined) {
+        if (this.rulesetTileModel.rulesetId == 0 || this.rulesetTileModel.rulesetId == undefined) {
             this.alertService.showMessage("", "Character is not selected.", MessageSeverity.error);
         }
-        else if (this.characterTileModel.tileTypeId == 0 || this.characterTileModel.tileTypeId == undefined) {
+        else if (this.rulesetTileModel.tileTypeId == 0 || this.rulesetTileModel.tileTypeId == undefined) {
             this.alertService.showMessage("", "Toggle tile is not selected.", MessageSeverity.error);
         }
         else {
           this.toggleTileFormModal.title = this.toggleTileFormModal.title ? this.toggleTileFormModal.title.trim() : undefined;
             
                 this.toggleTileFormModal.color = this.tileColor ? this.tileColor : '#343038';
-                this.characterTileModel.color = this.toggleTileFormModal.color;
-                this.characterTileModel.shape = this.toggleTileFormModal.shape;
-                this.characterTileModel.toggleTile = this.toggleTileFormModal;
+                this.rulesetTileModel.color = this.toggleTileFormModal.color;
+                this.rulesetTileModel.shape = this.toggleTileFormModal.shape;
+                this.rulesetTileModel.toggleTile = this.toggleTileFormModal;
 
                 this.isLoading = true;
              let _msg = this.toggleTileFormModal.toggleTileId == 0 || this.toggleTileFormModal.toggleTileId === undefined ? "Creating Toggle Tile..." : "Updating Toggle Tile...";
 
           this.alertService.startLoadingMessage("", _msg);
-          console.log(this.characterTileModel);
-          this.addToggleTile(this.characterTileModel);
+          console.log(this.rulesetTileModel);
+          this.addToggleTile(this.rulesetTileModel);
           this.isLoading = false;   
         }
     }
@@ -370,32 +371,32 @@ export class ToggleTileComponent implements OnInit {
     //                data => {                        
     //                    this.imageUrl = data.ImageUrl;
     //                    //this.rulesetFormModal.thumbnailUrl = data.ThumbnailUrl;
-    //                  this.addToggleTile(this.characterTileModel);
+    //                  this.addToggleTile(this.rulesetTileModel);
     //                },
     //                error => {
     //                    let Errors = Utilities.ErrorDetail('Error', error);
     //                    if (Errors.sessionExpire) {
     //                        this.authService.logout(true);
-    //                    } else this.addToggleTile(this.characterTileModel);
+    //                    } else this.addToggleTile(this.rulesetTileModel);
     //                });
     //    }
     //}
 
    
 
-  private addToggleTile(modal: CharacterTile) {
+  private addToggleTile(modal: RulesetTile) {
     console.log(modal);
     //used to save toggle tile functionlaity
 
-    this.isLoading = true;
-    this.toggleTileService.createToggleTile(modal)
+        this.isLoading = true;
+    this.toggleTileService.createRulesetToggleTile(modal)
             .subscribe(
                 data => {
                    // console.log(data);
                     this.isLoading = false;
                     this.alertService.stopLoadingMessage();
 
-                    let message = modal.toggleTile.toggleTileId == 0 || modal.toggleTile.toggleTileId === undefined ? "Toggle Tile has been added successfully." : "Toggle Tile has been updated successfully.";
+                  let message = modal.toggleTile.toggleTileId == 0 || modal.toggleTile.toggleTileId === undefined ? "Toggle Tile has been added successfully." : "Toggle Tile has been updated successfully.";
                     this.alertService.showMessage(message, "", MessageSeverity.success);
                     this.sharedService.updateCharacterList(data);
                     this.close();
@@ -403,7 +404,7 @@ export class ToggleTileComponent implements OnInit {
                 error => {
                     console.log(error);
                     this.isLoading = false;
-                    this.alertService.stopLoadingMessage();
+                  this.alertService.stopLoadingMessage();
                   let _message = modal.toggleTile.toggleTileId == 0 || modal.toggleTile.toggleTileId === undefined ? "Unable to Add " : "Unable to Update ";
                     let Errors = Utilities.ErrorDetail(_message, error);
                     if (Errors.sessionExpire) {

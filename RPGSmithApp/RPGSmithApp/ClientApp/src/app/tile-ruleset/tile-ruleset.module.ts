@@ -17,6 +17,7 @@ import { RulesetEditCharacterStatComponent } from './character-stat/edit-charact
 import { RulesetTextTileComponent } from './text/text.component';
 import { RulesetEditTextComponent } from './text/edit-text/edit-text.component';
 import { RulesetBuffAndEffectTileComponent } from "./buff-and-effect/buff-and-effect.component";
+import { RulesetToggleTileComponent } from "./toggle/toggle.component";
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { RulesetBuffAndEffectTileComponent } from "./buff-and-effect/buff-and-ef
     RulesetCharacterStatTileComponent,
     RulesetEditCharacterStatComponent,
     RulesetTextTileComponent,
-    RulesetEditTextComponent, RulesetBuffAndEffectTileComponent
+    RulesetEditTextComponent, RulesetBuffAndEffectTileComponent,
+    RulesetToggleTileComponent
   ],
   imports: [
     SharedModule
@@ -51,7 +53,8 @@ import { RulesetBuffAndEffectTileComponent } from "./buff-and-effect/buff-and-ef
     RulesetCharacterStatTileComponent,
     RulesetEditCharacterStatComponent,
     RulesetTextTileComponent,
-    RulesetEditTextComponent, RulesetBuffAndEffectTileComponent
+    RulesetEditTextComponent, RulesetBuffAndEffectTileComponent,
+    RulesetToggleTileComponent
   ],
   entryComponents: [
     RulesetTileComponent,
@@ -65,7 +68,8 @@ import { RulesetBuffAndEffectTileComponent } from "./buff-and-effect/buff-and-ef
     RulesetCharacterStatTileComponent,
     RulesetEditCharacterStatComponent,
     RulesetTextTileComponent,
-    RulesetEditTextComponent, RulesetBuffAndEffectTileComponent
+    RulesetEditTextComponent, RulesetBuffAndEffectTileComponent,
+    RulesetToggleTileComponent
   ]
 })
 export class TileRulesetModule {}

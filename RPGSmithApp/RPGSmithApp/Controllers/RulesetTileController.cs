@@ -27,6 +27,7 @@ namespace RPGSmithApp.Controllers
         private readonly IRulesetCounterTileService _counterTileService;
         private readonly IRulesetImageTileService _imageTileService;
         private readonly IRulesetTextTileService _textTileService;
+        private readonly IRulesetToggleTileService _toggleTileService;
         private readonly IRulesetNoteTileService _noteTileService;
         private readonly IRulesetTileColorService _colorService;
         private readonly IRulesetBuffAndEffectTileService _buffAndEffectTileService;
@@ -42,7 +43,7 @@ namespace RPGSmithApp.Controllers
             IRulesetTextTileService textTileService,
             IRulesetNoteTileService noteTileService,
             IRulesetTileColorService colorService,
-            IRulesetBuffAndEffectTileService buffAndEffectTileService)
+            IRulesetBuffAndEffectTileService buffAndEffectTileService, IRulesetToggleTileService toggleTileService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._accountManager = accountManager;
@@ -55,6 +56,7 @@ namespace RPGSmithApp.Controllers
             this._noteTileService = noteTileService;
             this._colorService = colorService;
             this._buffAndEffectTileService = buffAndEffectTileService;
+            this._toggleTileService = toggleTileService;
         }
 
         [HttpGet("GetById")]
@@ -239,6 +241,20 @@ namespace RPGSmithApp.Controllers
                             //imageTile.Color = Tile.Color;
                             buffAndEffectTile.Shape = Tile.Shape;
                             Tile.BuffAndEffectTiles = await _buffAndEffectTileService.Create(buffAndEffectTile);
+                            SaveColorsAsync(Tile);
+                            break;
+                        case (int)Enum.TILES.Toggle:
+                            //Add Image Tile 
+                            if (model.ToggleTile == null)
+                                return BadRequest("ToggleTile missing in request");
+
+                            await _tileService.Create(Tile);
+
+                            var toggleTile = model.ToggleTile;
+                            toggleTile.RulesetTileId = Tile.RulesetTileId;
+                            //imageTile.Color = Tile.Color;
+                            toggleTile.Shape = Tile.Shape;
+                            Tile.ToggleTiles = await _toggleTileService.Create(toggleTile);
                             SaveColorsAsync(Tile);
                             break;
                         default:
@@ -493,6 +509,12 @@ namespace RPGSmithApp.Controllers
                         _tileColor.BodyTextColor = Tile.TextTiles.BodyTextColor;
                         _tileColor.TitleBgColor = Tile.TextTiles.TitleBgColor;
                         _tileColor.TitleTextColor = Tile.TextTiles.TitleTextColor;
+                        break;
+                    case (int)Enum.TILES.Toggle:
+                        _tileColor.BodyBgColor = Tile.ToggleTiles.BodyBgColor;
+                        _tileColor.BodyTextColor = Tile.ToggleTiles.BodyTextColor;
+                        _tileColor.TitleBgColor = Tile.ToggleTiles.TitleBgColor;
+                        _tileColor.TitleTextColor = Tile.ToggleTiles.TitleTextColor;
                         break;
                     default: break;
                 }

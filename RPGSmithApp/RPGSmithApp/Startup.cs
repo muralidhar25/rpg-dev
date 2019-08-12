@@ -290,7 +290,10 @@ namespace RPGSmithApp
             services.AddScoped<IMonsterTemplateBundleService, MonsterTemplateBundleService>();
             services.AddScoped<ICombatService, CombatService>();
             services.AddScoped<ILootPileTemplateService, LootPileTemplateService>();
+            services.AddScoped<IToggleTileService, ToggleTileService>();
+            services.AddScoped<IRulesetToggleTileService, RulesetToggleTileService>();
             
+
 
             // Register Hosted Services
             services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, BackgroundProcesses>();

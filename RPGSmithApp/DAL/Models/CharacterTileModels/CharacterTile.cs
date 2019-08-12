@@ -40,6 +40,7 @@ namespace DAL.Models.CharacterTileModels
         public virtual CharacterExecuteTile ExecuteTiles { get; set; }
         public virtual CharacterLinkTile LinkTiles { get; set; }
         public virtual CharacterCommandTile CommandTiles { get; set; }
+        public virtual CharacterToggleTile ToggleTiles { get; set; }
         public virtual TileConfig Config { get; set; }
     }
 }
