@@ -67,7 +67,7 @@
 
           <!--if GM-->
           <ul class="page-toolbar-links" *ngIf="!isLoading && IsGm">
-            <li *ngIf="RuleSet?.isItemEnabled" class="hidden-tab">
+            <li *ngIf="RuleSet?.isItemEnabled" class="hidden-tab show-first-child">
               <a [routerLink]="['/ruleset/item-master/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Items"> <span>Item Templates</span></a>
             </li>
             <li *ngIf="ItemMasterDetail?.ruleSet?.isSpellEnabled" (click)="Redirect('/ruleset/spell/')" class="hidden-tab">

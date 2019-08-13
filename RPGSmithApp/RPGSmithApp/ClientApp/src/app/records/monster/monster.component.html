@@ -88,7 +88,7 @@
 
           <!--if GM-->
           <ul class="page-toolbar-links" *ngIf="!isLoading && IsGm">
-            <li *ngIf="IsGm" class="hidden-tab">
+            <li *ngIf="IsGm" class="hidden-tab show-first-child">
               <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Monster"> <span>Monsters</span></a>
             </li>
             <li *ngIf="rulesetModel?.isSpellEnabled" class="hidden-tab">

@@ -81,7 +81,7 @@
           </ul>
 
           <!--if GM-->
-          <ul class="page-toolbar-links" *ngIf="!isLoading && IsGm">
+          <ul class="page-toolbar-links" *ngIf="!isLoading && IsGm show-first-child">
             <li *ngIf="RuleSet" class="hidden-tab">
               <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection icon icon-Monster"> <span>Monsters</span></a>
             </li>

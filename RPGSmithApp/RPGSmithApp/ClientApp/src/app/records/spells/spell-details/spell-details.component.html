@@ -67,7 +67,7 @@
 
           <!--if GM-->
           <ul class="page-toolbar-links" *ngIf="!isLoading && IsGm">
-            <li *ngIf="spellDetail?.ruleset" (click)="Redirect('/ruleset/monster/')" class="hidden-tab">
+            <li *ngIf="spellDetail?.ruleset" (click)="Redirect('/ruleset/monster/')" class="hidden-tab show-first-child">
               <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection icon icon-Monster"> <span>Monsters</span></a>
             </li>
             <li *ngIf="spellDetail?.ruleset?.isSpellEnabled" (click)="Redirect('/ruleset/spell/')" class="hidden-tab">
