@@ -87,7 +87,7 @@
                 <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                   <ul class="dropdown-menu-list" *ngIf="!isLoading">
-                    <li *ngIf="IsGm" class="dropdown-menu-item">
+                    <li *ngIf="monsterTemplateDetail?.ruleset" class="dropdown-menu-item">
                       <a [routerLink]="['/ruleset/monster-template/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-MonsterTemp"> Monster Templates</a>
                     </li>
                     <li class="dropdown-menu-item" *ngIf="monsterTemplateDetail?.ruleset?.isSpellEnabled">
