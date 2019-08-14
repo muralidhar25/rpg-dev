@@ -22,6 +22,8 @@ export class ItemMasterService extends EndpointFactory {
 
   private readonly getAllUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getAll";
   private readonly getCountUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getItemsCount";
+  private readonly getItemCountUrl: string = this.configurations.baseUrl + "/api/ItemMaster/getCharacterItemCount";
+  private readonly getLootCountUrl: string = this.configurations.baseUrl + "/api/ItemMaster/get_ItemMaster_and_Loot_Count";
   private readonly createUrl: string = this.configurations.baseUrl + "/api/ItemMaster/create";
   private readonly updateUrl: string = this.configurations.baseUrl + "/api/ItemMaster/update";
   private readonly createBundleUrl: string = this.configurations.baseUrl + "/api/ItemMasterBundle/create";
@@ -71,6 +73,24 @@ export class ItemMasterService extends EndpointFactory {
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getItemMasterCount(Id));
+      });
+  }
+
+  getCharacterItemCount<T>(RuleSetId: number, CharacterId): Observable<T> {
+    let endpointUrl = `${this.getItemCountUrl}?rulesetId=${RuleSetId}&characterId=${CharacterId}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getCharacterItemCount(RuleSetId, CharacterId));
+      });
+  }
+
+  getLootItemCount<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this.getLootCountUrl}?rulesetId=${Id}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getLootItemCount(Id));
       });
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter} from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import 'rxjs/add/operator/switchMap';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
@@ -15,78 +15,80 @@ import { LocalStoreManager } from '../../../core/common/local-store-manager.serv
 import { AuthService } from '../../../core/auth/auth.service';
 import { MonsterTemplateService } from '../../../core/services/monster-template.service';
 import { AppService1 } from '../../../app.service';
+import { ItemMasterService } from '../../../core/services/item-master.service';
 
 
 @Component({
-    selector: 'app-drop-items-monster',
-    templateUrl: './drop-items-monster.component.html',
-    styleUrls: ['./drop-items-monster.component.scss']
+  selector: 'app-drop-items-monster',
+  templateUrl: './drop-items-monster.component.html',
+  styleUrls: ['./drop-items-monster.component.scss']
 })
 export class DropItemsMonsterComponent implements OnInit {
 
   public event: EventEmitter<any> = new EventEmitter();
-    isLoading = false;
-    title: string;
-    _view: string;
-    characterId: number;
-    rulesetId: number;
-    characterItems: any;    
-    searchText: string;
-    itemsList: any[] = [];
-    selectedItemsList: any[] = [];
-    monsterId: number;
+  isLoading = false;
+  title: string;
+  _view: string;
+  characterId: number;
+  rulesetId: number;
+  characterItems: any;
+  searchText: string;
+  itemsList: any[] = [];
+  selectedItemsList: any[] = [];
+  monsterId: number;
   monsterName: string = '';
   monsterImage: string = '';
   allSelected: boolean = false;
   selectedLootPileItem: any;
-    constructor(
-        private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
-        public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
-      private sharedService: SharedService, private commonService: CommonService,
-      private itemsService: ItemsService, private appService: AppService1,
-      private monsterTemplateService: MonsterTemplateService
-    ) {
-        this.route.params.subscribe(params => { this.characterId = params['id']; });
-    }
+  constructor(
+    private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
+    public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
+    private sharedService: SharedService, private commonService: CommonService,
+    private itemsService: ItemsService, private appService: AppService1,
+    private monsterTemplateService: MonsterTemplateService,
+    private itemMasterService: ItemMasterService
+  ) {
+    this.route.params.subscribe(params => { this.characterId = params['id']; });
+  }
 
-    ngOnInit() {
-        setTimeout(() => {
-            this.title = this.bsModalRef.content.title;
-            this._view = this.bsModalRef.content.button;
-          this.monsterName = this.bsModalRef.content.monsterName;
-          this.monsterImage = this.bsModalRef.content.monsterImage;
-            
-            this.rulesetId = this.bsModalRef.content.rulesetID;
-            this.monsterId = this.bsModalRef.content.monsterId;
-            if (this.rulesetId == undefined)
-                this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+  ngOnInit() {
+    setTimeout(() => {
+      this.title = this.bsModalRef.content.title;
+      this._view = this.bsModalRef.content.button;
+      this.monsterName = this.bsModalRef.content.monsterName;
+      this.monsterImage = this.bsModalRef.content.monsterImage;
 
-           this.initialize();
-        }, 0);
-    }
+      this.rulesetId = this.bsModalRef.content.rulesetID;
+      this.monsterId = this.bsModalRef.content.monsterId;
+      if (this.rulesetId == undefined)
+        this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+      this.initialize();
+    }, 0);
+  }
 
   private initialize() {
-   
-        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-        if (user == null)
-            this.authService.logout();
-        else {
-          this.isLoading = true;
-          
-          this.monsterTemplateService.getMonsterItemToDrop<any>(this.monsterId)
-            .subscribe(data => {
-              this.itemsList = data;
-              this.isLoading = false;
-            }, error => {
-              this.isLoading = false;
-              let Errors = Utilities.ErrorDetail("", error);
-              if (Errors.sessionExpire) {
-                this.authService.logout(true);
-              }
 
-            }, () => { });
-        }
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      this.isLoading = true;
+
+      this.monsterTemplateService.getMonsterItemToDrop<any>(this.monsterId)
+        .subscribe(data => {
+          this.itemsList = data;
+          this.isLoading = false;
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+
+        }, () => { });
     }
+  }
 
   setItemMaster(event: any, itemMaster: any) {
     itemMaster.selected = event.target.checked;
@@ -117,41 +119,51 @@ export class DropItemsMonsterComponent implements OnInit {
 
   submitForm() {
     console.log('selectedLottPileItem', this.selectedLootPileItem);
-    
+
     if (this.selectedItemsList.length) {
-      this.isLoading = true;
-      let _msg = 'Droping Monster Items ...';
-      this.alertService.startLoadingMessage("", _msg);
-      this.monsterTemplateService.dropMonsterItems(this.selectedItemsList, this.monsterId)
-        .subscribe(data => {
-          //if (data) {
-            this.event.emit(data);
-          //}
-          this.alertService.stopLoadingMessage();
-          this.isLoading = false;
-          this.close();
-          this.appService.updateChatWithLootMessage(true);
-          this.sharedService.updateDropMonsterList(true);
-          this.sharedService.updateCombatantListForAddDeleteMonsters(true);
-        }, error => {
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          this.alertService.showMessage(error, "", MessageSeverity.error);
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
+      let selecetedItemCount = this.selectedItemsList.length;
+      this.itemMasterService.getLootItemCount(this.rulesetId)
+        .subscribe((data: any) => {
+          let LootCount = data.lootCount;
+          if ((LootCount + selecetedItemCount) < 200) {
+            this.isLoading = true;
+            let _msg = 'Droping Monster Items ...';
+            this.alertService.startLoadingMessage("", _msg);
+            this.monsterTemplateService.dropMonsterItems(this.selectedItemsList, this.monsterId)
+              .subscribe(data => {
+                //if (data) {
+                this.event.emit(data);
+                //}
+                this.alertService.stopLoadingMessage();
+                this.isLoading = false;
+                this.close();
+                this.appService.updateChatWithLootMessage(true);
+                this.sharedService.updateDropMonsterList(true);
+                this.sharedService.updateCombatantListForAddDeleteMonsters(true);
+              }, error => {
+                this.isLoading = false;
+                this.alertService.stopLoadingMessage();
+                this.alertService.showMessage(error, "", MessageSeverity.error);
+                let Errors = Utilities.ErrorDetail("", error);
+                if (Errors.sessionExpire) {
+                  this.authService.logout(true);
+                }
+              }, () => { });
+          } else {
+            this.isLoading = false;
+            this.alertService.showMessage("The maximum number of Loot Items has been reached, 200. Please delete some loot items before attempting to drop items again.", "", MessageSeverity.error);
           }
-        }, () => { });
+        }, error => { }, () => { });
     } else {
       let message = 'Please select atleast one item to drop';
       this.alertService.showMessage(message, "", MessageSeverity.error);
     }
-    
+
   }
 
-    close() {
-        this.bsModalRef.hide();
-    }
+  close() {
+    this.bsModalRef.hide();
+  }
   selectDeselectFilters(isSelectAll) {
     this.allSelected = isSelectAll;
     this.selectedItemsList = [];

@@ -12,6 +12,7 @@ import { Utilities } from '../../../core/common/utilities';
 import { PlayerLootComponent } from '../player-loot.component';
 import { User } from '../../../core/models/user.model';
 import { Items } from '../../../core/models/view-models/items.model';
+import { ItemMasterService } from '../../../core/services/item-master.service';
 
 @Component({
   selector: 'app-player-loot-secondary',
@@ -42,7 +43,8 @@ export class PlayerLootSecondaryComponent implements OnInit {
     private lootService: LootService,
     private sharedService: SharedService,
     private appService: AppService1,
-    private itemsService: ItemsService) { }
+    private itemsService: ItemsService,
+    private itemMasterService: ItemMasterService) { }
 
   ngOnInit() {
     setTimeout(() => {
@@ -107,10 +109,18 @@ export class PlayerLootSecondaryComponent implements OnInit {
 
   }
   addEditItem(model) {
-    debugger
     model.characterId = this.characterId;
     model.itemMasterId = null;
     this.isLoading = true;
+    this.itemMasterService.getCharacterItemCount(this.rulesetId, this.characterId)
+      .subscribe((data: any) => {
+        let ItemCount = data.itemCount;
+        let selectedItemCount = 0;
+        if (model.multiLootIds && model.multiLootIds.length) {
+          selectedItemCount = model.multiLootIds.length;
+        }
+        if ((ItemCount + selectedItemCount) < 200) {
+
     this.lootService.lootItemsTakeByplayer<any>(model)
       .subscribe(data => {
         if (data) {
@@ -130,7 +140,13 @@ export class PlayerLootSecondaryComponent implements OnInit {
           //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
           this.authService.logout(true);
         }
-      }, () => { });
+            }, () => { });
+        }
+        else {
+          this.isLoading = false;
+          this.alertService.showMessage("The maximum number of Items has been reached, 200. Please delete some Items and try again.", "", MessageSeverity.error);
+        }
+      }, error => { }, () => { });
   }
 
   selectDeselectFilters(selected) {

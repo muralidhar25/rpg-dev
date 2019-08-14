@@ -16,10 +16,10 @@
             </button>
         </div>-->
         <div class="page-toolbar-wrapper initial show recordes-menu">
-         
-          <!-- Toolbar links -->
-          <ul class="page-toolbar-links" *ngIf="!isLoading">
 
+          <!-- Toolbar links -->
+          <!--if !GM-->
+          <ul class="page-toolbar-links" *ngIf="!isLoading && !IsGm">
             <li *ngIf="RuleSet" class="hidden-tab">
               <a [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Tiles">Layouts</a>
             </li>
@@ -83,7 +83,74 @@
                   </ul>
                 </div>
               </div>
-            </li>           
+            </li>
+          </ul>
+
+          <!--if GM-->
+          <ul class="page-toolbar-links" *ngIf="!isLoading && IsGm">
+            <li *ngIf="RuleSet" class="hidden-tab show-first-child">
+              <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection icon icon-Monster"> <span>Monsters</span></a>
+            </li>
+            <li *ngIf="RuleSet?.isSpellEnabled" class="hidden-tab">
+              <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+            </li>
+            <li *ngIf="RuleSet?.isAbilityEnabled" class="hidden-tab">
+              <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+            </li>
+            <li *ngIf="RuleSet?.isBuffAndEffectEnabled" class="hidden-tab">
+              <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> <span>Buffs/Effects</span></a>
+            </li>
+            <li *ngIf="RuleSet" class="hidden-tab">
+              <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Pouch"> <span>Loot</span></a>
+            </li>
+            <li class="visible-tab mt-0">
+              <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                  <ul class="dropdown-menu-list" *ngIf="!isLoading">
+                    <li *ngIf="RuleSet" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection icon icon-Monster">Monsters</a>
+                    </li>
+                    <li *ngIf="RuleSet?.isSpellEnabled" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
+                    </li>
+                    <li *ngIf="RuleSet?.isAbilityEnabled" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
+                    </li>
+                    <li *ngIf="RuleSet?.isBuffAndEffectEnabled" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE">Buffs/Effects</a>
+                    </li>
+                    <li *ngIf="RuleSet" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Gen-Items"> Loot</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text btn-primary dropdown-toggle is-show">A<span class="text-hide-tab is-show">ACTIONS</span></button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                  <ul class="dropdown-menu-list">
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="addItem()" class="btn btn-accent icon-Rec-Add" [disabled]="pauseItemAdd"> Add Loot</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="createItem()" class="btn btn-accent icon-Gen-Edit" [disabled]="pauseItemCreate"> Create Loot</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="createPile()" class="btn btn-accent icon-Gen-Edit" [disabled]="pauseItemCreate"> Create Pile</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="moveLoot()" class="btn btn-accent icon icon-external" [disabled]="pauseItemCreate"> Move Loot</button>
+                    </li>
+                    <li class="dropdown-menu-item">
+                      <button type="button" (click)="deleteAll()" class="btn btn-accent icon-with-text icon-Gen-Trash"> Delete Loot</button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
           </ul>
           <!-- End of toolbar links -->
         </div>
@@ -91,7 +158,7 @@
           <li class="view-switch">
             <div class="btn-group" role="group">
               <!--<button type="button" id="gridViewTrigger" class="btn icon icon-grid btn-primary" [ngClass]="{'selected':!isListView}" (click)="showListView(false)"></button>
-      <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="{'selected':isListView}" (click)="showListView(true)"></button>-->
+              <button type="button" id="listViewTrigger" class="btn icon icon-list btn-primary" [ngClass]="{'selected':isListView}" (click)="showListView(true)"></button>-->
               <div class="dropdown">
                 <button class="btn dropdown-toggle filter-toggle-btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i [ngClass]="isDenseView ? 'icon-Rec-Dense': '' "></i>
@@ -107,25 +174,25 @@
             </div>
           </li>
           <!--<li>
-    <div class="dropdown dropdown-buttons">
-        <button type="button" (click)="createItem()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Create Item</button>
-    </div>
-    <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
-      <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle is-show">
-        <span class="text-hide-tab  is-show">Create</span>
-      </button>
-      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
-        <ul class="dropdown-menu-list">
-          <li class="dropdown-menu-item">
-            <button type="button" (click)="createItem()" class="btn btn-accent icon-Gen-Edit"> Item</button>
-          </li>
-          <li class="dropdown-menu-item">
-            <button type="button" (click)="createBundle()" class="btn btn-accent icon-Gen-Edit"> Bundle</button>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </li>-->
+            <div class="dropdown dropdown-buttons">
+                <button type="button" (click)="createItem()" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary btn-block">Create Item</button>
+            </div>
+            <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+              <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text icon-plus btn-primary dropdown-toggle is-show">
+                <span class="text-hide-tab  is-show">Create</span>
+              </button>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                <ul class="dropdown-menu-list">
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="createItem()" class="btn btn-accent icon-Gen-Edit"> Item</button>
+                  </li>
+                  <li class="dropdown-menu-item">
+                    <button type="button" (click)="createBundle()" class="btn btn-accent icon-Gen-Edit"> Bundle</button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </li>-->
           <li class="refresh-btn">
             <button type="button" class="btn btn-outline-primary icon icon-Gen-Refresh" (click)="refresh()"></button>
           </li>
@@ -189,7 +256,7 @@
                 <h4 class="card-title" *ngIf="ItemMaster?.quantity<=1" popover="{{ItemMaster?.itemName}}" triggers="hover">{{ItemMaster?.itemName}}</h4>
                 <h4 class="card-title" *ngIf="ItemMaster?.quantity>1" popover="({{ItemMaster?.quantity}}) {{ItemMaster?.itemName}}" triggers="hover">({{ItemMaster?.quantity}}) {{ItemMaster?.itemName}}</h4>
                 <ul class="item-properties">
-                  <ng-container *ngIf="!ItemMaster.isLootPile">                    
+                  <ng-container *ngIf="!ItemMaster.isLootPile">
                     <li *ngIf="ItemMaster.value>=0" class="item-property item-property-text value " title="Value" data-toggle="Value">{{ItemMaster.value}} <small *ngIf="ItemMaster.ruleSet?.currencyLabel">({{ItemMaster.ruleSet?.currencyLabel}})</small></li>
                     <li *ngIf="ItemMaster.weight>=0" class="item-property item-property-text weight" title="Weight" data-toggle="Weight">{{ItemMaster.weight}} <small *ngIf="ItemMaster.ruleSet?.weightLabel">({{ItemMaster.ruleSet?.weightLabel}})</small></li>
                     <li *ngIf="ItemMaster.volume>=0" class="item-property item-property-text volume" title="Volume" data-toggle="Volume">{{ItemMaster.volume}} <small *ngIf="ItemMaster.ruleSet?.volumeLabel">({{ItemMaster.ruleSet?.volumeLabel}})</small></li>
@@ -206,9 +273,9 @@
                     <li *ngIf="ItemMaster.isContainer" class="item-property item-property-icon icon icon-Rec-Container icon-ico" title="Container" data-toggle="tooltip"></li>
 
                   </ng-container>
-                  
+
                   <!--<ng-container *ngIf="ItemMaster.isLootPile">
-                    <li class="item-property item-property-icon icon icon-Loot_Pile icon-ico" title="Loot Pile" data-toggle="tooltip"></li>                    
+                    <li class="item-property item-property-icon icon icon-Loot_Pile icon-ico" title="Loot Pile" data-toggle="tooltip"></li>
                   </ng-container>-->
                 </ul>
                 <!-- <div class="item-stats" [froalaView]="ItemMaster?.itemStats"></div> -->

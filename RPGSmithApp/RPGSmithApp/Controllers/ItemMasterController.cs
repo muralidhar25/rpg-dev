@@ -70,6 +70,43 @@ namespace RPGSmithApp.Controllers
             }
         }
 
+        [HttpGet("get_ItemMaster_and_Loot_Count")]
+        public async Task<IActionResult> get_ItemMaster_and_Loot_Count(int rulesetId)
+        {
+            int LootCount = 0;
+            int ItemMasterCount = 0;
+            if (_coreRulesetService.IsCopiedFromCoreRuleset(rulesetId))
+            {
+                ItemMasterCount = _coreRulesetService.GetItemCountByRuleSetId(rulesetId);
+                LootCount= _coreRulesetService.GetLootCountByRuleSetId(rulesetId);
+                //return Ok(_items);
+            }
+            else
+            {
+                ItemMasterCount = _itemMasterService.GetCountByRuleSetId(rulesetId);
+                LootCount= _itemMasterService.GetLootCountByRuleSetId(rulesetId);
+               // return Ok(_items);
+            }
+            return Ok(new { LootCount = LootCount, ItemMasterCount = ItemMasterCount });
+        }
+
+        [HttpGet("getCharacterItemCount")]
+        public async Task<IActionResult> getCharacterItemCount(int rulesetId, int characterId)
+        {
+            int ItemMasterCount = 0;
+            int ItemCount = _itemMasterService.GetCharacterItemCount(characterId);
+            if (_coreRulesetService.IsCopiedFromCoreRuleset(rulesetId))
+            {
+                ItemMasterCount = _coreRulesetService.GetItemCountByRuleSetId(rulesetId);                
+            }
+            else
+            {
+                ItemMasterCount = _itemMasterService.GetCountByRuleSetId(rulesetId);
+                
+            }
+            return Ok(new { ItemMasterCount=ItemMasterCount, ItemCount = ItemCount });
+        }
+
         [HttpGet("getById")]
         public ItemMaster GetItemById(int id)
         {

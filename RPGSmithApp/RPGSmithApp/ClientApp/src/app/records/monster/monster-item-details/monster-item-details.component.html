@@ -19,7 +19,8 @@
       </div>-->
         <div class="page-toolbar-wrapper initial show recordes-menu">
           <!-- Toolbar links -->
-          <ul class="page-toolbar-links" *ngIf="!isLoading">
+          <!--if !GM-->
+          <ul class="page-toolbar-links" *ngIf="!isLoading && !IsGm">
             <li *ngIf="ItemDetail?.ruleSet" class="hidden-tab">
               <a *ngIf="!IsGm" [routerLink]="['/ruleset/dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
               <a *ngIf="IsGm" [routerLink]="['/ruleset/campaign-dashboard/', ruleSetId]" class="btn btn-link-primary nav-redirection">Layouts</a>
@@ -63,12 +64,56 @@
               </div>
             </li>
           </ul>
+
+          <!--if GM-->
+          <ul class="page-toolbar-links" *ngIf="!isLoading && IsGm">
+            <li *ngIf="ItemDetail?.ruleSet" class="hidden-tab show-first-child">
+              <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Monster"> <span>Monsters</span></a>
+            </li>
+            <li *ngIf="ItemDetail?.ruleSet?.isSpellEnabled" (click)="Redirect('/ruleset/spell/')" class="hidden-tab">
+              <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+            </li>
+            <li *ngIf="ItemDetail?.ruleSet?.isAbilityEnabled" (click)="Redirect('/ruleset/ability/')" class="hidden-tab">
+              <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+            </li>
+            <li *ngIf="ItemDetail?.ruleSet?.isBuffAndEffectEnabled" class="hidden-tab">
+              <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> <span>Buffs/Effects</span></a>
+            </li>
+            <li *ngIf="ItemDetail?.ruleSet" class="hidden-tab">
+              <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Pouch"> <span>Loot</span></a>
+            </li>
+            <li class="visible-tab mt-0">
+              <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                  <ul class="dropdown-menu-list" *ngIf="!isLoading">
+                    <li class="dropdown-menu-item" *ngIf="ItemDetail?.ruleSet">
+                      <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Monster"> <span>Monsters</span></a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="ItemDetail?.ruleSet?.isSpellEnabled">
+                      <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="ItemDetail?.ruleSet?.isAbilityEnabled">
+                      <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="ItemDetail?.ruleSet?.isBuffAndEffectEnabled" >
+                      <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE">Buffs/Effects</a>
+                    </li>
+                    <li class="dropdown-menu-item" *ngIf="ItemDetail?.ruleSet">
+                      <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> Loot</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>
+
           <!-- End of toolbar links -->
           <!-- Toolbar actions -->
           <ul class="page-toolbar-actions" *ngIf="!isLoading">
             <!--<li>
-              <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
-          </li>-->
+        <button type="button" id="manageTilesTrigger" class="btn btn-outline-primary">Manage Tiles</button>
+    </li>-->
             <li>
               <!-- Manage item -->
               <div class="dropdown dropdown-buttons">
@@ -79,8 +124,8 @@
                       <button type="button" (click)="editItemTemplate(ItemDetail)" class="btn icon icon-with-text icon-pencil btn-accent">Edit</button>
                     </li>
                     <!--<li class="dropdown-menu-item">
-                      <button type="button" (click)="duplicateItemTemplate(ItemDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent">Duplicate</button>
-                    </li>-->
+              <button type="button" (click)="duplicateItemTemplate(ItemDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent">Duplicate</button>
+            </li>-->
                     <li class="dropdown-menu-item">
                       <button type="button" (click)="deleteItem(ItemDetail)" class="btn icon icon-with-text icon-trash btn-accent">Delete</button>
                     </li>

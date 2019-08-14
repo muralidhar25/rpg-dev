@@ -8588,6 +8588,10 @@ li.popup-new-tile-trigger.cross-li .btn {
     display: none
   }
 
+  .page-toolbar-wrapper.initial.show.recordes-menu ul.page-toolbar-links > .show-first-child {
+    display: block !important;
+  }
+
   .page-toolbar-wrapper.initial.show ul.page-toolbar-links > li > a > span {
     display: none
   }
