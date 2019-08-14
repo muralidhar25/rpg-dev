@@ -254,7 +254,17 @@ export class CombatPlayerViewComponent implements OnInit {
     }
 
   }
-
+  RemoveTargetBtn(item) {
+    if (item) {
+      this.combatants.map(x => {
+        if (x.isOwnPlayer) {          
+            x.targetId = 0;
+            x.targetType = null;          
+          this.SaveTarget(x);
+        }
+      });
+    }
+  }
   SaveTarget(combatatnt) {
     this.combatService.saveTarget(combatatnt).subscribe(res => {
       //let result = res;
@@ -446,7 +456,7 @@ export class CombatPlayerViewComponent implements OnInit {
     }, 1500);
   }
   bindCombatantInitiatives() {
-    this.combatService.getCombatDetails(this.ruleSetId,true).subscribe(res => {
+    this.combatService.getCombatDetails(this.ruleSetId,true,0).subscribe(res => {
       if (res) {
         debugger;
         let combatModal: any = res;
@@ -563,5 +573,26 @@ export class CombatPlayerViewComponent implements OnInit {
         this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
       }
     });
+  }
+  description(text) {
+    if (text) {
+      var encodedStr = text;
+      var parser = new DOMParser;
+      var dom = parser.parseFromString(
+        '<!doctype html><body>' + encodedStr,
+        'text/html');
+      var decodedString = dom.body.textContent;
+      return decodedString;
+    }
+    return '';
+  }
+  CombatantBuff_EffectDetail(currentCombatantDetail, item) {
+    debugger
+    if (currentCombatantDetail.type == combatantType.MONSTER) {
+      this.router.navigate(['/character/combat-pc-buff-effect-detail', item.buffAndEffectId]);
+    }
+    if (currentCombatantDetail.type == combatantType.CHARACTER) {
+      this.router.navigate(['/character/combat-pc-buff-effect-detail', item.buffAndEffect.buffAndEffectId]);
+    }
   }
 }

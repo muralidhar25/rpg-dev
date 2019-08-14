@@ -210,7 +210,10 @@ export class RulesetDetailsComponent implements OnInit {
     this.rulesetService.ruleset = ruleset;
     this.router.navigate(['/ruleset/ability', ruleset.ruleSetId]);
   }
-
+  BuffAndEffects(ruleset: Ruleset) {
+    this.rulesetService.ruleset = ruleset;
+    this.router.navigate(['/ruleset/buff-effect', ruleset.ruleSetId])
+  }
   shareRuleset(ruleset: Ruleset) {
     this.bsModalRef = this.modalService.show(ShareRulesetComponent, {
       class: 'modal-primary modal-md',

@@ -72,7 +72,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
   selectedBuffAndEffectsList: any[] = [];
   pageRefresh: boolean;
   isPlayerCharacter: boolean = false;
-  showBuffEffects: boolean = false;
+  //showBuffEffects: boolean = false;
   pauseBuffAndEffectAdd: boolean = false
   pauseBuffAndEffectCreate: boolean = false
   IsComingFromCombatTracker_GM: boolean = false;
@@ -2320,9 +2320,9 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
               this.pauseBuffAndEffectCreate = data.pauseBuffAndEffectCreate;
               
             }
-            if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
-              this.showBuffEffects = true;
-            }
+            //if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
+            //  this.showBuffEffects = true;
+            //}
             if (data.isDeletedInvite) {
               this.router.navigate(['/characters']);
               this.alertService.showStickyMessage('', "Your " + data.name + " character has been deleted by the GM", MessageSeverity.error);

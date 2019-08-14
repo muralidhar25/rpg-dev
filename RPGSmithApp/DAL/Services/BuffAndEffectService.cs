@@ -41,6 +41,42 @@ namespace DAL.Services
             }
             // Remove associated character ability
 
+            
+            var IMBE = _context.ItemMasterBuffAndEffects.Where(x => x.BuffAndEffectId == id && x.IsDeleted != true).ToList();
+
+            foreach (var IMBE_item in IMBE)
+            {
+                IMBE_item.IsDeleted = true;
+            }
+
+            var IBE = _context.ItemBuffAndEffects.Where(x => x.BuffAndEffectId == id && x.IsDeleted != true).ToList();
+
+            foreach (var IBE_item in IBE)
+            {
+                IBE_item.IsDeleted = true;
+            }
+
+            var SBE = _context.SpellBuffAndEffects.Where(x => x.BuffAndEffectId == id && x.IsDeleted != true).ToList();
+
+            foreach (SpellBuffAndEffect SBE_item in SBE)
+            {
+                SBE_item.IsDeleted = true;               
+            }
+
+            var ABE = _context.AbilityBuffAndEffects.Where(x => x.BuffAndEffectId == id && x.IsDeleted != true).ToList();
+
+            foreach (AbilityBuffAndEffect ABE_item in ABE)
+            {
+                ABE_item.IsDeleted = true;
+            }
+
+            var MBE = _context.MonsterBuffAndEffects.Where(x => x.BuffAndEffectId == id && x.IsDeleted != true).ToList();
+
+            foreach (MonsterBuffAndEffect MBE_item in MBE)
+            {
+                MBE_item.IsDeleted = true;
+            }
+
             var ca = _context.CharacterBuffAndEffects.Where(x => x.BuffAndEffectID == id && x.IsDeleted != true).ToList();
 
             foreach (CharacterBuffAndEffect ca_item in ca)
@@ -53,6 +89,7 @@ namespace DAL.Services
                     LRCCS.LinkType = "";
                 }
             }
+
 
             // Remove Ability
             var buffAndEffect = await _repo.Get(id);
@@ -92,7 +129,7 @@ namespace DAL.Services
                     CommandName = x.CommandName,
                     Description = x.Description,
                     ImageUrl = x.ImageUrl,
-                    IsAssignedToAnyCharacter = _context.CharacterBuffAndEffects.Where(q => q.BuffAndEffectID == x.BuffAndEffectId && x.IsDeleted != true).Any(),
+                    IsAssignedToAnyCharacter = _context.CharacterBuffAndEffects.Where(q => q.BuffAndEffectID == x.BuffAndEffectId && q.IsDeleted != true).Any(),
                     IsDeleted = x.IsDeleted,
                     Metatags = x.Metatags,
                     Name = x.Name,

@@ -46,6 +46,10 @@
               <a class="btn icon icon-Gen-Items btn-accent" (click)="item(rulesetModel)">ITEM TEMPLATES</a>
               <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.itemMasterCount !== undefined">{{rulesetRecordCount?.itemMasterCount}} </span>
             </li>
+            <li class="ng-star-inserted" *ngIf="rulesetModel.isBuffAndEffectEnabled">
+              <a class="btn icon icon-BnE btn-accent" (click)="BuffAndEffects(rulesetModel)">BUFFS & EFFECTS</a>
+              <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.buffAndEffectCount !== undefined">{{rulesetRecordCount?.buffAndEffectCount}} </span>
+            </li>
             <li *ngIf="rulesetModel">
               <a class="btn icon icon-Gen-Tiles btn-accent" (click)="gotoDashboard(rulesetModel)">DEFAULT LAYOUTS</a>
               <span class="dropdown-menu-item-count pull-right ng-star-inserted" *ngIf="rulesetRecordCount.layoutCount !== undefined">{{rulesetRecordCount?.layoutCount}}</span>

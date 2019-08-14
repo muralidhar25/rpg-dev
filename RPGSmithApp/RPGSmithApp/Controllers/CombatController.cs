@@ -41,11 +41,11 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpGet("GetCombatDetails")]
-        public async Task<IActionResult> GetCombatDetails(int CampaignId,bool isPCView)
+        public async Task<IActionResult> GetCombatDetails(int CampaignId,bool isPCView,int recentlyEndedCombatId)
         {
             try
             {
-                Combat_ViewModel model = await _combatService.GetCombatDetails(CampaignId, GetUserDetails(), isPCView);
+                Combat_ViewModel model = await _combatService.GetCombatDetails(CampaignId, GetUserDetails(), isPCView, recentlyEndedCombatId);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -222,12 +222,12 @@ namespace RPGSmithApp.Controllers
 
         }
         [HttpPost("saveTarget")]
-        public async Task<IActionResult> saveTarget([FromBody] Combatant_ViewModel model)
+        public async Task<IActionResult> saveTarget([FromBody] Combatant_ViewModel model,bool isFromGMScreen=false)
         {
 
             try
             {
-                _combatService.saveTarget(model);
+                _combatService.saveTarget(model, isFromGMScreen);
                 return Ok();
             }
             catch (Exception ex)

@@ -376,11 +376,14 @@ export class AppComponent implements OnInit, AfterViewInit {
 
             if (this.router.url.toUpperCase().indexOf('/CHARACTER/DASHBOARD/') > -1
               || this.router.url.toUpperCase().indexOf('/CHARACTERS/DASHBOARD/') > -1
+              || this.router.url.toUpperCase().indexOf('/CHARACTER/COMBATPLAYER/') > -1
             ) {
               this.showCharacterSearch = true;
               this.dashbaordUser = true;
               this.showCampaignSearch = false;
-            } else if (this.router.url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DETAILS') > -1) {
+            } else if (this.router.url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DETAILS') > -1
+              || this.router.url.toUpperCase().indexOf('/RULESET/COMBAT/') > -1
+            ) {
               this.showCharacterSearch = false;
 
               this.showCampaignSearch = true;
@@ -1120,12 +1123,15 @@ export class AppComponent implements OnInit, AfterViewInit {
 
         if (url.toUpperCase().indexOf('/CHARACTER/DASHBOARD/') > -1
           || url.toUpperCase().indexOf('/CHARACTERS/DASHBOARD/') > -1
+          || url.toUpperCase().indexOf('/CHARACTER/COMBATPLAYER/') > -1
         ) {
           this.showCharacterSearch = true;
           this.dashbaordUser = true;
           this.showCampaignSearch = false;
         }
-        else if (url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DETAILS') > -1) {
+        else if (url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DETAILS') > -1
+            || url.toUpperCase().indexOf('/RULESET/COMBAT/') > -1
+            ) {
           this.showCharacterSearch = false;
 
           this.showCampaignSearch = true;

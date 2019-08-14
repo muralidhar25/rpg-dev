@@ -362,12 +362,12 @@ export class CombatComponent implements OnInit {
   }
 
   // Combat Settings
-  GetCombatDetails(ShowLoader = true, selectedDeployedMonsters: any = []) {
+  GetCombatDetails(ShowLoader = true, selectedDeployedMonsters: any = [], recentlyEndedCombatId:number=0) {
     if (ShowLoader) {
       this.isLoading = true;
     }
 
-    this.combatService.getCombatDetails(this.ruleSetId, false).subscribe(res => {
+    this.combatService.getCombatDetails(this.ruleSetId, false, recentlyEndedCombatId).subscribe(res => {
       if (res) {
         let combatModal: any = res;
         this.roundCounter = combatModal.round;
@@ -1342,7 +1342,7 @@ export class CombatComponent implements OnInit {
       this.SendSystemMessageToChat(msg);
 
       this.isLoading = false;
-      this.GetCombatDetails();
+      this.GetCombatDetails(true, [], this.CombatId);
     }, error => {
       this.alertService.stopLoadingMessage();
       this.isLoading = false;
@@ -1936,9 +1936,9 @@ export class CombatComponent implements OnInit {
 
   refreshPCDataModelPageData() {    
       this.refreshPCDataModel = setInterval(() => {
-        console.log("update");
+        //console.log("update");
         this.combatService.getCombatDetails_PCModelData(this.ruleSetId).subscribe(data => {
-        console.log("res ", data);
+        //console.log("res ", data);
         let res: any = data;
           if (res && res.combatantList) {
             if (res.combatantList.length) {
@@ -2002,4 +2002,30 @@ export class CombatComponent implements OnInit {
       });      
     }, 3000);
   }
+
+  RemoveTargetBtn(item) {
+    if (item) {
+      this.combatants.map(x => {
+        if (x.isOwnPlayer) {
+          x.targetId = 0;
+          x.targetType = null;
+          this.SaveTarget(x);
+        }
+      });
+    }
+  }
+
+  SaveTarget(combatatnt) {
+    this.combatService.saveTarget(combatatnt,true).subscribe(res => {
+      //let result = res;
+    }, error => {
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      } else {
+        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+      }
+    });
+  }
+
 }

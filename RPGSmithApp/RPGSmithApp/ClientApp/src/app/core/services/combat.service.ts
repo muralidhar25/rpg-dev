@@ -42,12 +42,12 @@ export class CombatService extends EndpointFactory {
     super(http, configurations, injector);
   }
 
-  getCombatDetails<T>(CampaignID: number, isPCView: boolean): Observable<T> {
-    let endpointUrl = `${this.GetCombatDetails}?CampaignId=${CampaignID}&isPCView=${isPCView}`;
+  getCombatDetails<T>(CampaignID: number, isPCView: boolean, recentlyEndedCombatId: number): Observable<T> {
+    let endpointUrl = `${this.GetCombatDetails}?CampaignId=${CampaignID}&isPCView=${isPCView}&recentlyEndedCombatId=${recentlyEndedCombatId}`;
 
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
-        return this.handleError(error, () => this.getCombatDetails(CampaignID, isPCView));
+        return this.handleError(error, () => this.getCombatDetails(CampaignID, isPCView, recentlyEndedCombatId));
       });
   }
 
@@ -157,8 +157,8 @@ export class CombatService extends EndpointFactory {
       });
   }
 
-  saveTarget<T>(target): Observable<T> {
-    let endpointUrl = `${this.SaveTarget}`
+  saveTarget<T>(target, isFromGMScreen:boolean =false): Observable<T> {
+    let endpointUrl = `${this.SaveTarget}?isFromGMScreen=${isFromGMScreen}`
     return this.http.post<T>(endpointUrl, JSON.stringify(target), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.saveTarget(target));
