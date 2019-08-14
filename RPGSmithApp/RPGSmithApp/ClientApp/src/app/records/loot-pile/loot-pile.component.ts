@@ -19,6 +19,7 @@ import { GiveawayComponent } from "../loot/giveaway/giveaway.component";
 import { DeleteAllLootItemsComponent } from "../loot/delete-all-loot-items/delete-all-loot-items.component";
 import { CreateLootPileComponent } from "./create-loot-pile/create-loot-pile.component";
 import { AddLootPileComponent } from "./add-loot-pile/add-loot-pile.component";
+import { ItemMasterService } from "../../core/services/item-master.service";
 
 @Component({
   selector: 'app-loot-pile',
@@ -57,7 +58,8 @@ export class LootPileComponent implements OnInit {
     private pageLastViewsService: PageLastViewsService,
     private sharedService: SharedService,
     public appService: AppService1,
-    public lootService: LootService
+    public lootService: LootService,
+    public itemMasterService: ItemMasterService
   ) {
 
     this.sharedService.shouldUpdateItemsList().subscribe(sharedServiceJson => {
@@ -256,18 +258,35 @@ export class LootPileComponent implements OnInit {
   }
 
   createItem() {
-    this.bsModalRef = this.modalService.show(CreateLootPileComponent, {
-      class: 'modal-primary modal-custom',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
-    this.bsModalRef.content.title = 'Create Loot';
-    this.bsModalRef.content.button = 'CREATE';
-    this.bsModalRef.content.ruleSetId = this.ruleSetId;
-    this.bsModalRef.content.lootPileVM = {
-      ruleSetId: this.ruleSetId,
-      ruleSet: this.RuleSet
-    };
+    this.itemMasterService.getLootItemCount(this.ruleSetId)
+      .subscribe((data: any) => {
+        //this.alertService.stopLoadingMessage();
+        let LootCount = data.lootCount;
+        let ItemMasterCount = data.itemMasterCount;
+        if (LootCount < 200 && ItemMasterCount < 2000) {
+          this.bsModalRef = this.modalService.show(CreateLootPileComponent, {
+            class: 'modal-primary modal-custom',
+            ignoreBackdropClick: true,
+            keyboard: false
+          });
+          this.bsModalRef.content.title = 'Create Loot';
+          this.bsModalRef.content.button = 'CREATE';
+          this.bsModalRef.content.ruleSetId = this.ruleSetId;
+          this.bsModalRef.content.lootPileVM = {
+            ruleSetId: this.ruleSetId,
+            ruleSet: this.RuleSet
+          };
+        }
+        else {
+
+          if (ItemMasterCount >= 2000) {
+            this.alertService.showMessage("The maximum number of records to create item template has been reached, 2,000. Please delete some item templates and try again.", "", MessageSeverity.error);
+          } else if (LootCount >= 200) {
+            this.alertService.showMessage("The maximum number of records has been reached, 200. Please delete some records and try again.", "", MessageSeverity.error);
+          }
+
+        }
+      }, error => { }, () => { });
 
 
   }
@@ -285,15 +304,32 @@ export class LootPileComponent implements OnInit {
   }
 
   duplicateItemTemplate(itemMaster: ItemMaster) {
-    this.bsModalRef = this.modalService.show(CreateLootPileComponent, {
-      class: 'modal-primary modal-custom',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
-    this.bsModalRef.content.title = 'Duplicate Loot';
-    this.bsModalRef.content.button = 'DUPLICATE';
-    this.bsModalRef.content.itemMasterVM = itemMaster;
-    this.bsModalRef.content.rulesetID = this.ruleSetId;
+    this.itemMasterService.getLootItemCount(this.ruleSetId)
+      .subscribe((data: any) => {
+        //this.alertService.stopLoadingMessage();
+        let LootCount = data.lootCount;
+        let ItemMasterCount = data.itemMasterCount;
+        if (LootCount < 200 && ItemMasterCount < 2000) {
+          this.bsModalRef = this.modalService.show(CreateLootPileComponent, {
+            class: 'modal-primary modal-custom',
+            ignoreBackdropClick: true,
+            keyboard: false
+          });
+          this.bsModalRef.content.title = 'Duplicate Loot';
+          this.bsModalRef.content.button = 'DUPLICATE';
+          this.bsModalRef.content.itemMasterVM = itemMaster;
+          this.bsModalRef.content.rulesetID = this.ruleSetId;
+        }
+        else {
+
+          if (ItemMasterCount >= 2000) {
+            this.alertService.showMessage("The maximum number of records to create item template has been reached, 2,000. Please delete some item templates and try again.", "", MessageSeverity.error);
+          } else if (LootCount >= 200) {
+            this.alertService.showMessage("The maximum number of records has been reached, 200. Please delete some records and try again.", "", MessageSeverity.error);
+          }
+
+        }
+      }, error => { }, () => { });
   }
 
   GoToDetails(item: any) {

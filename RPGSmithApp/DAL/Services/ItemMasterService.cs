@@ -319,6 +319,7 @@ namespace DAL.Services
         }
         public ItemMasterMonsterItem getMonsterItemById(int id) {
             var item = _context.ItemMasterMonsterItems
+              //.Include(d => d.Monster).ThenInclude(d=>d.RuleSet)
               .Include(d => d.RuleSet)
               .Include(d => d.ItemMasterAbilities).ThenInclude(d => d.Ability)
               .Include(d => d.ItemMasterSpell).ThenInclude(d => d.Spell)
@@ -871,7 +872,7 @@ namespace DAL.Services
             return (_context.ItemMasters.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted != true).Count()
                 +
                 _context.ItemMasterBundles.Where(x => x.RuleSetId == ruleSetId).Count());
-        }
+        }        
         public int Core_GetCountByRuleSetId(int ruleSetId, int parentID)
         {
             // var query = "EXEC CoreGetItemMasters @rulesetID = " + ruleSetId + ",@parentRulesetID= " + parentID + "";
@@ -923,6 +924,50 @@ namespace DAL.Services
 
         }
 
+        public int GetLootCountByRuleSetId(int rulesetId)
+        {
+            return _context.ItemMasterLoots.Where(x => x.RuleSetId == rulesetId && x.IsDeleted != true && x.LootPileId==null).Count();
+        }
+        public int GetCharacterItemCount(int characterId) {
+            return _context.Items.Where(x => x.CharacterId == characterId && x.IsDeleted != true).Count();
+        }
+        public int Core_GetLootCountByRuleSetId(int rulesetId, int parentID)
+        {
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            //string qry = "EXEC Ruleset_GetRecordCounts @RulesetID = '" + ruleSetId + "'";
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataTable dt = new DataTable();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("Ruleset_GetRecordCounts", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@RulesetID", rulesetId);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(dt);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            SP_RulesetRecordCount res = new SP_RulesetRecordCount();
+            if (dt.Rows.Count > 0)
+            {
+                res.LootCount = Convert.ToInt32(dt.Rows[0]["LootCount"]);
+            }
+            return res.LootCount;
+
+        }
 
         public async Task<bool> CheckDuplicateItemMaster(string value, int? ruleSetId, int? itemMasterId = 0)
         {

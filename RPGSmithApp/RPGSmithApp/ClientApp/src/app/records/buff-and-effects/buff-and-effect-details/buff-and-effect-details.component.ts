@@ -160,7 +160,7 @@ export class BuffAndEffectDetailsComponent implements OnInit {
     this.buffAndEffectService.getBuffAndEffectsCount(this.ruleSetId)
       .subscribe(data => {
         //this.alertService.stopLoadingMessage();
-        if (data < 2000) {
+        if (data < 200) {
           this.bsModalRef = this.modalService.show(CreateBuffAndEffectsComponent, {
             class: 'modal-primary modal-custom',
             ignoreBackdropClick: true,
@@ -174,7 +174,7 @@ export class BuffAndEffectDetailsComponent implements OnInit {
         }
         else {
           //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
-          this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
+          this.alertService.showMessage("The maximum number of records has been reached, 200. Please delete some records and try again.", "", MessageSeverity.error);
         }
       }, error => { }, () => { });
 

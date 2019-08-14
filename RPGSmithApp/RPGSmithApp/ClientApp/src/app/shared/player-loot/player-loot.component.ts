@@ -1,5 +1,5 @@
-import { Component, OnInit} from '@angular/core';
-import { BsModalService, BsModalRef} from 'ngx-bootstrap';
+import { Component, OnInit } from '@angular/core';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
 import { User } from '../../core/models/user.model';
 import { DBkeys } from '../../core/common/db-keys';
@@ -11,6 +11,7 @@ import { LootService } from '../../core/services/loot.service';
 import { SharedService } from '../../core/services/shared.service';
 import { AppService1 } from '../../app.service';
 import { PlayerLootSecondaryComponent } from './player-loot-secondary/player-loot-secondary.component';
+import { ItemMasterService } from '../../core/services/item-master.service';
 
 @Component({
   selector: 'app-player-loot',
@@ -21,7 +22,7 @@ export class PlayerLootComponent implements OnInit {
 
   isLoading = false;
   characterId: number;
-  characterName: string='';
+  characterName: string = '';
   rulesetId: number;
   itemsList: any;
   characterItemModal: any = new Items();
@@ -41,6 +42,7 @@ export class PlayerLootComponent implements OnInit {
     private lootService: LootService,
     private sharedService: SharedService,
     private appService: AppService1,
+    private itemMasterService: ItemMasterService
 
   ) {
 
@@ -81,7 +83,7 @@ export class PlayerLootComponent implements OnInit {
                 this.itemsList.push(x);
               }
             });
-            
+
             this.characterItemModal.itemMasterId = -1;
             //this.itemsList = data;
             if (this.itemsList.filter(x => x.selected == true).length === data.length)
@@ -123,18 +125,18 @@ export class PlayerLootComponent implements OnInit {
     })
     //this.allSelected = true;
     if (this.itemsList.filter(x => x.selected == true).length === this.itemsList.length)
-      this.allSelected = true;   
-    
+      this.allSelected = true;
+
   }
 
   submitForm(itemMaster: any) {
     this.characterItemModal.multiLootIds = [];
     this.itemsList.map((item) => {
       if (item.selected) {
-        this.characterItemModal.multiLootIds.push({ lootId: item.lootId, name: item.itemName});
+        this.characterItemModal.multiLootIds.push({ lootId: item.lootId, name: item.itemName });
       }
       return item;
-     
+
     })
     if (this.characterItemModal.multiLootIds == undefined) {
       this.alertService.showMessage("Please select new Item Template to Add.", "", MessageSeverity.error);
@@ -149,45 +151,59 @@ export class PlayerLootComponent implements OnInit {
   }
   addEditItem(model) {
     this.isLoading = true;
-    this.lootService.lootItemsTakeByplayer<any>(model)
-      .subscribe(data => {
-        if (data) {
-          if (data.message) {
-            this.alertService.showMessage(data.message, "", MessageSeverity.error);
-            } else {
-              this.alertService.showMessage("Adding Loot Item", "", MessageSeverity.success);
-          }
-          this.close();
-          this.appService.updateItemsList(true);
-          this.appService.updateChatWithTakenByLootMessage(this.characterName);
+    this.itemMasterService.getCharacterItemCount(this.rulesetId, this.characterId)
+      .subscribe((data: any) => {
+        let ItemCount = data.itemCount;
+        let selectedItemCount = 0;
+        if (model.multiLootIds && model.multiLootIds.length) {
+          selectedItemCount = model.multiLootIds.length;
         }
-        this.isLoading = false;
-      }, error => {
-        this.isLoading = false;
-        let Errors = Utilities.ErrorDetail("", error);
-        if (Errors.sessionExpire) {
-          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-          this.authService.logout(true);
+        if ((ItemCount + selectedItemCount) < 200) {
+          this.lootService.lootItemsTakeByplayer<any>(model)
+            .subscribe(data => {
+              if (data) {
+                if (data.message) {
+                  this.alertService.showMessage(data.message, "", MessageSeverity.error);
+                } else {
+                  this.alertService.showMessage("Adding Loot Item", "", MessageSeverity.success);
+                }
+                this.close();
+                this.appService.updateItemsList(true);
+                this.appService.updateChatWithTakenByLootMessage(this.characterName);
+              }
+              this.isLoading = false;
+            }, error => {
+              this.isLoading = false;
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                this.authService.logout(true);
+              }
+            }, () => { });
         }
-      }, () => { });
+        else {
+          this.isLoading = false;
+          this.alertService.showMessage("The maximum number of Items has been reached, 200. Please delete some Items and try again.", "", MessageSeverity.error);
+        }
+      }, error => { }, () => { });
   }
 
   selectDeselectFilters(selected) {
-       
+
     this.allSelected = selected;
-   
+
     if (this.allSelected) {
 
       this.itemsList.map((item) => {
         item.selected = true;
       })
-      
+
     }
     else {
       this.itemsList.map((item) => {
         item.selected = false;
       })
-     
+
     }
   }
 

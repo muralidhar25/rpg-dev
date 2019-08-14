@@ -167,10 +167,12 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
 
   duplicateItem(item: any) {
     // this.alertService.startLoadingMessage("", "Checking records");      
-    this.itemMasterService.getItemMasterCount(this.ruleSetId)
-      .subscribe(data => {
+    this.itemMasterService.getCharacterItemCount(this.ruleSetId, this.characterId)
+      .subscribe((data: any) => {
+        let ItemCount = data.itemCount;
+        let ItemMasterCount = data.itemMasterCount;
         //this.alertService.stopLoadingMessage();
-        if (data < 2000) {
+        if (ItemMasterCount < 2000 && ItemCount < 200) {
           this.bsModalRef = this.modalService.show(EditItemComponent, {
             class: 'modal-primary modal-custom',
             ignoreBackdropClick: true,
@@ -182,8 +184,11 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
           this.bsModalRef.content.itemVM = item;
         }
         else {
-          //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
-          this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
+          if (ItemMasterCount >= 2000) {
+            this.alertService.showMessage("The maximum number of Item Templates has been reached, 2,000. Please delete some Item Templates and try again.", "", MessageSeverity.error);
+          } else if (ItemCount >= 200) {
+            this.alertService.showMessage("The maximum number of records has been reached, 200. Please delete some records and try again.", "", MessageSeverity.error);
+          }
         }
       }, error => { }, () => { });
 

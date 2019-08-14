@@ -218,7 +218,6 @@ export class MonsterDetailsComponent implements OnInit {
     this.bsModalRef.content.button = 'UPDATE';
     this.bsModalRef.content.monsterVM = this._editMonster;
     this.bsModalRef.content.rulesetID = this.ruleSetId;
-    debugger
   }
 
   duplicateMonster(monster: any) {
@@ -226,7 +225,7 @@ export class MonsterDetailsComponent implements OnInit {
     this.monsterTemplateService.getMonsterTemplateCount(this.ruleSetId)
       .subscribe(data => {
         //this.alertService.stopLoadingMessage();
-        if (data < 2000) {
+        if (data < 200) {
           this.bsModalRef = this.modalService.show(CreateMonsterTemplateComponent, {
             class: 'modal-primary modal-custom',
             ignoreBackdropClick: true,
@@ -235,7 +234,6 @@ export class MonsterDetailsComponent implements OnInit {
           this.bsModalRef.content.title = 'Duplicate New Monster';
           this.bsModalRef.content.button = 'DUPLICATE';
           this.bsModalRef.content.ruleSetId = this.ruleSetId;
-          debugger
           this.bsModalRef.content.monsterTemplateVM = this._editMonster;
           this.bsModalRef.content.isCreatingFromMonsterScreen = true;
           this.bsModalRef.content.isCreatingFromMonsterDetailScreen = true;
@@ -248,7 +246,7 @@ export class MonsterDetailsComponent implements OnInit {
         }
         else {
           //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
-          this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
+          this.alertService.showMessage("The maximum number of records has been reached, 200. Please delete some records and try again.", "", MessageSeverity.error);
         }
       }, error => { }, () => { });
 

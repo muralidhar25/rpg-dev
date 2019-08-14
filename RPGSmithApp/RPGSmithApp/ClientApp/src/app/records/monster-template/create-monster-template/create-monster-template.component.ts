@@ -154,14 +154,14 @@ export class CreateMonsterTemplateComponent implements OnInit {
     this.title = this.bsModalRef.content.title;
     let _view = this.button = this.bsModalRef.content.button;
     if (!this.bsModalRef.content.isFromCombatScreen) {
-    let _monsterTemplateVM = this.bsModalRef.content.monsterTemplateVM;
-    this.monsterTemplateFormModal = this.monsterTemplateService.MonsterTemplateModelData(_monsterTemplateVM, _view);
-  
-    if (this.isCreatingFromMonsterScreen && this.monsterTemplateFormModal.view == VIEW.DUPLICATE && this.bsModalRef.content.isCreatingFromMonsterDetailScreen) {
-      this.monsterTemplateFormModal = this.monsterTemplateService.MonsterTemplateModelData(_monsterTemplateVM.monsterTemplate, _view);
-      
+      let _monsterTemplateVM = this.bsModalRef.content.monsterTemplateVM;
+      this.monsterTemplateFormModal = this.monsterTemplateService.MonsterTemplateModelData(_monsterTemplateVM, _view);
 
-    }
+      if (this.isCreatingFromMonsterScreen && this.monsterTemplateFormModal.view == VIEW.DUPLICATE && this.bsModalRef.content.isCreatingFromMonsterDetailScreen) {
+        this.monsterTemplateFormModal = this.monsterTemplateService.MonsterTemplateModelData(_monsterTemplateVM.monsterTemplate, _view);
+
+
+      }
     }
     this.selectedBuffAndEffects = this.monsterTemplateFormModal.monsterTemplateBuffAndEffects.map(x => { return x.buffAndEffect; });
     this.selectedAbilities = this.monsterTemplateFormModal.monsterTemplateAbilities.map(x => { return x.buffAndEffect; });
@@ -279,9 +279,9 @@ export class CreateMonsterTemplateComponent implements OnInit {
                   x.isOr = undefined;
                 }
                 x.selectedItem.push({ image: x.itemMaster.itemImage, itemId: x.itemMaster.itemMasterId, text: x.itemMaster.itemName })
-                });
+              });
             }
-            
+
             this.SelectedItemsList = data.selectedItemMasters.map((x) => {
               return { text: x.name, itemId: x.itemMasterId, image: x.imageUrl, quantity: x.qty }
             });
@@ -347,6 +347,16 @@ export class CreateMonsterTemplateComponent implements OnInit {
     //}
 
     //monsterTemplate.isFromCharacterAbilityId = ability.isFromCharacterAbilityId;
+    if (monsterTemplate.isRandomizationEngine) {      let REitems = this.get_AND_ItemsCountFromRandomizationEngine(monsterTemplate.randomizationEngine, this.alertService);
+      if (REitems > 200) {
+        this.alertService.showMessage("The maximum number of items has been reached, 200. Please delete some items and try again.", "", MessageSeverity.error);
+        return false;
+      }
+
+    }else if (this.SelectedItemsList && this.SelectedItemsList.length > 200) {
+      this.alertService.showMessage("The maximum number of items has been reached, 200. Please delete some items and try again.", "", MessageSeverity.error);
+      return false;
+    }
 
     if (monsterTemplate.ruleSetId === 0 || monsterTemplate.ruleSetId === undefined)
       monsterTemplate.ruleSetId = this._ruleSetId;
@@ -374,7 +384,6 @@ export class CreateMonsterTemplateComponent implements OnInit {
     this.alertService.startLoadingMessage("", _msg);
 
     let tagsValue = this.metatags.map(x => {
-      debugger;
       if (x.value == undefined) return x;
       else return x.value;
     });
@@ -404,7 +413,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
   }
   submitForm(monsterTemplate: MonsterTemplate) {
-    monsterTemplate.randomizationEngine = [];    this.randomizationInfo.map((x: randomization, index) => {      //let _randomization = new randomization(undefined, +x.percentage, +x.sortOrder, +x.itemMasterId, x.isOr, x.isDeleted, +x.qty,undefined,undefined);      //monsterTemplate.randomizationEngine.push(_randomization1);      let _randomization1 = new randomization();      _randomization1.percentage = +x.percentage;      _randomization1.qty = x.qty;      _randomization1.isOr = x.isOr ? true : false;            //_randomization1.randomizationEngineId = x.randomizationEngineId;      if (x.selectedItem) {
+    monsterTemplate.randomizationEngine = [];    this.randomizationInfo.map((x: randomization, index) => {      //let _randomization = new randomization(undefined, +x.percentage, +x.sortOrder, +x.itemMasterId, x.isOr, x.isDeleted, +x.qty,undefined,undefined);      //monsterTemplate.randomizationEngine.push(_randomization1);      let _randomization1 = new randomization();      _randomization1.percentage = +x.percentage;      _randomization1.qty = x.qty;      _randomization1.isOr = x.isOr ? true : false;      //_randomization1.randomizationEngineId = x.randomizationEngineId;      if (x.selectedItem) {
         if (x.selectedItem.length) {
           _randomization1.itemMasterId = +x.selectedItem[0].itemId;
         }
@@ -469,7 +478,6 @@ export class CreateMonsterTemplateComponent implements OnInit {
   }
 
   private submit(monsterTemplate: any) {
-    debugger
     if (this.monsterTemplateFormModal.view === VIEW.DUPLICATE) {
       this.duplicateMonsterTemplate(monsterTemplate);
     }
@@ -501,7 +509,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
       health = modal.health ? DiceService.rollDiceExternally(this.alertService, modal.health, this.customDices) : 0;
       challangeRating = modal.challangeRating ? DiceService.rollDiceExternally(this.alertService, modal.challangeRating, this.customDices) : 0;
       xpValue = modal.xPValue ? DiceService.rollDiceExternally(this.alertService, modal.xPValue, this.customDices) : 0;
-      
+
       modal.REitems = ServiceUtil.getItemsFromRandomizationEngine(modal.randomizationEngine, this.alertService);
       if (modal.REitems && modal.REitems.length) {
         modal.REitems.map((re) => {
@@ -509,7 +517,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
         });
       }
     }
-    
+
     this.monsterTemplateService.createMonsterTemplate<any>(modal, this.isCreatingFromMonsterScreen, armorClass, health, challangeRating, xpValue)
       .subscribe(
         data => {
@@ -576,7 +584,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
     //  health = modal.health ? DiceService.rollDiceExternally(this.alertService, modal.health, this.customDices) : 0;
     //  challangeRating = modal.challangeRating ? DiceService.rollDiceExternally(this.alertService, modal.challangeRating, this.customDices) : 0;
     //  xpValue = modal.xPValue ? DiceService.rollDiceExternally(this.alertService, modal.xPValue, this.customDices) : 0;
-      
+
     //}
     if (this.isCreatingFromMonsterScreen) {
       armorClass = modal.armorClass ? DiceService.rollDiceExternally(this.alertService, modal.armorClass, this.customDices) : 0;
@@ -927,11 +935,11 @@ export class CreateMonsterTemplateComponent implements OnInit {
         }
 
       }
-    });    debugger    let currentOrCount = 0;        AndArray.map((and) => {      let isCurrentOrInWhichItemIsInsert = false;      let totalPercent: number = 100;      and.map((or) => {              totalPercent = totalPercent - (+or.percentage);        currentOrCount = currentOrCount + 1;        if (currentOrCount == indexToInsert) {
+    });    debugger    let currentOrCount = 0;    AndArray.map((and) => {      let isCurrentOrInWhichItemIsInsert = false;      let totalPercent: number = 100;      and.map((or) => {        totalPercent = totalPercent - (+or.percentage);        currentOrCount = currentOrCount + 1;        if (currentOrCount == indexToInsert) {
           isCurrentOrInWhichItemIsInsert = true;
         }      })      if (totalPercent <= 100 && currentOrCount >= indexToInsert && isCurrentOrInWhichItemIsInsert) {
         this.randomizationInfo[indexToInsert].percentage = totalPercent;
-      }          });
+      }    });
 
   }
 
@@ -971,10 +979,10 @@ export class CreateMonsterTemplateComponent implements OnInit {
 
     //    }
 
-    //  });    //  let currentOrCount = 0;    //  let currentOrCount_Delete = 0;    //  AndArray.map((and) => {    //    let isCurrentOrInWhichItemIsDeleted = false;            //    and.map((or) => {              //      currentOrCount = currentOrCount + 1;    //      if (currentOrCount == index) {
+    //  });    //  let currentOrCount = 0;    //  let currentOrCount_Delete = 0;    //  AndArray.map((and) => {    //    let isCurrentOrInWhichItemIsDeleted = false;    //    and.map((or) => {    //      currentOrCount = currentOrCount + 1;    //      if (currentOrCount == index) {
     //        isCurrentOrInWhichItemIsDeleted = true;
     //      }    //    })    //    if (isCurrentOrInWhichItemIsDeleted) {
-    //      and.map((or) => {    //        currentOrCount_Delete = currentOrCount_Delete + 1;    //        this.randomizationInfo.splice(currentOrCount_Delete, 1);                //      })
+    //      and.map((or) => {    //        currentOrCount_Delete = currentOrCount_Delete + 1;    //        this.randomizationInfo.splice(currentOrCount_Delete, 1);    //      })
     //    }    //  });    //}  }  SelectItem(item, i) {    this.bsModalRef = this.modalService.show(SingleItemMonsterComponent, {      class: 'modal-primary modal-md',      ignoreBackdropClick: true,      keyboard: false    });    this.bsModalRef.content.title = 'Add Item';    this.bsModalRef.content.button = 'ADD';    this.bsModalRef.content.rulesetID = this._ruleSetId;    this.bsModalRef.content.SelectedItems = item.selectedItem;    this.bsModalRef.content.event.subscribe(data => {      if (data) {        item.selectedItem = data;      }    });  }  validateRandomization(mt) {    if (!mt.isRandomizationEngine) {
       return true;
     }    let isValidPrecentage = true;    let isValidItem = true;    let isPercentageFieldsAreValid = true;    let isQtyFieldsAreValid = true;    let AndArray = [];
@@ -1014,4 +1022,33 @@ export class CreateMonsterTemplateComponent implements OnInit {
       }      if (!isValidPrecentage) {
         let message = "Total percent chance for a section can't exceed 100%, Please adjust these values and try again.";        this.alertService.showMessage(message, "", MessageSeverity.error);
       }      return false;    }  }
+
+
+  get_AND_ItemsCountFromRandomizationEngine(REList, alertService) {
+    let AndArray = [];
+    let OrArray = [];
+    REList.map((item, index) => {
+
+      if (index == 0) {
+        OrArray.push(item);
+      }
+      if (item.isOr && index != 0) {
+        OrArray.push(item);
+      }
+      if ((!item.isOr && index != 0) || index == REList.length - 1) {
+        AndArray.push(OrArray);
+        OrArray = [];
+        OrArray.push(item);
+
+        if (!item.isOr && index == REList.length - 1) {
+          AndArray.push(OrArray);
+        }
+      }
+
+
+    });
+
+    return AndArray.length;
+
+  }
 }

@@ -8,6 +8,7 @@ import { User } from '../../../../core/models/user.model';
 import { DBkeys } from '../../../../core/common/db-keys';
 import { Utilities } from '../../../../core/common/utilities';
 import { ItemsService } from '../../../../core/services/items.service';
+import { ItemMasterService } from '../../../../core/services/item-master.service';
 
 @Component({
   selector: 'app-drop-items',
@@ -35,7 +36,8 @@ export class DropItemsComponent implements OnInit {
     public modalService: BsModalService,
     private localStorage: LocalStoreManager,
     private appService: AppService1,
-    private itemsService: ItemsService) { }
+    private itemsService: ItemsService,
+    private itemMasterService: ItemMasterService) { }
 
   ngOnInit() {
     setTimeout(() => {
@@ -77,7 +79,7 @@ export class DropItemsComponent implements OnInit {
                 this.authService.logout(true);
               }
             }, () => { })
-        });     
+        });
     }
   }
 
@@ -95,7 +97,7 @@ export class DropItemsComponent implements OnInit {
     this.selectedItems = [];
     this.itemsList.map((item) => {
       if (item.selected) {
-        this.selectedItems.push({ itemId: item.itemId});
+        this.selectedItems.push({ itemId: item.itemId });
       }
       return item;
 
@@ -116,25 +118,38 @@ export class DropItemsComponent implements OnInit {
   }
   DropSelectedItems() {
     this.isLoading = true;
-    let lootId: number=-1;
+    let lootId: number = -1;
     if (this.selectedLootPileItem) {
       this.selectedLootPileItem.map(x => { lootId = x.lootId });
     }
 
-    this.itemsService.dropMultipleItems<any>(this.selectedItems, lootId, this.rulesetId, this.characterId )
-      .subscribe(data => {
-              this.alertService.showMessage("Dropping Item(s)", "", MessageSeverity.success);
-              this.close();
-              this.appService.updateItemsList(true);
+    let selecetedItemCount = this.selectedItems.length;
+
+    this.itemMasterService.getLootItemCount(this.rulesetId)
+      .subscribe((data: any) => {
+        let LootCount = data.lootCount;
+        if (((LootCount + selecetedItemCount) < 200) || lootId!=-1) {
+          this.itemsService.dropMultipleItems<any>(this.selectedItems, lootId, this.rulesetId, this.characterId)
+          .subscribe(data => {
+            this.alertService.showMessage("Dropping Item(s)", "", MessageSeverity.success);
+            this.close();
+            this.appService.updateItemsList(true);
             this.isLoading = false;
-        }, error => {
-        this.isLoading = false;
-        let Errors = Utilities.ErrorDetail("", error);
-        if (Errors.sessionExpire) {
-          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-          this.authService.logout(true);
+          }, error => {
+            this.isLoading = false;
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
+            }
+          }, () => { });
+        } else {
+          this.isLoading = false;
+          this.alertService.showMessage("The maximum number of Loot Items has been reached, 200. Please delete some loot items before attempting to drop items again.", "", MessageSeverity.error);
         }
-      }, () => { });
+      }, error => { }, () => { });
+
+
   }
 
   selectDeselectFilters(selected) {

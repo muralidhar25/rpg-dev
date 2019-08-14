@@ -46,7 +46,9 @@ namespace DAL.Services
         Task<List<ItemMasterLoot_ViewModel>> GetLootItemsForPlayers(int rulesetID);
         Task<ItemMasterLoot> getLootDetails(int LootId);
         Task<bool> DeleteContainer(int itemMasterId);
+        int GetCharacterItemCount(int characterId);
         Task<List<ItemMasterLoot_ViewModel>> GetByContainerId(int? containerId);
+        int GetLootCountByRuleSetId(int rulesetId);
         ItemMasterLoot GetLootById(int id);
         Task<ItemMasterLoot> UpdateWeight(int itemMasterId, decimal TotalWeight);
         Task<ItemMasterLoot> UpdateContainer(int itemId, int containerItemId);
@@ -75,5 +77,6 @@ namespace DAL.Services
         void MoveLoot(List<ItemMasterLoot> model, int lootPileID);
         List<LootPileViewModel> GetLootPilesListByRuleSetId(int rulesetId);
         void DeployLootTemplateList(List<DeployLootTemplateListToAdd> lootTemplateList);
+        int Core_GetLootCountByRuleSetId(int rulesetId, int parentID);
     }
 }

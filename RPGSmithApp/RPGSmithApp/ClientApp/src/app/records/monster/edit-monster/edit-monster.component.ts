@@ -257,6 +257,10 @@ export class EditMonsterComponent implements OnInit {
     //}
 
     //monsterTemplate.isFromCharacterAbilityId = ability.isFromCharacterAbilityId;
+    if (this.selectedMonsterItems && this.selectedMonsterItems.length > 200) {
+      this.alertService.showMessage("The maximum number of items has been reached, 200. Please delete some items and try again.", "", MessageSeverity.error);
+      return false;
+    }
 
     if (monsterTemplate.ruleSetId === 0 || monsterTemplate.ruleSetId === undefined)
       monsterTemplate.ruleSetId = this._ruleSetId;
@@ -389,6 +393,7 @@ export class EditMonsterComponent implements OnInit {
   }
 
   private addEditMonster(modal: MonsterTemplate) {
+    debugger
     modal.ruleSetId = this._ruleSetId;
     this.isLoading = true;
     this.monsterTemplateService.createMonster<any>(modal)

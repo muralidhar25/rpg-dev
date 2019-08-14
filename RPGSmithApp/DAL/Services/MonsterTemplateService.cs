@@ -558,7 +558,7 @@ namespace DAL.Services
                                 TotalWeightWithContents = x.TotalWeightWithContents,
                                 ItemMasterId = MI.ItemMasterId,
                                 MonsterId = item.MonsterId,
-
+                                RuleSetId=model.RuleSetId
                             })
                             .FirstOrDefault();
                         if (ItemMasterMonsterItem != null)
@@ -677,7 +677,9 @@ namespace DAL.Services
 
         public int GetCountByRuleSetId(int ruleSetId)
         {
-            return _context.MonsterTemplates.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted != true).Count();
+            return (_context.MonsterTemplates.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted != true).Count()
+                + _context.MonsterTemplateBundles.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted != true).Count()
+                );
         }
         public int Core_GetCountByRuleSetId(int ruleSetId, int parentID)
         {

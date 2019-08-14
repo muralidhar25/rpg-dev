@@ -28,15 +28,15 @@ import { DropItemsComponent } from "./drop-items/drop-items.component";
 
 
 @Component({
-    selector: 'app-items',
-    templateUrl: './items.component.html',
-    styleUrls: ['./items.component.scss']
+  selector: 'app-items',
+  templateUrl: './items.component.html',
+  styleUrls: ['./items.component.scss']
 })
 export class CharacterItemsComponent implements OnInit {
 
   isLoading = false;
   isListView: boolean = false;
-  isDenseView: boolean = false; 
+  isDenseView: boolean = false;
   showActions: boolean = true;
   actionText: string;
   bsModalRef: BsModalRef;
@@ -65,7 +65,7 @@ export class CharacterItemsComponent implements OnInit {
   charNav: any = {};
   containerCount: number;
   alphabetCount: number;
-  equippedCount : number;
+  equippedCount: number;
   visibleCount: number;
   Uncontained: boolean = false;
   Equipped: boolean = false;
@@ -103,7 +103,7 @@ export class CharacterItemsComponent implements OnInit {
     //    // stop the event from bubbling up
     //    e.preventDefault()
 
-    
+
     //});
   }
 
@@ -154,12 +154,12 @@ export class CharacterItemsComponent implements OnInit {
         }
       }
     }
-    
+
   }
 
   private initialize() {
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-   let localStorageFilters = this.localStorage.getDataObject<number>('inventoryFilter');
+    let localStorageFilters = this.localStorage.getDataObject<number>('inventoryFilter');
     if (localStorageFilters != null) {
       this.inventoryFilter = localStorageFilters;
     }
@@ -167,23 +167,23 @@ export class CharacterItemsComponent implements OnInit {
     if (user == null)
       this.authService.logout();
     else {
-     this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+      this.headers = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
       if (this.headers) {
         if (this.headers.headerId && this.headers.headerLink == 'character') {
           this.characterId = this.headers.headerId;
         }
       }
       this.getFilters();
-     
+
       this.isLoading = true;
 
-      this.gameStatus(this.characterId );
-      
+      this.gameStatus(this.characterId);
+
       this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, this.inventoryFilter.type)
         .subscribe(data => {
 
           this.ItemsList = Utilities.responseData(data.ItemsList, this.pageSize);
-         
+
           if (this.inventoryFilter.type == 1) {
             this.containerCount = this.ItemsList.length;
           }
@@ -192,13 +192,13 @@ export class CharacterItemsComponent implements OnInit {
             this.equippedCount = result.length;
           }
           if (this.inventoryFilter.type == 3) {
-              this.alphabetCount = this.ItemsList.length;
+            this.alphabetCount = this.ItemsList.length;
           }
           if (this.inventoryFilter.type == 4) {
-          
+
             let result = this.ItemsList.filter(s => s.isVisible);
             this.visibleCount = result.length;
-           
+
           }
           this.applyFilters(this.inventoryFilter.type, true);
 
@@ -272,7 +272,7 @@ export class CharacterItemsComponent implements OnInit {
               this.isDenseView = false;
             }
           }
-          
+
           //if (data !== null) this.isListView = data.viewType == 'List' ? true : false;
         }, error => {
           let Errors = Utilities.ErrorDetail("", error);
@@ -302,7 +302,7 @@ export class CharacterItemsComponent implements OnInit {
       .subscribe(data => {
 
         var _ItemsList = data.ItemsList;
-       
+
         for (var i = 0; i < _ItemsList.length; i++) {
           _ItemsList[i].showIcon = false;
           try {
@@ -313,7 +313,7 @@ export class CharacterItemsComponent implements OnInit {
         this.scrollLoading = false;
 
         if (this.inventoryFilter.type == 1) {
-          
+
           this.containerCount = this.ItemsList.length;
         }
         if (this.inventoryFilter.type == 2) {
@@ -328,8 +328,8 @@ export class CharacterItemsComponent implements OnInit {
           this.visibleCount = result.length;
         }
         this.applyFilters(this.inventoryFilter.type, true);
-      
-        
+
+
       }, error => {
         this.scrollLoading = false;
         this.isLoading = false;
@@ -377,13 +377,13 @@ export class CharacterItemsComponent implements OnInit {
   showDenseview(view: boolean) {
     this.isListView = false;
     this.isDenseView = view;
-      let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
 
-      this.pageLastView = {
-        pageName: 'CharacterItems',
-        viewType:  'Dense',
-        UserId: user.id
-      }
+    this.pageLastView = {
+      pageName: 'CharacterItems',
+      viewType: 'Dense',
+      UserId: user.id
+    }
     this.pageLastViewsService.createPageLastViews<any>(this.pageLastView)
       .subscribe(data => {
         if (data !== null) this.isDenseView = data.viewType == 'Dense' ? true : false;
@@ -393,7 +393,7 @@ export class CharacterItemsComponent implements OnInit {
           this.authService.logout(true);
         }
       });
-      
+
   }
 
   manageIcon(id: number) {
@@ -417,15 +417,17 @@ export class CharacterItemsComponent implements OnInit {
     this.bsModalRef.content.button = 'ADD';
     this.bsModalRef.content.itemVM = { characterId: this.characterId };
     this.bsModalRef.content.characterItems = this.ItemsList;
-    
+
   }
 
   createItem() {
     // this.alertService.startLoadingMessage("", "Checking records");      
-    this.itemMasterService.getItemMasterCount(this.ruleSetId)
-      .subscribe(data => {
+    this.itemMasterService.getCharacterItemCount(this.ruleSetId, this.characterId)
+      .subscribe((data: any) => {
+        let ItemCount = data.itemCount;
+        let ItemMasterCount = data.itemMasterCount;
         //this.alertService.stopLoadingMessage();
-        if (data < 2000) {
+        if (ItemMasterCount < 2000 && ItemCount < 200) {
           this.bsModalRef = this.modalService.show(CreateItemComponent, {
             class: 'modal-primary modal-custom',
             ignoreBackdropClick: true,
@@ -441,8 +443,13 @@ export class CharacterItemsComponent implements OnInit {
           this.bsModalRef.content.itemsVM = { characterId: this.characterId, ruleSet: this.ruleSet };
         }
         else {
-          //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
-          this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
+          if (ItemMasterCount >= 2000) {
+            this.alertService.showMessage("The maximum number of Item Templates has been reached, 2,000. Please delete some Item Templates and try again.", "", MessageSeverity.error);
+          } else if (ItemCount >= 200) {
+            this.alertService.showMessage("The maximum number of records has been reached, 200. Please delete some records and try again.", "", MessageSeverity.error);
+          }
+
+
         }
       }, error => { }, () => { });
 
@@ -462,10 +469,12 @@ export class CharacterItemsComponent implements OnInit {
 
   duplicateItem(item: any) {
     // this.alertService.startLoadingMessage("", "Checking records");      
-    this.itemMasterService.getItemMasterCount(this.ruleSetId)
-      .subscribe(data => {
+    this.itemMasterService.getCharacterItemCount(this.ruleSetId, this.characterId)
+      .subscribe((data: any) => {
+        let ItemCount = data.itemCount;
+        let ItemMasterCount = data.itemMasterCount;
         //this.alertService.stopLoadingMessage();
-        if (data < 2000) {
+        if (ItemMasterCount < 2000 && ItemCount < 200) {
           this.bsModalRef = this.modalService.show(EditItemComponent, {
             class: 'modal-primary modal-custom',
             ignoreBackdropClick: true,
@@ -477,8 +486,11 @@ export class CharacterItemsComponent implements OnInit {
           this.bsModalRef.content.itemVM = item;
         }
         else {
-          //this.alertService.showStickyMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
-          this.alertService.showMessage("The maximum number of records has been reached, 2,000. Please delete some records and try again.", "", MessageSeverity.error);
+          if (ItemMasterCount >= 2000) {
+            this.alertService.showMessage("The maximum number of Item Templates has been reached, 2,000. Please delete some Item Templates and try again.", "", MessageSeverity.error);
+          } else if (ItemCount >= 200) {
+            this.alertService.showMessage("The maximum number of records has been reached, 200. Please delete some records and try again.", "", MessageSeverity.error);
+          }
         }
       }, error => { }, () => { });
 
@@ -488,14 +500,14 @@ export class CharacterItemsComponent implements OnInit {
     //this.isLoading = true;
     this.itemsService.GetNestedContainerItems(item.itemId)
       .subscribe(
-      data => {
-        let message: string = '';
+        data => {
+          let message: string = '';
           let itemsList: any = data;
           this.isLoading = false;
-          
-           message = 'Are you sure you want to remove "' + item.name + '" from this Character ?';
-          
-           if (item.containerItems) {
+
+          message = 'Are you sure you want to remove "' + item.name + '" from this Character ?';
+
+          if (item.containerItems) {
             if (itemsList.length) {
               message += '</br></br>This will also remove the following contained items:</br>';
               //item.containerItems.map((itm: any, index) => {
@@ -518,16 +530,16 @@ export class CharacterItemsComponent implements OnInit {
               })
             }
           }
-        this.ContainedItemsToDelete = itemsList;
+          this.ContainedItemsToDelete = itemsList;
 
-        if (deleted || !this.isPlayerCharacter) {
-          this.alertService.showDialog(message,
-            DialogType.confirm, () => this.deleteItemHelper(item, itemsList), null, 'Yes', 'No');
-        }
-        else{
-          this.deleteItemHelper(item, itemsList);
-        }
-          
+          if (deleted || !this.isPlayerCharacter) {
+            this.alertService.showDialog(message,
+              DialogType.confirm, () => this.deleteItemHelper(item, itemsList), null, 'Yes', 'No');
+          }
+          else {
+            this.deleteItemHelper(item, itemsList);
+          }
+
         },
         error => {
           this.isLoading = false;
@@ -550,7 +562,7 @@ export class CharacterItemsComponent implements OnInit {
     } else {
       this.alertService.startLoadingMessage("", "Deleting " + item.name);
     }
-    
+
     //this.itemsService.deleteItem(item.itemId)
     //    .subscribe(
     //        data => {
@@ -600,7 +612,7 @@ export class CharacterItemsComponent implements OnInit {
             this.alertService.showMessage("Item has been deleted successfully.", "", MessageSeverity.success);
             //this.alertService.startLoadingMessage("", "Deleting " + item.name);
           }
-          
+
           //this.isLoading = TRUE;
           //this.initialize();
 
@@ -624,7 +636,7 @@ export class CharacterItemsComponent implements OnInit {
 
   equippedItem(item: Items) {
     //this.isLoading = true;
-    this.equippedCount = item.isEquipped ? this.equippedCount - 1 : this.equippedCount + 1;    
+    this.equippedCount = item.isEquipped ? this.equippedCount - 1 : this.equippedCount + 1;
     let equipTxt = item.isEquipped ? 'Unequipped' : 'Equipped';
     this.itemsService.toggleEquippedItem(item.itemId)
       .subscribe(
@@ -671,7 +683,7 @@ export class CharacterItemsComponent implements OnInit {
 
   }
 
-  useCommand(Command: any, itemId: string='') {
+  useCommand(Command: any, itemId: string = '') {
     let msg = "The command value for " + Command.name
       + " has not been provided. Edit this record to input one.";
     if (Command.command == undefined || Command.command == null || Command.command == '') {
@@ -761,7 +773,7 @@ export class CharacterItemsComponent implements OnInit {
     }
   }
 
-  applyFilters(present_filter, apply_same = false, IsCalledFromClickFunction=false) {
+  applyFilters(present_filter, apply_same = false, IsCalledFromClickFunction = false) {
     //if (apply_same) {
     //  this.inventoryFilter.type = present_filter;
     //} else {
@@ -774,9 +786,9 @@ export class CharacterItemsComponent implements OnInit {
     //}
     if (present_filter == 1) {
       this.Uncontained = true;
-      this.Equipped= false;
-      this.Alphabetical= false;
-      this.Visible= false;
+      this.Equipped = false;
+      this.Alphabetical = false;
+      this.Visible = false;
     }
     else if (present_filter == 2) {
       this.Uncontained = false;
@@ -790,13 +802,13 @@ export class CharacterItemsComponent implements OnInit {
       this.Alphabetical = true;
       this.Visible = false;
     }
-    else{
+    else {
       this.Uncontained = false;
       this.Equipped = false;
       this.Alphabetical = false;
       this.Visible = true;
     }
-     
+
     this.inventoryFilter.type = present_filter;
     if (IsCalledFromClickFunction) {
       this.isLoading = true;
@@ -910,9 +922,9 @@ export class CharacterItemsComponent implements OnInit {
 
     this.localStorage.saveSyncedSessionData(this.inventoryFilter, 'inventoryFilter');
   }
-   
+
   getFilters() {
-    if (this.inventoryFilter.type == 2 || this.inventoryFilter.type == 3 || this.inventoryFilter.type == 4 ) {
+    if (this.inventoryFilter.type == 2 || this.inventoryFilter.type == 3 || this.inventoryFilter.type == 4) {
 
       this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, 1)
         .subscribe(data => {
@@ -923,7 +935,7 @@ export class CharacterItemsComponent implements OnInit {
     if (this.inventoryFilter.type == 1 || this.inventoryFilter.type == 3 || this.inventoryFilter.type == 4) {
       this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, 2)
         .subscribe(data => {
-         let result = data.ItemsList.filter(s => s.isEquipped);
+          let result = data.ItemsList.filter(s => s.isEquipped);
           this.equippedCount = result.length;
         }, error => {
         }, () => { });
@@ -949,7 +961,7 @@ export class CharacterItemsComponent implements OnInit {
     this.pageSize = 28;
     this.initialize();
   }
-  gameStatus(characterId?: any) {    
+  gameStatus(characterId?: any) {
     //api for player controls
     this.charactersService.getPlayerControlsByCharacterId(characterId)
       .subscribe(data => {
@@ -985,9 +997,9 @@ export class CharacterItemsComponent implements OnInit {
               this.alertService.showStickyMessage('', "Your " + data.name + " character has been deleted by the GM", MessageSeverity.error);
               setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
             }
-          }          
-          
-        }     
+          }
+
+        }
       }, error => {
         let Errors = Utilities.ErrorDetail("", error);
         if (Errors.sessionExpire) {
@@ -1018,5 +1030,5 @@ export class CharacterItemsComponent implements OnInit {
     this.bsModalRef.content.ruleSetId = this.ruleSetId;
     this.bsModalRef.content.characterId = this.characterId;
   }
-  
+
 }
