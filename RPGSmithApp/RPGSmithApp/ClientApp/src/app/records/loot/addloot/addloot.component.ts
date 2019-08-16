@@ -29,7 +29,7 @@ export class AddlootComponent implements OnInit {
   characterId: number;
   rulesetId: number;
   itemsList: any;
-  lootTemplateList:any
+  lootTemplateList: any
   characterItems: any;
   characterItemModal: any = new Items();
   searchText: string;
@@ -42,7 +42,7 @@ export class AddlootComponent implements OnInit {
     public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
     private sharedService: SharedService, private commonService: CommonService,
     private itemsService: ItemsService, private itemMasterService: ItemMasterService,
-    private appService: AppService1,private lootService: LootService) {
+    private appService: AppService1, private lootService: LootService) {
 
   }
 
@@ -136,28 +136,28 @@ export class AddlootComponent implements OnInit {
     debugger
 
     SelectedLootTemp.map((x) => {
-      x.quantity = 1;    
-        
-        var reItems = [];
-        if (+x.quantity) {
-          for (var i = 0; i < x.quantity; i++) {
+      x.quantity = 1;
 
-              let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine(x.lootTemplateRandomizationEngines, this.alertService);
-              if (currentItemsToDeploy && currentItemsToDeploy.length) {
-                currentItemsToDeploy.map((re) => {
-                  re.deployCount = i + 1;
-                  reItems.push(re);
-                });
-              }
+      var reItems = [];
+      if (+x.quantity) {
+        for (var i = 0; i < x.quantity; i++) {
+
+          let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine(x.lootTemplateRandomizationEngines, this.alertService);
+          if (currentItemsToDeploy && currentItemsToDeploy.length) {
+            currentItemsToDeploy.map((re) => {
+              re.deployCount = i + 1;
+              reItems.push(re);
+            });
           }
         }
-        this.selectedLootTemplates.push({
-          qty: x.quantity,
-          lootTemplateId: x.lootTemplateId,
-          rulesetId: x.ruleSetId,         
-          reitems: reItems
-        });
-      
+      }
+      this.selectedLootTemplates.push({
+        qty: x.quantity,
+        lootTemplateId: x.lootTemplateId,
+        rulesetId: x.ruleSetId,
+        reitems: reItems
+      });
+
 
     });
     //////////////////////////////////////////////////////////////////////////
@@ -177,7 +177,7 @@ export class AddlootComponent implements OnInit {
       }
       return item;
     })
-    if ((this.characterItemModal.multiItemMasters == undefined && this.characterItemModal.multiItemMasterBundles.length == 0) && (this.selectedLootTemplates == undefined || this.selectedLootTemplates.length==0)) {
+    if ((this.characterItemModal.multiItemMasters == undefined && this.characterItemModal.multiItemMasterBundles.length == 0) && (this.selectedLootTemplates == undefined || this.selectedLootTemplates.length == 0)) {
       this.alertService.showMessage("Please select new Item Template or Loot Template to Add.", "", MessageSeverity.error);
     }
     else if ((this.characterItemModal.multiItemMasters.length == 0 && this.characterItemModal.multiItemMasterBundles.length == 0) && (this.selectedLootTemplates.length == 0)) {
@@ -204,29 +204,44 @@ export class AddlootComponent implements OnInit {
   addEditItem(modal: any, lootTemplate, selectedLootPileId: number) {
     //console.log('modal data', modal.multiItemMasters);
     this.isLoading = true;
-    this.lootService.addLootItem(modal.multiItemMasters, lootTemplate, this.rulesetId, selectedLootPileId)
-      .subscribe(
-      data => {
-        //console.log(data);
+    this.itemMasterService.getLootItemCount(this.rulesetId)
+      .subscribe((data: any) => {
+        //this.alertService.stopLoadingMessage();
+        let LootCount = data.lootCount;
+        let selecteLootItems = 0;
+        if (modal.multiItemMasters && modal.multiItemMasters.length) {
+          selecteLootItems = modal.multiItemMasters.length;
+        }
+        if ((LootCount + selecteLootItems) < 200) {
+          this.lootService.addLootItem(modal.multiItemMasters, lootTemplate, this.rulesetId, selectedLootPileId)
+            .subscribe(
+              data => {
+                //console.log(data);
+                this.isLoading = false;
+                this.alertService.stopLoadingMessage();
+                let message = "Loot(s) added successfully.";
+                this.alertService.showMessage(message, "", MessageSeverity.success);
+                this.bsModalRef.hide();
+                this.sharedService.updateItemsList(true);
+                this.appService.updateChatWithLootMessage(true);
+              },
+              error => {
+                this.isLoading = false;
+                this.alertService.stopLoadingMessage();
+                let Errors = Utilities.ErrorDetail("Unable to Add", error);
+                if (Errors.sessionExpire) {
+                  this.authService.logout(true);
+                }
+                else
+                  this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+              },
+            );
+        }
+        else {
           this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          let message = "Loot(s) added successfully.";
-          this.alertService.showMessage(message, "", MessageSeverity.success);
-          this.bsModalRef.hide();
-          this.sharedService.updateItemsList(true);
-        this.appService.updateChatWithLootMessage(true);
-        },
-        error => {
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          let Errors = Utilities.ErrorDetail("Unable to Add", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-          else
-            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-        },
-      );
+          this.alertService.showMessage("The maximum number of records has been reached, 200. Please delete some records and try again.", "", MessageSeverity.error);
+        }
+      }, error => { }, () => { });
   }
 
   duplicateItem(modal: any) {

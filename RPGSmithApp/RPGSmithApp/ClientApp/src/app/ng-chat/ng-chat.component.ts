@@ -29,6 +29,13 @@ import { AppService1 } from '../app.service';
 import { CharacterCommand } from '../core/models/view-models/character-command.model';
 import { Router } from '@angular/router';
 import { AlertService, MessageSeverity } from '../core/common/alert.service';
+import { CustomDice } from '../core/models/view-models/custome-dice.model';
+import { Utilities } from '../core/common/utilities';
+import { RulesetService } from '../core/services/ruleset.service';
+import { AuthService } from '../core/auth/auth.service';
+import { DiceService } from '../core/services/dice.service';
+import { CharactersService } from '../core/services/characters.service';
+import { Characters } from '../core/models/view-models/characters.model';
 
 
 
@@ -47,7 +54,10 @@ import { AlertService, MessageSeverity } from '../core/common/alert.service';
 
 export class NgChat implements OnInit, IChatController {
   constructor(public sanitizer: DomSanitizer, private _httpClient: HttpClient, private localStorage: LocalStoreManager, private appService: AppService1, private router: Router,
-    private alertService: AlertService) {
+    private alertService: AlertService,
+    private rulesetService: RulesetService,
+    private characterService: CharactersService,
+    private authService: AuthService) {
     this.appService.shouldUpdateChatWithDiceRoll().subscribe((serviceData) => {
       if (serviceData) {
         this.sendDiceRolledToChatGroup(serviceData);
@@ -66,7 +76,7 @@ export class NgChat implements OnInit, IChatController {
     });
     this.appService.shouldUpdateChatWithTakenByLootMessage().subscribe((serviceData) => {
       if (serviceData) {
-        this.sendLootMessageToChatGroup(true,serviceData);
+        this.sendLootMessageToChatGroup(true, serviceData);
       }
     });
     this.appService.shouldUpdateChatRemoveIntervals().subscribe((serviceData) => {
@@ -77,7 +87,7 @@ export class NgChat implements OnInit, IChatController {
     });
 
     this.appService.shouldUpdateChatFromCombat().subscribe((serviceData) => {
-        debugger;
+      debugger;
       if (serviceData) {
         this.sendCombatMessageToChatGroup(serviceData);
       }
@@ -95,6 +105,12 @@ export class NgChat implements OnInit, IChatController {
   public ChatParticipantStatus = ChatParticipantStatus;
   public MessageType = MessageType;
   IsDefaultGroupCreated: boolean = false;
+
+  customDices: CustomDice[] = [];
+  statdetails: any;
+  charactersCharacterStats: any[];
+  character: Characters = new Characters();
+
   ruleset: Ruleset = this.localStorage.localStorageGetItem(DBkeys.rulesetforChat);
   @Input()
   public adapter: ChatAdapter;
@@ -243,6 +259,7 @@ export class NgChat implements OnInit, IChatController {
     return `ng-chat-users-${this.userId}`; // Appending the user id so the state is unique per user in a computer.   
   };
 
+
   get filteredParticipants(): IChatParticipant[] {
     this.participants = this.filterCampaignParticipants(this.participants)
     if (this.searchInput.length > 0) {
@@ -376,7 +393,7 @@ export class NgChat implements OnInit, IChatController {
 
   isBootstrapped: boolean = false;
 
-  fetchFriendsListInterval: any ;
+  fetchFriendsListInterval: any;
 
   @ViewChildren('chatMessages') chatMessageClusters: any;
 
@@ -386,10 +403,41 @@ export class NgChat implements OnInit, IChatController {
 
   ngOnInit() {
     console.log('Here chat is working');
-    this.bootstrapChat();    
+    this.bootstrapChat();
     if (this.router.url.toLowerCase().indexOf("character/tiles") > -1 || this.router.url.toLowerCase().indexOf("ruleset/dashboard") > -1) {
       this.isCollapsed = true;
     }
+
+    //this.rulesetService.getCustomDice(this.ruleset.ruleSetId)
+    //  .subscribe(data => {
+    //    this.customDices = data;
+    //  }, error => {
+    //    let Errors = Utilities.ErrorDetail("", error);
+    //    if (Errors.sessionExpire) {
+    //      this.authService.logout(true);
+    //    }
+    //  });
+    debugger
+    let characterid = ServiceUtil.GetCurrentCharacterID(this.localStorage);
+    if (characterid > 0) {
+
+      this.characterService.getDiceRollModel(this.ruleset.ruleSetId, characterid)
+        .subscribe((data:any) => {
+          debugger
+          this.customDices = data.customDices;
+          this.statdetails = { charactersCharacterStat: data.charactersCharacterStats, character: data.character };
+          this.charactersCharacterStats = data.charactersCharacterStats;
+          this.character = data.character;
+          //var ressss = ServiceUtil.getFinalCalculationString(inputString, statDetails, charactersCharacterStats, character)
+          //this.getFinalCommandString(command, statdetails, data.charactersCharacterStats, data.character)
+
+        }, error => {
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+        });
+         }
   }
 
   @HostListener('window:resize', ['$event'])
@@ -524,7 +572,7 @@ export class NgChat implements OnInit, IChatController {
   }
 
   fetchMessageHistory(window: Window) {
-    
+
     //// Not ideal but will keep this until we decide if we are shipping pagination with the default adapter
     //if (this.adapter instanceof PagedHistoryChatAdapter)
     //{
@@ -559,7 +607,7 @@ export class NgChat implements OnInit, IChatController {
     //        })
     //    ).subscribe();
     //}
-    
+
     //window.isLoadingHistory = false;
     if (true) {
       this.groupAdapter.getMessageHistory(window.participant)
@@ -574,11 +622,11 @@ export class NgChat implements OnInit, IChatController {
           })
         ).subscribe();
     }
-    
+
   }
 
   private onFetchMessageHistoryLoaded(messages: Message[], window: Window, direction: ScrollDirection, forceMarkMessagesAsSeen: boolean = false): void {
-    
+
     this.scrollChatWindow(window, direction)
 
     if (window.hasFocus || forceMarkMessagesAsSeen) {
@@ -629,7 +677,7 @@ export class NgChat implements OnInit, IChatController {
           this.markMessagesAsRead([message]);
           this.onMessagesSeen.emit([message]);
         }
-      } 
+      }
 
       this.emitMessageSound(chatWindow[0]);
 
@@ -648,7 +696,7 @@ export class NgChat implements OnInit, IChatController {
   public openChatWindow(participant: IChatParticipant, focusOnNewWindow: boolean = false, invokedByUserClick: boolean = false): [Window, boolean] {
     //debugger
     //console.log('openChatWindow');
-    
+
     // Is this window opened?
     let openedWindow = this.windows.find(x => x.participant.id == participant.id);
 
@@ -668,7 +716,7 @@ export class NgChat implements OnInit, IChatController {
       let collapseWindow = invokedByUserClick ? false : !this.maximizeWindowOnNewMessage;
 
       let newChatWindow: Window = new Window(participant, this.historyEnabled, collapseWindow);
-      
+
       // Loads the chat history via an RxJs Observable
       if (this.historyEnabled) {
         this.fetchMessageHistory(newChatWindow);
@@ -865,37 +913,68 @@ export class NgChat implements OnInit, IChatController {
     }
   }
 
-  SendMessage(window: Window) {    
+  SendMessage(window: Window) {
     if (window.newMessage && window.newMessage.trim() != "") {
-      let message = new Message();
+      window.newMessage = this.getMessageWithDiceIntegration(window.newMessage);
+      if (window.newMessage && window.newMessage.trim() != "") {
+        let message = new Message();
 
-      message.fromId = this.userId;
-      message.toId = window.participant.id;
-      message.message = window.newMessage;
-      message.dateSent = new Date();
-      if (true) {
-        debugger
-        //JSON.stringify(obj1) === JSON.stringify(obj2) 
-        let currentopendwindowParticipant = this.participants.filter(x => JSON.stringify(x) == JSON.stringify(window.participant));
-        if (!currentopendwindowParticipant.length && this.participants.filter(x => x.displayName == "Everyone").length) {
-          this.onCloseChatWindow(window);
-          window = this.openChatWindow(this.participants.filter(x => x.displayName == "Everyone")[0])["0"];
-          message.toId = window.participant.id;
+        message.fromId = this.userId;
+        message.toId = window.participant.id;
+        message.message = window.newMessage;
+        message.dateSent = new Date();
+        if (true) {
+          debugger
+          //JSON.stringify(obj1) === JSON.stringify(obj2) 
+          let currentopendwindowParticipant = this.participants.filter(x => JSON.stringify(x) == JSON.stringify(window.participant));
+          if (!currentopendwindowParticipant.length && this.participants.filter(x => x.displayName == "Everyone").length) {
+            this.onCloseChatWindow(window);
+            window = this.openChatWindow(this.participants.filter(x => x.displayName == "Everyone")[0])["0"];
+            message.toId = window.participant.id;
+          }
         }
+
+
+
+        window.messages.push(message);
+        // console.log("SendMessageVariable", message)
+        this.adapter.sendMessage(message);
+
+        window.newMessage = ""; // Resets the new message input
+
+        this.scrollChatWindow(window, ScrollDirection.Bottom);
       }
-
-
-
-      window.messages.push(message);
-      // console.log("SendMessageVariable", message)
-      this.adapter.sendMessage(message);
-
-      window.newMessage = ""; // Resets the new message input
-
-      this.scrollChatWindow(window, ScrollDirection.Bottom);
-
     }
   }
+
+  getMessageWithDiceIntegration(message) {
+    let isStringWithCommand: boolean = false;
+    var msg = message;
+    msg = msg.trim();
+    isStringWithCommand = msg.toLowerCase().startsWith("/r");
+    if (isStringWithCommand) {
+      msg = msg.substr(2);
+      msg = msg.trim();
+      let characterid = ServiceUtil.GetCurrentCharacterID(this.localStorage);
+      if (characterid > 0) {
+        /////////////////////////////////////////////////////////////////
+        //this.customDices
+        msg = ServiceUtil.getFinalCalculationString(msg, this.statdetails, this.charactersCharacterStats, this.character)
+      }
+      var diceResult = DiceService.rollDiceExternally_with_And(this.alertService, msg, this.customDices, true)
+      if (diceResult &&
+        diceResult.characterMultipleCommands &&
+        diceResult.characterMultipleCommands[0] &&
+        +diceResult.characterMultipleCommands[0].calculationResult) {
+        this.sendDiceRolledToChatGroup(diceResult);
+        return '';
+      }
+      
+      return msg;
+    }
+    return message;
+  }
+
   /*  Monitors pressed keys on a chat window
       - Dispatches a message when the ENTER key is pressed
       - Tabs between windows on TAB or SHIFT + TAB
@@ -953,12 +1032,12 @@ export class NgChat implements OnInit, IChatController {
 
   // Toggles a chat window visibility between maximized/minimized
   onChatWindowClicked(window: Window): void {
-    
+
     //if (!this.isSmallScreen()) {
-      window.isCollapsed = !window.isCollapsed;
-      this.scrollChatWindow(window, ScrollDirection.Bottom);
-      if (window.isCollapsed) {
-        this.appService.updateChatHalfScreen(false);
+    window.isCollapsed = !window.isCollapsed;
+    this.scrollChatWindow(window, ScrollDirection.Bottom);
+    if (window.isCollapsed) {
+      this.appService.updateChatHalfScreen(false);
     }
 
     //collaspe participant list with chat window if in mobile screen
@@ -997,7 +1076,7 @@ export class NgChat implements OnInit, IChatController {
         return true;
       }
       else if (window.messages[index - 1].fromId === window.messages[index].fromId
-        && window.messages[index - 1].message.indexOf("Loot</span>") >-1
+        && window.messages[index - 1].message.indexOf("Loot</span>") > -1
         && window.messages[index].message.indexOf("Loot</span>") == -1
       ) {
         return true;
@@ -1023,7 +1102,7 @@ export class NgChat implements OnInit, IChatController {
 
   getChatWindowAvatar(participant: IChatParticipant, message: Message): string | null {
     if (participant.participantType == ChatParticipantType.User) {
-      
+
       // return participant.avatar;
       if (message.fromId != this.userId) {
         return participant.avatar;
@@ -1073,7 +1152,7 @@ export class NgChat implements OnInit, IChatController {
   }
 
   // Toggles a window focus on the focus/blur of a 'newMessage' input
-  toggleWindowFocus(window: Window): void {    
+  toggleWindowFocus(window: Window): void {
     window.hasFocus = !window.hasFocus;
     if (window.hasFocus) {
       const unreadMessages = window.messages.filter(message => message.dateSeen == null && message.toId == this.userId);
@@ -1197,7 +1276,7 @@ export class NgChat implements OnInit, IChatController {
   sendDiceRolledToChatGroup(diceR: any) {
     if (this.participants && this.participants.length) {
       try {
-      
+
         let message = new Message();
         message.fromId = this.userId;
         message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;
@@ -1245,7 +1324,7 @@ export class NgChat implements OnInit, IChatController {
   sendLootMessageToChatGroup(isLootTakenByCharacter = false, CharacterName = '') {
     if (this.participants && this.participants.length) {
       try {
-      
+
         let message = new Message();
         message.fromId = this.userId;
         message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;
@@ -1266,7 +1345,7 @@ export class NgChat implements OnInit, IChatController {
         })
         this.adapter.sendMessage(message);
       }
-    catch (e) {
+      catch (e) {
 
       }
     }
@@ -1275,7 +1354,7 @@ export class NgChat implements OnInit, IChatController {
   sendCombatMessageToChatGroup(combatMessage) {
     if (this.participants && this.participants.length) {
       try {
-      
+
         let message = new Message();
         message.fromId = this.userId;
         message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;
@@ -1293,11 +1372,11 @@ export class NgChat implements OnInit, IChatController {
         })
         this.adapter.sendMessage(message);
       }
-    catch (e) {
+      catch (e) {
 
       }
     }
-  } 
+  }
   toggleNotificationSound() {
     this.audioEnabled = !this.audioEnabled;
   }
