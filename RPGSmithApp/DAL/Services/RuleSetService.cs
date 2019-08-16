@@ -2936,10 +2936,11 @@ namespace DAL.Services
                     RecordType = SP_SearchType.RulesetMonsterTemplate,
                     RulesetMonsterTemplate = item
                 };
-                if (!monsters.Any(x => x.MonsterTemplateId == item.MonsterTemplateId && x.MonsterTemplate.Name == item.Name))
-                {
-                    results.Add(obj);
-                }
+                //if (!monsters.Any(x => x.MonsterTemplateId == item.MonsterTemplateId && x.MonsterTemplate.Name == item.Name))
+                //{
+                //    results.Add(obj);
+                //}
+                results.Add(obj);
             }
             foreach (var item in loots)
             {

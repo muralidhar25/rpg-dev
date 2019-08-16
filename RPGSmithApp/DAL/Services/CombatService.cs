@@ -40,7 +40,7 @@ namespace DAL.Services
             _ruleSetService = ruleSetService;
         }
 
-        public async Task<Combat_ViewModel> GetCombatDetails(int CampaignId, ApplicationUser user, bool isPCView)
+        public async Task<Combat_ViewModel> GetCombatDetails(int CampaignId, ApplicationUser user, bool isPCView, int recentlyEndedCombatId)
         {
             Combat_ViewModel combat = new Combat_ViewModel();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -59,7 +59,8 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@CampaignId", CampaignId);
                 command.Parameters.AddWithValue("@UserID", user.Id);
                 command.Parameters.AddWithValue("@isPCView", isPCView);
-                
+                command.Parameters.AddWithValue("@recentlyEndedCombatId", recentlyEndedCombatId);
+
                 command.CommandType = CommandType.StoredProcedure;
 
                 adapter.SelectCommand = command;
@@ -247,6 +248,7 @@ namespace DAL.Services
                                                     i.ItemId = CharItemRow["ItemId"] == DBNull.Value ? 0 : Convert.ToInt32(CharItemRow["ItemId"].ToString());
                                                     i.Name = CharItemRow["Name"] == DBNull.Value ? null : CharItemRow["Name"].ToString();
                                                     i.ItemImage = CharItemRow["ItemImage"] == DBNull.Value ? null : CharItemRow["ItemImage"].ToString();
+                                                    i.IsVisible = CharItemRow["IsVisible"] == DBNull.Value ? false : Convert.ToBoolean(CharItemRow["IsVisible"]);
                                                     i.CharacterId = CurrentRunningCharacterId;
                                                     combatant.Character.Items.Add(i);
                                                 }
@@ -937,14 +939,21 @@ namespace DAL.Services
                 }
             }
         }
-        public void saveTarget(Combatant_ViewModel model)
+        public void saveTarget(Combatant_ViewModel model, bool isFromGMScreen = false)
         {
             var combatant = _context.CombatantLists.Where(x => x.Id == model.Id).FirstOrDefault();
             if (combatant != null)
             {
                 combatant.TargetId = model.TargetId;
                 combatant.TargetType = model.TargetType;
+
+                //MarkCombatAsUpdated((int) model.CombatId);
                 _context.SaveChanges();
+                if (isFromGMScreen)
+                {
+                    MarkCombatAsUpdated((int)model.CombatId);
+                }
+                
             }
         }
         private static int Getindex(int index)

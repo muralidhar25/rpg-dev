@@ -1274,6 +1274,7 @@ export class NgChat implements OnInit, IChatController {
     this.appService.updateChatHalfScreen(window.isHalfScreen);
   }
   sendDiceRolledToChatGroup(diceR: any) {
+    console.log('sendDiceRolledToChatGroup', diceR);
     if (this.participants && this.participants.length) {
       try {
 

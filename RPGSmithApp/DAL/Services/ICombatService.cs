@@ -10,7 +10,7 @@ namespace DAL.Services
 {
     public interface ICombatService
     {
-      Task <Combat_ViewModel> GetCombatDetails(int CampaignId, ApplicationUser user, bool isPCView);
+      Task <Combat_ViewModel> GetCombatDetails(int CampaignId, ApplicationUser user, bool isPCView, int recentlyEndedCombatId);
         Task<Combat_ViewModel> GetCombatDetailsForPCUpdates(int CampaignId, ApplicationUser user);
         Task<CombatSetting> UpdateSettings(CombatSetting model);
         List<CombatAllTypeMonsters> GetCombatAllTypeMonsters(int CampaignId);
@@ -24,7 +24,7 @@ namespace DAL.Services
         void SaveMonsterHealth(Monster model);
         List<BuffAndEffect> SP_GetMonsterAssociateBEs(int monsterID, int rulesetId);
         void SaveCharacterHealth(CharacterHealthModel model);
-        void saveTarget(Combatant_ViewModel model);
+        void saveTarget(Combatant_ViewModel model, bool isFromGMScreen = false);
         void SaveSortorder(List<Combatant_DTModel> model);
         void SaveDelayTurn(Combatant_ViewModel model);
         void saveSelectedCombatant(Combatant_ViewModel model);

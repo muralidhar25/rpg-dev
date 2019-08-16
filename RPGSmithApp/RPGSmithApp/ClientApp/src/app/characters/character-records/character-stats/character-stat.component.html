@@ -120,7 +120,9 @@
                 <button type="submit" (click)="save(charactersCharacterStats,0)" class="btn btn-accent">Save</button>
             </div>
         </div>
-        <ng-container *ngIf="ruleSet?.isBuffAndEffectEnabled && showBuffEffects">
+
+      <!--<ng-container *ngIf="ruleSet?.isBuffAndEffectEnabled && showBuffEffects">-->
+        <ng-container *ngIf="ruleSet?.isBuffAndEffectEnabled">
           <div class="col-lg-6 col-md-6 col-6" *ngIf="isModelChange"></div>
           <div class="col-lg-6 col-md-6 col-6">
             <div class="form-row">

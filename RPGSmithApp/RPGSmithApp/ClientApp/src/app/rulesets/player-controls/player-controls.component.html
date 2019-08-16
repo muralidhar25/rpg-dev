@@ -124,6 +124,40 @@
 
   <div class="row  align-items-center">
     <div class="col-12 col-sm-7 pr-sm-0">
+      <label>Allow Player Buffs & Effects Creations</label>
+    </div>
+    <div class="col-12 col-sm-5">
+      <div class="form-group">
+        <fieldset class="form-group input-switch input-switch-dual">
+          <ul class="input-switch-items">
+            <li class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="buffAndEffectcreations1"
+                       [disabled]="playerControls.pauseBuffAndEffectAdd"
+                       [checked]="!playerControls.pauseBuffAndEffectCreate"
+                       (click)="AllowBuffAndEffectCreation(false)">
+                <span [ngClass]="{'disabled':playerControls.pauseBuffAndEffectAdd}"
+                      [title]="playerControls.pauseBuffAndEffectAdd?'Player Buffs & Effects Assignment should be allowed first':''">ON</span>
+              </label>
+            </li>
+            <li class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="buffAndEffectcreations2"
+                       [disabled]="playerControls.pauseBuffAndEffectAdd"
+                       [checked]="playerControls.pauseBuffAndEffectCreate"
+                       (click)="AllowBuffAndEffectCreation(true)">
+                <span [ngClass]="{'disabled':playerControls.pauseBuffAndEffectAdd}"
+                      [title]="playerControls.pauseBuffAndEffectAdd?'Player Buffs & Effects Assignment should be allowed first':''">OFF</span>
+              </label>
+            </li>
+          </ul>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+
+  <div class="row  align-items-center">
+    <div class="col-12 col-sm-7 pr-sm-0">
       <label>Allow Player Item Additions</label>
     </div>
     <div class="col-12 col-sm-5">
@@ -238,39 +272,7 @@
       </div>
     </div>
   </div>
-  <div class="row  align-items-center">
-    <div class="col-12 col-sm-7 pr-sm-0">
-      <label>Allow Player Buffs & Effects Creations</label>
-    </div>
-    <div class="col-12 col-sm-5">
-      <div class="form-group">
-        <fieldset class="form-group input-switch input-switch-dual">
-          <ul class="input-switch-items">
-            <li class="form-check">
-              <label class="form-check-label">
-                <input class="form-check-input" type="radio" name="buffAndEffectcreations1"
-                       [disabled]="playerControls.pauseBuffAndEffectAdd"
-                       [checked]="!playerControls.pauseBuffAndEffectCreate"
-                       (click)="AllowBuffAndEffectCreation(false)">
-                <span  [ngClass]="{'disabled':playerControls.pauseBuffAndEffectAdd}"
-                      [title]="playerControls.pauseBuffAndEffectAdd?'Player Buffs & Effects Assignment should be allowed first':''">ON</span>
-              </label>
-            </li>
-            <li class="form-check">
-              <label class="form-check-label">
-                <input class="form-check-input"  type="radio" name="buffAndEffectcreations2"
-                       [disabled]="playerControls.pauseBuffAndEffectAdd"
-                       [checked]="playerControls.pauseBuffAndEffectCreate"
-                       (click)="AllowBuffAndEffectCreation(true)">
-                <span  [ngClass]="{'disabled':playerControls.pauseBuffAndEffectAdd}"
-                      [title]="playerControls.pauseBuffAndEffectAdd?'Player Buffs & Effects Assignment should be allowed first':''">OFF</span>
-              </label>
-            </li>
-          </ul>
-        </fieldset>
-      </div>
-    </div>
-  </div>
+
 </div>
 <div class="modal-footer"  *ngIf="!isLoading">
   <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>

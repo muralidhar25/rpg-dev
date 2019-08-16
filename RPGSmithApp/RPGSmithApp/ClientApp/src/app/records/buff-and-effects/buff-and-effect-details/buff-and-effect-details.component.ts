@@ -86,28 +86,31 @@ export class BuffAndEffectDetailsComponent implements OnInit {
       this.buffAndEffectService.getBuffAndEffectById<any>(this.buffAndEffectId)
         .subscribe(data => {
 
-          if (data)
+          if (data) {
             this.buffAndEffectDetail = this.buffAndEffectService.BuffAndEffectsModelData(data, "UPDATE");
-          if (!this.buffAndEffectDetail.ruleset) {
-            this.buffAndEffectDetail.ruleset = data.ruleSet;
-          }
-          this.buffAndEffectDetail.isAssignedToAnyCharacter = data.isAssignedToAnyCharacter;
-          debugger
-          this.ruleSetId = this.buffAndEffectDetail.ruleSetId;
-          this.rulesetService.GetCopiedRulesetID(this.buffAndEffectDetail.ruleSetId, user.id).subscribe(data => {
-            let id: any = data
-            //this.ruleSetId = id;
-            this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-            this.isLoading = false;
-          }, error => {
-            this.isLoading = false;
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-              this.authService.logout(true);
+            if (!this.buffAndEffectDetail.ruleset) {
+              this.buffAndEffectDetail.ruleset = data.ruleSet;
             }
-          }, () => { });
-
+            this.buffAndEffectDetail.isAssignedToAnyCharacter = data.isAssignedToAnyCharacter;
+            debugger
+            this.ruleSetId = this.buffAndEffectDetail.ruleSetId;
+            this.rulesetService.GetCopiedRulesetID(this.buffAndEffectDetail.ruleSetId, user.id).subscribe(data => {
+              let id: any = data
+              //this.ruleSetId = id;
+              this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+              this.isLoading = false;
+            }, error => {
+              this.isLoading = false;
+              let Errors = Utilities.ErrorDetail("", error);
+              if (Errors.sessionExpire) {
+                //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                this.authService.logout(true);
+              }
+            }, () => { });
+          }
+          else {
+            this.isLoading = false;
+          }
         }, error => {
           this.isLoading = false;
           let Errors = Utilities.ErrorDetail("", error);

@@ -188,12 +188,12 @@ export class CombatHealthComponent implements OnInit {
   }
 
   changeHealthMax(event: any) {
-    this.healthCurrent = +event.target.value;
+    //this.healthCurrent = +event.target.value;
   }
 
 
   changeHealthCurrent(event: any) {
-    this.healthMax = +event.target.value;
+    //this.healthMax = +event.target.value;
   }
 
 
