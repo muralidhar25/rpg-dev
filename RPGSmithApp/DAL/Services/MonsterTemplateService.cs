@@ -681,6 +681,47 @@ namespace DAL.Services
                 + _context.MonsterTemplateBundles.Where(x => x.RuleSetId == ruleSetId && x.IsDeleted != true).Count()
                 );
         }
+        public int GetMonsterCountByRuleSetId(int rulesetId)
+        {
+            return _context.Monsters.Where(x => x.RuleSetId == rulesetId && x.IsDeleted != true).Count();
+        }
+        public int Core_GetMonsterCountByRuleSetId(int rulesetId, int parentID) {
+            string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            //string qry = "EXEC Ruleset_GetRecordCounts @RulesetID = '" + ruleSetId + "'";
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            SqlCommand command = new SqlCommand();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+            DataTable dt = new DataTable();
+            try
+            {
+                connection.Open();
+                command = new SqlCommand("Ruleset_GetRecordCounts", connection);
+
+                // Add the parameters for the SelectCommand.
+                command.Parameters.AddWithValue("@RulesetID", rulesetId);
+                command.CommandType = CommandType.StoredProcedure;
+
+                adapter.SelectCommand = command;
+
+                adapter.Fill(dt);
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+
+
+            SP_RulesetRecordCount res = new SP_RulesetRecordCount();
+            if (dt.Rows.Count > 0)
+            {
+                res.MonsterCount = Convert.ToInt32(dt.Rows[0]["MonsterCount"]);
+            }
+            return res.MonsterCount;
+        }
         public int Core_GetCountByRuleSetId(int ruleSetId, int parentID)
         {
             //var idsToRemove = _context.Abilities.Where(p => (p.RuleSetId == ruleSetId) && p.ParentAbilityId != null).Select(p => p.ParentAbilityId).ToArray();

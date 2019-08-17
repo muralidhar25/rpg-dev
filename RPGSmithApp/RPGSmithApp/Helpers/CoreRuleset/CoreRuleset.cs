@@ -50,6 +50,7 @@ namespace RPGSmithApp.Helpers.CoreRuleset
         Task<ItemMasterBundle> CreateItemMasterBundle(ItemMasterBundle bundle, List<ItemMasterBundleItem> bundleItems);        
         Task<MonsterTemplateBundle> CreateMonsterTemplateBundle(MonsterTemplateBundle bundle, List<MonsterTemplateBundleItem> bundleItems);
         int GetLootCountByRuleSetId(int rulesetId);
+        int GetMonsterCountByRuleSetId(int rulesetId);
     }
 
     public class CoreRuleset : ICoreRuleset
@@ -266,6 +267,15 @@ namespace RPGSmithApp.Helpers.CoreRuleset
                 parentID = rulesetId;
             }
             return _monsterTemplateService.Core_GetCountByRuleSetId(rulesetId, (int)parentID);
+        }
+        public int GetMonsterCountByRuleSetId(int rulesetId)
+        {
+            int? parentID = _ruleSetService.GetRuleSetById(rulesetId).Result.ParentRuleSetId;
+            if (parentID == null)
+            {
+                parentID = rulesetId;
+            }
+            return _monsterTemplateService.Core_GetMonsterCountByRuleSetId(rulesetId, (int)parentID);
         }
         public async Task<ItemMaster> CreateItemMaster(ItemMaster itemMaster, List<ItemMasterSpell> itemMasterSpellVM, List<ItemMasterAbility> itemMasterAbilityVM, List<ItemMasterBuffAndEffect> itemMasterBuffAndEffectVM)
         {

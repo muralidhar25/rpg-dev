@@ -599,6 +599,24 @@ namespace RPGSmithApp.Controllers
             }
         }
 
+        [HttpGet("getMonsterCountByRuleSetId")]
+        public async Task<IActionResult> getMonsterCountByRuleSetId(int rulesetId)
+        {
+            int monsterCount = 0;
+            int monsterTemplateCount = 0;
+            if (_coreRulesetService.IsCopiedFromCoreRuleset(rulesetId))
+            {
+                monsterTemplateCount = _coreRulesetService.GetMonsterTemplateCountByRuleSetId(rulesetId);
+                monsterCount = _coreRulesetService.GetMonsterCountByRuleSetId(rulesetId);
+            }
+            else
+            {
+                monsterTemplateCount = _monsterTemplateService.GetCountByRuleSetId(rulesetId);
+                monsterCount = _monsterTemplateService.GetMonsterCountByRuleSetId(rulesetId);
+            }
+            return Ok(new { monsterTemplateCount = monsterTemplateCount , monsterCount = monsterCount });
+        }
+
 
         [HttpPost("upLoadImageBlob")]
         public async Task<IActionResult> UpLoadImageBlob()

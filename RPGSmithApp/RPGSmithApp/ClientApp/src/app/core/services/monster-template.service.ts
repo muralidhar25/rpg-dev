@@ -22,6 +22,7 @@ export class MonsterTemplateService extends EndpointFactory {
 
   private readonly _getAllUrl: string = "/api/MonsterTemplate/getAll";
   private readonly _getCountUrl: string = "/api/MonsterTemplate/getCountByRuleSetId";
+  private readonly _getMonsterCountUrl: string = "/api/MonsterTemplate/getMonsterCountByRuleSetId";
   private readonly _createUrl: string = "/api/MonsterTemplate/create";
   private readonly _updateUrl: string = "/api/MonsterTemplate/update";  
   private readonly _deleteUrl: string = "/api/MonsterTemplate/delete";
@@ -68,6 +69,7 @@ export class MonsterTemplateService extends EndpointFactory {
 
   get getAllUrl() { return this.configurations.baseUrl + this._getAllUrl; }
   get getCountUrl() { return this.configurations.baseUrl + this._getCountUrl; }
+  get getMonsterCountUrl() { return this.configurations.baseUrl + this._getMonsterCountUrl; }
   get createUrl() { return this.configurations.baseUrl + this._createUrl; }
   get updateUrl() { return this.configurations.baseUrl + this._updateUrl; }
   get deleteUrl() { return this.configurations.baseUrl + this._deleteUrl; }
@@ -99,6 +101,15 @@ export class MonsterTemplateService extends EndpointFactory {
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getMonsterTemplateCount(Id));
+      });
+  }
+
+  getMonsterCountByRuleSetId<T>(Id: number): Observable<T> {
+    let endpointUrl = `${this._getMonsterCountUrl}?rulesetId=${Id}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getMonsterCountByRuleSetId(Id));
       });
   }
 

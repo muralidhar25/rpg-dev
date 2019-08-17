@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter} from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import 'rxjs/add/operator/switchMap';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
@@ -21,106 +21,106 @@ import { ServiceUtil } from '../../../core/services/service-util';
 
 
 @Component({
-    selector: 'app-add-monster',
-    templateUrl: './add-monster.component.html',
-    styleUrls: ['./add-monster.component.scss']
+  selector: 'app-add-monster',
+  templateUrl: './add-monster.component.html',
+  styleUrls: ['./add-monster.component.scss']
 })
 export class AddMonsterComponent implements OnInit {
 
   public event: EventEmitter<any> = new EventEmitter();
-    isLoading = false;
-    title: string;
-    _view: string;
-    characterId: number;
-    rulesetId: number;
-    characterItems: any;
-    searchText: string;
-    itemsList: any[] = [];
-    selectedItemsList: any[] = [];
+  isLoading = false;
+  title: string;
+  _view: string;
+  characterId: number;
+  rulesetId: number;
+  characterItems: any;
+  searchText: string;
+  itemsList: any[] = [];
+  selectedItemsList: any[] = [];
   customDices: CustomDice[] = [];
   addToCombat: boolean = false;
-    constructor(
-        private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
-        public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
-        private sharedService: SharedService, private commonService: CommonService,
-      private itemsService: ItemsService, private itemMasterService: ItemMasterService, private monsterTemplateService: MonsterTemplateService
-    ) {
-        this.route.params.subscribe(params => { this.characterId = params['id']; });
-    }
+  constructor(
+    private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
+    public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
+    private sharedService: SharedService, private commonService: CommonService,
+    private itemsService: ItemsService, private itemMasterService: ItemMasterService, private monsterTemplateService: MonsterTemplateService
+  ) {
+    this.route.params.subscribe(params => { this.characterId = params['id']; });
+  }
 
-    ngOnInit() {
-        setTimeout(() => {
+  ngOnInit() {
+    setTimeout(() => {
 
-            this.title = this.bsModalRef.content.title;
-            this._view = this.bsModalRef.content.button;
-            this.rulesetId = this.bsModalRef.content.rulesetID;
-            if (this.rulesetId == undefined)
-                this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-          this.customDices= this.bsModalRef.content.customDices;
-           this.initialize();
-        }, 0);
-    }
+      this.title = this.bsModalRef.content.title;
+      this._view = this.bsModalRef.content.button;
+      this.rulesetId = this.bsModalRef.content.rulesetID;
+      if (this.rulesetId == undefined)
+        this.rulesetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+      this.customDices = this.bsModalRef.content.customDices;
+      this.initialize();
+    }, 0);
+  }
 
   private initialize() {
-        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-        if (user == null)
-            this.authService.logout();
-        else {
-            this.isLoading = true;
-          this.monsterTemplateService.getMonsterTemplateByRuleset_add<any>(this.rulesetId, true)//true
-            .subscribe(data => {
-              
-              this.itemsList = data.MonsterTemplate;
-                  this.itemsList.map((item) => {
-                   item.quantity = 1;
-                  });
-                    this.isLoading = false;
-                }, error => {
-                    this.isLoading = false;
-                    let Errors = Utilities.ErrorDetail("", error);
-                    if (Errors.sessionExpire) {
-                        //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-                        this.authService.logout(true);
-                    }
-                }, () => { });
-        }
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      this.isLoading = true;
+      this.monsterTemplateService.getMonsterTemplateByRuleset_add<any>(this.rulesetId, true)//true
+        .subscribe(data => {
+
+          this.itemsList = data.MonsterTemplate;
+          this.itemsList.map((item) => {
+            item.quantity = 1;
+          });
+          this.isLoading = false;
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => { });
     }
+  }
 
   setMonsterTemplate(event: any, MonsterTemplate: any) {
 
-      if (event.target.checked) {
-        const _containsItems = Object.assign([], this.selectedItemsList);
-        _containsItems.push(MonsterTemplate);
-        this.selectedItemsList = _containsItems;
-        } else {
-        let _item = MonsterTemplate;
-            const index: number = this.selectedItemsList.indexOf(_item);
-            if (index !== -1) {
-              this.selectedItemsList.splice(index, 1);
-            }else {
-              const _arrayItems = Object.assign([], this.selectedItemsList);
-              this.selectedItemsList = _arrayItems.filter(function (itm) {
-                if (itm.monsterTemplateId !== _item.monsterTemplateId) return _item;
-              });
-            }
+    if (event.target.checked) {
+      const _containsItems = Object.assign([], this.selectedItemsList);
+      _containsItems.push(MonsterTemplate);
+      this.selectedItemsList = _containsItems;
+    } else {
+      let _item = MonsterTemplate;
+      const index: number = this.selectedItemsList.indexOf(_item);
+      if (index !== -1) {
+        this.selectedItemsList.splice(index, 1);
+      } else {
+        const _arrayItems = Object.assign([], this.selectedItemsList);
+        this.selectedItemsList = _arrayItems.filter(function (itm) {
+          if (itm.monsterTemplateId !== _item.monsterTemplateId) return _item;
+        });
       }
     }
+  }
 
   submitForm() {
 
-    
+
     if (this.selectedItemsList.length) {
       var selectedMonsters: any = [];
-      
+
       this.selectedItemsList.map((x) => {
 
-       
+
 
         if (x.isBundle) {
           if (x.bundleItems) {
             if (x.bundleItems.length) {
               x.bundleItems.map((bi) => {
-                
+
                 let itemQtyCount = +bi.quantity;
                 for (var i_itemQty = 0; i_itemQty < itemQtyCount; i_itemQty++) {
                   let healthNumberArray = [];
@@ -142,7 +142,7 @@ export class AddMonsterComponent implements OnInit {
                       challangeRatingNumberArray.push(challangeRating);
 
                       if (bi.monsterTemplate.isRandomizationEngine) {
-                        
+
                         let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine(bi.monsterTemplate.randomizationEngine, this.alertService);
                         if (currentItemsToDeploy && currentItemsToDeploy.length) {
                           currentItemsToDeploy.map((re) => {
@@ -165,16 +165,16 @@ export class AddMonsterComponent implements OnInit {
                     challangeRating: challangeRatingNumberArray,
                     addToCombat: this.addToCombat,
                     isBundle: false, // as this will insert as a single item now.
-                    reItems:reItems
+                    reItems: reItems
                   });
                 }
-                
+
 
               })
             }
           }
-          
-          
+
+
         }
         else {
           let healthNumberArray = [];
@@ -196,7 +196,7 @@ export class AddMonsterComponent implements OnInit {
               challangeRatingNumberArray.push(challangeRating);
 
               if (x.isRandomizationEngine) {
-                
+
                 let currentItemsToDeploy = ServiceUtil.getItemsFromRandomizationEngine(x.randomizationEngine, this.alertService);
                 if (currentItemsToDeploy && currentItemsToDeploy.length) {
                   currentItemsToDeploy.map((re) => {
@@ -221,47 +221,58 @@ export class AddMonsterComponent implements OnInit {
             reitems: reItems
           });
         }
-        
+
       });
       this.isLoading = true;
       let _msg = ' Adding Monster ....';
       this.alertService.startLoadingMessage("", _msg);
-      
-      this.monsterTemplateService.addMonster(selectedMonsters)
-        .subscribe(data => {
-         
-          this.alertService.stopLoadingMessage();
-          this.alertService.showMessage("Monsters has been added successfully.", "", MessageSeverity.success);
-          this.isLoading = false;
-          this.close();
-          this.sharedService.updateMonsterList(true);
-        }, error => {
-          this.isLoading = false;
-          this.alertService.stopLoadingMessage();
-          this.alertService.showMessage(error, "", MessageSeverity.error);
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
+
+      this.monsterTemplateService.getMonsterCountByRuleSetId(this.rulesetId)
+        .subscribe((data: any) => {
+          let MonsterCount = data.monsterCount;
+          if ((MonsterCount + selectedMonsters.length) < 200) {
+            this.monsterTemplateService.addMonster(selectedMonsters)
+              .subscribe(data => {
+
+                this.alertService.stopLoadingMessage();
+                this.alertService.showMessage("Monsters has been added successfully.", "", MessageSeverity.success);
+                this.isLoading = false;
+                this.close();
+                this.sharedService.updateMonsterList(true);
+              }, error => {
+                this.isLoading = false;
+                this.alertService.stopLoadingMessage();
+                this.alertService.showMessage(error, "", MessageSeverity.error);
+                let Errors = Utilities.ErrorDetail("", error);
+                if (Errors.sessionExpire) {
+                  this.authService.logout(true);
+                }
+              }, () => { });
           }
-        }, () => { });
+          else {
+            this.isLoading = false;
+            this.alertService.stopLoadingMessage();
+            this.alertService.showMessage("The maximum number of monsters has been reached, 200. Please delete some monsters and try again.", "", MessageSeverity.error);
+          }
+        }, error => { }, () => { });
     } else {
       let message = 'Please select atleast one Monster';
       this.alertService.showMessage(message, "", MessageSeverity.error);
     }
-   
+
   }
 
   quantityChanged(quantity, item) {
-       this.selectedItemsList.map(function (itm) {
-         if (itm.monsterTemplateId == item.monsterTemplateId) {
-           itm.quantity = quantity;
-         }
-      });
+    this.selectedItemsList.map(function (itm) {
+      if (itm.monsterTemplateId == item.monsterTemplateId) {
+        itm.quantity = quantity;
+      }
+    });
   }
   close() {
-        this.bsModalRef.hide();
-   }
-  changeCheckbox(event) {    
+    this.bsModalRef.hide();
+  }
+  changeCheckbox(event) {
     this.addToCombat = event.target.checked;
   }
 }
