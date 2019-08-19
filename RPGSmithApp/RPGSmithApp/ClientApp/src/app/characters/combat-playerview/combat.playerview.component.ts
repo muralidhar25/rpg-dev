@@ -395,9 +395,9 @@ export class CombatPlayerViewComponent implements OnInit {
   }
   refreshPageData() {
     this.refreshPage = setInterval(() => {
-      console.log("update");
+      //console.log("update");
       this.combatService.isCombatUpdatedAndCurrentTurn(this.CombatId).subscribe(data => {
-        console.log("res ", data);
+        //console.log("res ", data);
         let res: any = data;
         if (res) {
           if (res.isCombatUdated) {
@@ -466,6 +466,8 @@ export class CombatPlayerViewComponent implements OnInit {
         this.settings = combatModal.combatSettings;
         this.combatants = combatModal.combatantList;
 
+        let unknownMonsterNameCount = 1;
+
         this.combatants.map((x) => {
           x.initiativeValue = x.initiative;
           if (!x.combatId) {
@@ -521,6 +523,13 @@ export class CombatPlayerViewComponent implements OnInit {
                   x.character.healthCurrent = +charStat.defaultValue;
                 }
               }
+            }
+          }
+
+          if (x.type == this.combatantsType.MONSTER) {
+            if (x.visibleToPc && !x.showMonsterName) {
+              x.monster.name = "Unknown #" + unknownMonsterNameCount;
+              unknownMonsterNameCount = unknownMonsterNameCount + 1;
             }
           }
 

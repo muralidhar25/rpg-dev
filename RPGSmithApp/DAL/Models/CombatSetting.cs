@@ -38,7 +38,9 @@ namespace DAL.Models
         public bool ShowMonsterHealth { get; set; }
         public bool SeeMonsterBuffEffects { get; set; }
         public bool SeeMonsterItems { get; set; }
+        public bool ShowMonsterNameByDefault { get; set; }
 
         public bool IsDeleted { get; set; }
     }
+    //UPDATE [CombatSettings] SET ShowMonsterNameByDefault=1
 }

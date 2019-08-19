@@ -44,6 +44,6 @@ namespace DAL.Models
 
         public bool DelayTurn { get; set; }
         public bool IsCurrentSelected { get; set; }
-
+        public bool ShowMonsterName { get; set; }
     }
 }
