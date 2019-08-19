@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, EventEmitter, HostListener } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { PlatformLocation } from '@angular/common';
 import { SharedService } from '../../core/services/shared.service';
@@ -34,6 +34,13 @@ export class UpdateMonsterHealthComponent implements OnInit {
   monsterDetailType = MonsterDetailType;
 
   public event: EventEmitter<any> = new EventEmitter();
+
+  @HostListener('window:keydown', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      this.saveCounter();
+    }
+  }
 
   constructor(private bsModalRef: BsModalRef,
     private modalService: BsModalService,

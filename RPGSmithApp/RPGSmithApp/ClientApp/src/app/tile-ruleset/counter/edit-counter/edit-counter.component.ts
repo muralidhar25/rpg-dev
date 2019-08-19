@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { RulesetCounterTileComponent } from '../counter.component';
 import { CounterTile } from '../../../core/models/tiles/counter-tile.model';
@@ -27,7 +27,14 @@ export class RulesetEditCounterComponent implements OnInit {
     rulesetId: number;
     pageId: number;
     pageDefaultData = new RulesetDashboardPage();
-    isLoading: boolean = false;
+  isLoading: boolean = false;
+
+  @HostListener('window:keydown', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      this.saveCounter();
+    }
+  }
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
         private colorService: ColorService, private localStorage: LocalStoreManager, private counterTileService: CounterTileService,

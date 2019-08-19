@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, EventEmitter, HostListener } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { CounterTile } from '../../../core/models/tiles/counter-tile.model';
 import { CharacterTile } from '../../../core/models/tiles/character-tile.model';
@@ -41,6 +41,13 @@ export class CombatHealthComponent implements OnInit {
   DummyValueForCharHealthStat: number = -9999
 
   public event: EventEmitter<any> = new EventEmitter();
+
+  @HostListener('window:keydown', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      this.saveCounter();
+    }
+  }
 
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
     private colorService: ColorService, private localStorage: LocalStoreManager, private counterTileService: CounterTileService,

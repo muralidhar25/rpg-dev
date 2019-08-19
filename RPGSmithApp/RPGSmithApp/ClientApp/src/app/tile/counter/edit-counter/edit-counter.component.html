@@ -9,9 +9,9 @@
             <form>
                 <div class="form-group input-counter">
                     <div class="input-group">
-                        <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDown(-1)" (mouseup)="mouseUp()" (click)="decrement()"></button>
+                        <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDown(-1)" (mouseup)="mouseUp()" (click)="decrement()" (keydown.enter)="$event.preventDefault()"></button>
                         <input type="number" id="viewCounterValue" class="form-control" placeholder="Enter value" (change)="changeCurrentValue($event)" [(ngModel)]="counterFormModel.currentValue" name="currentValue">
-                        <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (mousedown)="mouseDown(1)" (mouseup)="mouseUp()" (click)="increment()"></button>
+                        <button type="button" class="btn icon icon-plus btn-primary btn-plus-minus" (mousedown)="mouseDown(1)" (mouseup)="mouseUp()" (click)="increment()" (keydown.enter)="$event.preventDefault()"></button>
                     </div>
 
                     <div class="row">

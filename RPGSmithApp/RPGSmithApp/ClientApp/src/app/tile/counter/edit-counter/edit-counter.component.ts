@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { CounterTile } from '../../../core/models/tiles/counter-tile.model';
 import { CharacterTile } from '../../../core/models/tiles/character-tile.model';
@@ -32,6 +32,13 @@ export class EditCounterComponent implements OnInit {
   isMouseDown: boolean = false;
   interval: any;
   isSharedLayout: boolean = false;
+
+  @HostListener('window:keydown', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      this.saveCounter();
+    }
+  }
 
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
     private colorService: ColorService, private localStorage: LocalStoreManager, private counterTileService: CounterTileService,

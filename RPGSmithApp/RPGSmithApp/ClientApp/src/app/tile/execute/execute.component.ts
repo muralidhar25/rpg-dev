@@ -1,4 +1,4 @@
-import { Component, OnInit,EventEmitter } from '@angular/core';
+import { Component, OnInit,EventEmitter, HostListener } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { FilterTilePipe } from "../../core/pipes/filter-tile.pipe";
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
@@ -85,7 +85,14 @@ export class ExecuteTileComponent implements OnInit {
     selectedStatType: number = 0;
     selectedIndex: number;
     displayboth: boolean = false;
-    displayLinkImage: boolean = true;
+  displayLinkImage: boolean = true;
+
+  @HostListener('window:keydown', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      this.submitForm();
+    }
+  }
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private colorService: ColorService,
         public localStorage: LocalStoreManager, private authService: AuthService, private sharedService: SharedService,

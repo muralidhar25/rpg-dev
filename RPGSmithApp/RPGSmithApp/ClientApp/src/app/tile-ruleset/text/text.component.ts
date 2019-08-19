@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, EventEmitter, HostListener } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { RulesetTile } from '../../core/models/tiles/ruleset-tile.model';
 import { TextTile } from '../../core/models/tiles/text-tile.model';
@@ -52,7 +52,14 @@ export class RulesetTextTileComponent implements OnInit {
     showDemo: boolean = false;
     tile: number;
     selectedStatType: number = 0;
-    selectedIndex: number;
+  selectedIndex: number;
+
+  @HostListener('window:keydown', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      this.submitForm();
+    }
+  }
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService, private colorService: ColorService,
         private textTileService: TextTileService, private alertService: AlertService, private authService: AuthService,

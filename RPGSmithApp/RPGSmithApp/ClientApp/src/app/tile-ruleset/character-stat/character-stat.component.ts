@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, EventEmitter, HostListener } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { ActivatedRoute } from '@angular/router';
 import { RulesetTile } from '../../core/models/tiles/ruleset-tile.model';
@@ -68,6 +68,13 @@ export class RulesetCharacterStatTileComponent implements OnInit {
   showWebButtons: boolean;
   imageUrl: string;
   fileToUpload: File = null;
+
+  @HostListener('window:keydown', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      this.submitForm();
+    }
+  }
 
     constructor(private bsModalRef: BsModalRef, private route: ActivatedRoute, private sharedService: SharedService,
         private colorService: ColorService, private modalService: BsModalService, public localStorage: LocalStoreManager,

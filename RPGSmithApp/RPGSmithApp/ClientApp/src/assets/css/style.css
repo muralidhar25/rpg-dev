@@ -4361,6 +4361,11 @@ span.search-content span {
 .popup-dice .command-list ul li .btn {
   margin: 0.25rem;
   background-color: #f3f2f2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  padding: 0px 3px !important;
 }
 
   .popup-dice .command-list ul li .btn:hover {

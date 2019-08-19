@@ -17,7 +17,7 @@ export class AppErrorHandler extends ErrorHandler {
     //private alertService: AlertService;
   commonErrorMessage: string = "<span class='custom-common-error-message'><span class='err-heading d-block text-center'><b>ERROR</b></span><br/>"+
 
-  "<span>Whoops, that shouldn’t Happen. We got an error but not to worry, a quick refresh normally takes care of the issue.</span><br/><br/>"+
+  "<span>Whoops, that shouldn’t happen. We got an error but not to worry, a quick refresh normally takes care of the issue.</span><br/><br/>"+
   "<span>Press OK to refresh. If the problem persists, please consider opening a bug launched through the Help/About screen accessible via the stack menu on the top right.</span></span>";
   constructor(private alertService: AlertService, private localStorage: LocalStoreManager,private configurations: ConfigurationService   
     //private userService: UserService, private router: Router,

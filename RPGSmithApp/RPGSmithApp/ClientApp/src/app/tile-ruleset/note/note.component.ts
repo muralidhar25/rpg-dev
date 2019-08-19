@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, EventEmitter, ViewChild, HostListener } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { RulesetTile } from '../../core/models/tiles/ruleset-tile.model';
 import { NoteTile } from '../../core/models/tiles/note-tile.model';
@@ -52,7 +52,14 @@ export class RulesetNoteTileComponent implements OnInit {
     selectedStatType: number = 0;
     selectedIndex: number;
     //options: Object = Utilities.options;
-    uploadingFile: boolean = false;
+  uploadingFile: boolean = false;
+
+  @HostListener('window:keydown', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      this.submitForm();
+    }
+  }
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private colorService: ColorService,
         private alertService: AlertService, private noteTileService: NoteTileService, private localStorage: LocalStoreManager,

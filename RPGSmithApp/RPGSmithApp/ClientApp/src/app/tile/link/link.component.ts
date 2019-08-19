@@ -1,4 +1,4 @@
-import { Component, OnInit,EventEmitter } from '@angular/core';
+import { Component, OnInit,EventEmitter, HostListener } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { FilterTilePipe } from "../../core/pipes/filter-tile.pipe";
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
@@ -86,6 +86,13 @@ export class LinkTileComponent implements OnInit {
     VIEW = VIEW;
     displayboth: boolean = false;
   displayLinkImage: boolean = true;
+
+  @HostListener('window:keydown', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      this.submitForm();
+    }
+  }
 
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,

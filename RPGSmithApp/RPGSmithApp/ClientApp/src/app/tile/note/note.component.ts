@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, EventEmitter, ViewChild, HostListener } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import { CharacterTile } from '../../core/models/tiles/character-tile.model';
@@ -220,6 +220,13 @@ export class NoteTileComponent implements OnInit {
       //    this.uploadingFile = false;
       //    console.log('froalaEditor.video.error', error);
       //}
+    }
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      this.submitForm();
     }
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { STAT_TYPE, VIEW } from '../../../core/models/enums';
 import { Characters } from '../../../core/models/view-models/characters.model';
@@ -73,7 +73,14 @@ export class EditCharacterStatComponent implements OnInit {
   options(placeholder?: string, initOnClick?: boolean): Object {
     //console.log(Utilities.optionsFloala(200, placeholder, initOnClick, true))
         return Utilities.optionsFloala(200, placeholder, initOnClick,true);
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.keyCode === 13 && (this.CharacterStatTypeID === STAT_TYPE.RichText && this.showRichEditor) || (this.CharacterStatTypeID !== STAT_TYPE.Calculation && this.CharacterStatTypeID !== STAT_TYPE.RichText && this.CharacterStatTypeID !== STAT_TYPE.Condition)) {
+        this.saveStat(this.CharacterStatTypeID);     
     }
+  }
 
     constructor(
         private bsModalRef: BsModalRef, private alertService: AlertService, private sharedService: SharedService,

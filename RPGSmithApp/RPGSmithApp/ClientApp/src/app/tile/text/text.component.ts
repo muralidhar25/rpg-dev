@@ -1,4 +1,4 @@
-import { Component, OnInit,EventEmitter } from '@angular/core';
+import { Component, OnInit,EventEmitter, HostListener } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { CharacterTile } from '../../core/models/tiles/character-tile.model';
 import { TextTile } from '../../core/models/tiles/text-tile.model';
@@ -50,6 +50,13 @@ export class TextTileComponent implements OnInit {
   tile: number;
   selectedStatType: number = 0;
   selectedIndex: number;
+
+  @HostListener('window:keydown', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      this.submitForm();
+    }
+  }
 
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService, private colorService: ColorService,
     private textTileService: TextTileService, private alertService: AlertService, private authService: AuthService,
@@ -326,6 +333,7 @@ export class TextTileComponent implements OnInit {
     }
   }
   submitForm() {
+    debugger
     this.validateSubmit();
   }
 
