@@ -1513,7 +1513,35 @@ export class RulesetDashboardComponent implements OnInit {
             }
             else {
                 ngGridItemConfig = this._generateDefaultItemConfig(item.rulesetTileId);
+          }
+
+          if (item.tileTypeId == TILES.TOGGLE && item.toggleTiles) {
+
+            let isCustomToggleInitialSet = false;
+            item.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
+              debugger
+              if (togg.tileCustomToggleId == item.toggleTiles.customValue) {
+                togg.initial = true;
+                isCustomToggleInitialSet = true;
+              }
+              else {
+                togg.initial = false;
+              }
+            })
+            if (!isCustomToggleInitialSet) {
+              item.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
+                debugger
+                if (index == 0) {
+                  togg.initial = true;
+                }
+                else {
+                  togg.initial = false;
+                }
+              })
             }
+
+
+          }
             let box: Box = { config: ngGridItemConfig, tile: item, IsCharacter: false };
             boxes.push(box);
       })

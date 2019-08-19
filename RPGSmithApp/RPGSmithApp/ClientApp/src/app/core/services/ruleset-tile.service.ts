@@ -7,6 +7,7 @@ import { ConfigurationService } from '../common/configuration.service';
 import { FileUploadService } from "../common/file-upload.service";
 import { Tile } from '../models/view-models/tile.model';
 import { RulesetTile } from '../models/tiles/ruleset-tile.model';
+import { ToggleTile } from '../models/view-models/toggle-tile.model';
 
 @Injectable()
 export class RulesetTileService extends EndpointFactory {
@@ -20,6 +21,7 @@ export class RulesetTileService extends EndpointFactory {
   private readonly _getCountByPageIdRulesetId: string = "/api/RulesetTile/getCountByPageIdRulesetId";
   private readonly _getRecentColorsApi: string = "/api/RulesetTile/getRecentColors";
   private readonly _deleteTileListApi: string = "/api/RulesetTile/deleteTileList";
+  private readonly _updateToggleTileValuesApi: string = "/api/RulesetTile/updateToggleTileValues";
 
   get createUrl() { return this.configurations.baseUrl + this._createUrl; }
   get updateUrl() { return this.configurations.baseUrl + this._updateUrl; }
@@ -30,6 +32,8 @@ export class RulesetTileService extends EndpointFactory {
   get getCountByPageIdRulesetId() { return this.configurations.baseUrl + this._getCountByPageIdRulesetId; }
   get getRecentColorsApi() { return this.configurations.baseUrl + this._getRecentColorsApi; }
   get deleteTileListUrl() { return this.configurations.baseUrl + this._deleteTileListApi; }
+  get updateToggleTileValuesUrl() { return this.configurations.baseUrl + this._updateToggleTileValuesApi; }
+  
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
     super(http, configurations, injector);
@@ -125,6 +129,13 @@ export class RulesetTileService extends EndpointFactory {
     return this.http.post(endpointUrl, JSON.stringify(TileIds), { headers: this.getRequestHeadersNew(), responseType: "text" })
       .catch(error => {
         return this.handleError(error, () => this.deleteTileList(TileIds));
+      });
+  }
+  updateToggleTileValues<T>(tile: ToggleTile): Observable<T> {
+
+    return this.http.post<T>(this.updateToggleTileValuesUrl, JSON.stringify(tile), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.updateToggleTileValues(tile));
       });
   }
 }

@@ -37,6 +37,7 @@ import { AppService1 } from '../../../app.service';
 import { APP_BASE_HREF } from '@angular/common';
 import { debug } from 'util';
 import { BuffAndEffectTileComponent } from '../../../tile/buff-and-effect/buff-and-effect.component';
+import { ToggleTileComponent } from '../../../tile/toggle/toggle.component';
 
 
 
@@ -708,6 +709,25 @@ export class CharacterTilesComponent implements OnInit {
         })
         break;
 
+      }
+      case TILES.TOGGLE: {
+        this.bsModalRef = this.modalService.show(ToggleTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = 'Edit Toggle Tile';
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.EDIT;
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            this.event.emit(data);
+          }
+        })
+        break;
       }
       default: break;
     }
@@ -1468,6 +1488,33 @@ export class CharacterTilesComponent implements OnInit {
             }
           })
         }
+      }
+      else if (item.tileTypeId == TILES.TOGGLE && item.toggleTiles!=null) {
+
+        let isCustomToggleInitialSet = false;
+        item.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
+          debugger
+          if (togg.tileCustomToggleId == item.toggleTiles.customValue) {
+            togg.initial = true;
+            isCustomToggleInitialSet = true;
+          }
+          else {
+            togg.initial = false;
+          }
+        })
+        if (!isCustomToggleInitialSet) {
+          item.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
+            debugger
+            if (index == 0) {
+              togg.initial = true;
+            }
+            else {
+              togg.initial = false;
+            }
+          })
+        }
+
+
       }
       ////////////////////////////////
       let box: Box = { config: ngGridItemConfig, tile: item, IsCharacter: false };

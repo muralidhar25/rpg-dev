@@ -662,6 +662,74 @@
                   <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
                 </div>
               </div>
+
+
+              <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.TOGGLE && box.tile.toggleTiles">
+                <div class="tile tile-type-note" (click)="viewTile(box.tile, box.tile.tileTypeId)" [style.background-color]="box.tile.toggleTiles?.bodyBgColor" [ngClass]="(box.tile.toggleTiles?.shape=='50')?'grid-rounded':(box.tile.toggleTiles?.shape=='100')?'grid-circle':!isManageTile ? 'crsr-pointer':''">
+                  <h5 *ngIf="box.tile.toggleTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.toggleTiles.titleTextColor, 'background-color': box.tile.toggleTiles.titleBgColor}"
+                      popover="{{box.tile.toggleTiles?.title}}" triggers="hover"
+                      [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
+                    {{box.tile.toggleTiles?.title}}
+                  </h5>
+
+                  <div class="tile-body text-overflow-hidden">
+                    <div [ngClass]="(box.tile.toggleTiles?.shape=='50')?'grid-rounded':''" [style.color]="box.tile.toggleTiles.bodyTextColor"
+                         [style.background-color]="box.tile.toggleTiles.bodyBgColor">
+
+                      <ng-container>
+                        <ng-container *ngIf="box.tile.toggleTiles?.tileToggle?.yesNo">
+                          <span [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v noselect">{{box.tile.toggleTiles?.yesNo ? 'YES' : 'NO'}}</span>
+                        </ng-container>
+                        <ng-container *ngIf="box.tile.toggleTiles?.tileToggle?.onOff">
+                          <span [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v noselect">{{box.tile.toggleTiles?.onOff ? 'ON' : 'OFF'}}</span>
+                        </ng-container>
+                        <ng-container *ngIf="box.tile.toggleTiles?.tileToggle?.display">
+                          <span *ngIf="box.tile.toggleTiles?.checkBox" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v icon-Gen-Check noselect"></span>
+                          <span *ngIf="!box.tile.toggleTiles?.checkBox" [style.font-size.px]="box.config.sizex*box.config.sizey*5+20" class="text-center-v icon-Gen-Uncheck noselect"></span>
+                        </ng-container>
+
+
+                        <ng-container *ngIf="box.tile.toggleTiles?.tileToggle?.isCustom">
+                          <ng-container *ngIf="box.tile.toggleTiles?.tileToggle?.tileCustomToggles?.length">
+                            <ng-container *ngFor="let toggleVal of box.tile.toggleTiles?.tileToggle?.tileCustomToggles; let i = index">
+                              <ng-container *ngIf="toggleVal.initial">
+                                <ng-container *ngIf="toggleVal.toggleText">
+
+                                  <p class="noselect" [style.color]="box.tile.toggleTiles.bodyTextColor"
+                                     [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                    {{toggleVal.toggleText}}
+                                  </p>
+                                </ng-container>
+                                <ng-container *ngIf="toggleVal.image">
+                                  <img class="imgwidth" [src]="toggleVal.image" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
+                                </ng-container>
+                              </ng-container>
+
+                            </ng-container>
+                          </ng-container>
+                        </ng-container>
+
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+                <div class="tile-actions">
+                  <!--  <button type="button" title="Delete" (click)="deleteTile(tile)" data-action="delete" class="btn icon icon-delete btn-primary"></button>-->
+                  <!--<button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                  <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                  <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary  nw-resize"></button>-->
+                  <span class="d-none d-xl-block" *ngIf="isManageTile">
+                    <button type="button" title="Edit" (click)="editTile(box.tile, box.tile.tileTypeId,i)" data-action="edit" class="btn icon icon-pencil btn-primary"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-left" class="btn icon icon-arrow-resize btn-primary ne-resize"></button>
+                    <button type="button" title="Resize" data-toggle="tooltip" data-action="resize-right" class="btn icon icon-arrow-resize btn-primary nw-resize"></button>
+                  </span>
+                  <button type="button" title="Delete" *ngIf="IsTrashPage" class="btn icon icon-cross btn-primary delete-tile-btn" (click)="moveToTrash(box,i)"></button>
+                  <button type="button" title="Edit" *ngIf="IsEditPage" (click)="editTile(box.tile, box.tile.tileTypeId,i)" class="btn icon icon-pencil btn-primary delete-tile-btn"></button>
+                  <button type="button" title="Resize" *ngIf="IsResizePage" class="btn icon icon-arrow-resize btn-primary delete-tile-btn"></button>
+                  <button type="button" title="Relocate" *ngIf="IsRelocatePage" class="btn icon icon-Gen-Relocate btn-primary delete-tile-btn"></button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

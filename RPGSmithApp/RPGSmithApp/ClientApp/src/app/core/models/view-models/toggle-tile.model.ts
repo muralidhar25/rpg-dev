@@ -16,7 +16,11 @@ export class ToggleTile {
     sortOrder?: number,
     view?: VIEW,
     tileToggle?: TileToggle,
-    tileToggleId?:number
+    tileToggleId?: number,
+    //onOff?: boolean,
+    //yesNo?: boolean,
+    //checkBox?: boolean,
+    //customValue?: boolean,
   ) {
     this.toggleTileId = toggleTileId;
     this.characterTileId = characterTileId;

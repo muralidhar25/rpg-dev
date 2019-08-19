@@ -32,6 +32,7 @@ namespace RPGSmithApp.Controllers
         private readonly INoteTileService _noteTileService;
         private readonly IBuffAndEffectTileService _buffAndEffectTileService;
         private readonly ITileConfigService _tileConfigService;
+        private readonly IToggleTileService _toggleTileService;
 
         public CharacterDashboardPageController(IHttpContextAccessor httpContextAccessor,
             DAL.Services.ICharacterDashboardPageService characterDashboardPageService,
@@ -46,7 +47,8 @@ namespace RPGSmithApp.Controllers
             INoteTileService noteTileService,
             ITileConfigService tileConfigService,
             ITextTileService textTileService,
-             IBuffAndEffectTileService buffAndEffectTileService)
+             IBuffAndEffectTileService buffAndEffectTileService,
+             IToggleTileService toggleTileService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._characterDashboardPageService = characterDashboardPageService;
@@ -62,6 +64,7 @@ namespace RPGSmithApp.Controllers
             this._tileConfigService = tileConfigService;
             this._textTileService = textTileService;
             this._buffAndEffectTileService = buffAndEffectTileService;
+            this._toggleTileService = toggleTileService;
         }
 
         [HttpGet("GetById")]
@@ -351,6 +354,54 @@ namespace RPGSmithApp.Controllers
                                     IsDeleted = false,
                                     DisplayLinkImage = buffTile.DisplayLinkImage,
                                 });
+                                //SaveColorsAsync(Tile);
+                                break;
+                            case (int)Enum.TILES.Toggle:
+                                var toggleTile = _tile.ToggleTiles;
+                                var tog = toggleTile.TileToggle;
+
+                                var customTogglesList = new List<TileCustomToggle>();
+                                if (tog.TileCustomToggles!=null)
+                                {
+                                    foreach (var item in tog.TileCustomToggles)
+                                    {
+                                        customTogglesList.Add(new TileCustomToggle()
+                                        {
+                                            Image= item.Image,
+                                            IsDeleted= item.IsDeleted,
+                                            ToggleText=item.ToggleText,
+                                        });
+                                    }
+                                }
+                                
+                                var togToAdd = new TileToggle() {
+                                    Display= tog.Display,
+                                    IsCustom= tog.IsCustom,
+                                    OnOff= tog.OnOff,
+                                   IsDeleted = tog.IsDeleted,
+                                    ShowCheckbox= tog.ShowCheckbox,                                   
+                                    YesNo= tog.YesNo,
+                                    TileCustomToggles= customTogglesList,
+                                };
+                                var toggleTileToCreate = new CharacterToggleTile
+                                {
+                                    CharacterTileId = Tile.CharacterTileId,
+                                    Title = toggleTile.Title,
+                                    Shape = toggleTile.Shape,
+                                    SortOrder = toggleTile.SortOrder,
+                                    BodyBgColor = toggleTile.BodyBgColor,
+                                    BodyTextColor = toggleTile.BodyTextColor,
+                                    TitleBgColor = toggleTile.TitleBgColor,
+                                    TitleTextColor = toggleTile.TitleTextColor,
+                                    IsDeleted = false,
+                                    CheckBox = toggleTile.CheckBox,
+                                    CustomValue = toggleTile.CustomValue,
+                                    OnOff = toggleTile.OnOff,
+                                    YesNo = toggleTile.YesNo,
+                                    TileToggle= togToAdd,
+
+                                };
+                                Tile.ToggleTiles = await _toggleTileService.Create(toggleTileToCreate);
                                 //SaveColorsAsync(Tile);
                                 break;
                             default:

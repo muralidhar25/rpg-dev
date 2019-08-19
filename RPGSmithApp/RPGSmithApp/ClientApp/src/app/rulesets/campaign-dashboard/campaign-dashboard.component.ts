@@ -46,6 +46,7 @@ import { RulesetEditTextComponent } from '../../tile-ruleset/text/edit-text/edit
 import { EditCharacterStatComponent } from '../../tile/character-stat/edit-character-stat/edit-character-stat.component';
 import { Characters } from '../../core/models/view-models/characters.model';
 import { RulesetBuffAndEffectTileComponent } from '../../tile-ruleset/buff-and-effect/buff-and-effect.component';
+import { RulesetToggleTileComponent } from '../../tile-ruleset/toggle/toggle.component';
 
 @Component({
   selector: 'app-campaign-dashboard',
@@ -1414,12 +1415,73 @@ export class CampaignDashboardComponent implements OnInit {
           this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
           break;
         }
+        case TILES.TOGGLE: {
+          debugger
+          if (_tile.toggleTiles.tileToggle.yesNo) {
+            _tile.toggleTiles.yesNo = !_tile.toggleTiles.yesNo
+            this.updateToggleTile(_tile.toggleTiles);
+          }
+          else if (_tile.toggleTiles.tileToggle.onOff) {
+            _tile.toggleTiles.onOff = !_tile.toggleTiles.onOff
+            this.updateToggleTile(_tile.toggleTiles)
+          }
+          else if (_tile.toggleTiles.tileToggle.display) {
+            _tile.toggleTiles.checkBox = !_tile.toggleTiles.checkBox;
+            this.updateToggleTile(_tile.toggleTiles)
+          }
+          else if (_tile.toggleTiles.tileToggle.isCustom) {
+            debugger
+            let initialIndex: number = -1;
+            _tile.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
+              if (togg.initial) {
+                initialIndex = index;
+              }
+            })
+            _tile.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
+              togg.initial = false;
+              if ((initialIndex + 1) == _tile.toggleTiles.tileToggle.tileCustomToggles.length) {
+                if (index == 0) {
+                  togg.initial = true;
+                  _tile.toggleTiles.customValue = togg.tileCustomToggleId;
+                }
+              }
+              else {
+                if ((initialIndex + 1) == index) {
+                  togg.initial = true;
+                  _tile.toggleTiles.customValue = togg.tileCustomToggleId;
+                }
+              }
+            })
+
+            this.updateToggleTile(_tile.toggleTiles)
+          }
+
+          break;
+        }
         default: break;
       }
     }
     
   }
-
+  updateToggleTile(tile) {
+    this.rulesetTileService.updateToggleTileValues(tile).subscribe(
+      data => {
+        //this.alertService.stopLoadingMessage();
+        //this.alertService.showMessage("Character stat has been saved successfully.", "", MessageSeverity.success);               
+      },
+      error => {
+        this.alertService.stopLoadingMessage();
+        let _message = "Unable to Save";
+        let Errors = Utilities.ErrorDetail(_message, error);
+        if (Errors.sessionExpire) {
+          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          this.authService.logout(true);
+        }
+        else
+          this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+      },
+    )
+  }
   NextPrevPage(selectedlayout: any, next: any) {
 
     this.isLoading = true;
@@ -1657,6 +1719,33 @@ export class CampaignDashboardComponent implements OnInit {
         let AllChoices: any[] = [];
         // console.log('1531', item);
       }
+      else if (item.tileTypeId == TILES.TOGGLE && item.toggleTiles) {
+
+        let isCustomToggleInitialSet = false;
+        item.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
+          debugger
+          if (togg.tileCustomToggleId == item.toggleTiles.customValue) {
+            togg.initial = true;
+            isCustomToggleInitialSet = true;
+          }
+          else {
+            togg.initial = false;
+          }
+        })
+        if (!isCustomToggleInitialSet) {
+          item.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
+            debugger
+            if (index == 0) {
+              togg.initial = true;
+            }
+            else {
+              togg.initial = false;
+            }
+          })
+        }
+
+
+      }
       let box: Box = { config: ngGridItemConfig, tile: item, IsCharacter: false };
       boxes.push(box);
     })
@@ -1823,6 +1912,27 @@ export class CampaignDashboardComponent implements OnInit {
         this.bsModalRef.content.tile = tile;
         this.bsModalRef.content.rulesetId = this.ruleSetId;
         this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.EDIT;
+
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            this.showManageIcons = data;
+          }
+        })
+        break;
+      }
+      case TILES.TOGGLE: {
+        debugger
+        this.bsModalRef = this.modalService.show(RulesetToggleTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = 'Edit Toggle Tile';
+        this.bsModalRef.content.rulesetId = this.ruleSetId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.tile = tile;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.EDIT;
 

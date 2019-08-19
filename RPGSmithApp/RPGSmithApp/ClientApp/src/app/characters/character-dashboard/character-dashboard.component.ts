@@ -1624,10 +1624,74 @@ export class CharacterDashboardComponent implements OnInit {
         this.bsModalRef.content.isSharedLayout = this.isSharedLayout;
         break;
       }
+      case TILES.TOGGLE: {
+        if (!this.isSharedLayout) {
+          debugger
+          if (_tile.toggleTiles.tileToggle.yesNo) {
+            _tile.toggleTiles.yesNo = !_tile.toggleTiles.yesNo
+            this.updateToggleTile(_tile.toggleTiles);
+          }
+          else if (_tile.toggleTiles.tileToggle.onOff) {
+            _tile.toggleTiles.onOff = !_tile.toggleTiles.onOff
+            this.updateToggleTile(_tile.toggleTiles)
+          }
+          else if (_tile.toggleTiles.tileToggle.display) {
+            _tile.toggleTiles.checkBox = !_tile.toggleTiles.checkBox;
+            this.updateToggleTile(_tile.toggleTiles)
+          }
+          else if (_tile.toggleTiles.tileToggle.isCustom) {
+            debugger
+            let initialIndex: number = -1;
+            _tile.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
+              if (togg.initial) {
+                initialIndex = index;
+              }
+            })
+            _tile.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
+              togg.initial = false;
+              if ((initialIndex + 1) == _tile.toggleTiles.tileToggle.tileCustomToggles.length) {
+                if (index == 0) {
+                  togg.initial = true;
+                  _tile.toggleTiles.customValue = togg.tileCustomToggleId;
+                }
+              }
+              else {
+                if ((initialIndex + 1) == index) {
+                  togg.initial = true;
+                  _tile.toggleTiles.customValue = togg.tileCustomToggleId;
+                }
+              }
+            })
+
+            this.updateToggleTile(_tile.toggleTiles)
+          }
+        }
+       
+
+        break;
+      }
       default: break;
     }
   }
-
+  updateToggleTile(tile) {
+    this.characterTileService.updateToggleTileValues(tile).subscribe(
+      data => {
+        //this.alertService.stopLoadingMessage();
+        //this.alertService.showMessage("Character stat has been saved successfully.", "", MessageSeverity.success);               
+      },
+      error => {
+        this.alertService.stopLoadingMessage();
+        let _message = "Unable to Save";
+        let Errors = Utilities.ErrorDetail(_message, error);
+        if (Errors.sessionExpire) {
+          //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+          this.authService.logout(true);
+        }
+        else
+          this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+      },
+    )
+  }
   useCommand(Command: any) {
     let msg = "The command value for " + Command.name
       + " has not been provided. Edit this record to input one.";
@@ -2376,6 +2440,33 @@ export class CharacterDashboardComponent implements OnInit {
             }
           })
         }
+      }
+      else if (item.tileTypeId == TILES.TOGGLE && item.toggleTiles!=null) {
+   
+          let isCustomToggleInitialSet = false;
+        item.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
+            debugger
+          if (togg.tileCustomToggleId == item.toggleTiles.customValue) {
+              togg.initial = true;
+              isCustomToggleInitialSet = true;
+            }
+            else {
+              togg.initial = false;
+            }
+          })
+          if (!isCustomToggleInitialSet) {
+            item.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
+              debugger
+              if (index == 0) {
+                togg.initial = true;
+              }
+              else {
+                togg.initial = false;
+              }
+            })
+          }
+
+        
       }
       ////////////////////////////////
       let box: Box = { config: ngGridItemConfig, tile: item, IsCharacter: false };

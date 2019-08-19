@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Models;
@@ -58,6 +59,31 @@ namespace DAL.Services.RulesetTileServices
             try
             {
                 await _repo.Update(toggleTile);
+                var toggles = _context.TileToggles.Where(x => x.TileToggleId == toggleTile.TileToggleId && x.IsDeleted != true).FirstOrDefault();
+                if (toggles != null)
+                {
+                    toggles.Display = item.TileToggle.Display;
+                    toggles.IsCustom = item.TileToggle.IsCustom;
+                    toggles.OnOff = item.TileToggle.OnOff;
+                    toggles.ShowCheckbox = item.TileToggle.ShowCheckbox;
+                    toggles.YesNo = item.TileToggle.YesNo;
+
+
+                    _context.TileCustomToggles.RemoveRange(_context.TileCustomToggles.Where(x => x.TileToggleId == toggles.TileToggleId && x.IsDeleted != true));
+                    _context.SaveChanges();
+                    if (item.TileToggle.IsCustom && item.TileToggle.TileCustomToggles.Count > 0)
+                    {
+                        var records = item.TileToggle.TileCustomToggles.Select(x => new TileCustomToggle()
+                        {
+                            Image = x.Image,
+                            TileToggleId = toggles.TileToggleId,
+                            ToggleText = x.ToggleText,
+
+                        });
+                        _context.TileCustomToggles.AddRange(records);
+                        _context.SaveChanges();
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -65,6 +91,19 @@ namespace DAL.Services.RulesetTileServices
             }
 
             return toggleTile;
+        }
+        public async Task updateRulesetToggleTileValues(RulesetToggleTile model)
+        {
+            var toggleTile = _context.RulesetToggleTiles.Where(x => x.ToggleTileId == model.ToggleTileId).FirstOrDefault();
+            if (toggleTile != null)
+            {
+                toggleTile.YesNo = model.YesNo;
+                toggleTile.OnOff = model.OnOff;
+                toggleTile.CheckBox = model.CheckBox;
+                toggleTile.CustomValue = model.CustomValue;
+
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }
