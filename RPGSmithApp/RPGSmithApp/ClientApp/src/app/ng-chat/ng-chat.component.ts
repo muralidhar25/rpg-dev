@@ -961,7 +961,7 @@ export class NgChat implements OnInit, IChatController {
         //this.customDices
         msg = ServiceUtil.getFinalCalculationString(msg, this.statdetails, this.charactersCharacterStats, this.character)
       }
-      var diceResult = DiceService.rollDiceExternally_with_And(this.alertService, msg, this.customDices, true)
+      var diceResult = DiceService.rollDiceExternally(this.alertService, msg, this.customDices, true)
       if (diceResult &&
         diceResult.characterMultipleCommands &&
         diceResult.characterMultipleCommands[0] &&
