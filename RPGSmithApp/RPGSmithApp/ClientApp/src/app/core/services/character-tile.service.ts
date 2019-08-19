@@ -6,6 +6,7 @@ import { EndpointFactory } from '../common/endpoint-factory.service';
 import { ConfigurationService } from '../common/configuration.service';
 import { FileUploadService } from "../common/file-upload.service";
 import { Tile } from '../models/view-models/tile.model';
+import { ToggleTile } from '../models/view-models/toggle-tile.model';
 
 @Injectable()
 export class CharacterTileService extends EndpointFactory {
@@ -20,6 +21,7 @@ export class CharacterTileService extends EndpointFactory {
   private readonly _getCountByPageIdCharacterId: string = "/api/CharatcerTile/getCountByPageIdCharacterId";
   private readonly _getRecentColorsApi: string = "/api/CharatcerTile/getRecentColors";
   private readonly _deleteTileListApi: string = "/api/CharatcerTile/deleteTileList";
+  private readonly _updateToggleTileValuesUrl: string = "/api/CharatcerTile/updateToggleTileValues";
 
   get createUrl() { return this.configurations.baseUrl + this._createUrl; }
   get updateUrl() { return this.configurations.baseUrl + this._updateUrl; }
@@ -31,6 +33,7 @@ export class CharacterTileService extends EndpointFactory {
   get getCountByPageIdCharacterId() { return this.configurations.baseUrl + this._getCountByPageIdCharacterId; }
   get getRecentColorsApi() { return this.configurations.baseUrl + this._getRecentColorsApi; }
   get deleteTileListUrl() { return this.configurations.baseUrl + this._deleteTileListApi; }
+  get updateToggleTileValuesUrl() { return this.configurations.baseUrl + this._updateToggleTileValuesUrl; }
 
 
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
@@ -105,6 +108,13 @@ export class CharacterTileService extends EndpointFactory {
     return this.http.put<T>(this.updateUrl, JSON.stringify(tile), this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.updateTile(tile));
+      });
+  }
+  updateToggleTileValues<T>(tile: ToggleTile): Observable<T> {
+
+    return this.http.post<T>(this.updateToggleTileValuesUrl, JSON.stringify(tile), this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.updateToggleTileValues(tile));
       });
   }
 

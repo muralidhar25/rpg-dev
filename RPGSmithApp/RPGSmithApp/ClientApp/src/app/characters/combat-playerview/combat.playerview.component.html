@@ -86,7 +86,9 @@
                 <ng-container *ngIf="item.visibleToPc">
                   <td>
                     <div class="white-section name-data text-ellipsis crsr-pointer" popover="{{item?.type == combatantsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}" triggers="hover">
-                      {{item?.type == combatantsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}
+                      <ng-container *ngIf="!(item?.type == combatantsType.MONSTER && item?.visibleToPc && !item?.showMonsterName)">{{item?.type == combatantsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}</ng-container>
+                      <ng-container  *ngIf="(item?.type == combatantsType.MONSTER && item?.visibleToPc && !item?.showMonsterName)"><em>{{item?.monster?.name}}</em></ng-container>
+                      
                     </div>
                   </td>
                   <td class="health-circle-column">

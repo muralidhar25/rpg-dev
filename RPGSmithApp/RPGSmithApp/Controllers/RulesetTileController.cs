@@ -6,6 +6,7 @@ using AutoMapper;
 using DAL.Core.Interfaces;
 using DAL.Models;
 using DAL.Models.RulesetTileModels;
+using DAL.Services;
 using DAL.Services.RulesetTileServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +32,8 @@ namespace RPGSmithApp.Controllers
         private readonly IRulesetNoteTileService _noteTileService;
         private readonly IRulesetTileColorService _colorService;
         private readonly IRulesetBuffAndEffectTileService _buffAndEffectTileService;
-        
+        private readonly IRuleSetService _rulesetService;
+
         private const int heightWidth = 144;
 
         public RulesetTileController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager,
@@ -43,7 +45,8 @@ namespace RPGSmithApp.Controllers
             IRulesetTextTileService textTileService,
             IRulesetNoteTileService noteTileService,
             IRulesetTileColorService colorService,
-            IRulesetBuffAndEffectTileService buffAndEffectTileService, IRulesetToggleTileService toggleTileService)
+            IRulesetBuffAndEffectTileService buffAndEffectTileService, IRulesetToggleTileService toggleTileService,
+            IRuleSetService rulesetService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._accountManager = accountManager;
@@ -57,6 +60,7 @@ namespace RPGSmithApp.Controllers
             this._colorService = colorService;
             this._buffAndEffectTileService = buffAndEffectTileService;
             this._toggleTileService = toggleTileService;
+            this._rulesetService = rulesetService;
         }
 
         [HttpGet("GetById")]
@@ -254,6 +258,7 @@ namespace RPGSmithApp.Controllers
                             toggleTile.RulesetTileId = Tile.RulesetTileId;
                             //imageTile.Color = Tile.Color;
                             toggleTile.Shape = Tile.Shape;
+                            BindCustomToggleImages(toggleTile);
                             Tile.ToggleTiles = await _toggleTileService.Create(toggleTile);
                             SaveColorsAsync(Tile);
                             break;
@@ -281,7 +286,29 @@ namespace RPGSmithApp.Controllers
             return BadRequest(Utilities.ModelStateError(ModelState));
         }
 
-
+        private void BindCustomToggleImages(RulesetToggleTile toggleTile)
+        {
+            if (toggleTile.TileToggle != null && toggleTile.TileToggle.IsCustom && toggleTile.TileToggle.TileCustomToggles != null)
+            {
+                foreach (var customToggle in toggleTile.TileToggle.TileCustomToggles)
+                {
+                    if (customToggle.Image != "" && customToggle.Image != null)
+                    {
+                        if (!customToggle.Image.Contains("rpgsmithsa.blob.core.windows.net"))
+                        {
+                            BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _rulesetService);
+                            string imageName = Guid.NewGuid().ToString() + ".jpg";
+                            if (customToggle.Image.StartsWith("data:image"))
+                            {
+                                customToggle.Image = bs.UploadImage_Base64(customToggle.Image, imageName).Result;
+                            }
+                            else
+                                customToggle.Image = bs.UploadImage_URL(customToggle.Image, imageName).Result;
+                        }
+                    }
+                }
+            }
+        }
         [HttpPost("update")]
         [ProducesResponseType(200, Type = typeof(string))]
         public async Task<IActionResult> Update([FromBody] RulesetTileEditModel model)
@@ -410,6 +437,22 @@ namespace RPGSmithApp.Controllers
                             buffAndEffectTile.RulesetTileId = Tile.RulesetTileId;
                             buffAndEffectTile.Shape = Tile.Shape;
                             Tile.BuffAndEffectTiles = await _buffAndEffectTileService.Update(buffAndEffectTile);
+                            SaveColorsAsync(Tile);
+                            break;
+                        case (int)Enum.TILES.Toggle:
+                            //Update Text Tile 
+                            if (model.ToggleTile == null)
+                                return BadRequest("ToggleTile missing in request");
+                            else if (model.ToggleTile.ToggleTileId == 0)
+                                return BadRequest("ToggleTileId field is required for ToggleTile");
+
+                            await _tileService.Update(Tile);
+
+                            var ToggleTile = model.ToggleTile;
+                            ToggleTile.RulesetTileId = Tile.RulesetTileId;
+                            ToggleTile.Shape = Tile.Shape;
+                            BindCustomToggleImages(ToggleTile);
+                            Tile.ToggleTiles = await _toggleTileService.Update(ToggleTile);
                             SaveColorsAsync(Tile);
                             break;
                         default:
@@ -542,6 +585,20 @@ namespace RPGSmithApp.Controllers
                 await Delete(id);
             }
             return Ok();
+        }
+        [HttpPost("updateToggleTileValues")]
+        public async Task<IActionResult> updateToggleTileValues([FromBody] RulesetToggleTile model)
+        {
+            try
+            {
+                await _toggleTileService.updateRulesetToggleTileValues(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+
         }
     }
 }

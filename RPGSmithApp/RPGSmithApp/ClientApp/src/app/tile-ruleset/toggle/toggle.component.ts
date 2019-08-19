@@ -102,6 +102,12 @@ export class RulesetToggleTileComponent implements OnInit {
           
           this.shapeClass = this.toggleTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.toggleTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
           console.log(this.shapeClass);
+
+          if (this.rulesetTileModel.view == VIEW.EDIT) {
+
+            this.tileToggleViewModel = Object.assign({}, this.toggleTileFormModal.tileToggle);
+          }
+
           this.Initialize(this.toggleTileFormModal);
 
         }, 0);
@@ -405,7 +411,7 @@ export class RulesetToggleTileComponent implements OnInit {
 
                   let message = modal.toggleTile.toggleTileId == 0 || modal.toggleTile.toggleTileId === undefined ? "Toggle Tile has been added successfully." : "Toggle Tile has been updated successfully.";
                     this.alertService.showMessage(message, "", MessageSeverity.success);
-                    this.sharedService.updateCharacterList(data);
+                  this.sharedService.updateRulesetDashboard(data)
                     this.close();
                 },
                 error => {

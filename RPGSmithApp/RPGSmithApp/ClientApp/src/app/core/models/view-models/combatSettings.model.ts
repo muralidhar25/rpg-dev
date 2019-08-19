@@ -17,7 +17,8 @@ export class CombatSettings {
     displayMonsterRollResultInChat?: boolean,
     showMonsterHealth?: boolean,
     seeMonsterBuffEffects?: boolean,
-    seeMonsterItems?: boolean
+    seeMonsterItems?: boolean,
+    showMonsterNameByDefault?: boolean,
   ) {
     this.id = id;
     this.combatId = combatId;
@@ -37,6 +38,7 @@ export class CombatSettings {
     this.showMonsterHealth = showMonsterHealth;
     this.seeMonsterBuffEffects = seeMonsterBuffEffects;
     this.seeMonsterItems = seeMonsterItems;
+    this.showMonsterNameByDefault = showMonsterNameByDefault;
   }
 
   public id: number;  public combatId: number;
@@ -56,4 +58,5 @@ export class CombatSettings {
   public showMonsterHealth: boolean;
   public seeMonsterBuffEffects: boolean;
   public seeMonsterItems: boolean;
+  public showMonsterNameByDefault: boolean;
 }

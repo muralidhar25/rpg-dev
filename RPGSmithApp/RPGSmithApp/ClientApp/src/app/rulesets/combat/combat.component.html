@@ -112,6 +112,12 @@
                       <span></span>
                     </li>
                     <li>
+                      Show Monster Names by Default
+                      <input type="checkbox" name="ShowMonsterNamesByDefault" [(ngModel)]="settings.showMonsterNameByDefault"
+                             (change)="UpdateSettings($event, COMBAT_SETTINGS.SHOW_MONSTER_NAMES_BY_DEFAULT)" />
+                      <span></span>
+                    </li>
+                    <li>
                       Display Monster Roll Results in Chat
                       <input type="checkbox" name="displayMonsterRollResultInChat" [(ngModel)]="settings.displayMonsterRollResultInChat"
                              (change)="UpdateSettings($event, COMBAT_SETTINGS.DISPLAY_MONSTER_ROLL_RESULTS_IN_CHAT)" />
@@ -269,6 +275,12 @@
                           <span></span>
                         </li>
                         <li>
+                          Show Monster Names by Default
+                          <input type="checkbox" name="ShowMonsterNamesByDefault" [(ngModel)]="settings.showMonsterNameByDefault"
+                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.SHOW_MONSTER_NAMES_BY_DEFAULT)" />
+                          <span></span>
+                        </li>
+                        <li>
                           Display Monster Roll Results in Chat
                           <input type="checkbox" name="displayMonsterRollResultInChat" [(ngModel)]="settings.displayMonsterRollResultInChat"
                                  (change)="UpdateSettings($event, COMBAT_SETTINGS.DISPLAY_MONSTER_ROLL_RESULTS_IN_CHAT)" />
@@ -322,7 +334,13 @@
               <td>
                 <div class="white-section name-data text-ellipsis crsr-pointer" (click)="nameClicked(item);$event.stopPropagation()"
                      popover="{{item?.type == combatItemsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}" triggers="hover">
-                  {{item?.type == combatItemsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}
+                  
+                  <ng-container *ngIf="!(item?.type == combatItemsType.MONSTER && item?.visibleToPc && !item?.showMonsterName)">{{item?.type == combatItemsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}</ng-container>
+                  <ng-container *ngIf="(item?.type == combatItemsType.MONSTER && item?.visibleToPc && !item?.showMonsterName)">
+                    <em>{{item?.monster?.name}}</em><br />
+                    <em class="text-black">{{item?.monster?.unKonwnName ? '('+item?.monster?.unKonwnName+')':''}}</em>
+                  </ng-container>
+
                 </div>
               </td>
               <td class="health-circle-column">
@@ -494,6 +512,30 @@
                              [checked]="!item?.visibleToPc"
                              (click)="HideVisibility(item)">
                       <span class="visibility-btn"><i class="icon-Gen-Hide"> </i></span>
+                    </label>
+                  </li>
+                </ul>
+              </fieldset>
+
+
+            </div>
+            <div *ngIf="item?.type==combatItemsType.MONSTER && item?.visibleToPc" class="mt-1">
+              <fieldset class=" input-switch input-switch-dual">
+                <ul class="input-switch-items">
+                  <li class="form-check p-0" *ngIf="!item?.showMonsterName">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="ShowMonsterName1"
+                             [checked]="item?.showMonsterName"
+                             (click)="ShowMonsterName(item,true)">
+                      <span class="">Show Monster Name</span>
+                    </label>
+                  </li>
+                  <li class="form-check p-0" *ngIf="item?.showMonsterName">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="ShowMonsterName2"
+                             [checked]="!item?.showMonsterName"
+                             (click)="ShowMonsterName(item,false)">
+                      <span class=""><em>Hide Monster Name</em></span>
                     </label>
                   </li>
                 </ul>

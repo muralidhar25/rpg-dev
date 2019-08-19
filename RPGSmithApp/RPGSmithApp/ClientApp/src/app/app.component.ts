@@ -453,7 +453,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.IsRulesetRecordScreenActive = false;
               //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
             }
-            debugger
+            
             this.SearchType = 0;
             this.SearchTypeText = '';
             this.isCharacterItem = 0;

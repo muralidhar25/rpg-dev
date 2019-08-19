@@ -36,22 +36,24 @@ namespace RPGSmithApp.Controllers
         private readonly IColorService _colorService;
         private readonly ICharactersCharacterStatService _charactersCharacterStatService;
         private readonly IToggleTileService _toggleTileService;
+        private readonly IRuleSetService _ruleSetService;
         private const int heightWidth = 144;
 
-        public CharatcerTileController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager, 
+        public CharatcerTileController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager,
             ICharacterTileService tileService,
-            ICharacterStatTileService characterStatTileService, 
+            ICharacterStatTileService characterStatTileService,
             ICommandTileService commandTileService,
-            ICounterTileService counterTileService, 
-            IExecuteTileService executeTileService, 
+            ICounterTileService counterTileService,
+            IExecuteTileService executeTileService,
             IImageTileService imageTileService,
-            ITextTileService textTileService, 
-            ILinkTileService linkTileService, 
-            INoteTileService noteTileService, 
+            ITextTileService textTileService,
+            ILinkTileService linkTileService,
+            INoteTileService noteTileService,
             IColorService colorService,
             ICharactersCharacterStatService charactersCharacterStatService,
             IBuffAndEffectTileService buffAndEffectTileService,
-            IToggleTileService toggleTileService)
+            IToggleTileService toggleTileService,
+            IRuleSetService ruleSetService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._accountManager = accountManager;
@@ -68,6 +70,7 @@ namespace RPGSmithApp.Controllers
             this._imageTileService = imageTileService;
             this._buffAndEffectTileService = buffAndEffectTileService;
             this._toggleTileService = toggleTileService;
+            this._ruleSetService = ruleSetService;
         }
 
         [HttpGet("GetById")]
@@ -79,7 +82,7 @@ namespace RPGSmithApp.Controllers
         [HttpGet("getByPageIdCharacterId")]
         public IEnumerable<CharacterTile> GetByPageIdCharacterId(int pageId, int characterId)
         {
-            var result= _tileService.GetByPageIdCharacterId(pageId, characterId);
+            var result = _tileService.GetByPageIdCharacterId(pageId, characterId);
             foreach (var item in result)
             {
                 item.Character.CharacterTiles = null;
@@ -102,7 +105,7 @@ namespace RPGSmithApp.Controllers
             List<CharacterTile> result = _tileService.GetByPageIdCharacterId_sp(pageId, characterId);
             var bb = _tileService.GetCharactersCharacterStats_sp(characterId);
             var cc = _charactersCharacterStatService.getLinkTypeRecords(characterId);
-            return new { data = result, characterStatsValues = bb, statLinkRecords= cc };
+            return new { data = result, characterStatsValues = bb, statLinkRecords = cc };
         }
 
         [HttpGet("getSharedLayoutByPageIdRulesetId_sp")]
@@ -125,7 +128,7 @@ namespace RPGSmithApp.Controllers
             string userId = GetUserId();
             return _colorService.GetByUserId(userId);
         }
-        
+
         [HttpGet("getRPGCoreColors")]
         public IEnumerable<RPGCoreColor> getRPGCoreColors()
         {
@@ -146,7 +149,7 @@ namespace RPGSmithApp.Controllers
                     model.Width = model.Width == 0 ? heightWidth : model.Width;
                     model.Height = model.Height == 0 ? heightWidth : model.Height;
 
-                    var Tile = Mapper.Map<CharacterTile>(model);                                       
+                    var Tile = Mapper.Map<CharacterTile>(model);
 
                     switch (Tile.TileTypeId)
                     {
@@ -200,7 +203,7 @@ namespace RPGSmithApp.Controllers
                             else if (model.MultiCharacterStats.Count == 0)
                                 return BadRequest("Character Stat Tile is missing in request");
 
-                            foreach(var cStat in model.MultiCharacterStats)
+                            foreach (var cStat in model.MultiCharacterStats)
                             {
                                 var _newTile = Mapper.Map<CharacterTile>(model);
                                 _newTile.Shape = cStat.CharacterStatTypeId == 2 ? (_newTile.Shape == 100 ? 0 : _newTile.Shape) : _newTile.Shape;
@@ -218,22 +221,22 @@ namespace RPGSmithApp.Controllers
                                     bodyBgColor = characterStatTile.bodyBgColor,
                                     bodyTextColor = characterStatTile.bodyTextColor,
                                     ShowTitle = characterStatTile.ShowTitle,
-                                    ImageUrl= cStat.Image,
-                                    DisplayLinkImage= characterStatTile.DisplayLinkImage
+                                    ImageUrl = cStat.Image,
+                                    DisplayLinkImage = characterStatTile.DisplayLinkImage
                                 });
 
                                 SaveColorsAsync(_newTile);
-                                if (tilesList==null)
+                                if (tilesList == null)
                                 {
                                     tilesList = new List<CharacterTile>();
                                 }
                                 tilesList.Add(_newTile);
                                 //if (!string.IsNullOrEmpty(cStat.Image))
-                                    //await _charactersCharacterStatService.UpdateCommandImage(cStat.CharacterStatId, cStat.Image);
-                            }                            
-                            
+                                //await _charactersCharacterStatService.UpdateCommandImage(cStat.CharacterStatId, cStat.Image);
+                            }
+
                             break;
-                        case (int)Enum.TILES.LINK:                                               
+                        case (int)Enum.TILES.LINK:
                             List<multiRecord> recList = new List<multiRecord>();
                             if (model.itemIDS.Length > 0)
                             {
@@ -243,7 +246,7 @@ namespace RPGSmithApp.Controllers
                                 }
                             }
                             if (model.spellIDS.Length > 0)
-                            {                                
+                            {
                                 foreach (var spell in model.spellIDS)
                                 {
                                     recList.Add(new multiRecord { recId = spell, recType = "Spell" });
@@ -468,9 +471,9 @@ namespace RPGSmithApp.Controllers
                                     SpellId = model.ExecuteTile.SpellId,
                                     TitleBgColor = model.ExecuteTile.TitleBgColor,
                                     TitleTextColor = model.ExecuteTile.TitleTextColor,
-                                    CommandId= model.ExecuteTile.CommandId,
+                                    CommandId = model.ExecuteTile.CommandId,
                                     DisplayLinkImage = model.ExecuteTile.DisplayLinkImage,
-                                    BuffAndEffectId= model.ExecuteTile.BuffAndEffectId,
+                                    BuffAndEffectId = model.ExecuteTile.BuffAndEffectId,
                                 };
 
                                 var executeTile = _ExecuteTile;
@@ -484,7 +487,7 @@ namespace RPGSmithApp.Controllers
                                     tilesList = new List<CharacterTile>();
                                 }
                                 tilesList.Add(_newTile);
-                            }                            
+                            }
                             break;
                         case (int)Enum.TILES.COMMAND:
                             //Add Command Tile 
@@ -509,7 +512,7 @@ namespace RPGSmithApp.Controllers
 
                             var textTile = model.TextTile;
                             textTile.CharacterTileId = Tile.CharacterTileId;
-                           
+
                             textTile.Shape = Tile.Shape;
                             Tile.TextTiles = await _textTileService.Create(textTile);
                             SaveColorsAsync(Tile);
@@ -541,6 +544,7 @@ namespace RPGSmithApp.Controllers
                             toggleTile.CharacterTileId = Tile.CharacterTileId;
 
                             toggleTile.Shape = Tile.Shape;
+                            BindCustomToggleImages(toggleTile);
                             Tile.ToggleTiles = await _toggleTileService.Create(toggleTile);
                             SaveColorsAsync(Tile);
                             break;
@@ -557,7 +561,7 @@ namespace RPGSmithApp.Controllers
                     else
                     {
                         return Ok(tilesList);
-                    }                    
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -764,7 +768,7 @@ namespace RPGSmithApp.Controllers
 
                             var commandTile = model.CommandTile;
                             commandTile.CharacterTileId = Tile.CharacterTileId;
-                           // commandTile.Color = Tile.Color;
+                            // commandTile.Color = Tile.Color;
                             commandTile.Shape = Tile.Shape;
                             Tile.CommandTiles = await _commandTileService.Update(commandTile);
                             SaveColorsAsync(Tile);
@@ -799,6 +803,23 @@ namespace RPGSmithApp.Controllers
                             Tile.BuffAndEffectTiles = await _buffAndEffectTileService.Update(buffAndEffect);
                             SaveColorsAsync(Tile);
                             break;
+                        case (int)Enum.TILES.Toggle:
+                            //Update Text Tile 
+                            if (model.ToggleTile == null)
+                                return BadRequest("ToggleTile missing in request");
+                            else if (model.ToggleTile.ToggleTileId == 0)
+                                return BadRequest("ToggleTileId field is required for ToggleTile");
+
+                            await _tileService.Update(Tile);
+
+                            var toggleTile = model.ToggleTile;
+                            toggleTile.CharacterTileId = Tile.CharacterTileId;
+                            toggleTile.Shape = Tile.Shape;
+                            BindCustomToggleImages(toggleTile);
+
+                            Tile.ToggleTiles = await _toggleTileService.Update(toggleTile);
+                            SaveColorsAsync(Tile);
+                            break;
                         default:
                             break;
                     }
@@ -811,6 +832,30 @@ namespace RPGSmithApp.Controllers
 
             }
             return BadRequest(Utilities.ModelStateError(ModelState));
+        }
+
+        private void BindCustomToggleImages(CharacterToggleTile toggleTile)
+        {
+            if (toggleTile.TileToggle != null && toggleTile.TileToggle.IsCustom && toggleTile.TileToggle.TileCustomToggles != null)
+            {
+                foreach (var customToggle in toggleTile.TileToggle.TileCustomToggles)
+                {
+                    if (customToggle.Image != "" && customToggle.Image != null)
+                    {
+                        if (!customToggle.Image.Contains("rpgsmithsa.blob.core.windows.net"))
+                        {
+                            BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _ruleSetService);
+                            string imageName = Guid.NewGuid().ToString() + ".jpg";
+                            if (customToggle.Image.StartsWith("data:image"))
+                            {
+                                customToggle.Image = bs.UploadImage_Base64(customToggle.Image, imageName).Result;
+                            }
+                            else
+                                customToggle.Image = bs.UploadImage_URL(customToggle.Image, imageName).Result;
+                        }
+                    }
+                }
+            }
         }
 
         [HttpDelete("delete")]
@@ -843,11 +888,11 @@ namespace RPGSmithApp.Controllers
 
                 switch (Tile.TileTypeId)
                 {
-                    case (int)Enum.TILES.NOTE:                       
+                    case (int)Enum.TILES.NOTE:
                         _tileColor.BodyBgColor = Tile.NoteTiles.BodyBgColor;
                         _tileColor.BodyTextColor = Tile.NoteTiles.BodyTextColor;
-                        _tileColor.TitleBgColor= Tile.NoteTiles.TitleBgColor;
-                        _tileColor.TitleTextColor= Tile.NoteTiles.TitleTextColor;
+                        _tileColor.TitleBgColor = Tile.NoteTiles.TitleBgColor;
+                        _tileColor.TitleTextColor = Tile.NoteTiles.TitleTextColor;
                         break;
                     case (int)Enum.TILES.IMAGE:
                         _tileColor.BodyBgColor = Tile.ImageTiles.BodyBgColor;
@@ -908,7 +953,7 @@ namespace RPGSmithApp.Controllers
 
                 //save colors
                 if (_tileColor.TitleTextColor != null && _tileColor.BodyTextColor != null)
-                   await _colorService.Create(_tileColor);
+                    await _colorService.Create(_tileColor);
             }
             catch (Exception ex)
             { }
@@ -923,7 +968,7 @@ namespace RPGSmithApp.Controllers
         [HttpGet("allReadyHaveColor")]
         public Boolean allReadyHaveColor(string userId)
         {
-          return  _colorService.ColorExixtsForUser(userId);
+            return _colorService.ColorExixtsForUser(userId);
         }
         //[HttpGet("GetCharactersCharacterStats_sp")]
         //public SP_CharactersCharacterStat GetCharactersCharacterStats_sp(int characterId)
@@ -942,6 +987,19 @@ namespace RPGSmithApp.Controllers
                 await Delete(id);
             }
             return Ok();
+        }
+
+        [HttpPost("updateToggleTileValues")]
+        public async Task<IActionResult> updateToggleTileValues([FromBody] CharacterToggleTile model)
+        {
+            try {
+                await _toggleTileService.updateCharacterToggleTileValues(model);
+                return Ok();
+            }
+            catch (Exception ex) {
+                return Ok(ex.Message);
+            }
+            
         }
     }
 }

@@ -53,6 +53,7 @@ namespace DAL.Models.SPModels
         public bool IsDeleted { get; set; }
 
         public bool VisibleToPc { get; set; }
+        public bool ShowMonsterName { get; set; }
 
         public string VisibilityColor { get; set; }
 
@@ -122,8 +123,11 @@ namespace DAL.Models.SPModels
         public string VisibilityColor { get; set; }
 
         public bool VisibleToPc { get; set; }
+        
 
         public bool IsCurrentTurn { get; set; }
+
+        public bool ShowMonsterName { get; set; }
 
     }
     public class CharacterHealthModel

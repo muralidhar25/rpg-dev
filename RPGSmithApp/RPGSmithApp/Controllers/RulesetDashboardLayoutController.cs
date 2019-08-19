@@ -29,6 +29,7 @@ namespace RPGSmithApp.Controllers
         private readonly IRulesetNoteTileService _noteTileService;
         private readonly IRulesetTileConfigService _tileConfigService;
         private readonly IRulesetTextTileService _textTileService;
+        private readonly IRulesetToggleTileService _toggleTileService;
 
         public RulesetDashboardLayoutController(IHttpContextAccessor httpContextAccessor,
             IRulesetDashboardLayoutService rulesetDashboardLayoutService,
@@ -39,7 +40,8 @@ namespace RPGSmithApp.Controllers
             IRulesetCounterTileService counterTileService,
             IRulesetImageTileService imageTileService,
             IRulesetNoteTileService noteTileService,
-            IRulesetTileConfigService tileConfigService, IRulesetTextTileService textTileService)
+            IRulesetTileConfigService tileConfigService, IRulesetTextTileService textTileService,
+            IRulesetToggleTileService toggleTileService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._rulesetDashboardLayoutService = rulesetDashboardLayoutService;
@@ -52,6 +54,7 @@ namespace RPGSmithApp.Controllers
             this._noteTileService = noteTileService;
             this._tileConfigService = tileConfigService;
             this._textTileService = textTileService;
+            this._toggleTileService = toggleTileService;
         }
 
         [HttpGet("getByRulesetId")]
@@ -338,6 +341,55 @@ namespace RPGSmithApp.Controllers
                                         IsDeleted = false,
                                         Text = textTile.Text
                                     });
+                                    //SaveColorsAsync(Tile);
+                                    break;
+                                case (int)Enum.TILES.Toggle:
+                                    var toggleTile = _tile.ToggleTiles;
+                                    var tog = toggleTile.TileToggle;
+
+                                    var customTogglesList = new List<TileCustomToggle>();
+                                    if (tog.TileCustomToggles != null)
+                                    {
+                                        foreach (var item in tog.TileCustomToggles)
+                                        {
+                                            customTogglesList.Add(new TileCustomToggle()
+                                            {
+                                                Image = item.Image,
+                                                IsDeleted = item.IsDeleted,
+                                                ToggleText = item.ToggleText,
+                                            });
+                                        }
+                                    }
+
+                                    var togToAdd = new TileToggle()
+                                    {
+                                        Display = tog.Display,
+                                        IsCustom = tog.IsCustom,
+                                        OnOff = tog.OnOff,
+                                        IsDeleted = tog.IsDeleted,
+                                        ShowCheckbox = tog.ShowCheckbox,
+                                        YesNo = tog.YesNo,
+                                        TileCustomToggles = customTogglesList,
+                                    };
+                                    var toggleTileToCreate = new RulesetToggleTile
+                                    {
+                                        RulesetTileId = Tile.RulesetTileId,
+                                        Title = toggleTile.Title,
+                                        Shape = toggleTile.Shape,
+                                        SortOrder = toggleTile.SortOrder,
+                                        BodyBgColor = toggleTile.BodyBgColor,
+                                        BodyTextColor = toggleTile.BodyTextColor,
+                                        TitleBgColor = toggleTile.TitleBgColor,
+                                        TitleTextColor = toggleTile.TitleTextColor,
+                                        IsDeleted = false,
+                                        CheckBox = toggleTile.CheckBox,
+                                        CustomValue = toggleTile.CustomValue,
+                                        OnOff = toggleTile.OnOff,
+                                        YesNo = toggleTile.YesNo,
+                                        TileToggle = togToAdd,
+
+                                    };
+                                    Tile.ToggleTiles = await _toggleTileService.Create(toggleTileToCreate);
                                     //SaveColorsAsync(Tile);
                                     break;
                                 default:

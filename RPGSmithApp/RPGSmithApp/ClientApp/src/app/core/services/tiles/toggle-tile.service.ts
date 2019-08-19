@@ -169,7 +169,7 @@ export class ToggleTileService extends EndpointFactory
       modelData = {
         rulesetTileId: model.rulesetTileId ,
         tileTypeId: model.tileTypeId,
-        rulesetDashboardPageId: pageId,
+        rulesetDashboardPageId: model.rulesetDashboardPageId,
         rulesetId: rulesetId,
         color: model.color ? model.color : '',
         bgColor: model.bgColor ? model.bgColor : '',

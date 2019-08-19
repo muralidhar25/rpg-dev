@@ -621,7 +621,7 @@ export class CombatComponent implements OnInit {
           //  debugger
           //})
 
-          console.log('save', this.combatants)
+          //console.log('save', this.combatants)
           if (this.showCombatOptions) {
             this.combatService.saveSortOrder(this.combatants).subscribe(res => {
 
@@ -670,6 +670,7 @@ export class CombatComponent implements OnInit {
         //    clearInterval(this.refreshPCDataModel)
         //  }
         //}
+        this.BindMonstersName();
       }
       this.isLoading = false;
     }, error => {
@@ -1396,6 +1397,9 @@ export class CombatComponent implements OnInit {
       case COMBAT_SETTINGS.MONSTERS_ARE_VISIBLE_BY_DEFAULT:
         this.settings.monsterVisibleByDefault = e.target.checked;
         break;
+      case COMBAT_SETTINGS.SHOW_MONSTER_NAMES_BY_DEFAULT:
+        this.settings.showMonsterNameByDefault = e.target.checked;
+        break;
       case COMBAT_SETTINGS.DISPLAY_MONSTER_ROLL_RESULTS_IN_CHAT:
         this.settings.displayMonsterRollResultInChat = e.target.checked;
         break;
@@ -1833,20 +1837,23 @@ export class CombatComponent implements OnInit {
     this.saveVisibilityDetails(item);
 
   }
-
+  ShowMonsterName(item,flag) {
+    item.showMonsterName = flag;
+    this.saveVisibilityDetails(item);
+  }
   ShowVisibility(item) {
-    debugger
+    
     item.visibleToPc = true;
     this.saveVisibilityDetails(item);
   }
   HideVisibility(item) {
-    debugger
+    
     item.visibleToPc = false;
     this.saveVisibilityDetails(item);
   }
   saveVisibilityDetails(currentItem) {
-    debugger
-
+    
+    this.BindMonstersName();
     this.combatService.saveVisibilityDetails(currentItem).subscribe(res => {
 
     }, error => {
@@ -2027,5 +2034,16 @@ export class CombatComponent implements OnInit {
       }
     });
   }
+  BindMonstersName() {
+    let unknownMonsterNameCount = 1;
+    this.combatants.map(x => {
+      if (x.type == combatantType.MONSTER) {
+        if (x.visibleToPc && !x.showMonsterName) {
+          x.monster.unKonwnName = "Unknown #" + unknownMonsterNameCount;
+          unknownMonsterNameCount = unknownMonsterNameCount + 1;
+        }
 
+      } 
+    });
+  }
 }

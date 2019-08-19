@@ -98,9 +98,17 @@ export class ToggleTileComponent implements OnInit {
 
           this.toggleTileFormModal.color = this.toggleTileFormModal.color;
           this.toggleTileFormModal.shape = this.toggleTileFormModal.shape;
+
           
           this.shapeClass = this.toggleTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.toggleTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
           console.log(this.shapeClass);
+
+          if (this.characterTileModel.view == VIEW.EDIT) {
+
+            this.tileToggleViewModel = Object.assign({}, this.toggleTileFormModal.tileToggle);
+          }
+
+
           this.Initialize(this.toggleTileFormModal);
 
         }, 0);

@@ -13,5 +13,6 @@ namespace DAL.Services.RulesetTileServices
         Task<RulesetToggleTile> Create(RulesetToggleTile item);
         Task<RulesetToggleTile> Update(RulesetToggleTile item);
         Task<bool> Delete(int id);
+        Task updateRulesetToggleTileValues(RulesetToggleTile model);
     }
 }

@@ -136,6 +136,9 @@ namespace DAL.Services
                                 combat.CombatSettings.MonsterVisibleByDefault =
                                     SettingRow["MonsterVisibleByDefault"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["MonsterVisibleByDefault"]);
 
+                                combat.CombatSettings.ShowMonsterNameByDefault =
+                                    SettingRow["ShowMonsterNameByDefault"] == DBNull.Value ? false : Convert.ToBoolean(SettingRow["ShowMonsterNameByDefault"]);
+
                                 combat.CombatSettings.PcInitiativeFormula =
                                     SettingRow["PcInitiativeFormula"] == DBNull.Value ? string.Empty : SettingRow["PcInitiativeFormula"].ToString();
 
@@ -177,6 +180,7 @@ namespace DAL.Services
                                     IsCurrentTurn = CombatantRow["IsCurrentTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsCurrentTurn"]),
                                     VisibilityColor = CombatantRow["VisibilityColor"] == DBNull.Value ? string.Empty : CombatantRow["VisibilityColor"].ToString(),
                                     VisibleToPc = CombatantRow["VisibleToPc"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["VisibleToPc"]),
+                                    ShowMonsterName = CombatantRow["ShowMonsterName"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["ShowMonsterName"]),
                                     Initiative = CombatantRow["Initiative"] == DBNull.Value ? nulldecimal : Convert.ToDecimal(CombatantRow["Initiative"]),
                                     TargetId = CombatantRow["TargetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["TargetId"]),
                                     TargetType = CombatantRow["TargetType"] == DBNull.Value ? string.Empty : CombatantRow["TargetType"].ToString(),
@@ -501,6 +505,7 @@ namespace DAL.Services
                 combatsetting.GroupInitFormula = model.GroupInitFormula;
                 combatsetting.GroupInitiative = model.GroupInitiative;
                 combatsetting.MonsterVisibleByDefault = model.MonsterVisibleByDefault;
+                combatsetting.ShowMonsterNameByDefault = model.ShowMonsterNameByDefault;
                 combatsetting.PcInitiativeFormula = model.PcInitiativeFormula;
                 combatsetting.RollInitiativeEveryRound = model.RollInitiativeEveryRound;
                 combatsetting.RollInitiativeForPlayer = model.RollInitiativeForPlayer;
@@ -717,6 +722,7 @@ namespace DAL.Services
                 Type = o.Type,
                 VisibilityColor = o.VisibilityColor,
                 VisibleToPc = o.VisibleToPc,
+                ShowMonsterName=o.ShowMonsterName
             }).ToList();
 
             DataTable DTCombatantList = utility.ToDataTable<Combatant_DTModel>(CombatList);
@@ -768,6 +774,7 @@ namespace DAL.Services
                         IsCurrentTurn = CombatantRow["IsCurrentTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsCurrentTurn"]),
                         VisibilityColor = CombatantRow["VisibilityColor"] == DBNull.Value ? string.Empty : CombatantRow["VisibilityColor"].ToString(),
                         VisibleToPc = CombatantRow["VisibleToPc"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["VisibleToPc"]),
+                        ShowMonsterName = CombatantRow["ShowMonsterName"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["ShowMonsterName"]),
                         TargetId = CombatantRow["TargetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["TargetId"]),
                         TargetType = CombatantRow["TargetType"] == DBNull.Value ? string.Empty : CombatantRow["TargetType"].ToString(),
                         DelayTurn = CombatantRow["DelayTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["DelayTurn"]),
@@ -885,6 +892,7 @@ namespace DAL.Services
             {
                 combatant.VisibilityColor = model.VisibilityColor;
                 combatant.VisibleToPc = model.VisibleToPc;
+                combatant.ShowMonsterName = model.ShowMonsterName;
                 _context.SaveChanges();
 
                 int combatId = model.CombatId == null ? 0 : (int)model.CombatId;
