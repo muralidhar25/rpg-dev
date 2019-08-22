@@ -265,14 +265,38 @@ export class CombatInitiativeComponent implements OnInit {
     }
     //Re-Roll All Monsters
     if (type == CombatItemsType.MONSTER) {
-      debugger;
+      let resultOfGroupInitiativeFilled_Flag = false;
+      let resultOfGroupInitiative = 0;
       this.initiativeInfo.map((x) => {
         if (x.initiativeCommand && x.type == type) {
-          let res = DiceService.rollDiceExternally(this.alertService, x.initiativeCommand, this.customDices);
-          if (isNaN(res)) {
-            x.initiativeValue = 0;
-          } else {
-            x.initiativeValue = res;
+          if (this.combatSettings && this.combatSettings.groupInitiative) {
+            let res = DiceService.rollDiceExternally(this.alertService, x.initiativeCommand, this.customDices);
+            if (this.combatSettings && this.combatSettings.groupInitiative && !resultOfGroupInitiativeFilled_Flag) {
+              if (isNaN(res)) {
+                resultOfGroupInitiative = 0;
+              } else {
+                resultOfGroupInitiative = res;
+              }
+              resultOfGroupInitiativeFilled_Flag = true;
+            }
+            if (this.combatSettings && this.combatSettings.groupInitiative && resultOfGroupInitiativeFilled_Flag) {
+              x.initiativeValue = resultOfGroupInitiative;
+            }
+            else {
+              if (isNaN(res)) {
+                x.initiativeValue = 0;
+              } else {
+                x.initiativeValue = res;
+              }
+            }
+          }
+          else {
+            let res = DiceService.rollDiceExternally(this.alertService, x.initiativeCommand, this.customDices);
+            if (isNaN(res)) {
+              x.initiativeValue = 0;
+            } else {
+              x.initiativeValue = res;
+            }
           }
         }
       });
