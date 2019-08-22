@@ -521,13 +521,23 @@ export class ItemRulesetViewListComponent implements OnInit {
               this.pageRefresh = data.isPlayerCharacter;
             }
             if (data.isPlayerCharacter) {
-              this.showManage = false;
+              this.showManage = data.isPlayerLinkedToCurrentCampaign;
+              //this.pauseItemAdd = data.pauseItemAdd;
+              //this.pauseItemCreate = data.pauseItemCreate;
+              //if (data.pauseGame) {
+              //  this.router.navigate(['/characters']);
+              //  this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+              //  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+              //}
+              if (!data.isPlayerLinkedToCurrentCampaign) {
+              //this.showManage = false;
               this.pauseItemAdd = data.pauseItemAdd;
               this.pauseItemCreate = data.pauseItemCreate;
               if (data.pauseGame) {
                 this.router.navigate(['/characters']);
                 this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
                 setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+              }
               }
             } else {
               this.showManage = true;

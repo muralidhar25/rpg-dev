@@ -370,12 +370,22 @@ export class CharacterSpellDetailsComponent implements OnInit {
               this.pageRefresh = data.isPlayerCharacter;
             }
             if (data.isPlayerCharacter) {
+              //this.pauseSpellAdd = data.pauseSpellAdd;
+              //this.pauseSpellCreate = data.pauseSpellCreate;
+              //if (data.pauseGame) {
+              //  this.router.navigate(['/characters']);
+              //  this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+              //  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+              //}
+
+              if (!data.isPlayerLinkedToCurrentCampaign) {
               this.pauseSpellAdd = data.pauseSpellAdd;
               this.pauseSpellCreate = data.pauseSpellCreate;
               if (data.pauseGame) {
                 this.router.navigate(['/characters']);
                 this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
                 setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+              }
               }
 
               // this.pageRefresh = data.isPlayerCharacter;

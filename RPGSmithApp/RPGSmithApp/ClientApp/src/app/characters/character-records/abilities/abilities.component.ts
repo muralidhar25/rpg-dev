@@ -144,7 +144,7 @@ export class CharacterAbilitiesComponent implements OnInit {
         }
       }
     }
-    
+
   }
 
   private initialize() {
@@ -469,7 +469,7 @@ export class CharacterAbilitiesComponent implements OnInit {
         });
   }
 
-  enableAbility(ability: any) {    
+  enableAbility(ability: any) {
     this.EnableCount = ability.isEnabled ? this.EnableCount - 1 : this.EnableCount + 1;
     //this.isLoading = true;
     let enableTxt = ability.isEnabled ? 'Disable' : 'Enable';
@@ -496,7 +496,7 @@ export class CharacterAbilitiesComponent implements OnInit {
   useAbility(ability: any) {
 
     if (ability.abilityId) {
-      this.abilityService.getAbilityCommands_sp<any>(ability.abilityId,0)
+      this.abilityService.getAbilityCommands_sp<any>(ability.abilityId, 0)
         .subscribe(data => {
           if (data.length > 0) {
             this.bsModalRef = this.modalService.show(CastComponent, {
@@ -694,9 +694,9 @@ export class CharacterAbilitiesComponent implements OnInit {
 
   }
 
-  private scrollToTop() {
-    jQuery('html, body').animate({ scrollTop: 0 }, 500);
-  }
+  //private scrollToTop() {
+  //  jQuery('html, body').animate({ scrollTop: 0 }, 500);
+  //}
 
   public clickAndHold(record: any) {
     if (this.timeoutHandler) {
@@ -818,14 +818,23 @@ export class CharacterAbilitiesComponent implements OnInit {
               this.pageRefresh = data.isPlayerCharacter;
             }
             if (data.isPlayerCharacter) {
-              this.pauseAbilityAdd = data.pauseAbilityAdd;
-              this.pauseAbilityCreate = data.pauseAbilityCreate;
+              //this.pauseAbilityAdd = data.pauseAbilityAdd;
+              //this.pauseAbilityCreate = data.pauseAbilityCreate;
 
-              if (data.pauseGame) {
-                this.router.navigate(['/characters']);
-                this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
-                setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+              //if (data.pauseGame) {
+              //  this.router.navigate(['/characters']);
+              //  this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+              //  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+              //}
+              if (!data.isPlayerLinkedToCurrentCampaign) {
+                this.pauseAbilityAdd = data.pauseAbilityAdd;
+                this.pauseAbilityCreate = data.pauseAbilityCreate;
 
+                if (data.pauseGame) {
+                  this.router.navigate(['/characters']);
+                  this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+                  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+                }
               }
               // this.pageRefresh = data.isPlayerCharacter;
             }

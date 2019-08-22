@@ -324,13 +324,21 @@ export class CharBuffAndEffectDetailsComponent implements OnInit {
               this.pageRefresh = data.isPlayerCharacter;
             }
             if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {              
-              this.pauseBuffAndEffectCreate = data.pauseBuffAndEffectCreate;
+              //this.pauseBuffAndEffectCreate = data.pauseBuffAndEffectCreate;
 
+              //if (data.pauseGame) {
+              //  this.router.navigate(['/characters']);
+              //  this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+              //  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+              //}
+              if (!data.isPlayerLinkedToCurrentCampaign) {
+              this.pauseBuffAndEffectCreate = data.pauseBuffAndEffectCreate;
 
               if (data.pauseGame) {
                 this.router.navigate(['/characters']);
                 this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
                 setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+              }
               }
               // this.pageRefresh = data.isPlayerCharacter;
             }

@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener } from "@angular/core";
-import { Router,  ActivatedRoute } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { Characters } from "../../../../../core/models/view-models/characters.model";
 import { Ruleset } from "../../../../../core/models/view-models/ruleset.model";
@@ -31,36 +31,36 @@ import { AppService1 } from "../../../../../app.service";
 })
 export class RulesetViewAbilityDetailComponent implements OnInit {
 
-    isLoading = false;
-    showActions: boolean = true;
-    isDropdownOpen: boolean = false;
-    actionText: string;
-    abilityId: number;
+  isLoading = false;
+  showActions: boolean = true;
+  isDropdownOpen: boolean = false;
+  actionText: string;
+  abilityId: number;
   ruleSetId: number;
   //isDropdownOpen: boolean = false;
-    bsModalRef: BsModalRef;
-    AbilityDetail: any = new Ability();
-    character: Characters = new Characters();
-    ruleset: Ruleset = new Ruleset();
-    charNav: any = {};
+  bsModalRef: BsModalRef;
+  AbilityDetail: any = new Ability();
+  character: Characters = new Characters();
+  ruleset: Ruleset = new Ruleset();
+  charNav: any = {};
 
-    characterAbilityModal: any = new CharacterAbilities();
-    IsAddingRecord: boolean = false;
-    pageRefresh: boolean;
+  characterAbilityModal: any = new CharacterAbilities();
+  IsAddingRecord: boolean = false;
+  pageRefresh: boolean;
   pauseAbilityAdd: boolean;
   pauseAbilityCreate: boolean;
   showManage: boolean = false;
-    constructor(
-        private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
-        private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
-        private sharedService: SharedService, private commonService: CommonService,
-        private abilityService: AbilityService, private rulesetService: RulesetService, private charactersService: CharactersService,
-      private characterAbilityService: CharacterAbilityService, public appService: AppService1
-    ) {
-        this.route.params.subscribe(params => { this.abilityId = params['id']; });
-        this.sharedService.shouldUpdateAbilityList().subscribe(sharedServiceJson => {
-            if (sharedServiceJson) this.initialize();
-        });
+  constructor(
+    private router: Router, private route: ActivatedRoute, private alertService: AlertService, private authService: AuthService,
+    private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
+    private sharedService: SharedService, private commonService: CommonService,
+    private abilityService: AbilityService, private rulesetService: RulesetService, private charactersService: CharactersService,
+    private characterAbilityService: CharacterAbilityService, public appService: AppService1
+  ) {
+    this.route.params.subscribe(params => { this.abilityId = params['id']; });
+    this.sharedService.shouldUpdateAbilityList().subscribe(sharedServiceJson => {
+      if (sharedServiceJson) this.initialize();
+    });
   }
   //@HostListener('document:click', ['$event.target'])
   //documentClick(target: any) {
@@ -70,235 +70,235 @@ export class RulesetViewAbilityDetailComponent implements OnInit {
   //    else this.isDropdownOpen = false;
   //  } catch (err) { this.isDropdownOpen = false; }
   //}
-    
-    ngOnInit() {
-        this.initialize();
-      this.showActionButtons(this.showActions);
 
-      let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
-      let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
-      if (char) {
-        if (!icharNav) {
+  ngOnInit() {
+    this.initialize();
+    this.showActionButtons(this.showActions);
+
+    let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+    let icharNav = this.localStorage.localStorageGetItem(DBkeys.CHARACTER_NAVIGATION);
+    if (char) {
+      if (!icharNav) {
+        this.charNav = {
+          'items': '/character/inventory/' + char.headerId,
+          'spells': '/character/spell/' + char.headerId,
+          'abilities': '/character/ability/' + char.headerId
+        };
+      }
+      else {
+        if (!icharNav[char.headerId]) {
           this.charNav = {
             'items': '/character/inventory/' + char.headerId,
             'spells': '/character/spell/' + char.headerId,
             'abilities': '/character/ability/' + char.headerId
           };
-        }
-        else {
-          if (!icharNav[char.headerId]) {
-            this.charNav = {
-              'items': '/character/inventory/' + char.headerId,
-              'spells': '/character/spell/' + char.headerId,
-              'abilities': '/character/ability/' + char.headerId
-            };
-          } else {
-            this.charNav = icharNav[char.headerId];
-          }
+        } else {
+          this.charNav = icharNav[char.headerId];
         }
       }
-        
     }
 
-    private initialize() {
-        this.character.characterId = this.localStorage.getDataObject<number>(DBkeys.CHARACTER_ID);
+  }
 
-        let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
-        if (char) {
-            if (char.headerId) {
-                this.character.characterName = char.headerName;
-                this.character.imageUrl = char.headerImage;
-                this.character.characterId = char.headerId;
-                this.setHeaderValues(this.character);
+  private initialize() {
+    this.character.characterId = this.localStorage.getDataObject<number>(DBkeys.CHARACTER_ID);
+
+    let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+    if (char) {
+      if (char.headerId) {
+        this.character.characterName = char.headerName;
+        this.character.imageUrl = char.headerImage;
+        this.character.characterId = char.headerId;
+        this.setHeaderValues(this.character);
+      }
+    }
+
+
+    let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
+    if (user == null)
+      this.authService.logout();
+    else {
+      this.isLoading = true;
+      this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
+
+      this.gameStatus(this.character.characterId);
+
+      this.charactersService.getCharactersById<any>(this.character.characterId)
+        .subscribe(data => {
+          this.character = data;
+
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => { });
+      this.abilityService.getAbilityById<any[]>(this.abilityId)
+        .subscribe(data => {
+          this.AbilityDetail = this.abilityService.abilityModelData(data, "UPDATE");;
+          this.ruleSetId = this.AbilityDetail.ruleSetId;
+          //this.AbilityDetail.forEach(function (val) { val.showIcon = false; });
+          this.rulesetService.GetCopiedRulesetID(this.AbilityDetail.ruleSetId, user.id).subscribe(data => {
+            let id: any = data
+            this.ruleSetId = id;
+            this.isLoading = false;
+          }, error => {
+            this.isLoading = false;
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+              this.authService.logout(true);
             }
-        }
+          }, () => { });
 
-
-        let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
-        if (user == null)
-            this.authService.logout();
-        else {
-            this.isLoading = true;
-          this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-
-          this.gameStatus(this.character.characterId);
-
-            this.charactersService.getCharactersById<any>(this.character.characterId)
-                .subscribe(data => {
-                    this.character = data;
-
-                }, error => {
-                    this.isLoading = false;
-                    let Errors = Utilities.ErrorDetail("", error);
-                    if (Errors.sessionExpire) {
-                        //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-                        this.authService.logout(true);
-                    }
-                }, () => { });
-            this.abilityService.getAbilityById<any[]>(this.abilityId)
-                .subscribe(data => {
-                    this.AbilityDetail = this.abilityService.abilityModelData(data, "UPDATE");;
-                    this.ruleSetId = this.AbilityDetail.ruleSetId;
-                    //this.AbilityDetail.forEach(function (val) { val.showIcon = false; });
-                    this.rulesetService.GetCopiedRulesetID(this.AbilityDetail.ruleSetId, user.id).subscribe(data => {
-                        let id: any = data
-                        this.ruleSetId = id;
-                        this.isLoading = false;
-                    }, error => {
-                        this.isLoading = false;
-                        let Errors = Utilities.ErrorDetail("", error);
-                        if (Errors.sessionExpire) {
-                            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-                            this.authService.logout(true);
-                        }
-                    }, () => { });
-
-                }, error => {
-                    this.isLoading = false;
-                    let Errors = Utilities.ErrorDetail("", error);
-                    if (Errors.sessionExpire) {
-                        //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-                        this.authService.logout(true);
-                    }
-                }, () => { });
-        }
+        }, error => {
+          this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => { });
     }
+  }
 
-    @HostListener('document:click', ['$event.target'])
-    documentClick(target: any) {
-      try {
-        if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE))
-          this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
-            if (target.className.endsWith("is-show"))
-                this.isDropdownOpen = !this.isDropdownOpen;
-            else this.isDropdownOpen = false;
-        } catch (err) { this.isDropdownOpen = false; }
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
+      if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE))
+        this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
+      if (target.className.endsWith("is-show"))
+        this.isDropdownOpen = !this.isDropdownOpen;
+      else this.isDropdownOpen = false;
+    } catch (err) { this.isDropdownOpen = false; }
+  }
+
+
+  showActionButtons(showActions) {
+    this.showActions = !showActions;
+    if (showActions) {
+      this.actionText = 'ACTIONS';// 'Show Actions';
+    } else {
+      this.actionText = 'HIDE';//'Hide Actions';
     }
+  }
 
-
-    showActionButtons(showActions) {
-        this.showActions = !showActions;
-        if (showActions) {
-            this.actionText = 'ACTIONS';// 'Show Actions';
-        } else {
-            this.actionText = 'HIDE';//'Hide Actions';
-        }
-    }
-    
   RedirectBack() {
     //this.router.navigate(['/character/ruleset/abilities', this.ruleSetId]);
-        window.history.back();
+    window.history.back();
+  }
+  ViewImage(img) {
+    if (img) {
+      this.bsModalRef = this.modalService.show(ImageViewerComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.ViewImageUrl = img.src;
+      this.bsModalRef.content.ViewImageAlt = img.alt;
     }
-    ViewImage(img) {
-        if (img) {
-            this.bsModalRef = this.modalService.show(ImageViewerComponent, {
-                class: 'modal-primary modal-md',
-                ignoreBackdropClick: true,
-                keyboard: false
-            });
-            this.bsModalRef.content.ViewImageUrl = img.src;
-            this.bsModalRef.content.ViewImageAlt = img.alt;
-        }
-    }
-    useAbility(ability: any) {
-        if (this.AbilityDetail.abilityCommandVM.length) {
-            this.bsModalRef = this.modalService.show(CastComponent, {
-                class: 'modal-primary modal-md',
-                ignoreBackdropClick: true,
-                keyboard: false
-            });
+  }
+  useAbility(ability: any) {
+    if (this.AbilityDetail.abilityCommandVM.length) {
+      this.bsModalRef = this.modalService.show(CastComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
 
-            this.bsModalRef.content.title = "Ability Commands"
-            this.bsModalRef.content.ListCommands = this.AbilityDetail.abilityCommandVM
-            this.bsModalRef.content.Command = this.AbilityDetail
-            this.bsModalRef.content.Character = this.character
-            this.bsModalRef.content.recordType = 'ch-rs-ability';
-            this.bsModalRef.content.recordId = ability.abilityId;
-        } else {
-          this.useCommand(this.AbilityDetail, ability.abilityId);
-        }
+      this.bsModalRef.content.title = "Ability Commands"
+      this.bsModalRef.content.ListCommands = this.AbilityDetail.abilityCommandVM
+      this.bsModalRef.content.Command = this.AbilityDetail
+      this.bsModalRef.content.Character = this.character
+      this.bsModalRef.content.recordType = 'ch-rs-ability';
+      this.bsModalRef.content.recordId = ability.abilityId;
+    } else {
+      this.useCommand(this.AbilityDetail, ability.abilityId);
     }
+  }
   useCommand(Command: any, abilityId: string = '') {
-        let msg = "The command value for " + Command.name
-            + " has not been provided. Edit this record to input one.";
-        if (Command.command == undefined || Command.command == null || Command.command == '') {
-            this.alertService.showDialog(msg, DialogType.alert, () => this.useCommandHelper(Command));
-        }
-        else {
-            //TODO
-          this.useCommandHelper(Command, abilityId);
-        }
+    let msg = "The command value for " + Command.name
+      + " has not been provided. Edit this record to input one.";
+    if (Command.command == undefined || Command.command == null || Command.command == '') {
+      this.alertService.showDialog(msg, DialogType.alert, () => this.useCommandHelper(Command));
     }
+    else {
+      //TODO
+      this.useCommandHelper(Command, abilityId);
+    }
+  }
   private useCommandHelper(Command: any, abilityId: string = '') {
-        this.bsModalRef = this.modalService.show(DiceRollComponent, {
-            class: 'modal-primary modal-md',
-            ignoreBackdropClick: true,
-            keyboard: false
-        });
-        this.bsModalRef.content.title = "Dice";
-        this.bsModalRef.content.tile = -2;
-        this.bsModalRef.content.characterId = this.character.characterId;
-        this.bsModalRef.content.character = this.character;
-        this.bsModalRef.content.command = Command.command;
-        if (Command.hasOwnProperty("abilityId")) {
-            this.bsModalRef.content.recordName = Command.name;
-            this.bsModalRef.content.recordImage = Command.imageUrl;
-            this.bsModalRef.content.recordType = 'ch-rs-ability';
-            this.bsModalRef.content.recordId = abilityId;
-        }
-        this.bsModalRef.content.event.subscribe(result => {
-        });
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = this.character.characterId;
+    this.bsModalRef.content.character = this.character;
+    this.bsModalRef.content.command = Command.command;
+    if (Command.hasOwnProperty("abilityId")) {
+      this.bsModalRef.content.recordName = Command.name;
+      this.bsModalRef.content.recordImage = Command.imageUrl;
+      this.bsModalRef.content.recordType = 'ch-rs-ability';
+      this.bsModalRef.content.recordId = abilityId;
     }
-    Redirect(path) {
-        this.router.navigate([path, this.character.characterId]);
-    }
-    AddAbility(ability: Ability) {
-        
-        this.IsAddingRecord = true;
-        this.alertService.startLoadingMessage("", "Adding ability to character");
-        let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
-        if (char) {
-            if (char.headerId) {
-                this.characterAbilityModal.multiAbilities = [];
-                this.characterAbilityModal.multiAbilities.push({ abilityId: ability.abilityId });
-                this.characterAbilityModal.characterId = char.headerId;
-                this.characterAbilityModal.abilityId = ability.abilityId;
-                this.characterAbilityModal.isEnabled = false;
+    this.bsModalRef.content.event.subscribe(result => {
+    });
+  }
+  Redirect(path) {
+    this.router.navigate([path, this.character.characterId]);
+  }
+  AddAbility(ability: Ability) {
 
-                this.characterAbilityService.createCharacterAbility(this.characterAbilityModal)
-                    .subscribe(
-                        data => {
-                            this.IsAddingRecord = false;
-                            this.alertService.stopLoadingMessage();
-                            let message = "This ability has been added to your character.";
-                            this.alertService.showMessage(message, "", MessageSeverity.success);
-                            //this.sharedService.UpdateCharacterAbilityList(true);
-                        },
-                        error => {
-                            this.IsAddingRecord = false;
-                            this.alertService.stopLoadingMessage();
-                            let Errors = Utilities.ErrorDetail("Unable to Add", error);
-                            if (Errors.sessionExpire) {
-                                this.authService.logout(true);
-                            }
-                            else
-                                this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-                        });
-            }
-        }
+    this.IsAddingRecord = true;
+    this.alertService.startLoadingMessage("", "Adding ability to character");
+    let char: any = this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE);
+    if (char) {
+      if (char.headerId) {
+        this.characterAbilityModal.multiAbilities = [];
+        this.characterAbilityModal.multiAbilities.push({ abilityId: ability.abilityId });
+        this.characterAbilityModal.characterId = char.headerId;
+        this.characterAbilityModal.abilityId = ability.abilityId;
+        this.characterAbilityModal.isEnabled = false;
+
+        this.characterAbilityService.createCharacterAbility(this.characterAbilityModal)
+          .subscribe(
+            data => {
+              this.IsAddingRecord = false;
+              this.alertService.stopLoadingMessage();
+              let message = "This ability has been added to your character.";
+              this.alertService.showMessage(message, "", MessageSeverity.success);
+              //this.sharedService.UpdateCharacterAbilityList(true);
+            },
+            error => {
+              this.IsAddingRecord = false;
+              this.alertService.stopLoadingMessage();
+              let Errors = Utilities.ErrorDetail("Unable to Add", error);
+              if (Errors.sessionExpire) {
+                this.authService.logout(true);
+              }
+              else
+                this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+            });
+      }
     }
-    private setHeaderValues(character: Characters): any {
-        let headerValues = {
-            headerName: character.characterName,
-            headerImage: character.imageUrl,
-            headerId: character.characterId,
-            headerLink: 'character',
-            hasHeader: true
-      };
-      this.appService.updateAccountSetting1(headerValues);
-        this.sharedService.updateAccountSetting(headerValues);
-        this.localStorage.deleteData(DBkeys.HEADER_VALUE);
-        this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
+  }
+  private setHeaderValues(character: Characters): any {
+    let headerValues = {
+      headerName: character.characterName,
+      headerImage: character.imageUrl,
+      headerId: character.characterId,
+      headerLink: 'character',
+      hasHeader: true
+    };
+    this.appService.updateAccountSetting1(headerValues);
+    this.sharedService.updateAccountSetting(headerValues);
+    this.localStorage.deleteData(DBkeys.HEADER_VALUE);
+    this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
   }
   editAbility(ability: Ability) {
     this.bsModalRef = this.modalService.show(CreateAbilitiesComponent, {
@@ -419,14 +419,23 @@ export class RulesetViewAbilityDetailComponent implements OnInit {
               this.pageRefresh = data.isPlayerCharacter;
             }
             if (data.isPlayerCharacter) {
-              this.showManage = false;
-              this.pauseAbilityAdd = data.pauseAbilityAdd;
-              this.pauseAbilityCreate = data.pauseAbilityCreate;
-              if (data.pauseGame) {                
-                this.router.navigate(['/characters']);
-                this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
-                setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
-
+              this.showManage = data.isPlayerLinkedToCurrentCampaign;
+              //this.pauseAbilityAdd = data.pauseAbilityAdd;
+              //this.pauseAbilityCreate = data.pauseAbilityCreate;
+              //if (data.pauseGame) {                
+              //  this.router.navigate(['/characters']);
+              //  this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+              //  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+              //}
+              if (!data.isPlayerLinkedToCurrentCampaign) {
+                //this.showManage = false;
+                this.pauseAbilityAdd = data.pauseAbilityAdd;
+                this.pauseAbilityCreate = data.pauseAbilityCreate;
+                if (data.pauseGame) {
+                  this.router.navigate(['/characters']);
+                  this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+                  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+                }
               }
             }
             else {

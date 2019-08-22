@@ -391,15 +391,25 @@ export class CharacterAbilityDetailsComponent implements OnInit {
               this.pageRefresh = data.isPlayerCharacter;
             }
             if (data.isPlayerCharacter) {
-              this.pauseAbilityAdd = data.pauseAbilityAdd;
-              this.pauseAbilityCreate = data.pauseAbilityCreate;
+              //this.pauseAbilityAdd = data.pauseAbilityAdd;
+              //this.pauseAbilityCreate = data.pauseAbilityCreate;
+              //if (data.pauseGame) {
+              //  this.router.navigate(['/characters']);
+              //  this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+              //  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+              //}
+              if (!data.isPlayerLinkedToCurrentCampaign) {
+                this.pauseAbilityAdd = data.pauseAbilityAdd;
+                this.pauseAbilityCreate = data.pauseAbilityCreate;
 
+                if (data.pauseGame) {
+                  this.router.navigate(['/characters']);
+                  this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+                  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+                }
 
-              if (data.pauseGame) {
-                this.router.navigate(['/characters']);
-                this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
-                setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
               }
+
               // this.pageRefresh = data.isPlayerCharacter;
             }
             if (data.isDeletedInvite) {

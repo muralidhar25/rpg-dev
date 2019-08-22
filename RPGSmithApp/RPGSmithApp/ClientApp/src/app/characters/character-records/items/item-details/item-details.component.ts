@@ -554,12 +554,21 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
               this.pageRefresh = data.isPlayerCharacter;
             }
             if (data.isPlayerCharacter) {
+              //this.pauseItemAdd = data.pauseItemAdd;
+              //this.pauseItemCreate = data.pauseItemCreate;
+              //if (data.pauseGame) {
+              //  this.router.navigate(['/characters']);
+              //  this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+              //  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+              //}
+              if (!data.isPlayerLinkedToCurrentCampaign) {
               this.pauseItemAdd = data.pauseItemAdd;
               this.pauseItemCreate = data.pauseItemCreate;
               if (data.pauseGame) {
                 this.router.navigate(['/characters']);
                 this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
                 setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+              }
               }
               // this.pageRefresh = data.isPlayerCharacter;
             }

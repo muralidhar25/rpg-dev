@@ -267,7 +267,7 @@ export class CharacterDashboardComponent implements OnInit {
             var selectedLayoutId = this.selectedlayout.characterDashboardLayoutId;
             if (this.selectedlayout.characterDashboardPages.length == 1) {
               this.selectedPage = this.selectedlayout.characterDashboardPages[0];
-            }            
+            }
             this.characterlayouts.forEach(function (val) {
 
               if (selectedLayoutId == val.characterDashboardLayoutId) {
@@ -516,7 +516,7 @@ export class CharacterDashboardComponent implements OnInit {
             }
 
             this.layoutService.getLayoutsByCharacterId(this.characterId, -1, -1)
-              .subscribe(data => {                
+              .subscribe(data => {
                 this.characterlayouts = data;
                 if (this.LayoutId) {
                   this.characterlayouts.map((item) => {
@@ -738,7 +738,7 @@ export class CharacterDashboardComponent implements OnInit {
 
             this.gameStatus(this.characterId);
           });
-        
+
       } catch (err) { }
     }
   }
@@ -850,7 +850,7 @@ export class CharacterDashboardComponent implements OnInit {
 
   }
 
-  onLayoutSelect(layout: any): void {    
+  onLayoutSelect(layout: any): void {
     this.selectedlayout = layout;
 
     this.selectedPage = layout.characterDashboardPages[0];
@@ -864,16 +864,16 @@ export class CharacterDashboardComponent implements OnInit {
     if (this.selectedPage) {
       if (this.selectedPage.characterDashboardPageId) {
         let rulesetId = 0;
-          if (this.selectedPage.characterDashboardLayoutId == -1) {
-            this.isSharedLayout = true;
-            rulesetId = this.character.ruleSetId;
+        if (this.selectedPage.characterDashboardLayoutId == -1) {
+          this.isSharedLayout = true;
+          rulesetId = this.character.ruleSetId;
         }
-          else {
-            this.isSharedLayout = false;
-          }
+        else {
+          this.isSharedLayout = false;
+        }
         this.isLoading = true;
         this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId, rulesetId, this.isSharedLayout)
-          .subscribe(data => {            
+          .subscribe(data => {
             //this.isLoading = false;
             let model: any = data;
             this.CharacterStatsValues = model.characterStatsValues;
@@ -897,7 +897,7 @@ export class CharacterDashboardComponent implements OnInit {
           }, error => {
             this.isLoading = false;
           }, () => { });
-      }      
+      }
       this.updateDefaultLayout(this.selectedPage.characterDashboardLayoutId);
     }
   }
@@ -1003,17 +1003,17 @@ export class CharacterDashboardComponent implements OnInit {
   onPageSelect(page: any): void {
     this.isLoading = true;
     this.selectedPage = page;
-    if (page.characterDashboardPageId) {    
-        let rulesetId = 0;
-        if (this.selectedPage.characterDashboardLayoutId == -1) {
-          this.isSharedLayout = true;
-          rulesetId = this.character.ruleSetId;
+    if (page.characterDashboardPageId) {
+      let rulesetId = 0;
+      if (this.selectedPage.characterDashboardLayoutId == -1) {
+        this.isSharedLayout = true;
+        rulesetId = this.character.ruleSetId;
       }
-        else {
-          this.isSharedLayout = false;
-        }
-        this.isLoading = true;
-        this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId, rulesetId, this.isSharedLayout)
+      else {
+        this.isSharedLayout = false;
+      }
+      this.isLoading = true;
+      this.characterTileService.getTilesByPageIdCharacterId<string>(this.selectedPage.characterDashboardPageId, this.characterId, rulesetId, this.isSharedLayout)
         .subscribe(data => {
           //getCharacterDashboardPageById
           let model: any = data;
@@ -1239,7 +1239,7 @@ export class CharacterDashboardComponent implements OnInit {
 
   viewTile(tile: any, tileType: number) {
     //let _tile: any;
-    let _tile = Object.assign({}, tile);    
+    let _tile = Object.assign({}, tile);
     switch (tileType) {
       case TILES.NOTE: {
         if (!this.isSharedLayout) {
@@ -1324,7 +1324,7 @@ export class CharacterDashboardComponent implements OnInit {
             this.bsModalRef.content.tile = TILES.CHARACTERSTAT;
             this.bsModalRef.content.characterStatTile = _tile.characterStatTiles;
             this.bsModalRef.content.recordName = this.character.characterName;
-            this.bsModalRef.content.recordImage = this.character.imageUrl;           
+            this.bsModalRef.content.recordImage = this.character.imageUrl;
             break;
 
           case STAT_TYPE.RichText:
@@ -1381,7 +1381,7 @@ export class CharacterDashboardComponent implements OnInit {
                   }
                 }
               })
-              
+
               this.updateStatService(_tile.characterStatTiles.charactersCharacterStat);
             }
 
@@ -1471,7 +1471,7 @@ export class CharacterDashboardComponent implements OnInit {
         switch (_executeTile.linkType) {
           case "Spell": {
             if (_executeTile.spell.spellId) {
-              this.spellsService.getSpellCommands_sp<any>(_executeTile.spell.spellId,0)
+              this.spellsService.getSpellCommands_sp<any>(_executeTile.spell.spellId, 0)
                 .subscribe(data => {
 
                   if (data.length > 0) {
@@ -1517,7 +1517,7 @@ export class CharacterDashboardComponent implements OnInit {
           }
           case "Ability": {
             if (_executeTile.ability.abilityId) {
-              this.abilityService.getAbilityCommands_sp<any>(_executeTile.ability.abilityId,0)
+              this.abilityService.getAbilityCommands_sp<any>(_executeTile.ability.abilityId, 0)
                 .subscribe(data => {
                   if (data.length > 0) {
                     this.bsModalRef = this.modalService.show(CastComponent, {
@@ -1666,7 +1666,7 @@ export class CharacterDashboardComponent implements OnInit {
             this.updateToggleTile(_tile.toggleTiles)
           }
         }
-       
+
 
         break;
       }
@@ -1975,7 +1975,7 @@ export class CharacterDashboardComponent implements OnInit {
                             let characterStatConditionsfilter = this.ConditionsValuesList.filter((Cs) => Cs.characterStatId == rec.id);
                             let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.CharacterStatsValues.charactersCharacterStat);
                             num = +result;
-                            
+
                             break;
                           default:
                             break;
@@ -1990,7 +1990,7 @@ export class CharacterDashboardComponent implements OnInit {
                     });
                   }
                   finalCalcString = CalcString;
-                  
+
                 });
               }
               try {
@@ -2026,7 +2026,7 @@ export class CharacterDashboardComponent implements OnInit {
 
               }
               ////////////////////////////////////////////
-              
+
             }
             else {
               //For Old Records
@@ -2185,7 +2185,7 @@ export class CharacterDashboardComponent implements OnInit {
                 }
               })
             }
-            
+
           }
         }
 
@@ -2441,32 +2441,32 @@ export class CharacterDashboardComponent implements OnInit {
           })
         }
       }
-      else if (item.tileTypeId == TILES.TOGGLE && item.toggleTiles!=null) {
-   
-          let isCustomToggleInitialSet = false;
+      else if (item.tileTypeId == TILES.TOGGLE && item.toggleTiles != null) {
+
+        let isCustomToggleInitialSet = false;
         item.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
-            debugger
+          debugger
           if (togg.tileCustomToggleId == item.toggleTiles.customValue) {
+            togg.initial = true;
+            isCustomToggleInitialSet = true;
+          }
+          else {
+            togg.initial = false;
+          }
+        })
+        if (!isCustomToggleInitialSet) {
+          item.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
+            debugger
+            if (index == 0) {
               togg.initial = true;
-              isCustomToggleInitialSet = true;
             }
             else {
               togg.initial = false;
             }
           })
-          if (!isCustomToggleInitialSet) {
-            item.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
-              debugger
-              if (index == 0) {
-                togg.initial = true;
-              }
-              else {
-                togg.initial = false;
-              }
-            })
-          }
+        }
 
-        
+
       }
       ////////////////////////////////
       let box: Box = { config: ngGridItemConfig, tile: item, IsCharacter: false };
@@ -2767,7 +2767,7 @@ export class CharacterDashboardComponent implements OnInit {
         'text/html');
       var decodedString = dom.body.textContent;
 
-      
+
       return decodedString;
       //text = text.replace(/<{1}[^<>]{1,}>{1}/g, " ");
       ////if (text.length >= 100) {
@@ -2779,9 +2779,9 @@ export class CharacterDashboardComponent implements OnInit {
     }
     return '';
   }
-  refresh() {    
+  refresh() {
     this.LayoutId = this.selectedlayout.characterDashboardLayoutId;
-    this.initialize(true,false, this.LayoutId);
+    this.initialize(true, false, this.LayoutId);
   }
   gameStatus(characterId?: any) {
     //api for player controls
@@ -2801,13 +2801,21 @@ export class CharacterDashboardComponent implements OnInit {
               this.pageRefresh = data.isPlayerCharacter;
             }
             if (data.isPlayerCharacter) {
-              if (data.pauseGame) {
-                this.router.navigate(['/characters']);
-                this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
-                setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
-              }
-              this.pauseBuffAndEffectAdd = data.pauseBuffAndEffectAdd;
-              this.pauseBuffAndEffectCreate = data.pauseBuffAndEffectCreate;
+              //if (data.pauseGame) {
+              //  this.router.navigate(['/characters']);
+              //  this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+              //  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+              //}
+              //this.pauseBuffAndEffectAdd = data.pauseBuffAndEffectAdd;
+              //this.pauseBuffAndEffectCreate = data.pauseBuffAndEffectCreate;
+              if (!data.isPlayerLinkedToCurrentCampaign) {                if (data.pauseGame) {
+                  this.router.navigate(['/characters']);
+                  this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+                  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+                }
+
+                this.pauseBuffAndEffectAdd = data.pauseBuffAndEffectAdd;
+                this.pauseBuffAndEffectCreate = data.pauseBuffAndEffectCreate;              }
             }
             if (data.isDeletedInvite) {
               this.router.navigate(['/characters']);
@@ -2819,7 +2827,7 @@ export class CharacterDashboardComponent implements OnInit {
 
       }, error => {
         let Errors = Utilities.ErrorDetail("", error);
-        
+
 
         //if (Errors.sessionExpire) {
         //  this.authService.logout(true);
@@ -2840,7 +2848,7 @@ export class CharacterDashboardComponent implements OnInit {
           })
         }
       }
-     
+
 
       this.bsModalRef = this.modalService.show(AddBuffAndEffectComponent, {
         class: 'modal-primary modal-md',
@@ -2858,6 +2866,6 @@ export class CharacterDashboardComponent implements OnInit {
         }
       });
     }
-    
+
   }
 }
