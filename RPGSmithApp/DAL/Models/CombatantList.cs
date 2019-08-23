@@ -45,5 +45,8 @@ namespace DAL.Models
         public bool DelayTurn { get; set; }
         public bool IsCurrentSelected { get; set; }
         public bool ShowMonsterName { get; set; }
+
+        [Column(TypeName = "nvarchar(100)")]
+        public string HiddenMonsterName { get; set; }
     }
 }

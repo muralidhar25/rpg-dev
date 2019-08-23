@@ -186,7 +186,8 @@ namespace DAL.Services
                                     TargetType = CombatantRow["TargetType"] == DBNull.Value ? string.Empty : CombatantRow["TargetType"].ToString(),
                                     DelayTurn = CombatantRow["DelayTurn"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["DelayTurn"]),
                                     IsCurrentSelected = CombatantRow["IsCurrentSelected"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsCurrentSelected"]),
-                                    IsPlayerCharacter = CombatantRow["IsPlayerCharacter"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsPlayerCharacter"])
+                                    IsPlayerCharacter = CombatantRow["IsPlayerCharacter"] == DBNull.Value ? false : Convert.ToBoolean(CombatantRow["IsPlayerCharacter"]),
+                                    HiddenMonsterName= CombatantRow["HiddenMonsterName"] == DBNull.Value ? string.Empty : CombatantRow["HiddenMonsterName"].ToString()
                                     //Character = new Character(),
                                     //Monster=new Monster()
 
@@ -835,6 +836,7 @@ namespace DAL.Services
                 {
                     combat.Round = 1;
                     _context.SaveChanges();
+                    AssignNamesToHiddenMonsters(combatId);
                 }
                 else
                 {
@@ -842,6 +844,31 @@ namespace DAL.Services
                 }
                 MarkCombatAsUpdated(combatId);
             }
+        }
+
+        private void AssignNamesToHiddenMonsters(int combatId)
+        {
+            string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(consString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("Combat_AssignNamesToHiddenMonsters"))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@combatId", combatId);
+                        cmd.Connection = con;                        
+                        con.Open();
+                        var a = cmd.ExecuteNonQuery();
+                        con.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
         }
 
         private void EndCombat(int combatId)

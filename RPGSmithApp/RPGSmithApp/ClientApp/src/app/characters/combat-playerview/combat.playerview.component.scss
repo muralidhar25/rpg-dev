@@ -1053,3 +1053,12 @@ page-toolbar-links li:last-child:before {
 .r-padding {
   padding-right: 0;
 }
+@media screen and (min-width: 992px) and (max-width: 1200px) {
+  .action-buttons-table li {
+    margin: 0px !important;
+  }
+
+  .action-button-icon-orange {
+    font-size: 16px !important;
+  }
+}

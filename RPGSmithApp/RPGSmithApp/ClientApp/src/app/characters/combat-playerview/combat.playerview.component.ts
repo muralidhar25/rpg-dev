@@ -466,7 +466,7 @@ export class CombatPlayerViewComponent implements OnInit {
         this.settings = combatModal.combatSettings;
         this.combatants = combatModal.combatantList;
 
-        let unknownMonsterNameCount = 1;
+        //let unknownMonsterNameCount = 1;
 
         this.combatants.map((x) => {
           x.initiativeValue = x.initiative;
@@ -528,8 +528,9 @@ export class CombatPlayerViewComponent implements OnInit {
 
           if (x.type == this.combatantsType.MONSTER) {
             if (x.visibleToPc && !x.showMonsterName) {
-              x.monster.name = "Unknown #" + unknownMonsterNameCount;
-              unknownMonsterNameCount = unknownMonsterNameCount + 1;
+              x.monster.name = x.hiddenMonsterName;
+              //x.monster.name = "Unknown #" + unknownMonsterNameCount;
+             // unknownMonsterNameCount = unknownMonsterNameCount + 1;
             }
           }
 

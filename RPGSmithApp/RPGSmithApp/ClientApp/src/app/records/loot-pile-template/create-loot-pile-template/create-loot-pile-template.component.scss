@@ -255,7 +255,16 @@ tag-input {
   padding: 0px 0px;
   flex-wrap: wrap
 }
-
+@media screen and (max-width: 1200px) {
+  .randominzation-engine-content h3 {
+    justify-content: center !important;
+    }
+  }
+@media screen and (max-width: 1200px) {
+  .search-field-randominzation {
+    display:-webkit-inline-box !important;
+  }
+}
 .randominzation-engine-content h3 > input {
   width: 69px;
   padding: 10px 9px;

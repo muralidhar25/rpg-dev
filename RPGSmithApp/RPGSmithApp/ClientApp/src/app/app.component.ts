@@ -1212,7 +1212,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
         }
 
-        debugger
+        
         this.SearchType = 0;
         this.SearchTypeText = '';
 
@@ -1755,7 +1755,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
 
         if (this.isPlayerCharacter) {
-          debugger
+          
           if (this.isPlayerLinkedToCurrentCampaign) {
             this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
           }
@@ -1938,7 +1938,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
   isRulesetRoute(): boolean {
-    //debugger
+    
     if (
       this.isGmUser
       && this.router.url.toUpperCase().indexOf('/RULESET/') > -1
@@ -1951,7 +1951,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
   GoToPCCombat() {
-    debugger
+    
     if (this.isPlayerCharacter) {
       if (this.isPlayerLinkedToCurrentCampaign) {
         let ruleSetId = this.localStorage.getDataObject<any>(DBkeys.RULESET_ID);

@@ -338,7 +338,8 @@
                   <ng-container *ngIf="!(item?.type == combatItemsType.MONSTER && item?.visibleToPc && !item?.showMonsterName)">{{item?.type == combatItemsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}</ng-container>
                   <ng-container *ngIf="(item?.type == combatItemsType.MONSTER && item?.visibleToPc && !item?.showMonsterName)">
                     <em>{{item?.monster?.name}}</em><br />
-                    <em class="text-black">{{item?.monster?.unKonwnName ? '('+item?.monster?.unKonwnName+')':''}}</em>
+                    <em *ngIf="!showCombatOptions" class="text-black">{{item?.monster?.unKonwnName ? '('+item?.monster?.unKonwnName+')':''}}</em>
+                    <em *ngIf="showCombatOptions" class="text-black">{{item?.hiddenMonsterName ? '('+item?.hiddenMonsterName+')':''}}</em>
                   </ng-container>
 
                 </div>
@@ -606,8 +607,8 @@
           <button class="btn-orange btn-block icon-Rec-Drop crsr-pointer" (click)="dropMonsterItems(currentCombatantDetail)"> Drop Items</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
-          <button class="btn-black btn-block icon-Delay crsr-pointer" *ngIf="!currentCombatantDetail.delayTurn" (click)="DelayTurn(currentCombatantDetail)"> Delay Turn</button>
-          <button class="btn-black btn-block icon-Resume crsr-pointer" *ngIf="currentCombatantDetail.delayTurn" (click)="ResumeTurn(currentCombatantDetail)"> Resume Turn</button>
+          <button class="btn-black btn-block icon-Delay " [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'"  *ngIf="!currentCombatantDetail.delayTurn" [disabled]="!showCombatOptions" (click)="DelayTurn(currentCombatantDetail)"> Delay Turn</button>
+          <button class="btn-black btn-block icon-Resume" [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'"  *ngIf="currentCombatantDetail.delayTurn" (click)="ResumeTurn(currentCombatantDetail)"> Resume Turn</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
           <button class="btn-red btn-block icon-Rec-Remove crsr-pointer" (click)="removeCurrentMonster(currentCombatantDetail)"> Remove</button>
@@ -622,8 +623,8 @@
           <button class="btn-orange btn-block icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToSpell(currentCombatantDetail)"> Spells</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
-          <button class="btn-black btn-block icon-Delay crsr-pointer" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" *ngIf="!currentCombatantDetail.delayTurn" (click)="DelayTurn(currentCombatantDetail)"> Delay Turn</button>
-          <button class="btn-black btn-block icon-Resume crsr-pointer" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" *ngIf="currentCombatantDetail.delayTurn" (click)="ResumeTurn(currentCombatantDetail)"> Resume Turn</button>
+          <button class="btn-black btn-block icon-Delay crsr-pointer" [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'" *ngIf="!currentCombatantDetail.delayTurn" (click)="DelayTurn(currentCombatantDetail)" [disabled]="!showCombatOptions"> Delay Turn</button>
+          <button class="btn-black btn-block icon-Resume crsr-pointer" [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'" *ngIf="currentCombatantDetail.delayTurn" (click)="ResumeTurn(currentCombatantDetail)"> Resume Turn</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
           <button class="btn-orange btn-block icon-Gen-Ability crsr-pointer" [ngClass]="isCharacterAbilityEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToAbility(currentCombatantDetail)"> Abilities</button>

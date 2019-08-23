@@ -1419,7 +1419,7 @@ namespace RPGSmithApp.Controllers
             var EmailContent = System.IO.File.ReadAllText(mailTemplatePath);
             EmailContent = EmailContent.Replace("#RULESET-NAME#", ruleSet.RuleSetName);
             EmailContent = EmailContent.Replace("#RULESET-IMAGE#", ruleSet.ImageUrl == null || ruleSet.ImageUrl == ""
-                ? "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RuleSetWhite.png" : ruleSet.ImageUrl);
+                ? "https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png" : ruleSet.ImageUrl);
             EmailContent = EmailContent.Replace("#RPGSMITH-USERNAME#", ruleSet.AspNetUser.UserName);
             EmailContent = EmailContent.Replace("#RULESET-SHARE-CODE#", code);
             EmailContent = EmailContent.Replace("#YEAR#", DateTime.Now.Year.ToString());

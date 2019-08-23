@@ -67,7 +67,7 @@ namespace DAL.Models.SPModels
 
         public bool IsCurrentSelected { get; set; }
         public bool IsPlayerCharacter { get; set; }
-
+        public string HiddenMonsterName { get; set; }
     }
     public class CombatAllTypeMonsters : MonsterTemplate
     {

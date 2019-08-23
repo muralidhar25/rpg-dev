@@ -170,18 +170,18 @@ export class CombatComponent implements OnInit {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
   }
   @HostListener('window:keydown', ['$event'])
-  keyEvent(event: KeyboardEvent) {
+  keyEvent(event: any) {
     //console.log(event);
-    if (event.keyCode === 32 && event.target == document.body && this.showCombatOptions) {
-      this.nextTurn();
+    if (event.keyCode === 32 && (event.target == document.body || event.target.nodeName =='BUTTON') && this.showCombatOptions) {      
       event.preventDefault();
+      this.nextTurn();
+      
     }
   }
 
   @HostListener('document:click', ['$event.target'])
   documentClick(target: any) {
-    try {
-      debugger
+    try {      
       if (target.className.endsWith("setting-toggle-btn")) {
         this.isDropdownOpen = !this.isDropdownOpen;
       }
@@ -216,7 +216,7 @@ export class CombatComponent implements OnInit {
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
 
     this.sharedService.shouldUpdateCombatantListForAddDeleteMonsters().subscribe(combatantListJson => {
-      debugger;
+     
       if (combatantListJson) {
         this.combatService.markCombatAsUpdatedFlag(this.CombatId).subscribe(res => {
           let result = res;
@@ -230,7 +230,7 @@ export class CombatComponent implements OnInit {
         });
 
         ///////////////////////////////////////////////////////////////////////////////////////////
-        debugger;
+        
         //{ flag: combatantListFlag, selectedDeployedMonsters: selectedDeployedMonsters}
         
         if (combatantListJson.flag) {
@@ -251,7 +251,7 @@ export class CombatComponent implements OnInit {
     });
 
     this.sharedService.shouldUpdateCombatantList().subscribe(combatantListJson => {
-      debugger
+      
       if (combatantListJson) {
         //{ combatantList: this.initiativeInfo, isInitialForCombatStart:this.isInitialForCombatStart }
         this.combatants = combatantListJson.combatantList;
@@ -263,6 +263,7 @@ export class CombatComponent implements OnInit {
             this.SendSystemMessageToChat(msg);
 
             this.isLoading = false;
+            this.GetCombatDetails(true);
           }, error => {
             this.alertService.stopLoadingMessage();
             this.isLoading = false;
@@ -376,7 +377,7 @@ export class CombatComponent implements OnInit {
         this.rulesetModel = combatModal.campaign;
         this.setHeaderValues(this.rulesetModel);
         this.settings = combatModal.combatSettings;
-        debugger
+        
         this.combatants = combatModal.combatantList;
 
         let characterFlag = false;
@@ -507,7 +508,14 @@ export class CombatComponent implements OnInit {
           let roundTime = this.settings.gameRoundLength * this.roundCounter;
           this.gametime = this.time_convert(roundTime);
         }
-
+        if (!(selectedDeployedMonsters && selectedDeployedMonsters.length)) {
+          
+          selectedDeployedMonsters = [];
+          let monsterCombatants = this.combatants.filter(x => (x.type == combatantType.MONSTER && x.initiative == null));
+          monsterCombatants.map((m) => {
+            selectedDeployedMonsters.push(m.monster);
+          })
+        }
         if (selectedDeployedMonsters && selectedDeployedMonsters.length) {
           let resultOfGroupInitiative = 0;
           let resultOfGroupInitiativeFilled_Flag = false;
@@ -516,7 +524,7 @@ export class CombatComponent implements OnInit {
             this.combatants.map((rec_C) => {
 
               if (rec_C.type == combatantType.MONSTER && rec_C.monsterId == rec_deployedMonster.monsterId) {
-                debugger
+                
                 if (this.settings && this.settings.groupInitiative) {
 
                   rec_C.initiativeCommand = this.settings.groupInitFormula;
@@ -548,7 +556,7 @@ export class CombatComponent implements OnInit {
               }
             })
 
-            //debugger
+            
 
 
             //let OldIndexToRemove = this.combatants.findIndex(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId)
@@ -566,9 +574,9 @@ export class CombatComponent implements OnInit {
             //this.combatants.map((rec, rec_index) => {
             //  rec.sortOrder = rec_index + 1;
             //})
-            //debugger
+            
           })
-          debugger
+          
           selectedDeployedMonsters.sort((a, b) => b.initiativeValue - a.initiativeValue);
 
           let Oldcombatants = Object.assign([], this.combatants); 
@@ -601,7 +609,7 @@ export class CombatComponent implements OnInit {
 
           //selectedDeployedMonsters.map((rec_deployedMonster) => {          
 
-          //  debugger
+  
 
 
             
@@ -618,7 +626,7 @@ export class CombatComponent implements OnInit {
           //  this.combatants.map((rec, rec_index) => {
           //    rec.sortOrder = rec_index + 1;
           //  })
-          //  debugger
+   
           //})
 
           //console.log('save', this.combatants)
@@ -781,7 +789,7 @@ export class CombatComponent implements OnInit {
 
 
   DelayTurn(currentCombat) {
-    debugger
+    
     currentCombat.delayTurn = true;
     this.combatants.map(x => {
       if (x.type == combatantType.MONSTER && x.monsterId == currentCombat.monsterId && currentCombat.isCurrentTurn) {
@@ -1359,7 +1367,7 @@ export class CombatComponent implements OnInit {
 
   //change settings here
   UpdateSettings(e, type) {
-    debugger
+    
     switch (type) {
       case COMBAT_SETTINGS.PC_INITIATIVE_FORMULA:
         this.settings.pcInitiativeFormula = e.target.value;
@@ -1820,7 +1828,7 @@ export class CombatComponent implements OnInit {
     });
   }
   public onContextMenu($event: MouseEvent, item: any): void {
-    debugger
+    
     this.contextMenuService.show.next({
       anchorElement: $event.target,
       // Optional - if unspecified, all context menu components will open
@@ -1832,7 +1840,7 @@ export class CombatComponent implements OnInit {
     $event.stopPropagation();
   }
   setdefaultColor(color, item) {
-    debugger
+    
     item.visibilityColor = color.bodyBgColor;
     this.saveVisibilityDetails(item);
 
