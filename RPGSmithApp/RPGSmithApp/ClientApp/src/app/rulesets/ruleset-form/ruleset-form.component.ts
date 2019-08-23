@@ -61,6 +61,7 @@ export class RulesetFormComponent implements OnInit {
     RdefaultDices: DefaultDice[] = [];
   RdiceTray: DiceTray[] = [];
   IsGm: boolean = false;
+  viewBtn= VIEW;
     constructor(private router: Router, private alertService: AlertService,
         private authService: AuthService, private configurations: ConfigurationService,
         private rulesetService: RulesetService, private bsModalRef: BsModalRef,

@@ -11,7 +11,7 @@ import { STAT_TYPE } from '../models/enums';
 import { Router } from '@angular/router';
 import { HeaderValues } from '../models/headers.model';
 import { LocalStoreManager } from './local-store-manager.service';
-
+//import * as FroalaEditor from 'froala-editor';
 
 @Injectable()
 export class Utilities {
@@ -120,7 +120,7 @@ export class Utilities {
     //quickInsertTags: ['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'pre', 'blockquote'],
     //pluginsEnabled: ['quickInsert', 'image', 'table', 'lists']
   }
-  public static optionsFloala(height: number = 300, placeholder: string = 'Type something..', initOnClick: boolean = false, FocusOnInitialize:boolean=false): Object {
+  public static optionsFloala(height: number = 300, placeholder: string = 'Type something..', initOnClick: boolean = false, FocusOnInitialize: boolean = false): Object {
     return {
       key: 'FD3G3B2C2uB5A2A1C3A5E1H5E1J4B16hgfpktsotB5B-16pm==',
       //key: 'Fwvh1H-8dcC-21dA6mg1B-8==',
@@ -150,7 +150,7 @@ export class Utilities {
       quickInsertButtons: ['embedly', 'table', 'ul', 'ol'], //'image', 'video', , 'hr'
       //quickInsertTags: ['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'pre', 'blockquote'],
       //pluginsEnabled: ['quickInsert', 'image', 'table', 'lists']
-      events: this.FocusOnInitializeEditor(FocusOnInitialize)
+      events: [this.FocusOnInitializeEditor(FocusOnInitialize)]
     }
   }
 
@@ -819,14 +819,14 @@ export class Utilities {
   }
 
   public static RefreshPage(url: string, router: Router, headers: HeaderValues, rulesetID: number, localStorage: LocalStoreManager) {
-    
+
     let NewUrl = url;
     if (+url.split('/')[url.split('/').length - 1]) {
       NewUrl = url.replace('/' + url.split('/')[url.split('/').length - 1], '')
     }
-    
+
     let lastPageAccessed = localStorage.localStorageGetItem("LastAccessedPage");
-    
+
     if (lastPageAccessed) {
       let GoToAddress = localStorage.localStorageGetItem("LastAccessedPage");
       if (+lastPageAccessed.split('/')[lastPageAccessed.split('/').length - 1]) {
@@ -837,7 +837,7 @@ export class Utilities {
         localStorage.localStorageSetItem("LastAccessedPage", GoToAddress);
         //this.RefreshURLFlag = true;
 
-        this.RedriectToPageWithoutId(GoToAddress, NewUrl, router,5);
+        this.RedriectToPageWithoutId(GoToAddress, NewUrl, router, 5);
         //router.navigate([GoToAddress], { skipLocationChange: true });
         //window.history.pushState('', '', NewUrl)
       }
@@ -846,12 +846,12 @@ export class Utilities {
         localStorage.localStorageSetItem("LastAccessedPage", GoToAddress);
         //this.RefreshURLFlag = true;
 
-        this.RedriectToPageWithoutId(GoToAddress, NewUrl, router,6);
+        this.RedriectToPageWithoutId(GoToAddress, NewUrl, router, 6);
         //router.navigate([GoToAddress], { skipLocationChange: true });
         //window.history.pushState('', '', NewUrl)
       }
     }
-    
+
 
     if (headers) {
       if (headers.headerId) {
@@ -886,7 +886,7 @@ export class Utilities {
             url.toUpperCase().indexOf('/CHARACTER/RULESET') > -1
             && url.toUpperCase().indexOf('DETAILS') == -1
           ) {
-            
+
             url = url.replace("/" + headers.headerId, ' ');
             url = url.trim() + "/" + rulesetID;
             this.RedriectToPageWithoutId(url, NewUrl, router, 9);
@@ -896,56 +896,56 @@ export class Utilities {
           }
         }
       }
-     
+
     }
   }
 
-  public static RedriectToPageWithoutId(originalUrl: string, displayUrl: string, router: Router,RedriectFromCode:number) {
-    
+  public static RedriectToPageWithoutId(originalUrl: string, displayUrl: string, router: Router, RedriectFromCode: number) {
+
     router.navigate([originalUrl], { skipLocationChange: true });
     window.history.pushState('', '', displayUrl);
   }
 
   public static InvalidValueForConditionStats: number = -25163711;
-  
+
 
   public static setCharacterRedirection(routerUrl, characterID, rulesetID, characterNavigation) {
-    
-      if (routerUrl.toUpperCase().indexOf('/CHARACTER/DASHBOARD') > -1 && (typeof (characterNavigation[characterID]) == 'undefined')) {
-        characterNavigation[characterID] = {
-          'items': '/character/inventory/' + characterID,
-          'spells': '/character/spell/' + characterID,
-          'abilities': '/character/ability/' + characterID
-        };
-      }
-      else if (characterID && characterNavigation && characterNavigation[characterID]) { 
-        if (routerUrl.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS') > -1) {
-          characterNavigation[characterID].items = '/character/ruleset/items/' + rulesetID;
-        }
-        else if (routerUrl.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS') > -1) {
-          characterNavigation[characterID].spells = '/character/ruleset/spells/' + rulesetID;
-        }
-        else if (routerUrl.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES') > -1) {
-          characterNavigation[characterID].abilities = '/character/ruleset/abilities/' + rulesetID;
-        }
-        else if (routerUrl.toUpperCase().indexOf('/CHARACTER/INVENTORY') > -1) {
-          characterNavigation[characterID].items = '/character/inventory/' + characterID;
-        }
-        else if (routerUrl.toUpperCase().indexOf('/CHARACTER/SPELL') > -1) {
-          characterNavigation[characterID].spells = '/character/spell/' + characterID;
-        }
-        else if (routerUrl.toUpperCase().indexOf('/CHARACTER/ABILITY') > -1) {
-          characterNavigation[characterID].abilities = '/character/ability/' + characterID;
-        }
 
+    if (routerUrl.toUpperCase().indexOf('/CHARACTER/DASHBOARD') > -1 && (typeof (characterNavigation[characterID]) == 'undefined')) {
+      characterNavigation[characterID] = {
+        'items': '/character/inventory/' + characterID,
+        'spells': '/character/spell/' + characterID,
+        'abilities': '/character/ability/' + characterID
+      };
+    }
+    else if (characterID && characterNavigation && characterNavigation[characterID]) {
+      if (routerUrl.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS') > -1) {
+        characterNavigation[characterID].items = '/character/ruleset/items/' + rulesetID;
       }
-      
-      return characterNavigation;
-    
+      else if (routerUrl.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS') > -1) {
+        characterNavigation[characterID].spells = '/character/ruleset/spells/' + rulesetID;
+      }
+      else if (routerUrl.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES') > -1) {
+        characterNavigation[characterID].abilities = '/character/ruleset/abilities/' + rulesetID;
+      }
+      else if (routerUrl.toUpperCase().indexOf('/CHARACTER/INVENTORY') > -1) {
+        characterNavigation[characterID].items = '/character/inventory/' + characterID;
+      }
+      else if (routerUrl.toUpperCase().indexOf('/CHARACTER/SPELL') > -1) {
+        characterNavigation[characterID].spells = '/character/spell/' + characterID;
+      }
+      else if (routerUrl.toUpperCase().indexOf('/CHARACTER/ABILITY') > -1) {
+        characterNavigation[characterID].abilities = '/character/ability/' + characterID;
+      }
+
+    }
+
+    return characterNavigation;
+
   }
-  public static isGoingToAppNonLoginRoutes(url:string):boolean {
+  public static isGoingToAppNonLoginRoutes(url: string): boolean {
     if (
-      url.toUpperCase().indexOf('/LOGIN') != -1 
+      url.toUpperCase().indexOf('/LOGIN') != -1
       || url.toUpperCase().indexOf('/REGISTER') != -1
       || url.toUpperCase().indexOf('/FORGOTPASSWORD') != -1
       || url.toUpperCase().indexOf('/FORGOT-PASSWORD-EMAIL') != -1
@@ -963,75 +963,127 @@ export class Utilities {
     return false;
   }
   public static Kickstarterlink() {
-    
+
     let url = 'https://www.kickstarter.com/projects/rpgsmith/rpgsmith-gm-campaigns';
     window.open(url, "_blank");
   }
 
   public static getHelpLinkUrl(url) {
-    
+
     if (url.toUpperCase() == '/CHARACTERS' || url.toUpperCase() == '/CHARACTER') {
-      return 'https://rpgsmith.com/help/#CharacterCreation';
+      return 'https://rpgsmith.com/help/#a11';
     }
     else if (url.toUpperCase() == '/RULESETS' || url.toUpperCase() == '/RULESET') {
-      return 'https://rpgsmith.com/help/#RuleSets';
+      return 'https://rpgsmith.com/help/#a12';
     }
-    else if (url.toUpperCase() == '/RULESETS/CAMPAIGNS' || url.toUpperCase() == '/RULESET/CAMPAIGNS') {
-      return 'https://rpgsmith.com/help/#RuleSets';
+    else if (url.toUpperCase() == '/RULESETS/CAMPAIGNS/' || url.toUpperCase() == '/RULESET/CAMPAIGNS/') {
+      return 'https://rpgsmith.com/help/#a13';
     }
-    else if (url.toUpperCase().indexOf('RULESET/CAMPAIGN-DETAILS') > -1) {
+    else if (url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DETAILS/') > -1) {
       return 'https://rpgsmith.com/help/#CampaignInterface';
     }
-    else if (url.toUpperCase().indexOf('/CHARACTER/DASHBOARD') > -1 ||
-      url.toUpperCase().indexOf('/RULESET/DASHBOARD') > -1 || url.toUpperCase().indexOf('/CHARACTER/TILES/') > -1) {
-      return 'https://rpgsmith.com/help/#Dashboard';
+    else if (url.toUpperCase().indexOf('RULESET/COMBAT/') > -1) {
+      return 'https://rpgsmith.com/helpg/#g1';
     }
-    else if (url.toUpperCase().indexOf('/SEARCH/BASIC/') > -1 || url.toUpperCase().indexOf('/SEARCH/') > -1) {
-      return 'https://rpgsmith.com/help/#Search';
+    else if (url.toUpperCase().indexOf('/RULESET/MONSTER/') > -1) {
+      return 'https://rpgsmith.com/helpe/#e6';
     }
-    else if (url.toUpperCase().indexOf('/RULESET/CHARACTER-STATS') > -1 || url.toUpperCase().indexOf('/CHARACTER/CHARACTER-STATS') > -1) {
-      return 'https://rpgsmith.com/help/#RSCharStats';
-
-    } else if (url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1 || url.toUpperCase().indexOf('/CHARACTER/INVENTORY-DETAILS/') > -1) {
-     
-      return 'https://rpgsmith.com/help/#items';
+    else if (url.toUpperCase().indexOf('RULESET/MONSTER-DETAILS/') > -1) {
+      return 'https://rpgsmith.com/helpe/#e6a';
+    }
+    else if (url.toUpperCase().indexOf('/RULESET/MONSTER-TEMPLATE/') > -1) {
+      return 'https://rpgsmith.com/helpe/#e5';
+    }
+    else if (url.toUpperCase().indexOf('/RULESET/MONSTER-TEMPLATE-DETAILS/') > -1) {
+      return 'https://rpgsmith.com/helpe/#e5a';
+    }
+    else if (url.toUpperCase().indexOf('/RULESET/LOOT/') > -1) {
+      return 'https://rpgsmith.com/helpe/#e9';
+    }
+    else if (url.toUpperCase().indexOf('/RULESET/LOOT-DETAILS/') > -1) {
+      return 'https://rpgsmith.com/helpe/#e9a';
+    }
+    else if (url.toUpperCase().indexOf('/RULESET/LOOT-PILE-TEMPLATE/') > -1) {
+      return 'https://rpgsmith.com/helpe/#e8';
+    }
+    else if (url.toUpperCase().indexOf('/RULESET/LOOT-PILE-TEMPLATE-DETAILS/') > -1) {
+      return 'https://rpgsmith.com/helpe/#e8a';
+    }
+    else if (url.toUpperCase().indexOf('/RULESET/ADD/') > -1) {
+      return 'https://rpgsmith.com/help/#a13a';
+    }
+    else if (url.toUpperCase().indexOf('/MARKETPLACE/') > -1) {
+      return 'https://rpgsmith.com/help/#a6';
+    }
+    else if (url.toUpperCase().indexOf('/CHARACTER/DASHBOARD/') > -1 || url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DASHBOARD/') > -1) {
+      return 'https://rpgsmith.com/helpb/#B2';
+    }
+    else if (url.toUpperCase().indexOf('/RULESET/DASHBOARD/') > -1) {
+      return 'https://rpgsmith.com/helpc/#c3';
+    }
+    else if (url.toUpperCase().indexOf('/CHARACTER/TILES/') > -1) {
+      return 'https://rpgsmith.com/helpb/#B4';
+    }
+    else if (url.toUpperCase().indexOf('/SEARCH/') > -1) {
+      return 'https://rpgsmith.com/helph/#h';
+    }
+    else if (url.toUpperCase().indexOf('/CHARACTER/CHARACTER-STATS/') > -1) {
+      return 'https://rpgsmith.com/helpb/#b6';
+    } 
+    else if (url.toUpperCase().indexOf('/RULESET/CHARACTER-STATS/') > -1) {
+      return 'https://rpgsmith.com/helpc/#c2';
+    }
+    else if (url.toUpperCase().indexOf('/CHARACTER/INVENTORY/') > -1) {
+      return 'https://rpgsmith.com/helpe/#e2';
+    }
+    else if (url.toUpperCase().indexOf('/CHARACTER/INVENTORY-DETAILS/') > -1) {
+      return 'https://rpgsmith.com/helpe/#e2c';
     }
     else if ((url.toUpperCase().indexOf('/RULESET/ITEM-MASTER/') > -1 ||
-      url.toUpperCase().indexOf('/RULESET/ITEM-DETAILS') > -1 ||
-      url.toUpperCase().indexOf('/RULESET/BUNDLE-DETAILS') > -1)
+      url.toUpperCase().indexOf('/RULESET/ITEM-DETAILS/') > -1 ||
+      url.toUpperCase().indexOf('/RULESET/BUNDLE-DETAILS/') > -1)
       && url.toUpperCase().indexOf('/CHARACTER/RULESET/') == -1) {
-
+      return 'https://rpgsmith.com/helpe/#e1';
     }
-    else if (url.toUpperCase().indexOf('/CHARACTER/SPELL/') > -1 ||
-      url.toUpperCase().indexOf('/CHARACTER/SPELL-DETAILS') > -1) {
-      return 'https://rpgsmith.com/help/#Spells';
+    else if (url.toUpperCase().indexOf('/CHARACTER/SPELL/') > -1) {
+      return 'https://rpgsmith.com/helpe/#e3';
+    }
+    else if (url.toUpperCase().indexOf('/CHARACTER/SPELL-DETAILS/') > -1) {
+      return 'https://rpgsmith.com/helpe/#e3c';
+    }
+    else if (url.toUpperCase().indexOf('/RULESET/BUFF-EFFECT/') > -1) {
+      return 'https://rpgsmith.com/helpe/#e7';
+    }
+    else if (url.toUpperCase().indexOf('/RULESET/BUFF-EFFECT-DETAILS/') > -1) {
+      return 'https://rpgsmith.com/helpe/#e7a';
     }
     else if ((url.toUpperCase().indexOf('/RULESET/SPELL/') > -1 ||
-      url.toUpperCase().indexOf('/RULESET/SPELL-DETAILS') > -1)
+      url.toUpperCase().indexOf('/RULESET/SPELL-DETAILS/') > -1)
       && url.toUpperCase().indexOf('/CHARACTER/RULESET/') == -1) {
       return 'https://rpgsmith.com/help/#Spells';
-
     }
-    else if (url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1 ||
-      url.toUpperCase().indexOf('/CHARACTER/ABILITY-DETAILS') > -1) {
-      return 'https://rpgsmith.com/help/#abilities';
+    else if (url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1) {
+      return 'https://rpgsmith.com/helpe/#e4';
+    }
+    else if (url.toUpperCase().indexOf('/CHARACTER/ABILITY-DETAILS/') > -1) {
+      return 'https://rpgsmith.com/helpe/#e4c';
     }
     else if ((url.toUpperCase().indexOf('/RULESET/ABILITY/') > -1 ||
-      url.toUpperCase().indexOf('/RULESET/ABILITY-DETAILS') > -1) && url.toUpperCase().indexOf('/CHARACTER/RULESET/') == -1) {
+      url.toUpperCase().indexOf('/RULESET/ABILITY-DETAILS/') > -1) && url.toUpperCase().indexOf('/CHARACTER/RULESET/') == -1) {
       return 'https://rpgsmith.com/help/#abilities';
     }
 
     else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS/') > -1 ||
-      url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEM-DETAIL') > -1) {
+      url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEM-DETAIL/') > -1) {
       return 'https://rpgsmith.com/help/#ItemTemp';
     }
     else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS/') > -1 ||
-      url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELL-DETAILS') > -1) {
+      url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELL-DETAILS/') > -1) {
       return 'https://rpgsmith.com/help/#Spells';
 
     }
     else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES/') > -1 ||
-      url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITY-DETAILS') > -1) {
+      url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITY-DETAILS/') > -1) {
       return 'https://rpgsmith.com/help/#abilities';
     }
   }

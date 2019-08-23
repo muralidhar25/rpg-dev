@@ -1,18 +1,19 @@
 <form name="customDiceForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
 
     <div class="modal-content popup-dice ">
-        <div class="modal-header">
-            <h5 class="modal-title" id="customDiceTitle">
-                Dice Tray
-                <div class="manage-ruleset-header">
-                    <span>
-                        <img *ngIf="ruleset?.imageUrl" [src]="ruleset?.imageUrl">
-                    </span>
-                    <span>{{ruleset?.ruleSetName}}</span>
-                </div>
-            </h5>
-            <button type="button" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close(diceTray)"></button>
-        </div>
+      <div class="modal-header">
+        <h5 class="modal-title" id="customDiceTitle">
+          Dice Tray
+          <div class="manage-ruleset-header">
+            <span>
+              <img *ngIf="ruleset?.imageUrl" [src]="ruleset?.imageUrl">
+            </span>
+            <span>{{ruleset?.ruleSetName}}</span>
+          </div>
+        </h5>
+        <a href="https://rpgsmith.com/helpd/#d4" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+        <button type="button" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close(diceTray)"></button>
+      </div>
         <div class="modal-body new-command initial">
             <div class="form-row mb-3">
                 <div class="col-12">

@@ -6,9 +6,10 @@
 
         <div class="page-toolbar-dropdown">
 
-            <button class="btn btn-accent" type="button">Upload Images<input type="file" accept="image/*" multiple (change)="UploadImages($event)"/></button>
-            <button class="btn btn-accent" type="button" *ngIf="showDeleteBtn" (click)="deleteImagePrompt()">Delete Selected</button>
-            <!-- End of filter dropdown -->
+          <button class="btn btn-accent" type="button">Upload Images<input type="file" accept="image/*" multiple (change)="UploadImages($event)" /></button>
+          <a href="https://rpgsmith.com/help/#a3" class="help-icon icon icon-Gen-Help crsr-pointer ml-3 mt-2" target="_blank"></a>
+          <button class="btn btn-accent" type="button" *ngIf="showDeleteBtn" (click)="deleteImagePrompt()">Delete Selected</button>
+          <!-- End of filter dropdown -->
         </div>
         <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
     </div>

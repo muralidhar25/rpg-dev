@@ -2,18 +2,19 @@
 <form name="customDiceForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
 
     <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="customDiceTitle">
-                {{view}} Custom Dice
-                <div class="manage-ruleset-header">
-                    <span>
-                        <img *ngIf="ruleset?.imageUrl" [src]="ruleset?.imageUrl" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" >
-                    </span>
-                    <span>{{ruleset?.ruleSetName}}</span>
-                </div>
-            </h5>
-            <button type="button" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close(ruleset)"></button>
-        </div>
+      <div class="modal-header">
+        <h5 class="modal-title" id="customDiceTitle">
+          {{view}} Custom Dice
+          <div class="manage-ruleset-header">
+            <span>
+              <img *ngIf="ruleset?.imageUrl" [src]="ruleset?.imageUrl" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+            </span>
+            <span>{{ruleset?.ruleSetName}}</span>
+          </div>
+        </h5>
+        <a href="https://rpgsmith.com/helpd/#d3a" class="help-icon icon icon-Gen-Help crsr-pointer ml-3 mt-2" target="_blank"></a>
+        <button type="button" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close(ruleset)"></button>
+      </div>
         <div class="modal-body">
             <div class="form-row">
               <div class="col-8">

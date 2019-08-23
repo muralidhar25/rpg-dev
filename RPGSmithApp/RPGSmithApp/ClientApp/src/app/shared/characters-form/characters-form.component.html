@@ -1,10 +1,11 @@
 <!-- New character popup -->
 <form name="charactersForm" #f="ngForm" (ngSubmit)="f.form.valid && submitForm()">
 
-    <div class="modal-header">
-        <h5 class="modal-title" id="newCharacterPopupTitle">{{title}}</h5>
-        <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
-    </div>
+  <div class="modal-header">
+    <h5 class="modal-title" id="newCharacterPopupTitle">{{title}}</h5>
+    <a href="https://rpgsmith.com/help/#a11b" class="help-icon icon icon-Gen-Help crsr-pointer" target="_blank"></a>
+    <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary text-right close" (click)="close()"></button>
+  </div>
     <div class="modal-body">
 
         <div class="form-row">
