@@ -81,19 +81,19 @@ export class NgChat implements OnInit, IChatController {
     });
     this.appService.shouldUpdateChatRemoveIntervals().subscribe((serviceData) => {
       if (serviceData && this.fetchFriendsListInterval) {
-        debugger
+        
         clearInterval(this.fetchFriendsListInterval);
       }
     });
 
     this.appService.shouldUpdateChatFromCombat().subscribe((serviceData) => {
-      debugger;
+      
       if (serviceData) {
         this.sendCombatMessageToChatGroup(serviceData);
       }
     });
     this.appService.shouldUpdateOpenChatForCharacter().subscribe((characterId) => {
-      debugger;
+      
       if (characterId) {
         this.openChatForCharacter(characterId);
       }
@@ -149,7 +149,28 @@ export class NgChat implements OnInit, IChatController {
   public searchEnabled: boolean = true;
 
   @Input() // TODO: This might need a better content strategy
-  public audioSource: string = 'https://raw.githubusercontent.com/rpaschoal/ng-chat/master/src/ng-chat/assets/notification.wav';
+  public audioSource: string = '../assets/images/sounds/notification.wav';
+
+  @Input() // chat dice roll sound
+  public diceRollAudioSource1: string = '../assets/images/sounds/1.wav';
+  @Input() // chat dice roll sound
+  public diceRollAudioSource2: string = '../assets/images/sounds/2.wav';
+  @Input() // chat dice roll sound
+  public diceRollAudioSource3: string = '../assets/images/sounds/3.wav';
+  @Input() // chat dice roll sound
+  public diceRollAudioSource4: string = '../assets/images/sounds/4.wav';
+  @Input() // chat dice roll sound
+  public diceRollAudioSource5: string = '../assets/images/sounds/5.wav';
+  @Input() // chat dice roll sound
+  public diceRollAudioSource6: string = '../assets/images/sounds/6.wav';
+  @Input() // chat dice roll sound
+  public diceRollAudioSource7: string = '../assets/images/sounds/7.wav';
+  @Input() // chat dice roll sound
+  public diceRollAudioSource8: string = '../assets/images/sounds/8.wav';
+  @Input() // chat dice roll sound
+  public diceRollAudioSource9: string = '../assets/images/sounds/9.wav';
+  @Input() // chat dice roll sound
+  public diceRollAudioSource10: string = '../assets/images/sounds/10.wav';
 
   @Input()
   public persistWindowsState: boolean = true;
@@ -224,6 +245,16 @@ export class NgChat implements OnInit, IChatController {
   };
 
   private audioFile: HTMLAudioElement;
+  private diceRollAudioFile1: HTMLAudioElement;
+  private diceRollAudioFile2: HTMLAudioElement;
+  private diceRollAudioFile3: HTMLAudioElement;
+  private diceRollAudioFile4: HTMLAudioElement;
+  private diceRollAudioFile5: HTMLAudioElement;
+  private diceRollAudioFile6: HTMLAudioElement;
+  private diceRollAudioFile7: HTMLAudioElement;
+  private diceRollAudioFile8: HTMLAudioElement;
+  private diceRollAudioFile9: HTMLAudioElement;
+  private diceRollAudioFile10: HTMLAudioElement;
 
   public searchInput: string = '';
 
@@ -271,7 +302,7 @@ export class NgChat implements OnInit, IChatController {
   }
 
   filterCampaignParticipants(participants) {
-    //debugger
+    
     //console.log("participants-1", participants)
     //  let user = this.localStorage.getDataObject<any>(DBkeys.CURRENT_USER);
     let rulesetID = ServiceUtil.CurrentCharacters_RulesetID(this.localStorage);
@@ -291,7 +322,7 @@ export class NgChat implements OnInit, IChatController {
         let currentParticipantList = [];
 
         if (ServiceUtil.IsCurrentlyRulesetOpen(this.localStorage) == true) {
-          //debugger
+      
           currentParticipantList = participants.filter(x => x.characterCampaignID == rulesetID || (x.chattingTo && (x.campaignID == rulesetID || x.characterCampaignID == rulesetID)));
           participants = currentParticipantList;
 
@@ -309,7 +340,7 @@ export class NgChat implements OnInit, IChatController {
 
         }
         else if (ServiceUtil.IsCurrentlyRulesetOpen(this.localStorage) == false) {
-          //debugger
+          
           let characterid = ServiceUtil.GetCurrentCharacterID(this.localStorage)
           currentParticipantList = participants.filter(x => (x.characterCampaignID == rulesetID || x.campaignID == rulesetID) || (!x.chattingTo && (x.campaignID == rulesetID || x.characterID == rulesetID)))
           participants = currentParticipantList;
@@ -327,7 +358,7 @@ export class NgChat implements OnInit, IChatController {
         else {
           participants = [];
         }
-        //debugger
+        
         let everyoneList = participants.filter(x => x.chattingTo)
         if (everyoneList.length) {
           participants = participants.filter(x => !x.chattingTo)
@@ -417,13 +448,13 @@ export class NgChat implements OnInit, IChatController {
     //      this.authService.logout(true);
     //    }
     //  });
-    debugger
+    
     let characterid = ServiceUtil.GetCurrentCharacterID(this.localStorage);
     if (characterid > 0) {
 
       this.characterService.getDiceRollModel(this.ruleset.ruleSetId, characterid)
         .subscribe((data:any) => {
-          debugger
+          
           this.customDices = data.customDices;
           this.statdetails = { charactersCharacterStat: data.charactersCharacterStats, character: data.character };
           this.charactersCharacterStats = data.charactersCharacterStats;
@@ -652,7 +683,7 @@ export class NgChat implements OnInit, IChatController {
 
   // Handles received messages by the adapter
   private onMessageReceived(participant: IChatParticipant, message: Message) {
-    debugger
+    
     if (participant && message) {
       let chatWindow = this.openChatWindow(participant);
 
@@ -678,8 +709,8 @@ export class NgChat implements OnInit, IChatController {
           this.onMessagesSeen.emit([message]);
         }
       }
-
-      this.emitMessageSound(chatWindow[0]);
+      debugger
+      this.emitMessageSound(chatWindow[0], message);
 
       // Github issue #58 
       // Do not push browser notifications with message content for privacy purposes if the 'maximizeWindowOnNewMessage' setting is off and this is a new chat window.
@@ -694,7 +725,7 @@ export class NgChat implements OnInit, IChatController {
   // Works for opening a chat window for an user or for a group
   // Returns => [Window: Window object reference, boolean: Indicates if this window is a new chat window]
   public openChatWindow(participant: IChatParticipant, focusOnNewWindow: boolean = false, invokedByUserClick: boolean = false): [Window, boolean] {
-    //debugger
+    
     //console.log('openChatWindow');
 
     // Is this window opened?
@@ -793,17 +824,143 @@ export class NgChat implements OnInit, IChatController {
 
   // Buffers audio file (For component's bootstrapping)
   private bufferAudioFile(): void {
+    
     if (this.audioSource && this.audioSource.length > 0) {
       this.audioFile = new Audio();
       this.audioFile.src = this.audioSource;
       this.audioFile.load();
     }
+    if (this.diceRollAudioSource1 && this.diceRollAudioSource1.length > 0) {
+      this.diceRollAudioFile1 = new Audio();
+      this.diceRollAudioFile1.src = this.diceRollAudioSource1;
+      this.diceRollAudioFile1.load();
+    }
+    if (this.diceRollAudioSource2 && this.diceRollAudioSource2.length > 0) {
+      this.diceRollAudioFile2 = new Audio();
+      this.diceRollAudioFile2.src = this.diceRollAudioSource2;
+      this.diceRollAudioFile2.load();
+    }
+    if (this.diceRollAudioSource3 && this.diceRollAudioSource3.length > 0) {
+      this.diceRollAudioFile3 = new Audio();
+      this.diceRollAudioFile3.src = this.diceRollAudioSource3;
+      this.diceRollAudioFile3.load();
+    }
+    if (this.diceRollAudioSource4 && this.diceRollAudioSource4.length > 0) {
+      this.diceRollAudioFile4 = new Audio();
+      this.diceRollAudioFile4.src = this.diceRollAudioSource4;
+      this.diceRollAudioFile4.load();
+    }
+    if (this.diceRollAudioSource5 && this.diceRollAudioSource5.length > 0) {
+      this.diceRollAudioFile5 = new Audio();
+      this.diceRollAudioFile5.src = this.diceRollAudioSource5;
+      this.diceRollAudioFile5.load();
+    }
+    if (this.diceRollAudioSource6 && this.diceRollAudioSource6.length > 0) {
+      this.diceRollAudioFile6 = new Audio();
+      this.diceRollAudioFile6.src = this.diceRollAudioSource6;
+      this.diceRollAudioFile6.load();
+    }
+    if (this.diceRollAudioSource7 && this.diceRollAudioSource7.length > 0) {
+      this.diceRollAudioFile7 = new Audio();
+      this.diceRollAudioFile7.src = this.diceRollAudioSource7;
+      this.diceRollAudioFile7.load();
+    }
+    if (this.diceRollAudioSource8 && this.diceRollAudioSource8.length > 0) {
+      this.diceRollAudioFile8 = new Audio();
+      this.diceRollAudioFile8.src = this.diceRollAudioSource8;
+      this.diceRollAudioFile8.load();
+    }
+    if (this.diceRollAudioSource9 && this.diceRollAudioSource9.length > 0) {
+      this.diceRollAudioFile9 = new Audio();
+      this.diceRollAudioFile9.src = this.diceRollAudioSource9;
+      this.diceRollAudioFile9.load();
+    }
+    if (this.diceRollAudioSource10 && this.diceRollAudioSource10.length > 0) {
+      this.diceRollAudioFile10 = new Audio();
+      this.diceRollAudioFile10.src = this.diceRollAudioSource10;
+      this.diceRollAudioFile10.load();
+    }
+
+    
   }
 
   // Emits a message notification audio if enabled after every message received
-  private emitMessageSound(window: Window): void {
-    if (this.audioEnabled && !window.hasFocus && this.audioFile) {
-      this.audioFile.play();
+  private emitMessageSound(window: Window, message: Message): void {
+    if (this.audioEnabled && !window.hasFocus) {
+      
+      let isChatDiceRollMessage = false;
+
+      if (message && message.message && message.message.indexOf('ng-chat-diceRoll-message') > -1) {
+        isChatDiceRollMessage = true;
+      }
+
+      debugger
+      if (!isChatDiceRollMessage && this.audioFile) {
+        this.audioFile.play();
+      }
+      else if (isChatDiceRollMessage) {
+        let num = Math.floor(Math.random() * 10) + 1;
+        switch (num) {
+          case 1:
+            if (this.diceRollAudioFile1) {
+              this.diceRollAudioFile1.play();
+            }
+            break;
+          case 2:
+            if (this.diceRollAudioFile2) {
+              this.diceRollAudioFile2.play();
+            }
+            break;
+          case 3:
+            if (this.diceRollAudioFile3) {
+              this.diceRollAudioFile3.play();
+            }
+            break;
+          case 4:
+            if (this.diceRollAudioFile4) {
+              this.diceRollAudioFile4.play();
+            }
+            break;
+          case 5:
+            if (this.diceRollAudioFile5) {
+              this.diceRollAudioFile5.play();
+            }
+            break;
+          case 6:
+            if (this.diceRollAudioFile6) {
+              this.diceRollAudioFile6.play();
+            }
+            break;
+          case 7:
+            if (this.diceRollAudioFile7) {
+              this.diceRollAudioFile7.play();
+            }
+            break;
+          case 8:
+            if (this.diceRollAudioFile8) {
+              this.diceRollAudioFile8.play();
+            }
+            break;
+          case 9:
+            if (this.diceRollAudioFile9) {
+              this.diceRollAudioFile9.play();
+            }
+            break;
+          case 10:
+            if (this.diceRollAudioFile10) {
+              this.diceRollAudioFile10.play();
+            }
+
+            break;
+
+          default:
+            if (this.audioFile) {
+              this.audioFile.play();
+            }
+            break;
+        }
+      }
+      
     }
   }
 
@@ -924,7 +1081,7 @@ export class NgChat implements OnInit, IChatController {
         message.message = window.newMessage;
         message.dateSent = new Date();
         if (true) {
-          debugger
+          
           //JSON.stringify(obj1) === JSON.stringify(obj2) 
           let currentopendwindowParticipant = this.participants.filter(x => JSON.stringify(x) == JSON.stringify(window.participant));
           if (!currentopendwindowParticipant.length && this.participants.filter(x => x.displayName == "Everyone").length) {
@@ -966,8 +1123,8 @@ export class NgChat implements OnInit, IChatController {
         diceResult.characterMultipleCommands &&
         diceResult.characterMultipleCommands[0] &&
         +diceResult.characterMultipleCommands[0].calculationResult) {
-        this.sendDiceRolledToChatGroup(diceResult);
-        return '';
+       // this.sendDiceRolledToChatGroup(diceResult);
+        return this.generateDiceRolledMessage(diceResult);
       }
       
       return msg;
@@ -1283,32 +1440,7 @@ export class NgChat implements OnInit, IChatController {
         message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;
         //message.isSystemGenerated = true;
 
-        let diceResult = Object.assign({}, diceR)
-        let commandModel: CharacterCommand = diceResult.characterCommandModel;
-        let characterMultipleCommands: any[] = diceResult.characterMultipleCommands;
-        let ExpandResult: string = commandModel.lastResult ? commandModel.lastResult.toString() : '0';
-        let CollaspedResult: string = commandModel.lastResult ? commandModel.lastResult.toString() : '0';
-        let CollaspedMessage = '';
-        let ExpandedMessage = '';
-        if (characterMultipleCommands.length) {
-          ExpandResult = '';
-          CollaspedResult = '';
-          characterMultipleCommands.map((x) => {
-            let _beforeResult = "";
-            let _afterResult = "";
-            if (x.beforeResult) {
-              _beforeResult = x.beforeResult.replace(/"/g, '');
-            }
-            if (x.afterResult) {
-              _afterResult = x.afterResult.replace(/"/g, '');
-            }
-            ExpandResult += "<span class='ng-chat-grey-text'>" + x.calculationString + "</span> " + (x.calculationString ? '=' : '') + " <b>" + _beforeResult + " <u>" + (x.calculationResult ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
-            CollaspedResult += "<b>" + _beforeResult + " <u>" + (x.calculationResult ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
-          })
-        }
-        ExpandedMessage = "<span class='ng-chat-message-expand d-none'><span class='ng-chat-orange-text'>Rolled: </span><span class='ng-chat-grey-text'>" + commandModel.command + "</span><br/><span class='ng-chat-orange-text'>Result: </span>" + ExpandResult + "</span>";
-        CollaspedMessage = "<span class='ng-chat-message-collaspe'><span class='ng-chat-orange-text'>Result: </span>" + CollaspedResult + "</span>";
-        message.message = CollaspedMessage + ExpandedMessage;
+        message.message = this.generateDiceRolledMessage(diceR);
         message.dateSent = new Date();
         //console.log("SendMessageVariable", message)
         this.windows.map((x) => {
@@ -1321,6 +1453,34 @@ export class NgChat implements OnInit, IChatController {
         this.adapter.sendMessage(message);
       } catch (e) { }
     }
+  }
+  generateDiceRolledMessage(diceR) {
+    let diceResult = Object.assign({}, diceR)
+    let commandModel: CharacterCommand = diceResult.characterCommandModel;
+    let characterMultipleCommands: any[] = diceResult.characterMultipleCommands;
+    let ExpandResult: string = commandModel.lastResult ? commandModel.lastResult.toString() : '0';
+    let CollaspedResult: string = commandModel.lastResult ? commandModel.lastResult.toString() : '0';
+    let CollaspedMessage = '';
+    let ExpandedMessage = '';
+    if (characterMultipleCommands.length) {
+      ExpandResult = '';
+      CollaspedResult = '';
+      characterMultipleCommands.map((x) => {
+        let _beforeResult = "";
+        let _afterResult = "";
+        if (x.beforeResult) {
+          _beforeResult = x.beforeResult.replace(/"/g, '');
+        }
+        if (x.afterResult) {
+          _afterResult = x.afterResult.replace(/"/g, '');
+        }
+        ExpandResult += "<span class='ng-chat-grey-text'>" + x.calculationString + "</span> " + (x.calculationString ? '=' : '') + " <b>" + _beforeResult + " <u>" + (x.calculationResult ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
+        CollaspedResult += "<b>" + _beforeResult + " <u>" + (x.calculationResult ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
+      })
+    }
+    ExpandedMessage = "<span class='ng-chat-diceRoll-message ng-chat-message-expand d-none'><span class='ng-chat-orange-text'>Rolled: </span><span class='ng-chat-grey-text'>" + commandModel.command + "</span><br/><span class='ng-chat-orange-text'>Result: </span>" + ExpandResult + "</span>";
+    CollaspedMessage = "<span class='ng-chat-diceRoll-message ng-chat-message-collaspe'><span class='ng-chat-orange-text'>Result: </span>" + CollaspedResult + "</span>";
+    return CollaspedMessage + ExpandedMessage;
   }
   sendLootMessageToChatGroup(isLootTakenByCharacter = false, CharacterName = '') {
     if (this.participants && this.participants.length) {
@@ -1382,7 +1542,7 @@ export class NgChat implements OnInit, IChatController {
     this.audioEnabled = !this.audioEnabled;
   }
   toggleDiceResult(e) {
-    debugger
+    
     if (e.currentTarget.previousElementSibling.children) {
       if (e.currentTarget.previousElementSibling.children[0]) {
         if (e.currentTarget.previousElementSibling.children[0].classList.contains('ng-chat-message-collaspe')) {
@@ -1411,7 +1571,7 @@ export class NgChat implements OnInit, IChatController {
 
     //}
     try {
-      debugger
+      
       if (this.participants.filter((x: any) => x.characterID == characterId && !x.chattingTo).length) {
         if (this.participants.filter((x: any) => x.characterID == characterId && !x.chattingTo && x.status == ChatParticipantStatus.Online).length) {
           this.openChatWindow(this.participants.filter((x: any) => x.characterID == characterId && !x.chattingTo && x.status == ChatParticipantStatus.Online)[0], true, true);
@@ -1428,7 +1588,7 @@ export class NgChat implements OnInit, IChatController {
       let message = new Message();
       message.fromId = this.userId;
       message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;
-      debugger
+      
 
     }
     catch (e) {
