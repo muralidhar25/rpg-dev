@@ -80,7 +80,8 @@ export class ImageTileService extends EndpointFactory {
         commandTile: model.commandTiles,
         toggleTile: model.toggleTiles,
         multiCharacterStats: [],
-        buffAndEffectTile: model.buffAndEffectTile
+        buffAndEffectTile: model.buffAndEffectTiles,
+        characterStatClusterTile: model.characterStatClusterTiles
       };
     }
     else {
@@ -126,7 +127,8 @@ export class ImageTileService extends EndpointFactory {
         commandTile: null,
         toggleTile: null,
         multiCharacterStats: [],
-        buffAndEffectTile:null
+        buffAndEffectTile: null,
+        characterStatClusterTile: null
       };
     }
     return modelData;

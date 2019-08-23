@@ -9,6 +9,7 @@ import { CharacterStatTile } from './character-stat-tile.model';
 import { TextTile } from './text-tile.model';
 import { BuffAndEffectTile } from './buff-and-effect-tile.model';
 import { ToggleTile } from '../view-models/toggle-tile.model';
+import { CharacterStatClusterTile } from './character-stat-cluster-tile.model';
 
 export class CharacterTile {
   constructor(characterTileId?: number,
@@ -36,7 +37,8 @@ export class CharacterTile {
     commandTile?: CommandTile,
     multiCharacterStats?: characterStatIds[],
     buffAndEffectTile?: BuffAndEffectTile,
-    toggleTile?: ToggleTile
+    toggleTile?: ToggleTile,
+    characterStatClusterTile?: CharacterStatClusterTile,
   ) {
     this.characterTileId = characterTileId,
       this.tileTypeId = tileTypeId,
@@ -63,7 +65,8 @@ export class CharacterTile {
       this.commandTile = commandTile,
       this.multiCharacterStats = multiCharacterStats,
       this.buffAndEffectTile = buffAndEffectTile,
-      this.toggleTile = toggleTile
+      this.toggleTile = toggleTile,
+      this.characterStatClusterTile = characterStatClusterTile
   }
 
   public characterTileId: number;
@@ -92,6 +95,7 @@ export class CharacterTile {
   public multiCharacterStats: characterStatIds[];
   public buffAndEffectTile: BuffAndEffectTile;
   public toggleTile: ToggleTile;
+  public characterStatClusterTile: CharacterStatClusterTile;
 }
 
 export class characterStatIds {

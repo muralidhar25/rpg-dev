@@ -88,7 +88,8 @@ export class BuffAandEffectTileService extends EndpointFactory {
         commandTile: model.commandTiles,
         toggleTile: model.toggleTiles,
         multiCharacterStats: [],
-        buffAndEffectTile: model.buffAndEffectTiles
+        buffAndEffectTile: model.buffAndEffectTiles,
+        characterStatClusterTile: model.characterStatClusterTiles
       };
     }
     else {
@@ -117,6 +118,7 @@ export class BuffAandEffectTileService extends EndpointFactory {
         executeTile: null,
         commandTile: null,
         toggleTile: null,
+        characterStatClusterTile:null,
         multiCharacterStats: [],
         buffAndEffectTile: {
           buffAndEffectTileId: model.buffAndEffectTileId ? model.buffAndEffectTileId : 0,

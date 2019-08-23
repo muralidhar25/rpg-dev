@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace RPGSmithApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190820134035_clustertile_listInCharacterTile")]
+    partial class clustertile_listInCharacterTile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -960,7 +962,7 @@ namespace RPGSmithApp.Migrations
 
                     b.Property<string>("ClusterWithSortOrder");
 
-                    b.Property<int?>("DisplayCharactersCharacterStatID");
+                    b.Property<int?>("DisplayCharacterStatId");
 
                     b.Property<bool>("IsDeleted");
 
@@ -986,7 +988,7 @@ namespace RPGSmithApp.Migrations
                         .IsUnique()
                         .HasFilter("[CharacterTileId] IS NOT NULL");
 
-                    b.HasIndex("DisplayCharactersCharacterStatID");
+                    b.HasIndex("DisplayCharacterStatId");
 
                     b.ToTable("CharacterCharacterStatClusterTiles");
                 });
@@ -4880,9 +4882,9 @@ namespace RPGSmithApp.Migrations
                         .WithOne("CharacterStatClusterTiles")
                         .HasForeignKey("DAL.Models.CharacterTileModels.CharacterCharacterStatClusterTile", "CharacterTileId");
 
-                    b.HasOne("DAL.Models.CharactersCharacterStat", "DisplayCharactersCharacterStat")
+                    b.HasOne("DAL.Models.CharacterStat", "DisplayCharacterStat")
                         .WithMany()
-                        .HasForeignKey("DisplayCharactersCharacterStatID");
+                        .HasForeignKey("DisplayCharacterStatId");
                 });
 
             modelBuilder.Entity("DAL.Models.CharacterTileModels.CharacterCharacterStatTile", b =>

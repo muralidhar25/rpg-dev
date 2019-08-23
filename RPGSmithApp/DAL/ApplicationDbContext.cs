@@ -174,7 +174,9 @@ namespace DAL
         public virtual DbSet<TileCustomToggle> TileCustomToggles { get; set; }
         public virtual DbSet<CharacterToggleTile> CharacterToggleTiles { get; set; }
         public virtual DbSet<RulesetToggleTile> RulesetToggleTiles { get; set; }
+        public virtual DbSet<CharacterCharacterStatClusterTile> CharacterCharacterStatClusterTiles { get; set; }
         
+
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {

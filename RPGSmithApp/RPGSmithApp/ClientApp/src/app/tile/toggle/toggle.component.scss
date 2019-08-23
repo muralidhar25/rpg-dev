@@ -726,6 +726,9 @@ p.rich-text {
   transform: translate(0,-50%);
   background: #d1d0ce;
 }
+.checkbox-design label span.display-option:before {
+  background: none;
+}
 .checkbox-design label input[type=radio]:checked + span:before {
   border-color: #5a534d;
 }

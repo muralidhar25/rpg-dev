@@ -36,6 +36,7 @@ namespace RPGSmithApp.Controllers
         private readonly IColorService _colorService;
         private readonly ICharactersCharacterStatService _charactersCharacterStatService;
         private readonly IToggleTileService _toggleTileService;
+        private readonly ICharacterStatClusterTileService _characterStatClusterTileService;
         private readonly IRuleSetService _ruleSetService;
         private const int heightWidth = 144;
 
@@ -53,7 +54,8 @@ namespace RPGSmithApp.Controllers
             ICharactersCharacterStatService charactersCharacterStatService,
             IBuffAndEffectTileService buffAndEffectTileService,
             IToggleTileService toggleTileService,
-            IRuleSetService ruleSetService)
+            IRuleSetService ruleSetService,
+            ICharacterStatClusterTileService characterStatClusterTileService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._accountManager = accountManager;
@@ -71,6 +73,7 @@ namespace RPGSmithApp.Controllers
             this._buffAndEffectTileService = buffAndEffectTileService;
             this._toggleTileService = toggleTileService;
             this._ruleSetService = ruleSetService;
+            this._characterStatClusterTileService = characterStatClusterTileService;
         }
 
         [HttpGet("GetById")]
@@ -548,7 +551,20 @@ namespace RPGSmithApp.Controllers
                             Tile.ToggleTiles = await _toggleTileService.Create(toggleTile);
                             SaveColorsAsync(Tile);
                             break;
+                        case (int)Enum.TILES.CHARACTERSTATCLUSTER:
+                            //Add Text Tile 
+                            if (model.CharacterStatClusterTile == null)
+                                return BadRequest("Character Stat Cluster Tile missing in request");
 
+                            await _tileService.Create(Tile);
+
+                            var characterStatClusterTile = model.CharacterStatClusterTile;
+                            characterStatClusterTile.CharacterTileId = Tile.CharacterTileId;
+
+                            characterStatClusterTile.Shape = Tile.Shape;
+                            Tile.CharacterStatClusterTiles = await _characterStatClusterTileService.Create(characterStatClusterTile);
+                            SaveColorsAsync(Tile);
+                            break;
                         default:
                             break;
                     }
@@ -820,6 +836,21 @@ namespace RPGSmithApp.Controllers
                             Tile.ToggleTiles = await _toggleTileService.Update(toggleTile);
                             SaveColorsAsync(Tile);
                             break;
+                        case (int)Enum.TILES.CHARACTERSTATCLUSTER:
+                            //Update Text Tile 
+                            if (model.CharacterStatClusterTile == null)
+                                return BadRequest("CharacterStatClusterTile missing in request");
+                            else if (model.CharacterStatClusterTile.CharacterStatClusterTileId == 0)
+                                return BadRequest("CharacterStatClusterTileId field is required for CharacterStatClusterTile");
+
+                            await _tileService.Update(Tile);
+
+                            var characterStatClusterTile = model.CharacterStatClusterTile;
+                            characterStatClusterTile.CharacterTileId = Tile.CharacterTileId;
+                            characterStatClusterTile.Shape = Tile.Shape;
+                            Tile.CharacterStatClusterTiles = await _characterStatClusterTileService.Update(characterStatClusterTile);
+                            SaveColorsAsync(Tile);
+                            break;
                         default:
                             break;
                     }
@@ -947,6 +978,12 @@ namespace RPGSmithApp.Controllers
                         _tileColor.BodyTextColor = Tile.ToggleTiles.BodyTextColor;
                         _tileColor.TitleBgColor = Tile.ToggleTiles.TitleBgColor;
                         _tileColor.TitleTextColor = Tile.ToggleTiles.TitleTextColor;
+                        break;
+                    case (int)Enum.TILES.CHARACTERSTATCLUSTER:
+                        _tileColor.BodyBgColor = Tile.CharacterStatClusterTiles.BodyBgColor;
+                        _tileColor.BodyTextColor = Tile.CharacterStatClusterTiles.BodyTextColor;
+                        _tileColor.TitleBgColor = Tile.CharacterStatClusterTiles.TitleBgColor;
+                        _tileColor.TitleTextColor = Tile.CharacterStatClusterTiles.TitleTextColor;
                         break;
                     default: break;
                 }

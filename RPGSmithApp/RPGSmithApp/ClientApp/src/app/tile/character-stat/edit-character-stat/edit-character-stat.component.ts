@@ -75,9 +75,11 @@ export class EditCharacterStatComponent implements OnInit {
         return Utilities.optionsFloala(200, placeholder, initOnClick,true);
   }
 
-  @HostListener('window:keydown', ['$event'])
+  @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
-    if (event.keyCode === 13 && (this.CharacterStatTypeID === STAT_TYPE.RichText && this.showRichEditor) || (this.CharacterStatTypeID !== STAT_TYPE.Calculation && this.CharacterStatTypeID !== STAT_TYPE.RichText && this.CharacterStatTypeID !== STAT_TYPE.Condition)) {
+    if ((event.keyCode === 13) && ((this.CharacterStatTypeID === STAT_TYPE.RichText && this.showRichEditor) || (this.CharacterStatTypeID !== STAT_TYPE.Calculation && this.CharacterStatTypeID !== STAT_TYPE.RichText && this.CharacterStatTypeID !== STAT_TYPE.Condition)))
+    {
+      debugger
         this.saveStat(this.CharacterStatTypeID);     
     }
   }
@@ -254,7 +256,8 @@ export class EditCharacterStatComponent implements OnInit {
         }
     }
 
-    saveStat(characterStatTypeId: number) {
+  saveStat(characterStatTypeId: number) {
+      debugger
         let charactersCharacterStat: CharactersCharacterStat = this.CharacterStatTile.charactersCharacterStat;
         this.isNotValidNumber = false;
         let obj: any = this.CharacterStatTile.charactersCharacterStat.characterStat;

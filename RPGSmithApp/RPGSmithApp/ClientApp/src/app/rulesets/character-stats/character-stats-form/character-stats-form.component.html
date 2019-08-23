@@ -254,8 +254,8 @@
                           <input type="radio" id="display-yn" name="toggle" (click)="selectedToggle(characterStatsFormModal.characterStatToggleViewModel,'display')"
                                  [checked]="characterStatsFormModal.characterStatToggleViewModel.display" /><span></span>
                         </li>
-                        <li><input [disabled]="!characterStatsFormModal.characterStatToggleViewModel.display" type="radio" name="display" [checked]="characterStatsFormModal.characterStatToggleViewModel.showCheckbox" (change)="setShowCheckbox(true)" /><span></span></li>
-                        <li><input [disabled]="!characterStatsFormModal.characterStatToggleViewModel.display" type="radio" name="display" [checked]="!characterStatsFormModal.characterStatToggleViewModel.showCheckbox" (change)="setShowCheckbox(false)" /><span></span></li>
+                        <li><input [disabled]="true" type="radio" name="display" [checked]="true" (change)="setShowCheckbox(true)" /><span></span></li>
+                        <li><input [disabled]="true" type="radio" name="display" [checked]="false" (change)="setShowCheckbox(false)" /><span></span></li>
                       </ul>
                     </div>
                     <div class="col-6 col-sm-3">

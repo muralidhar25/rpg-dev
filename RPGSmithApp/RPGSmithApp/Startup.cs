@@ -292,6 +292,7 @@ namespace RPGSmithApp
             services.AddScoped<ILootPileTemplateService, LootPileTemplateService>();
             services.AddScoped<IToggleTileService, ToggleTileService>();
             services.AddScoped<IRulesetToggleTileService, RulesetToggleTileService>();
+            services.AddScoped<ICharacterStatClusterTileService, CharacterStatClusterTileService>();
             
 
 

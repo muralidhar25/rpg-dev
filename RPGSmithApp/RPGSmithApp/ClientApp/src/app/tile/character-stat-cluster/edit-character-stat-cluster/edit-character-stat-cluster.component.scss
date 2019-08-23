@@ -1,3 +1,43 @@
+.btn-edit {
+    border-color: #fd7e14;
+    background-color: transparent;
+    color: #fd7e14;
+}
+
+.btn-edit:hover {
+    border-color: #fd7e14;
+    background-color: #ffffff;
+    color: #fd7e14;
+}
+.emptySpace{
+    width:7em;
+}
+.resetbutton {
+    padding-top: 0px !important;
+}
+.flex-align-col {
+    flex-direction: column
+}
+.input-switch-items .form-check-label .notopborder {
+    border-top: none !important;
+    border-right: 1px solid #d15727 !important;
+}
+.input-switch-items .form-check-label .rightborder {
+    
+    border-right: 1px solid #d15727 !important;
+}
+.input-switch-items .form-check-label .my-class {
+    border-top: 1px solid #d15727 !important;
+}
+
+
+
+
+
+.modal-header {
+    background:none;
+}
+
 .modal-footer {
     padding: 12px 15px 10px;
     border-top: 1px solid #dedbda;
@@ -5,69 +45,59 @@
 
 .modal-footer .btn {
     margin-top: 0px !important;
+    height: 2.5rem;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 0.75rem;
+}
+.btn-simple-accent {
+    border-color: transparent;
 }
 
-input.input-color-custom {
-    opacity: 0;
-    width: 0px;
-    opacity: 0;
-    width: 100%;
-    position: absolute;
-    left: 0px;
-    right: 0px;
-    height: 100%;
-    cursor: pointer;
+@media (max-width:768px) {
+    button.btn.icon.icon-with-text.icon-reset.btn-link-primary {
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        height: auto;
+        padding-left: 0;
+        padding-right: 0;
+        text-transform: none;
+        border-color: transparent !important;
+    }
+
+    button.float-right.btn.icon.icon-with-text.icon-dice.icon-rsi.btn-link-primary {
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        height: auto;
+        padding-left: 0;
+        padding-right: 0;
+        text-transform: none;
+        border-color: transparent !important;
+    }
 }
 
-.input-color-items {
-    list-style: none
+.visible-body{
+  overflow-y:visible;
+  /*overflow:visible*/
 }
-
-.input-color-items .form-check-label {
-    margin-top: 10px;
-}
-
-.input-color-items li .tile {
-    margin-top: 0px;
-}
-.remove-btn-box {
-    position: absolute;
-    bottom: 0px;
-    left: 0px;
-    opacity: 0;
-    right:0px;
-}
-.remove-btn-box:hover{
-    opacity:1
-}
-.remove-btn-box .removebtn-img {
-    width: 100%;
-    background: #d25727;
-    border: 0px;
-    color: #fff;
-    padding: 8px 0px;
-    font-size: 15px;
-    cursor: pointer
-}
-.input-image-trigger:hover + .remove-btn-box {
-    opacity: 1;
-}
-
-
 .modal-footer {
   padding: 12px 15px 10px;
   border-top: 1px solid #dedbda;
-  justify-content:space-between;
-  flex-direction:row;
+  justify-content: space-between;
+  flex-direction: row;
 }
 
 .modal-footer .btn {
   margin-top: 0px !important;
 }
-.btn{
-  padding-left:10px;
-  padding-right:10px;
+
+.btn {
+  padding-left: 10px;
+  padding-right: 10px;
 }
+
 input.input-color-custom {
   opacity: 0;
   width: 0px;
@@ -163,6 +193,7 @@ input.input-color-custom {
   border-color: #e7ce63 !important;
   background-color: #f8f1d2 !important;
 }
+
 .page-toolbar-title a {
   margin-top: 0.5rem;
 }
@@ -455,6 +486,7 @@ input.input-color-custom {
   width: auto;
   padding: 3px;
 }
+
 .edit-btn:before {
   font-size: 30px !important;
 }
@@ -665,26 +697,31 @@ p.rich-text {
   display: inline-flex;
   cursor: pointer
 }
+
 .input-counter .input-group .form-control {
   border-left: 1px solid #ced4da;
   border-right: 1px solid #ced4da;
 }
+
 .form-group.input-counter small {
   color: #d15727;
 }
-.modal-footer span{
-  justify-content:space-between;
-  display:flex;
-  width:50%;
+
+.modal-footer span {
+  justify-content: space-between;
+  display: flex;
+  width: 50%;
 }
+
 .btn-orange-outer {
   border: 1px solid #d15727;
   background: none;
   color: #d15727
 }
+
 .modal-body .user-login-details {
-  max-width:100%;
-  margin-left:0px !important
+  max-width: 100%;
+  margin-left: 0px !important
 }
 
 /* == Checkbox Design == */
@@ -693,6 +730,7 @@ p.rich-text {
   flex-wrap: wrap;
   justify-content: center;
 }
+
 .checkbox-design label input {
   position: absolute;
   width: 20px;
@@ -700,20 +738,22 @@ p.rich-text {
   left: 7px;
   top: 50%;
   transform: translate(0,-50%);
-  z-index:1;
-  opacity:0;
-  cursor:pointer
-
+  z-index: 1;
+  opacity: 0;
+  cursor: pointer
 }
+
 .checkbox-design label span {
   padding: 5px 0px 5px 20px;
   position: relative;
   margin: 0px 0px 0px 7px;
 }
+
 .checkbox-design label {
   margin: 10px 0;
   position: relative;
 }
+
 .checkbox-design label span:before {
   content: '';
   width: 20px;
@@ -726,27 +766,28 @@ p.rich-text {
   transform: translate(0,-50%);
   background: #d1d0ce;
 }
-.checkbox-design label span.display-option:before {
-  background: none;
-}
+
 .checkbox-design label input[type=radio]:checked + span:before {
   border-color: #5a534d;
 }
-  .checkbox-design label input[type=radio]:checked + span:after {
-    content: '';
-    border: 2px solid;
-    width: 7px;
-    height: 11px;
-    position: absolute;
-    left: 6.5px;
-    top: 46%;
-    transform: translate(0,-50%) rotate(-135deg);
-    border-color: #5a534d transparent transparent #5a534d;
-  }
+
+.checkbox-design label input[type=radio]:checked + span:after {
+  content: '';
+  border: 2px solid;
+  width: 7px;
+  height: 11px;
+  position: absolute;
+  left: 6.5px;
+  top: 46%;
+  transform: translate(0,-50%) rotate(-135deg);
+  border-color: #5a534d transparent transparent #5a534d;
+}
+
 .checkbox-design label input[type=checkbox]:checked + span:before {
   border-color: #b3b3b3;
   background: #5a534d;
 }
+
 .checkbox-design label input[type=checkbox]:checked + span:after {
   content: '';
   border: 2px solid;
@@ -758,9 +799,11 @@ p.rich-text {
   transform: translate(0,-50%) rotate(-135deg);
   border-color: #fff transparent transparent #fff;
 }
-.image-icons:before{
-  font-size:30px !important;
+
+.image-icons:before {
+  font-size: 30px !important;
 }
+
 .image-icons {
   margin-left: 5px;
   padding: 4px;
@@ -780,40 +823,37 @@ p.rich-text {
   }
 }
 
-  @media (max-width:767.5px) {
-    .input-counter .input-group .btn {
-      width: auto
-    }
-
-    .input-counter .input-group .btn:before {
-      font-size: 0.75rem;
-    }
+@media (max-width:767.5px) {
+  .input-counter .input-group .btn {
+    width: auto
   }
 
-  @media (max-width:575px) {
-    .modal-footer {
-      flex-direction: column;
-    }
-
-    .modal-footer span {
-      justify-content: space-between;
-      width: 100%;
-      margin: 5px 0px;
-    }
-
-    .modal-footer .btn {
-      width: 7rem;
-      margin: 0px 2px;
-    }
-
-    .modal-body .user-login-details {
-      width: 100%;
-    }
-
-    .modal-body .user-login-details span:last-child {
-      display: block !important
-    }
+  .input-counter .input-group .btn:before {
+    font-size: 0.75rem;
   }
-.form-group {
-  margin-bottom: 0.5rem !important;
+}
+
+@media (max-width:575px) {
+  .modal-footer {
+    flex-direction: column;
+  }
+
+  .modal-footer span {
+    justify-content: space-between;
+    width: 100%;
+    margin: 5px 0px;
+  }
+
+  .modal-footer .btn {
+    width: 7rem;
+    margin: 0px 2px;
+  }
+
+  .modal-body .user-login-details {
+    width: 100%;
+  }
+
+  .modal-body .user-login-details span:last-child {
+    display: block !important
+  }
 }

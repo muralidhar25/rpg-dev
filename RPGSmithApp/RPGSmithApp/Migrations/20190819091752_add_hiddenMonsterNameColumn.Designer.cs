@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace RPGSmithApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190819091752_add_hiddenMonsterNameColumn")]
+    partial class add_hiddenMonsterNameColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -940,55 +942,6 @@ namespace RPGSmithApp.Migrations
                         .HasFilter("[CharacterTileId] IS NOT NULL");
 
                     b.ToTable("CharacterBuffAndEffectTiles");
-                });
-
-            modelBuilder.Entity("DAL.Models.CharacterTileModels.CharacterCharacterStatClusterTile", b =>
-                {
-                    b.Property<int>("CharacterStatClusterTileId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("BodyBgColor")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<string>("BodyTextColor")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<int?>("CharacterTileId");
-
-                    b.Property<string>("ClusterWithSortOrder");
-
-                    b.Property<int?>("DisplayCharactersCharacterStatID");
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<int>("Shape");
-
-                    b.Property<int>("SortOrder");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("TitleBgColor")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<string>("TitleTextColor")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.HasKey("CharacterStatClusterTileId");
-
-                    b.HasIndex("CharacterTileId")
-                        .IsUnique()
-                        .HasFilter("[CharacterTileId] IS NOT NULL");
-
-                    b.HasIndex("DisplayCharactersCharacterStatID");
-
-                    b.ToTable("CharacterCharacterStatClusterTiles");
                 });
 
             modelBuilder.Entity("DAL.Models.CharacterTileModels.CharacterCharacterStatTile", b =>
@@ -4872,17 +4825,6 @@ namespace RPGSmithApp.Migrations
                     b.HasOne("DAL.Models.CharacterTileModels.CharacterTile", "CharacterTile")
                         .WithOne("BuffAndEffectTiles")
                         .HasForeignKey("DAL.Models.CharacterTileModels.CharacterBuffAndEffectTile", "CharacterTileId");
-                });
-
-            modelBuilder.Entity("DAL.Models.CharacterTileModels.CharacterCharacterStatClusterTile", b =>
-                {
-                    b.HasOne("DAL.Models.CharacterTileModels.CharacterTile", "CharacterTile")
-                        .WithOne("CharacterStatClusterTiles")
-                        .HasForeignKey("DAL.Models.CharacterTileModels.CharacterCharacterStatClusterTile", "CharacterTileId");
-
-                    b.HasOne("DAL.Models.CharactersCharacterStat", "DisplayCharactersCharacterStat")
-                        .WithMany()
-                        .HasForeignKey("DisplayCharactersCharacterStatID");
                 });
 
             modelBuilder.Entity("DAL.Models.CharacterTileModels.CharacterCharacterStatTile", b =>

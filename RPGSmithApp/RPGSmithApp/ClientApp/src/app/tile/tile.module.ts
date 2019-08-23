@@ -19,6 +19,8 @@ import { TextTileComponent } from './text/text.component';
 import { EditTextComponent } from './text/edit-text/edit-text.component';
 import { BuffAndEffectTileComponent } from './buff-and-effect/buff-and-effect.component';
 import { ToggleTileComponent } from './toggle/toggle.component';
+import { CharacterStatClusterTileComponent } from './character-stat-cluster/character-stat-cluster.component';
+import { EditCharacterStatClusterComponent } from './character-stat-cluster/edit-character-stat-cluster/edit-character-stat-cluster.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { ToggleTileComponent } from './toggle/toggle.component';
     TextTileComponent,
     EditTextComponent,
     BuffAndEffectTileComponent,
-    ToggleTileComponent
+    ToggleTileComponent,
+    CharacterStatClusterTileComponent,
+    EditCharacterStatClusterComponent
   ],
   imports: [
     SharedModule
@@ -66,7 +70,9 @@ import { ToggleTileComponent } from './toggle/toggle.component';
     TextTileComponent,
     EditTextComponent,
     BuffAndEffectTileComponent,
-    ToggleTileComponent
+    ToggleTileComponent,
+    CharacterStatClusterTileComponent,
+    EditCharacterStatClusterComponent
   ],
   entryComponents: [
     TileComponent,
@@ -87,7 +93,9 @@ import { ToggleTileComponent } from './toggle/toggle.component';
     TextTileComponent,
     EditTextComponent,
     BuffAndEffectTileComponent,
-    ToggleTileComponent
+    ToggleTileComponent,
+    CharacterStatClusterTileComponent,
+    EditCharacterStatClusterComponent
   ]
 })
 export class TileModule {}

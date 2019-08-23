@@ -140,7 +140,9 @@ export enum TILES {
   COMMAND = 7,
   TEXT = 8,
   BUFFANDEFFECT = 9,
-  TOGGLE = 10
+  TOGGLE = 10,
+  CHARACTERSTATCLUSTER = 11,
+
 }
 
 export enum TILE_ICON {
@@ -153,7 +155,8 @@ export enum TILE_ICON {
   EXECUTE = "icon-execute",
   COMMAND = "icon-dice",
   BUFFANDEFFECT = "icon-BnE",
-  TOGGLE = "icon-CharStat-Yes-No"
+  TOGGLE = "icon-CharStat-Yes-No",
+  CHARACTERSTATCLUSTER = "icon-CharStatCluster"
 }
 export enum ImageError {
   MESSAGE = "High resolution images will affect loading times and diminish performance. Do you still want to upload ?",

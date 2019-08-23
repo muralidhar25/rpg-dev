@@ -35,12 +35,12 @@
                       <span></span>
                     </label>
                     <label>
-                      <input [disabled]="!tileToggleViewModel.display" type="radio" name="display" [checked]="tileToggleViewModel.showCheckbox" (change)="setShowCheckbox(true)" />
-                      <span></span>
+                      <input [disabled]="true" type="radio" name="display" [checked]="true" (change)="setShowCheckbox(true)" />
+                      <span class="display-option"></span>
                     </label>
                     <label>
-                      <input [disabled]="!tileToggleViewModel.display" type="radio" name="display" [checked]="!tileToggleViewModel.showCheckbox" (change)="setShowCheckbox(false)" />
-                      <span></span>
+                      <input [disabled]="true" type="radio" name="display" [checked]="false" (change)="setShowCheckbox(false)" />
+                      <span class="display-option"></span>
                     </label>
 
                     <label class="pl-2">

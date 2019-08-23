@@ -16,6 +16,7 @@ import { TextTileComponent } from './text/text.component';
 import { PlatformLocation } from '@angular/common';
 import { BuffAndEffectTileComponent } from './buff-and-effect/buff-and-effect.component';
 import { ToggleTileComponent } from './toggle/toggle.component';
+import { CharacterStatClusterTileComponent } from './character-stat-cluster/character-stat-cluster.component';
 
 @Component({
   selector: 'app-tile',
@@ -67,6 +68,7 @@ export class TileComponent implements OnInit {
       { tileName: 'COUNTER', tileTypeId: TILES.COUNTER, icon: TILE_ICON.COUNTER },
       { tileName: 'TOGGLE', tileTypeId: TILES.TOGGLE, icon: TILE_ICON.TOGGLE },
       { tileName: 'CHARACTER STAT', tileTypeId: TILES.CHARACTERSTAT, icon: TILE_ICON.CHARACTERSTAT },
+      { tileName: 'CHAR STAT CLUSTER', tileTypeId: TILES.CHARACTERSTATCLUSTER, icon: TILE_ICON.CHARACTERSTATCLUSTER },
       
     ];
     if (this.ruleSet.isBuffAndEffectEnabled) {
@@ -275,6 +277,29 @@ export class TileComponent implements OnInit {
         this.bsModalRef.content.tile = tile;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.ADD;
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            this.event.emit(data);
+          }
+        })
+        break;
+      }
+      case TILES.CHARACTERSTATCLUSTER: {
+        const char = new Characters();
+        char.characterId = this.characterId;
+        char.ruleSet = this.ruleSet;
+        this.bsModalRef = this.modalService.show(CharacterStatClusterTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = 'Add Character Stat Cluster Tile';
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.pageId = this.pageId;
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.ADD;
+        this.bsModalRef.content.character = char;
         this.bsModalRef.content.event.subscribe(data => {
           if (data) {
             this.event.emit(data);
