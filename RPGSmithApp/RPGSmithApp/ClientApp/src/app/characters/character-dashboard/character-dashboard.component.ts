@@ -1678,7 +1678,7 @@ export class CharacterDashboardComponent implements OnInit {
           keyboard: false
         });
         this.bsModalRef.content.tile = _tile;
-        this.bsModalRef.content.textTile = _tile.textTiles;
+        this.bsModalRef.content.characterStatClusterTile = _tile.characterStatClusterTiles;
         this.bsModalRef.content.tileName = 'cluster';
         this.bsModalRef.content.characterId = this.characterId;
         this.bsModalRef.content.view = VIEW.MANAGE;
@@ -3254,14 +3254,18 @@ export class CharacterDashboardComponent implements OnInit {
               //}
               //this.pauseBuffAndEffectAdd = data.pauseBuffAndEffectAdd;
               //this.pauseBuffAndEffectCreate = data.pauseBuffAndEffectCreate;
-              if (!data.isPlayerLinkedToCurrentCampaign) {                if (data.pauseGame) {
+              if (!data.isPlayerLinkedToCurrentCampaign) {
+
+                if (data.pauseGame) {
                   this.router.navigate(['/characters']);
                   this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
                   setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
                 }
 
                 this.pauseBuffAndEffectAdd = data.pauseBuffAndEffectAdd;
-                this.pauseBuffAndEffectCreate = data.pauseBuffAndEffectCreate;              }
+                this.pauseBuffAndEffectCreate = data.pauseBuffAndEffectCreate;
+
+              }
             }
             if (data.isDeletedInvite) {
               this.router.navigate(['/characters']);

@@ -377,6 +377,9 @@ export class CharacterStatClusterTileComponent implements OnInit {
       if (this.displayCharacterStat && this.displayCharacterStat.length && this.displayCharacterStat[0]) {
         this.ClusterTileFormModal.displayCharactersCharacterStatID = this.displayCharacterStat[0].charactersCharacterStatId;
       }
+      else {
+        this.ClusterTileFormModal.displayCharactersCharacterStatID = null;
+      }
 
       let selectedStats = this.ClusterCharacterStatsList.filter(x => x.selected);
       let selectedStatIds = [];

@@ -9455,3 +9455,14 @@ input-type-number::-webkit-outer-spin-button {
 .text-black {
   color: #000;
 }
+@media (min-width:1024px) {
+  .tile-create-popup {
+    max-width: 600px;
+  }
+}
+@media (max-width:1023px) {
+  .tile-create-popup {
+    width: auto;
+  }
+}
+
