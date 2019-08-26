@@ -982,7 +982,7 @@ export class Utilities {
     else if (url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DETAILS/') > -1) {
       return 'https://rpgsmith.com/help/#CampaignInterface';
     }
-    else if (url.toUpperCase().indexOf('RULESET/COMBAT/') > -1) {
+    else if (url.toUpperCase().indexOf('RULESET/COMBAT/') > -1 || url.toUpperCase().indexOf('CHARACTER/COMBATPLAYER/') > -1) {
       return 'https://rpgsmith.com/helpg/#g1';
     }
     else if (url.toUpperCase().indexOf('/RULESET/MONSTER/') > -1) {
