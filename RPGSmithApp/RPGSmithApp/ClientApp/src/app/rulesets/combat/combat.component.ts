@@ -363,7 +363,8 @@ export class CombatComponent implements OnInit {
   }
 
   // Combat Settings
-  GetCombatDetails(ShowLoader = true, selectedDeployedMonsters: any = [], recentlyEndedCombatId:number=0) {
+  GetCombatDetails(ShowLoader = true, selectedDeployedMonsters: any = [], recentlyEndedCombatId: number = 0) {
+
     if (ShowLoader) {
       this.isLoading = true;
     }
@@ -579,10 +580,10 @@ export class CombatComponent implements OnInit {
           
           selectedDeployedMonsters.sort((a, b) => b.initiativeValue - a.initiativeValue);
 
-          let Oldcombatants = Object.assign([], this.combatants); 
+          let Oldcombatants = Object.assign([], this.combatants);
           let newcombatants = [];
           selectedDeployedMonsters.map((rec_deployedMonster) => {
-            if (Oldcombatants.find(x => x.type == combatantType.MONSTER && x.monsterId != rec_deployedMonster.monsterId)) {
+            if (Oldcombatants.find(x => x.monsterId != rec_deployedMonster.monsterId)) {
               newcombatants.push(Oldcombatants.find(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId));
               
             }

@@ -131,8 +131,7 @@ export class CombatInitiativeComponent implements OnInit {
   }
 
   //Save Initiative Details
-  saveInitiativeDetails() {
-    
+  saveInitiativeDetails() {    
     this.isLoading = true;
     //let combatantList = this.initiativeInfo.map((rec) => {
     //  return {
@@ -149,7 +148,6 @@ export class CombatInitiativeComponent implements OnInit {
       rec.initiative = rec.initiativeValue ? rec.initiativeValue : 0;
     });
     this.combatService.saveCombatantList(this.initiativeInfo, this.ruleSetId).subscribe(res => {
-      
       this.sharedService.updateCombatantList(
         {
           combatantList: this.initiativeInfo,
@@ -220,7 +218,6 @@ export class CombatInitiativeComponent implements OnInit {
   getCommandresults() {
     this.initiativeInfo.map((x) => {
       if (x.initiativeCommand) {
-        debugger
         let initiativecommand = x.initiativeCommand;
         if (x.type == combatantType.CHARACTER) {
          
@@ -248,7 +245,6 @@ export class CombatInitiativeComponent implements OnInit {
     if (type == CombatItemsType.CHARACTER) {
       this.initiativeInfo.map((x) => {
         if (x.initiativeCommand && x.type == type) {
-          debugger
           let initiativecommand = x.initiativeCommand;
           let statdetails = { charactersCharacterStat: x.character.diceRollViewModel.charactersCharacterStats, character: x.character.diceRollViewModel.character };
           initiativecommand= ServiceUtil.getFinalCalculationString(this.combatSettings.pcInitiativeFormula, statdetails, x.character.diceRollViewModel.charactersCharacterStats, x.character.diceRollViewModel.character)
@@ -268,9 +264,9 @@ export class CombatInitiativeComponent implements OnInit {
       let resultOfGroupInitiativeFilled_Flag = false;
       let resultOfGroupInitiative = 0;
       this.initiativeInfo.map((x) => {
-        if (x.initiativeCommand && x.type == type) {
+        if ((x.initiativeCommand && x.type == type) || (!x.initiativeCommand && this.combatSettings.groupInitiative)) {
           if (this.combatSettings && this.combatSettings.groupInitiative) {
-            let res = DiceService.rollDiceExternally(this.alertService, x.initiativeCommand, this.customDices);
+            let res = DiceService.rollDiceExternally(this.alertService, this.combatSettings.groupInitFormula, this.customDices);
             if (this.combatSettings && this.combatSettings.groupInitiative && !resultOfGroupInitiativeFilled_Flag) {
               if (isNaN(res)) {
                 resultOfGroupInitiative = 0;

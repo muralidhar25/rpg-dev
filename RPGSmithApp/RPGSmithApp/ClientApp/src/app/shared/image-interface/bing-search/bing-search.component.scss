@@ -2,9 +2,11 @@
     background:none;
 }
 .not-bg span {
-    color: #4e4fce;
-    border-bottom: 2px solid #4e4fce;
-    cursor:pointer
+  color: #4e4fce;
+  border-bottom: 2px solid #4e4fce;
+  cursor: pointer;
+  position: relative;
+  z-index: 9999999;
 }
 .spinner {
     width: 100%;
