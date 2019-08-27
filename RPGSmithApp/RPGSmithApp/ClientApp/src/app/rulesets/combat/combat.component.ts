@@ -1503,7 +1503,7 @@ export class CombatComponent implements OnInit {
   }
 
   buffEffectclick(item) {
-    console.log('cliked');
+   
     this.bsModalRef = this.modalService.show(CombatBuffeffectDetailsComponent, {
       class: 'modal-primary',
       ignoreBackdropClick: true,
