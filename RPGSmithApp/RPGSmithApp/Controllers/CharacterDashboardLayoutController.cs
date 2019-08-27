@@ -33,6 +33,7 @@ namespace RPGSmithApp.Controllers
         private readonly ITextTileService _textTileService;
         private readonly IBuffAndEffectTileService _buffAndEffectTileService;
         private readonly IToggleTileService _toggleTileService;
+        private readonly ICharacterStatClusterTileService _clusterTileService;
 
         public CharacterDashboardLayoutController(IHttpContextAccessor httpContextAccessor,
             DAL.Services.ICharacterDashboardLayoutService characterDashboardLayoutService,
@@ -48,7 +49,8 @@ namespace RPGSmithApp.Controllers
             ITileConfigService tileConfigService,
             ITextTileService textTileService,
             IBuffAndEffectTileService buffAndEffectTileService,
-            IToggleTileService toggleTileService)
+            IToggleTileService toggleTileService,
+            ICharacterStatClusterTileService clusterTileService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._characterDashboardLayoutService = characterDashboardLayoutService;
@@ -65,6 +67,7 @@ namespace RPGSmithApp.Controllers
             this._textTileService = textTileService;
             this._buffAndEffectTileService = buffAndEffectTileService;
             this._toggleTileService = toggleTileService;
+            this._clusterTileService = clusterTileService;
         }
 
         [HttpGet("getByCharacterId")]
@@ -460,6 +463,24 @@ namespace RPGSmithApp.Controllers
 
                                     };
                                     Tile.ToggleTiles = await _toggleTileService.Create(toggleTileToCreate);
+                                    //SaveColorsAsync(Tile);
+                                    break;
+                                case (int)Enum.TILES.CHARACTERSTATCLUSTER:
+                                    var clusterTile = _tile.CharacterStatClusterTiles;
+                                    Tile.CharacterStatClusterTiles = await _clusterTileService.Create(new CharacterCharacterStatClusterTile
+                                    {
+                                        CharacterTileId = Tile.CharacterTileId,
+                                        Title = clusterTile.Title,
+                                        Shape = clusterTile.Shape,
+                                        SortOrder = clusterTile.SortOrder,
+                                        BodyBgColor = clusterTile.BodyBgColor,
+                                        BodyTextColor = clusterTile.BodyTextColor,
+                                        TitleBgColor = clusterTile.TitleBgColor,
+                                        TitleTextColor = clusterTile.TitleTextColor,
+                                        IsDeleted = false,
+                                        DisplayCharactersCharacterStatID = clusterTile.DisplayCharactersCharacterStatID,
+                                        ClusterWithSortOrder = clusterTile.ClusterWithSortOrder,
+                                    });
                                     //SaveColorsAsync(Tile);
                                     break;
                                 default:

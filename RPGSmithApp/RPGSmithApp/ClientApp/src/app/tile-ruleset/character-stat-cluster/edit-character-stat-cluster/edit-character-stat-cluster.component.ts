@@ -164,6 +164,89 @@ export class EditRulesetCharacterStatClusterComponent implements OnInit {
         }
 
       });
+      ///bind default values
+      this.CharacterStatListToDisplay.map((cs:any) => {
+        let characterStat:any = cs;
+        let CharacterStatTypeID = characterStat.characterStatTypeId;        
+
+        let defaultValue1 = '';
+        let defaultValue2 = '';
+        if (characterStat.characterStatDefaultValues) {
+          if (characterStat.characterStatDefaultValues.length) {
+            defaultValue1 = characterStat.characterStatDefaultValues[0].defaultValue ? characterStat.characterStatDefaultValues[0].defaultValue : '';
+          }
+          if (characterStat.characterStatDefaultValues.length > 1) {
+            defaultValue2 = characterStat.characterStatDefaultValues[1].defaultValue ? characterStat.characterStatDefaultValues[1].defaultValue : '';
+          }
+        }
+
+        switch (CharacterStatTypeID) {
+          case STAT_TYPE.Text:
+            cs.valText = defaultValue1//this.charactersCharacterStat.text;
+            break;
+          case STAT_TYPE.RichText:
+            cs.valRichText = defaultValue1// this.charactersCharacterStat.richText;
+            break;
+          case STAT_TYPE.Number:
+            cs.valNumber = defaultValue1//this.charactersCharacterStat.number.toString();
+            cs.defValNumber = defaultValue2//this.charactersCharacterStat.number.toString();
+            break;
+          case STAT_TYPE.CurrentMax:
+            let rescurrentMax: currentMax = { current: defaultValue1.toString(), max: defaultValue2.toString() };
+            cs.valCurrentMax = Object.assign({}, rescurrentMax);
+            cs.defValCurrentMax = Object.assign({}, rescurrentMax);
+            break;
+          case STAT_TYPE.Choice:
+            //if (characterStat.isMultiSelect) {
+            //    let tempIds: number[] = [];
+            //    this.charactersCharacterStat.multiChoice.split(';').map((item) => {
+            //        tempIds.push(parseInt(item));
+            //    })
+            //    characterStat.characterStatChoices.map((item) => {
+            //        this.valChoices.push({ key: item.characterStatChoiceId, value: item.statChoiceValue, selected: tempIds.indexOf(item.characterStatChoiceId) > -1, isMultiSelect: true })
+            //    })
+            //}
+            //else {
+            //    let tempId: number = +this.charactersCharacterStat.choice;
+            //    characterStat.characterStatChoices.map((item) => {
+            //        this.valChoices.push({ key: item.characterStatChoiceId, value: item.statChoiceValue, selected: tempId == item.characterStatChoiceId, isMultiSelect: false })
+            //    })
+            //}
+            break;
+          case STAT_TYPE.ValueSubValue:
+            let resvalSubVal: valSubVal = { value: defaultValue1.toString(), subValue: defaultValue2.toString() };
+            cs.valValueSubValue = Object.assign({}, resvalSubVal);
+            cs.defValValueSubValue = Object.assign({}, resvalSubVal);
+            break;
+          
+          case STAT_TYPE.Calculation:
+            cs.valCalculationResult = "";//this.charactersCharacterStat.calculationResult.toString();
+            cs.valCalculationFormula = characterStat.characterStatCalcs.length ? characterStat.characterStatCalcs[0].statCalculation : '' ;
+            break;
+          case STAT_TYPE.Command:
+            cs.valCommand = defaultValue1;
+            break;
+          case STAT_TYPE.Toggle:
+            cs.valToggle = defaultValue1;
+            break;
+          case STAT_TYPE.Combo:
+            let defaultValueNum = '';
+            let defaultValueText = '';
+            if (characterStat.characterStatCombos) {
+
+              defaultValueNum = characterStat.characterStatCombos.defaultValue;
+
+
+              defaultValueText = characterStat.characterStatCombos.defaultText ? characterStat.characterStatCombos.defaultText : '';
+
+            }
+            cs.valNumber = defaultValueNum;
+            cs.defValNumber = defaultValueNum;
+            cs.valText = defaultValueText;
+            break;
+        }
+      })
+      ////////////////////////
       this.CharacterStatListToDisplay_Old = Object.assign([], this.CharacterStatListToDisplay);
 
     }
@@ -916,34 +999,35 @@ export class EditRulesetCharacterStatClusterComponent implements OnInit {
     return name;
 
   }
-  //dice(numberToAdd: number, typeId?: number, type?: number) {
+  dice(numberToAdd: number, typeId?: number, type?: number) {
+    if (+numberToAdd) {
+      this.bsModalRef.hide();
+      this.bsModalRef = this.modalService.show(DiceRollComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = "Dice";
+      this.bsModalRef.content.tile = -3;
+      this.bsModalRef.content.rulesetId = this.rulesetId;
+      this.bsModalRef.content.ruleset = this.ruleSet;
+      this.bsModalRef.content.showDetailsByDefault = true;
+      this.bsModalRef.content.numberToAdd = numberToAdd;
+      this.bsModalRef.content.isFromCampaignDetail = true;
 
-  //  //if (+numberToAdd) {
-  //  this.bsModalRef.hide();
-  //  this.bsModalRef = this.modalService.show(DiceRollComponent, {
-  //    class: 'modal-primary modal-md',
-  //    ignoreBackdropClick: true,
-  //    keyboard: false
-  //  });
-  //  this.bsModalRef.content.title = "Dice";
-  //  this.bsModalRef.content.tile = -3;
-  //  this.bsModalRef.content.characterId = this.characterId;
-  //  this.bsModalRef.content.character = this.character;
-  //  this.bsModalRef.content.showDetailsByDefault = true;
-  //  this.bsModalRef.content.numberToAdd = numberToAdd;
-
-  //  //this.bsModalRef.content.event.subscribe(result => {
-  //  //  if (typeId === STAT_TYPE.Number) {
-  //  //    //this.valNumber = +this.valNumber + result;
-  //  //  }
-  //  //  else if (typeId === STAT_TYPE.ValueSubValue) {
-  //  //    if (type === 1)
-  //  //      this.valValueSubValue.value = +this.valValueSubValue.value + result;
-  //  //    else if (type === 2)
-  //  //      this.valValueSubValue.subValue = +this.valValueSubValue.subValue + result;
-  //  //  }
-  //  //});   
-  //}
+      //this.bsModalRef.content.event.subscribe(result => {
+      //  if (typeId === STAT_TYPE.Number) {
+      //    //this.valNumber = +this.valNumber + result;
+      //  }
+      //  else if (typeId === STAT_TYPE.ValueSubValue) {
+      //    if (type === 1)
+      //      this.valValueSubValue.value = +this.valValueSubValue.value + result;
+      //    else if (type === 2)
+      //      this.valValueSubValue.subValue = +this.valValueSubValue.subValue + result;
+      //  }
+      //});
+    }
+  }
   editTile() {
     this.close();
     this.bsModalRef = this.modalService.show(RulesetCharacterStatClusterTileComponent, {

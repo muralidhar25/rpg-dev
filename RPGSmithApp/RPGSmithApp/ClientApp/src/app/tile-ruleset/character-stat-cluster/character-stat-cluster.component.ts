@@ -480,7 +480,7 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',
       singleSelection: false,
-      limitSelection: 1,
+      limitSelection: false,
       enableSearchFilter: true,
       classes: "myclass custom-class ",
       showCheckbox: false,

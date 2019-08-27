@@ -429,7 +429,7 @@ export class RulesetEditCharacterStatComponent implements OnInit {
             this.bsModalRef.content.title = "Dice";
             this.bsModalRef.content.tile = -3;
             this.bsModalRef.content.rulesetId = this.rulesetId;
-            this.bsModalRef.content.ruleset = this.Character;
+            this.bsModalRef.content.ruleset = this.Ruleset;
             this.bsModalRef.content.showDetailsByDefault = true;
           this.bsModalRef.content.numberToAdd = numberToAdd;
           this.bsModalRef.content.isFromCampaignDetail = this.isFromCampaignDetail;

@@ -26,7 +26,7 @@
             </div>
             <div class="col-lg-7 col-md-7 col-sm-8 col-8">
               <div class="form-group">
-                <input class="form-control ng-untouched ng-pristine ng-valid" placeholder="Text" type="text" name="text_{{i}}" >
+                <input class="form-control ng-untouched ng-pristine ng-valid" placeholder="Text" type="text" name="text_{{i}}" readonly [value]="ccs?.valText">
               </div>
             </div>
           </div>
@@ -53,6 +53,8 @@
             name="valRichText"></div>-->
                 <div id="eg-royal-theme"
                      [froalaEditor]="options('Description')"
+                      [(ngModel)]="ccs.valRichText"
+                     name="ccs.valRichText"
                     ></div>
               </div>
             </div>
@@ -94,7 +96,8 @@
 
                 <angular2-multiselect id="characterstatsinglechoiceid-{{i}}"
                                       [data]="ccs?.characterStatChoices" 
-                                     
+                                     [(ngModel)]="ccs.selectedChoiceCharacterStat"
+                                      name="characterstatsinglechoice-{{i}}"
                                       [settings]="singlechoiceSettings">
                   <c-item id="spell">
                     <ng-template let-item="item">
@@ -144,7 +147,9 @@
 
                 <angular2-multiselect id="multiChoiceList-{{1}}"
                                       [data]="ccs?.characterStatChoices" 
-                                      [settings]="multichoiceSettings">
+                                      [settings]="multichoiceSettings"
+                                      [(ngModel)]="ccs.selectedChoiceCharacterStat"
+                                      name="characterstatmultichoice-{{i}}">
                   <c-item id="spell">
                     <ng-template let-item="item">
                       <span class="associate-label-name">{{item.statChoiceValue}}</span>
@@ -214,14 +219,14 @@
           (mousedown)="mouseDown(1,ccs?.characterStatTypeId,ccs)" (mouseup)="mouseUp()"
           (click)="increment(ccs?.characterStatTypeId,ccs)" (keydown.enter)="$event.preventDefault()"></button>-->
                   <input class="form-control ng-pristine ng-valid ng-touched" placeholder="Number" type="text"
-                         
+                         readonly [(ngModel)]="ccs.valNumber"
                          name="number_{{i}}">
                 </div>
               </div>
             </div>
-            <!--<div class="col-lg-2 col-md-2 col-sm-2 col-2">
-              <button class="btn edit-btn icon-CharStat-Command" (click)="dice(ccs.number,ccs?.characterStatTypeId)"></button>
-            </div>-->
+            <div class="col-lg-2 col-md-2 col-sm-2 col-2">
+              <button class="btn edit-btn icon-CharStat-Command" (click)="dice(ccs.valNumber,ccs?.characterStatTypeId)"></button>
+            </div>
           </div>
 
           <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.Combo">
@@ -240,7 +245,7 @@
             </div>
             <div class="col-lg-4 col-md-4 col-sm-4 col-8">
               <div class="form-group">
-                <input class="form-control ng-untouched ng-pristine ng-valid" placeholder="Text" type="text">
+                <input class="form-control ng-untouched ng-pristine ng-valid" placeholder="Text" type="text" [value]="ccs.valText" readonly>
               </div>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-4 col-10">
@@ -257,13 +262,13 @@
           (mousedown)="mouseDown(1,ccs?.characterStatTypeId,ccs)" (mouseup)="mouseUp()"
           (click)="increment(ccs?.characterStatTypeId,ccs)" (keydown.enter)="$event.preventDefault()"></button>-->
                   <input class="form-control ng-pristine ng-valid ng-touched" id="viewCounterValue" name="comboNum_{{i}}" placeholder="Enter value"
-                          type="text" pattern="^-?[0-9]\d*(\\d+)?$">
+                          type="text" pattern="^-?[0-9]\d*(\\d+)?$" [(ngModel)]="ccs.valNumber" readonly>
                 </div>
               </div>
             </div>
-            <!--<div class="col-lg-1 col-md-1 col-sm-1 col-2">
-              <button class="btn edit-btn icon-CharStat-Command" (click)="dice(ccs.defaultValue,ccs?.characterStatTypeId)"></button>
-            </div>-->
+            <div class="col-lg-1 col-md-1 col-sm-1 col-2">
+              <button class="btn edit-btn icon-CharStat-Command" (click)="dice(ccs.valNumber,ccs?.characterStatTypeId)"></button>
+            </div>
           </div>
 
           <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.CurrentMax">
@@ -296,16 +301,16 @@
           (mousedown)="mouseDown(1,ccs?.characterStatTypeId,ccs,1)" (mouseup)="mouseUp()"
           (click)="increment(ccs?.characterStatTypeId,ccs,1)" (keydown.enter)="$event.preventDefault()"></button>-->
                   <input class="form-control ng-pristine ng-valid ng-touched" name="currentValue_{{i}}" placeholder="Enter value" type="text"
-                        >
+                      [(ngModel)]="ccs.valCurrentMax.current" readonly >
                 </div>
                 
               </div>
 
             </div>
-            <!--<div class="col-lg-2 col-md-2 col-sm-2 col-2">
+            <div class="col-lg-2 col-md-2 col-sm-2 col-2">
               <small>&nbsp;</small>
-              <button class="btn edit-btn icon-CharStat-Command" (click)="dice(ccs.current,ccs?.characterStatTypeId)"></button>
-            </div>-->
+              <button class="btn edit-btn icon-CharStat-Command" (click)="dice(ccs.valCurrentMax.current,ccs?.characterStatTypeId)"></button>
+            </div>
             <div class="col-lg-3 col-md-3 col-sm-3 col-10">
               <div class="form-group input-counter">
                 <small>Maximum</small>
@@ -321,14 +326,14 @@
           (click)="increment(ccs?.characterStatTypeId,ccs,2)" (keydown.enter)="$event.preventDefault()"></button>-->
 
                   <input class="form-control ng-pristine ng-valid ng-touched" id="viewCounterValue" name="currentValue_{{i}}" placeholder="Enter value"
-type="text" >
+type="text" [(ngModel)]="ccs.valCurrentMax.max" readonly>
                 </div>
               </div>
             </div>
-            <!--<div class="col-lg-1 col-md-1 col-sm-1 col-2">
+            <div class="col-lg-1 col-md-1 col-sm-1 col-2">
               <small>&nbsp;</small>
-              <button class="btn edit-btn icon-CharStat-Command" (click)="dice(ccs.maximum,ccs?.characterStatTypeId)"></button>
-            </div>-->
+              <button class="btn edit-btn icon-CharStat-Command" (click)="dice(ccs.valCurrentMax.max,ccs?.characterStatTypeId)"></button>
+            </div>
           </div>
 
           <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.ValueSubValue">
@@ -361,15 +366,15 @@ type="text" >
           (mousedown)="mouseDown(1,ccs?.characterStatTypeId,ccs,1)" (mouseup)="mouseUp()"
           (click)="increment(ccs?.characterStatTypeId,ccs,1)" (keydown.enter)="$event.preventDefault()"></button>-->
                   <input class="form-control ng-pristine ng-valid ng-touched" id="viewCounterValue" name="currentValue_{{i}}" placeholder="Enter value"
-                         >
+                       readonly  [(ngModel)]="ccs.valValueSubValue.value">
                 </div>
                 
               </div>
             </div>
-            <!--<div class="col-lg-2 col-md-2 col-sm-2 col-2">
+            <div class="col-lg-2 col-md-2 col-sm-2 col-2">
               <small>&nbsp;</small>
-              <button class="btn edit-btn icon-CharStat-Command" (click)="dice(ccs.value,ccs?.characterStatTypeId)"></button>
-            </div>-->
+              <button class="btn edit-btn icon-CharStat-Command" (click)="dice(ccs.valValueSubValue.value,ccs?.characterStatTypeId)"></button>
+            </div>
             <div class="col-lg-3 col-md-3 col-sm-3 col-10">
               <div class="form-group input-counter">
                 <small>Subvalue</small>
@@ -384,14 +389,14 @@ type="text" >
           (mousedown)="mouseDown(1,ccs?.characterStatTypeId,ccs,2)" (mouseup)="mouseUp()"
           (click)="increment(ccs?.characterStatTypeId,ccs,2)" (keydown.enter)="$event.preventDefault()"></button>-->
                   <input class="form-control ng-pristine ng-valid ng-touched" id="viewCounterValue" name="currentValue" placeholder="Enter value"
-                         >
+                       readonly  [(ngModel)]="ccs.valValueSubValue.subValue">
                 </div>
               </div>
             </div>
-            <!--<div class="col-lg-1 col-md-1 col-sm-1 col-2">
+            <div class="col-lg-1 col-md-1 col-sm-1 col-2">
               <small>&nbsp;</small>
-              <button class="btn edit-btn icon-CharStat-Command" (click)="dice(ccs.subValue,ccs?.characterStatTypeId)"></button>
-            </div>-->
+              <button class="btn edit-btn icon-CharStat-Command" (click)="dice(ccs.valValueSubValue.subValue,ccs?.characterStatTypeId)"></button>
+            </div>
           </div>
 
           <div class="form-row" *ngIf="ccs?.characterStatTypeId==STAT_TYPE.Calculation">
@@ -410,10 +415,10 @@ type="text" >
             </div>
             <div class="col-lg-5 col-md-5 col-sm-4 col-4">
               <div class="form-group desktop-view cal-formula-display text-elips">
-                {{ccs?.displayCalculation}}
+                {{ccs?.valCalculationFormula}}
               </div>
               <div class="form-group mobile-view cal-formula-display text-elips">
-                {{ccs?.displayCalculation}}
+                {{ccs?.valCalculationFormula}}
               </div>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-4 col-4">
@@ -441,7 +446,7 @@ type="text" >
               <div class="form-group input-counter">
                 <div class="input-group">
                   <input class="form-control ng-pristine ng-valid ng-touched" readonly id="viewCounterValue" name="command_{{i}}" placeholder="Enter value" type="text"
-                        >
+                       [value]="ccs.valCommand" >
                   <!--<button class="btn edit-btn icon-CharStat-Command" type="button" (click)="diceRoll(ccs.displaycommand)"></button>-->
                 </div>
               </div>
@@ -465,7 +470,7 @@ type="text" >
             <div class="col-lg-7 col-md-7 col-sm-8 col-8">
               <div class="form-group input-counter">
                 <div class="input-group">
-                  <input class="form-control ng-pristine ng-valid ng-touched" readonly id="viewCounterValue" name="cond_{{i}}" placeholder="Enter value" type="text" >
+                  <input class="form-control ng-pristine ng-valid ng-touched" readonly id="viewCounterValue" name="cond_{{i}}" type="text" >
                 </div>
               </div>
             </div>
@@ -497,37 +502,37 @@ type="text" >
             </ul>
           </div>
         </div>-->
-            <ng-container *ngIf="ccs?.display">
+            <ng-container *ngIf="ccs?.characterStatToggles?.display">
               <div class="col-lg-7 col-md-7 col-sm-8 col-8">
                 <div class="form-group">
                   <ul class="input-switch-items">
                     <li class="form-check">
                       <label class="form-check-label">
-                        <input class="form-check-input" type="button" name="yesnoradio-{{ccs?.charactersCharacterStatId}}"
-                               (click)="selectDisplay(true,ccs?.charactersCharacterStatId)">
-                        <span [ngClass]="ccs?.showCheckbox?'icon icon-Gen-Check chk-size':'icon icon-Gen-Uncheck chk-size'"></span>
+                        <input class="form-check-input" type="button" name="yesnoradio-{{ccs?.characterStatToggles?.characterStatId}}"
+                               (click)="selectDisplay(true,ccs?.characterStatToggles?.characterStatId)">
+                        <span [ngClass]="ccs?.characterStatToggles?.showCheckbox?'icon icon-Gen-Check chk-size':'icon icon-Gen-Uncheck chk-size'"></span>
                       </label>
                     </li>
                   </ul>
                 </div>
               </div>
             </ng-container>
-            <ng-container *ngIf="ccs?.onOff">
+            <ng-container *ngIf="ccs?.characterStatToggles?.onOff">
               <div class="col-lg-7 col-md-7 col-sm-8 col-8">
                 <div class="form-group">
 
                   <ul class="input-switch-items">
                     <li class="form-check">
                       <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="onoffradio-{{ccs?.charactersCharacterStatId}}" [checked]="ccs?.isOn == true"
-                               (click)="selectIsOnOff(true,ccs?.charactersCharacterStatId)">
+                        <input class="form-check-input" type="radio" name="onoffradio-{{ccs?.characterStatToggles?.characterStatId}}" [checked]="ccs?.characterStatToggles?.isOn == true"
+                               (click)="selectIsOnOff(true,ccs?.characterStatToggles?.characterStatId)">
                         <span>On</span>
                       </label>
                     </li>
                     <li class="form-check">
                       <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="onoffradio-{{ccs?.charactersCharacterStatId}}" [checked]="ccs?.isOn == false"
-                               (click)="selectIsOnOff(false,ccs?.charactersCharacterStatId)">
+                        <input class="form-check-input" type="radio" name="onoffradio-{{ccs?.characterStatToggles?.characterStatId}}" [checked]="ccs?.characterStatToggles?.isOn == false"
+                               (click)="selectIsOnOff(false,ccs?.characterStatToggles?.characterStatId)">
                         <span>Off</span>
                       </label>
                     </li>
@@ -536,21 +541,21 @@ type="text" >
                 </div>
               </div>
             </ng-container>
-            <ng-container *ngIf="ccs?.yesNo">
+            <ng-container *ngIf="ccs?.characterStatToggles?.yesNo">
               <div class="col-lg-7 col-md-7 col-sm-8 col-8">
                 <div class="form-group">
                   <ul class="input-switch-items">
                     <li class="form-check">
                       <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="yesnoradio-{{ccs?.charactersCharacterStatId}}" [checked]="ccs?.isYes == true"
-                               (click)="selectIsYesNo(true,ccs?.charactersCharacterStatId)">
+                        <input class="form-check-input" type="radio" name="yesnoradio-{{ccs?.characterStatToggles?.characterStatId}}" [checked]="ccs?.characterStatToggles?.isYes == true"
+                               (click)="selectIsYesNo(true,ccs?.characterStatToggles?.characterStatId)">
                         <span>Yes</span>
                       </label>
                     </li>
                     <li class="form-check">
                       <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="yesnoradio-{{ccs?.charactersCharacterStatId}}" [checked]="ccs?.isYes == false"
-                               (click)="selectIsYesNo(false,ccs?.charactersCharacterStatId)">
+                        <input class="form-check-input" type="radio" name="yesnoradio-{{ccs?.characterStatToggles?.characterStatId}}" [checked]="ccs?.characterStatToggles?.isYes == false"
+                               (click)="selectIsYesNo(false,ccs?.characterStatToggles?.characterStatId)">
                         <span>No</span>
                       </label>
                     </li>
@@ -558,7 +563,7 @@ type="text" >
                 </div>
               </div>
             </ng-container>
-            <ng-container *ngIf="ccs?.isCustom">
+            <ng-container *ngIf="ccs?.characterStatToggles?.isCustom">
               <div class="col-lg-7 col-md-7 col-sm-8 col-8">
                 <div class="form-group">
                   <input class="form-control" type="text" readonly="readonly" value="Custom Toggle Stat">

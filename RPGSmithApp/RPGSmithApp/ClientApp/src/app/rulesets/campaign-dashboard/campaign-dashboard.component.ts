@@ -1296,23 +1296,23 @@ export class CampaignDashboardComponent implements OnInit {
           let characterStatTypeID = _tile.characterStatTiles.characterStat.characterStatType.characterStatTypeId;
           switch (characterStatTypeID) {
             case STAT_TYPE.Command:
-              this.bsModalRef = this.modalService.show(DiceRollComponent, {
-                class: 'modal-primary modal-md',
-                ignoreBackdropClick: true,
-                keyboard: false
-              });
-              this.bsModalRef.content.title = "Dice";
-              this.bsModalRef.content.rulesetId = this.ruleSetId;
-              this.bsModalRef.content.ruleset = this.ruleset;
-              this.bsModalRef.content.tile = TILES.CHARACTERSTAT;
-              this.bsModalRef.content.characterStatTile = _tile.characterStatTiles;
-            //  this.bsModalRef.content.isFromRulesetSharedLayout = true;             
-              this.bsModalRef.content.characterId = 0;
-              this.bsModalRef.content.character = new Characters();
-              this.bsModalRef.content.recordName = this.ruleset.ruleSetName;
-              this.bsModalRef.content.recordImage = this.ruleset.imageUrl;
-              this.bsModalRef.content.recordType = 'ruleset'
-              this.bsModalRef.content.isFromCampaignDetail = true;
+            //  this.bsModalRef = this.modalService.show(DiceRollComponent, {
+            //    class: 'modal-primary modal-md',
+            //    ignoreBackdropClick: true,
+            //    keyboard: false
+            //  });
+            //  this.bsModalRef.content.title = "Dice";
+            //  this.bsModalRef.content.rulesetId = this.ruleSetId;
+            //  this.bsModalRef.content.ruleset = this.ruleset;
+            //  this.bsModalRef.content.tile = TILES.CHARACTERSTAT;
+            //  this.bsModalRef.content.characterStatTile = _tile.characterStatTiles;
+            ////  this.bsModalRef.content.isFromRulesetSharedLayout = true;             
+            //  this.bsModalRef.content.characterId = 0;
+            //  this.bsModalRef.content.character = new Characters();
+            //  this.bsModalRef.content.recordName = this.ruleset.ruleSetName;
+            //  this.bsModalRef.content.recordImage = this.ruleset.imageUrl;
+            //  this.bsModalRef.content.recordType = 'ruleset'
+            //  this.bsModalRef.content.isFromCampaignDetail = true;
               break;
             case STAT_TYPE.Condition:
               break;
