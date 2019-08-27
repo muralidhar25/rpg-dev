@@ -5,6 +5,7 @@ import { Utilities } from '../../../core/common/utilities';
 import { AuthService } from '../../../core/auth/auth.service';
 import { LootService } from '../../../core/services/loot.service';
 import { SharedService } from '../../../core/services/shared.service';
+import { MessageSeverity, AlertService } from '../../../core/common/alert.service';
 
 
 @Component({
@@ -27,6 +28,7 @@ export class GiveawayComponent implements OnInit {
     private authService: AuthService,
     private lootService: LootService,
     private sharedService: SharedService,
+    private alertService: AlertService
 
   ) { }
 
@@ -36,25 +38,25 @@ export class GiveawayComponent implements OnInit {
       this.ruleSetId = this.giveAwayItem.ruleSet.ruleSetId;
       this.initialize();
     }, 0);
-    
+
   }
 
   initialize() {
-    this.isLoading = true;    
+    this.isLoading = true;
     this.charactersService.getCharactersByRuleSetId<any>(this.ruleSetId, this.isFromLootGiveScreen)
-          .subscribe(data => {            
-            this.characters = data;
-            this.isLoading = false;
-          }, error => {
-            let Errors = Utilities.ErrorDetail("", error);
-            if (Errors.sessionExpire) {
-              this.authService.logout(true);
-            }
-          }, () => { });
+      .subscribe(data => {
+        this.characters = data;
+        this.isLoading = false;
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      }, () => { });
   }
 
   setCharacter(_selectedcharacter: any) {
-  
+
     this.selectercharacter = _selectedcharacter;
   }
 
@@ -63,21 +65,28 @@ export class GiveawayComponent implements OnInit {
   }
   Give() {
     let _character = [];
-    _character.push({ iD: this.selectercharacter.characterId});
-   
-    let lootId = this.giveAwayItem.lootId;
-    this.isLoading = true;
-    this.lootService.giveItemTocharacter<any>(_character,lootId)
-      .subscribe(data => {        
-       // console.log(data);
-        this.close();
-        this.sharedService.updateItemsList(true);
-        this.isLoading = false;
-      }, error => {
-        let Errors = Utilities.ErrorDetail("", error);
-        if (Errors.sessionExpire) {
-          this.authService.logout(true);
-        }
-      }, () => { });
+    if (this.selectercharacter && this.selectercharacter.characterId) {
+      _character.push({ iD: this.selectercharacter.characterId });
+
+      let lootId = this.giveAwayItem.lootId;
+      this.isLoading = true;
+      this.lootService.giveItemTocharacter<any>(_character, lootId)
+        .subscribe(data => {
+          // console.log(data);
+          this.close();
+          this.sharedService.updateItemsList(true);
+          this.isLoading = false;
+        }, error => {
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+        }, () => { });
+    } else {
+      let message = 'please select atleast one Character and try again.';
+      this.alertService.showMessage(message, "", MessageSeverity.error);
+    }
+
+
   }
 }
