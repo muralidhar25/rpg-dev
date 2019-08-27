@@ -196,7 +196,8 @@ export class CommandTileService extends EndpointFactory
         commandTile: model.commandTiles,
         multiCharacterStats: [],
         buffAndEffectTile: model.buffAndEffectTiles,
-        toggleTile: model.toggleTiles
+        toggleTile: model.toggleTiles,
+        characterStatClusterTile: model.characterStatClusterTiles
       };
     }
     else {
@@ -244,7 +245,8 @@ export class CommandTileService extends EndpointFactory
         counterTile: null,
         multiCharacterStats: [],
         buffAndEffectTile: null,
-        toggleTile: null
+        toggleTile: null,
+        characterStatClusterTile:null
       };
     }
     return modelData;

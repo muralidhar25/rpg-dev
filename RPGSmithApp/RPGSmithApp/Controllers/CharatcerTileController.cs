@@ -1038,5 +1038,19 @@ namespace RPGSmithApp.Controllers
             }
             
         }
+
+        [HttpPost("updateClusterSortOrder")]
+        public async Task<IActionResult> updateClusterSortOrder([FromBody] UpdateClusterSortOrderModel model) {
+            try {
+                _characterStatClusterTileService.updateClusterSortOrder(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
+
+        }
     }
 }

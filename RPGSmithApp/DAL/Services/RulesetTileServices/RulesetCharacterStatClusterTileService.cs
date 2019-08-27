@@ -3,26 +3,26 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Models;
-using DAL.Models.CharacterTileModels;
+using DAL.Models.RulesetTileModels;
 using DAL.Models.SPModels;
 using DAL.Repositories.Interfaces;
 
-namespace DAL.Services.CharacterTileServices
+namespace DAL.Services.RulesetTileServices
 {
-    public class CharacterStatClusterTileService : ICharacterStatClusterTileService
+    public class RulesetCharacterStatClusterTileService : IRulesetCharacterStatClusterTileService
     {
-        private readonly IRepository<CharacterCharacterStatClusterTile> _repo;
+        private readonly IRepository<RulesetCharacterStatClusterTile> _repo;
         protected readonly ApplicationDbContext _context;
 
 
-        public CharacterStatClusterTileService(ApplicationDbContext context, IRepository<CharacterCharacterStatClusterTile> repo)
+        public RulesetCharacterStatClusterTileService(ApplicationDbContext context, IRepository<RulesetCharacterStatClusterTile> repo)
         {
             _repo = repo;
             _context = context;
 
         }
 
-        public async Task<CharacterCharacterStatClusterTile> Create(CharacterCharacterStatClusterTile item)
+        public async Task<RulesetCharacterStatClusterTile> Create(RulesetCharacterStatClusterTile item)
         {
             return await _repo.Add(item);
         }
@@ -37,7 +37,7 @@ namespace DAL.Services.CharacterTileServices
         //    throw new NotImplementedException();
         //}
 
-        public async Task<CharacterCharacterStatClusterTile> Update(CharacterCharacterStatClusterTile item)
+        public async Task<RulesetCharacterStatClusterTile> Update(RulesetCharacterStatClusterTile item)
         {
 
             var clusterTile = await _repo.Get((int)item.CharacterStatClusterTileId);

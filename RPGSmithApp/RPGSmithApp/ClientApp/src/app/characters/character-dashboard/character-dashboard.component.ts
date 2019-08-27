@@ -80,7 +80,7 @@ export class CharacterDashboardComponent implements OnInit {
   character: any = new Characters();
   characterlayouts: any;
   selectedlayout: any;
-  foldClass: any = 'dropdown-menu input-list-items border-none';
+  foldClass: any = 'dropdown-menu input-list-items border-none';  
   pagedrpClass: any = 'dropdown-menu input-list-items1 border-none';
   selectedPage: any;
   page: number = 1;

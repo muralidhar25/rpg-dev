@@ -47,6 +47,8 @@ import { EditCharacterStatComponent } from '../../tile/character-stat/edit-chara
 import { Characters } from '../../core/models/view-models/characters.model';
 import { RulesetBuffAndEffectTileComponent } from '../../tile-ruleset/buff-and-effect/buff-and-effect.component';
 import { RulesetToggleTileComponent } from '../../tile-ruleset/toggle/toggle.component';
+import { EditRulesetCharacterStatClusterComponent } from '../../tile-ruleset/character-stat-cluster/edit-character-stat-cluster/edit-character-stat-cluster.component';
+import { RulesetCharacterStatClusterTileComponent } from '../../tile-ruleset/character-stat-cluster/character-stat-cluster.component';
 
 @Component({
   selector: 'app-campaign-dashboard',
@@ -1109,6 +1111,7 @@ export class CampaignDashboardComponent implements OnInit {
       this.selectedPage.rulesetDashboardPageId : this.pageId;
     this.bsModalRef.content.rulesetId = this.ruleSetId;
     this.bsModalRef.content.ruleset = this.ruleset;
+    this.bsModalRef.content.isCampaignDashboard = true;
 
     this.bsModalRef.content.event.subscribe(data => {
       if (data) {
@@ -1458,6 +1461,23 @@ export class CampaignDashboardComponent implements OnInit {
 
           break;
         }
+        case TILES.CHARACTERSTATCLUSTER: {
+          this.bsModalRef = this.modalService.show(EditRulesetCharacterStatClusterComponent, {
+            class: 'modal-primary modal-md',
+            ignoreBackdropClick: true,
+            keyboard: false
+          });
+          this.bsModalRef.content.tile = _tile;
+          this.bsModalRef.content.textTile = _tile.characterStatClusterTiles;
+          this.bsModalRef.content.tileName = 'image';
+          this.bsModalRef.content.rulesetId = this.ruleSetId;
+          this.bsModalRef.content.view = VIEW.MANAGE;
+
+          this.bsModalRef.content.pageId = this.selectedPage.rulesetDashboardPageId ?
+            this.selectedPage.rulesetDashboardPageId : this.pageId;
+          this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+          break;
+        }
         default: break;
       }
     }
@@ -1746,6 +1766,99 @@ export class CampaignDashboardComponent implements OnInit {
 
 
       }
+
+      else if (item.tileTypeId == TILES.CHARACTERSTATCLUSTER) {
+        item.characterStatClusterTiles.showTitle = true;
+        if (item.characterStatClusterTiles.displayCharactersCharacterStat) {
+          if (item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues) {
+            //  console.log('defultvales', item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues);
+            if (item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatTypeId == STAT_TYPE.RichText) {
+              //console.log('rich', item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues);
+              item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues.map((stat) => {
+                //console.log('richloop', stat.defaultValue);
+                // item.characterStatClusterTiles.displayCharactersCharacterStat.defaultValue =
+              })
+
+            }
+            if (item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatTypeId == STAT_TYPE.Command) {
+              //console.log('cmd', item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues);
+              item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues.map((stat) => {
+                //console.log('cmd', stat.defaultValue);
+                item.characterStatClusterTiles.displayCharactersCharacterStat.defaultValue = stat.defaultValue;
+              })
+            }
+            if (item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatTypeId == STAT_TYPE.Condition) {
+              //console.log('Condition', item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues);
+              item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues.map((stat) => {
+                //console.log('Condition', stat.defaultValue);
+                item.characterStatClusterTiles.displayCharactersCharacterStat.defaultValue = stat.defaultValue;
+              })
+            }
+            if (item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatTypeId == STAT_TYPE.Calculation) {
+              //console.log('Calculation', item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues);
+              item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues.map((stat) => {
+                //console.log('Calculation', stat.defaultValue);
+                item.characterStatClusterTiles.displayCharactersCharacterStat.defaultValue = stat.defaultValue;
+              })
+            }
+            if (item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatTypeId == STAT_TYPE.Choice) {
+              //console.log('Choice', item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues);
+              item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues.map((stat) => {
+                //console.log('Choice', stat.defaultValue);
+                item.characterStatClusterTiles.displayCharactersCharacterStat.defaultValue = stat.defaultValue;
+              })
+            }
+            if (item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatTypeId == STAT_TYPE.Number) {
+              //console.log('Number', item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues);
+              item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues.map((stat) => {
+                //console.log('Number', stat.defaultValue);
+                item.characterStatClusterTiles.displayCharactersCharacterStat.defaultValue = stat.defaultValue;
+              })
+            }
+            if (item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatTypeId == STAT_TYPE.CurrentMax) {
+              //console.log('CurrentMax', item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues);
+              item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues.map((stat) => {
+                //console.log('CurrentMax', stat);
+                item.characterStatClusterTiles.displayCharactersCharacterStat.defaultValue = stat.defaultValue;
+              })
+            }
+            if (item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatTypeId == STAT_TYPE.OnOff) {
+              //console.log('OnOff', item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues);
+              item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues.map((stat) => {
+                //console.log('OnOff', stat);
+                item.characterStatClusterTiles.displayCharactersCharacterStat.defaultValue = stat.defaultValue;
+              })
+            }
+            if (item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatTypeId == STAT_TYPE.YesNo) {
+              //console.log('YesNo', item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues);
+              item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues.map((stat) => {
+                //console.log('YesNo', stat.defaultValue);
+                item.characterStatClusterTiles.displayCharactersCharacterStat.defaultValue = stat.defaultValue;
+              })
+            }
+            if (item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatTypeId == STAT_TYPE.Toggle) {
+              //console.log('Toggle', item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues);
+              item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues.map((stat) => {
+                //console.log('Toggle', stat.defaultValue);
+                item.characterStatClusterTiles.displayCharactersCharacterStat.defaultValue = stat.defaultValue;
+              })
+            }
+            if (item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatTypeId == STAT_TYPE.LinkRecord) {
+              //console.log('LinkRecord', item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues);
+              item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatDefaultValues.map((stat) => {
+                //console.log('LinkRecord', stat.defaultValue);
+                item.characterStatClusterTiles.displayCharactersCharacterStat.defaultValue = stat.defaultValue;
+              })
+            }
+
+            //switch (item.characterStatClusterTiles.displayCharactersCharacterStat.characterStatTypeId) {
+            //  case STAT_TYPE.Command:
+
+            //  default:
+            //}
+          }
+        }
+      }
       let box: Box = { config: ngGridItemConfig, tile: item, IsCharacter: false };
       boxes.push(box);
     })
@@ -1933,6 +2046,26 @@ export class CampaignDashboardComponent implements OnInit {
         this.bsModalRef.content.rulesetId = this.ruleSetId;
         this.bsModalRef.content.pageId = this.pageId;
         this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+        this.bsModalRef.content.view = VIEW.EDIT;
+
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            this.showManageIcons = data;
+          }
+        })
+        break;
+      }
+      case TILES.CHARACTERSTATCLUSTER: {
+        this.bsModalRef = this.modalService.show(RulesetCharacterStatClusterTileComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = "Edit Character Stat Cluster Tile";
+        this.bsModalRef.content.tile = tile;
+        this.bsModalRef.content.rulesetId = this.ruleSetId;
+        this.bsModalRef.content.pageId = this.pageId;
         this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
         this.bsModalRef.content.view = VIEW.EDIT;
 

@@ -2,8 +2,6 @@ import { Component, OnInit, EventEmitter, HostListener } from '@angular/core';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { ActivatedRoute } from '@angular/router';
 import { VIEW, STAT_TYPE, SHAPE, SHAPE_CLASS, STAT_LINK_TYPE, BLOB_TYPE } from '../../core/models/enums';
-import { Characters } from '../../core/models/view-models/characters.model';
-import { CharacterTile } from '../../core/models/tiles/character-tile.model';
 import { CharacterStatTile } from '../../core/models/tiles/character-stat-tile.model';
 import { CharacterDashboardPage } from '../../core/models/view-models/character-dashboard-page.model';
 import { Color } from '../../core/models/tiles/color.model';
@@ -18,20 +16,24 @@ import { LocalStoreManager } from '../../core/common/local-store-manager.service
 import { User } from '../../core/models/user.model';
 import { DBkeys } from '../../core/common/db-keys';
 import { Utilities } from '../../core/common/utilities';
-import { ColorsComponent } from '../colors/colors.component';
 import { CharactersCharacterStat } from '../../core/models/view-models/characters-character-stats.model';
 import { ImageSelectorComponent } from '../../shared/image-interface/image-selector/image-selector.component';
 import { PlatformLocation } from '@angular/common';
 import { CharacterStatClusterTile } from '../../core/models/tiles/character-stat-cluster-tile.model';
 import { CharacterStatClusterTileService } from '../../core/services/tiles/character-stat-cluster-tile.service';
 import { CharacterStats } from '../../core/models/view-models/character-stats.model';
+import { ColorsComponent } from '../../tile/colors/colors.component';
+import { RulesetTile } from '../../core/models/tiles/ruleset-tile.model';
+import { RulesetDashboardPage } from '../../core/models/view-models/ruleset-dashboard-page.model';
+import { CharactersService } from '../../core/services/characters.service';
+import { CharacterStatService } from '../../core/services/character-stat.service';
 
 @Component({
   selector: 'app-character-stat-cluster',
   templateUrl: './character-stat-cluster.component.html',
   styleUrls: ['./character-stat-cluster.component.scss']
 })
-export class CharacterStatClusterTileComponent implements OnInit {
+export class RulesetCharacterStatClusterTileComponent implements OnInit {
 
   public event: EventEmitter<any> = new EventEmitter();
   textTitle: any;
@@ -40,7 +42,7 @@ export class CharacterStatClusterTileComponent implements OnInit {
   isLoading: boolean;
   shapeClass: string;
 
-  characterTileModel = new CharacterTile();
+  rulesetTileModel = new RulesetTile();
   ClusterTileFormModal = new CharacterStatClusterTile();
 
   color: any;
@@ -49,9 +51,9 @@ export class CharacterStatClusterTileComponent implements OnInit {
   tileColor: any;
   pageId: number;
 
-  characterId: number;
+  rulesetId: number;
   title: string;
-  pageDefaultData = new CharacterDashboardPage();
+  pageDefaultData = new RulesetDashboardPage();
   showMoreLessColorText: string = "Advanced";
   showMoreLessColorToggle: boolean = true;
   defaultColorList: any = [];
@@ -61,8 +63,8 @@ export class CharacterStatClusterTileComponent implements OnInit {
   selectedStatType: number = 0;
   selectedIndex: number;
 
-  displayCharacterStat: CharactersCharacterStat[] =[];
-  CharacterStatsList: CharactersCharacterStat[] = [];
+  displayCharacterStat: CharacterStats[] =[];
+  CharacterStatsList: CharacterStats[] = [];
   ClusterCharacterStatsList: any[] = [];
   query: string = '';
 
@@ -75,24 +77,24 @@ export class CharacterStatClusterTileComponent implements OnInit {
 
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService, private colorService: ColorService,
     private clusterTileService: CharacterStatClusterTileService, private alertService: AlertService, private authService: AuthService,
-    private localStorage: LocalStoreManager, public characterStatService: CharactersCharacterStatService) {
+    private localStorage: LocalStoreManager, public charactersService: CharacterStatService) {
     this.color = this.selectedColor;
   }
 
   ngOnInit() {
     setTimeout(() => {
 
-      this.characterId = this.bsModalRef.content.characterId;
+      this.rulesetId = this.bsModalRef.content.rulesetId;
       this.title = this.bsModalRef.content.title;
       this.pageId = this.bsModalRef.content.pageId;
       let model = this.bsModalRef.content.tile;
       let view = this.bsModalRef.content.view;
       this.pageDefaultData = this.bsModalRef.content.pageDefaultData;
 
-      this.characterTileModel = this.clusterTileService.clusterTileModelData(model, this.characterId, this.pageId, view, this.pageDefaultData);
-      this.ClusterTileFormModal = Object.assign({}, this.characterTileModel.characterStatClusterTile);
-      this.ClusterTileFormModal.color = this.characterTileModel.color;
-      this.ClusterTileFormModal.shape = this.characterTileModel.shape;
+      this.rulesetTileModel = this.clusterTileService.clusterTileRulesetModelData(model, this.rulesetId, this.pageId, view, this.pageDefaultData);
+      this.ClusterTileFormModal = Object.assign({}, this.rulesetTileModel.characterStatClusterTile);
+      this.ClusterTileFormModal.color = this.rulesetTileModel.color;
+      this.ClusterTileFormModal.shape = this.rulesetTileModel.shape;
 
       this.shapeClass = this.ClusterTileFormModal.shape == SHAPE.ROUNDED ? SHAPE_CLASS.ROUNDED : (this.ClusterTileFormModal.shape == SHAPE.CIRCLE ? SHAPE_CLASS.CIRCLE : SHAPE_CLASS.SQUARE);
 
@@ -109,29 +111,27 @@ export class CharacterStatClusterTileComponent implements OnInit {
     else {
       this.isLoading = true;
       this.setColorOnInit();
-      this.characterStatService.getCharactersCharacterStat_StatList<any[]>(this.characterId, -1, -1) //100=>for testing
+      this.charactersService.getCharacterStatsByRuleset<CharacterStats[]>(this.rulesetId) //100=>for testing
         .subscribe((data:any) => {
           if (data && data.length) {
             
-            //data.map((ccs) => {
-            //  this.CharacterStatsList.push(ccs.characterStat);
-            //})
+            
             this.CharacterStatsList = data;
-            this.CharacterStatsList.map((ccs:any) => {
-              ccs.statName = ccs.characterStat.statName;
-            })
+            //this.CharacterStatsList.map((ccs:any) => {
+            //  ccs.statName = ccs.characterStat.statName;
+            //})
             this.ClusterCharacterStatsList = Object.assign([], this.CharacterStatsList)
             this.ClusterCharacterStatsList.map((cs) => {
               cs.selected = false;
             });
-            if (this.characterTileModel.view == VIEW.EDIT) {
+            if (this.rulesetTileModel.view == VIEW.EDIT) {
               debugger
-              this.displayCharacterStat = Object.assign([], this.CharacterStatsList.filter(x => (x.charactersCharacterStatId == this.ClusterTileFormModal.displayCharactersCharacterStatID)));
+              this.displayCharacterStat = Object.assign([], this.CharacterStatsList.filter(x => (x.characterStatId == this.ClusterTileFormModal.displayCharactersCharacterStatID)));
               if (this.ClusterTileFormModal.clusterWithSortOrder) {
                 let selectedIds = this.ClusterTileFormModal.clusterWithSortOrder.split(',');
                 selectedIds.map((id) => {
                   this.ClusterCharacterStatsList.map((cs) => {
-                    if (id == cs.charactersCharacterStatId) {
+                    if (id == cs.characterStatId) {
                       cs.selected = true;
                     }
                    
@@ -192,9 +192,9 @@ export class CharacterStatClusterTileComponent implements OnInit {
 
           }
           this.colorList = _colorList;
-          this.isLoading = false;
+          //this.isLoading = false;
         }, error => {
-          this.isLoading = false;
+          //this.isLoading = false;
           this.alertService.stopLoadingMessage();
           let Errors = Utilities.ErrorDetail("Error getting recent colors", error);
           if (Errors.sessionExpire) this.authService.logout(true);
@@ -360,10 +360,10 @@ export class CharacterStatClusterTileComponent implements OnInit {
 
   validateSubmit() {
     debugger
-    if (this.characterTileModel.characterId == 0 || this.characterTileModel.characterId == undefined) {
-      this.alertService.showMessage("", "Character is not selected.", MessageSeverity.error);
+    if (this.rulesetTileModel.rulesetId == 0 || this.rulesetTileModel.rulesetId == undefined) {
+      this.alertService.showMessage("", "Ruleset is not selected.", MessageSeverity.error);
     }
-    else if (this.characterTileModel.tileTypeId == 0 || this.characterTileModel.tileTypeId == undefined) {
+    else if (this.rulesetTileModel.tileTypeId == 0 || this.rulesetTileModel.tileTypeId == undefined) {
       this.alertService.showMessage("", "Char Stat Cluster tile is not selected.", MessageSeverity.error);
     }
     else if (!this.ClusterTileFormModal.title && !this.displayCharacterStat.length) {
@@ -375,7 +375,7 @@ export class CharacterStatClusterTileComponent implements OnInit {
     else {
 
       if (this.displayCharacterStat && this.displayCharacterStat.length && this.displayCharacterStat[0]) {
-        this.ClusterTileFormModal.displayCharactersCharacterStatID = this.displayCharacterStat[0].charactersCharacterStatId;
+        this.ClusterTileFormModal.displayCharactersCharacterStatID = this.displayCharacterStat[0].characterStatId;
       }
       else {
         this.ClusterTileFormModal.displayCharactersCharacterStatID = null;
@@ -384,17 +384,17 @@ export class CharacterStatClusterTileComponent implements OnInit {
       let selectedStats = this.ClusterCharacterStatsList.filter(x => x.selected);
       let selectedStatIds = [];
       selectedStats.map((s) => {
-        selectedStatIds.push(s.charactersCharacterStatId);
+        selectedStatIds.push(s.characterStatId);
       })
       let idsString:string=selectedStatIds.join(',');
       this.ClusterTileFormModal.clusterWithSortOrder = idsString;
 
       this.ClusterTileFormModal.color = this.tileColor ? this.tileColor : '#343038';
-      this.characterTileModel.color = this.ClusterTileFormModal.color;
-      this.characterTileModel.shape = this.ClusterTileFormModal.shape;
-      this.characterTileModel.shape = this.ClusterTileFormModal.shape;
+      this.rulesetTileModel.color = this.ClusterTileFormModal.color;
+      this.rulesetTileModel.shape = this.ClusterTileFormModal.shape;
+      this.rulesetTileModel.shape = this.ClusterTileFormModal.shape;
 
-      this.characterTileModel.characterStatClusterTile = this.ClusterTileFormModal;
+      this.rulesetTileModel.characterStatClusterTile = this.ClusterTileFormModal;
 
       this.isLoading = true;
       const _msg = this.ClusterTileFormModal.characterStatClusterTileId == 0 || this.ClusterTileFormModal.characterStatClusterTileId === undefined
@@ -402,7 +402,7 @@ export class CharacterStatClusterTileComponent implements OnInit {
 
       this.alertService.startLoadingMessage("", _msg);
 
-      this.addEditClusterTile(this.characterTileModel);
+      this.addEditClusterTile(this.rulesetTileModel);
 
     }
   }
@@ -412,9 +412,9 @@ export class CharacterStatClusterTileComponent implements OnInit {
   }
 
 
-  private addEditClusterTile(modal: CharacterTile) {
+  private addEditClusterTile(modal: RulesetTile) {
     this.isLoading = true;
-    this.clusterTileService.createTile(modal)
+    this.clusterTileService.createRulesetClusterTile(modal)
       .subscribe(
         data => {
           // console.log(data);
@@ -423,7 +423,7 @@ export class CharacterStatClusterTileComponent implements OnInit {
           const message = modal.characterStatClusterTile.characterStatClusterTileId == 0 || modal.characterStatClusterTile.characterStatClusterTileId === undefined
             ? "Char Stat Cluster Tile has been added successfully." : "Char Stat Cluster Tile has been updated successfully.";
           this.alertService.showMessage(message, "", MessageSeverity.success);
-          this.sharedService.updateCharacterList(data);
+          this.sharedService.updateRulesetDashboard(data);
           this.close();
         },
         error => {
@@ -473,7 +473,7 @@ export class CharacterStatClusterTileComponent implements OnInit {
   }
   get singleSelectSettings() {
     return {
-      primaryKey: "charactersCharacterStatId",
+      primaryKey: "characterStatId",
       labelKey: "statName",
       text: "select character stat",
       enableCheckAll: false,

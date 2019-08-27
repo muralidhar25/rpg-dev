@@ -1096,4 +1096,8 @@ public bool IsLootPile { get; set; }
         public BlobResponse blobResponse { get; set; }
         //count = Count, blobResponse = objBlobResponse, previousContainerImageNumber = previousContainerImageNumber
     }
+    public class UpdateClusterSortOrderModel {
+        public int ClusterTileId { get; set; }
+        public string SortedIds { get; set; }
+    }
 }

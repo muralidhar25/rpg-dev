@@ -717,15 +717,21 @@
                      class="tile-group tile-group-item_counts"
                      [ngClass]="(box.tile.characterStatClusterTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatClusterTiles?.shape=='100')?'grid-circle':''">
                   <div class="tile tile-type-note" [style.background-color]="box.tile.characterStatClusterTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
-                    <h5 class="tile-title wraptext"
+                    <!--<h5 class="tile-title wraptext"
                         [ngStyle]="{'color': box.tile.characterStatClusterTiles.titleTextColor, 'background-color': box.tile.characterStatClusterTiles.titleBgColor}"
                         popover="{{box.tile.characterStatClusterTiles?.title}}" triggers="hover" container="body"
                         [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
                       {{box.tile.characterStatClusterTiles?.title}}
-                    </h5>
+                    </h5>-->
 
                     <div class="tile-body">
-
+                      <span class="text-center-v"
+                            [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
+                            [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)"
+                            [style.color]="box.tile.characterStatClusterTiles.bodyTextColor"
+                            [style.background-color]="box.tile.characterStatClusterTiles.bodyBgColor">
+                        {{box.tile.characterStatClusterTiles?.title}}
+                      </span>
                     </div>
                   </div>
                 </div>

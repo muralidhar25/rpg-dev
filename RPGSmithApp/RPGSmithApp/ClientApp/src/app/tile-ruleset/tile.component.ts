@@ -13,6 +13,7 @@ import { RulesetTextTileComponent } from './text/text.component';
 import { PlatformLocation } from '@angular/common';
 import { RulesetBuffAndEffectTileComponent } from './buff-and-effect/buff-and-effect.component';
 import { RulesetToggleTileComponent } from './toggle/toggle.component';
+import { RulesetCharacterStatClusterTileComponent } from './character-stat-cluster/character-stat-cluster.component';
 
 @Component({
   selector: 'app-tile',
@@ -26,7 +27,8 @@ export class RulesetTileComponent implements OnInit {
     tiles: any;
     rulesetId: number;
     pageId: number;
-    pageDefaultData = new RulesetDashboardPage();
+  pageDefaultData = new RulesetDashboardPage();
+  isCampaignDashboard: boolean = false;
 
     constructor(private bsModalRef: BsModalRef, private modalService: BsModalService
       , private pageService: RulesetDashboardPageService, private location: PlatformLocation) {
@@ -38,6 +40,7 @@ export class RulesetTileComponent implements OnInit {
             this.pageId = this.bsModalRef.content.pageId;
             this.rulesetId = this.bsModalRef.content.rulesetId;
             this.ruleSet = this.bsModalRef.content.ruleset;
+          this.isCampaignDashboard = this.bsModalRef.content.isCampaignDashboard ? true : false;
             this.getTiles();
             this.Initialize();
         }, 0);
@@ -63,8 +66,12 @@ export class RulesetTileComponent implements OnInit {
           { tileName: 'TOGGLE', tileTypeId: TILES.TOGGLE, icon: TILE_ICON.TOGGLE },
           { tileName: 'CHARACTER STAT', tileTypeId: TILES.CHARACTERSTAT, icon: TILE_ICON.CHARACTERSTAT },
           
+          
             
       ];
+      if (this.isCampaignDashboard) {
+        this.tiles.push({ tileName: 'CHAR STAT CLUSTER', tileTypeId: TILES.CHARACTERSTATCLUSTER, icon: TILE_ICON.CHARACTERSTATCLUSTER });
+      }
       if (this.ruleSet.isBuffAndEffectEnabled) {
         this.tiles.push({ tileName: 'BUFFS & EFFECTS', tileTypeId: TILES.BUFFANDEFFECT, icon: TILE_ICON.BUFFANDEFFECT });
       }
@@ -225,6 +232,26 @@ export class RulesetTileComponent implements OnInit {
               keyboard: false
             });
             this.bsModalRef.content.title = 'Add Toggle Tile';
+            this.bsModalRef.content.rulesetId = this.rulesetId;
+            this.bsModalRef.content.pageId = this.pageId;
+            this.bsModalRef.content.tile = tile;
+            this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+            this.bsModalRef.content.view = VIEW.ADD;
+            this.bsModalRef.content.event.subscribe(data => {
+              if (data) {
+                this.event.emit(data);
+              }
+            })
+            break;
+          }
+          case TILES.CHARACTERSTATCLUSTER: {
+
+            this.bsModalRef = this.modalService.show(RulesetCharacterStatClusterTileComponent, {
+              class: 'modal-primary modal-md',
+              ignoreBackdropClick: true,
+              keyboard: false
+            });
+            this.bsModalRef.content.title = 'Add Character Stat Cluster Tile';
             this.bsModalRef.content.rulesetId = this.rulesetId;
             this.bsModalRef.content.pageId = this.pageId;
             this.bsModalRef.content.tile = tile;

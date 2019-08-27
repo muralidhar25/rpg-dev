@@ -6,6 +6,7 @@ using AutoMapper;
 using DAL.Core.Interfaces;
 using DAL.Models;
 using DAL.Models.RulesetTileModels;
+using DAL.Models.SPModels;
 using DAL.Services;
 using DAL.Services.RulesetTileServices;
 using Microsoft.AspNetCore.Http;
@@ -28,6 +29,7 @@ namespace RPGSmithApp.Controllers
         private readonly IRulesetCounterTileService _counterTileService;
         private readonly IRulesetImageTileService _imageTileService;
         private readonly IRulesetTextTileService _textTileService;
+        private readonly IRulesetCharacterStatClusterTileService _clusterTileService;
         private readonly IRulesetToggleTileService _toggleTileService;
         private readonly IRulesetNoteTileService _noteTileService;
         private readonly IRulesetTileColorService _colorService;
@@ -46,7 +48,7 @@ namespace RPGSmithApp.Controllers
             IRulesetNoteTileService noteTileService,
             IRulesetTileColorService colorService,
             IRulesetBuffAndEffectTileService buffAndEffectTileService, IRulesetToggleTileService toggleTileService,
-            IRuleSetService rulesetService)
+            IRuleSetService rulesetService, IRulesetCharacterStatClusterTileService clusterTileService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._accountManager = accountManager;
@@ -61,6 +63,7 @@ namespace RPGSmithApp.Controllers
             this._buffAndEffectTileService = buffAndEffectTileService;
             this._toggleTileService = toggleTileService;
             this._rulesetService = rulesetService;
+            this._clusterTileService = clusterTileService;
         }
 
         [HttpGet("GetById")]
@@ -262,6 +265,20 @@ namespace RPGSmithApp.Controllers
                             Tile.ToggleTiles = await _toggleTileService.Create(toggleTile);
                             SaveColorsAsync(Tile);
                             break;
+                        case (int)Enum.TILES.CHARACTERSTATCLUSTER:
+                            //Add Image Tile 
+                            if (model.CharacterStatClusterTile == null)
+                                return BadRequest("ClusterTile missing in request");
+
+                            await _tileService.Create(Tile);
+
+                            var clusterTile = model.CharacterStatClusterTile;
+                            clusterTile.RulesetTileId = Tile.RulesetTileId;
+                            //imageTile.Color = Tile.Color;
+                            clusterTile.Shape = Tile.Shape;
+                            Tile.CharacterStatClusterTiles = await _clusterTileService.Create(clusterTile);
+                            SaveColorsAsync(Tile);
+                            break;
                         default:
                             break;
                     }               
@@ -455,6 +472,21 @@ namespace RPGSmithApp.Controllers
                             Tile.ToggleTiles = await _toggleTileService.Update(ToggleTile);
                             SaveColorsAsync(Tile);
                             break;
+                        case (int)Enum.TILES.CHARACTERSTATCLUSTER:
+                            //Update Cluster Tile 
+                            if (model.CharacterStatClusterTile == null)
+                                return BadRequest("ClusterTile missing in request");
+                            else if (model.CharacterStatClusterTile.CharacterStatClusterTileId == 0)
+                                return BadRequest("ClusterTileId field is required for TextTile");
+
+                            await _tileService.Update(Tile);
+
+                            var clusterTile = model.CharacterStatClusterTile;
+                            clusterTile.RulesetTileId = Tile.RulesetTileId;
+                            clusterTile.Shape = Tile.Shape;
+                            Tile.CharacterStatClusterTiles = await _clusterTileService.Update(clusterTile);
+                            SaveColorsAsync(Tile);
+                            break;
                         default:
                             break;
                     }
@@ -559,6 +591,12 @@ namespace RPGSmithApp.Controllers
                         _tileColor.TitleBgColor = Tile.ToggleTiles.TitleBgColor;
                         _tileColor.TitleTextColor = Tile.ToggleTiles.TitleTextColor;
                         break;
+                    case (int)Enum.TILES.CHARACTERSTATCLUSTER:
+                        _tileColor.BodyBgColor = Tile.CharacterStatClusterTiles.BodyBgColor;
+                        _tileColor.BodyTextColor = Tile.CharacterStatClusterTiles.BodyTextColor;
+                        _tileColor.TitleBgColor = Tile.CharacterStatClusterTiles.TitleBgColor;
+                        _tileColor.TitleTextColor = Tile.CharacterStatClusterTiles.TitleTextColor;
+                        break;
                     default: break;
                 }
 
@@ -598,6 +636,21 @@ namespace RPGSmithApp.Controllers
             {
                 return Ok(ex.Message);
             }
+
+        }
+        [HttpPost("updateClusterSortOrder")]
+        public async Task<IActionResult> updateClusterSortOrder([FromBody] UpdateClusterSortOrderModel model)
+        {
+            try
+            {
+                _clusterTileService.updateClusterSortOrder(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
 
         }
     }

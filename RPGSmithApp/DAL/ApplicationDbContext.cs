@@ -175,6 +175,7 @@ namespace DAL
         public virtual DbSet<CharacterToggleTile> CharacterToggleTiles { get; set; }
         public virtual DbSet<RulesetToggleTile> RulesetToggleTiles { get; set; }
         public virtual DbSet<CharacterCharacterStatClusterTile> CharacterCharacterStatClusterTiles { get; set; }
+        public virtual DbSet<RulesetCharacterStatClusterTile> RulesetCharacterStatClusterTiles { get; set; }
         
 
 

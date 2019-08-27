@@ -26,6 +26,8 @@ import { ServiceUtil } from '../../../core/services/service-util';
 import { DiceService } from '../../../core/services/dice.service';
 import { CommandTile } from '../../../core/models/tiles/command-tile.model';
 import { LinkRecordComponent } from '../../../characters/character-records/character-stats/link-record/link-record.component';
+import { CharacterStatClusterTileComponent } from '../character-stat-cluster.component';
+import { CharacterStatClusterTileService } from '../../../core/services/tiles/character-stat-cluster-tile.service';
 
 @Component({
   selector: 'app-edit-character-stat-cluster',
@@ -61,10 +63,12 @@ export class EditCharacterStatClusterComponent implements OnInit {
   pageSize: number = 999999;
   noRecordFound: boolean = false;
   CharactersCharacterStatListToDisplay: CharactersCharacterStat[] = [];
+  CharactersCharacterStatListToDisplay_Old: CharactersCharacterStat[] = [];
   DefVal_STATTYPE = DefaultValue_STAT_TYPE;
   isMouseDown: boolean = false;
   interval: any;
   STAT_LINK_TYPE = STAT_LINK_TYPE;
+  OpenSortOrder: boolean = false;
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -77,7 +81,7 @@ export class EditCharacterStatClusterComponent implements OnInit {
     private bsModalRef: BsModalRef, private alertService: AlertService, private sharedService: SharedService,
     private authService: AuthService, private modalService: BsModalService, private localStorage: LocalStoreManager,
     private characterStatService: CharacterStatService, private charactersService: CharactersService,
-    private rulesetService: RulesetService,
+    private rulesetService: RulesetService, private clusterTileService: CharacterStatClusterTileService,
     private charactersCharacterStatService: CharactersCharacterStatService, private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
   }
@@ -526,6 +530,7 @@ export class EditCharacterStatClusterComponent implements OnInit {
         }
 
       });
+      this.CharactersCharacterStatListToDisplay_Old = Object.assign([], this.CharactersCharacterStatListToDisplay);
 
     }
 
@@ -1192,6 +1197,7 @@ export class EditCharacterStatClusterComponent implements OnInit {
     this.bsModalRef.content.characterId = this.characterId;
     this.bsModalRef.content.ruleSet = this.ruleSet;
     this.bsModalRef.content.title = "Link Record";
+    this.bsModalRef.content.isFromClusterTile = true;
     this.bsModalRef.content.characterstat = Object.assign({}, characterstat);
     this.bsModalRef.content.event.subscribe(data => {
       debugger
@@ -1275,5 +1281,524 @@ export class EditCharacterStatClusterComponent implements OnInit {
     }
     return name;
 
+  }
+  dice(numberToAdd: number, typeId?: number, type?: number) {
+
+    //if (+numberToAdd) {
+    this.bsModalRef.hide();
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -3;
+    this.bsModalRef.content.characterId = this.characterId;
+    this.bsModalRef.content.character = this.character;
+    this.bsModalRef.content.showDetailsByDefault = true;
+    this.bsModalRef.content.numberToAdd = numberToAdd;
+
+    //this.bsModalRef.content.event.subscribe(result => {
+    //  if (typeId === STAT_TYPE.Number) {
+    //    //this.valNumber = +this.valNumber + result;
+    //  }
+    //  else if (typeId === STAT_TYPE.ValueSubValue) {
+    //    if (type === 1)
+    //      this.valValueSubValue.value = +this.valValueSubValue.value + result;
+    //    else if (type === 2)
+    //      this.valValueSubValue.subValue = +this.valValueSubValue.subValue + result;
+    //  }
+    //});   
+  }
+  editTile() {
+    this.close();
+    this.bsModalRef = this.modalService.show(CharacterStatClusterTileComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Edit Character Stat Cluster Tile";
+    this.bsModalRef.content.tile = this.tile;
+    this.bsModalRef.content.characterId = this.characterId;
+    this.bsModalRef.content.pageId = this.pageId;
+    this.bsModalRef.content.pageDefaultData = this.pageDefaultData;
+    this.bsModalRef.content.view = VIEW.EDIT;
+  }
+  ShowSortOrderScreen() {
+    this.OpenSortOrder = true;
+  }
+  upclick(index) {
+    if (index == 0) {
+      return;
+    }
+    [this.CharactersCharacterStatListToDisplay[index], this.CharactersCharacterStatListToDisplay[index - 1]] = [this.CharactersCharacterStatListToDisplay[index - 1], this.CharactersCharacterStatListToDisplay[index]];
+  }
+
+  downclick(index) {
+    if (index === this.CharactersCharacterStatListToDisplay.length - 1) {
+      return;
+    }
+    [this.CharactersCharacterStatListToDisplay[index], this.CharactersCharacterStatListToDisplay[index + 1]] = [this.CharactersCharacterStatListToDisplay[index + 1], this.CharactersCharacterStatListToDisplay[index]];
+  }
+  closeSortOrder() {
+    this.OpenSortOrder = false;
+    this.CharactersCharacterStatListToDisplay =Object.assign([],this.CharactersCharacterStatListToDisplay_Old);
+  }
+  saveSortOrder() {
+    //save sortorder...
+    
+    let selectedStats = this.CharactersCharacterStatListToDisplay;
+    let selectedStatIds = [];
+    selectedStats.map((s) => {
+      selectedStatIds.push(s.charactersCharacterStatId);
+    })
+    let newSortedIds: string = selectedStatIds.join(',');
+    this.isLoading = true;
+    let characterClusterTileId: number = this.CharacterStatClusterTile.characterStatClusterTileId;
+    this.clusterTileService.updateSortOrder(characterClusterTileId, newSortedIds)
+      .subscribe(
+      data => {
+        this.CharacterStatClusterTile.clusterWithSortOrder = newSortedIds;
+          // console.log(data);
+          this.isLoading = false;
+          this.OpenSortOrder = false;
+          this.CharactersCharacterStatListToDisplay_Old = Object.assign([], this.CharactersCharacterStatListToDisplay);
+        },
+        error => {
+          console.log(error);
+          this.isLoading = false;          
+        },
+      );
+    
+  }
+  save(characterstats: any, redirectto: any) {
+    debugger
+    //if (redirectto == 99) {
+    //  this.isLoading = true;
+    //  }
+    let valid = true;
+    characterstats.map((cs) => {
+      if (cs.characterStat.characterStatTypeId == STAT_TYPE.Combo) {
+        if (!(+cs.minimum == 0 && +cs.maximum == 0)) {
+          if (!(+cs.defaultValue >= +cs.minimum && +cs.defaultValue <= +cs.maximum)) {
+            valid = false;
+          }
+        }
+      }
+      if (cs.characterStat.characterStatTypeId == STAT_TYPE.Number || cs.characterStat.characterStatTypeId == STAT_TYPE.CurrentMax ||
+        cs.characterStat.characterStatTypeId == STAT_TYPE.ValueSubValue) {
+        if (cs.characterStat.characterStatDefaultValues.length) {
+          switch (cs.characterStat.characterStatTypeId) {
+            case STAT_TYPE.Number:
+              let defval: CharacterStatDefaultValue = cs.characterStat.characterStatDefaultValues[0];
+              if (!(+defval.minimum == 0 && +defval.maximum == 0)) {
+                if (!(+cs.number >= +defval.minimum && +cs.number <= +defval.maximum)) {
+                  valid = false;
+                }
+              }
+              break;
+            case STAT_TYPE.CurrentMax:
+              let CurDefval: CharacterStatDefaultValue = cs.characterStat.characterStatDefaultValues[0];
+              if (!(+CurDefval.minimum == 0 && +CurDefval.maximum == 0)) {
+                if (!(+cs.current >= +CurDefval.minimum && +cs.current <= +CurDefval.maximum)) {
+                  valid = false;
+                }
+              }
+              let MaxDefval: CharacterStatDefaultValue = cs.characterStat.characterStatDefaultValues[1];
+              if (!(+MaxDefval.minimum == 0 && +MaxDefval.maximum == 0)) {
+                if (!(+cs.maximum >= +MaxDefval.minimum && +cs.maximum <= +MaxDefval.maximum)) {
+                  valid = false;
+                }
+              }
+              break;
+            case STAT_TYPE.ValueSubValue:
+
+              let ValDefval: CharacterStatDefaultValue = cs.characterStat.characterStatDefaultValues[0];
+              if (!(+ValDefval.minimum == 0 && +ValDefval.maximum == 0)) {
+                if (!(+cs.value >= +ValDefval.minimum && +cs.value <= +ValDefval.maximum)) {
+                  valid = false;
+                }
+              }
+              let SubDefval: CharacterStatDefaultValue = cs.characterStat.characterStatDefaultValues[1];
+              if (!(+SubDefval.minimum == 0 && +SubDefval.maximum == 0)) {
+                if (!(+cs.subValue >= +SubDefval.minimum && +cs.subValue <= +SubDefval.maximum)) {
+                  valid = false;
+                }
+              }
+              break;
+
+
+            default:
+          }
+        }
+
+      }
+    })
+    if (!valid) {
+      //alert('falseff')
+      this.alertService.showMessage("", "Please fill the correct values.", MessageSeverity.error);
+      return false;
+    }
+
+    let _msg = "Updating Character Stat Cluster";
+    this.isLoading = true;
+
+    this.alertService.startLoadingMessage("", _msg);
+    //if (redirectto != 99) {
+    //  this.alertService.startLoadingMessage("", _msg);
+    //}
+
+
+    characterstats.forEach(item => {
+
+      if (item.current == "") {
+        item.current = 0;
+      }
+
+      if (item.maximum == "") {
+        item.maximum = 0;
+      }
+
+      if (item.value == "") {
+        item.value = 0;
+      }
+
+      if (item.subValue == "") {
+        item.subValue = 0;
+      }
+
+      if (item.characterStat.characterStatType.statTypeName == "Choice" && item.characterStat.isMultiSelect == true) {
+
+        item.multiChoice = "";
+        item.selectedCharacterChoices.forEach(item2 => {
+          item.multiChoice = item.multiChoice + item2.characterStatChoiceId + ';'
+        });
+
+        if (item.multiChoice != null && item.multiChoice != '')
+          item.multiChoice = item.multiChoice.slice(0, -1);
+      }
+
+      if (item.characterStat.characterStatType.statTypeName == "Choice" && item.characterStat.isMultiSelect == false) {
+
+        item.choice = "";
+        item.selectedCharacterChoices.forEach(item2 => {
+          item.choice = item.choice + item2.characterStatChoiceId + ';'
+        });
+
+        if (item.choice != null && item.choice != '')
+          item.choice = item.choice.slice(0, -1);
+      }
+
+      if (item.characterStat.characterStatType.statTypeName == "Command") {
+        if (item.displaycommand != null && item.displaycommand != "")
+          item.command = item.displaycommand;//this.manageCommandSave(item.displaycommand);
+
+        //alert(item.displaycommand);
+      }
+
+      if (item.characterStat.characterStatType.statTypeName == "Calculation") {
+
+        // item.calculationResult =
+        if (item.characterStat.characterStatCalcs.length) {
+          let finalCalcString = '';
+          if (item.characterStat.characterStatCalcs[0].statCalculation != null && item.characterStat.characterStatCalcs[0].statCalculation != undefined) {
+            item.displayCalculation = item.characterStat.characterStatCalcs[0].statCalculation;
+            let IDs: any[] = [];
+            let CalcString = item.characterStat.characterStatCalcs[0].statCalculationIds;
+            if (item.characterStat.characterStatCalcs[0].statCalculationIds) {
+              item.characterStat.characterStatCalcs[0].statCalculationIds.split(/\[(.*?)\]/g).map((rec) => {
+
+                let id = ''; let flag = false; let type = 0; let statType = 0;
+                if (rec.split('_').length > 1) {
+                  id = rec.split('_')[0].replace('[', '').replace(']', '');
+                  type = parseInt(rec.split('_')[1])
+                }
+                else {
+                  id = rec.replace('[', '').replace(']', '');
+                  type = 0
+                }
+                this.charactersCharacterStats.map((q) => {
+                  if (!flag) {
+                    flag = (parseInt(id) == q.characterStatId);
+                    statType = q.characterStat.characterStatTypeId
+                  }
+                })
+                if (flag) {
+                  IDs.push({ id: id, type: isNaN(type) ? 0 : type, originaltext: "[" + rec + "]", statType: statType })
+                }
+                else if (+id == -1) {
+                  IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
+                }
+              })
+            }
+            IDs.map((rec) => {
+              if (+rec.id == -1 && this.character.inventoryWeight) {
+                CalcString = CalcString.replace(rec.originaltext, this.character.inventoryWeight);
+              } else {
+                this.charactersCharacterStats.map((stat) => {
+                  if (rec.id == stat.characterStatId) {
+                    let num = 0;
+                    switch (rec.statType) {
+                      case 3: //Number
+                        num = stat.number
+                        break;
+                      case 5: //Current Max
+                        if (rec.type == 1)//current
+                        {
+                          num = stat.current
+                        }
+                        else if (rec.type == 2)//Max
+                        {
+                          num = stat.maximum
+                        }
+                        break;
+                      case 7: //Val Sub-Val
+                        if (rec.type == 3)//value
+                        {
+                          num = +stat.value
+                        }
+                        else if (rec.type == 4)//sub-value
+                        {
+                          num = stat.subValue
+                        }
+                        break;
+                      case 12: //Calculation
+                        num = stat.calculationResult
+                        break;
+                      case STAT_TYPE.Combo: //Combo
+                        num = stat.defaultValue
+                        break;
+                      case STAT_TYPE.Choice: //Choice
+                        num = stat.defaultValue
+                        break;
+                      case STAT_TYPE.Condition: //condition
+                        let characterStatConditionsfilter = this.ConditionsValuesList.filter((CCS) => CCS.characterStat.characterStatId == rec.id);
+                        let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
+                        let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], this.character, this.ConditionsValuesList);
+                        num = +result;
+                        break;
+                      default:
+                        break;
+                    }
+                    if (num)
+                      CalcString = CalcString.replace(rec.originaltext, num);
+                    //else
+                    //CalcString = CalcString.replace(rec.originaltext, 0);
+                    //CalcString = CalcString.replace(rec.originaltext, "(" + num + ")");
+                  }
+
+                });
+              }
+              finalCalcString = CalcString;
+            });
+          }
+          try {
+            finalCalcString = (finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '+ 0' ||
+              finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '- 0' ||
+              finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '* 0' ||
+              finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '/ 0')
+              ? finalCalcString.trim().slice(0, -1)
+              : finalCalcString.trim();
+            item.calculationResult = DiceService.commandInterpretation(finalCalcString, undefined, undefined)[0].calculationResult;
+          }
+          catch (ex) {
+            item.calculationResult = this.getCalculationResult(item.characterStat.characterStatCalcs[0].statCalculation);
+          }
+          if (isNaN(item.calculationResult)) {
+            item.calculationResult = 0;
+          }
+        }
+      }
+
+      if (item.characterStat.characterStatTypeId == STAT_TYPE.Condition) {
+
+        let result = '';
+        if (item.characterStat.characterStatConditions) {
+
+          if (item.characterStat.characterStatConditions.length) {
+            let SkipNextEntries: boolean = false;
+            item.characterStat.characterStatConditions.map((Condition: CharacterStatConditionViewModel) => {
+              if (!SkipNextEntries) {
+                //let ConditionStatValue: string = this.GetValueFromStatsByStatID(Condition.ifClauseStatId, Condition.ifClauseStattype);
+
+                let ConditionStatValue: string = '';
+                if (Condition.ifClauseStatText) {
+                  ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.ConditionsValuesList, Condition, false);
+                }
+                let operator = "";
+                let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(this.character.inventoryWeight, this.ConditionsValuesList, Condition, true);//Condition.compareValue;
+
+                let ConditionTrueResult = Condition.result;
+
+
+                if (Condition.sortOrder != item.characterStat.characterStatConditions.length) {//if and Else If Part
+                  if (Condition.conditionOperator) {
+                    //////////////////////////////////////////////////////////////////
+
+                    if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.EQUALS ||
+                      Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.NOT_EQUALS ||
+                      Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.GREATER_THAN ||
+                      Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.EQUAL_TO_OR_GREATER_THAN ||
+                      Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.LESS_THAN ||
+                      Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.EQUAL_TO_OR_LESS_THAN) {
+
+                      operator = Condition.conditionOperator.symbol;
+                      let ConditionCheckString = '';
+                      if (Condition.isNumeric) {
+                        ConditionStatValue = ConditionStatValue ? ConditionStatValue : "0";
+                        ValueToCompare = ValueToCompare ? ValueToCompare : "0";
+                        ConditionCheckString = ConditionStatValue + ' ' + operator + ' ' + ValueToCompare;
+                      }
+                      else {
+                        ConditionCheckString = ' "' + ConditionStatValue + '" ' + operator + ' "' + ValueToCompare + '" ';
+                      }
+                      ConditionCheckString = ConditionCheckString.toUpperCase();
+                      let conditionCheck = eval(ConditionCheckString);
+                      if ((typeof (conditionCheck)) == "boolean") {
+                        if (conditionCheck) {
+                          result = ConditionTrueResult;
+                          SkipNextEntries = true;
+                        }
+                      }
+                    }
+
+
+                    else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.IS_BLANK) {
+                      if (!ConditionStatValue) {
+                        result = ConditionTrueResult;
+                        SkipNextEntries = true;
+                      }
+                    }
+                    else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.IS_NOT_BLANK) {
+                      if (ConditionStatValue) {
+                        result = ConditionTrueResult;
+                        SkipNextEntries = true;
+                      }
+                    }
+                    //else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.CONTAINS) {
+                    //    ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                    //    ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                    //    if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+
+                    //        let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
+                    //        choicesArr = choicesArr.map((z) => {
+                    //            return z.toUpperCase();
+                    //        })
+                    //        if (choicesArr.indexOf(ValueToCompare.toUpperCase()) > -1) {
+                    //            result = ConditionTrueResult;
+                    //            SkipNextEntries = true;
+                    //        }
+                    //    }
+                    //    else {
+                    //        if (ConditionStatValue.toUpperCase() == ValueToCompare.toUpperCase()) {
+                    //            result = ConditionTrueResult;
+                    //            SkipNextEntries = true;
+                    //        }
+                    //    }
+                    //}
+                    //else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.DOES_NOT_CONTAIN) {
+                    //    ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                    //    ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                    //    if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+
+                    //        let choicesArr: any[] = ConditionStatValue.split(this.choiceArraySplitter);
+                    //        choicesArr = choicesArr.map((z) => {
+                    //            return z.toUpperCase();
+                    //        })
+                    //        if (choicesArr.indexOf(ValueToCompare.toUpperCase()) == -1) {
+                    //            result = ConditionTrueResult;
+                    //            SkipNextEntries = true;
+                    //        }
+                    //    }
+                    //    else {
+                    //        if (ConditionStatValue.toUpperCase() != ValueToCompare.toUpperCase()) {
+                    //            result = ConditionTrueResult;
+                    //            SkipNextEntries = true;
+                    //        }
+                    //    }
+                    //}
+                    else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.CONTAINS) {
+                      ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                      ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                      if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+
+
+                        if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
+                          result = ConditionTrueResult;
+                          SkipNextEntries = true;
+                        }
+                      }
+                      else {
+                        if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
+                          result = ConditionTrueResult;
+                          SkipNextEntries = true;
+                        }
+                      }
+                    }
+                    else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.DOES_NOT_CONTAIN) {
+                      ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                      ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                      if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+
+
+                        if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
+                          result = ConditionTrueResult;
+                          SkipNextEntries = true;
+                        }
+                      }
+                      else {
+                        if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
+                          result = ConditionTrueResult;
+                          SkipNextEntries = true;
+                        }
+                      }
+                    }
+                    //////////////////////////////////////////////////////////////////
+                  }
+                }
+                else {
+                  let ConditionFalseResult = Condition.result;
+                  result = ConditionFalseResult;
+                  SkipNextEntries = true;
+                }
+              }
+            })
+          }
+        }
+        item.text = result;
+      }
+
+    });
+
+    this.charactersCharacterStatService.updateCharactersCharacterStatList(characterstats)
+      .subscribe(
+      data => {
+        this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let message = "Characters stat cluster has been updated successfully.";
+          this.alertService.showMessage(message, "", MessageSeverity.success);
+          //if (redirectto != 99) {
+          //  this.alertService.showMessage(message, "", MessageSeverity.success);
+          //}
+          this.close();
+
+          
+        },
+        error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let _message = "Unable to Update ";
+          let Errors = Utilities.ErrorDetail(_message, error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        },
+      );
+
+
+    // this.router.navigate(['/character/dashboard', this.characterId]);
   }
 }

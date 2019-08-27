@@ -194,6 +194,7 @@ export class ToggleTileService extends EndpointFactory
         toggleTile: model.toggleTiles,
         multiCharacterStats: [],
         buffAndEffectTile: model.buffAndEffectTiles,
+        characterStatClusterTile: model.characterStatClusterTiles
       };
     }
     else {
@@ -243,7 +244,8 @@ export class ToggleTileService extends EndpointFactory
         counterTile: null,
         commandTile: null,
         multiCharacterStats: [],
-        buffAndEffectTile: null
+        buffAndEffectTile: null,
+        characterStatClusterTile:null
       };
     }
     return modelData;

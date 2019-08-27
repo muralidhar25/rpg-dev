@@ -1270,10 +1270,149 @@ namespace DAL.Services.CharacterTileServices
 
             return ClusterCharCharStat;
         }
+        private static CharactersCharacterStat GetClusterCharCharStatForSharedLayout(DataSet ds, int? charCharStatId, CharactersCharacterStat ClusterCharCharStat)
+        {
+            if (ds.Tables[25].Rows.Count > 0)
+            {
+                foreach (DataRow CharCharStat_Row in ds.Tables[25].Rows)
+                {
+                    int? nullInt = null;
+                    int CharactersCharacterStatId = CharCharStat_Row["CharactersCharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["CharactersCharacterStatId"]);
+                    if (CharactersCharacterStatId == charCharStatId)
+                    {
+                        ClusterCharCharStat = new CharactersCharacterStat();
+                        ClusterCharCharStat.CharactersCharacterStatId = CharactersCharacterStatId;
+                        ClusterCharCharStat.CharacterStatId = CharCharStat_Row["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["CharacterStatId"]);
+                        ClusterCharCharStat.CharacterId = CharCharStat_Row["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["CharacterId"]);
+                        ClusterCharCharStat.Text = CharCharStat_Row["Text"] == DBNull.Value ? null : CharCharStat_Row["Text"].ToString();
+                        ClusterCharCharStat.RichText = CharCharStat_Row["RichText"] == DBNull.Value ? null : CharCharStat_Row["RichText"].ToString();
+                        ClusterCharCharStat.Choice = CharCharStat_Row["Choice"] == DBNull.Value ? null : CharCharStat_Row["Choice"].ToString();
+                        ClusterCharCharStat.MultiChoice = CharCharStat_Row["MultiChoice"] == DBNull.Value ? null : CharCharStat_Row["MultiChoice"].ToString();
+                        ClusterCharCharStat.Command = CharCharStat_Row["Command"] == DBNull.Value ? null : CharCharStat_Row["Command"].ToString();
+                        ClusterCharCharStat.YesNo = CharCharStat_Row["YesNo"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["YesNo"]);
+                        ClusterCharCharStat.OnOff = CharCharStat_Row["OnOff"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["OnOff"]);
+                        ClusterCharCharStat.Value = CharCharStat_Row["Value"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["Value"]);
+                        ClusterCharCharStat.Number = CharCharStat_Row["Number"] == DBNull.Value ? (int?)null : Convert.ToInt32(CharCharStat_Row["Number"]);
+                        ClusterCharCharStat.SubValue = CharCharStat_Row["SubValue"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["SubValue"]);
+                        ClusterCharCharStat.Current = CharCharStat_Row["Current"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["Current"]);
+                        ClusterCharCharStat.Maximum = CharCharStat_Row["Maximum"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["Maximum"]);
+                        ClusterCharCharStat.CalculationResult = CharCharStat_Row["CalculationResult"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["CalculationResult"]);
+                        ClusterCharCharStat.Minimum = CharCharStat_Row["Minimum"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["Minimum"]);
+                        ClusterCharCharStat.DefaultValue = CharCharStat_Row["DefaultValue"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["DefaultValue"]);
+                        ClusterCharCharStat.ComboText = CharCharStat_Row["ComboText"] == DBNull.Value ? null : CharCharStat_Row["ComboText"].ToString();
+                        ClusterCharCharStat.IsDeleted = CharCharStat_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsDeleted"]);
+                        ClusterCharCharStat.Display = CharCharStat_Row["Display"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["Display"]);
+                        ClusterCharCharStat.ShowCheckbox = CharCharStat_Row["ShowCheckbox"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["ShowCheckbox"]);
+                        ClusterCharCharStat.IsCustom = CharCharStat_Row["IsCustom"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsCustom"]);
+                        ClusterCharCharStat.IsYes = CharCharStat_Row["IsYes"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsYes"]);
+                        ClusterCharCharStat.IsOn = CharCharStat_Row["IsOn"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsOn"]);
+                        ClusterCharCharStat.LinkType = CharCharStat_Row["LinkType"] == DBNull.Value ? null : CharCharStat_Row["LinkType"].ToString();
+                        CharacterStat ClusterCharStat = null;
+                        short num = 0;
+                        int characterstatID = CharCharStat_Row["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["CharacterStatId"]);
+                        if (characterstatID == ClusterCharCharStat.CharacterStatId)
+                        {
+                            ClusterCharStat = new CharacterStat();
 
+
+                            ClusterCharStat.CharacterStatDefaultValues = new List<CharacterStatDefaultValue>();
+                            if (ds.Tables[28].Rows.Count > 0)
+                            {
+                                foreach (DataRow DefaultVal_Row in ds.Tables[28].Rows)
+                                {
+                                    int DefaultValcharacterstatID = DefaultVal_Row["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(DefaultVal_Row["CharacterStatId"]);
+                                    if (DefaultValcharacterstatID == ClusterCharCharStat.CharacterStatId)
+                                    {
+                                        ClusterCharStat.CharacterStatDefaultValues.Add(new CharacterStatDefaultValue()
+                                        {
+                                            CharacterStatDefaultValueId = DefaultVal_Row["CharacterStatDefaultValueId"] == DBNull.Value ? 0 : Convert.ToInt32(DefaultVal_Row["CharacterStatDefaultValueId"]),
+                                            CharacterStatId = DefaultVal_Row["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(DefaultVal_Row["CharacterStatId"]),
+                                            DefaultValue = DefaultVal_Row["DefaultValue"] == DBNull.Value ? string.Empty : DefaultVal_Row["DefaultValue"].ToString(),
+                                            Minimum = DefaultVal_Row["Minimum"] == DBNull.Value ? 0 : Convert.ToInt32(DefaultVal_Row["Minimum"]),
+                                            Maximum = DefaultVal_Row["Maximum"] == DBNull.Value ? 0 : Convert.ToInt32(DefaultVal_Row["Maximum"]),
+                                            Type = DefaultVal_Row["Type"] == DBNull.Value ? 0 : Convert.ToInt32(DefaultVal_Row["Type"])
+                                        });
+                                    }
+                                }
+                            }
+                            utility.FillConditionStats(ds, ClusterCharCharStat, ClusterCharStat, 29);
+
+                            ClusterCharStat.CharacterStatId = characterstatID;
+                            ClusterCharStat.RuleSetId = CharCharStat_Row["RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["RuleSetId"]);
+                            ClusterCharStat.StatName = CharCharStat_Row["StatName"] == DBNull.Value ? null : CharCharStat_Row["StatName"].ToString();
+                            ClusterCharStat.StatDesc = CharCharStat_Row["StatDesc"] == DBNull.Value ? null : CharCharStat_Row["StatDesc"].ToString();
+                            ClusterCharStat.isActive = CharCharStat_Row["isActive"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["isActive"]);
+                            ClusterCharStat.CharacterStatTypeId = CharCharStat_Row["CharacterStatTypeId"] == DBNull.Value ? num : (short)(CharCharStat_Row["CharacterStatTypeId"]);
+                            ClusterCharStat.isMultiSelect = CharCharStat_Row["isMultiSelect"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["isMultiSelect"]);
+                            ClusterCharStat.ParentCharacterStatId = CharCharStat_Row["ParentCharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["ParentCharacterStatId"]);
+                            ClusterCharStat.SortOrder = CharCharStat_Row["SortOrder"] == DBNull.Value ? num : (short)(CharCharStat_Row["SortOrder"]);
+                            ClusterCharStat.IsDeleted = CharCharStat_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsDeleted"]);
+                            ClusterCharStat.IsChoiceNumeric = CharCharStat_Row["IsChoiceNumeric"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsChoiceNumeric"]);
+                            ClusterCharStat.IsChoicesFromAnotherStat = CharCharStat_Row["IsChoicesFromAnotherStat"] == DBNull.Value ? false : Convert.ToBoolean(CharCharStat_Row["IsChoicesFromAnotherStat"]);
+                            ClusterCharStat.SelectedChoiceCharacterStatId = CharCharStat_Row["SelectedChoiceCharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStat_Row["SelectedChoiceCharacterStatId"]);
+
+                            utility.FillStatChoices(ds, ClusterCharStat, characterstatID, 10);
+                            utility.FillStatCalcs(ds, ClusterCharStat, characterstatID, 26);
+                            CharacterStatType statType = null;
+                            if (ds.Tables[27].Rows.Count > 0)
+                            {
+                                foreach (DataRow r in ds.Tables[27].Rows)
+                                {
+                                    short CharacterStatTypeID = r["CharacterStatTypeId"] == DBNull.Value ? num : (short)(r["CharacterStatTypeId"]);
+                                    if (CharacterStatTypeID == ClusterCharStat.CharacterStatTypeId)
+                                    {
+                                        statType = new CharacterStatType();
+                                        statType.CharacterStatTypeId = CharacterStatTypeID;
+                                        statType.StatTypeName = r["StatTypeName"] == DBNull.Value ? null : r["StatTypeName"].ToString();
+                                        statType.StatTypeDesc = r["StatTypeDesc"] == DBNull.Value ? null : r["StatTypeDesc"].ToString();
+                                        statType.isNumeric = r["isNumeric"] == DBNull.Value ? false : Convert.ToBoolean(r["isNumeric"]);
+                                        statType.TypeId = r["TypeId"] == DBNull.Value ? num : (short)(r["TypeId"]);
+                                    }
+                                }
+                            }
+                            ClusterCharStat.CharacterStatType = statType;
+                        }
+
+
+                        ClusterCharCharStat.CharacterStat = ClusterCharStat;
+
+                        List<CharacterCustomToggle> characterCustomToggle = new List<CharacterCustomToggle>();
+                        if (ClusterCharCharStat.IsCustom)
+                        {
+                            ClusterCharCharStat.CharacterCustomToggles = characterCustomToggle;
+                            if (ds.Tables[30].Rows.Count > 0)
+                            {
+                                foreach (DataRow CustomToggle_Row in ds.Tables[30].Rows)
+                                {
+                                    int CustomTogglecharacterstatID = CustomToggle_Row["CharacterStatId"] == DBNull.Value ? 0 : Convert.ToInt32(CustomToggle_Row["CharacterStatId"]);
+                                    if (CustomTogglecharacterstatID == ClusterCharCharStat.CharacterStatId)
+                                    {
+                                        characterCustomToggle.Add(new CharacterCustomToggle()
+                                        {
+                                            CustomToggleId = CustomToggle_Row["CustomToggleId"] == DBNull.Value ? 0 : Convert.ToInt32(CustomToggle_Row["CustomToggleId"]),
+                                            Image = CustomToggle_Row["Image"] == DBNull.Value ? string.Empty : CustomToggle_Row["Image"].ToString(),
+                                            IsDeleted = CustomToggle_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CustomToggle_Row["IsDeleted"]),
+                                            ToggleText = CustomToggle_Row["ToggleText"] == DBNull.Value ? string.Empty : CustomToggle_Row["ToggleText"].ToString(),
+                                        });
+                                    }
+                                }
+                            }
+
+
+                        }
+                        ClusterCharCharStat.CharacterCustomToggles = characterCustomToggle;
+                    }
+
+                }
+            }
+
+            return ClusterCharCharStat;
+        }
 
         public List<CharacterTile> GetSharedLayoutByPageIdRulesetId_sp(int characterId, int pageId, int rulesetId)
         {
+            List<CharactersCharacterStat> ClusterSelectedCharCharStats = new List<CharactersCharacterStat>();
+            bool IsClusterCharacterCharacterStatsFilled = false;
             List<CharacterTile> tileList = new List<CharacterTile>();
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             //string qry = "EXEC Character_GetTilesByPageID @CharacterID = '" + characterId + "' ,@PageID='" + pageId + "'";
@@ -1865,32 +2004,84 @@ namespace DAL.Services.CharacterTileServices
                             }
                             tile.ToggleTiles = TGT;
                             break;
-                        //case 11://TextTiles
-                        //    CharacterCharacterStatClusterTile ClusterT = null;
-                        //    if (ds.Tables[23].Rows.Count > 0)
-                        //    {
-                        //        foreach (DataRow TT_Row in ds.Tables[23].Rows)
-                        //        {
-                        //            int CharacterTileId = TT_Row["RulesetTileId"] == DBNull.Value ? 0 : Convert.ToInt32(TT_Row["RulesetTileId"]);
-                        //            if (CharacterTileId == tile.CharacterTileId)
-                        //            {
-                        //                TT = new CharacterTextTile();
-                        //                TT.BodyBgColor = TT_Row["BodyBgColor"] == DBNull.Value ? null : TT_Row["BodyBgColor"].ToString();
-                        //                TT.BodyTextColor = TT_Row["BodyTextColor"] == DBNull.Value ? null : TT_Row["BodyTextColor"].ToString();
-                        //                TT.IsDeleted = TT_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(TT_Row["IsDeleted"]);
-                        //                TT.TextTileId = TT_Row["TextTileId"] == DBNull.Value ? 0 : Convert.ToInt32(TT_Row["TextTileId"]);
-                        //                TT.CharacterTileId = CharacterTileId;
-                        //                TT.Shape = TT_Row["Shape"] == DBNull.Value ? 0 : Convert.ToInt32(TT_Row["Shape"]);
-                        //                TT.SortOrder = TT_Row["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(TT_Row["SortOrder"]);
-                        //                TT.Title = TT_Row["Title"] == DBNull.Value ? null : TT_Row["Title"].ToString();
-                        //                TT.TitleBgColor = TT_Row["TitleBgColor"] == DBNull.Value ? null : TT_Row["TitleBgColor"].ToString();
-                        //                TT.TitleTextColor = TT_Row["TitleTextColor"] == DBNull.Value ? null : TT_Row["TitleTextColor"].ToString();
-                        //                TT.Text = TT_Row["Text"] == DBNull.Value ? "" : TT_Row["Text"].ToString();
-                        //            }
-                        //        }
-                        //    }
-                        //    tile.TextTiles = TT;
-                        //    break;
+                        case 11://TextTiles
+                            List<CharactersCharacterStat> TempIdsOfCharacterStatsForClustorItems = new List<CharactersCharacterStat>();
+                            CharacterCharacterStatClusterTile_VM ClusterT = null;
+                            if (ds.Tables[23].Rows.Count > 0)
+                            {
+                                if (ds.Tables[24].Rows.Count > 0 && !IsClusterCharacterCharacterStatsFilled)
+                                {
+                                    foreach (DataRow CharCharStatIDs_Rows in ds.Tables[24].Rows)
+                                    {
+                                        
+                                        int charcharstatId = CharCharStatIDs_Rows[0] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStatIDs_Rows[0]);                                       
+                                        CharactersCharacterStat charCharStatObj = null;
+                                        charCharStatObj = GetClusterCharCharStatForSharedLayout(ds, charcharstatId, charCharStatObj);
+                                        if (charCharStatObj != null)
+                                        {
+                                            ClusterSelectedCharCharStats.Add(charCharStatObj);
+                                        }
+
+                                     }
+                                    IsClusterCharacterCharacterStatsFilled = true;
+                                }
+                                if (ds.Tables[24].Rows.Count > 0)
+                                {
+                                    foreach (DataRow CharCharStatIDs_Rows in ds.Tables[24].Rows)
+                                    {
+
+                                        int charcharstatId = CharCharStatIDs_Rows[0] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStatIDs_Rows[0]);
+                                        int charstatId = CharCharStatIDs_Rows[1] == DBNull.Value ? 0 : Convert.ToInt32(CharCharStatIDs_Rows[1]);    
+                                        TempIdsOfCharacterStatsForClustorItems.Add(new CharactersCharacterStat() { CharactersCharacterStatId = charcharstatId, CharacterStatId = charstatId });
+                                    }
+                                }
+                                foreach (DataRow ClusterT_Row in ds.Tables[23].Rows)
+                                {
+                                    int CharacterTileId = ClusterT_Row["RulesetTileId"] == DBNull.Value ? 0 : Convert.ToInt32(ClusterT_Row["RulesetTileId"]);
+                                    if (CharacterTileId == tile.CharacterTileId)
+                                    {
+                                        ClusterT = new CharacterCharacterStatClusterTile_VM();
+                                        ClusterT.BodyBgColor = ClusterT_Row["BodyBgColor"] == DBNull.Value ? null : ClusterT_Row["BodyBgColor"].ToString();
+                                        ClusterT.BodyTextColor = ClusterT_Row["BodyTextColor"] == DBNull.Value ? null : ClusterT_Row["BodyTextColor"].ToString();
+                                        ClusterT.IsDeleted = ClusterT_Row["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(ClusterT_Row["IsDeleted"]);
+                                        ClusterT.CharacterStatClusterTileId = ClusterT_Row["CharacterStatClusterTileId"] == DBNull.Value ? 0 : Convert.ToInt32(ClusterT_Row["CharacterStatClusterTileId"]);
+                                        ClusterT.CharacterTileId = CharacterTileId;
+                                        ClusterT.Shape = ClusterT_Row["Shape"] == DBNull.Value ? 0 : Convert.ToInt32(ClusterT_Row["Shape"]);
+                                        ClusterT.SortOrder = ClusterT_Row["SortOrder"] == DBNull.Value ? 0 : Convert.ToInt32(ClusterT_Row["SortOrder"]);
+                                        ClusterT.Title = ClusterT_Row["Title"] == DBNull.Value ? null : ClusterT_Row["Title"].ToString();
+                                        ClusterT.TitleBgColor = ClusterT_Row["TitleBgColor"] == DBNull.Value ? null : ClusterT_Row["TitleBgColor"].ToString();
+                                        ClusterT.TitleTextColor = ClusterT_Row["TitleTextColor"] == DBNull.Value ? null : ClusterT_Row["TitleTextColor"].ToString();
+                                        ClusterT.DisplayCharactersCharacterStatID = ClusterT_Row["DisplayCharCharStatId"] == DBNull.Value ? 0 : Convert.ToInt32(ClusterT_Row["DisplayCharCharStatId"]);
+                                        ClusterT.ClusterWithSortOrder = ClusterT_Row["ClusterWithSortOrder"] == DBNull.Value ? null : ClusterT_Row["ClusterWithSortOrder"].ToString();
+
+                                        CharactersCharacterStat ClusterCharCharStat = null;
+                                        ClusterCharCharStat = GetClusterCharCharStatForSharedLayout(ds, ClusterT.DisplayCharactersCharacterStatID, ClusterCharCharStat);
+
+
+                                        ClusterT.DisplayCharactersCharacterStat = ClusterCharCharStat;
+                                        if (ClusterT.ClusterWithSortOrder != null)
+                                        {
+                                            List<int> charIds = StringToIntList(ClusterT.ClusterWithSortOrder).ToList();
+                                            List<int> charcharIds = new List<int>();
+                                            foreach (var item in charIds)
+                                            {
+                                                if (TempIdsOfCharacterStatsForClustorItems.Where(x => x.CharacterStatId == item).Any())
+                                                {
+                                                    charcharIds.Add(TempIdsOfCharacterStatsForClustorItems.Where(x => x.CharacterStatId == item).Select(x => x.CharactersCharacterStatId).FirstOrDefault());
+                                                }
+                                                
+                                            }
+                                            ClusterT.ClusterWithSortOrder = string.Join(",", charcharIds.Select(n => n.ToString()).ToArray());
+                                            ClusterT.ClusterCharactersCharacterStats = ClusterSelectedCharCharStats.Where(x => charcharIds.Contains(x.CharactersCharacterStatId)).ToList();
+                                        }
+
+                                    }
+                                }
+
+
+                            }
+                            tile.CharacterStatClusterTiles = ClusterT;
+                            break;
                         default:
                             break;
                     }

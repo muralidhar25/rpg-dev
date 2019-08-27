@@ -193,7 +193,8 @@ export class CharacterStatTileService extends EndpointFactory{
         commandTile: model.commandTiles,
         multiCharacterStats: [],
         buffAndEffectTile: model.buffAndEffectTiles,
-        toggleTile: model.toggleTiles
+        toggleTile: model.toggleTiles,
+        characterStatClusterTile: model.characterStatClusterTiles
       };
     }
     else {
@@ -246,7 +247,8 @@ export class CharacterStatTileService extends EndpointFactory{
         counterTile: null,
         multiCharacterStats: [],
         buffAndEffectTile: null,
-        toggleTile:null
+        toggleTile: null,
+        characterStatClusterTile:null
       };
     }
 

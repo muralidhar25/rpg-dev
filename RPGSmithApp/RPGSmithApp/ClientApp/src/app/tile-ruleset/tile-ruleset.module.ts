@@ -18,6 +18,8 @@ import { RulesetTextTileComponent } from './text/text.component';
 import { RulesetEditTextComponent } from './text/edit-text/edit-text.component';
 import { RulesetBuffAndEffectTileComponent } from "./buff-and-effect/buff-and-effect.component";
 import { RulesetToggleTileComponent } from "./toggle/toggle.component";
+import { EditRulesetCharacterStatClusterComponent } from "./character-stat-cluster/edit-character-stat-cluster/edit-character-stat-cluster.component";
+import { RulesetCharacterStatClusterTileComponent } from "./character-stat-cluster/character-stat-cluster.component";
 
 
 @NgModule({
@@ -34,7 +36,9 @@ import { RulesetToggleTileComponent } from "./toggle/toggle.component";
     RulesetEditCharacterStatComponent,
     RulesetTextTileComponent,
     RulesetEditTextComponent, RulesetBuffAndEffectTileComponent,
-    RulesetToggleTileComponent
+    RulesetToggleTileComponent,
+    RulesetCharacterStatClusterTileComponent,
+    EditRulesetCharacterStatClusterComponent
   ],
   imports: [
     SharedModule
@@ -54,7 +58,9 @@ import { RulesetToggleTileComponent } from "./toggle/toggle.component";
     RulesetEditCharacterStatComponent,
     RulesetTextTileComponent,
     RulesetEditTextComponent, RulesetBuffAndEffectTileComponent,
-    RulesetToggleTileComponent
+    RulesetToggleTileComponent,
+    RulesetCharacterStatClusterTileComponent,
+    EditRulesetCharacterStatClusterComponent
   ],
   entryComponents: [
     RulesetTileComponent,
@@ -69,7 +75,9 @@ import { RulesetToggleTileComponent } from "./toggle/toggle.component";
     RulesetEditCharacterStatComponent,
     RulesetTextTileComponent,
     RulesetEditTextComponent, RulesetBuffAndEffectTileComponent,
-    RulesetToggleTileComponent
+    RulesetToggleTileComponent,
+    RulesetCharacterStatClusterTileComponent,
+    EditRulesetCharacterStatClusterComponent
   ]
 })
 export class TileRulesetModule {}
