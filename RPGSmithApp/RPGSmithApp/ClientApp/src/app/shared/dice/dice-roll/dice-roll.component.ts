@@ -413,8 +413,6 @@ export class DiceRollComponent implements OnInit {
       .subscribe(data => {
         this.isLoading = false;
         if (data) {
-
-          debugger;
           this.character = data.character;
           if (this.isFromCampaignDetail) {
             this.characterCommandData = data.rulesetCommands;
@@ -1969,7 +1967,6 @@ export class DiceRollComponent implements OnInit {
             //if (this.isDicePublicRoll || this.isSkipDicePublicRollcheck) {
             if (this.isDicePublicRoll) {
               //this.isSkipDicePublicRollcheck = false;
-              debugger
               if (this.displayRollResultInChat_AfterAllChecks) {
                 this.appService.updateChatWithDiceRoll({ characterCommandModel: this.characterCommandModel, characterMultipleCommands: this.characterMultipleCommands });
               }              
@@ -2882,6 +2879,7 @@ export class DiceRollComponent implements OnInit {
 
       let __calculationResult = 0;
       let __calculationString = "";
+      let __calculationString_withColor = "";
       let _calculationStringForResult = "";
       let checkLastCommandString = "";
       let _operator = "";
@@ -2897,10 +2895,16 @@ export class DiceRollComponent implements OnInit {
           if (this.IsImageDiceWithNonNumeric(_characterMultipleCommands[cmdArr].dice)) {
             __calculationString += __calculationString == "" ? '[Image]'
               : _characterMultipleCommands[cmdArr].sign + '[Image]';
+
+            __calculationString_withColor += __calculationString_withColor == "" ? '[Image]'
+              : _characterMultipleCommands[cmdArr].sign + '[Image]';
           }
           else {
             __calculationString += __calculationString == "" ? rNumAfter
               : _characterMultipleCommands[cmdArr].sign + rNumAfter;
+
+            __calculationString_withColor += __calculationString_withColor == "" ? (rNumAfter==0? 0: DiceService.GetColoredNumber(_characterMultipleCommands[cmdArr]))
+              : _characterMultipleCommands[cmdArr].sign + (rNumAfter == 0 ? 0 : DiceService.GetColoredNumber(_characterMultipleCommands[cmdArr]));
           }
 
 
@@ -2958,10 +2962,16 @@ export class DiceRollComponent implements OnInit {
           if (this.IsImageDiceWithNonNumeric(_characterMultipleCommands[cmdArr].dice)) {
             __calculationString += __calculationString == "" ? '[Image]'
               : _characterMultipleCommands[cmdArr].sign + '[Image]';
+
+            __calculationString_withColor += __calculationString_withColor == "" ? '[Image]'
+              : _characterMultipleCommands[cmdArr].sign + '[Image]';
           }
           else {
             __calculationString += __calculationString == "" ? rNumAfter
               : _characterMultipleCommands[cmdArr].sign + rNumAfter;
+
+            __calculationString_withColor += __calculationString_withColor == "" ? (rNumAfter ? DiceService.GetColoredNumber(_characterMultipleCommands[cmdArr]) : rNumAfter)
+              : _characterMultipleCommands[cmdArr].sign + (rNumAfter ? DiceService.GetColoredNumber(_characterMultipleCommands[cmdArr]) : rNumAfter);
           }
 
 
@@ -2979,30 +2989,39 @@ export class DiceRollComponent implements OnInit {
       try {
         if (__calculationString.split("((").length - 1 === __calculationString.split("))").length - 1) {
           __calculationString = __calculationString.replace('((', '(').replace('))', ')');
+          __calculationString_withColor = __calculationString_withColor.replace('((', '(').replace('))', ')');
         }
       } catch (err) { }
       //__calculationString = __calculationString.replace('((', '(').replace('))', ')');
       if (__calculationString.length > 1) {
         __calculationString = __calculationString.replace(/  /g, ' ');
+        __calculationString_withColor = __calculationString_withColor.replace(/  /g, ' ');
         __calculationString.split('+ -').map((x) => {
           __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          __calculationString_withColor = __calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
         })
         __calculationString.split('+ *').map((x) => {
           __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          __calculationString_withColor = __calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
         })
         __calculationString.split('+ /').map((x) => {
           __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          __calculationString_withColor = __calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
         })
         __calculationString.split('+ +').map((x) => {
           __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          __calculationString_withColor = __calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
         })
         __calculationString.split('- -').map((x) => {
           __calculationString = __calculationString.replace('- -', '-')
+          __calculationString_withColor = __calculationString_withColor.replace('- -', '-')
         })
       }
       __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+').replace('- -', '-');
+      __calculationString_withColor = __calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+').replace('- -', '-');
 
       this.characterMultipleCommands[_calculationIndex].calculationString = __calculationString;
+      this.characterMultipleCommands[_calculationIndex].calculationStringColor = __calculationString_withColor;
       if (isCustom) {
         this.characterMultipleCommands[_calculationIndex].calculationResult = 0;
 
@@ -3219,12 +3238,12 @@ export class DiceRollComponent implements OnInit {
 
       let __calculationResult = 0;
       let __calculationString = "";
+      let __calculationString_withColor = "";
       let _calculationStringForResult = "";
       let checkLastCommandString = "";
       let _operator = "";
 
       for (var cmdArr in _characterMultipleCommands) {
-
         let checkLastCommandStringReplaceTo = "";
         checkLastCommandString += _characterMultipleCommands[cmdArr].sign + _characterMultipleCommands[cmdArr].randomNumbersAfter;
 
@@ -3238,6 +3257,9 @@ export class DiceRollComponent implements OnInit {
         __calculationString += __calculationString == "" ? _characterMultipleCommands[cmdArr].randomNumbersAfter
           : _characterMultipleCommands[cmdArr].sign + _characterMultipleCommands[cmdArr].randomNumbersAfter;
 
+        __calculationString_withColor += __calculationString_withColor == "" ? DiceService.GetColoredNumber(_characterMultipleCommands[cmdArr])
+          : _characterMultipleCommands[cmdArr].sign + DiceService.GetColoredNumber(_characterMultipleCommands[cmdArr]);
+
         _calculationStringForResult = __calculationString;
         if (checkLastCommandStringReplaceTo !== "") {
           _calculationStringForResult = _calculationStringForResult.replace(checkLastCommandString, checkLastCommandStringReplaceTo);
@@ -3249,30 +3271,38 @@ export class DiceRollComponent implements OnInit {
       try {
         if (__calculationString.split("((").length - 1 === __calculationString.split("))").length - 1) {
           __calculationString = __calculationString.replace('((', '(').replace('))', ')');
+          __calculationString_withColor = __calculationString_withColor.replace('((', '(').replace('))', ')');
         }
       } catch (err) { }
       //__calculationString = __calculationString.replace('((', '(').replace('))', ')');
       if (__calculationString.length > 1) {
         __calculationString = __calculationString.replace(/  /g, ' ');
+        __calculationString_withColor = __calculationString_withColor.replace(/  /g, ' ');
         __calculationString.split('+ -').map((x) => {
           __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          __calculationString_withColor = __calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
         })
         __calculationString.split('+ *').map((x) => {
           __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          __calculationString_withColor = __calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
         })
         __calculationString.split('+ /').map((x) => {
           __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          __calculationString_withColor = __calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
         })
         __calculationString.split('+ +').map((x) => {
-          __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          __calculationString_withColor = __calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
         })
         __calculationString.split('- -').map((x) => {
           __calculationString = __calculationString.replace('- -', '-')
+          __calculationString_withColor = __calculationString_withColor.replace('- -', '-')
         })
       }
       __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+').replace('- -', '-');
+      __calculationString_withColor = __calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+').replace('- -', '-');
 
       this.characterMultipleCommands[_calculationIndex].calculationString = __calculationString;
+      this.characterMultipleCommands[_calculationIndex].calculationStringColor = __calculationString_withColor;
       this.characterMultipleCommands[_calculationIndex].calculationStringArray = DiceService.getCalculationStringArray(__calculationString);
       this.characterMultipleCommands[_calculationIndex].calculationResult = Math.round(eval(_calculationStringForResult)); // Math.floor(eval(__calculationString));
 
@@ -3639,7 +3669,6 @@ export class DiceRollComponent implements OnInit {
       ignoreBackdropClick: true,
       keyboard: false
     });
-    debugger
     this.bsModalRef.content.title = "Edit Saved Command";
     this.bsModalRef.content.view = 'EDIT';
     this.bsModalRef.content.characterId = this.characterId;

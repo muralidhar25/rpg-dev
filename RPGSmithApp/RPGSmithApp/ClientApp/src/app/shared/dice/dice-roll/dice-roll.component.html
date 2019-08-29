@@ -281,9 +281,15 @@
                         {{cmd.text}}
                     </span>
                 </ng-container>-->
-                <span *ngIf="command.isResultWithCustomDice">{{command.calculationString}}</span>
-                <span *ngIf="!command.isResultWithCustomDice">{{command.calculationString}} <span *ngIf="command?.calculationString"> = </span> <b>{{command?.beforeResult}} <span *ngIf="command?.calculationResult"> {{command.calculationResult}} </span> {{command?.afterResult}}</b></span>
 
+                <ng-container *ngIf="!command.calculationStringColor">
+                  <span *ngIf="command.isResultWithCustomDice">{{command.calculationString}}</span>
+                  <span *ngIf="!command.isResultWithCustomDice">{{command.calculationString}} <span *ngIf="command?.calculationString"> = </span> <b>{{command?.beforeResult}} <span *ngIf="command?.calculationResult"> {{command.calculationResult}} </span> {{command?.afterResult}}</b></span>
+                </ng-container>
+                <ng-container *ngIf="command.calculationStringColor">
+                  <span *ngIf="command.isResultWithCustomDice" [froalaView]="command.calculationStringColor"></span>
+                  <span *ngIf="!command.isResultWithCustomDice"><span [froalaView]="command.calculationStringColor"></span><span *ngIf="command?.calculationString"> = </span> <b>{{command?.beforeResult}} <span *ngIf="command?.calculationResult"> {{command.calculationResult}} </span> {{command?.afterResult}}</b></span>
+                </ng-container>
               </div>
               <button *ngIf="loadingResult" type="button" (click)="copyCommandResultText(characterCommandModel, command)" class="btn icon icon-copy icon-rsi btn-simple-primary" title="Copy command result."></button>
             </ng-container>

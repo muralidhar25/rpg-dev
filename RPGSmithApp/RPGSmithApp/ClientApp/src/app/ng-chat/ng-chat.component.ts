@@ -1474,7 +1474,12 @@ export class NgChat implements OnInit, IChatController {
         if (x.afterResult) {
           _afterResult = x.afterResult.replace(/"/g, '');
         }
-        ExpandResult += "<span class='ng-chat-grey-text'>" + x.calculationString + "</span> " + (x.calculationString ? '=' : '') + " <b>" + _beforeResult + " <u>" + (x.calculationResult ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
+        if (x.calculationStringColor) {
+          ExpandResult += "<span class='ng-chat-grey-text'>" + x.calculationStringColor + "</span> " + (x.calculationStringColor ? '=' : '') + " <b>" + _beforeResult + " <u>" + (x.calculationResult ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
+        } else {
+          ExpandResult += "<span class='ng-chat-grey-text'>" + x.calculationString + "</span> " + (x.calculationString ? '=' : '') + " <b>" + _beforeResult + " <u>" + (x.calculationResult ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
+        }
+
         CollaspedResult += "<b>" + _beforeResult + " <u>" + (x.calculationResult ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
       })
     }

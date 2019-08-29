@@ -1,17 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
-import { DICE, DICE_ICON, COMMAND_OPERATOR, CustomDiceResultType, STAT_TYPE } from '../models/enums';
+import { DICE, DICE_ICON, COMMAND_OPERATOR, CustomDiceResultType } from '../models/enums';
 import { CharacterCommand, DiceCommand } from '../models/view-models/character-command.model';
 import { DiceRoll } from '../models/view-models/dice-roll.model';
-import { forEach } from '@angular/router/src/utils/collection';
-import { CustomDice, DefaultDice, DiceTray, Results } from '../models/view-models/custome-dice.model';
+import { CustomDice, DiceTray, Results } from '../models/view-models/custome-dice.model';
 import { Utilities } from '../common/utilities';
-import { AlertService, MessageSeverity } from '../common/alert.service';
-import { ServiceUtil } from './service-util';
-import { Characters } from '../models/view-models/characters.model';
-import { CharacterLastCommand } from '../models/view-models/character-last-command.model';
+import { AlertService } from '../common/alert.service';
 
 @Injectable()
 export class DiceService {
@@ -23,6 +17,7 @@ export class DiceService {
   public static totalAndLimit: number = 6;
   private static readonly  AND_Error_Message: string = "Only 5 ‘AND’s allowed in one command string. Please update your command and try again.";
   private static readonly COMMAND_Error = "Invalid Command. Please check the command string and try again.";
+  public static colorResult: any;
 
   //public static isInvalidFECommand: boolean = false;
   public static copyToClipboard(value: string) {
@@ -63,6 +58,7 @@ export class DiceService {
      
       let _finalInterpretationArray = [];
       let _calculationString = "";
+      let _calculationString_withColor = "";
       let _calculationStringForResult = "";
       let _operator = "";
       let _commandArray = _commandInterpretationArray[cmd].commandArray;
@@ -73,17 +69,31 @@ export class DiceService {
         let _sign = ' ' + _commandArray[cmdArr].sign + ' ';
         if (_commandArray[cmdArr].parenthesis) {
           let __calculationString = "";
+          let __calculationString_withColor = "";
           let _diceArray = _commandArray[cmdArr].diceArray;
 
           for (var diceArr in _diceArray) {
             if (_diceArray[diceArr].isFeDice) {
-              __calculationString += __calculationString == "" ? (_calculationString == "" ? (_sign.trim() == '-' ? _sign : '') : _sign) + ' ( ' + (_diceArray[diceArr].sign.trim() == '-' ? _diceArray[diceArr].sign : '') + _diceArray[diceArr].diceInterpretationArray.feTotal
-                : _diceArray[diceArr].sign + _diceArray[diceArr].diceInterpretationArray.feTotal;
+              __calculationString +=
+                __calculationString == ""
+                ?
+                (_calculationString == "" ? (_sign.trim() == '-' ? _sign : '') : _sign) + ' ( ' + (_diceArray[diceArr].sign.trim() == '-' ? _diceArray[diceArr].sign : '') + _diceArray[diceArr].diceInterpretationArray.feTotal
+                  :
+                  _diceArray[diceArr].sign + _diceArray[diceArr].diceInterpretationArray.feTotal;
+
+              __calculationString_withColor +=
+                __calculationString_withColor == ""
+                  ?
+                  (_calculationString_withColor == "" ? (_sign.trim() == '-' ? _sign : '') : _sign) + ' ( ' + (_diceArray[diceArr].sign.trim() == '-' ? _diceArray[diceArr].sign : '') + _diceArray[diceArr].diceInterpretationArray.feTotal
+                  :
+                  _diceArray[diceArr].sign + _diceArray[diceArr].diceInterpretationArray.feTotal;
               //'( ' + _diceArray[diceArr].diceInterpretationArray.feTotal + ' ';
             }
             else {
               __calculationString += __calculationString == "" ? (_calculationString == "" ? (_sign.trim() == '-' ? _sign : '') : _sign) + ' ( ' + (_diceArray[diceArr].sign.trim() == '-' ? _diceArray[diceArr].sign : '') + _diceArray[diceArr].diceInterpretationArray.randomNumbersAfter
                 : _diceArray[diceArr].sign + _diceArray[diceArr].diceInterpretationArray.randomNumbersAfter;
+              __calculationString_withColor += __calculationString_withColor == "" ? (_calculationString_withColor == "" ? (_sign.trim() == '-' ? _sign : '') : _sign) + ' ( ' + (_diceArray[diceArr].sign.trim() == '-' ? _diceArray[diceArr].sign : '') + this.GetColoredNumber(_diceArray[diceArr].diceInterpretationArray)
+                : _diceArray[diceArr].sign + this.GetColoredNumber(_diceArray[diceArr].diceInterpretationArray);
             }
             
 
@@ -92,6 +102,7 @@ export class DiceService {
             if (_diceArray.length - 1 === +diceArr) {
               //if (!_commandArray[cmdArr].isCustomDice)
               _calculationString += __calculationString + ' ) ';
+              _calculationString_withColor += __calculationString_withColor + ' ) ';
             }
 
             ///20-dec-18
@@ -142,6 +153,7 @@ export class DiceService {
 
           //if (!_commandArray[cmdArr].isCustomDice)
           _calculationString += _calculationString == "" ? (_commandArray[cmdArr].sign.trim() == '-' ? _sign : '') + modValue : _sign + modValue;
+          _calculationString_withColor += _calculationString_withColor == "" ? (_commandArray[cmdArr].sign.trim() == '-' ? _sign : '') + modValue : _sign + modValue;
 
           _calculationStringForResult = _calculationString;
         }
@@ -165,13 +177,32 @@ export class DiceService {
               _calculationString == "" ?
                 (_commandArray[cmdArr].sign.trim() == '-' ? _sign : '') + '[Image]'
                 :
-              _sign + '[Image]';
+                _sign + '[Image]';
+            _calculationString_withColor +=
+              _calculationString_withColor == "" ?
+                (_commandArray[cmdArr].sign.trim() == '-' ? _sign : '') + '[Image]'
+                :
+                _sign + '[Image]';
           }
           else {
-            _calculationString += _calculationString == "" ? (_commandArray[cmdArr].sign.trim() == '-' ? _sign : '') + _commandArray[cmdArr].diceInterpretationArray.randomNumbersAfter
-              : _sign + _commandArray[cmdArr].diceInterpretationArray.randomNumbersAfter;
-          }
+            _calculationString +=
+              _calculationString == ""
+              ?
+              (_commandArray[cmdArr].sign.trim() == '-' ? _sign : '') + _commandArray[cmdArr].diceInterpretationArray.randomNumbersAfter
+                :
+                _sign + _commandArray[cmdArr].diceInterpretationArray.randomNumbersAfter;
           
+            _calculationString_withColor +=
+              _calculationString_withColor == ""
+              ?
+              (_commandArray[cmdArr].sign.trim() == '-' ? _sign : '') + this.GetColoredNumber(_commandArray[cmdArr].diceInterpretationArray)
+                :
+              _sign + this.GetColoredNumber(_commandArray[cmdArr].diceInterpretationArray);
+          }
+          //debugger;
+          //let coloerdNumber = this.GetColoredNumber(_commandArray[cmdArr].diceInterpretationArray);
+          //console.log("coloerdNumber", coloerdNumber);
+
           _finalInterpretationArray.push(this.calsInterpretationArray(_commandArray[cmdArr], +cmd));
 
           _calculationStringForResult = _calculationString.replace(/  /g, ' ');
@@ -196,6 +227,7 @@ export class DiceService {
           //    _calculationString += _commandArray[cmdArr].diceInterpretationArray.randomNumbersListAfter.join(', ');
           //}
           _calculationString = _calculationString.replace(/  /g, ' ');
+          _calculationString_withColor = _calculationString_withColor.replace(/  /g, ' ');
           _calculationStringForResult = _calculationString.replace(/  /g, ' ');
 
 
@@ -207,31 +239,40 @@ export class DiceService {
       try {
         if (_calculationString.split("((").length - 1 === _calculationString.split("))").length - 1) {
           _calculationString = _calculationString.replace('((', '(').replace('))', ')');
+          _calculationString_withColor = _calculationString_withColor.replace('((', '(').replace('))', ')');
         }
       } catch (err) { }
       if (_calculationString.length > 1) {
         _calculationString = _calculationString.replace(/  /g, ' ');
+        _calculationString_withColor = _calculationString_withColor.replace(/  /g, ' ');
         _calculationString.split('+ -').map((x) => {
           _calculationString = _calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          _calculationString_withColor = _calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
         })
         _calculationString.split('+ *').map((x) => {
           _calculationString = _calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          _calculationString_withColor = _calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
         })
         _calculationString.split('+ /').map((x) => {
           _calculationString = _calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          _calculationString_withColor = _calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
         })
         _calculationString.split('+ +').map((x) => {
           _calculationString = _calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          _calculationString_withColor = _calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
         })
         _calculationString.split('- -').map((x) => {
           _calculationString = _calculationString.replace('- -', '-');
+          _calculationString_withColor = _calculationString_withColor.replace('- -', '-');
         })
       }
       _calculationString = _calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+').replace('- -', '-');
+      _calculationString_withColor = _calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+').replace('- -', '-');
 
       if (numberToAdd) {
 
         _calculationString = _calculationString + ' + ' + numberToAdd;
+        _calculationString_withColor = _calculationString_withColor + ' + ' + numberToAdd;
         _calculationStringForResult = _calculationStringForResult + ' + ' + numberToAdd;
         _commandInterpretationArray[cmd] = Object.assign(_commandInterpretationArray[cmd], { command: _commandInterpretationArray[cmd].command + ' + ' + numberToAdd })
       }
@@ -239,6 +280,7 @@ export class DiceService {
       //let _calculationStringArray = this.splitByMultiSeparator(calculationStringForArray, ['+', '-', '/', '*']);
 
       _calculationString = _calculationString.replace(/  /g, ' ');
+      _calculationString_withColor = _calculationString_withColor.replace(/  /g, ' ');
 
       let _calculationStringArray = this.getCalculationStringArray(_calculationString, undefined);
 
@@ -318,11 +360,37 @@ export class DiceService {
         beforeResult: beforeResultText,
         afterResult: afterResultText,
         isInvalidFECommand: isInvalidFECommand,
+        calculationStringColor: _calculationString_withColor
       });
     }
+
     return _commandInterpretationArrayList;
   }
 
+  public static GetColoredNumber(cmdArrar) {
+    let randomNumbersAfterString = cmdArrar.randomNumbersAfter
+    let coloredNumber = cmdArrar.randomNumbersList;
+    
+    let numsCheked = [];
+    coloredNumber.map(y => {
+      let Number = '';
+      if (!numsCheked.find(x=>x==y.number)) {
+        if (y.number && y.number == 1) {
+          Number = '<span style="color:Red;">' + y.number + '</span>'
+        } else if (y.number && y.number == cmdArrar.diceNumber) {
+          Number = '<span style="color:Green;">' + y.number + '</span>'
+        } else {
+          Number = y.number
+        }
+        numsCheked.push(y.number);
+        let expression = new RegExp(y.number,'g');
+        randomNumbersAfterString=randomNumbersAfterString.replace(expression, Number);
+      }
+     
+    });
+    return randomNumbersAfterString;
+
+  }
   private static calsInterpretationArray(_commandArray: any, _calculationIndex: number): any {
     let _diceInterpretationArray = _commandArray.diceInterpretationArray;
     if (_commandArray.isCustomDice) {
@@ -1893,7 +1961,6 @@ export class DiceService {
       let _calculationStringArray = [];
       let _maxNum: number = 0;
       let _minNum: number = 0;
-
       _calculationStringArrayList.forEach(value => {
 
         if (!isNaN(parseInt(value, 10))) {
@@ -1918,7 +1985,6 @@ export class DiceService {
         }
       });
     }
-
     return _calculationStringArray;
   }
 
@@ -2962,6 +3028,7 @@ export class DiceService {
 
       let _finalInterpretationArray = [];
       let _calculationString = "";
+      let _calculationString_withColor = "";
       let _calculationStringForResult = "";
       let _operator = "";
       let _commandArray = _commandInterpretationArray[cmd].commandArray;
@@ -2971,18 +3038,26 @@ export class DiceService {
         let _sign = ' ' + _commandArray[cmdArr].sign + ' ';
         if (_commandArray[cmdArr].parenthesis) {
           let __calculationString = "";
+          let __calculationString_withColor = "";
           let _diceArray = _commandArray[cmdArr].diceArray;
 
           for (var diceArr in _diceArray) {
 
-            __calculationString += __calculationString == "" ? (_calculationString == "" ? (_sign.trim() == '-' ? _sign : '') : _sign) + ' ( ' + (_diceArray[diceArr].sign.trim() == '-' ? _diceArray[diceArr].sign : '') + _diceArray[diceArr].diceInterpretationArray.randomNumbersAfter
+            __calculationString +=  __calculationString == "" ?
+              (_calculationString == "" ? (_sign.trim() == '-' ? _sign : '') : _sign) + ' ( ' + (_diceArray[diceArr].sign.trim() == '-' ? _diceArray[diceArr].sign : '') + _diceArray[diceArr].diceInterpretationArray.randomNumbersAfter
               : _diceArray[diceArr].sign + _diceArray[diceArr].diceInterpretationArray.randomNumbersAfter;
+
+            __calculationString_withColor += __calculationString_withColor == "" ?
+              (_calculationString_withColor == "" ? (_sign.trim() == '-' ? _sign : '') : _sign) + ' ( ' + (_diceArray[diceArr].sign.trim() == '-' ? _diceArray[diceArr].sign : '') + this.GetColoredNumber(_diceArray[diceArr].diceInterpretationArray)
+              : _diceArray[diceArr].sign + this.GetColoredNumber(_diceArray[diceArr].diceInterpretationArray);
+
 
             _finalInterpretationArray.push(this.calsInterpretationArray(_diceArray[diceArr], +cmd));
 
             if (_diceArray.length - 1 === +diceArr) {
               //if (!_commandArray[cmdArr].isCustomDice)
               _calculationString += __calculationString + ' ) ';
+              _calculationString_withColor += __calculationString_withColor + ' ) ';
             }
 
             ///20-dec-18
@@ -3033,6 +3108,7 @@ export class DiceService {
 
           //if (!_commandArray[cmdArr].isCustomDice)
           _calculationString += _calculationString == "" ? (_commandArray[cmdArr].sign.trim() == '-' ? _sign : '') + modValue : _sign + modValue;
+          _calculationString_withColor += _calculationString_withColor == "" ? (_commandArray[cmdArr].sign.trim() == '-' ? _sign : '') + modValue : _sign + modValue;
 
           _calculationStringForResult = _calculationString;
         }
@@ -3052,6 +3128,10 @@ export class DiceService {
           //if (!_commandArray[cmdArr].isCustomDice)
           _calculationString += _calculationString == "" ? (_commandArray[cmdArr].sign.trim() == '-' ? _sign : '') + _commandArray[cmdArr].diceInterpretationArray.randomNumbersAfter
             : _sign + _commandArray[cmdArr].diceInterpretationArray.randomNumbersAfter;
+
+          _calculationString_withColor += _calculationString_withColor == "" ?
+            (_commandArray[cmdArr].sign.trim() == '-' ? _sign : '') + this.GetColoredNumber(_commandArray[cmdArr].diceInterpretationArray)
+            : _sign + this.GetColoredNumber(_commandArray[cmdArr].diceInterpretationArray);
 
           _finalInterpretationArray.push(this.calsInterpretationArray(_commandArray[cmdArr], +cmd));
 
@@ -3077,6 +3157,7 @@ export class DiceService {
           //    _calculationString += _commandArray[cmdArr].diceInterpretationArray.randomNumbersListAfter.join(', ');
           //}
           _calculationString = _calculationString.replace(/  /g, ' ');
+          _calculationString_withColor = _calculationString_withColor.replace(/  /g, ' ');
           _calculationStringForResult = _calculationString.replace(/  /g, ' ');
 
 
@@ -3088,31 +3169,40 @@ export class DiceService {
       try {
         if (_calculationString.split("((").length - 1 === _calculationString.split("))").length - 1) {
           _calculationString = _calculationString.replace('((', '(').replace('))', ')');
+          _calculationString_withColor = _calculationString_withColor.replace('((', '(').replace('))', ')');
         }
       } catch (err) { }
       if (_calculationString.length > 1) {
         _calculationString = _calculationString.replace(/  /g, ' ');
+        _calculationString_withColor = _calculationString_withColor.replace(/  /g, ' ');
         _calculationString.split('+ -').map((x) => {
           _calculationString = _calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          _calculationString_withColor = _calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
         })
         _calculationString.split('+ *').map((x) => {
           _calculationString = _calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          _calculationString_withColor = _calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
         })
         _calculationString.split('+ /').map((x) => {
           _calculationString = _calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          _calculationString_withColor = _calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
         })
         _calculationString.split('+ +').map((x) => {
           _calculationString = _calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+          _calculationString_withColor = _calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
         })
         _calculationString.split('- -').map((x) => {
           _calculationString = _calculationString.replace('- -', '-');
+          _calculationString_withColor = _calculationString_withColor.replace('- -', '-');
         })
       }
       _calculationString = _calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+').replace('- -', '-');
+      _calculationString_withColor = _calculationString_withColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+').replace('- -', '-');
 
       if (numberToAdd) {
 
         _calculationString = _calculationString + ' + ' + numberToAdd;
+        _calculationString_withColor = _calculationString_withColor + ' + ' + numberToAdd;
         _calculationStringForResult = _calculationStringForResult + ' + ' + numberToAdd;
         _commandInterpretationArray[cmd] = Object.assign(_commandInterpretationArray[cmd], { command: _commandInterpretationArray[cmd].command + ' + ' + numberToAdd })
       }
@@ -3120,6 +3210,7 @@ export class DiceService {
       //let _calculationStringArray = this.splitByMultiSeparator(calculationStringForArray, ['+', '-', '/', '*']);
 
       _calculationString = _calculationString.replace(/  /g, ' ');
+      _calculationString_withColor = _calculationString_withColor.replace(/  /g, ' ');
 
       let _calculationStringArray = this.getCalculationStringArray(_calculationString, undefined);
 
@@ -3191,6 +3282,7 @@ export class DiceService {
         calculationIndex: +cmd,
         isResultWithCustomDice: __IsResultWithCustomDice,
         isCustomNumericCommand: _commandInterpretationArray[cmd].isCustomNumericCommand ? true : false,
+        calculationStringColor: _calculationString_withColor
       });
     }
 
