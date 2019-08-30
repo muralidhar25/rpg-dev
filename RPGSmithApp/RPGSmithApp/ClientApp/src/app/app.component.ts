@@ -1,7 +1,7 @@
 
 import { Component, Inject, ViewEncapsulation, OnInit, OnDestroy, ViewChildren, AfterViewInit, QueryList, ElementRef, HostListener } from "@angular/core";
 import { Router, NavigationStart, NavigationEnd, ActivatedRoute } from '@angular/router';
-import * as $ from 'jquery';
+import * as J from 'jquery';
 import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { DOCUMENT } from '@angular/platform-browser';
@@ -34,7 +34,7 @@ import { Utilities } from "./core/common/utilities";
 import { MyImagesComponent } from "./shared/my-images/my-images.component";
 import { Ruleset } from "./core/models/view-models/ruleset.model";
 import { AppService1 } from "./app.service";
-import { SearchType } from "./core/models/enums";
+import { SearchType, EDITOR_LINK_BUTTON } from "./core/models/enums";
 import { CampaignService } from "./core/services/campaign.service";
 import { playerInviteListModel } from "./core/models/campaign.model";
 import { CampaignInviteComponent } from "./rulesets/campaign-invite/campaign-invite.component";
@@ -46,6 +46,12 @@ import { SignalRAdapter } from "./core/common/signalr-adapter";
 import { HttpClient } from '@angular/common/http';
 import { ChatConnection } from "./core/models/chat.model";
 import { HandoutuploadComponent } from "./shared/handouts/handout-upload/handoutupload.component";
+import { EditorStatComponent } from "./shared/editor-link-button/character-stat/stat.component";
+import { EditorLinkComponent } from "./shared/editor-link-button/link/link.component";
+import { EditorExecuteComponent } from "./shared/editor-link-button/execute/execute.component";
+import { EditorCommandComponent } from "./shared/editor-link-button/command/command.component";
+
+declare var $: any;
 
 //declare let ga: Function;
 
@@ -141,6 +147,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   showCombatBtn: boolean = false;
   combatUrl: any;
   cId: number;
+  characterId: number = 0;
   showCampaignBtn: boolean = false;
   @HostListener('window:scroll', ['$event'])
   scrollTOTop(event) {
@@ -181,6 +188,14 @@ export class AppComponent implements OnInit, AfterViewInit {
     //        ga('send', 'pageview');
     //    }
     //});
+
+    this.sharedService.shouldUpdateEditorCommand().subscribe(result => {
+      if (result) {
+        result.htmlEditor.insert(result.htmlToInsert);
+      }
+      
+      }
+    );
 
     this.app1Service.shouldUpdateAccountSetting1().subscribe((serviceData) => {
       let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
@@ -299,6 +314,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (this.headers) {
         if (this.headers.headerLink == "character") {
           this.cId = this.headers.headerId;
+          this.characterId = this.headers.headerId;
           this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
             .subscribe(data => {
               this.isPlayerCharacter = false;
@@ -945,6 +961,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           if (this.headers) {
             if (this.headers.headerLink == "character") {
               this.cId = this.headers.headerId;
+              this.characterId = this.headers.headerId;
               this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
                 .subscribe(data => {
                   this.isPlayerCharacter = false;
@@ -1370,6 +1387,138 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
       }
     });
+    this.fEditor();
+  }
+
+  fEditor() {
+    let that = this;
+    $.FroalaEditor.DefineIconTemplate('brackets', '<i class="icon-Variable squareBrackets"></i>');
+    $.FroalaEditor.DefineIcon('bracketsIcon', { NAME: 'squareBrackets', template: 'brackets' });
+    $.FroalaEditor.RegisterCommand('my_dropdown', {
+      title: 'Options',
+      icon:'bracketsIcon',
+      type: 'dropdown',
+      focus: false,
+      undo: false,
+      refreshAfterCallback: true,
+      options: {
+        'Stat': 'Character Stat',
+        'Link': 'Link',
+        'Execute': 'Execute',
+        'Command': 'Command'
+      },
+      callback: function (cmd, val) {
+        that.EditorDropDown(val, this.html);
+        console.log(val);
+      },
+      // Callback on refresh.
+      refresh: function ($btn) {
+        console.log('do refresh');
+      },
+      // Callback on dropdown show.
+      refreshOnShow: function ($btn, $dropdown) {
+        console.log('do refresh when show');
+      }
+    });
+    $.FroalaEditor.RegisterCommand('my_dropdown2', {
+      title: 'Options',
+      icon: 'bracketsIcon',
+      type: 'dropdown',
+      focus: false,
+      undo: false,
+      refreshAfterCallback: true,
+      options: {
+        'Stat': 'Character Stat',
+        'Command': 'Command'
+      },
+      callback: function (cmd, val) {
+        that.EditorDropDown(val, this.html);
+        console.log(val);
+      },
+      // Callback on refresh.
+      refresh: function ($btn) {
+        console.log('do refresh');
+      },
+      // Callback on dropdown show.
+      refreshOnShow: function ($btn, $dropdown) {
+        console.log('do refresh when show');
+      }
+    });
+  }
+
+  EditorDropDown(val, editorHtml) {
+    let result: string = '';
+    switch (val) {
+      case EDITOR_LINK_BUTTON.STAT:
+        this.bsModalRef = this.modalService.show(EditorStatComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = 'Select Character Stat';
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.rulesetId = this.ruleset.ruleSetId;
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            result = data.toString();
+            editorHtml.insert(result);
+          }
+        });
+        break;
+      case EDITOR_LINK_BUTTON.LINK:
+        // open popup
+        this.bsModalRef = this.modalService.show(EditorLinkComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = 'Select Record to Link';
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.ruleset = this.ruleset;
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            result = data.toString();
+            editorHtml.insert(result);
+          }
+        });
+        break;
+      case EDITOR_LINK_BUTTON.EXECUTE:
+        // open popup
+        this.bsModalRef = this.modalService.show(EditorExecuteComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = 'Select Record to Execute';
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.ruleset = this.ruleset;
+        this.bsModalRef.content.event.subscribe(data => {
+          if (data) {
+            result = data.toString();
+            editorHtml.insert(result);
+          }
+        });
+        break;
+      case EDITOR_LINK_BUTTON.COMMAND:
+        // open popup
+        this.bsModalRef = this.modalService.show(EditorCommandComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.title = 'Input Command';
+        this.bsModalRef.content.characterId = this.characterId;
+        this.bsModalRef.content.rulesetId = this.ruleset.ruleSetId;
+        this.bsModalRef.content.editor = editorHtml;
+        //this.bsModalRef.content.event.subscribe(data => {
+        //  if (data) {
+        //    result = data.toString();
+        //    editorHtml.insert(result);
+        //  }
+        //});
+        break;
+    }
+    return result;
   }
 
   ngOnDestroy() {

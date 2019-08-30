@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { NoteTile } from '../../../core/models/tiles/note-tile.model';
 import { CharacterDashboardPage } from '../../../core/models/view-models/character-dashboard-page.model';
@@ -6,6 +6,8 @@ import { Utilities } from '../../../core/common/utilities';
 import { NoteTileComponent } from '../note.component';
 import { VIEW } from '../../../core/models/enums';
 import { PlatformLocation } from '@angular/common';
+import { DiceRollComponent } from '../../../shared/dice/dice-roll/dice-roll.component';
+import { Characters } from '../../../core/models/view-models/characters.model';
 
 @Component({
   selector: 'edit-note',
@@ -25,6 +27,15 @@ export class EditNoteComponent implements OnInit {
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private location: PlatformLocation) {
     // closes modal when back button is clicked
     location.onPopState(() => this.modalService.hide(1));
+  }
+
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
+      if (target.className && target.className == "Editor_Command a-hyperLink") {
+        this.GotoCommand(target.attributes["data-editor"].value);
+      }
+    } catch (err) { }
   }
 
     ngOnInit() {
@@ -67,6 +78,20 @@ export class EditNoteComponent implements OnInit {
             //$(".modal-backdrop").remove();
         } catch (err) { }
     }
+
+  GotoCommand(cmd) {
+    // TODO get char ID
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = this.characterId;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.command = cmd;
+  }
 
    
 }

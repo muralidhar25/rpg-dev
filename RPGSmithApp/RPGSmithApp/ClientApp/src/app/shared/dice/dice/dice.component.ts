@@ -14,6 +14,7 @@ import { DBkeys } from "../../../core/common/db-keys";
 import { DiceSaveComponent } from "../dice-save/dice-save.component";
 import { NumericCharacterStatComponent } from "../../numeric-character-stats/numeric-character-stat.component";
 import { PlatformLocation } from "@angular/common";
+import { EditorCommandComponent } from "../../editor-link-button/command/command.component";
 
 @Component({
     selector: "app-dice",
@@ -37,7 +38,12 @@ export class DiceComponent implements OnInit {
     diceRollModel: any = new Array<DiceRoll>();
     diceTray: DiceTray[] = [];
     customDices: CustomDice[] = [];
-    defaultDices: DefaultDice[] = [];
+  defaultDices: DefaultDice[] = [];
+
+  isFromEditor: boolean = false;
+  commandContent: string;
+  commandTitle: any;
+  editorHtml: any;
     
     constructor(
         public modalService: BsModalService, private bsModalRef: BsModalRef, private authService: AuthService,
@@ -65,7 +71,16 @@ export class DiceComponent implements OnInit {
                 if (this.bsModalRef.content.rulesetId) {
                     this.rulesetId = this.bsModalRef.content.rulesetId;                    
                 }
-            }
+          }
+
+          this.isFromEditor = this.bsModalRef.content.isFromEditor ? this.bsModalRef.content.isFromEditor : false;
+
+          if (this.isFromEditor) {
+           this.commandTitle = this.bsModalRef.content.commandTitle;
+            this.commandContent = this.bsModalRef.content.commandContent;
+            this.editorHtml = this.bsModalRef.content.editor;
+          }
+
             this.isLoading = true;
             this.charactersService.getDiceTray<any>(this.rulesetId, this.characterId)
                 .subscribe(data => {
@@ -265,12 +280,31 @@ export class DiceComponent implements OnInit {
         this.characterCommandModel.parentIndex = this.parentInputIndex;
         this.sharedService.setCommandData(this.characterCommandModel);
         this.closeevent.emit(this.characterCommandModel); 
-    }
+  }
 
-    close() {
+  openEditorCommandPopup() {
+    if (this.isFromEditor) {
+      this.bsModalRef = this.modalService.show(EditorCommandComponent, {
+        class: 'modal-primary modal-md',
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.bsModalRef.content.title = 'Input Command';
+      this.bsModalRef.content.characterId = this.characterId;
+      this.bsModalRef.content.rulesetId = this.rulesetId;
+      this.bsModalRef.content.commandTitle = this.commandTitle;
+      this.bsModalRef.content.commandContent = this.characterCommandModel.command;
+      this.bsModalRef.content.editor = this.editorHtml;
+    }
+  }
+
+  close() {
         this.bsModalRef.hide();
         //this.closeevent.emit();
-        this.destroyModal();
+    this.destroyModal();
+    if (this.isFromEditor) {
+      this.openEditorCommandPopup();
+    }
     }
 
     private destroyModalOnInit(): void {

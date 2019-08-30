@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { NoteTile } from '../../../core/models/tiles/note-tile.model';
 import { RulesetDashboardPage } from '../../../core/models/view-models/ruleset-dashboard-page.model';
@@ -6,6 +6,8 @@ import { Utilities } from '../../../core/common/utilities';
 import { RulesetNoteTileComponent } from '../note.component';
 import { VIEW } from '../../../core/models/enums';
 import { PlatformLocation } from '@angular/common';
+import { DiceRollComponent } from '../../../shared/dice/dice-roll/dice-roll.component';
+import { Characters } from '../../../core/models/view-models/characters.model';
 
 @Component({
   selector: 'edit-note',
@@ -22,7 +24,17 @@ export class RulesetEditNoteComponent implements OnInit {
     options: Object = Utilities.options;
 
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private location: PlatformLocation) {
-    location.onPopState(() => this.modalService.hide(1)); }
+    location.onPopState(() => this.modalService.hide(1));
+  }
+
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
+      if (target.className && target.className == "Editor_Command a-hyperLink") {
+        this.GotoCommand(target.attributes["data-editor"].value);
+      }
+    } catch (err) { }
+  }
 
   ngOnInit() {
       debugger
@@ -64,6 +76,20 @@ export class RulesetEditNoteComponent implements OnInit {
             //$(".modal-backdrop").remove();
         } catch (err) { }
     }
+  
 
+  GotoCommand(cmd) {
+    // TODO get char ID
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.command = cmd;
+  }
    
 }

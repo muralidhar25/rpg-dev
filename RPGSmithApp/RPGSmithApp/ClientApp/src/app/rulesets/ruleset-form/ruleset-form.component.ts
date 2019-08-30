@@ -55,7 +55,7 @@ export class RulesetFormComponent implements OnInit {
     button: string
     IsCopiedFromCoreRuleset: boolean = false
     options(placeholder?: string, initOnClick?: boolean): Object {
-        return Utilities.optionsFloala(160, placeholder, initOnClick);
+      return Utilities.optionsFloala(160, placeholder, initOnClick, false, false);
     }
     RcustomDices: CustomDice[] = [];
     RdefaultDices: DefaultDice[] = [];

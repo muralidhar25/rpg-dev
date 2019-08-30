@@ -27,7 +27,7 @@
 
             <div class="form-group" *ngIf="CharacterStatTypeID==STAT_TYPE.RichText">
                 <!--<div [froalaEditor]="options" [(ngModel)]="valRichText" (change)="onChange()" name="valRichText" ></div>-->
-                <div class="text-content" [froalaView]="valRichText" *ngIf="!showRichEditor" (click)="showRichEditor = !showRichEditor" style="cursor:pointer;"></div>
+                <div class="text-content" [froalaView]="GetDescription(valRichText)" *ngIf="!showRichEditor" (click)="showRichEditor = !showRichEditor" style="cursor:pointer;"></div>
                 <div id="eg-royal-theme" *ngIf="showRichEditor"
                      [froalaEditor]="options('Description')"
                      [(ngModel)]="valRichText"
@@ -223,7 +223,7 @@
             <div class="form-group" *ngIf="CharacterStatTypeID==STAT_TYPE.Calculation">
                 <label for="newItemTags" class="textCenter">{{valCalculationFormula}}</label>
                 <!--<input type="text" id="newItemTags" class="form-control textBox" [value]="valCalculationResult">-->
-                <div class="form-control textinput" [froalaView]="valCalculationResult"></div>
+                <div class="form-control textinput" [froalaView]="GetDescription(valCalculationResult)"></div>
                 <div class="textinput">
                     <button type="button" class="float-right  btn icon icon-with-text icon-dice icon-rsi btn-link-primary" (click)="dice(valCalculationResult,CharacterStatTypeID)"><small><span>Dice</span></small></button>
                 </div>
@@ -231,7 +231,7 @@
 
             <div class="form-group" *ngIf="CharacterStatTypeID==STAT_TYPE.Command">
                 <!--<input type="text" class="form-control" placeholder="Enter value" (change)="onChange()" [value]="valCommand">-->
-                <div class="text-content" [froalaView]="valCommand"></div>
+                <div class="text-content" [froalaView]="GetDescription(valCommand)"></div>
             </div>
 
             <div class="form-group" *ngIf="CharacterStatTypeID==STAT_TYPE.Combo">

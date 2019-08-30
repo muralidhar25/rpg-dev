@@ -186,6 +186,9 @@ export class CombatPC_BERulesetDetailsComponent implements OnInit {
   @HostListener('document:click', ['$event.target'])
   documentClick(target: any) {
     try {
+      if (target.className && target.className == "Editor_Command a-hyperLink") {
+        this.GotoCommand(target.attributes["data-editor"].value);
+      }      
       if (target.className.endsWith("is-show"))
         this.isDropdownOpen = !this.isDropdownOpen;
       else this.isDropdownOpen = false;
@@ -440,5 +443,22 @@ export class CombatPC_BERulesetDetailsComponent implements OnInit {
           this.authService.logout(true);
         }
       }, () => { });
+  }
+
+  GetDescription(description) {
+    return ServiceUtil.GetDescriptionWithStatValues(description, this.localStorage);
+  }
+
+  GotoCommand(cmd) {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = this.characterId;
+    this.bsModalRef.content.character = this.character;
+    this.bsModalRef.content.command = cmd;
   }
 }

@@ -39,6 +39,7 @@ import { debug } from 'util';
 import { BuffAndEffectTileComponent } from '../../../tile/buff-and-effect/buff-and-effect.component';
 import { ToggleTileComponent } from '../../../tile/toggle/toggle.component';
 import { CharacterStatClusterTileComponent } from '../../../tile/character-stat-cluster/character-stat-cluster.component';
+import { DiceRollComponent } from '../../../shared/dice/dice-roll/dice-roll.component';
 
 
 
@@ -174,6 +175,16 @@ export class CharacterTilesComponent implements OnInit {
       }
     });
   }
+
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
+      if (target.className && target.className == "Editor_Command a-hyperLink") {
+        this.GotoCommand(target.attributes["data-editor"].value);
+      }
+    } catch (err) {}
+  }
+
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.characterId = params['id'];
@@ -2363,6 +2374,23 @@ export class CharacterTilesComponent implements OnInit {
     }
     result = result ? result.substring(0, result.length - 1) : '';
     return result;
+  }
+
+  GetDescription(description) {
+    return ServiceUtil.GetDescriptionWithStatValues(description, this.localStorage);
+  }
+
+  GotoCommand(cmd) {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = this.characterId;
+    this.bsModalRef.content.character = this.character;
+    this.bsModalRef.content.command = cmd;
   }
 }
 

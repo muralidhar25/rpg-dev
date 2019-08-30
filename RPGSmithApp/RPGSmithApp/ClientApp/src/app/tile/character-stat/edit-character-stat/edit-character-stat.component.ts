@@ -16,6 +16,7 @@ import { CharacterStats } from '../../../core/models/view-models/character-stats
 import { DiceRollComponent } from '../../../shared/dice/dice-roll/dice-roll.component';
 import { CharacterStatTileComponent } from '../character-stat.component';
 import { PlatformLocation } from '@angular/common';
+import { ServiceUtil } from '../../../core/services/service-util';
 
 @Component({
     selector: 'app-edit-character-stat',
@@ -82,6 +83,14 @@ export class EditCharacterStatComponent implements OnInit {
       debugger
         this.saveStat(this.CharacterStatTypeID);     
     }
+  }
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
+      if (target.className && target.className == "Editor_Command a-hyperLink") {
+        this.GotoCommand(target.attributes["data-editor"].value);
+      }
+    } catch (err) { }
   }
 
     constructor(
@@ -1031,6 +1040,24 @@ export class EditCharacterStatComponent implements OnInit {
         this.isMouseDown = false;
         clearInterval(this.interval);
         this.interval = undefined;
+  }
+
+  GetDescription(description) {
+    return ServiceUtil.GetDescriptionWithStatValues(description, this.localStorage);
+  }
+
+  GotoCommand(cmd) {
+    // TODO get char ID
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.command = cmd;
   }
 
 }

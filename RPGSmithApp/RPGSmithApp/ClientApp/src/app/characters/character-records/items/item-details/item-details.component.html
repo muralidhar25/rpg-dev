@@ -199,7 +199,7 @@
                         <div class="col-12 col-md-12">
                             <div class="item-info-desc">
                                 <h3>Description</h3>
-                                <p [froalaView]="ItemDetail?.description"></p>
+                                <p [froalaView]="GetDescription(ItemDetail?.description)"></p>
                             </div>
                         </div>
                     </div>
@@ -208,7 +208,7 @@
                         <div class="col-12 col-md-6">
                             <div class="item-info-tags">
                                 <h3>Item Stats</h3>
-                                <p [froalaView]="ItemDetail?.itemStats"></p>
+                                <p [froalaView]="GetDescription(ItemDetail?.itemStats)"></p>
                             </div>
                         </div>
                         <div class="col-12 col-md-6">

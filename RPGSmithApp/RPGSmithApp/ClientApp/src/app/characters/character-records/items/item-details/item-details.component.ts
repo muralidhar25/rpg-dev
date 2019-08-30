@@ -24,6 +24,11 @@ import { HeaderValues } from "../../../../core/models/headers.model";
 import { CharactersService } from "../../../../core/services/characters.service";
 import { ServiceUtil } from "../../../../core/services/service-util";
 import { AppService1 } from "../../../../app.service";
+import { SpellsService } from "../../../../core/services/spells.service";
+import { CharacterSpellService } from "../../../../core/services/character-spells.service";
+import { AbilityService } from "../../../../core/services/ability.service";
+import { CharacterAbilityService } from "../../../../core/services/character-abilities.service";
+import { BuffAndEffectService } from "../../../../core/services/buff-and-effect.service";
 
 @Component({
   selector: 'app-item-details',
@@ -40,6 +45,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
   actionText: string;
   itemId: number;
   ruleSetId: number;
+  rulesetIdForExecute: number
   characterId: number;
   character: Characters = new Characters();
   ItemDetail: any = new Items;
@@ -58,7 +64,12 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
     private configurations: ConfigurationService, public modalService: BsModalService, private localStorage: LocalStoreManager,
     private sharedService: SharedService, private commonService: CommonService,
     private itemsService: ItemsService, private itemMasterService: ItemMasterService, public appService: AppService1,
-    private charactersService: CharactersService
+    private charactersService: CharactersService,
+    private spellsService: SpellsService,
+    private characterSpellService: CharacterSpellService,
+    private abilityService: AbilityService,
+    private characterAbilityService: CharacterAbilityService,
+    private buffAndEffectService: BuffAndEffectService
   ) {
     this.route.params.subscribe(params => { this.itemId = params['id']; });
     this.sharedService.shouldUpdateItemsList().subscribe(sharedData => {
@@ -75,6 +86,11 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
   @HostListener('document:click', ['$event.target'])
   documentClick(target: any) {
     try {
+      if (target.className) {
+        if (target.className == "Editor_Command a-hyperLink") {
+          this.GotoCommand(target.attributes["data-editor"].value);
+        }
+      }
       if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE))
         this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
       if (target.className.endsWith("is-show"))
@@ -137,6 +153,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
           debugger
           this.ItemDetail = this.itemsService.itemModelData(data, "UPDATE");
           this.ruleSetId = this.ItemDetail.ruleSetId;
+          this.rulesetIdForExecute = this.ItemDetail.character.ruleSetId;
           this.characterId = this.ItemDetail.characterId;
           this.character = data.character;
           this.gameStatus(this.character.characterId);
@@ -410,7 +427,7 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
     }
     else {
       window.history.back();
-    }    
+    }
     //window.history.back();
   }
 
@@ -562,13 +579,13 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
               //  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
               //}
               if (!data.isPlayerLinkedToCurrentCampaign) {
-              this.pauseItemAdd = data.pauseItemAdd;
-              this.pauseItemCreate = data.pauseItemCreate;
-              if (data.pauseGame) {
-                this.router.navigate(['/characters']);
-                this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
-                setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
-              }
+                this.pauseItemAdd = data.pauseItemAdd;
+                this.pauseItemCreate = data.pauseItemCreate;
+                if (data.pauseGame) {
+                  this.router.navigate(['/characters']);
+                  this.alertService.showStickyMessage('', "The GM has paused the game.", MessageSeverity.error);
+                  setTimeout(() => { this.alertService.resetStickyMessage(); }, 1600);
+                }
               }
               // this.pageRefresh = data.isPlayerCharacter;
             }
@@ -615,4 +632,22 @@ export class CharacterItemDetailsComponent implements OnInit, OnDestroy {
     this.localStorage.saveSyncedSessionData(headerValues, DBkeys.HEADER_VALUE);
 
   }
+
+  GotoCommand(cmd) {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = this.characterId;
+    this.bsModalRef.content.character = this.character;
+    this.bsModalRef.content.command = cmd;
+  }
+
+  GetDescription(description) {
+    return ServiceUtil.GetDescriptionWithStatValues(description, this.localStorage);
+  }
+
 }

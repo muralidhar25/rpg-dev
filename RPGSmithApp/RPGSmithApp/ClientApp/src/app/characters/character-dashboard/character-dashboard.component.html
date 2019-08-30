@@ -206,7 +206,7 @@
             <div class="tiles manage colwidth handle">
 
               <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.NOTE && box.tile.noteTiles" [ngClass]="(box.tile.noteTiles?.shape=='50')?'grid-rounded':''">
-                <div class="tile tile-type-note" [style.background-color]="box.tile.noteTiles.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
+                <div class="tile tile-type-note" [style.background-color]="box.tile.noteTiles.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)">
                   <h5 *ngIf="box.tile.noteTiles?.title" class="tile-title wraptext" popover="{{box.tile.noteTiles?.title}}" triggers="hover" container="body"
                       [ngStyle]="{'color': box.tile.noteTiles.titleTextColor, 'background-color': box.tile.noteTiles.titleBgColor}"
                       [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
@@ -216,7 +216,7 @@
                   <div class="tile-body">
                     <div class="" [ngClass]="(box.tile.noteTiles?.shape=='50')?'grid-rounded':''">
                       <p class="text-left" [style.background-color]="white"
-                         [froalaView]="box.tile.noteTiles?.content">
+                         [froalaView]="GetDescription(box.tile.noteTiles?.content)">
                       </p>
                     </div>
                   </div>
@@ -224,7 +224,7 @@
               </div>
 
               <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.IMAGE && box.tile.imageTiles" [ngClass]="(box.tile.imageTiles?.shape=='50')?'grid-rounded':(box.tile.imageTiles?.shape=='100')?'grid-circle':''">
-                <div class="tile tile-type-note" [style.background-color]="box.tile.imageTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
+                <div class="tile tile-type-note" [style.background-color]="box.tile.imageTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)">
                   <h5 *ngIf="box.tile.imageTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.imageTiles.titleTextColor, 'background-color': box.tile.imageTiles.titleBgColor}"
                       popover="{{box.tile.imageTiles?.title}}" triggers="hover" container="body"
                       [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
@@ -238,7 +238,7 @@
               </div>
 
               <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.COUNTER && box.tile.counterTiles" [ngClass]="(box.tile.counterTiles?.shape=='50')?'grid-rounded':(box.tile.counterTiles?.shape=='100')?'grid-circle':''">
-                <div class="tile tile-type-note tile-color-6" [style.background-color]="box.tile.counterTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
+                <div class="tile tile-type-note tile-color-6" [style.background-color]="box.tile.counterTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)">
                   <h5 *ngIf="box.tile.counterTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.counterTiles.titleTextColor, 'background-color': box.tile.counterTiles.titleBgColor}"
                       popover="{{box.tile.counterTiles?.title}}" triggers="hover" container="body"
                       [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
@@ -255,7 +255,7 @@
               </div>
 
               <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.CHARACTERSTAT && box.tile.characterStatTiles" [ngClass]="(box.tile.characterStatTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatTiles?.shape=='100')?'grid-circle':''">
-                <div class="tile tile-type-note  tile-color-6" (click)="viewTile(box.tile, box.tile.tileTypeId)"
+                <div class="tile tile-type-note  tile-color-6" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)"
                      [style.background-color]="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Command?((box.tile.characterStatTiles?.showTitle && !box.tile?.characterStatTiles?.imageUrl)?box.tile.characterStatTiles.titleBgColor:box.tile.characterStatTiles.bodyBgColor):box.tile.characterStatTiles.bodyBgColor">
 
                   <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.characterStatTiles?.titleTextColor, 'background-color': box.tile.characterStatTiles.titleBgColor}"
@@ -277,7 +277,7 @@
                       </span>
 
                       <span style="color:#000" *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.RichText"
-                            [froalaView]="box.tile.characterStatTiles?.charactersCharacterStat?.richText">
+                            [froalaView]="GetDescription(box.tile.characterStatTiles?.charactersCharacterStat?.richText)">
                       </span>
 
                       <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Number" [style.font-size.px]="box.config.sizex*box.config.sizey*5+30" class="text-center-v">
@@ -441,7 +441,7 @@
               <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.LINK && box.tile.linkTiles" [ngClass]="(box.tile.linkTiles?.shape=='50')?'grid-rounded':(box.tile.linkTiles?.shape=='100')?'grid-circle':''">
                 <div class="tile tile-type-note tile-color-6"
                      [style.background-color]=" (box.tile.linkTiles?.showTitle && !box.tile.linkTiles?.displayLinkImage)? box.tile.linkTiles.titleBgColor :box.tile.linkTiles?.bodyBgColor" [ngClass]="(box.tile.linkTiles?.shape=='50')?'grid-rounded':(box.tile.linkTiles?.shape=='100')?'grid-circle':''"
-                     (click)="viewTile(box.tile, box.tile.tileTypeId)">
+                     (click)="viewTile(box.tile, box.tile.tileTypeId, $event)">
 
                   <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.linkTiles.titleTextColor, 'background-color': box.tile.linkTiles.titleBgColor}"
                       *ngIf="box.tile.linkTiles?.showTitle && box.tile.linkTiles?.displayLinkImage"
@@ -473,7 +473,7 @@
               <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.EXECUTE && box.tile.executeTiles" [ngClass]="(box.tile.executeTiles?.shape=='50')?'grid-rounded':(box.tile.executeTiles?.shape=='100')?'grid-circle':''">
                 <div class="tile tile-type-note tile-color-6"
                      [style.background-color]="box.tile.executeTiles?.bodyBgColor"
-                     (click)="viewTile(box.tile, box.tile.tileTypeId)">
+                     (click)="viewTile(box.tile, box.tile.tileTypeId, $event)">
 
                   <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.executeTiles.titleTextColor, 'background-color': box.tile.executeTiles.titleBgColor}"
                       *ngIf="box.tile.executeTiles?.showTitle && box.tile.executeTiles?.displayLinkImage"
@@ -504,7 +504,7 @@
               </div>
 
               <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.COMMAND && box.tile.commandTiles" [ngClass]="(box.tile.commandTiles?.shape=='50')?'grid-rounded':(box.tile.commandTiles?.shape=='100')?'grid-circle':''">
-                <div class="tile tile-type-image tile-color-6" [style.background-color]="box.tile.commandTiles?.title && box.tile.commandTiles?.imageUrl?.trim()?box.tile.commandTiles?.bodyBgColor:box.tile.commandTiles?.titleBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
+                <div class="tile tile-type-image tile-color-6" [style.background-color]="box.tile.commandTiles?.title && box.tile.commandTiles?.imageUrl?.trim()?box.tile.commandTiles?.bodyBgColor:box.tile.commandTiles?.titleBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)">
                   <h5 *ngIf="box.tile.commandTiles?.title && box.tile.commandTiles?.imageUrl?.trim()" class="tile-title wraptext" [ngStyle]="{'color': box.tile.commandTiles.titleTextColor, 'background-color': box.tile.commandTiles.titleBgColor}"
                       popover="{{box.tile.commandTiles?.title}}" triggers="hover" container="body"
                       [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
@@ -527,7 +527,7 @@
               </div>
 
               <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.TEXT && box.tile.textTiles" [ngClass]="(box.tile.textTiles?.shape=='50')?'grid-rounded':(box.tile.textTiles?.shape=='100')?'grid-circle':''">
-                <div class="tile tile-type-note" [style.background-color]="box.tile.textTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
+                <div class="tile tile-type-note" [style.background-color]="box.tile.textTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)">
                   <h5 *ngIf="box.tile.textTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.textTiles.titleTextColor, 'background-color': box.tile.textTiles.titleBgColor}"
                       popover="{{box.tile.textTiles?.title}}" triggers="hover" container="body"
                       [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
@@ -550,7 +550,7 @@
                 <div class="tile tile-type-note tile-color-6 buff-padding"
                      [style.background-color]=" (box.tile.buffAndEffectTiles?.showTitle && !box.tile.buffAndEffectTiles?.displayLinkImage)? box.tile.buffAndEffectTiles.titleBgColor :box.tile.buffAndEffectTiles?.bodyBgColor"
                      [ngClass]="{'grid-rounded':(box.tile.buffAndEffectTiles?.shape=='50'),'grid-circle':(box.tile.buffAndEffectTiles?.shape=='100'),'buff-padding-1-tile':(box.config.sizex==1),'buff-padding-2-tiles':(box.config.sizex==2),'buff-padding-2-plus-tiles':(box.config.sizex>=3)}"
-                     (click)="viewTile(box.tile, box.tile.tileTypeId)">
+                     (click)="viewTile(box.tile, box.tile.tileTypeId, $event)">
 
                   <!--<h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor, 'background-color': box.tile.buffAndEffectTiles.titleBgColor}"
                       popover="Buffs & Effects" triggers="hover" container="body"
@@ -661,7 +661,7 @@
               </div>
 
               <div class="tile-group tile-group-item_counts" *ngIf="box.tile.tileTypeId==TILES.TOGGLE && box.tile.toggleTiles" [ngClass]="(box.tile.toggleTiles?.shape=='50')?'grid-rounded':(box.tile.toggleTiles?.shape=='100')?'grid-circle':''">
-                <div class="tile tile-type-note" [style.background-color]="box.tile.toggleTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
+                <div class="tile tile-type-note" [style.background-color]="box.tile.toggleTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)">
                   <h5 *ngIf="box.tile.toggleTiles?.title" class="tile-title wraptext" [ngStyle]="{'color': box.tile.toggleTiles.titleTextColor, 'background-color': box.tile.toggleTiles.titleBgColor}"
                       popover="{{box.tile.toggleTiles?.title}}" triggers="hover" container="body"
                       [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
@@ -716,7 +716,7 @@
                 <div *ngIf="box.tile.characterStatClusterTiles?.title && !box.tile.characterStatClusterTiles?.displayCharactersCharacterStatID"
                      class="tile-group tile-group-item_counts"
                      [ngClass]="(box.tile.characterStatClusterTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatClusterTiles?.shape=='100')?'grid-circle':''">
-                  <div class="tile tile-type-note" [style.background-color]="box.tile.characterStatClusterTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId)">
+                  <div class="tile tile-type-note" [style.background-color]="box.tile.characterStatClusterTiles?.bodyBgColor" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)">
                     <!--<h5 class="tile-title wraptext"
                         [ngStyle]="{'color': box.tile.characterStatClusterTiles.titleTextColor, 'background-color': box.tile.characterStatClusterTiles.titleBgColor}"
                         popover="{{box.tile.characterStatClusterTiles?.title}}" triggers="hover" container="body"
@@ -739,7 +739,7 @@
                   <div class="tile-group tile-group-item_counts"
                        *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStatID"
                        [ngClass]="(box.tile.characterStatClusterTiles?.shape=='50')?'grid-rounded':(box.tile.characterStatClusterTiles?.shape=='100')?'grid-circle':''">
-                    <div class="tile tile-type-note  tile-color-6" (click)="viewTile(box.tile, box.tile.tileTypeId)"
+                    <div class="tile tile-type-note  tile-color-6" (click)="viewTile(box.tile, box.tile.tileTypeId, $event)"
                          [style.background-color]="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Command?((box.tile.characterStatClusterTiles?.showTitle && !box.tile?.characterStatClusterTiles?.imageUrl)?box.tile.characterStatClusterTiles.titleBgColor:box.tile.characterStatClusterTiles.bodyBgColor):box.tile.characterStatClusterTiles.bodyBgColor">
 
                       <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.characterStatClusterTiles?.titleTextColor, 'background-color': box.tile.characterStatClusterTiles.titleBgColor}"
@@ -761,7 +761,7 @@
                           </span>
 
                           <span style="color:#000" *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.RichText"
-                                [froalaView]="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.richText">
+                                [froalaView]="GetDescription(box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.richText)">
                           </span>
 
                           <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Number" [style.font-size.px]="box.config.sizex*box.config.sizey*5+30" class="text-center-v">

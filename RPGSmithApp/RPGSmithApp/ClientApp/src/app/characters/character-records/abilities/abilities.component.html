@@ -184,7 +184,7 @@
                 <ul class="item-properties discription-tick" *ngIf="!isListView">
                   <li *ngIf="ability.isEnabled" class="item-property item-property-icon icon-ico icon-Rec-Enabled" title="Enabled" data-toggle="tooltip"></li>
                 </ul>
-                <div class="item-stats" [froalaView]="ability?.ability?.description"></div>
+                <div class="item-stats" [froalaView]="GetDescription(ability?.ability?.description)"></div>
               </div>
               <div class="card-actions-trigger" *ngIf="!ability.showIcon">
                 <button type="button" (click)="manageIcon(ability.characterAbilityId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary"></button>

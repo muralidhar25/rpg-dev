@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, HostListener } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { Spell } from "../../../../core/models/view-models/spell.model";
@@ -54,6 +54,15 @@ export class SpellRulesetDetailComponent implements OnInit {
     this.sharedService.shouldUpdateSpellList().subscribe(sharedServiceJson => {
       if (sharedServiceJson) this.initialize();
     });
+  }
+
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
+      if (target.className && target.className == "Editor_Command a-hyperLink") {
+        this.GotoCommand(target.attributes["data-editor"].value);
+      }
+    } catch (err) { }
   }
 
   ngOnInit() {
@@ -433,5 +442,19 @@ export class SpellRulesetDetailComponent implements OnInit {
   }
   GoToRuleBuff(RulesetBuffID: number) {
     this.router.navigate(['/ruleset/buff-effect-details', RulesetBuffID]);
+  }
+
+  GotoCommand(cmd) {
+    // TODO get char ID
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = this.character;
+    this.bsModalRef.content.command = cmd;
   }
 }

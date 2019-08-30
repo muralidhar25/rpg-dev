@@ -50,7 +50,7 @@
                                 <div class="tile-body">
                                   <div class="" [ngClass]="(box.tile.noteTiles?.shape=='50')?'grid-rounded':''">
                                     <p class="text-left" [style.background-color]="white"
-                                       [froalaView]="box.tile.noteTiles?.content">
+                                       [froalaView]="GetDescription(box.tile.noteTiles?.content)">
                                     </p>
                                   </div>
                                 </div>
@@ -161,7 +161,7 @@
                                     </span>
 
                                     <span style="color:#000" *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.RichText"
-                                          [froalaView]="box.tile.characterStatTiles?.charactersCharacterStat?.richText">
+                                          [froalaView]="GetDescription(box.tile.characterStatTiles?.charactersCharacterStat?.richText)">
                                     </span>
                                     <span *ngIf="box.tile.characterStatTiles?.charactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Number"
                                           [style.font-size.px]="box.config.sizex*box.config.sizey*5+30"
@@ -719,7 +719,7 @@
                                         </span>
 
                                         <span style="color:#000" *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.RichText"
-                                              [froalaView]="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.richText">
+                                              [froalaView]="GetDescription(box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.richText)">
                                         </span>
 
                                         <span *ngIf="box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Number" [style.font-size.px]="box.config.sizex*box.config.sizey*5+30" class="text-center-v">

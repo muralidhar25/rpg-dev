@@ -68,6 +68,9 @@ export class ItemRulesetViewListComponent implements OnInit {
     @HostListener('document:click', ['$event.target'])
     documentClick(target: any) {
       try {
+        if (target.className && target.className == "Editor_Command a-hyperLink") {
+          this.GotoCommand(target.attributes["data-editor"].value);
+        }
         if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE))
           this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
             if (target.className.endsWith("is-show"))
@@ -555,5 +558,19 @@ export class ItemRulesetViewListComponent implements OnInit {
           this.authService.logout(true);
         }
       });
+  }
+
+  GotoCommand(cmd) {
+    // TODO get char ID
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = this.character;
+    this.bsModalRef.content.command = cmd;
   }
 }

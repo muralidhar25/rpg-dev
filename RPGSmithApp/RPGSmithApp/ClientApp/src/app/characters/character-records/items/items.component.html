@@ -217,7 +217,7 @@
                     <i class="item-property item-property-icon icon icon-Rec-Contained icon-ico"></i>
                   </li>
                 </ul>
-                <div class="item-stats pl-0" [froalaView]="Item?.description"></div>
+                <div class="item-stats pl-0" [froalaView]="GetDescription(Item?.description)"></div>
               </div>
               <div class="card-actions-trigger" *ngIf="!Item?.showIcon">
                 <button type="button" (click)="manageIcon(Item?.itemId)" title="Manage" data-toggle="tooltip" class="btn icon icon-more btn-simple-primary"></button>

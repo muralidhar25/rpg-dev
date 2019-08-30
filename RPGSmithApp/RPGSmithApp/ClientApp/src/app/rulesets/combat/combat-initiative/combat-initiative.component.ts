@@ -40,7 +40,6 @@ export class CombatInitiativeComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      debugger
       this.customDices = Object.assign([], this.bsModalRef.content.customDices);
       this.initiativeInfo = Object.assign([], this.bsModalRef.content.combatants);
       this.combatSettings = Object.assign({}, this.bsModalRef.content.settings);
@@ -51,9 +50,7 @@ export class CombatInitiativeComponent implements OnInit {
   }
 
   GetCombatantList() {
-    
     if (this.isInitialForCombatStart) {
-      debugger
       let resultOfGroupInitiative = 0;
       let resultOfGroupInitiativeFilled_Flag = false;
       this.initiativeInfo.map(pc => {
@@ -83,7 +80,7 @@ export class CombatInitiativeComponent implements OnInit {
           }
         }
         else {
-          debugger
+          debugger;
           if (this.combatSettings && this.combatSettings.groupInitiative) {
             
             pc.initiativeCommand = this.combatSettings.groupInitFormula;
@@ -170,7 +167,6 @@ export class CombatInitiativeComponent implements OnInit {
 
   //Re-Roll Dice on click
   ReRollDice(item) {
-    debugger
     if (item.initiativeCommand) {
       let initiativecommand = item.initiativeCommand;
       if (item.type == combatantType.CHARACTER) {

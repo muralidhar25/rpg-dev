@@ -35,7 +35,7 @@
                         <img class="card-img-top portrait" [src]="character.imageUrl" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-chars/MaleHuman.jpg';" [alt]="character.characterName">
                         <div class="characters-description" (click)="gotoDashboard(character)">
                           <div class="characters-description-inner"
-                               [froalaView]="character.characterDescription==null?'':character.characterDescription">
+                               [froalaView]="GetDescription(character.characterDescription==null?'':character.characterDescription)">
                           </div>
                         </div>
                         <div class="card-actions show" *ngIf="character.showIcon">

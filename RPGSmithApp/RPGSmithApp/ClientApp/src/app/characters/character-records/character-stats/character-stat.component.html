@@ -236,7 +236,7 @@
                 <div class="col-lg-6 col-md-6 col-sm-7 col-7">
                     <div class="form-group">
                         <!--<input (click)="editRichText (characterstat.richText,characterstat.charactersCharacterStatId,characterstat.characterStat.statName)" re tabindex="-1" readonly placeholder="Rich Text" (ngModelChange)="mychange($event)" class="form-control rich-text" type="text" [(ngModel)]="characterstat.displayRichText">-->
-                        <div (click)="editRichText (characterstat.richText,characterstat.charactersCharacterStatId,characterstat.characterStat.statName)" re tabindex="-1" class="form-control rich-text " type="text"><p class="rich-text" [froalaView]="characterstat.richText==null?'':characterstat.richText"></p></div>
+                        <div (click)="editRichText (characterstat.richText,characterstat.charactersCharacterStatId,characterstat.characterStat.statName)" re tabindex="-1" class="form-control rich-text " type="text"><p class="rich-text" [froalaView]="GetDescription(characterstat.richText==null?'':characterstat.richText)"></p></div>
                     </div>
                 </div>
                 <div class="col-lg-1 col-md-1 col-sm-1 col-1">

@@ -22,6 +22,8 @@ import { DefaultDice } from "../../core/models/view-models/custome-dice.model";
 import { MarketPlaceService } from "../../core/services/maketplace.service";
 import { marketplaceListModel } from "../../core/models/marketplace.model";
 import { PaymentComponent } from "../../shared/payment/payment.component";
+import { DiceRollComponent } from "../../shared/dice/dice-roll/dice-roll.component";
+import { Characters } from "../../core/models/view-models/characters.model";
 
 @Component({
   selector: 'app-ruleset',
@@ -66,7 +68,10 @@ export class RulesetComponent implements OnInit, OnDestroy {
 
     @HostListener('document:click', ['$event.target'])
     documentClick(target: any) {        
-        try {
+      try {
+        if (target.className && target.className == "Editor_Command a-hyperLink") {
+          this.GotoCommand(target.attributes["data-editor"].value);
+        }  
             if (target.className.endsWith("not-plus"))
                 this.showPlus = false;
             else if (target.className.endsWith("is-plus"))
@@ -355,6 +360,20 @@ export class RulesetComponent implements OnInit, OnDestroy {
       this.rulesetSlots = this.rulesetSlots + paymentDoneForItem.qty;
     });
 
+  }
+
+  GotoCommand(cmd) {
+    // TODO get char ID
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.command = cmd;
   }
   
 }

@@ -18,6 +18,8 @@ import { ImageViewerComponent } from "../../../shared/image-interface/image-view
 import { PlatformLocation } from "@angular/common";
 import { Bundle } from "../../../core/models/view-models/bundle.model";
 import { CreateBundleComponent } from "../create-bundle/create-bundle.component";
+import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.component";
+import { Characters } from "../../../core/models/view-models/characters.model";
 
 @Component({
   selector: 'app-bundle-details',
@@ -52,6 +54,9 @@ export class BundleDetailsComponent implements OnInit {
   @HostListener('document:click', ['$event.target'])
   documentClick(target: any) {
     try {
+      if (target.className && target.className == "Editor_Command a-hyperLink") {
+        this.GotoCommand(target.attributes["data-editor"].value);
+      }
       if (target.className.endsWith("is-show"))
         this.isDropdownOpen = !this.isDropdownOpen;
       else this.isDropdownOpen = false;
@@ -272,5 +277,19 @@ export class BundleDetailsComponent implements OnInit {
       this.bsModalRef.content.ViewImageUrl = img.src;
       this.bsModalRef.content.ViewImageAlt = img.alt;
     }
+  }
+
+  GotoCommand(cmd) {
+    // TODO get char ID
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.command = cmd;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { STAT_TYPE, VIEW } from '../../../core/models/enums';
 import { Ruleset } from '../../../core/models/view-models/ruleset.model';
@@ -80,7 +80,16 @@ export class RulesetEditCharacterStatComponent implements OnInit {
         private authService: AuthService, private modalService: BsModalService, private localStorage: LocalStoreManager,
       private CCService: CharactersCharacterStatService, private location: PlatformLocation) {
       location.onPopState(() => this.modalService.hide(1));
-    }
+  }
+
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
+      if (target.className && target.className == "Editor_Command a-hyperLink") {
+        this.GotoCommand(target.attributes["data-editor"].value);
+      }
+    } catch (err) { }
+  }
 
     ngOnInit() {
       debugger
@@ -512,5 +521,19 @@ export class RulesetEditCharacterStatComponent implements OnInit {
         text.selected = true;
 
     }
+
+  GotoCommand(cmd) {
+    // TODO get char ID
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.command = cmd;
+  }
     
 }

@@ -76,6 +76,10 @@ import { CombatBuffeffectDetailsComponent } from "../rulesets/combat/combat-buff
 import { CombatHealthComponent } from "../rulesets/combat/update-combat-health/update-combat-health.component";
 import { UpdateMonsterHealthComponent } from "./update-monster-health/update-monster-health.component";
 import { PlayerLootSecondaryComponent } from "./player-loot/player-loot-secondary/player-loot-secondary.component";
+import { EditorStatComponent } from "./editor-link-button/character-stat/stat.component";
+import { EditorCommandComponent } from "./editor-link-button/command/command.component";
+import { EditorExecuteComponent } from "./editor-link-button/execute/execute.component";
+import { EditorLinkComponent } from "./editor-link-button/link/link.component";
 
 @NgModule({
   declarations: [
@@ -119,7 +123,11 @@ import { PlayerLootSecondaryComponent } from "./player-loot/player-loot-secondar
     CombatBuffeffectDetailsComponent,
     CombatHealthComponent,
     UpdateMonsterHealthComponent,
-    PlayerLootSecondaryComponent
+    PlayerLootSecondaryComponent,
+    EditorStatComponent,
+    EditorCommandComponent,
+    EditorExecuteComponent,
+    EditorLinkComponent
   ],
   imports: [
     CommonModule,
@@ -220,7 +228,11 @@ import { PlayerLootSecondaryComponent } from "./player-loot/player-loot-secondar
     CombatBuffeffectDetailsComponent,
     CombatHealthComponent,
     UpdateMonsterHealthComponent,
-    PlayerLootSecondaryComponent
+    PlayerLootSecondaryComponent,
+    EditorStatComponent,
+    EditorCommandComponent,
+    EditorExecuteComponent,
+    EditorLinkComponent
   ],
   entryComponents: [
     AccountSettingsComponent,
@@ -260,7 +272,11 @@ import { PlayerLootSecondaryComponent } from "./player-loot/player-loot-secondar
     CombatBuffeffectDetailsComponent,
     CombatHealthComponent,
     UpdateMonsterHealthComponent,
-    PlayerLootSecondaryComponent
+    PlayerLootSecondaryComponent,
+    EditorStatComponent,
+    EditorCommandComponent,
+    EditorExecuteComponent,
+    EditorLinkComponent
   ]
 })
 export class SharedModule { }

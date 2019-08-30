@@ -120,7 +120,25 @@ export class Utilities {
     //quickInsertTags: ['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'pre', 'blockquote'],
     //pluginsEnabled: ['quickInsert', 'image', 'table', 'lists']
   }
-  public static optionsFloala(height: number = 300, placeholder: string = 'Type something..', initOnClick: boolean = false, FocusOnInitialize: boolean = false): Object {
+  public static optionsFloala(height: number = 300, placeholder: string = 'Type something..', initOnClick: boolean = false, FocusOnInitialize: boolean = false, IncludeVariableLinks: boolean = true): Object {
+    let btnArr = [];
+    if (IncludeVariableLinks) {
+      btnArr = ['fullscreen', 'my_dropdown2', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript',
+        '|', 'fontFamily', 'fontSize', 'color', //  '|', 'paragraphStyle', 'inlineStyle', 'paragraphFormat',
+        'align', 'formatOL', 'insertLink', //'formatUL', 'quote', 'outdent', 'indent', 
+        //'insertImage', 'insertVideo', 'embedly', 'insertFile', 'insertTable',
+        '|', 'emoticons', 'specialCharacters', 'selectAll', 'clearFormatting',
+        //'|', 'print', 'spellChecker', 'html','insertHR',
+        '|', 'undo', 'redo', 'inlineClass'];
+    } else {
+      btnArr = ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript',
+        '|', 'fontFamily', 'fontSize', 'color', //  '|', 'paragraphStyle', 'inlineStyle', 'paragraphFormat',
+        'align', 'formatOL', 'insertLink', //'formatUL', 'quote', 'outdent', 'indent', 
+        //'insertImage', 'insertVideo', 'embedly', 'insertFile', 'insertTable',
+        '|', 'emoticons', 'specialCharacters', 'selectAll', 'clearFormatting',
+        //'|', 'print', 'spellChecker', 'html','insertHR',
+        '|', 'undo', 'redo', 'inlineClass'];
+    }
     return {
       key: 'FD3G3B2C2uB5A2A1C3A5E1H5E1J4B16hgfpktsotB5B-16pm==',
       //key: 'Fwvh1H-8dcC-21dA6mg1B-8==',
@@ -140,13 +158,7 @@ export class Utilities {
       videoUpload: false,
       videoAllowDragAndDrop: false,
       videoInsertingStrategy: "url",
-      toolbarButtons: Utilities.IsMobileScreen() ? Utilities.mobileToolbarButton : ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript',
-        '|', 'fontFamily', 'fontSize', 'color', //  '|', 'paragraphStyle', 'inlineStyle', 'paragraphFormat',
-        'align', 'formatOL', 'insertLink', //'formatUL', 'quote', 'outdent', 'indent', 
-        //'insertImage', 'insertVideo', 'embedly', 'insertFile', 'insertTable',
-        '|', 'emoticons', 'specialCharacters', 'selectAll', 'clearFormatting',
-        //'|', 'print', 'spellChecker', 'html','insertHR',
-        '|', 'undo', 'redo'],
+      toolbarButtons: Utilities.IsMobileScreen() ? Utilities.mobileToolbarButton : btnArr,
       quickInsertButtons: ['embedly', 'table', 'ul', 'ol'], //'image', 'video', , 'hr'
       //quickInsertTags: ['p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'pre', 'blockquote'],
       //pluginsEnabled: ['quickInsert', 'image', 'table', 'lists']
@@ -1090,4 +1102,5 @@ export class Utilities {
 
   //public static LogoImage: string = 'logo-full.png'; //for prod //beta //--Not used now
   public static LogoImage: string = 'logo-full.svg'; // for prod //non-beta
+
 }

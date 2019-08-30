@@ -299,3 +299,10 @@ export enum MonsterDetailType {
   XPVALUE="Xp Value"
 
 }
+
+export enum EDITOR_LINK_BUTTON {
+  STAT = "Stat",
+  LINK = 'Link',
+  EXECUTE = 'Execute',
+  COMMAND = 'Command'
+}

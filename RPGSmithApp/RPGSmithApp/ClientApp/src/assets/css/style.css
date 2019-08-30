@@ -1092,6 +1092,11 @@
   content: "\e971";
 }
 
+
+.icon-Variable:before {
+  content: "\e972";
+}
+
 .icon-Health:before {
   content: "\e96c";
 }
@@ -1131,6 +1136,7 @@
 .icon-Resume:before {
   content: "\e974";
 }
+
 .icon-Loot_Pile:before {
   content: "\e976";
 }
@@ -1138,11 +1144,12 @@
 .icon-RemTarget:before {
   content: "\e970";
 }
+
 .icon-CharStatCluster:before {
   content: "\e975";
 }
 
-.icon-BnE:before, .icon-Monster:before, .icon-MonsterTemp:before, .icon-Combat:before, .icon-MarkTarget:before, .icon-Health:before, .icon-Settings:before, .icon-Assign:before, .icon-DefLayouts:before, .icon-Delay:before, .icon-Resume:before, .icon-Loot_Pile:before, .icon-RemTarget:before, .icon-CharStatCluster:before {
+.icon-BnE:before, .icon-Monster:before, .icon-MonsterTemp:before, .icon-Combat:before, .icon-MarkTarget:before, .icon-Health:before, .icon-Settings:before, .icon-Assign:before, .icon-DefLayouts:before, .icon-Delay:before, .icon-Resume:before, .icon-Loot_Pile:before, .icon-RemTarget:before, .icon-CharStatCluster:before, .icon-Variable:before {
   font-family: 'icomoon' !important;
   speak: none;
   font-style: normal;
@@ -9448,21 +9455,65 @@ input-type-number::-webkit-outer-spin-button {
 .visibility-hidden {
   visibility: hidden;
 }
+
 .action-btn-font-size {
   font-size: 1.4rem !important;
-  font-weight:bold !important;
+  font-weight: bold !important;
 }
+
 .text-black {
   color: #000;
 }
+
 @media (min-width:1024px) {
   .tile-create-popup {
     max-width: 600px;
   }
 }
+
 @media (max-width:1023px) {
   .tile-create-popup {
     width: auto;
   }
 }
 
+.a-hyperLink {
+  color: #d15727 !important;
+}
+
+  .a-hyperLink:hover {
+    text-decoration: underline !important;
+  }
+
+.squareBrackets:before {
+  font-size: 20px;
+  font-weight: 600 !important;
+  position: relative;
+  top: -3px;
+}
+
+/*#dropdown-menu-my_dropdown-3 ul.fr-dropdown-list li {
+  background-color: #205a86 !important;
+  margin-bottom: 3px !important;
+  color: #fff !important;
+}*/
+
+  /*#dropdown-menu-my_dropdown-3 ul.fr-dropdown-list li:last-child {
+    margin-bottom: 0px !important;
+  }
+
+  #dropdown-menu-my_dropdown-3 ul.fr-dropdown-list li a {
+    padding: 2px 24px !important;
+  }
+
+    #dropdown-menu-my_dropdown-3 ul.fr-dropdown-list li a:hover {
+      background: #123d66 !important;
+    }*/
+
+.fr-btn-brackets::after {
+  display: none !important;
+}
+
+/*.fr-view .fr-class-DDcode {
+  background-color: #ffff00;
+}*/

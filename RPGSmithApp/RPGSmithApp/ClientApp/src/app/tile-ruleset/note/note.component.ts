@@ -412,7 +412,7 @@ export class RulesetNoteTileComponent implements OnInit {
         //key: 'Fwvh1H-8dcC-21dA6mg1B-8==',
         charCounterCount: true,
         heightMax: 200,
-        toolbarButtons: Utilities.IsMobileScreen() ? this.mobileToolbarButton : ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript',
+      toolbarButtons: Utilities.IsMobileScreen() ? this.mobileToolbarButton : ['fullscreen', 'my_dropdown', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript',
             '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle',
             '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote',
             //'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertTable',

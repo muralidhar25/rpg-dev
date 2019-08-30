@@ -192,9 +192,9 @@
                   <li *ngIf="spell.spell.isMaterialComponent" class="item-property item-property-icon icon-ico icon-Rec-Material icon-rsi" title="Material Component" data-toggle="tooltip"></li>
                   <li *ngIf="spell.isMemorized" class="item-property item-property-icon icon-ico icon-Rec-Memorized" title="Readied" data-toggle="tooltip"></li>
                 </ul>
-                <div class="item-stats d-sm-none" [froalaView]="spell?.spell?.description"></div>
+                <div class="item-stats d-sm-none" [froalaView]="GetDescription(spell?.spell?.description)"></div>
               </div>
-              <div class="item-stats d-sm-block d-none" [froalaView]="spell?.spell?.description"></div>
+              <div class="item-stats d-sm-block d-none" [froalaView]="GetDescription(spell?.spell?.description)"></div>
               <!--<div class="item-stats d-sm-block d-none" tooltip="{{spell.spell.description}}">{{spell.spell.description}}</div>-->
               <div class="card-actions-trigger" [hidden]="spell.showIcon">
                 <!--to-->

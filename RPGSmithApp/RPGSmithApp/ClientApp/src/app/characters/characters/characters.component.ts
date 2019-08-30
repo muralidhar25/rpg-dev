@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from "@angular/core";
+import { Component, OnInit, OnDestroy, Input, HostListener } from "@angular/core";
 import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
 import { BsModalService, BsModalRef, ModalDirective, TooltipModule } from 'ngx-bootstrap';
 import { Ruleset } from "../../core/models/view-models/ruleset.model";
@@ -21,6 +21,8 @@ import { marketplaceListModel } from "../../core/models/marketplace.model";
 import { MarketPlaceItemsType } from "../../core/models/enums";
 import { PaymentComponent } from "../../shared/payment/payment.component";
 import { CharactersFormComponent } from "../../shared/characters-form/characters-form.component";
+import { ServiceUtil } from "../../core/services/service-util";
+import { DiceRollComponent } from "../../shared/dice/dice-roll/dice-roll.component";
 
 @Component({
   selector: 'app-characters',
@@ -83,7 +85,16 @@ export class CharactersComponent implements OnInit {
           this.characterSlot = +serviceJson;
         }
       });
-    }
+  }
+
+  @HostListener('document:click', ['$event.target'])
+  documentClick(target: any) {
+    try {
+      if (target.className && target.className == "Editor_Command a-hyperLink") {
+        this.GotoCommand(target.attributes["data-editor"].value);
+      }
+    } catch (err) { }
+  }
 
     ngOnInit() {
         this.destroyModalOnInit();
@@ -353,5 +364,23 @@ export class CharactersComponent implements OnInit {
       this.characterSlot = this.characterSlot + paymentDoneForItem.qty;
     });
 
+  }
+
+  GetDescription(description) {
+    return ServiceUtil.GetDescriptionWithStatValues(description, this.localStorage);
+  }
+
+  GotoCommand(cmd) {
+    // TODO get char ID
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.command = cmd;
   }
 }

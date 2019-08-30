@@ -1139,4 +1139,18 @@ export class ServiceUtil {
     localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, false);
     return IsComingFromCombatTracker;
   }
+
+
+  public static GetDescriptionWithStatValues(description, localStorage) {
+    if (description) {
+    description = description.replace('[magicC]', "5");
+    description = description.replace('[magicC]', "5");
+    description = description.replace('[magicC]', "5");
+    description = description.replace('[magicC]', "5");
+    description = description.replace('[magicC]', "5");
+    }
+    
+    return description;
+  }
+
 }
