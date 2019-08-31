@@ -20,6 +20,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace RPGSmithApp.Controllers
 {
@@ -302,6 +303,7 @@ namespace RPGSmithApp.Controllers
         [HttpGet("ConvertImageURLToBase64")]
         public string ConvertImageURLToBase64(string url)
         {
+            url = url.Replace("?", "%3f").Replace("&", "%26");
             StringBuilder _sb = new StringBuilder();
 
             Byte[] _byte = this.GetImage(url);

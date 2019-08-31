@@ -1,21 +1,10 @@
 import { Component, OnInit, EventEmitter, HostListener } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { CounterTile } from '../../../core/models/tiles/counter-tile.model';
-import { CharacterTile } from '../../../core/models/tiles/character-tile.model';
-import { CharacterDashboardPage } from '../../../core/models/view-models/character-dashboard-page.model';
-import { ColorService } from '../../../core/services/tiles/color.service';
-import { SharedService } from '../../../core/services/shared.service';
-import { CounterTileService } from '../../../core/services/tiles/counter-tile.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
-import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
-
 import { PlatformLocation } from '@angular/common';
-import { MonsterTemplateService } from '../../../core/services/monster-template.service';
 import { Utilities } from '../../../core/common/utilities';
-import { DiceService } from '../../../core/services/dice.service';
 import { CustomDice } from '../../../core/models/view-models/custome-dice.model';
-import { RulesetService } from '../../../core/services/ruleset.service';
 import { CombatService } from '../../../core/services/combat.service';
 import { combatantType } from '../../../core/models/enums';
 
@@ -49,17 +38,14 @@ export class CombatHealthComponent implements OnInit {
     }
   }
 
-  constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
-    private colorService: ColorService, private localStorage: LocalStoreManager, private counterTileService: CounterTileService,
-    private alertService: AlertService, private authService: AuthService, private location: PlatformLocation,
-    private monsterTemplateService: MonsterTemplateService, private rulesetService: RulesetService,
-    private combatService:CombatService) {
+  constructor(private bsModalRef: BsModalRef, private modalService: BsModalService,
+    private alertService: AlertService, private authService: AuthService,
+    private location: PlatformLocation, private combatService:CombatService) {
     location.onPopState(() => this.modalService.hide(1));
   }
 
   ngOnInit() {
     setTimeout(() => {
-      debugger
       this.title = this.bsModalRef.content.title;
 
       //combatInfo
@@ -172,11 +158,11 @@ export class CombatHealthComponent implements OnInit {
 
   decrementhealthcurr() {
     let step: number = 1;
-    if (this.healthCurrent == 1) {
-      return false;
-    } else {
+    //if (this.healthCurrent == 1) {
+    //  return false;
+    //} else {
       this.healthCurrent -= step;
-    }
+    //}
   }
 
 
@@ -187,11 +173,11 @@ export class CombatHealthComponent implements OnInit {
 
   decrementHealthMax() {
     let step: number = 1;
-    if (this.healthMax == 1) {
-      return false;
-    } else {
+    //if (this.healthMax == 1) {
+    //  return false;
+    //} else {
       this.healthMax -= step;
-    }
+    //}
   }
 
   changeHealthMax(event: any) {

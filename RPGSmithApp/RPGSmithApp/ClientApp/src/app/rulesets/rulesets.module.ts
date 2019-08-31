@@ -40,6 +40,7 @@ import { SaveCombatMonsterComponent } from "./combat/save-combat-monster/save-co
 import { AccordionModule } from "ngx-bootstrap";
 import { NgCircleProgressModule } from "ng-circle-progress";
 import { ContextMenuModule } from "ngx-contextmenu";
+import { CombatGMPlayerViewComponent } from "./combat/gm-playerview/gm-playerview.component";
 
 //import { CampaignInviteComponent } from './campaign-invite/campaign-invite.component';
 
@@ -71,6 +72,7 @@ import { ContextMenuModule } from "ngx-contextmenu";
     DropItemsCombatMonsterComponent,
     RemoveCombatMonsterComponent,
     SaveCombatMonsterComponent,
+    CombatGMPlayerViewComponent
 
     //CampaignInviteComponent
   ],
@@ -112,7 +114,8 @@ import { ContextMenuModule } from "ngx-contextmenu";
     CombatInitiativeComponent,
     DropItemsCombatMonsterComponent,
     RemoveCombatMonsterComponent,
-    SaveCombatMonsterComponent
+    SaveCombatMonsterComponent,
+    CombatGMPlayerViewComponent
     //CampaignInviteComponent
   ],
   entryComponents: [

@@ -31,6 +31,7 @@ import { CombatComponent } from "./combat/combat.component";
 import { LootPileTemplateDetailsComponent } from "../records/loot-pile-template/loot-pile-template-details/loot-pile-template-details.component";
 import { LootPileTemplateComponent } from "../records/loot-pile-template/loot-pile-template.component";
 import { LootPileDetailsComponent } from "../records/loot-pile/loot-pile-details/loot-pile-details.component";
+import { CombatGMPlayerViewComponent } from "./combat/gm-playerview/gm-playerview.component";
 
 
 const routes: Routes = [
@@ -65,6 +66,7 @@ const routes: Routes = [
   { path: "ruleset-details/:id", component: RulesetDetailsComponent , data: { title: "RulesetDetails" } },
   { path: "loot/:id", component: LootComponent, data: { title: "Loot" } },
   { path: "combat/:id", component: CombatComponent, data: { title: "combat" } },
+  { path: "gm-playerview/:id", component: CombatGMPlayerViewComponent, data: { title: "combat" } },
   { path: "loot-pile-template/:id", component: LootPileTemplateComponent, data: { title: "Loot Pile" } },
 ];
 

@@ -1,10 +1,7 @@
 import { Component, OnInit, EventEmitter, HostListener } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { PlatformLocation } from '@angular/common';
-import { SharedService } from '../../core/services/shared.service';
-import { LocalStoreManager } from '../../core/common/local-store-manager.service';
 import { AlertService, MessageSeverity } from '../../core/common/alert.service';
-import { MonsterTemplateService } from '../../core/services/monster-template.service';
 import { combatantType, MonsterDetailType } from '../../core/models/enums';
 import { CustomDice } from '../../core/models/view-models/custome-dice.model';
 import { CombatService } from '../../core/services/combat.service';
@@ -44,11 +41,8 @@ export class UpdateMonsterHealthComponent implements OnInit {
 
   constructor(private bsModalRef: BsModalRef,
     private modalService: BsModalService,
-    private sharedService: SharedService,
-    private localStorage: LocalStoreManager,
     private alertService: AlertService,
     private location: PlatformLocation,
-    private monsterTemplateService: MonsterTemplateService,
     private combatService: CombatService,
     private authService: AuthService) {
     location.onPopState(() => this.modalService.hide(1));
@@ -66,11 +60,11 @@ export class UpdateMonsterHealthComponent implements OnInit {
       //  this.healthCurrent = this.combatInfo.character.healthCurrent;
       //  this.healthMax = this.combatInfo.character.healthMax;
       //}
-     
-        if (this.title == MonsterDetailType.HEALTH) {
-          this.healthCurrent = +this.combatInfo.monster.healthCurrent;
-          this.healthMax = +this.combatInfo.monster.healthMax;
-        }
+
+      if (this.title == MonsterDetailType.HEALTH) {
+        this.healthCurrent = +this.combatInfo.monster.healthCurrent;
+        this.healthMax = +this.combatInfo.monster.healthMax;
+      }
 
       //title == monsterDetailType.RATING || title == monsterDetailType.ARMOR || title == monsterDetailType.XPVALUE || title == monsterDetailType.INITIATIVE
       if (this.title == MonsterDetailType.RATING) {
@@ -199,13 +193,16 @@ export class UpdateMonsterHealthComponent implements OnInit {
 
   decrementhealthcurr() {
     let step: number = 1;
-    if (this.healthCurrent == 1) {
-      return false;
-    } else {
+    if (this.title == MonsterDetailType.HEALTH) {
       this.healthCurrent -= step;
+    } else {
+      if (this.healthCurrent == 1) {
+        return false;
+      } else {
+        this.healthCurrent -= step;
+      }
     }
   }
-
 
   incrementHealthMax() {
     let step: number = 1;
@@ -214,11 +211,15 @@ export class UpdateMonsterHealthComponent implements OnInit {
 
   decrementHealthMax() {
     let step: number = 1;
-    if (this.healthMax == 1) {
-      return false;
-    } else {
+    if (this.title == MonsterDetailType.HEALTH) {
       this.healthMax -= step;
-    }
+    } else {
+      if (this.healthMax == 1) {
+        return false;
+      } else {
+        this.healthMax -= step;
+      }
+    }    
   }
 
   changeHealthMax(event: any) {

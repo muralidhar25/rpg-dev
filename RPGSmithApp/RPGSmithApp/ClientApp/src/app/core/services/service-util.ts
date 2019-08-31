@@ -1710,4 +1710,14 @@ export class ServiceUtil {
   //  return description;
   //}
 
+  public static EncryptID(id) {
+    let encryptedId = '';
+    encryptedId = Number(+id * 2 + 89898989 - (+id)).toString(16);
+    return encryptedId;
+  }
+  public static DecryptID(encryptedId) {
+    let decryptedId = '';
+    decryptedId = (parseInt(encryptedId, 16) - 89898989).toString();
+    return decryptedId;
+  }
 }
