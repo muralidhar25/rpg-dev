@@ -14,43 +14,111 @@
 
           <!-- Toolbar links -->
           <ul class="page-toolbar-links" *ngIf="!isLoading">
-            <li class="hidden-tab" *ngIf="rulesetModel?.isItemEnabled">
-              <a [routerLink]="['/character/inventory/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Inventory</span></a>
+            <li *ngIf="rulesetModel" class="hidden-tab show-first-child">
+              <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Monster"> <span>Monsters</span></a>
             </li>
-            <li class="hidden-tab" *ngIf="rulesetModel?.isSpellEnabled">
-              <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+            <li *ngIf="rulesetModel?.isSpellEnabled" class="hidden-tab">
+              <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
             </li>
-            <li class="hidden-tab" *ngIf="rulesetModel?.isAbilityEnabled">
-              <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+            <li *ngIf="rulesetModel?.isAbilityEnabled" class="hidden-tab">
+              <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
             </li>
-            <li class="hidden-tab" *ngIf="rulesetModel">
-              <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
+            <li *ngIf="rulesetModel?.isBuffAndEffectEnabled" class="hidden-tab">
+              <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE"> <span>Buffs/Effects</span></a>
             </li>
-
-            <li class="visible-tab mt-0">
+            <li *ngIf="rulesetModel" class="hidden-tab">
+              <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Pouch"> <span>Loot</span></a>
+            </li>
+            <li class="visible-tab">
               <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
                 <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
                   <ul class="dropdown-menu-list" *ngIf="!isLoading">
-                    <li class="dropdown-menu-item" *ngIf="rulesetModel?.isItemEnabled">
-                      <a [routerLink]="['/character/inventory/', characterId]" class="btn btn-link-primary nav-redirection  icon-Gen-Items"> Inventory</a>
+                    <li *ngIf="rulesetModel" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Monster"> <span>Monsters</span></a>
                     </li>
-                    <li class="dropdown-menu-item" *ngIf="rulesetModel?.isSpellEnabled">
-                      <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
+                    <li *ngIf="rulesetModel?.isSpellEnabled" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
                     </li>
-                    <li class="dropdown-menu-item" *ngIf="rulesetModel?.isAbilityEnabled">
-                      <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
+                    <li *ngIf="rulesetModel?.isAbilityEnabled" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
                     </li>
-
-                    <li class="dropdown-menu-item" *ngIf="rulesetModel">
-                      <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> Character Stats</a>
+                    <li *ngIf="rulesetModel?.isBuffAndEffectEnabled" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE">Buffs/Effects</a>
                     </li>
-
+                    <li *ngIf="rulesetModel" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> Loot</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+                <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn icon icon-with-text btn-primary dropdown-toggle is-show">
+                  R
+                  <span class="text-hide-tab  is-show">Records</span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+                  <ul class="dropdown-menu-list">
+                    <li *ngIf="rulesetModel" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/monster/', ruleSetId]" class="btn btn-link-primary nav-redirection selected icon-Monster"> <span>Monsters</span></a>
+                    </li>
+                    <li *ngIf="rulesetModel?.isSpellEnabled" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/spell/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
+                    </li>
+                    <li *ngIf="rulesetModel?.isAbilityEnabled" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/ability/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
+                    </li>
+                    <li *ngIf="rulesetModel?.isBuffAndEffectEnabled" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/buff-effect/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-BnE">Buffs/Effects</a>
+                    </li>
+                    <li *ngIf="rulesetModel" class="dropdown-menu-item">
+                      <a [routerLink]="['/ruleset/loot/', ruleSetId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> Loot</a>
+                    </li>
                   </ul>
                 </div>
               </div>
             </li>
           </ul>
+          <!--<ul class="page-toolbar-links" *ngIf="!isLoading">
+    <li class="hidden-tab" *ngIf="rulesetModel?.isItemEnabled">
+      <a [routerLink]="['/character/inventory/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Items"> <span>Inventory</span></a>
+    </li>
+    <li class="hidden-tab" *ngIf="rulesetModel?.isSpellEnabled">
+      <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> <span>Spells</span></a>
+    </li>
+    <li class="hidden-tab" *ngIf="rulesetModel?.isAbilityEnabled">
+      <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> <span>Abilities</span></a>
+    </li>
+    <li class="hidden-tab" *ngIf="rulesetModel">
+      <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> <span>Character Stats</span></a>
+    </li>
+
+    <li class="visible-tab mt-0">
+      <div class="dropdown dropdown-buttons" [ngClass]="{'show': isDropdownOpen}">
+        <button type="button" data-toggle="dropdown" aria-expanded="false" class="btn btn-primary dropdown-toggle is-show">Records</button>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="newItemTrigger" *ngIf="isDropdownOpen">
+          <ul class="dropdown-menu-list" *ngIf="!isLoading">
+            <li class="dropdown-menu-item" *ngIf="rulesetModel?.isItemEnabled">
+              <a [routerLink]="['/character/inventory/', characterId]" class="btn btn-link-primary nav-redirection  icon-Gen-Items"> Inventory</a>
+            </li>
+            <li class="dropdown-menu-item" *ngIf="rulesetModel?.isSpellEnabled">
+              <a [routerLink]="['/character/spell/', characterId]" class="btn btn-link-primary nav-redirection icon-Rec-Magical"> Spells</a>
+            </li>
+            <li class="dropdown-menu-item" *ngIf="rulesetModel?.isAbilityEnabled">
+              <a [routerLink]="['/character/ability/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-Ability"> Abilities</a>
+            </li>
+
+            <li class="dropdown-menu-item" *ngIf="rulesetModel">
+              <a [routerLink]="['/character/character-stats/', characterId]" class="btn btn-link-primary nav-redirection icon-Gen-CharStat"> Character Stats</a>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </li>
+  </ul>-->
           <!-- End of toolbar links -->
         </div>
 
@@ -74,8 +142,8 @@
                 <th class="health-circle-column"><span>HEALTH</span></th>
                 <th><span>TEAM</span></th>
                 <th><span>BUFFS & EFFECTS</span></th>
-                <th class="target-column"><span>TARGET</span></th>
-                <th><span>ACTIONS</span></th>
+                <!--<th class="target-column"><span>TARGET</span></th>-->
+                <!--<th><span>ACTIONS</span></th>-->
               </tr>
             </thead>
             <tbody>
@@ -186,7 +254,7 @@
                       </div>
                     </ng-container>
                   </td>
-                  <td>
+                  <!--<td>
                     <div class="white-section ">
                       <div class="initiative-title-box monsters-title-box target-column" *ngIf="item.targetId>0" popover="{{getTargetName(item)}}" triggers="hover">
                         <ng-container>
@@ -197,8 +265,8 @@
                         </ng-container>
                       </div>
                     </div>
-                  </td>
-                  <td>
+                  </td>-->
+                  <!--<td>
                     <div class="white-section">
                       <ul class="action-buttons-table">
                         <li class="action-button-icon-orange icon-Gen-Chat crsr-pointer" *ngIf="!item.isOwnPlayer && item.type==combatantsType.CHARACTER && item.isPlayerCharacter" (click)="ChatBtn(item);$event.stopPropagation()"></li>
@@ -206,7 +274,7 @@
                         <li *ngIf="item?.isOwnPlayer && item?.targetId>0" class="action-button-icon-orange icon-RemTarget crsr-pointer" (click)="RemoveTargetBtn(item);$event.stopPropagation()"></li>
                       </ul>
                     </div>
-                  </td>
+                  </td>-->
                 </ng-container>
               </tr>
             </tbody>

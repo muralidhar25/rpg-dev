@@ -1,18 +1,15 @@
 import { Component, OnInit, HostListener, ViewChild, Input } from '@angular/core';
 import { fadeInOut } from '../../core/services/animations';
-//import { CharacterStatClusterTileComponent } from './character-stat-cluster-tile/character-stat-cluster-tile.component';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { CombatInitiativeComponent } from './combat-initiative/combat-initiative.component';
-import { Router, NavigationExtras, ActivatedRoute } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { Characters } from '../../core/models/view-models/characters.model';
 import { CombatDetails } from '../../core/models/view-models/combat-details.model';
 import { Utilities } from '../../core/common/utilities';
 import { AddCombatMonsterComponent } from './add-combat-monster/add-monster-combat.component';
 import { RemoveCombatMonsterComponent } from './remove-combat-monster/remove-monster-combat.component';
 import { combatantType, COMBAT_SETTINGS, CombatItemsType, STAT_TYPE, MonsterDetailType } from '../../core/models/enums';
-import { combatant } from '../../core/models/view-models/combatants.model';
 import { CombatHealthComponent } from './update-combat-health/update-combat-health.component';
-import { DropItemsCombatMonsterComponent } from './drop-monstercombat-items/drop-items-monstercombat.component';
 import { CombatVisibilityComponent } from './change-combat-visiblity/change-combat-visiblity.component';
 import { CombatSettings } from '../../core/models/view-models/combatSettings.model';
 import { CustomDice } from '../../core/models/view-models/custome-dice.model';
@@ -30,7 +27,7 @@ import { CastComponent } from '../../shared/cast/cast.component';
 import { DropItemsMonsterComponent } from '../../records/monster/drop-items-monster/drop-items-monster.component';
 import { EditMonsterComponent } from '../../records/monster/edit-monster/edit-monster.component';
 import { CreateMonsterTemplateComponent } from '../../records/monster-template/create-monster-template/create-monster-template.component';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ItemsService } from '../../core/services/items.service';
 import { DBkeys } from '../../core/common/db-keys';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
@@ -40,6 +37,8 @@ import { CharactersCharacterStat } from '../../core/models/view-models/character
 import { ContextMenuComponent, ContextMenuService } from 'ngx-contextmenu';
 import { ImageViewerComponent } from '../../shared/image-interface/image-viewer/image-viewer.component';
 import { UpdateMonsterHealthComponent } from '../../shared/update-monster-health/update-monster-health.component';
+import { debug } from 'util';
+
 
 @Component({
   selector: 'app-combat',
@@ -67,6 +66,7 @@ export class CombatComponent implements OnInit {
   curretnCombatant: any;
   currentCombatantDetail: any;
   isDropdownOpen: boolean = false;
+  isDropdownOpenNewWindow: boolean = false;
   isCharacterItemEnabled: boolean = false;
   isCharacterSpellEnabled: boolean = false;
   isCharacterAbilityEnabled: boolean = false;
@@ -156,7 +156,7 @@ export class CombatComponent implements OnInit {
   ]
   noStatProvided: string = "No Stat Provided"
   noCharacterDescriptionProvided: string = 'No Character Description Provided';
-  noMonsterDescriptionProvided: string ="No Monster Description Provided"
+  noMonsterDescriptionProvided: string = "No Monster Description Provided"
   noBuffs_EffectsAvailable: string = 'No Buffs & Effects Assigned';
   noItemsAvailable: string = 'No Items Added';
   noSpellsAvailable: string = 'No Spells Assigned';
@@ -172,23 +172,37 @@ export class CombatComponent implements OnInit {
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: any) {
     //console.log(event);
-    if (event.keyCode === 32 && (event.target == document.body || event.target.nodeName =='BUTTON') && this.showCombatOptions) {      
+    if (event.keyCode === 32 && (event.target == document.body || event.target.nodeName == 'BUTTON') && this.showCombatOptions) {
       event.preventDefault();
       this.nextTurn();
-      
     }
   }
 
   @HostListener('document:click', ['$event.target'])
   documentClick(target: any) {
-    try {      
+    try {
+      if (target.className && target.className == "Editor_Command a-hyperLink") {
+        this.GotoCommand(target.attributes["data-editor"].value);
+      }
       if (target.className.endsWith("setting-toggle-btn")) {
         this.isDropdownOpen = !this.isDropdownOpen;
       }
-      else if (this.hasSomeParentTheClass(target, 'setting-toggle'))
+      else if (target.className.endsWith("newWindow-toggle-btn")) {
+        this.isDropdownOpenNewWindow = !this.isDropdownOpenNewWindow;
+      }
+      else if (this.hasSomeParentTheClass(target, 'setting-toggle')) {
+        this.isDropdownOpenNewWindow = false;
         this.isDropdownOpen = true;
-      else this.isDropdownOpen = false;
-    } catch (err) { this.isDropdownOpen = false; }
+      }
+      else if (this.hasSomeParentTheClass(target, 'newWindow-toggle')) {
+        this.isDropdownOpen = false;
+        this.isDropdownOpenNewWindow = true;
+      }
+      else {
+        this.isDropdownOpen = false;
+        this.isDropdownOpenNewWindow = false;
+      }
+    } catch (err) { this.isDropdownOpen = false; this.isDropdownOpenNewWindow = false; }
   }
 
   hasSomeParentTheClass(element, classname) {
@@ -215,8 +229,25 @@ export class CombatComponent implements OnInit {
     private contextMenuService: ContextMenuService) {
     this.route.params.subscribe(params => { this.ruleSetId = params['id']; });
 
+    let isNewTab = false;
+    let url = this.router.url.toLowerCase();
+    if (url && url.split('?') && url.split('?')[1]) {
+      let serachParams = new URLSearchParams(url.split('?')[1]);
+      isNewTab = (serachParams.get("newtab") === "1");
+    }
+    if (isNewTab) {
+      if (this.ruleSetId) {
+        let RuleSetID = ServiceUtil.DecryptID(this.ruleSetId);
+        this.ruleSetId = +RuleSetID;
+      }
+      let displayURL = '/ruleset/combat';
+      let originalURl = '/ruleset/combat/' + this.ruleSetId;
+      Utilities.RedriectToPageWithoutId(originalURl, displayURL, this.router, 1);
+    }
+
+
     this.sharedService.shouldUpdateCombatantListForAddDeleteMonsters().subscribe(combatantListJson => {
-     
+
       if (combatantListJson) {
         this.combatService.markCombatAsUpdatedFlag(this.CombatId).subscribe(res => {
           let result = res;
@@ -230,9 +261,9 @@ export class CombatComponent implements OnInit {
         });
 
         ///////////////////////////////////////////////////////////////////////////////////////////
-        
+
         //{ flag: combatantListFlag, selectedDeployedMonsters: selectedDeployedMonsters}
-        
+
         if (combatantListJson.flag) {
           if (combatantListJson.selectedDeployedMonsters && combatantListJson.selectedDeployedMonsters.length) {
             this.GetCombatDetails(true, combatantListJson.selectedDeployedMonsters);
@@ -244,14 +275,14 @@ export class CombatComponent implements OnInit {
         else {
           this.GetCombatDetails();
         }
-        
-      ///////////////////////////////////////////////////////////////////////////////////////////////
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////
         //this.GetCombatDetails();
       }
     });
 
     this.sharedService.shouldUpdateCombatantList().subscribe(combatantListJson => {
-      
+
       if (combatantListJson) {
         //{ combatantList: this.initiativeInfo, isInitialForCombatStart:this.isInitialForCombatStart }
         this.combatants = combatantListJson.combatantList;
@@ -378,7 +409,7 @@ export class CombatComponent implements OnInit {
         this.rulesetModel = combatModal.campaign;
         this.setHeaderValues(this.rulesetModel);
         this.settings = combatModal.combatSettings;
-        
+
         this.combatants = combatModal.combatantList;
 
         let characterFlag = false;
@@ -509,8 +540,9 @@ export class CombatComponent implements OnInit {
           let roundTime = this.settings.gameRoundLength * this.roundCounter;
           this.gametime = this.time_convert(roundTime);
         }
+
         if (!(selectedDeployedMonsters && selectedDeployedMonsters.length)) {
-          
+
           selectedDeployedMonsters = [];
           let monsterCombatants = this.combatants.filter(x => (x.type == combatantType.MONSTER && x.initiative == null));
           monsterCombatants.map((m) => {
@@ -525,13 +557,51 @@ export class CombatComponent implements OnInit {
             this.combatants.map((rec_C) => {
 
               if (rec_C.type == combatantType.MONSTER && rec_C.monsterId == rec_deployedMonster.monsterId) {
-                
+
                 if (this.settings && this.settings.groupInitiative) {
 
                   rec_C.initiativeCommand = this.settings.groupInitFormula;
                 }
 
-                let res = DiceService.rollDiceExternally(this.alertService, rec_C.initiativeCommand, this.customDices);
+                let res: any;
+
+                // Start code to get common value for monsters
+                if (this.settings && this.settings.groupInitiative) {
+                  let monsterInitativeValue = [];
+                  this.combatants.map(x => {
+                    if (x.type == combatantType.MONSTER) {
+                      monsterInitativeValue.push(x.initiativeValue);
+                    }
+                  });
+
+                  var mostCommon = 1;
+                  var m = 0;
+                  var mostCommonInitativeValue;
+                  for (var i = 0; i < monsterInitativeValue.length; i++) {
+                    for (var j = i; j < monsterInitativeValue.length; j++) {
+                      if (monsterInitativeValue[i] == monsterInitativeValue[j])
+                        m++;
+                      if (mostCommon < m) {
+                        mostCommon = m;
+                        mostCommonInitativeValue = monsterInitativeValue[i];
+                      }
+                    }
+                    m = 0;
+                  }
+                  res = mostCommonInitativeValue;
+
+                  //this.combatants.map(x => {
+                  //  if (x.type == combatantType.MONSTER) {
+                  //    x.initiativeValue = mostCommonInitativeValue;
+                  //  }
+                  //});
+                }
+                else {
+                  res = DiceService.rollDiceExternally(this.alertService, rec_C.initiativeCommand, this.customDices);
+                }
+                // End code to get common value for monsters
+
+                
 
                 if (this.settings && this.settings.groupInitiative && !resultOfGroupInitiativeFilled_Flag) {
                   if (isNaN(res)) {
@@ -557,14 +627,14 @@ export class CombatComponent implements OnInit {
               }
             })
 
-            
+
 
 
             //let OldIndexToRemove = this.combatants.findIndex(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId)
-            
+
             //let combatant_List = Object.assign([], this.combatants);
             //combatant_List.sort((a, b) => b.initiativeValue - a.initiativeValue || a.type.localeCompare(b.type));
-             
+
             //let NewIndexToAdd = combatant_List.findIndex(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId);
             //let NewItemToAdd = combatant_List.find(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId);
 
@@ -575,9 +645,9 @@ export class CombatComponent implements OnInit {
             //this.combatants.map((rec, rec_index) => {
             //  rec.sortOrder = rec_index + 1;
             //})
-            
-          })
-          
+
+          })         
+
           selectedDeployedMonsters.sort((a, b) => b.initiativeValue - a.initiativeValue);
 
           let Oldcombatants = Object.assign([], this.combatants);
@@ -585,21 +655,21 @@ export class CombatComponent implements OnInit {
           selectedDeployedMonsters.map((rec_deployedMonster) => {
             if (Oldcombatants.find(x => x.monsterId != rec_deployedMonster.monsterId)) {
               newcombatants.push(Oldcombatants.find(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId));
-              
+
             }
             Oldcombatants = Oldcombatants.filter(x => x.monsterId != rec_deployedMonster.monsterId);
-            
-      
+
+
           })
           newcombatants.map((rec_deployedMonster) => {
-            var insertedIndex=Oldcombatants.push(rec_deployedMonster);
+            var insertedIndex = Oldcombatants.push(rec_deployedMonster);
             insertedIndex = insertedIndex - 1;
 
             let combatant_List = Object.assign([], Oldcombatants);
             combatant_List.sort((a, b) => b.initiativeValue - a.initiativeValue || a.type.localeCompare(b.type));
 
             let NewIndexToAdd = combatant_List.findIndex(x => x.type == combatantType.MONSTER && x.monsterId == rec_deployedMonster.monsterId);
-            
+
             Oldcombatants.splice(insertedIndex, 1);
             Oldcombatants.splice((NewIndexToAdd), 0, rec_deployedMonster);
           })
@@ -610,10 +680,10 @@ export class CombatComponent implements OnInit {
 
           //selectedDeployedMonsters.map((rec_deployedMonster) => {          
 
-  
 
 
-            
+
+
           //  let combatant_List = Object.assign([], Oldcombatants);
           //  combatant_List.sort((a, b) => b.initiativeValue - a.initiativeValue || a.type.localeCompare(b.type));
 
@@ -627,7 +697,7 @@ export class CombatComponent implements OnInit {
           //  this.combatants.map((rec, rec_index) => {
           //    rec.sortOrder = rec_index + 1;
           //  })
-   
+
           //})
 
           //console.log('save', this.combatants)
@@ -636,11 +706,11 @@ export class CombatComponent implements OnInit {
 
               this.combatService.saveCombatantList(this.combatants, this.ruleSetId).subscribe(res => {
                 this.combatService.markCombatAsUpdatedFlag(this.CombatId).subscribe(res => {
-                  
+
                 }, error => {
-                  
+
                 });
-                
+
               }, error => {
                 this.isLoading = false;
                 let Errors = Utilities.ErrorDetail("", error);
@@ -659,7 +729,7 @@ export class CombatComponent implements OnInit {
                 this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
               }
             });
-            
+
           }
 
 
@@ -790,7 +860,7 @@ export class CombatComponent implements OnInit {
 
 
   DelayTurn(currentCombat) {
-    
+
     currentCombat.delayTurn = true;
     this.combatants.map(x => {
       if (x.type == combatantType.MONSTER && x.monsterId == currentCombat.monsterId && currentCombat.isCurrentTurn) {
@@ -1368,7 +1438,7 @@ export class CombatComponent implements OnInit {
 
   //change settings here
   UpdateSettings(e, type) {
-    
+
     switch (type) {
       case COMBAT_SETTINGS.PC_INITIATIVE_FORMULA:
         this.settings.pcInitiativeFormula = e.target.value;
@@ -1503,7 +1573,7 @@ export class CombatComponent implements OnInit {
   }
 
   buffEffectclick(item) {
-   
+
     this.bsModalRef = this.modalService.show(CombatBuffeffectDetailsComponent, {
       class: 'modal-primary',
       ignoreBackdropClick: true,
@@ -1829,7 +1899,7 @@ export class CombatComponent implements OnInit {
     });
   }
   public onContextMenu($event: MouseEvent, item: any): void {
-    
+
     this.contextMenuService.show.next({
       anchorElement: $event.target,
       // Optional - if unspecified, all context menu components will open
@@ -1841,27 +1911,27 @@ export class CombatComponent implements OnInit {
     $event.stopPropagation();
   }
   setdefaultColor(color, item) {
-    
+
     item.visibilityColor = color.bodyBgColor;
     this.saveVisibilityDetails(item);
 
   }
-  ShowMonsterName(item,flag) {
+  ShowMonsterName(item, flag) {
     item.showMonsterName = flag;
     this.saveVisibilityDetails(item);
   }
   ShowVisibility(item) {
-    
+
     item.visibleToPc = true;
     this.saveVisibilityDetails(item);
   }
   HideVisibility(item) {
-    
+
     item.visibleToPc = false;
     this.saveVisibilityDetails(item);
   }
   saveVisibilityDetails(currentItem) {
-    
+
     this.BindMonstersName();
     this.combatService.saveVisibilityDetails(currentItem).subscribe(res => {
 
@@ -1950,72 +2020,72 @@ export class CombatComponent implements OnInit {
     });
   }
 
-  refreshPCDataModelPageData() {    
-      this.refreshPCDataModel = setInterval(() => {
-        //console.log("update");
-        this.combatService.getCombatDetails_PCModelData(this.ruleSetId).subscribe(data => {
+  refreshPCDataModelPageData() {
+    this.refreshPCDataModel = setInterval(() => {
+      //console.log("update");
+      this.combatService.getCombatDetails_PCModelData(this.ruleSetId).subscribe(data => {
         //console.log("res ", data);
         let res: any = data;
-          if (res && res.combatantList) {
-            if (res.combatantList.length) {
-              res.combatantList.map((_rec_pc) => {
-                this.combatants.map((_rec_combatant) => {
-                  if (_rec_combatant.type == combatantType.CHARACTER && _rec_combatant.characterId == _rec_pc.characterId) {
+        if (res && res.combatantList) {
+          if (res.combatantList.length) {
+            res.combatantList.map((_rec_pc) => {
+              this.combatants.map((_rec_combatant) => {
+                if (_rec_combatant.type == combatantType.CHARACTER && _rec_combatant.characterId == _rec_pc.characterId) {
 
-                    ////////update target
-                    _rec_combatant.targetType = _rec_pc.targetType;
-                    _rec_combatant.targetId = _rec_pc.targetId;
-                    ////////update target end
+                  ////////update target
+                  _rec_combatant.targetType = _rec_pc.targetType;
+                  _rec_combatant.targetId = _rec_pc.targetId;
+                  ////////update target end
 
-                    ////////update health
-                    if (_rec_pc.character.diceRollViewModel.charactersCharacterStats) {
-                      let statFoundFlag: boolean = false;
-                      let charStat: CharactersCharacterStat = null;
-                      this.settings.charcterHealthStats.split(/\[(.*?)\]/g).map((rec) => {
-                        if (rec && !statFoundFlag) {
-                          let charStatList = _rec_pc.character.diceRollViewModel.charactersCharacterStats.filter(x => x.characterStat.statName.toUpperCase() == rec.toUpperCase());
-                          if (charStatList.length) {
-                            charStat = charStatList[0];
-                          }
-                          statFoundFlag = true;
+                  ////////update health
+                  if (_rec_pc.character.diceRollViewModel.charactersCharacterStats) {
+                    let statFoundFlag: boolean = false;
+                    let charStat: CharactersCharacterStat = null;
+                    this.settings.charcterHealthStats.split(/\[(.*?)\]/g).map((rec) => {
+                      if (rec && !statFoundFlag) {
+                        let charStatList = _rec_pc.character.diceRollViewModel.charactersCharacterStats.filter(x => x.characterStat.statName.toUpperCase() == rec.toUpperCase());
+                        if (charStatList.length) {
+                          charStat = charStatList[0];
                         }
-                      });
+                        statFoundFlag = true;
+                      }
+                    });
 
-                      _rec_combatant.character.healthCurrent = this.DummyValueForCharHealthStat;
-                      _rec_combatant.character.healthMax = this.DummyValueForCharHealthStat;
-                      if (charStat) {
-                        _rec_combatant.character.healthStatId = charStat.charactersCharacterStatId;
-                        if (charStat.characterStat.characterStatTypeId == STAT_TYPE.CurrentMax) {
-                          _rec_combatant.character.healthCurrent = +charStat.current;
-                          _rec_combatant.character.healthMax = +charStat.maximum;
-                        }
-                        else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.ValueSubValue) {
-                          _rec_combatant.character.healthCurrent = +charStat.value;
-                          _rec_combatant.character.healthMax = +charStat.subValue;
-                        }
-                        else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.Number) {
-                          _rec_combatant.character.healthCurrent = +charStat.number;
-                        }
-                        else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.Combo) {
-                          _rec_combatant.character.healthCurrent = +charStat.defaultValue;
-                        }
+                    _rec_combatant.character.healthCurrent = this.DummyValueForCharHealthStat;
+                    _rec_combatant.character.healthMax = this.DummyValueForCharHealthStat;
+                    if (charStat) {
+                      _rec_combatant.character.healthStatId = charStat.charactersCharacterStatId;
+                      if (charStat.characterStat.characterStatTypeId == STAT_TYPE.CurrentMax) {
+                        _rec_combatant.character.healthCurrent = +charStat.current;
+                        _rec_combatant.character.healthMax = +charStat.maximum;
+                      }
+                      else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.ValueSubValue) {
+                        _rec_combatant.character.healthCurrent = +charStat.value;
+                        _rec_combatant.character.healthMax = +charStat.subValue;
+                      }
+                      else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.Number) {
+                        _rec_combatant.character.healthCurrent = +charStat.number;
+                      }
+                      else if (charStat.characterStat.characterStatTypeId == STAT_TYPE.Combo) {
+                        _rec_combatant.character.healthCurrent = +charStat.defaultValue;
                       }
                     }
-                    ////////update health end
-
-                    ////////update B&E
-                    _rec_combatant.character.characterBuffAndEffects = _rec_pc.character.characterBuffAndEffects;
-                    ////////update B&E end
-
                   }
-                })
-              })
-            }
+                  ////////update health end
 
+                  ////////update B&E
+                  _rec_combatant.character.characterBuffAndEffects = _rec_pc.character.characterBuffAndEffects;
+                  ////////update B&E end
+
+                }
+              })
+            })
           }
+
+        }
       }, error => {
-        
-      });      
+
+      });
     }, 3000);
   }
 
@@ -2032,7 +2102,7 @@ export class CombatComponent implements OnInit {
   }
 
   SaveTarget(combatatnt) {
-    this.combatService.saveTarget(combatatnt,true).subscribe(res => {
+    this.combatService.saveTarget(combatatnt, true).subscribe(res => {
       //let result = res;
     }, error => {
       let Errors = Utilities.ErrorDetail("", error);
@@ -2052,7 +2122,41 @@ export class CombatComponent implements OnInit {
           unknownMonsterNameCount = unknownMonsterNameCount + 1;
         }
 
-      } 
+      }
     });
+  }
+
+  GotoCommand(cmd) {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = this.characterId;
+    this.bsModalRef.content.character = this.character;
+    this.bsModalRef.content.command = cmd;
+  }
+
+  OpenGMInNewTab() {
+    let RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+    this.router.navigate([]).then(result => { window.open(['/ruleset/combat/' + RuleSetId].toString()+'?newTab=1', '_blank'); });
+    //this.router.navigate(['/ruleset/combat/'], { queryParams: { id:this.ruleSetId}, skipLocationChange: true }); 
+  }
+  OpenGMInNewWindow() {
+    let RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+    window.open(['/ruleset/combat/' + RuleSetId].toString() + '?newTab=1', '_blank', "top=100,left=200,width=700,height=500")
+  }
+
+  OpenPlayerInNewTab() {
+    //this.ruleSetId = CryptoJS.AES.encrypt(this.ruleSetId.toString(), this.KEY);
+    let RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+    this.router.navigate([]).then(result => { window.open(['/ruleset/gm-playerview/' + RuleSetId].toString() + '?newTab=1', '_blank'); });
+  }
+
+  OpenPlayerInNewWindow() {
+    let RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
+    window.open(['/ruleset/gm-playerview/' + RuleSetId].toString() + '?newTab=1', '_blank', "top=100,left=200,width=800,height=500")
   }
 }

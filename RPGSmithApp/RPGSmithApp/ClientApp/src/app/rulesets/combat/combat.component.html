@@ -9,6 +9,29 @@
           <button class="btn-red-icons" (click)="endCombat()" *ngIf="showCombatOptions"><span class=" icon icon-CharStat-OnOff mr-2"></span> END COMBAT</button>
           <button class="btn-green-icons" (click)="startCombat()" *ngIf="!showCombatOptions"><span class=" icon icon-CharStat-OnOff mr-2"></span> START COMBAT</button>
           <!-- Mobile View-->
+          <div class="btn-group d-lg-none" [ngClass]="{'open': isDropdownOpenNewWindow}">
+            <button class="setting-btn new_window-btn icon icon-external dropdown-toggle newWindow-toggle-btn" type="button"></button>
+            <div class="dropdown-menu newWindow-toggle dropdown-menu-newWindow ">
+              <div class="row m-0">
+                <div class="col-12">
+                  <ul>
+                    <li>
+                      <a href="javascript:void(0);" (click)="OpenGMInNewTab()">Open GM View In new Tab</a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0);" (click)="OpenGMInNewWindow()">Open GM View In new Window</a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0);" (click)="OpenPlayerInNewTab()">Open Player View In new Tab</a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0);" (click)="OpenPlayerInNewWindow()">Open Player View In new Window</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="btn-group d-lg-none" [ngClass]="{'open': isDropdownOpen}">
             <button class="setting-btn icon-Settings dropdown-toggle setting-toggle-btn" type="button"></button>
             <div class="dropdown-menu setting-toggle">
@@ -167,7 +190,29 @@
               <button class="btn-red-icons crsr-pointer" (click)="monsterRemove()"><span class="icon icon-Rec-Remove mr-2"></span> MONSTERS</button>
             </li>
             <li>
-              <button class="btn-orange-icons crsr-pointer" (click)="openDiceRollModal()"><span class="icon icon-CharStat-Command mr-2"></span> DICE</button>
+              <div class="btn-group" [ngClass]="{'open': isDropdownOpenNewWindow}">
+                <button class="hidden-xs setting-btn new_window-btn icon icon-external dropdown-toggle newWindow-toggle-btn" type="button"></button>
+                <div class="dropdown-menu newWindow-toggle dropdown-menu-newWindow ">
+                  <div class="row m-0">
+                    <div class="col-12">
+                      <ul>
+                        <li>
+                          <a href="javascript:void(0);" (click)="OpenGMInNewTab()">Open GM View In new Tab</a>
+                        </li>
+                        <li>
+                          <a href="javascript:void(0);" (click)="OpenGMInNewWindow()">Open GM View In new Window</a>
+                        </li>
+                        <li>
+                          <a href="javascript:void(0);" (click)="OpenPlayerInNewTab()">Open Player View In new Tab</a>
+                        </li>
+                        <li>
+                          <a href="javascript:void(0);" (click)="OpenPlayerInNewWindow()">Open Player View In new Window</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </li>
             <li>
               <div class="btn-group" [ngClass]="{'open': isDropdownOpen}">
@@ -215,7 +260,7 @@
                         <li *ngIf="settings.xpDistributionforDeletedMonster">
                           Character XP Stat
                           <!--<input type="text" class="cust-txtbox" name="CharcterXPStats" [(ngModel)]="settings.charcterXpStats"
-                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_XP_STAT)" />-->
+                          (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_XP_STAT)" />-->
                           <div class="input-core-stat">
                             <select class='form-control' (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_XP_STAT)">
                               <option value="">Select</option>
@@ -226,7 +271,7 @@
                         <li>
                           Character Health Stat
                           <!--<input type="text" class="cust-txtbox" name="CharcterHealthStats" [(ngModel)]="settings.charcterHealthStats"
-                                 (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_HEALTH_STAT)" />-->
+                          (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_HEALTH_STAT)" />-->
                           <div class="input-core-stat">
                             <select class='form-control' (change)="UpdateSettings($event, COMBAT_SETTINGS.CHARACTER_TARGET_HEALTH_STAT)">
                               <option value="">Select</option>
@@ -334,7 +379,7 @@
               <td>
                 <div class="white-section name-data text-ellipsis crsr-pointer" (click)="nameClicked(item);$event.stopPropagation()"
                      popover="{{item?.type == combatItemsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}" triggers="hover">
-                  
+
                   <ng-container *ngIf="!(item?.type == combatItemsType.MONSTER && item?.visibleToPc && !item?.showMonsterName)">{{item?.type == combatItemsType.CHARACTER ? item?.character?.characterName : item?.monster?.name}}</ng-container>
                   <ng-container *ngIf="(item?.type == combatItemsType.MONSTER && item?.visibleToPc && !item?.showMonsterName)">
                     <em>{{item?.monster?.name}}</em><br />
@@ -359,7 +404,7 @@
                   <!--Current-Max/Val-SubVal Type Stat-->
                   <ng-container *ngIf="item?.character?.healthCurrent!=DummyValueForCharHealthStat && item?.character?.healthMax!=DummyValueForCharHealthStat">
                     <div class="white-section p-0 crsr-pointer" (click)="progressHealth(item);$event.stopPropagation()">
-                      <circle-progress [percent]="(item?.character?.healthCurrent/item?.character?.healthMax)*100"
+                      <circle-progress [percent]="(((item?.character?.healthCurrent/item?.character?.healthMax)*100) < 1) ? 1 : ((item?.character?.healthCurrent/item?.character?.healthMax)*100)"
                                        [space]="-10"
                                        [outerStrokeWidth]="10"
                                        [innerStrokeWidth]="10"
@@ -388,7 +433,7 @@
                 </ng-container>
                 <ng-container *ngIf="item.type==combatItemsType.MONSTER">
                   <div class="white-section p-0 crsr-pointer" (click)="progressHealth(item);$event.stopPropagation()">
-                    <circle-progress [percent]="(item?.monster?.healthCurrent/item?.monster?.healthMax)*100"
+                    <circle-progress [percent]="(((item?.monster?.healthCurrent/item?.monster?.healthMax)*100) < 1) ? 1: ((item?.monster?.healthCurrent/item?.monster?.healthMax)*100)"
                                      [space]="-10"
                                      [outerStrokeWidth]="10"
                                      [innerStrokeWidth]="10"
@@ -607,8 +652,8 @@
           <button class="btn-orange btn-block icon-Rec-Drop crsr-pointer" (click)="dropMonsterItems(currentCombatantDetail)"> Drop Items</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
-          <button class="btn-black btn-block icon-Delay " [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'"  *ngIf="!currentCombatantDetail.delayTurn" [disabled]="!showCombatOptions" (click)="DelayTurn(currentCombatantDetail)"> Delay Turn</button>
-          <button class="btn-black btn-block icon-Resume" [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'"  *ngIf="currentCombatantDetail.delayTurn" (click)="ResumeTurn(currentCombatantDetail)"> Resume Turn</button>
+          <button class="btn-black btn-block icon-Delay " [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'" *ngIf="!currentCombatantDetail.delayTurn" [disabled]="!showCombatOptions" (click)="DelayTurn(currentCombatantDetail)"> Delay Turn</button>
+          <button class="btn-black btn-block icon-Resume" [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'" *ngIf="currentCombatantDetail.delayTurn" (click)="ResumeTurn(currentCombatantDetail)"> Resume Turn</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
           <button class="btn-red btn-block icon-Rec-Remove crsr-pointer" (click)="removeCurrentMonster(currentCombatantDetail)"> Remove</button>
@@ -620,11 +665,11 @@
           <button class="btn-orange btn-block icon-Gen-Items" [ngClass]="isCharacterItemEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToItem(currentCombatantDetail)"> Inventory</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
-          <button class="btn-orange btn-block icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToSpell(currentCombatantDetail)"> Spells</button>
+          <button class="btn-orange btn-block icon-Rec-Magical" [ngClass]="isCharacterSpellEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToSpell(currentCombatantDetail)">di Spells</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pr-sm-1 px-md-3 pr-lg-1">
           <button class="btn-black btn-block icon-Delay crsr-pointer" [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'" *ngIf="!currentCombatantDetail.delayTurn" (click)="DelayTurn(currentCombatantDetail)" [disabled]="!showCombatOptions"> Delay Turn</button>
-          <button class="btn-black btn-block icon-Resume crsr-pointer" [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'" *ngIf="currentCombatantDetail.delayTurn" (click)="ResumeTurn(currentCombatantDetail)"> Resume Turn</button>
+          <button class="btn-black btn-block icon-Resume crsr-pointer" [ngClass]="showCombatOptions ? 'crsr-pointer': 'disabled'" *ngIf="currentCombatantDetail.delayTurn" (click)="ResumeTurn(currentCombatantDetail)">ur Resume Turntt</button>
         </div>
         <div class="col-12 col-sm-6 col-md-12 col-lg-6 mb-2 pl-sm-1 px-md-3 pl-lg-1">
           <button class="btn-orange btn-block icon-Gen-Ability crsr-pointer" [ngClass]="isCharacterAbilityEnabled ? 'crsr-pointer': 'disabled'" (click)="isCharacterItemEnabled && redirectToAbility(currentCombatantDetail)"> Abilities</button>
