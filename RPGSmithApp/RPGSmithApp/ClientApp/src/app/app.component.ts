@@ -50,6 +50,7 @@ import { EditorStatComponent } from "./shared/editor-link-button/character-stat/
 import { EditorLinkComponent } from "./shared/editor-link-button/link/link.component";
 import { EditorExecuteComponent } from "./shared/editor-link-button/execute/execute.component";
 import { EditorCommandComponent } from "./shared/editor-link-button/command/command.component";
+import { CharactersCharacterStatService } from "./core/services/characters-character-stat.service";
 
 declare var $: any;
 
@@ -177,7 +178,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     public configurations: ConfigurationService, public router: Router, private modalService: BsModalService, private commonService: CommonService,
     private rulesetService: RulesetService, private userService: UserService, private charactersService: CharactersService, private localStorage: LocalStoreManager,
     private app1Service: AppService1, private activatedroute: ActivatedRoute, public campaignService: CampaignService, private lootService: LootService,
-    private http: HttpClient,
+    private http: HttpClient, private charactersCharacterStatService: CharactersCharacterStatService,
     //public googleAnalyticsEventsService: GoogleAnalyticsEventsService,
     @Inject(DOCUMENT) private document: Document
   ) {
@@ -314,6 +315,9 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (this.headers) {
         if (this.headers.headerLink == "character") {
           this.cId = this.headers.headerId;
+          if (this.cId) {
+            ServiceUtil.BindCharCharDetailsInLocalStorage(this.cId, this.charactersCharacterStatService, this.localStorage);
+          }
           this.characterId = this.headers.headerId;
           this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
             .subscribe(data => {
@@ -960,6 +964,9 @@ export class AppComponent implements OnInit, AfterViewInit {
           if (this.headers) {
             if (this.headers.headerLink == "character") {
               this.cId = this.headers.headerId;
+              if (this.cId) {
+                ServiceUtil.BindCharCharDetailsInLocalStorage(this.cId, this.charactersCharacterStatService, this.localStorage);
+              }
               this.characterId = this.headers.headerId;
               this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
                 .subscribe(data => {
@@ -1474,6 +1481,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.bsModalRef.content.title = 'Select Record to Link';
         this.bsModalRef.content.characterId = this.characterId;
         this.bsModalRef.content.ruleset = this.ruleset;
+        this.bsModalRef.content.isRulesetLevel = (this.router.url.toUpperCase().indexOf('/CHARACTER') > -1) ? false : true;
         this.bsModalRef.content.event.subscribe(data => {
           if (data) {
             result = data.toString();
@@ -1491,6 +1499,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.bsModalRef.content.title = 'Select Record to Execute';
         this.bsModalRef.content.characterId = this.characterId;
         this.bsModalRef.content.ruleset = this.ruleset;
+        this.bsModalRef.content.isRulesetLevel = (this.router.url.toUpperCase().indexOf('/CHARACTER') > -1) ? false : true;
         this.bsModalRef.content.event.subscribe(data => {
           if (data) {
             result = data.toString();

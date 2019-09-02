@@ -1185,7 +1185,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                   //if (redirectto != 99) {
                   //  this.alertService.showMessage(message, "", MessageSeverity.success);
                   //}
-                    
+                  ServiceUtil.BindCharCharDetailsInLocalStorage(this.characterId, this.charactersCharacterStatService, this.localStorage, true);
                     
                     if (redirectto == 0) {
 

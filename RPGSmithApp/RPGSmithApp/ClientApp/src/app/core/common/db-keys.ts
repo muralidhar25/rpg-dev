@@ -38,4 +38,5 @@ export class DBkeys {
   public static readonly NotifyForPendingInvites = "NotifyForPendingInvites";
   public static readonly IsComingFromCombatTracker_GM = "IsComingFromCombatTracker_GM";
   public static readonly IsComingFromCombatTracker_PC = "IsComingFromCombatTracker_PC";
+  public static readonly CHAR_CHAR_STAT_DETAILS = "charCharStatDetails";
 }

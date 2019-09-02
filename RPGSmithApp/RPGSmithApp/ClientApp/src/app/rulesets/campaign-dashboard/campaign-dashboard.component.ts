@@ -49,6 +49,12 @@ import { RulesetBuffAndEffectTileComponent } from '../../tile-ruleset/buff-and-e
 import { RulesetToggleTileComponent } from '../../tile-ruleset/toggle/toggle.component';
 import { EditRulesetCharacterStatClusterComponent } from '../../tile-ruleset/character-stat-cluster/edit-character-stat-cluster/edit-character-stat-cluster.component';
 import { RulesetCharacterStatClusterTileComponent } from '../../tile-ruleset/character-stat-cluster/character-stat-cluster.component';
+import { CastComponent } from '../../shared/cast/cast.component';
+import { SpellsService } from '../../core/services/spells.service';
+import { AbilityService } from '../../core/services/ability.service';
+import { ItemMasterService } from '../../core/services/item-master.service';
+import { MonsterTemplateService } from '../../core/services/monster-template.service';
+import { BuffAndEffectService } from '../../core/services/buff-and-effect.service';
 
 @Component({
   selector: 'app-campaign-dashboard',
@@ -189,6 +195,9 @@ export class CampaignDashboardComponent implements OnInit {
     private layoutService: RulesetDashboardLayoutService,
     private pageService: RulesetDashboardPageService,
     private tileConfig: RulesetTileConfigService, public appService: AppService1,
+    private SpellService: SpellsService, private AbilityService: AbilityService,
+    private monsterService: MonsterTemplateService, private itemMasterService: ItemMasterService,
+    private buffAndEffectService: BuffAndEffectService,
     private location: PlatformLocation
   ) {
     location.onPopState(() => this.modalService.hide(1));
@@ -294,12 +303,52 @@ export class CampaignDashboardComponent implements OnInit {
     });
 
   }
-  @HostListener('document:click', ['$event.target'])
-  documentClick(target: any) {
+  @HostListener('document:click', ['$event'])
+  documentClick(e: any) {
+    let target = e.target;
       if (target.className && target.className == "Editor_Command a-hyperLink") {
         this.GotoCommand(target.attributes["data-editor"].value);
       }
+    if (target.className) {
+      if (target.className == "Editor_Ruleset_spellDetail a-hyperLink") {
+        ServiceUtil.GotoSpellDetail(target.attributes["data-editor"].value, this.router);
+      }
+      else if (target.className == "Editor_Ruleset_abilityDetail a-hyperLink") {
 
+        ServiceUtil.GotoAbilityDetail(target.attributes["data-editor"].value, this.router);
+      }
+      else if (target.className == "Editor_Ruleset_BuffAndEffectDetail a-hyperLink") {
+
+        ServiceUtil.GotoBuffEffectDetail(target.attributes["data-editor"].value, this.router);
+      }
+      else if (target.className == "Editor_Ruleset_ItemTemplateDetail a-hyperLink") {
+
+        if (target.attributes["data-isbundle"].value == "true") {
+          ServiceUtil.GotoItemTemplateBundleDetail(target.attributes["data-editor"].value, this.router);
+        } else {
+          ServiceUtil.GotoItemTemplateDetail(target.attributes["data-editor"].value, this.router);
+        }
+      }
+      else if (target.className == "Editor_Ruleset_MonsterTemplateDetail a-hyperLink") {
+
+        if (target.attributes["data-isbundle"].value == "true") {
+          ServiceUtil.GotoMonsterTemplateBundleDetail(target.attributes["data-editor"].value, this.router);
+        } else {
+          ServiceUtil.GotoMonsterTemplateDetail(target.attributes["data-editor"].value, this.router);
+        }
+      }
+      else if (target.className == "Editor_Ruleset_MonsterDetail a-hyperLink") {
+
+        ServiceUtil.GotoMonsterDetail(target.attributes["data-editor"].value, this.router);
+      }
+    }
+
+    if (target.className == "Editor_Ruleset_spellDetailExe a-hyperLink" || target.className == "Editor_Ruleset_abilityDetailExe a-hyperLink"
+      || target.className == "Editor_Ruleset_BuffAndEffectDetailExe a-hyperLink" || target.className == "Editor_Ruleset_ItemTemplateDetailExe a-hyperLink"
+      || target.className == "Editor_Ruleset_MonsterTemplateDetailExe a-hyperLink" || target.className == "Editor_Ruleset_MonsterDetailExe a-hyperLink") {
+
+      this.ExecutePopup(target.attributes["data-editor"].value, target.className);
+    }
     if (!this.SortClick) {
       try {
         if (target.className.endsWith("is-layout-show")) {
@@ -1241,7 +1290,11 @@ export class CampaignDashboardComponent implements OnInit {
     }
 
   }
-  viewTile(tile: any, tileType: number) {    
+  viewTile(tile: any, tileType: number, e: any) {
+
+    if (e.target.className && e.target.className.indexOf("a-hyperLink") > -1) {
+      return false;
+    }  
     if (!this.isManageTile) {      
       //let _tile: any;
       let _tile = Object.assign({}, tile);
@@ -2560,6 +2613,342 @@ export class CampaignDashboardComponent implements OnInit {
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.character = new Characters();
     this.bsModalRef.content.command = cmd;
+  }
+  ExecutePopup(Id, className) {
+    debugger
+    if (className == "Editor_Ruleset_spellDetailExe a-hyperLink" && Id) {
+      this.alertService.startLoadingMessage("", "Loading Commands...");
+      //this.isLoading = true;
+      let spellDetail: any;
+      //this.SpellService.get<any>(Id)
+      //  .subscribe(data => {
+      //    spellDetail = this.characterSpellService.spellModelDetailData(data, "UPDATE");
+      this.SpellService.getspellsById<any>(Id)
+        .subscribe(data => {
+          if (data) {
+            spellDetail = this.SpellService.spellModelData(data, "UPDATE");
+            this.alertService.stopLoadingMessage();
+            //this.isLoading = false;
+            if (spellDetail.spellCommandVM && spellDetail.spellCommandVM.length) {
+              this.bsModalRef = this.modalService.show(CastComponent, {
+                class: 'modal-primary modal-md',
+                ignoreBackdropClick: true,
+                keyboard: false
+              });
+              this.bsModalRef.content.title = "Spell Cast";
+              this.bsModalRef.content.ListCommands = spellDetail.spellCommandVM;
+              this.bsModalRef.content.Command = spellDetail;
+              this.bsModalRef.content.Character = new Characters();
+              this.bsModalRef.content.ButtonText = 'Cast';
+              //this.bsModalRef.content.Character = new Characters();
+              //this.bsModalRef.content.recordId = spellDetail.spellId;
+              //this.bsModalRef.content.recordType = 'spell';
+
+            } else {
+              this.useCommand(spellDetail)
+            }
+          }
+          else {
+            this.GotoErrorMessageRecordNotFound();
+          }
+
+        }, error => {
+          this.alertService.stopLoadingMessage();
+          //this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => {
+
+        });
+
+    }
+    else if (className == "Editor_Ruleset_ItemTemplateDetailExe a-hyperLink" && Id) {
+      this.alertService.startLoadingMessage("", "Loading Commands...");
+      //this.isLoading = true;
+      let itemDetailExe: any;
+      this.itemMasterService.getItemMasterById<any>(Id)
+        .subscribe(data => {
+          if (data) {
+            itemDetailExe = this.itemMasterService.itemMasterModelData(data, "UPDATE");
+            this.alertService.stopLoadingMessage();
+            //this.isLoading = false;
+            if (itemDetailExe.itemMasterCommand && itemDetailExe.itemMasterCommand.length) {
+              this.bsModalRef = this.modalService.show(CastComponent, {
+                class: 'modal-primary modal-md',
+                ignoreBackdropClick: true,
+                keyboard: false
+              });
+
+              this.bsModalRef.content.title = "Item Commands";
+              this.bsModalRef.content.ListCommands = itemDetailExe.itemMasterCommand;
+              this.bsModalRef.content.Command = itemDetailExe;
+              this.bsModalRef.content.Character = new Characters();
+              this.bsModalRef.content.ButtonText = 'Cast';
+            } else {
+              this.useCommand(itemDetailExe);
+            }
+          }
+          else {
+            this.GotoErrorMessageRecordNotFound();
+          }
+
+        }, error => {
+          this.alertService.stopLoadingMessage();
+          //this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+        }, () => {
+
+        });
+    }
+    else if (className == "Editor_Ruleset_abilityDetailExe a-hyperLink" && Id) {
+      let AbilityDetailExe: any;
+      this.alertService.startLoadingMessage("", "Loading Commands...");
+      //this.isLoading = true;
+      this.AbilityService.getAbilityById<any>(Id)
+        .subscribe(data => {
+          if (data) {
+            AbilityDetailExe = this.AbilityService.abilityModelData(data, "UPDATE");
+            this.alertService.stopLoadingMessage();
+            //this.isLoading = false;
+            if (AbilityDetailExe.abilityCommandVM && AbilityDetailExe.abilityCommandVM.length) {
+              this.bsModalRef = this.modalService.show(CastComponent, {
+                class: 'modal-primary modal-md',
+                ignoreBackdropClick: true,
+                keyboard: false
+              });
+
+              this.bsModalRef.content.title = "Ability Commands";
+              this.bsModalRef.content.ListCommands = AbilityDetailExe.abilityCommandVM;
+              this.bsModalRef.content.AbilityId = Id;
+              this.bsModalRef.content.Command = AbilityDetailExe;
+              this.bsModalRef.content.Character = new Characters();
+              this.bsModalRef.content.ButtonText = 'Cast';
+            } else {
+              this.useCommand(AbilityDetailExe)
+            }
+          }
+          else {
+            this.GotoErrorMessageRecordNotFound();
+          }
+
+        }, error => {
+          this.alertService.stopLoadingMessage();
+          //this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => {
+        });
+
+    }
+    else if (className == "Editor_Ruleset_BuffAndEffectDetailExe a-hyperLink" && Id) {
+      this.alertService.startLoadingMessage("", "Loading Commands...");
+      //this.isLoading = true;
+      let buffAndEffectDetailExe;
+      this.buffAndEffectService.getBuffAndEffectById<any>(Id)
+        .subscribe(data => {
+          if (data) {
+            buffAndEffectDetailExe = this.buffAndEffectService.BuffAndEffectsModelData(data, "UPDATE");
+            this.alertService.stopLoadingMessage();
+            //this.isLoading = false;
+            if (buffAndEffectDetailExe && buffAndEffectDetailExe.buffAndEffectCommandVM.length) {
+              this.bsModalRef = this.modalService.show(CastComponent, {
+                class: 'modal-primary modal-md',
+                ignoreBackdropClick: true,
+                keyboard: false
+              });
+
+              this.bsModalRef.content.title = "Buffs & Effects Commands";
+              this.bsModalRef.content.ListCommands = buffAndEffectDetailExe.buffAndEffectCommandVM;
+              this.bsModalRef.content.BuffAndEffectID = Id;
+              this.bsModalRef.content.Command = buffAndEffectDetailExe;
+              this.bsModalRef.content.Character = new Characters();
+              this.bsModalRef.content.ButtonText = 'Cast';
+            } else {
+              this.useCommand(buffAndEffectDetailExe)
+            }
+          }
+          else {
+            this.GotoErrorMessageRecordNotFound();
+          }
+
+        }, error => {
+          this.alertService.stopLoadingMessage();
+          //this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => {
+        });
+    }
+    else if (className == "Editor_Ruleset_MonsterDetailExe a-hyperLink" && Id) {
+      this.alertService.startLoadingMessage("", "Loading Commands...");
+      //this.isLoading = true;
+      let monsterDetailExe;
+      this.monsterService.getMonsterById<any>(Id)
+        .subscribe(data1 => {
+          if (data1) {
+            monsterDetailExe = this.monsterService.MonsterModelData(data1, "UPDATE");
+            this.monsterService.getMonsterAssociateRecords_sp<any>(monsterDetailExe.monsterId, this.ruleSetId)
+              .subscribe(data2 => {
+                this.alertService.stopLoadingMessage();
+                //this.isLoading = false;
+                if (data2 && data2.monsterTemplateCommands.length) {
+                  this.bsModalRef = this.modalService.show(CastComponent, {
+                    class: 'modal-primary modal-md',
+                    ignoreBackdropClick: true,
+                    keyboard: false
+                  });
+
+                  this.bsModalRef.content.title = "Monster Commands";
+                  this.bsModalRef.content.ListCommands = data2.monsterTemplateCommands;
+                  this.bsModalRef.content.monsterId = Id;
+                  this.bsModalRef.content.Command = monsterDetailExe;
+                  this.bsModalRef.content.Character = new Characters();
+                  this.bsModalRef.content.ButtonText = 'Cast';
+                } else {
+                  this.useCommand(monsterDetailExe)
+                }
+
+              }, error => {
+
+              }, () => { });
+          }
+          else {
+            this.GotoErrorMessageRecordNotFound();
+          }
+
+
+        }, error => {
+          this.alertService.stopLoadingMessage();
+          //this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => {
+        });
+    }
+    else if (className == "Editor_Ruleset_MonsterTemplateDetailExe a-hyperLink" && Id) {
+      this.alertService.startLoadingMessage("", "Loading Commands...");
+      //this.isLoading = true;
+      let monsterTemplateDetailExe;
+      this.monsterService.getMonsterTemplateById<any>(Id)
+        .subscribe(data1 => {
+          if (data1) {
+            monsterTemplateDetailExe = this.monsterService.MonsterTemplateModelData(data1, "UPDATE");
+            this.monsterService.getMonsterTemplateAssociateRecords_sp<any>(monsterTemplateDetailExe.monsterTemplateId, this.ruleSetId)
+              .subscribe(data2 => {
+                this.alertService.stopLoadingMessage();
+                //this.isLoading = false;
+                if (data2 && data2.monsterTemplateCommands.length) {
+                  this.bsModalRef = this.modalService.show(CastComponent, {
+                    class: 'modal-primary modal-md',
+                    ignoreBackdropClick: true,
+                    keyboard: false
+                  });
+
+                  this.bsModalRef.content.title = "Monster Template Commands";
+                  this.bsModalRef.content.ListCommands = data2.monsterTemplateCommands;
+                  this.bsModalRef.content.monsterTemplateId = Id;
+                  this.bsModalRef.content.Command = monsterTemplateDetailExe;
+                  this.bsModalRef.content.Character = new Characters();
+                  this.bsModalRef.content.ButtonText = 'Cast';
+                } else {
+                  this.useCommand(monsterTemplateDetailExe)
+                }
+
+              }, error => {
+
+              }, () => { });
+          }
+          else {
+            this.GotoErrorMessageRecordNotFound();
+          }
+
+
+        }, error => {
+          this.alertService.stopLoadingMessage();
+          //this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => {
+        });
+    }
+
+  }
+  useCommand(Command: any) {
+    let msg = "The command value for " + Command.name
+      + " has not been provided. Edit this record to input one.";
+    if (Command.command == undefined || Command.command == null || Command.command == '') {
+      this.alertService.showDialog(msg, DialogType.alert, () => this.useCommandHelper(Command));
+    }
+    else {
+      //TODO
+      this.useCommandHelper(Command);
+    }
+  }
+
+  private useCommandHelper(Command: any) {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.isFromCampaignDetail = true;
+    this.bsModalRef.content.command = Command.command;
+
+    if (Command.hasOwnProperty("itemMasterId")) {
+      this.bsModalRef.content.recordName = Command.name;
+      this.bsModalRef.content.recordImage = Command.itemImage;
+    }
+    else if (Command.hasOwnProperty("spellId")) {
+      this.bsModalRef.content.recordName = Command.name;
+      this.bsModalRef.content.recordImage = Command.imageUrl;
+    }
+    else if (Command.hasOwnProperty("abilityId")) {
+      this.bsModalRef.content.recordName = Command.name;
+      this.bsModalRef.content.recordImage = Command.imageUrl;
+    }
+    else if (Command.hasOwnProperty("buffAndEffectId")) {
+      this.bsModalRef.content.recordName = Command.name;
+      this.bsModalRef.content.recordImage = Command.imageUrl;
+    }
+    else if (Command.hasOwnProperty("monsterTemplateId")) {
+      this.bsModalRef.content.recordName = Command.name;
+      this.bsModalRef.content.recordImage = Command.imageUrl;
+    }
+    else if (Command.hasOwnProperty("monsterId")) {
+      this.bsModalRef.content.recordName = Command.name;
+      this.bsModalRef.content.recordImage = Command.imageUrl;
+      this.bsModalRef.content.recordType = 'monster';
+      this.bsModalRef.content.recordId = Command.monsterId;
+    }
+
+    this.bsModalRef.content.event.subscribe(result => {
+    });
+  }
+  GotoErrorMessageRecordNotFound() {
+    let message = "No record found.";
+    this.alertService.showMessage(message, "", MessageSeverity.error);
   }
 }
 

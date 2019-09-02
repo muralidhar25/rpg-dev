@@ -22,6 +22,12 @@ export class FilterTilePipe implements PipeTransform {
                 return (name.toLowerCase().indexOf(searchText) > -1);
             });
         }
+        else if (column == 'buffAndEffect') {
+          return data.filter(function (item) {
+            let name = item.buffAndEffect.name;
+            return (name.toLowerCase().indexOf(searchText) > -1);
+          });
+        }
         else if (column == 'item') {
             return data.filter(function (item) {
                 let name = item.name;

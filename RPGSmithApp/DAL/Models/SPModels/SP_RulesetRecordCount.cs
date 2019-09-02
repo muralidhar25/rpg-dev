@@ -755,6 +755,11 @@ namespace DAL.Models.SPModels
             return result;
         }
     }
+    public class CharCharStatDetails {
+        public List<LinkTypeRecord> LinkRecordsDetails { get; set; }
+        public List<CharactersCharacterStatViewModel> ConditionsValuesLists { get; set; }
+        public List<CharactersCharacterStatViewModel> CharactersCharacterStats { get; set; }
+    }
     public class LinkTypeRecord
     {
         public int id { get; set; }

@@ -287,8 +287,13 @@
                   <span *ngIf="!command.isResultWithCustomDice">{{command.calculationString}} <span *ngIf="command?.calculationString"> = </span> <b>{{command?.beforeResult}} <span *ngIf="command?.calculationResult"> {{command.calculationResult}} </span> {{command?.afterResult}}</b></span>
                 </ng-container>
                 <ng-container *ngIf="command.calculationStringColor">
-                  <span *ngIf="command.isResultWithCustomDice" [froalaView]="command.calculationStringColor"></span>
-                  <span *ngIf="!command.isResultWithCustomDice"><span [froalaView]="command.calculationStringColor"></span><span *ngIf="command?.calculationString"> = </span> <b>{{command?.beforeResult}} <span *ngIf="command?.calculationResult"> {{command.calculationResult}} </span> {{command?.afterResult}}</b></span>
+                  <span *ngIf="command.isResultWithCustomDice" >
+                    <span class="color-grey" [froalaView]="command.calculationStringColor">
+                    </span>
+                  </span>
+                  <span *ngIf="!command.isResultWithCustomDice">
+                  <span class="color-grey" [froalaView]="command.calculationStringColor"></span>
+                  <span *ngIf="command?.calculationString"> = </span> <b>{{command?.beforeResult}} <span *ngIf="command?.calculationResult"> {{command.calculationResult}} </span> {{command?.afterResult}}</b></span>
                 </ng-container>
               </div>
               <button *ngIf="loadingResult" type="button" (click)="copyCommandResultText(characterCommandModel, command)" class="btn icon icon-copy icon-rsi btn-simple-primary" title="Copy command result."></button>
@@ -323,15 +328,16 @@
               <strong *ngIf="character?.lastCommandResult.indexOf(' AND ')==-1">{{character?.lastCommandTotal}}</strong>
             </span>
             <!--<span *ngIf="calculationStringArray.length>0">
-                (<ng-container *ngFor="let cmd of calculationStringArray;let i = index;">
-                    <span [style.color]="cmd.isMax ? 'green' : (cmd.isMin ? 'red' : 'black')"
-                          [style.font-weight]="cmd.isMax ? 'bold' : (cmd.isMin ? 'bold' : 'normal')"
-                          [style.letter-spacing]="(cmd.text==')' || cmd.text=='(') && i>0 ? '-1px' : '0px'">
-                        {{cmd.text}}
-                    </span>
-                </ng-container>)
-            </span>-->
-            <span *ngIf="character?.lastCommandResult">({{character?.lastCommandResult}})</span>
+      (<ng-container *ngFor="let cmd of calculationStringArray;let i = index;">
+          <span [style.color]="cmd.isMax ? 'green' : (cmd.isMin ? 'red' : 'black')"
+                [style.font-weight]="cmd.isMax ? 'bold' : (cmd.isMin ? 'bold' : 'normal')"
+                [style.letter-spacing]="(cmd.text==')' || cmd.text=='(') && i>0 ? '-1px' : '0px'">
+              {{cmd.text}}
+          </span>
+      </ng-container>)
+  </span>-->
+            <!--<span *ngIf="character?.lastCommandResult">({{character?.lastCommandResult}})</span>-->
+            <span *ngIf="character?.lastCommandResult">(<span class="color-grey" [froalaView]="character?.lastCommandResult"></span>)</span>
             <strong *ngIf="!character?.lastCommandResult">No result found.</strong>
           </ng-container>
 

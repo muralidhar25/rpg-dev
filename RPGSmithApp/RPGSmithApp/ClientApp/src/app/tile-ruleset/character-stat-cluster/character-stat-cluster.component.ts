@@ -127,6 +127,14 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
             if (this.rulesetTileModel.view == VIEW.EDIT) {
               debugger
               this.displayCharacterStat = Object.assign([], this.CharacterStatsList.filter(x => (x.characterStatId == this.ClusterTileFormModal.displayCharactersCharacterStatID)));
+              if (this.displayCharacterStat && this.displayCharacterStat.length) {
+                let dummyCharStat: any = new CharactersCharacterStat();
+                dummyCharStat.characterStatId = -1;
+                dummyCharStat.statName = "<None>";
+                let dummyStatArr = [];
+                dummyStatArr.push(dummyCharStat);
+                this.CharacterStatsList = dummyStatArr.concat(this.CharacterStatsList);
+              }
               if (this.ClusterTileFormModal.clusterWithSortOrder) {
                 let selectedIds = this.ClusterTileFormModal.clusterWithSortOrder.split(',');
                 selectedIds.map((id) => {
@@ -360,6 +368,13 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
 
   validateSubmit() {
     debugger
+    if (!(this.displayCharacterStat
+      && this.displayCharacterStat.length
+      && this.displayCharacterStat[0]
+      && this.displayCharacterStat[0].characterStatId > 0
+    )) {
+      this.displayCharacterStat = [];
+    }
     if (this.rulesetTileModel.rulesetId == 0 || this.rulesetTileModel.rulesetId == undefined) {
       this.alertService.showMessage("", "Ruleset is not selected.", MessageSeverity.error);
     }
@@ -374,7 +389,7 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
     }
     else {
 
-      if (this.displayCharacterStat && this.displayCharacterStat.length && this.displayCharacterStat[0]) {
+      if (this.displayCharacterStat && this.displayCharacterStat.length && this.displayCharacterStat[0] && this.displayCharacterStat[0].characterStatId > 0) {
         this.ClusterTileFormModal.displayCharactersCharacterStatID = this.displayCharacterStat[0].characterStatId;
       }
       else {
@@ -479,7 +494,7 @@ export class RulesetCharacterStatClusterTileComponent implements OnInit {
       enableCheckAll: false,
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',
-      singleSelection: false,
+      singleSelection: true,
       limitSelection: false,
       enableSearchFilter: true,
       classes: "myclass custom-class ",

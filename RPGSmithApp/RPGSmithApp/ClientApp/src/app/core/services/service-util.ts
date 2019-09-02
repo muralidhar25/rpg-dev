@@ -6,13 +6,15 @@
 import { Injectable } from '@angular/core';
 import { forEach } from '@angular/router/src/utils/collection';
 import { CharacterStatConditionViewModel } from '../models/view-models/character-stats.model';
-import { STAT_TYPE, CONDITION_OPERATOR_ENUM } from '../models/enums';
+import { STAT_TYPE, CONDITION_OPERATOR_ENUM, STAT_LINK_TYPE } from '../models/enums';
 import { DiceService } from './dice.service';
 import { CharactersCharacterStat } from '../models/view-models/characters-character-stats.model';
 import { HeaderValues } from '../models/headers.model';
 import { DBkeys } from '../common/db-keys';
 import { LocalStoreManager } from '../common/local-store-manager.service';
 import { Observable } from 'rxjs';
+import { CharactersCharacterStatService } from './characters-character-stat.service';
+import { Characters } from '../models/view-models/characters.model';
 
 @Injectable()
 export class ServiceUtil {
@@ -1140,18 +1142,573 @@ export class ServiceUtil {
     return IsComingFromCombatTracker;
   }
 
+  public static BindCharCharDetailsInLocalStorage(characterId: number, charactersCharacterStatService: CharactersCharacterStatService, localStorage: LocalStoreManager, refreshData: boolean = false): any {
+    let localStorageVariable = localStorage.localStorageGetItem(DBkeys.CHAR_CHAR_STAT_DETAILS);
+    if (localStorageVariable && localStorageVariable.characterId == characterId && !refreshData) {
 
-  public static GetDescriptionWithStatValues(description, localStorage) {
-    if (description) {
-    description = description.replace('[magicC]', "5");
-    description = description.replace('[magicC]', "5");
-    description = description.replace('[magicC]', "5");
-    description = description.replace('[magicC]', "5");
-    description = description.replace('[magicC]', "5");
     }
-    
-    return description;
+    else {
+      localStorage.localStorageSetItem(DBkeys.CHAR_CHAR_STAT_DETAILS, { characterId: 0, charactersCharacterStats: null, statLinkRecords: null });
+      charactersCharacterStatService.getCharCharStatDetails<any>(characterId)
+        .subscribe((data: any) => {
+          
+          if (data) {
+            let statLinkRecords = data.linkRecordsDetails;
+            let ConditionsValuesList = data.conditionsValuesLists;
+            let charactersCharacterStats: any[] = data.charactersCharacterStats;
+            let character: any = new Characters();
+
+            if (charactersCharacterStats.length && charactersCharacterStats[0] && charactersCharacterStats[0].character) {
+
+              character = charactersCharacterStats[0].character;
+            }
+
+            charactersCharacterStats.forEach(item => {
+
+              //item.icon = this.characterStatService.getIcon(item.characterStat.characterStatType.statTypeName);
+
+              if (item.current == 0) {
+                item.current = "";
+              }
+              if (item.maximum == 0) {
+                item.maximum = "";
+              }
+              if (item.value == 0) {
+                item.value = "";
+              }
+              if (item.subValue == 0) {
+                item.subValue = "";
+              }
+
+
+              if (item.characterStat.characterStatType.statTypeName == 'Command') {
+                if (item.command != null && item.command != "")
+                  item.displaycommand = item.command; //this.manageCommandDisplay(item.command);
+              }
+
+              //if (item.characterStat.statName.length > 8) {
+              //    item.displayStatName = item.characterStat.statName.substr(0, 8);
+              //}
+              //else {
+              item.displayStatName = item.characterStat.statName;
+              //}
+
+              //if (item.characterStat.statName.length > 6) {
+              //    item.mobiledisplayStatName = item.characterStat.statName.substr(0, 6);
+              //}
+              //else {
+              item.mobiledisplayStatName = item.characterStat.statName;
+              //}
+
+              if (item.characterStat.characterStatType.statTypeName == 'Rich Text') {
+                if (item.richText != null && item.richText != "")
+                  item.displayRichText = item.richText.replace(/(<([^>]+)>)/ig, "");
+              }
+
+              if (item.characterStat.characterStatType.statTypeName == 'Calculation') {
+
+                if (item.characterStat.characterStatCalcs.length) {
+
+                  let finalCalcString = '';
+                  if (item.characterStat.characterStatCalcs[0].statCalculation != null && item.characterStat.characterStatCalcs[0].statCalculation != undefined) {  //&& item.characterStat.characterStatCalcs[0].statCalculation.length > 34) {
+                    item.displayCalculation = item.characterStat.characterStatCalcs[0].statCalculation; //.substr(0, 34) + "...";
+                    let IDs: any[] = [];
+                    let CalcString = item.characterStat.characterStatCalcs[0].statCalculationIds;
+
+                    if (item.characterStat.characterStatCalcs[0].statCalculationIds) {
+
+                      item.characterStat.characterStatCalcs[0].statCalculationIds.split(/\[(.*?)\]/g).map((rec) => {
+
+                        let id = ''; let flag = false; let type = 0; let statType = 0;
+                        if (rec.split('_').length > 1) {
+                          id = rec.split('_')[0].replace('[', '').replace(']', '');
+                          type = parseInt(rec.split('_')[1])
+                        }
+                        else {
+                          id = rec.replace('[', '').replace(']', '');
+                          type = 0
+                        }
+
+                        charactersCharacterStats.map((q) => {
+                          if (!flag) {
+                            flag = (parseInt(id) == q.characterStatId);
+                            statType = q.characterStat.characterStatTypeId
+                          }
+                        })
+
+                        if (flag) {
+                          IDs.push({ id: id, type: isNaN(type) ? 0 : type, originaltext: "[" + rec + "]", statType: statType })
+                        }
+                        else if (+id == -1) {
+                          IDs.push({ id: id, type: 0, originaltext: "[" + rec + "]", statType: -1 })
+                        }
+                      })
+
+
+                    }
+                    IDs.map((rec) => {
+
+                      if (+rec.id == -1 && character.inventoryWeight) {
+                        CalcString = CalcString.replace(rec.originaltext, character.inventoryWeight);
+                      } else {
+                        charactersCharacterStats.map((stat) => {
+                          if (rec.id == stat.characterStatId) {
+                            let num = 0;
+                            switch (rec.statType) {
+                              case 3: //Number
+                                num = stat.number
+                                break;
+                              case 5: //Current Max
+                                if (rec.type == 1)//current
+                                {
+                                  num = stat.current
+                                }
+                                else if (rec.type == 2)//Max
+                                {
+                                  num = stat.maximum
+                                }
+                                break;
+                              case 7: //Val Sub-Val
+                                if (rec.type == 3)//value
+                                {
+                                  num = +stat.value
+                                }
+                                else if (rec.type == 4)//sub-value
+                                {
+                                  num = stat.subValue
+                                }
+                                break;
+                              case 12: //Calculation
+                                num = stat.calculationResult
+                                break;
+                              case STAT_TYPE.Combo: //Combo
+                                num = stat.defaultValue
+                                break;
+                              case STAT_TYPE.Choice: //Choice
+                                num = stat.defaultValue
+                                break;
+                              case STAT_TYPE.Condition: //condition
+                                let characterStatConditionsfilter = ConditionsValuesList.filter((CCS) => CCS.characterStat.characterStatId == rec.id);
+                                let characterStatConditions = characterStatConditionsfilter["0"].characterStat.characterStatConditions;
+                                let result = ServiceUtil.conditionStat(characterStatConditionsfilter["0"], character, ConditionsValuesList);
+                                num = +result;
+                                break;
+                              default:
+                                break;
+                            }
+                            if (num)
+                              CalcString = CalcString.replace(rec.originaltext, num);
+                            //else
+                            //    CalcString = CalcString.replace(rec.originaltext, 0);
+                          }
+                        });
+                      }
+
+                      finalCalcString = CalcString;
+                    });
+                  }
+                  //else {
+                  //    item.displayCalculation = item.characterStat.characterStatCalcs[0].statCalculation;
+                  //}
+                  //if (item.characterStat.characterStatCalcs[0].statCalculation != null && item.characterStat.characterStatCalcs[0].statCalculation != undefined && item.characterStat.characterStatCalcs[0].statCalculation.length > 8) {
+                  //item.displayMobileCalculation = item.characterStat.characterStatCalcs[0].statCalculation.substr(0, 8) + "...";
+                  //}
+                  // else {
+                  item.displayMobileCalculation = item.characterStat.characterStatCalcs[0].statCalculation;
+                  //}
+                  try {
+                    //finalCalcString = finalCalcString.replace("/()/g", "0");
+                    finalCalcString = (finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '+ 0' ||
+                      finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '- 0' ||
+                      finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '* 0' ||
+                      finalCalcString.trim().substr(finalCalcString.trim().length - 1) == '/ 0')
+                      ? finalCalcString.trim().slice(0, -1)
+                      : finalCalcString.trim();
+                    item.calculationResult = DiceService.commandInterpretation(finalCalcString, undefined, undefined)[0].calculationResult;
+                  }
+                  catch (ex) {
+                    item.calculationResult = this.getCalculationResult(item.characterStat.characterStatCalcs[0].statCalculation, charactersCharacterStats);
+                  }
+                  if (isNaN(item.calculationResult)) {
+                    item.calculationResult = 0;
+                  }
+                  //item.calculationResult = this.getCalculationResult(item.characterStat.characterStatCalcs[0].statCalculation);
+                }
+              }
+
+              if (item.characterStat.characterStatTypeId == STAT_TYPE.Condition) {
+
+                let result = '';
+                if (item.characterStat.characterStatConditions) {
+
+                  if (item.characterStat.characterStatConditions.length) {
+                    let SkipNextEntries: boolean = false;
+                    item.characterStat.characterStatConditions.map((Condition: CharacterStatConditionViewModel) => {
+                      if (!SkipNextEntries) {
+                        //let ConditionStatValue: string = this.GetValueFromStatsByStatID(Condition.ifClauseStatId, Condition.ifClauseStattype);
+
+                        let ConditionStatValue: string = '';
+                        if (Condition.ifClauseStatText) {
+                          ConditionStatValue = ServiceUtil.GetClaculatedValuesOfConditionStats(character.inventoryWeight, ConditionsValuesList, Condition, false);
+                        }
+                        let operator = "";
+                        let ValueToCompare = ServiceUtil.GetClaculatedValuesOfConditionStats(character.inventoryWeight, ConditionsValuesList, Condition, true);//Condition.compareValue;
+
+                        let ConditionTrueResult = Condition.result;
+
+
+                        if (Condition.sortOrder != item.characterStat.characterStatConditions.length) {//if and Else If Part
+                          if (Condition.conditionOperator) {
+                            //////////////////////////////////////////////////////////////////
+
+                            if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.EQUALS ||
+                              Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.NOT_EQUALS ||
+                              Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.GREATER_THAN ||
+                              Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.EQUAL_TO_OR_GREATER_THAN ||
+                              Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.LESS_THAN ||
+                              Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.EQUAL_TO_OR_LESS_THAN) {
+
+                              operator = Condition.conditionOperator.symbol;
+                              let ConditionCheckString = '';
+                              if (Condition.isNumeric) {
+                                ConditionStatValue = ConditionStatValue ? ConditionStatValue : "0";
+                                ValueToCompare = ValueToCompare ? ValueToCompare : "0";
+                                ConditionCheckString = ConditionStatValue + ' ' + operator + ' ' + ValueToCompare;
+                              }
+                              else {
+                                ConditionCheckString = ' "' + ConditionStatValue + '" ' + operator + ' "' + ValueToCompare + '" ';
+                              }
+                              ConditionCheckString = ConditionCheckString.toUpperCase();
+                              let conditionCheck = eval(ConditionCheckString);
+                              if ((typeof (conditionCheck)) == "boolean") {
+                                if (conditionCheck) {
+                                  result = ConditionTrueResult;
+                                  SkipNextEntries = true;
+                                }
+                              }
+                            }
+
+
+                            else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.IS_BLANK) {
+                              if (!ConditionStatValue) {
+                                result = ConditionTrueResult;
+                                SkipNextEntries = true;
+                              }
+                            }
+                            else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.IS_NOT_BLANK) {
+                              if (ConditionStatValue) {
+                                result = ConditionTrueResult;
+                                SkipNextEntries = true;
+                              }
+                            }
+                            else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.CONTAINS) {
+                              ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                              ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                              if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+
+
+                                if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
+                                  result = ConditionTrueResult;
+                                  SkipNextEntries = true;
+                                }
+                              }
+                              else {
+                                if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) > -1) {
+                                  result = ConditionTrueResult;
+                                  SkipNextEntries = true;
+                                }
+                              }
+                            }
+                            else if (Condition.conditionOperator.name == CONDITION_OPERATOR_ENUM.DOES_NOT_CONTAIN) {
+                              ValueToCompare = ValueToCompare ? ValueToCompare : '';
+                              ConditionStatValue = ConditionStatValue ? ConditionStatValue : '';
+                              if (item.characterStat.isMultiSelect && item.characterStat.characterStatTypeId == STAT_TYPE.Choice) {
+
+
+                                if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
+                                  result = ConditionTrueResult;
+                                  SkipNextEntries = true;
+                                }
+                              }
+                              else {
+                                if (ConditionStatValue.toUpperCase().indexOf(ValueToCompare.toUpperCase()) == -1) {
+                                  result = ConditionTrueResult;
+                                  SkipNextEntries = true;
+                                }
+                              }
+                            }
+                            //////////////////////////////////////////////////////////////////
+                          }
+                        }
+                        else {
+                          let ConditionFalseResult = Condition.result;
+                          result = ConditionFalseResult;
+                          SkipNextEntries = true;
+                        }
+                      }
+                    })
+                  }
+                }
+                item.text = result;
+              }
+            });
+            let Obj: any = { characterId: characterId, charactersCharacterStats: charactersCharacterStats, statLinkRecords: statLinkRecords };
+            localStorage.localStorageSetItem(DBkeys.CHAR_CHAR_STAT_DETAILS, Obj)
+          }
+        }, error => {
+
+        }, () => { });
+    }
+
+
   }
+  private static getCalculationResult(value: string, charactersCharacterStats): number {
+    try {
+      if (value) {
+        //value = value.
+        return charactersCharacterStats.map(x => {
+          return { id: x.characterStatId, type: x.characterStatTypeViewModel.statTypeName, name: x.statName };
+        }).filter(y => y.type == 'Number' || y.type.startsWith('Value') || y.type.startsWith('Current'));
+      }
+      else return 0;
+    } catch (err) { return 0; }
+  }
+  public static GetDescriptionWithStatValues(desc, localStorage) {
+    try {
+      if (desc) {
+        let localStorage_variable = localStorage.localStorageGetItem(DBkeys.CHAR_CHAR_STAT_DETAILS);
+        if (localStorage_variable && localStorage_variable.characterId > 0 && localStorage_variable.charactersCharacterStats && localStorage_variable.charactersCharacterStats.length) {
+          let localStorage_CharCharStats: any[] = localStorage_variable.charactersCharacterStats
+
+          if (localStorage_CharCharStats) {
+            
+
+            var matchArr = [];
+            var myRegexp = /\[(.*?)\]/g;
+            var match = myRegexp.exec(desc);
+            while (match != null) {
+              // matched text: match[0]
+              // match start: match.index
+              // capturing group n: match[n]
+
+              matchArr.push(match[0])
+              match = myRegexp.exec(desc);
+            }
+            if (matchArr && matchArr.length) {
+              matchArr.map((match) => {
+                var charStatNameToFind = match;
+                if (charStatNameToFind) {
+                  //match.split('[').map((m) => {
+                  //  charStatNameToFind = match.replace('[', '');
+                  //})
+                  //match.split(']').map((m) => {
+                  //  charStatNameToFind = match.replace(']', '');
+                  //})
+                  charStatNameToFind = charStatNameToFind.replace('[', '');
+                  charStatNameToFind = charStatNameToFind.replace(']', '');
+
+
+                  var stat = localStorage_CharCharStats.find(ccs => ccs.displayStatName.toUpperCase() == charStatNameToFind.toUpperCase());
+                  if (stat) {
+                    switch (stat.characterStat.characterStatTypeId) {
+                      case STAT_TYPE.Text:
+                        var value = stat.text;
+                        if (value == null || value == undefined) {
+                          value = '';
+                        }
+                        desc = desc.replace(match, value);
+                        break;
+                      case STAT_TYPE.RichText:
+                        var value = stat.richText;
+                        if (value == null || value == undefined) {
+                          value = '';
+                        }
+                        desc = desc.replace(match, value);
+                        break;
+                      case STAT_TYPE.Number:
+                        var value = stat.number;
+                        if (value == null || value == undefined) {
+                          value = '';
+                        }
+                        desc = desc.replace(match, value);
+                        break;
+                      case STAT_TYPE.Calculation:
+                        var value = stat.calculationResult;
+                        if (value == null || value == undefined) {
+                          value = '';
+                        }
+                        desc = desc.replace(match, value);
+                        break;
+                      case STAT_TYPE.Command:
+                        var value = stat.command;
+                        if (value == null || value == undefined) {
+                          value = '';
+                        }
+                        desc = desc.replace(match, value);
+                        break;
+                      case STAT_TYPE.Condition:
+                        var value = stat.text;
+                        if (value == null || value == undefined) {
+                          value = '';
+                        }
+                        desc = desc.replace(match, value);
+                        break;
+                      case STAT_TYPE.Choice:
+                        var num = stat.defaultValue
+                        var choices = '';
+                        var value: any = '';
+
+                        let choicesTextArr = [];
+                        if (stat.selectedCharacterChoices && stat.selectedCharacterChoices.length) {
+                          stat.selectedCharacterChoices.map((choice) => {
+                            choicesTextArr.push(choice.statChoiceValue);
+                          })
+                        }
+                        if (stat.characterStat.isMultiSelect && choicesTextArr.length) {
+                          choices = choicesTextArr.join(',');
+                        }
+                        else if (!stat.characterStat.isMultiSelect && choicesTextArr.length) {
+                          choices = choicesTextArr[0];
+                        }
+
+                        if (stat.characterStat.isChoiceNumeric) {
+                          value = num + ' / ';
+                        }
+                        else {
+                          value = choices;
+                        }
+
+                        desc = desc.replace(match, value);
+                        break;
+                      case STAT_TYPE.Combo:
+                        var text = stat.comboText;
+                        var num = stat.defaultValue;
+                        if (text == null || text == undefined) {
+                          text = '';
+                        }
+                        if (num == null || num == undefined) {
+                          num = '';
+                        }
+                        //var value = num + ' / ' + text;
+
+                        desc = desc.replace(match, num + ' / ' + text);
+                        break;
+                      case STAT_TYPE.CurrentMax:
+                        var current = stat.current;
+                        if (current == null || current == undefined) {
+                          current = '';
+                        }
+                        var maximum = stat.maximum;
+                        if (maximum == null || maximum == undefined) {
+                          maximum = '';
+                        }
+                        desc = desc.replace(match, current + ' / ' + maximum);
+
+                        break;
+                      case STAT_TYPE.ValueSubValue:
+                        var value = stat.value;
+                        if (value == null || value == undefined) {
+                          value = '';
+                        }
+                        var subValue = stat.subValue;
+                        if (subValue == null || subValue == undefined) {
+                          subValue = '';
+                        }
+                        desc = desc.replace(match, value + '(' + subValue + ')');
+                        break;
+                      case STAT_TYPE.LinkRecord:
+                        if (localStorage_variable.statLinkRecords && localStorage_variable.statLinkRecords.length) {
+                          let statLinkRecords = localStorage_variable.statLinkRecords;
+                          let name = "";
+                          if (stat.defaultValue && stat.linkType) {
+                            if (statLinkRecords && statLinkRecords.length && statLinkRecords.length > 0) {
+                              statLinkRecords.map((link) => {
+                                if (link.id == stat.defaultValue && link.type == stat.linkType) {
+                                  name = link.name;
+                                }
+                              })
+                            }
+                            if (name) {
+                              switch (stat.linkType) {
+                                case STAT_LINK_TYPE.ABILITY:
+                                  var value: any = '<a class="Editor_itemDetail a-hyperLink" data - Editor="' + stat.defaultValue + '" >' + name + ' </a>';
+                                  desc = desc.replace(match, value);
+                                  break;
+                                case STAT_LINK_TYPE.SPELL:
+                                  var value: any = '<a class="Editor_spellDetail a-hyperLink" data-Editor="' + stat.defaultValue + '">' + name + '</a>';
+                                  desc = desc.replace(match, value);
+                                  break;
+                                case STAT_LINK_TYPE.ITEM:
+                                  var value: any = '<a class="Editor_abilityDetail a-hyperLink" data-Editor="' + stat.defaultValue + '">' + name + '</a>';
+                                  desc = desc.replace(match, value);
+                                  break;
+                                case STAT_LINK_TYPE.BUFFANDEFFECT:
+                                  var value: any = '<a class="Editor_BuffAndEffectDetail a-hyperLink" data-Editor="' + stat.defaultValue + '">' + name + '</a>';
+                                  desc = desc.replace(match, value);
+                                  break;
+                                default:
+                                  break;
+                              }
+
+                            }
+                          }
+
+                        }
+                        break;
+                      case STAT_TYPE.Toggle:
+                        switch (true) {
+                          case stat.yesNo:
+                            var value: any = stat.isYes ? 'YES' : 'NO';
+                            desc = desc.replace(match, value);
+                            break;
+                          case stat.onOff:
+                            var value: any = stat.isOn ? 'ON' : 'OFF';
+                            desc = desc.replace(match, value);
+                            break;
+                          case stat.display:
+                            var value: any = stat.showCheckbox ? 'TRUE' : 'FALSE';
+                            desc = desc.replace(match, value);
+                            break;
+                          case stat.isCustom:
+                            //var value: any = stat.showCheckbox ? 'TRUE' : 'FALSE';
+                            //desc = desc.replace(match, value);
+                            break;
+                          default:
+                            break;
+                        }
+                        break;
+
+
+                      default:
+                        break;
+                    }
+                  }
+                }
+              })
+              //desc = desc.replace('[Deity]', 100)
+              return desc;
+            }
+
+          }
+        }
+      }
+      return desc;
+    }
+    catch (ex) {
+      return desc;
+    }
+  }
+  //public static GetDescriptionWithStatValues(description, localStorage) {
+  //  if (description) {
+  //  description = description.replace('[magicC]', "5");
+  //  description = description.replace('[magicC]', "5");
+  //  description = description.replace('[magicC]', "5");
+  //  description = description.replace('[magicC]', "5");
+  //  description = description.replace('[magicC]', "5");
+  //  }
+    
+  //  return description;
+  //}
 
   public static EncryptID(id) {
     let encryptedId = '';
@@ -1163,4 +1720,31 @@ export class ServiceUtil {
     decryptedId = (parseInt(encryptedId, 16) - 89898989).toString();
     return decryptedId;
   }
+
+  public static GotoItemTemplateDetail(id, router) {
+    router.navigate(['/ruleset/item-details/', id]);
+  }
+  public static GotoItemTemplateBundleDetail(id, router) {
+    router.navigate(['/ruleset/bundle-details/', id]);
+  }
+  public static GotoSpellDetail(id, router) {
+    router.navigate(['/ruleset/spell-details/', id]);
+  }
+  public static GotoAbilityDetail(id, router) {
+    router.navigate(['/ruleset/ability-details/', id]);
+  }
+  public static GotoBuffEffectDetail(id, router) {
+    router.navigate(['/ruleset/buff-effect-details/', id]);
+  }
+  public static GotoMonsterDetail(id, router) {
+    router.navigate(['/ruleset/monster-details/', id]);
+  }
+  public static GotoMonsterTemplateDetail(id, router) {
+    router.navigate(['/ruleset/monster-template-details/', id]);
+  }
+  public static GotoMonsterTemplateBundleDetail(id, router) {
+    router.navigate(['/ruleset/monster-bundle-details/', id]);
+  }
+  
+  
 }

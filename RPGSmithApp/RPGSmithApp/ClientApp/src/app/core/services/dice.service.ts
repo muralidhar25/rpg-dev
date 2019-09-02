@@ -376,11 +376,14 @@ export class DiceService {
       let Number = '';
       if (!numsCheked.find(x=>x==y.number)) {
         if (y.number && y.number == 1) {
-          Number = '<span style="color:Red;">' + y.number + '</span>'
+          Number = '<span style="color:red;"><b class="bold-command-result">' + y.number + '</b></span>'
         } else if (y.number && y.number == cmdArrar.diceNumber) {
-          Number = '<span style="color:Green;">' + y.number + '</span>'
-        } else {
-          Number = y.number
+          Number = '<span style="color:green;"><b class="bold-command-result">' + y.number + '</b></span>'
+        } else if (cmdArrar.diceNumber){
+          Number = '<span style="color:white;"><b class="bold-command-result">' + y.number + '</b></span>'
+        }
+        else {
+          Number = '<span style="color: #a7a2a2;">' + y.number + '</span>';
         }
         numsCheked.push(y.number);
         let expression = new RegExp(y.number,'g');
