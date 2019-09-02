@@ -107,8 +107,8 @@ export class NgChat implements OnInit, IChatController {
   IsDefaultGroupCreated: boolean = false;
 
   customDices: CustomDice[] = [];
-  statdetails: any;
-  charactersCharacterStats: any[];
+  statdetails: any[]=[];
+  charactersCharacterStats: any[]=[];
   character: Characters = new Characters();
 
   ruleset: Ruleset = this.localStorage.localStorageGetItem(DBkeys.rulesetforChat);
@@ -453,10 +453,10 @@ export class NgChat implements OnInit, IChatController {
     if (characterid > 0) {
 
       this.characterService.getDiceRollModel(this.ruleset.ruleSetId, characterid)
-        .subscribe((data:any) => {
-          
+        .subscribe((data: any) => {
+          debugger
           this.customDices = data.customDices;
-          this.statdetails = { charactersCharacterStat: data.charactersCharacterStats, character: data.character };
+          this.statdetails.push({ charactersCharacterStat: data.charactersCharacterStats, character: data.character });
           this.charactersCharacterStats = data.charactersCharacterStats;
           this.character = data.character;
           //var ressss = ServiceUtil.getFinalCalculationString(inputString, statDetails, charactersCharacterStats, character)
@@ -1072,7 +1072,7 @@ export class NgChat implements OnInit, IChatController {
 
   SendMessage(window: Window) {
     if (window.newMessage && window.newMessage.trim() != "") {
-      window.newMessage = this.getMessageWithDiceIntegration(window.newMessage);
+      window.newMessage = this.getMessageWithDiceIntegration(window.newMessage, window);
       if (window.newMessage && window.newMessage.trim() != "") {
         let message = new Message();
 
@@ -1104,7 +1104,7 @@ export class NgChat implements OnInit, IChatController {
     }
   }
 
-  getMessageWithDiceIntegration(message) {
+  getMessageWithDiceIntegration(message, window) {
     let isStringWithCommand: boolean = false;
     var msg = message;
     msg = msg.trim();
@@ -1116,7 +1116,10 @@ export class NgChat implements OnInit, IChatController {
       if (characterid > 0) {
         /////////////////////////////////////////////////////////////////
         //this.customDices
-        msg = ServiceUtil.getFinalCalculationString(msg, this.statdetails, this.charactersCharacterStats, this.character)
+        if (window.participant.characterID > 0) {
+          msg = ServiceUtil.getFinalCalculationString(msg, this.statdetails, this.charactersCharacterStats, this.character)
+        }
+        
       }
       var diceResult = DiceService.rollDiceExternally(this.alertService, msg, this.customDices, true)
       if (diceResult &&

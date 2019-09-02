@@ -241,7 +241,7 @@ export class CombatComponent implements OnInit {
         this.ruleSetId = +RuleSetID;
       }
       let displayURL = '/ruleset/combat';
-      let originalURl = '/ruleset/combat/' + this.ruleSetId;
+      let originalURl = '/ruleset/combats/' + this.ruleSetId;
       Utilities.RedriectToPageWithoutId(originalURl, displayURL, this.router, 1);
     }
 
@@ -454,7 +454,7 @@ export class CombatComponent implements OnInit {
         //}
 
         let isFrameSelected_Flag = false;
-
+        debugger
         this.combatants.map((x) => {
           //for character layer View
           x.isOwnPlayer = true;
@@ -473,7 +473,6 @@ export class CombatComponent implements OnInit {
           }
 
           if (x.type == this.combatItemsType.CHARACTER) {
-
             if (x.character.diceRollViewModel.charactersCharacterStats) {
               let statFoundFlag: boolean = false;
               let charStat: CharactersCharacterStat = null;
@@ -490,6 +489,7 @@ export class CombatComponent implements OnInit {
               x.character.healthCurrent = this.DummyValueForCharHealthStat;
               x.character.healthMax = this.DummyValueForCharHealthStat;
               if (charStat) {
+                x.character.charStat = charStat;
                 x.character.healthStatId = charStat.charactersCharacterStatId;
                 if (charStat.characterStat.characterStatTypeId == STAT_TYPE.CurrentMax) {
                   x.character.healthCurrent = +charStat.current;
@@ -2141,12 +2141,12 @@ export class CombatComponent implements OnInit {
 
   OpenGMInNewTab() {
     let RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
-    this.router.navigate([]).then(result => { window.open(['/ruleset/combat/' + RuleSetId].toString()+'?newTab=1', '_blank'); });
+    this.router.navigate([]).then(result => { window.open(['/ruleset/combats/' + RuleSetId].toString()+'?newTab=1', '_blank'); });
     //this.router.navigate(['/ruleset/combat/'], { queryParams: { id:this.ruleSetId}, skipLocationChange: true }); 
   }
   OpenGMInNewWindow() {
     let RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
-    window.open(['/ruleset/combat/' + RuleSetId].toString() + '?newTab=1', '_blank', "top=100,left=200,width=700,height=500")
+    window.open(['/ruleset/combats/' + RuleSetId].toString() + '?newTab=1', '_blank', "top=100,left=200,width=700,height=500")
   }
 
   OpenPlayerInNewTab() {

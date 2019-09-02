@@ -303,7 +303,11 @@ namespace RPGSmithApp.Controllers
         [HttpGet("ConvertImageURLToBase64")]
         public string ConvertImageURLToBase64(string url)
         {
-            url = url.Replace("?", "%3f").Replace("&", "%26");
+            if (url.Contains("rpgsmithsa.blob.core.windows.net"))
+            {
+                url = url.Replace("?", "%3f").Replace("&", "%26");
+            }
+            
             StringBuilder _sb = new StringBuilder();
 
             Byte[] _byte = this.GetImage(url);

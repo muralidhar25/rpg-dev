@@ -89,6 +89,7 @@ export class CombatGMPlayerViewComponent implements OnInit {
       let serachParams = new URLSearchParams(url.split('?')[1]);
       isNewTab = (serachParams.get("newtab") === "1");
     }
+
     if (isNewTab) {
       if (this.ruleSetId) {
         let RuleSetID = ServiceUtil.DecryptID(this.ruleSetId);

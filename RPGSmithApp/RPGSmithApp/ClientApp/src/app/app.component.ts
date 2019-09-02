@@ -193,8 +193,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (result) {
         result.htmlEditor.insert(result.htmlToInsert);
       }
-      
-      }
+
+    }
     );
 
     this.app1Service.shouldUpdateAccountSetting1().subscribe((serviceData) => {
@@ -247,7 +247,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               model.campaignID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
               //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
               //console.log("3.initializeSignalRAdapter")
-              this.initializeSignalRAdapter(user, this.http, this.storageManager, true);
+              this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
             }
           }
           //else {
@@ -321,7 +321,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               if (data) {
                 this.isPlayerCharacter = data.isPlayerCharacter;
                 this.isPlayerLinkedToCurrentCampaign = data.isPlayerLinkedToCurrentCampaign;
-                
+
                 if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
                   if (this.router.url.toUpperCase().indexOf('/CHARACTER') > -1) {
                     this.showCombatBtn = true;
@@ -337,7 +337,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                         model.characterID = this.headers.headerId;
                         //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
                         //console.log("5.initializeSignalRAdapter")
-                        this.initializeSignalRAdapter(user, this.http, this.storageManager, false);
+                        this.initializeSignalRAdapter(user, this.http, this.storageManager, false, this.router.url);
                       }
                     }
 
@@ -416,7 +416,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               ||
               this.router.url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1
               ||
-              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS +'/') > -1
+              this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERITEMS + '/') > -1
               ||
               this.router.url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERSPELLS + '/') > -1
               ||
@@ -469,7 +469,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.IsRulesetRecordScreenActive = false;
               //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
             }
-            
+
             this.SearchType = 0;
             this.SearchTypeText = '';
             this.isCharacterItem = 0;
@@ -549,8 +549,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.SearchTypeText = 'Loots';
             }
             else if (this.router.url.toUpperCase().indexOf('/RULESET/LOOT-PILE-TEMPLATE/') > -1 ||
-              this.router.url.toUpperCase().indexOf('/RULESET/LOOT-PILE-TEMPLATE-DETAILS') > -1 )
-            {
+              this.router.url.toUpperCase().indexOf('/RULESET/LOOT-PILE-TEMPLATE-DETAILS') > -1) {
               this.SearchType = SearchType.RULESETLOOTTEMPLATE;
               this.SearchTypeText = 'Loot Templates';
             }
@@ -629,7 +628,7 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.SearchType = SearchType.RULESETBUFFANDEFFECT;
               this.SearchTypeText = 'Buffs & Effects';
             }
-            
+
           },
             error => {
 
@@ -912,7 +911,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                 model.campaignID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
                 //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
                 //console.log("9.initializeSignalRAdapter")
-                this.initializeSignalRAdapter(user, this.http, this.storageManager, true);
+                this.initializeSignalRAdapter(user, this.http, this.storageManager, true, (<NavigationStart>event).url);
               }
             }
             //else {
@@ -968,7 +967,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                   if (data) {
                     this.isPlayerCharacter = data.isPlayerCharacter;
                     this.isPlayerLinkedToCurrentCampaign = data.isPlayerLinkedToCurrentCampaign;
-                    
+
                     if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
                       if (url.toUpperCase().indexOf('/CHARACTER') > -1) {
                         this.showCombatBtn = true;
@@ -984,7 +983,7 @@ export class AppComponent implements OnInit, AfterViewInit {
                             //model.Id = this.headers.headerId;
                             //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
                             //console.log("10.initializeSignalRAdapter")
-                            this.initializeSignalRAdapter(user, this.http, this.storageManager, false);
+                            this.initializeSignalRAdapter(user, this.http, this.storageManager, false, (<NavigationStart>event).url);
                           }
                         }
 
@@ -1147,8 +1146,8 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.showCampaignSearch = false;
         }
         else if (url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DETAILS') > -1
-            || url.toUpperCase().indexOf('/RULESET/COMBAT/') > -1
-            ) {
+          || url.toUpperCase().indexOf('/RULESET/COMBAT/') > -1
+        ) {
           this.showCharacterSearch = false;
 
           this.showCampaignSearch = true;
@@ -1204,7 +1203,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           ||
           url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETABILITIES + '/') > -1
           ||
-         url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERLOOT + '/') > -1
+          url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERLOOT + '/') > -1
           ||
           url.toUpperCase().indexOf('/SEARCH/BASIC/' + SearchType.CHARACTERRULESETBUFFEFFECT + '/') > -1
           ||
@@ -1229,7 +1228,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           //console.log("IsCharacterRecordScreen", this.IsCharacterRecordScreen)
         }
 
-        
+
         this.SearchType = 0;
         this.SearchTypeText = '';
 
@@ -1298,7 +1297,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         else if ((url.toUpperCase().indexOf('/RULESET/LOOT/') > -1 ||
           url.toUpperCase().indexOf('/RULESET/LOOT-DETAILS') > -1 ||
           url.toUpperCase().indexOf('/RULESET/LOOT-PILE-DETAILS') > -1)
-        && this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/') == -1
+          && this.router.url.toUpperCase().indexOf('/CHARACTER/RULESET/') == -1
         ) {
           this.SearchType = SearchType.RULESETLOOT;
           this.SearchTypeText = 'Loots';
@@ -1396,7 +1395,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     $.FroalaEditor.DefineIcon('bracketsIcon', { NAME: 'squareBrackets', template: 'brackets' });
     $.FroalaEditor.RegisterCommand('my_dropdown', {
       title: 'Options',
-      icon:'bracketsIcon',
+      icon: 'bracketsIcon',
       type: 'dropdown',
       focus: false,
       undo: false,
@@ -1904,7 +1903,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
 
         if (this.isPlayerCharacter) {
-          
+
           if (this.isPlayerLinkedToCurrentCampaign) {
             this.logoPath = '/ruleset/campaign-details/' + this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
           }
@@ -1916,10 +1915,10 @@ export class AppComponent implements OnInit, AfterViewInit {
             }
             //this.logoPath = '/rulesets/campaigns';
           }
-          
+
         }
 
-        
+
 
         //if (url.toUpperCase().indexOf('/CHARACTER/') > -1) {
 
@@ -2012,10 +2011,16 @@ export class AppComponent implements OnInit, AfterViewInit {
   onEventTriggered(event: string): void {
     this.triggeredEvents.push(event);
   }
-  initializeSignalRAdapter(user: User, http, storageManager, IsRuleset: boolean) {
-    //this.storageManager.getDataObject<ChatConnection[]>(DBkeys.chatConnections);    
+  initializeSignalRAdapter(user: User, http, storageManager, IsRuleset: boolean, currentUrl) {
+    //this.storageManager.getDataObject<ChatConnection[]>(DBkeys.chatConnections);
+    let url = currentUrl.toLowerCase();
+    let isNewTab = false;
+    if (url.indexOf("/combats/") > -1 || url.indexOf("/gm-playerview/") > -1) {
+      isNewTab = true;
+    }
+
     let rulesetID = this.localStorage.getDataObject<User>(DBkeys.RULESET_ID);
-    if (rulesetID) {
+    if (rulesetID && !isNewTab) {
       this.rulesetService.getRulesetById<Ruleset>(+rulesetID).subscribe((data: Ruleset) => {
         this.localStorage.localStorageSetItem(DBkeys.rulesetforChat, data);
         if (!this.signalRAdapter) {
@@ -2087,7 +2092,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
   isRulesetRoute(): boolean {
-    
+
     if (
       this.isGmUser
       && this.router.url.toUpperCase().indexOf('/RULESET/') > -1
@@ -2100,7 +2105,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
   GoToPCCombat() {
-    
+
     if (this.isPlayerCharacter) {
       if (this.isPlayerLinkedToCurrentCampaign) {
         let ruleSetId = this.localStorage.getDataObject<any>(DBkeys.RULESET_ID);

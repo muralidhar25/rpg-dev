@@ -723,8 +723,9 @@
           <accordion-group class="detailPaneItems" #p1 heading="STATS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
             <div class="row">
               <div class="col-12">
-                <!--<label for="Desc">Stats</label>-->
-                <div [froalaView]="noStatProvided" name="stat"></div>
+                <!--<div [froalaView]="noStatProvided" name="stat"></div>-->
+                <div *ngIf="currentCombatantDetail?.monster?.stats" [froalaView]="currentCombatantDetail?.monster?.stats" name="stats"></div>
+                <div *ngIf="!currentCombatantDetail?.monster?.stats" [froalaView]="noStatProvided" name="stat"></div>
               </div>
             </div>
           </accordion-group>
