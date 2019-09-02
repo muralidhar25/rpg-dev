@@ -26,6 +26,7 @@ export class  CharactersCharacterStatService extends EndpointFactory {
   private readonly _updatelistUrl: string = "/api/CharactersCharacterStat/updatelist";
   private readonly _getLinkRecordsDetailsUrl: string = "/api/CharactersCharacterStat/getLinkTypeRecords";
   private readonly _getConditionsValuesListUrl: string = "/api/CharactersCharacterStat/getConditionsValuesList";
+  private readonly _getCharCharStatDetailsUrl: string = "/api/CharactersCharacterStat/getCharCharStatDetails";
 
 
   get getByCharacterIdUrl() { return this.configurations.baseUrl + this._getByCharacterIdUrl; }
@@ -37,7 +38,7 @@ export class  CharactersCharacterStatService extends EndpointFactory {
   get updatelistUrl() { return this.configurations.baseUrl + this._updatelistUrl; }
   get getLinkRecordsDetailsUrl() { return this.configurations.baseUrl + this._getLinkRecordsDetailsUrl; }
   get getConditionsValuesListUrl() { return this.configurations.baseUrl + this._getConditionsValuesListUrl; }
-
+  get getCharCharStatDetailsUrl() { return this.configurations.baseUrl + this._getCharCharStatDetailsUrl; }
   constructor(http: HttpClient, configurations: ConfigurationService, injector: Injector) {
     super(http, configurations, injector);
   }
@@ -64,6 +65,14 @@ export class  CharactersCharacterStatService extends EndpointFactory {
     return this.http.get<T>(endpointUrl, this.getRequestHeaders())
       .catch(error => {
         return this.handleError(error, () => this.getCharactersCharacterStat_StatList(Id, page, pageSize));
+      });
+  }
+  getCharCharStatDetails<T>(characterId: number): Observable<T> {
+    let endpointUrl = `${this.getCharCharStatDetailsUrl}?characterId=${characterId}`;
+
+    return this.http.get<T>(endpointUrl, this.getRequestHeaders())
+      .catch(error => {
+        return this.handleError(error, () => this.getCharCharStatDetails(characterId));
       });
   }
 

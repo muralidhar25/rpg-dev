@@ -8,6 +8,8 @@ import { VIEW } from '../../../core/models/enums';
 import { PlatformLocation } from '@angular/common';
 import { DiceRollComponent } from '../../../shared/dice/dice-roll/dice-roll.component';
 import { Characters } from '../../../core/models/view-models/characters.model';
+import { ServiceUtil } from '../../../core/services/service-util';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'edit-note',
@@ -23,18 +25,60 @@ export class RulesetEditNoteComponent implements OnInit {
     pageDefaultData = new RulesetDashboardPage();
     options: Object = Utilities.options;
 
-  constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private location: PlatformLocation) {
+  constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private location: PlatformLocation, public router: Router) {
     location.onPopState(() => this.modalService.hide(1));
   }
 
-  @HostListener('document:click', ['$event.target'])
-  documentClick(target: any) {
-    try {
-      if (target.className && target.className == "Editor_Command a-hyperLink") {
-        this.GotoCommand(target.attributes["data-editor"].value);
+  @HostListener('document:click', ['$event'])
+  documentClick(e: any) {
+    let target = e.target;
+    e.stopPropagation();
+    if (target.className && target.className == "Editor_Command a-hyperLink") {
+      this.close();
+      this.GotoCommand(target.attributes["data-editor"].value);
+    }
+    if (target.className) {
+      if (target.className == "Editor_Ruleset_spellDetail a-hyperLink") {
+        this.close();
+        ServiceUtil.GotoSpellDetail(target.attributes["data-editor"].value, this.router);
       }
-    } catch (err) { }
-  }
+      else if (target.className == "Editor_Ruleset_abilityDetail a-hyperLink") {
+        this.close();
+        ServiceUtil.GotoAbilityDetail(target.attributes["data-editor"].value, this.router);
+      }
+      else if (target.className == "Editor_Ruleset_BuffAndEffectDetail a-hyperLink") {
+        this.close();
+        ServiceUtil.GotoBuffEffectDetail(target.attributes["data-editor"].value, this.router);
+      }
+      else if (target.className == "Editor_Ruleset_ItemTemplateDetail a-hyperLink") {
+        this.close();
+        if (target.attributes["data-isbundle"].value == "true") {
+          ServiceUtil.GotoItemTemplateBundleDetail(target.attributes["data-editor"].value, this.router);
+        } else {
+          ServiceUtil.GotoItemTemplateDetail(target.attributes["data-editor"].value, this.router);
+        }
+      }
+      else if (target.className == "Editor_Ruleset_MonsterTemplateDetail a-hyperLink") {
+        this.close();
+        if (target.attributes["data-isbundle"].value == "true") {
+          ServiceUtil.GotoMonsterTemplateBundleDetail(target.attributes["data-editor"].value, this.router);
+        } else {
+          ServiceUtil.GotoMonsterTemplateDetail(target.attributes["data-editor"].value, this.router);
+        }
+      }
+      else if (target.className == "Editor_Ruleset_MonsterDetail a-hyperLink") {
+        this.close();
+        ServiceUtil.GotoMonsterDetail(target.attributes["data-editor"].value, this.router);
+      }
+    }
+
+    if (target.className == "Editor_Ruleset_spellDetailExe a-hyperLink" || target.className == "Editor_Ruleset_abilityDetailExe a-hyperLink"
+      || target.className == "Editor_Ruleset_BuffAndEffectDetailExe a-hyperLink" || target.className == "Editor_Ruleset_ItemTemplateDetailExe a-hyperLink"
+      || target.className == "Editor_Ruleset_MonsterTemplateDetailExe a-hyperLink" || target.className == "Editor_Ruleset_MonsterDetailExe a-hyperLink") {
+      this.close();
+      //ServiceUtil.ExecutePopup(target.attributes["data-editor"].value, target.className);
+    }
+  } 
 
   ngOnInit() {
       debugger

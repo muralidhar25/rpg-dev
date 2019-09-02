@@ -82,7 +82,7 @@ export class CharacterDashboardComponent implements OnInit {
   character: any = new Characters();
   characterlayouts: any;
   selectedlayout: any;
-  foldClass: any = 'dropdown-menu input-list-items border-none';  
+  foldClass: any = 'dropdown-menu input-list-items border-none';
   pagedrpClass: any = 'dropdown-menu input-list-items1 border-none';
   selectedPage: any;
   page: number = 1;
@@ -325,11 +325,40 @@ export class CharacterDashboardComponent implements OnInit {
       } else if (target.className == "Editor_BuffAndEffectDetail a-hyperLink") {
         this.GotoBuffEffectDetail(target.attributes["data-editor"].value);
       }
+      else if (target.className == "Editor_Ruleset_spellDetail a-hyperLink") {
+        this.GotoErrorMessage();
+        //this.GotoBuffEffectDetail(target.attributes["data-editor"].value);
+      }
+      else if (target.className == "Editor_Ruleset_abilityDetail a-hyperLink") {
+        this.GotoErrorMessage();
+        //this.GotoBuffEffectDetail(target.attributes["data-editor"].value);
+      }
+      else if (target.className == "Editor_Ruleset_BuffAndEffectDetail a-hyperLink") {
+        this.GotoErrorMessage();
+        //this.GotoBuffEffectDetail(target.attributes["data-editor"].value);
+      }
+      else if (target.className == "Editor_Ruleset_ItemTemplateDetail a-hyperLink") {
+        this.GotoErrorMessage();
+        //this.GotoBuffEffectDetail(target.attributes["data-editor"].value);
+      }
+      else if (target.className == "Editor_Ruleset_MonsterTemplateDetail a-hyperLink") {
+        this.GotoErrorMessage();
+        //this.GotoBuffEffectDetail(target.attributes["data-editor"].value);
+      }
+      else if (target.className == "Editor_Ruleset_MonsterDetail a-hyperLink") {
+        this.GotoErrorMessage();
+        //this.GotoBuffEffectDetail(target.attributes["data-editor"].value);
+      }      
     }
 
     if (target.className == "Editor_itemDetailExe a-hyperLink" || target.className == "Editor_spellDetailExe a-hyperLink"
       || target.className == "Editor_abilityDetailExe a-hyperLink" || target.className == "Editor_BuffAndEffectDetailExe a-hyperLink") {
       this.ExecutePopup(target.attributes["data-editor"].value, target.className);
+    }
+    else if (target.className == "Editor_Ruleset_spellDetailExe a-hyperLink" || target.className == "Editor_Ruleset_abilityDetailExe a-hyperLink"
+      || target.className == "Editor_Ruleset_BuffAndEffectDetailExe a-hyperLink" || target.className == "Editor_Ruleset_ItemTemplateDetailExe a-hyperLink"
+      || target.className == "Editor_Ruleset_MonsterTemplateDetailExe a-hyperLink" || target.className == "Editor_Ruleset_MonsterDetailExe a-hyperLink") {
+      this.GotoErrorMessage();
     }
 
     if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE))
@@ -1390,7 +1419,7 @@ export class CharacterDashboardComponent implements OnInit {
               this.updateStatService(_tile.characterStatTiles.charactersCharacterStat);
             }
             else if (_tile.characterStatTiles.charactersCharacterStat.isCustom) {
-              debugger
+              
               let initialIndex: number = -1;
               _tile.characterStatTiles.charactersCharacterStat.characterCustomToggles.map((togg, index) => {
                 if (togg.initial) {
@@ -1657,7 +1686,7 @@ export class CharacterDashboardComponent implements OnInit {
       }
       case TILES.TOGGLE: {
         if (!this.isSharedLayout) {
-          debugger
+          
           if (_tile.toggleTiles.tileToggle.yesNo) {
             _tile.toggleTiles.yesNo = !_tile.toggleTiles.yesNo
             this.updateToggleTile(_tile.toggleTiles);
@@ -1671,7 +1700,7 @@ export class CharacterDashboardComponent implements OnInit {
             this.updateToggleTile(_tile.toggleTiles)
           }
           else if (_tile.toggleTiles.tileToggle.isCustom) {
-            debugger
+            
             let initialIndex: number = -1;
             _tile.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
               if (togg.initial) {
@@ -2214,7 +2243,7 @@ export class CharacterDashboardComponent implements OnInit {
           if (item.characterStatTiles.charactersCharacterStat.isCustom) {
             let isCustomToggleInitialSet = false;
             item.characterStatTiles.charactersCharacterStat.characterCustomToggles.map((togg, index) => {
-              debugger
+              
               if (togg.customToggleId == item.characterStatTiles.charactersCharacterStat.defaultValue) {
                 togg.initial = true;
                 isCustomToggleInitialSet = true;
@@ -2225,7 +2254,7 @@ export class CharacterDashboardComponent implements OnInit {
             })
             if (!isCustomToggleInitialSet) {
               item.characterStatTiles.charactersCharacterStat.characterCustomToggles.map((togg, index) => {
-                debugger
+                
                 if (index == 0) {
                   togg.initial = true;
                 }
@@ -2494,7 +2523,7 @@ export class CharacterDashboardComponent implements OnInit {
 
         let isCustomToggleInitialSet = false;
         item.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
-          debugger
+          
           if (togg.tileCustomToggleId == item.toggleTiles.customValue) {
             togg.initial = true;
             isCustomToggleInitialSet = true;
@@ -2505,7 +2534,7 @@ export class CharacterDashboardComponent implements OnInit {
         })
         if (!isCustomToggleInitialSet) {
           item.toggleTiles.tileToggle.tileCustomToggles.map((togg, index) => {
-            debugger
+            
             if (index == 0) {
               togg.initial = true;
             }
@@ -3315,7 +3344,7 @@ export class CharacterDashboardComponent implements OnInit {
       });
   }
   AssignBuffsToCharacter(buffsList) {
-    debugger
+    
     if (!this.pauseBuffAndEffectAdd) {
       let selectedbuffs = [];
 
@@ -3335,7 +3364,7 @@ export class CharacterDashboardComponent implements OnInit {
         ignoreBackdropClick: true,
         keyboard: false
       });
-      debugger
+      
       this.bsModalRef.content.rulesetID = this.rulesetModel.ruleSetId;
       this.bsModalRef.content.characterID = this.characterId;
       this.bsModalRef.content.selectedBuffAndEffectsList = selectedbuffs;
@@ -3378,62 +3407,69 @@ export class CharacterDashboardComponent implements OnInit {
   GotoBuffEffectDetail(buffEffectId) {
     this.router.navigate(['/character/buff-effect-details/', buffEffectId]);
   }
-
+  GotoErrorMessage() {
+    let message = "Sorry, You can't access the template records.";
+    this.alertService.showMessage(message, "", MessageSeverity.error);
+  }
+  GotoErrorMessageRecordNotFound() {
+    let message = "The targeted record has been removed.";
+    this.alertService.showMessage(message, "", MessageSeverity.error);
+  }
   ExecutePopup(Id, className) {
+    debugger
     if (className == "Editor_spellDetailExe a-hyperLink" && Id) {
-      this.isLoading = true;
+      this.alertService.startLoadingMessage("", "Loading Commands...");
+      //this.isLoading = true;
       let spellDetail: any;
       this.characterSpellService.getCharacterSpellById<any>(Id)
         .subscribe(data => {
-          spellDetail = this.characterSpellService.spellModelDetailData(data, "UPDATE");
-        }, error => {
-          this.isLoading = false;
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-            this.authService.logout(true);
-          }
-        }, () => {
-          this.spellsService.getSpellCommands_sp<any>(Id, this.character.ruleSetId)
-            .subscribe(data => {
-              this.isLoading = false;
-              //if (data.length > 0) {
+          if (data) {
+            spellDetail = this.characterSpellService.spellModelDetailData(data, "UPDATE");
+            this.alertService.stopLoadingMessage();
+            //this.isLoading = false;
+            if (spellDetail.spellCommandVM && spellDetail.spellCommandVM.length) {
               this.bsModalRef = this.modalService.show(CastComponent, {
                 class: 'modal-primary modal-md',
                 ignoreBackdropClick: true,
                 keyboard: false
               });
               this.bsModalRef.content.title = "Spell Cast";
-              this.bsModalRef.content.ListCommands = data.spellCommands;
+              this.bsModalRef.content.ListCommands = spellDetail.spellCommandVM;
               this.bsModalRef.content.Command = spellDetail;
               this.bsModalRef.content.Character = this.character;
               this.bsModalRef.content.ButtonText = 'Cast';
-              //} else {
-              //  //this.useCommand(_executeTile.spell.spell)
-              //}
-            }, error => {
-              this.isLoading = false;
-            }, () => { });
+            } else {
+              this.useCommand(spellDetail)
+            }
+          }
+          else {
+            this.GotoErrorMessageRecordNotFound();
+          }
+         
+        }, error => {
+          this.alertService.stopLoadingMessage();
+          //this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => {
+          
         });
 
     }
     else if (className == "Editor_itemDetailExe a-hyperLink" && Id) {
-      this.isLoading = true;
+      this.alertService.startLoadingMessage("", "Loading Commands...");
+      //this.isLoading = true;
       let itemDetailExe: any;
       this.itemsService.getItemById<any>(Id)
         .subscribe(data => {
-          itemDetailExe = this.itemsService.itemModelData(data, "UPDATE");
-          this.isLoading = false;
-        }, error => {
-          this.isLoading = false;
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        }, () => {
-          this.itemsService.getItemCommands_sp<any>(Id)
-            .subscribe(data => {
-              //if (data.length > 0) {
+          if (data) {
+            itemDetailExe = this.itemsService.itemModelData(data, "UPDATE");
+            this.alertService.stopLoadingMessage();
+            //this.isLoading = false;
+            if (itemDetailExe.itemCommandVM && itemDetailExe.itemCommandVM.length) {
               this.bsModalRef = this.modalService.show(CastComponent, {
                 class: 'modal-primary modal-md',
                 ignoreBackdropClick: true,
@@ -3441,31 +3477,39 @@ export class CharacterDashboardComponent implements OnInit {
               });
 
               this.bsModalRef.content.title = "Item Commands";
-              this.bsModalRef.content.ListCommands = data;
+              this.bsModalRef.content.ListCommands = itemDetailExe.itemCommandVM;
               this.bsModalRef.content.Command = itemDetailExe;
               this.bsModalRef.content.Character = this.character;
-              //} else {
-              //  //this.useCommand(_executeTile.item);
-              //}
-            }, error => { }, () => { });
+            } else {
+              this.useCommand(itemDetailExe);
+            }
+          }
+          else {
+            this.GotoErrorMessageRecordNotFound();
+          }
+         
+        }, error => {
+          this.alertService.stopLoadingMessage();
+          //this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+        }, () => {
+          
         });
     }
     else if (className == "Editor_abilityDetailExe a-hyperLink" && Id) {
       let AbilityDetailExe: any;
+      this.alertService.startLoadingMessage("", "Loading Commands...");
+      //this.isLoading = true;
       this.characterAbilityService.getCharacterAbilityById<any>(Id)
         .subscribe(data => {
-          AbilityDetailExe = this.characterAbilityService.abilityModelDetailData(data, "UPDATE");
-        }, error => {
-          this.isLoading = false;
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
-            this.authService.logout(true);
-          }
-        }, () => {
-          this.abilityService.getAbilityCommands_sp<any>(Id, this.character.ruleSetId)
-            .subscribe(data => {
-              //if (data.length > 0) {
+          if (data) {
+            AbilityDetailExe = this.characterAbilityService.abilityModelDetailData(data, "UPDATE");
+            this.alertService.stopLoadingMessage();
+            //this.isLoading = false;
+            if (AbilityDetailExe.abilityCommandVM && AbilityDetailExe.abilityCommandVM.length) {
               this.bsModalRef = this.modalService.show(CastComponent, {
                 class: 'modal-primary modal-md',
                 ignoreBackdropClick: true,
@@ -3473,36 +3517,41 @@ export class CharacterDashboardComponent implements OnInit {
               });
 
               this.bsModalRef.content.title = "Ability Commands";
-              this.bsModalRef.content.ListCommands = data.abilityCommands;
+              this.bsModalRef.content.ListCommands = AbilityDetailExe.abilityCommandVM;
               this.bsModalRef.content.AbilityId = Id;
               this.bsModalRef.content.Command = AbilityDetailExe;
               this.bsModalRef.content.Character = this.character;
-              //} else {
-              //  //this.useCommand(_executeTile.ability.ability)
-              //}
-            }, error => { }, () => { });
-        });
-
-    }
-    else if (className == "Editor_BuffAndEffectDetailExe a-hyperLink" && Id) {
-      this.isLoading = true;
-      let buffAndEffectDetailExe;
-      this.buffAndEffectService.getCharacterBuffAndEffectById<any>(Id)
-        .subscribe(data => {
-          if (data)
-            buffAndEffectDetailExe = this.buffAndEffectService.BuffAndEffectsModelData(data, "UPDATE");
-
+            } else {
+              this.useCommand(AbilityDetailExe)
+            }
+          }
+          else {
+            this.GotoErrorMessageRecordNotFound();
+          }
+         
         }, error => {
-          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          //this.isLoading = false;
           let Errors = Utilities.ErrorDetail("", error);
           if (Errors.sessionExpire) {
             //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
             this.authService.logout(true);
           }
         }, () => {
-          this.buffAndEffectService.getBuffAndEffectCommands_sp<any>(Id)
-            .subscribe(data => {
-              //if (data.length > 0) {
+        });
+
+    }
+    else if (className == "Editor_BuffAndEffectDetailExe a-hyperLink" && Id) {
+      this.alertService.startLoadingMessage("", "Loading Commands...");
+      //this.isLoading = true;
+      let buffAndEffectDetailExe;
+      this.buffAndEffectService.getCharacterBuffAndEffectById<any>(Id)
+        .subscribe(data => {
+          if (data) {
+            buffAndEffectDetailExe = this.buffAndEffectService.BuffAndEffectsModelData(data, "UPDATE");
+            this.alertService.stopLoadingMessage();
+            //this.isLoading = false;
+            if (buffAndEffectDetailExe && buffAndEffectDetailExe.buffAndEffectCommandVM.length) {
               this.bsModalRef = this.modalService.show(CastComponent, {
                 class: 'modal-primary modal-md',
                 ignoreBackdropClick: true,
@@ -3510,14 +3559,27 @@ export class CharacterDashboardComponent implements OnInit {
               });
 
               this.bsModalRef.content.title = "Buffs & Effects Commands";
-              this.bsModalRef.content.ListCommands = data;
+              this.bsModalRef.content.ListCommands = buffAndEffectDetailExe.buffAndEffectCommandVM;
               this.bsModalRef.content.BuffAndEffectID = Id;
               this.bsModalRef.content.Command = buffAndEffectDetailExe;
               this.bsModalRef.content.Character = this.character;
-              //} else {
-              //  this.useCommand(_executeTile.buffAndEffect.buffAndEffect)
-              //}
-            }, error => { }, () => { });
+            } else {
+              this.useCommand(buffAndEffectDetailExe)
+            }
+          }
+          else {
+            this.GotoErrorMessageRecordNotFound();
+          }
+           
+        }, error => {
+          this.alertService.stopLoadingMessage();
+          //this.isLoading = false;
+          let Errors = Utilities.ErrorDetail("", error);
+          if (Errors.sessionExpire) {
+            //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+            this.authService.logout(true);
+          }
+        }, () => {
         });
     }
 

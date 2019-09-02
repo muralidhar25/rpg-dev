@@ -702,9 +702,9 @@
 
                                     <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.characterStatClusterTiles?.titleTextColor, 'background-color': box.tile.characterStatClusterTiles.titleBgColor}"
                                         *ngIf="(box.tile.characterStatClusterTiles?.showTitle && box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStat?.characterStatTypeId!==STAT_TYPE.Command)||(box.tile.characterStatClusterTiles?.showTitle && box.tile?.characterStatClusterTiles?.imageUrl && box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStat?.characterStatTypeId==STAT_TYPE.Command)"
-                                        popover="{{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStat?.statName}}" triggers="hover" container="body"
+                                        popover="{{box.tile.characterStatClusterTiles?.title ? box.tile.characterStatClusterTiles?.title : box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStat?.statName}}" triggers="hover" container="body"
                                         [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?13:15">
-                                      {{box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStat?.statName}}
+                                      {{box.tile.characterStatClusterTiles?.title ? box.tile.characterStatClusterTiles?.title : box.tile.characterStatClusterTiles?.displayCharactersCharacterStat?.characterStat?.statName}}
                                     </h5>
 
                                     <div class="tile-body text-overflow-hidden">

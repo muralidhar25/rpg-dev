@@ -1720,4 +1720,31 @@ export class ServiceUtil {
     decryptedId = (parseInt(encryptedId, 16) - 89898989).toString();
     return decryptedId;
   }
+
+  public static GotoItemTemplateDetail(id, router) {
+    router.navigate(['/ruleset/item-details/', id]);
+  }
+  public static GotoItemTemplateBundleDetail(id, router) {
+    router.navigate(['/ruleset/bundle-details/', id]);
+  }
+  public static GotoSpellDetail(id, router) {
+    router.navigate(['/ruleset/spell-details/', id]);
+  }
+  public static GotoAbilityDetail(id, router) {
+    router.navigate(['/ruleset/ability-details/', id]);
+  }
+  public static GotoBuffEffectDetail(id, router) {
+    router.navigate(['/ruleset/buff-effect-details/', id]);
+  }
+  public static GotoMonsterDetail(id, router) {
+    router.navigate(['/ruleset/monster-details/', id]);
+  }
+  public static GotoMonsterTemplateDetail(id, router) {
+    router.navigate(['/ruleset/monster-template-details/', id]);
+  }
+  public static GotoMonsterTemplateBundleDetail(id, router) {
+    router.navigate(['/ruleset/monster-bundle-details/', id]);
+  }
+  
+  
 }

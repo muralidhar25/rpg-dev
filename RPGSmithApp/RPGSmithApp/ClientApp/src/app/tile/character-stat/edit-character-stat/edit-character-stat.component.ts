@@ -509,7 +509,8 @@ export class EditCharacterStatComponent implements OnInit {
                  }
              
               this.sharedService.updateCharacterList(result);
-                this.close(true);
+              this.close(true);
+              ServiceUtil.BindCharCharDetailsInLocalStorage(this.CharacterID, this.CCService, this.localStorage, true);
             },
             error => {
                 this.alertService.stopLoadingMessage();
@@ -635,7 +636,8 @@ export class EditCharacterStatComponent implements OnInit {
         }
         this.CCService.updateCharactersCharacterStat(CStat).subscribe(
             data => {
-                this.CharacterStatTile.charactersCharacterStat = Object.assign(this.CharacterStatTile.charactersCharacterStat, CStat)
+              this.CharacterStatTile.charactersCharacterStat = Object.assign(this.CharacterStatTile.charactersCharacterStat, CStat)
+              ServiceUtil.BindCharCharDetailsInLocalStorage(this.CharacterID, this.CCService, this.localStorage, true);
             },
             error => {
             },

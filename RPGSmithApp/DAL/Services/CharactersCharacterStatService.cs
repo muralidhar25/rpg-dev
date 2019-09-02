@@ -19,12 +19,17 @@ namespace DAL.Services
         private readonly IRepository<CharactersCharacterStat> _repo;
         protected readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
+        private readonly ICharacterStatChoiceService _characterStatChoiceService;
 
-        public CharactersCharacterStatService(ApplicationDbContext context, IRepository<CharactersCharacterStat> repo, IConfiguration configuration)
+        public CharactersCharacterStatService(ApplicationDbContext context, 
+            IRepository<CharactersCharacterStat> repo, 
+            IConfiguration configuration,
+            ICharacterStatChoiceService characterStatChoiceService)
         {
             _repo = repo;
             _context = context;
             _configuration = configuration;
+            _characterStatChoiceService = characterStatChoiceService;
         }
 
         public void Create(CharactersCharacterStat item)
@@ -698,6 +703,92 @@ namespace DAL.Services
             //////////////////////////////////////////////////////////////////////////////////////////////////////
             return CharacterStatsList;
         }
-       
+        public CharCharStatDetails getCharCharStatDetails(int characterId) {
+            CharCharStatDetails obj = new CharCharStatDetails();
+            obj.LinkRecordsDetails = getLinkTypeRecords(characterId).ToList();
+            //////////////////////////////////////////////////////////////
+            List<CharactersCharacterStatViewModel> ResultList = new List<CharactersCharacterStatViewModel>();
+            CharactersCharacterStatViewModel CharactersCharacterStatVievModel = new CharactersCharacterStatViewModel();
+            List<CharactersCharacterStat> data = GetConditionsValuesList(characterId).Result;
+            foreach (CharactersCharacterStat item in data)
+            {
+                CharactersCharacterStatVievModel = new CharactersCharacterStatViewModel()
+                {
+                    CalculationResult = item.CalculationResult,
+                    CharacterId = item.CharacterId,
+                    CharactersCharacterStatId = item.CharactersCharacterStatId,
+                    CharacterStatId = item.CharacterStatId,
+                    Choice = item.Choice,
+                    Command = item.Command,
+                    Current = item.Current,
+                    IsDeleted = item.IsDeleted,
+                    Maximum = item.Maximum,
+                    MultiChoice = item.MultiChoice,
+                    Number = item.Number,
+                    OnOff = item.OnOff,
+                    RichText = item.RichText,
+                    SubValue = item.SubValue,
+                    Text = item.Text,
+                    Value = item.Value,
+                    YesNo = item.YesNo,
+                    ComboText = item.ComboText,
+                    DefaultValue = item.DefaultValue,
+                    Minimum = item.Minimum,
+                    Display = item.Display,
+                    IsCustom = item.IsCustom,
+                    IsOn = item.IsOn,
+                    IsYes = item.IsYes,
+                    ShowCheckbox = item.ShowCheckbox,
+                    LinkType = item.LinkType,
+                    CharacterStat = new CharacterStat()
+                    {
+                        CharacterStatId = item.CharacterStat.CharacterStatId,
+                        CharacterStatTypeId = item.CharacterStat.CharacterStatTypeId,
+                        StatName = item.CharacterStat.StatName,
+                        isMultiSelect = item.CharacterStat.isMultiSelect,
+                        CharacterStatChoices = item.CharacterStat.CharacterStatChoices.Select(z => new CharacterStatChoice
+                        {
+                            CharacterStatChoiceId = z.CharacterStatChoiceId,
+                            CharacterStatId = z.CharacterStatId,
+                            IsDeleted = z.IsDeleted,
+                            StatChoiceValue = z.StatChoiceValue
+                        }).ToList(),
+                        CharacterStatConditions = item.CharacterStat.CharacterStatConditions.Select(z => new CharacterStatCondition()
+                        {
+                            CharacterStatConditionId = z.CharacterStatConditionId,
+                            CharacterStatId = z.CharacterStatId,
+                            ConditionOperatorID = z.ConditionOperatorID,
+                            IfClauseStatText = z.IfClauseStatText,
+                            IsNumeric = z.IsNumeric,
+                            CompareValue = z.CompareValue,
+                            Result = z.Result,
+                            SortOrder = z.SortOrder,
+                            ConditionOperator = z.ConditionOperator,
+                        }).ToList(),
+                        CharacterStatCalcs = item.CharacterStat.CharacterStatCalcs.Select(z => new CharacterStatCalc()
+                        {
+                            CharacterStatCalcId = z.CharacterStatCalcId,
+                            CharacterStatId = z.CharacterStatId,
+                            IsDeleted = z.IsDeleted,
+                            StatCalculation = z.StatCalculation,
+                            StatCalculationIds = z.StatCalculationIds,
+                        }).ToList(),
+                    }
+
+                };
+                ResultList.Add(CharactersCharacterStatVievModel);
+            }
+            obj.ConditionsValuesLists = ResultList;
+            /////////////////////////////////////////////////////////////////
+
+            //////////////////////////////////////////////
+            var CharCharStats = GetByCharacterId_sp(characterId, 1, 9999999);
+            List<CharactersCharacterStatViewModel> CharactersCharacterStatVievModels = utility.GetCharCharStatViewModelList(CharCharStats, _characterStatChoiceService);
+            obj.CharactersCharacterStats = CharactersCharacterStatVievModels;
+            ////////////////////////////////////////////////
+            return obj;
+        }
+
+
     }
 }

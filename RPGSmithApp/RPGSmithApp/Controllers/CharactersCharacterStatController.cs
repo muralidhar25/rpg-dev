@@ -257,6 +257,13 @@ namespace RPGSmithApp.Controllers
             }
             return Ok(ResultList);
         }
+        [HttpGet("getCharCharStatDetails")]
+        public async Task<IActionResult> getCharCharStatDetails(int characterId)
+        {
+            var res = _charactersCharacterStatServic.getCharCharStatDetails(characterId);
+            
+            return Ok(res);
+        }
 
     }
 }

@@ -22,5 +22,6 @@ namespace DAL.Services
         List<LinkTypeRecord> getLinkTypeRecords(int characterId);
         Task<List<CharactersCharacterStat>> GetConditionsValuesList(int characterId);
         Task<CharactersCharacterStat> UpdateCommandImage(int id, string image);
+        CharCharStatDetails getCharCharStatDetails(int characterId);
     }
 }

@@ -427,3 +427,6 @@
   -webkit-transform: rotate(43deg);
   transform: rotate(43deg);
 }
+.ng-chat-grey-text b.bold-command-result {
+  font-size: 0.92rem;
+}
