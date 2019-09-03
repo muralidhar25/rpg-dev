@@ -39,6 +39,7 @@ namespace DAL.Models
         public string LastCommand { get; set; }
 
         public string LastCommandResult { get; set; }
+        public string LastCommandResultColor { get; set; }
 
         //[DefaultValue(0)]
         public int LastCommandTotal { get; set; }

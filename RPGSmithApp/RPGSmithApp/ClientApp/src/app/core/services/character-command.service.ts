@@ -105,6 +105,7 @@ export class CharacterCommandService extends EndpointFactory {
 
   //bind form model
   public commandModelData(_modelVM: any, _view: string): any {
+    debugger
     if (_modelVM == null) _view = 'SAVE';
     let charactersFormModal: any;
 
@@ -126,6 +127,7 @@ export class CharacterCommandService extends EndpointFactory {
         characterId: _modelVM.characterId,
         character: _modelVM ? _modelVM.character : new Characters(),
         lastResult: _lastResult, // _modelVM ? (_modelVM.character ? _modelVM.character.lastCommand : '') : '',
+        lastResultNumbersColor: _modelVM ? (_modelVM.character ? _modelVM.character.lastCommandResultColor : '') : '',
         lastResultNumbers: _modelVM ? (_modelVM.character ? _modelVM.character.lastCommandResult : '') : '',
         lastSavedCommand: _modelVM ? (_modelVM.character ? _modelVM.character.lastCommand : '') : '',
         diceCommandArray: [],
@@ -140,6 +142,7 @@ export class CharacterCommandService extends EndpointFactory {
         command: _modelVM ? _modelVM.command : '',
         character: _modelVM ? _modelVM.character : new Characters(),
         lastResult: _lastResult, //_modelVM ? (_modelVM.character ? _modelVM.character.lastCommand : '') : '',
+        lastResultNumbersColor: _modelVM ? (_modelVM.character ? _modelVM.character.lastCommandResultColor : '') : '',
         lastResultNumbers: _modelVM ? (_modelVM.character ? _modelVM.character.lastCommandResult : '') : '',
         lastSavedCommand: _modelVM ? (_modelVM.character ? _modelVM.character.lastCommand : '') : '',
         diceCommandArray: [],

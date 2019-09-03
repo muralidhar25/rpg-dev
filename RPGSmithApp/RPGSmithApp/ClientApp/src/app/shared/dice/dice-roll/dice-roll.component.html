@@ -282,7 +282,7 @@
                     </span>
                 </ng-container>-->
 
-                <ng-container *ngIf="!command.calculationStringColor">
+                <ng-container *ngIf="!command.calculationStringColor ">
                   <span *ngIf="command.isResultWithCustomDice">{{command.calculationString}}</span>
                   <span *ngIf="!command.isResultWithCustomDice">{{command.calculationString}} <span *ngIf="command?.calculationString"> = </span> <b>{{command?.beforeResult}} <span *ngIf="command?.calculationResult"> {{command.calculationResult}} </span> {{command?.afterResult}}</b></span>
                 </ng-container>

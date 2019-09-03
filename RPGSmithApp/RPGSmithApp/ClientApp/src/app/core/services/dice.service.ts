@@ -1671,8 +1671,13 @@ export class DiceService {
           command += " " + sortedRandomNumbersSign[index] + " " + x;
         }
       })
-
-      temp_randomNumbersAfter = command;
+      if (sortedRandomNumbersSign.length > 1) {
+        temp_randomNumbersAfter = ' ( ' + command + ' ) ';
+      }
+      else {
+        temp_randomNumbersAfter = command;
+      }
+      
     }
    
 

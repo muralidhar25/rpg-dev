@@ -258,6 +258,11 @@ namespace DAL.Repositories
             _character.IsDeleted = dtCharacter.Rows[0]["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(dtCharacter.Rows[0]["IsDeleted"]);
             _character.LastCommand = dtCharacter.Rows[0]["LastCommand"] == DBNull.Value ? null : dtCharacter.Rows[0]["LastCommand"].ToString();
             _character.LastCommandResult = dtCharacter.Rows[0]["LastCommandResult"] == DBNull.Value ? null : dtCharacter.Rows[0]["LastCommandResult"].ToString();
+            if (dtCharacter.Columns.Contains("LastCommandResultColor"))
+            {
+                _character.LastCommandResultColor = dtCharacter.Rows[0]["LastCommandResultColor"] == DBNull.Value ? null : dtCharacter.Rows[0]["LastCommandResultColor"].ToString();
+            }
+            
             _character.LastCommandValues = dtCharacter.Rows[0]["LastCommandValues"] == DBNull.Value ? null : dtCharacter.Rows[0]["LastCommandValues"].ToString();
             _character.LastCommandTotal = dtCharacter.Rows[0]["LastCommandTotal"] == DBNull.Value ? 0 : Convert.ToInt32(dtCharacter.Rows[0]["LastCommandTotal"]);
             _character.InventoryWeight = dtCharacter.Rows[0]["InventoryWeight"] == DBNull.Value ? 0 : Convert.ToDecimal(dtCharacter.Rows[0]["InventoryWeight"]);

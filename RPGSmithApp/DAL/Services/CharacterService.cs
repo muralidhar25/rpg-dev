@@ -472,7 +472,7 @@ namespace DAL.Services
         }
 
 
-        public async Task<Character> UpdateLastCommand(int characterId, string lastcommand, string lastcommandresult, string lastCommandValues, int lastCommandTotal)
+        public async Task<Character> UpdateLastCommand(int characterId, string lastcommand, string lastcommandresult, string lastCommandValues, int lastCommandTotal, string lastcommandresultcolor)
         {
             var _character = await _repo.Get(characterId);
 
@@ -481,6 +481,7 @@ namespace DAL.Services
 
             _character.LastCommand = lastcommand;
             _character.LastCommandResult = lastcommandresult;
+            _character.LastCommandResultColor = lastcommandresultcolor;
             _character.LastCommandValues = lastCommandValues;
             _character.LastCommandTotal = lastCommandTotal;
 

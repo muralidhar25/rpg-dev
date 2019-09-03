@@ -1113,7 +1113,7 @@ export class DiceRollComponent implements OnInit {
 
           }
         });
-
+        debugger
         let val_Eval = 0;
         try {
           val_Eval = eval(character.lastCommandResult.split(' AND ')[_Cindex]);
@@ -1128,6 +1128,7 @@ export class DiceRollComponent implements OnInit {
           __characterMultipleCommands.calculationResult = Math.floor(val_Eval);
 
         __characterMultipleCommands.calculationString = character.lastCommandResult.split(' AND ')[_Cindex];
+        __characterMultipleCommands.calculationStringColor = character.lastCommandResultColor.split(' AND ')[_Cindex];
 
         //this.characterMultipleCommands[0] = __characterMultipleCommands;
 
@@ -1135,7 +1136,7 @@ export class DiceRollComponent implements OnInit {
       })
 
 
-
+      debugger
       //this.onClickRoll(characterCommand, '', __characterMultipleCommands);
       this.onClickRoll(characterCommand, '', this.characterMultipleCommands[0]);
     }
@@ -1575,7 +1576,7 @@ export class DiceRollComponent implements OnInit {
           }
           return false;
         }
-
+        debugger
         if (this.customDices.length > 0) {
           let dArray = DiceService.commandInterpretation(command, undefined, this.addModArray, this.customDices);
           let IsCmdValid = true;
@@ -1689,6 +1690,7 @@ export class DiceRollComponent implements OnInit {
         let __calculationCommand = __characterMultipleCommands.calculationCommand.toString();
         let __calculationResult = __characterMultipleCommands.calculationResult;
         let __calculationString = __characterMultipleCommands.calculationString;
+        let __calculationString_WithColor = __characterMultipleCommands.calculationStringColor;
         let __isCustomNumericCommand = false;
         if (__characterMultipleCommands.isCustomNumericCommand) {
           __isCustomNumericCommand = __characterMultipleCommands.isCustomNumericCommand;
@@ -1697,27 +1699,35 @@ export class DiceRollComponent implements OnInit {
         try {
           if (__calculationString.split("((").length - 1 === __calculationString.split("))").length - 1) {
             __calculationString = __calculationString.replace('((', '(').replace('))', ')');
+            __calculationString_WithColor = __calculationString_WithColor.replace('((', '(').replace('))', ')');
           }
         } catch (err) { }
         if (__calculationString.length > 1) {
           __calculationString = __calculationString.replace(/  /g, ' ');
+          __calculationString_WithColor = __calculationString_WithColor.replace(/  /g, ' ');
           __calculationString.split('+ -').map((x) => {
             __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+            __calculationString_WithColor = __calculationString_WithColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
           })
           __calculationString.split('+ *').map((x) => {
             __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+            __calculationString_WithColor = __calculationString_WithColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
           })
           __calculationString.split('+ /').map((x) => {
             __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+            __calculationString_WithColor = __calculationString_WithColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
           })
           __calculationString.split('+ +').map((x) => {
             __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
+            __calculationString_WithColor = __calculationString_WithColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+');
           })
           __calculationString.split('- -').map((x) => {
             __calculationString = __calculationString.replace('- -', '-')
+            __calculationString_WithColor = __calculationString_WithColor.replace('- -', '-')
           })
         }
         __calculationString = __calculationString.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+').replace('- -', '-');
+        __calculationString_WithColor = __calculationString_WithColor.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+').replace('- -', '-');
 
         this.diceRolledData = __characterMultipleCommands.calculationArray;
         /*********************************************************************************/
@@ -1767,6 +1777,7 @@ export class DiceRollComponent implements OnInit {
         this.characterCommandModel.command = this.mainCommandText;
         this.characterCommandModel.lastResult = __calculationResult;
         this.characterCommandModel.lastResultNumbers = __calculationString;
+        this.characterCommandModel.lastResultNumbersColor = __calculationString_WithColor;
         this.characterCommandModel.isCustomNumericCommand = __isCustomNumericCommand;
         this.characterCommandModel.isCustomDice = __characterMultipleCommands.isResultWithCustomDice
 
@@ -1775,6 +1786,7 @@ export class DiceRollComponent implements OnInit {
         }
         this.character.lastCommand = commandTxt;
         this.character.lastCommandResult = __calculationString;
+        this.character.lastCommandResultColor = __calculationString_WithColor;
         //let textResult = this.fillBeforeAndAfterText(characterCommand.command, true);
         //this.beforeResultText = textResult.start;
         //this.afterResultText = textResult.end;
@@ -1810,6 +1822,7 @@ export class DiceRollComponent implements OnInit {
             characterLastCommand.characterId = characterCommand.characterId;
             characterLastCommand.lastCommand = commandTxt;
             characterLastCommand.lastCommandResult = __calculationString;
+            characterLastCommand.lastCommandResultColor = __calculationString_WithColor;
             characterLastCommand.lastCommandTotal = __calculationResult;
 
             let lastCommandValues: string = "";
@@ -1823,15 +1836,16 @@ export class DiceRollComponent implements OnInit {
                   numberString += x.number + ",";
                 }
               })
+              debugger
               if (diceRoll.dice && diceRoll.diceIcon) {
                 lastCommandValues += (index === 0 ? '' : diceRoll.sign) +
                   diceRoll.randomCount + diceRoll.dice
                   + "=" + numberString.toString();
-                //+ "=" + diceRoll.randomNumbersListAfter.toString();
+               // + "=" + diceRoll.randomNumbersListAfter.toString();
               } else {
                 lastCommandValues += (index === 0 ? '' : diceRoll.sign) + diceRoll.randomCount
-                  + "=" + numberString.toString();
-                //+ "=" + diceRoll.randomNumbersListAfter.toString();
+                  //+ "=" + numberString.toString();
+                + "=" + diceRoll.randomNumbersListAfter.toString();
               }
 
             });
@@ -1840,6 +1854,7 @@ export class DiceRollComponent implements OnInit {
 
             this.character.lastCommand = this.characterCommandModel.command;
             this.character.lastCommandResult = this.characterCommandModel.lastResultNumbers;
+            this.character.lastCommandResultColor = this.characterCommandModel.lastResultNumbersColor
             this.character.lastCommandValues = lastCommandValues;
             this.character.lastCommandTotal = characterLastCommand.lastCommandTotal;
 
@@ -1890,8 +1905,8 @@ export class DiceRollComponent implements OnInit {
                         //+ "=" + diceRoll.randomNumbersListAfter.toString();
                       } else {
                         lastCommandValues += (index === 0 ? '' : diceRoll.sign) + diceRoll.randomCount
-                          + "=" + numberString.toString();
-                        //+ "=" + diceRoll.randomNumbersListAfter.toString();
+                          //+ "=" + numberString.toString();
+                        + "=" + diceRoll.randomNumbersListAfter.toString();
                       }
 
                     });
@@ -1912,6 +1927,7 @@ export class DiceRollComponent implements OnInit {
               rulesetLastCommand.rulesetId = this.rulesetId;
               rulesetLastCommand.lastCommand = commandTxt;
               rulesetLastCommand.lastCommandResult = __calculationString;
+              rulesetLastCommand.lastCommandResultColor = __calculationString_WithColor;
               rulesetLastCommand.lastCommandTotal = characterLastCommand.lastCommandTotal;
               rulesetLastCommand.lastCommandValues = lastCommandValues;
               this.updateRuleSetLastCommand(rulesetLastCommand);
@@ -2985,7 +3001,7 @@ export class DiceRollComponent implements OnInit {
 
       }
 
-
+      debugger
       try {
         if (__calculationString.split("((").length - 1 === __calculationString.split("))").length - 1) {
           __calculationString = __calculationString.replace('((', '(').replace('))', ')');
@@ -3048,11 +3064,12 @@ export class DiceRollComponent implements OnInit {
         }
         _calculationStringForResult = _calculationStringForResult.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+').replace('- -', '-');
         this.characterMultipleCommands[_calculationIndex].calculationResult = Math.round(eval(_calculationStringForResult)); // Math.floor(eval(__calculationString));
-
+        debugger
         this.characterCommandModel.lastResult = Math.round(eval(_calculationStringForResult)); // Math.floor(eval(__calculationString));;
       }
 
       this.characterCommandModel.lastResultNumbers = __calculationString;
+      this.characterCommandModel.lastResultNumbersColor = __calculationString_withColor;
       this.characterCommandModel.lastSavedCommand = this.characterMultipleCommands[_calculationIndex].calculationCommand;
       //color maximum & minimum
       //let _maxNum: number = 0;
@@ -3083,21 +3100,32 @@ export class DiceRollComponent implements OnInit {
       characterLastCommand.characterId = this.characterId;
       characterLastCommand.lastCommand = this.characterCommandModel.lastSavedCommand;
       characterLastCommand.lastCommandResult = this.characterCommandModel.lastResultNumbers;
+      characterLastCommand.lastCommandResultColor = this.characterCommandModel.lastResultNumbersColor;
       characterLastCommand.lastCommandTotal = this.characterCommandModel.lastResult;
 
       let lastCommandValues: string = "";
       this.diceRolledData.forEach((diceRoll, index) => {
-
+        let numberString = '';
+        diceRoll.randomNumbersList.map((x, xIndex) => {
+          if (xIndex == diceRoll.randomNumbersList.length - 1) {
+            numberString += x.number;
+          }
+          else {
+            numberString += x.number + ",";
+          }
+        })
         if (diceRoll.dice && diceRoll.diceIcon) {
           lastCommandValues += (index === 0 ? '' : diceRoll.sign) +
             diceRoll.randomCount + diceRoll.dice
-            + "=" + diceRoll.randomNumbersListAfter.toString();
+            + "=" + numberString.toString();
+          // + "=" + diceRoll.randomNumbersListAfter.toString();
         } else {
           lastCommandValues += (index === 0 ? '' : diceRoll.sign) + diceRoll.randomCount
+            //+ "=" + numberString.toString();
             + "=" + diceRoll.randomNumbersListAfter.toString();
         }
 
-      });
+      });     
 
       characterLastCommand.lastCommandValues = lastCommandValues;
 
@@ -3118,6 +3146,7 @@ export class DiceRollComponent implements OnInit {
             if (index == 0) {
               characterLastCommand.lastCommand = cmd.calculationCommand;
               characterLastCommand.lastCommandResult = cmd.calculationString;
+              characterLastCommand.lastCommandResultColor = cmd.calculationStringColor;
               characterLastCommand.lastCommandTotal = this.characterCommandModel.lastResult;
 
               let lastCommandValues: string = "";
@@ -3136,11 +3165,11 @@ export class DiceRollComponent implements OnInit {
                   lastCommandValues += (index === 0 ? '' : diceRoll.sign) +
                     diceRoll.randomCount + diceRoll.dice
                     + "=" + numberString.toString();
-                  //+ "=" + diceRoll.randomNumbersListAfter.toString();
+          // + "=" + diceRoll.randomNumbersListAfter.toString();
                 } else {
                   lastCommandValues += (index === 0 ? '' : diceRoll.sign) + diceRoll.randomCount
-                    + "=" + numberString.toString();
-                  //+ "=" + diceRoll.randomNumbersListAfter.toString();
+                    //+ "=" + numberString.toString();
+                    + "=" + diceRoll.randomNumbersListAfter.toString();
                 }
 
               });
@@ -3151,6 +3180,7 @@ export class DiceRollComponent implements OnInit {
 
               characterLastCommand.lastCommand += " AND " + cmd.calculationCommand;
               characterLastCommand.lastCommandResult += " AND " + cmd.calculationString;
+              characterLastCommand.lastCommandResultColor += " AND " + cmd.calculationStringColor;
               //characterLastCommand.lastCommandTotal += " AND " + __calculationResult;
 
               let lastCommandValues: string = "";
@@ -3172,8 +3202,8 @@ export class DiceRollComponent implements OnInit {
                   //+ "=" + diceRoll.randomNumbersListAfter.toString();
                 } else {
                   lastCommandValues += (index === 0 ? '' : diceRoll.sign) + diceRoll.randomCount
-                    + "=" + numberString.toString();
-                  //+ "=" + diceRoll.randomNumbersListAfter.toString();
+                    //+ "=" + numberString.toString();
+                    + "=" + diceRoll.randomNumbersListAfter.toString();
                 }
 
               });
@@ -3183,6 +3213,7 @@ export class DiceRollComponent implements OnInit {
           })
         }
       }
+      debugger
       //////////////////////////////////////////////////////
       //if (!anyCommandIsCustomWithNonNumeric) {
       if (this.isFromCampaignDetail) {
@@ -3190,6 +3221,7 @@ export class DiceRollComponent implements OnInit {
         rulesetLastCommand.rulesetId = this.rulesetId;
         rulesetLastCommand.lastCommand = this.characterCommandModel.lastSavedCommand;
         rulesetLastCommand.lastCommandResult = __calculationString;
+        rulesetLastCommand.lastCommandResultColor = __calculationString_withColor;
         rulesetLastCommand.lastCommandTotal = this.characterCommandModel.lastResult;
         rulesetLastCommand.lastCommandValues = lastCommandValues;
         this.updateRuleSetLastCommand(rulesetLastCommand);
@@ -3204,6 +3236,7 @@ export class DiceRollComponent implements OnInit {
 
       this.character.lastCommand = this.characterCommandModel.lastSavedCommand;
       this.character.lastCommandResult = this.characterCommandModel.lastResultNumbers;
+      this.character.lastCommandResultColor = this.characterCommandModel.lastResultNumbersColor;
       this.character.lastCommandTotal = this.characterCommandModel.lastResult;
 
       this.loadingResult = true;
@@ -3308,6 +3341,7 @@ export class DiceRollComponent implements OnInit {
 
       this.characterCommandModel.lastResult = Math.round(eval(_calculationStringForResult)); // Math.floor(eval(__calculationString));;
       this.characterCommandModel.lastResultNumbers = __calculationString;
+      this.characterCommandModel.lastResultNumbersColor = __calculationString_withColor;
 
       this.loadingResult = true;
     }, 2000);

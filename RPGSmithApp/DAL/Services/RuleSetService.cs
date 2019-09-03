@@ -3265,7 +3265,7 @@ namespace DAL.Services
         }
         #endregion
 
-        public async Task<RuleSet> UpdateLastCommand(int rulesetId, string lastcommand, string lastcommandresult, string lastCommandValues, int lastCommandTotal)
+        public async Task<RuleSet> UpdateLastCommand(int rulesetId, string lastcommand, string lastcommandresult, string lastCommandValues, int lastCommandTotal, string lastcommandresultcolor)
         {
             var _ruleset = await _repo.Get(rulesetId);
 
@@ -3274,6 +3274,7 @@ namespace DAL.Services
 
             _ruleset.LastCommand = lastcommand;
             _ruleset.LastCommandResult = lastcommandresult;
+            _ruleset.LastCommandResultColor = lastcommandresultcolor;
             _ruleset.LastCommandValues = lastCommandValues;
             _ruleset.LastCommandTotal = lastCommandTotal;
 
