@@ -1401,11 +1401,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     $.FroalaEditor.DefineIconTemplate('brackets', '<i class="icon-Variable squareBrackets"></i>');
     $.FroalaEditor.DefineIcon('bracketsIcon', { NAME: 'squareBrackets', template: 'brackets' });
     $.FroalaEditor.RegisterCommand('my_dropdown', {
-      title: 'Options',
+      title: 'Variables',
       icon: 'bracketsIcon',
       type: 'dropdown',
-      focus: false,
-      undo: false,
+      focus: true,
+      undo: true,
       refreshAfterCallback: true,
       options: {
         'Stat': 'Character Stat',
@@ -1427,11 +1427,11 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
     });
     $.FroalaEditor.RegisterCommand('my_dropdown2', {
-      title: 'Options',
+      title: 'Variables',
       icon: 'bracketsIcon',
       type: 'dropdown',
-      focus: false,
-      undo: false,
+      focus: true,
+      undo: true,
       refreshAfterCallback: true,
       options: {
         'Stat': 'Character Stat',

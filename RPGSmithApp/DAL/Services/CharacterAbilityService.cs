@@ -210,11 +210,21 @@ namespace DAL.Services
 
         #region SP relate methods
 
-        public (List<CharacterAbility>, Character, RuleSet) SP_CharacterAbility_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize, int sortType = 1)
+        public (CharacterAbilityListWithFilterCount, Character, RuleSet) SP_CharacterAbility_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize, int sortType = 1)
         {
+            CharacterAbilityListWithFilterCount result = new CharacterAbilityListWithFilterCount();
             List<CharacterAbility> _CharacterAbilityList = new List<CharacterAbility>();
             RuleSet ruleset = new RuleSet();
             Character character = new Character();
+
+            int FilterAplhabetCount = 0;
+            int FilterEnabledCount = 0;
+            int FilterLevelCount = 0;
+
+            result.AbilityList = _CharacterAbilityList;
+            result.FilterAplhabetCount = FilterAplhabetCount;
+            result.FilterEnabledCount = FilterEnabledCount;
+            result.FilterLevelCount = FilterLevelCount;
 
             short num = 0;
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -292,7 +302,23 @@ namespace DAL.Services
                     _CharacterAbilityList.Add(_characterAbility);
                 }
             }
-            return (_CharacterAbilityList, character, ruleset);
+
+            if (ds.Tables[3].Rows.Count > 0)
+            {
+                FilterAplhabetCount = ds.Tables[3].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[3].Rows[0][0]);
+                FilterLevelCount = ds.Tables[3].Rows[0][1] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[3].Rows[0][1]);
+            }
+            if (ds.Tables[4].Rows.Count > 0)
+            {
+                FilterEnabledCount = ds.Tables[4].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[4].Rows[0][0]);
+            }
+
+            result.AbilityList = _CharacterAbilityList;
+            result.FilterAplhabetCount = FilterAplhabetCount;
+            result.FilterEnabledCount = FilterEnabledCount;
+            result.FilterLevelCount = FilterLevelCount;
+            //return result;
+            return (result, character, ruleset);
         }
         private static int Getindex(int index)
         {

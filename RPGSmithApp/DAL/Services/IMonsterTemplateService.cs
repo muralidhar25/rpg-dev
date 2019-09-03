@@ -26,7 +26,7 @@ namespace DAL.Services
         int Core_GetCountByRuleSetId(int ruleSetId, int parentID);
         Task<bool> CheckDuplicateMonsterTemplate(string value, int? ruleSetId, int? MonsterTemplateId = 0);
         bool Core_MonsterTemplateWithParentIDExists(int monsterTemplateId, int RulesetID);
-        List<MonsterTemplate_Bundle> SP_GetMonsterTemplateByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1);
+        MonsterTemplateWithFilterCount SP_GetMonsterTemplateByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1);
         List<MonsterTemplateCommand> SP_GetMonsterTemplateCommands(int MonsterTemplateId);
         SP_AssociateForMonsterTemplate SP_GetAssociateRecords(int monsterTemplateId, int rulesetId, int MonsterID);
         Task<MonsterTemplate> Core_CreateMonsterTemplate(MonsterTemplate MonsterTemplate);
@@ -40,7 +40,7 @@ namespace DAL.Services
         void deployMonster(DeployMonsterTemplate model);
         //List<Monster> SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1);
 
-        List<MonsterWithItemCount> SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1);
+        MonstersWithFilterCount SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1);
         Task enableCombatTracker(int monsterId, bool enableCombatTracker);
         Task<MonsterTemplate> Core_CreateMonsterTemplateUsingMonster(int monsterTemplateId, int rulesetID);
         List<ItemMasterForMonsterTemplate> getMonsterItemsToDrop(int monsterId);

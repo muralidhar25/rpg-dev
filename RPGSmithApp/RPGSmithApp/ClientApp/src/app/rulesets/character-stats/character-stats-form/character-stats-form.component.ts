@@ -96,7 +96,7 @@ export class CharacterStatsFormComponent implements OnInit {
 
       this.characterStatsFormModal = this.charactersService.getCharacterStatsFormModal(_characterStatsVM, _view);
       this.characterStatsFormModal.ruleSetId = this._ruleSetId;
-
+      debugger
       this.choiceList = this.bsModalRef.content.Choices;
       this.IsThisStatAlreayAssignedtoOtherStat = false;
       
@@ -214,7 +214,8 @@ export class CharacterStatsFormComponent implements OnInit {
       if (_view === 'DUPLICATE' || _view === 'UPDATE') {
 
         if (this.characterStatsFormModal.characterStatDefaultValueViewModel.length) {
-          this.LoadDefaultValues(this.characterStatsFormModal.characterStatDefaultValueViewModel, this.characterStatsFormModal, this.characterStatsFormModal.characterStatDefaultValueViewModel[0].type);
+          //this.LoadDefaultValues(this.characterStatsFormModal.characterStatDefaultValueViewModel, this.characterStatsFormModal, this.characterStatsFormModal.characterStatDefaultValueViewModel[0].type);
+          this.LoadDefaultValues(this.characterStatsFormModal.characterStatDefaultValueViewModel, this.characterStatsFormModal, this.characterStatsFormModal.characterStatTypeId);
         }
         else {
           this.LoadDefaultValues(characterStatDefaultValue, this.characterStatsFormModal, this.characterStatsFormModal.characterStatTypeId);
@@ -639,7 +640,6 @@ export class CharacterStatsFormComponent implements OnInit {
     } catch (err) { }
   }
   showAdvancedFeatures() {
-
     if (!this.showAdvancedFeaturesToggle) {
       this.showAdvancedFeaturesText = "Show Less";
 
@@ -694,6 +694,7 @@ export class CharacterStatsFormComponent implements OnInit {
         }
         break;
       case STAT_TYPE.CurrentMax:
+        debugger
         characterStatsFormModal.characterStatDefaultValueViewModel = [];
         defValues[0].type = DefaultValue_STAT_TYPE.Current;
         characterStatsFormModal.characterStatDefaultValueViewModel.push(Object.assign({}, defValues[0]));
@@ -704,6 +705,7 @@ export class CharacterStatsFormComponent implements OnInit {
         }
         break;
       case STAT_TYPE.ValueSubValue:
+        debugger
         characterStatsFormModal.characterStatDefaultValueViewModel = [];
         defValues[0].type = DefaultValue_STAT_TYPE.Value;
         characterStatsFormModal.characterStatDefaultValueViewModel.push(Object.assign({}, defValues[0]))

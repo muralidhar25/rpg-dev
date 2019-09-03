@@ -94,8 +94,13 @@ export class CharacterAbilitiesComponent implements OnInit {
       if (target.className && target.className == "Editor_Command a-hyperLink") {
         this.GotoCommand(target.attributes["data-editor"].value);
       }
-      if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE))
-        this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
+      //if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE))
+      //  this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
+      if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE)) {
+        if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerLink == 'character') {
+          this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
+        }
+      }
       if (target.className.endsWith("is-show"))
         this.isDropdownOpen = !this.isDropdownOpen;
       else this.isDropdownOpen = false;
@@ -177,14 +182,17 @@ export class CharacterAbilitiesComponent implements OnInit {
           this.abilitiesList = Utilities.responseData(data.characterAbilityList, this.pageSize);
 
           if (this.abilityFilter.type == 1) {
-            this.AlphabeticalCount = this.abilitiesList.length;
+            //this.AlphabeticalCount = this.abilitiesList.length;
+            this.AlphabeticalCount = data.FilterAplhabetCount;
           }
           if (this.abilityFilter.type == 2) {
-            let result = this.abilitiesList.filter(s => s.isEnabled);
-            this.EnableCount = result.length;
+            //let result = this.abilitiesList.filter(s => s.isEnabled);
+            //this.EnableCount = result.length;
+            this.EnableCount = data.FilterEnabledCount;
           }
           if (this.abilityFilter.type == 3) {
-            this.LevelCount = this.abilitiesList.length;
+            //this.LevelCount = this.abilitiesList.length;
+            this.LevelCount = data.FilterLevelCount;
           }
           this.applyFilters(this.abilityFilter.type, true);
 
@@ -266,14 +274,17 @@ export class CharacterAbilitiesComponent implements OnInit {
         this.applyFilters(this.abilityFilter.type, true);
 
         if (this.abilityFilter.type == 1) {
-          this.AlphabeticalCount = this.abilitiesList.length;
+          //this.AlphabeticalCount = this.abilitiesList.length;
+          this.AlphabeticalCount = data.FilterAplhabetCount;
         }
         if (this.abilityFilter.type == 2) {
-          let result = this.abilitiesList.filter(s => s.isEnabled);
-          this.EnableCount = result.length;
+          //let result = this.abilitiesList.filter(s => s.isEnabled);
+          //this.EnableCount = result.length;
+          this.EnableCount = data.FilterEnabledCount;
         }
         if (this.abilityFilter.type == 3) {
-          this.LevelCount = this.abilitiesList.length;
+          //this.LevelCount = this.abilitiesList.length;
+          this.LevelCount = data.FilterLevelCount;
         }
       }, error => {
         this.scrollLoading = false;
@@ -449,7 +460,13 @@ export class CharacterAbilitiesComponent implements OnInit {
 
     this.characterAbilityService.deleteCharacterAbility_up(ability.characterAbilityId, this.rulesetId)
       .subscribe(
-        data => {
+      data => {
+        if (ability.isEnabled) {
+          this.EnableCount = this.EnableCount - 1;
+        }
+        this.AlphabeticalCount = this.AlphabeticalCount-1;      
+        this.LevelCount = this.LevelCount-1;
+        this.ImplementFilter();
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           this.alertService.showMessage("Character Ability has been removed successfully.", "", MessageSeverity.success);
@@ -714,7 +731,8 @@ export class CharacterAbilitiesComponent implements OnInit {
     }, 1000);
   }
   ImplementFilter() {
-    this.abilityFilter.viewableCount = this.abilitiesList.length;
+    //this.abilityFilter.viewableCount = this.abilitiesList.length;
+    this.abilityFilter.viewableCount = this.AlphabeticalCount;
 
     switch (this.abilityFilter.type) {
       case 1: // Alphabetical
@@ -737,12 +755,13 @@ export class CharacterAbilitiesComponent implements OnInit {
         //  return (a["isEnabled"] > b["isEnabled"]) ? -1 : 1;
         //});
 
-        this.abilityFilter.viewableCount = 0;
-        this.abilitiesList.map((item) => {
-          if (item.isEnabled) {
-            this.abilityFilter.viewableCount++;
-          }
-        });
+        this.abilityFilter.viewableCount = this.EnableCount;
+        //this.abilityFilter.viewableCount = 0;
+        //this.abilitiesList.map((item) => {
+        //  if (item.isEnabled) {
+        //    this.abilityFilter.viewableCount++;
+        //  }
+        //});
 
         this.abilityFilter.name = 'Enabled';
         this.abilityFilter.icon = 'icon-Rec-Enabled';
@@ -779,22 +798,25 @@ export class CharacterAbilitiesComponent implements OnInit {
     if (this.abilityFilter.type == 2 || this.abilityFilter.type == 3) {
       this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 1)
         .subscribe(data => {
-          this.AlphabeticalCount = data.characterAbilityList.length;
+          //this.AlphabeticalCount = data.characterAbilityList.length;
+          this.AlphabeticalCount = data.FilterAplhabetCount;
         }, error => {
         }, () => { });
     }
     if (this.abilityFilter.type == 1 || this.abilityFilter.type == 3) {
       this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 2)
         .subscribe(data => {
-          let result = data.characterAbilityList.filter(s => s.isEnabled);
-          this.EnableCount = result.length;
+          //let result = data.characterAbilityList.filter(s => s.isEnabled);
+          //this.EnableCount = result.length;
+          this.EnableCount = data.FilterEnabledCount;
         }, error => {
         }, () => { });
     }
     if (this.abilityFilter.type == 1 || this.abilityFilter.type == 2) {
       this.characterAbilityService.getCharacterAbilitiesByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 3)
         .subscribe(data => {
-          this.LevelCount = data.characterAbilityList.length;
+          //this.LevelCount = data.characterAbilityList.length;
+          this.LevelCount = data.FilterLevelCount;
         }, error => {
         }, () => { });
     }

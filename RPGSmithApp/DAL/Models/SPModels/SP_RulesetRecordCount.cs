@@ -139,9 +139,45 @@ namespace DAL.Models.SPModels
     {
         public int ID { get; set; }
     }
-    public class MonsterWithItemCount:Monster
+    public class MonsterWithItemCount : Monster
     {
         public int ItemsCount { get; set; }
+
+    }
+    public class MonstersWithFilterCount {
+        public List<MonsterWithItemCount> Monsters { get; set; }
+        public int FilterAplhabetCount { get; set; }
+        public int FilterCRCount { get; set; }
+        public int FilterHealthCount { get; set; }
+    }
+    public class MonsterTemplateWithFilterCount
+    {
+        public List<MonsterTemplate_Bundle> MonsterTemplates_Bundle { get; set; }
+        public int FilterAplhabetCount { get; set; }
+        public int FilterCRCount { get; set; }
+        public int FilterHealthCount { get; set; }
+    }
+    public class CharacterItemWithFilterCount{
+
+        public List<Item> items { get; set; }
+        public int FilterUnContainedCount { get; set; }
+        public int FilterAplhabetCount { get; set; }
+        public int FilterEquippedCount { get; set; }
+        public int FilterVisibleCount { get; set; }
+    }
+    public class CharacterSpellListWithFilterCount
+    {
+        public List<CharacterSpell> SpellList { get; set; }
+        public int FilterAplhabetCount { get; set; }
+        public int FilterReadiedCount { get; set; }
+        public int FilterLevelCount { get; set; }
+    }
+    public class CharacterAbilityListWithFilterCount
+    {
+        public List<CharacterAbility> AbilityList { get; set; }
+        public int FilterAplhabetCount { get; set; }
+        public int FilterEnabledCount { get; set; }
+        public int FilterLevelCount { get; set; }
     }
     public class LogError
     {

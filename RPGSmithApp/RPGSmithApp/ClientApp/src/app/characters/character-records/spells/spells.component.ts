@@ -94,8 +94,13 @@ export class CharacterSpellsComponent implements OnInit {
       if (target.className && target.className == "Editor_Command a-hyperLink") {
         this.GotoCommand(target.attributes["data-editor"].value);
       }
-      if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE))
-        this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
+      //if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE))
+      //  this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
+      if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE)) {
+        if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerLink == 'character') {
+          this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
+        }
+      }
       if (target.className.endsWith("is-show"))
         this.isDropdownOpen = !this.isDropdownOpen;
       else this.isDropdownOpen = false;
@@ -164,14 +169,17 @@ export class CharacterSpellsComponent implements OnInit {
         .subscribe(data => {
           this.spellsList = Utilities.responseData(data.CharacterSpellList, this.pageSize);
           if (this.spellFilter.type == 1) {
-            this.alphabetCount = this.spellsList.length;
+            //this.alphabetCount = this.spellsList.length;
+            this.alphabetCount = data.FilterAplhabetCount;
           }
           if (this.spellFilter.type == 2) {
-            let result = this.spellsList.filter(s => s.isMemorized);
-            this.ReadiedCount = result.length;
+            //let result = this.spellsList.filter(s => s.isMemorized);
+            //this.ReadiedCount = result.length;
+            this.ReadiedCount = data.FilterReadiedCount;
           }
           if (this.spellFilter.type == 3) {
-            this.LevelCount = this.spellsList.length;
+            //this.LevelCount = this.spellsList.length;
+            this.LevelCount = data.FilterLevelCount;
           }
           this.applyFilters(this.spellFilter.type, true);
           this.ruleSet = data.RuleSet;
@@ -240,14 +248,17 @@ export class CharacterSpellsComponent implements OnInit {
         this.scrollLoading = false;
 
         if (this.spellFilter.type == 1) {
-          this.alphabetCount = this.spellsList.length;
+          //this.alphabetCount = this.spellsList.length;
+          this.alphabetCount = data.FilterAplhabetCount;
         }
         if (this.spellFilter.type == 2) {
-          let result = this.spellsList.filter(s => s.isMemorized);
-          this.ReadiedCount = result.length;
+          //let result = this.spellsList.filter(s => s.isMemorized);
+          //this.ReadiedCount = result.length;
+          this.ReadiedCount = data.FilterReadiedCount;
         }
         if (this.spellFilter.type == 3) {
-          this.LevelCount = this.spellsList.length;
+          //this.LevelCount = this.spellsList.length;
+          this.LevelCount = data.FilterLevelCount;
         }
 
         this.applyFilters(this.spellFilter.type, true);
@@ -422,7 +433,13 @@ export class CharacterSpellsComponent implements OnInit {
 
     this.characterSpellService.deleteCharacterSpell_up(spell.characterSpellId, this.rulesetId)
       .subscribe(
-        data => {
+      data => {
+        if (spell.isMemorized) {
+          this.ReadiedCount = this.ReadiedCount - 1;
+        }        
+        this.alphabetCount = this.alphabetCount - 1;
+        this.LevelCount = this.LevelCount - 1;
+        this.ImplementFilter();
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           this.alertService.showMessage("Character Spell has been deleted successfully.", "", MessageSeverity.success);
@@ -672,7 +689,8 @@ export class CharacterSpellsComponent implements OnInit {
     }, 1000);
   }
   ImplementFilter() {
-    this.spellFilter.viewableCount = this.spellsList.length;
+    //this.spellFilter.viewableCount = this.spellsList.length;
+    this.spellFilter.viewableCount = this.alphabetCount;
 
     switch (this.spellFilter.type) {
       case 1: // Alphabetical
@@ -698,12 +716,13 @@ export class CharacterSpellsComponent implements OnInit {
         //  }
         //});
 
-        this.spellFilter.viewableCount = 0;
-        this.spellsList.map((item) => {
-          if (item.isMemorized) {
-            this.spellFilter.viewableCount++;
-          }
-        });
+        this.spellFilter.viewableCount = this.ReadiedCount;
+        //this.spellFilter.viewableCount = 0;
+        //this.spellsList.map((item) => {
+        //  if (item.isMemorized) {
+        //    this.spellFilter.viewableCount++;
+        //  }
+        //});
 
         this.spellFilter.name = 'Readied';
         this.spellFilter.icon = 'icon-Rec-Memorized';
@@ -740,22 +759,25 @@ export class CharacterSpellsComponent implements OnInit {
     if (this.spellFilter.type == 2 || this.spellFilter.type == 3 ) {
       this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 1)
         .subscribe(data => {
-          this.alphabetCount = data.CharacterSpellList.length;
+          //this.alphabetCount = data.CharacterSpellList.length;
+          this.alphabetCount = data.FilterAplhabetCount;
         }, error => {
         }, () => { });
     }
     if (this.spellFilter.type == 1 || this.spellFilter.type == 3) {
       this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 2)
         .subscribe(data => {
-          let result = data.CharacterSpellList.filter(s => s.isMemorized);
-          this.ReadiedCount = result.length;
+          //let result = data.CharacterSpellList.filter(s => s.isMemorized);
+          //this.ReadiedCount = result.length;
+          this.ReadiedCount = data.FilterReadiedCount;
         }, error => {
         }, () => { });
     }
     if (this.spellFilter.type == 1 || this.spellFilter.type == 2 ) {
       this.characterSpellService.getCharacterSpellsByCharacterId_sp<any>(this.characterId, this.rulesetId, this.page, this.pageSize, 3)
         .subscribe(data => {
-          this.LevelCount = data.CharacterSpellList.length;
+          //this.LevelCount = data.CharacterSpellList.length;
+          this.LevelCount = data.FilterLevelCount;
         }, error => {
         }, () => { });
     }

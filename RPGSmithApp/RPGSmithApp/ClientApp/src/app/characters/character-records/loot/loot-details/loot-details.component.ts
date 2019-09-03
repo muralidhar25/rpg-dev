@@ -77,8 +77,13 @@ export class lootDetailsForCharComponent implements OnInit, OnDestroy {
       if (target.className && target.className == "Editor_Command a-hyperLink") {
         this.GotoCommand(target.attributes["data-editor"].value);
       }
-      if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE))
-        this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
+      //if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE))
+      //  this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
+      if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE)) {
+        if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerLink == 'character') {
+          this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
+        }
+      }
       if (target.className.endsWith("is-show"))
         this.isDropdownOpen = !this.isDropdownOpen;
       else this.isDropdownOpen = false;

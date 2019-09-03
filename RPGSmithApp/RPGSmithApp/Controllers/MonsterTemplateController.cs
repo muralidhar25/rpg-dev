@@ -970,8 +970,13 @@ namespace RPGSmithApp.Controllers
         public async Task<IActionResult> getByRuleSetId_sp(int rulesetId, int page = 1, int pageSize = 30, int sortType = 1)
         {
             dynamic Response = new ExpandoObject();
-            var monsterTemplatesList = _monsterTemplateService.SP_GetMonsterTemplateByRuleSetId(rulesetId, page, pageSize, sortType);
+            var monsterTemplatesResult = _monsterTemplateService.SP_GetMonsterTemplateByRuleSetId(rulesetId, page, pageSize, sortType);
+            var monsterTemplatesList = monsterTemplatesResult.MonsterTemplates_Bundle;
             Response.monsterTemplates = monsterTemplatesList; // Utilities.CleanModel<Ability>(abilityList);
+            Response.FilterAplhabetCount = monsterTemplatesResult.FilterAplhabetCount;
+            Response.FilterCRCount = monsterTemplatesResult.FilterCRCount;
+            Response.FilterHealthCount = monsterTemplatesResult.FilterHealthCount;
+
             if (monsterTemplatesList.Any())
             {
                 Response.RuleSet = monsterTemplatesList.FirstOrDefault().RuleSet;
@@ -987,8 +992,12 @@ namespace RPGSmithApp.Controllers
         public async Task<IActionResult> getMonsterByRuleSetId_sp(int rulesetId, int page = 1, int pageSize = 30, int sortType = 1)
         {
             dynamic Response = new ExpandoObject();
-            var monsterList = _monsterTemplateService.SP_GetMonstersByRuleSetId(rulesetId, page, pageSize, sortType);
+            var monsterResult = _monsterTemplateService.SP_GetMonstersByRuleSetId(rulesetId, page, pageSize, sortType);
+            var monsterList = monsterResult.Monsters;
             Response.monsters = monsterList; // Utilities.CleanModel<Ability>(abilityList);
+            Response.FilterAplhabetCount = monsterResult.FilterAplhabetCount;
+            Response.FilterCRCount = monsterResult.FilterCRCount;
+            Response.FilterHealthCount = monsterResult.FilterHealthCount;
             if (monsterList.Any())
             {
                 Response.RuleSet = monsterList.FirstOrDefault().RuleSet;

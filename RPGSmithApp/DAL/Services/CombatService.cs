@@ -526,8 +526,8 @@ namespace DAL.Services
         }
         public List<CombatAllTypeMonsters> GetCombatAllTypeMonsters(int CampaignId)
         {
-            List<MonsterWithItemCount> Monsters = _monsterTemplateService.SP_GetMonstersByRuleSetId(CampaignId, 1, 9999);
-            List<MonsterTemplate_Bundle> MonsterTemplates = _monsterTemplateService.SP_GetMonsterTemplateByRuleSetId(CampaignId, 1, 9999);
+            List<MonsterWithItemCount> Monsters = _monsterTemplateService.SP_GetMonstersByRuleSetId(CampaignId, 1, 9999).Monsters;
+            List<MonsterTemplate_Bundle> MonsterTemplates = _monsterTemplateService.SP_GetMonsterTemplateByRuleSetId(CampaignId, 1, 9999).MonsterTemplates_Bundle;
             List<CombatAllTypeMonsters> allTypeMonsters = new List<CombatAllTypeMonsters>();
 
             Monsters = Monsters.Where(x => x.AddToCombatTracker != true).ToList();

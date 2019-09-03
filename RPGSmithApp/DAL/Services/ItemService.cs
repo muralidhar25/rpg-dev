@@ -640,11 +640,25 @@ namespace DAL.Services
         }
         #region SP relate methods
 
-        public (List<Item>, Character, RuleSet) SP_Items_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize,  int sortType = 1)
+        public (CharacterItemWithFilterCount, Character, RuleSet) SP_Items_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize,  int sortType = 1)
         {
+            CharacterItemWithFilterCount result = new CharacterItemWithFilterCount();
             List<Item> _ItemList = new List<Item>();
             RuleSet ruleset = new RuleSet();
             Character character = new Character();
+            
+            int FilterAplhabetCount = 0;
+            int FilterUnContainedCount = 0;
+            int FilterEquippedCount = 0;
+            int FilterVisibleCount = 0;
+
+            result.items = _ItemList;
+            result.FilterAplhabetCount = FilterAplhabetCount;
+            result.FilterUnContainedCount = FilterUnContainedCount;
+            result.FilterEquippedCount = FilterEquippedCount;
+            result.FilterVisibleCount = FilterVisibleCount;
+
+
 
             short num = 0;
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -725,7 +739,29 @@ namespace DAL.Services
                     _ItemList.Add(i);
                 }
             }
-            return (_ItemList, character, ruleset);
+
+            if (ds.Tables[3].Rows.Count > 0)
+            {
+                FilterAplhabetCount = ds.Tables[3].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[3].Rows[0][0]);
+                FilterUnContainedCount = ds.Tables[3].Rows[0][1] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[3].Rows[0][1]);
+            }
+            if (ds.Tables[4].Rows.Count > 0)
+            {
+                FilterEquippedCount = ds.Tables[4].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[4].Rows[0][0]);
+            }
+            if (ds.Tables[5].Rows.Count > 0)
+            {
+                FilterVisibleCount = ds.Tables[5].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[5].Rows[0][0]);
+            }
+
+            result.items = _ItemList;
+            result.FilterAplhabetCount = FilterAplhabetCount;
+            result.FilterUnContainedCount = FilterUnContainedCount;
+            result.FilterEquippedCount = FilterEquippedCount;
+            result.FilterVisibleCount = FilterVisibleCount;
+            //return result;
+
+            return (result, character, ruleset);
         }
 
         public SP_AbilitySpellForItemMaster AbilitySpellForItemsByRuleset_sp(int characterId, int rulesetId, int itemId)

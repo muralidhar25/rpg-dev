@@ -141,16 +141,21 @@ export class MonsterComponent implements OnInit {
           if (data.RuleSet)
             this.monsterList = Utilities.responseData(data.monsters, this.pageSize);
           if (this.monstersFilter.type == 1) {
-            this.monstersFilter.viewableCount = this.monsterList.length;
-            this.alphabetCount = this.monsterList.length;
+            //this.monstersFilter.viewableCount = this.monsterList.length;
+            //this.alphabetCount = this.monsterList.length;
+            this.monstersFilter.viewableCount = data.FilterAplhabetCount;
+            this.alphabetCount = data.FilterAplhabetCount;
+
           }
           if (this.monstersFilter.type == 2) {
-            let result = this.monsterList.filter(s => s.challangeRating);
-            this.ChallangeRatingCount = result.length;
+            //let result = this.monsterList.filter(s => s.challangeRating);
+            //this.ChallangeRatingCount = result.length;
+            this.ChallangeRatingCount = data.FilterCRCount;
           }
           if (this.monstersFilter.type == 3) {
-            let result = this.monsterList.filter(s => s.healthCurrent || s.healthMax);
-            this.HealthCount = result.length;
+            //let result = this.monsterList.filter(s => s.healthCurrent || s.healthMax);
+            //this.HealthCount = result.length;
+            this.HealthCount = data.FilterHealthCount;
           }
 
           this.applyFilters(this.monstersFilter.type, true);
@@ -220,16 +225,20 @@ export class MonsterComponent implements OnInit {
         //this.isLoading = false;
         this.scrollLoading = false;
         if (this.monstersFilter.type == 1) {
-          this.monstersFilter.viewableCount = this.monsterList.length;
-          this.alphabetCount = this.monsterList.length;
+          //this.monstersFilter.viewableCount = this.monsterList.length;
+          //this.alphabetCount = this.monsterList.length;
+          this.monstersFilter.viewableCount = data.FilterAplhabetCount;
+          this.alphabetCount = data.FilterAplhabetCount;
         }
         if (this.monstersFilter.type == 2) {
-          let result = this.monsterList.filter(s => s.challangeRating);
-          this.ChallangeRatingCount = result.length;
+          //let result = this.monsterList.filter(s => s.challangeRating);
+          //this.ChallangeRatingCount = result.length;
+          this.ChallangeRatingCount = data.FilterCRCount;
         }
         if (this.monstersFilter.type == 3) {
-          let result = this.monsterList.filter(s => s.healthCurrent || s.healthMax);
-          this.HealthCount = result.length;
+          //let result = this.monsterList.filter(s => s.healthCurrent || s.healthMax);
+          //this.HealthCount = result.length;
+          this.HealthCount = data.FilterHealthCount;
         }
 
         this.applyFilters(this.monstersFilter.type, true);
@@ -416,7 +425,15 @@ export class MonsterComponent implements OnInit {
 
     this.monsterTemplateService.deleteMonster_up(monster)
       .subscribe(
-        data => {
+      data => {
+        if (monster.healthCurrent || monster.healthMax) {
+          this.HealthCount = this.HealthCount - 1;
+        }
+        if (monster.challangeRating ) {
+          this.ChallangeRatingCount = this.ChallangeRatingCount - 1;
+        }
+        this.alphabetCount = this.alphabetCount - 1;
+        this.ImplementFilter();
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           this.alertService.showMessage("Monster has been deleted successfully.", "", MessageSeverity.success);
@@ -723,33 +740,36 @@ export class MonsterComponent implements OnInit {
     }
   }
   ImplementFilter() {
-    this.monstersFilter.viewableCount = this.monsterList.length;
+    //this.monstersFilter.viewableCount = this.monsterList.length;
+    this.monstersFilter.viewableCount = this.alphabetCount;
 
     switch (this.monstersFilter.type) {
       case 1: // Alphabetical
       default:
-        this.monstersFilter.viewableCount = this.monsterList.length;
+        //this.monstersFilter.viewableCount = this.monsterList.length;
+        this.monstersFilter.viewableCount = this.alphabetCount;
         this.monstersFilter.name = 'Alphabetical';
         this.monstersFilter.icon = '';
         break;
       case 2: //challange Rating
-        this.monstersFilter.viewableCount = 0;
-        this.monsterList.map((item) => {
-          if (item.challangeRating) {
-            this.monstersFilter.viewableCount++;
-          }
-        })
+        this.monstersFilter.viewableCount = this.ChallangeRatingCount;
+        //this.monstersFilter.viewableCount = 0;
+        //this.monsterList.map((item) => {
+        //  if (item.challangeRating) {
+        //    this.monstersFilter.viewableCount++;
+        //  }
+        //})
         this.monstersFilter.name = 'ChallangeRating';
         this.monstersFilter.icon = '';
         break;
       case 3: //Health
-        this.monstersFilter.viewableCount = 0;
-
-        this.monsterList.map((item) => {
-          if (item.healthCurrent || item.healthMax) {
-            this.monstersFilter.viewableCount++;
-          }
-        })
+        this.monstersFilter.viewableCount = this.HealthCount;
+        //this.monstersFilter.viewableCount = 0;
+        //this.monsterList.map((item) => {
+        //  if (item.healthCurrent || item.healthMax) {
+        //    this.monstersFilter.viewableCount++;
+        //  }
+        //})
         this.monstersFilter.name = 'Health';
         this.monstersFilter.icon = 'icon icon-Health';
         break;
@@ -761,7 +781,8 @@ export class MonsterComponent implements OnInit {
     if (this.monstersFilter.type == 2 || this.monstersFilter.type == 3) {
       this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, 1)
         .subscribe(data => {
-          this.alphabetCount = data.monsters.length;
+          //this.alphabetCount = data.monsters.length;
+          this.alphabetCount = data.FilterAplhabetCount;
         }, error => {
 
 
@@ -771,8 +792,9 @@ export class MonsterComponent implements OnInit {
 
       this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, 2)
         .subscribe(data => {
-          let result = data.monsters.filter(s => s.challangeRating);
-          this.ChallangeRatingCount = result.length;
+          //let result = data.monsters.filter(s => s.challangeRating);
+          //this.ChallangeRatingCount = result.length;
+          this.ChallangeRatingCount = data.FilterCRCount;
         }, error => {
 
         }, () => { });
@@ -781,8 +803,9 @@ export class MonsterComponent implements OnInit {
 
       this.monsterTemplateService.getMonsterByRuleset_spWithPagination<any>(this.ruleSetId, this.page, this.pageSize, 3)
         .subscribe(data => {
-          let result = data.monsters.filter(s => s.healthCurrent || s.healthMax);
-          this.HealthCount = result.length;
+          //let result = data.monsters.filter(s => s.healthCurrent || s.healthMax);
+          //this.HealthCount = result.length;
+          this.HealthCount = data.FilterHealthCount;
         }, error => {
 
         }, () => { });

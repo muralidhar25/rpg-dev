@@ -4,6 +4,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using DAL.Models;
+using DAL.Models.SPModels;
 using DAL.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -275,11 +276,14 @@ namespace RPGSmithApp.Controllers
         public async Task<IActionResult> getByCharacterId_sp(int characterId, int rulesetId, int page = 1, int pageSize = 30, int sortType = 1)
         {
             dynamic Response = new ExpandoObject();
-            (List<CharacterSpell> CharacterSpellList, Character _character, RuleSet _ruleSet) = _characterSpellService.SP_CharacterSpell_GetByCharacterId(characterId, rulesetId, page, pageSize, sortType);
-
+            (CharacterSpellListWithFilterCount CharacterSpellresult, Character _character, RuleSet _ruleSet) = _characterSpellService.SP_CharacterSpell_GetByCharacterId(characterId, rulesetId, page, pageSize, sortType);
+            var CharacterSpellList = CharacterSpellresult.SpellList;
             Response.CharacterSpellList = CharacterSpellList;
             Response.Character = _character;
             Response.RuleSet = _ruleSet;
+            Response.FilterAplhabetCount = CharacterSpellresult.FilterAplhabetCount;
+            Response.FilterReadiedCount = CharacterSpellresult.FilterReadiedCount;
+            Response.FilterLevelCount = CharacterSpellresult.FilterLevelCount;
 
             return Ok(Response);
         }

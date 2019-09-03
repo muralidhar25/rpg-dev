@@ -1076,9 +1076,10 @@ namespace RPGSmithApp.Controllers
         public async Task<IActionResult> getByCharacterId_sp(int characterId, int rulesetId, int page = 1, int pageSize = 30,int sortType=1)
         {
             dynamic Response = new ExpandoObject();
-            (List<Item> itemsList, Character _character, RuleSet _ruleSet) = _itemService.SP_Items_GetByCharacterId(characterId, rulesetId, page, pageSize, sortType);
+            (CharacterItemWithFilterCount result, Character _character, RuleSet _ruleSet) = _itemService.SP_Items_GetByCharacterId(characterId, rulesetId, page, pageSize, sortType);
+            var itemsList = result.items;
 
-            
+
             List<ItemListViewModel> ___itemlist = new List<ItemListViewModel>();
 
             foreach (Item item in itemsList)
@@ -1096,6 +1097,10 @@ namespace RPGSmithApp.Controllers
             Response.ItemsList = ___itemlist;
             Response.Character = _character;
             Response.RuleSet = _ruleSet;
+            Response.FilterAplhabetCount = result.FilterAplhabetCount;
+            Response.FilterUnContainedCount = result.FilterUnContainedCount;
+            Response.FilterEquippedCount = result.FilterEquippedCount;
+            Response.FilterVisibleCount = result.FilterVisibleCount;
 
             return Ok(Response);
         }

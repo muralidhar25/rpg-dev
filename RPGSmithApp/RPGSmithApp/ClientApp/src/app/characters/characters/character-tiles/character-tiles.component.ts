@@ -234,7 +234,7 @@ export class CharacterTilesComponent implements OnInit {
             "bottomright"
           ],
       };
-      this.boxes = this.mapBoxes(this.tiles);
+      //this.boxes = this.mapBoxes(this.tiles);
     }, false);
 
     //window.onorientationchange = () => {

@@ -361,8 +361,13 @@ export class CharacterDashboardComponent implements OnInit {
       this.GotoErrorMessage();
     }
 
-    if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE))
-      this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
+    //if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE))
+    //  this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
+    if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE)) {
+      if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerLink == 'character') {
+        this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
+      }
+    }
 
     if (!this.SortClick) {
       try {
@@ -1530,7 +1535,7 @@ export class CharacterDashboardComponent implements OnInit {
         //linkType
         switch (_executeTile.linkType) {
           case "Spell": {
-            if (_executeTile.spell.spellId) {
+            if (_executeTile.spell && _executeTile.spell.spellId) {
               this.spellsService.getSpellCommands_sp<any>(_executeTile.spell.spellId, 0)
                 .subscribe(data => {
 
@@ -1553,7 +1558,7 @@ export class CharacterDashboardComponent implements OnInit {
             break;
           }
           case "Item": {
-            if (_executeTile.item.itemId) {
+            if (_executeTile.item && _executeTile.item.itemId) {
               this.itemsService.getItemCommands_sp<any>(_executeTile.item.itemId)
                 .subscribe(data => {
 
@@ -1576,7 +1581,7 @@ export class CharacterDashboardComponent implements OnInit {
             break;
           }
           case "Ability": {
-            if (_executeTile.ability.abilityId) {
+            if (_executeTile.ability && _executeTile.ability.abilityId) {
               this.abilityService.getAbilityCommands_sp<any>(_executeTile.ability.abilityId, 0)
                 .subscribe(data => {
                   if (data.length > 0) {
@@ -1599,7 +1604,7 @@ export class CharacterDashboardComponent implements OnInit {
             break;
           }
           case "BuffAndEffect": {
-            if (_executeTile.buffAndEffect.buffAndEffectID) {
+            if (_executeTile.buffAndEffect && _executeTile.buffAndEffect.buffAndEffectID) {
               this.buffAndEffectService.getBuffAndEffectCommands_sp<any>(_executeTile.buffAndEffect.buffAndEffectID)
                 .subscribe(data => {
                   if (data.length > 0) {

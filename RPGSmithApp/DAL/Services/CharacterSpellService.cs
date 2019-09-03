@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Services
 {
-   public class CharacterSpellService : ICharacterSpellService
+    public class CharacterSpellService : ICharacterSpellService
     {
         private readonly IRepository<CharacterSpell> _repo;
         protected readonly ApplicationDbContext _context;
@@ -25,7 +25,7 @@ namespace DAL.Services
             _repo = repo;
             this._configuration = configuration;
         }
-        
+
         public async Task<bool> DeleteCharacterSpell(int id)
         {
             var LinkedRecords_CharacterCharacterStats = _context.CharactersCharacterStats.Where(x => x.LinkType == "spell" && x.DefaultValue == id).ToList();
@@ -61,7 +61,7 @@ namespace DAL.Services
                 LRCCS.DefaultValue = 0;
                 LRCCS.LinkType = "";
             }
-            var cs = _context.CharacterSpells.Where(x => x.CharacterSpellId  == id).SingleOrDefault();
+            var cs = _context.CharacterSpells.Where(x => x.CharacterSpellId == id).SingleOrDefault();
 
             if (cs == null)
                 return false;
@@ -83,13 +83,14 @@ namespace DAL.Services
         {
             return _context.CharacterSpells
                 .Include(d => d.Character.RuleSet)
-                .Include(d => d.Spell).ThenInclude(d=>d.SpellCommand)
-                .Include(d=>d.Character)
-                .Where(x => x.CharacterId == characterId && x.IsDeleted!=true)
+                .Include(d => d.Spell).ThenInclude(d => d.SpellCommand)
+                .Include(d => d.Character)
+                .Where(x => x.CharacterId == characterId && x.IsDeleted != true)
                 .OrderBy(o => o.Spell.Name).ToList();
         }
-        public List<CharacterSpell> GetSpellByCharacterId(int characterId) {
-            return _context.CharacterSpells              
+        public List<CharacterSpell> GetSpellByCharacterId(int characterId)
+        {
+            return _context.CharacterSpells
                 .Include(d => d.Spell)
                 .Where(x => x.CharacterId == characterId && x.IsDeleted != true)
                 .OrderBy(o => o.Spell.Name).ToList();
@@ -110,7 +111,7 @@ namespace DAL.Services
                 .Include(d => d.Character).ThenInclude(d => d.RuleSet)
                 .Include(d => d.Spell).ThenInclude(d => d.SpellCommand)
                 .Include(d => d.Spell).ThenInclude(d => d.SpellBuffAndEffects).ThenInclude(d => d.BuffAndEffect)
-                .FirstOrDefault(x => x.CharacterSpellId == id && x.IsDeleted!=true);
+                .FirstOrDefault(x => x.CharacterSpellId == id && x.IsDeleted != true);
         }
 
         public CharacterSpell GetBySpellId(int spellId)
@@ -125,16 +126,16 @@ namespace DAL.Services
         {
             return await _repo.Add(characterSpell);
         }
-        
+
         public (bool, string) CheckCharacterSpellExist(int characterId, int spellId)
         {
-            bool IsExist = _context.CharacterSpells.Any(x => x.CharacterId == characterId && x.SpellId == spellId && x.IsDeleted!=true);
+            bool IsExist = _context.CharacterSpells.Any(x => x.CharacterId == characterId && x.SpellId == spellId && x.IsDeleted != true);
             string name = string.Empty;
             if (IsExist)
             {
                 try
                 {
-                    name = _context.CharacterSpells.Where(x => x.CharacterId == characterId && x.SpellId == spellId && x.IsDeleted!=true).Include(x=>x.Spell).FirstOrDefault().Spell.Name;
+                    name = _context.CharacterSpells.Where(x => x.CharacterId == characterId && x.SpellId == spellId && x.IsDeleted != true).Include(x => x.Spell).FirstOrDefault().Spell.Name;
                 }
                 catch (Exception ex)
                 {
@@ -171,13 +172,13 @@ namespace DAL.Services
             return _context.CharacterSpells
                 .Include(d => d.Character)
                 .Include(d => d.Spell)
-                .Where(x=>x.IsDeleted!=true)
+                .Where(x => x.IsDeleted != true)
                 .OrderBy(o => o.Spell.Name).ToList();
         }
 
         public int GetCountByCharacterId(int characterId)
         {
-            return _context.CharacterSpells.Where(x => x.CharacterId == characterId && x.IsDeleted!=true).Count();
+            return _context.CharacterSpells.Where(x => x.CharacterId == characterId && x.IsDeleted != true).Count();
         }
 
         public void ToggleMemorizedCharacterSpell(int id)
@@ -209,11 +210,21 @@ namespace DAL.Services
 
         #region SP relate methods
 
-        public (List<CharacterSpell>, Character, RuleSet) SP_CharacterSpell_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize, int sortType = 1)
+        public (CharacterSpellListWithFilterCount, Character, RuleSet) SP_CharacterSpell_GetByCharacterId(int characterId, int rulesetId, int page, int pageSize, int sortType = 1)
         {
+            CharacterSpellListWithFilterCount result = new CharacterSpellListWithFilterCount();
             List<CharacterSpell> _CharacterSpellList = new List<CharacterSpell>();
             RuleSet ruleset = new RuleSet();
             Character character = new Character();
+
+            int FilterAplhabetCount = 0;
+            int FilterReadiedCount = 0;
+            int FilterLevelCount = 0;
+
+            result.SpellList = _CharacterSpellList;
+            result.FilterAplhabetCount = FilterAplhabetCount;
+            result.FilterReadiedCount = FilterReadiedCount;
+            result.FilterLevelCount = FilterLevelCount;
 
             short num = 0;
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -301,7 +312,24 @@ namespace DAL.Services
                     _CharacterSpellList.Add(_characterSpell);
                 }
             }
-            return (_CharacterSpellList, character, ruleset);
+
+            if (ds.Tables[3].Rows.Count > 0)
+            {
+                FilterAplhabetCount = ds.Tables[3].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[3].Rows[0][0]);
+                FilterLevelCount = ds.Tables[3].Rows[0][1] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[3].Rows[0][1]);
+            }
+            if (ds.Tables[4].Rows.Count > 0)
+            {
+                FilterReadiedCount = ds.Tables[4].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[4].Rows[0][0]);
+            }
+
+            result.SpellList = _CharacterSpellList;
+            result.FilterAplhabetCount = FilterAplhabetCount;
+            result.FilterReadiedCount = FilterReadiedCount;
+            result.FilterLevelCount = FilterLevelCount;
+            //return result;
+
+            return (result, character, ruleset);
         }
         private static int Getindex(int index)
         {
@@ -314,7 +342,7 @@ namespace DAL.Services
             List<numbersList> dtList = model.Select(x => new numbersList()
             {
                 RowNum = index = Getindex(index),
-                Number =x.CharacterSpellId
+                Number = x.CharacterSpellId
             }).ToList();
 
 

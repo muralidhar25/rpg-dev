@@ -113,8 +113,13 @@ export class CharacterItemsComponent implements OnInit {
       if (target.className && target.className == "Editor_Command a-hyperLink") {
         this.GotoCommand(target.attributes["data-editor"].value);
       }
-      if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE))
-        this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
+      //if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE))
+      //  this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
+      if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE)) {
+        if (this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerLink == 'character') {
+          this.gameStatus(this.localStorage.getDataObject<any>(DBkeys.HEADER_VALUE).headerId);
+        }
+      }
       if (target.className.endsWith("is-show"))
         this.isDropdownOpen = !this.isDropdownOpen;
       else this.isDropdownOpen = false;
@@ -188,19 +193,23 @@ export class CharacterItemsComponent implements OnInit {
           this.ItemsList = Utilities.responseData(data.ItemsList, this.pageSize);
 
           if (this.inventoryFilter.type == 1) {
-            this.containerCount = this.ItemsList.length;
+            //this.containerCount = this.ItemsList.length;
+            this.containerCount = data.FilterUnContainedCount;
           }
           if (this.inventoryFilter.type == 2) {
-            let result = data.ItemsList.filter(s => s.isEquipped);
-            this.equippedCount = result.length;
+            //let result = data.ItemsList.filter(s => s.isEquipped);
+            //this.equippedCount = result.length;
+            this.equippedCount = data.FilterEquippedCount;
           }
           if (this.inventoryFilter.type == 3) {
-            this.alphabetCount = this.ItemsList.length;
+            //this.alphabetCount = this.ItemsList.length;
+            this.alphabetCount = data.FilterAplhabetCount;
           }
           if (this.inventoryFilter.type == 4) {
 
-            let result = this.ItemsList.filter(s => s.isVisible);
-            this.visibleCount = result.length;
+            //let result = this.ItemsList.filter(s => s.isVisible);
+            //this.visibleCount = result.length;
+            this.visibleCount = data.FilterVisibleCount;
 
           }
           this.applyFilters(this.inventoryFilter.type, true);
@@ -317,18 +326,22 @@ export class CharacterItemsComponent implements OnInit {
 
         if (this.inventoryFilter.type == 1) {
 
-          this.containerCount = this.ItemsList.length;
+          //this.containerCount = this.ItemsList.length;
+          this.containerCount = data.FilterUnContainedCount;
         }
         if (this.inventoryFilter.type == 2) {
-          let result = this.ItemsList.filter(s => s.isEquipped);
-          this.equippedCount = result.length;
+          //let result = this.ItemsList.filter(s => s.isEquipped);
+          //this.equippedCount = result.length;
+          this.equippedCount = data.FilterEquippedCount;
         }
         if (this.inventoryFilter.type == 3) {
-          this.alphabetCount = this.ItemsList.length;
+          //this.alphabetCount = this.ItemsList.length;
+          this.alphabetCount = data.FilterAplhabetCount;
         }
         if (this.inventoryFilter.type == 4) {
-          let result = this.ItemsList.filter(s => s.isVisible);
-          this.visibleCount = result.length;
+          //let result = this.ItemsList.filter(s => s.isVisible);
+          //this.visibleCount = result.length;
+          this.visibleCount = data.FilterVisibleCount;
         }
         this.applyFilters(this.inventoryFilter.type, true);
 
@@ -597,7 +610,16 @@ export class CharacterItemsComponent implements OnInit {
     item.character.ruleSet = this.ruleSet;
     this.itemsService.deleteItem_up(item, itemsList)
       .subscribe(
-        data => {
+      data => {
+        if (item.isEquipped) {
+          this.equippedCount = this.equippedCount - 1;
+        }
+        if (item.isVisible) {
+          this.visibleCount = this.visibleCount - 1;
+        }
+        this.alphabetCount = this.alphabetCount - 1;
+        this.containerCount = this.containerCount - 1;
+        this.ImplementFilter();
           setTimeout(() => {
             //this.isLoading = false;
             this.alertService.stopLoadingMessage();
@@ -864,17 +886,19 @@ export class CharacterItemsComponent implements OnInit {
     }, 1000);
   }
   ImplementFilter() {
-    this.inventoryFilter.viewableCount = this.ItemsList.length;
+    //this.inventoryFilter.viewableCount = this.ItemsList.length;
+    this.inventoryFilter.viewableCount = this.alphabetCount;
 
     switch (this.inventoryFilter.type) {
       case 1: // Conainter
       default:
-        this.inventoryFilter.viewableCount = 0;
-        this.ItemsList.map((item) => {
-          if (item.containedIn == 0) {
-            this.inventoryFilter.viewableCount++;
-          }
-        });
+        this.inventoryFilter.viewableCount = this.containerCount;
+        //this.inventoryFilter.viewableCount = 0;
+        //this.ItemsList.map((item) => {
+        //  if (item.containedIn == 0) {
+        //    this.inventoryFilter.viewableCount++;
+        //  }
+        //});
 
         this.inventoryFilter.name = 'Uncontained';
         this.inventoryFilter.icon = 'icon-Rec-Container';
@@ -889,12 +913,13 @@ export class CharacterItemsComponent implements OnInit {
         //  }
         //});
 
-        this.inventoryFilter.viewableCount = 0;
-        this.ItemsList.map((item) => {
-          if (item.isEquipped) {
-            this.inventoryFilter.viewableCount++;
-          }
-        });
+        this.inventoryFilter.viewableCount = this.equippedCount;
+        //this.inventoryFilter.viewableCount = 0;
+        //this.ItemsList.map((item) => {
+        //  if (item.isEquipped) {
+        //    this.inventoryFilter.viewableCount++;
+        //  }
+        //});
 
         this.inventoryFilter.name = 'Equipped';
         this.inventoryFilter.icon = 'icon-Rec-Equipped';
@@ -911,12 +936,13 @@ export class CharacterItemsComponent implements OnInit {
         this.inventoryFilter.icon = '';
         break;
       case 4: // Visible
-        this.inventoryFilter.viewableCount = 0;
-        this.ItemsList.map((item) => {
-          if (item.isVisible) {
-            this.inventoryFilter.viewableCount++;
-          }
-        });
+        this.inventoryFilter.viewableCount = this.visibleCount;
+        //this.inventoryFilter.viewableCount = 0;
+        //this.ItemsList.map((item) => {
+        //  if (item.isVisible) {
+        //    this.inventoryFilter.viewableCount++;
+        //  }
+        //});
 
         this.inventoryFilter.name = 'Visible';
         this.inventoryFilter.icon = 'icon-Rec-Visible';
@@ -931,30 +957,34 @@ export class CharacterItemsComponent implements OnInit {
 
       this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, 1)
         .subscribe(data => {
-          this.containerCount = data.ItemsList.length;
+          //this.containerCount = data.ItemsList.length;
+          this.containerCount = data.FilterUnContainedCount;
         }, error => {
         }, () => { });
     }
     if (this.inventoryFilter.type == 1 || this.inventoryFilter.type == 3 || this.inventoryFilter.type == 4) {
       this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, 2)
         .subscribe(data => {
-          let result = data.ItemsList.filter(s => s.isEquipped);
-          this.equippedCount = result.length;
+          //let result = data.ItemsList.filter(s => s.isEquipped);
+          //this.equippedCount = result.length;
+          this.equippedCount = data.FilterEquippedCount;
         }, error => {
         }, () => { });
     }
     if (this.inventoryFilter.type == 1 || this.inventoryFilter.type == 2 || this.inventoryFilter.type == 4) {
       this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, 3)
         .subscribe(data => {
-          this.alphabetCount = data.ItemsList.length;
+          //this.alphabetCount = data.ItemsList.length;
+          this.alphabetCount = data.FilterAplhabetCount;
         }, error => {
         }, () => { });
     }
     if (this.inventoryFilter.type == 1 || this.inventoryFilter.type == 2 || this.inventoryFilter.type == 2) {
       this.itemsService.getItemsByCharacterId_sp<any>(this.characterId, this.ruleSetId, this.page, this.pageSize, 4)
         .subscribe(data => {
-          let result = data.ItemsList.filter(s => s.isVisible);
-          this.visibleCount = result.length;
+          //let result = data.ItemsList.filter(s => s.isVisible);
+          //this.visibleCount = result.length;
+          this.visibleCount = data.FilterVisibleCount;
         }, error => {
         }, () => { });
     }

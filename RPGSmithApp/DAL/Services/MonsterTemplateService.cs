@@ -811,10 +811,19 @@ namespace DAL.Services
             return await _repo.Add(monsterTemplate);
         }
 
-        public List<MonsterTemplate_Bundle> SP_GetMonsterTemplateByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1)
+        public MonsterTemplateWithFilterCount SP_GetMonsterTemplateByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1)
         {
+            int FilterAplhabetCount = 0;
+            int FilterCRCount = 0;
+            int FilterHealthCount = 0;
+            MonsterTemplateWithFilterCount result = new MonsterTemplateWithFilterCount();
+
             List<MonsterTemplate_Bundle> _monsterTemplateList = new List<MonsterTemplate_Bundle>();
             RuleSet ruleset = new RuleSet();
+            result.MonsterTemplates_Bundle = _monsterTemplateList;
+            result.FilterAplhabetCount = FilterAplhabetCount;
+            result.FilterCRCount = FilterCRCount;
+            result.FilterHealthCount = FilterHealthCount;
 
             short num = 0;
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -975,10 +984,27 @@ namespace DAL.Services
                         }
                     }
 
+                    if (ds.Tables[4].Rows.Count > 0)
+                    {
+                        FilterAplhabetCount = ds.Tables[4].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[4].Rows[0][0]);
+                    }
+                    if (ds.Tables[5].Rows.Count > 0)
+                    {
+                        FilterCRCount = ds.Tables[5].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[5].Rows[0][0]);
+                    }
+                    if (ds.Tables[6].Rows.Count > 0)
+                    {
+                        FilterHealthCount = ds.Tables[6].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[6].Rows[0][0]);
+                    }
+
                     _monsterTemplateList.Add(_MonsterTemplate);
                 }
             }
-            return _monsterTemplateList;
+            result.MonsterTemplates_Bundle = _monsterTemplateList;
+            result.FilterAplhabetCount = FilterAplhabetCount;
+            result.FilterCRCount = FilterCRCount;
+            result.FilterHealthCount = FilterHealthCount;
+            return result;
         }
 
         public List<MonsterTemplateCommand> SP_GetMonsterTemplateCommands(int monsterTemplateId)
@@ -1943,10 +1969,19 @@ namespace DAL.Services
         }
 
 
-        public List<MonsterWithItemCount> SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1)
+        public MonstersWithFilterCount SP_GetMonstersByRuleSetId(int rulesetId, int page, int pageSize, int sortType = 1)
         {
-            List<MonsterWithItemCount> _monsterList = new List<MonsterWithItemCount>();
+            int FilterAplhabetCount=0;
+            int FilterCRCount=0;
+            int FilterHealthCount=0;
+            MonstersWithFilterCount result = new MonstersWithFilterCount();
+        List<MonsterWithItemCount> _monsterList = new List<MonsterWithItemCount>();
             RuleSet ruleset = new RuleSet();
+
+            result.Monsters = _monsterList;
+            result.FilterAplhabetCount = FilterAplhabetCount;
+            result.FilterCRCount = FilterCRCount;
+            result.FilterHealthCount = FilterHealthCount;
 
             short num = 0;
             string connectionString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
@@ -2054,14 +2089,29 @@ namespace DAL.Services
                         }
                     }
 
-
+                    if (ds.Tables[3].Rows.Count > 0)
+                    {
+                        FilterAplhabetCount = ds.Tables[3].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[3].Rows[0][0]);                       
+                    }
+                    if (ds.Tables[4].Rows.Count > 0)
+                    {
+                        FilterCRCount = ds.Tables[4].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[4].Rows[0][0]);
+                    }
+                    if (ds.Tables[5].Rows.Count > 0)
+                    {
+                        FilterHealthCount = ds.Tables[5].Rows[0][0] == DBNull.Value ? 0 : Convert.ToInt32(ds.Tables[5].Rows[0][0]);
+                    }
 
                     _monster.RuleSet = ruleset;
                     _monster.MonsterTemplate = _MonsterTemplate;
                     _monsterList.Add(_monster);
                 }
             }
-            return _monsterList;
+            result.Monsters = _monsterList;
+            result.FilterAplhabetCount = FilterAplhabetCount;
+            result.FilterCRCount = FilterCRCount;
+            result.FilterHealthCount = FilterHealthCount;
+            return result;
         }
 
         public async Task enableCombatTracker(int monsterId, bool enableCombatTracker)
