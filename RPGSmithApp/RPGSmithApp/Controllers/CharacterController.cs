@@ -778,7 +778,7 @@ namespace RPGSmithApp.Controllers
             if (ModelState.IsValid)
             {
                 //var result = await _CharacterService.UpdateLastCommand(model.CharacterId, model.LastCommand, model.LastCommandResult, model.LastCommandValues);
-                return Ok(await _CharacterService.UpdateLastCommand(model.CharacterId, model.LastCommand, model.LastCommandResult, model.LastCommandValues, model.LastCommandTotal));
+                return Ok(await _CharacterService.UpdateLastCommand(model.CharacterId, model.LastCommand, model.LastCommandResult, model.LastCommandValues, model.LastCommandTotal,model.LastCommandResultColor));
             }
 
             return BadRequest(Utilities.ModelStateError(ModelState));

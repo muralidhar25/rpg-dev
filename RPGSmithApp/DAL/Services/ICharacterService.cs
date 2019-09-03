@@ -22,7 +22,7 @@ namespace DAL.Services
         Task<bool> DeleteCharacter(int id);
         Task<int> GetCharactersCount();
         Task<int> GetCharactersCountByUserId(string userId);
-        Task<Character> UpdateLastCommand(int characterId, string lastcommand, string lastcommandresult, string lastCommandValues, int lastCommandTotal);
+        Task<Character> UpdateLastCommand(int characterId, string lastcommand, string lastcommandresult, string lastCommandValues, int lastCommandTotal, string lastcommandresultcolor);
         int GetCharacterCountUserId(string userId);
         Task<List<Character>> GetOnlyCharactersByRulesetID(int ruleSetId);
         (List<CharecterWithInvites>, List<RuleSet>) SP_Character_GetByUserId(string userId, int page, int pageSize);

@@ -43,6 +43,7 @@ namespace RPGSmithApp.ViewModels
         public bool IsDicePublicRoll { get; set; }
         public string LastCommand { get; set; }
         public string LastCommandResult { get; set; }
+        public string LastCommandResultColor { get; set; }
         public int LastCommandTotal { get; set; }
         public string LastCommandValues { get; set; }
         public bool IsCombatStarted { get; set; }

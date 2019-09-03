@@ -7,7 +7,7 @@ export class Characters {
   constructor(characterId?: number, characterName?: string, characterDescription?: string, characterImage?: string,
     ruleSetId?: number, view?: VIEW, showIcon?: boolean, ruleSet?: any, ruleSets?: Ruleset[],
     imageUrl?: string, thumbnailUrl?: string, lastCommand?: string, lastCommandResult?: string,
-    charactersCharacterStats?: CharactersCharacterStat[], lastCommandTotal?: number
+    charactersCharacterStats?: CharactersCharacterStat[], lastCommandTotal?: number, lastCommandResultColor?: string
   ) {
 
     this.characterId = characterId;
@@ -23,6 +23,7 @@ export class Characters {
     this.thumbnailUrl = thumbnailUrl;
     this.lastCommand = lastCommand;
     this.lastCommandResult = lastCommandResult;
+    this.lastCommandResultColor = lastCommandResultColor;
     this.charactersCharacterStats = charactersCharacterStats;
     this.lastCommandTotal = lastCommandTotal;
   }
@@ -41,6 +42,7 @@ export class Characters {
 
   public lastCommand: string;
   public lastCommandResult: string;
+  public lastCommandResultColor: string;
   public charactersCharacterStats: CharactersCharacterStat[];
   public lastCommandValues: string;
   public lastCommandTotal: number;

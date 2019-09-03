@@ -216,6 +216,7 @@ namespace RPGSmithApp.Helpers
                 IsCombatStarted = _ruleSetService.IsCombatStarted(ruleSet.RuleSetId),
                 LastCommand=ruleSet.LastCommand,
                 LastCommandResult=ruleSet.LastCommandResult,
+                LastCommandResultColor = ruleSet.LastCommandResultColor,
                 LastCommandTotal=ruleSet.LastCommandTotal,
                 LastCommandValues=ruleSet.LastCommandValues,
                 haveHandOutItems=true,

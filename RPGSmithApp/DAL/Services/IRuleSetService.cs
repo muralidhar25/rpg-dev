@@ -71,7 +71,7 @@ namespace DAL.Services
         Task updateUserPurchasedRuleset(int ruleSetId, string userID);
         Task<DiceRollModel> GetDiceRollModelAsync(int RulesetID, int CharacterID, ApplicationUser User);
 
-        Task<RuleSet> UpdateLastCommand(int rulesetId, string lastcommand, string lastcommandresult, string lastCommandValues, int lastCommandTotal);
+        Task<RuleSet> UpdateLastCommand(int rulesetId, string lastcommand, string lastcommandresult, string lastCommandValues, int lastCommandTotal, string lastcommandresultcolor);
         Task<bool> CheckDuplicateRulesetCommand(string value, int? rulesetId, int? rulesetCommandId = 0);
         Task<RulesetCommand> Create(RulesetCommand item);
         Task<RuleSet> UpdateRulesetLastCommand(RuleSet _ruleSet);
