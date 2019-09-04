@@ -81,19 +81,19 @@ export class NgChat implements OnInit, IChatController {
     });
     this.appService.shouldUpdateChatRemoveIntervals().subscribe((serviceData) => {
       if (serviceData && this.fetchFriendsListInterval) {
-        
+
         clearInterval(this.fetchFriendsListInterval);
       }
     });
 
     this.appService.shouldUpdateChatFromCombat().subscribe((serviceData) => {
-      
+
       if (serviceData) {
         this.sendCombatMessageToChatGroup(serviceData);
       }
     });
     this.appService.shouldUpdateOpenChatForCharacter().subscribe((characterId) => {
-      
+
       if (characterId) {
         this.openChatForCharacter(characterId);
       }
@@ -107,8 +107,8 @@ export class NgChat implements OnInit, IChatController {
   IsDefaultGroupCreated: boolean = false;
 
   customDices: CustomDice[] = [];
-  statdetails: any[]=[];
-  charactersCharacterStats: any[]=[];
+  statdetails: any;
+  charactersCharacterStats: any[];
   character: Characters = new Characters();
 
   ruleset: Ruleset = this.localStorage.localStorageGetItem(DBkeys.rulesetforChat);
@@ -302,7 +302,6 @@ export class NgChat implements OnInit, IChatController {
   }
 
   filterCampaignParticipants(participants) {
-    
     //console.log("participants-1", participants)
     //  let user = this.localStorage.getDataObject<any>(DBkeys.CURRENT_USER);
     let rulesetID = ServiceUtil.CurrentCharacters_RulesetID(this.localStorage);
@@ -322,7 +321,7 @@ export class NgChat implements OnInit, IChatController {
         let currentParticipantList = [];
 
         if (ServiceUtil.IsCurrentlyRulesetOpen(this.localStorage) == true) {
-      
+
           currentParticipantList = participants.filter(x => x.characterCampaignID == rulesetID || (x.chattingTo && (x.campaignID == rulesetID || x.characterCampaignID == rulesetID)));
           participants = currentParticipantList;
 
@@ -340,7 +339,7 @@ export class NgChat implements OnInit, IChatController {
 
         }
         else if (ServiceUtil.IsCurrentlyRulesetOpen(this.localStorage) == false) {
-          
+
           let characterid = ServiceUtil.GetCurrentCharacterID(this.localStorage)
           currentParticipantList = participants.filter(x => (x.characterCampaignID == rulesetID || x.campaignID == rulesetID) || (!x.chattingTo && (x.campaignID == rulesetID || x.characterID == rulesetID)))
           participants = currentParticipantList;
@@ -358,7 +357,7 @@ export class NgChat implements OnInit, IChatController {
         else {
           participants = [];
         }
-        
+
         let everyoneList = participants.filter(x => x.chattingTo)
         if (everyoneList.length) {
           participants = participants.filter(x => !x.chattingTo)
@@ -448,27 +447,25 @@ export class NgChat implements OnInit, IChatController {
     //      this.authService.logout(true);
     //    }
     //  });
-    
     let characterid = ServiceUtil.GetCurrentCharacterID(this.localStorage);
-    if (characterid > 0) {
+    if (!characterid) {
+      characterid = 0;
+    }
+    this.characterService.getDiceRollModel(this.ruleset.ruleSetId, characterid)
+      .subscribe((data: any) => {
+        this.customDices = data.customDices;
+        this.statdetails = { charactersCharacterStat: data.charactersCharacterStats, character: data.character };
+        this.charactersCharacterStats = data.charactersCharacterStats;
+        this.character = data.character;
+        //var ressss = ServiceUtil.getFinalCalculationString(inputString, statDetails, charactersCharacterStats, character)
+        //this.getFinalCommandString(command, statdetails, data.charactersCharacterStats, data.character)
 
-      this.characterService.getDiceRollModel(this.ruleset.ruleSetId, characterid)
-        .subscribe((data: any) => {
-          debugger
-          this.customDices = data.customDices;
-          this.statdetails.push({ charactersCharacterStat: data.charactersCharacterStats, character: data.character });
-          this.charactersCharacterStats = data.charactersCharacterStats;
-          this.character = data.character;
-          //var ressss = ServiceUtil.getFinalCalculationString(inputString, statDetails, charactersCharacterStats, character)
-          //this.getFinalCommandString(command, statdetails, data.charactersCharacterStats, data.character)
-
-        }, error => {
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        });
-         }
+      }, error => {
+        let Errors = Utilities.ErrorDetail("", error);
+        if (Errors.sessionExpire) {
+          this.authService.logout(true);
+        }
+      });
   }
 
   @HostListener('window:resize', ['$event'])
@@ -683,7 +680,7 @@ export class NgChat implements OnInit, IChatController {
 
   // Handles received messages by the adapter
   private onMessageReceived(participant: IChatParticipant, message: Message) {
-    
+
     if (participant && message) {
       let chatWindow = this.openChatWindow(participant);
 
@@ -725,7 +722,7 @@ export class NgChat implements OnInit, IChatController {
   // Works for opening a chat window for an user or for a group
   // Returns => [Window: Window object reference, boolean: Indicates if this window is a new chat window]
   public openChatWindow(participant: IChatParticipant, focusOnNewWindow: boolean = false, invokedByUserClick: boolean = false): [Window, boolean] {
-    
+
     //console.log('openChatWindow');
 
     // Is this window opened?
@@ -824,7 +821,7 @@ export class NgChat implements OnInit, IChatController {
 
   // Buffers audio file (For component's bootstrapping)
   private bufferAudioFile(): void {
-    
+
     if (this.audioSource && this.audioSource.length > 0) {
       this.audioFile = new Audio();
       this.audioFile.src = this.audioSource;
@@ -881,13 +878,13 @@ export class NgChat implements OnInit, IChatController {
       this.diceRollAudioFile10.load();
     }
 
-    
+
   }
 
   // Emits a message notification audio if enabled after every message received
   private emitMessageSound(window: Window, message: Message): void {
     if (this.audioEnabled && !window.hasFocus) {
-      
+
       let isChatDiceRollMessage = false;
 
       if (message && message.message && message.message.indexOf('ng-chat-diceRoll-message') > -1) {
@@ -960,7 +957,7 @@ export class NgChat implements OnInit, IChatController {
             break;
         }
       }
-      
+
     }
   }
 
@@ -1081,7 +1078,7 @@ export class NgChat implements OnInit, IChatController {
         message.message = window.newMessage;
         message.dateSent = new Date();
         if (true) {
-          
+
           //JSON.stringify(obj1) === JSON.stringify(obj2) 
           let currentopendwindowParticipant = this.participants.filter(x => JSON.stringify(x) == JSON.stringify(window.participant));
           if (!currentopendwindowParticipant.length && this.participants.filter(x => x.displayName == "Everyone").length) {
@@ -1119,17 +1116,17 @@ export class NgChat implements OnInit, IChatController {
         if (window.participant.characterID > 0) {
           msg = ServiceUtil.getFinalCalculationString(msg, this.statdetails, this.charactersCharacterStats, this.character)
         }
-        
+
       }
       var diceResult = DiceService.rollDiceExternally(this.alertService, msg, this.customDices, true)
       if (diceResult &&
         diceResult.characterMultipleCommands &&
         diceResult.characterMultipleCommands[0] &&
         +diceResult.characterMultipleCommands[0].calculationResult) {
-       // this.sendDiceRolledToChatGroup(diceResult);
+        // this.sendDiceRolledToChatGroup(diceResult);
         return this.generateDiceRolledMessage(diceResult);
       }
-      
+
       return msg;
     }
     return message;
@@ -1550,7 +1547,7 @@ export class NgChat implements OnInit, IChatController {
     this.audioEnabled = !this.audioEnabled;
   }
   toggleDiceResult(e) {
-    
+
     if (e.currentTarget.previousElementSibling.children) {
       if (e.currentTarget.previousElementSibling.children[0]) {
         if (e.currentTarget.previousElementSibling.children[0].classList.contains('ng-chat-message-collaspe')) {
@@ -1579,7 +1576,7 @@ export class NgChat implements OnInit, IChatController {
 
     //}
     try {
-      
+
       if (this.participants.filter((x: any) => x.characterID == characterId && !x.chattingTo).length) {
         if (this.participants.filter((x: any) => x.characterID == characterId && !x.chattingTo && x.status == ChatParticipantStatus.Online).length) {
           this.openChatWindow(this.participants.filter((x: any) => x.characterID == characterId && !x.chattingTo && x.status == ChatParticipantStatus.Online)[0], true, true);
@@ -1596,7 +1593,7 @@ export class NgChat implements OnInit, IChatController {
       let message = new Message();
       message.fromId = this.userId;
       message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;
-      
+
 
     }
     catch (e) {

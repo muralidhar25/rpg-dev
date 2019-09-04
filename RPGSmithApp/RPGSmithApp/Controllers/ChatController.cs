@@ -111,7 +111,7 @@ namespace RPGSmithApp.Controllers
                         MessageViewModel messageView = new MessageViewModel()
                         {
                             Message = message.Message,
-                            DateSent = message.DateSent,
+                            DateSent = message.DateSent.ToLocalTime(),
                             Type = 1,
                             FromId = fromid,
                             ToId = payload.Id,
