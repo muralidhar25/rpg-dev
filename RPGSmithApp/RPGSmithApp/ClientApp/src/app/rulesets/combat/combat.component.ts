@@ -454,7 +454,6 @@ export class CombatComponent implements OnInit {
         //}
 
         let isFrameSelected_Flag = false;
-        debugger
         this.combatants.map((x) => {
           //for character layer View
           x.isOwnPlayer = true;

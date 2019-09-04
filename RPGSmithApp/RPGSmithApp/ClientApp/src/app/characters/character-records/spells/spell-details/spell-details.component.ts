@@ -126,7 +126,6 @@ export class CharacterSpellDetailsComponent implements OnInit {
 
             this.characterSpellService.getCharacterSpellById<any>(this.spellId)
               .subscribe(data => {
-                  debugger
                     this.spellDetail = this.characterSpellService.spellModelDetailData(data, "UPDATE");
                    // this.ruleSetId = this.spellDetail.ruleSetId;
                     this.characterId = this.spellDetail.characterId;

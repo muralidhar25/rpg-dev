@@ -99,7 +99,6 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
             })
       });
       this.sharedService.shouldUpdateCharactersCharacterStatsBuffs().subscribe(data => {
-        debugger
         setTimeout(() => {
          
           if (data) {
@@ -781,7 +780,6 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
     }
 
   save(characterstats: any, redirectto: any) {
-    debugger
     //if (redirectto == 99) {
     //  this.isLoading = true;
     //  }
@@ -2132,7 +2130,6 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         this.bsModalRef.content.title = "Link Record";
         this.bsModalRef.content.characterstat = Object.assign({}, characterstat) ;
         this.bsModalRef.content.event.subscribe(data => {
-            debugger
             switch (data.type) {
                 case STAT_LINK_TYPE.ITEM:
                     characterstat.linkType = STAT_LINK_TYPE.ITEM;
@@ -2357,7 +2354,6 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
       });
   }
   SelectBuffAndEffects() {
-    debugger
     this.bsModalRef = this.modalService.show(AddBuffAndEffectComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -2389,7 +2385,6 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
 
     })
     nonSelectedBuffAndEffectsList = nonSelectedBuffAndEffectsList.filter(SC => SC)
-    debugger
     this.buffAndEffectService.assignBuffAndEffectToCharacter<any>(this.selectedBuffAndEffectsList, characters, [], nonSelectedBuffAndEffectsList, this.characterId)
       .subscribe(data => {
        
