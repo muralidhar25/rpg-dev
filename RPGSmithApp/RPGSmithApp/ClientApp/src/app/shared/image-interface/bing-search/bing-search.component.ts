@@ -162,7 +162,14 @@ export class BingSearchComponent implements OnInit {
 
         this.imageSearchService.getBingSearch<any>(_query, this.noOfImagesShow)
             .subscribe(data => {
-                this.bingImages = data.value;
+              this.bingImages = data.value;
+              if (this.bingImages && this.bingImages.length) {
+                this.bingImages.map((x) => {
+                  if (x.contentUrl) {
+                    x.contentUrl = x.contentUrl.split('?')[0];
+                  }                  
+                });
+              }
                 this.isLoading = false;
             }, error => {
                 console.log("Error: ", error);
@@ -368,7 +375,14 @@ export class BingSearchComponent implements OnInit {
         this.noOfImagesShow = this.noOfImagesShow + 40;
         this.imageSearchService.getBingSearch<any>(this.query, this.noOfImagesShow)
             .subscribe(data => {
-                this.bingImages = data.value;
+              this.bingImages = data.value;
+              if (this.bingImages && this.bingImages.length) {
+                this.bingImages.map((x) => {
+                  if (x.contentUrl) {
+                    x.contentUrl = x.contentUrl.split('?')[0];
+                  }
+                });
+              }
                 this.isLoading = false;
             }, error => {
                 console.log("Error: ", error);
