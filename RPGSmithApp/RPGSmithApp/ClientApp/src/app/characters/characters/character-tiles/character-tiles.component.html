@@ -276,10 +276,15 @@
                                             <ng-container *ngIf="toggleVal.initial">
                                               <ng-container *ngIf="toggleVal.toggleText">
 
-                                                <p [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                                                <!--<p [style.color]="box.tile.characterStatTiles.bodyTextColor"
                                                    [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
                                                   {{toggleVal.toggleText}}
-                                                </p>
+                                                </p>-->
+                                                <span class="text-center-v" [style.color]="box.tile.characterStatTiles.bodyTextColor"
+                                                   [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
+                                                      [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                                  {{toggleVal.toggleText}}
+                                                </span>
                                               </ng-container>
                                               <ng-container *ngIf="toggleVal.image">
                                                 <img class="imgwidth" [src]="toggleVal.image" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
@@ -696,10 +701,15 @@
                                             <ng-container *ngIf="toggleVal.initial">
                                               <ng-container *ngIf="toggleVal.toggleText">
 
-                                                <p class="noselect" [style.color]="box.tile.toggleTiles.bodyTextColor"
+                                                <!--<p class="noselect" [style.color]="box.tile.toggleTiles.bodyTextColor"
                                                    [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
                                                   {{toggleVal.toggleText}}
-                                                </p>
+                                                </p>-->
+                                                <span class="noselect text-center-v" [style.color]="box.tile.toggleTiles.bodyTextColor"
+                                                   [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)"
+                                                   [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                                  {{toggleVal.toggleText}}
+                                                </span>
                                               </ng-container>
                                               <ng-container *ngIf="toggleVal.image">
                                                 <img class="imgwidth" [src]="toggleVal.image" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
@@ -912,10 +922,14 @@
                                                 <ng-container *ngIf="toggleVal.initial">
                                                   <ng-container *ngIf="toggleVal.toggleText">
 
-                                                    <p class="noselect" [style.color]="box.tile.characterStatClusterTiles.bodyTextColor"
+                                                    <!--<p class="noselect" [style.color]="box.tile.characterStatClusterTiles.bodyTextColor"
                                                        [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
                                                       {{toggleVal.toggleText}}
-                                                    </p>
+                                                    </p>-->
+                                                    <span class="noselect text-center-v" [style.color]="box.tile.characterStatClusterTiles.bodyTextColor"
+                                                       [style.font-size.px]="((box.config.sizey*box.config.sizex)*2) < 21 ? 20 : ((box.config.sizey*box.config.sizex)*2)" [style.line-height.px]="((box.config.sizey*box.config.sizex)*2+5)  < 24 ? 25 : ((box.config.sizey*box.config.sizex)*2+5)">
+                                                      {{toggleVal.toggleText}}
+                                                    </span>
                                                   </ng-container>
                                                   <ng-container *ngIf="toggleVal.image">
                                                     <img class="imgwidth" [src]="toggleVal.image" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" />
