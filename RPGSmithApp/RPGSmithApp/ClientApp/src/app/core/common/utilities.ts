@@ -992,7 +992,7 @@ export class Utilities {
       return 'https://rpgsmith.com/help/#a13';
     }
     else if (url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DETAILS/') > -1) {
-      return 'https://rpgsmith.com/help/#CampaignInterface';
+      return 'https://rpgsmith.com/helpc/#c1a ';
     }
     else if (url.toUpperCase().indexOf('RULESET/COMBAT/') > -1 || url.toUpperCase().indexOf('CHARACTER/COMBATPLAYER/') > -1) {
       return 'https://rpgsmith.com/helpg/#g1';
@@ -1072,7 +1072,7 @@ export class Utilities {
     else if ((url.toUpperCase().indexOf('/RULESET/SPELL/') > -1 ||
       url.toUpperCase().indexOf('/RULESET/SPELL-DETAILS/') > -1)
       && url.toUpperCase().indexOf('/CHARACTER/RULESET/') == -1) {
-      return 'https://rpgsmith.com/help/#Spells';
+      return 'https://rpgsmith.com/help/#spells';
     }
     else if (url.toUpperCase().indexOf('/CHARACTER/ABILITY/') > -1) {
       return 'https://rpgsmith.com/helpe/#e4';
@@ -1087,11 +1087,11 @@ export class Utilities {
 
     else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS/') > -1 ||
       url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEM-DETAIL/') > -1) {
-      return 'https://rpgsmith.com/help/#ItemTemp';
+      return 'https://rpgsmith.com/help/#itemtemp';
     }
     else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELLS/') > -1 ||
       url.toUpperCase().indexOf('/CHARACTER/RULESET/SPELL-DETAILS/') > -1) {
-      return 'https://rpgsmith.com/help/#Spells';
+      return 'https://rpgsmith.com/help/#spells';
 
     }
     else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ABILITIES/') > -1 ||

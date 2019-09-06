@@ -6,7 +6,7 @@ import { BasicSearchComponent } from "./basic-search/basic-search.component";
 
 const routes: Routes = [
   { path: "", component: SearchComponent, data: { title: "Search" } },
-  { path: ":searchText", component: SearchComponent, data: { title: "Search" } },
+  { path: ":searchType", component: SearchComponent, data: { title: "Search" } },
   { path: ":searchType/:searchText", component: SearchComponent, data: { title: "Search" } },
   { path: "basic/:searchType", component: BasicSearchComponent, data: { title: "Basic Search" } },
   { path: "basic/:searchType/:searchText", component: BasicSearchComponent, data: { title: "Basic Search" } },
