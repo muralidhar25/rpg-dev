@@ -320,7 +320,7 @@ export class MonsterTemplateDetailsComponent implements OnInit {
     });
     this.bsModalRef.content.title = "Quantity";
     this.bsModalRef.content.monsterInfo = monsterInfo;
-
+    this.bsModalRef.content.rulesetId = this.ruleSetId
   }
   openDiceRollModal() {
     this.bsModalRef = this.modalService.show(DiceRollComponent, {
