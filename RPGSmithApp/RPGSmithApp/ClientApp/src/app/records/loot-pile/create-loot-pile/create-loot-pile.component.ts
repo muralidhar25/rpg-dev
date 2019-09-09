@@ -343,9 +343,11 @@ export class CreateLootPileComponent implements OnInit {
           this.alertService.showMessage(message, "", MessageSeverity.success);
           this.close();
           if (modal.lootId == 0 || modal.lootId === undefined) {
-            this.appService.updateChatWithLootMessage(true); //loot created...
+            if (modal.isVisible) {
+              this.appService.updateChatWithLootMessage(true); //loot created...
+            }
+            
           }
-
           //if (this.fromDetail) {
             //if (data) {
               let id = data;
@@ -395,7 +397,9 @@ export class CreateLootPileComponent implements OnInit {
           //  this.router.navigate(['/ruleset/item-master', this._ruleSetId]);
           //else
           this.sharedService.updateItemsList(true);
-          this.appService.updateChatWithLootMessage(true);
+          if (modal.isVisible) {
+            this.appService.updateChatWithLootMessage(true);
+          }          
         },
         error => {
           this.isLoading = false;

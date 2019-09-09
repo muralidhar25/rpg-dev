@@ -28,6 +28,7 @@ import { CommandTile } from '../../../core/models/tiles/command-tile.model';
 import { LinkRecordComponent } from '../../../characters/character-records/character-stats/link-record/link-record.component';
 import { CharacterStatClusterTileComponent } from '../character-stat-cluster.component';
 import { CharacterStatClusterTileService } from '../../../core/services/tiles/character-stat-cluster-tile.service';
+import { AppService1 } from '../../../app.service';
 
 @Component({
   selector: 'app-edit-character-stat-cluster',
@@ -82,7 +83,8 @@ export class EditCharacterStatClusterComponent implements OnInit {
     private authService: AuthService, private modalService: BsModalService, private localStorage: LocalStoreManager,
     private characterStatService: CharacterStatService, private charactersService: CharactersService,
     private rulesetService: RulesetService, private clusterTileService: CharacterStatClusterTileService,
-    private charactersCharacterStatService: CharactersCharacterStatService, private location: PlatformLocation) {
+    private charactersCharacterStatService: CharactersCharacterStatService, private location: PlatformLocation,
+    private appService: AppService1) {
     location.onPopState(() => this.modalService.hide(1));
   }
 
@@ -1774,13 +1776,14 @@ export class EditCharacterStatClusterComponent implements OnInit {
       .subscribe(
       data => {
         this.isLoading = false;
+        this.appService.updateDiceCommandFromCharacterStat(true);
           this.alertService.stopLoadingMessage();
           let message = "Characters stat cluster has been updated successfully.";
           this.alertService.showMessage(message, "", MessageSeverity.success);
           //if (redirectto != 99) {
           //  this.alertService.showMessage(message, "", MessageSeverity.success);
           //}
-          this.close();
+        this.close();
         ServiceUtil.BindCharCharDetailsInLocalStorage(this.characterId, this.charactersCharacterStatService, this.localStorage, true);
           
         },

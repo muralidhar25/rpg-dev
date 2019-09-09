@@ -76,7 +76,8 @@ export class NgChat implements OnInit, IChatController {
     });
     this.appService.shouldUpdateChatWithTakenByLootMessage().subscribe((serviceData) => {
       if (serviceData) {
-        this.sendLootMessageToChatGroup(true, serviceData);
+        //this.sendLootMessageToChatGroup(true, serviceData);
+        let characterName = serviceData.characterName;        let multipleLoots = serviceData.lootItems;        this.sendLootMessageToChatGroup(true, characterName, multipleLoots);
       }
     });
     this.appService.shouldUpdateChatRemoveIntervals().subscribe((serviceData) => {
@@ -98,6 +99,32 @@ export class NgChat implements OnInit, IChatController {
         this.openChatForCharacter(characterId);
       }
     });
+
+    this.appService.shouldUpdateDiceCommandFromCharacterStat().subscribe(result => {
+      if (result) {
+        let characterid = ServiceUtil.GetCurrentCharacterID(this.localStorage);
+        if (!characterid) {
+          characterid = 0;
+        }
+        this.characterService.getDiceRollModel(this.ruleset.ruleSetId, characterid)
+          .subscribe((data: any) => {
+
+            this.customDices = data.customDices;
+            this.statdetails = { charactersCharacterStat: data.charactersCharacterStats, character: data.character };
+            this.charactersCharacterStats = data.charactersCharacterStats;
+            this.character = data.character;
+            //var ressss = ServiceUtil.getFinalCalculationString(inputString, statDetails, charactersCharacterStats, character)
+            //this.getFinalCommandString(command, statdetails, data.charactersCharacterStats, data.character)
+            
+          }, error => {
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              this.authService.logout(true);
+            }
+          });
+      }
+    });
+
   }
 
   // Exposes enums for the ng-template
@@ -319,9 +346,7 @@ export class NgChat implements OnInit, IChatController {
         //  }
         //}
         let currentParticipantList = [];
-
-        if (ServiceUtil.IsCurrentlyRulesetOpen(this.localStorage) == true) {
-
+        if (this.localStorage.localStorageGetItem(DBkeys.IsGMCampaignChat)) {
           currentParticipantList = participants.filter(x => x.characterCampaignID == rulesetID || (x.chattingTo && (x.campaignID == rulesetID || x.characterCampaignID == rulesetID)));
           participants = currentParticipantList;
 
@@ -338,8 +363,7 @@ export class NgChat implements OnInit, IChatController {
 
 
         }
-        else if (ServiceUtil.IsCurrentlyRulesetOpen(this.localStorage) == false) {
-
+        else if (this.localStorage.localStorageGetItem(DBkeys.IsGMCampaignChat) == false) {
           let characterid = ServiceUtil.GetCurrentCharacterID(this.localStorage)
           currentParticipantList = participants.filter(x => (x.characterCampaignID == rulesetID || x.campaignID == rulesetID) || (!x.chattingTo && (x.campaignID == rulesetID || x.characterID == rulesetID)))
           participants = currentParticipantList;
@@ -432,7 +456,6 @@ export class NgChat implements OnInit, IChatController {
   @ViewChild('nativeFileInput') nativeFileInput: ElementRef;
 
   ngOnInit() {
-    console.log('Here chat is working');
     this.bootstrapChat();
     if (this.router.url.toLowerCase().indexOf("character/tiles") > -1 || this.router.url.toLowerCase().indexOf("ruleset/dashboard") > -1) {
       this.isCollapsed = true;
@@ -706,7 +729,6 @@ export class NgChat implements OnInit, IChatController {
           this.onMessagesSeen.emit([message]);
         }
       }
-      debugger
       this.emitMessageSound(chatWindow[0], message);
 
       // Github issue #58 
@@ -891,7 +913,6 @@ export class NgChat implements OnInit, IChatController {
         isChatDiceRollMessage = true;
       }
 
-      debugger
       if (!isChatDiceRollMessage && this.audioFile) {
         this.audioFile.play();
       }
@@ -1114,6 +1135,17 @@ export class NgChat implements OnInit, IChatController {
         /////////////////////////////////////////////////////////////////
         //this.customDices
         if (window.participant.characterID > 0) {
+          if (characterid) {
+            let localStorage_variable = this.localStorage.localStorageGetItem(DBkeys.CHAR_CHAR_STAT_DETAILS);
+            if (localStorage_variable && localStorage_variable.characterId > 0 && localStorage_variable.charactersCharacterStats && localStorage_variable.charactersCharacterStats.length) {
+              let localStorage_CharCharStats: any[] = localStorage_variable.charactersCharacterStats
+
+              if (localStorage_CharCharStats) {
+                this.statdetails.charactersCharacterStat = localStorage_CharCharStats;
+                this.charactersCharacterStats = localStorage_CharCharStats;
+              }
+            }
+          }
           msg = ServiceUtil.getFinalCalculationString(msg, this.statdetails, this.charactersCharacterStats, this.character)
         }
 
@@ -1227,8 +1259,8 @@ export class NgChat implements OnInit, IChatController {
     // console.log("window.messages", window.messages);
     if (window.messages[index - 1]) {
       if (window.messages[index - 1].fromId === window.messages[index].fromId
-        && window.messages[index - 1].message == "<span class='ng-chat-orange-text'>New Loot is Available</span>"
-        && window.messages[index].message != "<span class='ng-chat-orange-text'>New Loot is Available</span>"
+        && window.messages[index - 1].message == "<span class='ng-chat-orange-text  LootAvailable'>New Loot is Available</span>"
+        && window.messages[index].message != "<span class='ng-chat-orange-text  LootAvailable'>New Loot is Available</span>"
       ) {
         return true;
       }
@@ -1239,7 +1271,7 @@ export class NgChat implements OnInit, IChatController {
         return true;
       }
     }
-    if (message.message == "<span class='ng-chat-orange-text'>New Loot is Available</span>") {
+    if (message.message == "<span class='ng-chat-orange-text LootAvailable'>New Loot is Available</span>") {
       return false;
     }
     //if (message.fromId != this.userId){
@@ -1431,7 +1463,7 @@ export class NgChat implements OnInit, IChatController {
     this.appService.updateChatHalfScreen(window.isHalfScreen);
   }
   sendDiceRolledToChatGroup(diceR: any) {
-    console.log('sendDiceRolledToChatGroup', diceR);
+    //console.log('sendDiceRolledToChatGroup', diceR);
     if (this.participants && this.participants.length) {
       try {
 
@@ -1487,36 +1519,37 @@ export class NgChat implements OnInit, IChatController {
     CollaspedMessage = "<span class='ng-chat-diceRoll-message ng-chat-message-collaspe'><span class='ng-chat-orange-text'>Result: </span>" + CollaspedResult + "</span>";
     return CollaspedMessage + ExpandedMessage;
   }
-  sendLootMessageToChatGroup(isLootTakenByCharacter = false, CharacterName = '') {
-    if (this.participants && this.participants.length) {
-      try {
+  //sendLootMessageToChatGroup(isLootTakenByCharacter = false, CharacterName = '') {
+  //  if (this.participants && this.participants.length) {
+  //    try {
 
-        let message = new Message();
-        message.fromId = this.userId;
-        message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;
-        if (isLootTakenByCharacter) {
-          message.message = "<span class='ng-chat-orange-text'>" + CharacterName + " Has Taken Loot</span>";
-        }
-        else {
-          message.message = "<span class='ng-chat-orange-text'>New Loot is Available</span>";
-        }
-        message.dateSent = new Date();
-        message.isSystemGenerated = true;
-        //window.messages.push(message);
-        this.windows.map((x) => {
-          if (!x.isCollapsed && x.participant.displayName == "Everyone") {
-            x.messages.push(message);
-            this.scrollChatWindow(x, ScrollDirection.Bottom);
-          }
-        })
-        this.adapter.sendMessage(message);
-      }
-      catch (e) {
+  //      let message = new Message();
+  //      message.fromId = this.userId;
+  //      message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;
+  //      if (isLootTakenByCharacter) {
+  //        message.message = "<span class='ng-chat-orange-text LootTaken'>" + CharacterName + " Has Taken Loot</span>";
+  //      }
+  //      else {
+  //        message.message = "<span class='ng-chat-orange-text LootAvailable'>New Loot is Available</span>";
+  //      }
+  //      message.dateSent = new Date();
+  //      message.isSystemGenerated = true;
+  //      //window.messages.push(message);
+  //      this.windows.map((x) => {
+  //        if (!x.isCollapsed && x.participant.displayName == "Everyone") {
+  //          x.messages.push(message);
+  //          this.scrollChatWindow(x, ScrollDirection.Bottom);
+  //        }
+  //      })
+  //      this.adapter.sendMessage(message);
+  //    }
+  //    catch (e) {
 
-      }
-    }
-  }
+  //    }
+  //  }
+  //}
 
+  sendLootMessageToChatGroup(isLootTakenByCharacter = false, CharacterName = '', multipleLoots = undefined) {    if (this.participants && this.participants.length) {      try {        let message = new Message();        message.fromId = this.userId;        message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;        if (isLootTakenByCharacter) {          message.message = "<span class='ng-chat-orange-text LootTaken'>" + CharacterName + " Has Taken Loot</span>";          if (multipleLoots && multipleLoots.length) {            let ExpandedMessageContent = '';            multipleLoots.map((loot) => {              ExpandedMessageContent += '<span class="ng-chat-grey-text">' + CharacterName + ' has taken ' + loot.name + '</sapn></br>';            })            let ExpandedMessage = "<span class=' ng-chat-message-expand d-none'>" + ExpandedMessageContent + "</span>";            let CollaspedMessage = "<span class='ng-chat-diceRoll-message ng-chat-message-collaspe'><span class='ng-chat-orange-text LootTaken'>" + CharacterName + " Has Taken Loot</span></span>";            message.message = CollaspedMessage + ExpandedMessage;          }        }        else {          message.message = "<span class='ng-chat-orange-text LootAvailable'>New Loot is Available</span>";        }        message.dateSent = new Date();        message.isSystemGenerated = true;        //window.messages.push(message);        this.windows.map((x) => {          if (!x.isCollapsed && x.participant.displayName == "Everyone") {            x.messages.push(message);            this.scrollChatWindow(x, ScrollDirection.Bottom);          }        })        this.adapter.sendMessage(message);      }      catch (e) {      }    }  }
   sendCombatMessageToChatGroup(combatMessage) {
     if (this.participants && this.participants.length) {
       try {
@@ -1525,7 +1558,7 @@ export class NgChat implements OnInit, IChatController {
         message.fromId = this.userId;
         message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;
 
-        message.message = "<span class='ng-chat-orange-text'>" + combatMessage + "</span>";
+        message.message = "<span class='ng-chat-orange-text combatTracker'>" + combatMessage + "</span>";
 
         message.dateSent = new Date();
         message.isSystemGenerated = true;
