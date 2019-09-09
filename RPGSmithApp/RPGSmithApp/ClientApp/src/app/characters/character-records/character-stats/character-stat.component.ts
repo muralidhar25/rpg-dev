@@ -1194,7 +1194,8 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                 data => {
                     this.page = 1;
                     this.pageSize = 30;
-                    
+
+                  this.appService.updateDiceCommandFromCharacterStat(true);
                     this.alertService.stopLoadingMessage();
                   let message = "Characters stats has been updated successfully.";
                   this.alertService.showMessage(message, "", MessageSeverity.success);

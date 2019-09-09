@@ -325,7 +325,6 @@ export class AppComponent implements OnInit, AfterViewInit {
               if (data) {
                 this.isPlayerCharacter = data.isPlayerCharacter;
                 this.isPlayerLinkedToCurrentCampaign = data.isPlayerLinkedToCurrentCampaign;
-
                 if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
                   if (this.router.url.toUpperCase().indexOf('/CHARACTER') > -1) {
                     this.showCombatBtn = true;
@@ -341,7 +340,11 @@ export class AppComponent implements OnInit, AfterViewInit {
                         model.characterID = this.headers.headerId;
                         //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
                         //console.log("5.initializeSignalRAdapter")
-                        this.initializeSignalRAdapter(user, this.http, this.storageManager, false, this.router.url);
+                        if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {
+                          this.initializeSignalRAdapter(user, this.http, this.storageManager, true, this.router.url);
+                        } else {
+                          this.initializeSignalRAdapter(user, this.http, this.storageManager, false, this.router.url);
+                        }                        
                       }
                     }
 
@@ -699,6 +702,15 @@ export class AppComponent implements OnInit, AfterViewInit {
   @HostListener('document:click', ['$event.target'])
   documentClick(target: any) {
     try {
+      if (target.className.indexOf("combatTracker") > -1) {
+        this.GoToPCCombat();
+      } else if (target.className.indexOf("LootAvailable") > -1 || target.className.indexOf("LootTaken") > -1) {
+        if (this.isPlayerCharacter) {
+          this.playerLoot();
+        } else {
+          this.GoToLoot();
+        }
+      }
       if (target.className.endsWith("is-open"))
         this.isDropdownOpen = !this.isDropdownOpen;
       else this.isDropdownOpen = false;
@@ -974,7 +986,6 @@ export class AppComponent implements OnInit, AfterViewInit {
                   if (data) {
                     this.isPlayerCharacter = data.isPlayerCharacter;
                     this.isPlayerLinkedToCurrentCampaign = data.isPlayerLinkedToCurrentCampaign;
-
                     if (data.isPlayerCharacter || data.isCurrentCampaignPlayerCharacter) {
                       if (url.toUpperCase().indexOf('/CHARACTER') > -1) {
                         this.showCombatBtn = true;
@@ -990,7 +1001,11 @@ export class AppComponent implements OnInit, AfterViewInit {
                             //model.Id = this.headers.headerId;
                             //this.signalRAdapter = new SignalRGroupAdapter(user, this.http, this.storageManager);
                             //console.log("10.initializeSignalRAdapter")
-                            this.initializeSignalRAdapter(user, this.http, this.storageManager, false, (<NavigationStart>event).url);
+                            if (this.isPlayerCharacter && this.isPlayerLinkedToCurrentCampaign) {
+                              this.initializeSignalRAdapter(user, this.http, this.storageManager, true, (<NavigationStart>event).url);
+                            } else {
+                              this.initializeSignalRAdapter(user, this.http, this.storageManager, false, (<NavigationStart>event).url);
+                            }
                           }
                         }
 
@@ -1415,15 +1430,12 @@ export class AppComponent implements OnInit, AfterViewInit {
       },
       callback: function (cmd, val) {
         that.EditorDropDown(val, this.html);
-        console.log(val);
       },
       // Callback on refresh.
       refresh: function ($btn) {
-        console.log('do refresh');
       },
       // Callback on dropdown show.
       refreshOnShow: function ($btn, $dropdown) {
-        console.log('do refresh when show');
       }
     });
     $.FroalaEditor.RegisterCommand('my_dropdown2', {
@@ -1439,15 +1451,12 @@ export class AppComponent implements OnInit, AfterViewInit {
       },
       callback: function (cmd, val) {
         that.EditorDropDown(val, this.html);
-        console.log(val);
       },
       // Callback on refresh.
       refresh: function ($btn) {
-        console.log('do refresh');
       },
       // Callback on dropdown show.
       refreshOnShow: function ($btn, $dropdown) {
-        console.log('do refresh when show');
       }
     });
   }
@@ -2020,7 +2029,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   onEventTriggered(event: string): void {
     this.triggeredEvents.push(event);
   }
-  initializeSignalRAdapter(user: User, http, storageManager, IsRuleset: boolean, currentUrl) {
+  initializeSignalRAdapter(user: any, http, storageManager, IsRuleset: boolean, currentUrl) {
+    this.localStorage.localStorageSetItem(DBkeys.IsGMCampaignChat, IsRuleset);
     //this.storageManager.getDataObject<ChatConnection[]>(DBkeys.chatConnections);
     let url = currentUrl.toLowerCase();
     let isNewTab = false;
@@ -2033,6 +2043,10 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.rulesetService.getRulesetById<Ruleset>(+rulesetID).subscribe((data: Ruleset) => {
         this.localStorage.localStorageSetItem(DBkeys.rulesetforChat, data);
         if (!this.signalRAdapter) {
+          if (IsRuleset) {
+            user.campaignID = rulesetID;
+            user.characterID = 0;
+          }
           this.signalRAdapter = new SignalRGroupAdapter(user, http, storageManager, IsRuleset);
         }
       });

@@ -33,6 +33,7 @@ export class PlayerLootSecondaryComponent implements OnInit {
   lootPileList: any[] = [];
   characterItemModal: any = new Items();
   headers: any[] = [];
+  characterName: string = '';
 
   constructor(
     private bsModalRef: BsModalRef,
@@ -44,15 +45,15 @@ export class PlayerLootSecondaryComponent implements OnInit {
     private sharedService: SharedService,
     private appService: AppService1,
     private itemsService: ItemsService,
-    private itemMasterService: ItemMasterService) { }
+    private itemMasterService: ItemMasterService) {  }
 
   ngOnInit() {
     setTimeout(() => {
-      debugger
       this.rulesetId = this.bsModalRef.content.ruleSetId;
       this.lootPileId = this.bsModalRef.content.LootPileId;
       this.headers = this.bsModalRef.content.headers;
       this.characterId = this.bsModalRef.content.headers.headerId;
+      this.characterName = this.bsModalRef.content.headers.headerName;
       this.initialize();
     }, 0);
   }
@@ -131,6 +132,7 @@ export class PlayerLootSecondaryComponent implements OnInit {
           }
           this.close();
           this.appService.updateItemsList(true);
+          this.appService.updateChatWithTakenByLootMessage({ characterName: this.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] });
         }
         this.isLoading = false;
       }, error => {

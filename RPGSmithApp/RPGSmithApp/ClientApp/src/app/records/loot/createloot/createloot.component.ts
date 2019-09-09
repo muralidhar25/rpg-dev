@@ -403,7 +403,6 @@ export class CreatelootComponent implements OnInit {
     this.lootService.createLootItem<any>(modal)
       .subscribe(
       data => {
-        debugger
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           let message = modal.itemMasterId == 0 || modal.itemMasterId === undefined ? "Loot Item has been created successfully." : " Loot Item has been updated successfully.";
@@ -411,7 +410,9 @@ export class CreatelootComponent implements OnInit {
           this.alertService.showMessage(message, "", MessageSeverity.success);
         this.close();
         if (modal.lootId == 0 || modal.lootId === undefined) {
-          this.appService.updateChatWithLootMessage(true); //loot created...
+          if (modal.isVisible) {
+            this.appService.updateChatWithLootMessage(true); //loot created...
+          }          
         }
         
           if (this.fromDetail) {
@@ -463,7 +464,9 @@ export class CreatelootComponent implements OnInit {
           //  this.router.navigate(['/ruleset/item-master', this._ruleSetId]);
           //else
           this.sharedService.updateItemsList(true);
-          this.appService.updateChatWithLootMessage(true);
+          if (modal.isVisible) {
+            this.appService.updateChatWithLootMessage(true); 
+          }   
         },
         error => {
           this.isLoading = false;

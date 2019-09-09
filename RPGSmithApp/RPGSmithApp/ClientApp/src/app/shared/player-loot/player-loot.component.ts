@@ -72,7 +72,6 @@ export class PlayerLootComponent implements OnInit {
           if (data) {
 
             let list = data;
-            debugger;
             this.itemsList = [];
             this.lootPileList = [];
 
@@ -169,7 +168,8 @@ export class PlayerLootComponent implements OnInit {
                 }
                 this.close();
                 this.appService.updateItemsList(true);
-                this.appService.updateChatWithTakenByLootMessage(this.characterName);
+                //this.appService.updateChatWithTakenByLootMessage(this.characterName);
+                this.appService.updateChatWithTakenByLootMessage({ characterName: this.characterName, lootItems: model.multiLootIds ? model.multiLootIds : [] });
               }
               this.isLoading = false;
             }, error => {

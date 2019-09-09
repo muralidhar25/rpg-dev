@@ -17,6 +17,7 @@ import { DiceRollComponent } from '../../../shared/dice/dice-roll/dice-roll.comp
 import { CharacterStatTileComponent } from '../character-stat.component';
 import { PlatformLocation } from '@angular/common';
 import { ServiceUtil } from '../../../core/services/service-util';
+import { AppService1 } from '../../../app.service';
 
 @Component({
     selector: 'app-edit-character-stat',
@@ -96,7 +97,8 @@ export class EditCharacterStatComponent implements OnInit {
     constructor(
         private bsModalRef: BsModalRef, private alertService: AlertService, private sharedService: SharedService,
         private authService: AuthService, private modalService: BsModalService, private localStorage: LocalStoreManager,
-      private CCService: CharactersCharacterStatService, private location: PlatformLocation) {
+      private CCService: CharactersCharacterStatService, private location: PlatformLocation,
+      private appService: AppService1) {
       location.onPopState(() => this.modalService.hide(1));
     }
 
@@ -266,7 +268,6 @@ export class EditCharacterStatComponent implements OnInit {
     }
 
   saveStat(characterStatTypeId: number) {
-      debugger
         let charactersCharacterStat: CharactersCharacterStat = this.CharacterStatTile.charactersCharacterStat;
         this.isNotValidNumber = false;
         let obj: any = this.CharacterStatTile.charactersCharacterStat.characterStat;
@@ -495,7 +496,7 @@ export class EditCharacterStatComponent implements OnInit {
         }
     }
 
-    private updateStatService(charactersCharacterStat: CharactersCharacterStat) {
+  private updateStatService(charactersCharacterStat: CharactersCharacterStat) {
         this.CCService.updateCharactersCharacterStat(charactersCharacterStat).subscribe(
             data => {
                 //this.CharacterStatTile.charactersCharacterStat
@@ -509,6 +510,7 @@ export class EditCharacterStatComponent implements OnInit {
                  }
              
               this.sharedService.updateCharacterList(result);
+              this.appService.updateDiceCommandFromCharacterStat(true);
               this.close(true);
               ServiceUtil.BindCharCharDetailsInLocalStorage(this.CharacterID, this.CCService, this.localStorage, true);
             },
@@ -635,7 +637,9 @@ export class EditCharacterStatComponent implements OnInit {
                 break;
         }
         this.CCService.updateCharactersCharacterStat(CStat).subscribe(
-            data => {
+          data => {
+
+            this.appService.updateDiceCommandFromCharacterStat(true);
               this.CharacterStatTile.charactersCharacterStat = Object.assign(this.CharacterStatTile.charactersCharacterStat, CStat)
               ServiceUtil.BindCharCharDetailsInLocalStorage(this.CharacterID, this.CCService, this.localStorage, true);
             },
