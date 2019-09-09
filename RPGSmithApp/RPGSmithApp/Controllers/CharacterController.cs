@@ -141,6 +141,7 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                var CharacterID=0;
                 int CharIdToDuplicate = 0;
                 var userId = GetUserId();
                 if (model.View.ToUpper() == "DUPLICATE")
@@ -173,12 +174,12 @@ namespace RPGSmithApp.Controllers
                         characterDomain.RuleSetId = NewRuleset.RuleSetId;
                     }
                 }
-
                 try
                 {
                     Character NewCharacter = _CharacterService.Create_SP(characterDomain, model.LayoutHeight, model.LayoutWidth, CharIdToDuplicate);
                     if (NewCharacter != null)
                     {
+                        CharacterID= NewCharacter.CharacterId;
                         var result =await _campaignService.AcceptInvite(model.InviteId, NewCharacter.CharacterId);
                         if (result.PlayerCharacterID>0)
                         {
@@ -434,7 +435,7 @@ namespace RPGSmithApp.Controllers
                 //    CharacterDashboardLayout.DefaultPageId = CharacterDashboardPage.CharacterDashboardPageId;
                 //    await _characterDashboardLayoutService.Update(CharacterDashboardLayout);
                 //}
-                return Ok();
+                return Ok(CharacterID);
             }
 
             return BadRequest(Utilities.ModelStateError(ModelState));

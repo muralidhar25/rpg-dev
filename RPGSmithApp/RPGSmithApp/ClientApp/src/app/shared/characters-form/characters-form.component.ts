@@ -326,7 +326,7 @@ export class CharactersFormComponent implements OnInit {
     this.isLoading = true;
     this.charactersService.createCharacter(modal)
       .subscribe(
-        data => {
+      (data:any) => {
           //console.log('Indata', data);
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
@@ -337,7 +337,11 @@ export class CharactersFormComponent implements OnInit {
           this.close();
           this.sharedService.updateCharacterList(true);
           this.sharedService.updateCharactersCount(true);
-          this.appService.updateCharacterList(true);
+        this.appService.updateCharacterList(true);
+        if ((modal.characterId == 0 || modal.characterId === undefined) && data>0) {
+            this.localStorage.localStorageSetItem(DBkeys.IsCharacterOpenedFromCampaign, false);
+            this.router.navigate(['/character/dashboard', data]);       
+        }
           //this.router.navigateByUrl('/rulesets', { skipLocationChange: true }).then(() => this.router.navigate(['/ruleset']));
           // window.location.reload();
         },
@@ -361,12 +365,16 @@ export class CharactersFormComponent implements OnInit {
     this.isLoading = true;
     this.charactersService.duplicateCharacters(modal)
       .subscribe(
-        data => {
+      (data: any) => {
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           this.alertService.showMessage("Character has been duplicated successfully.", "", MessageSeverity.success);
           this.bsModalRef.hide();
           this.sharedService.updateCharacterList(true);
+          if (data>0) {
+            this.localStorage.localStorageSetItem(DBkeys.IsCharacterOpenedFromCampaign, false);
+            this.router.navigate(['/character/dashboard', data]);
+          }
           // window.location.reload();
         },
         error => {
