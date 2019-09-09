@@ -787,8 +787,10 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
         characterstats.map((cs) => {
             if (cs.characterStat.characterStatTypeId == STAT_TYPE.Combo) {
                 if (!(+cs.minimum == 0 && +cs.maximum == 0)) {
-                    if (!(+cs.defaultValue >= +cs.minimum && +cs.defaultValue <= +cs.maximum)) {
-                        valid = false;
+                  if (!(+cs.defaultValue >= +cs.minimum && +cs.defaultValue <= +cs.maximum)) {
+                      
+                    valid = false;
+                    this.alertService.showMessage("The value for " + cs.displayStatName + " field must be between " + cs.minimum + " and " + cs.maximum + " value", "", MessageSeverity.error);
                     }
                 }                
             }
@@ -799,7 +801,9 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                         case STAT_TYPE.Number:
                             let defval: CharacterStatDefaultValue = cs.characterStat.characterStatDefaultValues[0];
                             if (!(+defval.minimum == 0 && +defval.maximum == 0)) {
-                                if (!(+cs.number >= +defval.minimum && +cs.number <= +defval.maximum)) {
+                              if (!(+cs.number >= +defval.minimum && +cs.number <= +defval.maximum)) {
+                                
+                                this.alertService.showMessage("The value for " + cs.displayStatName + " field must be between " + defval.minimum + " and " + defval.maximum + " value", "", MessageSeverity.error);
                                     valid = false;
                                 }
                             }
@@ -807,14 +811,18 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                         case STAT_TYPE.CurrentMax:
                             let CurDefval: CharacterStatDefaultValue = cs.characterStat.characterStatDefaultValues[0];
                             if (!(+CurDefval.minimum == 0 && +CurDefval.maximum == 0)) {
-                                if (!(+cs.current >= +CurDefval.minimum && +cs.current <= +CurDefval.maximum)) {
-                                    valid = false;
+                              if (!(+cs.current >= +CurDefval.minimum && +cs.current <= +CurDefval.maximum)) {
+                                
+                                this.alertService.showMessage("The value for " + cs.displayStatName + " field must be between " + CurDefval.minimum + " and " + CurDefval.maximum + " value", "", MessageSeverity.error);
+                                valid = false;
                                 }
                             }
                             let MaxDefval: CharacterStatDefaultValue = cs.characterStat.characterStatDefaultValues[1];
                             if (!(+MaxDefval.minimum == 0 && +MaxDefval.maximum == 0)) {
-                                if (!(+cs.maximum >= +MaxDefval.minimum && +cs.maximum <= +MaxDefval.maximum)) {
-                                    valid = false;
+                              if (!(+cs.maximum >= +MaxDefval.minimum && +cs.maximum <= +MaxDefval.maximum)) {
+                                
+                                this.alertService.showMessage("The value for " + cs.displayStatName + " field must be between " + MaxDefval.minimum + " and " + MaxDefval.maximum + " value", "", MessageSeverity.error);
+                                  valid = false;
                                 }
                             }
                             break;
@@ -822,14 +830,18 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
 
                             let ValDefval: CharacterStatDefaultValue = cs.characterStat.characterStatDefaultValues[0];
                             if (!(+ValDefval.minimum == 0 && +ValDefval.maximum == 0)) {
-                                if (!(+cs.value >= +ValDefval.minimum && +cs.value <= +ValDefval.maximum)) {
-                                    valid = false;
+                              if (!(+cs.value >= +ValDefval.minimum && +cs.value <= +ValDefval.maximum)) {
+                                
+                                this.alertService.showMessage("The value for " + cs.displayStatName + " field must be between " + ValDefval.minimum + " and " + ValDefval.maximum + " value", "", MessageSeverity.error);
+                                   valid = false;
                                 }
                             }
                             let SubDefval: CharacterStatDefaultValue = cs.characterStat.characterStatDefaultValues[1];
                             if (!(+SubDefval.minimum == 0 && +SubDefval.maximum == 0)) {
-                                if (!(+cs.subValue >= +SubDefval.minimum && +cs.subValue <= +SubDefval.maximum)) {
-                                    valid = false;
+                              if (!(+cs.subValue >= +SubDefval.minimum && +cs.subValue <= +SubDefval.maximum)) {
+                                
+                                this.alertService.showMessage("The value for " + cs.displayStatName + " field must be between " + SubDefval.minimum + " and " + SubDefval.maximum + " value", "", MessageSeverity.error);
+                                  valid = false;
                                 }
                             }
                             break;
@@ -841,7 +853,8 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                
             }
         })
-        if (!valid) {
+    if (!valid) {
+      
             //alert('falseff')
             return false;
         }
