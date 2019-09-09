@@ -425,7 +425,7 @@ export class MonsterTemplateService extends EndpointFactory {
 
         health:monsterTemplateVM.health,
         armorClass : monsterTemplateVM.armorClass,
-        xPValue : monsterTemplateVM.xPValue,
+        xPValue: monsterTemplateVM.xPValue ? monsterTemplateVM.xPValue : monsterTemplateVM.xpValue,
         challangeRating : monsterTemplateVM.challangeRating,
         initiativeCommand : monsterTemplateVM.initiativeCommand,
         isRandomizationEngine : monsterTemplateVM.isRandomizationEngine,
