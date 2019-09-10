@@ -196,21 +196,44 @@ public class GroupChatHub : Hub
                 model.Participant.Status = 0;
             }
             else {
-                AllConnectedParticipants.Add(new ParticipantResponseViewModel()
+                if (user.CampaignID > 0)
                 {
-                    Metadata = new ParticipantMetadataViewModel()
+                    AllConnectedParticipants.Add(new ParticipantResponseViewModel()
                     {
-                        TotalUnreadMessages = 0
-                    },
-                    Participant = new ChatParticipantViewModel()
+                        Metadata = new ParticipantMetadataViewModel()
+                        {
+                            TotalUnreadMessages = 0
+                        },
+                        Participant = new ChatParticipantViewModel()
+                        {
+                            DisplayName = user.userName,
+                            Id = Context.ConnectionId,
+                            Avatar = user.profileImage,
+                            Status = 0,
+                            CampaignID=user.CampaignID,
+                            UserId=user.id
+                        },
+                        IsConnectionIDProvided = true
+                    });
+                }
+                else
+                {
+                    AllConnectedParticipants.Add(new ParticipantResponseViewModel()
                     {
-                        DisplayName = user.userName,
-                        Id = Context.ConnectionId,
-                        Avatar = user.profileImage,
-                        Status = 0
-                    },
-                    IsConnectionIDProvided = true
-                });
+                        Metadata = new ParticipantMetadataViewModel()
+                        {
+                            TotalUnreadMessages = 0
+                        },
+                        Participant = new ChatParticipantViewModel()
+                        {
+                            DisplayName = user.userName,
+                            Id = Context.ConnectionId,
+                            Avatar = user.profileImage,
+                            Status = 0
+                        },
+                        IsConnectionIDProvided = true
+                    });
+                }
             }
             
 
