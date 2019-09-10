@@ -836,24 +836,34 @@ namespace RPGSmithApp.Controllers
         {
             MonsterTemplate monsterTemplateobj = new MonsterTemplate();
             int OldParentMonsterTemplateID = (int)model.MonsterTemplateId;
-            MonsterTemplate monsterTemplate = new MonsterTemplate();
-            monsterTemplate.MonsterTemplateCommands = model.MonsterTemplateCommandVM;
-            monsterTemplate.MonsterTemplateId = model.MonsterTemplateId == null ? 0 : (int)model.MonsterTemplateId;
-            monsterTemplate.Command = model.Command;
-            monsterTemplate.Description = model.Description;
-            monsterTemplate.ImageUrl = model.ImageUrl;
-            monsterTemplate.Metatags = model.Metatags;
-            monsterTemplate.Name = model.Name;
-            monsterTemplate.RuleSetId = model.RuleSetId == null ? 0 : (int)model.RuleSetId;
-            monsterTemplate.Stats = model.Stats;
-            monsterTemplate.IsDeleted = IsDeleted == null ? false : Convert.ToBoolean(monsterTemplate.IsDeleted);
+            MonsterTemplate monsterTemplate = new MonsterTemplate() {
+            MonsterTemplateId = model.MonsterTemplateId == null ? 0 : (int)model.MonsterTemplateId,
+            Command = model.Command,
+            Description = model.Description,
+            ImageUrl = model.ImageUrl,
+            Metatags = model.Metatags,
+            Name = model.Name,
+            RuleSetId = model.RuleSetId == null ? 0 : (int)model.RuleSetId,
+            Stats = model.Stats,
+            IsDeleted = IsDeleted == null ? false : Convert.ToBoolean(model.IsDeleted),
+            ArmorClass= model.ArmorClass,
+            ChallangeRating= model.ChallangeRating,
+            CommandName= model.CommandName,
+            Health= model.Health,
+            InitiativeCommand= model.InitiativeCommand,
+            IsRandomizationEngine= model.IsRandomizationEngine,
+            XPValue= model.XPValue,
+            
+        };
+            
+            
 
 
 
 
             //var result = await _abilityService.Create(ability);
             var result = await _coreRulesetService.CreateMonsterTemplate(monsterTemplate);
-
+            //monsterTemplate.MonsterTemplateCommands = model.MonsterTemplateCommandVM;
             if (model.MonsterTemplateCommandVM != null && model.MonsterTemplateCommandVM.Count > 0)
             {
                 foreach (var acViewModels in model.MonsterTemplateCommandVM)
@@ -869,20 +879,36 @@ namespace RPGSmithApp.Controllers
             }
             if (model.MonsterTemplateAbilityVM != null && model.MonsterTemplateAbilityVM.Count > 0)
             {
+                foreach (var item in model.MonsterTemplateAbilityVM)
+                {
+                    item.MonsterTemplateId = result.MonsterTemplateId;
+                } 
                 _monsterTemplateService.insertAssociateAbilities(model.MonsterTemplateAbilityVM);
             }
             if (model.MonsterTemplateSpellVM != null && model.MonsterTemplateSpellVM.Count > 0)
             {
+                foreach (var item in model.MonsterTemplateSpellVM)
+                {
+                    item.MonsterTemplateId = result.MonsterTemplateId;
+                }
                 _monsterTemplateService.insertAssociateSpells(model.MonsterTemplateSpellVM);
 
             }
             if (model.MonsterTemplateBuffAndEffectVM != null && model.MonsterTemplateBuffAndEffectVM.Count > 0)
             {
+                foreach (var item in model.MonsterTemplateBuffAndEffectVM)
+                {
+                    item.MonsterTemplateId = result.MonsterTemplateId;
+                }
                 _monsterTemplateService.insertAssociateBuffAndEffects(model.MonsterTemplateBuffAndEffectVM);
 
             }
             if (model.MonsterTemplateAssociateMonsterTemplateVM != null && model.MonsterTemplateAssociateMonsterTemplateVM.Count > 0)
             {
+                foreach (var item in model.MonsterTemplateAssociateMonsterTemplateVM)
+                {
+                    item.MonsterTemplateId = result.MonsterTemplateId;
+                }
                 _monsterTemplateService.insertAssociateMonsterTemplates(model.MonsterTemplateAssociateMonsterTemplateVM);
 
             }

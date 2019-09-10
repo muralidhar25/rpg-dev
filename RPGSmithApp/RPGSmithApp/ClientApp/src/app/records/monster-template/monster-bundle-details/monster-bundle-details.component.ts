@@ -261,7 +261,8 @@ export class MonsterBundleDetailsComponent implements OnInit {
     });
     this.bsModalRef.content.title = "Quantity";
     this.bsModalRef.content.monsterInfo = monsterInfo;
-    this.bsModalRef.content.bundleItems =this.bundleItems
+    this.bsModalRef.content.bundleItems = this.bundleItems
+    this.bsModalRef.content.rulesetId = this.ruleSetId
 
   }
   openDiceRollModal() {

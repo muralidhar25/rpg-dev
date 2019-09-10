@@ -36,6 +36,7 @@ export class DeployMonsterComponent implements OnInit {
   addToCombat: boolean = false;
   customDices: CustomDice[] = [];
   bundleItems: any[] = [];
+  ruleSetId: number = 0;
 
   constructor(private bsModalRef: BsModalRef, private modalService: BsModalService, private sharedService: SharedService,
     private colorService: ColorService, private localStorage: LocalStoreManager, private counterTileService: CounterTileService,
@@ -46,15 +47,17 @@ export class DeployMonsterComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
+      
       this.title = this.bsModalRef.content.title;
       this.monsterInfo = this.bsModalRef.content.monsterInfo;
       this.monsterImage = (this.monsterInfo.imageUrl) ? this.monsterInfo.imageUrl : this.monsterInfo.bundleImage ? this.monsterInfo.bundleImage : '../assets/images/DefaultImages/Item.jpg';
       this.bundleItems = this.bsModalRef.content.bundleItems ? this.bsModalRef.content.bundleItems : [];
+      this.ruleSetId = this.bsModalRef.content.rulesetId ? this.bsModalRef.content.rulesetId : this.monsterInfo.ruleSetId;
       this.value = 1;
-      debugger
-      this.rulesetService.getCustomDice(this.monsterInfo.ruleSetId)
+      
+      this.rulesetService.getCustomDice(this.ruleSetId)
         .subscribe(data => {
-          debugger
+          
           this.customDices = data
 
         }, error => {
@@ -138,7 +141,7 @@ export class DeployMonsterComponent implements OnInit {
                 BundleItemsToDeploy.push({
                   qty: this.value,
                   monsterTemplateId: b.monsterTemplateId,
-                  rulesetId: this.monsterInfo.ruleSetId,
+                  rulesetId: this.ruleSetId,
                   healthCurrent: healthNumberArray,
                   healthMax: healthNumberArray,
                   armorClass: armorClassNumberArray,
@@ -213,7 +216,7 @@ export class DeployMonsterComponent implements OnInit {
         let deployMonsterInfo = {
           qty: this.value,
           monsterTemplateId: this.monsterInfo.monsterTemplateId,
-          rulesetId: this.monsterInfo.ruleSetId,
+          rulesetId: this.ruleSetId,
           healthCurrent: healthNumberArray,
           healthMax: healthNumberArray,
           armorClass: armorClassNumberArray,

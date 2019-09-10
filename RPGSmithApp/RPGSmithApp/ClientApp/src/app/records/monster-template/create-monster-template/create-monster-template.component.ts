@@ -250,8 +250,12 @@ export class CreateMonsterTemplateComponent implements OnInit {
       this.authService.logout();
     else {
       if (this.monsterTemplateFormModal.monsterTemplateId) {
-        this.isLoading = true;
-        this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(this.monsterTemplateFormModal.monsterTemplateId, this._ruleSetId)
+        this.isLoading = true;        
+        let rulesetid = this._ruleSetId; //check if is coreRuleset or not
+        if (this._ruleSetId != this.monsterTemplateFormModal.ruleSetId) {
+          rulesetid = this.monsterTemplateFormModal.ruleSetId;
+        }
+        this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(this.monsterTemplateFormModal.monsterTemplateId, rulesetid)
           .subscribe(data => {
             this.monsterTemplateFormModal.monsterTemplateCommandVM = data.monsterTemplateCommands;
             this.buffAndEffectsList = data.buffAndEffectsList;

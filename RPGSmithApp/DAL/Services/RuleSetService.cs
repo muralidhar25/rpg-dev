@@ -589,6 +589,7 @@ namespace DAL.Services
                 command.Parameters.AddWithValue("@IsAbilityEnabled", IsNull(model.IsAbilityEnabled));
                 command.Parameters.AddWithValue("@IsItemEnabled", IsNull(model.IsItemEnabled));
                 command.Parameters.AddWithValue("@IsSpellEnabled", IsNull(model.IsSpellEnabled));
+                command.Parameters.AddWithValue("@IsBuffAndEffectEnabled", IsNull(model.IsBuffAndEffectEnabled));
 
                 command.CommandType = CommandType.StoredProcedure;
 
