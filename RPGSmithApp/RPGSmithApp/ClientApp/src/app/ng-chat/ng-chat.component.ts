@@ -408,7 +408,6 @@ export class NgChat implements OnInit, IChatController {
           }
         })
         participants = newparticipants;
-
         if (participants.length && !this.IsDefaultGroupCreated) {
           this.selectedUsersFromFriendsList = [];
           participants.map((p) => {
@@ -906,7 +905,6 @@ export class NgChat implements OnInit, IChatController {
   // Emits a message notification audio if enabled after every message received
   private emitMessageSound(window: Window, message: Message): void {
     if (this.audioEnabled && !window.hasFocus) {
-
       let isChatDiceRollMessage = false;
 
       if (message && message.message && message.message.indexOf('ng-chat-diceRoll-message') > -1) {
@@ -1549,7 +1547,7 @@ export class NgChat implements OnInit, IChatController {
   //  }
   //}
 
-  sendLootMessageToChatGroup(isLootTakenByCharacter = false, CharacterName = '', multipleLoots = undefined) {    if (this.participants && this.participants.length) {      try {        let message = new Message();        message.fromId = this.userId;        message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;        if (isLootTakenByCharacter) {          message.message = "<span class='ng-chat-orange-text LootTaken'>" + CharacterName + " Has Taken Loot</span>";          if (multipleLoots && multipleLoots.length) {            let ExpandedMessageContent = '';            multipleLoots.map((loot) => {              ExpandedMessageContent += '<span class="ng-chat-grey-text">' + CharacterName + ' has taken ' + loot.name + '</sapn></br>';            })            let ExpandedMessage = "<span class=' ng-chat-message-expand d-none'>" + ExpandedMessageContent + "</span>";            let CollaspedMessage = "<span class='ng-chat-diceRoll-message ng-chat-message-collaspe'><span class='ng-chat-orange-text LootTaken'>" + CharacterName + " Has Taken Loot</span></span>";            message.message = CollaspedMessage + ExpandedMessage;          }        }        else {          message.message = "<span class='ng-chat-orange-text LootAvailable'>New Loot is Available</span>";        }        message.dateSent = new Date();        message.isSystemGenerated = true;        //window.messages.push(message);        this.windows.map((x) => {          if (!x.isCollapsed && x.participant.displayName == "Everyone") {            x.messages.push(message);            this.scrollChatWindow(x, ScrollDirection.Bottom);          }        })        this.adapter.sendMessage(message);      }      catch (e) {      }    }  }
+  sendLootMessageToChatGroup(isLootTakenByCharacter = false, CharacterName = '', multipleLoots = undefined) {    if (this.participants && this.participants.length) {      try {        let message = new Message();        message.fromId = this.userId;        message.toId = this.participants.filter(x => x.displayName == "Everyone")[this.participants.filter(x => x.displayName == "Everyone").length - 1].id;        if (isLootTakenByCharacter) {          message.message = "<span class='ng-chat-orange-text LootTaken'>" + CharacterName + " Has Taken Loot</span>";          if (multipleLoots && multipleLoots.length) {            let ExpandedMessageContent = '';            multipleLoots.map((loot) => {              ExpandedMessageContent += '<span class="ng-chat-grey-text">' + CharacterName + ' has taken ' + loot.name + '</sapn></br>';            })            let ExpandedMessage = "<span class=' ng-chat-message-expand d-none'>" + ExpandedMessageContent + "</span>";            let CollaspedMessage = "<span class='ng-chat-message-collaspe'><span class='ng-chat-orange-text LootTaken'>" + CharacterName + " Has Taken Loot</span></span>";            message.message = CollaspedMessage + ExpandedMessage;          }        }        else {          message.message = "<span class='ng-chat-orange-text LootAvailable'>New Loot is Available</span>";        }        message.dateSent = new Date();        message.isSystemGenerated = true;        //window.messages.push(message);        this.windows.map((x) => {          if (!x.isCollapsed && x.participant.displayName == "Everyone") {            x.messages.push(message);            this.scrollChatWindow(x, ScrollDirection.Bottom);          }        })        this.adapter.sendMessage(message);      }      catch (e) {      }    }  }
   sendCombatMessageToChatGroup(combatMessage) {
     if (this.participants && this.participants.length) {
       try {
