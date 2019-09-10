@@ -387,7 +387,7 @@ namespace RPGSmithApp.Controllers
                 //Limit user to have max 3 ruleset & //purchase for more sets
                 if (await _ruleSetService.GetRuleSetsCountByUserId(_userId) >= TotalRuleSetSlotsAvailable && !IsAdminUser())
                     return BadRequest("Only " + TotalRuleSetSlotsAvailable + " slots of Rule Sets are allowed.");
-
+                int newAddedRulesetID = 0;
                 foreach (var _id in rulesetIds)
                 {
 
@@ -439,6 +439,7 @@ namespace RPGSmithApp.Controllers
                     _addRuleset.IsCoreRuleset = false;//not used in sp
 
                     RuleSet res = await _ruleSetService.AddCoreRuleset(_rulesetData, _id, _userId);
+                    newAddedRulesetID = res.RuleSetId;
                     CopyCustomDiceToNewRuleSet(_id, res.RuleSetId);
 
                     /////End 15 nov 2018 Import RuleSet/////////////////////
@@ -798,7 +799,7 @@ namespace RPGSmithApp.Controllers
                     //}
                 }
                 // System.IO.File.Delete(path);
-                return Ok();
+                return Ok(newAddedRulesetID);
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
         }

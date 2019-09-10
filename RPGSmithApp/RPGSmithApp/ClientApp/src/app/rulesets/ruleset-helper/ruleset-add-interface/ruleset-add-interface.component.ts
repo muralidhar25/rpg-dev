@@ -118,12 +118,29 @@ export class RulesetAddInterfaceComponent implements OnInit {
           let message = "Rule Set(s) have been added successfully.";
           this.alertService.showMessage(message, "", MessageSeverity.success);
 
-          if (IsGM) {
+          //if (IsGM) {
+          //  this.router.navigate(['/rulesets/campaigns']);
+          //}
+          //else {
+          //  this.router.navigate(['/rulesets']);
+          //}
+
+          if (data > 0) {
+            if (user.isGm) {
+              this.router.navigate(['/ruleset/campaign-details/' + data]);
+            } else {
+              this.router.navigate(['/ruleset/ruleset-details/' + data]);
+            }
+          } else {
+            if (IsGM) {
             this.router.navigate(['/rulesets/campaigns']);
           }
           else {
             this.router.navigate(['/rulesets']);
           }
+          }
+
+          
           //this.eventEmitter.emit(true);
         },
         error => {
