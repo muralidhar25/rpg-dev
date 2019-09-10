@@ -183,8 +183,8 @@ export class LootPileDetailsComponent implements OnInit {
   }
 
   deleteItemTemplate(itemMaster: ItemMaster) {
-    let message = "Are you sure you want to delete this " + itemMaster.itemName
-      + " item template?";
+    let message = "Are you sure you want to delete the " + itemMaster.itemName
+      + " Loot Pile and all items contained within?";
 
     this.alertService.showDialog(message,
       DialogType.confirm, () => this.deleteItemTemplateHelper(itemMaster), null, 'Yes', 'No');
