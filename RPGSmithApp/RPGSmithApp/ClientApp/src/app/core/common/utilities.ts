@@ -1020,10 +1020,10 @@ export class Utilities {
     else if (url.toUpperCase().indexOf('/RULESET/LOOT-PILE-TEMPLATE-DETAILS/') > -1) {
       return 'https://rpgsmith.com/helpe/#e8a';
     }
-    else if (url.toUpperCase().indexOf('/RULESET/ADD/') > -1) {
+    else if (url.toUpperCase().indexOf('/RULESET/ADD') > -1) {
       return 'https://rpgsmith.com/help/#a13a';
     }
-    else if (url.toUpperCase().indexOf('/MARKETPLACE/') > -1) {
+    else if (url.toUpperCase().indexOf('/MARKETPLACE') > -1) {
       return 'https://rpgsmith.com/help/#a6';
     }
     else if (url.toUpperCase().indexOf('/CHARACTER/DASHBOARD/') > -1 || url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DASHBOARD/') > -1) {
