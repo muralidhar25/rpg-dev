@@ -706,10 +706,27 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.GoToPCCombat();
       } else if (target.className.indexOf("LootAvailable") > -1 || target.className.indexOf("LootTaken") > -1) {
         if (this.isPlayerCharacter) {
-          this.playerLoot();
+          if (this.isPlayerLinkedToCurrentCampaign) {
+            let ruleSetId = this.localStorage.getDataObject<any>(DBkeys.RULESET_ID);
+            if (ruleSetId) {
+              this.GoToLoot();
+            }
+          }
+          else {
+            this.playerLoot();
+          }
+
         } else {
-          this.GoToLoot();
+          let ruleSetId = this.localStorage.getDataObject<any>(DBkeys.RULESET_ID);
+          if (ruleSetId) {
+            this.GoToLoot();
+          }
         }
+        //if (this.isPlayerCharacter) {
+        //  this.playerLoot();
+        //} else {
+        //  this.GoToLoot();
+        //}
       }
       if (target.className.endsWith("is-open"))
         this.isDropdownOpen = !this.isDropdownOpen;
