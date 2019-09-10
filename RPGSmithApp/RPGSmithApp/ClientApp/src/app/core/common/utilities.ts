@@ -981,14 +981,13 @@ export class Utilities {
   }
 
   public static getHelpLinkUrl(url) {
-
     if (url.toUpperCase() == '/CHARACTERS' || url.toUpperCase() == '/CHARACTER') {
       return 'https://rpgsmith.com/help/#a11';
     }
     else if (url.toUpperCase() == '/RULESETS' || url.toUpperCase() == '/RULESET') {
       return 'https://rpgsmith.com/help/#a12';
     }
-    else if (url.toUpperCase() == '/RULESETS/CAMPAIGNS/' || url.toUpperCase() == '/RULESET/CAMPAIGNS/') {
+    else if (url.toUpperCase() == '/RULESETS/CAMPAIGNS' || url.toUpperCase() == '/RULESET/CAMPAIGNS') {
       return 'https://rpgsmith.com/help/#a13';
     }
     else if (url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DETAILS/') > -1) {
