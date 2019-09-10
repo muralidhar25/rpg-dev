@@ -100,7 +100,7 @@ export class DeleteTemplatesComponent implements OnInit {
     this.isLoading = true;
     this.itemMasterService.deleteTemplates<any>(this.selectedItems, this.rulesetId)
       .subscribe(data => {
-              this.alertService.showMessage("Deleting Templates", "", MessageSeverity.success);
+        this.alertService.showMessage("Templates Deleted.", "", MessageSeverity.success);
               this.close();
         this.sharedService.updateItemMasterList(true);
             this.isLoading = false;

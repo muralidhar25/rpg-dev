@@ -409,7 +409,7 @@ namespace RPGSmithApp.Controllers
             BuffAndEffect buffAndEffectobj = new BuffAndEffect();
             int OldParentBuffAndEffectID = (int)model.BuffAndEffectId;
             BuffAndEffect buffAndEffect = new BuffAndEffect();
-            buffAndEffect.BuffAndEffectCommand = model.BuffAndEffectCommandVM;
+            
             buffAndEffect.BuffAndEffectId = model.BuffAndEffectId == null ? 0 : (int)model.BuffAndEffectId;
             buffAndEffect.Command = model.Command;
             buffAndEffect.Description = model.Description;
@@ -425,6 +425,8 @@ namespace RPGSmithApp.Controllers
 
             //var result = await _abilityService.Create(ability);
             var result = await _coreRulesetService.CreateBuffAndEffect(buffAndEffect);
+
+            //buffAndEffect.BuffAndEffectCommand = model.BuffAndEffectCommandVM;
 
             if (model.BuffAndEffectCommandVM != null && model.BuffAndEffectCommandVM.Count > 0)
             {

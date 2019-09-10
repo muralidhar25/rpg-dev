@@ -48,7 +48,7 @@ const routes: Routes = [
   { path: "spell-details/:id", component: SpellDetailsComponent, data: { title: "Spell Details" } },
   { path: "ability-details/:id", component: AbilityDetailsComponent, data: { title: "Ability Details" } },
   { path: "buff-effect-details/:id", component: BuffAndEffectDetailsComponent, data: { title: "Buffs & Effects Details" } },
-  { path: "monster-template-details/:id", component: MonsterTemplateDetailsComponent, data: { title: "Buffs & Effects Details" } },
+  { path: "monster-template-details/:id", component: MonsterTemplateDetailsComponent, data: { title: "Monster Template Details" } },
   { path: "monster-bundle-details/:id", component: MonsterBundleDetailsComponent, data: { title: "Monster Bundle Details" } },
   { path: "loot-details/:id", component: LootDetailsComponent, data: { title: "Loot Details" } },
   { path: "monster-item-details/:id", component: MonsterItemDetailsComponent, data: { title: "Monster Item Details" } },

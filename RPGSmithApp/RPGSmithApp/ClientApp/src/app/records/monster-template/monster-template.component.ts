@@ -625,6 +625,7 @@ export class MonsterTemplateComponent implements OnInit {
     });
     this.bsModalRef.content.title = "Quantity";
     this.bsModalRef.content.monsterInfo = item;
+    this.bsModalRef.content.rulesetId = this.ruleSetId
     if (item.isBundle) {
       this.bsModalRef.content.bundleItems = item.bundleItems
     }

@@ -64,7 +64,9 @@ namespace DAL.Services
 
         public async Task<BuffAndEffectCommand> InsertBuffAndEffectCommand(BuffAndEffectCommand buffAndEffectCommand)
         {
-            return await _repo.Add(buffAndEffectCommand);
+            _context.BuffAndEffectCommands.Add(buffAndEffectCommand);
+            _context.SaveChanges();
+            return buffAndEffectCommand;
         }
 
         public async Task<BuffAndEffectCommand> UdateBuffAndEffectCommand(BuffAndEffectCommand buffAndEffectCommand)
