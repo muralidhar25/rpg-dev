@@ -79,7 +79,6 @@ export class LootService extends EndpointFactory {
       });
   }
   addLootItem<T>(item, lootTemplate, rulesetId: number, selectedLootPileId:number): Observable<T> {
-    debugger
     let endpointUrl = `${this._getAddLootItemUrl}?rulesetID=${rulesetId}&selectedLootPileId=${selectedLootPileId}`;
     
     return this.http.post<T>(endpointUrl, JSON.stringify({ lootItemsToAdd: item, lootTemplatesToAdd: lootTemplate }), this.getRequestHeaders())

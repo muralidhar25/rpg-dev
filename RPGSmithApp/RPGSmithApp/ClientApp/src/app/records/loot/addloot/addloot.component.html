@@ -95,7 +95,8 @@
             <label for="newItems">Add to Loot Pile</label>
           </div>
           <div class="col-8">
-            <angular2-multiselect id="moveLoot" [data]="lootPileList" [(ngModel)]="selectedLootPileItem" name="newItems" [settings]="lootItemsSettings">
+            <angular2-multiselect id="moveLoot" [data]="lootPileList" [(ngModel)]="selectedLootPileItem"
+                                   (ngModelChange)="AddToLootPile($event)"name="newItems" [settings]="lootItemsSettings">
               <c-item id="item">
                 <ng-template let-item="item">
                   <span class="associate-label-name">{{item.itemName}}</span>
@@ -109,11 +110,18 @@
       </div>
     </div>
     <!--<div class="form-separator"></div>-->
-    <div class="form-row">
-      <div class="col-12 d-flex justify-flex-end">        
+    <div class="row">
+      <div class="form-check col-6 mt-2" [ngClass]="selectedLootPileID==-1? 'visibilityShow': 'visibilityHide'">
+        <label class="check-box">
+          <input class="form-check-input" type="checkbox" name="Visible" [checked]="isVisible" (change)="changeVisibility($event)" />
+          <span class="checkmark"></span>
+        </label>
+        <em class="icon icon-with-text add-combat">Visible</em>
+      </div>
+      <div class="col-6 d-flex justify-flex-end">
         <button type="button" (click)="close()" class="btn btn-simple-accent">Cancel</button>
         <button [disabled]="isLoading" type="submit" class="btn btn-accent">{{_view}}</button>
       </div>
-      </div>
+    </div>
     </div>
 </form>

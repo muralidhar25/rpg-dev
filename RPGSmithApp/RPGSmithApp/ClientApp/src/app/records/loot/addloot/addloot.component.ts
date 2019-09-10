@@ -37,6 +37,8 @@ export class AddlootComponent implements OnInit {
   selectedLootTemplates: any[] = []
   lootPileList: any[] = [];
   selectedLootPileItem: any[];
+  isVisible: boolean = false;
+  selectedLootPileID = -1;
 
   constructor(private router: Router, private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager, private route: ActivatedRoute,
@@ -73,7 +75,6 @@ export class AddlootComponent implements OnInit {
       this.itemsService.getLootPilesListByRuleSetId<any>(this.rulesetId)
         .subscribe(data => {
           this.lootPileList = data;
-          debugger
           this.selectedLootPileItem = [];
           this.selectedLootPileItem.push(this.lootPileList[0]);
         }, error => {
@@ -133,7 +134,6 @@ export class AddlootComponent implements OnInit {
     this.selectedLootTemplates = [];
 
     let SelectedLootTemp = this.lootTemplateList.filter(x => x.selected == true);
-    debugger
 
     SelectedLootTemp.map((x) => {
       x.quantity = 1;
@@ -184,7 +184,6 @@ export class AddlootComponent implements OnInit {
       this.alertService.showMessage("Please select new Item Template or Loot Template to Add.", "", MessageSeverity.error);
     }
     else if (this.characterItemModal.multiItemMasters && this.characterItemModal.multiItemMasters.length != 0 && (this.selectedLootPileItem == undefined || this.selectedLootPileItem.length == 0)) {
-      debugger
       this.alertService.showMessage("Please select Drop to Loot Pile for selected Item Templates.", "", MessageSeverity.error);
     }
     else {
@@ -192,11 +191,11 @@ export class AddlootComponent implements OnInit {
         //this.duplicateAbility(ability);
       }
       else {
-        let selectedLootPileID = -1;
+        //this.selectedLootPileID = -1;
         if (this.selectedLootPileItem && this.selectedLootPileItem.length) {
-          selectedLootPileID = this.selectedLootPileItem[0].lootId
+          this.selectedLootPileID = this.selectedLootPileItem[0].lootId
         }
-        this.addEditItem(itemMaster, this.selectedLootTemplates, selectedLootPileID);
+        this.addEditItem(itemMaster, this.selectedLootTemplates, this.selectedLootPileID);
       }
     }
   }
@@ -223,7 +222,13 @@ export class AddlootComponent implements OnInit {
                 this.alertService.showMessage(message, "", MessageSeverity.success);
                 this.bsModalRef.hide();
                 this.sharedService.updateItemsList(true);
-                this.appService.updateChatWithLootMessage(true);
+                //this.appService.updateChatWithLootMessage(true);
+                if (selectedLootPileId == -1) {
+                  if (this.isVisible) {
+                    this.appService.updateChatWithLootMessage(true);
+                  }
+                }
+                
               },
               error => {
                 this.isLoading = false;
@@ -289,5 +294,18 @@ export class AddlootComponent implements OnInit {
       showCheckbox: false,
       position: "top"
     };
+  }
+
+  changeVisibility(event) {
+    this.isVisible = event.target.checked;
+  }
+
+  AddToLootPile(event) {
+    if (this.selectedLootPileItem && this.selectedLootPileItem.length) {
+      this.selectedLootPileID = this.selectedLootPileItem[0].lootId
+    }
+    if (this.selectedLootPileID != -1) {
+      this.isVisible = false;
+    }
   }
 }

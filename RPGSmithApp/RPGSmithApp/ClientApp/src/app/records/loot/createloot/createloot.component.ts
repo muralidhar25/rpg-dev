@@ -118,7 +118,6 @@ export class CreatelootComponent implements OnInit {
         let _itemTemplateVM = this.bsModalRef.content.itemMasterVM;
         this.itemMasterFormModal = this.itemMasterService.itemMasterModelData(_itemTemplateVM, _view);
         this.itemMasterFormModal.itemMasterCommandVM = this.itemMasterFormModal.itemMasterCommand
-        debugger
         if (this.bsModalRef.content.button == 'UPDATE' || 'DUPLICATE') {
           this._ruleSetId = this.bsModalRef.content.rulesetID ? this.bsModalRef.content.rulesetID : this.itemMasterFormModal.ruleSetId;
 
@@ -154,7 +153,6 @@ export class CreatelootComponent implements OnInit {
       this.isLoading = true;
       this.itemMasterService.getAbilitySpellForLootsByRuleset_sp<any[]>(this.itemMasterFormModal.ruleSetId, this.itemMasterFormModal.lootId)
         .subscribe(data => {
-          debugger
           let dataobj: any = data
           this.abilitiesList = dataobj.abilityList;
           this.spellsList = dataobj.spellList;
@@ -276,7 +274,6 @@ export class CreatelootComponent implements OnInit {
     itemMaster.itemMasterBuffAndEffectVM = this.selectedBuffAndEffects.map(x => {
       return { buffAndEffectId: x.buffAndEffectId, itemMasterId: itemMaster.itemMasterId };
     });
-    debugger
     let tagsValue = this.metatags.map(x => {
       if (x.value == undefined) return x;
       else return x.value;
