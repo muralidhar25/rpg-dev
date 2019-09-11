@@ -915,66 +915,7 @@ export class NgChat implements OnInit, IChatController {
         this.audioFile.play();
       }
       else if (isChatDiceRollMessage) {
-        let num = Math.floor(Math.random() * 10) + 1;
-        switch (num) {
-          case 1:
-            if (this.diceRollAudioFile1) {
-              this.diceRollAudioFile1.play();
-            }
-            break;
-          case 2:
-            if (this.diceRollAudioFile2) {
-              this.diceRollAudioFile2.play();
-            }
-            break;
-          case 3:
-            if (this.diceRollAudioFile3) {
-              this.diceRollAudioFile3.play();
-            }
-            break;
-          case 4:
-            if (this.diceRollAudioFile4) {
-              this.diceRollAudioFile4.play();
-            }
-            break;
-          case 5:
-            if (this.diceRollAudioFile5) {
-              this.diceRollAudioFile5.play();
-            }
-            break;
-          case 6:
-            if (this.diceRollAudioFile6) {
-              this.diceRollAudioFile6.play();
-            }
-            break;
-          case 7:
-            if (this.diceRollAudioFile7) {
-              this.diceRollAudioFile7.play();
-            }
-            break;
-          case 8:
-            if (this.diceRollAudioFile8) {
-              this.diceRollAudioFile8.play();
-            }
-            break;
-          case 9:
-            if (this.diceRollAudioFile9) {
-              this.diceRollAudioFile9.play();
-            }
-            break;
-          case 10:
-            if (this.diceRollAudioFile10) {
-              this.diceRollAudioFile10.play();
-            }
-
-            break;
-
-          default:
-            if (this.audioFile) {
-              this.audioFile.play();
-            }
-            break;
-        }
+        this.PlayDiceRollSound();
       }
 
     }
@@ -1153,10 +1094,12 @@ export class NgChat implements OnInit, IChatController {
         diceResult.characterMultipleCommands &&
         diceResult.characterMultipleCommands[0] &&
         +diceResult.characterMultipleCommands[0].calculationResult) {
-        // this.sendDiceRolledToChatGroup(diceResult);
+        // this.sendDiceRolledToChatGroup(diceResult);        
+
+        this.PlayDiceRollSound();
+
         return this.generateDiceRolledMessage(diceResult);
       }
-
       return msg;
     }
     return message;
@@ -1629,6 +1572,69 @@ export class NgChat implements OnInit, IChatController {
     }
     catch (e) {
       //some error occured.
+    }
+  }
+
+  PlayDiceRollSound() {
+    let num = Math.floor(Math.random() * 10) + 1;
+    switch (num) {
+      case 1:
+        if (this.diceRollAudioFile1) {
+          this.diceRollAudioFile1.play();
+        }
+        break;
+      case 2:
+        if (this.diceRollAudioFile2) {
+          this.diceRollAudioFile2.play();
+        }
+        break;
+      case 3:
+        if (this.diceRollAudioFile3) {
+          this.diceRollAudioFile3.play();
+        }
+        break;
+      case 4:
+        if (this.diceRollAudioFile4) {
+          this.diceRollAudioFile4.play();
+        }
+        break;
+      case 5:
+        if (this.diceRollAudioFile5) {
+          this.diceRollAudioFile5.play();
+        }
+        break;
+      case 6:
+        if (this.diceRollAudioFile6) {
+          this.diceRollAudioFile6.play();
+        }
+        break;
+      case 7:
+        if (this.diceRollAudioFile7) {
+          this.diceRollAudioFile7.play();
+        }
+        break;
+      case 8:
+        if (this.diceRollAudioFile8) {
+          this.diceRollAudioFile8.play();
+        }
+        break;
+      case 9:
+        if (this.diceRollAudioFile9) {
+          this.diceRollAudioFile9.play();
+        }
+        break;
+      case 10:
+        if (this.diceRollAudioFile10) {
+          this.diceRollAudioFile10.play();
+        }
+
+        break;
+
+      default:
+        if (this.audioFile) {
+          this.audioFile.play();
+        }
+        break;
     }
   }
 }
