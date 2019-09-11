@@ -1450,7 +1450,7 @@ namespace DAL.Services
             }
         }
         #region Loot
-        public async Task _AddItemsToLoot(List<LootsToAdd> itemList, List<DeployLootTemplateListToAdd> lootTemplateList, int rulesetID, int selectedLootPileId) {
+        public async Task _AddItemsToLoot(List<LootsToAdd> itemList, List<DeployLootTemplateListToAdd> lootTemplateList, int rulesetID, int selectedLootPileId, bool isVisible) {
 
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
             DataTable Datatable_Ids = utility.ToDataTable<LootsToAdd>(itemList);
@@ -1465,6 +1465,7 @@ namespace DAL.Services
                     cmd.Parameters.AddWithValue("@IdsToInsert", Datatable_Ids);
                     cmd.Parameters.AddWithValue("@RulesetID", rulesetID);
                     cmd.Parameters.AddWithValue("@selectedLootPileId", selectedLootPileId);
+                    cmd.Parameters.AddWithValue("@isVisible", isVisible);
                     
                     con.Open();
                     try
@@ -2021,6 +2022,7 @@ namespace DAL.Services
             if (loot!=null)
             {
                 loot.IsShow = isShow;
+                loot.IsVisible = isShow;
                 await _context.SaveChangesAsync();
             }
         }

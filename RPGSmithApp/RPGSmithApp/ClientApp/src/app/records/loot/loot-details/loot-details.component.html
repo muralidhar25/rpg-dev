@@ -214,6 +214,12 @@
                     <li *ngIf="ItemMasterDetail.isContainer" title="Container" data-toggle="tooltip">
                       <i class="item-property item-property-icon icon icon-Rec-Container icon-ico"></i>
                     </li>
+                    <li *ngIf="!ItemMasterDetail.isShow" title="Hide" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i>
+                    </li>
+                    <li *ngIf="ItemMasterDetail.isShow" title="Show" data-toggle="tooltip">
+                      <i class="item-property item-property-icon icon icon-Rec-Visible icon-ico"></i>
+                    </li>
                   </ul>
                 </div>
               </div>
