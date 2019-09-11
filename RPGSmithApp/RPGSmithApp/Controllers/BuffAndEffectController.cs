@@ -259,7 +259,7 @@ namespace RPGSmithApp.Controllers
                     if (!_coreRulesetService.IsBuffAndEffectCopiedFromCoreRuleset(BuffAndEffectId, rulesetID))
                     {
                         await CreateBuffAndEffectForCopiedRuleset(model, true);
-                        //return Ok();
+                        return Ok();
                         // await UpdateItemMasterCommon(model);
                     }
                 }
@@ -441,7 +441,10 @@ namespace RPGSmithApp.Controllers
                     });
                 }
             }
-           
+            if (IsDeleted==true)
+            {
+                await _buffAndEffectService.Delete(result.BuffAndEffectId);
+            }
             return Ok(result.BuffAndEffectId);
         }
         [HttpGet("getByRuleSetId_add")]

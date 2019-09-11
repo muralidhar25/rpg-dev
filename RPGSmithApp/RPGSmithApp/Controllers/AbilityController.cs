@@ -281,7 +281,7 @@ namespace RPGSmithApp.Controllers
                     if (!_coreRulesetService.IsAbilityCopiedFromCoreRuleset(AbilityId, rulesetID))
                     {
                         await CreateAbilityForCopiedRuleset(model, true);
-                        //return Ok();
+                        return Ok();
                         // await UpdateItemMasterCommon(model);
                     }
                 }
@@ -527,6 +527,11 @@ namespace RPGSmithApp.Controllers
             {
                 return BadRequest(ex.Message);
             }
+            if (IsDeleted==true)
+            {
+                await _abilityService.Delete(result.AbilityId);
+            }
+            
             return Ok(result.AbilityId);
         }
         [HttpPost("DeleteAbilities")]

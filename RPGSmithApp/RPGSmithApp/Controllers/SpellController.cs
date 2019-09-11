@@ -262,7 +262,7 @@ namespace RPGSmithApp.Controllers
                     if (!_coreRulesetService.IsSpellCopiedFromCoreRuleset(SpellId, rulesetID))
                     {
                         await CreateSpellForCopiedRuleset(model, true);
-                        //return Ok();
+                        return Ok();
                         // await UpdateItemMasterCommon(model);
                     }
                 }
@@ -516,6 +516,10 @@ namespace RPGSmithApp.Controllers
             }
             catch (Exception ex)
             { return BadRequest(ex.Message); }
+            if (IsDeleted==true)
+            {
+                await _spellService.Delete(result.SpellId);
+            }
             return Ok(result.SpellId);
         }
 

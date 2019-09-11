@@ -738,6 +738,10 @@ namespace RPGSmithApp.Controllers
             //}
             //catch (Exception ex)
             //{ return BadRequest(ex.Message); }
+            if (IsDeleted==true)
+            {
+                await _itemMasterService.DeleteItemMaster(result.ItemMasterId);
+            }
             return Ok(result.ItemMasterId);
         }
 
@@ -777,7 +781,7 @@ namespace RPGSmithApp.Controllers
                 if (!_coreRulesetService.IsItemCopiedFromCoreRuleset(ItemMasterID, rulesetID))
                 {
                     await CreateItemMasterForCopiedRuleset(model, true);
-                    //return Ok();
+                    return Ok();
                     // await UpdateItemMasterCommon(model);
                 }
             }
