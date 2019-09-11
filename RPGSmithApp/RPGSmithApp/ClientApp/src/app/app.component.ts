@@ -2077,19 +2077,27 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
   leaveChat() {
     if (this.signalRAdapter) {
-
+      
       this.charactersService.leaveChat(this.signalRAdapter.userId)
         .subscribe(data => {
-
-
+          
+          if (this.signalRAdapter) {
+            this.signalRAdapter.LeaveChat();
+          }
+          
+          this.signalRAdapter = undefined;
+          this.app1Service.updateChatRemoveIntervals(true);
         }, error => {
-
+          this.signalRAdapter = undefined;
+          this.app1Service.updateChatRemoveIntervals(true);
         });
-      //this.signalRAdapter.LeaveChat();
-      this.app1Service.updateChatRemoveIntervals(true);
+
+      
     }
-    //this.app1Service.updateChatRemoveIntervals(true);
-    this.signalRAdapter = undefined;
+    else {
+      this.signalRAdapter = undefined;
+    }   
+    
   }
   NotifyUserForPendingInvites() {
 

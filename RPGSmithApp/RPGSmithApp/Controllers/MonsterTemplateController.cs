@@ -510,7 +510,7 @@ namespace RPGSmithApp.Controllers
                     if (!_coreRulesetService.IsMonsterTemplateCopiedFromCoreRuleset(MonsterTemplateId, rulesetID))
                     {
                         await CreateMonsterTemplateForCopiedRuleset(model, true);
-                        //return Ok();
+                        return Ok();
                         // await UpdateItemMasterCommon(model);
                     }
                 }
@@ -863,6 +863,7 @@ namespace RPGSmithApp.Controllers
 
             //var result = await _abilityService.Create(ability);
             var result = await _coreRulesetService.CreateMonsterTemplate(monsterTemplate);
+            await _coreRulesetService._updateParentIDForAllRelatedItems((int)model.RuleSetId, OldParentMonsterTemplateID, result.MonsterTemplateId, 'M');
             //monsterTemplate.MonsterTemplateCommands = model.MonsterTemplateCommandVM;
             if (model.MonsterTemplateCommandVM != null && model.MonsterTemplateCommandVM.Count > 0)
             {
@@ -939,6 +940,10 @@ namespace RPGSmithApp.Controllers
                     _monsterTemplateService.insertAssociateItemMasters(model.MonsterTemplateItemMasterVM);
 
                 }
+            }
+            if (IsDeleted==true)
+            {
+                await _monsterTemplateService.Delete(result.MonsterTemplateId);
             }
             return Ok(result.MonsterTemplateId);
         }
