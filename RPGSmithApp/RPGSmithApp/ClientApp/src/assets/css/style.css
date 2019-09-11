@@ -3412,7 +3412,8 @@ a {
 
   .modal-dialog.modal-primary .modal-body .image-auto-size img {
     max-width: 100%;
-    max-height: -webkit-fill-available;
+    /*max-height: -webkit-fill-available;*/
+    max-height: 70vh;
     max-height: -moz-fill-available;
     max-height: -o-fill-available;
   }
