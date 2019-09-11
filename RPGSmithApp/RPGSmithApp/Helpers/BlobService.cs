@@ -78,9 +78,9 @@ namespace RPGSmithApp.Helpers
             return await cloudBlobContainer.DeleteIfExistsAsync();
         }
 
-        public async Task<string> UploadImages(IFormFile httpPostedFile, string fileName, CloudBlobContainer cloudBlobContainer)
+        public async Task<string> UploadImages(IFormFile httpPostedFile, string fileName, CloudBlobContainer cloudBlobContainer, string userId=null)
         {
-            if (!doesUserHaveEnoughSpace(cloudBlobContainer.Name))
+            if (!doesUserHaveEnoughSpace(cloudBlobContainer.Name, userId))
             {
                 throw new System.InvalidOperationException(StorageFullMessage);
             }

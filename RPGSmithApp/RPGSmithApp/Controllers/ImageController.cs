@@ -362,7 +362,7 @@ namespace RPGSmithApp.Controllers
                         BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _rulesetService);
                         var container = bs.GetCloudBlobContainer("user-" + userId).Result;
                         string imageName = Guid.NewGuid().ToString();
-                        return Ok(bs.UploadImages(_httpPostedFile, imageName, container).Result);
+                        return Ok(bs.UploadImages(_httpPostedFile, imageName, container, userId).Result);
                     }
                     catch (Exception ex)
                     {

@@ -730,7 +730,6 @@ export class DiceRollComponent implements OnInit {
   }
 
   generateCommandOnChange(command: string, diceRollModel: DiceRoll[]) {
-
     if (!command) {
       this.recycleDice();
       return false;
@@ -1113,7 +1112,6 @@ export class DiceRollComponent implements OnInit {
 
           }
         });
-        debugger
         let val_Eval = 0;
         try {
           val_Eval = eval(character.lastCommandResult.split(' AND ')[_Cindex]);
@@ -1136,7 +1134,6 @@ export class DiceRollComponent implements OnInit {
       })
 
 
-      debugger
       //this.onClickRoll(characterCommand, '', __characterMultipleCommands);
       this.onClickRoll(characterCommand, '', this.characterMultipleCommands[0]);
     }
@@ -1576,7 +1573,6 @@ export class DiceRollComponent implements OnInit {
           }
           return false;
         }
-        debugger
         if (this.customDices.length > 0) {
           let dArray = DiceService.commandInterpretation(command, undefined, this.addModArray, this.customDices);
           let IsCmdValid = true;
@@ -1810,7 +1806,14 @@ export class DiceRollComponent implements OnInit {
             this.rollAgainBtnText = 'Roll Again';
           }
         }
-
+        let timeOut = 10;
+        if (this.diceRolledData) {
+          this.diceRolledData.map(x => {
+            if (x.dice) {
+              timeOut = 1200;
+            }
+          });
+        }
         setTimeout(() => {
           //this.characterCommandModel.lastResult = __calculationResult;
           //this.characterCommandModel.lastResultNumbers = __calculationString;
@@ -1835,8 +1838,7 @@ export class DiceRollComponent implements OnInit {
                 else {
                   numberString += x.number + ",";
                 }
-              })
-              debugger
+              })              
               if (diceRoll.dice && diceRoll.diceIcon) {
                 lastCommandValues += (index === 0 ? '' : diceRoll.sign) +
                   diceRoll.randomCount + diceRoll.dice
@@ -1989,7 +1991,7 @@ export class DiceRollComponent implements OnInit {
             }
           }
           this.loadingResult = true;
-        }, 1200);
+        }, timeOut);
 
         this.diceSection = false;
         this.rollSection = true;
@@ -3001,7 +3003,6 @@ export class DiceRollComponent implements OnInit {
 
       }
 
-      debugger
       try {
         if (__calculationString.split("((").length - 1 === __calculationString.split("))").length - 1) {
           __calculationString = __calculationString.replace('((', '(').replace('))', ')');
@@ -3064,7 +3065,6 @@ export class DiceRollComponent implements OnInit {
         }
         _calculationStringForResult = _calculationStringForResult.replace('+ -', '-').replace('+ *', '*').replace('+ /', '/').replace('+ +', '+').replace('- -', '-');
         this.characterMultipleCommands[_calculationIndex].calculationResult = Math.round(eval(_calculationStringForResult)); // Math.floor(eval(__calculationString));
-        debugger
         this.characterCommandModel.lastResult = Math.round(eval(_calculationStringForResult)); // Math.floor(eval(__calculationString));;
       }
 
@@ -3213,7 +3213,6 @@ export class DiceRollComponent implements OnInit {
           })
         }
       }
-      debugger
       //////////////////////////////////////////////////////
       //if (!anyCommandIsCustomWithNonNumeric) {
       if (this.isFromCampaignDetail) {

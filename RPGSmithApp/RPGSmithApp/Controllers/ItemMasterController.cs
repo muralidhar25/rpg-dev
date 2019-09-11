@@ -1050,7 +1050,7 @@ namespace RPGSmithApp.Controllers
         #endregion
         #region Loot
         [HttpPost("AddItemMastersToLoot")]
-        public async Task<IActionResult> AddItemMastersToLoot([FromBody] AddLoot addLoot, int rulesetID, int selectedLootPileId=-1)
+        public async Task<IActionResult> AddItemMastersToLoot([FromBody] AddLoot addLoot, int rulesetID, int selectedLootPileId=-1, bool isVisible=false)
         {
             //ItemList = new List<CommonID>();
             //ItemList.Add(new CommonID() { ID = 8499 });
@@ -1059,7 +1059,7 @@ namespace RPGSmithApp.Controllers
             {
                 var ItemList = addLoot.lootItemsToAdd;
                 var LootTemplatesList = addLoot.lootTemplatesToAdd;
-                await _itemMasterService._AddItemsToLoot(ItemList, LootTemplatesList, rulesetID, selectedLootPileId);
+                await _itemMasterService._AddItemsToLoot(ItemList, LootTemplatesList, rulesetID, selectedLootPileId, isVisible);
             }
             catch (Exception ex)
             {
@@ -1136,7 +1136,7 @@ namespace RPGSmithApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                itemDomain.IsShow = true;
+                itemDomain.IsShow = itemDomain.IsVisible == null ? false : (bool)itemDomain.IsVisible;
                 var ItemMasterModel = _itemMasterService.GetDuplicateItemMaster(itemDomain.ItemName, itemDomain.RuleSetId).Result;
                 var result = new ItemMaster();
                 var itemMaster = Mapper.Map<ItemMaster>(itemDomain);
@@ -1337,7 +1337,8 @@ namespace RPGSmithApp.Controllers
                 LootId = OldLoot.LootId,
                 ContainedIn = model.ContainedIn,
                 IsIdentified = model.IsIdentified,
-                IsShow = model.IsShow,
+                //IsShow = model.IsShow,
+                IsShow = model.IsVisible==null?false:(bool)model.IsVisible,
                 IsVisible = model.IsVisible,
                 Quantity = model.Quantity,
                 ItemMasterId = OldLoot.ItemMasterId,
