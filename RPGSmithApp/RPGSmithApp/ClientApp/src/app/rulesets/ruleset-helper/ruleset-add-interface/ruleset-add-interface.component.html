@@ -42,10 +42,6 @@
                             <div class="w-100 h-100 ">
                                 <div class="row m-0 align-items-center h-100 ">
                                   <div class="col-12 mb-1 justify-content-end align-items-center">
-                                    <span class="ruleset-count" popover="Monsters" triggers="hover">
-                                      <i class="icon-Monster"></i>
-                                      {{ruleset?.recordCount.monsterTemplateCount}}
-                                    </span>
                                     <span class="ruleset-count" *ngIf="!isItemEnabled" popover="Item Templates" triggers="hover">
                                       <i class="icon-Gen-Items"></i>
                                       {{ruleset?.recordCount.itemMasterCount}}
@@ -58,6 +54,10 @@
                                       <i class="icon-Gen-Ability"></i>
                                       {{ruleset?.recordCount.abilityCount}}
                                     </span>
+                                    <span class="ruleset-count" popover="Monsters" triggers="hover">
+                                      <i class="icon-Monster"></i>
+                                      {{ruleset?.recordCount.monsterTemplateCount}}
+                                    </span>
                                     <span class="ruleset-count" popover="Character Stats" triggers="hover">
                                       <i class="icon-Gen-CharStat"></i>
                                       {{ruleset?.recordCount.characterStatCount}}
@@ -66,6 +66,7 @@
                                       <img [src]="ruleset?.coreRulesetAdminImageUrl"
                                            onerror="this.src = '../assets/images/DefaultImages/AccountProfile.jpg';" />
                                     </span>
+
                                   </div>
                                     <div class="col-12 justify-content-end">
                                       <span class="ruleset-count text-success item-amount" *ngIf="ruleset?.isAlreadyPurchased">                                        
@@ -105,10 +106,7 @@
                                         </span>
                                     </div>
                                     <div class="col-sm-12 col-5 pl-mob-1 pr-mob-1 justify-content-center align-items-center">
-                                      <span class="ruleset-count">
-                                        <i class="icon-Monster"></i>
-                                        {{ruleset?.recordCount.monsterTemplateCount}}
-                                      </span>
+
                                       <span class="ruleset-count" *ngIf="!isItemEnabled">
                                         <i class="icon-Gen-Items"></i>
                                         {{ruleset?.recordCount.itemMasterCount}}
@@ -117,16 +115,21 @@
                                         <i class="icon-Rec-Magical"></i>
                                         {{ruleset?.recordCount.spellCount}}
                                       </span>
+                                      <span class="ruleset-count" *ngIf="!isAbilityEnabled">
+                                        <i class="icon-Gen-Ability"></i>
+                                        {{ruleset?.recordCount.abilityCount}}
+                                      </span>
                                     </div>
                                     <div class="col-sm-12 col-5 pl-mob-1  mb-sm-1 justify-content-center align-items-center">
-                                        <span class="ruleset-count" *ngIf="!isAbilityEnabled">
-                                            <i class="icon-Gen-Ability"></i>
-                                            {{ruleset?.recordCount.abilityCount}}
-                                        </span>
-                                        <span class="ruleset-count">
-                                            <i class="icon-Gen-CharStat"></i>
-                                            {{ruleset?.recordCount.characterStatCount}}
-                                        </span>
+                                      <span class="ruleset-count">
+                                        <i class="icon-Monster"></i>
+                                        {{ruleset?.recordCount.monsterTemplateCount}}
+                                      </span>
+                                      <span class="ruleset-count">
+                                        <i class="icon-Gen-CharStat"></i>
+                                        {{ruleset?.recordCount.characterStatCount}}
+                                      </span>
+                                      
                                     </div>
                                 </div>
                             </div>
