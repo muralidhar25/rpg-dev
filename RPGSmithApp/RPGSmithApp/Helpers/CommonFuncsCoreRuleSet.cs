@@ -14,6 +14,7 @@ namespace RPGSmithApp.Helpers
     public interface ICommonFuncsCoreRuleSet {
         CharacterStatViewModel GetCharacterStatViewModel(CharacterStat CharacterStat);
         RuleSetViewModel GetRuleSetViewModel(RuleSet ruleSet,string UserID=null);
+        RuleSetViewModel GetRuleSetViewModel_LiteVersion(RuleSet ruleSet, string UserID = null);
         //RulesetRecordCount GetRulesetRecordCounts(int Id);
     }
     public class CommonFuncsCoreRuleSet: ICommonFuncsCoreRuleSet
@@ -221,6 +222,56 @@ namespace RPGSmithApp.Helpers
                 LastCommandValues=ruleSet.LastCommandValues,
                 haveHandOutItems=true,
                 haveLootItems= _itemMasterService.isLootAvailable(ruleSet.RuleSetId),
+            };
+
+            return ruleSetViewModel;
+        }
+        public RuleSetViewModel GetRuleSetViewModel_LiteVersion(RuleSet ruleSet, string UserID = null)
+        {
+            var ruleSetViewModel = new RuleSetViewModel
+            {
+                RuleSetId = ruleSet.RuleSetId,
+                RuleSetName = ruleSet.RuleSetName,
+                RuleSetDesc = ruleSet.RuleSetDesc,
+                isActive = ruleSet.isActive,
+                DefaultDice = ruleSet.DefaultDice,
+                CurrencyLabel = ruleSet.CurrencyLabel,
+                WeightLabel = ruleSet.WeightLabel,
+                DistanceLabel = ruleSet.DistanceLabel,
+                SortOrder = ruleSet.SortOrder,
+                VolumeLabel = ruleSet.VolumeLabel,
+                ImageUrl = ruleSet.ImageUrl,
+                ThumbnailUrl = ruleSet.ThumbnailUrl,
+                IsAbilityEnabled = ruleSet.IsAbilityEnabled,
+                IsItemEnabled = ruleSet.IsItemEnabled,
+                IsSpellEnabled = ruleSet.IsSpellEnabled,
+                IsBuffAndEffectEnabled = ruleSet.IsBuffAndEffectEnabled,
+                IsAllowSharing = ruleSet.IsAllowSharing,
+                ShareCode = ruleSet.ShareCode,
+                IsCoreRuleset = ruleSet.IsCoreRuleset,
+                ParentRuleSetId = ruleSet.ParentRuleSetId,
+
+                ItemMasters = ruleSet.ItemMasters,
+                Spells = ruleSet.Spells,
+                Abilities = ruleSet.Abilities,
+                CreatedOn = ruleSet.CreatedDate.ToString("MM-dd-yy"),
+                CreatedBy = ruleSet.CreatedBy,               
+                //RecordCount = _coreRulesetService.GetRulesetRecordCounts(ruleSet.RuleSetId),
+                //customDices = utility.MapCustomDice(_ruleSetService.GetCustomDice(ruleSet.RuleSetId)),
+                //diceTray = _ruleSetService.GetDiceTray(ruleSet.RuleSetId),
+                //defaultDices = _ruleSetService.GetDefaultDices(),
+                //CoreRulesetAdminImageUrl = _ruleSetService.GetUserImageFromRulesetID(ruleSet.RuleSetId),
+                Price = ruleSet.Price,
+                IsAlreadyPurchased = _ruleSetService.IsRulesetAlreadyPurchased(ruleSet.RuleSetId, UserID),
+                IsDicePublicRoll = ruleSet.IsDicePublicRoll,
+                //IsCombatStarted = _ruleSetService.IsCombatStarted(ruleSet.RuleSetId),
+                LastCommand = ruleSet.LastCommand,
+                LastCommandResult = ruleSet.LastCommandResult,
+                LastCommandResultColor = ruleSet.LastCommandResultColor,
+                LastCommandTotal = ruleSet.LastCommandTotal,
+                LastCommandValues = ruleSet.LastCommandValues,
+                haveHandOutItems = true,
+                //haveLootItems = _itemMasterService.isLootAvailable(ruleSet.RuleSetId),
             };
 
             return ruleSetViewModel;

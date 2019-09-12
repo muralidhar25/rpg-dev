@@ -284,7 +284,7 @@ namespace RPGSmithApp.Controllers
 
                 var ruleSetsVM = new List<RuleSetViewModel>();
                 foreach (var ruleSet in ruleSets)
-                    ruleSetsVM.Add(_commonFuncsCoreRuleSet.GetRuleSetViewModel(ruleSet, GetUserId()));
+                    ruleSetsVM.Add(_commonFuncsCoreRuleSet.GetRuleSetViewModel_LiteVersion(ruleSet, GetUserId()));
 
                 return Ok(ruleSetsVM);
             }
