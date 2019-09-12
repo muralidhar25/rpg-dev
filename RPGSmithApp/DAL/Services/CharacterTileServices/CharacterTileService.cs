@@ -909,6 +909,7 @@ namespace DAL.Services.CharacterTileServices
                                     if (CharacterTileId == tile.CharacterTileId)
                                     {
                                         CBET = new CharacterBuffAndEffectTileVM();
+                                        CBET.Title = CBET_Row["Title"] == DBNull.Value ? null : CBET_Row["Title"].ToString();
                                         CBET.BodyBgColor = CBET_Row["BodyBgColor"] == DBNull.Value ? null : CBET_Row["BodyBgColor"].ToString();
                                         CBET.BodyTextColor = CBET_Row["BodyTextColor"] == DBNull.Value ? null : CBET_Row["BodyTextColor"].ToString();
                                         CBET.CharacterTileId = CharacterTileId;
@@ -1885,6 +1886,7 @@ namespace DAL.Services.CharacterTileServices
                                     if (CharacterTileId == tile.CharacterTileId)
                                     {
                                         CBET = new CharacterBuffAndEffectTileVM();
+                                        CBET.Title = CBET_Row["Title"] == DBNull.Value ? null : CBET_Row["Title"].ToString();
                                         CBET.BodyBgColor = CBET_Row["BodyBgColor"] == DBNull.Value ? null : CBET_Row["BodyBgColor"].ToString();
                                         CBET.BodyTextColor = CBET_Row["BodyTextColor"] == DBNull.Value ? null : CBET_Row["BodyTextColor"].ToString();
                                         CBET.CharacterTileId = CharacterTileId;

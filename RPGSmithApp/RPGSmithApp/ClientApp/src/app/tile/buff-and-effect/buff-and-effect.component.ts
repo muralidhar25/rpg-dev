@@ -473,7 +473,8 @@ export class BuffAndEffectTileComponent implements OnInit {
         //  this.alertService.showMessage("", "Please select at least one Buff/Effect.", MessageSeverity.error);
         //}
         else {
-         
+          this.buffAndEffectTileFormModal.title = this.buffAndEffectTileFormModal.title ? this.buffAndEffectTileFormModal.title.trim() : undefined;
+
             this.buffAndEffectTileFormModal.color = this.tileColor ? this.tileColor : '#343038';
             this.characterTileModel.color = this.buffAndEffectTileFormModal.color;
           this.characterTileModel.shape = this.buffAndEffectTileFormModal.shape;
@@ -496,7 +497,6 @@ export class BuffAndEffectTileComponent implements OnInit {
         this.isLoading = true;
         
      // modal.multiBuffAndEffectsIds = this.buffAndEffectTileFormModal.multiBuffAndEffectsIds
-      debugger
       //let flag = false;
       //if (modal.buffAndEffectTile.multiBuffAndEffectsIds.length) {
       //  if (modal.buffAndEffectTile.multiBuffAndEffectsIds[0].buffAndEffectTileId) {
@@ -511,8 +511,7 @@ export class BuffAndEffectTileComponent implements OnInit {
       //    return { BuffAndEffectTileId: 0, CharacterBuffAndEffectId: x }
       //  })
       //}
-      
-debugger
+
       this.buffAndEffectTileService.createBuffAndEffectTile(modal)
             .subscribe(
                 data => {

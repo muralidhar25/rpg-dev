@@ -540,12 +540,14 @@
                      [style.background-color]=" (box.tile.buffAndEffectTiles?.showTitle && !box.tile.buffAndEffectTiles?.displayLinkImage)? box.tile.buffAndEffectTiles.titleBgColor :box.tile.buffAndEffectTiles?.bodyBgColor"
                      [ngClass]="{'grid-rounded':(box.tile.buffAndEffectTiles?.shape=='50'),'grid-circle':(box.tile.buffAndEffectTiles?.shape=='100'),'buff-padding-1-tile':(box.config.sizex==1),'buff-padding-2-tiles':(box.config.sizex==2),'buff-padding-2-plus-tiles':(box.config.sizex>=3)}"
                      (click)="viewTile(box.tile, box.tile.tileTypeId, $event)">
-
-                  <!--<h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor, 'background-color': box.tile.buffAndEffectTiles.titleBgColor}"
-          popover="Buffs & Effects" triggers="hover" container="body"
-          [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?10:12">
-        Buffs & Effects
-      </h5>-->
+                  <ng-container *ngIf="box.tile.buffAndEffectTiles?.title">
+                    <h5 class="tile-title wraptext" [ngStyle]="{'color': box.tile.buffAndEffectTiles.titleTextColor, 'background-color': box.tile.buffAndEffectTiles.titleBgColor}"
+                        popover="{{box.tile.buffAndEffectTiles?.title}}" triggers="hover" container="body"
+                        [style.height.px]="box.config.sizey==1?20:40" [style.line-height.px]="box.config.sizey==1?13:30" [style.font-size.px]="box.config.sizey==1?10:12">
+                      {{box.tile.buffAndEffectTiles?.title}}
+                    </h5>
+                  </ng-container>
+                  
 
                   <div class="tile-body buff-tile-body">
                     <ng-container *ngIf="box.tile.buffAndEffectTiles?.showTitle && !box.tile.buffAndEffectTiles?.displayLinkImage">

@@ -3,9 +3,7 @@ import { VIEW } from "../enums";
 export class BuffAndEffectTile {
   constructor(
     buffAndEffectTileId?: number,
-    characterTileId?: number,
-    
-    
+    characterTileId?: number,    
     color?: string,
     bgColor?: string,
     titleTextColor?: string,
@@ -18,12 +16,11 @@ export class BuffAndEffectTile {
     displayLinkImage?: boolean,
     view?: VIEW,
     multiBuffAndEffectsIds?: number[],
-    rulesetTileId?:number
+    rulesetTileId?: number,
+    title?: string
   ) {
     this.buffAndEffectTileId = buffAndEffectTileId;
-    this.characterTileId = characterTileId;
-
-    
+    this.characterTileId = characterTileId;    
     this.showTitle = showTitle;
     this.displayLinkImage = displayLinkImage;
     this.color = color;
@@ -37,6 +34,7 @@ export class BuffAndEffectTile {
     this.view = view;
     this.multiBuffAndEffectsIds = multiBuffAndEffectsIds;
     this.rulesetTileId = rulesetTileId;
+    this.title = title;
   }
 
   public buffAndEffectTileId: number;
@@ -54,6 +52,7 @@ export class BuffAndEffectTile {
   public shape: number;
   public sortOrder: number;
   public view: VIEW;
+  public title: string;
 
   public multiBuffAndEffectsIds: number[];
 }
