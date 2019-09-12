@@ -10,7 +10,11 @@ namespace DAL.Models.CharacterTileModels
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int BuffAndEffectTileId { get; set; }
-       
+
+        [MaxLength(255, ErrorMessage = "The field Title must be string with maximum length of 255 characters")]
+        [Column(TypeName = "nvarchar(255)")]
+        public string Title { get; set; }
+
         public int? CharacterTileId { get; set; }
 
         public bool ShowTitle { get; set; }    

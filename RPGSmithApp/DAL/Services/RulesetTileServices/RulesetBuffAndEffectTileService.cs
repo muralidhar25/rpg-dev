@@ -49,6 +49,7 @@ namespace DAL.Services.RulesetTileServices
             if (buffAndEffectTile == null)
                 return buffAndEffectTile;
 
+            buffAndEffectTile.Title = item.Title;
             buffAndEffectTile.ShowTitle = item.ShowTitle;
             buffAndEffectTile.DisplayLinkImage = item.DisplayLinkImage;
             buffAndEffectTile.BodyBgColor = item.BodyBgColor;

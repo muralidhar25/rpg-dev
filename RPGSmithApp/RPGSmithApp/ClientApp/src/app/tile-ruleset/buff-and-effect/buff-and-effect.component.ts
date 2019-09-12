@@ -499,7 +499,8 @@ export class RulesetBuffAndEffectTileComponent implements OnInit {
         //  this.alertService.showMessage("", "Please select at least one Buff/Effect.", MessageSeverity.error);
         //}
         else {
-         
+      this.buffAndEffectTileFormModal.title = this.buffAndEffectTileFormModal.title ? this.buffAndEffectTileFormModal.title.trim() : undefined;
+
             this.buffAndEffectTileFormModal.color = this.tileColor ? this.tileColor : '#343038';
       this.rulesetTileModel.color = this.buffAndEffectTileFormModal.color;
       this.rulesetTileModel.shape = this.buffAndEffectTileFormModal.shape;

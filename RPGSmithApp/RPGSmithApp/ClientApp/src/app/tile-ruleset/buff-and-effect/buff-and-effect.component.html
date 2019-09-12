@@ -60,6 +60,11 @@
         </div>
           <div class="form-row">
             <div class="col-12">
+              <div class="form-group">
+                <label for="BuffEffectTitle">Title</label>
+                <input type="text" id="BuffEffectTitle" class="form-control" placeholder="Title" [(ngModel)]="buffAndEffectTileFormModal.title" name="title">
+              </div>
+
               <fieldset class="form-group input-switch input-switch-dual">
                 <legend>Display link Image or Title</legend>
                 <ul class="input-switch-items">
@@ -85,22 +90,22 @@
                 </ul>
               </fieldset>
               <!--<fieldset class="form-group input-switch input-switch-dual">
-            <legend>Show Title</legend>
-            <ul class="input-switch-items">
-              <li class="form-check">
-                <label class="form-check-label">
-                  <input class="form-check-input" type="radio" name="show" [checked]="showTitle" (change)="setShowTitle(true)" [value]="showTitle">
-                  <span>Yes</span>
-                </label>
-              </li>
-              <li class="form-check">
-                <label class="form-check-label">
-                  <input class="form-check-input" type="radio" name="show" [checked]="!showTitle" (change)="setShowTitle(false)" [value]="!showTitle">
-                  <span>No</span>
-                </label>
-              </li>
-            </ul>
-          </fieldset>-->
+    <legend>Show Title</legend>
+    <ul class="input-switch-items">
+      <li class="form-check">
+        <label class="form-check-label">
+          <input class="form-check-input" type="radio" name="show" [checked]="showTitle" (change)="setShowTitle(true)" [value]="showTitle">
+          <span>Yes</span>
+        </label>
+      </li>
+      <li class="form-check">
+        <label class="form-check-label">
+          <input class="form-check-input" type="radio" name="show" [checked]="!showTitle" (change)="setShowTitle(false)" [value]="!showTitle">
+          <span>No</span>
+        </label>
+      </li>
+    </ul>
+  </fieldset>-->
               <!-- End of link show title switch -->
             </div>
           </div>
@@ -148,7 +153,7 @@
               <ul class="input-color-items">
                 <li [ngClass]="shapeClass" class="d-block m-auto">
                   <div class="tile">
-                    <span *ngIf="showTitle" [ngStyle]="{'color': colorModel.titleTextColor, 'background-color': colorModel.titleBgColor,'border-bottom': (colorModel.titleBgColor==colorModel.bodyBgColor) ? '1px solid rgba(255,255,255,.5)':''}"
+                    <span *ngIf="buffAndEffectTileFormModal.title" [ngStyle]="{'color': colorModel.titleTextColor, 'background-color': colorModel.titleBgColor,'border-bottom': (colorModel.titleBgColor==colorModel.bodyBgColor) ? '1px solid rgba(255,255,255,.5)':''}"
                           class="tile-title wraptext">
                       Title Text
                     </span>

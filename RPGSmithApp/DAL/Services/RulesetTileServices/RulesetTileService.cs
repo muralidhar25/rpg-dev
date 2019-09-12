@@ -570,6 +570,7 @@ namespace DAL.Services.RulesetTileServices
                                     if (RulesetTileId == tile.RulesetTileId)
                                     {
                                         BET = new RulesetBuffAndEffectTileVM();
+                                        BET.Title = BET_Row["Title"] == DBNull.Value ? null : BET_Row["Title"].ToString();
                                         BET.BodyBgColor = BET_Row["BodyBgColor"] == DBNull.Value ? null : BET_Row["BodyBgColor"].ToString();
                                         BET.BodyTextColor = BET_Row["BodyTextColor"] == DBNull.Value ? null : BET_Row["BodyTextColor"].ToString();
                                         BET.RulesetTileId = RulesetTileId;
