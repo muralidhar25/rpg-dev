@@ -526,7 +526,7 @@ namespace DAL.Services
                 {
                     if (MI.ItemId == 0)
                     {
-                        int qtyToSave = 1;
+                        int qtyToSave = MI.Qty;
                         var ItemMasterMonsterItem = //_itemMasterService.GetItemMasterById(MI.ItemMasterId);
                         _context.ItemMasters.Where(x => x.ItemMasterId == MI.ItemMasterId && x.IsDeleted != true)
                             .Select(x => new ItemMasterMonsterItem()

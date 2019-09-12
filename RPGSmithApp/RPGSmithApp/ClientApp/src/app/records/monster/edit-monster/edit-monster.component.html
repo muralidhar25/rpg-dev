@@ -312,20 +312,39 @@
             </angular2-multiselect>
           </div>
         </div>
-        <div class="col-12 col-md-12">
-          <div class="form-group">
-            <label for="newItemSpells">Items</label>
-            <angular2-multiselect id="monsterItemsList" [data]="monsterItemsList" [(ngModel)]="selectedMonsterItems" name="newItemItems" [settings]="monsterItemsSettings">
-              <c-item id="spell">
-                <ng-template let-item="item">
-                  <span class="associate-label-name">{{item.name}}</span>
-                  <img [src]="item.imageUrl" class="pull-right associate-img"
-                       onerror="this.src = '../assets/images/DefaultImages/Item.jpg'" />
-                </ng-template>
-              </c-item>
-            </angular2-multiselect>
+        <!--<div class="col-12 col-md-12">
+    <div class="form-group">
+      <label for="newItemSpells">Items</label>
+      <angular2-multiselect id="monsterItemsList" [data]="monsterItemsList" [(ngModel)]="selectedMonsterItems" name="newItemItems" [settings]="monsterItemsSettings">
+        <c-item id="spell">
+          <ng-template let-item="item">
+            <span class="associate-label-name">{{item.name}}</span>
+            <img [src]="item.imageUrl" class="pull-right associate-img"
+                 onerror="this.src = '../assets/images/DefaultImages/Item.jpg'" />
+          </ng-template>
+        </c-item>
+      </angular2-multiselect>
+    </div>
+  </div>-->
+
+        <div class="col-12">
+          <div class="form-group form-group-unlabelled" (click)="SelectMonsterItems()">
+            <span class="input-group-btn">Items</span>
+            <tag-input name="contains"
+                       (onRemove)="selectedMosnterItemsListChanged($event)"
+                       [(ngModel)]='SelectedItemsList'
+                       theme='dark'
+                       inputId="contains"
+                       inputClass="form-control metatags-field"
+                       class="form-control"
+                       [identifyBy]="'value'"
+                       [displayBy]="'name'"
+                       placeholder=""
+                       secondaryPlaceholder="Search Items">
+            </tag-input>
           </div>
         </div>
+
       </div>
 
 

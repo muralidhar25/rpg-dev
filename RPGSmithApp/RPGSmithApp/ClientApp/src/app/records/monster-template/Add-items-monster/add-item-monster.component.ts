@@ -55,10 +55,10 @@ export class AddItemMonsterComponent implements OnInit {
           //    this.selectedItemsList = selectedItems;
           //  }
           //}
-          let SelectedBuffs: any[] = this.bsModalRef.content.SelectedItemsList;
-          if (SelectedBuffs) {
-            if (SelectedBuffs.length) {
-              this.selectedItemsList = SelectedBuffs;
+          let SelectedItems: any[] = this.bsModalRef.content.SelectedItemsList;
+          if (SelectedItems) {
+            if (SelectedItems.length) {
+              this.selectedItemsList = SelectedItems;
             }
           }
             if (this.rulesetId == undefined)
@@ -69,7 +69,6 @@ export class AddItemMonsterComponent implements OnInit {
     }
 
   private initialize() {
-    debugger;
         let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
         if (user == null)
             this.authService.logout();
@@ -79,7 +78,17 @@ export class AddItemMonsterComponent implements OnInit {
                 .subscribe(data => {
                   this.itemsList = data.ItemMaster;
                   this.itemsList.map((item) => {
-                   item.quantity = 1;
+                    if (this.selectedItemsList) {
+                      this.selectedItemsList.map(x => {
+                        if (x.itemMasterId == item.itemMasterId) {
+                          item.quantity = x.qty;
+                          item.selected = true;
+                        }else {
+                      item.quantity = 1;
+                    }
+                      });
+                    } 
+                   //item.quantity = 1;
                   });
                     this.isLoading = false;
                 }, error => {
@@ -94,20 +103,19 @@ export class AddItemMonsterComponent implements OnInit {
     }
 
   setItemMaster(event: any, itemMaster: any) {
-
       if (event.target.checked) {
         const _containsItems = Object.assign([], this.selectedItemsList);
-        _containsItems.push({ text: itemMaster.itemName, itemId: itemMaster.itemMasterId, image: itemMaster.itemImage, quantity: itemMaster.quantity });
+        _containsItems.push({ name: itemMaster.itemName, itemId: itemMaster.itemId ? itemMaster.itemId : 0, itemMasterId: itemMaster.itemMasterId, image: itemMaster.itemImage, quantity: itemMaster.quantity });
         this.selectedItemsList = _containsItems;
         } else {
-            let _item = { text: itemMaster.itemName, itemId: itemMaster.itemMasterId, image: itemMaster.itemImage, quantity: itemMaster.quantity };
+        let _item = { name: itemMaster.itemName, itemId: itemMaster.itemId ? itemMaster.itemId : 0,  itemMasterId: itemMaster.itemMasterId, image: itemMaster.itemImage, quantity: itemMaster.quantity };
             const index: number = this.selectedItemsList.indexOf(_item);
             if (index !== -1) {
               this.selectedItemsList.splice(index, 1);
             }else {
               const _arrayItems = Object.assign([], this.selectedItemsList);
               this.selectedItemsList = _arrayItems.filter(function (itm) {
-                if (itm.itemId !== _item.itemId) return _item;
+                if (itm.itemMasterId !== _item.itemMasterId) return _item;
               });
             }
       }
@@ -121,12 +129,16 @@ export class AddItemMonsterComponent implements OnInit {
   }
 
   quantityChanged(quantity, item) {
-    
-       this.selectedItemsList.map(function (itm) {
-         if (itm.itemId == item.itemMasterId) {
-           itm.quantity = quantity;
+       this.selectedItemsList.map((itm) => {
+         if (itm.itemMasterId == item.itemMasterId) {
+           itm.quantity = quantity >= 1 ? quantity : 1;
          }
-      });
+    });
+    this.itemsList.map((itm) => {
+      if (itm.itemMasterId == item.itemMasterId) {
+        itm.quantity = quantity >= 1 ? quantity : 1;
+      }
+    });
   }
   
 

@@ -196,6 +196,7 @@ export class EditMonsterComponent implements OnInit {
             this.selectedAssociateMonsterTemplates = data.selectedMonsterTemplates;
             this.monsterItemsList = data.itemMasterList;
             this.selectedMonsterItems = data.selectedItemMasters;
+            this.SelectedItemsList = data.selectedItemMasters;
 
             this.isLoading = false;
           }, error => { }, () => { this.isLoading = false; });
@@ -257,7 +258,8 @@ export class EditMonsterComponent implements OnInit {
     //}
 
     //monsterTemplate.isFromCharacterAbilityId = ability.isFromCharacterAbilityId;
-    if (this.selectedMonsterItems && this.selectedMonsterItems.length > 200) {
+    if (this.SelectedItemsList && this.SelectedItemsList.length > 200) {
+    //if (this.selectedMonsterItems && this.selectedMonsterItems.length > 200) {
       this.alertService.showMessage("The maximum number of items has been reached, 200. Please delete some items and try again.", "", MessageSeverity.error);
       return false;
     }
@@ -278,8 +280,11 @@ export class EditMonsterComponent implements OnInit {
       return { associateMonsterTemplateId: x.monsterTemplateId, monsterTemplateId: monsterTemplate.monsterTemplateId };
     });
 
-    monsterTemplate.monsterTemplateItemVM = this.selectedMonsterItems.map(x => {
-      return { itemId: x.itemId ? x.itemId : 0, itemMasterId: x.itemMasterId, monsterTemplateId: monsterTemplate.monsterTemplateId };
+    //monsterTemplate.monsterTemplateItemVM = this.selectedMonsterItems.map(x => {
+    //  return { itemId: x.itemId ? x.itemId : 0, itemMasterId: x.itemMasterId, monsterTemplateId: monsterTemplate.monsterTemplateId };
+    //});
+    monsterTemplate.monsterTemplateItemVM = this.SelectedItemsList.map(x => {
+      return { itemId: x.itemId ? x.itemId : 0, qty: x.quantity, itemMasterId: x.itemMasterId, monsterTemplateId: monsterTemplate.monsterTemplateId };
     });
 
     this.isLoading = true;
@@ -694,10 +699,9 @@ export class EditMonsterComponent implements OnInit {
       return false;
     }
   }
-  selectedBuffAndEffectsListChanged(item) {
+  selectedMosnterItemsListChanged(item) {
   }
-  SelectBuffAndEffects() {
-
+  SelectMonsterItems() {
     this.bsModalRef = this.modalService.show(AddItemMonsterComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
