@@ -6,6 +6,30 @@
           <h1 class="capitalize">{{GetSearchText(searchModal?.searchType)}} Search Results</h1>
         </a>
       </div>
+
+      <div class="page-toolbar-dropdown">
+        <!-- Filter dropdown -->
+        <div class="dropdown">
+          <div class="dropdown-toggle" id="pageLayoutNavigationToggle" data-toggle="dropdown" [ngClass]="{'disabled': isLoading}">
+            <span>Show <em>{{defaultText}}</em></span>
+          </div>
+          <div class="dropdown-menu dropdown-menu-right w-200p" aria-labelledby="pageLayoutNavigationToggle">
+            <ul class="dropdown-menu-list dropdown-menu-item-contain-actions">
+              <ng-container *ngFor="let text of dropDownText">
+                <li class="dropdown-menu-item" *ngIf="(text?.isForPC && isPlayerCharacterSearch) || (!text?.isForPC)" (click)="setText(text,searchModal.searchString)" [ngClass]="{'active': text.selected }">
+                  <span class="dropdown-menu-item-title">{{text.text}}</span>
+                  <!--<span class="w-95p" *ngIf="text?.imageurl !== '' ">
+                    <img [src]="text?.imageurl" [alt]="text?.imageurl" class="img-fluid">
+                  </span>-->
+                </li>
+              </ng-container>
+
+            </ul>
+          </div>
+        </div>
+        <!-- End of filter dropdown -->
+      </div>
+
     </div>
   </div>
   <!-- End of toolbar -->

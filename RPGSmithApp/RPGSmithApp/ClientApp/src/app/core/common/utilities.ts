@@ -913,7 +913,9 @@ export class Utilities {
   }
 
   public static RedriectToPageWithoutId(originalUrl: string, displayUrl: string, router: Router, RedriectFromCode: number) {
-
+    if (originalUrl.indexOf('/search/')>-1) {
+      displayUrl = originalUrl;
+    }
     router.navigate([originalUrl], { skipLocationChange: true });
     window.history.pushState('', '', displayUrl);
   }
