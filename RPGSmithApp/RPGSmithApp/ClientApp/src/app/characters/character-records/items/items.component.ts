@@ -460,7 +460,7 @@ export class CharacterItemsComponent implements OnInit {
         }
         else {
           if (ItemMasterCount >= 2000) {
-            this.alertService.showMessage("The maximum number of Item Templates has been reached, 2,000. Please delete some Item Templates and try again.", "", MessageSeverity.error);
+            this.alertService.showMessage("The maximum number of Item Templates for this Rule Set as been reached. Please delete some Item Templates and try again.", "", MessageSeverity.error);
           } else if (ItemCount >= 200) {
             this.alertService.showMessage("The maximum number of records has been reached, 200. Please delete some records and try again.", "", MessageSeverity.error);
           }
