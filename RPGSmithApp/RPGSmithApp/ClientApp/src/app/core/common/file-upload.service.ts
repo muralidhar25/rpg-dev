@@ -38,7 +38,8 @@ export class FileUploadService extends EndpointFactory {
   fileUpload<T>(endpoint: string, fileToUpload: File): Observable<T> {
     const formData: FormData = new FormData();
     formData.append('UploadedImage', fileToUpload, fileToUpload.name);
-
+    
+    endpoint = `${this.uploadByUserApi}?isRegistering=true`;
     return this.http.post<T>(endpoint, formData, this.getRequestFileHeaders())
       //.map(() => { return true; })
       .catch(error => {

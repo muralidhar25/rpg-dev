@@ -124,36 +124,86 @@ namespace RPGSmithApp.Controllers
         }
 
         [HttpPost("uploadByUserId")]
-        public async Task<IActionResult> uploadByUserId(string userId)
+        public async Task<IActionResult> uploadByUserId(string userId, bool isRegistering = false)
         {
-
-            if (_httpContextAccessor.HttpContext.Request.Form.Files.Any())
+            if (!isRegistering)
             {
-                // Get the uploaded image from the Files collection
-                var httpPostedFile = _httpContextAccessor.HttpContext.Request.Form.Files["UploadedImage"];
+                if (_httpContextAccessor.HttpContext.Request.Form.Files.Any())
+                {
+                    // Get the uploaded image from the Files collection
+                    var httpPostedFile = _httpContextAccessor.HttpContext.Request.Form.Files["UploadedImage"];
 
-                if (httpPostedFile != null)
+                    if (httpPostedFile != null)
+                    {
+                        try
+                        {
+                            BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _rulesetService);
+                            var container = bs.GetCloudBlobContainer("user-" + userId).Result;
+                            string imageName = Guid.NewGuid().ToString();
+                            dynamic Response = new ExpandoObject();
+                            Response.ImageUrl = bs.UploadImages(httpPostedFile, imageName, container).Result;
+                            Response.ThumbnailUrl = Response.ImageUrl; // bs.UploadThumbnail(httpPostedFile, imageName, container).Result;
+
+                            return Ok(Response);
+                        }
+                        catch (Exception ex)
+                        {
+                            return BadRequest(ex.Message);
+                        }
+                    }
+
+                    return BadRequest();
+                }
+                return BadRequest("No Image Selected");
+            }
+            else { //to solve image upload issue while registering a user.
+                if (_httpContextAccessor.HttpContext.Request.Form.Files.Any())
                 {
                     try
                     {
-                        BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _rulesetService);
-                        var container = bs.GetCloudBlobContainer("user-" + userId).Result;
-                        string imageName = Guid.NewGuid().ToString();
-                        dynamic Response = new ExpandoObject();
-                        Response.ImageUrl = bs.UploadImages(httpPostedFile, imageName, container).Result;
-                        Response.ThumbnailUrl = Response.ImageUrl; // bs.UploadThumbnail(httpPostedFile, imageName, container).Result;
+                        // Get the uploaded image from the Files collection
+                        var httpPostedFile = _httpContextAccessor.HttpContext.Request.Form.Files["UploadedImage"];
+                        if (httpPostedFile != null)
+                        {
+                            //var dirPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/UploadedFiles/Profile");
+                            //try
+                            //{
+                            //    if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/UploadedFiles")))
+                            //    {
+                            //        Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/UploadedFiles"));
+                            //        Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/UploadedFiles/Profile"));
+                            //    }
+                            //    else if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+                            //}
+                            //catch { }
 
-                        return Ok(Response);
+                            //var path = Path.Combine(dirPath, httpPostedFile.FileName);
+                            //using (var stream = new FileStream(path, FileMode.Create))
+                            //{
+                            //    await httpPostedFile.CopyToAsync(stream);
+                            //}
+                            //return Ok(httpPostedFile.FileName + " uploaded successfully.");
+
+
+                            BlobService bs = new BlobService(_httpContextAccessor, _accountManager, _rulesetService);
+                            var container = bs.GetCloudBlobContainer().Result;
+                            string imageName = Guid.NewGuid().ToString();
+
+                            dynamic Response = new ExpandoObject();
+                            Response.ProfileImage = bs.UploadThumbnail(httpPostedFile, imageName, container).Result;
+
+                            return Ok(Response);
+
+                        }
                     }
                     catch (Exception ex)
                     {
                         return BadRequest(ex.Message);
                     }
                 }
-
-                return BadRequest();
+                return BadRequest("No Image Selected");
             }
-            return BadRequest("No Image Selected");
+           
 
         }
         [HttpPost("uploadVideoByUserId")]
@@ -553,7 +603,7 @@ namespace RPGSmithApp.Controllers
             {
                 return BadRequest(ex.Message);
             }
-        }
+        }        
         //[HttpGet("DownloadBlob")]
         ////[ResponseType(typeof(HttpResponseMessage))]
         //public async Task<HttpResponseMessage> DownloadBlob(string fileName, string userId, int campaignID = 0)
@@ -594,6 +644,6 @@ namespace RPGSmithApp.Controllers
         //    //}
 
         //}
-        
+
     }
 }
