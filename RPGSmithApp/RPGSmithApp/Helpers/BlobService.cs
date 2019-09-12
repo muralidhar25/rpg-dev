@@ -133,9 +133,9 @@ namespace RPGSmithApp.Helpers
            // httpPostedFile.CopyTo(ms);  
         }
 
-        public async Task<string> UploadThumbnail(IFormFile httpPostedFile, string fileName, CloudBlobContainer cloudBlobContainer)
+        public async Task<string> UploadThumbnail(IFormFile httpPostedFile, string fileName, CloudBlobContainer cloudBlobContainer,bool isRegistering=false)
         {
-            if (!doesUserHaveEnoughSpace(cloudBlobContainer.Name))
+            if (!isRegistering && !doesUserHaveEnoughSpace(cloudBlobContainer.Name))
             {
                 throw new System.InvalidOperationException(StorageFullMessage);
             }

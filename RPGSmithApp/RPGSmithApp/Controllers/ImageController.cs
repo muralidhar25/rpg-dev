@@ -190,7 +190,7 @@ namespace RPGSmithApp.Controllers
                             string imageName = Guid.NewGuid().ToString();
 
                             dynamic Response = new ExpandoObject();
-                            Response.ProfileImage = bs.UploadThumbnail(httpPostedFile, imageName, container).Result;
+                            Response.ProfileImage = bs.UploadThumbnail(httpPostedFile, imageName, container,isRegistering).Result;
 
                             return Ok(Response);
 
