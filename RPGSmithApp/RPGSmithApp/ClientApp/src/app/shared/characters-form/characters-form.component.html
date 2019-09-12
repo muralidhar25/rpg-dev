@@ -47,7 +47,7 @@
                     [infiniteScrollThrottle]="300" [scrollWindow]="false" *ngIf="charactersFormModal.hasRuleset">
                   <li class="form-check" *ngFor="let ruleset of charactersFormModal?.ruleSets | filter : searchText : 'ruleSetName';let i = index;">
                     <label class="form-check-label" (click)="setCharacterRuleset(ruleset)">
-                      <input class="form-check-input" type="radio" name="newCharacterRuleset" [checked]="charactersFormModal.ruleSetId">
+                      <input class="form-check-input" type="radio" name="newCharacterRuleset" [checked]="charactersFormModal.ruleSetId == ruleset.ruleSetId">
                       <input type="hidden" id="ruleSetId" name="ruleSetId" [(ngModel)]="charactersFormModal.ruleSetId" #ruleSetId="ngModel">
                       <span class="text-cut" [ngClass]="ruleset.isCoreRuleset?'':'bg-white'">
                         <img [alt]="ruleset.ruleSetName" [src]="ruleset.imageUrl"
