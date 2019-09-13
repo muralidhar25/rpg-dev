@@ -1092,7 +1092,7 @@ export class Utilities {
 
     else if (url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEMS/') > -1 ||
       url.toUpperCase().indexOf('/CHARACTER/RULESET/ITEM-DETAIL/') > -1) {
-      return 'https://rpgsmith.com/help/#itemtemp';
+      return 'https://rpgsmith.com/helpe/#e1';
     }
   }
 
