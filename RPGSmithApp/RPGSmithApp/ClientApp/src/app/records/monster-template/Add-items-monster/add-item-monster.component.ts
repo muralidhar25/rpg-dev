@@ -75,20 +75,18 @@ export class AddItemMonsterComponent implements OnInit {
         else {
             this.isLoading = true;
           this.itemMasterService.getItemMasterByRuleset_add<any>(this.rulesetId, false)//true
-                .subscribe(data => {
-                  this.itemsList = data.ItemMaster;
+            .subscribe(data => {
+              this.itemsList = Object.assign([], data.ItemMaster);
                   this.itemsList.map((item) => {
-                    if (this.selectedItemsList) {
+                    item.quantity = 1;
+                    if (this.selectedItemsList && this.selectedItemsList.length>=1) {
                       this.selectedItemsList.map(x => {
                         if (x.itemMasterId == item.itemMasterId) {
                           item.quantity = x.qty;
                           item.selected = true;
-                        }else {
-                      item.quantity = 1;
-                    }
+                        } 
                       });
-                    } 
-                   //item.quantity = 1;
+                    }                   
                   });
                     this.isLoading = false;
                 }, error => {
@@ -105,10 +103,10 @@ export class AddItemMonsterComponent implements OnInit {
   setItemMaster(event: any, itemMaster: any) {
       if (event.target.checked) {
         const _containsItems = Object.assign([], this.selectedItemsList);
-        _containsItems.push({ name: itemMaster.itemName, itemId: itemMaster.itemId ? itemMaster.itemId : 0, itemMasterId: itemMaster.itemMasterId, image: itemMaster.itemImage, quantity: itemMaster.quantity });
+        _containsItems.push({ name: itemMaster.itemName, itemId: itemMaster.itemId ? itemMaster.itemId : 0, itemMasterId: itemMaster.itemMasterId, image: itemMaster.itemImage, qty: itemMaster.quantity });
         this.selectedItemsList = _containsItems;
         } else {
-        let _item = { name: itemMaster.itemName, itemId: itemMaster.itemId ? itemMaster.itemId : 0,  itemMasterId: itemMaster.itemMasterId, image: itemMaster.itemImage, quantity: itemMaster.quantity };
+        let _item = { name: itemMaster.itemName, itemId: itemMaster.itemId ? itemMaster.itemId : 0,  itemMasterId: itemMaster.itemMasterId, image: itemMaster.itemImage, qty: itemMaster.quantity };
             const index: number = this.selectedItemsList.indexOf(_item);
             if (index !== -1) {
               this.selectedItemsList.splice(index, 1);
@@ -131,7 +129,7 @@ export class AddItemMonsterComponent implements OnInit {
   quantityChanged(quantity, item) {
        this.selectedItemsList.map((itm) => {
          if (itm.itemMasterId == item.itemMasterId) {
-           itm.quantity = quantity >= 1 ? quantity : 1;
+           itm.qty = quantity >= 1 ? quantity : 1;
          }
     });
     this.itemsList.map((itm) => {

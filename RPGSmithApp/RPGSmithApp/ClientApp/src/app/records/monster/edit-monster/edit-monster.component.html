@@ -24,8 +24,8 @@
             <div class="adjst-dice-position">
               <label>Health</label>
               <!--<span class="input-group-btn">
-              <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,monsterFormModal.health)"></button>
-            </span>-->
+                <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,monsterFormModal.health)"></button>
+              </span>-->
               <div class="form-row">
                 <input name="monsterHealthCurrent" type="number" class="col-4 form-control input-type-number" placeholder="Current"
                        [(ngModel)]="monsterFormModal.monsterHealthCurrent" #monsterHealthCurrent="ngModel" />
@@ -42,8 +42,8 @@
             <div class="adjst-dice-position">
               <label>Armor Class</label>
               <!--<span class="input-group-btn">
-              <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,monsterFormModal.armorClass)"></button>
-            </span>-->
+                <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,monsterFormModal.armorClass)"></button>
+              </span>-->
               <div class="form-row">
                 <input name="monsterArmorClass" type="number" class="col-6 form-control input-type-number" placeholder="Value"
                        [(ngModel)]="monsterFormModal.monsterArmorClass" #monsterArmorClass="ngModel" />
@@ -58,8 +58,8 @@
             <div class="adjst-dice-position">
               <label>Challenge Rating</label>
               <!--<span class="input-group-btn">
-              <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,monsterFormModal.challangeRating)"></button>
-            </span>-->
+                <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,monsterFormModal.challangeRating)"></button>
+              </span>-->
               <div class="form-row">
                 <input name="monsterChallangeRating" type="number" class="col-6 form-control input-type-number" placeholder="Value"
                        [(ngModel)]="monsterFormModal.monsterChallangeRating" #monsterChallangeRating="ngModel" />
@@ -98,8 +98,8 @@
             <div class="adjst-dice-position">
               <label>XP Value</label>
               <!--<span class="input-group-btn">
-              <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,monsterFormModal.xPValue)"></button>
-            </span>-->
+                <button type="button" title="Show dice" tooltip="Show dice" class="btn icon icon-dice icon-rsi btn-simple-primary" (click)="openDiceModal(-1,monsterFormModal.xPValue)"></button>
+              </span>-->
               <div class="form-row">
                 <input name="monsterXPValue" type="number" class="col-6 form-control  input-type-number" placeholder="Value"
                        [(ngModel)]="monsterFormModal.monsterXPValue" #monsterXPValue="ngModel" />
@@ -107,8 +107,8 @@
               </div>
             </div>
             <!--<app-input-single-result-command _placeholder="Value" [command]="monsterFormModal.xPValue"
-          labelText="XP Value" (getResult)="getXPValueResult($event)"
-          ></app-input-single-result-command>-->
+            labelText="XP Value" (getResult)="getXPValueResult($event)"
+            ></app-input-single-result-command>-->
           </div>
           <div class="form-group">
             <label for="newMonsterTemplateCommand">Initiative</label>
@@ -149,7 +149,7 @@
             <label for="newMonsterTemplateDescription">Description</label>
             <div [froalaEditor]="options('Description')" [(ngModel)]="monsterFormModal.description" name="description"></div>
             <!--<textarea id="newMonsterTemplateDescription" name="newMonsterTemplateDescription" class="form-control" placeholder="Description" rows="5"
-          [(ngModel)]="monsterFormModal.description" #newMonsterTemplateDescription="ngModel"></textarea>-->
+            [(ngModel)]="monsterFormModal.description" #newMonsterTemplateDescription="ngModel"></textarea>-->
           </div>
         </div>
         <div class="col-12">
@@ -157,7 +157,7 @@
             <label for="newMonsterTemplateStats">Stats</label>
             <div [froalaEditor]="options('Input stat')" [(ngModel)]="monsterFormModal.stats" name="stats"></div>
             <!--<textarea id="newMonsterTemplateStats" class="form-control" name="newMonsterTemplateStats" placeholder="Input stat" rows="5"
-          [(ngModel)]="monsterFormModal.stats" #newMonsterTemplateStats="ngModel"></textarea>-->
+            [(ngModel)]="monsterFormModal.stats" #newMonsterTemplateStats="ngModel"></textarea>-->
           </div>
         </div>
       </div>
@@ -166,32 +166,32 @@
       <div class="form-row">
         <div class="col-12 col-md-6">
           <!--<fieldset class="form-group input-switch input-switch-dual input-switch-muted">
-            <legend>Enable?</legend>
-            <ul class="input-switch-items">
-                <li class="form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="IsEnable1" [checked]="monsterFormModal.isEnabled"
-                               (click)="setEnableDisable(true)" />
-                        <span>Yes</span>
-                    </label>
-                </li>
-                <li class="form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" type="radio" name="IsEnable2" [checked]="!monsterFormModal.isEnabled"
-                               (click)="setEnableDisable(false)" />
-                        <span>No</span>
-                    </label>
-                </li>
-            </ul>
-        </fieldset>-->
+              <legend>Enable?</legend>
+              <ul class="input-switch-items">
+                  <li class="form-check">
+                      <label class="form-check-label">
+                          <input class="form-check-input" type="radio" name="IsEnable1" [checked]="monsterFormModal.isEnabled"
+                                 (click)="setEnableDisable(true)" />
+                          <span>Yes</span>
+                      </label>
+                  </li>
+                  <li class="form-check">
+                      <label class="form-check-label">
+                          <input class="form-check-input" type="radio" name="IsEnable2" [checked]="!monsterFormModal.isEnabled"
+                                 (click)="setEnableDisable(false)" />
+                          <span>No</span>
+                      </label>
+                  </li>
+              </ul>
+          </fieldset>-->
           <!--<div class="form-group">
-            <label for="newMonsterTemplateAssocItem">Associated Item</label>
-            <input type="text" id="newMonsterTemplateAssocItem" name="newMonsterTemplateAssocItem" class="form-control" placeholder="Name of the level" />
-        </div>-->
+              <label for="newMonsterTemplateAssocItem">Associated Item</label>
+              <input type="text" id="newMonsterTemplateAssocItem" name="newMonsterTemplateAssocItem" class="form-control" placeholder="Name of the level" />
+          </div>-->
           <!--<div class="form-group">
-            <label for="newMonsterTemplateTiles">Tile(s)</label>
-            <input type="text" id="newMonsterTemplateTiles" class="form-control" placeholder="Enter the tile descritption">
-        </div>-->
+              <label for="newMonsterTemplateTiles">Tile(s)</label>
+              <input type="text" id="newMonsterTemplateTiles" class="form-control" placeholder="Enter the tile descritption">
+          </div>-->
         </div>
 
       </div>
@@ -224,16 +224,16 @@
               </div>
             </div>
             <!-- <div class="input-group mb-1" *ngFor="let command of monsterFormModal.abilityCommandVM;let i = index;">
-              <input type="text" [id]="'newMonsterTemplateCommand'+i" [name]="'newMonsterTemplateCommand'+i" class="form-control mr-1" placeholder="Select dice"
-                     [(ngModel)]="command.command" />
+                <input type="text" [id]="'newMonsterTemplateCommand'+i" [name]="'newMonsterTemplateCommand'+i" class="form-control mr-1" placeholder="Select dice"
+                       [(ngModel)]="command.command" />
 
-              <input type="text" [id]="'newMonsterTemplateCommand'+i" [name]="'newMonsterTemplateCommand'+i" class="form-control mr-1" placeholder="Name"
-                     [(ngModel)]="command.name" />
+                <input type="text" [id]="'newMonsterTemplateCommand'+i" [name]="'newMonsterTemplateCommand'+i" class="form-control mr-1" placeholder="Name"
+                       [(ngModel)]="command.name" />
 
-              <span class="pull-right">
-                  <button class="btn icon icon-trash btn-primary pull-right" type="button" (click)="removeCommand(command)"></button>
-              </span>
-          </div> -->
+                <span class="pull-right">
+                    <button class="btn icon icon-trash btn-primary pull-right" type="button" (click)="removeCommand(command)"></button>
+                </span>
+            </div> -->
             <div class="row" *ngFor="let command of monsterFormModal.monsterTemplateCommandVM;let i = index;">
               <div class="form-group col-6 mb-1">
                 <span class="input-group-btn command-dice">
@@ -313,67 +313,67 @@
           </div>
         </div>
         <!--<div class="col-12 col-md-12">
-    <div class="form-group">
-      <label for="newItemSpells">Items</label>
-      <angular2-multiselect id="monsterItemsList" [data]="monsterItemsList" [(ngModel)]="selectedMonsterItems" name="newItemItems" [settings]="monsterItemsSettings">
-        <c-item id="spell">
-          <ng-template let-item="item">
-            <span class="associate-label-name">{{item.name}}</span>
-            <img [src]="item.imageUrl" class="pull-right associate-img"
-                 onerror="this.src = '../assets/images/DefaultImages/Item.jpg'" />
-          </ng-template>
-        </c-item>
-      </angular2-multiselect>
-    </div>
-  </div>-->
+          <div class="form-group">
+            <label for="newItemSpells">Items</label>
+            <angular2-multiselect id="monsterItemsList" [data]="monsterItemsList" [(ngModel)]="selectedMonsterItems" name="newItemItems" [settings]="monsterItemsSettings">
+              <c-item id="spell">
+                <ng-template let-item="item">
+                  <span class="associate-label-name">{{item.name}}</span>
+                  <img [src]="item.imageUrl" class="pull-right associate-img"
+                       onerror="this.src = '../assets/images/DefaultImages/Item.jpg'" />
+                </ng-template>
+              </c-item>
+            </angular2-multiselect>
+          </div>
+        </div>-->
+        <div class="col-12 col-md-12">
+          <div class="form-group">
+            <label for="newItemSpells">Items</label>
+            <div (click)="SelectMonsterItems()">
+              <tag-input name="contains"
+                         (onRemove)="selectedMosnterItemsListChanged($event)"
+                         [(ngModel)]='SelectedItemsList'
+                         theme='dark'
+                         inputId="contains"
+                         inputClass="form-control metatags-field"
+                         class="form-control"
+                         [identifyBy]="'value'"
+                         [displayBy]="'name'"
+                         placeholder=""
+                         secondaryPlaceholder="Search Items">
+              </tag-input>
+            </div>
+          </div>
+        </div>
 
+      </div>
+
+      <!--<div class="form-separator"></div>
+      <div class="form-row">
         <div class="col-12">
-          <div class="form-group form-group-unlabelled" (click)="SelectMonsterItems()">
-            <span class="input-group-btn">Items</span>
+
+          <div class="form-group form-group-unlabelled" (click)="SelectBuffAndEffects()">
+            <span class="input-group-btn">
+              Items
+            </span>
             <tag-input name="contains"
-                       (onRemove)="selectedMosnterItemsListChanged($event)"
+                       (onRemove)="selectedBuffAndEffectsListChanged($event)"
                        [(ngModel)]='SelectedItemsList'
                        theme='dark'
                        inputId="contains"
                        inputClass="form-control metatags-field"
                        class="form-control"
                        [identifyBy]="'value'"
-                       [displayBy]="'name'"
+                       [displayBy]="'text'"
                        placeholder=""
-                       secondaryPlaceholder="Search Items">
+                       secondaryPlaceholder="Search Buffs & Effects"
+                       >
+
             </tag-input>
           </div>
         </div>
 
-      </div>
-
-
-      <!--<div class="form-separator"></div>
-    <div class="form-row">
-      <div class="col-12">
-
-        <div class="form-group form-group-unlabelled" (click)="SelectBuffAndEffects()">
-          <span class="input-group-btn">
-            Items
-          </span>
-          <tag-input name="contains"
-                     (onRemove)="selectedBuffAndEffectsListChanged($event)"
-                     [(ngModel)]='SelectedItemsList'
-                     theme='dark'
-                     inputId="contains"
-                     inputClass="form-control metatags-field"
-                     class="form-control"
-                     [identifyBy]="'value'"
-                     [displayBy]="'text'"
-                     placeholder=""
-                     secondaryPlaceholder="Search Buffs & Effects"
-                     >
-
-          </tag-input>
-        </div>
-      </div>
-
-    </div>-->
+      </div>-->
     </div>
     <app-loader [isLoading]="isLoading"></app-loader>
   </div>
