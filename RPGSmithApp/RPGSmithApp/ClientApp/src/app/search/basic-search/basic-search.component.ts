@@ -40,6 +40,7 @@ export class BasicSearchComponent implements OnInit {
   characterId: number;
   rulesetID: number;
   character: Characters = new Characters();
+  isPlayerCharacterSearch: boolean = false;
 
   constructor(private searchService: SearchService, private router: Router, private alertService: AlertService, private sharedService: SharedService,
     private configurations: ConfigurationService, private route: ActivatedRoute, private modalService: BsModalService,
@@ -190,7 +191,6 @@ export class BasicSearchComponent implements OnInit {
       this.searchModal.handoutFilters.isHandoutName = true;
       this.searchModal.handoutFilters.isHandoutFileType = true;
     }
-    debugger
     if (this.headers) {      
       if (this.headers.headerLink == 'ruleset') {
         this.searchModal.rulesetID = this.headers.headerId;
@@ -202,7 +202,6 @@ export class BasicSearchComponent implements OnInit {
             this.isLoading = true;
             this.characterId = 0;
             this.rulesetID = this.headers.headerId;
-            
             this.dropDownText = [
               { value: 1, text: 'Everything', type: SearchType.EVERYTHING, selected: this.searchModal.searchType == SearchType.EVERYTHING ? true : false, imageurl: '' },
               { value: 12, text: 'Monsters', type: SearchType.RULESETMONSTER, selected: this.searchModal.searchType == SearchType.RULESETMONSTER ? true : false, imageurl: '' },
@@ -243,6 +242,21 @@ export class BasicSearchComponent implements OnInit {
           this.searchModal.characterID = this.headers.headerId
         }
 
+        this.charactersService.getPlayerControlsByCharacterId(this.headers.headerId)
+          .subscribe(data => {
+            if (data) {
+              if (data.isPlayerCharacter ||
+                data.isPlayerLinkedToCurrentCampaign ||
+                data.isCurrentCampaignPlayerCharacter) {
+                this.isPlayerCharacterSearch = true;
+              }
+              else {
+                this.isPlayerCharacterSearch = false;
+              }
+            }
+          }, error => {
+            let Errors = Utilities.ErrorDetail("", error);
+          });
         ////Character Dropdown////
         this.charactersService.getCharactersById<any>(this.searchModal.characterID)
           .subscribe(data => {

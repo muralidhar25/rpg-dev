@@ -18,9 +18,9 @@
               <ng-container *ngFor="let text of dropDownText">
                 <li class="dropdown-menu-item" *ngIf="(text?.isForPC && isPlayerCharacterSearch) || (!text?.isForPC)" (click)="setText(text,searchModal.searchString)" [ngClass]="{'active': text.selected }">
                   <span class="dropdown-menu-item-title">{{text.text}}</span>
-                  <!--<span class="w-95p" *ngIf="text?.imageurl !== '' ">
+                  <span class="w-95p" *ngIf="text?.imageurl !== '' ">
                     <img [src]="text?.imageurl" [alt]="text?.imageurl" class="img-fluid">
-                  </span>-->
+                  </span>
                 </li>
               </ng-container>
 
