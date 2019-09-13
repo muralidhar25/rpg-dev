@@ -984,10 +984,10 @@ export class Utilities {
 
   public static getHelpLinkUrl(url) {
     if (url.toUpperCase() == '/CHARACTERS' || url.toUpperCase() == '/CHARACTER') {
-      return 'https://rpgsmith.com/help/#a11';
+      return 'https://rpgsmith.com/helpa/#a11';
     }
     else if (url.toUpperCase() == '/RULESETS' || url.toUpperCase() == '/RULESET') {
-      return 'https://rpgsmith.com/help/#a12';
+      return 'https://rpgsmith.com/helpa/#a12';
     }
     else if (url.toUpperCase() == '/RULESETS/CAMPAIGNS' || url.toUpperCase() == '/RULESET/CAMPAIGNS') {
       return 'https://rpgsmith.com/helpa/#a13';
@@ -1023,10 +1023,10 @@ export class Utilities {
       return 'https://rpgsmith.com/helpe/#e8a';
     }
     else if (url.toUpperCase().indexOf('/RULESET/ADD') > -1) {
-      return 'https://rpgsmith.com/help/#a13a';
+      return 'https://rpgsmith.com/helpa/#a13a';
     }
     else if (url.toUpperCase().indexOf('/MARKETPLACE') > -1) {
-      return 'https://rpgsmith.com/help/#a6';
+      return 'https://rpgsmith.com/helpa/#a6';
     }
     else if (url.toUpperCase().indexOf('/CHARACTER/DASHBOARD/') > -1 || url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DASHBOARD/') > -1) {
       return 'https://rpgsmith.com/helpb/#B2';
