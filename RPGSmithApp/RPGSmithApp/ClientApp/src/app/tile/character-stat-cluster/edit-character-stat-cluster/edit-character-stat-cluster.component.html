@@ -442,8 +442,8 @@
                           (mousedown)="mouseDown(-1,ccs?.characterStat?.characterStatTypeId,ccs,2)" (mouseup)="mouseUp()"
                           (click)="decrement(ccs?.characterStat?.characterStatTypeId,ccs,2)" (keydown.enter)="$event.preventDefault()"></button>
                   <input class="form-control ng-pristine ng-valid ng-touched" id="viewCounterValue" name="currentValue" placeholder="Enter value"
-                         (input)="inputValidator($event,characterstat.charactersCharacterStatId,'subvalue')" 
-                         [(ngModel)]="ccs.subValue" (change)="DefaultDefValueOnchange($event, characterstat,DefVal_STATTYPE.SubValue);">
+                         (input)="inputValidator($event,characterstat?.charactersCharacterStatId,'subvalue')" 
+                         [(ngModel)]="ccs.subValue" (change)="DefaultDefValueOnchange($event, ccs,DefVal_STATTYPE.SubValue);">
                   <button class="btn icon icon-plus btn-primary btn-plus-minus" type="button"
                           (mousedown)="mouseDown(1,ccs?.characterStat?.characterStatTypeId,ccs,2)" (mouseup)="mouseUp()"
                           (click)="increment(ccs?.characterStat?.characterStatTypeId,ccs,2)" (keydown.enter)="$event.preventDefault()"></button>

@@ -707,6 +707,7 @@ export class EditCharacterStatClusterComponent implements OnInit {
     }
   }
   DefaultDefValueOnchange(event: any, characterstat: any, DefVal_STATTYPE: DefaultValue_STAT_TYPE) {
+    debugger
     if (characterstat.characterStat.characterStatDefaultValues.length) {
       let DefVal = new CharacterStatDefaultValue();
       switch (DefVal_STATTYPE) {
