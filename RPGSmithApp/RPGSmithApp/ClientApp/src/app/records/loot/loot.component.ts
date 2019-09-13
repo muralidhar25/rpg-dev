@@ -516,6 +516,32 @@ export class LootComponent implements OnInit {
     });
     this.bsModalRef.content.giveAwayItem = item;
   }
+
+  GiveLootPile(item) {
+    this.isLoading = true;
+    //api////
+    let lootPileItems = [];
+    this.itemMasterService.getLootPile<any>(item.lootId)
+      .subscribe(data => {
+        this.isLoading = false;
+        if (data) {
+          lootPileItems = data.lootPileItems;
+        }
+      }, error => {
+        this.isLoading = false;
+      }, () => {
+        this.bsModalRef = this.modalService.show(GiveawayComponent, {
+          class: 'modal-primary modal-md',
+          ignoreBackdropClick: true,
+          keyboard: false
+        });
+        this.bsModalRef.content.giveAwayItem = item;
+        this.bsModalRef.content.lootPileItems = lootPileItems;
+        this.bsModalRef.content.isLootPile = true;
+      });
+
+  }
+
   Show(item) {
 
     let show = item.isShow ? 'Hide' : 'Show';

@@ -235,6 +235,9 @@
                   <button type="button" *ngIf="ItemMasterDetail?.isShow" (click)="Show(ItemMasterDetail)" class="btn btn-accent icon icon-Gen-Hide icon-with-text">Hide</button>
                   <button type="button" *ngIf="!ItemMasterDetail?.isShow" (click)="Show(ItemMasterDetail)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>
                 </li>
+                <li>
+                  <button type="button" (click)="Give(ItemMasterDetail)" class="btn btn-accent icon-with-text icon icon-Gen-Give">Give</button>
+                </li>
               </ul>
             </div>
           </div>

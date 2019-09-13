@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
 import { CharactersService } from '../../../core/services/characters.service';
 import { Utilities } from '../../../core/common/utilities';
@@ -6,6 +6,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { LootService } from '../../../core/services/loot.service';
 import { SharedService } from '../../../core/services/shared.service';
 import { MessageSeverity, AlertService } from '../../../core/common/alert.service';
+import { ItemMasterService } from '../../../core/services/item-master.service';
 
 
 @Component({
@@ -21,6 +22,10 @@ export class GiveawayComponent implements OnInit {
   isLoading = false;
   selectercharacter: any;
   isFromLootGiveScreen: boolean = true;
+  isLootPile: boolean = false;
+  lootPileItems: any = [];
+
+  public event: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private bsModalRef: BsModalRef,
@@ -28,14 +33,17 @@ export class GiveawayComponent implements OnInit {
     private authService: AuthService,
     private lootService: LootService,
     private sharedService: SharedService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private itemMasterService: ItemMasterService
 
   ) { }
 
   ngOnInit() {
     setTimeout(() => {
       this.giveAwayItem = this.bsModalRef.content.giveAwayItem;
+      this.lootPileItems = this.bsModalRef.content.lootPileItems;
       this.ruleSetId = this.giveAwayItem.ruleSet.ruleSetId;
+      this.isLootPile = this.bsModalRef.content.isLootPile ? this.bsModalRef.content.isLootPile : false;
       this.initialize();
     }, 0);
 
@@ -64,27 +72,78 @@ export class GiveawayComponent implements OnInit {
     this.bsModalRef.hide();
   }
   Give() {
-    let _character = [];
-    if (this.selectercharacter && this.selectercharacter.characterId) {
-      _character.push({ iD: this.selectercharacter.characterId });
-
-      let lootId = this.giveAwayItem.lootId;
+    if (this.isLootPile) {
+        //model.characterId = this.characterId;
+        //model.itemMasterId = null;
       this.isLoading = true;
-      this.lootService.giveItemTocharacter<any>(_character, lootId)
-        .subscribe(data => {
-          // console.log(data);
-          this.close();
-          this.sharedService.updateItemsList(true);
-          this.isLoading = false;
-        }, error => {
-          let Errors = Utilities.ErrorDetail("", error);
-          if (Errors.sessionExpire) {
-            this.authService.logout(true);
-          }
-        }, () => { });
+      this.itemMasterService.getCharacterItemCount(this.ruleSetId, this.selectercharacter.characterId)
+          .subscribe((data: any) => {
+            let ItemCount = data.itemCount;
+            let selectedItemCount = 0;
+            let multiLootIds = [];
+            if (this.lootPileItems) {
+              this.lootPileItems.map(x => {
+                multiLootIds.push({ lootId: x.lootId, name: x.itemName });
+              });
+            }
+            let model = { characterId: this.selectercharacter.characterId, itemMasterId: null, multiItemMasterBundles: [], multiLootIds: multiLootIds}; 
+            if (this.lootPileItems && this.lootPileItems.length) {
+              selectedItemCount = this.lootPileItems.length;
+            }
+            if ((ItemCount + selectedItemCount) < 200) {
+
+              this.lootService.lootItemsTakeByplayer<any>(model)
+                .subscribe(data => {
+                  if (data) {
+                    if (data.message) {
+                      this.alertService.showMessage(data.message, "", MessageSeverity.error);
+                    } else {
+                      this.alertService.showMessage("Adding Loot Item", "", MessageSeverity.success);
+                    }
+                    this.close();
+                    this.sharedService.updateItemsList(true);
+                    this.event.emit(true);                   
+                  }
+                  this.isLoading = false;
+                }, error => {
+                  this.isLoading = false;
+                  let Errors = Utilities.ErrorDetail("", error);
+                  if (Errors.sessionExpire) {
+                    //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
+                    this.authService.logout(true);
+                  }
+                }, () => { });
+            }
+            else {
+              this.isLoading = false;
+              this.alertService.showMessage("The maximum number of Items has been reached, 200. Please delete some Items and try again.", "", MessageSeverity.error);
+            }
+          }, error => { }, () => { });
+      
     } else {
-      let message = 'please select atleast one Character and try again.';
-      this.alertService.showMessage(message, "", MessageSeverity.error);
+      let _character = [];
+      if (this.selectercharacter && this.selectercharacter.characterId) {
+        _character.push({ iD: this.selectercharacter.characterId });
+
+        let lootId = this.giveAwayItem.lootId;
+        this.isLoading = true;
+        this.lootService.giveItemTocharacter<any>(_character, lootId)
+          .subscribe(data => {
+            // console.log(data);
+            this.close();
+            this.sharedService.updateItemsList(true);
+            this.event.emit(true);
+            this.isLoading = false;
+          }, error => {
+            let Errors = Utilities.ErrorDetail("", error);
+            if (Errors.sessionExpire) {
+              this.authService.logout(true);
+            }
+          }, () => { });
+      } else {
+        let message = 'please select atleast one Character and try again.';
+        this.alertService.showMessage(message, "", MessageSeverity.error);
+      }
     }
 
 

@@ -19,6 +19,7 @@ import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.comp
 import { Characters } from "../../../core/models/view-models/characters.model";
 import { CreatelootComponent } from "../createloot/createloot.component";
 import { LootService } from "../../../core/services/loot.service";
+import { GiveawayComponent } from "../giveaway/giveaway.component";
 
 @Component({
   selector: 'app-loot-details',
@@ -324,6 +325,19 @@ export class LootDetailsComponent implements OnInit {
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.character = new Characters();
     this.bsModalRef.content.command = cmd;
+  }
+  Give(item) {
+    this.bsModalRef = this.modalService.show(GiveawayComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.giveAwayItem = item;
+    this.bsModalRef.content.event.subscribe(data => {
+      if (data) {
+        this.router.navigate(['/ruleset/loot', this.ruleSetId]);
+      }
+    });
   }
 
 }

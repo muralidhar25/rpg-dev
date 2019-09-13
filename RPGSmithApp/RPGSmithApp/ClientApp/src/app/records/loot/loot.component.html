@@ -307,11 +307,12 @@
                 <ng-container *ngIf="!ItemMaster.isLootPile">
                   <button type="button" *ngIf="ItemMaster.isShow" (click)="Show(ItemMaster)" class="btn btn-accent icon icon-Gen-Hide icon-with-text">Hide</button>
                   <button type="button" *ngIf="!ItemMaster.isShow" (click)="Show(ItemMaster)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>
-                  <button type="button" (click)="Give(ItemMaster)" class="btn btn-accent icon icon-Gen-Give icon-with-text ">Give</button>
+                  <button type="button" (click)="Give(ItemMaster)" class="btn btn-accent icon icon-Gen-Give icon-with-text">Give</button>
                 </ng-container>
                 <ng-container *ngIf="ItemMaster.isLootPile">
                   <button type="button" *ngIf="ItemMaster.isVisible" (click)="Visible(ItemMaster)" class="btn btn-accent icon icon-Gen-Hide icon-with-text">Hide</button>
                   <button type="button" *ngIf="!ItemMaster.isVisible" (click)="Visible(ItemMaster)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>
+                  <button type="button" (click)="GiveLootPile(ItemMaster)" class="btn btn-accent icon icon-Gen-Give icon-with-text ">Give</button>
                 </ng-container>
 
 

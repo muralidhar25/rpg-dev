@@ -19,6 +19,7 @@ import { DiceRollComponent } from "../../../shared/dice/dice-roll/dice-roll.comp
 import { Characters } from "../../../core/models/view-models/characters.model";
 import { LootService } from "../../../core/services/loot.service";
 import { CreateLootPileComponent } from "../create-loot-pile/create-loot-pile.component";
+import { GiveawayComponent } from "../../loot/giveaway/giveaway.component";
 
 @Component({
   selector: 'app-loot-pile-details',
@@ -81,11 +82,9 @@ export class LootPileDetailsComponent implements OnInit {
         this.IsGm = user.isGm;
       }
       this.isLoading = true;
-      debugger
       this.itemMasterService.getLootPile<any>(this.lootPileId)
         .subscribe(data => {
           if (data) {
-            debugger;
             this.RuleSet = data.lootPileRuleSet;
             this.lootPileItems = data.lootPileItems;
             this.ItemMasterDetail = this.itemMasterService.itemMasterModelData(data, "UPDATE");
@@ -126,7 +125,6 @@ export class LootPileDetailsComponent implements OnInit {
   }
 
   editItemTemplate(itemMaster: any) {
-    debugger;
     itemMaster.lootPileItems = this.lootPileItems;
 
     let lootPileVM = { lootId: itemMaster.lootId, ruleSetId: itemMaster.ruleSetId, name: itemMaster.itemName, imageUrl: itemMaster.itemImage, description: itemMaster.itemVisibleDesc, metatags: itemMaster.metatags, visible: itemMaster.isVisible, itemList: itemMaster.lootPileItems }
@@ -286,7 +284,6 @@ export class LootPileDetailsComponent implements OnInit {
   }
 
   redirectToItem(itemId: number) {
-    debugger
     if (itemId) {
       this.router.navigate(['/ruleset/loot-details', itemId]);
       //this.sharedService.updateItemsList({ onPage: false });
@@ -330,6 +327,22 @@ export class LootPileDetailsComponent implements OnInit {
     this.bsModalRef.content.characterId = 0;
     this.bsModalRef.content.character = new Characters();
     this.bsModalRef.content.command = cmd;
+  }
+
+  Give(item) {
+    this.bsModalRef = this.modalService.show(GiveawayComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.giveAwayItem = item;
+    this.bsModalRef.content.lootPileItems = this.lootPileItems;
+    this.bsModalRef.content.isLootPile = true;
+    this.bsModalRef.content.event.subscribe(data => {
+      if (data) {
+        this.router.navigate(['/ruleset/loot', this.ruleSetId]);
+      }
+    });
   }
 
 }
