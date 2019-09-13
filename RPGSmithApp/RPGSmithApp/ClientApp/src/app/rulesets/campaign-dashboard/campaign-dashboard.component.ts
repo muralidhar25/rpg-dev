@@ -1241,8 +1241,8 @@ export class CampaignDashboardComponent implements OnInit {
       }));
       this.ResizeRelocateboxes = [];
     }
-    else {
-      // this.boxes = Object.assign([], this.Originalboxes);
+    else if (this.Deletedboxes.length && doUpdate) {
+      this.boxes = Object.assign([], this.Originalboxes);
     }
   }
   moveToTrash(box: Box, index: number) {

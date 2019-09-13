@@ -442,7 +442,6 @@ export class CharacterTilesComponent implements OnInit {
     this.IsEditPage = false;
     this.gridConfig.draggable = !this.IsMobilePanel;
     this.gridConfig.resizable = !this.IsMobilePanel;
-    
     if (this.ResizeRelocateboxes.length && doUpdate) {
       this.Deletedboxes = [];
       this.boxes = Object.assign([], this.ResizeRelocateboxes.map((box) => {
@@ -452,8 +451,8 @@ export class CharacterTilesComponent implements OnInit {
       }));
       this.ResizeRelocateboxes = [];
     }
-    else {
-      //this.boxes = Object.assign([], this.Originalboxes);
+    else if (this.Deletedboxes.length && doUpdate) {
+        this.boxes = Object.assign([], this.Originalboxes); 
     }
 
   }

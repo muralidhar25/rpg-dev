@@ -1208,16 +1208,16 @@ export class RulesetDashboardComponent implements OnInit {
         //this.boxes = Object.assign([], this.Originalboxes);
     if (this.ResizeRelocateboxes.length && doUpdate) {
       this.Deletedboxes = [];
-            this.boxes = Object.assign([], this.ResizeRelocateboxes.map((box) => {
-                box.config = Object.assign(new config, box.config);
+      this.boxes = Object.assign([], this.ResizeRelocateboxes.map((box) => {
+        box.config = Object.assign(new config, box.config);
 
-                return Object.assign(new Box, box);
-            }));
-            this.ResizeRelocateboxes = [];
-        }
-        else {
-           // this.boxes = Object.assign([], this.Originalboxes);
-        }
+        return Object.assign(new Box, box);
+      }));
+      this.ResizeRelocateboxes = [];
+    }
+    else if (this.Deletedboxes.length && doUpdate) {
+      this.boxes = Object.assign([], this.Originalboxes);
+    }
     }
     moveToTrash(box: Box, index: number) {
         this.Deletedboxes.push(box);
