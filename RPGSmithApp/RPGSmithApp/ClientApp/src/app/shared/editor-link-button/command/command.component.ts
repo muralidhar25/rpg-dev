@@ -42,7 +42,11 @@ export class EditorCommandComponent implements OnInit {
       this.editorHtml = this.bsModalRef.content.editor;
 
       this.Initialize();
+      try {
+        document.getElementsByClassName('modal-md modal-with-max-zindex')[0].parentElement.style.zIndex = '99999999999';
+      } catch (e) {
 
+      }
     }, 0);
   }
 

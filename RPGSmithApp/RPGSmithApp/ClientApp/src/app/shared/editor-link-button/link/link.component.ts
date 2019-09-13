@@ -116,7 +116,11 @@ export class EditorLinkComponent implements OnInit {
         this.isMonsterTemplateloaded = true;
       }
       this.initialize();
+      try {
+        document.getElementsByClassName('modal-md modal-with-max-zindex')[0].parentElement.style.zIndex = '99999999999';
+      } catch (e) {
 
+      }
     }, 0);
   }
 

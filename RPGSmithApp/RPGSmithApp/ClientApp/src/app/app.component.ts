@@ -1483,7 +1483,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     switch (val) {
       case EDITOR_LINK_BUTTON.STAT:
         this.bsModalRef = this.modalService.show(EditorStatComponent, {
-          class: 'modal-primary modal-md',
+          class: 'modal-primary modal-md modal-with-max-zindex',
           ignoreBackdropClick: true,
           keyboard: false
         });
@@ -1500,7 +1500,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       case EDITOR_LINK_BUTTON.LINK:
         // open popup
         this.bsModalRef = this.modalService.show(EditorLinkComponent, {
-          class: 'modal-primary modal-md',
+          class: 'modal-primary modal-md modal-with-max-zindex',
           ignoreBackdropClick: true,
           keyboard: false
         });
@@ -1518,7 +1518,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       case EDITOR_LINK_BUTTON.EXECUTE:
         // open popup
         this.bsModalRef = this.modalService.show(EditorExecuteComponent, {
-          class: 'modal-primary modal-md',
+          class: 'modal-primary modal-md modal-with-max-zindex',
           ignoreBackdropClick: true,
           keyboard: false
         });
@@ -1536,7 +1536,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       case EDITOR_LINK_BUTTON.COMMAND:
         // open popup
         this.bsModalRef = this.modalService.show(EditorCommandComponent, {
-          class: 'modal-primary modal-md',
+          class: 'modal-primary modal-md modal-with-max-zindex',
           ignoreBackdropClick: true,
           keyboard: false
         });

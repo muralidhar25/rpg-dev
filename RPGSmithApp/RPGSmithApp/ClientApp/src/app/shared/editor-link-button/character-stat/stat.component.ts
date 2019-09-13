@@ -45,7 +45,11 @@ export class EditorStatComponent implements OnInit {
       this.title = this.bsModalRef.content.title;
 
       this.Initialize();
+      try {
+        document.getElementsByClassName('modal-md modal-with-max-zindex')[0].parentElement.style.zIndex = '99999999999';
+      } catch (e) {
 
+      }
     }, 0);
   }
 
