@@ -9,6 +9,8 @@ import { User } from '../../../core/models/user.model';
 import { PlatformLocation } from '@angular/common';
 import { CharactersCharacterStatService } from '../../../core/services/characters-character-stat.service';
 import { STAT_TYPE } from '../../../core/models/enums';
+import { CharacterStatService } from '../../../core/services/character-stat.service';
+import { CharacterStats } from '../../../core/models/view-models/character-stats.model';
 
 @Component({
   selector: 'app-stat',
@@ -23,7 +25,7 @@ export class EditorStatComponent implements OnInit {
   limit: number = 4;
   rulesetId: number;
   characterId: number;
-  isLoading: boolean = false;
+  isLoading: boolean = true;
   title: string;
   statsList: Array<any> = [];
   query: string = '';
@@ -33,7 +35,7 @@ export class EditorStatComponent implements OnInit {
 
   constructor(private bsModalRef: BsModalRef,
     private modalService: BsModalService, public localStorage: LocalStoreManager, private authService: AuthService,
-    public characterStatService: CharactersCharacterStatService, private alertService: AlertService, private location: PlatformLocation) {
+    public characterStatService: CharactersCharacterStatService, public cStatService: CharacterStatService,private alertService: AlertService, private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
     this.rulesetId = this.localStorage.localStorageGetItem('rulesetId');
   }
@@ -54,25 +56,42 @@ export class EditorStatComponent implements OnInit {
   }
 
   private Initialize() {
-
     let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);
     if (user == null)
       this.authService.logout();
     else {
       this.isLoading = true;
-      this.characterStatService.getCharactersCharacterStat_StatList<any[]>(this.characterId, -1, -1) //100=>for testing
-        .subscribe(data => {
-          this.statsList = data;
-          if (this.statsList.length) {
-            this.statsList.map((x) => {
-              x.selected = false;
-            });
-          }
-          this.isLoading = false;
-        }, error => {
-          this.isLoading = false;
-        }, () => { });
-    }
+      if (this.characterId > 0) {
+        this.characterStatService.getCharactersCharacterStat_StatList<any[]>(this.characterId, -1, -1) //100=>for testing
+          .subscribe(data => {
+            this.statsList = data;
+            if (this.statsList.length) {
+              this.statsList.map((x) => {
+                x.selected = false;
+              });
+            }
+            this.isLoading = false;
+          }, error => {
+            this.isLoading = false;
+          }, () => { });
+      }
+      else {
+        this.cStatService.getCharacterStatsByRuleset<any[]>(this.rulesetId) //100=>for testing
+          .subscribe(data => {
+            this.statsList = data;
+            if (this.statsList.length) {
+              this.statsList.map((x) => {
+                x.characterStat = new CharacterStats();
+                x.characterStat.statName = x.statName;
+                x.selected = false;
+              });
+            }
+            this.isLoading = false;
+          }, error => {
+            this.isLoading = false;
+          }, () => { });
+        }
+      }
   }
 
   showMoreCommands(_limit: number, _limitText: string) {
