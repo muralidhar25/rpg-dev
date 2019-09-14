@@ -72,6 +72,10 @@ export class GiveawayComponent implements OnInit {
     this.bsModalRef.hide();
   }
   Give() {
+    if (!(this.selectercharacter && this.selectercharacter.characterId)) {
+      this.alertService.showMessage("Please select atleast one Character and try again.", "", MessageSeverity.error);
+      return false;
+    }
     if (this.isLootPile) {
         //model.characterId = this.characterId;
         //model.itemMasterId = null;
@@ -141,7 +145,7 @@ export class GiveawayComponent implements OnInit {
             }
           }, () => { });
       } else {
-        let message = 'please select atleast one Character and try again.';
+        let message = 'Please select atleast one Character and try again.';
         this.alertService.showMessage(message, "", MessageSeverity.error);
       }
     }

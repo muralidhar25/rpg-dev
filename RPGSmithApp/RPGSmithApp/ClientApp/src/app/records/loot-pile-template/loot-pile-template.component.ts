@@ -140,7 +140,7 @@ export class LootPileTemplateComponent implements OnInit {
           this.RuleSet = data.RuleSet;
           this.setHeaderValues(this.RuleSet);
           try {
-            this.noRecordFound = !data.ItemMaster.length;
+            this.noRecordFound = !data.lootTemplates.length;
           } catch (err) { }
           this.isLoading = false;
         }, error => {

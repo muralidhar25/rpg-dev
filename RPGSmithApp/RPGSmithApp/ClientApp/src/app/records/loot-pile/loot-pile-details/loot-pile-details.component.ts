@@ -49,12 +49,10 @@ export class LootPileDetailsComponent implements OnInit {
     private location: PlatformLocation) {
     location.onPopState(() => this.modalService.hide(1));
     this.route.params.subscribe(params => { this.lootPileId = params['id']; this.initialize(); });
-    debugger
 
-    //this.sharedService.shouldUpdateItemMasterDetailList().subscribe(sharedServiceJson => {
-    //  debugger
-    //  if (sharedServiceJson) this.initialize();
-    //});
+    this.sharedService.shouldUpdateItemMasterDetailList().subscribe(sharedServiceJson => {
+      if (sharedServiceJson) this.initialize();
+    });
   }
   @HostListener('document:click', ['$event.target'])
   documentClick(target: any) {
