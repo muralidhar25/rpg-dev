@@ -56,7 +56,10 @@ export class MonsterTemplateDetailsComponent implements OnInit {
         this.monsterTemplateId = params['id'];
         this.initialize();
       });
-      this.sharedService.shouldUpdateMonsterTemplateList().subscribe(sharedServiceJson => {
+      //this.sharedService.shouldUpdateMonsterTemplateList().subscribe(sharedServiceJson => {
+      //      if (sharedServiceJson) this.initialize();
+      //  });
+      this.sharedService.shouldUpdateMonsterTemplateDetailList().subscribe(sharedServiceJson => {
             if (sharedServiceJson) this.initialize();
         });
     }
@@ -99,12 +102,14 @@ export class MonsterTemplateDetailsComponent implements OnInit {
               }
                 this.monsterTemplateService.getMonsterTemplateAssociateRecords_sp<any>(this.monsterTemplateId, this.ruleSetId)
                   .subscribe(data => {
+                   
                     this.selectedBuffAndEffects = data.selectedBuffAndEffects;
                     this.selectedAbilities = data.selectedAbilityList;
                     this.selectedSpells = data.selectedSpellList;
                  
                     this.monsterTemplateDetail.randomizationEngine = data.randomizationEngine;
                     if (this.monsterTemplateDetail.isRandomizationEngine) {
+                      this.selectedItemMasters = [];
                       data.randomizationEngine.map(x => {
                         this.selectedItemMasters.push({ imageUrl: x.itemMaster.itemImage, itemId: 0, itemMasterId: x.itemMaster.itemMasterId, name: x.itemMaster.itemName, qty: 1, ruleSetId: this.monsterTemplateDetail.ruleSetId })
                       });
@@ -113,16 +118,16 @@ export class MonsterTemplateDetailsComponent implements OnInit {
                     }
                    // this.associateMonsterTemplateList = data.monsterTemplatesList;
                     this.selectedAssociateMonsterTemplates = data.selectedMonsterTemplates;
-
+                    this.isLoading = false;
                   }, error => {
-
+                    this.isLoading = false;
                   }, () => { });
              
                 this.rulesetService.GetCopiedRulesetID(this.monsterTemplateDetail.ruleSetId, user.id).subscribe(data => {
                         let id: any = data
                         //this.ruleSetId = id;
                         this.ruleSetId = this.localStorage.getDataObject<number>(DBkeys.RULESET_ID);
-                        this.isLoading = false;
+                        
                     }, error => {
                         this.isLoading = false;
                         let Errors = Utilities.ErrorDetail("", error);

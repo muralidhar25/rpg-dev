@@ -541,20 +541,23 @@ export class CreateMonsterTemplateComponent implements OnInit {
                 this.router.navigate(['/ruleset/monster-template-details', id]);
                 this.event.emit({ monsterTemplateId: id });
                 //this.sharedService.updateItemMasterDetailList(true);
+                this.sharedService.updateMonsterTemplateDetailList(true);
               }
               else {
-
+                this.sharedService.updateMonsterTemplateDetailList(true);
                 this.sharedService.updateMonsterTemplateList(true);
                 this.sharedService.updateMonsterList(true);
 
               }
             }
             else {
+              this.sharedService.updateMonsterTemplateDetailList(true);
               this.sharedService.updateMonsterTemplateList(true);
               this.sharedService.updateMonsterList(true);
             }
           }
           else {
+            this.sharedService.updateMonsterTemplateDetailList(true);
             this.sharedService.updateMonsterTemplateList(true);
             this.sharedService.updateMonsterList(true);
           }

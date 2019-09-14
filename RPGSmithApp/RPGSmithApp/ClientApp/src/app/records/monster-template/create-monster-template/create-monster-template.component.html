@@ -342,96 +342,102 @@
               <!-- After click or -->
               <div *ngIf="randomizationInfo.length >= 0 ">
                 <div *ngFor="let item of randomizationInfo;let i = index">
-                  <div *ngIf="item.isOr == undefined">
-                    <h3>
-                      This Monster has a
-                      <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)"
-                             [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />
-                      % chance of having
-                      <span>
-                        <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)"
-                               [ngStyle]="{'border-color': f.submitted && !item.qty ? 'red' : '#d3cfce'}" required />
-                        <i class="icon-CharStat-Command" [id]="'diceModal_'+i" (click)="openDiceModal(((i+10)*-1),item.qty)"></i>
+                  <form>
+                    <div *ngIf="item.isOr == undefined">
+                      <h3>
+                        This Monster has a
+                        <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)"
+                               [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />
+                        % chance of having
+                        <span>
+                          <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)"
+                                 [ngStyle]="{'border-color': f.submitted && !item.qty ? 'red' : '#d3cfce'}" required />
+                          <i class="icon-CharStat-Command" [id]="'diceModal_'+i" (click)="openDiceModal(((i+10)*-1),item.qty)"></i>
+                        </span>
+                      </h3>
+                      <!--validation message-->
+                      <span *ngIf="item.qty && !isValidSingleNumberCommand(item.qty?item.qty.toString():'', item)" class="errorMessage text-danger">
+                        The 'And' and Text options are disallowed for this comand
                       </span>
-                    </h3>
-                    <!--validation message-->
-                    <span *ngIf="item.qty && !isValidSingleNumberCommand(item.qty?item.qty.toString():'', item)" class="errorMessage text-danger">
-                      The 'And' and Text options are disallowed for this comand
-                    </span>
-                    <div class="search-field-randominzation">
-                      <div (click)="SelectItem(item,i)">
-                        <tag-input [id]="'contains_'+i" [name]="'contains'+ i" theme='dark' [(ngModel)]='item.selectedItem'
-                                   [inputId]="'contains'+i" inputClass="form-control metatags-field" class="form-control"
-                                   [identifyBy]="'value'" [displayBy]="'text'" [placeholder]="''" [secondaryPlaceholder]="'Select Item'"
-                                   style="width: 300px;">
-                        </tag-input>
+                      <div class="search-field-randominzation">
+                        <div (click)="SelectItem(item,i)">
+                          <tag-input name="name1" theme='dark' [(ngModel)]='item.selectedItem'
+                                     inputClass="form-control metatags-field" class="form-control"
+                                     [identifyBy]="'itemId'" [displayBy]="'text'" [placeholder]="''" [secondaryPlaceholder]="'Select Item'"
+                                     style="width: 300px;">
+                          </tag-input>
+                        </div>
+                        <!--Parent OR button-->
+                        <button type="button" class="btn-orange-icons icon-Gen-Trash unvisible"></button>
+                        <a href="javascript:void(0);" class="orange-text-randominzation visible" (click)="randomizationOR(i)">OR</a>
                       </div>
-                      <!--Parent OR button-->
-                      <button type="button" class="btn-orange-icons icon-Gen-Trash unvisible"></button>
-                      <a href="javascript:void(0);" class="orange-text-randominzation visible" (click)="randomizationOR(i)">OR</a>
+
+                    </div>
+                    <div *ngIf="item.isOr">
+                      <h3>
+                        or a
+                        <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)"
+                               [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />
+                        % chance of having
+                        <span>
+                          <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)"
+                                 [ngStyle]="{'border-color': f.submitted && !item.qty ? 'red' : '#d3cfce'}" required />
+                          <i class="icon-CharStat-Command" [id]="'diceModal_'+i" (click)="openDiceModal(((i+10)*-1),item.qty)"></i>
+                        </span>
+                      </h3>
+                      <!--validation message-->
+                      <span *ngIf="item.qty && !isValidSingleNumberCommand(item.qty?item.qty.toString():'', item)" class="errorMessage text-danger">
+                        The 'And' and Text options are disallowed for this comand
+                      </span>
+
+                      <div class="search-field-randominzation">
+                        <div (click)="SelectItem(item,i)">
+                          <tag-input name="name2" theme='dark'
+                                     [(ngModel)]='item.selectedItem' inputClass="form-control metatags-field" class="form-control"
+                                     [identifyBy]="'itemId'" [displayBy]="'text'" [placeholder]="''" [secondaryPlaceholder]="'Select Item'"
+                                     style="width: 300px;">
+                          </tag-input>
+                        </div>
+                        <!--Child OR with Delete button-->
+                        <button type="button" class="btn-orange-icons icon-Gen-Trash" (click)="removeRandom(item,i)"></button>
+                        <a href="javascript:void(0);" class="orange-text-randominzation" (click)="randomizationOr(i)">OR</a>
+                      </div>
                     </div>
 
-                  </div>
-                  <div *ngIf="item.isOr">
-                    <h3>
-                      or a
-                      <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)"
-                             [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />
-                      % chance of having
-                      <span>
-                        <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)"
-                               [ngStyle]="{'border-color': f.submitted && !item.qty ? 'red' : '#d3cfce'}" required />
-                        <i class="icon-CharStat-Command" [id]="'diceModal_'+i" (click)="openDiceModal(((i+10)*-1),item.qty)"></i>
+                    <!--Start AND part-->
+                    <div *ngIf="item.isOr == false">
+                      <div class="adn-seprater"><span>and</span></div>
+                      <h3>
+                        This Monster has a
+                        <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)"
+                               [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />
+                        % chance of having
+                        <span>
+                          <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)"
+                                 [ngStyle]="{'border-color': f.submitted && !item.qty ? 'red' : '#d3cfce'}" required />
+                          <i class="icon-CharStat-Command" [id]="'diceModal_'+i" (click)="openDiceModal(((i+10)*-1),item.qty)"></i>
+                        </span>
+                      </h3>
+                      <!-- Quantity Validation Message-->
+                      <span *ngIf="item.qty && !isValidSingleNumberCommand(item.qty?item.qty.toString():'', item)" class="errorMessage text-danger">
+                        The 'And' and Text options are disallowed for this comand
                       </span>
-                    </h3>
-                    <!--validation message-->
-                    <span *ngIf="item.qty && !isValidSingleNumberCommand(item.qty?item.qty.toString():'', item)" class="errorMessage text-danger">
-                      The 'And' and Text options are disallowed for this comand
-                    </span>
-
-                    <div class="search-field-randominzation">
-                      <div (click)="SelectItem(item,i)">
-                        <tag-input [id]="'contains_'+i" [name]="'contains'+ i" theme='dark' [inputId]="'contains'+ i"
-                                   [(ngModel)]='item.selectedItem' inputClass="form-control metatags-field" class="form-control"
-                                   [identifyBy]="'value'" [displayBy]="'text'" [placeholder]="''" [secondaryPlaceholder]="'Select Item'"
-                                   style="width: 300px;">
-                        </tag-input>
+                      <div class="search-field-randominzation">
+                        <div (click)="SelectItem(item,i)">
+                          <tag-input name="name3" theme='dark' [(ngModel)]='item.selectedItem'
+                                     inputClass="form-control metatags-field" class="form-control"
+                                     [identifyBy]="'itemId'" [displayBy]="'text'" [placeholder]="''" [secondaryPlaceholder]="'Select Item'"
+                                     style="width: 300px;">
+                          </tag-input>
+                        </div>
+                        <!--child OR-->
+                        <button type="button" class="btn-orange-icons icon-Gen-Trash" (click)="removeRandom(item,i)"></button>
+                        <a href="javascript:void(0);" class="orange-text-randominzation visible" (click)="randomizationOR(i)">OR</a>
                       </div>
-                      <!--Child OR with Delete button-->
-                      <button type="button" class="btn-orange-icons icon-Gen-Trash" (click)="removeRandom(item,i)"></button>
-                      <a href="javascript:void(0);" class="orange-text-randominzation" (click)="randomizationOr(i)">OR</a>
                     </div>
-                  </div>
+                    <!--End AND part-->
 
-                  <!--Start AND part-->
-                  <div *ngIf="item.isOr == false">
-                    <div class="adn-seprater"><span>and</span></div>
-                    <h3>
-                      This Monster has a
-                      <input type="number" placeholder="0-100" [name]="'percentage_'+i" [value]="item.percentage" (change)="percentage($event, item)"
-                             [ngStyle]="{'border-color': f.submitted && !item.percentage ? 'red' : '#d3cfce'}" required />
-                      % chance of having
-                      <span>
-                        <input type="text" placeholder="Quantity" [name]="'Qty_'+i" [value]="item.qty" (keyup)="quantity($event, item)"
-                               [ngStyle]="{'border-color': f.submitted && !item.qty ? 'red' : '#d3cfce'}" required />
-                        <i class="icon-CharStat-Command" [id]="'diceModal_'+i" (click)="openDiceModal(((i+10)*-1),item.qty)"></i>
-                      </span>
-                    </h3>
-                    <!-- Quantity Validation Message-->
-                    <span *ngIf="item.qty && !isValidSingleNumberCommand(item.qty?item.qty.toString():'', item)" class="errorMessage text-danger">
-                      The 'And' and Text options are disallowed for this comand
-                    </span>
-                    <div class="search-field-randominzation">
-                      <div (click)="SelectItem(item,i)">
-                        <tag-input [id]="'contains_'+i" [name]="'contains'+ i" theme='dark' [(ngModel)]='item.selectedItem' [inputId]="'contains'+ i" inputClass="form-control metatags-field" class="form-control" [identifyBy]="'value'" [displayBy]="'text'" [placeholder]="''" [secondaryPlaceholder]="'Select Item'" style="width: 300px;">
-                        </tag-input>
-                      </div>
-                      <!--child OR-->
-                      <button type="button" class="btn-orange-icons icon-Gen-Trash" (click)="removeRandom(item,i)"></button>
-                      <a href="javascript:void(0);" class="orange-text-randominzation visible" (click)="randomizationOR(i)">OR</a>
-                    </div>
-                  </div>
-                  <!--End AND part-->
+                  </form>
                 </div>
               </div>
               <!-- After Click And end-->
