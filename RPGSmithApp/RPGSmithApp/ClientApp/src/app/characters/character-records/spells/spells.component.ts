@@ -201,7 +201,13 @@ export class CharacterSpellsComponent implements OnInit {
           if (Errors.sessionExpire) {
             this.authService.logout(true);
           }
-        }, () => { });
+        }, () => {
+          setTimeout(() => {
+            if (window.innerHeight > document.body.clientHeight) {
+              this.onScroll();
+            }
+          }, 10)
+         });
 
       this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'CharacterSpells')
         .subscribe(data => {

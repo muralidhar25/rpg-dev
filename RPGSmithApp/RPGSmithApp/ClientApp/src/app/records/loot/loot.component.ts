@@ -130,7 +130,13 @@ export class LootComponent implements OnInit {
             //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
             this.authService.logout(true);
           }
-        }, () => { })
+        }, () => {
+          setTimeout(() => {
+            if (window.innerHeight > document.body.clientHeight) {
+              this.onScroll();
+            }
+          }, 10)
+         })
 
 
 

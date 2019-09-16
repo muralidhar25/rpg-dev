@@ -598,6 +598,13 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                           item.text = result;
                         }
                       });
+
+                      setTimeout(() => {
+                        if (window.innerHeight > document.body.clientHeight) {
+                          this.onScroll();
+                        }
+                      }, 10)
+
                     });
                 }, error => {
                     let Errors = Utilities.ErrorDetail("", error);

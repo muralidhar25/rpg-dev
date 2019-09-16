@@ -173,7 +173,13 @@ export class MonsterComponent implements OnInit {
             //this.alertService.showMessage("Session Ended!", "", MessageSeverity.default);
             this.authService.logout(true);
           }
-        }, () => { });
+        }, () => {
+          setTimeout(() => {
+            if (window.innerHeight > document.body.clientHeight) {
+              this.onScroll();
+            }
+          }, 10)
+        });
 
       this.pageLastViewsService.getByUserIdPageName<any>(user.id, 'RulesetMonsters')
         .subscribe(data => {
