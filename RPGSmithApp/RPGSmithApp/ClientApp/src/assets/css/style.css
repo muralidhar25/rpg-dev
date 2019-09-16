@@ -9518,3 +9518,10 @@ input-type-number::-webkit-outer-spin-button {
 /*.fr-view .fr-class-DDcode {
   background-color: #ffff00;
 }*/
+.dense-list .card-body {
+  width: 100%;
+}
+.card-list.dense-list .card-wrapper .card .card-title {
+  width: 100%;
+  word-break: break-all !important;
+}
