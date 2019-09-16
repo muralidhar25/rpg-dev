@@ -1029,13 +1029,13 @@ export class Utilities {
       return 'https://rpgsmith.com/helpa/#a6';
     }
     else if (url.toUpperCase().indexOf('/CHARACTER/DASHBOARD/') > -1 || url.toUpperCase().indexOf('/RULESET/CAMPAIGN-DASHBOARD/') > -1) {
-      return 'https://rpgsmith.com/helpb/#B2';
+      return 'https://rpgsmith.com/helpb/#b2';
     }
     else if (url.toUpperCase().indexOf('/RULESET/DASHBOARD/') > -1) {
       return 'https://rpgsmith.com/helpc/#c3';
     }
     else if (url.toUpperCase().indexOf('/CHARACTER/TILES/') > -1) {
-      return 'https://rpgsmith.com/helpb/#B4';
+      return 'https://rpgsmith.com/helpb/#b4';
     }
     else if (url.toUpperCase().indexOf('/SEARCH/') > -1) {
       return 'https://rpgsmith.com/helph/#h';
