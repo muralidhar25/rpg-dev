@@ -430,3 +430,9 @@
 .ng-chat-grey-text b.bold-command-result {
   font-size: 0.92rem;
 }
+.chat-heading {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 90%;
+}

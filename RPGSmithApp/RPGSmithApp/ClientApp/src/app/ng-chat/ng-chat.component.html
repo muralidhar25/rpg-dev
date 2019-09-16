@@ -2,7 +2,8 @@
 
 <div id="ng-chat" *ngIf="isBootstrapped && !unsupportedViewport" [ngClass]="theme">
   <div *ngIf="!hideFriendsList" id="ng-chat-people" [ngClass]="{'primary-outline-color': true, 'primary-background': true, 'ng-chat-people-collapsed': isCollapsed}">
-    <a href="javascript:void(0);" class="ng-chat-title secondary-background shadowed" (click)="onChatTitleClicked($event)">
+    <a href="javascript:void(0);" class="ng-chat-title secondary-background shadowed chat-heading" (click)="onChatTitleClicked($event)"
+       popover="{{localization.title}}" triggers="hover">
       <span>
         {{localization.title}}
       </span>
@@ -150,7 +151,7 @@
             </div>
 
             <div class="ng-chat-footer primary-outline-color primary-background">
-                <input #chatWindowInput 
+                <input #chatWindowInput
                     type="text" 
                     [ngModel]="window.newMessage | emojify:emojisEnabled" 
                     (ngModelChange)="window.newMessage=$event" 
