@@ -9,7 +9,7 @@
       <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
     </div>
 
-    <div class="modal-body" *ngIf="!isLoading">
+    <div class="modal-body">
 
       <!-- Search query -->
       <div class="form-group form-group-unlabelled" [ngClass]="{ 'has-success': f.submitted && query.valid, 'has-error': f.submitted && !query.valid }">
@@ -24,7 +24,8 @@
           <!-- Attribute core stats -->
           <fieldset class="form-group input-list input-list-wrap core-stats">
             <legend>Character Stats</legend>
-            <ul class="input-list-items">
+            <app-loader [isLoading]="isLoading"></app-loader>
+            <ul class="input-list-items"  *ngIf="!isLoading">
               <li class="form-check" *ngFor="let stat of statsList | filterTile : query : 'stat';let i=index;" popover="{{stat.characterStat.statName}}" triggers="hover">
                 <!--<label class="form-check-label" *ngIf="i<limit">-->
                 <label class="form-check-label">
@@ -47,7 +48,7 @@
 
     </div>
 
-    <app-loader [isLoading]="isLoading"></app-loader>
+    <!--<app-loader [isLoading]="isLoading"></app-loader>-->
 
     <div class="modal-footer">
       <button type="button" data-dismiss="modal" class="btn btn-simple-accent" (click)="close()">Cancel</button>
