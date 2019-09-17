@@ -26,7 +26,7 @@
             <li class="form-check col-md-6 col-sm-12" *ngFor="let item of itemsList | filter : searchText : 'itemName';let i = index;" popover="{{item.itemName}}" triggers="hover">
               <label class="form-check-label">
 
-                <input class="form-check-input" type="checkbox" name="newItem" #chkEnable ngModel [checked]="item.selected" (change)="setItemMaster($event,item)" />
+                <input class="form-check-input" type="checkbox" name="newItem{{i}}" #chkEnable [checked]="item.selected" (change)="setItemMaster($event,item)" />
                 <!--[checked]="characterItems | contains : item.itemMasterId : 'itemMasterId'" />
                   [disabled]="characterItems | contains : item.itemMasterId : 'itemMasterId'" />-->
                 <span>
@@ -34,7 +34,7 @@
                        onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
                   <em>{{item.itemName}}</em>
                   <span class="input-box" *ngIf="chkEnable.checked">
-                    <input type="number" max="9999" maxlength='4' class="w-100 h-100 text-center border-0" id="qty{{i}}" name="qty{{i}}" [(ngModel)]="item.quantity" #qty="ngModel" (ngModelChange)="quantityChanged(item.quantity,item)" />
+                    <input type="number" max="9999" maxlength='4' class="w-100 h-100 text-center border-0" id="qty{{i}}" name="qty{{i}}" [(ngModel)]="item.quantity" #qty="ngModel" (change)="quantityChanged(item.quantity,item)" />
                   </span>
                   <i class="icon monster-icon"></i>
                 </span>

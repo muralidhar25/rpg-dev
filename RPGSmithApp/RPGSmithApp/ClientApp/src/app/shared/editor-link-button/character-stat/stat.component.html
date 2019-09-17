@@ -4,7 +4,7 @@
 
 
     <div class="modal-header">
-      <h5 class="modal-title" id="newNoteTilePopupTitle">{{title}} </h5>
+      <h5 class="modal-title" id="newNoteTilePopupTitle">{{title}} </h5> 
       <a href="https://rpgsmith.com/helpa/#a1" class=" help-icon  icon icon-Gen-Help crsr-pointer" target="_blank"></a>
       <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
     </div>
@@ -12,7 +12,7 @@
     <div class="modal-body">
 
       <!-- Search query -->
-      <div class="form-group form-group-unlabelled" [ngClass]="{ 'has-success': f.submitted && query.valid, 'has-error': f.submitted && !query.valid }">
+      <div class="form-group form-group-unlabelled">
         <span class="input-group-btn">
           <button type="button" title="Search" data-toggle="tooltip" class="btn icon icon-search btn-simple-primary"></button>
         </span>

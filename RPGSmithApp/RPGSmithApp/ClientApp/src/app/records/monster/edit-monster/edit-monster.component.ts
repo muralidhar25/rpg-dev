@@ -19,9 +19,9 @@ import { DBkeys } from '../../../core/common/db-keys';
 import { DiceComponent } from '../../../shared/dice/dice/dice.component';
 import { ImageSelectorComponent } from '../../../shared/image-interface/image-selector/image-selector.component';
 import { DiceService } from '../../../core/services/dice.service';
-import { AddItemMonsterComponent } from '../../monster-template/Add-items-monster/add-item-monster.component';
 import { CustomDice } from '../../../core/models/view-models/custome-dice.model';
 import { RulesetService } from '../../../core/services/ruleset.service';
+import { AddItemsForMonstersOnlyComponent } from '../add-items-for-monster/add-items-for-monster.component';
 
 @Component({
   selector: 'app-edit-monster',
@@ -702,7 +702,7 @@ export class EditMonsterComponent implements OnInit {
   selectedMosnterItemsListChanged(item) {
   }
   SelectMonsterItems() {
-    this.bsModalRef = this.modalService.show(AddItemMonsterComponent, {
+    this.bsModalRef = this.modalService.show(AddItemsForMonstersOnlyComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
       keyboard: false

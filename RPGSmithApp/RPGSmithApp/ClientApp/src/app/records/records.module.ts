@@ -66,6 +66,7 @@ import { CreateLootPileTemplateComponent } from "./loot-pile-template/create-loo
 import { LootPileTemplateComponent } from "./loot-pile-template/loot-pile-template.component";
 import { LootPileTemplateDetailsComponent } from "./loot-pile-template/loot-pile-template-details/loot-pile-template-details.component";
 import { DeleteLootPileTemplateComponent } from "./loot-pile-template/delete-loot-pile-template/delete-loot-pile-template.component";
+import { AddItemsForMonstersOnlyComponent } from "./monster/add-items-for-monster/add-items-for-monster.component";
 
 
 
@@ -131,7 +132,8 @@ import { DeleteLootPileTemplateComponent } from "./loot-pile-template/delete-loo
     LootPileTemplateComponent,
     CreateLootPileTemplateComponent,
     LootPileTemplateDetailsComponent,
-    DeleteLootPileTemplateComponent
+    DeleteLootPileTemplateComponent,
+    AddItemsForMonstersOnlyComponent
   ],
   imports: [
     SharedModule
@@ -200,7 +202,8 @@ import { DeleteLootPileTemplateComponent } from "./loot-pile-template/delete-loo
     LootPileTemplateComponent,
     CreateLootPileTemplateComponent,
     LootPileTemplateDetailsComponent,
-    DeleteLootPileTemplateComponent
+    DeleteLootPileTemplateComponent,
+    AddItemsForMonstersOnlyComponent
   ],
   entryComponents: [
     AddItemMasterComponent,
@@ -246,7 +249,8 @@ import { DeleteLootPileTemplateComponent } from "./loot-pile-template/delete-loo
     LootPileTemplateComponent,
     CreateLootPileTemplateComponent,
     LootPileTemplateDetailsComponent,
-    DeleteLootPileTemplateComponent
+    DeleteLootPileTemplateComponent,
+    AddItemsForMonstersOnlyComponent
   ]
 })
 export class RecordsModule {}
