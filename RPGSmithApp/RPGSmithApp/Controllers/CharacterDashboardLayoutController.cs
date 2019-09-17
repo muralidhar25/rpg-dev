@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using DAL.Core.Interfaces;
 using DAL.Models;
 using DAL.Models.CharacterTileModels;
 //using DAL.Services;
@@ -34,6 +35,7 @@ namespace RPGSmithApp.Controllers
         private readonly IBuffAndEffectTileService _buffAndEffectTileService;
         private readonly IToggleTileService _toggleTileService;
         private readonly ICharacterStatClusterTileService _clusterTileService;
+        private readonly IAccountManager _accountManager;
 
         public CharacterDashboardLayoutController(IHttpContextAccessor httpContextAccessor,
             DAL.Services.ICharacterDashboardLayoutService characterDashboardLayoutService,
@@ -50,7 +52,7 @@ namespace RPGSmithApp.Controllers
             ITextTileService textTileService,
             IBuffAndEffectTileService buffAndEffectTileService,
             IToggleTileService toggleTileService,
-            ICharacterStatClusterTileService clusterTileService)
+            ICharacterStatClusterTileService clusterTileService, IAccountManager accountManager)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._characterDashboardLayoutService = characterDashboardLayoutService;
@@ -68,6 +70,7 @@ namespace RPGSmithApp.Controllers
             this._buffAndEffectTileService = buffAndEffectTileService;
             this._toggleTileService = toggleTileService;
             this._clusterTileService = clusterTileService;
+            this._accountManager = accountManager;
         }
 
         [HttpGet("getByCharacterId")]
@@ -206,6 +209,7 @@ namespace RPGSmithApp.Controllers
                 try
                 {
                     int defaultPageId = 0;
+                    int? defaultPageIdOfOldLayout = model.DefaultPageId;
                     var _characterDashboardPages = model.CharacterDashboardPages;
 
                     int maxsortorder = _characterDashboardLayoutService.GetMaximumSortOrdertByCharacterId(model.CharacterId);
@@ -216,297 +220,320 @@ namespace RPGSmithApp.Controllers
 
                     var layout = await _characterDashboardLayoutService.Create(model);
 
-                    foreach (var page in _characterDashboardPages)
+
+                    ////New With SP work start////////////  
+                    int old_CharacterDashboardLayoutId = layout.CharacterDashboardLayoutId; ;
+                    if (_characterDashboardPages.Any())
                     {
-                        page.Tiles = null;
-                        int PageId = page.CharacterDashboardPageId;
-                        page.CharacterId = layout.CharacterId;
-                        page.CharacterDashboardLayoutId = layout.CharacterDashboardLayoutId;
-                        page.CharacterDashboardPageId = 0;
-                        var _characterDashboardPage = await _characterDashboardPageService.Create(page);
-                        if (defaultPageId == 0)
-                            defaultPageId = _characterDashboardPage.CharacterDashboardPageId;
-
-                        var characterTiles = _tileService.GetByPageIdCharacterId(PageId, _characterDashboardPage.CharacterId ?? 0);
-                        foreach (var _tile in characterTiles)
-                        {
-                            CharacterTile Tile = await _tileService.Create(new CharacterTile
-                            {
-                                CharacterId = _tile.CharacterId,
-                                CharacterDashboardPageId = _characterDashboardPage.CharacterDashboardPageId,
-                                Height = _tile.Height,
-                                Width = _tile.Width,
-                                IsDeleted = false,
-                                LocationX = _tile.LocationX,
-                                LocationY = _tile.LocationY,
-                                Shape = _tile.Shape,
-                                SortOrder = _tile.SortOrder,
-                                TileTypeId = _tile.TileTypeId
-                            });
-
-                            switch (Tile.TileTypeId)
-                            {
-                                case (int)Enum.TILES.NOTE:
-                                    var noteTile = _tile.NoteTiles; 
-                                    Tile.NoteTiles = await _noteTileService.Create(new CharacterNoteTile
-                                    {
-                                        CharacterTileId = Tile.CharacterTileId,
-                                        Title = noteTile.Title,
-                                        Shape = noteTile.Shape,
-                                        SortOrder = noteTile.SortOrder,
-                                        Content = noteTile.Content,
-                                        BodyBgColor = noteTile.BodyBgColor,
-                                        BodyTextColor = noteTile.BodyTextColor,
-                                        TitleBgColor = noteTile.TitleBgColor,
-                                        TitleTextColor = noteTile.TitleTextColor,
-                                        IsDeleted = false
-                                    });
-                                    //SaveColorsAsync(Tile);
-                                    break;
-                                case (int)Enum.TILES.IMAGE:
-                                    var imageTile = _tile.ImageTiles;
-                                    Tile.ImageTiles = await _imageTileService.Create(new CharacterImageTile {
-                                        CharacterTileId = Tile.CharacterTileId,
-                                        Title = imageTile.Title,
-                                        Shape = imageTile.Shape,
-                                        SortOrder = imageTile.SortOrder,
-                                        BodyBgColor = imageTile.BodyBgColor,
-                                        BodyTextColor = imageTile.BodyTextColor,
-                                        TitleBgColor = imageTile.TitleBgColor,
-                                        TitleTextColor = imageTile.TitleTextColor,
-                                        IsDeleted = false,
-                                        ImageUrl= imageTile.ImageUrl                                        
-                                    });
-                                    //SaveColorsAsync(Tile);
-                                    break;
-                                case (int)Enum.TILES.COUNTER:
-                                    var counterTile = _tile.CounterTiles;
-                                    Tile.CounterTiles = await _counterTileService.Create(new CharacterCounterTile {
-                                        CharacterTileId = Tile.CharacterTileId,
-                                        Title = counterTile.Title,
-                                        Shape = counterTile.Shape,
-                                        SortOrder = counterTile.SortOrder,
-                                        BodyBgColor = counterTile.BodyBgColor,
-                                        BodyTextColor = counterTile.BodyTextColor,
-                                        TitleBgColor = counterTile.TitleBgColor,
-                                        TitleTextColor = counterTile.TitleTextColor,
-                                        CurrentValue = counterTile.CurrentValue,
-                                        DefaultValue =counterTile.DefaultValue,
-                                        Maximum = counterTile.Maximum,
-                                        Minimum = counterTile.Minimum,
-                                        Step = counterTile.Step,
-                                        IsDeleted = false
-                                    });
-                                    //SaveColorsAsync(Tile);
-                                    break;
-                                case (int)Enum.TILES.CHARACTERSTAT:
-                                    var characterStatTile = _tile.CharacterStatTiles;
-                                    Tile.CharacterStatTiles = await _characterStatTileService.Create(new CharacterCharacterStatTile
-                                    {
-                                        CharacterTileId = Tile.CharacterTileId,
-                                        CharactersCharacterStatId= characterStatTile.CharactersCharacterStatId,
-                                        ShowTitle= characterStatTile.ShowTitle,
-                                        Shape = characterStatTile.Shape,
-                                        SortOrder = characterStatTile.SortOrder,
-                                        bodyBgColor = characterStatTile.bodyBgColor,
-                                        bodyTextColor = characterStatTile.bodyTextColor,
-                                        titleBgColor = characterStatTile.titleBgColor,
-                                        titleTextColor = characterStatTile.titleTextColor,
-                                        IsDeleted = false,
-                                        ImageUrl = characterStatTile.ImageUrl
-                                    });
-                                    //SaveColorsAsync(Tile);
-                                    break;
-                                case (int)Enum.TILES.LINK:
-                                    var linkTile = _tile.LinkTiles;
-                                    Tile.LinkTiles = await _linkTileService.Create(new CharacterLinkTile
-                                    {
-                                        CharacterTileId = Tile.CharacterTileId,
-                                        AbilityId = linkTile.LinkType.ToLower() == Enum.LinkType.ability.ToString()
-                                                ? linkTile.AbilityId : null,
-                                        SpellId = linkTile.LinkType.ToLower() == Enum.LinkType.spell.ToString()
-                                                ? linkTile.SpellId : null,
-                                        ItemId = linkTile.LinkType.ToLower() == Enum.LinkType.item.ToString()
-                                                ? linkTile.ItemId : null,
-                                        LinkType = linkTile.LinkType,
-                                        ShowTitle = linkTile.ShowTitle,
-                                        Shape = linkTile.Shape,
-                                        SortOrder = linkTile.SortOrder,
-                                        BodyBgColor = linkTile.BodyBgColor,
-                                        BodyTextColor = linkTile.BodyTextColor,
-                                        TitleBgColor = linkTile.TitleBgColor,
-                                        TitleTextColor = linkTile.TitleTextColor,
-                                        DisplayLinkImage=linkTile.DisplayLinkImage,
-                                        IsDeleted = false
-                                    });                                   
-                                    //SaveColorsAsync(Tile);
-                                    break;
-                                case (int)Enum.TILES.EXECUTE:
-                                    var executeTile = _tile.ExecuteTiles;
-                                        Tile.ExecuteTiles = await _executeTileService.Create(new CharacterExecuteTile {
-                                            CharacterTileId = Tile.CharacterTileId,
-                                            AbilityId = executeTile.LinkType.ToLower() == Enum.LinkType.ability.ToString()
-                                                    ? executeTile.AbilityId : null,
-                                            SpellId = executeTile.LinkType.ToLower() == Enum.LinkType.spell.ToString()
-                                                    ? executeTile.SpellId : null,
-                                            ItemId = executeTile.LinkType.ToLower() == Enum.LinkType.item.ToString()
-                                                    ? executeTile.ItemId : null,
-                                            LinkType = executeTile.LinkType,
-                                            ShowTitle = executeTile.ShowTitle,
-                                            Shape = executeTile.Shape,
-                                            SortOrder = executeTile.SortOrder,
-                                            BodyBgColor = executeTile.BodyBgColor,
-                                            BodyTextColor = executeTile.BodyTextColor,
-                                            TitleBgColor = executeTile.TitleBgColor,
-                                            TitleTextColor = executeTile.TitleTextColor,
-                                            CommandId = executeTile.CommandId,
-                                            DisplayLinkImage = executeTile.DisplayLinkImage,
-                                            IsDeleted = false
-                                        });                                  
-                                    //SaveColorsAsync(Tile);
-                                    break;
-                                case (int)Enum.TILES.COMMAND:
-                                    var commandTile = _tile.CommandTiles;
-                                    Tile.CommandTiles = await _commandTileService.Create(new CharacterCommandTile {
-                                        CharacterTileId = Tile.CharacterTileId,
-                                        Title = commandTile.Title,
-                                        Shape = commandTile.Shape,
-                                        SortOrder = commandTile.SortOrder,
-                                        ImageUrl = commandTile.ImageUrl,
-                                        BodyBgColor = commandTile.BodyBgColor,
-                                        BodyTextColor = commandTile.BodyTextColor,
-                                        TitleBgColor = commandTile.TitleBgColor,
-                                        TitleTextColor = commandTile.TitleTextColor,
-                                        Command=commandTile.Command,
-                                        IsDeleted = false
-                                    });
-                                    //SaveColorsAsync(Tile);
-                                    break;
-                                case (int)Enum.TILES.TEXT:
-                                    var textTile = _tile.TextTiles;
-                                    Tile.TextTiles = await _textTileService.Create(new CharacterTextTile
-                                    {
-                                        CharacterTileId = Tile.CharacterTileId,
-                                        Title = textTile.Title,
-                                        Shape = textTile.Shape,
-                                        SortOrder = textTile.SortOrder,
-                                        BodyBgColor = textTile.BodyBgColor,
-                                        BodyTextColor = textTile.BodyTextColor,
-                                        TitleBgColor = textTile.TitleBgColor,
-                                        TitleTextColor = textTile.TitleTextColor,
-                                        IsDeleted = false,
-                                        Text = textTile.Text,
-                                    });
-                                    //SaveColorsAsync(Tile);
-                                    break;
-                                case (int)Enum.TILES.BUFFANDEFFECT:
-                                    var buffTile = _tile.BuffAndEffectTiles;
-                                    Tile.BuffAndEffectTiles = await _buffAndEffectTileService.Create(new CharacterBuffAndEffectTile
-                                    {
-                                        CharacterTileId = Tile.CharacterTileId,
-                                        ShowTitle = buffTile.ShowTitle,
-                                        Shape = buffTile.Shape,
-                                        SortOrder = buffTile.SortOrder,
-                                        BodyBgColor = buffTile.BodyBgColor,
-                                        BodyTextColor = buffTile.BodyTextColor,
-                                        TitleBgColor = buffTile.TitleBgColor,
-                                        TitleTextColor = buffTile.TitleTextColor,
-                                        IsDeleted = false,
-                                        DisplayLinkImage = buffTile.DisplayLinkImage,
-                                    });
-                                    //SaveColorsAsync(Tile);
-                                    break;
-                                case (int)Enum.TILES.Toggle:
-                                    var toggleTile = _tile.ToggleTiles;
-                                    var tog = toggleTile.TileToggle;
-
-                                    var customTogglesList = new List<TileCustomToggle>();
-                                    if (tog.TileCustomToggles != null)
-                                    {
-                                        foreach (var item in tog.TileCustomToggles)
-                                        {
-                                            customTogglesList.Add(new TileCustomToggle()
-                                            {
-                                                Image = item.Image,
-                                                IsDeleted = item.IsDeleted,
-                                                ToggleText = item.ToggleText,
-                                            });
-                                        }
-                                    }
-
-                                    var togToAdd = new TileToggle()
-                                    {
-                                        Display = tog.Display,
-                                        IsCustom = tog.IsCustom,
-                                        OnOff = tog.OnOff,
-                                        IsDeleted = tog.IsDeleted,
-                                        ShowCheckbox = tog.ShowCheckbox,
-                                        YesNo = tog.YesNo,
-                                        TileCustomToggles = customTogglesList,
-                                    };
-                                    var toggleTileToCreate = new CharacterToggleTile
-                                    {
-                                        CharacterTileId = Tile.CharacterTileId,
-                                        Title = toggleTile.Title,
-                                        Shape = toggleTile.Shape,
-                                        SortOrder = toggleTile.SortOrder,
-                                        BodyBgColor = toggleTile.BodyBgColor,
-                                        BodyTextColor = toggleTile.BodyTextColor,
-                                        TitleBgColor = toggleTile.TitleBgColor,
-                                        TitleTextColor = toggleTile.TitleTextColor,
-                                        IsDeleted = false,
-                                        CheckBox = toggleTile.CheckBox,
-                                        CustomValue = toggleTile.CustomValue,
-                                        OnOff = toggleTile.OnOff,
-                                        YesNo = toggleTile.YesNo,
-                                        TileToggle = togToAdd,
-
-                                    };
-                                    Tile.ToggleTiles = await _toggleTileService.Create(toggleTileToCreate);
-                                    //SaveColorsAsync(Tile);
-                                    break;
-                                case (int)Enum.TILES.CHARACTERSTATCLUSTER:
-                                    var clusterTile = _tile.CharacterStatClusterTiles;
-                                    Tile.CharacterStatClusterTiles = await _clusterTileService.Create(new CharacterCharacterStatClusterTile
-                                    {
-                                        CharacterTileId = Tile.CharacterTileId,
-                                        Title = clusterTile.Title,
-                                        Shape = clusterTile.Shape,
-                                        SortOrder = clusterTile.SortOrder,
-                                        BodyBgColor = clusterTile.BodyBgColor,
-                                        BodyTextColor = clusterTile.BodyTextColor,
-                                        TitleBgColor = clusterTile.TitleBgColor,
-                                        TitleTextColor = clusterTile.TitleTextColor,
-                                        IsDeleted = false,
-                                        DisplayCharactersCharacterStatID = clusterTile.DisplayCharactersCharacterStatID,
-                                        ClusterWithSortOrder = clusterTile.ClusterWithSortOrder,
-                                    });
-                                    //SaveColorsAsync(Tile);
-                                    break;
-                                default:
-                                    break;
-                            }
-
-                            await _tileConfigService.CreateAsync(new TileConfig
-                            {
-                                CharacterTileId = Tile.CharacterTileId,
-                                Col = _tile.Config.Col,
-                                Row = _tile.Config.Row,
-                                SizeX = _tile.Config.SizeX,
-                                SizeY = _tile.Config.SizeY,
-                                SortOrder = _tile.Config.SortOrder,
-                                UniqueId = _tile.Config.UniqueId,
-                                Payload = _tile.Config.Payload,
-                                IsDeleted = false
-                            });
-                            //await _colorService.Create(Tile.tileColor);
-                        }
+                        old_CharacterDashboardLayoutId = (int)_characterDashboardPages.FirstOrDefault().CharacterDashboardLayoutId;
                     }
+
+                    _characterDashboardLayoutService.Create_sp(layout, GetUserId(), old_CharacterDashboardLayoutId);
+                    ////New With SP work end////////////
+                    //////Old Without SP work start////////////
+                    //foreach (var page in _characterDashboardPages)
+                    //{
+                    //    page.Tiles = null;
+                    //    int PageId = page.CharacterDashboardPageId;
+                    //    page.CharacterId = layout.CharacterId;
+                    //    page.CharacterDashboardLayoutId = layout.CharacterDashboardLayoutId;
+                    //    page.CharacterDashboardPageId = 0;
+                    //    var _characterDashboardPage = await _characterDashboardPageService.Create(page);
+                    //    if (defaultPageId == 0)
+                    //        defaultPageId = _characterDashboardPage.CharacterDashboardPageId;
+
+                    //    var characterTiles = _tileService.GetByPageIdCharacterId(PageId, _characterDashboardPage.CharacterId ?? 0);
+                    //    foreach (var _tile in characterTiles)
+                    //    {
+                    //        CharacterTile Tile = await _tileService.Create(new CharacterTile
+                    //        {
+                    //            CharacterId = _tile.CharacterId,
+                    //            CharacterDashboardPageId = _characterDashboardPage.CharacterDashboardPageId,
+                    //            Height = _tile.Height,
+                    //            Width = _tile.Width,
+                    //            IsDeleted = false,
+                    //            LocationX = _tile.LocationX,
+                    //            LocationY = _tile.LocationY,
+                    //            Shape = _tile.Shape,
+                    //            SortOrder = _tile.SortOrder,
+                    //            TileTypeId = _tile.TileTypeId
+                    //        });
+
+                    //        switch (Tile.TileTypeId)
+                    //        {
+                    //            case (int)Enum.TILES.NOTE:
+                    //                var noteTile = _tile.NoteTiles;
+                    //                Tile.NoteTiles = await _noteTileService.Create(new CharacterNoteTile
+                    //                {
+                    //                    CharacterTileId = Tile.CharacterTileId,
+                    //                    Title = noteTile.Title,
+                    //                    Shape = noteTile.Shape,
+                    //                    SortOrder = noteTile.SortOrder,
+                    //                    Content = noteTile.Content,
+                    //                    BodyBgColor = noteTile.BodyBgColor,
+                    //                    BodyTextColor = noteTile.BodyTextColor,
+                    //                    TitleBgColor = noteTile.TitleBgColor,
+                    //                    TitleTextColor = noteTile.TitleTextColor,
+                    //                    IsDeleted = false
+                    //                });
+                    //                //SaveColorsAsync(Tile);
+                    //                break;
+                    //            case (int)Enum.TILES.IMAGE:
+                    //                var imageTile = _tile.ImageTiles;
+                    //                Tile.ImageTiles = await _imageTileService.Create(new CharacterImageTile
+                    //                {
+                    //                    CharacterTileId = Tile.CharacterTileId,
+                    //                    Title = imageTile.Title,
+                    //                    Shape = imageTile.Shape,
+                    //                    SortOrder = imageTile.SortOrder,
+                    //                    BodyBgColor = imageTile.BodyBgColor,
+                    //                    BodyTextColor = imageTile.BodyTextColor,
+                    //                    TitleBgColor = imageTile.TitleBgColor,
+                    //                    TitleTextColor = imageTile.TitleTextColor,
+                    //                    IsDeleted = false,
+                    //                    ImageUrl = imageTile.ImageUrl
+                    //                });
+                    //                //SaveColorsAsync(Tile);
+                    //                break;
+                    //            case (int)Enum.TILES.COUNTER:
+                    //                var counterTile = _tile.CounterTiles;
+                    //                Tile.CounterTiles = await _counterTileService.Create(new CharacterCounterTile
+                    //                {
+                    //                    CharacterTileId = Tile.CharacterTileId,
+                    //                    Title = counterTile.Title,
+                    //                    Shape = counterTile.Shape,
+                    //                    SortOrder = counterTile.SortOrder,
+                    //                    BodyBgColor = counterTile.BodyBgColor,
+                    //                    BodyTextColor = counterTile.BodyTextColor,
+                    //                    TitleBgColor = counterTile.TitleBgColor,
+                    //                    TitleTextColor = counterTile.TitleTextColor,
+                    //                    CurrentValue = counterTile.CurrentValue,
+                    //                    DefaultValue = counterTile.DefaultValue,
+                    //                    Maximum = counterTile.Maximum,
+                    //                    Minimum = counterTile.Minimum,
+                    //                    Step = counterTile.Step,
+                    //                    IsDeleted = false
+                    //                });
+                    //                //SaveColorsAsync(Tile);
+                    //                break;
+                    //            case (int)Enum.TILES.CHARACTERSTAT:
+                    //                var characterStatTile = _tile.CharacterStatTiles;
+                    //                Tile.CharacterStatTiles = await _characterStatTileService.Create(new CharacterCharacterStatTile
+                    //                {
+                    //                    CharacterTileId = Tile.CharacterTileId,
+                    //                    CharactersCharacterStatId = characterStatTile.CharactersCharacterStatId,
+                    //                    ShowTitle = characterStatTile.ShowTitle,
+                    //                    Shape = characterStatTile.Shape,
+                    //                    SortOrder = characterStatTile.SortOrder,
+                    //                    bodyBgColor = characterStatTile.bodyBgColor,
+                    //                    bodyTextColor = characterStatTile.bodyTextColor,
+                    //                    titleBgColor = characterStatTile.titleBgColor,
+                    //                    titleTextColor = characterStatTile.titleTextColor,
+                    //                    IsDeleted = false,
+                    //                    ImageUrl = characterStatTile.ImageUrl
+                    //                });
+                    //                //SaveColorsAsync(Tile);
+                    //                break;
+                    //            case (int)Enum.TILES.LINK:
+                    //                var linkTile = _tile.LinkTiles;
+                    //                Tile.LinkTiles = await _linkTileService.Create(new CharacterLinkTile
+                    //                {
+                    //                    CharacterTileId = Tile.CharacterTileId,
+                    //                    AbilityId = linkTile.LinkType.ToLower() == Enum.LinkType.ability.ToString()
+                    //                            ? linkTile.AbilityId : null,
+                    //                    SpellId = linkTile.LinkType.ToLower() == Enum.LinkType.spell.ToString()
+                    //                            ? linkTile.SpellId : null,
+                    //                    ItemId = linkTile.LinkType.ToLower() == Enum.LinkType.item.ToString()
+                    //                            ? linkTile.ItemId : null,
+                    //                    LinkType = linkTile.LinkType,
+                    //                    ShowTitle = linkTile.ShowTitle,
+                    //                    Shape = linkTile.Shape,
+                    //                    SortOrder = linkTile.SortOrder,
+                    //                    BodyBgColor = linkTile.BodyBgColor,
+                    //                    BodyTextColor = linkTile.BodyTextColor,
+                    //                    TitleBgColor = linkTile.TitleBgColor,
+                    //                    TitleTextColor = linkTile.TitleTextColor,
+                    //                    DisplayLinkImage = linkTile.DisplayLinkImage,
+                    //                    IsDeleted = false
+                    //                });
+                    //                //SaveColorsAsync(Tile);
+                    //                break;
+                    //            case (int)Enum.TILES.EXECUTE:
+                    //                var executeTile = _tile.ExecuteTiles;
+                    //                Tile.ExecuteTiles = await _executeTileService.Create(new CharacterExecuteTile
+                    //                {
+                    //                    CharacterTileId = Tile.CharacterTileId,
+                    //                    AbilityId = executeTile.LinkType.ToLower() == Enum.LinkType.ability.ToString()
+                    //                            ? executeTile.AbilityId : null,
+                    //                    SpellId = executeTile.LinkType.ToLower() == Enum.LinkType.spell.ToString()
+                    //                            ? executeTile.SpellId : null,
+                    //                    ItemId = executeTile.LinkType.ToLower() == Enum.LinkType.item.ToString()
+                    //                            ? executeTile.ItemId : null,
+                    //                    LinkType = executeTile.LinkType,
+                    //                    ShowTitle = executeTile.ShowTitle,
+                    //                    Shape = executeTile.Shape,
+                    //                    SortOrder = executeTile.SortOrder,
+                    //                    BodyBgColor = executeTile.BodyBgColor,
+                    //                    BodyTextColor = executeTile.BodyTextColor,
+                    //                    TitleBgColor = executeTile.TitleBgColor,
+                    //                    TitleTextColor = executeTile.TitleTextColor,
+                    //                    CommandId = executeTile.CommandId,
+                    //                    DisplayLinkImage = executeTile.DisplayLinkImage,
+                    //                    IsDeleted = false
+                    //                });
+                    //                //SaveColorsAsync(Tile);
+                    //                break;
+                    //            case (int)Enum.TILES.COMMAND:
+                    //                var commandTile = _tile.CommandTiles;
+                    //                Tile.CommandTiles = await _commandTileService.Create(new CharacterCommandTile
+                    //                {
+                    //                    CharacterTileId = Tile.CharacterTileId,
+                    //                    Title = commandTile.Title,
+                    //                    Shape = commandTile.Shape,
+                    //                    SortOrder = commandTile.SortOrder,
+                    //                    ImageUrl = commandTile.ImageUrl,
+                    //                    BodyBgColor = commandTile.BodyBgColor,
+                    //                    BodyTextColor = commandTile.BodyTextColor,
+                    //                    TitleBgColor = commandTile.TitleBgColor,
+                    //                    TitleTextColor = commandTile.TitleTextColor,
+                    //                    Command = commandTile.Command,
+                    //                    IsDeleted = false
+                    //                });
+                    //                //SaveColorsAsync(Tile);
+                    //                break;
+                    //            case (int)Enum.TILES.TEXT:
+                    //                var textTile = _tile.TextTiles;
+                    //                Tile.TextTiles = await _textTileService.Create(new CharacterTextTile
+                    //                {
+                    //                    CharacterTileId = Tile.CharacterTileId,
+                    //                    Title = textTile.Title,
+                    //                    Shape = textTile.Shape,
+                    //                    SortOrder = textTile.SortOrder,
+                    //                    BodyBgColor = textTile.BodyBgColor,
+                    //                    BodyTextColor = textTile.BodyTextColor,
+                    //                    TitleBgColor = textTile.TitleBgColor,
+                    //                    TitleTextColor = textTile.TitleTextColor,
+                    //                    IsDeleted = false,
+                    //                    Text = textTile.Text,
+                    //                });
+                    //                //SaveColorsAsync(Tile);
+                    //                break;
+                    //            case (int)Enum.TILES.BUFFANDEFFECT:
+                    //                var buffTile = _tile.BuffAndEffectTiles;
+                    //                Tile.BuffAndEffectTiles = await _buffAndEffectTileService.Create(new CharacterBuffAndEffectTile
+                    //                {
+                    //                    CharacterTileId = Tile.CharacterTileId,
+                    //                    ShowTitle = buffTile.ShowTitle,
+                    //                    Shape = buffTile.Shape,
+                    //                    SortOrder = buffTile.SortOrder,
+                    //                    BodyBgColor = buffTile.BodyBgColor,
+                    //                    BodyTextColor = buffTile.BodyTextColor,
+                    //                    TitleBgColor = buffTile.TitleBgColor,
+                    //                    TitleTextColor = buffTile.TitleTextColor,
+                    //                    IsDeleted = false,
+                    //                    DisplayLinkImage = buffTile.DisplayLinkImage,
+                    //                });
+                    //                //SaveColorsAsync(Tile);
+                    //                break;
+                    //            case (int)Enum.TILES.Toggle:
+                    //                var toggleTile = _tile.ToggleTiles;
+                    //                var tog = toggleTile.TileToggle;
+
+                    //                var customTogglesList = new List<TileCustomToggle>();
+                    //                if (tog.TileCustomToggles != null)
+                    //                {
+                    //                    foreach (var item in tog.TileCustomToggles)
+                    //                    {
+                    //                        customTogglesList.Add(new TileCustomToggle()
+                    //                        {
+                    //                            Image = item.Image,
+                    //                            IsDeleted = item.IsDeleted,
+                    //                            ToggleText = item.ToggleText,
+                    //                        });
+                    //                    }
+                    //                }
+
+                    //                var togToAdd = new TileToggle()
+                    //                {
+                    //                    Display = tog.Display,
+                    //                    IsCustom = tog.IsCustom,
+                    //                    OnOff = tog.OnOff,
+                    //                    IsDeleted = tog.IsDeleted,
+                    //                    ShowCheckbox = tog.ShowCheckbox,
+                    //                    YesNo = tog.YesNo,
+                    //                    TileCustomToggles = customTogglesList,
+                    //                };
+                    //                var toggleTileToCreate = new CharacterToggleTile
+                    //                {
+                    //                    CharacterTileId = Tile.CharacterTileId,
+                    //                    Title = toggleTile.Title,
+                    //                    Shape = toggleTile.Shape,
+                    //                    SortOrder = toggleTile.SortOrder,
+                    //                    BodyBgColor = toggleTile.BodyBgColor,
+                    //                    BodyTextColor = toggleTile.BodyTextColor,
+                    //                    TitleBgColor = toggleTile.TitleBgColor,
+                    //                    TitleTextColor = toggleTile.TitleTextColor,
+                    //                    IsDeleted = false,
+                    //                    CheckBox = toggleTile.CheckBox,
+                    //                    CustomValue = toggleTile.CustomValue,
+                    //                    OnOff = toggleTile.OnOff,
+                    //                    YesNo = toggleTile.YesNo,
+                    //                    TileToggle = togToAdd,
+
+                    //                };
+                    //                Tile.ToggleTiles = await _toggleTileService.Create(toggleTileToCreate);
+                    //                //SaveColorsAsync(Tile);
+                    //                break;
+                    //            case (int)Enum.TILES.CHARACTERSTATCLUSTER:
+                    //                var clusterTile = _tile.CharacterStatClusterTiles;
+                    //                Tile.CharacterStatClusterTiles = await _clusterTileService.Create(new CharacterCharacterStatClusterTile
+                    //                {
+                    //                    CharacterTileId = Tile.CharacterTileId,
+                    //                    Title = clusterTile.Title,
+                    //                    Shape = clusterTile.Shape,
+                    //                    SortOrder = clusterTile.SortOrder,
+                    //                    BodyBgColor = clusterTile.BodyBgColor,
+                    //                    BodyTextColor = clusterTile.BodyTextColor,
+                    //                    TitleBgColor = clusterTile.TitleBgColor,
+                    //                    TitleTextColor = clusterTile.TitleTextColor,
+                    //                    IsDeleted = false,
+                    //                    DisplayCharactersCharacterStatID = clusterTile.DisplayCharactersCharacterStatID,
+                    //                    ClusterWithSortOrder = clusterTile.ClusterWithSortOrder,
+                    //                });
+                    //                //SaveColorsAsync(Tile);
+                    //                break;
+                    //            default:
+                    //                break;
+                    //        }
+
+                    //        await _tileConfigService.CreateAsync(new TileConfig
+                    //        {
+                    //            CharacterTileId = Tile.CharacterTileId,
+                    //            Col = _tile.Config.Col,
+                    //            Row = _tile.Config.Row,
+                    //            SizeX = _tile.Config.SizeX,
+                    //            SizeY = _tile.Config.SizeY,
+                    //            SortOrder = _tile.Config.SortOrder,
+                    //            UniqueId = _tile.Config.UniqueId,
+                    //            Payload = _tile.Config.Payload,
+                    //            IsDeleted = false
+                    //        });
+                    //        //await _colorService.Create(Tile.tileColor);
+                    //    }
+                    //}
+                    //////Old Without SP work end////////////
                     if (defaultPageId > 0)
                     {
                         layout.DefaultPageId = defaultPageId;
                         await _characterDashboardLayoutService.Update(layout);
                     }
+                    if (_characterDashboardPages.Where(x => x.CharacterDashboardPageId == defaultPageIdOfOldLayout).Any())
+                    {
+                        string old_DefaultPageName = _characterDashboardPages.Where(x => x.CharacterDashboardPageId == defaultPageIdOfOldLayout).FirstOrDefault().Name;
+
+                        _characterDashboardLayoutService.UpdateDefaultPageId(layout.CharacterDashboardLayoutId, old_DefaultPageName);
+                    }
+
                     _characterDashboardLayoutService.UpdateDefaultLayout(layout.CharacterDashboardLayoutId);
                 }
                 catch (Exception ex)
@@ -594,6 +621,13 @@ namespace RPGSmithApp.Controllers
         {
             _characterDashboardLayoutService.UpdateDefaultLayoutPage(layoutId, pageId);
             return Ok();
+        }
+        private string GetUserId()
+        {
+            string userName = _httpContextAccessor.HttpContext.User.Identities.Select(x => x.Name).FirstOrDefault();
+            ApplicationUser appUser = _accountManager.GetUserByUserNameAsync(userName).Result;
+            return appUser.Id;
+            //return "ec34768b-c2ff-43b2-9bf3-d0946d416482";
         }
     }
 }

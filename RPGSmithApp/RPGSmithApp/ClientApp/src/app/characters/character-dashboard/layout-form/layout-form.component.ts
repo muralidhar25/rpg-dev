@@ -92,7 +92,7 @@ export class LayoutFormComponent implements OnInit {
       this.layoutFormModal.layoutWidth = this.screenWidth;
       this.layoutFormModal.layoutHeight = this.screenHeight;
       this.layoutFormModal.characterId = this.characterId;
-
+      
       if (this.layoutFormModal.characterDashboardLayoutId == 0 || this.layoutFormModal.characterDashboardLayoutId === undefined) {
         this.addLayout(this.layoutFormModal);
       }
@@ -100,7 +100,7 @@ export class LayoutFormComponent implements OnInit {
         this.updateLayout(this.layoutFormModal);
       }
       else if (this.layoutFormModal.characterDashboardLayoutId > 0 && this.layoutFormModal.view == VIEW.DUPLICATE) {
-        this.layoutFormModal.characterDashboardLayoutId = undefined;
+        
         this.duplicateLayout(this.layoutFormModal);
       }
     }
@@ -171,9 +171,11 @@ export class LayoutFormComponent implements OnInit {
       );
   }
 
-  private duplicateLayout(modal) {
+  private duplicateLayout(layoutFormModal) {
     this.isLoading = true;
     this.disabled = true;
+    let modal = Object.assign({}, layoutFormModal);
+    modal.characterDashboardLayoutId = undefined;
     this.layoutService.duplicateCharacterDashboardLayout(modal)
       .subscribe(
         data => {

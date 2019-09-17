@@ -270,5 +270,37 @@ namespace DAL.Services
 
             return items.Result.Where(x => x.Name.ToLower() == value.ToLower() && x.CharacterId == characterId && x.CharacterDashboardLayoutId==layoutId && x.CharacterDashboardPageId != Id && x.IsDeleted != true).FirstOrDefault() == null ? false : true;
         }
+        public void Create_sp(CharacterDashboardPage model, string UserID)
+        {
+            string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            using (SqlConnection con = new SqlConnection(consString))
+            {
+                using (SqlCommand cmd = new SqlCommand("Character_DuplicateLayout_And_Page"))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = con;
+                    cmd.Parameters.AddWithValue("@CharacterLayoutID", model.CharacterDashboardLayoutId);                    
+                    cmd.Parameters.AddWithValue("@OldCharacterDashboardPageId", model.CharacterDashboardPageId);
+                    cmd.Parameters.AddWithValue("@CharacterId", model.CharacterId);
+                    cmd.Parameters.AddWithValue("@PageName", model.Name);
+                    cmd.Parameters.AddWithValue("@UserId", UserID);
+                    cmd.Parameters.AddWithValue("@IsDuplicatingLayout", false);
+                    cmd.Parameters.AddWithValue("@PageSortOrder", model.SortOrder);
+                    con.Open();
+                    try
+                    {
+                        var a = cmd.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        con.Close();
+                        throw ex;
+                    }
+                    con.Close();
+                    //return true;
+                }
+            }
+        }
     }
 }

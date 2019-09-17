@@ -19,5 +19,6 @@ namespace DAL.Services.RulesetTileServices
         Task<bool> CheckDuplicate(string value, int? RulesetId, int? layoutId, int? Id = 0);
         void UpdateSortOrder(List<SortOrderEditModel> sortOrderList);
         List<RulesetDashboardPage> GetPagesByLayoutId(int layoutId);
+        void Create_sp(RulesetDashboardPage rulesetDashboardPage, string UserID);
     }
 }

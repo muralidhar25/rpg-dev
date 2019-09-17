@@ -422,7 +422,7 @@ namespace DAL.Services
                                    .Select(x => new CharacterDashboardLayout()
                                    {
                                        CharacterDashboardLayoutId = -1,
-                                       CharacterDashboardPages = ruleSetDashboardLayout.FirstOrDefault().RulesetDashboardPages.Select(y => new CharacterDashboardPage()
+                                       CharacterDashboardPages = ruleSetDashboardLayout.FirstOrDefault().RulesetDashboardPages.Where(p => p.IsDeleted != true).Select(y => new CharacterDashboardPage()
                                        {
                                            BodyBgColor = y.BodyBgColor,
                                            BodyTextColor = y.BodyTextColor,
@@ -457,6 +457,47 @@ namespace DAL.Services
             }
             return null;
            
+        }
+        public void Create_sp(CharacterDashboardLayout model, string UserId, int old_CharacterDashboardLayoutId) {
+            string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            using (SqlConnection con = new SqlConnection(consString))
+            {
+                using (SqlCommand cmd = new SqlCommand("Character_DuplicateLayout_And_Page"))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = con;
+                    cmd.Parameters.AddWithValue("@CharacterLayoutID", model.CharacterDashboardLayoutId);
+                    cmd.Parameters.AddWithValue("@OldCharacterDashboardLayoutId", old_CharacterDashboardLayoutId);
+                    cmd.Parameters.AddWithValue("@CharacterId", model.CharacterId);                   
+                    cmd.Parameters.AddWithValue("@UserId", UserId);
+                    cmd.Parameters.AddWithValue("@IsDuplicatingLayout", true);
+                    con.Open();
+                    try
+                    {
+                        var a = cmd.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        con.Close();
+                        throw ex;
+                    }
+                    con.Close();
+                    //return true;
+                }
+            }
+        }
+        public void UpdateDefaultPageId(int characterDashboardLayoutId, string old_DefaultPageName) {
+            var layout = _context.CharacterDashboardLayouts.Where(x => x.CharacterDashboardLayoutId == characterDashboardLayoutId && x.IsDeleted != true).FirstOrDefault();
+            if (layout!=null)
+            {
+                var page = _context.CharacterDashboardPages.Where(x => x.CharacterDashboardLayoutId == characterDashboardLayoutId && x.Name == old_DefaultPageName && x.IsDeleted != true).FirstOrDefault();
+                if (page != null)
+                {
+                    layout.DefaultPageId = page.CharacterDashboardPageId;
+                    _context.SaveChanges();
+                }
+            }
         }
     }
 }
