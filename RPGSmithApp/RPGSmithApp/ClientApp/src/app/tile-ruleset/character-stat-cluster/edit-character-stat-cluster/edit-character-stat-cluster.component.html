@@ -5,7 +5,7 @@
     <a href="https://rpgsmith.com/helpb/#b5j " class=" help-icon  icon icon-Gen-Help crsr-pointer" target="_blank"></a>
     <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
   </div>
-  <div class="modal-body px-2 visible-body" *ngIf="!isLoading">
+  <div class="modal-body px-2 visible-body" *ngIf="!isLoading" [ngClass]="{'visible-choice-accoording-count':CharacterStatListToDisplay?.length<=2}" >
     <ng-container *ngIf="!OpenSortOrder">
       <ng-container *ngIf="CharacterStatListToDisplay?.length">
         <ng-container *ngFor="let ccs of CharacterStatListToDisplay; let i = index">

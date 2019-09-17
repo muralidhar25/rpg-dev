@@ -100,7 +100,7 @@
             </div>
 
             <div class="form-row" *ngIf="CharacterStatTypeID==STAT_TYPE.Choice">
-              <fieldset class="form-group input-switch input-switch-vertical w-100">
+              <fieldset class="form-group input-switch input-switch-vertical w-100 mb-1">
                 <ng-container *ngIf="charactersCharacterStat.characterStat.isChoiceNumeric">
                   <div class="input-group">
                     <button type="button" class="btn icon icon-minus btn-primary btn-plus-minus" (mousedown)="mouseDown(-1,CharacterStatTypeID)" (mouseup)="mouseUp()" (click)="decrement(CharacterStatTypeID)" (keydown.enter)="$event.preventDefault()"></button>
@@ -127,24 +127,7 @@
 
                   </li>
                 </ul>-->
-                <angular2-multiselect *ngIf="charactersCharacterStat.characterStat.isMultiSelect" id="multiChoiceListTile" [data]="valChoices" name="multiChoiceListTile"
-                                      [settings]="multichoiceSettings" [(ngModel)]="selectedValChoices" >
-                  <c-item id="spell">
-                    <ng-template let-item="item">
-                      <span class="associate-label-name">{{item.value}}</span>
-
-                    </ng-template>
-                  </c-item>
-                </angular2-multiselect>
-                <angular2-multiselect *ngIf="!charactersCharacterStat.characterStat.isMultiSelect" id="multiChoiceListTile1" [data]="valChoices" name="multiChoiceListTile1"
-                                      [settings]="singlechoiceSettings" [(ngModel)]="selectedValChoices">
-                  <c-item id="spell">
-                    <ng-template let-item="item">
-                      <span class="associate-label-name">{{item.value}}</span>
-
-                    </ng-template>
-                  </c-item>
-                </angular2-multiselect>
+                
               </fieldset>
             </div>
 
@@ -261,6 +244,29 @@
             </div>
         </div>
     </form>
+</div>
+<div class="modal-body visible-choice" [style.background-color]="CharacterStatTypeID==STAT_TYPE.RichText ? CharacterStatTile.bodyBgColor :null">
+  <ng-container *ngIf="CharacterStatTypeID==STAT_TYPE.Choice">
+    <angular2-multiselect *ngIf="charactersCharacterStat.characterStat.isMultiSelect" id="multiChoiceListTile" [data]="valChoices" name="multiChoiceListTile"
+                          [settings]="multichoiceSettings" [(ngModel)]="selectedValChoices">
+      <c-item id="spell">
+        <ng-template let-item="item">
+          <span class="associate-label-name">{{item.value}}</span>
+
+        </ng-template>
+      </c-item>
+    </angular2-multiselect>
+    <angular2-multiselect *ngIf="!charactersCharacterStat.characterStat.isMultiSelect" id="multiChoiceListTile1" [data]="valChoices" name="multiChoiceListTile1"
+                          [settings]="singlechoiceSettings" [(ngModel)]="selectedValChoices">
+      <c-item id="spell">
+        <ng-template let-item="item">
+          <span class="associate-label-name">{{item.value}}</span>
+
+        </ng-template>
+      </c-item>
+    </angular2-multiselect>
+  </ng-container>
+ 
 </div>
 <div class="modal-footer">
 

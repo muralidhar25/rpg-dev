@@ -5,7 +5,7 @@
     <a href="https://rpgsmith.com/helpb/#b5j " class=" help-icon  icon icon-Gen-Help crsr-pointer" target="_blank"></a>
     <button type="button" data-dismiss="modal" class="btn icon icon-cross btn-simple-primary close" (click)="close()"></button>
   </div>
-  <div class="modal-body px-2 visible-body" *ngIf="!isLoading">
+  <div class="modal-body px-2 visible-body"  [ngClass]="{'visible-choice-accoording-count':CharactersCharacterStatListToDisplay?.length<=2}" *ngIf="!isLoading">
     <ng-container *ngIf="!OpenSortOrder">
       <ng-container *ngIf="CharactersCharacterStatListToDisplay?.length">
         <ng-container *ngFor="let ccs of CharactersCharacterStatListToDisplay; let i = index">
@@ -121,7 +121,7 @@
                 <label class="labelcharstat" popoverTitle="{{ccs?.displayStatName}}" [popover]="!ccs?.characterStat.statDesc ? ccs?.displayStatName : ccs?.characterStat.statDesc" triggers="hover" container="body">{{ccs?.mobiledisplayStatName}}</label>
               </div>
             </div>
-            <div class="col-lg-2 col-md-2 col-sm-2 col-2" *ngIf="ccs?.characterStat?.isChoiceNumeric==true">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-3" *ngIf="ccs?.characterStat?.isChoiceNumeric==true">
 
               <div class="form-group input-counter">
                 <div class="input-group">
