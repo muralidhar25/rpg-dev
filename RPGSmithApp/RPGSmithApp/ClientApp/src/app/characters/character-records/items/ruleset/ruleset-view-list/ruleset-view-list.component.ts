@@ -236,7 +236,12 @@ export class ItemRulesetViewListComponent implements OnInit {
           if (Errors.sessionExpire) {
             this.authService.logout(true);
           }
-        });
+      });
+    setTimeout(() => {
+      if (window.innerHeight > document.body.clientHeight) {
+        this.onScroll();
+      }
+    }, 10)
     }
 
     //addItem() {

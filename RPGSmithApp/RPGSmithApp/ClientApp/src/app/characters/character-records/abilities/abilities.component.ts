@@ -355,6 +355,11 @@ export class CharacterAbilitiesComponent implements OnInit {
           this.authService.logout(true);
         }
       });
+    setTimeout(() => {
+      if (window.innerHeight > document.body.clientHeight) {
+        this.onScroll();
+      }
+    }, 10)
 
   }
   manageIcon(id: number) {

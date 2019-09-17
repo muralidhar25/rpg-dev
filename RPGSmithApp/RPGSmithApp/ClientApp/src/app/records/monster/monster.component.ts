@@ -312,6 +312,11 @@ export class MonsterComponent implements OnInit {
           this.authService.logout(true);
         }
       });
+    setTimeout(() => {
+      if (window.innerHeight > document.body.clientHeight) {
+        this.onScroll();
+      }
+    }, 10)
   }
   manageIcon(id: number) {
     this.monsterList.forEach(function (val) {
