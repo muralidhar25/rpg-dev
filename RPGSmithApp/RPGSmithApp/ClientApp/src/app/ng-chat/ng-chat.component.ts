@@ -1041,6 +1041,7 @@ export class NgChat implements OnInit, IChatController {
 
   SendMessage(window: Window) {
     if (window.newMessage && window.newMessage.trim() != "") {
+      window.recentMessageCount = 0;
       window.newMessage = this.getMessageWithDiceIntegration(window.newMessage, window);
       if (window.newMessage && window.newMessage.trim() != "") {
         let message = new Message();
@@ -1662,29 +1663,25 @@ export class NgChat implements OnInit, IChatController {
   }
 
   UpArrow(window) {
-    debugger
-    if (window.recentMessageCount == 0 && window.willDownPress) {
-      window.recentMessageCount = 1;
+    if (!window.newMessage) {
+      window.recentMessageCount = 0;
     }
     let diceMsgs = this.getSentMessages(window);
     if (window.recentMessageCount < diceMsgs.length) {
-      let text = diceMsgs[window.recentMessageCount];
-      window.recentMessageCount = (window.recentMessageCount == (diceMsgs.length - 1)) ? window.recentMessageCount : window.recentMessageCount + 1;
-      window.newMessage = text;
-      window.willDownPress = true;
+      window.recentMessageCount = window.recentMessageCount + 1;
+      window.newMessage = diceMsgs[window.recentMessageCount - 1];
     }
   }
 
   DowmArrow(window) {
-    debugger
-    let diceMsgs = this.getSentMessages(window);
-    let text = '';
-    window.recentMessageCount = ((window.recentMessageCount - 1) < 0) ? 0 : (window.recentMessageCount - 1);
-    window.recentMessageCount = (window.recentMessageCount == (diceMsgs.length - 1)) ? (window.recentMessageCount - 1) : window.recentMessageCount;
-    if (window.recentMessageCount >= 0 && window.willDownPress) {
-      text = diceMsgs[window.recentMessageCount];
-      window.newMessage =  text;
+    if (!window.newMessage) {
+      window.recentMessageCount = 0;
     }
+    let diceMsgs = this.getSentMessages(window);
+    if (window.recentMessageCount !=0) {
+      window.recentMessageCount = window.recentMessageCount - 1;
+      window.newMessage = diceMsgs[window.recentMessageCount-1];
+    }    
   }
 
   getSentMessages(window) {
