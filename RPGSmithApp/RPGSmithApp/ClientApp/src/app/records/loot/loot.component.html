@@ -264,7 +264,7 @@
                   <ng-container *ngIf="ItemMaster.isLootPile">
                     <li class="item-property item-property-icon icon icon-Loot_Pile icon-ico" title="Loot Pile" data-toggle="tooltip"></li>
 
-                    <li *ngIf="!ItemMaster.isVisible" title="Hide" data-toggle="tooltip">
+                    <li *ngIf="!ItemMaster.isVisible" title="Hidden" data-toggle="tooltip">
                       <i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i>
                     </li>
                     <li *ngIf="ItemMaster.isVisible" title="Show" data-toggle="tooltip">
@@ -279,7 +279,7 @@
                     <li *ngIf="ItemMaster.isMagical" class="item-property item-property-icon icon icon-Rec-Magical icon-ico" title="Magical" data-toggle="tooltip"></li>
                     <li *ngIf="ItemMaster.isContainer" class="item-property item-property-icon icon icon-Rec-Container icon-ico" title="Container" data-toggle="tooltip"></li>
 
-                    <li *ngIf="!ItemMaster.isShow" title="Hide" data-toggle="tooltip">
+                    <li *ngIf="!ItemMaster.isShow" title="Hidden" data-toggle="tooltip">
                       <i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i>
                     </li>
                     <li *ngIf="ItemMaster.isShow" title="Show" data-toggle="tooltip">
@@ -313,6 +313,7 @@
                   <button type="button" *ngIf="ItemMaster.isVisible" (click)="Visible(ItemMaster)" class="btn btn-accent icon icon-Gen-Hide icon-with-text">Hide</button>
                   <button type="button" *ngIf="!ItemMaster.isVisible" (click)="Visible(ItemMaster)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>
                   <button type="button" (click)="GiveLootPile(ItemMaster)" class="btn btn-accent icon icon-Gen-Give icon-with-text ">Give</button>
+                  <button type="button" (click)="addLootPileItem(ItemMaster)" class="btn btn-accent icon icon-Rec-Add icon-with-text ">Add Loot</button>
                 </ng-container>
 
 

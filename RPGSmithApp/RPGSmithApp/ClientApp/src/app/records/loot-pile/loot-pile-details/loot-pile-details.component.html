@@ -117,11 +117,14 @@
                     <li class="dropdown-menu-item">
                       <button type="button" (click)="duplicateItemTemplate(ItemMasterDetail)" class="btn icon icon-with-text icon-copy icon-rsi btn-accent">Duplicate</button>
                       <!--<button type="button" *ngIf="ItemMasterDetail.isVisible" (click)="Visible(ItemMasterDetail)" class="btn btn-accent icon icon-Gen-Hide icon-with-text">Hide</button>
-              <button type="button" *ngIf="!ItemMasterDetail.isVisible" (click)="Visible(ItemMasterDetail)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>-->
+    <button type="button" *ngIf="!ItemMasterDetail.isVisible" (click)="Visible(ItemMasterDetail)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>-->
                     </li>
                     <li class="dropdown-menu-item">
                       <button type="button" (click)="deleteItemTemplate(ItemMasterDetail)" class="btn icon icon-with-text icon-trash btn-accent">Delete</button>
                     </li>
+                    <!--<li class="dropdown-menu-item">
+                      <button type="button" (click)="addLootPileItem(ItemMasterDetail)" class="btn btn-accent icon-Rec-Add"> Add Loot</button>
+                    </li>-->
                   </ul>
                 </div>
               </div>
@@ -151,7 +154,10 @@
                   </li>
                   <li class="dropdown-menu-item">
                     <button type="button" (click)="deleteItemTemplate(ItemMasterDetail)" class="btn icon icon-with-text icon-trash btn-accent"> Delete</button>
-                  </li>
+                  </li>                  
+                    <!--<li class="dropdown-menu-item">
+                      <button type="button" (click)="addLootPileItem(ItemMasterDetail)" class="btn btn-accent icon-Rec-Add"> Add Loot</button>
+                    </li>-->
                 </ul>
               </div>
             </div>
@@ -184,7 +190,7 @@
                     <li title="Loot Pile" data-toggle="tooltip">
                       <i class="item-property item-property-icon icon icon-Loot_Pile icon-ico"></i>
                     </li>
-                    <li *ngIf="!ItemMasterDetail.isVisible" title="Hide" data-toggle="tooltip">
+                    <li *ngIf="!ItemMasterDetail.isVisible" title="Hidden" data-toggle="tooltip">
                       <i class="item-property item-property-icon icon icon-Gen-Hide icon-ico"></i>
                     </li>
                     <li *ngIf="ItemMasterDetail.isVisible" title="Show" data-toggle="tooltip">
@@ -197,15 +203,18 @@
                 <li>
                   <button type="button" (click)="editItemTemplate(ItemMasterDetail)" class="btn btn-accent icon-with-text icon icon-pencil "> Edit</button>
                 </li>
-                <li>
+                <!--<li>
                   <button type="button" (click)="deleteItemTemplate(ItemMasterDetail)" class="btn btn-accent icon-with-text icon icon-trash"> Delete</button>
-                </li>
+                </li>-->
                 <li>
                   <button type="button" *ngIf="ItemMasterDetail?.isVisible" (click)="Visible(ItemMasterDetail)" class="btn btn-accent icon icon-Gen-Hide icon-with-text">Hide</button>
                   <button type="button" *ngIf="!ItemMasterDetail?.isVisible" (click)="Visible(ItemMasterDetail)" class="btn btn-accent icon icon-Rec-Visible icon-with-text">Show</button>
                 </li>
                 <li>
                   <button type="button" (click)="Give(ItemMasterDetail)" class="btn btn-accent icon-with-text icon icon-Gen-Give">Give</button>
+                </li>
+                <li>
+                  <button type="button" (click)="addLootPileItem(ItemMasterDetail)" class="btn btn-accent icon-with-text icon icon-Rec-Add">Add Loot</button>
                 </li>
               </ul>
             </div>

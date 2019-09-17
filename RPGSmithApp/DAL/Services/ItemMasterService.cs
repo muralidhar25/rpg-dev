@@ -1450,14 +1450,15 @@ namespace DAL.Services
             }
         }
         #region Loot
-        public async Task _AddItemsToLoot(List<LootsToAdd> itemList, List<DeployLootTemplateListToAdd> lootTemplateList, int rulesetID, int selectedLootPileId, bool isVisible) {
+        public async Task _AddItemsToLoot(List<LootsToAdd_New> itemList, List<DeployLootTemplateListToAdd> lootTemplateList, int rulesetID, int selectedLootPileId, bool isVisible, List<LootIds_With_Qty> selectedLootItems,bool isComingFromCreateEditLootPile=false) {
 
+            // Item Master
             string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
-            DataTable Datatable_Ids = utility.ToDataTable<LootsToAdd>(itemList);
+            DataTable Datatable_Ids = utility.ToDataTable<LootsToAdd_New>(itemList);
            // DataTable Datatable_LootTemplateIds = utility.ToDataTable<DeployLootTemplateListToAdd>(lootTemplateList);
             using (SqlConnection con = new SqlConnection(consString))
             {
-
+                
                 using (SqlCommand cmd = new SqlCommand("AddItemMasterToLoot"))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -1480,11 +1481,25 @@ namespace DAL.Services
                     con.Close();                    
                 }
             }
+            // Loot Template
+            DeployLootTemplateList(lootTemplateList,isComingFromCreateEditLootPile, selectedLootPileId);
 
-            DeployLootTemplateList(lootTemplateList);
+            // Loot
+            if (selectedLootItems != null)
+            {
+                List<ItemMasterLoot> itemMasterLoots = new List<ItemMasterLoot>();
+                foreach (var item in selectedLootItems)
+                {
+                    itemMasterLoots.Add(new ItemMasterLoot() { LootId = item.LootId });
+                }
+                MoveLoot(itemMasterLoots, selectedLootPileId);
+            }
+            
+
         }
 
-        public void DeployLootTemplateList(List<DeployLootTemplateListToAdd> lootTemplateList)
+        public void DeployLootTemplateList(List<DeployLootTemplateListToAdd> lootTemplateList,bool isComingFromCreateEditLootPile =false,
+            int selectedLootPileId=-1)
         {
             foreach (var model in lootTemplateList)
             {
@@ -1513,8 +1528,8 @@ namespace DAL.Services
 
                 using (SqlConnection con = new SqlConnection(consString))
                 {
-
-                    using (SqlCommand cmd = new SqlCommand("LootTemplate_DeployToLoot"))
+                    string SPName = isComingFromCreateEditLootPile ? "LootTemplate_DeployToLootPile" : "LootTemplate_DeployToLoot";
+                    using (SqlCommand cmd = new SqlCommand(SPName))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Connection = con;                        
@@ -1522,6 +1537,10 @@ namespace DAL.Services
                         cmd.Parameters.AddWithValue("@LootTemplateId", model.lootTemplateId);
                         cmd.Parameters.AddWithValue("@Qty", 1);                        
                         cmd.Parameters.AddWithValue("@REItems", DT_reItems);
+                        if (isComingFromCreateEditLootPile)
+                        {
+                            cmd.Parameters.AddWithValue("@LootPileId", selectedLootPileId);
+                        }
                         //cmd.Parameters.AddWithValue("@IsBundle", model.isBundle);
 
                         con.Open();
@@ -2213,7 +2232,7 @@ namespace DAL.Services
             return index;
         }
 
-        public void CreateLootPile(CreateLootPileModel model) {
+        public async Task CreateLootPile(CreateLootPileModel model) {
 
             int index = 0;
             List<CommonID> dtList = model.LootPileItems.Select(x => new CommonID()
@@ -2251,7 +2270,8 @@ namespace DAL.Services
                     con.Open();
                     try
                     {
-                        var a = cmd.ExecuteNonQuery();
+                        var id = cmd.ExecuteScalar();
+                        model.LootId = Convert.ToInt32(id);
                     }
                     catch (Exception ex)
                     {
@@ -2259,6 +2279,38 @@ namespace DAL.Services
                         throw ex;
                     }
                     con.Close();
+
+                    List<LootsToAdd_New> itemList = new List<LootsToAdd_New>();
+                    if (model.ItemTemplateToDeploy != null && model.ItemTemplateToDeploy.Count > 0)
+                    {
+                        foreach (var itemTemplate in model.ItemTemplateToDeploy)
+                        {
+                            itemList.Add(new LootsToAdd_New()
+                            {
+                                ID = itemTemplate.ItemMasterId,
+                                IsBundle = itemTemplate.IsBundle,
+                                Qty = itemTemplate.Qty
+                            });
+                        }
+                    }
+
+                    List<DeployLootTemplateListToAdd> LootTemplatesList = new List<DeployLootTemplateListToAdd>();
+                    if (model.LootTemplateToDeploy != null && model.LootTemplateToDeploy.Count > 0)
+                    {
+                        foreach (var lootTemplate in model.LootTemplateToDeploy)
+                        {
+                            LootTemplatesList.Add(new DeployLootTemplateListToAdd()
+                            {
+                                lootTemplateId = lootTemplate.lootTemplateId,
+                                qty = lootTemplate.qty,
+                                REItems = lootTemplate.REItems,
+                                rulesetId = (int)model.RuleSetId
+                            });
+                        }
+                    }
+
+                    await _AddItemsToLoot(itemList, LootTemplatesList, (int)model.RuleSetId, model.LootId, model.IsVisible, null,true);
+
                 }
             }
         }
@@ -2294,7 +2346,7 @@ namespace DAL.Services
             }
             return obj;
         }
-        public void UpdateLootPile(CreateLootPileModel itemDomain) {
+        public async Task UpdateLootPile(CreateLootPileModel itemDomain) {
             var lootPile = _context.ItemMasterLoots.Where(x => x.LootId == itemDomain.LootId && x.IsDeleted != true && x.IsLootPile == true).FirstOrDefault();
             if (lootPile != null)
             {
@@ -2398,6 +2450,43 @@ namespace DAL.Services
                     //    }
                     //}
                 }
+
+
+
+
+                //List<ItemTemplateToDeploy> ItemTemplateToDeploy = itemDomain.ItemTemplateToDeploy;
+                //List<DeployLootTemplateListToAdd> LootTemplateToDeploy = itemDomain.LootTemplateToDeploy;
+
+                List<LootsToAdd_New> itemList = new List<LootsToAdd_New>();
+                if (itemDomain.ItemTemplateToDeploy !=null && itemDomain.ItemTemplateToDeploy.Count>0)
+                {
+                    foreach (var itemTemplate in itemDomain.ItemTemplateToDeploy)
+                    {
+                        itemList.Add(new LootsToAdd_New()
+                        {
+                            ID = itemTemplate.ItemMasterId,
+                            IsBundle= itemTemplate.IsBundle,
+                            Qty= itemTemplate.Qty
+                        });
+                    }
+                }
+
+                List<DeployLootTemplateListToAdd> LootTemplatesList = new List<DeployLootTemplateListToAdd>();
+                if (itemDomain.LootTemplateToDeploy != null && itemDomain.LootTemplateToDeploy.Count > 0)
+                {
+                    foreach (var lootTemplate in itemDomain.LootTemplateToDeploy)
+                    {
+                        LootTemplatesList.Add(new DeployLootTemplateListToAdd()
+                        {
+                            lootTemplateId= lootTemplate.lootTemplateId,
+                            qty= lootTemplate.qty,
+                            REItems= lootTemplate.REItems,
+                            rulesetId= (int)itemDomain.RuleSetId
+                        });
+                    }
+                }
+
+              await _AddItemsToLoot(itemList, LootTemplatesList, (int)itemDomain.RuleSetId, itemDomain.LootId, itemDomain.IsVisible, null,true);
             }
         }
 

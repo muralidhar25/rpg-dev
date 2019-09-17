@@ -192,6 +192,18 @@ namespace DAL.Models.SPModels
         public int ID { get; set; }
         public bool IsBundle { get; set; }
     }
+    public class LootsToAdd_New
+    {
+        public int ID { get; set; }
+        public bool IsBundle { get; set; }
+        public int Qty { get; set; }
+    }
+    public class ItemTemplateToDeploy
+    {
+        public int ItemMasterId { get; set; }
+        public bool IsBundle { get; set; }
+        public int Qty { get; set; }
+    }
     public class DeployLootTemplateListToAdd
     {
        
@@ -203,8 +215,9 @@ namespace DAL.Models.SPModels
     }
     public class AddLoot
     {
-        public List<LootsToAdd> lootItemsToAdd { get; set; }
+        public List<LootsToAdd_New> lootItemsToAdd { get; set; }
         public List<DeployLootTemplateListToAdd> lootTemplatesToAdd { get; set; }
+        public List<LootIds_With_Qty> lootItemsToLink { get; set; }
     }
     public class AssignBuffAndEffect
     {
@@ -990,10 +1003,17 @@ namespace DAL.Models.SPModels
         public bool IsVisible { get; set; }
 
         public List<LootPileLootItem> LootPileItems { get; set; }
+        public List<ItemTemplateToDeploy> ItemTemplateToDeploy { get; set; }
+        public List<DeployLootTemplateListToAdd> LootTemplateToDeploy { get; set; }
     }
     public class LootPileLootItem
     {       
         public int LootId { get; set; }
+    }
+    public class LootIds_With_Qty
+    {       
+        public int LootId { get; set; }
+        public int Qty { get; set; }
     }
     //public class LootPileItem
     //{

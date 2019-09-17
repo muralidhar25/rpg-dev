@@ -159,7 +159,8 @@
                     [ngClass]="{'chat-window-input': true, 'has-side-action': fileUploadAdapter}"
                     (keydown)="onChatInputTyped($event, window)" 
                     (blur)="toggleWindowFocus(window)" 
-                    (focus)="toggleWindowFocus(window)"/>
+                    (focus)="toggleWindowFocus(window)"
+                    (keyup)="onKeyUp($event, window)"/>
 
                     <a class="btn-add-file"(click)="SendMessage(window)">
                         <i class="fa fa-location-arrow ng-chat-send-icon"></i>

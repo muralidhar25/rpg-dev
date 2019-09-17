@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, EventEmitter} from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { AlertService, MessageSeverity } from '../../../core/common/alert.service';
 import { LocalStoreManager } from '../../../core/common/local-store-manager.service';
@@ -16,11 +16,13 @@ import { AppService1 } from '../../../app.service';
 import { ServiceUtil } from '../../../core/services/service-util';
 
 @Component({
-  selector: 'app-add-loot-pile',
-  templateUrl: './add-loot-pile.component.html',
-  styleUrls: ['./add-loot-pile.component.scss']
+  selector: 'app-add-items-loot-pile',
+  templateUrl: './add-items-loot-pile.component.html',
+  styleUrls: ['./add-items-loot-pile.component.scss']
 })
-export class AddLootPileComponent implements OnInit {
+export class AddItemsLootPileComponent implements OnInit {
+
+  public event: EventEmitter<any> = new EventEmitter();
   isLoading = false;
   title: string;
   _view: string;
@@ -42,7 +44,9 @@ export class AddLootPileComponent implements OnInit {
   selectedLootPileID: number;
   noRecordFound: boolean = false;
   LootPileItem: any;
-  selectedLootItemsList: any[] = []
+  selectedLootItemsList: any[] = [];
+  alreadySelectedItems: any[] = [];
+  view: any;
 
   constructor(private bsModalRef: BsModalRef, private alertService: AlertService, private authService: AuthService,
     public modalService: BsModalService, private localStorage: LocalStoreManager,
@@ -58,6 +62,9 @@ export class AddLootPileComponent implements OnInit {
       this._view = this.bsModalRef.content.button;
       let _itemVM = this.bsModalRef.content.itemVM;
       this.LootPileItem = this.bsModalRef.content.LootPileDetail;
+      this.alreadySelectedItems = this.bsModalRef.content.selectedItems;
+      this.view = this.bsModalRef.content.ViewType;
+      debugger;
       this.characterItemModal = this.itemsService.itemModelData(_itemVM, this._view);
       this.characterId = this.characterItemModal.characterId;
       this.rulesetId = this.characterItemModal.rulesetId;
@@ -81,6 +88,23 @@ export class AddLootPileComponent implements OnInit {
           this.LootList = Utilities.responseData(data.ItemMaster, 9999);
           this.LootList.forEach(function (val) { val.showIcon = false; });
           this.LootList = this.LootList.filter(x => !x.isLootPile);
+          if (this.alreadySelectedItems) {
+            this.alreadySelectedItems.map(loot => {
+              if (loot.lootId) {
+                if (this.LootList.find(x => x.lootId == loot.lootId)) {
+                  this.LootList.find(x => x.lootId == loot.lootId).selected = true;
+                } else {
+                  this.LootList.push({ lootId: loot.lootId, quantity: loot.qty, itemName: loot.itemName, itemImage: loot.itemImage, selected: true });
+                }
+              }
+            });
+          }
+          this.LootList.sort(function (a, b) {
+            if (a.itemName.toLowerCase() < b.itemName.toLowerCase()) { return -1; }
+            if (a.itemName.toLowerCase() > b.itemName.toLowerCase()) { return 1; }
+            return 0;
+          });
+
           try {
             this.noRecordFound = !data.ItemMaster.length;
           } catch (err) { }
@@ -114,6 +138,24 @@ export class AddLootPileComponent implements OnInit {
 
                   this.itemsTemplateList.forEach(function (val) { val.showIcon = false; val.selected = false; val.qty=1 });
                   this.lootTemplateList.forEach(function (val) { val.showIcon = false; val.selected = false; });
+
+                  if (this.alreadySelectedItems) {
+                    this.alreadySelectedItems.map(item => {
+                      if (item.itemMasterId && !item.lootId) {
+                        debugger
+                        if (this.itemsTemplateList.find(x => x.itemMasterId == item.itemMasterId)) {
+                          this.itemsTemplateList.find(x => x.itemMasterId == item.itemMasterId).selected = true;
+                          this.itemsTemplateList.find(x => x.itemMasterId == item.itemMasterId).qty = item.qty;
+                        }
+                      }
+                      if (item.lootTemplateId) {
+                        if (this.lootTemplateList.find(x => x.lootTemplateId == item.lootTemplateId)) {
+                          this.lootTemplateList.find(x => x.lootTemplateId == item.lootTemplateId).selected = true;
+                        }
+                      }
+                    });
+                  }
+
                   this.isLoading = false;
                 }, error => {
                   this.isLoading = false;
@@ -161,12 +203,13 @@ export class AddLootPileComponent implements OnInit {
     this.selectedLootItemsList = [];
     let SelectedLootItem = this.LootList.filter(x => x.selected == true);
     SelectedLootItem.map(x => {
-      this.selectedLootItemsList.push({ lootId: x.lootId, qty:x.quantity });
-    });    
+      this.selectedLootItemsList.push({ lootId: x.lootId, qty:x.quantity, itemName:x.itemName});
+    });
 
     let SelectedLootTemp = this.lootTemplateList.filter(x => x.selected == true);
 
     SelectedLootTemp.map((x) => {
+      debugger
       x.quantity = 1;
 
       var reItems = [];
@@ -186,7 +229,8 @@ export class AddLootPileComponent implements OnInit {
         qty: x.quantity,
         lootTemplateId: x.lootTemplateId,
         rulesetId: x.ruleSetId,
-        reitems: reItems
+        reitems: reItems,
+        itemName: x.name
       });
 
 
@@ -199,7 +243,7 @@ export class AddLootPileComponent implements OnInit {
     this.characterItemModal.multiItemMasters = [];
     this.itemsTemplateList.map((item) => {
       if (item.selected) {
-        this.characterItemModal.multiItemMasters.push({ iD: item.itemMasterId, isBundle: item.isBundle, qty: item.qty });
+        this.characterItemModal.multiItemMasters.push({ itemMasterId: item.itemMasterId, isBundle: item.isBundle, qty: item.qty, itemName: item.itemName });
       }
       return item;
     })
@@ -227,52 +271,27 @@ export class AddLootPileComponent implements OnInit {
   }
 
   addEditItem(modal: any, lootTemplate, selectedLootPileId: number, selectedLootItems) {
+    debugger
+    let selectedItemsList = [];
 
-    this.isLoading = true;
-    this.itemMasterService.getLootItemCount(this.rulesetId)
-      .subscribe((data: any) => {
-        let LootCount = data.lootCount;
-        let selecteLootItems = 0;
-        if (modal.multiItemMasters && modal.multiItemMasters.length) {
-          selecteLootItems = modal.multiItemMasters.length;
-        }
-        if ((LootCount + selecteLootItems) < 200) {
-          this.lootService.addLootItem(modal.multiItemMasters, lootTemplate, this.rulesetId, selectedLootPileId, this.isVisible, selectedLootItems)
-            .subscribe(
-              data => {
-                //console.log(data);
-                this.isLoading = false;
-                this.alertService.stopLoadingMessage();
-                let message = "Loot(s) added successfully.";
-                this.alertService.showMessage(message, "", MessageSeverity.success);
-                this.bsModalRef.hide();
-                this.sharedService.updateItemsList(true);
-                this.sharedService.updateItemMasterDetailList(true);
-                //this.appService.updateChatWithLootMessage(true);
-                //if (selectedLootPileId == -1) {
-                //  if (this.isVisible) {
-                //    this.appService.updateChatWithLootMessage(true);
-                //  }
-                //}
-
-              },
-              error => {
-                this.isLoading = false;
-                this.alertService.stopLoadingMessage();
-                let Errors = Utilities.ErrorDetail("Unable to Add", error);
-                if (Errors.sessionExpire) {
-                  this.authService.logout(true);
-                }
-                else
-                  this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
-              },
-            );
-        }
-        else {
-          this.isLoading = false;
-          this.alertService.showMessage("The maximum number of records has been reached, 200. Please delete some records and try again.", "", MessageSeverity.error);
-        }
-      }, error => { }, () => { });
+    if (modal && modal.multiItemMasters) {
+      modal.multiItemMasters.map(loot => {
+        selectedItemsList.push(loot);
+      });
+    }
+    if (lootTemplate) {
+      lootTemplate.map(lootTemp => {
+        selectedItemsList.push(lootTemp);
+      });
+    }
+    if (selectedLootItems) {
+      selectedLootItems.map(lootItems => {
+        selectedItemsList.push(lootItems);
+      });
+    }
+    this.event.emit(selectedItemsList);
+    this.close();
+    
   }
 
   close() {

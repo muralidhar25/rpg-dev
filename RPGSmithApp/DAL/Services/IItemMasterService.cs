@@ -31,7 +31,7 @@ namespace DAL.Services
         SP_AbilitySpellForItemMaster AbilitySpellForItemsByRuleset_sp(int rulesetId, int itemMasterId);
         ItemsAndLootTemplates GetItemMastersByRuleSetId_add(int rulesetId, bool includeBundles = false, bool includeLootTemplates = false);
         bool Core_BundleWithParentIDExists(int bundleId, int rulesetID);
-        Task _AddItemsToLoot(List<LootsToAdd> itemList, List<DeployLootTemplateListToAdd> lootTemplateList, int rulesetID, int selectedLootPileId, bool isVisible);
+        Task _AddItemsToLoot(List<LootsToAdd_New> itemList, List<DeployLootTemplateListToAdd> lootTemplateList, int rulesetID, int selectedLootPileId, bool isVisible, List<LootIds_With_Qty> selectedLootItems, bool isComingFromCreateEditLootPile = false);
         Task<List<ItemMasterLoot_ViewModel>> GetItemMasterLoots(int rulesetID, int page = 1, int pageSize = 30);
         ItemMasterLoot CreateItemMasterLoot(
             ItemMaster result, 
@@ -66,9 +66,9 @@ namespace DAL.Services
         Task DeleteMonsterItem(int id);
         bool isLootAvailable(int rulesetId);
         void DeleteMultiItemTemplates(List<ItemMaster_Bundle> model, int rulesetId);
-        void CreateLootPile(CreateLootPileModel model);
+        Task CreateLootPile(CreateLootPileModel model);
         LootPileViewModel getLootPileDetails(int lootPileId);
-        void UpdateLootPile(CreateLootPileModel itemDomain);
+        Task UpdateLootPile(CreateLootPileModel itemDomain);
         LootPileViewModel getCharacterLootPile(int characterId);
         LootPileViewModel getMonsterLootPile(int monsterId,int rulesetId);
         Task ShowLootPile(int lootPileID, bool isVisible);
@@ -76,7 +76,8 @@ namespace DAL.Services
         Task<List<ItemMasterLoot_ViewModel>> GetItemsFromLootPile(int lootPileId);
         void MoveLoot(List<ItemMasterLoot> model, int lootPileID);
         List<LootPileViewModel> GetLootPilesListByRuleSetId(int rulesetId);
-        void DeployLootTemplateList(List<DeployLootTemplateListToAdd> lootTemplateList);
+        void DeployLootTemplateList(List<DeployLootTemplateListToAdd> lootTemplateList, bool isComingFromCreateEditLootPile = false,
+            int selectedLootPileId = -1);
         int Core_GetLootCountByRuleSetId(int rulesetId, int parentID);
     }
 }

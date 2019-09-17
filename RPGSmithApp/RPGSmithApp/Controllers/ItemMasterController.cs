@@ -1057,9 +1057,11 @@ namespace RPGSmithApp.Controllers
             //ItemList.Add(new CommonID() { ID = 8500 });
             try
             {
+                List<LootIds_With_Qty> selectedLootItems = addLoot.lootItemsToLink;
+
                 var ItemList = addLoot.lootItemsToAdd;
                 var LootTemplatesList = addLoot.lootTemplatesToAdd;
-                await _itemMasterService._AddItemsToLoot(ItemList, LootTemplatesList, rulesetID, selectedLootPileId, isVisible);
+                await _itemMasterService._AddItemsToLoot(ItemList, LootTemplatesList, rulesetID, selectedLootPileId, isVisible, selectedLootItems);
             }
             catch (Exception ex)
             {
@@ -2096,7 +2098,7 @@ namespace RPGSmithApp.Controllers
                     }
                     
 
-                    _itemMasterService.CreateLootPile(itemDomain);
+                   await _itemMasterService.CreateLootPile(itemDomain);
 
                     return Ok();
                 } catch (Exception ex) {
@@ -2117,7 +2119,7 @@ namespace RPGSmithApp.Controllers
                     var LootPile = _itemMasterService.getLootPileDetails(itemDomain.LootId);
                 if (LootPile == null) return BadRequest("Loot Pile not found");
 
-                _itemMasterService.UpdateLootPile(itemDomain);
+               await _itemMasterService.UpdateLootPile(itemDomain);
 
 
 
@@ -2144,7 +2146,7 @@ namespace RPGSmithApp.Controllers
                     {
                         return BadRequest("The Loot Pile Name " + model.ItemName + " had already been used in this Rule Set. Please select another name.");
                     }
-                    _itemMasterService.CreateLootPile(model);
+                   await _itemMasterService.CreateLootPile(model);
                 }
 
 

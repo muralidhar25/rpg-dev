@@ -20,6 +20,7 @@ import { Characters } from "../../../core/models/view-models/characters.model";
 import { LootService } from "../../../core/services/loot.service";
 import { CreateLootPileComponent } from "../create-loot-pile/create-loot-pile.component";
 import { GiveawayComponent } from "../../loot/giveaway/giveaway.component";
+import { AddLootPileComponent } from "../add-loot-pile/add-loot-pile.component";
 
 @Component({
   selector: 'app-loot-pile-details',
@@ -341,6 +342,17 @@ export class LootPileDetailsComponent implements OnInit {
         this.router.navigate(['/ruleset/loot', this.ruleSetId]);
       }
     });
+  }
+
+  addLootPileItem(lootPileDetail) {
+    this.bsModalRef = this.modalService.show(AddLootPileComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Add Loot';
+    this.bsModalRef.content.button = 'ADD';
+    this.bsModalRef.content.LootPileDetail = lootPileDetail
   }
 
 }

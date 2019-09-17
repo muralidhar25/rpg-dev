@@ -19,6 +19,7 @@ import { LootService } from '../../../core/services/loot.service';
 import { AppService1 } from '../../../app.service';
 import { AddLootPileComponent } from '../add-loot-pile/add-loot-pile.component';
 import { CreateLootPile } from '../../../core/models/view-models/loot-pile-create.model';
+import { AddItemsLootPileComponent } from '../add-items-loot-pile/add-items-loot-pile.component';
 
 @Component({
   selector: 'app-create-loot-pile',
@@ -86,7 +87,6 @@ export class CreateLootPileComponent implements OnInit {
       let _lootPileVM = this.bsModalRef.content.lootPileVM;
       //this.itemMasterFormModal = this.itemMasterService.itemMasterModelData(_itemTemplateVM, _view);
       this.createLootPileModal = _lootPileVM;
-      debugger
       //this._ruleSetId = this.itemMasterFormModal.ruleSetId;
       if (_lootPileVM.itemList) {
         this.selectedItems = Object.assign([], _lootPileVM.itemList) ;
@@ -96,7 +96,6 @@ export class CreateLootPileComponent implements OnInit {
           this.selectedItems.map((x) => {
             this.lootPileItems.push(x);            
           })
-          debugger
           this.lootPileItems.sort(function (a, b) {
             if (a.itemName < b.itemName) { return -1; }
             if (a.itemName > b.itemName) { return 1; }
@@ -149,7 +148,6 @@ export class CreateLootPileComponent implements OnInit {
             data.map((x) => {
               this.lootPileItems.push(x);
             });
-            debugger
             this.lootPileItems.sort(function (a, b) {
               if (a.itemName < b.itemName) { return -1; }
               if (a.itemName > b.itemName) { return 1; }
@@ -186,7 +184,6 @@ export class CreateLootPileComponent implements OnInit {
   }
 
   submitForm(lootPile: any) {
-    debugger
     let removeItemFlag = false;
     let lootNames = '';
     if (this.button == "UPDATE" && this.OldSelectedItems && this.OldSelectedItems.length && this.selectedItems && this.selectedItems.length) {
@@ -218,7 +215,6 @@ export class CreateLootPileComponent implements OnInit {
     
   }
   validateSubmit(lootPile: any) {
-    debugger;
     let tagsValue = this.metatags.map(x => {
       if (x.value == undefined) return x;
       else return x.value;
@@ -305,14 +301,39 @@ export class CreateLootPileComponent implements OnInit {
 
   private submit(lootPile: any) {
     let lootItems = [];
+    let ItemTemplates = [];
+    let lootTemplates = [];
     if (this.selectedItems) {
       this.selectedItems.map(x => {        
         //lootItems.push({ itemMasterId: x.itemMasterId, qty: x.qty, isBundle: x.isBundle });
-        lootItems.push({ lootId: x.lootId});
+        if (x.lootId) {
+          lootItems.push(x);
+        }
+        if (x.itemMasterId) {
+          ItemTemplates.push(x);
+        }
+        if (x.lootTemplateId) {
+          lootTemplates.push(x);
+        }
+
       });
     } 
-    lootPile.itemList = lootItems;
-    let lootPileVM = { lootId: lootPile.lootId, ruleSetId: lootPile.ruleSetId, itemName: lootPile.name, itemImage: lootPile.imageUrl, itemVisibleDesc: lootPile.description, metatags: lootPile.metatags, isVisible: lootPile.visible, lootPileItems: lootPile.itemList }
+    lootPile.lootItemsList = lootItems;
+    lootPile.itemTemplateList = ItemTemplates;
+    lootPile.lootTemplateList = lootTemplates;
+
+    let lootPileVM = {
+      lootId: lootPile.lootId,
+      ruleSetId: lootPile.ruleSetId,
+      itemName: lootPile.name,
+      itemImage: lootPile.imageUrl,
+      itemVisibleDesc: lootPile.description,
+      metatags: lootPile.metatags,
+      isVisible: lootPile.visible,
+      lootPileItems: lootPile.lootItemsList,
+      itemTemplateToDeploy: lootPile.itemTemplateList,
+      lootTemplateToDeploy: lootPile.lootTemplateList
+    }
 
     if (this.button == VIEW.DUPLICATE.toUpperCase()) {
       this.duplicateItemMaster(lootPileVM);
@@ -335,7 +356,6 @@ export class CreateLootPileComponent implements OnInit {
     this.lootService.createLootPile<any>(modal)
       .subscribe(
         data => {
-          debugger
           this.isLoading = false;
           this.alertService.stopLoadingMessage();
           let message = modal.itemMasterId == 0 || modal.itemMasterId === undefined ? "Loot Item Template has been created successfully." : " Loot Item Template has been updated successfully.";
@@ -476,26 +496,26 @@ export class CreateLootPileComponent implements OnInit {
     this.croppedImage = image;
   }
 
-  addItems(itemMaster: any) {
-    this.bsModalRef = this.modalService.show(AddLootPileComponent, {
-      class: 'modal-primary modal-md',
-      ignoreBackdropClick: true,
-      keyboard: false
-    });
+  //addItems(itemMaster: any) {
+  //  this.bsModalRef = this.modalService.show(AddLootPileComponent, {
+  //    class: 'modal-primary modal-md',
+  //    ignoreBackdropClick: true,
+  //    keyboard: false
+  //  });
 
-    this.bsModalRef.content.title = 'Select Item';
-    this.bsModalRef.content.button = 'SELECT';
-    //this.bsModalRef.content.rulesetId = this._ruleSetId;
-    //this.bsModalRef.content.itemId = itemMaster.lootId;
-    //this.bsModalRef.content.itemName = itemMaster.containerName;
-    //this.bsModalRef.content.contains = itemMaster.contains;
-    //this.bsModalRef.content.containerItemId = itemMaster.containerItemId;
+  //  this.bsModalRef.content.title = 'Select Item';
+  //  this.bsModalRef.content.button = 'SELECT';
+  //  //this.bsModalRef.content.rulesetId = this._ruleSetId;
+  //  //this.bsModalRef.content.itemId = itemMaster.lootId;
+  //  //this.bsModalRef.content.itemName = itemMaster.containerName;
+  //  //this.bsModalRef.content.contains = itemMaster.contains;
+  //  //this.bsModalRef.content.containerItemId = itemMaster.containerItemId;
 
-    this.bsModalRef.content.event.subscribe(data => {
-      debugger
-      this.createLootPileModal.itemList = data.multiItemMasters;
-    });
-  }
+  //  this.bsModalRef.content.event.subscribe(data => {
+  //    debugger
+  //    this.createLootPileModal.itemList = data.multiItemMasters;
+  //  });
+  //}
 
   get itemSettings() {
     return {
@@ -512,6 +532,26 @@ export class CreateLootPileComponent implements OnInit {
       showCheckbox: true,
       position: "top"
     };
+  }
+
+  selectedLootPileItemsListChanged(event) { }
+
+  SelectLootPileItems() {
+    this.bsModalRef = this.modalService.show(AddItemsLootPileComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Add Loot';
+    this.bsModalRef.content.button = 'ADD';
+    this.bsModalRef.content.LootPileDetail = this.createLootPileModal;
+    this.bsModalRef.content.selectedItems = this.selectedItems;
+    this.bsModalRef.content.ViewType = this._view;
+    this.bsModalRef.content.event.subscribe(data => {
+      if (data) {
+        this.selectedItems = data;
+      }
+    });
   }
 
 

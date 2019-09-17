@@ -81,7 +81,8 @@
                    [(ngModel)]="characterCommandModel.command" name="command" #command="ngModel" required />
           </div>
           <div class="d-flex col-12 col-md-3">
-            <button type="button" class="btn btn-primary btn-block" (click)="addMod()">Add Mod</button>
+            <!--<button type="button" class="btn btn-primary btn-block" (click)="addMod()">Add Mod</button>-->
+            <button type="submit" id="diceRollTrigger"  class="btn btn-primary btn-block">Roll</button>
           </div>
         </div>
 
@@ -120,10 +121,12 @@
         <!--*ngIf="!isFromCampaignDetail"-->
         <div class="command-actions form-row">
           <div class="d-flex col-12 col-md-6">
-            <button type="button" (click)="saveDiceCommand(characterCommandModel)" class="btn btn-accent btn-block">Save</button>
+            <!--<button type="button" (click)="saveDiceCommand(characterCommandModel)" class="btn btn-accent btn-block">Save</button>-->
+            <button type="button"  (click)="addMod()" class="btn btn-accent btn-block">Add Mod</button>
           </div>
           <div class="d-flex col-12 col-md-6">
-            <button type="submit" id="diceRollTrigger" class="btn btn-accent btn-block">Roll</button>
+            <!--<button type="submit" id="diceRollTrigger" class="btn btn-accent btn-block">Roll</button>-->
+            <button type="button" (click)="saveDiceCommand(characterCommandModel)" class="btn btn-accent btn-block">Save</button>
           </div>
         </div>
         <!--<div class="command-actions form-row" *ngIf="isFromCampaignDetail">

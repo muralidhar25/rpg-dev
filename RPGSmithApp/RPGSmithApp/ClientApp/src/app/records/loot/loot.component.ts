@@ -25,6 +25,7 @@ import { DiceRollComponent } from "../../shared/dice/dice-roll/dice-roll.compone
 import { Characters } from "../../core/models/view-models/characters.model";
 import { CreateLootPileComponent } from "../loot-pile/create-loot-pile/create-loot-pile.component";
 import { MoveLootComponent } from "./move-loot/move-loot.component";
+import { AddLootPileComponent } from "../loot-pile/add-loot-pile/add-loot-pile.component";
 
 @Component({
   selector: 'app-loot',
@@ -258,6 +259,17 @@ export class LootComponent implements OnInit {
     });
     this.bsModalRef.content.title = 'Add Loot';
     this.bsModalRef.content.button = 'ADD';
+  }
+
+  addLootPileItem(lootPileDetail) {
+    this.bsModalRef = this.modalService.show(AddLootPileComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = 'Add Loot';
+    this.bsModalRef.content.button = 'ADD';
+    this.bsModalRef.content.LootPileDetail = lootPileDetail
   }
 
   manageIcon(id: number) {

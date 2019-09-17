@@ -17,7 +17,9 @@ export class Window
         this.hasMoreMessages = false;
         this.historyPage = 0;
       this.isFullScreen = false;
-      this.isHalfScreen = false;
+    this.isHalfScreen = false;
+    this.willDownPress = false;
+    this.recentMessageCount = 0;
     }
 
     public participant: IChatParticipant;    
@@ -32,4 +34,6 @@ export class Window
     public historyPage: number = 0;
   public isFullScreen: boolean = false;
   public isHalfScreen: boolean = false;
+  public willDownPress: boolean = false;
+  public recentMessageCount: number = 0;
 }

@@ -131,7 +131,9 @@ export class NgChat implements OnInit, IChatController {
   public ChatParticipantType = ChatParticipantType;
   public ChatParticipantStatus = ChatParticipantStatus;
   public MessageType = MessageType;
+  //recentMessageCount: number = 0;
   IsDefaultGroupCreated: boolean = false;
+  //willDownPress: boolean = false
 
   customDices: CustomDice[] = [];
   statdetails: any;
@@ -489,6 +491,16 @@ export class NgChat implements OnInit, IChatController {
         }
       });
   }
+  // chat-window-input
+  //@HostListener('window:keyup', ['$event'])
+  //keyEvent(event: any) {
+  //  if (event.keyCode === 38 && event.target.className.indexOf("ng-chat-send-text-input") > -1) {   // Up Arrow
+  //    this.UpArrow(this.windows);
+  //  }
+  //  else if (event.keyCode === 40 && event.target.className.indexOf("ng-chat-send-text-input") > -1) {   // Down Arrow
+  //    this.DowmArrow();
+  //  }
+  //}
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
@@ -1456,7 +1468,7 @@ export class NgChat implements OnInit, IChatController {
         CollaspedResult += "<b>" + _beforeResult + " <u>" + (x.calculationResult ? x.calculationResult : '') + "</u> " + _afterResult + "</b><br/>";
       })
     }
-    ExpandedMessage = "<span class='ng-chat-diceRoll-message ng-chat-message-expand d-none'><span class='ng-chat-orange-text'>Rolled: </span><span class='ng-chat-grey-text'>" + commandModel.command + "</span><br/><span class='ng-chat-orange-text'>Result: </span>" + ExpandResult + "</span>";
+    ExpandedMessage = "<span class='ng-chat-diceRoll-message ng-chat-message-expand d-none'><span class='ng-chat-orange-text'>Rolled: </span><span class='ng-chat-grey-text command-toRoll-text'>" + commandModel.command + "</span><br/><span class='ng-chat-orange-text'>Result: </span>" + ExpandResult + "</span>";
     CollaspedMessage = "<span class='ng-chat-diceRoll-message ng-chat-message-collaspe'><span class='ng-chat-orange-text'>Result: </span>" + CollaspedResult + "</span>";
     return CollaspedMessage + ExpandedMessage;
   }
@@ -1637,4 +1649,89 @@ export class NgChat implements OnInit, IChatController {
         break;
     }
   }
+
+  onKeyUp(event: any, window: Window): void {
+    switch (event.keyCode) {
+      case 38:  // Up Arrow
+        this.UpArrow(window);
+        break;
+      case 40:  // Down Arrow
+        this.DowmArrow(window);
+        break;
+    }
+  }
+
+  UpArrow(window) {
+    debugger
+    if (window.recentMessageCount == 0 && window.willDownPress) {
+      window.recentMessageCount = 1;
+    }
+    let diceMsgs = this.getSentMessages(window);
+    if (window.recentMessageCount < diceMsgs.length) {
+      let text = diceMsgs[window.recentMessageCount];
+      window.recentMessageCount = (window.recentMessageCount == (diceMsgs.length - 1)) ? window.recentMessageCount : window.recentMessageCount + 1;
+      window.newMessage = text;
+      window.willDownPress = true;
+    }
+  }
+
+  DowmArrow(window) {
+    debugger
+    let diceMsgs = this.getSentMessages(window);
+    let text = '';
+    window.recentMessageCount = ((window.recentMessageCount - 1) < 0) ? 0 : (window.recentMessageCount - 1);
+    window.recentMessageCount = (window.recentMessageCount == (diceMsgs.length - 1)) ? (window.recentMessageCount - 1) : window.recentMessageCount;
+    if (window.recentMessageCount >= 0 && window.willDownPress) {
+      text = diceMsgs[window.recentMessageCount];
+      window.newMessage =  text;
+    }
+  }
+
+  getSentMessages(window) {
+    let lastMsg = '';
+    let sentMsgs = [];
+    let diceMsgs = [];
+    if (window.messages) {
+      window.messages.map(x => {
+        if (x.fromId == this.userId) {
+          sentMsgs.push(x);
+        }
+        if (!x.isSystemGenerated) {
+          lastMsg = x.message;
+        }
+      });
+
+      sentMsgs.map(sm => {
+        if (sm.message.indexOf("ng-chat-diceRoll-message") > -1) {
+          sm.message = sm.message.replace(/\"/g, "'");
+          let txt = this.getMessageText(sm.message);
+          if (txt) {
+            diceMsgs.push('/r ' +txt);
+          }
+        }
+      });
+      if (!(lastMsg.indexOf("ng-chat-diceRoll-message") > -1)) {
+        diceMsgs.push(lastMsg);
+      }
+
+      diceMsgs = diceMsgs.reverse();
+      return diceMsgs;
+    }
+  }
+
+  getMessageText(msg) {
+    try {      let frag = document.createRange().createContextualFragment(msg);      let firstDiv = frag.querySelector('.command-toRoll-text');      if (firstDiv) {
+        msg = firstDiv.textContent;
+      } else {        msg = '';
+      }      
+      frag = null;
+      firstDiv = null;
+      
+    }
+    catch (e) {
+
+    }
+    return msg;
+  }
+
 }

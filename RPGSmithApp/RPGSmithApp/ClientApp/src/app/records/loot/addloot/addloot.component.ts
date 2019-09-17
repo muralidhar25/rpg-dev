@@ -212,7 +212,7 @@ export class AddlootComponent implements OnInit {
           selecteLootItems = modal.multiItemMasters.length;
         }
         if ((LootCount + selecteLootItems) < 200) {
-          this.lootService.addLootItem(modal.multiItemMasters, lootTemplate, this.rulesetId, selectedLootPileId, this.isVisible)
+          this.lootService.addLootItem(modal.multiItemMasters, lootTemplate, this.rulesetId, selectedLootPileId, this.isVisible, [])
             .subscribe(
               data => {
                 //console.log(data);
