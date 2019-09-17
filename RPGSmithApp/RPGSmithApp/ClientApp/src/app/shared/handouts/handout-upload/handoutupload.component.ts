@@ -578,7 +578,7 @@ getFileName(name:string) {
   public DeleteSingleFile(file: any) {    
     this.isLoading = true;
     let model = [];
-    let name = file.absolutePath.substring(file.absolutePath.lastIndexOf('/') + 1);
+    let name = decodeURIComponent(file.absolutePath.substring(file.absolutePath.lastIndexOf('/') + 1));
     model.push({ blobName: name, userContainerName: file.container });
     this.alertService.startLoadingMessage("", "Deleting file...");
     this.imageSearchService.deleteImages<any>(model, this.prefixToGetFolderContent)
