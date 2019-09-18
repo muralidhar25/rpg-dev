@@ -348,6 +348,50 @@ namespace DAL.Services.RulesetTileServices
             return _context.RulesetDashboardLayouts.Where(x => x.RulesetId == ruleSetId && x.IsDeleted != true).Count();
         }
 
+        public void Create_sp(RulesetDashboardLayout model, string UserId, int old_RulesetDashboardLayoutId)
+        {
+            string consString = _configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
+
+            using (SqlConnection con = new SqlConnection(consString))
+            {
+                using (SqlCommand cmd = new SqlCommand("Ruleset_DuplicateLayout_And_Page"))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Connection = con;
+                    cmd.Parameters.AddWithValue("@RulesetLayoutID", model.RulesetDashboardLayoutId);
+                    cmd.Parameters.AddWithValue("@OldRulesetDashboardLayoutId", old_RulesetDashboardLayoutId);
+                    cmd.Parameters.AddWithValue("@RulesetId", model.RulesetId);
+                    cmd.Parameters.AddWithValue("@UserId", UserId);
+                    cmd.Parameters.AddWithValue("@IsDuplicatingLayout", true);
+                    con.Open();
+                    try
+                    {
+                        var a = cmd.ExecuteNonQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        con.Close();
+                        throw ex;
+                    }
+                    con.Close();
+                    //return true;
+                }
+            }
+        }
+        public void UpdateDefaultPageId(int rulesetDashboardLayoutId, string old_DefaultPageName)
+        {
+            var layout = _context.RulesetDashboardLayouts.Where(x => x.RulesetDashboardLayoutId == rulesetDashboardLayoutId && x.IsDeleted != true).FirstOrDefault();
+            if (layout != null)
+            {
+                var page = _context.RulesetDashboardPages.Where(x => x.RulesetDashboardLayoutId == rulesetDashboardLayoutId && x.Name == old_DefaultPageName && x.IsDeleted != true).FirstOrDefault();
+                if (page != null)
+                {
+                    layout.DefaultPageId = page.RulesetDashboardPageId;
+                    _context.SaveChanges();
+                }
+            }
+        }
+
         #region Shared layout
         public async Task<List<RulesetDashboardLayout>> GetSharedLayoutByRulesetId(int RulesetId, int page = -1, int pageSize = -1)
         {

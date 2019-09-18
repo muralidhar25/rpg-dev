@@ -22,5 +22,7 @@ namespace DAL.Services
         void UpdateSortOrder(List<SortOrderEditModel> sortOrderList);
         void UpdateDefaultLayout(int layoutId,int characterID=0);
         void UpdateDefaultLayoutPage(int layoutId, int pageId);
+        void Create_sp(CharacterDashboardLayout layout, string UserId, int old_CharacterDashboardLayoutId);
+        void UpdateDefaultPageId(int characterDashboardLayoutId, string old_DefaultPageName);
     }
 }

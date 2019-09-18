@@ -20,6 +20,6 @@ namespace DAL.Services
         int GetMaximumSortOrdertByLayoutId(int? layoutId);
         Task<bool> CheckDuplicate(string value, int? characterId, int? layoutId, int? Id = 0);
         void UpdateSortOrder(List<SortOrderEditModel> sortOrderList);
-
+        void Create_sp(CharacterDashboardPage characterDashboardPage, string UserID);
     }
 }
