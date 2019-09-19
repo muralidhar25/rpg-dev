@@ -112,7 +112,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   loginModal: ModalDirective;
   loginControl: LoginComponent;
 
-  ruleset: Ruleset = new Ruleset();
+  ruleset: any = new Ruleset();
   IsCharacterRecordScreen: boolean = false;
   IsRulesetRecordScreenActive: boolean = false;
   IsCharacterRecordScreenActive: boolean = false;
@@ -194,9 +194,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (result) {
         result.htmlEditor.insert(result.htmlToInsert);
       }
+    });
 
-    }
-    );
+    this.app1Service.shouldUpdateCombatStarted().subscribe(result => {
+      if (this.ruleset) {
+        this.ruleset.isCombatStarted = result ? true : false;
+      }
+    });
 
     this.app1Service.shouldUpdateAccountSetting1().subscribe((serviceData) => {
       let user = this.localStorage.getDataObject<User>(DBkeys.CURRENT_USER);

@@ -26,6 +26,7 @@ export class AppService1 {
   private UpdateChatFromCombat = new Subject<any>();
   private OpenChatForCharacter = new Subject<any>();
   private CommandFromCharacterStat = new Subject<any>();
+  private CombatStarted = new Subject<any>();
 
   updateAccountSetting1(accountSetting: any) {    
     this.accountSetting.next(accountSetting);
@@ -165,6 +166,14 @@ export class AppService1 {
 
   shouldUpdateDiceCommandFromCharacterStat(): Observable<any> {
     return this.CommandFromCharacterStat.asObservable();
+  }
+
+  updateCombatStarted(command: any) {
+    this.CombatStarted.next(command);
+  }
+
+  shouldUpdateCombatStarted(): Observable<any> {
+    return this.CombatStarted.asObservable();
   }
 
 }

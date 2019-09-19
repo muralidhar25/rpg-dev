@@ -14,8 +14,6 @@ import { DiceRollComponent } from '../../shared/dice/dice-roll/dice-roll.compone
 import { Ruleset } from '../../core/models/view-models/ruleset.model';
 import { CombatService } from '../../core/services/combat.service';
 import { AuthService } from '../../core/auth/auth.service';
-import { AddCombatMonsterComponent } from '../../rulesets/combat/add-combat-monster/add-monster-combat.component';
-import { RemoveCombatMonsterComponent } from '../../rulesets/combat/remove-combat-monster/remove-monster-combat.component';
 import { DBkeys } from '../../core/common/db-keys';
 import { LocalStoreManager } from '../../core/common/local-store-manager.service';
 import { AppService1 } from '../../app.service';
@@ -27,6 +25,7 @@ import { CharactersCharacterStat } from '../../core/models/view-models/character
 import { initiative } from '../../core/models/view-models/initiative.model';
 import { CombatHealthComponent } from '../../rulesets/combat/update-combat-health/update-combat-health.component';
 import { setTimeout } from 'timers';
+import { ItemsService } from '../../core/services/items.service';
 
 @Component({
   selector: 'app-combat-playerview',
@@ -59,12 +58,19 @@ export class CombatPlayerViewComponent implements OnInit {
   currentCombatantDetail: any;
   ownPlayer: any[] = [];
   DummyValueForCharHealthStat: number = -9999;
+  noStatProvided: string = "No Stat Provided"
+  noCharacterDescriptionProvided: string = 'No Character Description Provided';
+  noMonsterDescriptionProvided: string = "No Monster Description Provided"
   noBuffs_EffectsAvailable: string = 'No Buffs & Effects Available';
   noItemsAvailable: string = 'No Items Available';
-  //noSpellsAvailable: string = 'No Spells Available';
-  //noAbilitiesAvailable: string = 'No Abilities Available';
+  noSpellsAvailable: string = 'No Spells Available';
+  noAbilitiesAvailable: string = 'No Abilities Available';
+  noCommandsAvailable: string = 'No Commands Available';
   refreshPage: any;
   initialLoad: boolean = false;
+  curretnCombatant: any;
+  isCombatStarted: boolean = false;
+  timeoutHandler: any;
 
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
@@ -81,7 +87,8 @@ export class CombatPlayerViewComponent implements OnInit {
     private appService: AppService1,
     private sharedService: SharedService,
     private charactersService: CharactersService,
-    private router: Router) {
+    private router: Router,
+    private itemsService: ItemsService) {
     this.route.params.subscribe(params => { this.characterId = params['id']; });
 
     this.rulesetModel.ruleSetName = 'Orc Shaman';
@@ -151,7 +158,6 @@ export class CombatPlayerViewComponent implements OnInit {
   }
 
   progressHealth(item) {
-    debugger
     this.bsModalRef = this.modalService.show(CombatHealthComponent, {
       class: 'modal-primary modal-custom',
       ignoreBackdropClick: true,
@@ -206,7 +212,6 @@ export class CombatPlayerViewComponent implements OnInit {
   }
 
   frameClick(item) {
-    debugger
     this.currentCombatantDetail = item;
     this.combatants.map(function (itm) {
       if (itm.frameColor == 'red') {
@@ -458,13 +463,15 @@ export class CombatPlayerViewComponent implements OnInit {
   bindCombatantInitiatives() {
     this.combatService.getCombatDetails(this.ruleSetId,true,0).subscribe(res => {
       if (res) {
-        debugger;
         let combatModal: any = res;
         this.roundCounter = combatModal.round;
         this.CombatId = combatModal.id
         this.rulesetModel = combatModal.campaign;
         this.settings = combatModal.combatSettings;
         this.combatants = combatModal.combatantList;
+        this.isCombatStarted = combatModal.isStarted;
+
+        this.appService.updateCombatStarted(combatModal.isStarted);
 
         //let unknownMonsterNameCount = 1;
 
@@ -548,14 +555,15 @@ export class CombatPlayerViewComponent implements OnInit {
         this.isCharacterSpellEnabled = combatModal.isCharacterSpellEnabled;
         this.isCharacterAbilityEnabled = combatModal.isCharacterAbilityEnabled;
         let curretnCombatantList = this.combatants.filter(x => x.isCurrentTurn);
-        let curretnCombatant = new initiative();
+        //let curretnCombatant = new initiative();
+        this.curretnCombatant = new initiative();
         if (curretnCombatantList.length) {
-          curretnCombatant = curretnCombatantList[0];
-          let valueofinitiative = curretnCombatant.initiativeValue;
+          this.curretnCombatant = curretnCombatantList[0];
+          let valueofinitiative = this.curretnCombatant.initiativeValue;
           this.CurrentInitiativeValue = valueofinitiative;
         }
         if (this.initialLoad) {
-          this.frameClick(curretnCombatant);
+          this.frameClick(this.curretnCombatant);
         } else {
           this.frameClick(this.currentCombatantDetail);
         }
@@ -596,13 +604,223 @@ export class CombatPlayerViewComponent implements OnInit {
     }
     return '';
   }
+  // Buff_EffectDetail
   CombatantBuff_EffectDetail(currentCombatantDetail, item) {
-    debugger
     if (currentCombatantDetail.type == combatantType.MONSTER) {
       this.router.navigate(['/character/combat-pc-buff-effect-detail', item.buffAndEffectId]);
     }
     if (currentCombatantDetail.type == combatantType.CHARACTER) {
-      this.router.navigate(['/character/combat-pc-buff-effect-detail', item.buffAndEffect.buffAndEffectId]);
+      if (currentCombatantDetail.isOwnPlayer) {
+        this.CombatantBuff_EffectDetail_OwnPlayer(currentCombatantDetail, item);
+      } else {
+        this.router.navigate(['/character/combat-pc-buff-effect-detail', item.buffAndEffect.buffAndEffectId]);
+      }
     }
+  }
+   // Buff_EffectDetail
+  CombatantBuff_EffectDetail_OwnPlayer(currentCombatantDetail, item) {
+    //if (currentCombatantDetail.type == combatantType.MONSTER) {
+    //  this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, false);
+    //  this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, true);
+    //  this.router.navigate(['/ruleset/buff-effect-details', item.buffAndEffectId]);
+    //}
+    if (currentCombatantDetail.type == combatantType.CHARACTER) {
+      //this.router.navigate(['/character/buff-effect-details', item.characterBuffAandEffectId]);
+      this.characterId = currentCombatantDetail.character.characterId;
+      this.GoToCharbuff(item.buffAndEffect.buffAndEffectId);
+    }
+  }
+
+  // Item Details
+  CombatantItemDetail(currentCombatantDetail, item) {
+    //if (currentCombatantDetail.type == combatantType.MONSTER) {
+    //  this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, false);
+    //  this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, true);
+    //  this.router.navigate(['/ruleset/monster-item-details', item.itemId]);
+    //}
+    if (currentCombatantDetail.type == combatantType.CHARACTER) {
+      this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, false);
+      this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, true);
+      this.router.navigate(['/character/inventory-details', item.itemId]);
+    }
+  }
+
+  // Spell Details
+  CombatantSpellDetail(currentCombatantDetail, item) {
+    //if (currentCombatantDetail.type == combatantType.MONSTER) {
+    //  this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, false);
+    //  this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, true);
+    //  this.router.navigate(['/ruleset/spell-details', item.spellId]);
+    //}
+    if (currentCombatantDetail.type == combatantType.CHARACTER) {
+      //this.router.navigate(['/character/spell-details', item.characterSpellId]);
+      this.characterId = currentCombatantDetail.character.characterId;
+      this.GoToCharSpell(item.spell.spellId);
+    }
+  }
+
+  // Ability Details
+  CombatantAbilityDetail(currentCombatantDetail, item) {
+    //if (currentCombatantDetail.type == combatantType.MONSTER) {
+    //  this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, false);
+    //  this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, true);
+    //  this.router.navigate(['/ruleset/ability-details', item.abilityId]);
+    //}
+    if (currentCombatantDetail.type == combatantType.CHARACTER) {
+      //this.router.navigate(['/character/ability-details', item.characterAbilityId]);
+      this.characterId = currentCombatantDetail.character.characterId;
+      this.GoToCharAbility(item.ability.abilityId);
+    }
+  }
+
+  // Saved Commands
+  CombatantCommands(currentCombatantDetail, item) {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = this.characterId;
+    this.bsModalRef.content.character = this.character;
+    this.bsModalRef.content.command = item.command;
+  }
+
+
+  GoToCharSpell(RulesetSpellID: number) {
+
+    this.isLoading = true;
+    this.itemsService.GetCharSpellID(RulesetSpellID, this.characterId)
+      .subscribe(
+        data => {
+          this.setCharacterID(this.characterId);
+          this.isLoading = false;
+          if (data) {
+            let model: any = data;
+            this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, false);
+            this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, true);
+            this.router.navigate(['/character/spell-details', model.characterSpellId]);
+          }
+          else {
+            this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, false);
+            this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, true);
+            this.router.navigate(['/character/spell-detail', RulesetSpellID]);
+          }
+        },
+        error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let Errors = Utilities.ErrorDetail(error, error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        });
+  }
+  GoToCharbuff(RulesetBuffID: number) {
+    this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, false);
+    this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, true);
+    this.router.navigate(['/character/buff-effect-detail', RulesetBuffID]);
+  }
+  GoToCharAbility(RulesetAbilityId: number) {
+    this.isLoading = true;
+    this.itemsService.GetCharAbilityID(RulesetAbilityId, this.characterId)
+      .subscribe(
+        data => {
+          this.setCharacterID(this.characterId);
+          this.isLoading = false;
+          if (data) {
+            let model: any = data;
+            this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, false);
+            this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, true);
+            this.router.navigate(['/character/ability-details', model.characterAbilityId]);
+          }
+          else {
+            this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_GM, false);
+            this.localStorage.localStorageSetItem(DBkeys.IsComingFromCombatTracker_PC, true);
+            this.router.navigate(['/character/ability-detail', RulesetAbilityId]);
+          }
+        },
+        error => {
+          this.isLoading = false;
+          this.alertService.stopLoadingMessage();
+          let Errors = Utilities.ErrorDetail(error, error);
+          if (Errors.sessionExpire) {
+            this.authService.logout(true);
+          }
+          else
+            this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+        });
+  }
+
+  private setCharacterID(CharacterID: number) {
+    this.localStorage.deleteData(DBkeys.CHARACTER_ID);
+    this.localStorage.saveSyncedSessionData(CharacterID, DBkeys.CHARACTER_ID);
+  }
+
+  NextTurn() {
+    let skipIsCurrentTurnCheck: boolean = false;
+    for (let i = 0; i < this.combatants.length; i++) {
+      if ((this.combatants[i].isCurrentTurn == true && this.combatants[i + 1]) || (skipIsCurrentTurnCheck && this.combatants[i + 1])) {
+        this.combatants[i].isCurrentTurn = false;
+        if (this.combatants[i + 1].delayTurn) {
+          skipIsCurrentTurnCheck = true;
+          continue;
+        }
+        this.combatants[i + 1].isCurrentTurn = true;
+        this.curretnCombatant = this.combatants[i + 1];
+        let valueofinitiative = this.combatants[i + 1].initiativeValue;
+        this.CurrentInitiativeValue = valueofinitiative;
+        this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
+        //this.frameClick(this.curretnCombatant)
+        return;
+      }
+      else if (!this.combatants[i + 1]) {
+        if (this.roundCounter != 0 && this.settings.rollInitiativeEveryRound) {
+          //this.Init(true);
+        }
+        this.combatants[i].isCurrentTurn = false;
+        if (this.combatants[i - i].delayTurn) {
+          i = -1;
+          skipIsCurrentTurnCheck = true;
+          this.roundCounter = this.roundCounter + 1;
+          //convert time
+          let roundTime = this.settings.gameRoundLength * this.roundCounter;
+          this.gametime = this.time_convert(roundTime);
+          continue;
+        }
+        this.combatants[i - i].isCurrentTurn = true;
+        this.curretnCombatant = this.combatants[i - i];
+        let valueofinitiative = this.combatants[i - i].initiativeValue;
+        this.CurrentInitiativeValue = valueofinitiative;
+
+        this.roundCounter = this.roundCounter + 1;
+        //convert time
+        let roundTime = this.settings.gameRoundLength * this.roundCounter;
+        this.gametime = this.time_convert(roundTime);
+        this.SaveCombatantTurn(this.curretnCombatant, this.roundCounter);
+        //this.frameClick(this.curretnCombatant)
+        return;
+      }
+
+    }
+  }
+
+  SaveCombatantTurn(curretnCombatant, roundCount) {
+    //this.isLoading = true;
+    this.combatService.saveCombatantTurn(curretnCombatant, roundCount).subscribe(res => {
+      let result = res;
+      //this.isLoading = false;
+    }, error => {
+      //this.isLoading = false;
+      let Errors = Utilities.ErrorDetail("", error);
+      if (Errors.sessionExpire) {
+        this.authService.logout(true);
+      } else {
+        this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
+      }
+    });
   }
 }

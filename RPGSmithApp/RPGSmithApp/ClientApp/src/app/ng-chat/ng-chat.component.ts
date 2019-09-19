@@ -1690,26 +1690,38 @@ export class NgChat implements OnInit, IChatController {
     let diceMsgs = [];
     if (window.messages) {
       window.messages.map(x => {
-        if (x.fromId == this.userId) {
+        if (x.fromId == this.userId && !x.isSystemGenerated) {
           sentMsgs.push(x);
         }
-        if (!x.isSystemGenerated) {
-          lastMsg = x.message;
-        }
+        //if (!x.isSystemGenerated) {
+        //  lastMsg = x.message;
+        //}
       });
 
+      //sentMsgs.map(sm => {
+      //  if (sm.message.indexOf("ng-chat-diceRoll-message") > -1) {
+      //    sm.message = sm.message.replace(/\"/g, "'");
+      //    let txt = this.getMessageText(sm.message);
+      //    if (txt) {
+      //      diceMsgs.push('/r ' +txt);
+      //    }
+      //  }
+      //});
+      //if (!(lastMsg.indexOf("ng-chat-diceRoll-message") > -1)) {
+      //  diceMsgs.push(lastMsg);
+      //}
+
       sentMsgs.map(sm => {
-        if (sm.message.indexOf("ng-chat-diceRoll-message") > -1) {
           sm.message = sm.message.replace(/\"/g, "'");
+        if (sm.message.indexOf("ng-chat-diceRoll-message") > -1) {
           let txt = this.getMessageText(sm.message);
           if (txt) {
-            diceMsgs.push('/r ' +txt);
+            diceMsgs.push('/r ' + txt);
           }
+        } else {
+            diceMsgs.push(sm.message);
         }
       });
-      if (!(lastMsg.indexOf("ng-chat-diceRoll-message") > -1)) {
-        diceMsgs.push(lastMsg);
-      }
 
       diceMsgs = diceMsgs.reverse();
       return diceMsgs;
