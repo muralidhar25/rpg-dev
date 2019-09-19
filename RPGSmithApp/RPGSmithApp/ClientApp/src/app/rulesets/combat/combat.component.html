@@ -720,6 +720,7 @@
 
       <div class="combat-accordian">
         <accordion>
+          <!--Stat-->
           <accordion-group class="detailPaneItems" #p1 heading="STATS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
             <div class="row">
               <div class="col-12">
@@ -729,7 +730,8 @@
               </div>
             </div>
           </accordion-group>
-          <!--Monster-->
+
+          <!--Monster BUFFS & EFFECTS-->
           <accordion-group class="detailPaneItems be-items" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
             <div class="row crsr-pointer be-section" (click)="buffEffectclick(currentCombatantDetail)">
               <div class="text-center" *ngIf="currentCombatantDetail?.monster?.monsterBuffAndEffects.length == 0">
@@ -743,7 +745,7 @@
               </div>
             </div>
           </accordion-group>
-          <!--Character-->
+          <!--Character BUFFS & EFFECTS-->
           <accordion-group class="detailPaneItems be-items" #p2 heading="BUFFS & EFFECTS" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
             <div class="row crsr-pointer be-section" (click)="buffEffectclick(currentCombatantDetail)">
               <div class="text-center" *ngIf="currentCombatantDetail?.character?.characterBuffAndEffects.length == 0">
@@ -757,6 +759,8 @@
               </div>
             </div>
           </accordion-group>
+
+          <!--Description-->
           <accordion-group class="detailPaneItems" #p3 heading="DESCRIPTION">
             <div class="row">
               <div class="col-12">
@@ -777,7 +781,8 @@
               </div>
             </div>
           </accordion-group>
-          <!--Monster-->
+
+          <!--Monster Items-->
           <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
             <div class="row">
               <div class="text-center" *ngIf="currentCombatantDetail?.monster?.itemMasterMonsterItems?.length == 0">
@@ -791,7 +796,7 @@
               </div>
             </div>
           </accordion-group>
-          <!--Character-->
+          <!--Character Items-->
           <accordion-group class="detailPaneItems" #p4 heading="ITEMS" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
             <div class="row">
               <div class="text-center" *ngIf="currentCombatantDetail?.character.items?.length == 0">
@@ -805,6 +810,8 @@
               </div>
             </div>
           </accordion-group>
+
+          <!--Spells-->
           <accordion-group class="detailPaneItems" #p5 heading="SPELLS">
             <!--Monster-->
             <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
@@ -832,6 +839,8 @@
             </div>
 
           </accordion-group>
+
+          <!--Abilities-->
           <accordion-group class="detailPaneItems" #p5 heading="ABILITIES">
             <!--Monster-->
             <div class="row" *ngIf="currentCombatantDetail?.type==combatItemsType.MONSTER">
@@ -858,6 +867,21 @@
               </div>
             </div>
           </accordion-group>
+
+          <!--Saved Commands-->
+          <accordion-group class="detailPaneItems" #p5 heading="SAVED COMMANDS" *ngIf="currentCombatantDetail?.type==combatItemsType.CHARACTER">
+            <div class="row">
+              <div lass="text-center" *ngIf="currentCombatantDetail?.character?.characterCommands?.length == 0">
+                <span class="col-12">{{noCommandsAvailable}}</span>
+              </div>
+              <div class="col-6 accordin-items" *ngFor="let item of  currentCombatantDetail?.character?.characterCommands">
+                <div class="accordin-box crsr-pointer" (click)="CombatantCommands(currentCombatantDetail, item);$event.stopPropagation()">                 
+                  <p class="text-ellipsis" popover="{{item?.name}}" triggers="hover">{{item?.name}}</p>
+                </div>
+              </div>
+            </div>
+          </accordion-group>
+
         </accordion>
       </div>
     </div>

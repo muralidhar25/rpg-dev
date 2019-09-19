@@ -206,6 +206,7 @@ namespace DAL.Services
                                             CharacterAbilities = new List<CharacterAbility>(),
                                             CharacterSpells = new List<CharacterSpell>(),
                                             CharacterBuffAndEffects = new List<CharacterBuffAndEffect>(),
+                                            CharacterCommands = new List<CharacterCommand>(),
                                             CharacterDescription = CombatantRow["C_Description"] == DBNull.Value ? string.Empty : CombatantRow["C_Description"].ToString(),
                                             DiceRollViewModel = new DiceRollViewModel_Combat(),
                                             RuleSetId = CombatantRow["C_RuleSetId"] == DBNull.Value ? 0 : Convert.ToInt32(CombatantRow["C_RuleSetId"]),
@@ -320,6 +321,9 @@ namespace DAL.Services
                                                 }
                                             }
                                         }
+                                        if (ds.Tables[12].Rows.Count > 0)                                        {                                            foreach (DataRow CharCommandRow in ds.Tables[12].Rows)                                            {                                                int CurrentRunningCharacterId = CharCommandRow["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(CharCommandRow["CharacterId"]);                                                if (CurrentRunningCharacterId == combatant.Character.CharacterId)                                                {
+                                                    CharacterCommand characterCommand = new CharacterCommand()                                                    {                                                        CharacterCommandId = CharCommandRow["CharacterCommandId"] == DBNull.Value ? 0 : Convert.ToInt32(CharCommandRow["CharacterCommandId"]),                                                        CharacterId = CharCommandRow["CharacterId"] == DBNull.Value ? 0 : Convert.ToInt32(CharCommandRow["CharacterId"]),                                                        Command = CharCommandRow["Command"] == DBNull.Value ? null : CharCommandRow["Command"].ToString(),                                                        CreatedOn = CharCommandRow["CreatedOn"] == DBNull.Value ? new DateTime() : Convert.ToDateTime(CharCommandRow["CreatedOn"]),                                                        IsDeleted = CharCommandRow["IsDeleted"] == DBNull.Value ? false : Convert.ToBoolean(CharCommandRow["IsDeleted"]),                                                        UpdatedOn = CharCommandRow["UpdatedOn"] == DBNull.Value ? new DateTime() : Convert.ToDateTime(CharCommandRow["UpdatedOn"]),                                                        Name = CharCommandRow["Name"] == DBNull.Value ? null : CharCommandRow["Name"].ToString()                                                    };                                                    combatant.Character.CharacterCommands.Add(characterCommand);
+                                                }                                            }                                        }
                                     }
                                 }
                                 if (combatant.MonsterId != null && combatant.Type == CombatantTypeMonster)
@@ -1337,6 +1341,7 @@ namespace DAL.Services
                                 }                                
                                 
                             }
+                            if (ds.Tables[3].Rows.Count > 0)                            {                                combat.CurrentCombatantTurnID = Convert.ToInt32(ds.Tables[3].Rows[0][0]);                            }
                         }
                     }
                 }

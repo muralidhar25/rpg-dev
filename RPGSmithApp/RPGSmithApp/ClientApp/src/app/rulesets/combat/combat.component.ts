@@ -161,6 +161,7 @@ export class CombatComponent implements OnInit {
   noItemsAvailable: string = 'No Items Added';
   noSpellsAvailable: string = 'No Spells Assigned';
   noAbilitiesAvailable: string = 'No Abilities Assigned';
+  noCommandsAvailable: string = 'No Commands Available';
   monsterDetailType = MonsterDetailType;
   timeoutHandler: any;
   refreshFlag: boolean = false;
@@ -798,6 +799,7 @@ export class CombatComponent implements OnInit {
   // Current Turn
   SaveCombatantTurn(curretnCombatant, roundCount) {
     //this.isLoading = true;
+    setTimeout(() => {
     this.combatService.saveCombatantTurn(curretnCombatant, roundCount).subscribe(res => {
       let result = res;
       //this.isLoading = false;
@@ -809,7 +811,8 @@ export class CombatComponent implements OnInit {
       } else {
         this.alertService.showStickyMessage(Errors.summary, Errors.errorMessage, MessageSeverity.error, error);
       }
-    });
+        });
+    }, 100);
   }
 
   // Send message to chat
@@ -2029,8 +2032,11 @@ export class CombatComponent implements OnInit {
           if (res.combatantList.length) {
             res.combatantList.map((_rec_pc) => {
               this.combatants.map((_rec_combatant) => {
+                if ((res.currentCombatantTurnID > 0) && (_rec_combatant.isCurrentTurn) && (res.currentCombatantTurnID != _rec_combatant.id)) {
+                  this.nextTurn();
+                }
                 if (_rec_combatant.type == combatantType.CHARACTER && _rec_combatant.characterId == _rec_pc.characterId) {
-
+                  
                   ////////update target
                   _rec_combatant.targetType = _rec_pc.targetType;
                   _rec_combatant.targetId = _rec_pc.targetId;
@@ -2158,4 +2164,19 @@ export class CombatComponent implements OnInit {
     let RuleSetId = ServiceUtil.EncryptID(this.ruleSetId);
     window.open(['/ruleset/gm-playerview/' + RuleSetId].toString() + '?newTab=1', '_blank', "top=100,left=200,width=800,height=500")
   }
+
+  CombatantCommands(currentCombatantDetail, item) {
+    this.bsModalRef = this.modalService.show(DiceRollComponent, {
+      class: 'modal-primary modal-md',
+      ignoreBackdropClick: true,
+      keyboard: false
+    });
+    this.bsModalRef.content.title = "Dice";
+    this.bsModalRef.content.tile = -2;
+    this.bsModalRef.content.characterId = 0;
+    this.bsModalRef.content.character = new Characters();
+    this.bsModalRef.content.command = item.command;
+    this.bsModalRef.content.isFromCampaignDetail = true;    
+  }
+
 }

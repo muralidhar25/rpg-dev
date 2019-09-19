@@ -61,6 +61,7 @@ export class CombatGMPlayerViewComponent implements OnInit {
   noItemsAvailable: string = 'No Items Available';
   refreshPage: any;
   initialLoad: boolean = false;
+  isCombatStarted: boolean = false;
 
   options(placeholder?: string, initOnClick?: boolean): Object {
     return Utilities.optionsFloala(160, placeholder, initOnClick);
@@ -470,6 +471,8 @@ export class CombatGMPlayerViewComponent implements OnInit {
         this.rulesetModel = combatModal.campaign;
         this.settings = combatModal.combatSettings;
         this.combatants = combatModal.combatantList;
+        this.isCombatStarted = combatModal.isStarted;
+
         this.combatants.map((x) => {
           x.initiativeValue = x.initiative;
           if (!x.combatId) {
