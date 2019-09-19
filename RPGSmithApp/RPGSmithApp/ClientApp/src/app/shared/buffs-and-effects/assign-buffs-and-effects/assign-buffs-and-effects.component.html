@@ -6,7 +6,7 @@
       </span>
       <span class="manage-ruleset-header">
         <span>
-          <img [src]="BuffAndEffectToAssign?.imageUrl" onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+          <img [src]="BuffAndEffectToAssign?.imageUrl" onerror="this.src = '../assets/images/BnE/Def_BnE.jpg';">
         </span>
         <span>{{BuffAndEffectToAssign?.name}}</span>
       </span>
@@ -61,7 +61,7 @@
                       <input type="hidden" id="characterId" name="characterId" [(ngModel)]="character.characterId" #characterId="ngModel">
                       <span class="text-cut">
                         <img [alt]="characters.characterName" [src]="character.imageUrl"
-                             onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';">
+                             onerror="this.src = '../assets/images/BnE/Def_BnE.jpg';">
                         <em>{{character.characterName}}</em> <i class="icon"></i>
                       </span>
                     </label>

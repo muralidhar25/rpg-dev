@@ -32,7 +32,7 @@ export class ImageSelectorComponent implements OnInit {
     title: string;
     image: string;
     imageBase64: string;
-    errorImage: string = '../assets/images/DefaultImages/ability.png';
+    errorImage: string = '../assets/images/DefaultImages/ability.jpg';
     imageChangedEvent: any = '';
     croppedFile: any = '';
     croppedImage: any = '';
@@ -128,7 +128,7 @@ export class ImageSelectorComponent implements OnInit {
             this.authService.logout();
         else {
             this.title = this.bsModalRef.content.title ? this.bsModalRef.content.title : this.CropImage;
-            //this.charactersFormModal.imageUrl = '../assets/images/DefaultImages/ability.png'
+            //this.charactersFormModal.imageUrl = '../assets/images/DefaultImages/ability.jpg'
             this.enumImage = IMAGE;
             if (this.bsModalRef.content.errorImage) {
                 this.errorImage = this.bsModalRef.content.errorImage;

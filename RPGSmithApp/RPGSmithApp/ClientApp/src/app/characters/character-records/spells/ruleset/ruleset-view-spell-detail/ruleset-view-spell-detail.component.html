@@ -250,7 +250,7 @@
                             <li class="output-list-item" *ngFor="let rec of spellDetail?.spellBuffAndEffects">
                               <div (click)="GoToRuleBuff(rec.buffAndEffectId)" style="cursor:pointer;" popover="{{rec?.buffAndEffect?.name}}" triggers="hover">
                                 <img class="card-img-top" [src]="rec?.buffAndEffect?.imageUrl" [alt]="rec?.buffAndEffect?.name"
-                                     onerror="this.src='../assets/images/BnE/Def_BnE.png';" />
+                                     onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
                                 <span>{{rec?.buffAndEffect?.name}}</span>
                               </div>
                             </li>

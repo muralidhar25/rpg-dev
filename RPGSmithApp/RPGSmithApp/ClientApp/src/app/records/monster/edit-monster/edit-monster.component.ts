@@ -564,7 +564,7 @@ export class EditMonsterComponent implements OnInit {
     this.bsModalRef.content.title = 'Monster';
     this.bsModalRef.content.image = img;
     this.bsModalRef.content.view = view;
-    this.bsModalRef.content.errorImage = '../assets/images/DefaultImages/Item.jpg';
+    this.bsModalRef.content.errorImage = '../assets/images/DefaultImages/monster.jpg';
     //this.bsModalRef.content.imageChangedEvent = this.imageChangedEvent; //base 64 || URL
     this.bsModalRef.content.event.subscribe(data => {
       this.monsterFormModal.imageUrl = data.base64;

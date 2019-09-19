@@ -2205,7 +2205,7 @@ export class CharacterCharacterStatComponent implements OnInit, OnChanges {
                     imagePath = '../assets/images/DefaultImages/Spell.jpg';
                     break;
                 case STAT_LINK_TYPE.ABILITY:
-                    imagePath = '../assets/images/DefaultImages/ability.png';
+                    imagePath = '../assets/images/DefaultImages/ability.jpg';
                     break;
 
                 default:

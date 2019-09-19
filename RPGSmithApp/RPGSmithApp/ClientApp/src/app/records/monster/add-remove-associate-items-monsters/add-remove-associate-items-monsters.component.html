@@ -9,7 +9,7 @@
       <span>{{title}}</span>
       <span class="manage-ruleset-header">
         <span>
-          <img [src]="recordImage" onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
+          <img [src]="recordImage" onerror="this.src = '../assets/images/DefaultImages/monster.jpg';">
         </span>
         <span>{{(recordName) ? recordName : ''}}</span>
       </span>
@@ -54,7 +54,7 @@
                 <input class="form-check-input" type="checkbox" name="newItem" [checked]="item.selected" (change)="setItem($event,item)" />
                 <span>
                   <img [alt]="item.name" [src]="item.imageUrl"
-                       onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
+                       onerror="this.src = '../assets/images/DefaultImages/monster.jpg';">
                   <em>{{item.name}}</em>
                   <i class="icon monster-icon"></i>
                 </span>

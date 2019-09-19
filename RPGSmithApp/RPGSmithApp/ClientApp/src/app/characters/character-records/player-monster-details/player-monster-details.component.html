@@ -131,7 +131,7 @@
                   <div class="item-info-banner">
                     <div class="item-info-image">
                       <img class="card-img-top" [src]="monsterDetail?.imageUrl" [alt]="monsterDetail?.name"
-                           onerror="this.src='../assets/images/DefaultImages/Item.jpg';" #imgref (click)="ViewImage(imgref)" />
+                           onerror="this.src='../assets/images/DefaultImages/monster.jpg';" #imgref (click)="ViewImage(imgref)" />
                     </div>
                     <h2 class="item-info-name">
                       {{monsterDetail?.name}}
@@ -258,7 +258,7 @@
                         <li class="output-list-item" *ngFor="let ability of selectedAbilities">
                           <div popover="{{ability?.name}}" triggers="hover">
                             <img class="card-img-top" [src]="ability?.imageUrl" [alt]="ability?.name"
-                                 onerror="this.src='../assets/images/DefaultImages/ability.png';" />
+                                 onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
                             <span>{{ability?.name}}</span>
                           </div>
                         </li>
@@ -274,7 +274,7 @@
                         <li class="output-list-item" *ngFor="let  BuffAndEffects of selectedBuffAndEffects">
                           <div popover="{{BuffAndEffects?.name}}" triggers="hover">
                             <img class="card-img-top" [src]="BuffAndEffects.imageUrl" [alt]="BuffAndEffects?.name"
-                                 onerror="this.src='../assets/images/BnE/Def_BnE.png';" />
+                                 onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
                             <span>{{BuffAndEffects?.name}}</span>
                           </div>
                         </li>

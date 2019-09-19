@@ -103,7 +103,7 @@
                             <div class="item-info-banner">
                                 <div class="item-info-image">
                                     <img class="card-img-top" [src]="AbilityDetail?.imageUrl" [alt]="AbilityDetail?.name"
-                                         onerror="this.src='../assets/images/DefaultImages/ability.png';" #imgref (click)="ViewImage(imgref)" />
+                                         onerror="this.src='../assets/images/DefaultImages/ability.jpg';" #imgref (click)="ViewImage(imgref)" />
                                 </div>
                                 <h2 class="item-info-name">
                                     {{AbilityDetail?.name}}
@@ -176,7 +176,7 @@
                             <li class="output-list-item" *ngFor="let rec of AbilityDetail?.abilityBuffAndEffects">
                               <div (click)="GoToRuleBuff(rec.buffAndEffectId)" style="cursor:pointer;" popover="{{rec?.buffAndEffect?.name}}" triggers="hover">
                                 <img class="card-img-top" [src]="rec?.buffAndEffect?.imageUrl" [alt]="rec?.buffAndEffect?.name"
-                                     onerror="this.src='../assets/images/BnE/Def_BnE.png';" />
+                                     onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
                                 <span>{{rec?.buffAndEffect?.name}}</span>
                               </div>
                             </li>

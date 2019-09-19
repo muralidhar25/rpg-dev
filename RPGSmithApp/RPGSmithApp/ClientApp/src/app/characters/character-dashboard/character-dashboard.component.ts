@@ -3013,7 +3013,7 @@ export class CharacterDashboardComponent implements OnInit {
           e.src = '../assets/images/DefaultImages/Spell.jpg';
           break;
         case "Ability":
-          e.src = '../assets/images/DefaultImages/ability.png';
+          e.src = '../assets/images/DefaultImages/ability.jpg';
           break;
         default:
           e.src = '../assets/images/DefaultImages/Spell.jpg';

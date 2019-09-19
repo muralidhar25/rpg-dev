@@ -71,11 +71,11 @@
             <thead>
               <tr>
                 <th><span>NAME</span></th>
-                <th class="health-circle-column"><span>HEALTH</span></th>
+                <th class="health-circle-column combat-health-column"><span>HEALTH</span></th>
                 <th><span>TEAM</span></th>
-                <th><span>BUFFS & EFFECTS</span></th>
+                <th class="combat-bf-column"><span>BUFFS & EFFECTS</span></th>
                 <th class="target-column"><span>TARGET</span></th>
-                <th><span>ACTIONS</span></th>
+                <th class="combat-ation-column"><span>ACTIONS</span></th>
               </tr>
             </thead>
             <tbody>
@@ -91,7 +91,7 @@
                       
                     </div>
                   </td>
-                  <td class="health-circle-column">
+                  <td class="health-circle-column combat-health-column">
                     <ng-container *ngIf="item.type==combatantsType.CHARACTER">
 
                       <!--Number/Combo Type Stat-->
@@ -164,7 +164,7 @@
                       <span class="visible-icon unvisible-Circle crsr-pointer" [style.border-color]="item.visibilityColor" *ngIf="!item.visibleToPc"></span>
                     </div>
                   </td>
-                  <td>
+                  <td class="combat-bf-column">
                     <div class="white-section crsr-pointer" (click)="buffEffectclick(item);$event.stopPropagation()" *ngIf="item.type == combatantsType.CHARACTER">
                       <ul class="visiblity-list">
                         <li class="" *ngFor="let be of item?.character?.characterBuffAndEffects; let be_i = index">
@@ -198,7 +198,7 @@
                       </div>
                     </div>
                   </td>
-                  <td>
+                  <td class="combat-ation-column">
                     <div class="white-section">
                       <ul class="action-buttons-table">
                         <li class="action-button-icon-orange icon-Gen-Chat crsr-pointer" *ngIf="!item.isOwnPlayer && item.type==combatantsType.CHARACTER && item.isPlayerCharacter" (click)="ChatBtn(item);$event.stopPropagation()"></li>
@@ -254,7 +254,7 @@
                        (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item);$event.stopPropagation()"
                        popover="{{item?.buffAndEffect?.description? ('Desc: '+description(item?.buffAndEffect?.description)):' '}}"
                        triggers="hover" popoverTitle="{{item?.buffAndEffect?.name}}" container="body">
-                    <img [src]="item.buffAndEffect.imageUrl" onerror="this.src='../assets/images/BnE/Def_BnE.png';" />
+                    <img [src]="item.buffAndEffect.imageUrl" onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
                     <p class="text-ellipsis">{{item.buffAndEffect.name}}</p>
                   </div>
                 </div>
@@ -270,7 +270,7 @@
                   <div class="accordin-box" (click)="CombatantBuff_EffectDetail(currentCombatantDetail, item);$event.stopPropagation()"
                        popover="{{item?.buffAndEffect?.description? ('Desc: '+description(item?.buffAndEffect?.description)):' '}}"
                        triggers="hover" popoverTitle="{{item?.buffAndEffect?.name}}" container="body">
-                    <img [src]="item.buffAndEffect.imageUrl" onerror="this.src='../assets/images/BnE/Def_BnE.png';" />
+                    <img [src]="item.buffAndEffect.imageUrl" onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
                     <p class="text-ellipsis">{{item.buffAndEffect.name}}</p>
                   </div>
                 </div>

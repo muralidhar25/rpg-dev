@@ -491,7 +491,7 @@ export class CreateAbilitiesComponent implements OnInit {
         this.bsModalRef.content.title = 'ability';
         this.bsModalRef.content.image = img;
         this.bsModalRef.content.view = view;
-        this.bsModalRef.content.errorImage = '../assets/images/DefaultImages/ability.png';
+        this.bsModalRef.content.errorImage = '../assets/images/DefaultImages/ability.jpg';
         //this.bsModalRef.content.imageChangedEvent = this.imageChangedEvent; //base 64 || URL
         this.bsModalRef.content.event.subscribe(data => {
             this.abilityFormModal.imageUrl = data.base64;
