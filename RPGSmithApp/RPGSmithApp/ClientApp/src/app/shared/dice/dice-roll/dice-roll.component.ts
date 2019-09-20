@@ -1663,7 +1663,7 @@ export class DiceRollComponent implements OnInit {
 
           __characterMultipleCommands = this.characterMultipleCommands[0];
         }
-
+        debugger
         //if (this.customDices.length>0) {
 
         //}
@@ -1789,11 +1789,38 @@ export class DiceRollComponent implements OnInit {
         for (let i = 0; i < this.characterMultipleCommands.length; i++) {
           let result;
           if (this.characterMultipleCommands[i].afterResult != "") {
-            result = this.mainCommandText.substring(this.mainCommandText.toLowerCase().indexOf(this.characterMultipleCommands[i].afterResult.trim().toLowerCase()), this.mainCommandText.toLowerCase().indexOf(this.characterMultipleCommands[i].afterResult.trim().toLowerCase()) + this.characterMultipleCommands[i].afterResult.trim().length)
+            let str1 = this.characterMultipleCommands[i].afterResult.trim().toLowerCase();
+            let str2 = this.characterMultipleCommands[i].afterResult.trim().toLowerCase();
+            let str2Length = this.characterMultipleCommands[i].afterResult.trim().length;
+            if (this.mainCommandText.toLowerCase().indexOf(str1) > -1) {
+              result =
+                this.mainCommandText.substring(
+
+                  this.mainCommandText.toLowerCase().indexOf(str1)
+                  ,
+                  this.mainCommandText.toLowerCase().indexOf(str2) + str2Length)
+            }
+            else {
+              result = this.characterMultipleCommands[i].afterResult;
+            }
+            
+
             this.characterMultipleCommands[i].afterResult = result;
           }
           if (this.characterMultipleCommands[i].beforeResult != "") {
-            result = this.mainCommandText.substring(this.mainCommandText.toLowerCase().indexOf(this.characterMultipleCommands[i].beforeResult.trim().toLowerCase()), this.mainCommandText.toLowerCase().indexOf(this.characterMultipleCommands[i].beforeResult.trim().toLowerCase()) + this.characterMultipleCommands[i].beforeResult.trim().length)
+            let str1 = this.characterMultipleCommands[i].beforeResult.trim().toLowerCase();
+            let str2 = this.characterMultipleCommands[i].beforeResult.trim().toLowerCase();
+            let str2Length = this.characterMultipleCommands[i].beforeResult.trim().length;
+            if (this.mainCommandText.toLowerCase().indexOf(str1) > -1) {
+              result = this.mainCommandText.substring(
+                this.mainCommandText.toLowerCase().indexOf(str1)
+                ,
+                this.mainCommandText.toLowerCase().indexOf(str2) + str2Length)
+            }
+            else {
+              result = this.characterMultipleCommands[i].beforeResult;
+            }
+
             this.characterMultipleCommands[i].beforeResult = result;
           }
         }
@@ -3672,6 +3699,7 @@ export class DiceRollComponent implements OnInit {
         ignoreBackdropClick: true,
         keyboard: false
       });
+      
       if (this.isFromCampaignDetail) {
         this.bsModalRef.content.title = characterCommandModel.rulesetCommandId ? "Edit New Saved Command" : "New Saved Command";
         this.bsModalRef.content.view = characterCommandModel.rulesetCommandId ? 'EDIT' : 'SAVE';
@@ -3696,7 +3724,7 @@ export class DiceRollComponent implements OnInit {
   }
 
   editDiceCommand(command: any) {
-
+    
     this.bsModalRef = this.modalService.show(DiceSaveComponent, {
       class: 'modal-primary modal-md',
       ignoreBackdropClick: true,
@@ -3707,9 +3735,13 @@ export class DiceRollComponent implements OnInit {
     this.bsModalRef.content.characterId = this.characterId;
     this.bsModalRef.content.character = this.character;
     this.bsModalRef.content.command = command.command;
+    this.bsModalRef.content.mainCommand = command.command
     this.bsModalRef.content.characterCommand = command;
+    this.bsModalRef.content.addModArray = this.addModArray;
+    this.bsModalRef.content.statDetails = this.statdetails;
+    this.bsModalRef.content.charactersCharacterStats = this.charactersCharacterStats;
     this.bsModalRef.content.rulesetId = this.rulesetId;
-    this.bsModalRef.content.isFromCampaignDetail = this.isFromCampaignDetail;
+    this.bsModalRef.content.isFromCampaignDetail = this.isFromCampaignDetail;   
   }
 
 
