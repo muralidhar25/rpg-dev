@@ -49,7 +49,7 @@ export class DiceSaveComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      debugger
+      
       this.title = this.bsModalRef.content.title;
       this.characterId = this.bsModalRef.content.characterId;
       this.addModArray = this.bsModalRef.content.addModArray;

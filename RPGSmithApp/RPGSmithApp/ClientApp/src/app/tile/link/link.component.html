@@ -107,7 +107,7 @@
                         <input *ngIf="characterTileModel.view===VIEW.ADD" class="form-check-input" type="checkbox" name="newLinkProperties" (change)="getAbilityValueList($event,ability)" [checked]="ability.selected" />
 
                         <span [ngClass]="{'card-equip':ability.isEnabled}">
-                          <img src="{{ability.ability.imageUrl}}" onerror="this.src='../assets/images/DefaultImages/ability.png';">
+                          <img src="{{ability.ability.imageUrl}}" onerror="this.src='../assets/images/DefaultImages/ability.jpg';">
                           <em>
                             {{ability.ability.name}}
                           </em>

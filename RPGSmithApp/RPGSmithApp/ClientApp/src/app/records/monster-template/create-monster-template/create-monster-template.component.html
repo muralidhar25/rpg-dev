@@ -74,7 +74,7 @@
             <div class="form-group input-image-note input-image-trigger" (click)="cropImage(monsterTemplateFormModal.imageUrl,true,'VIEW.EDIT')"
                  *ngIf="(!showWebButtons && monsterTemplateFormModal.imageUrl !== undefined && monsterTemplateFormModal.imageUrl !== null)">
               <img class="spell-img" [src]="monsterTemplateFormModal.imageUrl"
-                   onerror="this.src='../assets/images/DefaultImages/Item.jpg';" />
+                   onerror="this.src='../assets/images/DefaultImages/monster.jpg';" />
             </div>
             <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
               <img [src]="monsterTemplateFormModal.imageUrl" class="bg-image" />
@@ -254,7 +254,7 @@
                 <ng-template let-item="item">
                   <span class="associate-label-name">{{item.name}}</span>
                   <img [src]="item.imageUrl" class="pull-right associate-img"
-                       onerror="this.src = '../assets/images/DefaultImages/ability.png'" />
+                       onerror="this.src = '../assets/images/DefaultImages/ability.jpg'" />
                 </ng-template>
               </c-item>
             </angular2-multiselect>
@@ -282,7 +282,7 @@
                 <ng-template let-item="item">
                   <span class="associate-label-name">{{item.name}}</span>
                   <img [src]="item.imageUrl" class="pull-right associate-img"
-                       onerror="this.src = '../assets/images/DefaultImages/Item.jpg'" />
+                       onerror="this.src = '../assets/images/DefaultImages/monster.jpg'" />
                 </ng-template>
               </c-item>
             </angular2-multiselect>
@@ -296,7 +296,7 @@
                 <ng-template let-item="item">
                   <span class="associate-label-name">{{item.name}}</span>
                   <img [src]="item.imageUrl" class="pull-right associate-img"
-                       onerror="this.src = '../assets/images/BnE/Def_BnE.png'" />
+                       onerror="this.src = '../assets/images/BnE/Def_BnE.jpg'" />
                 </ng-template>
               </c-item>
             </angular2-multiselect>

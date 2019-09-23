@@ -406,7 +406,7 @@ export class BuffAndEffectComponent implements OnInit {
     try {
       let headerValues = {
         headerName: ruleset.ruleSetName,
-        headerImage: ruleset.imageUrl ? ruleset.imageUrl : 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png',
+        headerImage: ruleset.imageUrl ? ruleset.imageUrl : '../assets/images/BnE/Def_BnE.jpg',
         headerId: ruleset.ruleSetId,
         headerLink: 'ruleset',
         hasHeader: true

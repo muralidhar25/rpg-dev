@@ -163,7 +163,7 @@
             <div class="card" [ngClass]="{'card-equip':ItemMaster?.isShow}">
               <div class="card-image" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
                 <img class="card-img-top portrait" [src]="ItemMaster.itemImage" [alt]="ItemMaster.itemName"
-                     onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';" (click)="GoToDetails(ItemMaster)">
+                     onerror="this.src='./assets/images/DefaultImages/Item.jpg';" (click)="GoToDetails(ItemMaster)">
                 <div class="card-actions show" *ngIf="ItemMaster.showIcon && !isListView">
                   <button type="button" (click)="editItemTemplate(ItemMaster)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>
                   <button type="button" (click)="duplicateItemTemplate(ItemMaster)" title="Duplicate" data-toggle="tooltip" data-action="duplicate" class="btn icon icon-copy icon-rsi btn-simple-primary"></button>

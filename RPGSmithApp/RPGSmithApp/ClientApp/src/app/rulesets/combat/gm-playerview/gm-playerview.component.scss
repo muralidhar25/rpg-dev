@@ -1062,3 +1062,14 @@ page-toolbar-links li:last-child:before {
     font-size: 16px !important;
   }
 }
+@media(max-width:471.5px) {
+  .combat-bf-column {
+    display: none;
+  }
+}
+
+@media(max-width:337.5px) {
+  .combat-health-column {
+    display: none;
+  }
+}

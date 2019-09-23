@@ -816,16 +816,24 @@ button.btn-top {
   margin-right: 0px
 }
 
-@media(max-width:991px) {
-  .action-buttons-table li {
+@media(max-width:991.5px) {
+  /*.action-buttons-table li {
     margin: 0px;
     font-size: 8px;
     padding: 0 2px;
     border: 1px solid #bf693b;
     line-height: 13px;
     width: 14px;
+  }*/
+  .action-buttons-table li {
+    font-size: 15px;
+    padding: 3px 4px 0px;
+    border: 1px solid #bf693b;
+    line-height: 22px;
+    width: 25px;
+    text-align: center;
+    margin: 0px;
   }
-
   .btns-combat-actions .btn-group.open .dropdown-menu ul li {
     width: 50%;
   }
@@ -1053,12 +1061,29 @@ page-toolbar-links li:last-child:before {
 .r-padding {
   padding-right: 0;
 }
-@media screen and (min-width: 992px) and (max-width: 1200px) {
+@media screen and (min-width: 992px) and (max-width: 1199.5px) {
   .action-buttons-table li {
     margin: 0px !important;
   }
 
   .action-button-icon-orange {
     font-size: 16px !important;
+  }
+}
+@media(max-width:1199.5px) {
+  .combat-bf-column {
+    display: none;
+  }
+}
+
+@media(max-width:991.5px) {
+  .combat-health-column {
+    display: none;
+  }
+}
+
+@media(max-width:487.5px) {
+  .combat-ation-column {
+    display: none;
   }
 }

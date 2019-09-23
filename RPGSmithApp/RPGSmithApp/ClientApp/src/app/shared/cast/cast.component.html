@@ -7,7 +7,7 @@
                 <img [src]="Command?.itemImage" *ngIf="Command?.itemImage"
                      onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Shield.jpg';" [alt]="Command.name">
                 <img [src]="Command.imageUrl" *ngIf="Command.imageUrl"
-                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-spells/Fire.jpg';" [alt]="Command.name">
+                     onerror="this.src = './assets/images/DefaultImages/Spell.jpg';" [alt]="Command.name">
             </span>
             <span>{{Command.name}}</span>
         </div>

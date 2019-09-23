@@ -121,7 +121,7 @@
               <label class="form-check-label">
                 <span>
                   <img [alt]="item.name" [src]="item.imageUrl"
-                       onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
+                       onerror="this.src = '../assets/images/DefaultImages/monster.jpg';">
                   <em>{{item.name}}</em>
                   <span class="input-box">
                     <input type="number" max="99999" class="w-100 h-100 text-center border-0" id="qty{{i}}" name="qty{{i}}" [(ngModel)]="item.quantityToAdd" #qty="ngModel" (change)="quantityChanged(item)" />

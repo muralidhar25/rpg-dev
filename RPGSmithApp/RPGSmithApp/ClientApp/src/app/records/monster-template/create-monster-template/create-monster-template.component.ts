@@ -266,7 +266,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
     //    qty: "7",
     //    randomizationEngineId: undefined,
     //    selectedItem: [
-    //      { text: "1 loot", itemId: 8880, image: "https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg" }
+    //      { text: "1 loot", itemId: 8880, image: "./assets/images/DefaultImages/Item.jpg" }
     //    ]
     //  },
 
@@ -769,7 +769,7 @@ export class CreateMonsterTemplateComponent implements OnInit {
     this.bsModalRef.content.title = 'monsterTemplate';
     this.bsModalRef.content.image = img;
     this.bsModalRef.content.view = view;
-    this.bsModalRef.content.errorImage = '../assets/images/DefaultImages/Item.jpg';
+    this.bsModalRef.content.errorImage = '../assets/images/DefaultImages/monster.jpg';
     //this.bsModalRef.content.imageChangedEvent = this.imageChangedEvent; //base 64 || URL
     this.bsModalRef.content.event.subscribe(data => {
       this.monsterTemplateFormModal.imageUrl = data.base64;

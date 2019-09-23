@@ -365,6 +365,8 @@ namespace RPGSmithApp.Helpers
                    "stock-defimg-items," +
                    "stock-defimg-spells," +
                    "stock-defimg-abilities," +
+                   "stock-defimg-effects," +
+                   "stock-defimg-monsters," +
                    "stock-images," +
                    "stock-icons";
                 //"stock-defimages";

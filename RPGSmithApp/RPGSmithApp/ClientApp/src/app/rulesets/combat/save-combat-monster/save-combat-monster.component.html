@@ -28,7 +28,7 @@
                 <!--<button type="button" class="icon icon-Gen-Trash text-orange btn px-2" (click)="removeItem(item)"></button>-->
                 <span>
                   <img [alt]="item.name" [src]="item.image"
-                       onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
+                       onerror="this.src = '../assets/images/DefaultImages/monster.jpg';">
                   <em>{{item.name}}</em>
                   <span class="input-box" *ngIf="item.type == 'monstertemplate'">
                     <input type="number" max="9999" maxlength='4' class="w-100 h-100 text-center border-0" id="qty{{i}}" name="qty{{i}}" [(ngModel)]="item.quantity" #qty="ngModel" (ngModelChange)="quantityChanged(item.quantity,item)" />

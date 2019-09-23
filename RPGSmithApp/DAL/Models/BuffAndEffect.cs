@@ -55,5 +55,4 @@ namespace DAL.Models
     }
 }
 
-//update[RuleSets] set[IsBuffAndEffectEnabled] = 0
-//update[RuleSets] set[IsBuffAndEffectEnabled] = 1  where OwnerId in (SELECT id FROM ASPNETUSERS WHERE IsGm=1 )
+//UPDATE BuffAndEffects set ImageUrl='../assets/images/BnE/Def_BnE.jpg' where ImageUrl='../assets/images/BnE/Def_BnE.png'

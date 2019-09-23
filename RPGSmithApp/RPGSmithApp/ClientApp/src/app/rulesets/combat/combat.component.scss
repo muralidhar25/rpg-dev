@@ -817,16 +817,22 @@ button.btn-top {
   margin-right: 0px
 }
 
-@media(max-width:991px) {
-  .action-buttons-table li {
-    /*margin: 0px;*/
+@media(max-width:991.5px) {
+  /*.action-buttons-table li {
     font-size: 8px;
     padding: 0 2px;
     border: 1px solid #bf693b;
     line-height: 13px;
     width: 14px;
+  }*/
+  .action-buttons-table li {
+    font-size: 15px;
+    padding: 3px 6px 0px;
+    border: 1px solid #bf693b;
+    line-height: 25px;
+    width: 30px;
+    text-align: center;
   }
-
   .btns-combat-actions .btn-group.open .dropdown-menu ul li {
     width: 50%;
   }
@@ -1054,6 +1060,7 @@ button.btn-top {
     width: 88%;
     margin-left: 0% !important;
   }
+
   .randominzation-engine-content h3 {
     justify-content: center;
     padding: 0px;
@@ -1298,79 +1305,94 @@ table.montser-Items {
   border-right: 5px solid #f3f2f2;
   padding: 8px 5px 5px 5px;
 }
+
 .montser-Items td:last-child {
   border-right: 0 !important;
 }
+
 .montser-Items div {
   width: 53px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-@media screen and (min-width: 1024px) and (max-width: 1199px)
-{
-  .montser-Items div{
+
+@media screen and (min-width: 1024px) and (max-width: 1199px) {
+  .montser-Items div {
     width: 41px;
   }
-  .dropdown-menu.dropdown-menu-newWindow{
+
+  .dropdown-menu.dropdown-menu-newWindow {
     margin-left: 53.4% !important;
     top: 80px !important;
   }
-  }
+}
+
 @media screen and (min-width:768px) and (max-width: 1023px) {
   .montser-Items div {
     width: 25px;
   }
+
   .btns-combat-actions .dropdown-menu.dropdown-menu-newWindow {
     width: 40% !important;
     margin-left: 52.4% !important;
     top: 40px !important;
   }
 }
+
 @media screen and (min-width:480px) and (max-width: 767px) {
   .montser-Items div {
     width: 69px;
   }
 }
+
 @media screen and (min-width:320px) and (max-width: 479px) {
   .montser-Items div {
     width: 37px;
   }
 }
+
 @media screen and (min-width:360px) and (max-width: 374px) {
   .montser-Items div {
     width: 45px;
   }
 }
+
 @media screen and (min-width:375px) and (max-width: 380px) {
   .montser-Items div {
     width: 48px;
   }
 }
+
 @media screen and (min-width:409px) and (max-width: 411px) {
   .montser-Items div {
     width: 55px;
   }
 }
+
 @media screen and (min-width:412px) and (max-width: 414px) {
   .montser-Items div {
     width: 56px;
   }
 }
+
 @media screen and (min-width:639px) and (max-width: 640px) {
   .montser-Items div {
     width: 81px;
   }
 }
+
 @media screen and (min-width:640px) and (max-width: 736px) {
   .montser-Items div {
     width: 81px;
   }
 }
+
 @media screen and (min-width:567px) and (max-width: 568px) {
   .montser-Items div {
     width: 87px;
   }
 }
+
 @media screen and (min-width:822px) and (max-width: 823px) {
   .montser-Items div {
     width: 25px;
@@ -1381,21 +1403,89 @@ table.montser-Items {
   font-size: 1.7rem;
   padding: 2px;
 }
+
 .dropdown-menu.dropdown-menu-newWindow {
   width: 30%;
   margin-left: 63.4% !important;
 }
+
 .dropdown-menu.dropdown-menu-newWindow ul {
   padding-top: 15px !important;
 }
+
 .new_window-btn:before {
   font-size: 20px;
 }
-.new_window-btn
-{
-padding: 10px 11px 10px 12px;
+
+.new_window-btn {
+  padding: 10px 11px 10px 12px;
 }
+
 .dropdown-menu.dropdown-menu-newWindow a {
-    color: #333;
-    font-weight: 500;
+  color: #333;
+  font-weight: 500;
+}
+
+@media(max-width:991.5px) {
+  .combat-bf-column {
+    display: none;
+  }
+}
+
+@media(max-width:475.5px) {
+  .combat-health-column {
+    display: none;
+  }
+}
+@media(max-width:364.5px) {
+  .combat-ation-column {
+    display: none;
+  }
+}
+@media(max-width:454.5px) {
+  .btn-orange-icons, .btn-red-icons {
+    font-size: 13px;
+    padding: 8px 8px;
+  }
+  .btn-orange-icons .icon-Rec-Add:before {
+    margin-right: 0px !important;
+  }
+  }
+@media screen and (min-width:370px) and (max-width: 410.5px)
+{
+  i.icon.icon-Monster{
+    margin-left: 1rem;
+  }
+}
+@media(max-width:410.5px)
+{
+  i.icon.icon-Monster::before
+  {
+  font-size: 1.7rem;
+  }
+}
+@media(max-width:400.5px)
+{
+  .btn-orange-icons, .btn-red-icons {
+    font-size: 11px;
+    padding: 7px 7px;
+  }
+  .btns-combat-actions li button span:before {
+    font-size: 16px;
+  }
+}
+@media screen and (min-width: 992px) and (max-width:1199.5px)
+{
+  .btns-combat-actions li {
+    padding-right: 8px;
+  }
+}
+@media(max-width:428.5px) {
+  .action-buttons-table li {
+    font-size: 8px;
+    padding: 0 2px;
+    border: 1px solid #bf693b;
+    line-height: 13px;
+    width: 14px;
+  }
 }

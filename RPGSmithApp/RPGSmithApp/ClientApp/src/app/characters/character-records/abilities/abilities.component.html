@@ -164,7 +164,7 @@
             <div class="card" [ngClass]="{'card-equip':ability.isEnabled}">
               <div class="card-image portrait" [ngClass]="{'thumbnail':!isListView, 'thumbnail-list':isListView}">
                 <img class="card-img-top" [src]="ability.ability.imageUrl" [alt]="ability.ability.imageUrl"
-                     onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-abilities/Attack.jpg';" [routerLink]="['/character/ability-details', ability.characterAbilityId]">
+                     onerror="this.src='./assets/images/DefaultImages/ability.jpg';" [routerLink]="['/character/ability-details', ability.characterAbilityId]">
 
                 <div class="card-actions show" *ngIf="ability.showIcon && !isListView && !pauseAbilityCreate">
                   <button type="button" (click)="editAbility(ability)" title="Edit" data-toggle="tooltip" data-action="edit" class="btn icon icon-pencil btn-simple-primary"></button>

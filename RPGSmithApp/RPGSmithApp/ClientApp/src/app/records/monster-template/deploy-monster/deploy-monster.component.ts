@@ -50,7 +50,7 @@ export class DeployMonsterComponent implements OnInit {
       
       this.title = this.bsModalRef.content.title;
       this.monsterInfo = this.bsModalRef.content.monsterInfo;
-      this.monsterImage = (this.monsterInfo.imageUrl) ? this.monsterInfo.imageUrl : this.monsterInfo.bundleImage ? this.monsterInfo.bundleImage : '../assets/images/DefaultImages/Item.jpg';
+      this.monsterImage = (this.monsterInfo.imageUrl) ? this.monsterInfo.imageUrl : this.monsterInfo.bundleImage ? this.monsterInfo.bundleImage : '../assets/images/DefaultImages/monster.jpg';
       this.bundleItems = this.bsModalRef.content.bundleItems ? this.bsModalRef.content.bundleItems : [];
       this.ruleSetId = this.bsModalRef.content.rulesetId ? this.bsModalRef.content.rulesetId : this.monsterInfo.ruleSetId;
       this.value = 1;

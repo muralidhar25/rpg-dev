@@ -55,7 +55,7 @@
           <div class="form-group input-image-note input-image-trigger" (click)="cropImage(abilityFormModal.imageUrl,true,'VIEW.EDIT')"
                *ngIf="(!showWebButtons && abilityFormModal.imageUrl !== undefined && abilityFormModal.imageUrl !== null)">
             <img class="spell-img" [src]="abilityFormModal.imageUrl"
-                 onerror="this.src='../assets/images/DefaultImages/ability.png';" />
+                 onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
           </div>
           <div class="input-image-control input-image-note input-image-buttons show" *ngIf="showWebButtons">
             <img [src]="abilityFormModal.imageUrl" class="bg-image" />
@@ -219,7 +219,7 @@
               <ng-template let-item="item">
                 <span class="associate-label-name">{{item.name}}</span>
                 <img [src]="item.imageUrl" class="pull-right associate-img"
-                     onerror="this.src = '../assets/images/BnE/Def_BnE.png'" />
+                     onerror="this.src = '../assets/images/BnE/Def_BnE.jpg'" />
               </ng-template>
             </c-item>
           </angular2-multiselect>

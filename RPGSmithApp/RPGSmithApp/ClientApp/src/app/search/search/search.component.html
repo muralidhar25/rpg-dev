@@ -552,26 +552,26 @@
               <div class="card-image">
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETITEMS || searchModal?.searchType == SEARCHTYPE.CHARACTERITEMS || searchModal?.searchType == SEARCHTYPE.RULESETCHARACTERITEMS"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
+                     onerror="this.src = './assets/images/DefaultImages/Item.jpg';">
 
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETSPELLS || searchModal?.searchType == SEARCHTYPE.CHARACTERSPELLS"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-spells/Fire.jpg';">
+                     onerror="this.src = './assets/images/DefaultImages/Spell.jpg';">
 
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETABILITIES || searchModal?.searchType == SEARCHTYPE.CHARACTERABILITIES"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-abilities/Attack.jpg';">
+                     onerror="this.src = './assets/images/DefaultImages/ability.jpg';">
 
                 <!---------------------------------------------------------------------------------------->
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETBUFFANDEFFECT || searchModal?.searchType == SEARCHTYPE.CHARACTERBUFFANDEFFECT"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = '../assets/images/BnE/Def_BnE.png';">
+                     onerror="this.src = '../assets/images/BnE/Def_BnE.jpg';">
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETMONSTERTEMPLATE || searchModal?.searchType == SEARCHTYPE.RULESETMONSTER"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
+                     onerror="this.src = './assets/images/DefaultImages/monster.jpg';">
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.RULESETLOOTTEMPLATE || searchModal?.searchType == SEARCHTYPE.RULESETLOOT || searchModal?.searchType == SEARCHTYPE.CHARACTERLOOT"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
+                     onerror="this.src = './assets/images/DefaultImages/Item.jpg';">
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.CHARACTERHANDOUT || searchModal?.searchType == SEARCHTYPE.RULESETHANDOUT"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
                      onerror="this.src = '../assets/images/handouticons/file-icon.png';">
@@ -579,45 +579,45 @@
 
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETITEMS"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
+                     onerror="this.src = './assets/images/DefaultImages/Item.jpg';">
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETSPELLS"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-spells/Fire.jpg';">
+                     onerror="this.src = './assets/images/DefaultImages/Spell.jpg';">
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETABILITIES"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-abilities/Attack.jpg';">
+                     onerror="this.src = './assets/images/DefaultImages/ability.jpg';">
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.CHARACTERABILITIES"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-abilities/Attack.jpg';">
+                     onerror="this.src = './assets/images/DefaultImages/ability.jpg';">
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.CHARACTERITEMS"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
+                     onerror="this.src = './assets/images/DefaultImages/Item.jpg';">
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.CHARACTERSPELLS"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-spells/Fire.jpg';">
+                     onerror="this.src = './assets/images/DefaultImages/Spell.jpg';">
 
                 <!---------------------------------------------------------------------------------------->
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETBUFFANDEFFECT"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = '../assets/images/BnE/Def_BnE.png';">
+                     onerror="this.src = '../assets/images/BnE/Def_BnE.jpg';">
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.CHARACTERBUFFANDEFFECT"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = '../assets/images/BnE/Def_BnE.png';">
+                     onerror="this.src = '../assets/images/BnE/Def_BnE.jpg';">
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETMONSTER"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
+                     onerror="this.src = './assets/images/DefaultImages/monster.jpg';">
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETMONSTERTEMPLATE"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
+                     onerror="this.src = './assets/images/DefaultImages/monster.jpg';">
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETLOOT"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
+                     onerror="this.src = './assets/images/DefaultImages/Item.jpg';">
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.CHARACTERLOOT"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
+                     onerror="this.src = './assets/images/DefaultImages/Item.jpg';">
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETLOOTTEMPLATE"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
+                     onerror="this.src = './assets/images/DefaultImages/Item.jpg';">
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType == SEARCHTYPE.CHARACTERHANDOUT"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
                      onerror="this.src = '../assets/images/handouticons/file-icon.png';">
@@ -626,7 +626,7 @@
                      onerror="this.src = '../assets/images/handouticons/file-icon.png';">
                 <img *ngIf="searchModal?.searchType == SEARCHTYPE.EVERYTHING && search?.searchType== SEARCHTYPE.RULESETCHARACTERITEMS"
                      class="card-img-top" src="{{search.searchimage}}" alt="{{search.name}}"
-                     onerror="this.src = 'https://rpgsmithsa.blob.core.windows.net/stock-defimg-items/Quiver.jpg';">
+                     onerror="this.src = './assets/images/DefaultImages/Item.jpg';">
                 <!---------------------------------------------------------------------------------------->
 
 

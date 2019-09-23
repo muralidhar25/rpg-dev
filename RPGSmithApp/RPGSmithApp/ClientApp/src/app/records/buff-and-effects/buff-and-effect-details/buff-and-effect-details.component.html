@@ -181,7 +181,8 @@
               <div class="item-info-banner">
                 <div class="item-info-image">
                   <img class="card-img-top" [src]="buffAndEffectDetail?.imageUrl" [alt]="buffAndEffectDetail?.name"
-                       onerror="this.src='https://rpgsmithsa.blob.core.windows.net/stock-defimg-rulesets/RS.png';" #imgref (click)="ViewImage(imgref)" />
+                       
+                       onerror="this.src = '../assets/images/BnE/Def_BnE.jpg'" #imgref (click)="ViewImage(imgref)" />
                 </div>
                 <h2 class="item-info-name">
                   {{buffAndEffectDetail?.name}}

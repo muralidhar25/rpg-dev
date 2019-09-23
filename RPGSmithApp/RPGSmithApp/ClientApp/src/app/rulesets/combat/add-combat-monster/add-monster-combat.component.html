@@ -35,7 +35,7 @@
       [disabled]="characterItems | contains : item.itemMasterId : 'itemMasterId'" />-->
                           <span>
                             <img [alt]="item.name" [src]="item.image"
-                                 onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
+                                 onerror="this.src = '../assets/images/DefaultImages/monster.jpg';">
                             <em>{{item.name}}</em>
                             <i class="icon monster-icon"></i>
                           </span>
@@ -55,7 +55,7 @@
   [disabled]="characterItems | contains : item.itemMasterId : 'itemMasterId'" />-->
                           <span>
                             <img [alt]="item.name" [src]="item.image"
-                                 onerror="this.src = '../assets/images/DefaultImages/Item.jpg';">
+                                 onerror="this.src = '../assets/images/DefaultImages/monster.jpg';">
                             <em>{{item.name}}</em>
                             <span class="input-box" *ngIf="item.type == COMBAT_MONSTER_TYPE_ITEMS.MONSTERTEMPLATE && item.selected">
                               <input type="number" max="9999" maxlength='4' class="w-100 h-100 text-center border-0" id="qty{{i}}" name="qty{{i}}" [(ngModel)]="item.quantity" #qty="ngModel" (ngModelChange)="quantityChanged(item.quantity,item)" />

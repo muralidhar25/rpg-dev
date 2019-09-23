@@ -51,7 +51,7 @@
                                        [disabled]="characterAbilities | contains : ability.abilityId : 'abilityId'" />
                                 <span>
                                     <img [alt]="ability.name" [src]="ability.imageUrl"
-                                         onerror="this.src = '../assets/images/DefaultImages/ability.png';">
+                                         onerror="this.src = '../assets/images/DefaultImages/ability.jpg';">
                                     <em>{{ability.name}}</em>
                                     <i *ngIf="characterAbilities | contains : ability.abilityId : 'abilityId'" class="icon" title="Already Added"
                                        style="background-color:#aaa39e!important;cursor:not-allowed;"></i>

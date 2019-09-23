@@ -25,6 +25,7 @@ namespace DAL.Models.SPModels
         public List<Combatant_ViewModel> CombatantList { get; set; }
         public CombatSetting CombatSettings { get; set; }
         public int CurrentCombatantTurnID { get; set; }
+        public bool HasCharacterChangedTurn { get; set; }
     }
     public class Character_Combat_VM_ForCharCharStats : Character
     {

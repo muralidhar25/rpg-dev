@@ -257,7 +257,7 @@
                     <li class="output-list-item" *ngFor="let abilitiy of ItemMasterDetail.itemMasterAbilities">
                       <div [routerLink]="['/ruleset/ability-details', abilitiy.abilitiy.abilityId]" style="cursor:pointer;" popover="{{abilitiy.abilitiy.name}}" triggers="hover">
                         <img class="card-img-top" [src]="abilitiy.abilitiy.imageUrl" [alt]="abilitiy.abilitiy.name"
-                             onerror="this.src='../assets/images/DefaultImages/ability.png';" />
+                             onerror="this.src='../assets/images/DefaultImages/ability.jpg';" />
                         <span>{{abilitiy.abilitiy.name}}</span>
                       </div>
                     </li>
@@ -296,7 +296,7 @@
                     <li class="output-list-item" *ngFor="let rec of ItemMasterDetail?.itemMasterBuffAndEffects">
                       <div (click)="GoToRuleBuff(rec.buffAndEffectId)" style="cursor:pointer;" popover="{{rec?.buffAndEffect?.name}}" triggers="hover">
                         <img class="card-img-top" [src]="rec?.buffAndEffect?.imageUrl" [alt]="rec?.buffAndEffect?.name"
-                             onerror="this.src='../assets/images/BnE/Def_BnE.png';" />
+                             onerror="this.src='../assets/images/BnE/Def_BnE.jpg';" />
                         <span>{{rec?.buffAndEffect?.name}}</span>
                       </div>
                     </li>
