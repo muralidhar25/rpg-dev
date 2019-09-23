@@ -2288,7 +2288,7 @@ export class CombatComponent implements OnInit {
       this.bsModalRef.content.spellVM = spell;
       this.bsModalRef.content.rulesetID = this.ruleSetId;
       this.bsModalRef.content.isFromCharacter = true;
-      this.bsModalRef.content.isFromCharacterId = +this.characterId;
+      this.bsModalRef.content.isFromCharacterId = currentCombatantDetail.character.characterId;
       this.bsModalRef.content.isEditingWithoutDetail = true;
       this.bsModalRef.content.userID = currentCombatantDetail.character.userId;
     }
@@ -2315,6 +2315,7 @@ export class CombatComponent implements OnInit {
       this.bsModalRef.content.isEditingWithoutDetail = true;
     }
     if (currentCombatantDetail.type == combatantType.CHARACTER) {
+
       this.bsModalRef = this.modalService.show(CreateAbilitiesComponent, {
         class: 'modal-primary modal-custom',
         ignoreBackdropClick: true,
@@ -2325,7 +2326,7 @@ export class CombatComponent implements OnInit {
       this.bsModalRef.content.fromDetail = false;
       this.bsModalRef.content.abilityVM = ability;
       this.bsModalRef.content.isFromCharacter = true;
-      this.bsModalRef.content.isFromCharacterId = +this.characterId;
+      this.bsModalRef.content.isFromCharacterId = currentCombatantDetail.character.characterId;
       this.bsModalRef.content.isFromCharacterAbilityId = ability.characterAbilityId;
       this.bsModalRef.content.rulesetID = this.ruleSetId
       this.bsModalRef.content.isEditingWithoutDetail = true;

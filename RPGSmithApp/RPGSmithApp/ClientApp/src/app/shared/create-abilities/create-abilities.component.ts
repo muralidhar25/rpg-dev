@@ -123,9 +123,9 @@ export class CreateAbilitiesComponent implements OnInit {
                     this.abilityFormModal.isFromCharacterId = this.isFromCharacterId;
                     this.abilityFormModal.isFromCharacterAbilityId = this.isFromCharacterAbilityId;
                     this.abilityFormModal.characterId = this.abilityFormModal.characterId ? this.abilityFormModal.characterId : this.isFromCharacterId;
-                    this.abilityFormModal.currentNumberOfUses = this.isFromCharacter ? this.isFromCharacterAbilityCurrent : this.abilityFormModal.currentNumberOfUses;
-                    this.abilityFormModal.maxNumberOfUses = this.isFromCharacter ? this.isFromCharacterAbilityMax : this.abilityFormModal.maxNumberOfUses;
-
+                    this.abilityFormModal.currentNumberOfUses = this.abilityFormModal.currentNumberOfUses ? this.abilityFormModal.currentNumberOfUses : 0;
+                    this.abilityFormModal.maxNumberOfUses = this.abilityFormModal.maxNumberOfUses ? this.abilityFormModal.maxNumberOfUses : 0;
+                    
                     this.selectedBuffAndEffects = this.abilityFormModal.abilityBuffAndEffects.map(x => { return x.buffAndEffect; });
 
                     try {
